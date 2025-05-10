@@ -32,7 +32,7 @@ export default function RootLayout({
         <CustomThemeProvider>
           <div className="relative flex min-h-screen flex-col">
             <AppHeader />
-            <main className="flex-1 container max-w-screen-2xl py-8">{children}</main>
+            <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
           </div>
           <Toaster />
         </CustomThemeProvider>
