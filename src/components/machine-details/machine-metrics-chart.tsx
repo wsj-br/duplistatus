@@ -1,7 +1,8 @@
+// src/components/machine-details/machine-metrics-chart.tsx
 "use client";
 
 import type { Machine } from "@/lib/types";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react"; // Added useMemo
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from "recharts";
 import {
   Card,
@@ -41,12 +42,13 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
   const currentMetricInfo = metricDisplayInfo[selectedMetric];
   const yAxisLabel = currentMetricInfo.unit ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` : currentMetricInfo.label;
 
-  const chartConfig = {
+  // useMemo for chartConfig to prevent re-creation on every render if selectedMetric doesn't change
+  const chartConfig = useMemo(() => ({
     [selectedMetric]: {
       label: yAxisLabel,
-      color: "hsl(var(--primary))",
+      color: "hsl(var(--chart-1))", // Changed to --chart-1
     },
-  } satisfies ChartConfig;
+  }), [selectedMetric, yAxisLabel]) satisfies ChartConfig;
   
   const chartData = machine.chartData.map(item => ({
     date: item.date,
@@ -60,11 +62,9 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     return value.toLocaleString();
   };
 
-  const tooltipFormatter = (value: number, name: string) => {
-     // name here will be the datakey from chartConfig which includes unit if present
-    // We want the raw value for formatting, and the original label without unit for display
-    const metricKey = Object.keys(metricDisplayInfo).find(key => chartConfig[key as MetricKey]?.label === name) as MetricKey | undefined;
-    const originalLabel = metricKey ? metricDisplayInfo[metricKey].label : name;
+  const tooltipFormatter = (value: number, name: string, props: any) => {
+    // The 'name' from Recharts tooltip payload is the dataKey. We can use it to find the original label.
+    const originalLabel = chartConfig[name as MetricKey]?.label || name;
 
     if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
       return [formatBytes(value), originalLabel];
@@ -114,7 +114,8 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                   content={<ChartTooltipContent indicator="dot" hideLabel formatter={tooltipFormatter} />}
                 />
                 <RechartsLegend content={<ChartLegendContent />} />
-                <Bar dataKey={selectedMetric} fill="var(--color-primary)" radius={4} />
+                {/* Updated fill to dynamically use the color based on selectedMetric */}
+                <Bar dataKey={selectedMetric} fill={`var(--color-${selectedMetric})`} radius={4} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -127,3 +128,4 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     </Card>
   );
 }
+

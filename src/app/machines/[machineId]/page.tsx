@@ -53,10 +53,6 @@ export default function MachineDetailsPage({ params }: MachineDetailsPageProps) 
         </CardHeader>
       </Card>
       
-      <MachineMetricsChart machine={machine} />
-
-      <Separator />
-
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Backup History</CardTitle>
@@ -66,6 +62,12 @@ export default function MachineDetailsPage({ params }: MachineDetailsPageProps) 
           <MachineBackupTable backups={machine.backups} />
         </CardContent>
       </Card>
+
+      <Separator />
+
+      <MachineMetricsChart machine={machine} />
+
     </div>
   );
 }
+
