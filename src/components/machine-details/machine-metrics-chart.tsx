@@ -17,8 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"; // Assuming ChartTooltip and ChartLegend exist or are part of ChartContainer export
+import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"; 
 import type { ChartConfig } from "@/components/ui/chart";
+import { formatBytes } from "@/lib/utils";
 
 
 interface MachineMetricsChartProps {
@@ -27,19 +28,22 @@ interface MachineMetricsChartProps {
 
 type MetricKey = "uploadedSize" | "duration" | "fileCount" | "fileSize";
 
-const metricLabels: Record<MetricKey, string> = {
-  uploadedSize: "Uploaded Size (MB)",
-  duration: "Duration (Minutes)",
-  fileCount: "File Count",
-  fileSize: "Total File Size (MB)",
+const metricDisplayInfo: Record<MetricKey, { label: string; unit?: string }> = {
+  uploadedSize: { label: "Uploaded Size" },
+  duration: { label: "Duration", unit: "Minutes" },
+  fileCount: { label: "File Count" },
+  fileSize: { label: "Total File Size" },
 };
 
 export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>("uploadedSize");
 
+  const currentMetricInfo = metricDisplayInfo[selectedMetric];
+  const yAxisLabel = currentMetricInfo.unit ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` : currentMetricInfo.label;
+
   const chartConfig = {
     [selectedMetric]: {
-      label: metricLabels[selectedMetric],
+      label: yAxisLabel,
       color: "hsl(var(--primary))",
     },
   } satisfies ChartConfig;
@@ -49,13 +53,33 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     [selectedMetric]: item[selectedMetric]
   }));
 
+  const yAxisTickFormatter = (value: number) => {
+    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
+      return formatBytes(value, 0);
+    }
+    return value.toLocaleString();
+  };
+
+  const tooltipFormatter = (value: number, name: string) => {
+     // name here will be the datakey from chartConfig which includes unit if present
+    // We want the raw value for formatting, and the original label without unit for display
+    const metricKey = Object.keys(metricDisplayInfo).find(key => chartConfig[key as MetricKey]?.label === name) as MetricKey | undefined;
+    const originalLabel = metricKey ? metricDisplayInfo[metricKey].label : name;
+
+    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
+      return [formatBytes(value), originalLabel];
+    }
+    return [value.toLocaleString(), originalLabel];
+  };
+
+
   return (
     <Card className="shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Visualize backup {metricLabels[selectedMetric].toLowerCase()} for {machine.name}.
+            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name}.
           </CardDescription>
         </div>
         <Select value={selectedMetric} onValueChange={(value) => setSelectedMetric(value as MetricKey)}>
@@ -63,9 +87,9 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
             <SelectValue placeholder="Select Metric" />
           </SelectTrigger>
           <SelectContent>
-            {(Object.keys(metricLabels) as MetricKey[]).map(metric => (
+            {(Object.keys(metricDisplayInfo) as MetricKey[]).map(metric => (
               <SelectItem key={metric} value={metric}>
-                {metricLabels[metric]}
+                {metricDisplayInfo[metric].unit ? `${metricDisplayInfo[metric].label} (${metricDisplayInfo[metric].unit})` : metricDisplayInfo[metric].label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -82,11 +106,12 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                   tickLine={false} 
                   axisLine={false} 
                   tickMargin={8}
-                  label={{ value: metricLabels[selectedMetric], angle: -90, position: 'insideLeft', offset: -5, style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))' } }}
+                  tickFormatter={yAxisTickFormatter}
+                  label={{ value: yAxisLabel, angle: -90, position: 'insideLeft', offset: -15, style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))' } }}
                 />
                  <RechartsTooltip
                   cursor={false}
-                  content={<ChartTooltipContent indicator="dot" hideLabel />}
+                  content={<ChartTooltipContent indicator="dot" hideLabel formatter={tooltipFormatter} />}
                 />
                 <RechartsLegend content={<ChartLegendContent />} />
                 <Bar dataKey={selectedMetric} fill="var(--color-primary)" radius={4} />

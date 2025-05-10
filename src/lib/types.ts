@@ -9,12 +9,10 @@ export interface Backup {
   warnings: number;
   errors: number;
   fileCount: number;
-  fileSize: string; // e.g., "1.2 GB"
-  uploadedSize: string; // e.g., "500 MB"
+  fileSize: number; // in bytes
+  uploadedSize: number; // in bytes
   duration: string; // e.g., "30m 15s"
   // Numeric values for charting
-  fileSizeInMB: number;
-  uploadedSizeInMB: number;
   durationInMinutes: number;
 }
 
@@ -25,10 +23,10 @@ export interface Machine {
   // For chart data pre-computation
   chartData: {
     date: string;
-    uploadedSize: number;
-    duration: number;
+    uploadedSize: number; // in bytes
+    duration: number; // in minutes
     fileCount: number;
-    fileSize: number;
+    fileSize: number; // in bytes
   }[];
 }
 

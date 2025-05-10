@@ -8,9 +8,11 @@ const generateBackups = (machineId: string, count: number): Backup[] => {
   for (let i = 0; i < count; i++) {
     const status = statuses[Math.floor(Math.random() * statuses.length)];
     const durationMinutes = Math.floor(Math.random() * 120) + 5; // 5 to 125 minutes
-    const uploadedMB = Math.floor(Math.random() * 5000) + 100; // 100MB to 5GB
+    
+    // Generate sizes in bytes
+    const uploadedBytes = (Math.floor(Math.random() * 5000) + 100) * 1024 * 1024; // 100MB to 5GB in bytes
     const totalFiles = Math.floor(Math.random() * 10000) + 500; // 500 to 10500 files
-    const totalSizeMB = uploadedMB + Math.floor(Math.random() * 1000); // Total size slightly larger
+    const totalSizeBytes = uploadedBytes + (Math.floor(Math.random() * 1000) * 1024 * 1024); // Total size slightly larger, in bytes
 
     backups.push({
       id: `${machineId}-backup-${i + 1}`,
@@ -20,12 +22,9 @@ const generateBackups = (machineId: string, count: number): Backup[] => {
       warnings: status === "Warning" ? Math.floor(Math.random() * 5) + 1 : 0,
       errors: status === "Failed" ? Math.floor(Math.random() * 3) + 1 : 0,
       fileCount: totalFiles,
-      fileSize: `${(totalSizeMB / 1024).toFixed(2)} GB`,
-      uploadedSize: `${(uploadedMB / 1024).toFixed(2)} GB`,
+      fileSize: totalSizeBytes, // Store as bytes
+      uploadedSize: uploadedBytes, // Store as bytes
       duration: `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`,
-      // Numeric values for charting
-      fileSizeInMB: totalSizeMB,
-      uploadedSizeInMB: uploadedMB,
       durationInMinutes: durationMinutes,
     });
     currentDate.setDate(currentDate.getDate() - (Math.floor(Math.random()*3) + 1)); // Go back 1-3 days
@@ -65,10 +64,10 @@ machinesData.forEach(machine => {
   machine.chartData = machine.backups
     .map(b => ({
       date: new Date(b.date).toLocaleDateString(),
-      uploadedSize: b.uploadedSizeInMB,
+      uploadedSize: b.uploadedSize, // now in bytes
       duration: b.durationInMinutes,
       fileCount: b.fileCount,
-      fileSize: b.fileSizeInMB,
+      fileSize: b.fileSize, // now in bytes
     }))
     .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Sort by date ascending for chart
 });

@@ -13,6 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { formatBytes } from "@/lib/utils";
+
 
 interface MachineBackupTableProps {
   backups: Backup[];
@@ -70,8 +72,8 @@ export function MachineBackupTable({ backups, itemsPerPage = 10 }: MachineBackup
                 <TableCell className="text-center">{backup.warnings}</TableCell>
                 <TableCell className="text-center">{backup.errors}</TableCell>
                 <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{backup.fileSize}</TableCell>
-                <TableCell className="text-right">{backup.uploadedSize}</TableCell>
+                <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
+                <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
                 <TableCell className="text-right">{backup.duration}</TableCell>
               </TableRow>
             ))}
