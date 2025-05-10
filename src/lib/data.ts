@@ -1,4 +1,4 @@
-import type { Machine, MachineSummary, Backup, BackupStatus } from './types';
+import type { Machine, MachineSummary, Backup, BackupStatus, OverallSummary } from './types';
 
 const generateBackups = (machineId: string, count: number): Backup[] => {
   const statuses: BackupStatus[] = ["Success", "Failed", "InProgress", "Warning"];
@@ -80,7 +80,7 @@ export const getMachinesSummary = (): MachineSummary[] => {
       id: machine.id,
       name: machine.name,
       backupCount: machine.backups.length,
-      lastBackupStatus: latestBackup?.status || "N/A" as any, // Cast to any if N/A needed, or handle better
+      lastBackupStatus: latestBackup?.status || "N/A",
       lastBackupDate: latestBackup?.date || "N/A",
       lastBackupDuration: latestBackup?.duration || "N/A",
       totalWarnings: machine.backups.reduce((sum, b) => sum + b.warnings, 0),
@@ -94,3 +94,25 @@ export const getMachineById = (id: string): Machine | undefined => {
 };
 
 export const getAllMachines = (): Machine[] => machinesData;
+
+export const getOverallSummary = (): OverallSummary => {
+  const totalMachines = machinesData.length;
+  let totalBackups = 0;
+  let totalUploadedSize = 0;
+  let totalStorageUsed = 0; // Sum of all backup.fileSize
+
+  machinesData.forEach(machine => {
+    totalBackups += machine.backups.length;
+    machine.backups.forEach(backup => {
+      totalUploadedSize += backup.uploadedSize;
+      totalStorageUsed += backup.fileSize; 
+    });
+  });
+
+  return {
+    totalMachines,
+    totalBackups,
+    totalUploadedSize,
+    totalStorageUsed,
+  };
+};

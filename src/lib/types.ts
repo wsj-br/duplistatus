@@ -31,12 +31,19 @@ export interface Machine {
 }
 
 export interface MachineSummary {
-  id: string;
+  id:string;
   name: string;
   backupCount: number;
-  lastBackupStatus: BackupStatus;
-  lastBackupDate: string; // ISO string
-  lastBackupDuration: string;
+  lastBackupStatus: BackupStatus | 'N/A';
+  lastBackupDate: string; // ISO string or "N/A"
+  lastBackupDuration: string; // or "N/A"
   totalWarnings: number;
   totalErrors: number;
+}
+
+export interface OverallSummary {
+  totalMachines: number;
+  totalBackups: number;
+  totalUploadedSize: number; // in bytes
+  totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
 }
