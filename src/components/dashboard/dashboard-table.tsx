@@ -1,3 +1,4 @@
+// src/components/dashboard/dashboard-table.tsx
 "use client";
 
 import type { MachineSummary } from "@/lib/types";
@@ -9,16 +10,20 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
-import Link from "next/link";
-import { Eye } from "lucide-react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 interface DashboardTableProps {
   machines: MachineSummary[];
 }
 
 export function DashboardTable({ machines }: DashboardTableProps) {
+  const router = useRouter(); // Initialize router
+
+  const handleRowClick = (machineId: string) => {
+    router.push(`/machines/${machineId}`);
+  };
+
   return (
     <div className="rounded-lg border shadow-sm overflow-hidden">
       <Table>
@@ -31,23 +36,25 @@ export function DashboardTable({ machines }: DashboardTableProps) {
             <TableHead className="text-right">Duration</TableHead>
             <TableHead className="text-center">Warnings</TableHead>
             <TableHead className="text-center">Errors</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {/* Removed Actions TableHead */}
           </TableRow>
         </TableHeader>
         <TableBody>
           {machines.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} className="text-center h-24">
+              <TableCell colSpan={7} className="text-center h-24"> {/* Adjusted colSpan */}
                 No machines found.
               </TableCell>
             </TableRow>
           )}
           {machines.map((machine) => (
-            <TableRow key={machine.id}>
+            <TableRow 
+              key={machine.id} 
+              onClick={() => handleRowClick(machine.id)} // Add onClick handler
+              className="cursor-pointer hover:bg-muted/50" // Add cursor and hover effect
+            >
               <TableCell className="font-medium">
-                <Link href={`/machines/${machine.id}`} className="hover:underline text-primary">
-                  {machine.name}
-                </Link>
+                {machine.name} {/* Removed Link component */}
               </TableCell>
               <TableCell className="text-center">{machine.backupCount}</TableCell>
               <TableCell>
@@ -57,13 +64,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
               <TableCell className="text-center">{machine.totalWarnings}</TableCell>
               <TableCell className="text-center">{machine.totalErrors}</TableCell>
-              <TableCell className="text-right">
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/machines/${machine.id}`}>
-                    <Eye className="mr-2 h-4 w-4" /> View Details
-                  </Link>
-                </Button>
-              </TableCell>
+              {/* Removed TableCell for actions */}
             </TableRow>
           ))}
         </TableBody>
@@ -71,3 +72,4 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     </div>
   );
 }
+
