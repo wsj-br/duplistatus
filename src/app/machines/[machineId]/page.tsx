@@ -1,13 +1,13 @@
 import { getMachineById, getAllMachines } from "@/lib/data";
-import type { Machine } from "@/lib/types";
+import type { Machine, BackupStatus } from "@/lib/types";
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
 import { MachineMetricsChart } from "@/components/machine-details/machine-metrics-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
 
 interface MachineDetailsPageProps {
   params: {
@@ -44,13 +44,50 @@ export default function MachineDetailsPage({ params }: MachineDetailsPageProps) 
     );
   }
 
+  // Calculate summary data
+  const totalBackups = machine.backups.length;
+  
+  const statusCounts: Record<BackupStatus, number> = {
+    Success: 0,
+    Failed: 0,
+    InProgress: 0,
+    Warning: 0,
+  };
+  machine.backups.forEach(backup => {
+    if (statusCounts[backup.status] !== undefined) {
+        statusCounts[backup.status]++;
+    }
+  });
+
+  const latestBackup = machine.backups.length > 0 ? machine.backups[0] : null;
+  const lastBackupWarnings = latestBackup?.warnings || 0;
+  const lastBackupErrors = latestBackup?.errors || 0;
+
+  const totalDurationMinutes = machine.backups.reduce((sum, b) => sum + (b.durationInMinutes || 0), 0);
+  const averageDuration = totalBackups > 0 ? totalDurationMinutes / totalBackups : 0;
+
+  const totalUploadedSize = machine.backups.reduce((sum, b) => sum + (b.uploadedSize || 0), 0);
+  const lastBackupStorageSize = latestBackup?.fileSize || 0;
+
+
   return (
     <div className="flex flex-col gap-8">
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-3xl">{machine.name}</CardTitle>
-          <CardDescription>Detailed backup history and performance metrics for {machine.name}.</CardDescription>
+          <CardDescription>Detailed backup information and performance metrics for {machine.name}.</CardDescription>
         </CardHeader>
+        <CardContent>
+          <MachineDetailSummaryItems
+            totalBackups={totalBackups}
+            statusCounts={statusCounts}
+            lastBackupWarnings={lastBackupWarnings}
+            lastBackupErrors={lastBackupErrors}
+            averageDuration={averageDuration}
+            totalUploadedSize={totalUploadedSize}
+            lastBackupStorageSize={lastBackupStorageSize}
+          />
+        </CardContent>
       </Card>
       
       <Card className="shadow-lg">
@@ -59,11 +96,9 @@ export default function MachineDetailsPage({ params }: MachineDetailsPageProps) 
           <CardDescription>List of all backups for {machine.name}.</CardDescription>
         </CardHeader>
         <CardContent>
-          <MachineBackupTable backups={machine.backups} />
+          <MachineBackupTable backups={machine.backups} itemsPerPage={5} />
         </CardContent>
       </Card>
-
-      <Separator />
 
       <MachineMetricsChart machine={machine} />
 

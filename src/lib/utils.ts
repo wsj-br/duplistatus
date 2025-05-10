@@ -17,3 +17,19 @@ export function formatBytes(bytes: number, decimals = 2): string {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
+
+export function formatDurationFromMinutes(totalMinutes: number): string {
+  if (isNaN(totalMinutes) || totalMinutes < 0 || !isFinite(totalMinutes)) return "N/A";
+  if (totalMinutes === 0) return "00:00:00";
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = Math.floor(totalMinutes % 60);
+  // Calculate seconds from the fractional part of totalMinutes
+  const seconds = Math.round((totalMinutes * 60) % 60);
+
+  const paddedHours = String(hours).padStart(2, '0');
+  const paddedMinutes = String(minutes).padStart(2, '0');
+  const paddedSeconds = String(seconds).padStart(2, '0');
+
+  return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+}
