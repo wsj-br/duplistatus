@@ -21,7 +21,7 @@ interface MachineBackupTableProps {
   itemsPerPage?: number;
 }
 
-export function MachineBackupTable({ backups, itemsPerPage = 10 }: MachineBackupTableProps) {
+export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(backups.length / itemsPerPage);
   const paginatedBackups = backups.slice(
@@ -108,3 +108,4 @@ export function MachineBackupTable({ backups, itemsPerPage = 10 }: MachineBackup
     </div>
   );
 }
+
