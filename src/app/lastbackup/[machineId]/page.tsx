@@ -8,6 +8,7 @@ import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
+import { notFound } from 'next/navigation';
 
 interface MachineDetailsPageProps {
   params: {
@@ -22,42 +23,20 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function MachineDetailsPage({ params }: MachineDetailsPageProps) {
-  const machine = await getMachineById(params.machineId);
+export default async function MachineDetailsPage({
+  params,
+}: MachineDetailsPageProps) {
+  // Ensure params is properly awaited
+  const { machineId } = await Promise.resolve(params);
+  
+  const machine = await getMachineById(machineId);
 
   if (!machine) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center">
-        <Alert variant="destructive" className="max-w-md">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Machine Not Found</AlertTitle>
-            <AlertDescription>
-            The machine with ID "{params.machineId}" could not be found. 
-            It might have been removed or the ID is incorrect.
-            </AlertDescription>
-        </Alert>
-        <Button asChild variant="link" className="mt-4">
-            <Link href="/">Return to Dashboard</Link>
-        </Button>
-      </div>
-    );
+    notFound();
   }
 
   // Calculate summary data
   const totalBackups = machine.backups.length;
-  
-  const statusCounts: Record<BackupStatus, number> = {
-    Success: 0,
-    Failed: 0,
-    InProgress: 0,
-    Warning: 0,
-  };
-  machine.backups.forEach(backup => {
-    if (statusCounts[backup.status] !== undefined) {
-        statusCounts[backup.status]++;
-    }
-  });
-
   const latestBackup = machine.backups.length > 0 ? machine.backups[0] : null;
   const lastBackupWarnings = latestBackup?.warnings || 0;
   const lastBackupErrors = latestBackup?.errors || 0;
@@ -66,8 +45,17 @@ export default async function MachineDetailsPage({ params }: MachineDetailsPageP
   const averageDuration = totalBackups > 0 ? totalDurationMinutes / totalBackups : 0;
 
   const totalUploadedSize = machine.backups.reduce((sum, b) => sum + (b.uploadedSize || 0), 0);
-  const lastBackupStorageSize = latestBackup?.fileSize || 0;
+  const lastBackupStorageSize = latestBackup?.knownFileSize || 0;
 
+  // Calculate chart data
+  const chartData = machine.backups.map(backup => ({
+    date: new Date(backup.date).toLocaleDateString(),
+    uploadedSize: backup.uploadedSize,
+    duration: backup.durationInMinutes,
+    fileCount: backup.fileCount,
+    fileSize: backup.fileSize,
+    storageSize: backup.knownFileSize
+  })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
     <div className="flex flex-col gap-8">
@@ -79,7 +67,6 @@ export default async function MachineDetailsPage({ params }: MachineDetailsPageP
         <CardContent>
           <MachineDetailSummaryItems
             totalBackups={totalBackups}
-            statusCounts={statusCounts}
             lastBackupWarnings={lastBackupWarnings}
             lastBackupErrors={lastBackupErrors}
             averageDuration={averageDuration}
@@ -99,9 +86,7 @@ export default async function MachineDetailsPage({ params }: MachineDetailsPageP
         </CardContent>
       </Card>
 
-      <MachineMetricsChart machine={machine} />
-
+      <MachineMetricsChart machine={{ ...machine, chartData }} />
     </div>
   );
-}
-
+} 

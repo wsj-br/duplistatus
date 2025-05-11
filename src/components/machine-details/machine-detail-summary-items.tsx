@@ -3,13 +3,12 @@
 
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Archive, CheckCircle, XCircle, AlertTriangle, Clock, UploadCloud, Database, Info } from "lucide-react";
+import { Archive, CheckCircle, XCircle, AlertTriangle, Clock, UploadCloud, Database } from "lucide-react";
 import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
 
 interface MachineDetailSummaryItemsProps {
   totalBackups: number;
-  statusCounts: Record<BackupStatus, number>;
+  statusCounts?: Record<BackupStatus, number>;
   lastBackupWarnings: number;
   lastBackupErrors: number;
   averageDuration: number; // in minutes
@@ -19,7 +18,6 @@ interface MachineDetailSummaryItemsProps {
 
 export function MachineDetailSummaryItems({
   totalBackups,
-  statusCounts,
   lastBackupWarnings,
   lastBackupErrors,
   averageDuration,
@@ -31,7 +29,7 @@ export function MachineDetailSummaryItems({
     { title: "Total Backups", value: totalBackups.toLocaleString(), icon: <Archive className="h-4 w-4 text-primary" />, "data-ai-hint": "archive storage" },
     { title: "Avg. Duration", value: formatDurationFromMinutes(averageDuration), icon: <Clock className="h-4 w-4 text-primary" />, "data-ai-hint": "timer clock" },
     { title: "Total Uploaded", value: formatBytes(totalUploadedSize), icon: <UploadCloud className="h-4 w-4 text-primary" />, "data-ai-hint": "cloud data" },
-    { title: "Last Backup Storage", value: formatBytes(lastBackupStorageSize), icon: <Database className="h-4 w-4 text-primary" />, "data-ai-hint": "database symbol" },
+    { title: "Total Storage Used", value: formatBytes(lastBackupStorageSize), icon: <Database className="h-4 w-4 text-primary" />, "data-ai-hint": "database symbol" },
     { title: "Last Backup Warnings", value: lastBackupWarnings.toLocaleString(), icon: <AlertTriangle className="h-4 w-4 text-yellow-500" />, "data-ai-hint": "warning symbol" },
     { title: "Last Backup Errors", value: lastBackupErrors.toLocaleString(), icon: <XCircle className="h-4 w-4 text-destructive" />, "data-ai-hint": "error cross" },
   ];
@@ -51,30 +49,6 @@ export function MachineDetailSummaryItems({
               </CardHeader>
               <CardContent className="pt-0 pb-1.5 px-3">
                 <div className="text-lg font-bold">{item.value}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      <Separator className="my-4" />
-
-      <div>
-        <h3 className="text-base font-semibold mb-2 text-foreground">Backup Status Distribution</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {(Object.keys(statusCounts) as BackupStatus[]).map(status => (
-            <Card key={status} className="shadow-sm" data-ai-hint={`${status.toLowerCase()} status`}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-1.5 px-3">
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {status}
-                </p>
-                 {status === "Success" && <CheckCircle className="h-4 w-4 text-green-500" />}
-                 {status === "Failed" && <XCircle className="h-4 w-4 text-destructive" />}
-                 {status === "Warning" && <AlertTriangle className="h-4 w-4 text-yellow-500" />}
-                 {status === "InProgress" && <Info className="h-4 w-4 text-primary" />}
-              </CardHeader>
-              <CardContent className="pt-0 pb-1.5 px-3">
-                <div className="text-lg font-bold">{statusCounts[status].toLocaleString()}</div>
               </CardContent>
             </Card>
           ))}

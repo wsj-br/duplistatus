@@ -52,6 +52,7 @@ export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupT
               <TableHead className="text-right">File Size</TableHead>
               <TableHead className="text-right">Uploaded Size</TableHead>
               <TableHead className="text-right">Duration</TableHead>
+              <TableHead className="text-right">Storage Size</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -80,6 +81,7 @@ export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupT
                 <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
                 <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
                 <TableCell className="text-right">{backup.duration}</TableCell>
+                <TableCell className="text-right">{formatBytes(backup.knownFileSize)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

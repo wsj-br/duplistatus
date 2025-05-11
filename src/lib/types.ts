@@ -1,4 +1,3 @@
-
 export type BackupStatus = "Success" | "Failed" | "InProgress" | "Warning";
 
 export interface Backup {
@@ -14,6 +13,7 @@ export interface Backup {
   duration: string; // e.g., "30m 15s"
   // Numeric values for charting
   durationInMinutes: number;
+  knownFileSize: number;
 }
 
 export interface Machine {

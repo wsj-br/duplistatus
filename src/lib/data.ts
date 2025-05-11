@@ -1,118 +1,158 @@
-import type { Machine, MachineSummary, Backup, BackupStatus, OverallSummary } from './types';
+import { Machine, MachineSummary, Backup, BackupStatus, OverallSummary } from './types';
+import { dbUtils } from './db-utils';
 
-const generateBackups = (machineId: string, count: number): Backup[] => {
-  const statuses: BackupStatus[] = ["Success", "Failed", "InProgress", "Warning"];
-  const backups: Backup[] = [];
-  let currentDate = new Date();
+interface MachineSummaryRow {
+  id: string;
+  name: string;
+  last_backup_date: string | null;
+  last_backup_status: BackupStatus | null;
+  last_backup_duration: number | null;
+  last_backup_size: number | null;
+  backup_count: number;
+  total_warnings: number;
+  total_errors: number;
+}
 
-  for (let i = 0; i < count; i++) {
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
-    const durationMinutes = Math.floor(Math.random() * 120) + 5; // 5 to 125 minutes
-    
-    // Generate sizes in bytes
-    const uploadedBytes = (Math.floor(Math.random() * 5000) + 100) * 1024 * 1024; // 100MB to 5GB in bytes
-    const totalFiles = Math.floor(Math.random() * 10000) + 500; // 500 to 10500 files
-    const totalSizeBytes = uploadedBytes + (Math.floor(Math.random() * 1000) * 1024 * 1024); // Total size slightly larger, in bytes
+interface MachineRow {
+  id: string;
+  name: string;
+  backups: BackupRow[];
+}
 
-    backups.push({
-      id: `${machineId}-backup-${i + 1}`,
-      name: `Backup ${currentDate.toLocaleDateString()}`,
-      date: currentDate.toISOString(),
-      status: status,
-      warnings: status === "Warning" ? Math.floor(Math.random() * 5) + 1 : 0,
-      errors: status === "Failed" ? Math.floor(Math.random() * 3) + 1 : 0,
-      fileCount: totalFiles,
-      fileSize: totalSizeBytes, // Store as bytes
-      uploadedSize: uploadedBytes, // Store as bytes
-      duration: `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`,
-      durationInMinutes: durationMinutes,
-    });
-    currentDate.setDate(currentDate.getDate() - (Math.floor(Math.random()*3) + 1)); // Go back 1-3 days
-  }
-  return backups.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-};
+interface BackupRow {
+  id: string;
+  machine_id: string;
+  date: string;
+  status: BackupStatus;
+  duration_seconds: number;
+  size: number;
+  examined_files: number;
+  warnings: number;
+  errors: number;
+  uploaded_size: number;
+  known_file_size: number;
+}
 
-const machinesData: Machine[] = [
-  {
-    id: "alpha-server",
-    name: "Alpha Server",
-    backups: generateBackups("alpha-server", 25),
-    chartData: [] // Will be populated based on backups
-  },
-  {
-    id: "beta-workstation",
-    name: "Beta Workstation",
-    backups: generateBackups("beta-workstation", 15),
-    chartData: []
-  },
-  {
-    id: "gamma-vm",
-    name: "Gamma Virtual Machine",
-    backups: generateBackups("gamma-vm", 30),
-    chartData: []
-  },
-  {
-    id: "delta-db",
-    name: "Delta Database",
-    backups: generateBackups("delta-db", 10),
-    chartData: []
-  },
-];
+interface OverallSummaryRow {
+  total_machines: number;
+  total_backups: number;
+  total_uploaded_size: number;
+  total_storage_used: number;
+}
 
-// Populate chartData
-machinesData.forEach(machine => {
-  machine.chartData = machine.backups
-    .map(b => ({
-      date: new Date(b.date).toLocaleDateString(),
-      uploadedSize: b.uploadedSize, // now in bytes
-      duration: b.durationInMinutes,
-      fileCount: b.fileCount,
-      fileSize: b.fileSize, // now in bytes
-    }))
-    .sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Sort by date ascending for chart
-});
+export async function getMachinesSummary(): Promise<MachineSummary[]> {
+  const rows = dbUtils.getMachinesSummary() as MachineSummaryRow[];
+  return rows.map(row => ({
+    id: row.id,
+    name: row.name,
+    lastBackupDate: row.last_backup_date || 'N/A',
+    lastBackupStatus: row.last_backup_status || 'N/A',
+    lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
+    backupCount: row.backup_count || 0,
+    totalWarnings: row.total_warnings || 0,
+    totalErrors: row.total_errors || 0
+  }));
+}
 
+export async function getMachineById(id: string): Promise<Machine | null> {
+  const machine = dbUtils.getMachineById(id) as MachineRow | null;
+  if (!machine) return null;
 
-export const getMachinesSummary = async (): Promise<MachineSummary[]> => {
-  return machinesData.map(machine => {
-    const latestBackup = machine.backups.length > 0 ? machine.backups[0] : null;
-    return {
-      id: machine.id,
-      name: machine.name,
-      backupCount: machine.backups.length,
-      lastBackupStatus: latestBackup?.status || "N/A",
-      lastBackupDate: latestBackup?.date || "N/A",
-      lastBackupDuration: latestBackup?.duration || "N/A",
-      totalWarnings: machine.backups.reduce((sum, b) => sum + b.warnings, 0),
-      totalErrors: machine.backups.reduce((sum, b) => sum + b.errors, 0),
-    };
-  });
-};
+  const backups = dbUtils.getMachineBackups(id) as BackupRow[];
+  const formattedBackups = backups.map(backup => ({
+    id: backup.id,
+    name: `Backup ${backup.id}`,
+    date: backup.date,
+    status: backup.status,
+    warnings: backup.warnings,
+    errors: backup.errors,
+    fileCount: backup.examined_files,
+    fileSize: backup.size,
+    uploadedSize: backup.uploaded_size,
+    duration: formatDurationFromSeconds(backup.duration_seconds),
+    durationInMinutes: Math.floor(backup.duration_seconds / 60),
+    knownFileSize: backup.known_file_size
+  }));
 
-export const getMachineById = async (id: string): Promise<Machine | undefined> => {
-  return machinesData.find(machine => machine.id === id);
-};
-
-export const getAllMachines = async (): Promise<Machine[]> => machinesData;
-
-export const getOverallSummary = async (): Promise<OverallSummary> => {
-  const totalMachines = machinesData.length;
-  let totalBackups = 0;
-  let totalUploadedSize = 0;
-  let totalStorageUsed = 0;
-
-  machinesData.forEach(machine => {
-    totalBackups += machine.backups.length;
-    machine.backups.forEach(backup => {
-      totalUploadedSize += backup.uploadedSize;
-      totalStorageUsed += backup.fileSize;
-    });
-  });
+  // Calculate chart data
+  const chartData = formattedBackups.map(backup => ({
+    date: new Date(backup.date).toLocaleDateString(),
+    uploadedSize: backup.uploadedSize,
+    duration: backup.durationInMinutes,
+    fileCount: backup.fileCount,
+    fileSize: backup.fileSize
+  })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return {
-    totalMachines,
-    totalBackups,
-    totalUploadedSize,
-    totalStorageUsed,
+    id: machine.id,
+    name: machine.name,
+    backups: formattedBackups,
+    chartData
   };
-};
+}
+
+export async function getAllMachines(): Promise<Machine[]> {
+  const machines = await Promise.all(
+    (dbUtils.getAllMachines() as MachineRow[]).map(async machine => {
+      const backups = dbUtils.getMachineBackups(machine.id) as BackupRow[];
+      const formattedBackups = backups.map(backup => ({
+        id: backup.id,
+        name: `Backup ${backup.id}`,
+        date: backup.date,
+        status: backup.status,
+        warnings: backup.warnings,
+        errors: backup.errors,
+        fileCount: backup.examined_files,
+        fileSize: backup.size,
+        uploadedSize: backup.uploaded_size,
+        duration: formatDurationFromSeconds(backup.duration_seconds),
+        durationInMinutes: Math.floor(backup.duration_seconds / 60),
+        knownFileSize: backup.known_file_size
+      }));
+
+      const chartData = formattedBackups.map(backup => ({
+        date: new Date(backup.date).toLocaleDateString(),
+        uploadedSize: backup.uploadedSize,
+        duration: backup.durationInMinutes,
+        fileCount: backup.fileCount,
+        fileSize: backup.fileSize
+      })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+      return {
+        id: machine.id,
+        name: machine.name,
+        backups: formattedBackups,
+        chartData
+      };
+    })
+  );
+
+  return machines;
+}
+
+export async function getOverallSummary(): Promise<OverallSummary> {
+  const summary = dbUtils.getOverallSummary() as OverallSummaryRow;
+  if (!summary) {
+    return {
+      totalMachines: 0,
+      totalBackups: 0,
+      totalUploadedSize: 0,
+      totalStorageUsed: 0
+    };
+  }
+
+  return {
+    totalMachines: summary.total_machines,
+    totalBackups: summary.total_backups,
+    totalUploadedSize: summary.total_uploaded_size,
+    totalStorageUsed: summary.total_storage_used
+  };
+}
+
+// Helper function to format duration from seconds
+function formatDurationFromSeconds(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+}

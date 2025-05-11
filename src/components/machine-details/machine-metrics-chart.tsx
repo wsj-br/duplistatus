@@ -21,19 +21,21 @@ import {
 import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"; 
 import type { ChartConfig } from "@/components/ui/chart";
 import { formatBytes } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 
 interface MachineMetricsChartProps {
   machine: Machine;
 }
 
-type MetricKey = "uploadedSize" | "duration" | "fileCount" | "fileSize";
+type MetricKey = "uploadedSize" | "duration" | "fileCount" | "fileSize" | "storageSize";
 
 const metricDisplayInfo: Record<MetricKey, { label: string; unit?: string }> = {
   uploadedSize: { label: "Uploaded Size" },
   duration: { label: "Duration", unit: "Minutes" },
   fileCount: { label: "File Count" },
   fileSize: { label: "Total File Size" },
+  storageSize: { label: "Storage Size" },
 };
 
 export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
@@ -56,7 +58,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
   }));
 
   const yAxisTickFormatter = (value: number) => {
-    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
+    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize" || selectedMetric === "storageSize") {
       return formatBytes(value, 0);
     }
     return value.toLocaleString();
@@ -66,10 +68,10 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     // The 'name' from Recharts tooltip payload is the dataKey. We can use it to find the original label.
     const originalLabel = chartConfig[name as MetricKey]?.label || name;
 
-    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
-      return [formatBytes(value), originalLabel];
+    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize" || selectedMetric === "storageSize") {
+      return [`${formatBytes(value)}`];
     }
-    return [value.toLocaleString(), originalLabel];
+    return [`${value.toLocaleString()}`];
   };
 
 
