@@ -32,8 +32,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
           <TableRow>
             <TableHead>Machine Name</TableHead>
             <TableHead className="text-center">Backup Count</TableHead>
-            <TableHead>Last Backup Status</TableHead>
             <TableHead>Last Backup Date</TableHead>
+            <TableHead>Last Backup Status</TableHead>
             <TableHead className="text-right">Duration</TableHead>
             <TableHead className="text-center">Warnings</TableHead>
             <TableHead className="text-center">Errors</TableHead>
@@ -59,9 +59,6 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               </TableCell>
               <TableCell className="text-center">{machine.backupCount}</TableCell>
               <TableCell>
-                <StatusBadge status={machine.lastBackupStatus} />
-              </TableCell>
-              <TableCell>
                 {machine.lastBackupDate !== "N/A" ? (
                   <>
                     <div>{new Date(machine.lastBackupDate).toLocaleString()}</div>
@@ -72,6 +69,9 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                 ) : (
                   "N/A"
                 )}
+              </TableCell>
+              <TableCell>
+                <StatusBadge status={machine.lastBackupStatus} />
               </TableCell>
               <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
               <TableCell className="text-center">{machine.totalWarnings}</TableCell>
