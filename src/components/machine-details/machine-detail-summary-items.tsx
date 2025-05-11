@@ -28,53 +28,53 @@ export function MachineDetailSummaryItems({
 }: MachineDetailSummaryItemsProps) {
 
   const summaryItems = [
-    { title: "Total Backups", value: totalBackups.toLocaleString(), icon: <Archive className="h-5 w-5 text-primary" />, "data-ai-hint": "archive storage" },
-    { title: "Avg. Duration", value: formatDurationFromMinutes(averageDuration), icon: <Clock className="h-5 w-5 text-primary" />, "data-ai-hint": "timer clock" },
-    { title: "Total Uploaded", value: formatBytes(totalUploadedSize), icon: <UploadCloud className="h-5 w-5 text-primary" />, "data-ai-hint": "cloud data" },
-    { title: "Last Backup Storage", value: formatBytes(lastBackupStorageSize), icon: <Database className="h-5 w-5 text-primary" />, "data-ai-hint": "database symbol" },
-    { title: "Last Backup Warnings", value: lastBackupWarnings.toLocaleString(), icon: <AlertTriangle className="h-5 w-5 text-yellow-500" />, "data-ai-hint": "warning symbol" },
-    { title: "Last Backup Errors", value: lastBackupErrors.toLocaleString(), icon: <XCircle className="h-5 w-5 text-destructive" />, "data-ai-hint": "error cross" },
+    { title: "Total Backups", value: totalBackups.toLocaleString(), icon: <Archive className="h-4 w-4 text-primary" />, "data-ai-hint": "archive storage" },
+    { title: "Avg. Duration", value: formatDurationFromMinutes(averageDuration), icon: <Clock className="h-4 w-4 text-primary" />, "data-ai-hint": "timer clock" },
+    { title: "Total Uploaded", value: formatBytes(totalUploadedSize), icon: <UploadCloud className="h-4 w-4 text-primary" />, "data-ai-hint": "cloud data" },
+    { title: "Last Backup Storage", value: formatBytes(lastBackupStorageSize), icon: <Database className="h-4 w-4 text-primary" />, "data-ai-hint": "database symbol" },
+    { title: "Last Backup Warnings", value: lastBackupWarnings.toLocaleString(), icon: <AlertTriangle className="h-4 w-4 text-yellow-500" />, "data-ai-hint": "warning symbol" },
+    { title: "Last Backup Errors", value: lastBackupErrors.toLocaleString(), icon: <XCircle className="h-4 w-4 text-destructive" />, "data-ai-hint": "error cross" },
   ];
 
   return (
     <div className="pt-4">
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-foreground">Machine Statistics</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h3 className="text-base font-semibold mb-2 text-foreground">Machine Statistics</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {summaryItems.map((item) => (
             <Card key={item.title} className="shadow-sm" data-ai-hint={item['data-ai-hint']}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-1.5 px-3">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   {item.title}
                 </p>
                 {item.icon}
               </CardHeader>
-              <CardContent className="pb-3 pt-1 px-4">
-                <div className="text-xl font-bold">{item.value}</div>
+              <CardContent className="pt-0 pb-1.5 px-3">
+                <div className="text-lg font-bold">{item.value}</div>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
 
-      <Separator className="my-6" />
+      <Separator className="my-4" />
 
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-foreground">Backup Status Distribution</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h3 className="text-base font-semibold mb-2 text-foreground">Backup Status Distribution</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {(Object.keys(statusCounts) as BackupStatus[]).map(status => (
             <Card key={status} className="shadow-sm" data-ai-hint={`${status.toLowerCase()} status`}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-4">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 py-1.5 px-3">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   {status}
                 </p>
-                 {status === "Success" && <CheckCircle className="h-5 w-5 text-green-500" />}
-                 {status === "Failed" && <XCircle className="h-5 w-5 text-destructive" />}
-                 {status === "Warning" && <AlertTriangle className="h-5 w-5 text-yellow-500" />}
-                 {status === "InProgress" && <Info className="h-5 w-5 text-primary" />}
+                 {status === "Success" && <CheckCircle className="h-4 w-4 text-green-500" />}
+                 {status === "Failed" && <XCircle className="h-4 w-4 text-destructive" />}
+                 {status === "Warning" && <AlertTriangle className="h-4 w-4 text-yellow-500" />}
+                 {status === "InProgress" && <Info className="h-4 w-4 text-primary" />}
               </CardHeader>
-              <CardContent className="pb-3 pt-1 px-4">
-                <div className="text-xl font-bold">{statusCounts[status].toLocaleString()}</div>
+              <CardContent className="pt-0 pb-1.5 px-3">
+                <div className="text-lg font-bold">{statusCounts[status].toLocaleString()}</div>
               </CardContent>
             </Card>
           ))}
@@ -83,3 +83,4 @@ export function MachineDetailSummaryItems({
     </div>
   );
 }
+
