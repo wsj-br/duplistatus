@@ -3,9 +3,9 @@ import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function DashboardPage() {
-  const machinesSummary = getMachinesSummary();
-  const overallSummary = getOverallSummary();
+export default async function DashboardPage() {
+  const machinesSummary = await getMachinesSummary();
+  const overallSummary = await getOverallSummary();
 
   return (
     <div className="flex flex-col gap-8">

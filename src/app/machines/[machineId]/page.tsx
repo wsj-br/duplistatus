@@ -16,15 +16,14 @@ interface MachineDetailsPageProps {
 }
 
 export async function generateStaticParams() {
-  const machines = getAllMachines();
-  return machines.map((machine) => ({
+  const machines = await getAllMachines();
+  return machines.map((machine: Machine) => ({
     machineId: machine.id,
   }));
 }
 
-
-export default function MachineDetailsPage({ params }: MachineDetailsPageProps) {
-  const machine = getMachineById(params.machineId);
+export default async function MachineDetailsPage({ params }: MachineDetailsPageProps) {
+  const machine = await getMachineById(params.machineId);
 
   if (!machine) {
     return (

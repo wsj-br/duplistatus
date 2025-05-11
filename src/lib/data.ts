@@ -73,7 +73,7 @@ machinesData.forEach(machine => {
 });
 
 
-export const getMachinesSummary = (): MachineSummary[] => {
+export const getMachinesSummary = async (): Promise<MachineSummary[]> => {
   return machinesData.map(machine => {
     const latestBackup = machine.backups.length > 0 ? machine.backups[0] : null;
     return {
@@ -89,23 +89,23 @@ export const getMachinesSummary = (): MachineSummary[] => {
   });
 };
 
-export const getMachineById = (id: string): Machine | undefined => {
+export const getMachineById = async (id: string): Promise<Machine | undefined> => {
   return machinesData.find(machine => machine.id === id);
 };
 
-export const getAllMachines = (): Machine[] => machinesData;
+export const getAllMachines = async (): Promise<Machine[]> => machinesData;
 
-export const getOverallSummary = (): OverallSummary => {
+export const getOverallSummary = async (): Promise<OverallSummary> => {
   const totalMachines = machinesData.length;
   let totalBackups = 0;
   let totalUploadedSize = 0;
-  let totalStorageUsed = 0; // Sum of all backup.fileSize
+  let totalStorageUsed = 0;
 
   machinesData.forEach(machine => {
     totalBackups += machine.backups.length;
     machine.backups.forEach(backup => {
       totalUploadedSize += backup.uploadedSize;
-      totalStorageUsed += backup.fileSize; 
+      totalStorageUsed += backup.fileSize;
     });
   });
 
