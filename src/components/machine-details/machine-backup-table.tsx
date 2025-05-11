@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, formatTimeAgo } from "@/lib/utils";
 
 
 interface MachineBackupTableProps {
@@ -65,7 +65,12 @@ export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupT
             {paginatedBackups.map((backup) => (
               <TableRow key={backup.id}>
                 <TableCell className="font-medium">{backup.name}</TableCell>
-                <TableCell>{new Date(backup.date).toLocaleString()}</TableCell>
+                <TableCell>
+                  <div>{new Date(backup.date).toLocaleString()}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {formatTimeAgo(backup.date)}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <StatusBadge status={backup.status} />
                 </TableCell>

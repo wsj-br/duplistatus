@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { useRouter } from "next/navigation"; // Import useRouter
+import { formatTimeAgo } from "@/lib/utils"; // Import the new function
 
 interface DashboardTableProps {
   machines: MachineSummary[];
@@ -60,7 +61,18 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               <TableCell>
                 <StatusBadge status={machine.lastBackupStatus} />
               </TableCell>
-              <TableCell>{new Date(machine.lastBackupDate).toLocaleString()}</TableCell>
+              <TableCell>
+                {machine.lastBackupDate !== "N/A" ? (
+                  <>
+                    <div>{new Date(machine.lastBackupDate).toLocaleString()}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {formatTimeAgo(machine.lastBackupDate)}
+                    </div>
+                  </>
+                ) : (
+                  "N/A"
+                )}
+              </TableCell>
               <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
               <TableCell className="text-center">{machine.totalWarnings}</TableCell>
               <TableCell className="text-center">{machine.totalErrors}</TableCell>
