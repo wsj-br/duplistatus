@@ -1,0 +1,37 @@
+# Version control
+.git
+.gitignore
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build output
+.next
+out
+
+# Environment files
+.env*
+!.env.example
+
+# Development files
+.vscode
+.idea
+*.log
+*.md
+!README.md
+
+# Test files
+__tests__
+*.test.*
+*.spec.*
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Other
+.DS_Store
+*.swp
+*.swo 

@@ -15,7 +15,7 @@ A modern web application for monitoring and visualizing backup operations from D
 ### Prerequisites
 
 - Node.js 18.x or later
-- pnpm package manager
+- pnpm 8.x or later (install with `npm install -g pnpm`)
 - SQLite3 (included as a dependency)
 
 ### Setup
@@ -34,7 +34,7 @@ pnpm install
 3. Create a `.env.local` file in the root directory (optional):
 ```env
 NODE_ENV=development
-PORT=9002
+PORT=9666
 ```
 
 4. Start the development server:
@@ -42,7 +42,18 @@ PORT=9002
 pnpm run dev
 ```
 
-The application will be available at `http://localhost:9002`
+The application will be available at `http://localhost:9666`
+
+### Package Management
+
+This project uses pnpm as its package manager. Here are some common commands:
+
+- `pnpm install` - Install all dependencies
+- `pnpm add <package>` - Add a new dependency
+- `pnpm add -D <package>` - Add a new dev dependency
+- `pnpm remove <package>` - Remove a dependency
+- `pnpm update` - Update all dependencies
+- `pnpm run <script>` - Run a script defined in package.json
 
 ## API Endpoints
 
@@ -149,13 +160,69 @@ The application uses SQLite3 as its database, with the database file stored in t
 - `/public`: Static assets
 
 ### Available Scripts
-- `pnpm run dev`: Start development server
-- `pnpm run build`: Build for production
-- `pnpm run start`: Start production server
-- `pnpm run lint`: Run ESLint
-- `pnpm run test:generate`: Generate test data
-- `pnpm run test:lastbackup`: Test last backup endpoint
-- `pnpm run test:clear-db`: Clear database
+- `pnpm run dev` - Start development server
+- `pnpm run build` - Build for production
+- `pnpm run start` - Start production server
+- `pnpm run lint` - Run ESLint
+- `pnpm run test:generate` - Generate test data
+- `pnpm run test:lastbackup` - Test last backup endpoint
+- `pnpm run test:clear-db` - Clear database
+- `pnpm run clean` - Clean build artifacts and dependencies
+- `pnpm run type-check` - Run TypeScript type checking
+
+## Docker Deployment
+
+The application can be deployed using Docker and Portainer. There are two ways to deploy:
+
+### Option 1: Using Docker Compose (Recommended)
+
+1. Ensure Docker and Docker Compose are installed on your system
+2. Clone the repository:
+```bash
+git clone https://github.com/wsj-br/duplidash-fb.git
+cd duplidash-fb
+```
+
+3. Start the application:
+```bash
+docker compose up -d
+```
+
+The application will be available at `http://localhost:9666`
+
+### Option 2: Using Portainer
+
+1. In Portainer, go to "Stacks" and click "Add stack"
+2. Name your stack (e.g., "duplidash")
+3. Choose "Build method" as "Repository"
+4. Enter the repository URL: `https://github.com/wsj-br/duplidash-fb.git`
+5. In the "Compose path" field, enter: `docker-compose.yml`
+6. Click "Deploy the stack"
+
+### Docker Configuration
+
+The Docker setup includes:
+
+- Multi-stage build for smaller production image
+- Volume mounting for persistent data storage
+- Health checks for container monitoring
+- Automatic container restart
+- Environment variable configuration
+
+#### Environment Variables
+
+The following environment variables can be configured in Portainer:
+
+- `NODE_ENV`: Set to `production` (default)
+- `PORT`: Application port (default: 9666)
+
+#### Data Persistence
+
+The application data is stored in the `./data` directory, which is mounted as a volume in the container. This ensures that your data persists even if the container is removed or updated.
+
+#### Health Monitoring
+
+The container includes a health check that monitors the application's availability. You can view the health status in Portainer's container details.
 
 ## License
 
