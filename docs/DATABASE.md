@@ -1,0 +1,465 @@
+# Duplidash Database Schema
+
+This document describes the SQLite database schema used by Duplidash to store backup operation data.
+
+## Database Location
+
+The database file (`backups.db`) is stored in the `data` directory of the application. The database is automatically created when the application starts if it doesn't exist.
+
+## Tables
+
+### Machines Table
+
+Stores information about machines that perform backups.
+
+```sql
+CREATE TABLE machines (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Fields
+- `id` (TEXT, PRIMARY KEY): Unique identifier for the machine
+- `name` (TEXT, NOT NULL): Display name of the machine
+- `created_at` (DATETIME): Timestamp when the machine was first registered
+
+### Backups Table
+
+Stores detailed information about each backup operation.
+
+```sql
+CREATE TABLE backups (
+    id TEXT PRIMARY KEY,
+    machine_id TEXT NOT NULL,
+    backup_name TEXT NOT NULL,
+    backup_id TEXT NOT NULL,
+    date DATETIME NOT NULL,
+    status TEXT NOT NULL,
+    duration_seconds INTEGER NOT NULL,
+    size INTEGER NOT NULL DEFAULT 0,
+    uploaded_size INTEGER NOT NULL DEFAULT 0,
+    examined_files INTEGER NOT NULL DEFAULT 0,
+    warnings INTEGER NOT NULL DEFAULT 0,
+    errors INTEGER NOT NULL DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Data fields
+    deleted_files INTEGER NOT NULL DEFAULT 0,
+    deleted_folders INTEGER NOT NULL DEFAULT 0,
+    modified_files INTEGER NOT NULL DEFAULT 0,
+    opened_files INTEGER NOT NULL DEFAULT 0,
+    added_files INTEGER NOT NULL DEFAULT 0,
+    size_of_modified_files INTEGER NOT NULL DEFAULT 0,
+    size_of_added_files INTEGER NOT NULL DEFAULT 0,
+    size_of_examined_files INTEGER NOT NULL DEFAULT 0,
+    size_of_opened_files INTEGER NOT NULL DEFAULT 0,
+    not_processed_files INTEGER NOT NULL DEFAULT 0,
+    added_folders INTEGER NOT NULL DEFAULT 0,
+    too_large_files INTEGER NOT NULL DEFAULT 0,
+    files_with_error INTEGER NOT NULL DEFAULT 0,
+    modified_folders INTEGER NOT NULL DEFAULT 0,
+    modified_symlinks INTEGER NOT NULL DEFAULT 0,
+    added_symlinks INTEGER NOT NULL DEFAULT 0,
+    deleted_symlinks INTEGER NOT NULL DEFAULT 0,
+    partial_backup BOOLEAN NOT NULL DEFAULT 0,
+    dryrun BOOLEAN NOT NULL DEFAULT 0,
+    main_operation TEXT NOT NULL,
+    parsed_result TEXT NOT NULL,
+    interrupted BOOLEAN NOT NULL DEFAULT 0,
+    version TEXT,
+    begin_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    warnings_actual_length INTEGER NOT NULL DEFAULT 0,
+    errors_actual_length INTEGER NOT NULL DEFAULT 0,
+    
+    -- BackendStatistics fields
+    bytes_downloaded INTEGER NOT NULL DEFAULT 0,
+    known_file_size INTEGER NOT NULL DEFAULT 0,
+    last_backup_date DATETIME,
+    backup_list_count INTEGER NOT NULL DEFAULT 0,
+    reported_quota_error BOOLEAN NOT NULL DEFAULT 0,
+    reported_quota_warning BOOLEAN NOT NULL DEFAULT 0,
+    backend_main_operation TEXT,
+    backend_parsed_result TEXT,
+    backend_interrupted BOOLEAN NOT NULL DEFAULT 0,
+    backend_version TEXT,
+    backend_begin_time DATETIME,
+    backend_duration TEXT,
+    backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
+    backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
+    
+    FOREIGN KEY (machine_id) REFERENCES machines(id)
+);
+```
+
+#### Key Fields
+- `id` (TEXT, PRIMARY KEY): Unique identifier for the backup
+- `machine_id` (TEXT, NOT NULL): Reference to the machine that performed the backup
+- `backup_name` (TEXT, NOT NULL): Name of the backup operation
+- `backup_id` (TEXT, NOT NULL): Duplicati backup identifier
+- `date` (DATETIME, NOT NULL): When the backup was performed
+- `status` (TEXT, NOT NULL): Backup status (Success, Failed, InProgress, Warning)
+- `duration_seconds` (INTEGER, NOT NULL): Duration of the backup in seconds
+- `size` (INTEGER): Total size of files in the backup
+- `uploaded_size` (INTEGER): Size of data uploaded during backup
+- `examined_files` (INTEGER): Number of files examined
+- `warnings` (INTEGER): Number of warnings during backup
+- `errors` (INTEGER): Number of errors during backup
+
+#### File Operation Fields
+- `deleted_files`: Number of files deleted
+- `deleted_folders`: Number of folders deleted
+- `modified_files`: Number of files modified
+- `opened_files`: Number of files opened
+- `added_files`: Number of files added
+- `size_of_modified_files`: Size of modified files
+- `size_of_added_files`: Size of added files
+- `size_of_examined_files`: Size of examined files
+- `size_of_opened_files`: Size of opened files
+- `not_processed_files`: Number of files not processed
+- `added_folders`: Number of folders added
+- `too_large_files`: Number of files too large to process
+- `files_with_error`: Number of files with errors
+- `modified_folders`: Number of folders modified
+- `modified_symlinks`: Number of symbolic links modified
+- `added_symlinks`: Number of symbolic links added
+- `deleted_symlinks`: Number of symbolic links deleted
+
+#### Operation Status Fields
+- `partial_backup`: Whether this was a partial backup
+- `dryrun`: Whether this was a dry run
+- `main_operation`: Type of operation performed
+- `parsed_result`: Result of the operation
+- `interrupted`: Whether the operation was interrupted
+- `version`: Duplicati version used
+- `begin_time`: When the backup started
+- `end_time`: When the backup ended
+- `warnings_actual_length`: Number of actual warnings
+- `errors_actual_length`: Number of actual errors
+
+#### Backend Statistics Fields
+- `bytes_downloaded`: Amount of data downloaded
+- `known_file_size`: Size of known files
+- `last_backup_date`: Date of the last backup
+- `backup_list_count`: Number of backups in the list
+- `reported_quota_error`: Whether a quota error was reported
+- `reported_quota_warning`: Whether a quota warning was reported
+- `backend_main_operation`: Backend operation type
+- `backend_parsed_result`: Backend operation result
+- `backend_interrupted`: Whether backend operation was interrupted
+- `backend_version`: Backend version
+- `backend_begin_time`: Backend operation start time
+- `backend_duration`: Backend operation duration
+- `backend_warnings_actual_length`: Number of backend warnings
+- `backend_errors_actual_length`: Number of backend errors
+
+## Indexes
+
+The following indexes are created to optimize query performance:
+
+```sql
+CREATE INDEX idx_backups_machine_id ON backups(machine_id);
+CREATE INDEX idx_backups_date ON backups(date);
+CREATE INDEX idx_backups_begin_time ON backups(begin_time);
+CREATE INDEX idx_backups_end_time ON backups(end_time);
+CREATE INDEX idx_backups_backup_id ON backups(backup_id);
+```
+
+## Relationships
+
+- Each backup (`backups` table) is associated with exactly one machine (`machines` table) through the `machine_id` foreign key
+- The relationship is enforced by a foreign key constraint: `FOREIGN KEY (machine_id) REFERENCES machines(id)`
+
+## Data Types
+
+- `TEXT`: Used for string values (IDs, names, statuses)
+- `INTEGER`: Used for numeric values (sizes, counts, durations)
+- `DATETIME`: Used for timestamps
+- `BOOLEAN`: Used for flags (stored as 0 or 1 in SQLite)
+
+## Backup Status Values
+
+The `status` field in the `backups` table can have the following values:
+- `Success`: Backup completed successfully
+- `Failed`: Backup failed
+- `InProgress`: Backup is currently running
+- `Warning`: Backup completed with warnings
+
+## Common Queries
+
+### Get Latest Backup for a Machine
+```sql
+SELECT b.*, m.name as machine_name
+FROM backups b
+JOIN machines m ON b.machine_id = m.id
+WHERE b.machine_id = ?
+ORDER BY b.date DESC
+LIMIT 1
+```
+
+### Get All Backups for a Machine
+```sql
+SELECT b.*, m.name as machine_name
+FROM backups b
+JOIN machines m ON b.machine_id = m.id
+WHERE b.machine_id = ?
+ORDER BY b.date DESC
+```
+
+### Get Machine Summary
+```sql
+WITH latest_backups AS (
+    SELECT 
+        machine_id,
+        MAX(date) as last_backup_date
+    FROM backups
+    GROUP BY machine_id
+)
+SELECT 
+    m.*,
+    lb.last_backup_date,
+    b.status as last_backup_status,
+    b.duration_seconds as last_backup_duration,
+    b.warnings as total_warnings,
+    b.errors as total_errors,
+    COUNT(b2.id) as backup_count
+FROM machines m
+LEFT JOIN latest_backups lb ON m.id = lb.machine_id
+LEFT JOIN backups b ON b.machine_id = m.id AND b.date = lb.last_backup_date
+LEFT JOIN backups b2 ON b2.machine_id = m.id
+GROUP BY m.id
+ORDER BY m.name
+```
+
+### Get Overall Summary
+```sql
+SELECT 
+    COUNT(DISTINCT m.id) as total_machines,
+    COUNT(b.id) as total_backups,
+    SUM(b.uploaded_size) as total_uploaded_size,
+    SUM(b.size) as total_storage_used
+FROM machines m
+LEFT JOIN backups b ON b.machine_id = m.id
+```
+
+## JSON to Database Mapping
+
+The following tables show how the JSON data from the API maps to the database columns. This is particularly useful when understanding the `/api/upload` endpoint data structure.
+
+### API Request Body to Database Columns Mapping
+
+#### Main Operation Data
+| JSON Path | Database Column | Description | Type | Default |
+|-----------|----------------|-------------|------|---------|
+| `Data.MainOperation` | `main_operation` | Type of backup operation | TEXT | - |
+| `Data.ParsedResult` | `parsed_result` | Result of the operation | TEXT | - |
+| `Data.BeginTime` | `begin_time` | Start time of backup | DATETIME | - |
+| `Data.Duration` | `duration_seconds` | Duration in seconds (converted from string) | INTEGER | - |
+| `Data.EndTime` | `end_time` | End time of backup | DATETIME | - |
+| `Data.Version` | `version` | Duplicati version used | TEXT | NULL |
+| `Data.Interrupted` | `interrupted` | Whether operation was interrupted | BOOLEAN | 0 |
+| `Data.PartialBackup` | `partial_backup` | Whether this was a partial backup | BOOLEAN | 0 |
+| `Data.Dryrun` | `dryrun` | Whether this was a dry run | BOOLEAN | 0 |
+
+#### File Operation Statistics
+| JSON Path | Database Column | Description | Type | Default |
+|-----------|----------------|-------------|------|---------|
+| `Data.DeletedFiles` | `deleted_files` | Number of files deleted | INTEGER | 0 |
+| `Data.DeletedFolders` | `deleted_folders` | Number of folders deleted | INTEGER | 0 |
+| `Data.ModifiedFiles` | `modified_files` | Number of files modified | INTEGER | 0 |
+| `Data.OpenedFiles` | `opened_files` | Number of files opened | INTEGER | 0 |
+| `Data.AddedFiles` | `added_files` | Number of files added | INTEGER | 0 |
+| `Data.SizeOfModifiedFiles` | `size_of_modified_files` | Size of modified files | INTEGER | 0 |
+| `Data.SizeOfAddedFiles` | `size_of_added_files` | Size of added files | INTEGER | 0 |
+| `Data.SizeOfExaminedFiles` | `size_of_examined_files` | Size of examined files | INTEGER | 0 |
+| `Data.SizeOfOpenedFiles` | `size_of_opened_files` | Size of opened files | INTEGER | 0 |
+| `Data.NotProcessedFiles` | `not_processed_files` | Number of files not processed | INTEGER | 0 |
+| `Data.AddedFolders` | `added_folders` | Number of folders added | INTEGER | 0 |
+| `Data.TooLargeFiles` | `too_large_files` | Number of files too large to process | INTEGER | 0 |
+| `Data.FilesWithError` | `files_with_error` | Number of files with errors | INTEGER | 0 |
+| `Data.ModifiedFolders` | `modified_folders` | Number of folders modified | INTEGER | 0 |
+| `Data.ModifiedSymlinks` | `modified_symlinks` | Number of symbolic links modified | INTEGER | 0 |
+| `Data.AddedSymlinks` | `added_symlinks` | Number of symbolic links added | INTEGER | 0 |
+| `Data.DeletedSymlinks` | `deleted_symlinks` | Number of symbolic links deleted | INTEGER | 0 |
+
+#### Backend Statistics
+| JSON Path | Database Column | Description | Type | Default |
+|-----------|----------------|-------------|------|---------|
+| `Data.BackendStatistics.BytesDownloaded` | `bytes_downloaded` | Amount of data downloaded | INTEGER | 0 |
+| `Data.BackendStatistics.BytesUploaded` | `uploaded_size` | Amount of data uploaded | INTEGER | 0 |
+| `Data.BackendStatistics.KnownFileSize` | `known_file_size` | Size of known files | INTEGER | 0 |
+| `Data.BackendStatistics.LastBackupDate` | `last_backup_date` | Date of the last backup | DATETIME | NULL |
+| `Data.BackendStatistics.BackupListCount` | `backup_list_count` | Number of backups in the list | INTEGER | 0 |
+| `Data.BackendStatistics.ReportedQuotaError` | `reported_quota_error` | Whether a quota error was reported | BOOLEAN | 0 |
+| `Data.BackendStatistics.ReportedQuotaWarning` | `reported_quota_warning` | Whether a quota warning was reported | BOOLEAN | 0 |
+| `Data.BackendStatistics.MainOperation` | `backend_main_operation` | Backend operation type | TEXT | NULL |
+| `Data.BackendStatistics.ParsedResult` | `backend_parsed_result` | Backend operation result | TEXT | NULL |
+| `Data.BackendStatistics.Interrupted` | `backend_interrupted` | Whether backend operation was interrupted | BOOLEAN | 0 |
+| `Data.BackendStatistics.Version` | `backend_version` | Backend version | TEXT | NULL |
+| `Data.BackendStatistics.BeginTime` | `backend_begin_time` | Backend operation start time | DATETIME | NULL |
+| `Data.BackendStatistics.Duration` | `backend_duration` | Backend operation duration | TEXT | NULL |
+| `Data.BackendStatistics.WarningsActualLength` | `backend_warnings_actual_length` | Number of backend warnings | INTEGER | 0 |
+| `Data.BackendStatistics.ErrorsActualLength` | `backend_errors_actual_length` | Number of backend errors | INTEGER | 0 |
+
+#### Extra Information
+| JSON Path | Database Column | Description | Type | Default |
+|-----------|----------------|-------------|------|---------|
+| `Extra.machine-id` | `machine_id` | Unique identifier for the machine | TEXT | - |
+| `Extra.machine-name` | `machines.name` | Display name of the machine | TEXT | - |
+| `Extra.backup-name` | `backup_name` | Name of the backup operation | TEXT | - |
+| `Extra.backup-id` | `backup_id` | Duplicati backup identifier | TEXT | - |
+
+#### Generated Fields
+| Database Column | Description | Type | Generation Method |
+|----------------|-------------|------|------------------|
+| `id` | Unique identifier for the backup | TEXT | Generated UUID |
+| `date` | When the backup was performed | DATETIME | Current timestamp |
+| `status` | Backup status | TEXT | Derived from `parsed_result` |
+| `warnings` | Number of warnings | INTEGER | Copied from `warnings_actual_length` |
+| `errors` | Number of errors | INTEGER | Copied from `errors_actual_length` |
+| `created_at` | Record creation timestamp | DATETIME | Current timestamp |
+
+### Example JSON to Database Insert
+
+```json
+{
+  "Data": {
+    "MainOperation": "Backup",
+    "ParsedResult": "Success",
+    "BeginTime": "2024-03-20T10:00:00Z",
+    "EndTime": "2024-03-20T11:30:00Z",
+    "Duration": "1h30m",
+    "Version": "2.0.7.1",
+    "Interrupted": false,
+    "PartialBackup": false,
+    "Dryrun": false,
+    
+    "DeletedFiles": 10,
+    "DeletedFolders": 2,
+    "ModifiedFiles": 50,
+    "OpenedFiles": 1000,
+    "AddedFiles": 25,
+    "SizeOfModifiedFiles": 5000000,
+    "SizeOfAddedFiles": 2500000,
+    "SizeOfExaminedFiles": 1000000,
+    "SizeOfOpenedFiles": 1000000,
+    "NotProcessedFiles": 5,
+    "AddedFolders": 3,
+    "TooLargeFiles": 1,
+    "FilesWithError": 2,
+    "ModifiedFolders": 4,
+    "ModifiedSymlinks": 1,
+    "AddedSymlinks": 0,
+    "DeletedSymlinks": 0,
+    
+    "BackendStatistics": {
+      "BytesDownloaded": 100000,
+      "BytesUploaded": 500000,
+      "KnownFileSize": 1000000,
+      "LastBackupDate": "2024-03-19T10:00:00Z",
+      "BackupListCount": 10,
+      "ReportedQuotaError": false,
+      "ReportedQuotaWarning": false,
+      "MainOperation": "Backup",
+      "ParsedResult": "Success",
+      "Interrupted": false,
+      "Version": "2.0.7.1",
+      "BeginTime": "2024-03-20T10:00:00Z",
+      "Duration": "1h30m",
+      "WarningsActualLength": 0,
+      "ErrorsActualLength": 0
+    },
+    
+    "WarningsActualLength": 0,
+    "ErrorsActualLength": 0
+  },
+  "Extra": {
+    "machine-id": "unique-machine-id",
+    "machine-name": "Machine Name",
+    "backup-name": "Backup Name",
+    "backup-id": "unique-backup-id"
+  }
+}
+```
+
+This JSON would be processed in two steps:
+
+1. First, insert/update the machine:
+```sql
+INSERT INTO machines (id, name)
+VALUES ('unique-machine-id', 'Machine Name')
+ON CONFLICT(id) DO UPDATE SET name = 'Machine Name';
+```
+
+2. Then, insert the backup record with all fields:
+```sql
+INSERT INTO backups (
+    -- Generated fields
+    id,                    -- Generated UUID
+    date,                 -- Current timestamp
+    status,               -- Derived from ParsedResult
+    created_at,           -- Current timestamp
+    
+    -- Extra information
+    machine_id,           -- 'unique-machine-id'
+    backup_name,          -- 'Backup Name'
+    backup_id,            -- 'unique-backup-id'
+    
+    -- Main operation data
+    main_operation,       -- 'Backup'
+    parsed_result,        -- 'Success'
+    begin_time,           -- '2024-03-20T10:00:00Z'
+    end_time,             -- '2024-03-20T11:30:00Z'
+    duration_seconds,     -- 5400 (converted from '1h30m')
+    version,              -- '2.0.7.1'
+    interrupted,          -- 0
+    partial_backup,       -- 0
+    dryrun,               -- 0
+    
+    -- File operation statistics
+    deleted_files,        -- 10
+    deleted_folders,      -- 2
+    modified_files,       -- 50
+    opened_files,         -- 1000
+    added_files,          -- 25
+    size_of_modified_files, -- 5000000
+    size_of_added_files,    -- 2500000
+    size_of_examined_files, -- 1000000
+    size_of_opened_files,   -- 1000000
+    not_processed_files,    -- 5
+    added_folders,          -- 3
+    too_large_files,        -- 1
+    files_with_error,       -- 2
+    modified_folders,       -- 4
+    modified_symlinks,      -- 1
+    added_symlinks,         -- 0
+    deleted_symlinks,       -- 0
+    
+    -- Backend statistics
+    bytes_downloaded,        -- 100000
+    uploaded_size,           -- 500000
+    known_file_size,         -- 1000000
+    last_backup_date,        -- '2024-03-19T10:00:00Z'
+    backup_list_count,       -- 10
+    reported_quota_error,    -- 0
+    reported_quota_warning,  -- 0
+    backend_main_operation,  -- 'Backup'
+    backend_parsed_result,   -- 'Success'
+    backend_interrupted,     -- 0
+    backend_version,         -- '2.0.7.1'
+    backend_begin_time,      -- '2024-03-20T10:00:00Z'
+    backend_duration,        -- '1h30m'
+    backend_warnings_actual_length, -- 0
+    backend_errors_actual_length,   -- 0
+    
+    -- Warning and error counts
+    warnings,                  -- 0 (from WarningsActualLength)
+    errors,                    -- 0 (from ErrorsActualLength)
+    warnings_actual_length,    -- 0
+    errors_actual_length       -- 0
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+```
+
+Note: The actual implementation includes data validation, type conversion, and error handling. Some fields may be optional in the API but required in the database (with default values). 
