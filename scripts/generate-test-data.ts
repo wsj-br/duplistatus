@@ -118,7 +118,7 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 
 // Main function to send test data
 async function sendTestData() {
-  const API_URL = 'http://localhost:9002/api/upload';
+  const API_URL = 'http://localhost:9666/api/upload';
 
   for (const machine of machines) {
     console.log(`\nGenerating backups for ${machine.name}...`);

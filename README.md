@@ -1,6 +1,6 @@
-# duplidash - Another Duplicati Dashboard
+# duplidash - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-A modern web application for monitoring and visualizing backup operations from Duplicati Servers. Duplidash provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines.
+A web application for monitoring and visualizing backup operations from [Duplicati](https://github.com/duplicati/duplicati). Duplidash provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines, also prividing an API endpoint to be integrated with 3rd party tools like [Homepage](https://gethomepage.dev/)
 
 ## Features
 
@@ -55,6 +55,104 @@ This project uses pnpm as its package manager. Here are some common commands:
 - `pnpm update` - Update all dependencies
 - `pnpm run <script>` - Run a script defined in package.json
 
+
+## Test Scripts
+
+The project includes several test scripts to help with development and testing:
+
+### Generate Test Data
+```bash
+pnpm run generate-test-data
+```
+This script generates and uploads test backup data for multiple machines. It creates 10 backup entries for each test machine.
+
+### Test Last Backup Endpoint
+```bash
+pnpm run test-lastbackup [machineName]
+```
+Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
+
+### Clear Database
+```bash
+pnpm run clear-db
+```
+Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
+
+### Clean build artifacts and dependencies
+```bash
+pnpm run clean
+```
+Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
+- `node_modules/` directory
+- `.next/` build directory
+- `dist/` directory
+- Any other build cache files
+
+<br>
+
+## Duplicati Configuration
+
+In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), configure it to send the backup results to the duplidash server using the `/upload` API endpoint. In the Duplicati configuration page, select Settings and in the Default Options section, include these two options:
+
+```bash
+--send-http-url=http://my.local.server:9666/upload
+--send-http-result-output-format=Json
+```
+
+<br>
+
+> **Tip:** click in `Edit as text` and copy the two lines above, adjusting the server name/IP.
+
+<br>
+
+![Duplicati configuration](docs/duplicati-options.png)
+
+<br>
+
+
+## Homepage integration (optional)
+
+To integrate duplidash with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplidash's `/lastbackup` API endpoint. For a complete list of available fields, see the [Get Latest Backup](#get-latest-backup) section.
+
+Below is a example showing how to configure this integration.
+
+```yaml
+   - Test Machine 1:
+        icon: mdi-test-tube
+        widget:
+          type: customapi
+          url: http://my.local.server:9666/api/lastbackup/Test%20Machine%201
+          display: list
+          refreshInterval: 60000
+          mappings:
+            - field: latest_backup.name
+              label: Backup name
+            - field: latest_backup.status
+              label: Result
+            - field: latest_backup.date
+              label: Date
+              format: date
+              locale: en-GB 
+              dateStyle: short
+              timeStyle: short
+            - field: latest_backup.duration
+              label: Duration
+              format: duration
+            - field: latest_backup.uploadedSize
+              label: Bytes Uploaded
+              format: number
+              scale: 0.000001
+              suffix: MB        
+```
+Preview:
+
+<div style="padding-left: 60px;">
+
+  ![Homepage Card](docs/homepage-card.png)
+
+</div>
+
+
 ## API Endpoints
 
 ### Upload Backup Data
@@ -98,6 +196,7 @@ This project uses pnpm as its package manager. Here are some common commands:
 - **Description**: Retrieves the latest backup information for a specific machine
 - **Parameters**:
   - `machineId`: Machine identifier (ID or name)
+  > The machine name has to be URL Encoded.
 - **Response**:
   ```json
   {
@@ -125,50 +224,6 @@ This project uses pnpm as its package manager. Here are some common commands:
   }
   ```
 
-## Test Scripts
-
-The project includes several test scripts to help with development and testing:
-
-### Generate Test Data
-```bash
-pnpm run test:generate
-```
-This script generates and uploads test backup data for multiple machines. It creates 10 backup entries for each test machine.
-
-### Test Last Backup Endpoint
-```bash
-pnpm run test:lastbackup [machineName]
-```
-Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
-
-### Clear Database
-```bash
-pnpm run test:clear-db
-```
-Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
-
-## Development
-
-### Database
-The application uses SQLite3 as its database, with the database file stored in the `data` directory. The schema is automatically created when the application starts.
-
-### Project Structure
-- `/src/app`: Next.js application routes and pages
-- `/src/components`: React components
-- `/src/lib`: Utility functions and database operations
-- `/scripts`: Test and utility scripts
-- `/public`: Static assets
-
-### Available Scripts
-- `pnpm run dev` - Start development server
-- `pnpm run build` - Build for production
-- `pnpm run start` - Start production server
-- `pnpm run lint` - Run ESLint
-- `pnpm run test:generate` - Generate test data
-- `pnpm run test:lastbackup` - Test last backup endpoint
-- `pnpm run test:clear-db` - Clear database
-- `pnpm run clean` - Clean build artifacts and dependencies
-- `pnpm run type-check` - Run TypeScript type checking
 
 ## Docker Deployment
 
@@ -188,7 +243,7 @@ cd duplidash-fb
 docker compose up -d
 ```
 
-The application will be available at `http://localhost:9666`
+The application will be available at `http://localhost:9666` or `http://<IP_or_NAME>:9666`
 
 ### Option 2: Using Portainer
 
@@ -223,6 +278,8 @@ The application data is stored in the `./data` directory, which is mounted as a 
 #### Health Monitoring
 
 The container includes a health check that monitors the application's availability. You can view the health status in Portainer's container details.
+
+
 
 ## License
 

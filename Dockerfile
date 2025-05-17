@@ -33,7 +33,9 @@ COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.ya
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.ts ./
-COPY --from=builder /app/data ./data
+
+# Create data directory with proper permissions
+RUN mkdir -p /app/data && chown -R node:node /app/data
 
 # Install production dependencies only
 RUN pnpm install --prod --frozen-lockfile
@@ -41,6 +43,9 @@ RUN pnpm install --prod --frozen-lockfile
 # Set environment variables
 ENV NODE_ENV=production
 ENV PORT=9666
+
+# Switch to non-root user
+USER node
 
 # Expose the port
 EXPOSE 9666

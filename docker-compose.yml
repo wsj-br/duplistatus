@@ -10,7 +10,7 @@ services:
     ports:
       - "9666:9666"
     volumes:
-      - ./data:/app/data
+      - duplidash_data:/app/data
     environment:
       - NODE_ENV=production
       - PORT=9666
@@ -19,4 +19,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s 
+      start_period: 40s
+
+volumes:
+  duplidash_data:
+    name: duplidash_data 

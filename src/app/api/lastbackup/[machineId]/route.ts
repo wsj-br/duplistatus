@@ -13,7 +13,7 @@ interface MachineRow {
 function mapBackupToType(backup: any): Backup {
   return {
     id: backup.id,
-    name: `Backup ${backup.id}`,
+    name: backup.backup_name,
     date: backup.date,
     status: backup.status,
     warnings: backup.warnings,
@@ -29,8 +29,11 @@ function mapBackupToType(backup: any): Backup {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { machineId: string } }
+  context: { params: { machineId: string } }
 ) {
+  // Await the params before using them
+  const { machineId } = await context.params;
+
   // Always return JSON regardless of Accept header
   const jsonResponse = (data: any, status = 200) => {
     return new NextResponse(
@@ -50,7 +53,7 @@ export async function GET(
   };
 
   try {
-    const identifier = params.machineId;
+    const identifier = machineId;
 
     // First try to find machine by ID
     let machine = dbOps.getMachine.get(identifier) as MachineRow | null;

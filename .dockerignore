@@ -19,7 +19,9 @@ out
 .idea
 *.log
 *.md
-!README.md
+README.md
+docs
+backups.db
 
 # Test files
 __tests__

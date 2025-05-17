@@ -18,7 +18,8 @@ let db: Database.Database;
 try {
   db = new Database(path.join(dataDir, 'backups.db'), {
     // Add verbose logging in development
-    verbose: process.env.NODE_ENV === 'development' ? console.log : undefined
+    // verbose: process.env.NODE_ENV === 'development' ? console.log : undefined
+    verbose: undefined
   });
 } catch (error) {
   console.error('Failed to initialize database:', error);

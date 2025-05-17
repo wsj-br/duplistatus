@@ -28,7 +28,7 @@ async function testLastBackup(machineName?: string) {
     }
 
     // Make request to the endpoint
-    const response = await fetch(`http://localhost:9002/api/lastbackup/${machineId}`);
+    const response = await fetch(`http://localhost:9666/api/lastbackup/${machineId}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
