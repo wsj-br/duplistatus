@@ -12,20 +12,34 @@ interface ThemeContextProps {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") as Theme | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (storedTheme) {
-      setTheme(storedTheme);
-    } else if (prefersDark) {
-      setTheme("dark");
+// Improved helper function to get initial theme
+const getInitialTheme = (): Theme => {
+  if (typeof window !== 'undefined') {
+    // First check if the dark class is already applied to the document
+    // This is important because the inline script may have already set this
+    if (document.documentElement.classList.contains('dark')) {
+      return 'dark';
     }
-  }, []);
+    
+    // Then check localStorage
+    const storedTheme = localStorage.getItem("theme") as Theme | null;
+    if (storedTheme) {
+      return storedTheme;
+    }
+    
+    // Fallback to system preference
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return "light"; // Default for SSR or environments without window
+};
+
+export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
+  // Initialize theme based on existing class or preference
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
+    // This effect handles theme changes triggered by toggleTheme
+    // AND ensures initial synchronization of the class and localStorage
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {

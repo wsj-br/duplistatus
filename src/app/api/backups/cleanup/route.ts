@@ -6,6 +6,47 @@ export async function POST(request: Request) {
   try {
     const { retentionPeriod } = await request.json();
 
+    // For "Delete all data" option, delete all backups
+    if (retentionPeriod === 'Delete all data') {
+      // Start a transaction
+      const transaction = db.transaction(() => {
+        // Get all backups that will be deleted
+        const backupsToDelete = db.prepare(`
+          SELECT id, backup_name, end_time 
+          FROM backups 
+          ORDER BY end_time DESC
+        `).all();
+
+        // Get all machines that will be deleted
+        const machinesToDelete = db.prepare(`
+          SELECT id, name
+          FROM machines
+        `).all();
+
+        // Delete all backups
+        const backupResult = db.prepare(`DELETE FROM backups`).run();
+        
+        // Delete all machines
+        const machineResult = db.prepare(`DELETE FROM machines`).run();
+
+        return { 
+          deletedBackups: backupsToDelete, 
+          deletedMachines: machinesToDelete,
+          backupChanges: backupResult.changes,
+          machineChanges: machineResult.changes
+        };
+      });
+
+      // Execute the transaction
+      const { deletedBackups, deletedMachines, backupChanges, machineChanges } = transaction();
+
+      return NextResponse.json({
+        message: `Successfully deleted all ${backupChanges} backups and ${machineChanges} machines`,
+        deletedBackups,
+        deletedMachines
+      });
+    }
+
     // Calculate the cutoff date based on the retention period
     let cutoffDate: Date;
     const now = new Date();

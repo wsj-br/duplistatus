@@ -1,7 +1,7 @@
 "use client";
 
 import type { Backup } from "@/lib/types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -30,9 +30,21 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
   );
 
   // Reset to first page when table page size changes
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [tablePageSize]);
+
+  // Reset to first page when backups data changes (e.g. after deletion)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [backups.length]);
+  
+  // Ensure current page is valid when totalPages changes
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));

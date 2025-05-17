@@ -60,9 +60,15 @@ export function ConfigMenu() {
         duration: 5000,
       });
       
-      // If we're on a detail page, refresh the page to update data/tables/chart
-      if (pathname && pathname.startsWith('/detail/')) {
-        router.refresh();
+      // Force a complete refresh of the page data
+      router.refresh();
+      
+      // Wait a short delay to ensure the refresh completes
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Location reload as a fallback if router.refresh() doesn't fully update
+      if (pathname.startsWith('/detail/')) {
+        window.location.reload();
       }
     } catch (error) {
       toast({
@@ -104,6 +110,7 @@ export function ConfigMenu() {
                   <SelectValue placeholder="Select retention period" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="Delete all data">Delete all data</SelectItem>
                   <SelectItem value="6 months">6 months</SelectItem>
                   <SelectItem value="1 year">1 year</SelectItem>
                   <SelectItem value="2 years">2 years</SelectItem>
@@ -123,9 +130,10 @@ export function ConfigMenu() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action will permanently delete all backups older than {backupRetentionPeriod}. 
-                      This action cannot be undone. This will permanently delete your backup data 
-                      and remove it from our servers.
+                      {backupRetentionPeriod === 'Delete all data' 
+                        ? "This action will permanently delete ALL backup data and machine records. This cannot be undone and will completely clear your database."
+                        : `This action will permanently delete all backups older than ${backupRetentionPeriod}. This action cannot be undone. This will permanently delete your backup data and remove it from our servers.`
+                      }
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -172,6 +180,8 @@ export function ConfigMenu() {
                   <SelectItem value="3 months">Last quarter</SelectItem>
                   <SelectItem value="6 months">Last semester</SelectItem>
                   <SelectItem value="1 year">Last year</SelectItem>
+                  <SelectItem value="2 years">Last 2 years</SelectItem>
+                  <SelectItem value="All data">All available data</SelectItem>
                 </SelectContent>
               </Select>
             </div>

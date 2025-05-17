@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-type BackupRetentionPeriod = '6 months' | '1 year' | '2 years';
+type BackupRetentionPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 type TablePageSize = 5 | 10 | 15 | 20;
-type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year';
+type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
 
 interface ConfigContextProps {
   backupRetentionPeriod: BackupRetentionPeriod;
@@ -20,7 +20,7 @@ interface ConfigContextProps {
 const ConfigContext = createContext<ConfigContextProps | undefined>(undefined);
 
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
-  const [backupRetentionPeriod, setBackupRetentionPeriod] = useState<BackupRetentionPeriod>('1 year');
+  const [backupRetentionPeriod, setBackupRetentionPeriod] = useState<BackupRetentionPeriod>('2 years');
   const [tablePageSize, setTablePageSize] = useState<TablePageSize>(5);
   const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>('1 month');
   const pathname = usePathname();
@@ -60,9 +60,14 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         throw new Error('Failed to delete old backups');
       }
 
-      // If we're on a detail page, refresh it to update data
+      // Always refresh the page after deletion to update data
+      router.refresh();
+      
+      // For detail pages, also do a full reload to ensure data and pagination are reset
       if (pathname && pathname.startsWith('/detail/')) {
-        router.refresh();
+        // Wait a short delay for router.refresh() to complete first
+        await new Promise(resolve => setTimeout(resolve, 100));
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error deleting old backups:', error);

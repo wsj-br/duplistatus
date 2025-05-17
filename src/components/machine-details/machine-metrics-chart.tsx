@@ -82,6 +82,15 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
       case '1 year':
         cutoffDate = subYears(now, 1);
         break;
+      case '2 years':
+        cutoffDate = subYears(now, 2);
+        break;
+      case 'All data':
+        // Skip date filtering for 'All data' option
+        return machine.chartData.map(item => ({
+          date: item.date,
+          [selectedMetric]: item[selectedMetric]
+        }));
       default:
         cutoffDate = subMonths(now, 1); // Default to 1 month
     }
@@ -138,7 +147,11 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name} over the last {chartTimeRange}.
+            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name} 
+            {chartTimeRange === 'All data' 
+              ? ' for all available data.'
+              : ` over the last ${chartTimeRange}.`
+            }
           </CardDescription>
         </div>
         <Select value={selectedMetric} onValueChange={(value) => setSelectedMetric(value as MetricKey)}>
@@ -194,11 +207,10 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                     );
                   }}
                 />
-                <RechartsLegend content={<ChartLegendContent />} />
+                
                 <Area
                   type="monotone"
                   dataKey={selectedMetric}
-                  name={`${currentMetricInfo.label} (Area)`}
                   stroke="none"
                   fill={`url(#color-${selectedMetric})`}
                   fillOpacity={1}
@@ -214,6 +226,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                   dot={{ r: 4, fill: 'hsl(var(--background))', stroke: 'hsl(var(--chart-1))', strokeWidth: 2 }}
                   activeDot={{ r: 6, fill: 'hsl(var(--chart-1))', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
                   isAnimationActive={false}
+                  legendType="none"
                 />
               </ComposedChart>
             </ResponsiveContainer>
@@ -221,6 +234,14 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         ) : (
           <div className="h-[400px] flex items-center justify-center text-muted-foreground">
             No data available for the selected time range.
+          </div>
+        )}
+        
+        {/* Custom legend below the chart */}
+        {filteredChartData.length > 0 && (
+          <div className="flex justify-center mt-4 items-center gap-2">
+            <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: 'hsl(var(--chart-1))' }}></div>
+            <span className="text-sm">{yAxisLabel}</span>
           </div>
         )}
       </CardContent>
