@@ -1,10 +1,12 @@
-# duplidash - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
+![duplidash](docs/duplidash_banner.png)
+
+# Duplidash - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
 A web application for monitoring and visualizing backup operations from [Duplicati](https://github.com/duplicati/duplicati). Duplidash provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines, also prividing an API endpoint to be integrated with 3rd party tools like [Homepage](https://gethomepage.dev/)
 
-## Features
+## Features 
 
-- **Dashboard Overview**: Real-time display of backup status for all machines
+- **Overview**: Real-time display of backup status for all machines
 - **Machine Details**: Detailed view of backup history for each machine
 - **Data Visualization**: Interactive charts showing backup metrics over time
 - **Dark/Light Theme**: Toggle between dark and light themes for comfortable viewing
@@ -15,8 +17,8 @@ A web application for monitoring and visualizing backup operations from [Duplica
 ### Prerequisites
 
 - Node.js 18.x or later
-- pnpm 8.x or later (install with `npm install -g pnpm`)
-- SQLite3 (included as a dependency)
+- pnpm 10.x or later (install with `npm install -g pnpm`)
+- SQLite3
 
 ### Setup
 
