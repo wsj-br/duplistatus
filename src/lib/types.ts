@@ -23,10 +23,12 @@ export interface Machine {
   // For chart data pre-computation
   chartData: {
     date: string;
+    isoDate: string; // ISO date string for accurate date filtering
     uploadedSize: number; // in bytes
     duration: number; // in minutes
     fileCount: number;
     fileSize: number; // in bytes
+    storageSize?: number; // in bytes
   }[];
 }
 

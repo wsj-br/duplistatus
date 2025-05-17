@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { CustomThemeProvider } from '@/contexts/theme-context';
+import { ConfigProvider } from '@/contexts/config-context';
 import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
+import { ToastProvider } from "@/components/ui/use-toast";
 
 const geistSans = localFont({
   src: [
@@ -74,11 +76,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CustomThemeProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <AppHeader />
-            <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
-          </div>
-          <Toaster />
+          <ConfigProvider>
+            <ToastProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <AppHeader />
+                <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
+              </div>
+              <Toaster />
+            </ToastProvider>
+          </ConfigProvider>
         </CustomThemeProvider>
       </body>
     </html>

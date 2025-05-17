@@ -76,6 +76,7 @@ export default async function MachineDetailsPage({
   // Calculate chart data
   const chartData = machine.backups.map(backup => ({
     date: new Date(backup.date).toLocaleDateString(),
+    isoDate: backup.date,
     uploadedSize: backup.uploadedSize,
     duration: backup.durationInMinutes,
     fileCount: backup.fileCount,
@@ -108,7 +109,7 @@ export default async function MachineDetailsPage({
           <CardDescription>List of all backups for {machine.name}.</CardDescription>
         </CardHeader>
         <CardContent>
-          <MachineBackupTable backups={machine.backups} itemsPerPage={5} />
+          <MachineBackupTable backups={machine.backups} />
         </CardContent>
       </Card>
 

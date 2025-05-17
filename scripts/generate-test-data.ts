@@ -16,17 +16,28 @@ function generateRandomDuration(): string {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// Helper function to generate a random date within the last 30 days
-function generateRandomDate(): string {
+// Generate a date at a specific interval from now
+function generateIntervalDate(intervalIndex: number, totalIntervals: number): string {
   const now = new Date();
-  const daysAgo = Math.floor(Math.random() * 30);
-  const hoursAgo = Math.floor(Math.random() * 24);
-  const minutesAgo = Math.floor(Math.random() * 60);
-  const date = new Date(now);
-  date.setDate(date.getDate() - daysAgo);
-  date.setHours(date.getHours() - hoursAgo);
-  date.setMinutes(date.getMinutes() - minutesAgo);
-  return date.toISOString();
+  const twoYearsAgo = new Date();
+  twoYearsAgo.setFullYear(now.getFullYear() - 2);
+  
+  // Calculate the time span between two years ago and now
+  const timeSpan = now.getTime() - twoYearsAgo.getTime();
+  
+  // Calculate the interval size
+  const intervalSize = timeSpan / (totalIntervals - 1);
+  
+  // Calculate the date for this specific interval
+  const intervalDate = new Date(twoYearsAgo.getTime() + (intervalSize * intervalIndex));
+  
+  // Add some randomness within a day to make it look more natural
+  const randomHours = Math.floor(Math.random() * 24);
+  const randomMinutes = Math.floor(Math.random() * 60);
+  intervalDate.setHours(randomHours);
+  intervalDate.setMinutes(randomMinutes);
+  
+  return intervalDate.toISOString();
 }
 
 // Helper function to generate random file statistics
@@ -49,8 +60,8 @@ function generateRandomFileStats() {
 }
 
 // Helper function to generate a backup payload
-function generateBackupPayload(machine: typeof machines[0], backupNumber: number) {
-  const beginTime = generateRandomDate();
+function generateBackupPayload(machine: typeof machines[0], backupNumber: number, intervalIndex: number, totalIntervals: number) {
+  const beginTime = generateIntervalDate(intervalIndex, totalIntervals);
   const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000); // Add up to 2 hours
   const duration = generateRandomDuration();
   const stats = generateRandomFileStats();
@@ -92,7 +103,9 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
         BytesUploaded: stats.uploadedSize,
         BytesDownloaded: Math.floor(stats.uploadedSize * 0.1),
         KnownFileSize: stats.fileSize,
-        LastBackupDate: new Date(new Date(beginTime).getTime() - 86400000).toISOString(), // 1 day before
+        LastBackupDate: intervalIndex > 0 
+          ? generateIntervalDate(intervalIndex - 1, totalIntervals) 
+          : new Date(new Date(beginTime).getTime() - 86400000).toISOString(), // Previous interval or 1 day before
         BackupListCount: backupNumber,
         ReportedQuotaError: false,
         ReportedQuotaWarning: Math.random() > 0.9, // 10% chance of quota warning
@@ -119,12 +132,14 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 // Main function to send test data
 async function sendTestData() {
   const API_URL = 'http://localhost:9666/api/upload';
+  const TOTAL_BACKUPS_PER_MACHINE = 60;
 
   for (const machine of machines) {
-    console.log(`\nGenerating backups for ${machine.name}...`);
+    console.log(`\nGenerating ${TOTAL_BACKUPS_PER_MACHINE} backups for ${machine.name}...`);
     
-    for (let i = 1; i <= 10; i++) {
-      const payload = generateBackupPayload(machine, i);
+    for (let i = 0; i < TOTAL_BACKUPS_PER_MACHINE; i++) {
+      const backupNumber = i + 1;
+      const payload = generateBackupPayload(machine, backupNumber, i, TOTAL_BACKUPS_PER_MACHINE);
       
       try {
         const response = await fetch(API_URL, {
@@ -140,12 +155,12 @@ async function sendTestData() {
         }
 
         const result = await response.json();
-        console.log(`Backup ${i} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
+        console.log(`Backup ${backupNumber}/${TOTAL_BACKUPS_PER_MACHINE} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
         
         // Add a small delay between requests
         await new Promise(resolve => setTimeout(resolve, 100));
       } catch (error) {
-        console.error(`Error sending backup ${i} for ${machine.name}:`, error);
+        console.error(`Error sending backup ${backupNumber} for ${machine.name}:`, error);
       }
     }
   }
@@ -153,6 +168,7 @@ async function sendTestData() {
 
 // Run the script
 console.log('Starting test data generation...');
+console.log('Generating 60 backups per machine at regular intervals from 2 years ago to today');
 sendTestData().then(() => {
   console.log('\nTest data generation completed!');
 }).catch(error => {

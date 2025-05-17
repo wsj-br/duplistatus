@@ -97,14 +97,20 @@ export async function getMachineById(id: string): Promise<Machine | null> {
   });
 
   // Calculate chart data
-  const chartData = formattedBackups.map(backup => ({
-    date: new Date(backup.date).toLocaleDateString(),
-    uploadedSize: backup.uploadedSize,
-    duration: backup.durationInMinutes,
-    fileCount: backup.fileCount,
-    fileSize: backup.fileSize,
-    storageSize: backup.knownFileSize
-  })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const chartData = formattedBackups.map(backup => {
+    const backupDate = new Date(backup.date);
+    return {
+      date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      isoDate: backup.date, // Preserve the original ISO date string for accurate filtering
+      originalDate: backupDate, // Keep original date for sorting
+      uploadedSize: backup.uploadedSize,
+      duration: backup.durationInMinutes,
+      fileCount: backup.fileCount,
+      fileSize: backup.fileSize,
+      storageSize: backup.knownFileSize
+    };
+  }).sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
+    .map(({ originalDate, ...rest }) => rest); // Remove only originalDate before returning, keep isoDate
 
   return {
     id: machine.id,
@@ -153,14 +159,20 @@ export async function getAllMachines(): Promise<Machine[]> {
         return formatted;
       });
 
-      const chartData = formattedBackups.map(backup => ({
-        date: new Date(backup.date).toLocaleDateString(),
-        uploadedSize: backup.uploadedSize,
-        duration: backup.durationInMinutes,
-        fileCount: backup.fileCount,
-        fileSize: backup.fileSize,
-        storageSize: backup.knownFileSize
-      })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const chartData = formattedBackups.map(backup => {
+        const backupDate = new Date(backup.date);
+        return {
+          date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          isoDate: backup.date, // Preserve the original ISO date string for accurate filtering
+          originalDate: backupDate, // Keep original date for sorting
+          uploadedSize: backup.uploadedSize,
+          duration: backup.durationInMinutes,
+          fileCount: backup.fileCount,
+          fileSize: backup.fileSize,
+          storageSize: backup.knownFileSize
+        };
+      }).sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
+        .map(({ originalDate, ...rest }) => rest); // Remove only originalDate before returning, keep isoDate
 
       return {
         id: machine.id,

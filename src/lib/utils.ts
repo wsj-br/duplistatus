@@ -113,8 +113,16 @@ export function formatTimeAgo(dateString: string): string {
       return `${months} month${months === 1 ? '' : 's'} ago`;
     }
 
+    // Calculate years and remaining months for periods longer than 1 year
     const years = Math.floor(diffInSeconds / 31536000);
-    return `${years} year${years === 1 ? '' : 's'} ago`;
+    const remainingSeconds = diffInSeconds % 31536000;
+    const months = Math.floor(remainingSeconds / 2592000);
+    
+    if (months === 0) {
+      return `${years} year${years === 1 ? '' : 's'} ago`;
+    } else {
+      return `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'} ago`;
+    }
   } catch (error) {
     return "";
   }

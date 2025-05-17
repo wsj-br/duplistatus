@@ -2,8 +2,21 @@
 "use client";
 
 import type { Machine } from "@/lib/types";
-import React, { useState, useMemo } from "react"; // Added useMemo
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from "recharts";
+import React, { useState, useMemo } from "react";
+import { 
+  Line, 
+  LineChart, 
+  CartesianGrid, 
+  XAxis, 
+  YAxis, 
+  Tooltip as RechartsTooltip, 
+  Legend as RechartsLegend, 
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+  ComposedChart,
+  TooltipProps
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -22,58 +35,102 @@ import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/compo
 import type { ChartConfig } from "@/components/ui/chart";
 import { formatBytes } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-
+import { useConfig } from "@/contexts/config-context";
+import { subWeeks, subMonths, subQuarters, subYears, parseISO } from "date-fns";
 
 interface MachineMetricsChartProps {
   machine: Machine;
 }
 
-type MetricKey = "uploadedSize" | "duration" | "fileCount" | "fileSize" | "storageSize";
+// Define the metrics that can be displayed in the chart
+type MetricKey = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize';
 
 const metricDisplayInfo: Record<MetricKey, { label: string; unit?: string }> = {
   uploadedSize: { label: "Uploaded Size" },
   duration: { label: "Duration", unit: "Minutes" },
   fileCount: { label: "File Count" },
   fileSize: { label: "Total File Size" },
-  storageSize: { label: "Storage Size" },
 };
 
 export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>("uploadedSize");
+  const { chartTimeRange } = useConfig();
 
-  const currentMetricInfo = metricDisplayInfo[selectedMetric];
-  const yAxisLabel = currentMetricInfo.unit ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` : currentMetricInfo.label;
+  const currentMetricInfo = metricDisplayInfo[selectedMetric] || { label: selectedMetric };
+  const yAxisLabel = currentMetricInfo.unit 
+    ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` 
+    : currentMetricInfo.label;
+
+  // Filter chart data based on the selected time range
+  const filteredChartData = useMemo(() => {
+    const now = new Date();
+    let cutoffDate: Date;
+
+    switch (chartTimeRange) {
+      case '2 weeks':
+        cutoffDate = subWeeks(now, 2);
+        break;
+      case '1 month':
+        cutoffDate = subMonths(now, 1);
+        break;
+      case '3 months':
+        cutoffDate = subQuarters(now, 1);
+        break;
+      case '6 months':
+        cutoffDate = subMonths(now, 6);
+        break;
+      case '1 year':
+        cutoffDate = subYears(now, 1);
+        break;
+      default:
+        cutoffDate = subMonths(now, 1); // Default to 1 month
+    }
+
+    return machine.chartData
+      .filter(item => {
+        // Use the ISO date string for accurate date comparison
+        if (item.isoDate) {
+          const itemDate = parseISO(item.isoDate);
+          return itemDate >= cutoffDate;
+        }
+        // Fallback to parsing the formatted date if isoDate is not available
+        const dateParts = item.date.split('/');
+        if (dateParts.length === 3) {
+          const day = parseInt(dateParts[0], 10);
+          const month = parseInt(dateParts[1], 10) - 1; // Month is 0-indexed
+          const year = parseInt(dateParts[2], 10);
+          const itemDate = new Date(year, month, day);
+          return itemDate >= cutoffDate;
+        }
+        return false; // Skip invalid dates
+      })
+      .map(item => ({
+        date: item.date,
+        [selectedMetric]: item[selectedMetric]
+      }));
+  }, [machine.chartData, selectedMetric, chartTimeRange]);
 
   // useMemo for chartConfig to prevent re-creation on every render if selectedMetric doesn't change
   const chartConfig = useMemo(() => ({
     [selectedMetric]: {
       label: yAxisLabel,
-      color: "hsl(var(--chart-1))", // Changed to --chart-1
+      color: "hsl(var(--chart-1))",
     },
   }), [selectedMetric, yAxisLabel]) satisfies ChartConfig;
-  
-  const chartData = machine.chartData.map(item => ({
-    date: item.date,
-    [selectedMetric]: item[selectedMetric]
-  }));
 
   const yAxisTickFormatter = (value: number) => {
-    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize" || selectedMetric === "storageSize") {
+    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
       return formatBytes(value, 0);
     }
     return value.toLocaleString();
   };
 
-  const tooltipFormatter = (value: number, name: string, props: any) => {
-    // The 'name' from Recharts tooltip payload is the dataKey. We can use it to find the original label.
-    const originalLabel = chartConfig[name as MetricKey]?.label || name;
-
-    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize" || selectedMetric === "storageSize") {
-      return [`${formatBytes(value)}`];
+  const tooltipFormatter = (value: number) => {
+    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
+      return formatBytes(value);
     }
-    return [`${value.toLocaleString()}`];
+    return value.toLocaleString();
   };
-
 
   return (
     <Card className="shadow-lg">
@@ -81,7 +138,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name}.
+            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name} over the last {chartTimeRange}.
           </CardDescription>
         </div>
         <Select value={selectedMetric} onValueChange={(value) => setSelectedMetric(value as MetricKey)}>
@@ -98,10 +155,20 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         </Select>
       </CardHeader>
       <CardContent>
-        {chartData.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+        {filteredChartData.length > 0 ? (
+          <ChartContainer 
+            key={`chart-${chartTimeRange}-${selectedMetric}`} 
+            config={chartConfig} 
+            className="h-[400px] w-full"
+          >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+              <ComposedChart data={filteredChartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+                <defs>
+                  <linearGradient id={`color-${selectedMetric}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={`hsl(var(--chart-1))`} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={`hsl(var(--chart-1))`} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
                 <YAxis 
@@ -111,19 +178,49 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                   tickFormatter={yAxisTickFormatter}
                   label={{ value: yAxisLabel, angle: -90, position: 'insideLeft', offset: -15, style: { textAnchor: 'middle', fill: 'hsl(var(--foreground))' } }}
                 />
-                 <RechartsTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" hideLabel formatter={tooltipFormatter} />}
+                <RechartsTooltip
+                  cursor={{ stroke: 'hsl(var(--chart-1))', strokeWidth: 1 }}
+                  formatter={tooltipFormatter}
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null;
+                    const value = payload[0].value as number;
+                    return (
+                      <div className="rounded-lg border bg-background p-2 shadow-sm">
+                        <div className="text-sm font-medium">{label}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {tooltipFormatter(value)}
+                        </div>
+                      </div>
+                    );
+                  }}
                 />
                 <RechartsLegend content={<ChartLegendContent />} />
-                {/* Updated fill to dynamically use the color based on selectedMetric */}
-                <Bar dataKey={selectedMetric} fill={`var(--color-${selectedMetric})`} radius={4} />
-              </BarChart>
+                <Area
+                  type="monotone"
+                  dataKey={selectedMetric}
+                  name={`${currentMetricInfo.label} (Area)`}
+                  stroke="none"
+                  fill={`url(#color-${selectedMetric})`}
+                  fillOpacity={1}
+                  isAnimationActive={false}
+                  legendType="none"
+                />
+                <Line
+                  type="monotone"
+                  dataKey={selectedMetric}
+                  name={currentMetricInfo.label}
+                  stroke={`hsl(var(--chart-1))`}
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: 'hsl(var(--background))', stroke: 'hsl(var(--chart-1))', strokeWidth: 2 }}
+                  activeDot={{ r: 6, fill: 'hsl(var(--chart-1))', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </ChartContainer>
         ) : (
           <div className="h-[400px] flex items-center justify-center text-muted-foreground">
-            Not enough data to display chart.
+            No data available for the selected time range.
           </div>
         )}
       </CardContent>

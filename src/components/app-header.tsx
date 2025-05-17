@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ThemeToggleButton } from '@/components/theme-toggle-button';
+import { ConfigMenu } from '@/components/config-menu';
 
 export function AppHeader() {
   return (
@@ -21,6 +22,7 @@ export function AppHeader() {
           </span>
         </Link>
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <ConfigMenu />
           <ThemeToggleButton />
         </div>
       </div>

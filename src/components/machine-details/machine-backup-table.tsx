@@ -14,20 +14,25 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatBytes, formatTimeAgo } from "@/lib/utils";
-
+import { useConfig } from "@/contexts/config-context";
 
 interface MachineBackupTableProps {
   backups: Backup[];
-  itemsPerPage?: number;
 }
 
-export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupTableProps) {
+export function MachineBackupTable({ backups }: MachineBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(backups.length / itemsPerPage);
+  const { tablePageSize } = useConfig();
+  const totalPages = Math.ceil(backups.length / tablePageSize);
   const paginatedBackups = backups.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    (currentPage - 1) * tablePageSize,
+    currentPage * tablePageSize
   );
+
+  // Reset to first page when table page size changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [tablePageSize]);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
@@ -88,19 +93,19 @@ export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupT
         </Table>
       </div>
       {totalPages > 1 && (
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
-          </span>
+        <div className="flex items-center justify-end gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
           >
-            <ChevronLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage} of {totalPages}
+          </div>
           <Button
             variant="outline"
             size="sm"
@@ -108,7 +113,7 @@ export function MachineBackupTable({ backups, itemsPerPage = 5 }: MachineBackupT
             disabled={currentPage === totalPages}
           >
             Next
-            <ChevronRight className="h-4 w-4 ml-1" />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       )}
