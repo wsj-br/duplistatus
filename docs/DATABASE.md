@@ -463,3 +463,42 @@ INSERT INTO backups (
 ```
 
 Note: The actual implementation includes data validation, type conversion, and error handling. Some fields may be optional in the API but required in the database (with default values). 
+
+## Chart Metrics
+
+The application provides visualization of backup metrics over time. The following metrics are available in the charts:
+
+| Metric Key     | Database Column    | Description                            | Unit    |
+|----------------|--------------------|----------------------------------------|---------|
+| `uploadedSize` | `uploaded_size`    | Amount of data uploaded during backup  | Bytes   |
+| `duration`     | `duration_seconds` | Duration of the backup operation       | Minutes |
+| `fileCount`    | `examined_files`   | Number of files examined during backup | Count   |
+| `fileSize`     | `size`             | Total size of files in the backup      | Bytes   |
+
+These metrics are used in the chart visualization and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
+
+### Chart Data Generation
+
+The chart data is generated from the backups table using the following query:
+
+```sql
+SELECT 
+    date,
+    uploaded_size as uploadedSize,
+    duration_seconds as duration,
+    examined_files as fileCount,
+    size as fileSize
+FROM backups
+WHERE machine_id = ?
+ORDER BY date ASC
+```
+
+The data is then processed on the client side to:
+1. Format dates for display
+2. Filter based on the selected time range
+3. Convert units (e.g., bytes to human-readable format)
+4. Apply any necessary aggregations 
+
+
+
+

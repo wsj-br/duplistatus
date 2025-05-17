@@ -1,7 +1,6 @@
 packages:
   - .
 onlyBuiltDependencies:
-  - '@firebase/util'
   - better-sqlite3
   - esbuild
   - protobufjs
