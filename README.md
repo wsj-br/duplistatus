@@ -18,44 +18,32 @@ A web application for monitoring and visualizing backup operations from [Duplica
 
 - Node.js 18.x or later
 - pnpm 10.x or later (install with `npm install -g pnpm`)
-- SQLite3
+- SQLite3 / better-sqlite3
 
 ### Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/wsj-br/duplidash-fb.git
-cd duplidash-fb
+git clone https://github.com/wsj-br/duplidash.git
+cd duplidash
 ```
 
 2. Install dependencies:
 ```bash
+sudo apt update
+sudo apt install nodejs npm make g++ sqlite3 curl -y
+sudo npm install -g pnpm
+pnpm add better-sqlite3 sqlite3 --allow-build=sqlite3 --allow-build=better-sqlite3 
 pnpm install
 ```
 
-3. Create a `.env.local` file in the root directory (optional):
-```env
-NODE_ENV=development
-PORT=9666
-```
 
-4. Start the development server:
+3. Start the development server:
 ```bash
 pnpm run dev
 ```
 
 The application will be available at `http://localhost:9666`
-
-### Package Management
-
-This project uses pnpm as its package manager. Here are some common commands:
-
-- `pnpm install` - Install all dependencies
-- `pnpm add <package>` - Add a new dependency
-- `pnpm add -D <package>` - Add a new dev dependency
-- `pnpm remove <package>` - Remove a dependency
-- `pnpm update` - Update all dependencies
-- `pnpm run <script>` - Run a script defined in package.json
 
 
 ## Test Scripts
@@ -82,7 +70,7 @@ Clears all data from the database and recreates the schema. Use with caution as 
 
 ### Clean build artifacts and dependencies
 ```bash
-pnpm run clean
+pnpm run clear-workspace
 ```
 Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
 - `node_modules/` directory
@@ -236,8 +224,8 @@ The application can be deployed using Docker and Portainer. There are two ways t
 1. Ensure Docker and Docker Compose are installed on your system
 2. Clone the repository:
 ```bash
-git clone https://github.com/wsj-br/duplidash-fb.git
-cd duplidash-fb
+git clone https://github.com/wsj-br/duplidash.git
+cd duplidash
 ```
 
 3. Start the application:
@@ -252,7 +240,7 @@ The application will be available at `http://localhost:9666` or `http://<IP_or_N
 1. In Portainer, go to "Stacks" and click "Add stack"
 2. Name your stack (e.g., "duplidash")
 3. Choose "Build method" as "Repository"
-4. Enter the repository URL: `https://github.com/wsj-br/duplidash-fb.git`
+4. Enter the repository URL: `https://github.com/wsj-br/duplidash.git`
 5. In the "Compose path" field, enter: `docker-compose.yml`
 6. Click "Deploy the stack"
 
@@ -260,7 +248,7 @@ The application will be available at `http://localhost:9666` or `http://<IP_or_N
 
 The Docker setup includes:
 
-- Multi-stage build for smaller production image
+- Single-stage build for smaller production image
 - Volume mounting for persistent data storage
 - Health checks for container monitoring
 - Automatic container restart
@@ -276,11 +264,6 @@ The following environment variables can be configured in Portainer:
 #### Data Persistence
 
 The application data is stored in the `./data` directory, which is mounted as a volume in the container. This ensures that your data persists even if the container is removed or updated.
-
-#### Health Monitoring
-
-The container includes a health check that monitors the application's availability. You can view the health status in Portainer's container details.
-
 
 
 ## License

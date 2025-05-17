@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 type BackupRetentionPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 type TablePageSize = 5 | 10 | 15 | 20;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
+type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize';
 
 interface ConfigContextProps {
   backupRetentionPeriod: BackupRetentionPeriod;
@@ -14,6 +15,8 @@ interface ConfigContextProps {
   setTablePageSize: (size: TablePageSize) => void;
   chartTimeRange: ChartTimeRange;
   setChartTimeRange: (range: ChartTimeRange) => void;
+  chartMetricSelection: ChartMetricSelection;
+  setChartMetricSelection: (metric: ChartMetricSelection) => void;
   deleteOldBackups: () => Promise<void>;
 }
 
@@ -22,7 +25,8 @@ const ConfigContext = createContext<ConfigContextProps | undefined>(undefined);
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [backupRetentionPeriod, setBackupRetentionPeriod] = useState<BackupRetentionPeriod>('2 years');
   const [tablePageSize, setTablePageSize] = useState<TablePageSize>(5);
-  const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>('1 month');
+  const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>('All data');
+  const [chartMetricSelection, setChartMetricSelection] = useState<ChartMetricSelection>('uploadedSize');
   const pathname = usePathname();
   const router = useRouter();
 
@@ -34,6 +38,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       if (config.backupRetentionPeriod) setBackupRetentionPeriod(config.backupRetentionPeriod);
       if (config.tablePageSize) setTablePageSize(config.tablePageSize);
       if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
+      if (config.chartMetricSelection) setChartMetricSelection(config.chartMetricSelection);
     }
   }, []);
 
@@ -43,8 +48,9 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       backupRetentionPeriod,
       tablePageSize,
       chartTimeRange,
+      chartMetricSelection,
     }));
-  }, [backupRetentionPeriod, tablePageSize, chartTimeRange]);
+  }, [backupRetentionPeriod, tablePageSize, chartTimeRange, chartMetricSelection]);
 
   const deleteOldBackups = async () => {
     try {
@@ -84,6 +90,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setTablePageSize,
         chartTimeRange,
         setChartTimeRange,
+        chartMetricSelection,
+        setChartMetricSelection,
         deleteOldBackups,
       }}
     >

@@ -53,10 +53,8 @@ const metricDisplayInfo: Record<MetricKey, { label: string; unit?: string }> = {
 };
 
 export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
-  const [selectedMetric, setSelectedMetric] = useState<MetricKey>("uploadedSize");
-  const { chartTimeRange } = useConfig();
-
-  const currentMetricInfo = metricDisplayInfo[selectedMetric] || { label: selectedMetric };
+  const { chartTimeRange, chartMetricSelection, setChartMetricSelection } = useConfig();
+  const currentMetricInfo = metricDisplayInfo[chartMetricSelection] || { label: chartMetricSelection };
   const yAxisLabel = currentMetricInfo.unit 
     ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` 
     : currentMetricInfo.label;
@@ -89,7 +87,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         // Skip date filtering for 'All data' option
         return machine.chartData.map(item => ({
           date: item.date,
-          [selectedMetric]: item[selectedMetric]
+          [chartMetricSelection]: item[chartMetricSelection]
         }));
       default:
         cutoffDate = subMonths(now, 1); // Default to 1 month
@@ -115,27 +113,27 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
       })
       .map(item => ({
         date: item.date,
-        [selectedMetric]: item[selectedMetric]
+        [chartMetricSelection]: item[chartMetricSelection]
       }));
-  }, [machine.chartData, selectedMetric, chartTimeRange]);
+  }, [machine.chartData, chartMetricSelection, chartTimeRange]);
 
   // useMemo for chartConfig to prevent re-creation on every render if selectedMetric doesn't change
   const chartConfig = useMemo(() => ({
-    [selectedMetric]: {
+    [chartMetricSelection]: {
       label: yAxisLabel,
       color: "hsl(var(--chart-1))",
     },
-  }), [selectedMetric, yAxisLabel]) satisfies ChartConfig;
+  }), [chartMetricSelection, yAxisLabel]) satisfies ChartConfig;
 
   const yAxisTickFormatter = (value: number) => {
-    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
+    if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize") {
       return formatBytes(value, 0);
     }
     return value.toLocaleString();
   };
 
   const tooltipFormatter = (value: number) => {
-    if (selectedMetric === "uploadedSize" || selectedMetric === "fileSize") {
+    if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize") {
       return formatBytes(value);
     }
     return value.toLocaleString();
@@ -154,12 +152,12 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
             }
           </CardDescription>
         </div>
-        <Select value={selectedMetric} onValueChange={(value) => setSelectedMetric(value as MetricKey)}>
+        <Select value={chartMetricSelection} onValueChange={(value) => setChartMetricSelection(value as ChartMetricSelection)}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Select Metric" />
           </SelectTrigger>
           <SelectContent>
-            {(Object.keys(metricDisplayInfo) as MetricKey[]).map(metric => (
+            {(Object.keys(metricDisplayInfo) as ChartMetricSelection[]).map(metric => (
               <SelectItem key={metric} value={metric}>
                 {metricDisplayInfo[metric].unit ? `${metricDisplayInfo[metric].label} (${metricDisplayInfo[metric].unit})` : metricDisplayInfo[metric].label}
               </SelectItem>
@@ -170,14 +168,14 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
       <CardContent>
         {filteredChartData.length > 0 ? (
           <ChartContainer 
-            key={`chart-${chartTimeRange}-${selectedMetric}`} 
+            key={`chart-${chartTimeRange}-${chartMetricSelection}`} 
             config={chartConfig} 
             className="h-[400px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={filteredChartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                 <defs>
-                  <linearGradient id={`color-${selectedMetric}`} x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id={`color-${chartMetricSelection}`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={`hsl(var(--chart-1))`} stopOpacity={0.3}/>
                     <stop offset="95%" stopColor={`hsl(var(--chart-1))`} stopOpacity={0}/>
                   </linearGradient>
@@ -210,16 +208,16 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                 
                 <Area
                   type="monotone"
-                  dataKey={selectedMetric}
+                  dataKey={chartMetricSelection}
                   stroke="none"
-                  fill={`url(#color-${selectedMetric})`}
+                  fill={`url(#color-${chartMetricSelection})`}
                   fillOpacity={1}
                   isAnimationActive={false}
                   legendType="none"
                 />
                 <Line
                   type="monotone"
-                  dataKey={selectedMetric}
+                  dataKey={chartMetricSelection}
                   name={currentMetricInfo.label}
                   stroke={`hsl(var(--chart-1))`}
                   strokeWidth={2}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { Settings, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -40,6 +40,8 @@ export function ConfigMenu() {
     setTablePageSize,
     chartTimeRange,
     setChartTimeRange,
+    chartMetricSelection,
+    setChartMetricSelection,
     deleteOldBackups,
   } = useConfig();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -85,26 +87,24 @@ export function ConfigMenu() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="mr-2">
-          <Settings className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Open configuration menu</span>
+        <Button variant="outline" size="icon">
+          <Settings className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none">Configuration</h4>
+            <h4 className="font-medium leading-none">Settings</h4>
             <p className="text-sm text-muted-foreground">
-              Customize your backup and display settings.
+              Configure your DupliDash preferences
             </p>
           </div>
-          <Separator />
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="backup-retention">Backup Retention Period</Label>
               <Select
                 value={backupRetentionPeriod}
-                onValueChange={(value: any) => setBackupRetentionPeriod(value)}
+                onValueChange={(value) => setBackupRetentionPeriod(value as any)}
               >
                 <SelectTrigger id="backup-retention">
                   <SelectValue placeholder="Select retention period" />
@@ -116,37 +116,6 @@ export function ConfigMenu() {
                   <SelectItem value="2 years">2 years</SelectItem>
                 </SelectContent>
               </Select>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive" 
-                    className="w-full mt-2"
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? "Deleting..." : "Delete Old Backups Now"}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {backupRetentionPeriod === 'Delete all data' 
-                        ? "This action will permanently delete ALL backup data and machine records. This cannot be undone and will completely clear your database."
-                        : `This action will permanently delete all backups older than ${backupRetentionPeriod}. This action cannot be undone. This will permanently delete your backup data and remove it from our servers.`
-                      }
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteBackups}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      Yes, delete old backups
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="table-page-size">Table Page Size</Label>
@@ -184,6 +153,47 @@ export function ConfigMenu() {
                   <SelectItem value="All data">All available data</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="chart-metric">Default Chart Metric</Label>
+              <Select
+                value={chartMetricSelection}
+                onValueChange={(value: any) => setChartMetricSelection(value)}
+              >
+                <SelectTrigger id="chart-metric">
+                  <SelectValue placeholder="Select default metric" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="uploadedSize">Uploaded Size</SelectItem>
+                  <SelectItem value="duration">Duration (Minutes)</SelectItem>
+                  <SelectItem value="fileCount">File Count</SelectItem>
+                  <SelectItem value="fileSize">Total File Size</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Separator />
+            <div className="grid gap-2">
+              <Label>Cleanup Old Backups</Label>
+              <Button 
+                variant="destructive" 
+                onClick={handleDeleteBackups}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Old Backups
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                This will delete all backups older than the selected retention period.
+              </p>
             </div>
           </div>
         </div>

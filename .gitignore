@@ -14,7 +14,8 @@ pnpm-lock.yaml
 
 # testing
 /coverage
-/data/
+/data/*
+backups.db
 
 # next.js
 /.next/
@@ -45,6 +46,3 @@ next-env.d.ts
 .genkit/*
 .env*
 
-# firebase
-firebase-debug.log
-firestore-debug.log
