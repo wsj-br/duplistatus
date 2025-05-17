@@ -1,8 +1,15 @@
-# Build stage
-FROM node:18-alpine AS builder
+# Production image
+FROM node:lts-alpine
 
-# Install pnpm
-RUN npm install -g pnpm@8
+# Install runtime dependencies and pnpm
+ # Install runtime dependencies and pnpm
+ RUN apk add --no-cache \
+     python3 \
+     make \
+     g++ \
+     sqlite-libs \
+     curl \
+     && npm install -g pnpm@latest-10
 
 # Set working directory
 WORKDIR /app
@@ -10,45 +17,33 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install production dependencies only
+RUN pnpm add better-sqlite3 sqlite3 --allow-build=sqlite3 --allow-build=better-sqlite3 && \
+    pnpm install --prod --frozen-lockfile
 
-# Copy source code
-COPY . .
-
-# Build the application
-RUN pnpm run build
-
-# Production stage
-FROM node:18-alpine AS runner
-
-# Install pnpm
-RUN npm install -g pnpm@8
-
-# Set working directory
-WORKDIR /app
-
-# Copy necessary files from builder
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.ts ./
+# Copy built application files
+COPY .next ./.next
+COPY public ./public
+COPY next.config.ts ./
 
 # Create data directory with proper permissions
-RUN mkdir -p /app/data && chown -R node:node /app/data
-
-# Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
+RUN mkdir -p /app/data && \
+    chown -R node:node /app/data
 
 # Set environment variables
-ENV NODE_ENV=production
-ENV PORT=9666
+ENV NODE_ENV=production \
+    PORT=9666 \
+    NEXT_TELEMETRY_DISABLED=1
 
 # Switch to non-root user
 USER node
 
 # Expose the port
 EXPOSE 9666
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:9666/api/health || exit 1
 
 # Start the application
 CMD ["pnpm", "start"] 

@@ -169,7 +169,20 @@ const dbOps = {
   `),
 
   getMachineBackups: db.prepare(`
-    SELECT b.*, m.name as machine_name
+    SELECT 
+      b.id,
+      b.machine_id,
+      b.backup_name,
+      b.date,
+      b.status,
+      b.duration_seconds,
+      b.size,
+      b.examined_files,
+      b.warnings,
+      b.errors,
+      COALESCE(b.uploaded_size, 0) as uploaded_size,
+      COALESCE(b.known_file_size, 0) as known_file_size,
+      m.name as machine_name
     FROM backups b
     JOIN machines m ON b.machine_id = m.id
     WHERE b.machine_id = ?

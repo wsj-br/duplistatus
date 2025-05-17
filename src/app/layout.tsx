@@ -58,8 +58,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Backup Insights',
-  description: 'Monitor your backup statuses and metrics.',
+  title: 'Duplidash',
+  description: 'Monitor the status and metrics of your Duplicati backups.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="512"
+   height="512"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="duplidash_logo.svg"
+   inkscape:export-filename="a-dashboard-icon-for-a-backup-tool-.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title13">Duplidash Logo</title>
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#000000"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1145218"
+     inkscape:cx="246.74259"
+     inkscape:cy="236.87288"
+     inkscape:window-width="1591"
+     inkscape:window-height="1000"
+     inkscape:window-x="2037"
+     inkscape:window-y="36"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg13" />
+  <rect
+     style="fill:#000000;stroke-width:0.3;stroke-miterlimit:0"
+     id="rect1"
+     width="323.00851"
+     height="184.04756"
+     x="93.874336"
+     y="160.94345" />
+  <path
+     fill="#4EA4B6"
+     d="M109.227 78.0748C116 77.829 122.865 78.0726 129.649 78.073L391.425 78.0615C396.446 78.0617 401.605 77.885 406.603 78.3976C428.085 80.6012 431.844 99.0398 431.849 116.36L431.845 258.562C431.846 263.081 432.972 270.77 429.686 274.418C426.952 277.451 421.779 277.646 418.899 274.702C415.382 271.107 416.707 264.254 416.717 259.712L416.737 166.747L175.375 166.747L122.172 166.747C113.296 166.747 104.4 166.597 95.5263 166.747L95.5196 315.433C95.5189 324.473 92.8631 339.53 103.806 343.556C107.911 345.066 125.2 344.348 130.617 344.348L221.047 344.33C225.085 344.327 229.284 344.099 233.303 344.465C239.538 345.032 242.481 352.383 238.267 357.219C235.23 360.705 229.143 359.636 225.024 359.617L126.015 359.623C118.753 359.629 110.89 360.241 103.731 359.121C80.5067 355.484 80.3054 334.27 80.3514 316.566L80.352 118.575C80.3626 98.6921 84.1791 79.8467 109.227 78.0748ZM95.5263 152.094L222.125 152.094L416.737 152.094C417.338 144.733 416.739 136.89 416.74 129.471L416.742 114.546C416.733 91.8536 411.55 92.8896 389.831 92.9105L290.499 92.9236L126.898 92.9276C97.0788 92.9241 95.5094 92.0764 95.515 119.882L95.5263 152.094Z"
+     id="path1"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#446175"
+     d="M216.334 107.624C224.323 107.103 231.232 113.134 231.794 121.121C232.355 129.107 226.359 136.046 218.376 136.649C210.334 137.256 203.334 131.206 202.768 123.162C202.202 115.118 208.287 108.148 216.334 107.624Z"
+     id="path2"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#446175"
+     d="M173.619 107.957C181.506 106.674 188.945 112.014 190.253 119.898C191.562 127.781 186.247 135.237 178.368 136.572C170.452 137.912 162.953 132.567 161.639 124.647C160.324 116.726 165.694 109.245 173.619 107.957Z"
+     id="path3"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#446175"
+     d="M133.34 107.819C141.271 106.942 148.417 112.647 149.318 120.576C150.218 128.504 144.535 135.667 136.609 136.591C128.649 137.52 121.449 131.806 120.545 123.844C119.64 115.882 125.375 108.699 133.34 107.819Z"
+     id="path4"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <circle
+     style="fill:#4cc8fd;stroke:none;stroke-width:1.0179;stroke-miterlimit:0;stroke-opacity:1;fill-opacity:1"
+     id="path7"
+     cx="342.87085"
+     cy="342.87076"
+     r="89.6017" />
+  <path
+     fill="#4EA4B6"
+     d="m 338.7296,272.68488 c 15.57049,-4.09149 13.38299,11.94795 13.36821,22.09 l -0.0242,27.65415 c 7.56086,3.50833 13.67189,9.77254 15.87954,17.96895 l 24.92381,-0.0497 c 5.67164,-0.007 14.52645,-1.3598 19.11376,2.92518 5.74555,5.36663 3.62926,16.14693 -4.30917,17.75665 -4.27825,0.86801 -9.18804,0.41385 -13.55901,0.40848 l -21.95428,-0.0282 h -4.21511 c -9.06845,13.93524 -23.94561,22.18943 -40.22422,14.08708 -22.72018,-11.30836 -19.87965,-45.24956 3.70854,-53.0684 0.17334,-12.52707 -1.19452,-30.27566 0.22574,-42.23032 0.54284,-4.5685 2.59463,-6.47786 7.06638,-7.51383 z"
+     id="path6"
+     style="fill:#000000;fill-opacity:1;stroke-width:1.34367" />
+  <path
+     fill="#446175"
+     d="M173.038 222.003C179.783 221.663 211.173 220.718 214.691 224.076C218.636 227.84 216.734 234.545 211.7 236.25C209.053 237.147 205.754 236.765 202.973 236.755L185.893 236.704C158.716 236.638 159.16 243.568 159.254 266.061L159.211 282.337C159.09 306.735 174.985 304.157 193.683 304.159L225.654 304.151C230.486 304.03 238.392 302.912 239.995 309.167C242.598 319.324 232.846 318.589 226.866 318.52L189.17 318.502C169.197 318.523 150.183 316.802 145.165 292.144C143.874 285.798 144.556 274.67 144.554 267.803C144.548 244.42 145.634 227.384 173.038 222.003Z"
+     id="path8"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#446175"
+     d="M238.77 191.439C241.578 191.253 244.494 191.42 247.311 191.426L278.12 191.431C295.509 191.418 310.853 195.494 317.465 214.28C320.038 221.59 322.725 235.77 312.965 238.877C301.403 238.672 305.796 226.62 303.459 219.274C298.578 203.933 282.747 206.354 270.486 206.368L247.572 206.367C242.605 206.397 234.41 207.555 232.65 201.176C231.295 196.264 233.951 192.709 238.77 191.439Z"
+     id="path9"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#4EA4B6"
+     d="M240.584 224.233L255.634 224.233L255.631 262.833C255.638 269.053 257.398 280.734 253.835 285.841C250.702 288.852 244.665 287.684 240.584 287.656C240.581 266.533 240.948 245.348 240.584 224.233Z"
+     id="path10"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#4EA4B6"
+     d="M208.643 251.5L223.747 251.5L223.747 287.656C218.783 287.926 213.624 287.665 208.643 287.656L208.643 251.5Z"
+     id="path11"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#4EA4B6"
+     d="M272.251 224.233L287.252 224.233L287.252 256.74L272.251 256.74L272.251 224.233Z"
+     id="path12"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <path
+     fill="#4EA4B6"
+     d="M183.704 256.74L191.51 256.74L191.51 287.656L185.184 287.656L176.556 287.656L176.556 256.74C179.177 256.245 181.087 256.266 183.704 256.74Z"
+     id="path13"
+     style="fill:#4cc8fd;fill-opacity:1" />
+  <metadata
+     id="metadata13">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <cc:license
+           rdf:resource="http://artlibre.org/licence/lal" />
+        <dc:title>Duplidash Logo</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>AI Generated</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://artlibre.org/licence/lal">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

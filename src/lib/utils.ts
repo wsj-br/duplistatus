@@ -6,27 +6,60 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return '0 Bytes';
-  if (isNaN(bytes) || !isFinite(bytes)) return 'N/A';
+export function formatBytes(bytes: unknown, decimals = 2): string {
+  // Handle all possible invalid inputs
+  if (bytes === null || bytes === undefined) return '0 Bytes';
+  
+  let numBytes: number;
+  
+  if (typeof bytes === 'number') {
+    numBytes = bytes;
+  } else if (typeof bytes === 'string') {
+    try {
+      numBytes = Number(bytes);
+    } catch (e) {
+      return '0 Bytes';
+    }
+  } else {
+    return '0 Bytes';
+  }
+  
+  if (isNaN(numBytes) || !isFinite(numBytes) || numBytes <= 0) return '0 Bytes';
 
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(numBytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return parseFloat((numBytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-export function formatDurationFromMinutes(totalMinutes: number): string {
-  if (isNaN(totalMinutes) || totalMinutes < 0 || !isFinite(totalMinutes)) return "N/A";
-  if (totalMinutes === 0) return "00:00:00";
+export function formatDurationFromMinutes(totalMinutes: unknown): string {
+  // Handle all possible invalid inputs
+  if (totalMinutes === null || totalMinutes === undefined) return "00:00:00";
+  
+  let numMinutes: number;
+  
+  if (typeof totalMinutes === 'number') {
+    numMinutes = totalMinutes;
+  } else if (typeof totalMinutes === 'string') {
+    try {
+      numMinutes = Number(totalMinutes);
+    } catch (e) {
+      return "00:00:00";
+    }
+  } else {
+    return "00:00:00";
+  }
+  
+  if (isNaN(numMinutes) || numMinutes < 0 || !isFinite(numMinutes)) return "00:00:00";
+  if (numMinutes === 0) return "00:00:00";
 
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = Math.floor(totalMinutes % 60);
+  const hours = Math.floor(numMinutes / 60);
+  const minutes = Math.floor(numMinutes % 60);
   // Calculate seconds from the fractional part of totalMinutes
-  const seconds = Math.round((totalMinutes * 60) % 60);
+  const seconds = Math.round((numMinutes * 60) % 60);
 
   const paddedHours = String(hours).padStart(2, '0');
   const paddedMinutes = String(minutes).padStart(2, '0');

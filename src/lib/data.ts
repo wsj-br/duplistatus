@@ -20,7 +20,9 @@ interface MachineRow {
 }
 
 interface BackupRow {
+  backup_name: any;
   id: string;
+  name: string;
   machine_id: string;
   date: string;
   status: BackupStatus;
@@ -59,20 +61,40 @@ export async function getMachineById(id: string): Promise<Machine | null> {
   if (!machine) return null;
 
   const backups = dbUtils.getMachineBackups(id) as BackupRow[];
-  const formattedBackups = backups.map(backup => ({
-    id: backup.id,
-    name: `Backup ${backup.id}`,
-    date: backup.date,
-    status: backup.status,
-    warnings: backup.warnings,
-    errors: backup.errors,
-    fileCount: backup.examined_files,
-    fileSize: backup.size,
-    uploadedSize: backup.uploaded_size,
-    duration: formatDurationFromSeconds(backup.duration_seconds),
-    durationInMinutes: Math.floor(backup.duration_seconds / 60),
-    knownFileSize: backup.known_file_size
-  }));
+  
+  // Debug logging for raw backup data
+  console.log('Raw backup data from database:', backups.map(b => ({
+    id: b.id,
+    uploaded_size: b.uploaded_size,
+    known_file_size: b.known_file_size,
+    size: b.size
+  })));
+
+  const formattedBackups = backups.map(backup => {
+    const formatted = {
+      id: backup.id,
+      name: backup.backup_name,
+      date: backup.date,
+      status: backup.status,
+      warnings: backup.warnings,
+      errors: backup.errors,
+      fileCount: backup.examined_files,
+      fileSize: backup.size,
+      uploadedSize: Number(backup.uploaded_size) || 0,
+      duration: formatDurationFromSeconds(backup.duration_seconds),
+      durationInMinutes: Math.floor(backup.duration_seconds / 60),
+      knownFileSize: Number(backup.known_file_size) || 0
+    };
+    
+    // Debug logging for each formatted backup
+    console.log('Formatted backup:', {
+      id: formatted.id,
+      uploadedSize: formatted.uploadedSize,
+      knownFileSize: formatted.knownFileSize
+    });
+    
+    return formatted;
+  });
 
   // Calculate chart data
   const chartData = formattedBackups.map(backup => ({
@@ -80,7 +102,8 @@ export async function getMachineById(id: string): Promise<Machine | null> {
     uploadedSize: backup.uploadedSize,
     duration: backup.durationInMinutes,
     fileCount: backup.fileCount,
-    fileSize: backup.fileSize
+    fileSize: backup.fileSize,
+    storageSize: backup.knownFileSize
   })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return {
@@ -95,27 +118,48 @@ export async function getAllMachines(): Promise<Machine[]> {
   const machines = await Promise.all(
     (dbUtils.getAllMachines() as MachineRow[]).map(async machine => {
       const backups = dbUtils.getMachineBackups(machine.id) as BackupRow[];
-      const formattedBackups = backups.map(backup => ({
-        id: backup.id,
-        name: `Backup ${backup.id}`,
-        date: backup.date,
-        status: backup.status,
-        warnings: backup.warnings,
-        errors: backup.errors,
-        fileCount: backup.examined_files,
-        fileSize: backup.size,
-        uploadedSize: backup.uploaded_size,
-        duration: formatDurationFromSeconds(backup.duration_seconds),
-        durationInMinutes: Math.floor(backup.duration_seconds / 60),
-        knownFileSize: backup.known_file_size
-      }));
+      
+      // Debug logging for raw backup data
+      console.log('Raw backup data for machine', machine.id, ':', backups.map(b => ({
+        id: b.id,
+        uploaded_size: b.uploaded_size,
+        known_file_size: b.known_file_size,
+        size: b.size
+      })));
+
+      const formattedBackups = backups.map(backup => {
+        const formatted = {
+          id: backup.id,
+          name: backup.backup_name,
+          date: backup.date,
+          status: backup.status,
+          warnings: backup.warnings,
+          errors: backup.errors,
+          fileCount: backup.examined_files,
+          fileSize: Number(backup.size) || 0,
+          uploadedSize: Number(backup.uploaded_size) || 0,
+          duration: formatDurationFromSeconds(backup.duration_seconds),
+          durationInMinutes: Math.floor(backup.duration_seconds / 60),
+          knownFileSize: Number(backup.known_file_size) || 0
+        };
+        
+        // Debug logging for each formatted backup
+        console.log('Formatted backup for machine', machine.id, ':', {
+          id: formatted.id,
+          uploadedSize: formatted.uploadedSize,
+          knownFileSize: formatted.knownFileSize
+        });
+        
+        return formatted;
+      });
 
       const chartData = formattedBackups.map(backup => ({
         date: new Date(backup.date).toLocaleDateString(),
         uploadedSize: backup.uploadedSize,
         duration: backup.durationInMinutes,
         fileCount: backup.fileCount,
-        fileSize: backup.fileSize
+        fileSize: backup.fileSize,
+        storageSize: backup.knownFileSize
       })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
       return {

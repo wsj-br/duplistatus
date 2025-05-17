@@ -25,13 +25,68 @@ export function MachineDetailSummaryItems({
   lastBackupStorageSize,
 }: MachineDetailSummaryItemsProps) {
 
+  // Use a try/catch for each item to ensure nothing breaks
+  const getFormattedValue = (value: any, formatter: Function, defaultValue: string = '0') => {
+    try {
+      return formatter(value);
+    } catch (error) {
+      console.error('Error formatting value:', value, error);
+      return defaultValue;
+    }
+  };
+
+  const getFormattedNumber = (value: any, defaultValue: string = '0') => {
+    try {
+      const num = Number(value);
+      return isNaN(num) ? defaultValue : num.toLocaleString();
+    } catch (error) {
+      return defaultValue;
+    }
+  };
+
+  // Debug logging for raw props
+  console.log('Raw props:', {
+    totalUploadedSize,
+    lastBackupStorageSize
+  });
+
   const summaryItems = [
-    { title: "Total Backups", value: totalBackups.toLocaleString(), icon: <Archive className="h-4 w-4 text-primary" />, "data-ai-hint": "archive storage" },
-    { title: "Avg. Duration", value: formatDurationFromMinutes(averageDuration), icon: <Clock className="h-4 w-4 text-primary" />, "data-ai-hint": "timer clock" },
-    { title: "Total Uploaded", value: formatBytes(totalUploadedSize), icon: <UploadCloud className="h-4 w-4 text-primary" />, "data-ai-hint": "cloud data" },
-    { title: "Total Storage Used", value: formatBytes(lastBackupStorageSize), icon: <Database className="h-4 w-4 text-primary" />, "data-ai-hint": "database symbol" },
-    { title: "Last Backup Warnings", value: lastBackupWarnings.toLocaleString(), icon: <AlertTriangle className="h-4 w-4 text-yellow-500" />, "data-ai-hint": "warning symbol" },
-    { title: "Last Backup Errors", value: lastBackupErrors.toLocaleString(), icon: <XCircle className="h-4 w-4 text-destructive" />, "data-ai-hint": "error cross" },
+    { 
+      title: "Total Backups", 
+      value: getFormattedNumber(totalBackups),
+      icon: <Archive className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "archive storage" 
+    },
+    { 
+      title: "Avg. Duration", 
+      value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
+      icon: <Clock className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "timer clock" 
+    },
+    { 
+      title: "Total Uploaded", 
+      value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
+      icon: <UploadCloud className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "cloud data" 
+    },
+    { 
+      title: "Total Storage Used", 
+      value: getFormattedValue(lastBackupStorageSize, formatBytes, "0 Bytes"),
+      icon: <Database className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "database symbol" 
+    },
+    { 
+      title: "Last Backup Warnings", 
+      value: getFormattedNumber(lastBackupWarnings),
+      icon: <AlertTriangle className="h-4 w-4 text-yellow-500" />, 
+      "data-ai-hint": "warning symbol" 
+    },
+    { 
+      title: "Last Backup Errors", 
+      value: getFormattedNumber(lastBackupErrors),
+      icon: <XCircle className="h-4 w-4 text-destructive" />, 
+      "data-ai-hint": "error cross" 
+    },
   ];
 
   return (

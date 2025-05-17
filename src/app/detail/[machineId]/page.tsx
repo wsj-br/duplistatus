@@ -41,11 +41,37 @@ export default async function MachineDetailsPage({
   const lastBackupWarnings = latestBackup?.warnings || 0;
   const lastBackupErrors = latestBackup?.errors || 0;
 
+  // Debug logging for latest backup
+  console.log('Latest backup:', latestBackup ? {
+    id: latestBackup.id,
+    uploadedSize: latestBackup.uploadedSize,
+    knownFileSize: latestBackup.knownFileSize
+  } : 'No backups');
+
   const totalDurationMinutes = machine.backups.reduce((sum, b) => sum + (b.durationInMinutes || 0), 0);
   const averageDuration = totalBackups > 0 ? totalDurationMinutes / totalBackups : 0;
 
-  const totalUploadedSize = machine.backups.reduce((sum, b) => sum + (b.uploadedSize || 0), 0);
-  const lastBackupStorageSize = latestBackup?.knownFileSize || 0;
+  const totalUploadedSize = machine.backups.reduce((sum, b) => {
+    const size = Number(b.uploadedSize);
+    const result = sum + (isNaN(size) ? 0 : size);
+    console.log('Adding to totalUploadedSize:', { current: b.uploadedSize, size, result });
+    return result;
+  }, 0);
+
+  const lastBackupStorageSize = latestBackup ? (() => {
+    const size = Number(latestBackup.knownFileSize);
+    const result = isNaN(size) ? 0 : size;
+    console.log('Calculating lastBackupStorageSize:', { raw: latestBackup.knownFileSize, size, result });
+    return result;
+  })() : 0;
+
+  // Debug logging for final values
+  console.log('Final calculated values:', {
+    totalUploadedSize,
+    lastBackupStorageSize,
+    totalBackups,
+    averageDuration
+  });
 
   // Calculate chart data
   const chartData = machine.backups.map(backup => ({

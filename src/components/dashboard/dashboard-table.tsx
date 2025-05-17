@@ -22,7 +22,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
 
   const handleRowClick = (machineId: string) => {
-    router.push(`/lastbackup/${machineId}`);
+    router.push(`/detail/${machineId}`);
   };
 
   return (

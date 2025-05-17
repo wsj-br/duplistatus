@@ -5,35 +5,51 @@
 # Dependencies
 node_modules
 .pnpm-store
+.pnpm-debug.log
 
 # Build output
 .next
 out
+dist
 
 # Environment files
 .env*
-!.env.example
+!.env.production
 
 # Development files
 .vscode
 .idea
 *.log
 *.md
-README.md
+!README.md
 docs
 backups.db
+*.db
+*.sqlite
+*.sqlite3
 
 # Test files
 __tests__
 *.test.*
 *.spec.*
+coverage
+.nyc_output
 
 # Docker files
-Dockerfile
-docker-compose.yml
+Dockerfile*
+docker-compose*
 .dockerignore
+
+# Development tools
+.eslintrc*
+.prettierrc*
+tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 # Other
 .DS_Store
 *.swp
-*.swo 
+*.swo
+*.bak
+*.tmp
+*.temp 
