@@ -26,7 +26,7 @@ pnpm-lock.yaml
 # misc
 .DS_Store
 *.pem
-.vscode
+/.vscode
 
 
 # debug
