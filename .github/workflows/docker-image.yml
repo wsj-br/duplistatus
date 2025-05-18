@@ -18,7 +18,7 @@ on:
       - 'releases/**'
 
 env:
-  REGISTRY_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.repository }}
+  REGISTRY_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
 
 jobs:
   docker:
