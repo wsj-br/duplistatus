@@ -8,6 +8,7 @@
     "pnpm": ">=10.11.0"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev --turbopack -p 9666",
     "build": "next build",
     "start": "NODE_ENV=production PORT=9666 NEXT_TELEMETRY_DISABLED=1 next start",
@@ -39,12 +40,10 @@
     "@radix-ui/react-tabs": "^1.1.5",
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.1.5",
-    "@tsconfig/next": "^2.0.3",
     "better-sqlite3": "^11.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
-    "esbuild": "^0.25.4",
     "lucide-react": "^0.344.0",
     "next": "^15.3.2",
     "react": "^18.0.0",
@@ -52,11 +51,9 @@
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.56.4",
     "recharts": "^2.15.1",
-    "sharp": "^0.34.1",
     "tailwindcss": "^3.4.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "unrs-resolver": "^1.7.2",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
@@ -64,10 +61,6 @@
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
-    "autoprefixer": "^10.4.17",
-    "eslint": "^9.27.0",
-    "eslint-config-next": "^15.3.2",
-    "postcss": "^8.4.35",
     "tsx": "^4.19.3",
     "typescript": "^5.3.3"
   }

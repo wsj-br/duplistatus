@@ -31,11 +31,8 @@ cd duplidash
 2. Install dependencies:
 ```bash
 sudo apt update
-sudo apt install nodejs npm make g++ sqlite3 curl -y
+sudo apt install nodejs npm sqlite3 -y
 sudo npm install -g pnpm
-pnpm add better-sqlite3 sharp unrs-resolver esbuild \
-         --allow-build=better-sqlite3 --allow-build=sharp \
-         --allow-build=unrs-resolver --allow-build=esbuild
 pnpm install
 ```
 
@@ -43,6 +40,13 @@ pnpm install
 3. Start the development server:
 ```bash
 pnpm run dev
+```
+
+The application will be available at `http://localhost:9666`
+
+4. Start the production server:
+```bash
+pnpm start
 ```
 
 The application will be available at `http://localhost:9666`
@@ -72,13 +76,21 @@ Clears all data from the database and recreates the schema. Use with caution as 
 
 ### Clean build artifacts and dependencies
 ```bash
-pnpm run clear-workspace
+scripts/clear-workspace.sh
 ```
 Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
 - `node_modules/` directory
 - `.next/` build directory
 - `dist/` directory
+- All docker build cache and perform a docker system prune
 - Any other build cache files
+
+### Generate the logo/favicon and banner from svn
+```bash
+scripts/convert_svg_logo.sh
+```
+
+> The svg files are located in the `docs` folder.
 
 <br>
 
@@ -232,7 +244,7 @@ cd duplidash
 
 3. Start the application:
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
 
 The application will be available at `http://localhost:9666` or `http://<IP_or_NAME>:9666`
@@ -246,15 +258,7 @@ The application will be available at `http://localhost:9666` or `http://<IP_or_N
 5. In the "Compose path" field, enter: `docker-compose.yml`
 6. Click "Deploy the stack"
 
-### Docker Configuration
 
-The Docker setup includes:
-
-- Single-stage build for smaller production image
-- Volume mounting for persistent data storage
-- Health checks for container monitoring
-- Automatic container restart
-- Environment variable configuration
 
 #### Environment Variables
 
@@ -262,10 +266,11 @@ The following environment variables can be configured in Portainer:
 
 - `NODE_ENV`: Set to `production` (default)
 - `PORT`: Application port (default: 9666)
+- `NEXT_TELEMETRY_DISABLED`: disable next telemetry (default: 1)
 
 #### Data Persistence
 
-The application data is stored in the `./data` directory, which is mounted as a volume in the container. This ensures that your data persists even if the container is removed or updated.
+The application data is stored in the `./data` directory, which is mounted as the volume `duplidash_data` in the container. This ensures that your data persists even if the container is removed or updated.
 
 
 ## License

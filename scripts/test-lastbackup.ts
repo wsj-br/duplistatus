@@ -7,31 +7,16 @@ interface Machine {
 
 async function testLastBackup(machineName?: string) {
   try {
-    // Get machine ID from name
-    let machineId: string;
-    
-    if (machineName) {
-      const machine = dbOps.getMachineByName.get(machineName) as Machine | null;
-      if (!machine) {
-        console.error(`Machine "${machineName}" not found`);
-        process.exit(1);
-      }
-      machineId = machine.id;
-    } else {
-      // Default to "Test Machine 1"
-      const machine = dbOps.getMachineByName.get("Test Machine 1") as Machine | null;
-      if (!machine) {
-        console.error('Default machine "Test Machine 1" not found');
-        process.exit(1);
-      }
-      machineId = machine.id;
-    }
+    // Use provided machine name or default to "Test Machine 1"
+    const machineNameToUse = machineName || "Test Machine 1";
 
+    console.log(`Testing last backup for machine: ${machineNameToUse}`);
     // Make request to the endpoint
-    const response = await fetch(`http://localhost:9666/api/lastbackup/${machineId}`);
-    
+    const response = await fetch(`http://localhost:9666/api/lastbackup/${machineNameToUse}`);
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(`HTTP error! status: ${response.status}, error: ${errorData.error}, message: ${errorData.message}`);
     }
 
     const data = await response.json();
