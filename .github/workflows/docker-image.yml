@@ -29,6 +29,7 @@ jobs:
 
       - name: Install dependencies and build
         run: |
+          npm install -g pnpm@latest-10
           pnpm add better-sqlite3 sqlite3 --allow-build=sqlite3 --allow-build=better-sqlite3
           pnpm install --frozen-lockfile
           pnpm build
