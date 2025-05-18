@@ -41,5 +41,5 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY_IMAGE }}:latest , ${{ env.REGISTRY_IMAGE }}:${{ steps.get_version.outputs.version-without-v }}
+          tags: ${{ env.REGISTRY_IMAGE }}:latest  # , ${{ env.REGISTRY_IMAGE }}:${{ steps.get_version.outputs.version-without-v }}
 
