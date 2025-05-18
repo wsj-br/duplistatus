@@ -34,30 +34,30 @@ import { usePathname, useRouter } from "next/navigation";
 
 export function ConfigMenu() {
   const {
-    backupRetentionPeriod,
-    setBackupRetentionPeriod,
+    databaseCleanupPeriod,
+    setDatabaseCleanupPeriod,
     tablePageSize,
     setTablePageSize,
     chartTimeRange,
     setChartTimeRange,
     chartMetricSelection,
     setChartMetricSelection,
-    deleteOldBackups,
+    cleanupDatabase,
   } = useConfig();
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isCleaning, setIsCleaning] = useState(false);
   const { toast } = useToast();
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleDeleteBackups = async () => {
+  const handleCleanup = async () => {
     try {
-      setIsDeleting(true);
-      await deleteOldBackups();
+      setIsCleaning(true);
+      await cleanupDatabase();
       
       // Show success toast
       toast({
-        title: "Backups deleted",
-        description: "Old backups have been successfully deleted.",
+        title: "Database cleaned",
+        description: "Old records have been successfully removed.",
         variant: "default",
         duration: 5000,
       });
@@ -75,12 +75,12 @@ export function ConfigMenu() {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to delete old backups. Please try again.",
+        description: "Failed to cleanup database. Please try again.",
         variant: "destructive",
         duration: 5000,
       });
     } finally {
-      setIsDeleting(false);
+      setIsCleaning(false);
     }
   };
 
@@ -100,23 +100,6 @@ export function ConfigMenu() {
             </p>
           </div>
           <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="backup-retention">Backup Retention Period</Label>
-              <Select
-                value={backupRetentionPeriod}
-                onValueChange={(value) => setBackupRetentionPeriod(value as any)}
-              >
-                <SelectTrigger id="backup-retention">
-                  <SelectValue placeholder="Select retention period" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Delete all data">Delete all data</SelectItem>
-                  <SelectItem value="6 months">6 months</SelectItem>
-                  <SelectItem value="1 year">1 year</SelectItem>
-                  <SelectItem value="2 years">2 years</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
             <div className="grid gap-2">
               <Label htmlFor="table-page-size">Table Page Size</Label>
               <Select
@@ -173,26 +156,65 @@ export function ConfigMenu() {
             </div>
             <Separator />
             <div className="grid gap-2">
-              <Label>Cleanup Old Backups</Label>
-              <Button 
-                variant="destructive" 
-                onClick={handleDeleteBackups}
-                disabled={isDeleting}
+              <Label htmlFor="database-cleanup">Database Cleanup Period</Label>
+              <Select
+                value={databaseCleanupPeriod}
+                onValueChange={(value) => setDatabaseCleanupPeriod(value as any)}
               >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Old Backups
-                  </>
-                )}
-              </Button>
+                <SelectTrigger id="database-cleanup">
+                  <SelectValue placeholder="Select cleanup period" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Delete all data">Delete all data</SelectItem>
+                  <SelectItem value="6 months">6 months</SelectItem>
+                  <SelectItem value="1 year">1 year</SelectItem>
+                  <SelectItem value="2 years">2 years</SelectItem>
+                </SelectContent>
+              </Select>
               <p className="text-xs text-muted-foreground">
-                This will delete all backups older than the selected retention period.
+                Select how long backup records are kept in the database. 
+              </p>
+            </div>
+            <div className="grid gap-2">
+              <Label>Clear Database</Label>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="destructive" 
+                    disabled={isCleaning}
+                  >
+                    {isCleaning ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Cleaning...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Clear Old Records
+                      </>
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete all backup records older than the selected cleanup period. 
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleCleanup} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <p className="text-xs text-muted-foreground">
+                This will remove all backup records older than the selected cleanup period. 
+                <u>This is not automatic</u>, you need to run the clear manually clicking the button.
               </p>
             </div>
           </div>

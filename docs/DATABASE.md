@@ -244,6 +244,21 @@ FROM machines m
 LEFT JOIN backups b ON b.machine_id = m.id
 ```
 
+### Database Cleanup
+
+The application provides a database cleanup feature that can remove old backup records based on a configurable period. The cleanup period can be set to:
+- Delete all data
+- 6 months
+- 1 year
+- 2 years
+
+When cleanup is performed, it:
+1. Deletes all backup records older than the selected period
+2. Maintains referential integrity with the machines table
+3. Updates all related statistics and metrics
+
+The cleanup operation is performed through the `/api/backups/cleanup` endpoint and requires a POST request with the cleanup period.
+
 ## JSON to Database Mapping
 
 The following tables show how the JSON data from the API maps to the database columns. This is particularly useful when understanding the `/api/upload` endpoint data structure.
