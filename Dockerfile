@@ -35,6 +35,11 @@ ENV NODE_ENV=production \
     PORT=9666 \
     NEXT_TELEMETRY_DISABLED=1
 
+# Labels
+LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplidash
+LABEL org.opencontainers.image.description="Duplidash Container Image"
+LABEL org.opencontainers.image.licenses=Apache-2.0
+
 # Switch to non-root user
 USER node
 
