@@ -36,16 +36,16 @@ import type { ChartConfig } from "@/components/ui/chart";
 import { formatBytes } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
+import type { ChartMetricSelection } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears, parseISO } from "date-fns";
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 interface MachineMetricsChartProps {
   machine: Machine;
 }
 
-// Define the metrics that can be displayed in the chart
-type MetricKey = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize';
-
-const metricDisplayInfo: Record<MetricKey, { label: string; unit?: string }> = {
+// Use the imported ChartMetricSelection type
+const metricDisplayInfo: Record<ChartMetricSelection, { label: string; unit?: string }> = {
   uploadedSize: { label: "Uploaded Size" },
   duration: { label: "Duration", unit: "Minutes" },
   fileCount: { label: "File Count" },
@@ -59,8 +59,13 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` 
     : currentMetricInfo.label;
 
+  // Ensure machine and chartData are defined
+  const safeChartData = machine?.chartData || [];
+  
   // Filter chart data based on the selected time range
   const filteredChartData = useMemo(() => {
+    if (!safeChartData.length) return [];
+    
     const now = new Date();
     let cutoffDate: Date;
 
@@ -85,7 +90,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         break;
       case 'All data':
         // Skip date filtering for 'All data' option
-        return machine.chartData.map(item => ({
+        return safeChartData.map(item => ({
           date: item.date,
           [chartMetricSelection]: item[chartMetricSelection]
         }));
@@ -93,7 +98,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         cutoffDate = subMonths(now, 1); // Default to 1 month
     }
 
-    return machine.chartData
+    return safeChartData
       .filter(item => {
         // Use the ISO date string for accurate date comparison
         if (item.isoDate) {
@@ -115,7 +120,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         date: item.date,
         [chartMetricSelection]: item[chartMetricSelection]
       }));
-  }, [machine.chartData, chartMetricSelection, chartTimeRange]);
+  }, [safeChartData, chartMetricSelection, chartTimeRange]);
 
   // useMemo for chartConfig to prevent re-creation on every render if selectedMetric doesn't change
   const chartConfig = useMemo(() => ({
@@ -125,19 +130,38 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     },
   }), [chartMetricSelection, yAxisLabel]) satisfies ChartConfig;
 
-  const yAxisTickFormatter = (value: number) => {
+  const yAxisTickFormatter = (value: number | undefined) => {
+    if (value === undefined) return '';
     if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize") {
       return formatBytes(value, 0);
     }
     return value.toLocaleString();
   };
 
-  const tooltipFormatter = (value: number) => {
+  const tooltipFormatter = (value: ValueType, name: NameType | undefined, props: any) => {
+    if (typeof value !== 'number') return '';
     if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize") {
       return formatBytes(value);
     }
     return value.toLocaleString();
   };
+
+  // Early return if no data
+  if (!safeChartData.length) {
+    return (
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle>Backup Metrics Over Time</CardTitle>
+          <CardDescription>No backup data available for {machine?.name || 'this machine'}.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] flex items-center justify-center text-muted-foreground">
+            No data available for the selected time range.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="shadow-lg">
@@ -145,14 +169,17 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name} 
+            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine?.name || 'this machine'} 
             {chartTimeRange === 'All data' 
               ? ' for all available data.'
               : ` over the last ${chartTimeRange}.`
             }
           </CardDescription>
         </div>
-        <Select value={chartMetricSelection} onValueChange={(value) => setChartMetricSelection(value as ChartMetricSelection)}>
+        <Select 
+          value={chartMetricSelection} 
+          onValueChange={(value) => setChartMetricSelection?.(value as ChartMetricSelection)}
+        >
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Select Metric" />
           </SelectTrigger>
@@ -194,12 +221,14 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
                   formatter={tooltipFormatter}
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
-                    const value = payload[0].value as number;
+                    const value = payload[0].value;
+                    const name = payload[0].name;
+                    if (typeof value !== 'number') return null;
                     return (
                       <div className="rounded-lg border bg-background p-2 shadow-sm">
                         <div className="text-sm font-medium">{label}</div>
                         <div className="text-sm text-muted-foreground">
-                          {tooltipFormatter(value)}
+                          {tooltipFormatter(value, name, payload[0])}
                         </div>
                       </div>
                     );

@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { dbOps } from '@/lib/db';
-import type { Machine, Backup } from '@/lib/types';
+import type { Backup } from '@/lib/types';
 
 interface MachineRow {
   id: string;
@@ -27,29 +26,23 @@ function mapBackupToType(backup: any): Backup {
   };
 }
 
-export async function GET(
-  request: NextRequest,
-  context: { params: { machineId: string } }
-) {
-  // Await the params before using them
-  const { machineId } = await context.params;
+export async function GET(request: Request) {
+  const { pathname } = new URL(request.url);
+  const match = pathname.match(/api\/lastbackup\/([^\/]+)/);
+  const machineId = match ? match[1] : undefined;
 
   // Always return JSON regardless of Accept header
   const jsonResponse = (data: any, status = 200) => {
-    return new NextResponse(
-      JSON.stringify(data),
-      { 
-        status,
-        headers: {
-          'Content-Type': 'application/json',
-          // Prevent caching to ensure fresh data
-          'Cache-Control': 'no-store, no-cache, must-revalidate',
-          'Pragma': 'no-cache',
-          // Prevent Next.js from intercepting the response
-          'X-Content-Type-Options': 'nosniff'
-        }
+    return Response.json(data, { 
+      status,
+      headers: {
+        // Prevent caching to ensure fresh data
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        // Prevent Next.js from intercepting the response
+        'X-Content-Type-Options': 'nosniff'
       }
-    );
+    });
   };
 
   try {

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 type TablePageSize = 5 | 10 | 15 | 20;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
-type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize';
+export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize';
 
 interface ConfigContextProps {
   databaseCleanupPeriod: DatabaseCleanupPeriod;
@@ -63,7 +63,18 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to cleanup database');
+        // Get detailed error information if available
+        let errorDetails = 'Failed to cleanup database';
+        try {
+          const errorData = await response.json();
+          if (errorData && errorData.error) {
+            errorDetails = errorData.details || errorData.error;
+          }
+        } catch (e) {
+          // If we can't parse the JSON, use the status text
+          errorDetails = `Failed to cleanup database: ${response.status} ${response.statusText}`;
+        }
+        throw new Error(errorDetails);
       }
 
       // Always refresh the page after cleanup to update data
@@ -77,7 +88,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (error) {
       console.error('Error cleaning up database:', error);
-      // You might want to show an error toast here
+      throw error; // Re-throw the error so the component can handle it
     }
   };
 

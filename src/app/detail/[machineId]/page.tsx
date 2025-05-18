@@ -9,10 +9,19 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
 import { notFound } from 'next/navigation';
+import { use } from 'react';
 
-interface MachineDetailsPageProps {
-  params: {
-    machineId: string;
+// Force dynamic rendering and disable caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Add cache control headers to the response
+export async function generateMetadata() {
+  return {
+    other: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'Pragma': 'no-cache'
+    }
   };
 }
 
@@ -23,17 +32,26 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function MachineDetailsPage({
+export default function MachineDetailsPage({
   params,
-}: MachineDetailsPageProps) {
-  // Ensure params is properly awaited
-  const { machineId } = await Promise.resolve(params);
+  searchParams,
+}: {
+  params: Promise<{ machineId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  // Use React's use() hook to handle the Promise
+  const { machineId } = use(params);
   
-  const machine = await getMachineById(machineId);
-
-  if (!machine) {
-    notFound();
-  }
+  // Since we can't use await directly in a non-async component,
+  // we'll wrap the async logic in a separate function
+  const machine = use(
+    getMachineById(machineId).then(result => {
+      if (!result) {
+        notFound();
+      }
+      return result;
+    })
+  );
 
   // Calculate summary data
   const totalBackups = machine.backups.length;
@@ -42,11 +60,11 @@ export default async function MachineDetailsPage({
   const lastBackupErrors = latestBackup?.errors || 0;
 
   // Debug logging for latest backup
-  console.log('Latest backup:', latestBackup ? {
-    id: latestBackup.id,
-    uploadedSize: latestBackup.uploadedSize,
-    knownFileSize: latestBackup.knownFileSize
-  } : 'No backups');
+  // console.log('Latest backup:', latestBackup ? {
+    // id: latestBackup.id,
+    // uploadedSize: latestBackup.uploadedSize,
+    // knownFileSize: latestBackup.knownFileSize
+  // } : 'No backups');
 
   const totalDurationMinutes = machine.backups.reduce((sum, b) => sum + (b.durationInMinutes || 0), 0);
   const averageDuration = totalBackups > 0 ? totalDurationMinutes / totalBackups : 0;
@@ -54,35 +72,24 @@ export default async function MachineDetailsPage({
   const totalUploadedSize = machine.backups.reduce((sum, b) => {
     const size = Number(b.uploadedSize);
     const result = sum + (isNaN(size) ? 0 : size);
-    console.log('Adding to totalUploadedSize:', { current: b.uploadedSize, size, result });
+    // console.log('Adding to totalUploadedSize:', { current: b.uploadedSize, size, result });
     return result;
   }, 0);
 
   const lastBackupStorageSize = latestBackup ? (() => {
     const size = Number(latestBackup.knownFileSize);
     const result = isNaN(size) ? 0 : size;
-    console.log('Calculating lastBackupStorageSize:', { raw: latestBackup.knownFileSize, size, result });
+    // console.log('Calculating lastBackupStorageSize:', { raw: latestBackup.knownFileSize, size, result });
     return result;
   })() : 0;
 
   // Debug logging for final values
-  console.log('Final calculated values:', {
-    totalUploadedSize,
-    lastBackupStorageSize,
-    totalBackups,
-    averageDuration
-  });
-
-  // Calculate chart data
-  const chartData = machine.backups.map(backup => ({
-    date: new Date(backup.date).toLocaleDateString(),
-    isoDate: backup.date,
-    uploadedSize: backup.uploadedSize,
-    duration: backup.durationInMinutes,
-    fileCount: backup.fileCount,
-    fileSize: backup.fileSize,
-    storageSize: backup.knownFileSize
-  })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  // console.log('Final calculated values:', {
+  //   totalUploadedSize,
+  //   lastBackupStorageSize,
+  //   totalBackups,
+  //   averageDuration
+  // });
 
   return (
     <div className="flex flex-col gap-8">
@@ -113,7 +120,7 @@ export default async function MachineDetailsPage({
         </CardContent>
       </Card>
 
-      <MachineMetricsChart machine={{ ...machine, chartData }} />
+      <MachineMetricsChart machine={machine} />
     </div>
   );
 } 

@@ -45,10 +45,10 @@ export function MachineDetailSummaryItems({
   };
 
   // Debug logging for raw props
-  console.log('Raw props:', {
-    totalUploadedSize,
-    lastBackupStorageSize
-  });
+  // console.log('Raw props:', {
+  //   totalUploadedSize,
+  //   lastBackupStorageSize
+  // });
 
   const summaryItems = [
     { 

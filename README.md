@@ -33,7 +33,9 @@ cd duplidash
 sudo apt update
 sudo apt install nodejs npm make g++ sqlite3 curl -y
 sudo npm install -g pnpm
-pnpm add better-sqlite3 sqlite3 --allow-build=sqlite3 --allow-build=better-sqlite3 
+pnpm add better-sqlite3 sharp unrs-resolver esbuild \
+         --allow-build=better-sqlite3 --allow-build=sharp \
+         --allow-build=unrs-resolver --allow-build=esbuild
 pnpm install
 ```
 

@@ -73,11 +73,19 @@ export function ConfigMenu() {
         window.location.reload();
       }
     } catch (error) {
+      console.error('Error in handleCleanup:', error);
+      
+      // Extract error message
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Unknown error occurred. Please try again.';
+      
+      // Show detailed error toast
       toast({
-        title: "Error",
-        description: "Failed to cleanup database. Please try again.",
+        title: "Database Cleanup Failed",
+        description: errorMessage,
         variant: "destructive",
-        duration: 5000,
+        duration: 10000,
       });
     } finally {
       setIsCleaning(false);

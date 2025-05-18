@@ -7,6 +7,25 @@ const machines = [
   { id: 'machine-3', name: 'Test Machine 3', backupName: 'Machine 3 Local Files' }
 ];
 
+// Server health check function
+async function checkServerHealth(url: string): Promise<boolean> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+  try {
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return response.ok;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error('Server health check failed:', error);
+    return false;
+  }
+}
+
 // Helper function to generate a random duration between 30 seconds and 2 hours
 function generateRandomDuration(): string {
   const totalSeconds = Math.floor(Math.random() * (7200 - 30) + 30);
@@ -132,10 +151,20 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 // Main function to send test data
 async function sendTestData() {
   const API_URL = 'http://localhost:9666/api/upload';
+  const HEALTH_CHECK_URL = 'http://localhost:9666/api/health'; // Adjust this URL based on your actual health endpoint
   const TOTAL_BACKUPS_PER_MACHINE = 60;
 
+  // Check server health before proceeding
+  console.log('  🩺 Checking server health...');
+  const isServerHealthy = await checkServerHealth(HEALTH_CHECK_URL);
+  if (!isServerHealthy) {
+    console.error('🚨 Server is not reachable. Please ensure the server is running and try again.');
+    process.exit(1);
+  }
+  console.log('  👍 Server is healthy, proceeding with data generation...');
+
   for (const machine of machines) {
-    console.log(`\nGenerating ${TOTAL_BACKUPS_PER_MACHINE} backups for ${machine.name}...`);
+    console.log(`\n    🔄 Generating ${TOTAL_BACKUPS_PER_MACHINE} backups for ${machine.name}...`);
     
     for (let i = 0; i < TOTAL_BACKUPS_PER_MACHINE; i++) {
       const backupNumber = i + 1;
@@ -155,23 +184,23 @@ async function sendTestData() {
         }
 
         const result = await response.json();
-        console.log(`Backup ${backupNumber}/${TOTAL_BACKUPS_PER_MACHINE} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
+        console.log(`      📄 Backup ${backupNumber}/${TOTAL_BACKUPS_PER_MACHINE} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
         
         // Add a small delay between requests
         await new Promise(resolve => setTimeout(resolve, 100));
       } catch (error) {
-        console.error(`Error sending backup ${backupNumber} for ${machine.name}:`, error);
+        console.error(`🚨 Error sending backup ${backupNumber} for ${machine.name}:`, error);
       }
     }
   }
 }
 
 // Run the script
-console.log('Starting test data generation...');
-console.log('Generating 60 backups per machine at regular intervals from 2 years ago to today');
+console.log('🛫 Starting test data generation...\n');
+console.log('  ℹ️ Generating 60 backups per machine at regular intervals from 2 years ago to today\n');
 sendTestData().then(() => {
-  console.log('\nTest data generation completed!');
+  console.log('\n🎉 Test data generation completed!');
 }).catch(error => {
-  console.error('Error generating test data:', error);
+  console.error('🚨 Error generating test data:', error);
   process.exit(1);
 }); 

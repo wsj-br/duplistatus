@@ -5,45 +5,29 @@ import { db } from '@/lib/db';
 export async function POST(request: Request) {
   try {
     const { retentionPeriod } = await request.json();
-
     // For "Delete all data" option, delete all backups
     if (retentionPeriod === 'Delete all data') {
       // Start a transaction
       const transaction = db.transaction(() => {
-        // Get all backups that will be deleted
-        const backupsToDelete = db.prepare(`
-          SELECT id, backup_name, end_time 
-          FROM backups 
-          ORDER BY end_time DESC
-        `).all();
-
-        // Get all machines that will be deleted
-        const machinesToDelete = db.prepare(`
-          SELECT id, name
-          FROM machines
-        `).all();
-
+    
         // Delete all backups
         const backupResult = db.prepare(`DELETE FROM backups`).run();
         
         // Delete all machines
         const machineResult = db.prepare(`DELETE FROM machines`).run();
-
+  
         return { 
-          deletedBackups: backupsToDelete, 
-          deletedMachines: machinesToDelete,
           backupChanges: backupResult.changes,
           machineChanges: machineResult.changes
         };
       });
 
       // Execute the transaction
-      const { deletedBackups, deletedMachines, backupChanges, machineChanges } = transaction();
+      const { backupChanges, machineChanges } = transaction();
 
       return NextResponse.json({
         message: `Successfully deleted all ${backupChanges} backups and ${machineChanges} machines`,
-        deletedBackups,
-        deletedMachines
+        status: 200,
       });
     }
 
@@ -70,34 +54,37 @@ export async function POST(request: Request) {
 
     // Start a transaction
     const transaction = db.transaction(() => {
-      // Get the backups that will be deleted
-      const backupsToDelete = db.prepare(`
-        SELECT id, backup_name, end_time 
-        FROM backups 
-        WHERE end_time < ? 
-        ORDER BY end_time DESC
-      `).all(cutoffDate.toISOString());
-
+      
       // Delete the backups
       const result = db.prepare(`
         DELETE FROM backups 
         WHERE end_time < ?
       `).run(cutoffDate.toISOString());
 
-      return { deletedBackups: backupsToDelete, changes: result.changes };
+      return { changes: result.changes };
     });
 
     // Execute the transaction
-    const { deletedBackups, changes } = transaction();
+    const { changes } = transaction();
 
     return NextResponse.json({
       message: `Successfully deleted ${changes} old backups`,
-      deletedBackups,
+      status: 200,
     });
   } catch (error) {
     console.error('Error deleting old backups:', error);
+    
+    // Enhanced error reporting
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : '';
+    
     return NextResponse.json(
-      { error: 'Failed to delete old backups' },
+      { 
+        error: 'Failed to delete old backups',
+        details: errorMessage,
+        stack: process.env.NODE_ENV === 'development' ? errorStack : undefined,
+        time: new Date().toISOString(),
+      },
       { status: 500 }
     );
   }

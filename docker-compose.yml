@@ -14,6 +14,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=9666
+      - NEXT_TELEMETRY_DISABLED=1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9666/api/health"]
       interval: 30s

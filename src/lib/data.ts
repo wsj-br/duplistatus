@@ -63,35 +63,35 @@ export async function getMachineById(id: string): Promise<Machine | null> {
   const backups = dbUtils.getMachineBackups(id) as BackupRow[];
   
   // Debug logging for raw backup data
-  console.log('Raw backup data from database:', backups.map(b => ({
-    id: b.id,
-    uploaded_size: b.uploaded_size,
-    known_file_size: b.known_file_size,
-    size: b.size
-  })));
+  // console.log('Raw backup data from database:', backups.map(b => ({
+  //   id: b.id,
+  //   uploaded_size: b.uploaded_size,
+  //   known_file_size: b.known_file_size,
+  //   size: b.size
+  // })));
 
   const formattedBackups = backups.map(backup => {
     const formatted = {
-      id: backup.id,
-      name: backup.backup_name,
+      id: String(backup.id),
+      name: String(backup.backup_name),
       date: backup.date,
       status: backup.status,
-      warnings: backup.warnings,
-      errors: backup.errors,
-      fileCount: backup.examined_files,
-      fileSize: backup.size,
+      warnings: Number(backup.warnings) || 0,
+      errors: Number(backup.errors) || 0,
+      fileCount: Number(backup.examined_files) || 0,
+      fileSize: Number(backup.size) || 0,
       uploadedSize: Number(backup.uploaded_size) || 0,
-      duration: formatDurationFromSeconds(backup.duration_seconds),
-      durationInMinutes: Math.floor(backup.duration_seconds / 60),
+      duration: formatDurationFromSeconds(Number(backup.duration_seconds) || 0),
+      durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
       knownFileSize: Number(backup.known_file_size) || 0
     };
     
-    // Debug logging for each formatted backup
-    console.log('Formatted backup:', {
-      id: formatted.id,
-      uploadedSize: formatted.uploadedSize,
-      knownFileSize: formatted.knownFileSize
-    });
+    // // Debug logging for each formatted backup
+    // console.log('Formatted backup:', {
+    //   id: formatted.id,
+    //   uploadedSize: formatted.uploadedSize,
+    //   knownFileSize: formatted.knownFileSize
+    // });
     
     return formatted;
   });
@@ -126,35 +126,35 @@ export async function getAllMachines(): Promise<Machine[]> {
       const backups = dbUtils.getMachineBackups(machine.id) as BackupRow[];
       
       // Debug logging for raw backup data
-      console.log('Raw backup data for machine', machine.id, ':', backups.map(b => ({
-        id: b.id,
-        uploaded_size: b.uploaded_size,
-        known_file_size: b.known_file_size,
-        size: b.size
-      })));
+      // console.log('Raw backup data for machine', machine.id, ':', backups.map(b => ({
+      //   id: b.id,
+      //   uploaded_size: b.uploaded_size,
+      //   known_file_size: b.known_file_size,
+      //   size: b.size
+      // })));
 
       const formattedBackups = backups.map(backup => {
         const formatted = {
-          id: backup.id,
-          name: backup.backup_name,
+          id: String(backup.id),
+          name: String(backup.backup_name),
           date: backup.date,
           status: backup.status,
-          warnings: backup.warnings,
-          errors: backup.errors,
-          fileCount: backup.examined_files,
+          warnings: Number(backup.warnings) || 0,
+          errors: Number(backup.errors) || 0,
+          fileCount: Number(backup.examined_files) || 0,
           fileSize: Number(backup.size) || 0,
           uploadedSize: Number(backup.uploaded_size) || 0,
-          duration: formatDurationFromSeconds(backup.duration_seconds),
-          durationInMinutes: Math.floor(backup.duration_seconds / 60),
+          duration: formatDurationFromSeconds(Number(backup.duration_seconds) || 0),
+          durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
           knownFileSize: Number(backup.known_file_size) || 0
         };
         
         // Debug logging for each formatted backup
-        console.log('Formatted backup for machine', machine.id, ':', {
-          id: formatted.id,
-          uploadedSize: formatted.uploadedSize,
-          knownFileSize: formatted.knownFileSize
-        });
+        // console.log('Formatted backup for machine', machine.id, ':', {
+        //   id: formatted.id,
+        //   uploadedSize: formatted.uploadedSize,
+        //   knownFileSize: formatted.knownFileSize
+        // });
         
         return formatted;
       });
