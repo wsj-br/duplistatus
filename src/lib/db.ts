@@ -219,13 +219,13 @@ const dbOps = {
       COUNT(b.id) as total_backups,
       SUM(b.uploaded_size) as total_uploaded_size,
       (
-        SELECT SUM(size)
+        SELECT SUM(b2.known_file_size)
         FROM backups b2
-        WHERE date = (
-          SELECT MAX(date)
-          FROM backups b3
-          WHERE b3.machine_id = b2.machine_id
-        )
+        INNER JOIN (
+          SELECT machine_id, MAX(date) as max_date
+          FROM backups
+          GROUP BY machine_id
+        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
       ) as total_storage_used
     FROM machines m
     LEFT JOIN backups b ON b.machine_id = m.id
