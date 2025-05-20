@@ -14,18 +14,6 @@ A web application for monitoring and visualizing backup operations from [Duplica
 
 ## Installation
 
-### Prerequisites
-
-To run as a docker container
-
-- docker / docker compose
-
-
-For devel/install from the sources
-- Node.js 18.x or later
-- pnpm 10.x or later (install with `npm install -g pnpm`)
-- SQLite3
-
 The application can be deployed using Docker or 
 [Portainer Stacks](https://docs.portainer.io/user/docker/stacks). 
 
@@ -35,7 +23,7 @@ The application can be deployed using Docker or
 ```yaml
 services:
   duplidash:
-    image: wsj-br/duplidash:master
+    image: wsjbr/duplidash:master
     container_name: duplidash
     restart: unless-stopped
     ports:
@@ -58,7 +46,7 @@ volumes:
     name: duplidash_data 
 ```
 
-### Option 2: Using Portainer 
+### Option 2: Using Portainer Stacks (Github)
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
 2. Name your stack (e.g., "duplidash")
@@ -86,11 +74,7 @@ docker run -d \
 - The `duplidash_data` volume will be used for persistent storage.
 
 
-<br>
-
----
-
-<br>
+<br><br>
 
 # Duplicati Configuration
 
@@ -205,13 +189,23 @@ will show:
 > [!TIP] 
 > For a complete list of available fields, see the [Get Latest Backup](#get-latest-backup) section.
 
-<br>
+<br><br>
 
----
+# Development / Running from source
 
-<br>
+## Prerequisites
 
-# Development / Running from the source
+To run as a docker container
+
+- docker / docker compose
+
+
+For devel/install from the sources
+- Node.js 18.x or later
+- pnpm 10.x or later (install with `npm install -g pnpm`)
+- SQLite3
+
+# Steps
 
 1. Clone the repository:
 ```bash
@@ -243,6 +237,7 @@ pnpm start
 ```bash
 docker compose up --build -d
 ```
+<br><br>
 
 ## Test Scripts
 
@@ -284,7 +279,17 @@ scripts/convert_svg_logo.sh
 
 > The svg files are located in the `docs` folder.
 
+<br><br>
+
 # API Endpoints
+
+The following endpoints are available:
+
+- [Upload Backup Data](#upload-backup-data)
+- [Get Latest Backup](#get-latest-backup)
+- [Get Overall Summary](#get-overall-summary)
+
+## Upload Backup Data
 
 ## Upload Backup Data
 - **Endpoint**: `/api/upload`
@@ -355,6 +360,7 @@ scripts/convert_svg_logo.sh
   }
   ```
 
+<br><br>
 
 # License
 
