@@ -17,6 +17,7 @@ export const dbUtils = {
   getMachineBackups: (machineId: string) => withDb(() => dbOps.getMachineBackups.all(machineId)),
   getAllMachines: () => withDb(() => dbOps.getAllMachines.all()),
   getOverallSummary: () => withDb(() => dbOps.getOverallSummary.get()),
+  getLatestBackupDate: () => withDb(() => dbOps.getLatestBackupDate.get()),
   insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => 
     withDb(() => dbOps.insertBackup.run(data)),
   upsertMachine: (data: Parameters<typeof dbOps.upsertMachine.run>[0]) => 

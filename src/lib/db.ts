@@ -240,6 +240,11 @@ const dbOps = {
       ) as total_backuped_size
     FROM machines m
     LEFT JOIN backups b ON b.machine_id = m.id
+  `),
+  
+  getLatestBackupDate: db.prepare(`
+    SELECT MAX(date) as last_backup_date
+    FROM backups
   `)
 };
 
