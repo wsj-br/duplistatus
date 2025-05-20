@@ -1,4 +1,4 @@
-import { dbOps } from '@/lib/db';
+import { dbOps, formatDurationFromSeconds } from '@/lib/db';
 import type { Backup } from '@/lib/types';
 
 interface MachineRow {
@@ -20,9 +20,11 @@ function mapBackupToType(backup: any): Backup {
     fileCount: backup.examined_files,
     fileSize: backup.size,
     uploadedSize: backup.uploaded_size,
-    duration: backup.duration_seconds,
+    duration: formatDurationFromSeconds(backup.duration_seconds),
+    duration_seconds: backup.duration_seconds,
     durationInMinutes: Math.floor(backup.duration_seconds / 60),
-    knownFileSize: backup.known_file_size
+    storageSize: backup.known_file_size,
+    backupVersions: backup.backup_list_count
   };
 }
 

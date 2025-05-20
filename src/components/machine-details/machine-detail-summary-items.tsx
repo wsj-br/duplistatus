@@ -70,10 +70,10 @@ export function MachineDetailSummaryItems({
       "data-ai-hint": "timer clock" 
     },
     { 
-      title: "Total Uploaded", 
-      value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
-      icon: <UploadCloud className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "cloud data" 
+      title: "Backup File Size", 
+      value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
+      icon: <HardDrive className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "hard drive" 
     },
     { 
       title: "Total Storage Used", 
@@ -82,10 +82,10 @@ export function MachineDetailSummaryItems({
       "data-ai-hint": "database symbol" 
     },
     { 
-      title: "Backup File Size", 
-      value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
-      icon: <HardDrive className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "hard drive" 
+      title: "Total Uploaded", 
+      value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
+      icon: <UploadCloud className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "cloud data" 
     }
   ];
 

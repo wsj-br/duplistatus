@@ -65,7 +65,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
               <TableHead>Status</TableHead>
               <TableHead className="text-center">Warnings</TableHead>
               <TableHead className="text-center">Errors</TableHead>
-              <TableHead className="text-center">Avail. Backup Versions</TableHead>
+              <TableHead className="text-center">Available Versions</TableHead>
               <TableHead className="text-right">File Count</TableHead>
               <TableHead className="text-right">File Size</TableHead>
               <TableHead className="text-right">Uploaded Size</TableHead>
