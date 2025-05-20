@@ -10,91 +10,89 @@ A web application for monitoring and visualizing backup operations from [Duplica
 - **Machine Details**: Detailed view of backup history for each machine
 - **Data Visualization**: Interactive charts showing backup metrics over time
 - **Dark/Light Theme**: Toggle between dark and light themes for comfortable viewing
-- **Responsive Design**: Grid-based layout that works on all device sizes
+- **API Access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
 
 ## Installation
 
 ### Prerequisites
 
+To run as a docker container
+
+- docker / docker compose
+
+
+For devel/install from the sources
 - Node.js 18.x or later
 - pnpm 10.x or later (install with `npm install -g pnpm`)
-- SQLite3 / better-sqlite3
+- SQLite3
 
-### Setup
+The application can be deployed using Docker or 
+[Portainer Stacks](https://docs.portainer.io/user/docker/stacks). 
 
-1. Clone the repository:
-```bash
-git clone https://github.com/wsj-br/duplidash.git
-cd duplidash
+
+### Option 1: Using Docker Compose
+
+```yaml
+services:
+  duplidash:
+    image: wsj-br/duplidash:master
+    container_name: duplidash
+    restart: unless-stopped
+    ports:
+      - "9666:9666"
+    volumes:
+      - duplidash_data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=9666
+      - NEXT_TELEMETRY_DISABLED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:9666/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  duplidash_data:
+    name: duplidash_data 
 ```
 
-2. Install dependencies:
+### Option 2: Using Portainer 
+
+1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
+2. Name your stack (e.g., "duplidash")
+3. Choose "Build method" as "Repository"
+4. Enter the repository URL: <br>
+`https://github.com/wsj-br/duplidash.git`
+
+5. In the "Compose path" field, enter: `docker-compose.yml`
+6. Click "Deploy the stack"
+
+### Option 3: Using Docker CLI
+
 ```bash
-sudo apt update
-sudo apt install nodejs npm sqlite3 -y
-sudo npm install -g pnpm
-pnpm install
+docker run -d \
+  --name duplidash \
+  -p 9666:9666 \
+  -v duplidash_data:/app/data \
+  -e NODE_ENV=production \
+  -e PORT=9666 \
+  -e NEXT_TELEMETRY_DISABLED=1 \
+  wsjbr/duplidash:master
 ```
 
+- The application will be available at `http://localhost:9666`
+- The `duplidash_data` volume will be used for persistent storage.
 
-3. Start the development server:
-```bash
-pnpm run dev
-```
-
-The application will be available at `http://localhost:9666`
-
-4. Start the production server:
-```bash
-pnpm start
-```
-
-The application will be available at `http://localhost:9666`
-
-
-## Test Scripts
-
-The project includes several test scripts to help with development and testing:
-
-### Generate Test Data
-```bash
-pnpm run generate-test-data
-```
-This script generates and uploads test backup data for multiple machines. It creates 10 backup entries for each test machine.
-
-### Test Last Backup Endpoint
-```bash
-pnpm run test-lastbackup [machineName]
-```
-Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
-
-### Clear Database
-```bash
-pnpm run clear-db
-```
-Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
-
-### Clean build artifacts and dependencies
-```bash
-scripts/clear-workspace.sh
-```
-Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
-- `node_modules/` directory
-- `.next/` build directory
-- `dist/` directory
-- All docker build cache and perform a docker system prune
-- Any other build cache files
-
-### Generate the logo/favicon and banner from svn
-```bash
-scripts/convert_svg_logo.sh
-```
-
-> The svg files are located in the `docs` folder.
 
 <br>
 
-## Duplicati Configuration
+---
+
+<br>
+
+# Duplicati Configuration
 
 In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), configure it to send the backup results to the duplidash server using the `/upload` API endpoint. In the Duplicati configuration page, select Settings and in the Default Options section, include these two options:
 
@@ -115,11 +113,11 @@ In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-bac
 <br>
 
 
-## Homepage integration (optional)
+# Homepage integration (optional)
 
 To integrate duplidash with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplidash.
 
-### Summary 
+## Summary 
 
 Show the overall summary of the backup data stored in the Duplidash's database. Below is a example showing how to configure this integration.
 
@@ -164,7 +162,7 @@ will show:
 
 </div>
 
-### Last backup information
+## Last backup information
 
 Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
 
@@ -207,10 +205,88 @@ will show:
 > [!TIP] 
 > For a complete list of available fields, see the [Get Latest Backup](#get-latest-backup) section.
 
+<br>
 
-## API Endpoints
+---
 
-### Upload Backup Data
+<br>
+
+# Development / Running from the source
+
+1. Clone the repository:
+```bash
+git clone https://github.com/wsj-br/duplidash.git
+cd duplidash
+```
+
+2. Install dependencies (debian/ubuntu):
+```bash
+sudo apt update
+sudo apt install nodejs npm sqlite3 -y
+sudo npm install -g pnpm
+pnpm install
+```
+
+
+3. Start the development server:
+```bash
+pnpm run dev
+```
+
+4. Start the production server:
+```bash
+pnpm start
+```
+
+5. Start a docker stack (docker compose)
+
+```bash
+docker compose up --build -d
+```
+
+## Test Scripts
+
+The project includes several test scripts to help with development and testing:
+
+### Generate Test Data
+```bash
+pnpm run generate-test-data
+```
+This script generates and uploads test backup data for multiple machines. It creates 10 backup entries for each test machine.
+
+### Test Last Backup Endpoint
+```bash
+pnpm run test-lastbackup [machineName]
+```
+Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
+
+### Clear Database
+```bash
+pnpm run clear-db
+```
+Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
+
+### Clean build artifacts and dependencies
+```bash
+scripts/clear-workspace.sh
+```
+Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
+- `node_modules/` directory
+- `.next/` build directory
+- `dist/` directory
+- All docker build cache and perform a docker system prune
+- Any other build cache files
+
+### Generate the logo/favicon and banner from svn
+```bash
+scripts/convert_svg_logo.sh
+```
+
+> The svg files are located in the `docs` folder.
+
+# API Endpoints
+
+## Upload Backup Data
 - **Endpoint**: `/api/upload`
 - **Method**: POST
 - **Description**: Uploads backup operation data for a machine
@@ -228,7 +304,7 @@ will show:
   }
   ```
 
-### Get Latest Backup
+## Get Latest Backup
 - **Endpoint**: `/api/lastbackup/:machineId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for a specific machine
@@ -263,7 +339,7 @@ will show:
   }
   ```
 
-### Get Overall Summary
+## Get Overall Summary
 - **Endpoint**: `/api/summary`
 - **Method**: GET
 - **Description**: Retrieves a summary of all backup operations across all machines
@@ -279,58 +355,11 @@ will show:
   }
   ```
 
-## Docker Deployment
 
-The application can be deployed using Docker and Portainer. There are two ways to deploy:
-
-### Option 1: Using Docker Compose (Recommended)
-
-1. Ensure Docker and Docker Compose are installed on your system
-2. Clone the repository:
-```bash
-git clone https://github.com/wsj-br/duplidash.git
-cd duplidash
-```
-
-3. Start the application:
-```bash
-docker compose up --build -d
-```
-
-The application will be available at `http://localhost:9666` or `http://<IP_or_NAME>:9666`
-
-### Option 2: Using Portainer
-
-1. In Portainer, go to "Stacks" and click "Add stack"
-2. Name your stack (e.g., "duplidash")
-3. Choose "Build method" as "Repository"
-4. Enter the repository URL: `https://github.com/wsj-br/duplidash.git`
-5. In the "Compose path" field, enter: `docker-compose.yml`
-6. Click "Deploy the stack"
-
-
-
-#### Environment Variables
-
-The following environment variables can be configured in Portainer:
-
-- `NODE_ENV`: production
-- `PORT`: 9666
-- `NEXT_TELEMETRY_DISABLED`: 1
-
-#### Data Persistence
-
-The application data is stored in the `./data` directory, which is mounted as the volume `duplidash_data` in the container. This ensures that your data persists even if the container is removed or updated.
-
-
-## License
+# License
 
 Copyright © 2025 Waldemar Scudeller Jr. 
 
->Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
->
->[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
->
->Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+>Licensed under [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
