@@ -56,40 +56,32 @@ export default function MachineDetailsPage({
   // Calculate summary data
   const totalBackups = machine.backups.length;
   const latestBackup = machine.backups.length > 0 ? machine.backups[0] : null;
-  const lastBackupWarnings = latestBackup?.warnings || 0;
-  const lastBackupErrors = latestBackup?.errors || 0;
+  const lastBackupListCount = latestBackup?.backup_list_count ?? null;
+  const lastBackupFileSize = latestBackup ? (() => {
+    const size = Number(latestBackup.fileSize);
+    const result = isNaN(size) ? 0 : size;
+    return result;
+  })() : 0;
 
-  // Debug logging for latest backup
-  // console.log('Latest backup:', latestBackup ? {
-    // id: latestBackup.id,
-    // uploadedSize: latestBackup.uploadedSize,
-    // knownFileSize: latestBackup.knownFileSize
-  // } : 'No backups');
-
-  const totalDurationMinutes = machine.backups.reduce((sum, b) => sum + (b.durationInMinutes || 0), 0);
-  const averageDuration = totalBackups > 0 ? totalDurationMinutes / totalBackups : 0;
+  // Calculate average duration using duration_seconds
+  const totalDurationSeconds = machine.backups.reduce((sum, b) => {
+    const seconds = Number(b.duration_seconds);
+    return sum + (isNaN(seconds) ? 0 : seconds);
+  }, 0);
+  const averageDurationSeconds = totalBackups > 0 ? totalDurationSeconds / totalBackups : 0;
+  const averageDuration = averageDurationSeconds / 60; // Convert to minutes for display
 
   const totalUploadedSize = machine.backups.reduce((sum, b) => {
     const size = Number(b.uploadedSize);
     const result = sum + (isNaN(size) ? 0 : size);
-    // console.log('Adding to totalUploadedSize:', { current: b.uploadedSize, size, result });
     return result;
   }, 0);
 
   const lastBackupStorageSize = latestBackup ? (() => {
     const size = Number(latestBackup.knownFileSize);
     const result = isNaN(size) ? 0 : size;
-    // console.log('Calculating lastBackupStorageSize:', { raw: latestBackup.knownFileSize, size, result });
     return result;
   })() : 0;
-
-  // Debug logging for final values
-  // console.log('Final calculated values:', {
-  //   totalUploadedSize,
-  //   lastBackupStorageSize,
-  //   totalBackups,
-  //   averageDuration
-  // });
 
   return (
     <div className="flex flex-col gap-8">
@@ -101,11 +93,11 @@ export default function MachineDetailsPage({
         <CardContent>
           <MachineDetailSummaryItems
             totalBackups={totalBackups}
-            lastBackupWarnings={lastBackupWarnings}
-            lastBackupErrors={lastBackupErrors}
             averageDuration={averageDuration}
             totalUploadedSize={totalUploadedSize}
             lastBackupStorageSize={lastBackupStorageSize}
+            lastBackupListCount={lastBackupListCount}
+            lastBackupFileSize={lastBackupFileSize}
           />
         </CardContent>
       </Card>

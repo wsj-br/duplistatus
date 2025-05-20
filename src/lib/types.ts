@@ -11,9 +11,11 @@ export interface Backup {
   fileSize: number; // in bytes
   uploadedSize: number; // in bytes
   duration: string; // e.g., "30m 15s"
+  duration_seconds: number; // raw duration in seconds
   // Numeric values for charting
   durationInMinutes: number;
   knownFileSize: number;
+  backup_list_count: number | null;
 }
 
 export interface Machine {
@@ -33,12 +35,13 @@ export interface Machine {
 }
 
 export interface MachineSummary {
-  id:string;
+  id: string;
   name: string;
   backupCount: number;
   lastBackupStatus: BackupStatus | 'N/A';
   lastBackupDate: string; // ISO string or "N/A"
   lastBackupDuration: string; // or "N/A"
+  lastBackupListCount: number | null;
   totalWarnings: number;
   totalErrors: number;
 }
@@ -48,4 +51,5 @@ export interface OverallSummary {
   totalBackups: number;
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
+  totalBackupedSize: number; // in bytes (sum of size_of_examined_files from latest backups)
 }

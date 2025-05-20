@@ -116,9 +116,60 @@ In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-bac
 
 ## Homepage integration (optional)
 
-To integrate duplidash with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplidash's `/lastbackup` API endpoint. For a complete list of available fields, see the [Get Latest Backup](#get-latest-backup) section.
+To integrate duplidash with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplidash.
 
-Below is a example showing how to configure this integration.
+### Summary 
+
+Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
+
+```yaml
+    - Dashboard:
+        icon: mdi-cloud-upload
+        href: http://my.local.server:9666/
+        widget:
+          type: customapi
+          url: http://my.local.server:9666/api/summary
+          display: list
+          refreshInterval: 60000
+          mappings:
+            - field: totalMachines
+              label: Machines
+            - field: totalBackups
+              label: Backups received
+            - field: secondsSinceLastBackup
+              label: Last backup
+              format: duration
+            - field: totalBackupedSize
+              label: Backuped size
+              format: number
+              scale: 0.000000001
+              suffix: GB     
+            - field: totalStorageUsed
+              label: Storage used
+              format: number
+              scale: 0.000000001
+              suffix: GB     
+            - field: totalUploadedSize
+              label: Uploaded size
+              format: number
+              scale: 0.000000001
+              suffix: GB     
+```
+will show:
+
+<div style="padding-left: 60px;">
+
+  ![Homepage Card](docs/homepage-summary.png)
+
+</div>
+
+For a complete list of available fields, see the [Get Latest Backup](#get-overall-summary) section.
+
+
+
+### Last backup information
+
+Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
 
 ```yaml
    - Test Machine 1:
@@ -148,13 +199,57 @@ Below is a example showing how to configure this integration.
               scale: 0.000001
               suffix: MB        
 ```
-Preview:
+will show:
 
 <div style="padding-left: 60px;">
 
-  ![Homepage Card](docs/homepage-card.png)
+  ![Homepage Card](docs/homepage-summary.png)
 
 </div>
+
+
+### Last backup information
+
+Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
+
+```yaml
+   - Test Machine 1:
+        icon: mdi-test-tube
+        widget:
+          type: customapi
+          url: http://my.local.server:9666/api/lastbackup/Test%20Machine%201
+          display: list
+          refreshInterval: 60000
+          mappings:
+            - field: latest_backup.name
+              label: Backup name
+            - field: latest_backup.status
+              label: Result
+            - field: latest_backup.date
+              label: Date
+              format: date
+              locale: en-GB 
+              dateStyle: short
+              timeStyle: short
+            - field: latest_backup.duration
+              label: Duration
+              format: duration
+            - field: latest_backup.uploadedSize
+              label: Bytes Uploaded
+              format: number
+              scale: 0.000001
+              suffix: MB        
+```
+will show:
+
+<div style="padding-left: 60px;">
+
+  ![Homepage Card](docs/homepage-lastbackup.png)
+
+</div>
+
+> [!TIP] 
+> For a complete list of available fields, see the [Get Latest Backup](#get-latest-backup) section.
 
 
 ## API Endpoints
@@ -163,30 +258,13 @@ Preview:
 - **Endpoint**: `/api/upload`
 - **Method**: POST
 - **Description**: Uploads backup operation data for a machine
-- **Request Body**:
-  ```json
-  {
-    "Data": {
-      "MainOperation": "Backup",
-      "ParsedResult": "Success",
-      "BeginTime": "2024-03-20T10:00:00Z",
-      "Duration": "1h30m",
-      "SizeOfExaminedFiles": 1000000,
-      "BackendStatistics": {
-        "BytesUploaded": 500000
-      },
-      "ExaminedFiles": 1000,
-      "WarningsActualLength": 0,
-      "ErrorsActualLength": 0
-    },
-    "Extra": {
-      "machine-id": "unique-machine-id",
-      "machine-name": "Machine Name",
-      "backup-name": "Backup Name",
-      "backup-id": "unique-backup-id"
-    }
-  }
+- **Request Body**: Json sent by Duplicati with the options:
+
+  ```bash
+  --send-http-url=http://my.local.server:9666/api/upload
+  --send-http-result-output-format=Json
   ```
+  
 - **Response**: 
   ```json
   {
@@ -228,6 +306,21 @@ Preview:
   }
   ```
 
+### Get Overall Summary
+- **Endpoint**: `/api/summary`
+- **Method**: GET
+- **Description**: Retrieves a summary of all backup operations across all machines
+- **Response**:
+  ```json
+  {
+    totalMachines: 3,
+    totalBackups: 9,
+    totalUploadedSize: 2397229507,
+    totalStorageUsed: 43346796938,
+    totalBackupedSize: 126089687807,
+    secondsSinceLastBackup: 264
+  }
+  ```
 
 ## Docker Deployment
 

@@ -65,6 +65,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
               <TableHead>Status</TableHead>
               <TableHead className="text-center">Warnings</TableHead>
               <TableHead className="text-center">Errors</TableHead>
+              <TableHead className="text-center">Avail. Backup Versions</TableHead>
               <TableHead className="text-right">File Count</TableHead>
               <TableHead className="text-right">File Size</TableHead>
               <TableHead className="text-right">Uploaded Size</TableHead>
@@ -75,7 +76,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
           <TableBody>
             {paginatedBackups.length === 0 && (
               <TableRow>
-                <TableCell colSpan={9} className="text-center h-24">
+                <TableCell colSpan={11} className="text-center h-24">
                   No backups found for this machine.
                 </TableCell>
               </TableRow>
@@ -94,6 +95,9 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
                 </TableCell>
                 <TableCell className="text-center">{backup.warnings}</TableCell>
                 <TableCell className="text-center">{backup.errors}</TableCell>
+                <TableCell className="text-center">
+                  {backup.backup_list_count !== null ? backup.backup_list_count.toLocaleString() : 'N/A'}
+                </TableCell>
                 <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
                 <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
                 <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>

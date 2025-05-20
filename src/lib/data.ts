@@ -7,7 +7,7 @@ interface MachineSummaryRow {
   last_backup_date: string | null;
   last_backup_status: BackupStatus | null;
   last_backup_duration: number | null;
-  last_backup_size: number | null;
+  last_backup_list_count: number | null;
   backup_count: number;
   total_warnings: number;
   total_errors: number;
@@ -33,6 +33,7 @@ interface BackupRow {
   errors: number;
   uploaded_size: number;
   known_file_size: number;
+  backup_list_count: number | null;
 }
 
 interface OverallSummaryRow {
@@ -40,6 +41,7 @@ interface OverallSummaryRow {
   total_backups: number;
   total_uploaded_size: number;
   total_storage_used: number;
+  total_backuped_size: number;
 }
 
 export async function getMachinesSummary(): Promise<MachineSummary[]> {
@@ -50,6 +52,7 @@ export async function getMachinesSummary(): Promise<MachineSummary[]> {
     lastBackupDate: row.last_backup_date || 'N/A',
     lastBackupStatus: row.last_backup_status || 'N/A',
     lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
+    lastBackupListCount: row.last_backup_list_count,
     backupCount: row.backup_count || 0,
     totalWarnings: row.total_warnings || 0,
     totalErrors: row.total_errors || 0
@@ -82,8 +85,10 @@ export async function getMachineById(id: string): Promise<Machine | null> {
       fileSize: Number(backup.size) || 0,
       uploadedSize: Number(backup.uploaded_size) || 0,
       duration: formatDurationFromSeconds(Number(backup.duration_seconds) || 0),
+      duration_seconds: Number(backup.duration_seconds) || 0,
       durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
-      knownFileSize: Number(backup.known_file_size) || 0
+      knownFileSize: Number(backup.known_file_size) || 0,
+      backup_list_count: backup.backup_list_count
     };
     
     // // Debug logging for each formatted backup
@@ -145,8 +150,10 @@ export async function getAllMachines(): Promise<Machine[]> {
           fileSize: Number(backup.size) || 0,
           uploadedSize: Number(backup.uploaded_size) || 0,
           duration: formatDurationFromSeconds(Number(backup.duration_seconds) || 0),
+          duration_seconds: Number(backup.duration_seconds) || 0,
           durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
-          knownFileSize: Number(backup.known_file_size) || 0
+          knownFileSize: Number(backup.known_file_size) || 0,
+          backup_list_count: backup.backup_list_count
         };
         
         // Debug logging for each formatted backup
@@ -193,7 +200,8 @@ export async function getOverallSummary(): Promise<OverallSummary> {
       totalMachines: 0,
       totalBackups: 0,
       totalUploadedSize: 0,
-      totalStorageUsed: 0
+      totalStorageUsed: 0,
+      totalBackupedSize: 0
     };
   }
 
@@ -201,7 +209,8 @@ export async function getOverallSummary(): Promise<OverallSummary> {
     totalMachines: summary.total_machines,
     totalBackups: summary.total_backups,
     totalUploadedSize: summary.total_uploaded_size,
-    totalStorageUsed: summary.total_storage_used
+    totalStorageUsed: summary.total_storage_used,
+    totalBackupedSize: summary.total_backuped_size
   };
 }
 

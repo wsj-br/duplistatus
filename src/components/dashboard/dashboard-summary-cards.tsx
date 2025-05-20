@@ -3,7 +3,7 @@
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HardDrive, Archive, UploadCloud, Database } from "lucide-react";
+import { HardDrive, Archive, UploadCloud, Database, FileSearch } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
 interface DashboardSummaryCardsProps {
@@ -25,10 +25,10 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
       "data-ai-hint": "archive box",
     },
     {
-      title: "Total Uploaded Size",
-      value: formatBytes(summary.totalUploadedSize),
-      icon: <UploadCloud className="h-6 w-6 text-primary" />,
-      "data-ai-hint": "cloud upload",
+      title: "Total Backuped Size",
+      value: formatBytes(summary.totalBackupedSize),
+      icon: <FileSearch className="h-6 w-6 text-primary" />,
+      "data-ai-hint": "file search",
     },
     {
       title: "Total Storage Used",
@@ -36,10 +36,16 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
       icon: <Database className="h-6 w-6 text-primary" />,
       "data-ai-hint": "database storage",
     },
+    {
+      title: "Total Uploaded Size",
+      value: formatBytes(summary.totalUploadedSize),
+      icon: <UploadCloud className="h-6 w-6 text-primary" />,
+      "data-ai-hint": "cloud upload",
+    },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mb-8">
       {summaryItems.map((item) => (
         <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

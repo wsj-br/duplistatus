@@ -3,26 +3,26 @@
 
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Archive, CheckCircle, XCircle, AlertTriangle, Clock, UploadCloud, Database } from "lucide-react";
+import { Archive, CheckCircle, XCircle, AlertTriangle, Clock, UploadCloud, Database, History, HardDrive } from "lucide-react";
 import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
 
 interface MachineDetailSummaryItemsProps {
   totalBackups: number;
   statusCounts?: Record<BackupStatus, number>;
-  lastBackupWarnings: number;
-  lastBackupErrors: number;
   averageDuration: number; // in minutes
   totalUploadedSize: number; // in bytes
   lastBackupStorageSize: number; // in bytes
+  lastBackupListCount: number | null;
+  lastBackupFileSize: number; // in bytes
 }
 
 export function MachineDetailSummaryItems({
   totalBackups,
-  lastBackupWarnings,
-  lastBackupErrors,
   averageDuration,
   totalUploadedSize,
   lastBackupStorageSize,
+  lastBackupListCount,
+  lastBackupFileSize,
 }: MachineDetailSummaryItemsProps) {
 
   // Use a try/catch for each item to ensure nothing breaks
@@ -58,6 +58,12 @@ export function MachineDetailSummaryItems({
       "data-ai-hint": "archive storage" 
     },
     { 
+      title: "Available Backup Versions", 
+      value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
+      icon: <History className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "history versions" 
+    },
+    { 
       title: "Avg. Duration", 
       value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
       icon: <Clock className="h-4 w-4 text-primary" />, 
@@ -76,17 +82,11 @@ export function MachineDetailSummaryItems({
       "data-ai-hint": "database symbol" 
     },
     { 
-      title: "Last Backup Warnings", 
-      value: getFormattedNumber(lastBackupWarnings),
-      icon: <AlertTriangle className="h-4 w-4 text-yellow-500" />, 
-      "data-ai-hint": "warning symbol" 
-    },
-    { 
-      title: "Last Backup Errors", 
-      value: getFormattedNumber(lastBackupErrors),
-      icon: <XCircle className="h-4 w-4 text-destructive" />, 
-      "data-ai-hint": "error cross" 
-    },
+      title: "Backup File Size", 
+      value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
+      icon: <HardDrive className="h-4 w-4 text-primary" />, 
+      "data-ai-hint": "hard drive" 
+    }
   ];
 
   return (

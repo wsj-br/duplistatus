@@ -31,6 +31,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Machine Name</TableHead>
+            <TableHead className="text-center">Available Backup Versions</TableHead>
             <TableHead className="text-center">Backup Count</TableHead>
             <TableHead>Last Backup Date</TableHead>
             <TableHead>Last Backup Status</TableHead>
@@ -43,7 +44,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
         <TableBody>
           {machines.length === 0 && (
             <TableRow>
-              <TableCell colSpan={7} className="text-center h-24"> {/* Adjusted colSpan */}
+              <TableCell colSpan={8} className="text-center h-24"> {/* Adjusted colSpan */}
                 No machines found.
               </TableCell>
             </TableRow>
@@ -56,6 +57,9 @@ export function DashboardTable({ machines }: DashboardTableProps) {
             >
               <TableCell className="font-medium">
                 {machine.name} {/* Removed Link component */}
+              </TableCell>
+              <TableCell className="text-center">
+                {machine.lastBackupListCount !== null ? machine.lastBackupListCount.toLocaleString() : 'N/A'}
               </TableCell>
               <TableCell className="text-center">{machine.backupCount}</TableCell>
               <TableCell>

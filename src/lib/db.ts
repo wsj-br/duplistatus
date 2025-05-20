@@ -182,6 +182,7 @@ const dbOps = {
       b.errors,
       COALESCE(b.uploaded_size, 0) as uploaded_size,
       COALESCE(b.known_file_size, 0) as known_file_size,
+      b.backup_list_count,
       m.name as machine_name
     FROM backups b
     JOIN machines m ON b.machine_id = m.id
@@ -204,6 +205,7 @@ const dbOps = {
       b.duration_seconds as last_backup_duration,
       b.warnings as total_warnings,
       b.errors as total_errors,
+      b.backup_list_count as last_backup_list_count,
       COUNT(b2.id) as backup_count
     FROM machines m
     LEFT JOIN latest_backups lb ON m.id = lb.machine_id
@@ -217,16 +219,25 @@ const dbOps = {
     SELECT 
       COUNT(DISTINCT m.id) as total_machines,
       COUNT(b.id) as total_backups,
-      SUM(b.uploaded_size) as total_uploaded_size,
+      COALESCE(SUM(b.uploaded_size), 0) as total_uploaded_size,
       (
-        SELECT SUM(b2.known_file_size)
+        SELECT COALESCE(SUM(b2.known_file_size), 0)
         FROM backups b2
         INNER JOIN (
           SELECT machine_id, MAX(date) as max_date
           FROM backups
           GROUP BY machine_id
         ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
-      ) as total_storage_used
+      ) as total_storage_used,
+      (
+        SELECT COALESCE(SUM(b2.size_of_examined_files), 0)
+        FROM backups b2
+        INNER JOIN (
+          SELECT machine_id, MAX(date) as max_date
+          FROM backups
+          GROUP BY machine_id
+        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+      ) as total_backuped_size
     FROM machines m
     LEFT JOIN backups b ON b.machine_id = m.id
   `)
