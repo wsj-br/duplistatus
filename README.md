@@ -242,7 +242,7 @@ The project includes several test scripts to help with development and testing:
 ```bash
 pnpm run generate-test-data
 ```
-This script generates and uploads test backup data for multiple machines. It creates 10 backup entries for each test machine.
+This script generates and uploads test backup data for multiple machines. 
 
 ### Test Last Backup Endpoint
 ```bash
