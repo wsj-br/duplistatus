@@ -195,12 +195,7 @@ will show:
 
 ## Prerequisites
 
-To run as a docker container
-
 - docker / docker compose
-
-
-For devel/install from the sources
 - Node.js 18.x or later
 - pnpm 10.x or later (install with `npm install -g pnpm`)
 - SQLite3
