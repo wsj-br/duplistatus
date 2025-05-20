@@ -314,9 +314,9 @@ The application will be available at `http://localhost:9666` or `http://<IP_or_N
 
 The following environment variables can be configured in Portainer:
 
-- `NODE_ENV`: Set to `production` (default)
-- `PORT`: Application port (default: 9666)
-- `NEXT_TELEMETRY_DISABLED`: disable next telemetry (default: 1)
+- `NODE_ENV`: production
+- `PORT`: 9666
+- `NEXT_TELEMETRY_DISABLED`: 1
 
 #### Data Persistence
 
