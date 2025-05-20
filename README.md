@@ -120,7 +120,7 @@ To integrate duplidash with [Homepage](https://gethomepage.dev/), you can add a 
 
 ### Summary 
 
-Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
+Show the overall summary of the backup data stored in the Duplidash's database. Below is a example showing how to configure this integration.
 
 ```yaml
     - Dashboard:
@@ -162,51 +162,6 @@ will show:
   ![Homepage Card](docs/homepage-summary.png)
 
 </div>
-
-For a complete list of available fields, see the [Get Latest Backup](#get-overall-summary) section.
-
-
-
-### Last backup information
-
-Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
-
-```yaml
-   - Test Machine 1:
-        icon: mdi-test-tube
-        widget:
-          type: customapi
-          url: http://my.local.server:9666/api/lastbackup/Test%20Machine%201
-          display: list
-          refreshInterval: 60000
-          mappings:
-            - field: latest_backup.name
-              label: Backup name
-            - field: latest_backup.status
-              label: Result
-            - field: latest_backup.date
-              label: Date
-              format: date
-              locale: en-GB 
-              dateStyle: short
-              timeStyle: short
-            - field: latest_backup.duration
-              label: Duration
-              format: duration
-            - field: latest_backup.uploadedSize
-              label: Bytes Uploaded
-              format: number
-              scale: 0.000001
-              suffix: MB        
-```
-will show:
-
-<div style="padding-left: 60px;">
-
-  ![Homepage Card](docs/homepage-summary.png)
-
-</div>
-
 
 ### Last backup information
 
