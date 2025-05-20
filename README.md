@@ -105,7 +105,8 @@ In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-bac
 
 <br>
 
-> **Tip:** click in `Edit as text` and copy the two lines above, adjusting the server name/IP.
+> [!TIP]
+>  click in `Edit as text` and copy the two lines above, adjusting the server name/IP.
 
 <br>
 
@@ -240,8 +241,6 @@ will show:
     "machine": {
       "id": "unique-machine-id",
       "name": "Machine Name",
-      "backup_name": "Backup Name",
-      "backup_id": "unique-backup-id",
       "created_at": "2024-03-20T10:00:00Z"
     },
     "latest_backup": {
@@ -251,13 +250,16 @@ will show:
       "status": "Success",
       "warnings": 0,
       "errors": 0,
-      "fileCount": 1000,
-      "fileSize": 1000000,
-      "uploadedSize": 500000,
-      "duration": 5400,
-      "durationInMinutes": 90,
-      "knownFileSize": 1000000
-    }
+      "fileCount": 249426,
+      "fileSize": 113395849938,
+      "uploadedSize": 331318892,
+      "duration": "00:38:31",
+      "duration_seconds": 2311.6018052,
+      "durationInMinutes": 38.52669675333333,
+      "knownFileSize": 27203688543,
+      "backup_list_count": 10
+    },
+    "status": 200
   }
   ```
 
@@ -268,12 +270,12 @@ will show:
 - **Response**:
   ```json
   {
-    totalMachines: 3,
-    totalBackups: 9,
-    totalUploadedSize: 2397229507,
-    totalStorageUsed: 43346796938,
-    totalBackupedSize: 126089687807,
-    secondsSinceLastBackup: 264
+    "totalMachines": 3,
+    "totalBackups": 9,
+    "totalUploadedSize": 2397229507,
+    "totalStorageUsed": 43346796938,
+    "totalBackupedSize": 126089687807,
+    "secondsSinceLastBackup": 264
   }
   ```
 
