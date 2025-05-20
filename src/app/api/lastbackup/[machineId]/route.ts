@@ -22,9 +22,9 @@ function mapBackupToType(backup: any): Backup {
     uploadedSize: backup.uploaded_size,
     duration: formatDurationFromSeconds(backup.duration_seconds),
     duration_seconds: backup.duration_seconds,
-    durationInMinutes: Math.floor(backup.duration_seconds / 60),
-    storageSize: backup.known_file_size,
-    backupVersions: backup.backup_list_count
+    durationInMinutes: backup.duration_seconds / 60,
+    knownFileSize: backup.known_file_size,
+    backup_list_count: backup.backup_list_count
   };
 }
 
