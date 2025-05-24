@@ -97,7 +97,7 @@ export function DatabaseMaintenanceMenu() {
           <div className="space-y-2">
             <h4 className="text-xl font-medium leading-none">Database Maintenance</h4>
             <p className="text-sm text-muted-foreground">
-              Manage your database records and cleanup settings
+              Reduce the size of the database by cleaning up old records.
             </p>
           </div>
           <div className="grid gap-4">
@@ -122,7 +122,6 @@ export function DatabaseMaintenanceMenu() {
               </p>
             </div>
             <div className="grid gap-2">
-              <Label>Clear Database</Label>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 

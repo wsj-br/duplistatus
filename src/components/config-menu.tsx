@@ -23,8 +23,6 @@ export function ConfigMenu() {
     setTablePageSize,
     chartTimeRange,
     setChartTimeRange,
-    chartMetricSelection,
-    setChartMetricSelection,
   } = useConfig();
 
   return (
@@ -77,25 +75,6 @@ export function ConfigMenu() {
                   <SelectItem value="1 year">Last year</SelectItem>
                   <SelectItem value="2 years">Last 2 years</SelectItem>
                   <SelectItem value="All data">All available data</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="chart-metric">Default Chart Metric</Label>
-              <Select
-                value={chartMetricSelection}
-                onValueChange={(value: any) => setChartMetricSelection(value)}
-              >
-                <SelectTrigger id="chart-metric">
-                  <SelectValue placeholder="Select default metric" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="uploadedSize">Uploaded Size</SelectItem>
-                  <SelectItem value="duration">Duration</SelectItem>
-                  <SelectItem value="fileCount">File Count</SelectItem>
-                  <SelectItem value="fileSize">File Size</SelectItem>
-                  <SelectItem value="storageSize">Storage Size</SelectItem>
-                  <SelectItem value="backupVersions">Backup Versions</SelectItem>
                 </SelectContent>
               </Select>
             </div>
