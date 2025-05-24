@@ -1,7 +1,6 @@
 import { getMachineById, getAllMachines } from "@/lib/data";
 import type { Machine, BackupStatus } from "@/lib/types";
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
-import { MachineMetricsChart } from "@/components/machine-details/machine-metrics-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
@@ -111,8 +110,6 @@ export default function MachineDetailsPage({
           <MachineBackupTable backups={machine.backups} />
         </CardContent>
       </Card>
-
-      <MachineMetricsChart machine={machine} />
     </div>
   );
 } 

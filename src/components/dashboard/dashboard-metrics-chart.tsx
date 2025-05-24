@@ -1,21 +1,15 @@
-// src/components/machine-details/machine-metrics-chart.tsx
 "use client";
 
-import type { Machine } from "@/lib/types";
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { 
   Line, 
-  LineChart, 
   CartesianGrid, 
   XAxis, 
   YAxis, 
   Tooltip as RechartsTooltip, 
-  Legend as RechartsLegend, 
   ResponsiveContainer,
   Area,
-  AreaChart,
-  ComposedChart,
-  TooltipProps
+  ComposedChart
 } from "recharts";
 import {
   Card,
@@ -31,36 +25,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChartContainer, ChartTooltipContent, ChartLegendContent } from "@/components/ui/chart"; 
+import { ChartContainer } from "@/components/ui/chart"; 
 import type { ChartConfig } from "@/components/ui/chart";
 import { formatBytes } from "@/lib/utils";
-import { cn } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
 import type { ChartMetricSelection } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears, parseISO } from "date-fns";
 import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
-interface MachineMetricsChartProps {
-  machine: Machine;
+interface DashboardMetricsChartProps {
+  aggregatedData: {
+    date: string;
+    isoDate: string;
+    uploadedSize: number;
+    duration: number;
+    fileCount: number;
+    fileSize: number;
+    storageSize: number;
+    backupVersions: number;
+  }[];
 }
 
 // Use the imported ChartMetricSelection type
 const metricDisplayInfo: Record<ChartMetricSelection, { label: string; unit?: string }> = {
   uploadedSize: { label: "Uploaded Size" },
-  duration: { label: "Duration", unit: "Minutes" },
+  duration: { label: "Duration" },
   fileCount: { label: "File Count" },
-  fileSize: { label: "Total File Size" },
+  fileSize: { label: "File Size" },
+  storageSize: { label: "Storage Size" },
+  backupVersions: { label: "Backup Versions" },
 };
 
-export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
+// Helper function to format duration from minutes to HH:MM
+const formatDuration = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+};
+
+export function DashboardMetricsChart({ aggregatedData }: DashboardMetricsChartProps) {
   const { chartTimeRange, chartMetricSelection, setChartMetricSelection } = useConfig();
   const currentMetricInfo = metricDisplayInfo[chartMetricSelection] || { label: chartMetricSelection };
   const yAxisLabel = currentMetricInfo.unit 
     ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` 
     : currentMetricInfo.label;
 
-  // Ensure machine and chartData are defined
-  const safeChartData = machine?.chartData || [];
+  // Ensure aggregatedData is defined
+  const safeChartData = aggregatedData || [];
   
   // Filter chart data based on the selected time range
   const filteredChartData = useMemo(() => {
@@ -132,7 +143,10 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
 
   const yAxisTickFormatter = (value: number | undefined) => {
     if (value === undefined) return '';
-    if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize") {
+    if (chartMetricSelection === "duration") {
+      return formatDuration(value);
+    }
+    if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize" || chartMetricSelection === "storageSize") {
       return formatBytes(value, 0);
     }
     return value.toLocaleString();
@@ -140,7 +154,10 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
 
   const tooltipFormatter = (value: ValueType, name: NameType | undefined, props: any) => {
     if (typeof value !== 'number') return '';
-    if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize") {
+    if (chartMetricSelection === "duration") {
+      return formatDuration(value);
+    }
+    if (chartMetricSelection === "uploadedSize" || chartMetricSelection === "fileSize" || chartMetricSelection === "storageSize") {
       return formatBytes(value);
     }
     return value.toLocaleString();
@@ -152,7 +169,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Backup Metrics Over Time</CardTitle>
-          <CardDescription>No backup data available for {machine?.name || 'this machine'}.</CardDescription>
+          <CardDescription>No backup data available across all machines.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] flex items-center justify-center text-muted-foreground">
@@ -169,7 +186,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine?.name || 'this machine'} 
+            Visualize aggregated backup {currentMetricInfo.label.toLowerCase()} across all machines 
             {chartTimeRange === 'All data' 
               ? ' for all available data.'
               : ` over the last ${chartTimeRange}.`
@@ -274,5 +291,4 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
       </CardContent>
     </Card>
   );
-}
-
+} 

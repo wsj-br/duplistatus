@@ -245,6 +245,51 @@ const dbOps = {
   getLatestBackupDate: db.prepare(`
     SELECT MAX(date) as last_backup_date
     FROM backups
+  `),
+
+  getAggregatedChartData: db.prepare(`
+    WITH latest_backups_per_day AS (
+      SELECT 
+        DATE(date) as backup_date,
+        machine_id,
+        date,
+        COALESCE(uploaded_size, 0) as uploaded_size,
+        COALESCE(size, 0) as file_size,
+        COALESCE(examined_files, 0) as file_count,
+        COALESCE(known_file_size, 0) as storage_size,
+        COALESCE(backup_list_count, 0) as backup_versions,
+        duration_seconds,
+        ROW_NUMBER() OVER (
+          PARTITION BY machine_id, DATE(date) 
+          ORDER BY date DESC
+        ) as rn
+      FROM backups
+    ),
+    aggregated_by_date AS (
+      SELECT 
+        backup_date,
+        MAX(date) as iso_date,
+        SUM(uploaded_size) as total_uploaded_size,
+        SUM(duration_seconds) as total_duration_seconds,
+        SUM(file_count) as total_file_count,
+        SUM(file_size) as total_file_size,
+        SUM(storage_size) as total_storage_size,
+        SUM(backup_versions) as total_backup_versions
+      FROM latest_backups_per_day
+      WHERE rn = 1
+      GROUP BY backup_date
+    )
+    SELECT 
+      strftime('%d/%m/%Y', backup_date) as date,
+      iso_date as isoDate,
+      total_uploaded_size as uploadedSize,
+      CAST(total_duration_seconds / 60 AS INTEGER) as duration,
+      total_file_count as fileCount,
+      total_file_size as fileSize,
+      total_storage_size as storageSize,
+      total_backup_versions as backupVersions
+    FROM aggregated_by_date
+    ORDER BY backup_date
   `)
 };
 

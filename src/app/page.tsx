@@ -1,6 +1,7 @@
-import { getMachinesSummary, getOverallSummary } from "@/lib/data";
+import { getMachinesSummary, getOverallSummary, getAggregatedChartData } from "@/lib/data";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
+import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { headers } from 'next/headers';
 
@@ -21,6 +22,7 @@ export async function generateMetadata() {
 export default async function DashboardPage() {
   const machinesSummary = await getMachinesSummary();
   const overallSummary = await getOverallSummary();
+  const aggregatedChartData = await getAggregatedChartData();
 
   return (
     <div className="flex flex-col gap-8">
@@ -35,6 +37,8 @@ export default async function DashboardPage() {
           <DashboardTable machines={machinesSummary} />
         </CardContent>
       </Card>
+
+      <DashboardMetricsChart aggregatedData={aggregatedChartData} />
     </div>
   );
 }

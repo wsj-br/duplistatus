@@ -156,9 +156,11 @@ export function ConfigMenu() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="uploadedSize">Uploaded Size</SelectItem>
-                  <SelectItem value="duration">Duration (Minutes)</SelectItem>
+                  <SelectItem value="duration">Duration</SelectItem>
                   <SelectItem value="fileCount">File Count</SelectItem>
-                  <SelectItem value="fileSize">Total File Size</SelectItem>
+                  <SelectItem value="fileSize">File Size</SelectItem>
+                  <SelectItem value="storageSize">Storage Size</SelectItem>
+                  <SelectItem value="backupVersions">Backup Versions</SelectItem>
                 </SelectContent>
               </Select>
             </div>

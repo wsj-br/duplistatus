@@ -27,7 +27,6 @@ backups.db
 # misc
 .DS_Store
 *.pem
-/.vscode
 
 
 # debug

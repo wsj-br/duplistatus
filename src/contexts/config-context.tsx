@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 type TablePageSize = 5 | 10 | 15 | 20;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
-export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize';
+export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize' | 'storageSize' | 'backupVersions';
 
 interface ConfigContextProps {
   databaseCleanupPeriod: DatabaseCleanupPeriod;

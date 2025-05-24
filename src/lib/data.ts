@@ -65,14 +65,6 @@ export async function getMachineById(id: string): Promise<Machine | null> {
 
   const backups = dbUtils.getMachineBackups(id) as BackupRow[];
   
-  // Debug logging for raw backup data
-  // console.log('Raw backup data from database:', backups.map(b => ({
-  //   id: b.id,
-  //   uploaded_size: b.uploaded_size,
-  //   known_file_size: b.known_file_size,
-  //   size: b.size
-  // })));
-
   const formattedBackups = backups.map(backup => {
     const formatted = {
       id: String(backup.id),
@@ -91,13 +83,6 @@ export async function getMachineById(id: string): Promise<Machine | null> {
       backup_list_count: backup.backup_list_count
     };
     
-    // // Debug logging for each formatted backup
-    // console.log('Formatted backup:', {
-    //   id: formatted.id,
-    //   uploadedSize: formatted.uploadedSize,
-    //   knownFileSize: formatted.knownFileSize
-    // });
-    
     return formatted;
   });
 
@@ -112,7 +97,8 @@ export async function getMachineById(id: string): Promise<Machine | null> {
       duration: backup.durationInMinutes,
       fileCount: backup.fileCount,
       fileSize: backup.fileSize,
-      storageSize: backup.knownFileSize
+      storageSize: backup.knownFileSize,
+      backupVersions: backup.backup_list_count || 0
     };
   }).sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
     .map(({ originalDate, ...rest }) => rest); // Remove only originalDate before returning, keep isoDate
@@ -130,13 +116,6 @@ export async function getAllMachines(): Promise<Machine[]> {
     (dbUtils.getAllMachines() as MachineRow[]).map(async machine => {
       const backups = dbUtils.getMachineBackups(machine.id) as BackupRow[];
       
-      // Debug logging for raw backup data
-      // console.log('Raw backup data for machine', machine.id, ':', backups.map(b => ({
-      //   id: b.id,
-      //   uploaded_size: b.uploaded_size,
-      //   known_file_size: b.known_file_size,
-      //   size: b.size
-      // })));
 
       const formattedBackups = backups.map(backup => {
         const formatted = {
@@ -156,13 +135,7 @@ export async function getAllMachines(): Promise<Machine[]> {
           backup_list_count: backup.backup_list_count
         };
         
-        // Debug logging for each formatted backup
-        // console.log('Formatted backup for machine', machine.id, ':', {
-        //   id: formatted.id,
-        //   uploadedSize: formatted.uploadedSize,
-        //   knownFileSize: formatted.knownFileSize
-        // });
-        
+       
         return formatted;
       });
 
@@ -176,7 +149,8 @@ export async function getAllMachines(): Promise<Machine[]> {
           duration: backup.durationInMinutes,
           fileCount: backup.fileCount,
           fileSize: backup.fileSize,
-          storageSize: backup.knownFileSize
+          storageSize: backup.knownFileSize,
+          backupVersions: backup.backup_list_count || 0
         };
       }).sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
         .map(({ originalDate, ...rest }) => rest); // Remove only originalDate before returning, keep isoDate
@@ -212,6 +186,28 @@ export async function getOverallSummary(): Promise<OverallSummary> {
     totalStorageUsed: summary.total_storage_used,
     totalBackupedSize: summary.total_backuped_size
   };
+}
+
+export async function getAggregatedChartData(): Promise<{
+  date: string;
+  isoDate: string;
+  uploadedSize: number;
+  duration: number;
+  fileCount: number;
+  fileSize: number;
+  storageSize: number;
+  backupVersions: number;
+}[]> {
+  return dbUtils.getAggregatedChartData() as {
+    date: string;
+    isoDate: string;
+    uploadedSize: number;
+    duration: number;
+    fileCount: number;
+    fileSize: number;
+    storageSize: number;
+    backupVersions: number;
+  }[];
 }
 
 // Helper function to format duration from seconds

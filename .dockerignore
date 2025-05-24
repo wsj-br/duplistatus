@@ -28,6 +28,7 @@ backups.db
 *.sqlite
 *.sqlite3
 
+
 # Test files
 __tests__
 *.test.*

@@ -30,7 +30,8 @@ export interface Machine {
     duration: number; // in minutes
     fileCount: number;
     fileSize: number; // in bytes
-    storageSize?: number; // in bytes
+    storageSize: number; // in bytes
+    backupVersions: number; // available backup versions
   }[];
 }
 
