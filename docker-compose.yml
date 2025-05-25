@@ -11,12 +11,12 @@ services:
     container_name: duplistatus
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "9666:9666"
     volumes:
       - duplistatus_data:/app/data
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=9666
       - NEXT_TELEMETRY_DISABLED=1
       - TZ=UTC
     healthcheck:
