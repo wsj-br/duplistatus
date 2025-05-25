@@ -1,14 +1,7 @@
+# duplistatus Dockerfile
+
 # Production image
 FROM node:lts-alpine
-
-# Install runtime dependencies and pnpm
-# RUN apk add --no-cache \
-#     python3 \
-#     make \
-#     g++ \
-#     sqlite-libs \
-#     curl \
-#     && npm install -g pnpm@latest-10
 
 RUN apk add --no-cache curl && npm install -g pnpm@latest-10
 
@@ -43,8 +36,8 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
 
 # Labels
-LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplidash
-LABEL org.opencontainers.image.description="Duplidash Container Image"
+LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplistatus
+LABEL org.opencontainers.image.description="duplistatus Container Image"
 LABEL org.opencontainers.image.licenses=Apache-2.0
 
 # Switch to non-root user

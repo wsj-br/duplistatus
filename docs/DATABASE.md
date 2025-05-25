@@ -1,6 +1,6 @@
-# Duplidash Database Schema
+# duplistatus Database Schema
 
-This document describes the SQLite database schema used by Duplidash to store backup operation data.
+This document describes the SQLite database schema used by duplistatus to store backup operation data.
 
 ## Database Location
 
@@ -238,8 +238,25 @@ ORDER BY m.name
 SELECT 
     COUNT(DISTINCT m.id) as total_machines,
     COUNT(b.id) as total_backups,
-    SUM(b.uploaded_size) as total_uploaded_size,
-    SUM(b.size) as total_storage_used
+    COALESCE(SUM(b.uploaded_size), 0) as total_uploaded_size,
+    (
+        SELECT COALESCE(SUM(b2.known_file_size), 0)
+        FROM backups b2
+        INNER JOIN (
+            SELECT machine_id, MAX(date) as max_date
+            FROM backups
+            GROUP BY machine_id
+        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+    ) as total_storage_used,
+    (
+        SELECT COALESCE(SUM(b2.size_of_examined_files), 0)
+        FROM backups b2
+        INNER JOIN (
+            SELECT machine_id, MAX(date) as max_date
+            FROM backups
+            GROUP BY machine_id
+        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+    ) as total_backuped_size
 FROM machines m
 LEFT JOIN backups b ON b.machine_id = m.id
 ```
@@ -247,17 +264,23 @@ LEFT JOIN backups b ON b.machine_id = m.id
 ### Database Cleanup
 
 The application provides a database cleanup feature that can remove old backup records based on a configurable period. The cleanup period can be set to:
-- Delete all data
-- 6 months
-- 1 year
-- 2 years
+- Delete all data: Removes all backup records and machines
+- 6 months: Keeps only the last 6 months of backup records
+- 1 year: Keeps only the last year of backup records
+- 2 years: Keeps only the last 2 years of backup records (default)
 
 When cleanup is performed, it:
-1. Deletes all backup records older than the selected period
-2. Maintains referential integrity with the machines table
-3. Updates all related statistics and metrics
+1. For "Delete all data":
+   - Deletes all backup records
+   - Deletes all machine records
+   - Maintains database schema and indexes
+2. For time-based cleanup:
+   - Deletes backup records older than the selected period based on `end_time`
+   - Maintains referential integrity with the machines table
+   - Preserves machine records even if all their backups are deleted
+   - Updates all related statistics and metrics
 
-The cleanup operation is performed through the `/api/backups/cleanup` endpoint and requires a POST request with the cleanup period.
+The cleanup operation is performed through the `/api/backups/cleanup` endpoint and requires a POST request with the cleanup period. The cleanup period is persisted in the browser's localStorage and can be configured through the database maintenance menu in the UI.
 
 ## JSON to Database Mapping
 
@@ -483,12 +506,14 @@ Note: The actual implementation includes data validation, type conversion, and e
 
 The application provides visualization of backup metrics over time. The following metrics are available in the charts:
 
-| Metric Key     | Database Column    | Description                            | Unit    |
-|----------------|--------------------|----------------------------------------|---------|
-| `uploadedSize` | `uploaded_size`    | Amount of data uploaded during backup  | Bytes   |
-| `duration`     | `duration_seconds` | Duration of the backup operation       | Minutes |
-| `fileCount`    | `examined_files`   | Number of files examined during backup | Count   |
-| `fileSize`     | `size`             | Total size of files in the backup      | Bytes   |
+| Metric Key        | Database Column    | Description                            | Unit    |
+|-------------------|--------------------|----------------------------------------|---------|
+| `uploadedSize`    | `uploaded_size`    | Amount of data uploaded during backup  | Bytes   |
+| `duration`        | `duration_seconds` | Duration of the backup operation       | Minutes |
+| `fileCount`       | `examined_files`   | Number of files examined during backup | Count   |
+| `fileSize`        | `size`             | Total size of files in the backup      | Bytes   |
+| `storageSize`     | `known_file_size`  | Size of known files in storage         | Bytes   |
+| `backupVersions`  | `backup_list_count`| Number of backup versions              | Count   |
 
 These metrics are used in the chart visualization and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
 
@@ -497,22 +522,55 @@ These metrics are used in the chart visualization and can be configured in the a
 The chart data is generated from the backups table using the following query:
 
 ```sql
-SELECT 
+WITH latest_backups_per_day AS (
+  SELECT 
+    DATE(date) as backup_date,
+    machine_id,
     date,
-    uploaded_size as uploadedSize,
-    duration_seconds as duration,
-    examined_files as fileCount,
-    size as fileSize
-FROM backups
-WHERE machine_id = ?
-ORDER BY date ASC
+    COALESCE(uploaded_size, 0) as uploaded_size,
+    COALESCE(size, 0) as file_size,
+    COALESCE(examined_files, 0) as file_count,
+    COALESCE(known_file_size, 0) as storage_size,
+    COALESCE(backup_list_count, 0) as backup_versions,
+    duration_seconds,
+    ROW_NUMBER() OVER (
+      PARTITION BY machine_id, DATE(date) 
+      ORDER BY date DESC
+    ) as rn
+  FROM backups
+),
+aggregated_by_date AS (
+  SELECT 
+    backup_date,
+    MAX(date) as iso_date,
+    SUM(uploaded_size) as total_uploaded_size,
+    SUM(duration_seconds) as total_duration_seconds,
+    SUM(file_count) as total_file_count,
+    SUM(file_size) as total_file_size,
+    SUM(storage_size) as total_storage_size,
+    SUM(backup_versions) as total_backup_versions
+  FROM latest_backups_per_day
+  WHERE rn = 1
+  GROUP BY backup_date
+)
+SELECT 
+  strftime('%d/%m/%Y', backup_date) as date,
+  iso_date as isoDate,
+  total_uploaded_size as uploadedSize,
+  CAST(total_duration_seconds / 60 AS INTEGER) as duration,
+  total_file_count as fileCount,
+  total_file_size as fileSize,
+  total_storage_size as storageSize,
+  total_backup_versions as backupVersions
+FROM aggregated_by_date
+ORDER BY backup_date
 ```
 
 The data is then processed on the client side to:
 1. Format dates for display
 2. Filter based on the selected time range
 3. Convert units (e.g., bytes to human-readable format)
-4. Apply any necessary aggregations 
+4. Apply any necessary aggregations
 
 
 

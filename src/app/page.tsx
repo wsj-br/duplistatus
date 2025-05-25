@@ -30,7 +30,7 @@ export default async function DashboardPage() {
 
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl">Dashboard Overview</CardTitle>
+          <CardTitle className="text-2xl">Overview</CardTitle>
           <CardDescription>Latest backup status for all machines.</CardDescription>
         </CardHeader>
         <CardContent>

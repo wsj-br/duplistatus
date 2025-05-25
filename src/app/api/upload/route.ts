@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
+import { dbUtils } from '@/lib/db-utils';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
@@ -27,6 +28,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Missing required backup data' },
         { status: 400 }
+      );
+    }
+
+    // Check for duplicate backup
+    const backupDate = new Date(data.Data.BeginTime).toISOString();
+    const isDuplicate = await dbUtils.checkDuplicateBackup({
+      machine_id: data.Extra['machine-id'],
+      backup_name: data.Extra['backup-name'],
+      date: backupDate
+    });
+
+    if (isDuplicate) {
+      return NextResponse.json(
+        { error: 'ignored, duplicated data' },
+        { status: 409 }
       );
     }
 

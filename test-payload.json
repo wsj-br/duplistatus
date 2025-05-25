@@ -1,0 +1,30 @@
+{
+  "Data": {
+    "MainOperation": "Backup",
+    "ParsedResult": "Success",
+    "BeginTime": "2024-03-20T10:00:00Z",
+    "Duration": "00:30:00",
+    "EndTime": "2024-03-20T10:30:00Z",
+    "Version": "2.0.7.1",
+    "Interrupted": false,
+    "PartialBackup": false,
+    "Dryrun": false,
+    "ExaminedFiles": 1000,
+    "SizeOfExaminedFiles": 1073741824,
+    "WarningsActualLength": 0,
+    "ErrorsActualLength": 0,
+    "BackendStatistics": {
+      "BytesUploaded": 1073741824,
+      "BytesDownloaded": 0,
+      "KnownFileSize": 1073741824,
+      "LastBackupDate": "2024-03-19T10:00:00Z",
+      "BackupListCount": 1
+    }
+  },
+  "Extra": {
+    "machine-id": "test-machine-1",
+    "machine-name": "Test Machine 1",
+    "backup-name": "Test Backup",
+    "backup-id": "test-backup-1"
+  }
+} 

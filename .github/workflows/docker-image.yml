@@ -46,7 +46,7 @@ jobs:
         id: meta_dockerhub
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/duplidash
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/duplistatus
 
       - name: Build and push Docker image (amd64, arm64)
         uses: docker/build-push-action@v5
@@ -55,7 +55,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/duplidash:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/duplistatus:latest
             ${{ steps.meta_ghcr.outputs.tags }}
             ${{ steps.meta_dockerhub.outputs.tags }}
           labels: |

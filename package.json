@@ -1,6 +1,6 @@
 {
-  "name": "duplidash",
-  "version": "0.1.0-beta.1",
+  "name": "duplistatus",
+  "version": "0.3.1",
   "private": true,
   "packageManager": "pnpm@10.11.0",
   "engines": {

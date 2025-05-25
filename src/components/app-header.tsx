@@ -11,15 +11,15 @@ export function AppHeader() {
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image
-              src="/images/duplidash_logo.png"
-              alt="Duplidash Logo"
+              src="/images/duplistatus_logo.png"
+              alt="duplistatus Logo"
               width={64}
               height={64}
               className="h-14 w-14"
             />
           </div>
-          <span className="font-bold sm:inline-block">
-            Duplidash
+          <span className="text-3xl text-blue-600 sm:inline-block">
+            duplistatus
           </span>
         </Link>
         <div className="flex flex-1 items-center justify-end space-x-2">

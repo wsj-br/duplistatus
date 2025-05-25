@@ -1,8 +1,8 @@
-![duplidash](docs/duplidash_banner.png)
+![duplistatus](docs/duplistatus_banner.png)
 
-# Duplidash - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
+# duplistatus - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-A web application for monitoring and visualizing backup operations from [Duplicati](https://github.com/duplicati/duplicati). Duplidash provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines, also prividing an API endpoint to be integrated with 3rd party tools like [Homepage](https://gethomepage.dev/)
+A web application for monitoring and visualizing backup operations from [Duplicati](https://github.com/duplicati/duplicati). duplistatus provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines, also prividing an API endpoint to be integrated with 3rd party tools like [Homepage](https://gethomepage.dev/)
 
 ## Features 
 
@@ -22,37 +22,37 @@ The application can be deployed using Docker or
 
 ```yaml
 services:
-  duplidash:
-    image: wsjbr/duplidash:master
-    container_name: duplidash
+  duplistatus:
+    image: wsjbr/duplistatus:master
+    container_name: duplistatus
     restart: unless-stopped
     ports:
-      - "9666:9666"
+      - "3000:3000"
     volumes:
-      - duplidash_data:/app/data
+      - duplistatus_data:/app/data
     environment:
       - NODE_ENV=production
-      - PORT=9666
+      - PORT=3000
       - NEXT_TELEMETRY_DISABLED=1
     healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://localhost:9666/api/health"]
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
 volumes:
-  duplidash_data:
-    name: duplidash_data 
+  duplistatus_data:
+    name: duplistatus_data 
 ```
 
 ### Option 2: Using Portainer Stacks (Github)
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
-2. Name your stack (e.g., "duplidash")
+2. Name your stack (e.g., "duplistatus")
 3. Choose "Build method" as "Repository"
 4. Enter the repository URL: <br>
-`https://github.com/wsj-br/duplidash.git`
+`https://github.com/wsj-br/duplistatus.git`
 
 5. In the "Compose path" field, enter: `docker-compose.yml`
 6. Click "Deploy the stack"
@@ -61,27 +61,27 @@ volumes:
 
 ```bash
 docker run -d \
-  --name duplidash \
-  -p 9666:9666 \
-  -v duplidash_data:/app/data \
+  --name duplistatus \
+  -p 3000:3000 \
+  -v duplistatus_data:/app/data \
   -e NODE_ENV=production \
-  -e PORT=9666 \
+  -e PORT=3000 \
   -e NEXT_TELEMETRY_DISABLED=1 \
-  wsjbr/duplidash:master
+  wsjbr/duplistatus:master
 ```
 
-- The application will be available at `http://localhost:9666`
-- The `duplidash_data` volume will be used for persistent storage.
+- The application will be available at `http://localhost:3000`
+- The `duplistatus_data` volume will be used for persistent storage.
 
 
 <br><br>
 
 # Duplicati Configuration
 
-In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), configure it to send the backup results to the duplidash server using the `/upload` API endpoint. In the Duplicati configuration page, select Settings and in the Default Options section, include these two options:
+In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), configure it to send the backup results to the duplistatus server using the `/upload` API endpoint. In the Duplicati configuration page, select Settings and in the Default Options section, include these two options:
 
 ```bash
---send-http-url=http://my.local.server:9666/upload
+--send-http-url=http://my.local.server:3000/upload
 --send-http-result-output-format=Json
 ```
 
@@ -99,19 +99,19 @@ In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-bac
 
 # Homepage integration (optional)
 
-To integrate duplidash with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplidash.
+To integrate duplistatus with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplistatus.
 
 ## Summary 
 
-Show the overall summary of the backup data stored in the Duplidash's database. Below is a example showing how to configure this integration.
+Show the overall summary of the backup data stored in the duplistatus's database. Below is a example showing how to configure this integration.
 
 ```yaml
     - Dashboard:
         icon: mdi-cloud-upload
-        href: http://my.local.server:9666/
+        href: http://my.local.server:3000/
         widget:
           type: customapi
-          url: http://my.local.server:9666/api/summary
+          url: http://my.local.server:3000/api/summary
           display: list
           refreshInterval: 60000
           mappings:
@@ -155,7 +155,7 @@ Show the latest backup information for a given machine/server. Below is a exampl
         icon: mdi-test-tube
         widget:
           type: customapi
-          url: http://my.local.server:9666/api/lastbackup/Test%20Machine%201
+          url: http://my.local.server:3000/api/lastbackup/Test%20Machine%201
           display: list
           refreshInterval: 60000
           mappings:
@@ -204,8 +204,8 @@ will show:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/wsj-br/duplidash.git
-cd duplidash
+git clone https://github.com/wsj-br/duplistatus.git
+cd duplistatus
 ```
 
 2. Install dependencies (debian/ubuntu):
@@ -293,7 +293,7 @@ The following endpoints are available:
 - **Request Body**: Json sent by Duplicati with the options:
 
   ```bash
-  --send-http-url=http://my.local.server:9666/api/upload
+  --send-http-url=http://my.local.server:3000/api/upload
   --send-http-result-output-format=Json
   ```
   

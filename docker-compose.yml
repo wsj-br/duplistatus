@@ -1,28 +1,37 @@
+# duplistatus docker-compose.yml
+
 version: '3.8'
 
 services:
-  duplidash:
+  duplistatus:
     build:
       context: .
       dockerfile: Dockerfile
-    image: wsj-br/duplidash:latest
-    container_name: duplidash
+    image: wsj-br/duplistatus:latest
+    container_name: duplistatus
     restart: unless-stopped
     ports:
-      - "9666:9666"
+      - "3000:3000"
     volumes:
-      - duplidash_data:/app/data
+      - duplistatus_data:/app/data
     environment:
       - NODE_ENV=production
-      - PORT=9666
+      - PORT=3000
       - NEXT_TELEMETRY_DISABLED=1
+      - TZ=UTC
     healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://localhost:9666/api/health"]
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    networks:
+      - duplistatus_network
+
+networks:
+  duplistatus_network:
+    driver: bridge
 
 volumes:
-  duplidash_data:
-    name: duplidash_data 
+  duplistatus_data:
+    name: duplistatus_data 

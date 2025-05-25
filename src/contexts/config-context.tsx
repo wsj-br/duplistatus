@@ -32,7 +32,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Load saved settings from localStorage
-    const savedConfig = localStorage.getItem('duplidash-config');
+    const savedConfig = localStorage.getItem('duplistatus-config');
     if (savedConfig) {
       const config = JSON.parse(savedConfig);
       if (config.databaseCleanupPeriod) setDatabaseCleanupPeriod(config.databaseCleanupPeriod);
@@ -44,7 +44,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Save settings to localStorage whenever they change
-    localStorage.setItem('duplidash-config', JSON.stringify({
+    localStorage.setItem('duplistatus-config', JSON.stringify({
       databaseCleanupPeriod,
       tablePageSize,
       chartTimeRange,

@@ -290,6 +290,14 @@ const dbOps = {
       total_backup_versions as backupVersions
     FROM aggregated_by_date
     ORDER BY backup_date
+  `),
+
+  checkDuplicateBackup: db.prepare(`
+    SELECT COUNT(*) as count
+    FROM backups
+    WHERE machine_id = @machine_id
+    AND backup_name = @backup_name
+    AND date = @date
   `)
 };
 

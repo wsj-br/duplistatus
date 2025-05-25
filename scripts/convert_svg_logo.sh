@@ -9,12 +9,15 @@ IMAGES=$BASEDIR/../public/images
 APP=$BASEDIR/../src/app
 
 # convert the banner (svg) to a png (transparent background)
-convert -background none -resize 25% $DOCS/duplidash_banner.svg $DOCS/duplidash_banner.png 
+echo "Converting banner to png"
+convert -background none -resize 25% $DOCS/duplistatus_banner.svg $DOCS/duplistatus_banner.png 
 
 # convert the logo (svg) to a png (transparent background)
-convert -background none  $DOCS/duplidash_logo.svg $IMAGES/duplidash_logo.png 
+echo "Converting logo to png"
+convert -background none  $DOCS/duplistatus_logo.svg $IMAGES/duplistatus_logo.png 
 
 # convert the logo (png) to an ico
-convert $IMAGES/duplidash_logo.png -define icon:auto-resize=16,24,32,48,64,96,128  $APP/favicon.ico 
+echo "Converting logo to ico"
+convert $IMAGES/duplistatus_logo.png -define icon:auto-resize=16,24,32,48,64,96,128  $APP/favicon.ico 
 
-
+echo "all done"

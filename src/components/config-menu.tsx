@@ -37,7 +37,7 @@ export function ConfigMenu() {
           <div className="space-y-2">
             <h4 className="text-xl font-medium leading-none">Settings</h4>
             <p className="text-sm text-muted-foreground">
-              Configure your DupliDash preferences
+              Configure your duplistatus preferences
             </p>
           </div>
           <div className="grid gap-4">
