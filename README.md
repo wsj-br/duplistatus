@@ -24,7 +24,7 @@ The application can be deployed using Docker or
 ```yaml
 services:
   duplistatus:
-    image: wsjbr/duplistatus:master
+    image: wsjbr/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
     ports:
@@ -68,7 +68,7 @@ docker run -d \
   -e NODE_ENV=production \
   -e PORT=9666 \
   -e NEXT_TELEMETRY_DISABLED=1 \
-  wsjbr/duplistatus:master
+  wsjbr/duplistatus:latest
 ```
 
 - The application will be available at `http://localhost:9666`
