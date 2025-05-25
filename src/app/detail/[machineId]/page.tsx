@@ -1,11 +1,7 @@
 import { getMachineById, getAllMachines } from "@/lib/data";
-import type { Machine, BackupStatus } from "@/lib/types";
+import type { Machine } from "@/lib/types";
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
 import { notFound } from 'next/navigation';
 import { use } from 'react';
@@ -32,11 +28,9 @@ export async function generateStaticParams() {
 }
 
 export default function MachineDetailsPage({
-  params,
-  searchParams,
+  params
 }: {
   params: Promise<{ machineId: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   // Use React's use() hook to handle the Promise
   const { machineId } = use(params);

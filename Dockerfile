@@ -3,10 +3,22 @@
 # Production image
 FROM node:lts-alpine
 
-RUN apk add --no-cache curl && npm install -g pnpm@latest-10
+# Install necessary build tools for better-sqlite3
+RUN apk add --no-cache \
+    curl \
+    python3 \
+    make \
+    g++ \
+    && npm install -g pnpm@latest-10
 
 # Set working directory
 WORKDIR /app
+
+# Copy package files first for better caching
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Install ALL dependencies first
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
@@ -19,16 +31,14 @@ RUN mkdir -p /app/data && \
 RUN mkdir -p /app/.next/cache && \
     chown -R node:node /app/.next/cache
 
-# Install ALL dependencies first
-RUN pnpm install 
-
 # Build the application
 RUN pnpm run build
 
 # Optional: Remove dev dependencies after build
 RUN pnpm prune --prod
 
-
+# Clean up build tools to reduce image size
+RUN apk del python3 make g++
 
 # Set environment variables
 ENV NODE_ENV=production \

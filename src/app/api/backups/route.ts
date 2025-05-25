@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
         end_time: new Date(data.Data.EndTime).toISOString(),
         warnings_actual_length: data.Data.WarningsActualLength || 0,
         errors_actual_length: data.Data.ErrorsActualLength || 0,
+        messages_actual_length: data.Data.MessagesActualLength || 0,
 
         // BackendStatistics fields
         bytes_downloaded: data.Data.BackendStatistics?.BytesDownloaded || 0,

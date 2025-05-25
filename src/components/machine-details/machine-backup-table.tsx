@@ -13,8 +13,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formatBytes, formatTimeAgo } from "@/lib/utils";
+import { formatBytes } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
+import { useRouter } from 'next/navigation';
+import { formatDistanceToNow } from 'date-fns';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MachineBackupTableProps {
   backups: Backup[];
@@ -28,6 +36,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
     (currentPage - 1) * tablePageSize,
     currentPage * tablePageSize
   );
+  const router = useRouter();
 
   // Reset to first page when table page size changes
   useEffect(() => {
@@ -54,9 +63,35 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
+  const parseJsonArray = (jsonString: string | null): string[] => {
+    if (!jsonString) return [];
+    try {
+      const parsed = JSON.parse(jsonString);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const hasNoMessages = (backup: Backup): boolean => {
+    const messages = parseJsonArray(backup.messages_array);
+    const warnings = parseJsonArray(backup.warnings_array);
+    const errors = parseJsonArray(backup.errors_array);
+    
+    return messages.length === 0 && warnings.length === 0 && errors.length === 0;
+  };
+
+  const handleBackupClick = (backup: Backup) => {
+    // Only navigate if there are messages to show
+    if (!hasNoMessages(backup)) {
+      router.push(`/detail/${backup.machine_id}/backup/${backup.id}`);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="rounded-lg border shadow-sm overflow-hidden">
+    <TooltipProvider>
+      <div className="flex flex-col gap-4">
+        <div className="rounded-lg border shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -87,11 +122,29 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
                 <TableCell>
                   <div>{new Date(backup.date).toLocaleString()}</div>
                   <div className="text-xs text-muted-foreground">
-                    {formatTimeAgo(backup.date)}
+                    {formatDistanceToNow(new Date(backup.date), { addSuffix: true })}
                   </div>
                 </TableCell>
                 <TableCell>
-                  <StatusBadge status={backup.status} />
+                  {hasNoMessages(backup) ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="cursor-not-allowed">
+                          <StatusBadge status={backup.status} />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>No messages were received for this backup.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <div 
+                      onClick={() => handleBackupClick(backup)}
+                      className="cursor-pointer"
+                    >
+                      <StatusBadge status={backup.status} />
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell className="text-center">{backup.warnings}</TableCell>
                 <TableCell className="text-center">{backup.errors}</TableCell>
@@ -133,7 +186,8 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
           </Button>
         </div>
       )}
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
 

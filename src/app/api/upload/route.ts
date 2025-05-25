@@ -2,10 +2,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
 import { dbUtils } from '@/lib/db-utils';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import path from 'path';
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
+
+    // Log received data in development mode
+    if (process.env.NODE_ENV != 'production') {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `${timestamp}.json`;
+      const dataDir = path.join(process.cwd(), 'data');
+      const filePath = path.join(dataDir, filename);
+      
+      // Ensure data directory exists
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      
+      // Write the data to file with pretty formatting
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      console.log(`Logged request data to ${filePath}`);
+    }
 
     // Only process if MainOperation is "Backup"
     if (data.Data?.MainOperation !== "Backup") {
@@ -76,6 +95,11 @@ export async function POST(request: NextRequest) {
         warnings: data.Data.WarningsActualLength || 0,
         errors: data.Data.ErrorsActualLength || 0,
 
+        // Message arrays stored as JSON blobs
+        messages_array: data.Data.Messages ? JSON.stringify(data.Data.Messages) : null,
+        warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
+        errors_array: data.Data.Errors ? JSON.stringify(data.Data.Errors) : null,
+
         // Data fields
         deleted_files: data.Data.DeletedFiles || 0,
         deleted_folders: data.Data.DeletedFolders || 0,
@@ -104,6 +128,7 @@ export async function POST(request: NextRequest) {
         end_time: new Date(data.Data.EndTime).toISOString(),
         warnings_actual_length: data.Data.WarningsActualLength || 0,
         errors_actual_length: data.Data.ErrorsActualLength || 0,
+        messages_actual_length: data.Data.MessagesActualLength || 0,
 
         // BackendStatistics fields
         bytes_downloaded: data.Data.BackendStatistics?.BytesDownloaded || 0,

@@ -45,7 +45,7 @@ export function ConfigMenu() {
               <Label htmlFor="table-page-size">Table Page Size</Label>
               <Select
                 value={tablePageSize.toString()}
-                onValueChange={(value) => setTablePageSize(parseInt(value) as any)}
+                onValueChange={(value) => setTablePageSize(parseInt(value) as 5 | 10 | 15 | 20)}
               >
                 <SelectTrigger id="table-page-size">
                   <SelectValue placeholder="Select page size" />
@@ -62,7 +62,7 @@ export function ConfigMenu() {
               <Label htmlFor="chart-time-range">Chart Time Range</Label>
               <Select
                 value={chartTimeRange}
-                onValueChange={(value: any) => setChartTimeRange(value)}
+                onValueChange={(value) => setChartTimeRange(value as '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data')}
               >
                 <SelectTrigger id="chart-time-range">
                   <SelectValue placeholder="Select time range" />

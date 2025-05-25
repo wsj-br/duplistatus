@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ThemeToggleButton } from '@/components/theme-toggle-button';
 import { ConfigMenu } from '@/components/config-menu';
 import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu';
+import { BackupCollectMenu } from '@/components/backup-collect-menu';
 
 export function AppHeader() {
   return (
@@ -23,6 +24,7 @@ export function AppHeader() {
           </span>
         </Link>
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <BackupCollectMenu />
           <DatabaseMaintenanceMenu />
           <ConfigMenu />
           <ThemeToggleButton />

@@ -3,7 +3,7 @@
 
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Archive, CheckCircle, XCircle, AlertTriangle, Clock, UploadCloud, Database, History, HardDrive } from "lucide-react";
+import { Archive, Clock, UploadCloud, Database, History, HardDrive } from "lucide-react";
 import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
 
 interface MachineDetailSummaryItemsProps {
@@ -16,6 +16,13 @@ interface MachineDetailSummaryItemsProps {
   lastBackupFileSize: number; // in bytes
 }
 
+interface SummaryItem {
+  title: string;
+  value: string;
+  icon: JSX.Element;
+  'data-ai-hint': string;
+}
+
 export function MachineDetailSummaryItems({
   totalBackups,
   averageDuration,
@@ -26,31 +33,24 @@ export function MachineDetailSummaryItems({
 }: MachineDetailSummaryItemsProps) {
 
   // Use a try/catch for each item to ensure nothing breaks
-  const getFormattedValue = (value: any, formatter: Function, defaultValue: string = '0') => {
+  const getFormattedValue = (value: number, formatter: (val: number) => string, defaultValue: string = '0') => {
     try {
       return formatter(value);
-    } catch (error) {
-      console.error('Error formatting value:', value, error);
+    } catch {
       return defaultValue;
     }
   };
 
-  const getFormattedNumber = (value: any, defaultValue: string = '0') => {
+  const getFormattedNumber = (value: number, defaultValue: string = '0') => {
     try {
       const num = Number(value);
       return isNaN(num) ? defaultValue : num.toLocaleString();
-    } catch (error) {
+    } catch {
       return defaultValue;
     }
   };
 
-  // Debug logging for raw props
-  // console.log('Raw props:', {
-  //   totalUploadedSize,
-  //   lastBackupStorageSize
-  // });
-
-  const summaryItems = [
+  const summaryItems: SummaryItem[] = [
     { 
       title: "Total Backups", 
       value: getFormattedNumber(totalBackups),

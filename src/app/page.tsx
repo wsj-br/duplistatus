@@ -3,7 +3,6 @@ import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { headers } from 'next/headers';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';

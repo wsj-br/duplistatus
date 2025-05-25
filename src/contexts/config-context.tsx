@@ -70,7 +70,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
           if (errorData && errorData.error) {
             errorDetails = errorData.details || errorData.error;
           }
-        } catch (e) {
+        } catch {
           // If we can't parse the JSON, use the status text
           errorDetails = `Failed to cleanup database: ${response.status} ${response.statusText}`;
         }

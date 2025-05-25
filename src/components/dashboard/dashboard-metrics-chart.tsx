@@ -31,7 +31,7 @@ import { formatBytes } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
 import type { ChartMetricSelection } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears, parseISO } from "date-fns";
-import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
+import type { ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 interface DashboardMetricsChartProps {
   aggregatedData: {
@@ -70,8 +70,8 @@ export function DashboardMetricsChart({ aggregatedData }: DashboardMetricsChartP
     ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` 
     : currentMetricInfo.label;
 
-  // Ensure aggregatedData is defined
-  const safeChartData = aggregatedData || [];
+  // Ensure aggregatedData is defined and memoize it
+  const safeChartData = useMemo(() => aggregatedData || [], [aggregatedData]);
   
   // Filter chart data based on the selected time range
   const filteredChartData = useMemo(() => {
@@ -152,7 +152,7 @@ export function DashboardMetricsChart({ aggregatedData }: DashboardMetricsChartP
     return value.toLocaleString();
   };
 
-  const tooltipFormatter = (value: ValueType, name: NameType | undefined, props: any) => {
+  const tooltipFormatter = (value: ValueType) => {
     if (typeof value !== 'number') return '';
     if (chartMetricSelection === "duration") {
       return formatDuration(value);
@@ -239,13 +239,12 @@ export function DashboardMetricsChart({ aggregatedData }: DashboardMetricsChartP
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
                     const value = payload[0].value;
-                    const name = payload[0].name;
                     if (typeof value !== 'number') return null;
                     return (
                       <div className="rounded-lg border bg-background p-2 shadow-sm">
                         <div className="text-sm font-medium">{label}</div>
                         <div className="text-sm text-muted-foreground">
-                          {tooltipFormatter(value, name, payload[0])}
+                          {tooltipFormatter(value)}
                         </div>
                       </div>
                     );

@@ -2,11 +2,13 @@ export type BackupStatus = "Success" | "Failed" | "InProgress" | "Warning";
 
 export interface Backup {
   id: string;
+  machine_id: string;
   name: string;
   date: string; // ISO string
   status: BackupStatus;
   warnings: number;
   errors: number;
+  messages: number;
   fileCount: number;
   fileSize: number; // in bytes
   uploadedSize: number; // in bytes
@@ -16,6 +18,10 @@ export interface Backup {
   durationInMinutes: number;
   knownFileSize: number;
   backup_list_count: number | null;
+  // Message arrays stored as JSON strings
+  messages_array: string | null;
+  warnings_array: string | null;
+  errors_array: string | null;
 }
 
 export interface Machine {

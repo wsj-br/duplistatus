@@ -118,6 +118,7 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       Duration: duration,
       WarningsActualLength: hasWarnings ? Math.floor(Math.random() * 5) + 1 : 0,
       ErrorsActualLength: hasErrors ? Math.floor(Math.random() * 3) + 1 : 0,
+      MessagesActualLength: Math.floor(Math.random() * 20) + 5, // Random messages count between 5-24
       BackendStatistics: {
         BytesUploaded: stats.uploadedSize,
         BytesDownloaded: Math.floor(stats.uploadedSize * 0.1),

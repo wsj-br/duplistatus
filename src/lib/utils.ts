@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { formatDistanceToNow, parseISO, isValid } from 'date-fns';
+import { parseISO, isValid } from 'date-fns';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -17,7 +17,7 @@ export function formatBytes(bytes: unknown, decimals = 2): string {
   } else if (typeof bytes === 'string') {
     try {
       numBytes = Number(bytes);
-    } catch (e) {
+    } catch {
       return '0 Bytes';
     }
   } else {
@@ -46,7 +46,7 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
   } else if (typeof totalMinutes === 'string') {
     try {
       numMinutes = Number(totalMinutes);
-    } catch (e) {
+    } catch {
       return "00:00:00";
     }
   } else {
@@ -123,7 +123,7 @@ export function formatTimeAgo(dateString: string): string {
     } else {
       return `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'} ago`;
     }
-  } catch (error) {
+  } catch {
     return "";
   }
 }

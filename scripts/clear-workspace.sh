@@ -11,23 +11,20 @@ ITEMS_TO_REMOVE=(
     "dist"
     ".turbo"
     "pnpm-lock.yaml"
+    "data/*.json"
 )
 
 echo "🧹 Cleaning build artifacts and dependencies..."
 
 # Remove directories and files
 for item in "${ITEMS_TO_REMOVE[@]}"; do
-    path="$ROOT_DIR/$item"
-    if [ -e "$path" ]; then
-        if rm -rf "$path"; then
-            echo "✅ Removed $item"
-        else
-            echo "❌ Error removing $item"
-        fi
+    if rm -rf "$ROOT_DIR"/$item; then
+        echo "✅ Removed $item"
     else
-        echo "ℹ️ $item not found, skipping..."
+        echo "❌ Error removing $item"
     fi
 done
+
 
 # Clear pnpm store cache
 echo "🧹 Clearing pnpm store cache..."

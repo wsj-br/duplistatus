@@ -1,4 +1,4 @@
-import { Machine, MachineSummary, Backup, BackupStatus, OverallSummary } from './types';
+import { Machine, MachineSummary, BackupStatus, OverallSummary } from './types';
 import { dbUtils } from './db-utils';
 
 interface MachineSummaryRow {
@@ -20,10 +20,10 @@ interface MachineRow {
 }
 
 interface BackupRow {
-  backup_name: any;
+  backup_name: string;
   id: string;
-  name: string;
   machine_id: string;
+  name: string;
   date: string;
   status: BackupStatus;
   duration_seconds: number;
@@ -34,6 +34,12 @@ interface BackupRow {
   uploaded_size: number;
   known_file_size: number;
   backup_list_count: number | null;
+  messages_array: string | null;
+  warnings_array: string | null;
+  errors_array: string | null;
+  warnings_actual_length: number;
+  errors_actual_length: number;
+  messages_actual_length: number;
 }
 
 interface OverallSummaryRow {
@@ -68,11 +74,13 @@ export async function getMachineById(id: string): Promise<Machine | null> {
   const formattedBackups = backups.map(backup => {
     const formatted = {
       id: String(backup.id),
+      machine_id: String(backup.machine_id),
       name: String(backup.backup_name),
       date: backup.date,
       status: backup.status,
       warnings: Number(backup.warnings) || 0,
       errors: Number(backup.errors) || 0,
+      messages: Number(backup.messages_actual_length) || 0,
       fileCount: Number(backup.examined_files) || 0,
       fileSize: Number(backup.size) || 0,
       uploadedSize: Number(backup.uploaded_size) || 0,
@@ -80,7 +88,10 @@ export async function getMachineById(id: string): Promise<Machine | null> {
       duration_seconds: Number(backup.duration_seconds) || 0,
       durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
       knownFileSize: Number(backup.known_file_size) || 0,
-      backup_list_count: backup.backup_list_count
+      backup_list_count: backup.backup_list_count,
+      messages_array: backup.messages_array,
+      warnings_array: backup.warnings_array,
+      errors_array: backup.errors_array
     };
     
     return formatted;
@@ -91,8 +102,7 @@ export async function getMachineById(id: string): Promise<Machine | null> {
     const backupDate = new Date(backup.date);
     return {
       date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-      isoDate: backup.date, // Preserve the original ISO date string for accurate filtering
-      originalDate: backupDate, // Keep original date for sorting
+      isoDate: backup.date,
       uploadedSize: backup.uploadedSize,
       duration: backup.durationInMinutes,
       fileCount: backup.fileCount,
@@ -100,8 +110,7 @@ export async function getMachineById(id: string): Promise<Machine | null> {
       storageSize: backup.knownFileSize,
       backupVersions: backup.backup_list_count || 0
     };
-  }).sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
-    .map(({ originalDate, ...rest }) => rest); // Remove only originalDate before returning, keep isoDate
+  }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
 
   return {
     id: machine.id,
@@ -120,11 +129,13 @@ export async function getAllMachines(): Promise<Machine[]> {
       const formattedBackups = backups.map(backup => {
         const formatted = {
           id: String(backup.id),
+          machine_id: String(backup.machine_id),
           name: String(backup.backup_name),
           date: backup.date,
           status: backup.status,
           warnings: Number(backup.warnings) || 0,
           errors: Number(backup.errors) || 0,
+          messages: Number(backup.messages_actual_length) || 0,
           fileCount: Number(backup.examined_files) || 0,
           fileSize: Number(backup.size) || 0,
           uploadedSize: Number(backup.uploaded_size) || 0,
@@ -132,7 +143,10 @@ export async function getAllMachines(): Promise<Machine[]> {
           duration_seconds: Number(backup.duration_seconds) || 0,
           durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
           knownFileSize: Number(backup.known_file_size) || 0,
-          backup_list_count: backup.backup_list_count
+          backup_list_count: backup.backup_list_count,
+          messages_array: backup.messages_array,
+          warnings_array: backup.warnings_array,
+          errors_array: backup.errors_array
         };
         
        
@@ -143,8 +157,7 @@ export async function getAllMachines(): Promise<Machine[]> {
         const backupDate = new Date(backup.date);
         return {
           date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-          isoDate: backup.date, // Preserve the original ISO date string for accurate filtering
-          originalDate: backupDate, // Keep original date for sorting
+          isoDate: backup.date,
           uploadedSize: backup.uploadedSize,
           duration: backup.durationInMinutes,
           fileCount: backup.fileCount,
@@ -152,8 +165,7 @@ export async function getAllMachines(): Promise<Machine[]> {
           storageSize: backup.knownFileSize,
           backupVersions: backup.backup_list_count || 0
         };
-      }).sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
-        .map(({ originalDate, ...rest }) => rest); // Remove only originalDate before returning, keep isoDate
+      }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
 
       return {
         id: machine.id,

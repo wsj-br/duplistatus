@@ -9,6 +9,7 @@ A web application for monitoring and visualizing backup operations from [Duplica
 - **Overview**: Real-time display of backup status for all machines
 - **Machine Details**: Detailed view of backup history for each machine
 - **Data Visualization**: Interactive charts showing backup metrics over time
+- **Collect Logs**: Collect backup logs directly from the Duplicaty servers.
 - **Dark/Light Theme**: Toggle between dark and light themes for comfortable viewing
 - **API Access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
 
@@ -27,15 +28,15 @@ services:
     container_name: duplistatus
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "9666:9666"
     volumes:
       - duplistatus_data:/app/data
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=9666
       - NEXT_TELEMETRY_DISABLED=1
     healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://localhost:3000/api/health"]
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:9666/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -62,15 +63,15 @@ volumes:
 ```bash
 docker run -d \
   --name duplistatus \
-  -p 3000:3000 \
+  -p 9666:9666 \
   -v duplistatus_data:/app/data \
   -e NODE_ENV=production \
-  -e PORT=3000 \
+  -e PORT=9666 \
   -e NEXT_TELEMETRY_DISABLED=1 \
   wsjbr/duplistatus:master
 ```
 
-- The application will be available at `http://localhost:3000`
+- The application will be available at `http://localhost:9666`
 - The `duplistatus_data` volume will be used for persistent storage.
 
 
@@ -78,10 +79,21 @@ docker run -d \
 
 # Duplicati Configuration
 
-In your Duplicati's [UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), configure it to send the backup results to the duplistatus server using the `/upload` API endpoint. In the Duplicati configuration page, select Settings and in the Default Options section, include these two options:
+
+1. **Allow remote access:**  login into the [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings` and allow remote access and include the list of hostnames. 
+
+![Duplicati settings](docs/duplicati-settings.png)
+
+
+> [!WARNING]
+>  Only enable remote access if your Duplicati server is protected by a secure network (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet without proper security measures could lead to unauthorized access.
+
+
+
+2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these two options:
 
 ```bash
---send-http-url=http://my.local.server:3000/upload
+--send-http-url=http://my.local.server:9666/upload
 --send-http-result-output-format=Json
 ```
 
@@ -108,10 +120,10 @@ Show the overall summary of the backup data stored in the duplistatus's database
 ```yaml
     - Dashboard:
         icon: mdi-cloud-upload
-        href: http://my.local.server:3000/
+        href: http://my.local.server:9666/
         widget:
           type: customapi
-          url: http://my.local.server:3000/api/summary
+          url: http://my.local.server:9666/api/summary
           display: list
           refreshInterval: 60000
           mappings:
@@ -155,7 +167,7 @@ Show the latest backup information for a given machine/server. Below is a exampl
         icon: mdi-test-tube
         widget:
           type: customapi
-          url: http://my.local.server:3000/api/lastbackup/Test%20Machine%201
+          url: http://my.local.server:9666/api/lastbackup/Test%20Machine%201
           display: list
           refreshInterval: 60000
           mappings:
@@ -293,7 +305,7 @@ The following endpoints are available:
 - **Request Body**: Json sent by Duplicati with the options:
 
   ```bash
-  --send-http-url=http://my.local.server:3000/api/upload
+  --send-http-url=http://my.local.server:9666/api/upload
   --send-http-result-output-format=Json
   ```
   

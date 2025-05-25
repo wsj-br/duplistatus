@@ -13,6 +13,7 @@
     "SizeOfExaminedFiles": 1073741824,
     "WarningsActualLength": 0,
     "ErrorsActualLength": 0,
+    "MessagesActualLength": 15,
     "BackendStatistics": {
       "BytesUploaded": 1073741824,
       "BytesDownloaded": 0,

@@ -1,5 +1,5 @@
 import { dbOps, formatDurationFromSeconds } from '@/lib/db';
-import type { Backup } from '@/lib/types';
+import type { Backup, BackupStatus } from '@/lib/types';
 
 interface MachineRow {
   id: string;
@@ -9,14 +9,36 @@ interface MachineRow {
   created_at: string;
 }
 
-function mapBackupToType(backup: any): Backup {
+interface BackupRecord {
+  id: string;
+  machine_id: string;
+  backup_name: string;
+  date: string;
+  status: BackupStatus;
+  warnings: number;
+  errors: number;
+  messages_actual_length: number;
+  examined_files: number;
+  size: number;
+  uploaded_size: number;
+  duration_seconds: number;
+  known_file_size: number;
+  backup_list_count: number;
+  messages_array: string | null;
+  warnings_array: string | null;
+  errors_array: string | null;
+}
+
+function mapBackupToType(backup: BackupRecord): Backup {
   return {
     id: backup.id,
+    machine_id: backup.machine_id,
     name: backup.backup_name,
     date: backup.date,
     status: backup.status,
     warnings: backup.warnings,
     errors: backup.errors,
+    messages: backup.messages_actual_length,
     fileCount: backup.examined_files,
     fileSize: backup.size,
     uploadedSize: backup.uploaded_size,
@@ -24,7 +46,11 @@ function mapBackupToType(backup: any): Backup {
     duration_seconds: backup.duration_seconds,
     durationInMinutes: backup.duration_seconds / 60,
     knownFileSize: backup.known_file_size,
-    backup_list_count: backup.backup_list_count
+    backup_list_count: backup.backup_list_count,
+    // Message arrays
+    messages_array: backup.messages_array,
+    warnings_array: backup.warnings_array,
+    errors_array: backup.errors_array
   };
 }
 
@@ -34,7 +60,7 @@ export async function GET(request: Request) {
   const machineId = match ? match[1] : undefined;
 
   // Always return JSON regardless of Accept header
-  const jsonResponse = (data: any, status = 200) => {
+  const jsonResponse = (data: Record<string, unknown>, status = 200) => {
     return Response.json(data, { 
       status,
       headers: {
@@ -68,7 +94,7 @@ export async function GET(request: Request) {
     }
 
     // Get latest backup
-    const latestBackup = dbOps.getLatestBackup.get(machine.id);
+    const latestBackup = dbOps.getLatestBackup.get(machine.id) as BackupRecord | undefined;
     if (!latestBackup) {
       return jsonResponse({
         machine: {
@@ -82,9 +108,6 @@ export async function GET(request: Request) {
         status: 200
       });
     }
-
-    // Get all backups for the machine
-    const backups = dbOps.getMachineBackups.all(machine.id);
 
     return jsonResponse({
       machine: {

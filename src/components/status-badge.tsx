@@ -6,6 +6,7 @@ import type { LucideIcon } from "lucide-react";
 
 interface StatusBadgeProps {
   status: BackupStatus | 'N/A';
+  onClick?: () => void;
 }
 
 interface StatusConfig {
@@ -15,7 +16,7 @@ interface StatusConfig {
   animate?: string;
 }
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+export function StatusBadge({ status, onClick }: StatusBadgeProps) {
   const statusConfig: Record<BackupStatus | 'N/A', StatusConfig> = {
     Success: { icon: CheckCircle2, color: "bg-green-500 hover:bg-green-600", text: "text-green-50" },
     Failed: { icon: XCircle, color: "bg-red-500 hover:bg-red-600", text: "text-red-50" },
@@ -28,7 +29,17 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const IconComponent = config.icon;
 
   return (
-    <Badge variant="default" className={cn("flex items-center gap-1.5 whitespace-nowrap", config.color, config.text)}>
+    <Badge 
+      variant="default" 
+      className={cn(
+        "flex items-center gap-1.5 whitespace-nowrap cursor-pointer", 
+        config.color, 
+        config.text,
+        onClick ? "hover:opacity-90" : ""
+      )}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+    >
       <IconComponent className={cn("h-3.5 w-3.5", config.animate)} />
       <span>{status}</span>
     </Badge>
