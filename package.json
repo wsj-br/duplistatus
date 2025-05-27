@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
   "packageManager": "pnpm@10.11.0",
   "engines": {
@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "clear-db": "tsx scripts/clear-db.ts",
-    "test-lastbackup": "tsx scripts/test-lastbackup.ts", 
+    "test-lastbackup": "tsx scripts/test-lastbackup.ts",
     "release:patch": "pnpm version patch",
     "release:minor": "pnpm version minor",
     "release:major": "pnpm version major"
