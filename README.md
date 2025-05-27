@@ -12,6 +12,7 @@ A web application for monitoring and visualizing backup operations from [Duplica
 - **Collect Logs**: Collect backup logs directly from the Duplicaty servers.
 - **Dark/Light Theme**: Toggle between dark and light themes for comfortable viewing
 - **API Access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
+- **Container**: Run inside a container (images in Docker Hub and GitHub Container Registry)
 
 ## Installation
 
@@ -19,7 +20,17 @@ The application can be deployed using Docker or
 [Portainer Stacks](https://docs.portainer.io/user/docker/stacks). 
 
 
+# Container images:
+
+You can use the images from:
+ - **Docker Hub**:  `wsjbr/duplistatus:latest`
+ - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
+
 ### Option 1: Using Docker Compose
+
+This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker-compose.yml` file to define and run the container with all its settings.
+
+Create a file named `docker-compose.yml` with the following content:
 
 ```yaml
 services:
@@ -47,7 +58,22 @@ volumes:
     name: duplistatus_data 
 ```
 
-### Option 2: Using Portainer Stacks (Github)
+After creating the file, run:
+```bash
+docker-compose up -d
+```
+
+The application will be available at `http://localhost:9666`
+
+### Option 2: Using Portainer Stacks (Docker Compose)
+
+1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
+2. Name your stack (e.g., "duplistatus")
+3. Choose "Build method" as "Web editor"
+4. Copy and paste the Docker Compose configuration from Option 1 into the web editor
+5. Click "Deploy the stack"
+
+### Option 3: Using Portainer Stacks (GitHub Repository)
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
 2. Name your stack (e.g., "duplistatus")
@@ -58,7 +84,7 @@ volumes:
 5. In the "Compose path" field, enter: `docker-compose.yml`
 6. Click "Deploy the stack"
 
-### Option 3: Using Docker CLI
+### Option 4: Using Docker CLI
 
 ```bash
 docker run -d \
@@ -203,90 +229,6 @@ will show:
 
 <br><br>
 
-# Development / Running from source
-
-## Prerequisites
-
-- docker / docker compose
-- Node.js 18.x or later
-- pnpm 10.x or later (install with `npm install -g pnpm`)
-- SQLite3
-
-# Steps
-
-1. Clone the repository:
-```bash
-git clone https://github.com/wsj-br/duplistatus.git
-cd duplistatus
-```
-
-2. Install dependencies (debian/ubuntu):
-```bash
-sudo apt update
-sudo apt install nodejs npm sqlite3 -y
-sudo npm install -g pnpm
-pnpm install
-```
-
-
-3. Start the development server:
-```bash
-pnpm run dev
-```
-
-4. Start the production server:
-```bash
-pnpm start
-```
-
-5. Start a docker stack (docker compose)
-
-```bash
-docker compose up --build -d
-```
-<br><br>
-
-## Test Scripts
-
-The project includes several test scripts to help with development and testing:
-
-### Generate Test Data
-```bash
-pnpm run generate-test-data
-```
-This script generates and uploads test backup data for multiple machines. 
-
-### Test Last Backup Endpoint
-```bash
-pnpm run test-lastbackup [machineName]
-```
-Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
-
-### Clear Database
-```bash
-pnpm run clear-db
-```
-Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
-
-### Clean build artifacts and dependencies
-```bash
-scripts/clear-workspace.sh
-```
-Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
-- `node_modules/` directory
-- `.next/` build directory
-- `dist/` directory
-- All docker build cache and perform a docker system prune
-- Any other build cache files
-
-### Generate the logo/favicon and banner from SVG images
-```bash
-scripts/convert_svg_logo.sh
-```
-
-> The svg files are located in the `docs` folder.
-
-<br><br>
 
 # API Endpoints
 
@@ -366,6 +308,11 @@ The following endpoints are available:
     "secondsSinceLastBackup": 264
   }
   ```
+<br><br>
+
+# Development
+
+Detailed instructions to download the source code, change, debug and run in development mode (debug) are provided in the file [DEVELOPMENT.md](DEVELOPMENT.md)
 
 <br><br>
 

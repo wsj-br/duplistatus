@@ -20,7 +20,8 @@
     "test-lastbackup": "tsx scripts/test-lastbackup.ts",
     "release:patch": "pnpm version patch",
     "release:minor": "pnpm version minor",
-    "release:major": "pnpm version major"
+    "release:major": "pnpm version major",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.10",
