@@ -127,13 +127,13 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
                 </TableCell>
                 <TableCell>
                   {hasNoMessages(backup) ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="cursor-not-allowed">
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger>
+                        <div className="cursor-default">
                           <StatusBadge status={backup.status} />
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent side="top" align="center">
                         <p>No messages were received for this backup.</p>
                       </TooltipContent>
                     </Tooltip>

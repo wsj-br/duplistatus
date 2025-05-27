@@ -32,7 +32,7 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
     <Badge 
       variant="default" 
       className={cn(
-        "flex items-center gap-1.5 whitespace-nowrap cursor-pointer", 
+        "flex items-center gap-1.5 whitespace-nowrap", 
         config.color, 
         config.text,
         onClick ? "hover:opacity-90" : ""
