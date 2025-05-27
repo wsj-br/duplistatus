@@ -17,7 +17,10 @@
     "typecheck": "tsc --noEmit",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "clear-db": "tsx scripts/clear-db.ts",
-    "test-lastbackup": "tsx scripts/test-lastbackup.ts"
+    "test-lastbackup": "tsx scripts/test-lastbackup.ts", 
+    "release:patch": "pnpm version patch",
+    "release:minor": "pnpm version minor",
+    "release:major": "pnpm version major"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.10",
