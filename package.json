@@ -10,6 +10,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev --turbopack -p 9666",
+    "dev-alt": "next dev --turbopack -p 8666",
     "build": "next build",
     "start": "NODE_ENV=production PORT=9666 NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "next lint",

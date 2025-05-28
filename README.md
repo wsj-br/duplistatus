@@ -116,12 +116,17 @@ docker run -d \
 
 
 
-2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these two options:
+2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options:
 
 ```bash
 --send-http-url=http://my.local.server:9666/upload
 --send-http-result-output-format=Json
+--send-http-log-level=Information
 ```
+> [!NOTE] Alternatively you can include this configuration in each backup `Advanced Options`. 
+>    If you ommit `--send-http-log-level` no message will be sent to dupistatus, just the statistics.
+>    you can use `--send-http-max-log-lines` to limite the number of messages sent. 
+>    Example, limit in 20 messages: `--send-http-max-log-lines=20`
 
 <br>
 

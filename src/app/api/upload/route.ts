@@ -96,7 +96,8 @@ export async function POST(request: NextRequest) {
         errors: data.Data.ErrorsActualLength || 0,
 
         // Message arrays stored as JSON blobs
-        messages_array: data.Data.Messages ? JSON.stringify(data.Data.Messages) : null,
+        messages_array:  data.LogLines ? JSON.stringify(data.LogLines) : // look for LogLines or Data.Messages
+                        (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null), 
         warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
         errors_array: data.Data.Errors ? JSON.stringify(data.Data.Errors) : null,
 

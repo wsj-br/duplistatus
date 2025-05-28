@@ -25,9 +25,25 @@ pnpm install
 
 
 3. Start the development server:
+
+For the default tcp port (9666)
 ```bash
 pnpm run dev
 ```
+
+For an alternative TCP port (8666)
+```bash
+pnpm run dev-alt
+```
+
+
+### Development Mode Features
+
+When running in development mode (`pnpm run dev`), the application includes additional features to help with debugging and development:
+
+- **JSON File Storage**: All received backup data is stored as JSON files in the `data` directory. These files are named using the timestamp of when they were received, in the format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC time). This feature is only active in development mode and helps with debugging by preserving the raw data received from Duplicati.
+
+-  **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.
 
 4. Build the application for production
 ```bash
