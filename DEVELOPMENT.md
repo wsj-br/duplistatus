@@ -140,7 +140,7 @@ These commands will:
 
 After running a release command, follow these steps to create a GitHub release:
 
-1. Go to the GitHub repository
+1. Go to the [GitHub repository](https://github.com/wsj-br/duplistatus)
 2. Click on "Releases" in the right sidebar
 3. Click "Create a new release"
 4. Select the tag that was just created (e.g., v1.2.3)
