@@ -123,7 +123,8 @@ docker run -d \
 --send-http-result-output-format=Json
 --send-http-log-level=Information
 ```
-> [!NOTE] Alternatively you can include this configuration in each backup `Advanced Options`. 
+> [!NOTE]
+>    Alternatively you can include this configuration in each backup `Advanced Options`. 
 >    If you ommit `--send-http-log-level` no message will be sent to dupistatus, just the statistics.
 >    you can use `--send-http-max-log-lines` to limite the number of messages sent. 
 >    Example, limit in 20 messages: `--send-http-max-log-lines=20`
