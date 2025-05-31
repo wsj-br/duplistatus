@@ -1,17 +1,17 @@
 ![duplistatus](docs/duplistatus_banner.png)
 
-# duplistatus - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
+# **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-A web application for monitoring and visualizing backup operations from [Duplicati](https://github.com/duplicati/duplicati). duplistatus provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines, also prividing an API endpoint to be integrated with 3rd party tools like [Homepage](https://gethomepage.dev/)
+This web application is used to monitor and visualise backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics and performance across multiple machines. It also provides an API endpoint that can be integrated with third-party tools such as the [Homepage](https://gethomepage.dev/).
 
 ## Features 
 
 - **Overview**: Real-time display of backup status for all machines
-- **Machine Details**: Detailed view of backup history for each machine
-- **Data Visualization**: Interactive charts showing backup metrics over time
-- **Collect Logs**: Collect backup logs directly from the Duplicaty servers.
-- **Dark/Light Theme**: Toggle between dark and light themes for comfortable viewing
-- **API Access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
+- **Machine details**: Detailed view of backup history for each machine
+- **Data visualisation**: Interactive charts showing backup metrics over time
+- **Collect logs**: Collect backup logs directly from the Duplicaty servers.
+- **Dark/light Theme**: Toggle between dark and light themes for comfortable viewing
+- **API access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
 - **Container**: Run inside a container (images in Docker Hub and GitHub Container Registry)
 
 ## Installation
@@ -63,11 +63,11 @@ After creating the file, run:
 docker-compose up -d
 ```
 
-The application will be available at `http://localhost:9666`
+The application will then be available at `http://localhost:9666`
 
 ### Option 2: Using Portainer Stacks (Docker Compose)
 
-1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
+1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack"
 2. Name your stack (e.g., "duplistatus")
 3. Choose "Build method" as "Web editor"
 4. Copy and paste the Docker Compose configuration from Option 1 into the web editor
@@ -106,13 +106,13 @@ docker run -d \
 # Duplicati Configuration
 
 
-1. **Allow remote access:**  login into the [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings` and allow remote access and include the list of hostnames. 
+1. **Allow remote access:**  login into the [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings` and allow remote access, including a list of hostnames (or use `*`). 
 
 ![Duplicati settings](docs/duplicati-settings.png)
 
 
 > [!WARNING]
->  Only enable remote access if your Duplicati server is protected by a secure network (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet without proper security measures could lead to unauthorized access.
+>  Only enable remote access if your Duplicati server is protected by a secure network (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet without proper security measures could lead to unauthorised access.
 
 
 
@@ -124,15 +124,15 @@ docker run -d \
 --send-http-log-level=Information
 ```
 > [!NOTE]
->    Alternatively you can include this configuration in each backup `Advanced Options`. 
->    If you ommit `--send-http-log-level` no message will be sent to dupistatus, just the statistics.
+>    Alternatively you can include this configuration in the `Advanced Options` of each backup. 
+>    If you ommit `--send-http-log-level` no message will be sent to **dupistatus**, just the statistics.
 >    you can use `--send-http-max-log-lines` to limite the number of messages sent. 
 >    For example, limit in 20 messages: `--send-http-max-log-lines=20`
 
 <br>
 
 > [!TIP]
->  click in `Edit as text` and copy the two lines above, adjusting the server name/IP.
+>  click on `Edit as text` and copy the two lines above, adjusting the server name/IP.
 
 <br>
 
@@ -143,11 +143,11 @@ docker run -d \
 
 # Homepage integration (optional)
 
-To integrate duplistatus with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from duplistatus.
+To integrate **duplistatus** with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from **duplistatus**.
 
 ## Summary 
 
-Show the overall summary of the backup data stored in the duplistatus's database. Below is a example showing how to configure this integration.
+Show the overall summary of the backup data stored in the duplistatus's database. Below is an example showing how to configure this integration.
 
 ```yaml
     - Dashboard:
@@ -182,7 +182,8 @@ Show the overall summary of the backup data stored in the duplistatus's database
               scale: 0.000000001
               suffix: GB     
 ```
-will show:
+
+Will show:
 
 <div style="padding-left: 60px;">
 
@@ -192,7 +193,7 @@ will show:
 
 ## Last backup information
 
-Show the latest backup information for a given machine/server. Below is a example showing how to configure this integration.
+Show the latest backup information for a given machine or server. The example below shows how to configure this integration.
 
 ```yaml
    - Test Machine 1:
@@ -222,7 +223,8 @@ Show the latest backup information for a given machine/server. Below is a exampl
               scale: 0.000001
               suffix: MB        
 ```
-will show:
+
+Will show:
 
 <div style="padding-left: 60px;">
 
@@ -250,7 +252,7 @@ The following endpoints are available:
 - **Endpoint**: `/api/upload`
 - **Method**: POST
 - **Description**: Uploads backup operation data for a machine
-- **Request Body**: Json sent by Duplicati with the options:
+- **Request Body**: Json sent by Duplicati with the following options:
 
   ```bash
   --send-http-url=http://my.local.server:9666/api/upload
@@ -269,8 +271,11 @@ The following endpoints are available:
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for a specific machine
 - **Parameters**:
-  - `machineId`: Machine identifier (ID or name)
+  - `machineId`: the machine identifier (ID or name)
+  
+  > [!NOTE]
   > The machine name has to be URL Encoded.
+  
 - **Response**:
   ```json
   {
@@ -318,7 +323,7 @@ The following endpoints are available:
 
 # Development
 
-Detailed instructions to download the source code, change, debug and run in development mode (debug) are provided in the file [DEVELOPMENT.md](DEVELOPMENT.md)
+Detailed instructions on how to download the source code, make changes, debug and run in development mode (debug) can be found in the file [DEVELOPMENT.md](DEVELOPMENT.md)
 
 <br><br>
 
@@ -332,8 +337,8 @@ SPDX-License-Identifier: Apache-2.0
 
 ## License Summary
 
-Licensed under the Apache License, Version 2.0 (the "License");  
-you may not use this work except in compliance with the License.  
+This work is licensed under the Apache License, Version 2.0 (the "License").
+You may not use this work except in compliance with the License.  
 You may obtain a copy of the License at:
 
 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
