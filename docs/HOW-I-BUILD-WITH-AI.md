@@ -99,11 +99,11 @@ After completing the initial prototype, I accessed the source code by clicking t
 
 ## Setup
 
-Downloaded the code from github  (git clone) to a local folder (in my case, into a Raspberry Pi 5). 
+I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running linux), installed the dependencies node.js, npm and pnpm. See more details on [DEVELOPMENT.md](../DEVELOPMENT.md).
 
-Setup [Cursor](http://www.cursor.com) and accesing it from my windows machine using SSH connection. 
+I set up Cursor to access the code folder from my Windows machine using an SSH connection.
 
-Copy a sample of the json sent by Duplicati into a file ([`database_values.json`](database_values.json)), keeping only some selected fields.
+I copied a sample of the JSON sent by Duplicati into a file called [`database_values.json`](database_values.json), clearing some unwanted fields.
 
 <br>
 
