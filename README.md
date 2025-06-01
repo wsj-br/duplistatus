@@ -109,9 +109,10 @@ The application will then be available at `http://localhost:9666`
 
 ### Option 4: Using Docker CLI
 
-```console
-# docker volume create duplistatus_data
-# docker run -d \
+```shell
+docker volume create duplistatus_data
+
+docker run -d \
   --name duplistatus \
   -p 9666:9666 \
   -v duplistatus_data:/app/data \
