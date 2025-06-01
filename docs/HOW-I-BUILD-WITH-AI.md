@@ -1,23 +1,29 @@
 # Motivation
 
-I started to use the duplicati as the backup tool for my home servers, tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), has two main requirements: (1) self-hosted; (2) expose an API to be integrated with Homepage (https://gethomepage.dev/), as I'm using it as my home lab's home page.
+I started using Duplicati as the backup tool for my home servers. I tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with [Homepage](https://gethomepage.dev/), as I use it for my home lab's homepage.
 
-Also tried to connect directly to each Duplicati server on the network, but the authentication method of the Duplicati server was not compatible with Homepage. 
+I also tried connecting directly to each Duplicati server on the network, but the authentication method of the Duplicati server was not compatible with Homepage (or I was not able to configure it properly).
 
-I was also trying some AI code tools, so I decided to give a try using AI to build this tools for me. Here is the process I used...
+Since I was also experimenting with AI code tools, I decided to try using AI to build this tool for me. Here is the process I used...
 
+<br>
 
 # Tools used
 
 1. for the UI: [Google's Firebase Studio](https://firebase.studio/)
 2. for the implementation: Cursor (https://www.cursor.com/)
 
+> [!NOTE]
+> I used Firebase for the UI, but you can also use [v0.dev](https://v0.dev/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilit, Windsurf, ...
 
+<br>
 
 # UI
 
-Create a new project in Firebase Studio [https://studio.firebase.google.com/] and used this prompt in the "Prototype an app with AI"
+Create a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI"
 
+
+<br>
 
 > A web dashboard application using tailwind/react to consolidate in a sqllite3 database the backup result sent by the duplicati backup solution using the option --send-http-url (json format) of several machines, keep tracking of the status of the backup, size, upload sizes.
 > 
@@ -35,15 +41,17 @@ Create a new project in Firebase Studio [https://studio.firebase.google.com/] an
 > 
 > "{ "Data": { "DeletedFiles": 0, "DeletedFolders": 0, "ModifiedFiles": 0, "ExaminedFiles": 15399, "OpenedFiles": 1861, "AddedFiles": 1861, "SizeOfModifiedFiles": 0, "SizeOfAddedFiles": 13450481, "SizeOfExaminedFiles": 11086692615, "SizeOfOpenedFiles": 13450481, "NotProcessedFiles": 0, "AddedFolders": 419, "TooLargeFiles": 0, "FilesWithError": 0, "ModifiedFolders": 0, "ModifiedSymlinks": 0, "AddedSymlinks": 0, "DeletedSymlinks": 0, "PartialBackup": false, "Dryrun": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "EndTime": "2025-04-21T23:46:38.3568274Z", "BeginTime": "2025-04-21T23:45:46.9712217Z", "Duration": "00:00:51.3856057", "WarningsActualLength": 0, "ErrorsActualLength": 0, "BackendStatistics": { "BytesUploaded": 8290314, "BytesDownloaded": 53550393, "KnownFileSize": 9920312634, "LastBackupDate": "2025-04-22T00:45:46+01:00", "BackupListCount": 6, "ReportedQuotaError": false, "ReportedQuotaWarning": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "BeginTime": "2025-04-21T23:45:46.9712252Z", "Duration": "00:00:00", "WarningsActualLength": 0, "ErrorsActualLength": 0 } }, "Extra": { "OperationName": "Backup", "machine-id": "66f5ffc7ff474a73a3c9cba4ac7bfb65", "machine-name": "WSJ-SER5", "backup-name": "WSJ-SER5 Local files", "backup-id": "DB-2" } } "
 
+<br>
 
 
-this generated an App Blueprint, I modified the generate slightly before clicking in "Prototype this App", see below: 
+this generated an App Blueprint, I then modified it slightly (as below) before clicking in `Prototype this App`: 
 
 ![appblueprint](app-blueprint.png)
 
 
+and later used these prompts to adjust/refine the design and behaviour:
 
-and later these prompts to adjust the first version
+<br>
 
 > remove the button "view details" from the dashboard overview page and the link on the machine name, if the user click anywhere on the row, it will show the detail page.
 
@@ -67,12 +75,16 @@ and later these prompts to adjust the first version
 > in the dashboard overview put last backup date before last backup status
 
 
-After iterating through these prompts, Firebase generated the final prototype as shown in the screenshots below:
+<br>
+
+After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
 
 ![prototype](screen-prototype.png)
 
 ![prototype-detail](screen-prototype-detail.png)
 
+> [!NOTE]
+> One interesting point was that since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
 
 After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
 
@@ -81,15 +93,17 @@ After completing the initial prototype, I accessed the source code by clicking t
 
 # Backend
 
+<br>
+
 ## Setup
 
 Downloaded the code from github  (git clone) to a local folder (in my case, into a Raspberry Pi 5). 
 
-Setup [Cursor](http://www.cursor.com) and accesing it from my windows machine using SSH connection
+Setup [Cursor](http://www.cursor.com) and accesing it from my windows machine using SSH connection. 
 
 Copy a sample of the json sent by Duplicati into a file ([`database_values.json`](database_values.json)), keeping only some selected fields.
 
-<br><br>
+<br>
 
 ## Implementation
 
@@ -147,7 +161,7 @@ The AI generated the following prompt:
 
 Copied the generated prompt to the clipboard.
 
-### The Journey Begins...
+### Start the implementation journey
 
 Created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
 
