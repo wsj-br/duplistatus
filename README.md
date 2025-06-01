@@ -9,10 +9,10 @@ This web application is used to monitor and visualise backup operations from [Du
 - **Overview**: Real-time display of backup status for all machines
 - **Machine details**: Detailed view of backup history for each machine
 - **Data visualisation**: Interactive charts showing backup metrics over time
-- **Collect logs**: Collect backup logs directly from the Duplicaty servers.
+- **Collect logs**: Collect backup logs directly from the Duplicati servers.
 - **Dark/light Theme**: Toggle between dark and light themes for comfortable viewing
-- **API access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
-- **Container**: Run inside a container (images in Docker Hub and GitHub Container Registry)
+- **API access**: API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that suports RESTful APIs.
+- **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry)
 
 <br><br>
 
@@ -76,8 +76,8 @@ volumes:
 ```
 
 After creating the file, run:
-```bash
-docker-compose -f duplistatus.yml up -d
+```console
+# docker-compose -f duplistatus.yml up -d
 ```
 
 The application will then be available at `http://localhost:9666`
@@ -109,10 +109,9 @@ The application will then be available at `http://localhost:9666`
 
 ### Option 4: Using Docker CLI
 
-```shell
-docker volume create duplistatus_data
-
-docker run -d \
+```console
+# docker volume create duplistatus_data
+# docker run -d \
   --name duplistatus \
   -p 9666:9666 \
   -v duplistatus_data:/app/data \
@@ -122,7 +121,7 @@ docker run -d \
   wsjbr/duplistatus:latest
 ```
 
-- The application will be available at `http://localhost:9666`
+- The application will be available at `http://localhost:9666`.
 - The `duplistatus_data` volume will be used for persistent storage.
 
 
