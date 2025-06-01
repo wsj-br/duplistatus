@@ -149,7 +149,7 @@ Copied the generated prompt to the clipboard.
 
 ### The Journey Begins...
 
-Created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V.
+Created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
 
 After the plan was generated, typed `please, implement this plan` in the chat to begin implementation.
 
@@ -162,10 +162,10 @@ After the plan was generated, typed `please, implement this plan` in the chat to
 
 - Some models can get stuck when fixing bugs. "claude-3.5" and "claude-4" are usually better, but sometimes you have to try another model (GPT, Gemini, etc.).
 For complex bugs or errors, use a prompt to analyse possible causes of the error instead of simply asking to fix it.
-- When making complex modifications, use a prompt to create a plan and then ask it to implement it. This always works better.
+- When making complex modifications, use a prompt to create a plan and then ask the AI agent to implement it. This always works better.
 - Be specific when changing the source code. If possible, select the relevant part of the code in the editor and press Ctrl+L to include it in the chat as context.
 - Also include a reference to the file you are mentioning in the chat to help the AI agent focus on the relevant part of the code and avoic making changes in other parts of the code.
 - I have the tendency to anthropomorphise the AI agent given that it persistently uses 'we', 'our code' and 'would you like me to...'. This is also to improve my odds of survival in case (or [when](https://ai-2027.com/)) Skynet becomes sentient and the Terminator is invented.
-- Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions (prompts). 
+- Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions to the AI agent. 
 
 
