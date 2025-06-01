@@ -13,6 +13,8 @@ Since I was also experimenting with AI code tools, I decided to try using AI to 
 1. for the UI: [Google's Firebase Studio](https://firebase.studio/)
 2. for the implementation: Cursor (https://www.cursor.com/)
 
+<br>
+
 > [!NOTE]
 > I used Firebase for the UI, but you can also use [v0.dev](https://v0.dev/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
 
