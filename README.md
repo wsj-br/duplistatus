@@ -14,17 +14,34 @@ This web application is used to monitor and visualise backup operations from [Du
 - **API access**: API endpoints to expose the data to [Homepage](https://gethomepage.dev/) or any other tool.
 - **Container**: Run inside a container (images in Docker Hub and GitHub Container Registry)
 
+<br><br>
+
+## Screenshots
+
+### Dashboard
+![dashboard](docs/screen-dashboard.png)
+
+### Machine detail
+![machine-detail](docs/screen-machine.png)
+
+### Backup detail
+![backup-detail](docs/screen-backup.png)
+
+<br><br>
+
 ## Installation
 
 The application can be deployed using Docker or 
 [Portainer Stacks](https://docs.portainer.io/user/docker/stacks). 
 
 
-# Container images:
+### Container images:
 
 You can use the images from:
  - **Docker Hub**:  `wsjbr/duplistatus:latest`
  - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
+
+<br>
 
 ### Option 1: Using Docker Compose
 
@@ -324,6 +341,8 @@ The following endpoints are available:
 # Development
 
 Detailed instructions on how to download the source code, make changes, debug and run in development mode (debug) can be found in the file [DEVELOPMENT.md](DEVELOPMENT.md)
+
+This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH_AI.md)
 
 <br><br>
 

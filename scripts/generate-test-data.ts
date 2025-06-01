@@ -78,14 +78,43 @@ function generateRandomFileStats() {
   };
 }
 
-// Helper function to generate a backup payload
+// Add this helper function to generate message arrays
+function generateMessageArrays(warningsCount: number, errorsCount: number, messagesCount: number) {
+  const warnings = Array.from({ length: warningsCount }, (_, i) => 
+    `Warning ${(i + 1).toString().padStart(3, '0')}`
+  );
+  
+  const errors = Array.from({ length: errorsCount }, (_, i) => 
+    `Error ${(i + 1).toString().padStart(3, '0')}`
+  );
+  
+  const messages = Array.from({ length: messagesCount }, (_, i) => 
+    `Message ${(i + 1).toString().padStart(3, '0')}`
+  );
+
+  return { warnings, errors, messages };
+}
+
+// Modify the generateBackupPayload function
 function generateBackupPayload(machine: typeof machines[0], backupNumber: number, intervalIndex: number, totalIntervals: number) {
   const beginTime = generateIntervalDate(intervalIndex, totalIntervals);
-  const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000); // Add up to 2 hours
+  const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000);
   const duration = generateRandomDuration();
   const stats = generateRandomFileStats();
   const hasWarnings = Math.random() > 0.7; // 30% chance of warnings
   const hasErrors = Math.random() > 0.9; // 10% chance of errors
+  
+  // Generate message counts
+  const warningsCount = hasWarnings ? Math.floor(Math.random() * 5) + 1 : 0;
+  const errorsCount = hasErrors ? Math.floor(Math.random() * 3) + 1 : 0;
+  const messagesCount = Math.floor(Math.random() * 20) + 5; // 5-24 messages
+  
+  // Generate the message arrays
+  const { warnings, errors, messages } = generateMessageArrays(
+    warningsCount,
+    errorsCount,
+    messagesCount
+  );
 
   return {
     Data: {
@@ -116,9 +145,12 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       BeginTime: beginTime,
       EndTime: endTime.toISOString(),
       Duration: duration,
-      WarningsActualLength: hasWarnings ? Math.floor(Math.random() * 5) + 1 : 0,
-      ErrorsActualLength: hasErrors ? Math.floor(Math.random() * 3) + 1 : 0,
-      MessagesActualLength: Math.floor(Math.random() * 20) + 5, // Random messages count between 5-24
+      Warnings: warnings,
+      Errors: errors,
+      Messages: messages,
+      WarningsActualLength: warnings.length,
+      ErrorsActualLength: errors.length,
+      MessagesActualLength: messages.length,
       BackendStatistics: {
         BytesUploaded: stats.uploadedSize,
         BytesDownloaded: Math.floor(stats.uploadedSize * 0.1),

@@ -12,3 +12,4 @@
 - Use a grid-based layout for responsiveness and easy content organization.
 - Employ simple and clear icons to represent backup status, file types, and actions.
 - Subtle transitions and animations for loading states and data updates.
+
