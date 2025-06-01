@@ -300,7 +300,7 @@ The following endpoints are available:
   - `machineId`: the machine identifier (ID or name)
 
 > [!NOTE]
-> The machine name has to be URL Encoded.
+> The machine identifier has to be URL Encoded.
   
 - **Response**:
   ```json
