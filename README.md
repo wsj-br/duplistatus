@@ -353,7 +353,7 @@ The following endpoints are available:
 
 Detailed instructions on how to download the source code, make changes, debug and run in development mode (debug) can be found in the file [DEVELOPMENT.md](DEVELOPMENT.md)
 
-This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH_AI.md)
+This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH-AI.md)
 
 <br><br>
 
