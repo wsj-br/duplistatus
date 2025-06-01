@@ -298,9 +298,9 @@ The following endpoints are available:
 - **Description**: Retrieves the latest backup information for a specific machine
 - **Parameters**:
   - `machineId`: the machine identifier (ID or name)
-  
-  > [!NOTE]
-  > The machine name has to be URL Encoded.
+
+> [!NOTE]
+> The machine name has to be URL Encoded.
   
 - **Response**:
   ```json
