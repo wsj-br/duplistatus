@@ -86,7 +86,7 @@ After iterating through these prompts, Firebase generated the prototype as shown
 ![prototype-detail](screen-prototype-detail.png)
 
 > [!NOTE]
-> One interesting point was that since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
+> One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
 
 After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
 
