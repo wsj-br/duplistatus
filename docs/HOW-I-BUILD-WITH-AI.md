@@ -147,7 +147,7 @@ The AI generated the following prompt:
 
 Copied the generated prompt to the clipboard.
 
-### Jouney begins...
+### The Journey Begins...
 
 Created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V.
 
