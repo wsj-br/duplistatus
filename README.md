@@ -281,6 +281,7 @@ The following endpoints are available:
   ```bash
   --send-http-url=http://my.local.server:9666/api/upload
   --send-http-result-output-format=Json
+  --send-http-log-level=Information
   ```
   
 - **Response**: 
