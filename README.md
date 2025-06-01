@@ -76,8 +76,8 @@ volumes:
 ```
 
 After creating the file, run:
-```console
-# docker-compose -f duplistatus.yml up -d
+```bash
+docker-compose -f duplistatus.yml up -d
 ```
 
 The application will then be available at `http://localhost:9666`
