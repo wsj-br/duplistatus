@@ -75,7 +75,7 @@ volumes:
     name: duplistatus_data 
 ```
 
-After creating the file, run:
+After creating the file, execute the `docker-compose` command to start the container in background (`-d`):
 ```bash
 docker-compose -f duplistatus.yml up -d
 ```
