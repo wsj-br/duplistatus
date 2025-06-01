@@ -82,6 +82,8 @@ docker-compose up -d
 
 The application will then be available at `http://localhost:9666`
 
+<br>
+
 ### Option 2: Using Portainer Stacks (Docker Compose)
 
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack"
@@ -89,6 +91,8 @@ The application will then be available at `http://localhost:9666`
 3. Choose "Build method" as "Web editor"
 4. Copy and paste the Docker Compose configuration from Option 1 into the web editor
 5. Click "Deploy the stack"
+
+<br>
 
 ### Option 3: Using Portainer Stacks (GitHub Repository)
 
@@ -100,6 +104,8 @@ The application will then be available at `http://localhost:9666`
 
 5. In the "Compose path" field, enter: `docker-compose.yml`
 6. Click "Deploy the stack"
+
+<br>
 
 ### Option 4: Using Docker CLI
 
@@ -263,7 +269,8 @@ The following endpoints are available:
 - [Get Latest Backup](#get-latest-backup)
 - [Get Overall Summary](#get-overall-summary)
 
-## Upload Backup Data
+
+<br>
 
 ## Upload Backup Data
 - **Endpoint**: `/api/upload`
@@ -282,6 +289,8 @@ The following endpoints are available:
     "success": true
   }
   ```
+
+<br>
 
 ## Get Latest Backup
 - **Endpoint**: `/api/lastbackup/:machineId`
@@ -320,6 +329,8 @@ The following endpoints are available:
     "status": 200
   }
   ```
+
+<br>
 
 ## Get Overall Summary
 - **Endpoint**: `/api/summary`
