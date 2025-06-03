@@ -14,7 +14,7 @@
 
 # testing
 /coverage
-/data/*
+data/*
 backups.db
 
 # next.js
@@ -27,6 +27,9 @@ backups.db
 # misc
 .DS_Store
 *.pem
+
+# development files
+.specstory/*
 
 
 # debug

@@ -27,7 +27,8 @@ backups.db
 *.db
 *.sqlite
 *.sqlite3
-
+data/*
+.specstory/*
 
 # Test files
 __tests__

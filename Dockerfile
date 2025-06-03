@@ -14,6 +14,9 @@ RUN apk add --no-cache \
 # Set working directory
 WORKDIR /app
 
+# Create data directory 
+RUN mkdir -p /app/data
+
 # Copy package files first for better caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
@@ -23,14 +26,6 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Create data directory with proper permissions
-RUN mkdir -p /app/data && \
-    chown -R node:node /app/data
-
-# Create cache directory with proper permissions
-RUN mkdir -p /app/.next/cache && \
-    chown -R node:node /app/.next/cache
-
 # Build the application
 RUN pnpm run build
 
@@ -38,7 +33,11 @@ RUN pnpm run build
 RUN pnpm prune --prod
 
 # Clean up build tools to reduce image size
-RUN apk del python3 make g++
+RUN apk del curl python3 make g++
+
+# adjust permissions for the data directory
+RUN chown -R node:node /app/data
+RUN rm -f /app/data/backups.*
 
 # Set environment variables
 ENV NODE_ENV=production \
@@ -49,9 +48,6 @@ ENV NODE_ENV=production \
 LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplistatus
 LABEL org.opencontainers.image.description="duplistatus Container Image"
 LABEL org.opencontainers.image.licenses=Apache-2.0
-
-# Switch to non-root user
-USER node
 
 # Expose the port
 EXPOSE 9666

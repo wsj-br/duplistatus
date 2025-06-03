@@ -19,6 +19,7 @@ services:
       - PORT=9666
       - NEXT_TELEMETRY_DISABLED=1
       - TZ=UTC
+    user: node
     healthcheck:
       test: ["CMD", "curl", "-f", "-s", "http://localhost:3000/api/health"]
       interval: 30s
