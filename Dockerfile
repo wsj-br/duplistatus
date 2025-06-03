@@ -33,7 +33,7 @@ RUN pnpm run build
 RUN pnpm prune --prod
 
 # Clean up build tools to reduce image size
-RUN apk del curl python3 make g++
+RUN apk del python3 make g++
 
 # adjust permissions for the data directory
 RUN chown -R node:node /app/data
