@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,8 @@ export function BackupCollectMenu() {
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState("8200");
   const [password, setPassword] = useState("");
+  const [useHttps, setUseHttps] = useState(false);
+  const [allowSelfSigned, setAllowSelfSigned] = useState(false);
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const { toast } = useToast();
   const router = useRouter();
@@ -53,7 +56,9 @@ export function BackupCollectMenu() {
         body: JSON.stringify({ 
           hostname, 
           port: parseInt(port) || 8200,
-          password 
+          password,
+          protocol: useHttps ? 'https' : 'http',
+          allowSelfSigned
         }),
       });
 
@@ -114,6 +119,41 @@ export function BackupCollectMenu() {
             </p>
           </div>
           <div className="grid gap-4">
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="useHttps"
+                  checked={useHttps}
+                  onCheckedChange={(checked) => {
+                    setUseHttps(checked as boolean);
+                    if (!checked) setAllowSelfSigned(false);
+                  }}
+                  disabled={isCollecting}
+                />
+                <Label
+                  htmlFor="useHttps"
+                  className="text-sm font-normal"
+                >
+                  Use HTTPS
+                </Label>
+              </div>
+              {useHttps && (
+                <div className="flex items-center space-x-2 ml-6">
+                  <Checkbox
+                    id="allowSelfSigned"
+                    checked={allowSelfSigned}
+                    onCheckedChange={(checked) => setAllowSelfSigned(checked as boolean)}
+                    disabled={isCollecting}
+                  />
+                  <Label
+                    htmlFor="allowSelfSigned"
+                    className="text-sm font-normal"
+                  >
+                    Allow self-signed certificates
+                  </Label>
+                </div>
+              )}
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="hostname">Hostname</Label>
               <Input

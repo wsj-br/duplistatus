@@ -35,7 +35,7 @@ RUN pnpm prune --prod
 # Clean up build tools to reduce image size
 RUN apk del python3 make g++
 
-# adjust permissions for the data directory
+# adjust permissions for the data directory and clean up
 RUN chown -R node:node /app/data
 RUN rm -f /app/data/backups.*
 

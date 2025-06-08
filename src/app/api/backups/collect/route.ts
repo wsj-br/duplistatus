@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { dbOps, parseDurationToSeconds } from '@/lib/db';
 import { dbUtils } from '@/lib/db-utils';
 import { v4 as uuidv4 } from 'uuid';
+import https from 'https';
+import http from 'http';
+
+// Add type for fetch options
+type FetchOptions = {
+  agent?: https.Agent;
+};
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -25,9 +32,45 @@ interface LogEntry {
   Message: string;
 }
 
+// Helper function to make HTTP/HTTPS requests
+async function makeRequest(url: string, options: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const protocol = url.startsWith('https') ? https : http;
+    const req = protocol.request(url, options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsedData = JSON.parse(data);
+          const statusCode = res.statusCode ?? 500;
+          resolve({
+            ok: statusCode >= 200 && statusCode < 300,
+            status: statusCode,
+            statusText: res.statusMessage ?? 'Unknown status',
+            json: async () => parsedData
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+    req.on('error', reject);
+    if (options.body) {
+      req.write(options.body);
+    }
+    req.end();
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { hostname, port = 8200, password } = await request.json();
+    const { 
+      hostname, 
+      port = 8200, 
+      password, 
+      protocol = 'http',
+      allowSelfSigned = false
+    } = await request.json();
 
     if (!hostname) {
       return NextResponse.json(
@@ -43,16 +86,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const baseUrl = `http://${hostname}:${port}`;
+    // Validate protocol
+    if (protocol !== 'http' && protocol !== 'https') {
+      return NextResponse.json(
+        { error: 'Protocol must be either "http" or "https"' },
+        { status: 400 }
+      );
+    }
+
+    const baseUrl = `${protocol}://${hostname}:${port}`;
     const loginEndpoint = '/api/v1/auth/login';
     const apiSysteminfoEndpoint = '/api/v1/systeminfo';
     const apiBackupsEndpoint = '/api/v1/backups';
     const apiLogBaseEndpoint = '/api/v1/backup';
 
+    // Create request options
+    const requestOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      ...(protocol === 'https' && {
+        agent: new https.Agent({
+          rejectUnauthorized: !allowSelfSigned
+        })
+      })
+    };
+
     // Step 1: Login and get token
-    const loginResponse = await fetch(`${baseUrl}${loginEndpoint}`, {
+    const loginResponse = await makeRequest(`${baseUrl}${loginEndpoint}`, {
+      ...requestOptions,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         Password: password,
         RememberMe: true
@@ -71,10 +135,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: Get system info
-    const systemInfoResponse = await fetch(`${baseUrl}${apiSysteminfoEndpoint}`, {
+    const systemInfoResponse = await makeRequest(`${baseUrl}${apiSysteminfoEndpoint}`, {
+      ...requestOptions,
       headers: {
-        'Authorization': `Bearer ${authToken}`,
-        'Accept': 'application/json'
+        ...requestOptions.headers,
+        'Authorization': `Bearer ${authToken}`
       }
     });
 
@@ -97,10 +162,11 @@ export async function POST(request: NextRequest) {
       });
   
     // Step 3: Get list of backups
-    const backupsResponse = await fetch(`${baseUrl}${apiBackupsEndpoint}`, {
+    const backupsResponse = await makeRequest(`${baseUrl}${apiBackupsEndpoint}`, {
+      ...requestOptions,
       headers: {
-        'Authorization': `Bearer ${authToken}`,
-        'Accept': 'application/json'
+        ...requestOptions.headers,
+        'Authorization': `Bearer ${authToken}`
       }
     });
 
@@ -123,10 +189,11 @@ export async function POST(request: NextRequest) {
     for (const backupId of backupIds) {
       try {
         const logEndpoint = `${apiLogBaseEndpoint}/${backupId}/log?pagesize=999`;
-        const logResponse = await fetch(`${baseUrl}${logEndpoint}`, {
+        const logResponse = await makeRequest(`${baseUrl}${logEndpoint}`, {
+          ...requestOptions,
           headers: {
-            'Authorization': `Bearer ${authToken}`,
-            'Accept': 'application/json'
+            ...requestOptions.headers,
+            'Authorization': `Bearer ${authToken}`
           }
         });
 

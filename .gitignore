@@ -29,7 +29,7 @@ backups.db
 *.pem
 
 # development files
-.specstory/*
+.specstory/**
 
 
 # debug

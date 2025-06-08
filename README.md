@@ -9,7 +9,7 @@ This web application is used to monitor and visualise backup operations from [Du
 - **Overview**: Real-time display of backup status for all machines
 - **Machine details**: Detailed view of backup history for each machine
 - **Data visualisation**: Interactive charts showing backup metrics over time
-- **Collect logs**: Collect backup logs directly from the Duplicati servers.
+- **Collect logs**: Collect backup logs directly from the Duplicati servers (http/https).
 - **Dark/light Theme**: Toggle between dark and light themes for comfortable viewing
 - **API access**: API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that suports RESTful APIs.
 - **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry)
@@ -144,7 +144,7 @@ docker run -d \
 2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options:
 
 ```bash
---send-http-url=http://my.local.server:9666/upload
+--send-http-url=http://my.local.server:9666/api/upload
 --send-http-result-output-format=Json
 --send-http-log-level=Information
 ```
