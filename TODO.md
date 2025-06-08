@@ -7,7 +7,7 @@
 
 ## changes
 
-- handle the status "Fatal"  with a red badge, now it's grey with a ? 
+
 - copy the chart again (moved to frontpage) to the machine detail page
 
 
@@ -29,3 +29,7 @@
 - fix documentation on duplicati server configuration (upload URL incorrected). Thanks @Taomyn. ✅
 - add support to collect backups logs using HTTPS ✅
 
+# implemented on version 0.3.9
+
+- handle the status "Fatal"  with a red badge instead of the default gray.
+- added a link to github repo on the footer of the pages

@@ -6,6 +6,7 @@ import { ConfigProvider } from '@/contexts/config-context';
 import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/use-toast";
+import { GithubLink } from '@/components/github-link';
 
 const geistSans = localFont({
   src: [
@@ -102,6 +103,7 @@ export default function RootLayout({
               <div className="relative flex min-h-screen flex-col">
                 <AppHeader />
                 <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
+                <GithubLink />
               </div>
               <Toaster />
             </ToastProvider>

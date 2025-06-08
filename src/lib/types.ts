@@ -1,4 +1,4 @@
-export type BackupStatus = "Success" | "Failed" | "InProgress" | "Warning";
+export type BackupStatus = "Success" | "Failed" | "InProgress" | "Warning" | "Fatal";
 
 export interface Backup {
   id: string;
