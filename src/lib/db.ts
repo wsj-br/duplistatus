@@ -20,11 +20,11 @@ let db: Database.Database;
 
 try {
   const dbPath = path.join(dataDir, 'backups.db');
-  log(`Initializing database at: ${dbPath}`);
+  // log(`Initializing database at: ${dbPath}`);
   
   db = new Database(dbPath, {
     // Add verbose logging in development
-    verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
+    // verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
     // Add timeout and other options for better reliability
     timeout: 5000,
     readonly: false
@@ -36,7 +36,7 @@ try {
   db.pragma('cache_size = 1000000');
   db.pragma('temp_store = memory');
   
-  log('Database initialized successfully');
+  // log('Database initialized successfully');
 } catch (error) {
   console.error('Failed to initialize database:', error);
   throw error;
@@ -127,7 +127,7 @@ try {
     CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
 
   `);
-  log('Database schema initialized successfully');
+  // log('Database schema initialized successfully');
 } catch (error) {
   console.error('Failed to initialize database schema:', error);
   throw error;
@@ -137,7 +137,7 @@ try {
 function safePrepare(sql: string, name: string) {
   try {
     const stmt = db.prepare(sql);
-    log(`Prepared statement '${name}' successfully`);
+    // log(`Prepared statement '${name}' successfully`);
     return stmt;
   } catch (error) {
     console.error(`Failed to prepare statement '${name}':`, error);
