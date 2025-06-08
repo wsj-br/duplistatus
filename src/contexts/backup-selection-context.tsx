@@ -9,8 +9,13 @@ interface BackupSelectionContextType {
 
 const BackupSelectionContext = createContext<BackupSelectionContextType | undefined>(undefined);
 
-export function BackupSelectionProvider({ children }: { children: React.ReactNode }) {
-  const [selectedBackup, setSelectedBackup] = useState<string>("all");
+interface BackupSelectionProviderProps {
+  children: React.ReactNode;
+  initialBackup?: string;
+}
+
+export function BackupSelectionProvider({ children, initialBackup = "all" }: BackupSelectionProviderProps) {
+  const [selectedBackup, setSelectedBackup] = useState<string>(initialBackup);
 
   const handleSetSelectedBackup = useCallback((backup: string) => {
     setSelectedBackup(backup);

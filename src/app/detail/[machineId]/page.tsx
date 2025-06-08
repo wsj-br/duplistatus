@@ -2,6 +2,7 @@ import { getMachineById, getAllMachines } from "@/lib/data";
 import { MachineDetailsContent } from "@/components/machine-details/machine-details-content";
 import { notFound } from 'next/navigation';
 import type { Machine } from "@/lib/types";
+import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
 
 // Add cache control headers to the response
 export async function generateMetadata() {
@@ -23,20 +24,30 @@ export async function generateStaticParams() {
 
 // Define the correct type for the page props
 type PageProps = {
-  params: {
+  params: Promise<{
     machineId: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export default async function MachineDetailsPage({
   params,
+  searchParams,
 }: PageProps) {
-  const machine = await getMachineById(params.machineId);
+  const { machineId } = await params;
+  const resolvedSearchParams = await searchParams;
+  const machine = await getMachineById(machineId);
   
   if (!machine) {
     notFound();
   }
 
-  return <MachineDetailsContent machine={machine} />;
+  // Get the backup name from the URL if it exists
+  const backupName = resolvedSearchParams.backup as string | undefined;
+
+  return (
+    <BackupSelectionProvider initialBackup={backupName || 'all'}>
+      <MachineDetailsContent machine={machine} />
+    </BackupSelectionProvider>
+  );
 } 

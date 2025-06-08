@@ -49,6 +49,7 @@ export interface MachineSummary {
   lastBackupDate: string; // ISO string or "N/A"
   lastBackupDuration: string; // or "N/A"
   lastBackupListCount: number | null;
+  lastBackupName: string | null;
   totalWarnings: number;
   totalErrors: number;
 }

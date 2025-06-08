@@ -212,7 +212,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
           <LogSection title="Errors" items={errors} variant="destructive" />
           <LogSection title="Warnings" items={warnings} variant="warning" />
           <LogSection title="Messages" items={messages} variant="default" />
-          <span className="text-xs text-muted-foreground ml-3">note: # of messages can be limited by the Duplicati configuration</span>
+          <span className="text-xs text-muted-foreground ml-3">Note: the number of messages can be limited by the Duplicati configuration.</span>
         </div>
       </div>
     );

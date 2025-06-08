@@ -4,55 +4,119 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
 import { MachineMetricsChart } from "@/components/machine-details/machine-metrics-chart";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
-import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
 import type { Machine } from "@/lib/types";
+import { useBackupSelection } from "@/contexts/backup-selection-context";
 
 interface MachineDetailsContentProps {
   machine: Machine;
 }
 
 export function MachineDetailsContent({ machine }: MachineDetailsContentProps) {
-  const totalBackups = machine.backups.length;
-  const averageDuration = machine.backups.reduce((acc, backup) => acc + backup.duration_seconds, 0) / totalBackups;
-  const totalUploadedSize = machine.backups.reduce((acc, backup) => acc + backup.uploadedSize, 0);
-  const lastBackup = machine.backups[0];
-  const lastBackupStorageSize = lastBackup?.knownFileSize ?? 0;
-  const lastBackupListCount = lastBackup?.backup_list_count ?? 0;
-  const lastBackupFileSize = lastBackup?.fileSize ?? 0;
+  const { selectedBackup: selectedBackupName } = useBackupSelection();
+  
+  // Find the selected backup if one is selected
+  const selectedBackup = selectedBackupName === 'all' 
+    ? null 
+    : machine.backups.find(backup => backup.name === selectedBackupName) ?? null;
+
+  // Calculate total backups for the selected backup name
+  const selectedBackupTotal = selectedBackupName === 'all'
+    ? machine.backups.length
+    : machine.backups.filter(backup => backup.name === selectedBackupName).length;
+  
+  // Calculate total backups for the selected backup name
+  const totalUploadedSize = selectedBackupName === 'all'
+    ? machine.backups.reduce((acc, backup) => acc + backup.uploadedSize, 0)
+    : machine.backups
+        .filter(backup => backup.name === selectedBackupName)
+        .reduce((acc, backup) => acc + backup.uploadedSize, 0);
+
+  // Calculate average duration based on selection
+  const averageDuration = selectedBackupName === 'all'
+    ? machine.backups.reduce((acc, backup) => acc + backup.duration_seconds/60.0, 0) / selectedBackupTotal
+    : machine.backups
+        .filter(backup => backup.name === selectedBackupName)
+        .reduce((acc, backup) => acc + backup.duration_seconds/60.0, 0) / selectedBackupTotal;
+
+  // Get the most recent backup for each backup name and sum their fields
+  const getMostRecentBackupsSum = (backups: typeof machine.backups) => {
+    // Group backups by name
+    const backupsByName = backups.reduce((acc, backup) => {
+      if (!acc[backup.name]) {
+        acc[backup.name] = [];
+      }
+      acc[backup.name].push(backup);
+      return acc;
+    }, {} as Record<string, typeof machine.backups>);
+
+    // Get most recent backup for each name and sum their fields
+    return Object.values(backupsByName).reduce((sum, backups) => {
+      // Sort by startTime and get the most recent
+      const mostRecent = [...backups].sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      )[0];
+
+      return {
+        knownFileSize: sum.knownFileSize + (mostRecent.knownFileSize ?? 0),
+        backup_list_count: sum.backup_list_count + (mostRecent.backup_list_count ?? 0),
+        fileSize: sum.fileSize + (mostRecent.fileSize ?? 0)
+      };
+    }, { knownFileSize: 0, backup_list_count: 0, fileSize: 0 });
+  };
+
+  // Get the relevant backups based on selection
+  const relevantBackups = selectedBackupName === 'all'
+    ? machine.backups
+    : machine.backups.filter(backup => backup.name === selectedBackupName);
+
+  // Get the sum of most recent backups
+  const { knownFileSize, backup_list_count, fileSize } = getMostRecentBackupsSum(relevantBackups);
+  const lastBackupStorageSize = knownFileSize;
+  const lastBackupListCount = backup_list_count;
+  const lastBackupFileSize = fileSize;
 
   return (
-    <BackupSelectionProvider>
-      <div className="flex flex-col gap-8">
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-3xl">{machine.name}</CardTitle>
-            <CardDescription>Detailed backup information and performance metrics for {machine.name}.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <MachineDetailSummaryItems
-              totalBackups={totalBackups}
-              averageDuration={averageDuration}
-              totalUploadedSize={totalUploadedSize}
-              lastBackupStorageSize={lastBackupStorageSize}
-              lastBackupListCount={lastBackupListCount}
-              lastBackupFileSize={lastBackupFileSize}
-            />
-          </CardContent>
-        </Card>
-        
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Backup History</CardTitle>
-            <CardDescription>List of all backups for {machine.name}.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <MachineBackupTable backups={machine.backups} />
-          </CardContent>
-        </Card>
+    <div className="flex flex-col gap-8">
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-3xl">{machine.name}</CardTitle>
+          <CardDescription>
+            {selectedBackup 
+              ? <>Details for backup <span className="text-primary font-medium">{selectedBackup.name}</span></>
+              : <>Details for <span className="text-primary font-medium">all backups</span></>
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <MachineDetailSummaryItems
+            totalBackups={selectedBackupTotal}
+            averageDuration={averageDuration}
+            totalUploadedSize={totalUploadedSize}
+            lastBackupStorageSize={lastBackupStorageSize}
+            lastBackupListCount={lastBackupListCount}
+            lastBackupFileSize={lastBackupFileSize}
+            selectedBackup={selectedBackup}
+          />
+        </CardContent>
+      </Card>
+      
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle>Backup History</CardTitle>
+          <CardDescription>
+            {selectedBackup 
+              ? <>List of all <span className="text-primary font-medium">{selectedBackup.name}</span> backups</>
+              : <>List of all backups for  <span className="text-primary font-medium">{machine.name}</span></>
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <MachineBackupTable backups={machine.backups} />
+        </CardContent>
+      </Card>
 
-        {/* Machine-specific metrics chart */}
-        <MachineMetricsChart machine={machine} />
-      </div>
-    </BackupSelectionProvider>
+      {/* Machine-specific metrics chart */}
+      <MachineMetricsChart machine={machine} />
+    </div>
   );
 } 

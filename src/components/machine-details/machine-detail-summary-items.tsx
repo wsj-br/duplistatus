@@ -5,6 +5,8 @@ import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive } from "lucide-react";
 import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
+import { useBackupSelection } from "@/contexts/backup-selection-context";
+import type { Backup } from "@/lib/types";
 
 interface MachineDetailSummaryItemsProps {
   totalBackups: number;
@@ -14,6 +16,7 @@ interface MachineDetailSummaryItemsProps {
   lastBackupStorageSize: number; // in bytes
   lastBackupListCount: number | null;
   lastBackupFileSize: number; // in bytes
+  selectedBackup?: Backup | null; // Add this prop for selected backup data
 }
 
 interface SummaryItem {
@@ -30,7 +33,9 @@ export function MachineDetailSummaryItems({
   lastBackupStorageSize,
   lastBackupListCount,
   lastBackupFileSize,
+  selectedBackup,
 }: MachineDetailSummaryItemsProps) {
+  const { selectedBackup: selectedBackupId } = useBackupSelection();
 
   // Use a try/catch for each item to ensure nothing breaks
   const getFormattedValue = (value: number, formatter: (val: number) => string, defaultValue: string = '0') => {
@@ -50,49 +55,57 @@ export function MachineDetailSummaryItems({
     }
   };
 
-  const summaryItems: SummaryItem[] = [
-    { 
-      title: "Total Backups", 
-      value: getFormattedNumber(totalBackups),
-      icon: <Archive className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "archive storage" 
-    },
-    { 
-      title: "Available Backup Versions", 
-      value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
-      icon: <History className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "history versions" 
-    },
-    { 
-      title: "Avg. Duration", 
-      value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
-      icon: <Clock className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "timer clock" 
-    },
-    { 
-      title: "Backup File Size", 
-      value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
-      icon: <HardDrive className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "hard drive" 
-    },
-    { 
-      title: "Total Storage Used", 
-      value: getFormattedValue(lastBackupStorageSize, formatBytes, "0 Bytes"),
-      icon: <Database className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "database symbol" 
-    },
-    { 
-      title: "Total Uploaded", 
-      value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
-      icon: <UploadCloud className="h-4 w-4 text-primary" />, 
-      "data-ai-hint": "cloud data" 
-    }
-  ];
+  const getSummaryItems = () => {
+ 
+    // Show aggregate statistics for all backups (or selected backup)
+    return [
+      { 
+        title: "Total Backups", 
+        value: getFormattedNumber(totalBackups),
+        icon: <Archive className="h-4 w-4 text-primary" />, 
+        "data-ai-hint": "archive storage" 
+      },
+      { 
+        title: "Available Backup Versions", 
+        value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
+        icon: <History className="h-4 w-4 text-primary" />, 
+        "data-ai-hint": "history versions" 
+      },
+      { 
+        title: "Avg. Duration", 
+        value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
+        icon: <Clock className="h-4 w-4 text-primary" />, 
+        "data-ai-hint": "timer clock" 
+      },
+      { 
+        title: "Backup File Size", 
+        value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
+        icon: <HardDrive className="h-4 w-4 text-primary" />, 
+        "data-ai-hint": "hard drive" 
+      },
+      { 
+        title: "Total Storage Used", 
+        value: getFormattedValue(lastBackupStorageSize, formatBytes, "0 Bytes"),
+        icon: <Database className="h-4 w-4 text-primary" />, 
+        "data-ai-hint": "database symbol" 
+      },
+      { 
+        title: "Total Uploaded", 
+        value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
+        icon: <UploadCloud className="h-4 w-4 text-primary" />, 
+        "data-ai-hint": "cloud data" 
+      }
+    ];
+  };
+
+  const summaryItems = getSummaryItems();
 
   return (
     <div className="pt-4">
       <div>
-        <h3 className="text-base font-semibold mb-2 text-foreground">Machine Statistics</h3>
+        <h3 className="text-base font-semibold mb-2 text-foreground">
+          {selectedBackup ? `${selectedBackup.name} Statistics` : 'Machine Statistics'}
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {summaryItems.map((item) => (
             <Card key={item.title} className="shadow-sm" data-ai-hint={item['data-ai-hint']}>

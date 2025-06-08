@@ -43,7 +43,7 @@ interface MachineMetricsChartProps {
 // Use the imported ChartMetricSelection type
 const metricDisplayInfo: Record<ChartMetricSelection, { label: string; unit?: string }> = {
   uploadedSize: { label: "Uploaded Size" },
-  duration: { label: "Duration" },
+  duration: { label: "Duration", unit: "HH:MM" },
   fileCount: { label: "File Count" },
   fileSize: { label: "File Size" },
   storageSize: { label: "Storage Size" },
@@ -200,8 +200,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Visualize backup {currentMetricInfo.label.toLowerCase()} for {machine.name}
-            {selectedBackup !== "all" ? ` (${selectedBackup})` : ""}
+            Data of {selectedBackup === "all" ? `${machine.name} (all backups)` : `${selectedBackup}`}
             {chartTimeRange === 'All data' 
               ? ' for all available data.'
               : ` over the last ${chartTimeRange}.`}
@@ -235,7 +234,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
             <SelectContent>
               {(Object.keys(metricDisplayInfo) as ChartMetricSelection[]).map(metric => (
                 <SelectItem key={metric} value={metric}>
-                  {metricDisplayInfo[metric].unit ? `${metricDisplayInfo[metric].label} (${metricDisplayInfo[metric].unit})` : metricDisplayInfo[metric].label}
+                  {metricDisplayInfo[metric].label}
                 </SelectItem>
               ))}
             </SelectContent>

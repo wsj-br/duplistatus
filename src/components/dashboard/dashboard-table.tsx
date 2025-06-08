@@ -21,8 +21,17 @@ interface DashboardTableProps {
 export function DashboardTable({ machines }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
 
-  const handleRowClick = (machineId: string) => {
+  const handleMachineNameClick = (machineId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the row click from firing
     router.push(`/detail/${machineId}`);
+  };
+
+  const handleRowClick = (machineId: string, backupName: string | null) => {
+    const queryParams = new URLSearchParams();
+    if (backupName) {
+      queryParams.set('backup', backupName);
+    }
+    router.push(`/detail/${machineId}?${queryParams.toString()}`);
   };
 
   return (
@@ -31,6 +40,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Machine Name</TableHead>
+            <TableHead>Backup Name</TableHead>
             <TableHead className="text-center">Available Backup Versions</TableHead>
             <TableHead className="text-center">Backup Count</TableHead>
             <TableHead>Last Backup Date</TableHead>
@@ -38,25 +48,30 @@ export function DashboardTable({ machines }: DashboardTableProps) {
             <TableHead className="text-right">Duration</TableHead>
             <TableHead className="text-center">Warnings</TableHead>
             <TableHead className="text-center">Errors</TableHead>
-            {/* Removed Actions TableHead */}
           </TableRow>
         </TableHeader>
         <TableBody>
           {machines.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} className="text-center h-24"> {/* Adjusted colSpan */}
+              <TableCell colSpan={9} className="text-center h-24">
                 No machines found.
               </TableCell>
             </TableRow>
           )}
           {machines.map((machine) => (
             <TableRow 
-              key={machine.id} 
-              onClick={() => handleRowClick(machine.id)} // Add onClick handler
-              className="cursor-pointer hover:bg-muted/50" // Add cursor and hover effect
+              key={`${machine.id}-${machine.lastBackupName || 'no-backup'}`} 
+              onClick={() => handleRowClick(machine.id, machine.lastBackupName)}
+              className="cursor-pointer hover:bg-muted/50"
             >
-              <TableCell className="font-medium">
-                {machine.name} {/* Removed Link component */}
+              <TableCell 
+                className="font-medium"
+                onClick={(e) => handleMachineNameClick(machine.id, e)}
+              >
+                {machine.name}
+              </TableCell>
+              <TableCell>
+                {machine.lastBackupName || 'N/A'}
               </TableCell>
               <TableCell className="text-center">
                 {machine.lastBackupListCount !== null ? machine.lastBackupListCount.toLocaleString() : 'N/A'}
@@ -80,7 +95,6 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
               <TableCell className="text-center">{machine.totalWarnings}</TableCell>
               <TableCell className="text-center">{machine.totalErrors}</TableCell>
-              {/* Removed TableCell for actions */}
             </TableRow>
           ))}
         </TableBody>

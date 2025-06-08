@@ -2,12 +2,14 @@ import { Machine, MachineSummary, BackupStatus, OverallSummary } from './types';
 import { dbUtils } from './db-utils';
 
 interface MachineSummaryRow {
-  id: string;
+  id: number;
+  machine_id: string;
   name: string;
   last_backup_date: string | null;
   last_backup_status: BackupStatus | null;
   last_backup_duration: number | null;
   last_backup_list_count: number | null;
+  last_backup_name: string | null;
   backup_count: number;
   total_warnings: number;
   total_errors: number;
@@ -53,12 +55,13 @@ interface OverallSummaryRow {
 export async function getMachinesSummary(): Promise<MachineSummary[]> {
   const rows = dbUtils.getMachinesSummary() as MachineSummaryRow[];
   return rows.map(row => ({
-    id: row.id,
+    id: row.machine_id,
     name: row.name,
     lastBackupDate: row.last_backup_date || 'N/A',
     lastBackupStatus: row.last_backup_status || 'N/A',
     lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
     lastBackupListCount: row.last_backup_list_count,
+    lastBackupName: row.last_backup_name || null,
     backupCount: row.backup_count || 0,
     totalWarnings: row.total_warnings || 0,
     totalErrors: row.total_errors || 0
