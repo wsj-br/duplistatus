@@ -29,6 +29,7 @@ backups.db
 *.sqlite3
 data/*
 .specstory/*
+*.diff
 
 # Test files
 __tests__

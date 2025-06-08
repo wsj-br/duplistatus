@@ -30,6 +30,7 @@ backups.db
 
 # development files
 .specstory/**
+*.diff
 
 
 # debug
