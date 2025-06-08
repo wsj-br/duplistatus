@@ -15,6 +15,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
+import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -23,6 +24,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface MachineBackupTableProps {
   backups: Backup[];
@@ -30,13 +38,29 @@ interface MachineBackupTableProps {
 
 export function MachineBackupTable({ backups }: MachineBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
-  const totalPages = Math.ceil(backups.length / tablePageSize);
-  const paginatedBackups = backups.slice(
+
+  // Get unique backup names for the filter
+  const uniqueBackupNames = ["all", ...new Set(backups.map(backup => backup.name))];
+
+  // Filter backups based on name
+  const filteredBackups = backups.filter((backup) => {
+    if (selectedBackup === "all") return true;
+    return backup.name === selectedBackup;
+  });
+
+  const totalPages = Math.ceil(filteredBackups.length / tablePageSize);
+  const paginatedBackups = filteredBackups.slice(
     (currentPage - 1) * tablePageSize,
     currentPage * tablePageSize
   );
   const router = useRouter();
+
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedBackup]);
 
   // Reset to first page when table page size changes
   useEffect(() => {
@@ -92,100 +116,120 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
     <TooltipProvider>
       <div className="flex flex-col gap-4">
         <div className="rounded-lg border shadow-sm overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Backup Name</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-center">Warnings</TableHead>
-              <TableHead className="text-center">Errors</TableHead>
-              <TableHead className="text-center">Available Versions</TableHead>
-              <TableHead className="text-right">File Count</TableHead>
-              <TableHead className="text-right">File Size</TableHead>
-              <TableHead className="text-right">Uploaded Size</TableHead>
-              <TableHead className="text-right">Duration</TableHead>
-              <TableHead className="text-right">Storage Size</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedBackups.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={11} className="text-center h-24">
-                  No backups found for this machine.
-                </TableCell>
-              </TableRow>
-            )}
-            {paginatedBackups.map((backup) => (
-              <TableRow key={backup.id}>
-                <TableCell className="font-medium">{backup.name}</TableCell>
-                <TableCell>
-                  <div>{new Date(backup.date).toLocaleString()}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(backup.date), { addSuffix: true })}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {hasNoMessages(backup) ? (
-                    <Tooltip delayDuration={0}>
-                      <TooltipTrigger>
-                        <div className="cursor-default">
+          <div className="flex justify-end p-4 border-b">
+            <Select
+              value={selectedBackup}
+              onValueChange={setSelectedBackup}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select backup" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Backups</SelectItem>
+                {uniqueBackupNames.filter(name => name !== "all").map((name) => (
+                  <SelectItem key={name} value={name}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Backup Name</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-center">Warnings</TableHead>
+                  <TableHead className="text-center">Errors</TableHead>
+                  <TableHead className="text-center">Available Versions</TableHead>
+                  <TableHead className="text-right">File Count</TableHead>
+                  <TableHead className="text-right">File Size</TableHead>
+                  <TableHead className="text-right">Uploaded Size</TableHead>
+                  <TableHead className="text-right">Duration</TableHead>
+                  <TableHead className="text-right">Storage Size</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedBackups.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={11} className="text-center h-24">
+                      No backups found for this machine.
+                    </TableCell>
+                  </TableRow>
+                )}
+                {paginatedBackups.map((backup) => (
+                  <TableRow key={backup.id}>
+                    <TableCell className="font-medium">{backup.name}</TableCell>
+                    <TableCell>
+                      <div>{new Date(backup.date).toLocaleString()}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(backup.date), { addSuffix: true })}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {hasNoMessages(backup) ? (
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <div className="cursor-default">
+                              <StatusBadge status={backup.status} />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" align="center">
+                            <p>No messages were received for this backup.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <div 
+                          onClick={() => handleBackupClick(backup)}
+                          className="cursor-pointer"
+                        >
                           <StatusBadge status={backup.status} />
                         </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" align="center">
-                        <p>No messages were received for this backup.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <div 
-                      onClick={() => handleBackupClick(backup)}
-                      className="cursor-pointer"
-                    >
-                      <StatusBadge status={backup.status} />
-                    </div>
-                  )}
-                </TableCell>
-                <TableCell className="text-center">{backup.warnings}</TableCell>
-                <TableCell className="text-center">{backup.errors}</TableCell>
-                <TableCell className="text-center">
-                  {backup.backup_list_count !== null ? backup.backup_list_count.toLocaleString() : 'N/A'}
-                </TableCell>
-                <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
-                <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
-                <TableCell className="text-right">{backup.duration}</TableCell>
-                <TableCell className="text-right">{formatBytes(backup.knownFileSize)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      {totalPages > 1 && (
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
-          <div className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">{backup.warnings}</TableCell>
+                    <TableCell className="text-center">{backup.errors}</TableCell>
+                    <TableCell className="text-center">
+                      {backup.backup_list_count !== null ? backup.backup_list_count.toLocaleString() : 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
+                    <TableCell className="text-right">{backup.duration}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.knownFileSize)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            Next
-            <ChevronRight className="h-4 w-4" />
-          </Button>
         </div>
-      )}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+            <div className="text-sm text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );
