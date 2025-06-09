@@ -26,18 +26,12 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Build the application
-RUN pnpm run build
-
-# Optional: Remove dev dependencies after build
-RUN pnpm prune --prod
-
-# Clean up build tools to reduce image size
-RUN apk del python3 make g++
-
-# adjust permissions for the data directory and clean up
-RUN chown -R node:node /app/data
-RUN rm -f /app/data/backups.*
+# Build the application and clean up
+RUN pnpm run build && \
+    pnpm prune --prod && \
+    apk del python3 make g++ && \
+    chown -R node:node /app/data && \
+    rm -f /app/data/backups.* 
 
 # Set environment variables
 ENV NODE_ENV=production \
