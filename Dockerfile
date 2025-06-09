@@ -27,8 +27,9 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the application and clean up
-RUN pnpm run build && \
-    pnpm prune --prod && \
+RUN pnpm run build 
+
+RUN pnpm prune --prod && \
     apk del python3 make g++ && \
     chown -R node:node /app/data && \
     rm -f /app/data/backups.* 
