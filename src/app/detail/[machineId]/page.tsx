@@ -30,6 +30,8 @@ type PageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function MachineDetailsPage({
   params,
   searchParams,

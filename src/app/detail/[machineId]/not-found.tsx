@@ -1,19 +1,6 @@
-import { headers } from 'next/headers';
 import Link from 'next/link';
 
-export default async function NotFound() {
-  const headersList = await headers();
-  const accept = headersList.get('accept') || '';
-
-  // If the request accepts JSON, return a JSON response
-  if (accept.includes('application/json')) {
-    return Response.json(
-      { error: 'Machine not found' },
-      { status: 404 }
-    );
-  }
-
-  // Otherwise return the HTML error page
+export default function NotFound() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
