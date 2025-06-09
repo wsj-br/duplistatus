@@ -7,16 +7,15 @@
 
 ## changes
 
+- (no planned changes)
 
-- copy the chart again (moved to frontpage) to the machine detail page
 
 
 ## new features
 
-- include a configuration to select the timezone and locale, or to get it from the browser.
-- send ntfy messages (https://ntfy.sh/) to a topic when receive a backup log (/api/upload)
-- send email messages to an address(es) when receive a backup log (/api/upload)
-- add support to serve using HTTPS (nginx/certbot or caddy)
+- send ntfy messages (https://ntfy.sh/) to a topic when receive a backup log (/api/upload) ❓
+- send email messages to an address(es) when receive a backup log (/api/upload) ❓
+- add support to serve using HTTPS (nginx/certbot or caddy) 🔍
 
 <br>
 
@@ -24,12 +23,20 @@
 
 <br>
 
-# implemented on version 0.3.8
+# implemented on version 0.3.8 ✅
 
-- fix documentation on duplicati server configuration (upload URL incorrected). Thanks @Taomyn. ✅
-- add support to collect backups logs using HTTPS ✅
+- fix documentation on duplicati server configuration (upload URL incorrected). Thanks @Taomyn. 
+- add support to collect backups logs using HTTPS 
 
-# implemented on version 0.3.9
+# implemented on version 0.4.0 ✅
 
-- handle the status "Fatal"  with a red badge instead of the default gray.
-- added a link to github repo on the footer of the pages
+* improved support for multiple backups in the same machine
+   -  in the dashboard table, show each backup in a row. 
+   -  when clicking on the row, goes to the detail page of the selected backup
+   -  when clicking on the machine name, goes to the detail page of all backups of the selected machine
+   -  in the detail page, user can select all backups or a specific backup name.
+   
+* included the chart on the detail page too (same as dashboard page).
+* added a link to github repo on the footer of the pages
+* change the handling of the status "Fatal"  with a red badge instead of the default gray.
+
