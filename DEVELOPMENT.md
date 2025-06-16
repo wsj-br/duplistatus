@@ -174,4 +174,58 @@ This script cleans up Docker resources:
 - Prunes unused Docker system resources (images, networks, volumes)
 - Useful when you need to free up disk space or resolve Docker-related issues
 
+## Frameworks, libraries and tools used
+
+1. **Runtime & Package Management**
+   - Node.js (>= 18.x)
+   - pnpm (v10.x)
+
+2. **Core Frameworks & Libraries**
+   - Next.js (^15.3.2) – React-based SSR/SSG framework (uses Turbopack in dev)
+   - React (^18.0.0)
+   - Radix UI (@radix-ui/react-*) – headless component primitives
+   - Tailwind CSS (^3.4.1) + tailwindcss-animate plugin
+   - PostCSS (postcss.config.mjs)
+   - Better-sqlite3 (^11.10.0) + SQLite3 (data store)
+   - Recharts (^2.15.1) – charting library
+   - react-day-picker (^9.7.0) – date picker
+   - react-hook-form (^7.56.4) – forms
+   - lucide-react (^0.344.0) – icon components
+   - clsx (^2.1.0) – utility for conditional classNames
+   - class-variance-authority (^0.7.1) – variant styling helper
+   - date-fns (^3.3.1) – date utilities
+   - uuid (^11.0.5) – unique IDs
+   - server-only – Next helper for server-only modules
+
+3. **Type Checking & Linting**
+   - TypeScript (^5.3.3) + tsc (noEmit)
+   - TSX (^4.19.3) – lightweight runner for TS scripts
+   - ESLint (via `next lint`)
+
+4. **Build & Dev Tools**
+   - Turbopack (Next dev server)
+   - Web/CSS bundling via Next's built-in toolchain
+   - Scripts under `scripts/` (shell & TS) for test data generation, DB reset, SVG conversion, workspace cleanup, etc.
+
+5. **Containerization & Deployment**
+   - Docker (node:lts-alpine base)
+   - Docker Compose (`docker-compose.yml`)
+   - Alpine build tooling (`apk add` curl, python3, make, g++, …) for compiling better-sqlite3
+   - cURL (healthchecks)
+   - GitHub Actions workflows (docker/setup-*, buildx, metadata-action, build-push-action)
+   - Docker Hub & GitHub Container Registry
+
+6. **Project Configuration & Monorepo Support**
+   - `tsconfig.json` & `scripts/tsconfig.json`
+   - `next.config.js` / `next.config.ts`
+   - `tailwind.config.ts`
+   - `postcss.config.mjs`
+   - `pnpm-workspace.yaml`
+   - `next-env.d.ts`
+
+7. **Version Control & Release**
+   - Git (preinstall hook enforces pnpm)
+   - Semantic-versioning scripts (`release:patch`, `release:minor`, `release:major`)
+   - GitHub Releases (via Actions on `release` events)
+
 
