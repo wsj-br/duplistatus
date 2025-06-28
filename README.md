@@ -191,7 +191,7 @@ Show the overall summary of the backup data stored in the duplistatus's database
             - field: secondsSinceLastBackup
               label: Last backup
               format: duration
-            - field: totalBackupedSize
+            - field: totalBackupSize
               label: Backuped size
               format: number
               scale: 0.000000001
@@ -235,18 +235,16 @@ Show the latest backup information for a given machine or server. The example be
               label: Result
             - field: latest_backup.date
               label: Date
-              format: date
-              locale: en-GB 
-              dateStyle: short
-              timeStyle: short
+              format: relativeDate
             - field: latest_backup.duration
               label: Duration
-              format: duration
             - field: latest_backup.uploadedSize
               label: Bytes Uploaded
               format: number
               scale: 0.000001
               suffix: MB        
+            - field: latest_backup.backup_list_count
+              label: Versions  
 ```
 
 Will show:
@@ -346,7 +344,7 @@ The following endpoints are available:
     "totalBackups": 9,
     "totalUploadedSize": 2397229507,
     "totalStorageUsed": 43346796938,
-    "totalBackupedSize": 126089687807,
+    "totalBackupSize": 126089687807,
     "secondsSinceLastBackup": 264
   }
   ```

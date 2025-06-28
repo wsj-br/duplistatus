@@ -1,5 +1,8 @@
 import type {NextConfig} from 'next';
 
+import { version } from './package.json';
+
+
 const nextConfig: NextConfig = {
   /* config options here */
   typescript: {
@@ -7,6 +10,9 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: false,
+  },
+  env: {
+    NEXT_PUBLIC_APP_VERSION: version,
   },
   images: {
     remotePatterns: [

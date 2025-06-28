@@ -59,5 +59,5 @@ export interface OverallSummary {
   totalBackups: number;
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
-  totalBackupedSize: number; // in bytes (sum of size_of_examined_files from latest backups)
+  totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
 }

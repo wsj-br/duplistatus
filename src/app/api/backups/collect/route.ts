@@ -114,14 +114,20 @@ export async function POST(request: NextRequest) {
     };
 
     // Step 1: Login and get token
-    const loginResponse = await makeRequest(`${baseUrl}${loginEndpoint}`, {
-      ...requestOptions,
-      method: 'POST',
-      body: JSON.stringify({
-        Password: password,
-        RememberMe: true
-      })
-    });
+    let loginResponse;
+    try {
+      loginResponse = await makeRequest(`${baseUrl}${loginEndpoint}`, {
+        ...requestOptions,
+        method: 'POST',
+        body: JSON.stringify({
+          Password: password,
+          RememberMe: true
+        })
+      });
+    } catch (error) {
+      console.error('Error during login request:', error);
+      throw new Error(`Login request failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
 
     if (!loginResponse.ok) {
       throw new Error(`Login failed: ${loginResponse.statusText}`);
@@ -135,13 +141,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: Get system info
-    const systemInfoResponse = await makeRequest(`${baseUrl}${apiSysteminfoEndpoint}`, {
-      ...requestOptions,
-      headers: {
-        ...requestOptions.headers,
-        'Authorization': `Bearer ${authToken}`
-      }
-    });
+    let systemInfoResponse;
+    try {
+      systemInfoResponse = await makeRequest(`${baseUrl}${apiSysteminfoEndpoint}`, {
+        ...requestOptions,
+        headers: {
+          ...requestOptions.headers,
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+    } catch (error) {
+      console.error('Error during system info request:', error);
+      throw new Error(`System info request failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
 
     if (!systemInfoResponse.ok) {
       throw new Error(`Failed to get system info: ${systemInfoResponse.statusText}`);
@@ -162,13 +174,19 @@ export async function POST(request: NextRequest) {
       });
   
     // Step 3: Get list of backups
-    const backupsResponse = await makeRequest(`${baseUrl}${apiBackupsEndpoint}`, {
-      ...requestOptions,
-      headers: {
-        ...requestOptions.headers,
-        'Authorization': `Bearer ${authToken}`
-      }
-    });
+    let backupsResponse;
+    try {
+      backupsResponse = await makeRequest(`${baseUrl}${apiBackupsEndpoint}`, {
+        ...requestOptions,
+        headers: {
+          ...requestOptions.headers,
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+    } catch (error) {
+      console.error('Error during backups list request:', error);
+      throw new Error(`Backups list request failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
 
     if (!backupsResponse.ok) {
       throw new Error(`Failed to get backups list: ${backupsResponse.statusText}`);
@@ -189,13 +207,19 @@ export async function POST(request: NextRequest) {
     for (const backupId of backupIds) {
       try {
         const logEndpoint = `${apiLogBaseEndpoint}/${backupId}/log?pagesize=999`;
-        const logResponse = await makeRequest(`${baseUrl}${logEndpoint}`, {
-          ...requestOptions,
-          headers: {
-            ...requestOptions.headers,
-            'Authorization': `Bearer ${authToken}`
-          }
-        });
+        let logResponse;
+        try {
+          logResponse = await makeRequest(`${baseUrl}${logEndpoint}`, {
+            ...requestOptions,
+            headers: {
+              ...requestOptions.headers,
+              'Authorization': `Bearer ${authToken}`
+            }
+          });
+        } catch (error) {
+          console.error(`Error during log request for backup ${backupId}:`, error);
+          throw new Error(`Log request for backup ${backupId} failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
 
         if (!logResponse.ok) {
           throw new Error(`Failed to get logs for backup ${backupId}: ${logResponse.statusText}`);

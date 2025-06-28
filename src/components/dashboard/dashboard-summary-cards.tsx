@@ -15,31 +15,31 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
     {
       title: "Total Machines",
       value: summary.totalMachines.toLocaleString(),
-      icon: <HardDrive className="h-6 w-6 text-primary" />,
+      icon: <HardDrive className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "server computer",
     },
     {
       title: "Total Backups",
       value: summary.totalBackups.toLocaleString(),
-      icon: <Archive className="h-6 w-6 text-primary" />,
+      icon: <Archive className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "archive box",
     },
     {
-      title: "Total Backuped Size",
-      value: formatBytes(summary.totalBackupedSize),
-      icon: <FileSearch className="h-6 w-6 text-primary" />,
+      title: "Total Backup Size",
+      value: formatBytes(summary.totalBackupSize),
+      icon: <FileSearch className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "file search",
     },
     {
       title: "Total Storage Used",
       value: formatBytes(summary.totalStorageUsed),
-      icon: <Database className="h-6 w-6 text-primary" />,
+      icon: <Database className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "database storage",
     },
     {
       title: "Total Uploaded Size",
       value: formatBytes(summary.totalUploadedSize),
-      icon: <UploadCloud className="h-6 w-6 text-primary" />,
+      icon: <UploadCloud className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "cloud upload",
     },
   ];

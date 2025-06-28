@@ -21,7 +21,7 @@ export async function GET() {
       totalBackups: Number(rawSummary.total_backups) || 0,
       totalUploadedSize: Number(rawSummary.total_uploaded_size) || 0,
       totalStorageUsed: Number(rawSummary.total_storage_used) || 0,
-      totalBackupedSize: Number(rawSummary.total_backuped_size) || 0
+      totalBackupSize: Number(rawSummary.total_backuped_size) || 0
     };
 
     // Get the latest backup date across all machines
@@ -37,7 +37,7 @@ export async function GET() {
       totalBackups: summary.totalBackups,
       totalUploadedSize: summary.totalUploadedSize,
       totalStorageUsed: summary.totalStorageUsed,
-      totalBackupedSize: summary.totalBackupedSize,
+      totalBackupSize: summary.totalBackupSize,
       secondsSinceLastBackup
     };
 

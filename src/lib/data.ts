@@ -190,7 +190,7 @@ export async function getOverallSummary(): Promise<OverallSummary> {
       totalBackups: 0,
       totalUploadedSize: 0,
       totalStorageUsed: 0,
-      totalBackupedSize: 0
+      totalBackupSize: 0
     };
   }
 
@@ -199,7 +199,7 @@ export async function getOverallSummary(): Promise<OverallSummary> {
     totalBackups: summary.total_backups,
     totalUploadedSize: summary.total_uploaded_size,
     totalStorageUsed: summary.total_storage_used,
-    totalBackupedSize: summary.total_backuped_size
+    totalBackupSize: summary.total_backuped_size
   };
 }
 

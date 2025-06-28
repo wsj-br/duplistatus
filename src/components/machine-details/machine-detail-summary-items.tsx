@@ -62,37 +62,37 @@ export function MachineDetailSummaryItems({
       { 
         title: "Total Backups", 
         value: getFormattedNumber(totalBackups),
-        icon: <Archive className="h-4 w-4 text-primary" />, 
+        icon: <Archive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "archive storage" 
       },
       { 
         title: "Available Backup Versions", 
         value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
-        icon: <History className="h-4 w-4 text-primary" />, 
+        icon: <History className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "history versions" 
       },
       { 
         title: "Avg. Duration", 
         value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
-        icon: <Clock className="h-4 w-4 text-primary" />, 
+        icon: <Clock className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "timer clock" 
       },
       { 
         title: "Backup File Size", 
         value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
-        icon: <HardDrive className="h-4 w-4 text-primary" />, 
+        icon: <HardDrive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "hard drive" 
       },
       { 
         title: "Total Storage Used", 
         value: getFormattedValue(lastBackupStorageSize, formatBytes, "0 Bytes"),
-        icon: <Database className="h-4 w-4 text-primary" />, 
+        icon: <Database className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "database symbol" 
       },
       { 
         title: "Total Uploaded", 
         value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
-        icon: <UploadCloud className="h-4 w-4 text-primary" />, 
+        icon: <UploadCloud className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "cloud data" 
       }
     ];
