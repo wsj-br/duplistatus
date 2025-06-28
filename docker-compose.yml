@@ -1,5 +1,4 @@
 # duplistatus docker-compose.yml
-
 services:
   duplistatus:
     build:
