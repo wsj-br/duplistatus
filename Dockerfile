@@ -14,9 +14,6 @@ RUN apk add --no-cache \
 # Set working directory
 WORKDIR /app
 
-# Create data directory 
-RUN mkdir -p /app/data
-
 # Copy package files first for better caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
@@ -26,18 +23,22 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
+# Create data directory 
+RUN mkdir -p /app/data
+
 # Build the application and clean up
 RUN pnpm run build 
 
 RUN pnpm prune --prod && \
     apk del python3 make g++ && \
-    chown -R node:node /app/data && \
+    chown -R node:node /app && \
     rm -f /app/data/backups.* 
 
 # Set environment variables
 ENV NODE_ENV=production \
     PORT=9666 \
-    NEXT_TELEMETRY_DISABLED=1
+    NEXT_TELEMETRY_DISABLED=1 \
+    TZ=UTC
 
 # Labels
 LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplistatus
@@ -47,9 +48,12 @@ LABEL org.opencontainers.image.licenses=Apache-2.0
 # Expose the port
 EXPOSE 9666
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f -s http://localhost:9666/api/health || exit 1
+# Define the health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
+  CMD curl -f -s http://localhost:9666/api/health || exit 1
+
+# Switch to the node user	
+USER node
 
 # Start the application
 CMD ["pnpm", "start"] 

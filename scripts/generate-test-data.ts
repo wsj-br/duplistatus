@@ -2,9 +2,9 @@ const { v4: uuidv4 } = require('uuid');
 
 // Machine configurations
 const machines = [
-  { id: 'machine-1', name: 'Test Machine 1', backupName: 'Machine 1 Local Files' },
-  { id: 'machine-2', name: 'Test Machine 2', backupName: 'Machine 2 Local Files' },
-  { id: 'machine-3', name: 'Test Machine 3', backupName: 'Machine 3 Local Files' }
+  { id: 'machine-1', name: 'Test Machine 1', backupName: 'Machine 1' },
+  { id: 'machine-2', name: 'Test Machine 2', backupName: 'Machine 2' },
+  { id: 'machine-3', name: 'Test Machine 3', backupName: 'Machine 3' }
 ];
 
 // Server health check function
@@ -96,7 +96,7 @@ function generateMessageArrays(warningsCount: number, errorsCount: number, messa
 }
 
 // Modify the generateBackupPayload function
-function generateBackupPayload(machine: typeof machines[0], backupNumber: number, intervalIndex: number, totalIntervals: number) {
+function generateBackupPayload(machine: typeof machines[0], backupNumber: number, intervalIndex: number, totalIntervals: number, backupType: string = "Backup") {
   const beginTime = generateIntervalDate(intervalIndex, totalIntervals);
   const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000);
   const duration = generateRandomDuration();
@@ -172,10 +172,10 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       }
     },
     Extra: {
-      OperationName: "Backup",
+      OperationName: backupType,
       'machine-id': machine.id,
       'machine-name': machine.name,
-      'backup-name': machine.backupName,
+      'backup-name': `${machine.backupName} ${backupType}`,
       'backup-id': `DB-${backupNumber}`
     }
   };
@@ -185,7 +185,8 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 async function sendTestData() {
   const API_URL = 'http://localhost:9666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:9666/api/health'; // Adjust this URL based on your actual health endpoint
-  const TOTAL_BACKUPS_PER_MACHINE = 60;
+  const TOTAL_BACKUPS_PER_TYPE = 30;
+  const BACKUP_TYPES = ['Files', 'Databases'];
 
   // Check server health before proceeding
   console.log('  🩺 Checking server health...');
@@ -197,32 +198,33 @@ async function sendTestData() {
   console.log('  👍 Server is healthy, proceeding with data generation...');
 
   for (const machine of machines) {
-    console.log(`\n    🔄 Generating ${TOTAL_BACKUPS_PER_MACHINE} backups for ${machine.name}...`);
-    
-    for (let i = 0; i < TOTAL_BACKUPS_PER_MACHINE; i++) {
-      const backupNumber = i + 1;
-      const payload = generateBackupPayload(machine, backupNumber, i, TOTAL_BACKUPS_PER_MACHINE);
-      
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log(`      📄 Backup ${backupNumber}/${TOTAL_BACKUPS_PER_MACHINE} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
+    for (const backupType of BACKUP_TYPES) {
+      console.log(`\n    🔄 Generating ${TOTAL_BACKUPS_PER_TYPE} ${backupType} backups for ${machine.name}...`);
+      for (let i = 0; i < TOTAL_BACKUPS_PER_TYPE; i++) {
+        const backupNumber = i + 1;
+        const payload = generateBackupPayload(machine, backupNumber, i, TOTAL_BACKUPS_PER_TYPE, backupType);
         
-        // Add a small delay between requests
-        await new Promise(resolve => setTimeout(resolve, 100));
-      } catch (error) {
-        console.error(`🚨 Error sending backup ${backupNumber} for ${machine.name}:`, error);
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const result = await response.json();
+          console.log(`      📄 ${backupType} Backup ${backupNumber}/${TOTAL_BACKUPS_PER_TYPE} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
+          
+          // Add a small delay between requests
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          console.error(`🚨 Error sending backup ${backupNumber} for ${machine.name}:`, error);
+        }
       }
     }
   }
@@ -230,7 +232,7 @@ async function sendTestData() {
 
 // Run the script
 console.log('🛫 Starting test data generation...\n');
-console.log('  ℹ️ Generating 60 backups per machine at regular intervals from 2 years ago to today\n');
+console.log('  ℹ️ Generating 2 types of backups per machine (30 each) at regular intervals from 2 years ago to today\n');
 sendTestData().then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {

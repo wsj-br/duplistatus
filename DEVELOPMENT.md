@@ -3,11 +3,11 @@
 ## Prerequisites
 
 - docker / docker compose
-- Node.js 18.x or later
-- pnpm 10.x or later (install with `npm install -g pnpm`)
+- Node.js 18.19.0 or later
+- pnpm 10.12.4 or later (install with `npm install -g pnpm`)
 - SQLite3
 
-# Steps
+## Steps
 
 1. Clone the repository:
 ```bash
@@ -19,7 +19,7 @@ cd duplistatus
 ```bash
 sudo apt update
 sudo apt install nodejs npm sqlite3 -y
-sudo npm install -g pnpm
+sudo npm install -g pnpm npm-check-updates
 pnpm install
 ```
 
@@ -36,8 +36,9 @@ For an alternative TCP port (8666)
 pnpm run dev-alt
 ```
 
+<br>
 
-### Development Mode Features
+## Development Mode Features
 
 When running in development mode (`pnpm run dev`), the application includes additional features to help with debugging and development:
 
@@ -45,18 +46,20 @@ When running in development mode (`pnpm run dev`), the application includes addi
 
 -  **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.
 
-4. Build the application for production
+<br>
+
+### Build the application for production
 ```bash
 pnpm build
 ```
 
 
-5. Start the production server:
+### Start the production server (in development environment):
 ```bash
-pnpm start
+pnpm start-local
 ```
 
-6. Start a docker stack (docker compose)
+### Start a docker stack (docker compose)
 
 ```bash
 docker compose up --build -d
@@ -73,21 +76,27 @@ pnpm run generate-test-data
 ```
 This script generates and uploads test backup data for multiple machines. 
 
+<br>
+
 ### Test Last Backup Endpoint
 ```bash
 pnpm run test-lastbackup [machineName]
 ```
 Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
 
-### Clear Database
+<br>
+
+### Clean Database
 ```bash
-pnpm run clear-db
+pnpm run clean-db
 ```
 Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
 
+<br>
+
 ### Clean build artifacts and dependencies
 ```bash
-scripts/clear-workspace.sh
+scripts/clean-workspace.sh
 ```
 Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
 - `node_modules/` directory
@@ -96,12 +105,24 @@ Removes all build artifacts, node_modules directory, and other generated files t
 - All docker build cache and perform a docker system prune
 - Any other build cache files
 
+<br>
+
 ### Generate the logo/favicon and banner from SVG images
 ```bash
 scripts/convert_svg_logo.sh
 ```
 
 > The svg files are located in the `docs` folder.
+
+<br>
+
+### Update the packages to the last version
+
+```bash
+ncu --upgrade
+pnpm update
+```
+
 
 <br><br>
 
@@ -165,9 +186,9 @@ To manually trigger the Docker image build workflow:
 
 ## Additional Scripts
 
-### Clear Docker Environment
+### Clean up Docker Environment
 ```bash
-scripts/clear-docker.sh
+scripts/clean-docker.sh
 ```
 This script cleans up Docker resources:
 - Removes all Docker builder cache
@@ -177,29 +198,29 @@ This script cleans up Docker resources:
 ## Frameworks, libraries and tools used
 
 1. **Runtime & Package Management**
-   - Node.js (>= 18.x)
-   - pnpm (v10.x)
+   - Node.js (>= 18.19.0)
+   - pnpm (v10.12.4)
 
 2. **Core Frameworks & Libraries**
-   - Next.js (^15.3.2) – React-based SSR/SSG framework (uses Turbopack in dev)
-   - React (^18.0.0)
+   - Next.js (^15.3.4) – React-based SSR/SSG framework (uses Turbopack in dev)
+   - React (^19.1.0)
    - Radix UI (@radix-ui/react-*) – headless component primitives
-   - Tailwind CSS (^3.4.1) + tailwindcss-animate plugin
+   - Tailwind CSS (^4.1.11) + tailwindcss-animate plugin
    - PostCSS (postcss.config.mjs)
-   - Better-sqlite3 (^11.10.0) + SQLite3 (data store)
-   - Recharts (^2.15.1) – charting library
+   - Better-sqlite3 (^12.2.0) + SQLite3 (data store)
+   - Recharts (^3.0.2) – charting library
    - react-day-picker (^9.7.0) – date picker
-   - react-hook-form (^7.56.4) – forms
-   - lucide-react (^0.344.0) – icon components
-   - clsx (^2.1.0) – utility for conditional classNames
+   - react-hook-form (^7.59.0) – forms
+   - lucide-react (^0.525.0) – icon components
+   - clsx (^2.1.1) – utility for conditional classNames
    - class-variance-authority (^0.7.1) – variant styling helper
-   - date-fns (^3.3.1) – date utilities
-   - uuid (^11.0.5) – unique IDs
+   - date-fns (^4.1.0) – date utilities
+   - uuid (^11.1.0) – unique IDs
    - server-only – Next helper for server-only modules
 
 3. **Type Checking & Linting**
-   - TypeScript (^5.3.3) + tsc (noEmit)
-   - TSX (^4.19.3) – lightweight runner for TS scripts
+   - TypeScript (^5.8.3) + tsc (noEmit)
+   - TSX (^4.20.3) – lightweight runner for TS scripts
    - ESLint (via `next lint`)
 
 4. **Build & Dev Tools**
@@ -217,15 +238,15 @@ This script cleans up Docker resources:
 
 6. **Project Configuration & Monorepo Support**
    - `tsconfig.json` & `scripts/tsconfig.json`
-   - `next.config.js` / `next.config.ts`
+   - `next.config.ts`
    - `tailwind.config.ts`
    - `postcss.config.mjs`
    - `pnpm-workspace.yaml`
-   - `next-env.d.ts`
 
 7. **Version Control & Release**
    - Git (preinstall hook enforces pnpm)
    - Semantic-versioning scripts (`release:patch`, `release:minor`, `release:major`)
    - GitHub Releases (via Actions on `release` events)
 
-
+8. **Other tools**
+   - ["Easy Screenshot"](https://webextension.org/listing/screenshot.html) extension 

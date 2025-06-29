@@ -31,8 +31,7 @@ This web application is used to monitor and visualise backup operations from [Du
 
 ## Installation
 
-The application can be deployed using Docker or 
-[Portainer Stacks](https://docs.portainer.io/user/docker/stacks). 
+The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) or Podman. 
 
 
 ### Container images:
@@ -52,23 +51,22 @@ Create a file named `duplistatus.yml` with the following content:
 ```yaml
 services:
   duplistatus:
-    image: wsjbr/duplistatus:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wsj-br/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
     ports:
       - "9666:9666"
     volumes:
       - duplistatus_data:/app/data
-    environment:
-      - NODE_ENV=production
-      - PORT=9666
-      - NEXT_TELEMETRY_DISABLED=1
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://localhost:9666/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    networks:
+      - duplistatus_network
+
+networks:
+  duplistatus_network:
+    driver: bridge
 
 volumes:
   duplistatus_data:
@@ -89,7 +87,28 @@ The application will then be available at `http://localhost:9666`
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack"
 2. Name your stack (e.g., "duplistatus")
 3. Choose "Build method" as "Web editor"
-4. Copy and paste the Docker Compose configuration from Option 1 into the web editor
+4. Copy and paste these lines below into the web editor
+```yaml
+services:
+  duplistatus:
+    image: wsj-br/duplistatus:latest
+    container_name: duplistatus
+    restart: unless-stopped
+    ports:
+      - "9666:9666"
+    volumes:
+      - duplistatus_data:/app/data
+    networks:
+      - duplistatus_network
+
+networks:
+  duplistatus_network:
+    driver: bridge
+
+volumes:
+  duplistatus_data:
+    name: duplistatus_data 
+```
 5. Click "Deploy the stack"
 
 <br>
@@ -116,15 +135,41 @@ docker run -d \
   --name duplistatus \
   -p 9666:9666 \
   -v duplistatus_data:/app/data \
-  -e NODE_ENV=production \
-  -e PORT=9666 \
-  -e NEXT_TELEMETRY_DISABLED=1 \
   wsjbr/duplistatus:latest
 ```
 
 - The application will be available at `http://localhost:9666`.
 - The `duplistatus_data` volume will be used for persistent storage.
 
+<br>
+
+### Option 5: Using Podman with Pod (CLI)
+
+```bash
+# Create a pod for the container
+podman pod create --name Duplistatus --publish 9666:9666/tcp
+
+# Create and start the container
+podman create \
+  --name duplistatus \
+  --pod Duplistatus \
+  --user root \
+  -v /root/duplistatus_home/data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest
+
+# Start the pod (which starts the container)
+podman pod start Duplistatus
+``` 
+
+<br>
+
+### Option 6: Using Podman Compose (CLI)
+
+Create the `docker-compose.yml` file as instructed in Option 1 above, then run:
+
+```bash
+podman-compose -f docker-compose.yml up -d
+``` 
 
 <br><br>
 
@@ -141,29 +186,40 @@ docker run -d \
 
 
 
-2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options:
+2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options, adjusting the server name/IP:
+
+
+    | Advanced option                   | Value                                    |
+    | --------------------------------- | ---------------------------------------- |
+    | `send-http-url`                   | `http://my.local.server:9666/api/upload` |
+    | `send-http-result-output-format`  | `Json`                                   |
+    | `send-http-log-level`             | `Information`                            |
+
+
+
+> [!TIP]
+>  click on `Edit as text` and copy the  lines below, adjusting the server name/IP.
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
 --send-http-result-output-format=Json
 --send-http-log-level=Information
 ```
-> [!NOTE]
->    Alternatively you can include this configuration in the `Advanced Options` of each backup. 
->    If you ommit `--send-http-log-level` no message will be sent to **dupistatus**, just the statistics.
->    you can use `--send-http-max-log-lines` to limite the number of messages sent. 
->    For example, limit in 20 messages: `--send-http-max-log-lines=20`
-
-<br>
-
-> [!TIP]
->  click on `Edit as text` and copy the two lines above, adjusting the server name/IP.
 
 <br>
 
 ![Duplicati configuration](docs/duplicati-options.png)
 
 <br>
+
+> [!NOTE]
+>    Alternatively you can include this configuration in the `Advanced Options` of each backup. <br>
+>    If you ommit `--send-http-log-level` no log messages will be sent to **dupistatus**, only the statistics. <br>
+>    You can use `--send-http-max-log-lines` to limit the number of messages sent. 
+>    For example: `--send-http-max-log-lines=40` will only send the first 40 messages.
+
+<br>
+
 
 
 # Homepage integration (optional)
@@ -215,6 +271,10 @@ Will show:
   ![Homepage Card](docs/homepage-summary.png)
 
 </div>
+
+> [!NOTE]
+>    in version 0.5.0 the field `totalBackupedSize` was replaced by `totalBackupSize`
+
 
 ## Last backup information
 
@@ -348,6 +408,10 @@ The following endpoints are available:
     "secondsSinceLastBackup": 264
   }
   ```
+
+> [!NOTE]
+>    in version 0.5.0 the field `totalBackupedSize` was replaced by `totalBackupSize`
+
 <br><br>
 
 # Development

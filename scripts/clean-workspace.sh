@@ -49,3 +49,10 @@ fi
 echo "✅ Docker compose cache cleared"
 
 echo "✨ Clean completed!" 
+
+echo ""
+echo ""
+echo "💡"
+echo "     remember to run 'pnpm install' to update the dependencies before building the application"
+echo "     or before running 'docker compose up'"
+echo ""

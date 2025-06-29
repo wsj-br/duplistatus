@@ -32,14 +32,22 @@ interface LogEntry {
   Message: string;
 }
 
+// Define a default timeout for requests (in milliseconds)
+const DEFAULT_REQUEST_TIMEOUT = 30000;
+
 // Helper function to make HTTP/HTTPS requests
 async function makeRequest(url: string, options: any): Promise<any> {
+  const { timeout = DEFAULT_REQUEST_TIMEOUT, ...requestOptions } = options;
+
   return new Promise((resolve, reject) => {
     const protocol = url.startsWith('https') ? https : http;
-    const req = protocol.request(url, options, (res) => {
+
+    // kick off the request
+    const req = protocol.request(url, requestOptions, (res) => {
       let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', () => {
+        clearTimeout(connectTimer);
         try {
           const parsedData = JSON.parse(data);
           const statusCode = res.statusCode ?? 500;
@@ -54,7 +62,24 @@ async function makeRequest(url: string, options: any): Promise<any> {
         }
       });
     });
+
+    // 1) CONNECTION‐TIMEOUT: if socket never connects within `timeout`
+    const connectTimer = setTimeout(() => {
+      req.destroy(new Error(`Connection timed out after ${timeout}ms`));
+    }, timeout);
+
+    // once the socket is assigned, we can also clear the connect timer on "connect"
+    req.on('socket', (socket) => {
+      socket.once('connect', () => clearTimeout(connectTimer));
+    });
+
+    // 2) IDLE‐TIMEOUT (what you already had)
+    req.setTimeout(timeout, () => {
+      req.destroy(new Error(`Idle timeout after ${timeout}ms`));
+    });
+
     req.on('error', reject);
+
     if (options.body) {
       req.write(options.body);
     }
@@ -130,6 +155,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!loginResponse.ok) {
+      console.error('Login failed:', loginResponse.statusText);
       throw new Error(`Login failed: ${loginResponse.statusText}`);
     }
 
@@ -137,6 +163,7 @@ export async function POST(request: NextRequest) {
     const authToken = loginData.AccessToken;
 
     if (!authToken) {
+      console.error('No authentication token received');
       throw new Error('No authentication token received');
     }
 
@@ -164,6 +191,7 @@ export async function POST(request: NextRequest) {
     const machineName = systemInfo.MachineName;
 
     if (!machineId || !machineName) {
+      console.error('Could not get machine information');
       throw new Error('Could not get machine information');
     }
     
@@ -189,6 +217,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!backupsResponse.ok) {
+      console.error('Failed to get backups list:', backupsResponse.statusText);
       throw new Error(`Failed to get backups list: ${backupsResponse.statusText}`);
     }
 
@@ -222,6 +251,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (!logResponse.ok) {
+          console.error('Failed to get logs for backup:', logResponse.statusText);
           throw new Error(`Failed to get logs for backup ${backupId}: ${logResponse.statusText}`);
         }
 
@@ -230,8 +260,6 @@ export async function POST(request: NextRequest) {
           try {
             // Parse the Message string into JSON
             const messageObj = JSON.parse(log.Message);
-            // Add debug logging to understand the data structure
-            console.log('Parsed log entry:', JSON.stringify(messageObj, null, 2));
             return messageObj?.MainOperation === 'Backup';
           } catch (error) {
             console.error('Error parsing log message:', error);
@@ -240,8 +268,15 @@ export async function POST(request: NextRequest) {
         });
 
         for (const log of backupMessages) {
-          // Parse the message string into JSON for each log entry
-          const message = JSON.parse(log.Message);
+          // Parse the message string into JSON for each log entry, with error handling
+          let message;
+          try {
+            message = JSON.parse(log.Message);
+          } catch (parseError) {
+            console.error(`Error parsing log.Message for backup ${backupId}:`, log.Message, parseError);
+            errorCount++;
+            continue;
+          }
           const backupDate = new Date(message.BeginTime).toISOString();
 
           // Check for duplicate

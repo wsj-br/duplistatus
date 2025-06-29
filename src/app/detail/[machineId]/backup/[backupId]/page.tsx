@@ -143,13 +143,14 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center gap-4">
-        <Link href={`/detail/${machineId}`}>
+        <Link href={`/detail/${machineId}?backup=${encodeURIComponent(backup.name)}`}>
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
-        <Link href={`/detail/${machineId}`}>
-          <h1 className="text-2xl font-bold cursor-pointer hover:text-primary transition-colors">return to {machine.name} backup list</h1>
+        <Link href={`/detail/${machineId}?backup=${encodeURIComponent(backup.name)}`}>
+          <h1 className="text-2xl font-bold cursor-pointer hover:text-primary transition-colors">return to  
+            <span className="text-muted-foreground"> {backup.name}</span> list</h1>
         </Link>
       </div>
 
@@ -159,7 +160,9 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-xl">Backup Details - {machine.name}</CardTitle>
+                <CardTitle className="text-xl">Backup Details: 
+                  <span className="text-blue-600"> {backup.name}  </span>
+                  <span className="text-muted-foreground"> ({machine.name}) </span></CardTitle>
               </div>
               <StatusBadge status={safeBackup.status} />
             </div>
@@ -175,10 +178,6 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                     <span className="text-sm text-muted-foreground">
                       ({formatDistanceToNow(new Date(safeBackup.date), { addSuffix: true })})
                     </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-muted-foreground">Name:</span>
-                    <span>{safeBackup.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-muted-foreground">ID:</span>

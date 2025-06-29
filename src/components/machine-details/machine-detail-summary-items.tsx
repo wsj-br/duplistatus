@@ -1,6 +1,7 @@
 // src/components/machine-details/machine-detail-summary-items.tsx
 "use client";
 
+import React from "react";
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive } from "lucide-react";
@@ -22,7 +23,7 @@ interface MachineDetailSummaryItemsProps {
 interface SummaryItem {
   title: string;
   value: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   'data-ai-hint': string;
 }
 

@@ -74,7 +74,8 @@ export async function GET(request: Request) {
   };
 
   try {
-    const identifier = machineId;
+    // Decode the machineId from URL encoding
+    const identifier = machineId ? decodeURIComponent(machineId) : undefined;
 
     // First try to find machine by ID
     let machine = dbOps.getMachine.get(identifier) as MachineRow | null;
@@ -84,8 +85,8 @@ export async function GET(request: Request) {
       machine = dbOps.getMachineByName.get(identifier) as MachineRow | null;
     }
 
-    if (!machine) {
-      // Return JSON error response
+    if (!machine) {     
+      // Return JSON error response if machine not found
       return jsonResponse({ 
         error: 'Machine not found',
         message: `No machine found with identifier: ${identifier}`,
