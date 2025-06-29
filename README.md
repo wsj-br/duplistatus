@@ -54,7 +54,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: wsj-br/duplistatus:latest
+    image: wsjbr/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
     ports:
@@ -91,7 +91,7 @@ The application will then be available at `http://localhost:9666`
 ```yaml
 services:
   duplistatus:
-    image: wsj-br/duplistatus:latest
+    image: wsjbr/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
     ports:
@@ -328,6 +328,9 @@ The following endpoints are available:
 - [Upload Backup Data](#upload-backup-data)
 - [Get Latest Backup](#get-latest-backup)
 - [Get Overall Summary](#get-overall-summary)
+- [Health Check](#health-check)
+- [Collect Backups](#collect-backups)
+- [Cleanup Backups](#cleanup-backups)
 
 
 <br>
@@ -411,6 +414,71 @@ The following endpoints are available:
 
 > [!NOTE]
 >    in version 0.5.0 the field `totalBackupedSize` was replaced by `totalBackupSize`
+
+<br>
+
+## Health Check
+- **Endpoint**: `/api/health`
+- **Method**: GET
+- **Description**: Checks the health status of the application and database
+- **Response**:
+  ```json
+  {
+    "status": "healthy",
+    "database": "connected",
+    "basicConnection": true,
+    "tablesFound": 2,
+    "tables": ["machines", "backups"],
+    "preparedStatements": true,
+    "timestamp": "2024-03-20T10:00:00Z"
+  }
+  ```
+
+<br>
+
+## Collect Backups
+- **Endpoint**: `/api/backups/collect`
+- **Method**: POST
+- **Description**: Collects backup data directly from a Duplicati server via its API
+- **Request Body**:
+  ```json
+  {
+    "hostname": "duplicati-server.local",
+    "port": 8200,
+    "password": "your-password",
+    "protocol": "http",
+    "allowSelfSigned": false
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Successfully collected 5 backups",
+    "processedCount": 5,
+    "status": 200
+  }
+  ```
+
+<br>
+
+## Cleanup Backups
+- **Endpoint**: `/api/backups/cleanup`
+- **Method**: POST
+- **Description**: Deletes old backup data based on retention period
+- **Request Body**:
+  ```json
+  {
+    "retentionPeriod": "6 months"
+  }
+  ```
+- **Retention Periods**: `"6 months"`, `"1 year"`, `"2 years"`, `"Delete all data"`
+- **Response**:
+  ```json
+  {
+    "message": "Successfully deleted 15 old backups",
+    "status": 200
+  }
+  ```
 
 <br><br>
 

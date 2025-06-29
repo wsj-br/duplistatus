@@ -6,6 +6,7 @@
 - Node.js 18.19.0 or later
 - pnpm 10.12.4 or later (install with `npm install -g pnpm`)
 - SQLite3
+- ImageMagick (for SVG conversion scripts)
 
 ## Steps
 
@@ -18,7 +19,7 @@ cd duplistatus
 2. Install dependencies (debian/ubuntu):
 ```bash
 sudo apt update
-sudo apt install nodejs npm sqlite3 -y
+sudo apt install nodejs npm sqlite3 imagemagick -y
 sudo npm install -g pnpm npm-check-updates
 pnpm install
 ```
@@ -64,6 +65,9 @@ pnpm start-local
 ```bash
 docker compose up --build -d
 ```
+
+The Docker image supports multiple architectures (AMD64 and ARM64) and will automatically use the appropriate version for your system.
+
 <br><br>
 
 ## Test Scripts
@@ -103,6 +107,8 @@ Removes all build artifacts, node_modules directory, and other generated files t
 - `.next/` build directory
 - `dist/` directory
 - All docker build cache and perform a docker system prune
+- pnpm store cache
+- Docker system resources (images, networks, volumes)
 - Any other build cache files
 
 <br>
@@ -112,7 +118,7 @@ Removes all build artifacts, node_modules directory, and other generated files t
 scripts/convert_svg_logo.sh
 ```
 
-> The svg files are located in the `docs` folder.
+> The svg files are located in the `docs` folder. This script requires ImageMagick to be installed on your system.
 
 <br>
 
@@ -169,7 +175,7 @@ After running a release command, follow these steps to create a GitHub release:
 6. Click "Publish release"
 
 This will automatically:
-- Create a new Docker images (AMD64 and arm64 architectures)
+- Create a new Docker images (AMD64 and ARM64 architectures)
 - Push the images to Docker Hub 
 - Push the images to GitHub Container Registry (ghcr.io/wsj-br/duplistatus:latest)
 
