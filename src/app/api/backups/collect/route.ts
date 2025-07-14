@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbOps, parseDurationToSeconds } from '@/lib/db';
 import { dbUtils } from '@/lib/db-utils';
+import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import http from 'http';
@@ -329,6 +330,9 @@ export async function POST(request: NextRequest) {
             messages_array: message.Messages ? JSON.stringify(message.Messages) : null,
             warnings_array: message.Warnings ? JSON.stringify(message.Warnings) : null,
             errors_array: message.Errors ? JSON.stringify(message.Errors) : null,
+            available_backups: JSON.stringify(extractAvailableBackups(
+              message.Messages ? JSON.stringify(message.Messages) : null
+            )),
 
             // Data fields
             deleted_files: message.DeletedFiles || 0,

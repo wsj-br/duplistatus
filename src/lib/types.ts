@@ -22,6 +22,8 @@ export interface Backup {
   messages_array: string | null;
   warnings_array: string | null;
   errors_array: string | null;
+  // Available backup timestamps (ISO format)
+  available_backups: string[] | null;
 }
 
 export interface Machine {

@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
+import { DatabaseMigrator } from './db-migrations';
 
 // Ensure we're running on the server side
 if (typeof window !== 'undefined') {
@@ -67,6 +68,7 @@ try {
       messages_array TEXT,
       warnings_array TEXT,
       errors_array TEXT,
+      available_backups TEXT DEFAULT '[]',
       
       -- Data fields
       deleted_files INTEGER NOT NULL DEFAULT 0,
@@ -130,6 +132,15 @@ try {
   throw error;
 }
 
+// Run database migrations
+try {
+  const migrator = new DatabaseMigrator(db);
+  migrator.runMigrations();
+} catch (error) {
+  console.error('Failed to run database migrations:', error);
+  throw error;
+}
+
 // Helper function to safely prepare statements with error handling
 function safePrepare(sql: string, name: string) {
   try {
@@ -169,7 +180,7 @@ const dbOps = {
     INSERT INTO backups (
       id, machine_id, backup_name, backup_id, date, status, duration_seconds,
       size, uploaded_size, examined_files, warnings, errors,
-      messages_array, warnings_array, errors_array,
+      messages_array, warnings_array, errors_array, available_backups,
       deleted_files, deleted_folders, modified_files, opened_files, added_files,
       size_of_modified_files, size_of_added_files, size_of_examined_files, size_of_opened_files,
       not_processed_files, added_folders, too_large_files, files_with_error,
@@ -184,7 +195,7 @@ const dbOps = {
     ) VALUES (
       @id, @machine_id, @backup_name, @backup_id, @date, @status, @duration_seconds,
       @size, @uploaded_size, @examined_files, @warnings, @errors,
-      @messages_array, @warnings_array, @errors_array,
+      @messages_array, @warnings_array, @errors_array, @available_backups,
       @deleted_files, @deleted_folders, @modified_files, @opened_files, @added_files,
       @size_of_modified_files, @size_of_added_files, @size_of_examined_files, @size_of_opened_files,
       @not_processed_files, @added_folders, @too_large_files, @files_with_error,

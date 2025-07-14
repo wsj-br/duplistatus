@@ -60,6 +60,12 @@ export async function POST(request: NextRequest) {
         warnings: data.Data.WarningsActualLength || 0,
         errors: data.Data.ErrorsActualLength || 0,
 
+        // Message arrays stored as JSON blobs
+        messages_array: null,
+        warnings_array: null,
+        errors_array: null,
+        available_backups: JSON.stringify([]),
+
         // Data fields
         deleted_files: data.Data.DeletedFiles || 0,
         deleted_folders: data.Data.DeletedFolders || 0,

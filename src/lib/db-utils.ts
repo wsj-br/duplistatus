@@ -21,6 +21,7 @@ interface BackupRecord {
   messages_array: string | null;
   warnings_array: string | null;
   errors_array: string | null;
+  available_backups: string | null;
 }
 
 // Helper function to ensure database operations are only performed on the server
@@ -87,7 +88,8 @@ export const dbUtils = {
           backup_list_count: backup.backup_list_count || 0,
           messages_array: backup.messages_array,
           warnings_array: backup.warnings_array,
-          errors_array: backup.errors_array
+          errors_array: backup.errors_array,
+          available_backups: backup.available_backups ? JSON.parse(backup.available_backups) : []
         }));
 
         // Calculate chart data

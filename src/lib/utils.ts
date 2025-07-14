@@ -127,3 +127,168 @@ export function formatTimeAgo(dateString: string): string {
     return "";
   }
 }
+
+// Function to convert timestamp from Duplicati format to ISO format
+export function convertTimestampToISO(timestamp: string): string {
+  try {
+    // Handle various timestamp formats that might come from Duplicati
+    // Expected format: "14/07/2025 00:05:06" or similar
+    const cleanTimestamp = timestamp.trim();
+    
+    // Try to parse DD/MM/YYYY HH:mm:ss format - be strict about this format
+    const match = cleanTimestamp.match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/);
+    if (match) {
+      const [, day, month, year, hour, minute, second] = match;
+      const dayNum = parseInt(day);
+      const monthNum = parseInt(month);
+      const yearNum = parseInt(year);
+      const hourNum = parseInt(hour);
+      const minuteNum = parseInt(minute);
+      const secondNum = parseInt(second);
+      
+      // Validate ranges
+      if (dayNum < 1 || dayNum > 31 || 
+          monthNum < 1 || monthNum > 12 || 
+          yearNum < 1900 || yearNum > 2100 ||
+          hourNum < 0 || hourNum > 23 ||
+          minuteNum < 0 || minuteNum > 59 ||
+          secondNum < 0 || secondNum > 59) {
+        console.warn(`Invalid timestamp values: ${timestamp}`);
+        return '';
+      }
+      
+      const date = new Date(yearNum, monthNum - 1, dayNum, hourNum, minuteNum, secondNum);
+      
+      // Additional validation - check if the date is valid
+      if (date.getFullYear() !== yearNum || 
+          date.getMonth() !== monthNum - 1 || 
+          date.getDate() !== dayNum) {
+        console.warn(`Invalid date constructed from timestamp: ${timestamp}`);
+        return '';
+      }
+      
+      return date.toISOString();
+    }
+    
+    console.warn(`Timestamp format not recognized: ${timestamp}`);
+    return '';
+  } catch (error) {
+    console.warn(`Error converting timestamp ${timestamp}:`, error);
+    return '';
+  }
+}
+
+// Helper function to extract from plain text (non-JSON strings)
+function extractFromPlainText(text: string): string[] {
+  let backupsToConsider: string[] = [];
+  let backupsToDelete: string[] = [];
+  
+  // Split by lines and process each line
+  const lines = text.split('\n');
+  
+  for (const line of lines) {
+    if (typeof line !== 'string') continue;
+    
+    if (line.includes("Backups to consider:")) {
+      const timestampsStr = line.split("Backups to consider:")[1]?.trim();
+      if (timestampsStr) {
+        backupsToConsider = timestampsStr.split(",")
+          .map(ts => ts.trim())
+          .filter(ts => ts.length > 0)
+          .map(convertTimestampToISO)
+          .filter(ts => ts.length > 0);
+      }
+    }
+    
+    if (line.includes("All backups to delete:")) {
+      const timestampsStr = line.split("All backups to delete:")[1]?.trim();
+      if (timestampsStr) {
+        backupsToDelete = timestampsStr.split(",")
+          .map(ts => ts.trim())
+          .filter(ts => ts.length > 0)
+          .map(convertTimestampToISO)
+          .filter(ts => ts.length > 0);
+      }
+    }
+  }
+  
+  if (backupsToConsider.length === 0) return [];
+  
+  // Filter out backups to delete
+  return backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
+}
+
+// Function to extract available backups from message array
+export function extractAvailableBackups(messagesArray: string | null): string[] {
+  if (!messagesArray) return [];
+  
+  // Trim whitespace and check for empty strings
+  const cleanedMessages = messagesArray.trim();
+  if (cleanedMessages.length === 0) return [];
+  
+  let messages: unknown;
+  
+  try {
+    messages = JSON.parse(cleanedMessages);
+  } catch (jsonError) {
+    // If JSON parsing fails, try to handle as plain text
+    console.warn('Messages array is not valid JSON, attempting to parse as plain text:', jsonError instanceof Error ? jsonError.message : 'Unknown error');
+    
+    // Try to extract directly from the string if it contains the target lines
+    if (typeof cleanedMessages === 'string') {
+      return extractFromPlainText(cleanedMessages);
+    }
+    
+    return [];
+  }
+  
+  // Handle case where JSON was parsed but result is not an array
+  if (!Array.isArray(messages)) {
+    console.warn('Parsed messages is not an array, got:', typeof messages);
+    
+    // If it's a string, try to extract from it
+    if (typeof messages === 'string') {
+      return extractFromPlainText(messages);
+    }
+    
+    return [];
+  }
+  
+  let backupsToConsider: string[] = [];
+  let backupsToDelete: string[] = [];
+  
+  for (const message of messages) {
+    // Skip non-string elements
+    if (typeof message !== 'string') {
+      console.warn('Skipping non-string message element:', typeof message);
+      continue;
+    }
+    
+    if (message.includes("Backups to consider:")) {
+      const timestampsStr = message.split("Backups to consider:")[1]?.trim();
+      if (timestampsStr) {
+        backupsToConsider = timestampsStr.split(",")
+          .map(ts => ts.trim())
+          .filter(ts => ts.length > 0)
+          .map(convertTimestampToISO)
+          .filter(ts => ts.length > 0);
+      }
+    }
+    
+    if (message.includes("All backups to delete:")) {
+      const timestampsStr = message.split("All backups to delete:")[1]?.trim();
+      if (timestampsStr) {
+        backupsToDelete = timestampsStr.split(",")
+          .map(ts => ts.trim())
+          .filter(ts => ts.length > 0)
+          .map(convertTimestampToISO)
+          .filter(ts => ts.length > 0);
+      }
+    }
+  }
+  
+  if (backupsToConsider.length === 0) return [];
+  
+  // Filter out backups to delete
+  return backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
+}

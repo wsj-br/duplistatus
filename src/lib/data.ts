@@ -39,6 +39,7 @@ interface BackupRow {
   messages_array: string | null;
   warnings_array: string | null;
   errors_array: string | null;
+  available_backups: string | null;
   warnings_actual_length: number;
   errors_actual_length: number;
   messages_actual_length: number;
@@ -94,7 +95,8 @@ export async function getMachineById(id: string): Promise<Machine | null> {
       backup_list_count: backup.backup_list_count,
       messages_array: backup.messages_array,
       warnings_array: backup.warnings_array,
-      errors_array: backup.errors_array
+      errors_array: backup.errors_array,
+      available_backups: backup.available_backups ? JSON.parse(backup.available_backups) : []
     };
     
     return formatted;
@@ -149,7 +151,8 @@ export async function getAllMachines(): Promise<Machine[]> {
           backup_list_count: backup.backup_list_count,
           messages_array: backup.messages_array,
           warnings_array: backup.warnings_array,
-          errors_array: backup.errors_array
+          errors_array: backup.errors_array,
+          available_backups: backup.available_backups ? JSON.parse(backup.available_backups) : []
         };
         
        

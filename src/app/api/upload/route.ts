@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
 import { dbUtils } from '@/lib/db-utils';
+import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
@@ -100,6 +101,10 @@ export async function POST(request: NextRequest) {
                         (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null), 
         warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
         errors_array: data.Data.Errors ? JSON.stringify(data.Data.Errors) : null,
+        available_backups: JSON.stringify(extractAvailableBackups(
+          data.LogLines ? JSON.stringify(data.LogLines) : 
+          (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null)
+        )),
 
         // Data fields
         deleted_files: data.Data.DeletedFiles || 0,
