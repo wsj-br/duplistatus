@@ -1,0 +1,121 @@
+import type { BackupStatus } from "./types";
+
+export type SortDirection = 'asc' | 'desc';
+export type SortColumn = string;
+
+export interface SortConfig {
+  column: SortColumn;
+  direction: SortDirection;
+}
+
+// Parse duration string (e.g., "30m 15s", "1h 5m 30s", "01:23:45") to seconds for comparison
+export function parseDurationToSeconds(duration: string): number {
+  if (!duration || duration === "N/A") return 0;
+  
+  // Handle HH:MM:SS format (e.g., "01:23:45")
+  if (duration.includes(':')) {
+    const parts = duration.split(':').map(part => parseInt(part) || 0);
+    if (parts.length === 3) {
+      const [hours, minutes, seconds] = parts;
+      return hours * 3600 + minutes * 60 + seconds;
+    }
+    if (parts.length === 2) {
+      const [minutes, seconds] = parts;
+      return minutes * 60 + seconds;
+    }
+  }
+  
+  // Handle space-separated format (e.g., "30m 15s", "1h 5m 30s")
+  let totalSeconds = 0;
+  const parts = duration.split(' ');
+  
+  for (const part of parts) {
+    if (part.endsWith('h')) {
+      totalSeconds += parseInt(part) * 3600;
+    } else if (part.endsWith('m')) {
+      totalSeconds += parseInt(part) * 60;
+    } else if (part.endsWith('s')) {
+      totalSeconds += parseInt(part);
+    }
+  }
+  
+  return totalSeconds;
+}
+
+// Status ordering: Failed/Error -> Warning -> Success
+export function getStatusSortValue(status: BackupStatus | 'N/A'): number {
+  const statusOrder: Record<string, number> = {
+    'Failed': 0,
+    'Error': 0,
+    'Warning': 1,
+    'Success': 2,
+    'N/A': 3
+  };
+  return statusOrder[status] ?? 3;
+}
+
+// Generic sort functions for different data types
+export const sortFunctions = {
+  text: (a: string, b: string): number => {
+    const aVal = a?.toString().toLowerCase() ?? '';
+    const bVal = b?.toString().toLowerCase() ?? '';
+    return aVal.localeCompare(bVal);
+  },
+
+  number: (a: number | null, b: number | null): number => {
+    // Handle null values - put them at the end
+    if (a === null && b === null) return 0;
+    if (a === null) return 1;
+    if (b === null) return -1;
+    return a - b;
+  },
+
+  date: (a: string, b: string): number => {
+    if (a === "N/A" && b === "N/A") return 0;
+    if (a === "N/A") return 1;
+    if (b === "N/A") return -1;
+    return new Date(a).getTime() - new Date(b).getTime();
+  },
+
+  status: (a: BackupStatus | 'N/A', b: BackupStatus | 'N/A'): number => {
+    return getStatusSortValue(a) - getStatusSortValue(b);
+  },
+
+  duration: (a: string, b: string): number => {
+    return parseDurationToSeconds(a) - parseDurationToSeconds(b);
+  }
+};
+
+// Helper function to get the appropriate sort function based on column type
+export function getSortFunction(columnType: keyof typeof sortFunctions) {
+  return sortFunctions[columnType] || sortFunctions.text;
+}
+
+// Helper function to safely get a value from an object by path
+export function getNestedValue(obj: any, path: string): any {
+  return path.split('.').reduce((current, key) => current?.[key], obj);
+}
+
+// Create a generic sort function that can be used by both tables
+export function createSortedArray<T>(
+  array: T[],
+  sortConfig: SortConfig,
+  columnConfig: Record<string, { type: keyof typeof sortFunctions; path: string }>
+): T[] {
+  if (!sortConfig.column || !columnConfig[sortConfig.column]) {
+    return array;
+  }
+
+  const { type, path } = columnConfig[sortConfig.column];
+  const sortFn = getSortFunction(type);
+
+  const sorted = [...array].sort((a, b) => {
+    const aValue = getNestedValue(a, path);
+    const bValue = getNestedValue(b, path);
+    
+    const result = (sortFn as any)(aValue, bValue);
+    return sortConfig.direction === 'desc' ? -result : result;
+  });
+
+  return sorted;
+} 

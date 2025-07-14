@@ -1,7 +1,7 @@
 "use client";
 
 import type { Backup } from "@/lib/types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Table,
   TableHeader,
@@ -31,6 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SortableTableHead } from "@/components/ui/sortable-table-head";
+import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
 
 interface MachineBackupTableProps {
   backups: Backup[];
@@ -38,29 +40,80 @@ interface MachineBackupTableProps {
 
 export function MachineBackupTable({ backups }: MachineBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
+
+  // Column configuration for sorting
+  const columnConfig = {
+    name: { type: 'text' as const, path: 'name' },
+    date: { type: 'date' as const, path: 'date' },
+    status: { type: 'status' as const, path: 'status' },
+    warnings: { type: 'number' as const, path: 'warnings' },
+    errors: { type: 'number' as const, path: 'errors' },
+    backup_list_count: { type: 'number' as const, path: 'backup_list_count' },
+    fileCount: { type: 'number' as const, path: 'fileCount' },
+    fileSize: { type: 'number' as const, path: 'fileSize' },
+    uploadedSize: { type: 'number' as const, path: 'uploadedSize' },
+    duration: { type: 'duration' as const, path: 'duration' },
+    knownFileSize: { type: 'number' as const, path: 'knownFileSize' }
+  };
 
   // Get unique backup names for the filter
   const uniqueBackupNames = ["all", ...new Set(backups.map(backup => backup.name))];
 
-  // Filter backups based on name
-  const filteredBackups = backups.filter((backup) => {
-    if (selectedBackup === "all") return true;
-    return backup.name === selectedBackup;
-  });
+  // Sort, filter, and paginate backups
+  const sortedFilteredPaginatedBackups = useMemo(() => {
+    // First sort the backups
+    const sorted = createSortedArray(backups, sortConfig, columnConfig);
+    
+    // Then filter based on selected backup name
+    const filtered = sorted.filter((backup) => {
+      if (selectedBackup === "all") return true;
+      return backup.name === selectedBackup;
+    });
+    
+    return {
+      filtered,
+      totalPages: Math.ceil(filtered.length / tablePageSize),
+      paginated: filtered.slice(
+        (currentPage - 1) * tablePageSize,
+        currentPage * tablePageSize
+      )
+    };
+  }, [backups, sortConfig, selectedBackup, currentPage, tablePageSize, columnConfig]);
 
-  const totalPages = Math.ceil(filteredBackups.length / tablePageSize);
-  const paginatedBackups = filteredBackups.slice(
-    (currentPage - 1) * tablePageSize,
-    currentPage * tablePageSize
-  );
+  const { filtered: filteredBackups, totalPages, paginated: paginatedBackups } = sortedFilteredPaginatedBackups;
   const router = useRouter();
+
+  const handleSort = (column: string) => {
+    setSortConfig(prevConfig => {
+      if (prevConfig.column === column) {
+        // Toggle direction for the same column
+        return {
+          column,
+          direction: prevConfig.direction === 'asc' ? 'desc' : 'asc'
+        };
+      } else {
+        // New column - use descending for dates, ascending for others
+        const isDateColumn = column === 'date';
+        return {
+          column,
+          direction: isDateColumn ? 'desc' : 'asc'
+        };
+      }
+    });
+  };
 
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedBackup]);
+
+  // Reset to first page when sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortConfig]);
 
   // Reset to first page when table page size changes
   useEffect(() => {
@@ -138,17 +191,39 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Backup Name</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-center">Warnings</TableHead>
-                  <TableHead className="text-center">Errors</TableHead>
-                  <TableHead className="text-center">Available Versions</TableHead>
-                  <TableHead className="text-right">File Count</TableHead>
-                  <TableHead className="text-right">File Size</TableHead>
-                  <TableHead className="text-right">Uploaded Size</TableHead>
-                  <TableHead className="text-right">Duration</TableHead>
-                  <TableHead className="text-right">Storage Size</TableHead>
+                  <SortableTableHead column="name" sortConfig={sortConfig} onSort={handleSort}>
+                    Backup Name
+                  </SortableTableHead>
+                  <SortableTableHead column="date" sortConfig={sortConfig} onSort={handleSort}>
+                    Date
+                  </SortableTableHead>
+                  <SortableTableHead column="status" sortConfig={sortConfig} onSort={handleSort}>
+                    Status
+                  </SortableTableHead>
+                  <SortableTableHead column="warnings" sortConfig={sortConfig} onSort={handleSort} align="center">
+                    Warnings
+                  </SortableTableHead>
+                  <SortableTableHead column="errors" sortConfig={sortConfig} onSort={handleSort} align="center">
+                    Errors
+                  </SortableTableHead>
+                  <SortableTableHead column="backup_list_count" sortConfig={sortConfig} onSort={handleSort} align="center">
+                    Available Versions
+                  </SortableTableHead>
+                  <SortableTableHead column="fileCount" sortConfig={sortConfig} onSort={handleSort} align="right">
+                    File Count
+                  </SortableTableHead>
+                  <SortableTableHead column="fileSize" sortConfig={sortConfig} onSort={handleSort} align="right">
+                    File Size
+                  </SortableTableHead>
+                  <SortableTableHead column="uploadedSize" sortConfig={sortConfig} onSort={handleSort} align="right">
+                    Uploaded Size
+                  </SortableTableHead>
+                  <SortableTableHead column="duration" sortConfig={sortConfig} onSort={handleSort} align="right">
+                    Duration
+                  </SortableTableHead>
+                  <SortableTableHead column="knownFileSize" sortConfig={sortConfig} onSort={handleSort} align="right">
+                    Storage Size
+                  </SortableTableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
