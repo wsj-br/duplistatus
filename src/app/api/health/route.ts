@@ -1,13 +1,28 @@
 import { NextResponse } from 'next/server';
 import { db, dbOps } from '@/lib/db';
 
+interface HealthData {
+  status: string;
+  database: string;
+  basicConnection: boolean;
+  tablesFound: number;
+  tables: string[];
+  preparedStatements: boolean;
+  timestamp: string;
+  preparedStatementsError?: string;
+}
+
+interface TableResult {
+  name: string;
+}
+
 export async function GET() {
   try {
     // Test basic database connection
     const basicTest = db.prepare('SELECT 1 as test').get();
     
     // Test table existence
-    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as TableResult[];
     
     // Test prepared statements
     let preparedStatementsOk = true;
@@ -15,25 +30,25 @@ export async function GET() {
     
     try {
       // Test a simple query that uses prepared statements
-      const machineCount = dbOps.getAllMachines.all().length;
-      const summaryData = dbOps.getOverallSummary.get();
+      dbOps.getAllMachines.all();
+      dbOps.getOverallSummary.get();
     } catch (error) {
       preparedStatementsOk = false;
       preparedStatementsError = error instanceof Error ? error.message : 'Unknown error';
     }
     
-    const healthData: any = {
+    const healthData: HealthData = {
       status: 'healthy',
       database: 'connected',
       basicConnection: !!basicTest,
       tablesFound: tables.length,
-      tables: tables.map((t: any) => t.name),
+      tables: tables.map((t: TableResult) => t.name),
       preparedStatements: preparedStatementsOk,
       timestamp: new Date().toISOString()
     };
     
     if (!preparedStatementsOk) {
-      healthData.preparedStatementsError = preparedStatementsError;
+      healthData.preparedStatementsError = preparedStatementsError ?? undefined;
     }
     
     return NextResponse.json(

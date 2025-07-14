@@ -45,11 +45,11 @@ export function parseDurationToSeconds(duration: string): number {
 // Status ordering: Failed/Error -> Warning -> Success
 export function getStatusSortValue(status: BackupStatus | 'N/A'): number {
   const statusOrder: Record<string, number> = {
-    'Failed': 0,
-    'Error': 0,
-    'Warning': 1,
-    'Success': 2,
-    'N/A': 3
+    'Success': 4,
+    'Unknown': 3,
+    'Warning': 2,
+    'Error': 1,
+    'Fatal': 0,
   };
   return statusOrder[status] ?? 3;
 }
@@ -92,8 +92,13 @@ export function getSortFunction(columnType: keyof typeof sortFunctions) {
 }
 
 // Helper function to safely get a value from an object by path
-export function getNestedValue(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => current?.[key], obj);
+export function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  return path.split('.').reduce((current: unknown, key: string) => {
+    if (current && typeof current === 'object' && key in current) {
+      return (current as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, obj as unknown);
 }
 
 // Create a generic sort function that can be used by both tables
@@ -110,10 +115,12 @@ export function createSortedArray<T>(
   const sortFn = getSortFunction(type);
 
   const sorted = [...array].sort((a, b) => {
-    const aValue = getNestedValue(a, path);
-    const bValue = getNestedValue(b, path);
+    const aValue = getNestedValue(a as Record<string, unknown>, path);
+    const bValue = getNestedValue(b as Record<string, unknown>, path);
     
-    const result = (sortFn as any)(aValue, bValue);
+    // Type assertion for the sort function call
+    const typedSortFn = sortFn as (a: unknown, b: unknown) => number;
+    const result = typedSortFn(aValue, bValue);
     return sortConfig.direction === 'desc' ? -result : result;
   });
 

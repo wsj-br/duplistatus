@@ -5,6 +5,7 @@ import { version } from './package.json';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  allowedDevOrigins: ['192.168.1.*', '192.168.1.20'],
   typescript: {
     ignoreBuildErrors: false,
   },

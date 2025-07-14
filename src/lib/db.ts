@@ -2,9 +2,6 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-// Helper function for development-only logging
-const log = process.env.NODE_ENV === 'development' ? console.log : () => {};
-
 // Ensure we're running on the server side
 if (typeof window !== 'undefined') {
   throw new Error('Database can only be initialized on the server side');

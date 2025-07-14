@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableBody,
   TableRow,
-  TableHead,
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -44,26 +43,26 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
 
-  // Column configuration for sorting
-  const columnConfig = {
-    name: { type: 'text' as const, path: 'name' },
-    date: { type: 'date' as const, path: 'date' },
-    status: { type: 'status' as const, path: 'status' },
-    warnings: { type: 'number' as const, path: 'warnings' },
-    errors: { type: 'number' as const, path: 'errors' },
-    backup_list_count: { type: 'number' as const, path: 'backup_list_count' },
-    fileCount: { type: 'number' as const, path: 'fileCount' },
-    fileSize: { type: 'number' as const, path: 'fileSize' },
-    uploadedSize: { type: 'number' as const, path: 'uploadedSize' },
-    duration: { type: 'duration' as const, path: 'duration' },
-    knownFileSize: { type: 'number' as const, path: 'knownFileSize' }
-  };
-
   // Get unique backup names for the filter
   const uniqueBackupNames = ["all", ...new Set(backups.map(backup => backup.name))];
 
   // Sort, filter, and paginate backups
   const sortedFilteredPaginatedBackups = useMemo(() => {
+    // Column configuration for sorting
+    const columnConfig = {
+      name: { type: 'text' as const, path: 'name' },
+      date: { type: 'date' as const, path: 'date' },
+      status: { type: 'status' as const, path: 'status' },
+      warnings: { type: 'number' as const, path: 'warnings' },
+      errors: { type: 'number' as const, path: 'errors' },
+      backup_list_count: { type: 'number' as const, path: 'backup_list_count' },
+      fileCount: { type: 'number' as const, path: 'fileCount' },
+      fileSize: { type: 'number' as const, path: 'fileSize' },
+      uploadedSize: { type: 'number' as const, path: 'uploadedSize' },
+      duration: { type: 'duration' as const, path: 'duration' },
+      knownFileSize: { type: 'number' as const, path: 'knownFileSize' }
+    };
+
     // First sort the backups
     const sorted = createSortedArray(backups, sortConfig, columnConfig);
     
@@ -74,16 +73,15 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
     });
     
     return {
-      filtered,
       totalPages: Math.ceil(filtered.length / tablePageSize),
       paginated: filtered.slice(
         (currentPage - 1) * tablePageSize,
         currentPage * tablePageSize
       )
     };
-  }, [backups, sortConfig, selectedBackup, currentPage, tablePageSize, columnConfig]);
+  }, [backups, sortConfig, selectedBackup, currentPage, tablePageSize]);
 
-  const { filtered: filteredBackups, totalPages, paginated: paginatedBackups } = sortedFilteredPaginatedBackups;
+  const { totalPages, paginated: paginatedBackups } = sortedFilteredPaginatedBackups;
   const router = useRouter();
 
   const handleSort = (column: string) => {

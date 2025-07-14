@@ -5,9 +5,10 @@ globs:
 alwaysApply: true
 ---
 tools:
-  Node.js: ^18.x
+  Node.js: ^20.x
   TypeScript: ^5.x
-  Next.js (App Router): 15.2.4
+  Next.js (App Router): 15.3.5
+  pnpm: ^10.x
   React & React-DOM: ^19.x
   @radix-ui/react-* modules: latest
   Tailwind CSS: ^3.4.17
@@ -22,3 +23,4 @@ Network:
 
 Instructions:
   - don't run the application automaticaly, use pnpm build or pnpm lint to check for errors.
+  - when creating or modifying code allways use a proper TypeScript interface instead of any.

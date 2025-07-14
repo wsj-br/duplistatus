@@ -5,11 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import http from 'http';
 
-// Add type for fetch options
-type FetchOptions = {
-  agent?: https.Agent;
-};
-
 // Type definitions for API responses
 interface SystemInfoOption {
   Name: string;
@@ -32,11 +27,26 @@ interface LogEntry {
   Message: string;
 }
 
+interface RequestOptions {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+  timeout?: number;
+  agent?: https.Agent;
+}
+
+interface RequestResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  json: () => Promise<unknown>;
+}
+
 // Define a default timeout for requests (in milliseconds)
 const DEFAULT_REQUEST_TIMEOUT = 30000;
 
 // Helper function to make HTTP/HTTPS requests
-async function makeRequest(url: string, options: any): Promise<any> {
+async function makeRequest(url: string, options: RequestOptions): Promise<RequestResponse> {
   const { timeout = DEFAULT_REQUEST_TIMEOUT, ...requestOptions } = options;
 
   return new Promise((resolve, reject) => {
@@ -159,7 +169,7 @@ export async function POST(request: NextRequest) {
       throw new Error(`Login failed: ${loginResponse.statusText}`);
     }
 
-    const loginData = await loginResponse.json();
+    const loginData = await loginResponse.json() as { AccessToken?: string };
     const authToken = loginData.AccessToken;
 
     if (!authToken) {
@@ -186,7 +196,7 @@ export async function POST(request: NextRequest) {
       throw new Error(`Failed to get system info: ${systemInfoResponse.statusText}`);
     }
 
-    const systemInfo: SystemInfo = await systemInfoResponse.json();
+    const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
     const machineId = systemInfo.Options?.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
     const machineName = systemInfo.MachineName;
 
@@ -221,7 +231,7 @@ export async function POST(request: NextRequest) {
       throw new Error(`Failed to get backups list: ${backupsResponse.statusText}`);
     }
 
-    const backups: BackupInfo[] = await backupsResponse.json();
+    const backups: BackupInfo[] = await backupsResponse.json() as BackupInfo[];
     const backupIds = backups.map((b) => b.Backup.ID);
 
     if (!backupIds.length) {
@@ -251,11 +261,11 @@ export async function POST(request: NextRequest) {
         }
 
         if (!logResponse.ok) {
-          console.error('Failed to get logs for backup:', logResponse.statusText);
-          throw new Error(`Failed to get logs for backup ${backupId}: ${logResponse.statusText}`);
+          console.error(`Failed to get log for backup ${backupId}:`, logResponse.statusText);
+          throw new Error(`Failed to get log for backup ${backupId}: ${logResponse.statusText}`);
         }
 
-        const logs: LogEntry[] = await logResponse.json();
+        const logs: LogEntry[] = await logResponse.json() as LogEntry[];
         const backupMessages = logs.filter((log) => {
           try {
             // Parse the Message string into JSON

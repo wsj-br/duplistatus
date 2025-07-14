@@ -6,7 +6,6 @@ import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive } from "lucide-react";
 import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
-import { useBackupSelection } from "@/contexts/backup-selection-context";
 import type { Backup } from "@/lib/types";
 
 interface MachineDetailSummaryItemsProps {
@@ -20,13 +19,6 @@ interface MachineDetailSummaryItemsProps {
   selectedBackup?: Backup | null; // Add this prop for selected backup data
 }
 
-interface SummaryItem {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-  'data-ai-hint': string;
-}
-
 export function MachineDetailSummaryItems({
   totalBackups,
   averageDuration,
@@ -36,8 +28,6 @@ export function MachineDetailSummaryItems({
   lastBackupFileSize,
   selectedBackup,
 }: MachineDetailSummaryItemsProps) {
-  const { selectedBackup: selectedBackupId } = useBackupSelection();
-
   // Use a try/catch for each item to ensure nothing breaks
   const getFormattedValue = (value: number, formatter: (val: number) => string, defaultValue: string = '0') => {
     try {

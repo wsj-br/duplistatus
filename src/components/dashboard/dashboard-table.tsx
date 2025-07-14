@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableBody,
   TableRow,
-  TableHead,
   TableCell,
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
@@ -51,7 +50,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
   }, []);
 
   // Column configuration for sorting
-  const columnConfig = {
+  const columnConfig = useMemo(() => ({
     name: { type: 'text' as const, path: 'name' },
     lastBackupName: { type: 'text' as const, path: 'lastBackupName' },
     lastBackupListCount: { type: 'number' as const, path: 'lastBackupListCount' },
@@ -61,7 +60,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     lastBackupDuration: { type: 'duration' as const, path: 'lastBackupDuration' },
     totalWarnings: { type: 'number' as const, path: 'totalWarnings' },
     totalErrors: { type: 'number' as const, path: 'totalErrors' }
-  };
+  }), []);
 
   // Persist sort configuration to localStorage whenever it changes (only after initial load)
   useEffect(() => {
@@ -77,7 +76,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
   // Sort machines based on current sort configuration
   const sortedMachines = useMemo(() => {
     return createSortedArray(machines, sortConfig, columnConfig);
-  }, [machines, sortConfig]);
+  }, [machines, sortConfig, columnConfig]);
 
   const handleSort = (column: string) => {
     setSortConfig(prevConfig => {
