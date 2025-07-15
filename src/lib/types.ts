@@ -52,8 +52,10 @@ export interface MachineSummary {
   lastBackupDuration: string; // or "N/A"
   lastBackupListCount: number | null;
   lastBackupName: string | null;
+  lastBackupId: string | null;
   totalWarnings: number;
   totalErrors: number;
+  availableBackups: string[] | null;
 }
 
 export interface OverallSummary {

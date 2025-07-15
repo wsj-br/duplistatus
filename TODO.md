@@ -1,75 +1,68 @@
-# TODO list 
+# TODO List  
 
-## fix
+## Fix  
 
-   - (no issues identified)
+- (No issues identified)  
 
+## Changes  
 
-## changes
+- Include a page refresh after the successful "Collect Backup Logs" 🆕  
+- Standardize the column titles: "Available Backup Versions" / "Available Versions" 🛠️  
 
-   - include a page refresh after the sucessfull "Collect Backup Logs" 🆕
-   - standardize the columns titles: Available Backup Versions/Available Versions 🛠️
+## New Features  
 
+- Send ntfy messages (https://ntfy.sh/) to a topic when receiving a backup log (`/api/upload`) ❓  
+- Send email messages to an address(es) when receiving a backup log (`/api/upload`) ❓  
+- Include in documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍  
 
+<br>  
 
-## new features
+---  
 
-   - send ntfy messages (https://ntfy.sh/) to a topic when receive a backup log (/api/upload) ❓
-   - send email messages to an address(es) when receive a backup log (/api/upload) ❓
-   - include in documentation how to serve using HTTPS (nginx/certbot or caddy) 🔍
+<br>  
 
+### Implemented in Version 0.3.8 ✅  
 
-<br>
+- Fix documentation on Duplicati server configuration (upload URL incorrect). Thanks @Taomyn.  
+- Add support to collect backup logs using HTTPS  
 
----
+<br>  
 
-<br>
+### Implemented in Version 0.4.0 ✅  
 
-### implemented on version 0.3.8 ✅
+- Improved support for multiple backups on the same machine:  
+  - In the dashboard table, show each backup in a row.  
+  - When clicking on the row, go to the detail page of the selected backup.  
+  - When clicking on the machine name, go to the detail page of all backups for the selected machine.  
+  - On the detail page, the user can select all backups or a specific backup name.  
+- Included the chart on the detail page (same as the dashboard page).  
+- Added a link to the GitHub repo in the footer of the pages.  
+- Changed the handling of the "Fatal" status with a red badge instead of the default gray.  
 
-   - fix documentation on duplicati server configuration (upload URL incorrected). Thanks @Taomyn. 
-   - add support to collect backups logs using HTTPS 
+<br>  
 
-<br>
+### Implemented in Version 0.5.0 ✅  
 
-### implemented on version 0.4.0 ✅
+- Changed labels/fields from `Total Backuped Size` to `Total Backup Size`.  
+- Added version number in the page footer.  
+- Corrected the return link on the backup detail page.  
+- Improved error management for `JSON.parse` and the `backups/collect` API endpoint.  
+- Upgraded all dependencies/frameworks/tools to the latest available version.  
+- Reduced HTTP/HTTPS timeout to 30 seconds.  
+- Updated documentation, added Podman install guide.  
 
-   * improved support for multiple backups in the same machine
-      -  in the dashboard table, show each backup in a row. 
-      -  when clicking on the row, goes to the detail page of the selected backup
-      -  when clicking on the machine name, goes to the detail page of all backups of the selected machine
-      -  in the detail page, user can select all backups or a specific backup name.
-      
-   * included the chart on the detail page too (same as dashboard page).
-   * added a link to github repo on the footer of the pages
-   * change the handling of the status "Fatal"  with a red badge instead of the default gray.
+<br>  
 
-<br>
+### Implemented in Version 0.6.0 🚧 (in progress)
 
+- Added sorting functions to the applications table (dashboard/detail).  
+- Persisted the user-selected sort order on the dashboard table.  
+- Improved navigation:  
+  - Added a "Return to Dashboard" link on the detail page.  
+  - Clicking the status badge on the dashboard page now directly shows backup details.  
+- Added display of available backup versions (this information is received via upload unless truncated by Duplicati):  
+  - Included an icon in both dashboard and detail page tables.  
+  - When clicked, shows a table of available backups at the time of the selected backup.  
+  - On the detail page, versions are displayed in the summary box at the top.  
 
-### implemented on version 0.5.0 ✅
-
-   * change labels/fields from  `Total Backuped Size` to `Total Backup size`.
-   * add version number on the pages's footer.
-   * correct the return link on the backup detail page.
-   * add better error management on `JSON.parser` and `backups/collect` API endpoint.
-   * upgrade all dependencies/framework/tools to the last version available.
-   * reduce the http/https timeout to 30 seconds.
-   * update documentation, add podman install guide.
-
-<br>
-
-### implemented on version 0.6.0 🚧
-
-   * add sort functions to the applications table (dashboard/detail)
-   * persist the sort order selected by the user on the dashboard table
-   * add a return to dashboard link in the detail page to improve navegability.
-   - add link/icon to version to Available Backup Versions/Available Versions (received via upload)
-   
-
-
-<br>
-
-
-
-
+<br>  

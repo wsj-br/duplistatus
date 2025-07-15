@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
 import {
   Select,
   SelectContent,
@@ -42,6 +43,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
+  const { handleAvailableBackupsClick, AvailableBackupsModal } = useAvailableBackupsModal();
 
   // Get unique backup names for the filter
   const uniqueBackupNames = ["all", ...new Set(backups.map(backup => backup.name))];
@@ -163,6 +165,8 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
     }
   };
 
+
+
   return (
     <TooltipProvider>
       <div className="flex flex-col gap-4">
@@ -265,7 +269,12 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
                     <TableCell className="text-center">{backup.warnings}</TableCell>
                     <TableCell className="text-center">{backup.errors}</TableCell>
                     <TableCell className="text-center">
-                      {backup.backup_list_count !== null ? backup.backup_list_count.toLocaleString() : 'N/A'}
+                      <AvailableBackupsIcon
+                        availableBackups={backup.available_backups}
+                        currentBackupDate={backup.date}
+                        onIconClick={handleAvailableBackupsClick}
+                        count={backup.backup_list_count}
+                      />
                     </TableCell>
                     <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
                     <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
@@ -303,6 +312,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
             </Button>
           </div>
         )}
+        <AvailableBackupsModal />
       </div>
     </TooltipProvider>
   );

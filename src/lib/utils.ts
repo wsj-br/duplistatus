@@ -290,5 +290,8 @@ export function extractAvailableBackups(messagesArray: string | null): string[] 
   if (backupsToConsider.length === 0) return [];
   
   // Filter out backups to delete
-  return backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
+  const availableBackups = backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
+  
+  // Sort timestamps from most recent to oldest (ISO format can be sorted as strings)
+  return availableBackups.sort((a, b) => b.localeCompare(a));
 }

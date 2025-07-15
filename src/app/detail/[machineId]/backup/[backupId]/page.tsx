@@ -1,11 +1,18 @@
 import { getMachineById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDistanceToNow } from 'date-fns';
 import { StatusBadge } from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, MessageSquare, AlertTriangle, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import { formatTimeAgo } from '@/lib/utils';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableCell,
+} from '@/components/ui/table';
 
 interface BackupLogPageProps {
   params: Promise<{
@@ -125,9 +132,66 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
     }
   };
 
+  const formatAvailableBackupDate = (isoTimestamp: string): string => {
+    try {
+      const date = new Date(isoTimestamp);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    } catch {
+      return 'Invalid date';
+    }
+  };
+
+  const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availableBackups: string[] | null; currentBackupDate: string }) => {
+    if (!availableBackups || availableBackups.length === 0) {
+      return <span className="text-sm text-muted-foreground">(not available)</span>;
+    }
+
+    return (
+      <div className="mt-2 w-fit ml-4">
+        <Table className="w-auto text-xs">
+          <TableHeader>
+            <TableRow className="border-b">
+              <TableCell className="font-medium text-blue-400 font-bold w-8 py-1 px-2 text-xs">#</TableCell>
+              <TableCell className="font-medium text-blue-400 font-bold py-1 px-2 text-xs">Backup Date</TableCell>
+              <TableCell className="font-medium text-blue-400 font-bold py-1 px-2 text-xs">When</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* First row: Current backup date */}
+            <TableRow className="border-b">
+              <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{formatAvailableBackupDate(currentBackupDate)}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(currentBackupDate)}</TableCell>
+            </TableRow>
+            {/* Additional available backups starting from #2 */}
+            {availableBackups.map((timestamp, index) => (
+              <TableRow key={index} className="border-b">
+                <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
+                <TableCell className="py-1 px-2 text-xs">{formatAvailableBackupDate(timestamp)}</TableCell>
+                <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(timestamp)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  };
+
   const messages = parseJsonArray(backup.messages_array || null);
   const warnings = parseJsonArray(backup.warnings_array || null);
   const errors = parseJsonArray(backup.errors_array || null);
+  
+  // Handle available_backups field - it should already be parsed as an array from db-utils
+  const availableBackups = (backup as { available_backups?: string[] }).available_backups || [];
 
   // Ensure all required properties exist with fallbacks
   const safeBackup = {
@@ -176,13 +240,19 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                     <span className="font-medium text-muted-foreground">Date:</span>
                     <span>{new Date(safeBackup.date).toLocaleString()}</span>
                     <span className="text-sm text-muted-foreground">
-                      ({formatDistanceToNow(new Date(safeBackup.date), { addSuffix: true })})
+                      ({formatTimeAgo(safeBackup.date)})
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-muted-foreground">ID:</span>
                     <span>{backupId}</span>
                   </div>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-medium text-muted-foreground mb-2">Available backups:</dt>
+                <dd className="text-sm">
+                  <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} />
                 </dd>
               </div>
               <div>

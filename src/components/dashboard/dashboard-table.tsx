@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import { formatTimeAgo } from "@/lib/utils"; // Import the new function
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
+import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
 
 interface DashboardTableProps {
   machines: MachineSummary[];
@@ -24,6 +25,7 @@ const DASHBOARD_SORT_KEY = 'dashboard-table-sort';
 
 export function DashboardTable({ machines }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
+  const { handleAvailableBackupsClick, AvailableBackupsModal } = useAvailableBackupsModal();
   
   // Initialize with default state to match server rendering
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
@@ -110,6 +112,13 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     router.push(`/detail/${machineId}?${queryParams.toString()}`);
   };
 
+  const handleStatusBadgeClick = (machineId: string, backupId: string | null, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the row click from firing
+    if (backupId) {
+      router.push(`/detail/${machineId}/backup/${backupId}`);
+    }
+  };
+
   return (
     <div className="rounded-lg border shadow-sm overflow-hidden">
       <Table>
@@ -168,7 +177,12 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                 {machine.lastBackupName || 'N/A'}
               </TableCell>
               <TableCell className="text-center">
-                {machine.lastBackupListCount !== null ? machine.lastBackupListCount.toLocaleString() : 'N/A'}
+                <AvailableBackupsIcon
+                  availableBackups={machine.availableBackups}
+                  currentBackupDate={machine.lastBackupDate}
+                  onIconClick={handleAvailableBackupsClick}
+                  count={machine.lastBackupListCount}
+                />
               </TableCell>
               <TableCell className="text-center">{machine.backupCount}</TableCell>
               <TableCell>
@@ -184,7 +198,12 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                 )}
               </TableCell>
               <TableCell>
-                <StatusBadge status={machine.lastBackupStatus} />
+                <div 
+                  onClick={(e) => handleStatusBadgeClick(machine.id, machine.lastBackupId, e)}
+                  className="cursor-pointer"
+                >
+                  <StatusBadge status={machine.lastBackupStatus} />
+                </div>
               </TableCell>
               <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
               <TableCell className="text-center">{machine.totalWarnings}</TableCell>
@@ -193,6 +212,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
           ))}
         </TableBody>
       </Table>
+      <AvailableBackupsModal />
     </div>
   );
 }

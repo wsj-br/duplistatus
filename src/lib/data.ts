@@ -6,6 +6,7 @@ interface MachineSummaryRow {
   machine_id: string;
   name: string;
   last_backup_date: string | null;
+  last_backup_id: string | null;
   last_backup_status: BackupStatus | null;
   last_backup_duration: number | null;
   last_backup_list_count: number | null;
@@ -13,6 +14,7 @@ interface MachineSummaryRow {
   backup_count: number;
   total_warnings: number;
   total_errors: number;
+  available_backups: string | null;
 }
 
 interface MachineRow {
@@ -63,9 +65,11 @@ export async function getMachinesSummary(): Promise<MachineSummary[]> {
     lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
     lastBackupListCount: row.last_backup_list_count,
     lastBackupName: row.last_backup_name || null,
+    lastBackupId: row.last_backup_id || null,
     backupCount: row.backup_count || 0,
     totalWarnings: row.total_warnings || 0,
-    totalErrors: row.total_errors || 0
+    totalErrors: row.total_errors || 0,
+    availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null
   }));
 }
 

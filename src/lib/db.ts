@@ -237,6 +237,7 @@ const dbOps = {
       b.messages_array,
       b.warnings_array,
       b.errors_array,
+      b.available_backups,
       b.warnings_actual_length,
       b.errors_actual_length,
       b.messages_actual_length,
@@ -271,11 +272,13 @@ const dbOps = {
         mb.machine_name as name,
         mb.backup_name as last_backup_name,
         lb.last_backup_date,
+        b.id as last_backup_id,
         b.status as last_backup_status,
         b.duration_seconds as last_backup_duration,
         b.warnings as total_warnings,
         b.errors as total_errors,
         b.backup_list_count as last_backup_list_count,
+        b.available_backups as available_backups,
         COUNT(b2.id) as backup_count
       FROM machine_backups mb
       LEFT JOIN latest_backups lb ON mb.machine_id = lb.machine_id AND mb.backup_name = lb.backup_name
