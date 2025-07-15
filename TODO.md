@@ -55,7 +55,8 @@
 
 ### Implemented in Version 0.6.0 🚧 (in progress)
 
-- Added sorting functions to the applications table (dashboard/detail).  
+- Added sorting functions to the applications table (dashboard/detail) 
+  - feature request by @Taomyn (request #4)
 - Persisted the user-selected sort order on the dashboard table.  
 - Improved navigation:  
   - Added a "Return to Dashboard" link on the detail page.  
