@@ -65,9 +65,9 @@ try {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       
       -- Message arrays stored as JSON blobs
-      messages_array TEXT,
-      warnings_array TEXT,
-      errors_array TEXT,
+      messages_array TEXT DEFAULT '[]',
+      warnings_array TEXT DEFAULT '[]',
+      errors_array TEXT DEFAULT '[]',
       available_backups TEXT DEFAULT '[]',
       
       -- Data fields
