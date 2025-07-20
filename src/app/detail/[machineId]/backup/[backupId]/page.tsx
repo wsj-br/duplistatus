@@ -1,4 +1,4 @@
-import { getMachineById } from '@/lib/data';
+import { getMachineById } from '@/lib/db-utils';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/status-badge';

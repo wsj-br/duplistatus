@@ -1,4 +1,4 @@
-import { getMachineById, getAllMachines } from "@/lib/data";
+import { getMachineById, getAllMachines } from "@/lib/db-utils";
 import { MachineDetailsContent } from "@/components/machine-details/machine-details-content";
 import { notFound } from 'next/navigation';
 import type { Machine } from "@/lib/types";

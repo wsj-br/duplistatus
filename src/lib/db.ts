@@ -125,6 +125,10 @@ try {
     CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
     CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
 
+    CREATE TABLE IF NOT EXISTS configurations (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT
+    );
   `);
   // log('Database schema initialized successfully');
 } catch (error) {

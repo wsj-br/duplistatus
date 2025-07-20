@@ -65,3 +65,47 @@ export interface OverallSummary {
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
   totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
 }
+
+export interface NtfyConfig {
+  url: string;
+  topic: string;
+}
+
+export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
+
+// Legacy interface for backward compatibility
+export interface MachineNotificationConfig {
+  notificationEvent: NotificationEvent;
+  expectedInterval: number; // in hours
+  missedBackupCheckEnabled: boolean;
+  intervalUnit: 'hours' | 'days';
+}
+
+// New interface for backup-based notifications
+export interface BackupNotificationConfig {
+  notificationEvent: NotificationEvent;
+  expectedInterval: number; // in hours
+  missedBackupCheckEnabled: boolean;
+  intervalUnit: 'hours' | 'days';
+}
+
+// Helper type for backup identification
+export type BackupKey = string; // Format: "machineName:backupName"
+
+export interface NotificationTemplate {
+  title: string;
+  priority: string;
+  tags: string;
+  message: string;
+}
+
+export interface NotificationConfig {
+  ntfy: NtfyConfig;
+  machineSettings: Record<string, MachineNotificationConfig>; // Legacy - for backward compatibility
+  backupSettings: Record<BackupKey, BackupNotificationConfig>; // New - for backup-based notifications
+  templates: {
+    success: NotificationTemplate;
+    warning: NotificationTemplate;
+    missedBackup: NotificationTemplate;
+  };
+}

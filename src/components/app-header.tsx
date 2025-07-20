@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Settings } from 'lucide-react';
 import { ThemeToggleButton } from '@/components/theme-toggle-button';
-import { ConfigMenu } from '@/components/config-menu';
+import { DisplayMenu } from '@/components/display-menu';
 import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { usePathname } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -44,7 +45,12 @@ export function AppHeader() {
         <div className="flex flex-1 items-center justify-end space-x-2">
           <BackupCollectMenu />
           <DatabaseMaintenanceMenu />
-          <ConfigMenu />
+          <DisplayMenu />
+          <Link href="/settings">
+            <Button variant="outline" size="icon">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </Link>
           <ThemeToggleButton />
         </div>
       </div>

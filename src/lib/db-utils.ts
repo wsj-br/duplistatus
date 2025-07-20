@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { Machine, Backup, BackupStatus } from "@/lib/types";
+import type { BackupStatus } from "@/lib/types";
 
 // Define the database backup record type
 interface BackupRecord {
@@ -57,76 +57,256 @@ function safeDbOperation<T>(operation: () => T, operationName: string, fallback?
   }
 }
 
-// Wrapper functions for database operations
-export const dbUtils = {
-  getMachinesSummary: () => withDb(() => safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', [])),
-  
-  getMachineById: (machineId: string): Machine | null => {
-    return withDb(() => {
-      try {
-        const machine = safeDbOperation(() => dbOps.getMachine.get(machineId), 'getMachine') as { id: string; name: string } | undefined;
-        if (!machine) return null;
+// Configuration data functions (moved from config-data.ts)
+export function getConfiguration(key: string): string | null {
+  return withDb(() => {
+    try {
+      const row = db.prepare('SELECT value FROM configurations WHERE key = ?').get(key) as { value: string } | undefined;
+      return row ? row.value : null;
+    } catch (error) {
+      console.error(`Failed to get configuration for key '${key}':`, error);
+      return null;
+    }
+  });
+}
 
-        const backups = safeDbOperation(() => dbOps.getMachineBackups.all(machineId), 'getMachineBackups', []) as BackupRecord[];
-        
-        const formattedBackups = backups.map((backup): Backup => ({
-          id: backup.id,
-          machine_id: backup.machine_id,
-          name: backup.backup_name,
-          date: backup.date,
-          status: backup.status,
-          warnings: backup.warnings || 0,
-          errors: backup.errors || 0,
-          messages: backup.messages_actual_length || 0,
-          fileCount: backup.examined_files || 0,
-          fileSize: backup.size || 0,
-          uploadedSize: backup.uploaded_size || 0,
-          duration: formatDurationFromSeconds(backup.duration_seconds || 0),
-          duration_seconds: backup.duration_seconds || 0,
-          durationInMinutes: (backup.duration_seconds || 0) / 60,
-          knownFileSize: backup.known_file_size || 0,
-          backup_list_count: backup.backup_list_count || 0,
-          messages_array: backup.messages_array,
-          warnings_array: backup.warnings_array,
-          errors_array: backup.errors_array,
-          available_backups: backup.available_backups ? JSON.parse(backup.available_backups) : []
-        }));
+export function setConfiguration(key: string, value: string): void {
+  withDb(() => {
+    try {
+      db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(key, value);
+    } catch (error) {
+      console.error(`Failed to set configuration for key '${key}':`, error);
+      throw error;
+    }
+  });
+}
 
-        // Calculate chart data
-        const chartData = formattedBackups.map(backup => {
-          const backupDate = new Date(backup.date);
-          return {
-            date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-            isoDate: backup.date,
-            uploadedSize: backup.uploadedSize,
-            duration: backup.durationInMinutes,
-            fileCount: backup.fileCount,
-            fileSize: backup.fileSize,
-            storageSize: backup.knownFileSize,
-            backupVersions: backup.backup_list_count || 0
-          };
-        }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
+// Enhanced data functions with better formatting (consolidated from data.ts)
+interface MachineSummaryRow {
+  machine_id: string;
+  name: string;
+  last_backup_date: string | null;
+  last_backup_id: string | null;
+  last_backup_status: BackupStatus | null;
+  last_backup_duration: number | null;
+  last_backup_list_count: number | null;
+  last_backup_name: string | null;
+  backup_count: number;
+  total_warnings: number;
+  total_errors: number;
+  available_backups: string | null;
+}
 
-        return {
-          id: machine.id,
-          name: machine.name,
-          backups: formattedBackups,
-          chartData
-        };
-      } catch (error) {
-        console.error(`Failed to get machine by ID ${machineId}:`, error);
-        return null;
+export function getMachinesSummary() {
+  return withDb(() => {
+    const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as MachineSummaryRow[];
+    return rows.map(row => {
+      // Validate and normalize the backup status
+      let normalizedStatus: BackupStatus | 'N/A';
+      if (row.last_backup_status === null) {
+        normalizedStatus = 'N/A';
+      } else {
+        // Check if the status is a valid BackupStatus value
+        const validStatuses: BackupStatus[] = ['Success', 'Failed', 'InProgress', 'Warning', 'Fatal'];
+        if (validStatuses.includes(row.last_backup_status as BackupStatus)) {
+          normalizedStatus = row.last_backup_status as BackupStatus;
+        } else {
+          // If it's not a valid status, default to 'Failed'
+          normalizedStatus = 'Failed';
+        }
       }
+
+      return {
+        id: row.machine_id,
+        name: row.name,
+        lastBackupDate: row.last_backup_date || 'N/A',
+        lastBackupStatus: normalizedStatus,
+        lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
+        lastBackupListCount: row.last_backup_list_count,
+        lastBackupName: row.last_backup_name || null,
+        lastBackupId: row.last_backup_id || null,
+        backupCount: row.backup_count || 0,
+        totalWarnings: row.total_warnings || 0,
+        totalErrors: row.total_errors || 0,
+        availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null
+      };
     });
-  },
-  
+  });
+}
+
+interface MachineRow {
+  id: string;
+  name: string;
+}
+
+export function getAllMachines() {
+  return withDb(() => {
+    const machines = safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as MachineRow[];
+    return machines.map(machine => {
+      const backups = safeDbOperation(() => dbOps.getMachineBackups.all(machine.id), 'getMachineBackups', []) as BackupRecord[];
+      
+      const formattedBackups = backups.map(backup => ({
+        id: String(backup.id),
+        machine_id: String(backup.machine_id),
+        name: String(backup.backup_name),
+        date: backup.date,
+        status: backup.status,
+        warnings: Number(backup.warnings) || 0,
+        errors: Number(backup.errors) || 0,
+        messages: Number(backup.messages_actual_length) || 0,
+        fileCount: Number(backup.examined_files) || 0,
+        fileSize: Number(backup.size) || 0,
+        uploadedSize: Number(backup.uploaded_size) || 0,
+        duration: formatDurationFromSeconds(Number(backup.duration_seconds) || 0),
+        duration_seconds: Number(backup.duration_seconds) || 0,
+        durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
+        knownFileSize: Number(backup.known_file_size) || 0,
+        backup_list_count: backup.backup_list_count,
+        messages_array: backup.messages_array,
+        warnings_array: backup.warnings_array,
+        errors_array: backup.errors_array,
+        available_backups: backup.available_backups ? JSON.parse(backup.available_backups) : []
+      }));
+
+      const chartData = formattedBackups.map(backup => {
+        const backupDate = new Date(backup.date);
+        return {
+          date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          isoDate: backup.date,
+          uploadedSize: backup.uploadedSize,
+          duration: backup.durationInMinutes,
+          fileCount: backup.fileCount,
+          fileSize: backup.fileSize,
+          storageSize: backup.knownFileSize,
+          backupVersions: backup.backup_list_count || 0
+        };
+      }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
+
+      return {
+        id: machine.id,
+        name: machine.name,
+        backups: formattedBackups,
+        chartData
+      };
+    });
+  });
+}
+
+interface OverallSummaryRow {
+  total_machines: number;
+  total_backups: number;
+  total_uploaded_size: number;
+  total_storage_used: number;
+  total_backuped_size: number;
+}
+
+export function getOverallSummary() {
+  return withDb(() => {
+    const summary = safeDbOperation(() => dbOps.getOverallSummary.get(), 'getOverallSummary') as OverallSummaryRow | undefined;
+    if (!summary) {
+      return {
+        totalMachines: 0,
+        totalBackups: 0,
+        totalUploadedSize: 0,
+        totalStorageUsed: 0,
+        totalBackupSize: 0
+      };
+    }
+
+    return {
+      totalMachines: summary.total_machines,
+      totalBackups: summary.total_backups,
+      totalUploadedSize: summary.total_uploaded_size,
+      totalStorageUsed: summary.total_storage_used,
+      totalBackupSize: summary.total_backuped_size
+    };
+  });
+}
+
+export function getMachineById(machineId: string) {
+  return withDb(() => {
+    try {
+      const machine = safeDbOperation(() => dbOps.getMachine.get(machineId), 'getMachine') as { id: string; name: string } | undefined;
+      if (!machine) return null;
+
+      const backups = safeDbOperation(() => dbOps.getMachineBackups.all(machineId), 'getMachineBackups', []) as BackupRecord[];
+      
+      const formattedBackups = backups.map(backup => ({
+        id: String(backup.id),
+        machine_id: String(backup.machine_id),
+        name: String(backup.backup_name),
+        date: backup.date,
+        status: backup.status,
+        warnings: Number(backup.warnings) || 0,
+        errors: Number(backup.errors) || 0,
+        messages: Number(backup.messages_actual_length) || 0,
+        fileCount: Number(backup.examined_files) || 0,
+        fileSize: Number(backup.size) || 0,
+        uploadedSize: Number(backup.uploaded_size) || 0,
+        duration: formatDurationFromSeconds(Number(backup.duration_seconds) || 0),
+        duration_seconds: Number(backup.duration_seconds) || 0,
+        durationInMinutes: Math.floor((Number(backup.duration_seconds) || 0) / 60),
+        knownFileSize: Number(backup.known_file_size) || 0,
+        backup_list_count: backup.backup_list_count,
+        messages_array: backup.messages_array,
+        warnings_array: backup.warnings_array,
+        errors_array: backup.errors_array,
+        available_backups: backup.available_backups ? JSON.parse(backup.available_backups) : []
+      }));
+
+      const chartData = formattedBackups.map(backup => {
+        const backupDate = new Date(backup.date);
+        return {
+          date: backupDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+          isoDate: backup.date,
+          uploadedSize: backup.uploadedSize,
+          duration: backup.durationInMinutes,
+          fileCount: backup.fileCount,
+          fileSize: backup.fileSize,
+          storageSize: backup.knownFileSize,
+          backupVersions: backup.backup_list_count || 0
+        };
+      }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
+
+      return {
+        id: machine.id,
+        name: machine.name,
+        backups: formattedBackups,
+        chartData
+      };
+    } catch (error) {
+      console.error(`Failed to get machine by ID ${machineId}:`, error);
+      return null;
+    }
+  });
+}
+
+export function getAggregatedChartData() {
+  return withDb(() => {
+    return safeDbOperation(() => dbOps.getAggregatedChartData.all(), 'getAggregatedChartData', []) as {
+      date: string;
+      isoDate: string;
+      uploadedSize: number;
+      duration: number;
+      fileCount: number;
+      fileSize: number;
+      storageSize: number;
+      backupVersions: number;
+    }[];
+  });
+}
+
+// Wrapper functions for database operations (keeping for backward compatibility)
+export const dbUtils = {
+  getMachinesSummary: () => getMachinesSummary(),
+  getMachineById: (machineId: string) => getMachineById(machineId),
   getMachineByName: (name: string) => withDb(() => safeDbOperation(() => dbOps.getMachineByName.get(name), 'getMachineByName')),
   getLatestBackup: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackup.get(machineId), 'getLatestBackup')),
   getMachineBackups: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getMachineBackups.all(machineId), 'getMachineBackups', [])),
-  getAllMachines: () => withDb(() => safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', [])),
-  getOverallSummary: () => withDb(() => safeDbOperation(() => dbOps.getOverallSummary.get(), 'getOverallSummary')),
+  getAllMachines: () => getAllMachines(),
+  getOverallSummary: () => getOverallSummary(),
   getLatestBackupDate: () => withDb(() => safeDbOperation(() => dbOps.getLatestBackupDate.get(), 'getLatestBackupDate')),
-  getAggregatedChartData: () => withDb(() => safeDbOperation(() => dbOps.getAggregatedChartData.all(), 'getAggregatedChartData', [])),
+  getAggregatedChartData: () => getAggregatedChartData(),
   
   insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => 
     withDb(() => safeDbOperation(() => dbOps.insertBackup.run(data), 'insertBackup')),

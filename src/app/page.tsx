@@ -1,4 +1,4 @@
-import { getMachinesSummary, getOverallSummary, getAggregatedChartData } from "@/lib/data";
+import { getMachinesSummary, getOverallSummary, getAggregatedChartData } from "@/lib/db-utils";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";

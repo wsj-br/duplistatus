@@ -1,4 +1,4 @@
-import type { BackupStatus } from "./types";
+import type { BackupStatus, NotificationEvent } from "./types";
 
 export type SortDirection = 'asc' | 'desc';
 export type SortColumn = string;
@@ -54,6 +54,17 @@ export function getStatusSortValue(status: BackupStatus | 'N/A'): number {
   return statusOrder[status] ?? 3;
 }
 
+// Notification event ordering: Off -> All -> Warnings -> Errors
+export function getNotificationEventSortValue(event: NotificationEvent): number {
+  const eventOrder: Record<NotificationEvent, number> = {
+    'off': 0,
+    'all': 1,
+    'warnings': 2,
+    'errors': 3,
+  };
+  return eventOrder[event] ?? 0;
+}
+
 // Generic sort functions for different data types
 export const sortFunctions = {
   text: (a: string, b: string): number => {
@@ -83,6 +94,10 @@ export const sortFunctions = {
 
   duration: (a: string, b: string): number => {
     return parseDurationToSeconds(a) - parseDurationToSeconds(b);
+  },
+
+  notificationEvent: (a: NotificationEvent, b: NotificationEvent): number => {
+    return getNotificationEventSortValue(a) - getNotificationEventSortValue(b);
   }
 };
 

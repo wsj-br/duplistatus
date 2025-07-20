@@ -72,6 +72,34 @@ interface BackupRecord {
   backend_errors_actual_length: number;
 }
 
+// Migration to add 'last_backup_date' and 'backup_list_count'
+const migration_2_1 = {
+  version: '2.1',
+  description: "Add 'last_backup_date' and 'backup_list_count' to backups table",
+  up: (db: Database.Database) => {
+    console.log("Running migration 2.1: Add 'last_backup_date' and 'backup_list_count'...");
+    
+    // Check if columns exist before adding them
+    const tableInfo = db.pragma('table_info(backups)') as { name: string }[];
+    const columnExists = (name: string) => tableInfo.some(col => col.name === name);
+
+    if (!columnExists('last_backup_date')) {
+      db.exec('ALTER TABLE backups ADD COLUMN last_backup_date DATETIME');
+    }
+
+    if (!columnExists('backup_list_count')) {
+      db.exec('ALTER TABLE backups ADD COLUMN backup_list_count INTEGER NOT NULL DEFAULT 0');
+    }
+    
+    console.log("Migration 2.1 completed.");
+  },
+  down: () => {
+    console.log("Reverting migration 2.1: This migration is not fully reversible without data loss. Skipping.");
+    // Down migration is not fully supported for ALTER TABLE ADD COLUMN in SQLite without recreating the table.
+    // If needed, a full table recreation and data copy would be necessary.
+  }
+};
+
 // Migration definitions
 const migrations: Migration[] = [
   {
@@ -375,6 +403,26 @@ const migrations: Migration[] = [
         CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
       `);
     }
+  },
+  migration_2_1,
+  {
+    version: '3.0',
+    description: 'Create configurations table',
+    up: (db: Database.Database) => {
+      console.log('Running migration 3.0: Create configurations table...');
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS configurations (
+          key TEXT PRIMARY KEY NOT NULL,
+          value TEXT
+        );
+      `);
+      console.log('Migration 3.0 completed: Created configurations table.');
+    },
+    down: (db: Database.Database) => {
+      console.log('Reverting migration 3.0: Dropping configurations table...');
+      db.exec(`DROP TABLE IF EXISTS configurations;`);
+      console.log('Reverted migration 3.0: Dropped configurations table.');
+    }
   }
 ];
 
@@ -412,7 +460,7 @@ export class DatabaseMigrator {
   
   private setVersion(version: string): void {
     this.db.prepare(`
-      INSERT INTO db_version (version) VALUES (?)
+      INSERT OR REPLACE INTO db_version (version) VALUES (?)
     `).run(version);
   }
   

@@ -5,6 +5,8 @@ import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
+import { sendBackupNotification, formatBytes, formatDuration, NotificationContext } from '@/lib/notifications';
+import { BackupStatus } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -156,6 +158,60 @@ export async function POST(request: NextRequest) {
 
     // Execute the transaction
     transaction();
+
+    // Send notification after successful backup insertion
+    try {
+      const machineId = data.Extra['machine-id'];
+      const machineName = data.Extra['machine-name'];
+      const backupName = data.Extra['backup-name'];
+      
+      // Create notification context
+      const notificationContext: NotificationContext = {
+        machine_name: machineName,
+        backup_name: backupName,
+        backup_date: new Date(data.Data.BeginTime).toISOString(),
+        status: status as BackupStatus,
+        messages_count: data.Data.MessagesActualLength || 0,
+        warnings_count: data.Data.WarningsActualLength || 0,
+        errors_count: data.Data.ErrorsActualLength || 0,
+        duration: formatDuration(parseDurationToSeconds(data.Data.Duration)),
+        file_count: data.Data.ExaminedFiles || 0,
+        file_size: formatBytes(data.Data.SizeOfExaminedFiles || 0),
+        uploaded_size: formatBytes(data.Data.BackendStatistics?.BytesUploaded || 0),
+        storage_size: formatBytes(data.Data.BackendStatistics?.KnownFileSize || 0),
+        available_versions: data.Data.BackendStatistics?.BackupListCount || 0,
+        link: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9666'}/detail/${machineId}`,
+      };
+
+      // Create backup object for notification service
+      const backup = {
+        id: uuidv4(), // This should match the ID used in the transaction
+        machine_id: machineId,
+        name: backupName,
+        date: new Date(data.Data.BeginTime).toISOString(),
+        status: status as BackupStatus,
+        warnings: data.Data.WarningsActualLength || 0,
+        errors: data.Data.ErrorsActualLength || 0,
+        messages: data.Data.MessagesActualLength || 0,
+        fileCount: data.Data.ExaminedFiles || 0,
+        fileSize: data.Data.SizeOfExaminedFiles || 0,
+        uploadedSize: data.Data.BackendStatistics?.BytesUploaded || 0,
+        duration: formatDuration(parseDurationToSeconds(data.Data.Duration)),
+        duration_seconds: parseDurationToSeconds(data.Data.Duration),
+        durationInMinutes: parseDurationToSeconds(data.Data.Duration) / 60,
+        knownFileSize: data.Data.BackendStatistics?.KnownFileSize || 0,
+        backup_list_count: data.Data.BackendStatistics?.BackupListCount || 0,
+        messages_array: null,
+        warnings_array: null,
+        errors_array: null,
+        available_backups: null,
+      };
+
+      await sendBackupNotification(backup, machineName, notificationContext);
+    } catch (notificationError) {
+      // Log notification errors but don't fail the request
+      console.error('Failed to send backup notification:', notificationError);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

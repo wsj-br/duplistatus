@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { MonitorCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -17,7 +17,7 @@ import {
 import { useConfig } from "@/contexts/config-context";
 import { Label } from "@/components/ui/label";
 
-export function ConfigMenu() {
+export function DisplayMenu() {
   const {
     tablePageSize,
     setTablePageSize,
@@ -29,15 +29,15 @@ export function ConfigMenu() {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon">
-          <Settings className="h-4 w-4" />
+          <MonitorCog className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="text-xl font-medium leading-none">Settings</h4>
+            <h4 className="text-xl font-medium leading-none">Display Settings</h4>
             <p className="text-sm text-muted-foreground">
-              Configure your duplistatus preferences
+              How duplistatus should display the data.
             </p>
           </div>
           <div className="grid gap-4">

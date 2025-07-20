@@ -12,7 +12,9 @@
 ## New Features  
 
 - Send ntfy messages (https://ntfy.sh/) to a topic when receiving a backup log (`/api/upload`) ❓  
+- Send notifications using shoutrrr (https://containrrr.dev/shoutrrr/v0.8/getting-started/) ❓
 - Send email messages to an address(es) when receiving a backup log (`/api/upload`) ❓  
+- Create a configuration to send notifications if no backup is received in X hours/days from a server. ❓
 - Include in documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍  
 
 <br>  
@@ -57,7 +59,7 @@
 
 - Added sorting functions to the applications table (dashboard/detail) 
   - feature request by @Taomyn (request #4)
-- Persisted the user-selected sort order on the dashboard table.  
+- Persisted (client side) the user-selected sort order on the dashboard table.  
 - Improved navigation:  
   - Added a "Return to Dashboard" link on the detail page.  
   - Clicking the status badge on the dashboard page now directly shows backup details.  
