@@ -2,6 +2,9 @@ import format from 'string-template';
 import { getConfiguration } from './db-utils';
 import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey } from './types';
 
+// Ensure this runs in Node.js runtime, not Edge Runtime
+export const runtime = 'nodejs';
+
 export interface NotificationContext {
   machine_name: string;
   backup_name: string;
@@ -219,19 +222,6 @@ export async function sendMissedBackupNotification(
 ): Promise<void> {
   const config = await getNotificationConfig();
   if (!config) {
-    console.log('No notification configuration found, skipping missed backup notification');
-    return;
-  }
-
-  const backupConfig = getBackupSettings(config, machineName, backupName, machineId);
-  if (!backupConfig || backupConfig.notificationEvent === 'off') {
-    console.log(`Notifications disabled for backup ${backupName} on machine ${machineName}, skipping missed backup notification`);
-    return;
-  }
-
-  // Check if missed backup check is enabled for this backup
-  if (!backupConfig.missedBackupCheckEnabled) {
-    console.log(`Missed backup check disabled for backup ${backupName} on machine ${machineName}, skipping`);
     return;
   }
 
@@ -247,7 +237,6 @@ export async function sendMissedBackupNotification(
       processedTemplate.tags
     );
     
-    console.log(`Missed backup notification sent for backup ${backupName} on machine ${machineName}`);
   } catch (error) {
     console.error(`Failed to send missed backup notification for ${machineName}:`, error);
     throw error;

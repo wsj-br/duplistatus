@@ -84,7 +84,7 @@ export interface MachineNotificationConfig {
 // New interface for backup-based notifications
 export interface BackupNotificationConfig {
   notificationEvent: NotificationEvent;
-  expectedInterval: number; // in hours
+  expectedInterval: number; // raw value as entered by user
   missedBackupCheckEnabled: boolean;
   intervalUnit: 'hours' | 'days';
 }

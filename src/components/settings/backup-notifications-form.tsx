@@ -57,6 +57,37 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     fetchMachinesWithBackups();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Initialize default settings for all machines when they are loaded
+  useEffect(() => {
+    if (machinesWithBackups.length > 0) {
+      setSettings(prev => {
+        const defaultSettings: Record<BackupKey, BackupNotificationConfig> = {};
+        let hasChanges = false;
+        
+        machinesWithBackups.forEach(machine => {
+          const backupKey = getBackupKey(machine.name, machine.backupName);
+          if (!prev[backupKey]) {
+            defaultSettings[backupKey] = {
+              notificationEvent: 'off',
+              expectedInterval: 1, // 1 day as default
+              missedBackupCheckEnabled: false,
+              intervalUnit: 'days',
+            };
+            hasChanges = true;
+          }
+        });
+        
+        if (hasChanges) {
+          return {
+            ...prev,
+            ...defaultSettings,
+          };
+        }
+        return prev;
+      });
+    }
+  }, [machinesWithBackups]);
+
   const fetchMachinesWithBackups = async () => {
     try {
       const response = await fetch('/api/machines-with-backups');
@@ -92,9 +123,9 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       [backupKey]: {
         ...(prev[backupKey] || { 
           notificationEvent: 'off', 
-          expectedInterval: 1, // Default to 1 day
+          expectedInterval: 1, // Default to 1 day (24 hours)
           missedBackupCheckEnabled: false,
-          intervalUnit: 'day'
+          intervalUnit: 'days'
         }),
         [field]: value,
       },
@@ -105,27 +136,13 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     const backupKey = getBackupKey(machineName, backupName);
     return settings[backupKey] || {
       notificationEvent: 'off',
-      expectedInterval: 1, // Default to 1 day
+      expectedInterval: 1, // Default to 1 day (24 hours)
       missedBackupCheckEnabled: false,
-      intervalUnit: 'day',
+      intervalUnit: 'days',
     };
   };
 
-  // Convert hours to display value based on unit
-  const getDisplayInterval = (hours: number, unit: 'hours' | 'days'): number => {
-    if (unit === 'days') {
-      return Math.round(hours / 24);
-    }
-    return hours;
-  };
 
-  // Convert display value to hours for storage
-  const getStorageInterval = (value: number, unit: 'hours' | 'days'): number => {
-    if (unit === 'days') {
-      return value * 24;
-    }
-    return value;
-  };
 
   const handleIntervalInputChange = (machineName: string, backupName: string, value: string) => {
     const key = `${machineName}:${backupName}`;
@@ -137,9 +154,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
 
   const handleIntervalBlur = (machineName: string, backupName: string, value: string) => {
     const numValue = parseInt(value) || 1;
-    const backupSetting = getBackupSetting(machineName, backupName);
-    const hoursValue = getStorageInterval(numValue, backupSetting.intervalUnit);
-    updateBackupSetting(machineName, backupName, 'expectedInterval', hoursValue);
+    updateBackupSetting(machineName, backupName, 'expectedInterval', numValue);
     
     // Clear the local input value since we've saved the setting
     setInputValues(prev => {
@@ -150,12 +165,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   };
 
   const handleUnitChange = (machineName: string, backupName: string, newUnit: 'hours' | 'days') => {
-    const backupSetting = getBackupSetting(machineName, backupName);
     updateBackupSetting(machineName, backupName, 'intervalUnit', newUnit);
-    // Update the interval value to maintain the same time duration
-    const currentDisplayValue = getDisplayInterval(backupSetting.expectedInterval, backupSetting.intervalUnit);
-    const newHoursValue = getStorageInterval(currentDisplayValue, newUnit);
-    updateBackupSetting(machineName, backupName, 'expectedInterval', newHoursValue);
     
     // Clear any local input value since the unit has changed
     setInputValues(prev => {
@@ -176,12 +186,11 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const getMachinesWithBackupAndSettings = (): MachineWithBackupAndSettings[] => {
     return machinesWithBackups.map(machine => {
       const backupSetting = getBackupSetting(machine.name, machine.backupName);
-      const displayInterval = getDisplayInterval(backupSetting.expectedInterval, backupSetting.intervalUnit);
       
       return {
         ...machine,
         ...backupSetting,
-        displayInterval,
+        displayInterval: backupSetting.expectedInterval,
       };
     });
   };
@@ -201,6 +210,19 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const handleTestMissedBackups = async () => {
     setIsTesting(true);
     try {
+      // Save backup settings first
+      await onSave(settings);
+      
+      // Clear missed backup notification timestamps before running the check
+      const clearResponse = await fetch('/api/notifications/clear-missed-timestamps', {
+        method: 'POST',
+      });
+
+      if (!clearResponse.ok) {
+        console.warn('Failed to clear missed backup timestamps, continuing with check...');
+      }
+      
+      // Then run the missed backup check
       const response = await fetch('/api/notifications/check-missed', {
         method: 'POST',
       });
@@ -212,7 +234,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       const result = await response.json();
       toast({
         title: "Missed Backup Check Complete",
-        description: `Checked ${result.statistics.checkedMachines} machines, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
+        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
       });
     } catch (error) {
       console.error('Error running missed backup check:', error);
@@ -319,7 +341,6 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
             <TableBody>
               {sortedMachines.map((machine) => {
                 const backupSetting = getBackupSetting(machine.name, machine.backupName);
-                const displayInterval = getDisplayInterval(backupSetting.expectedInterval, backupSetting.intervalUnit);
                 const inputKey = `${machine.name}:${machine.backupName}`;
                 
                 return (
@@ -375,7 +396,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                         type="number"
                         min="1"
                         max={backupSetting.intervalUnit === 'hours' ? "8760" : "365"}
-                        value={inputValues[inputKey] ?? displayInterval.toString()}
+                        value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
                         onChange={(e) => handleIntervalInputChange(machine.name, machine.backupName, e.target.value)}
                         onBlur={(e) => handleIntervalBlur(machine.name, machine.backupName, e.target.value)}
                         placeholder={backupSetting.intervalUnit === 'hours' ? "24" : "1"}
@@ -390,8 +411,8 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                         onValueChange={(value: 'hours' | 'days') => handleUnitChange(machine.name, machine.backupName, value)}
                         disabled={!backupSetting.missedBackupCheckEnabled}
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
+                        <SelectTrigger className={`w-full ${!backupSetting.missedBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
+                          <SelectValue placeholder={backupSetting.intervalUnit === 'days' ? 'Days' : 'Hours'} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="hours">Hours</SelectItem>
@@ -414,7 +435,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
               variant="outline" 
               disabled={isTesting}
             >
-              {isTesting ? "Checking..." : "Test Missed Backup Check"}
+              {isTesting ? "Checking..." : "Check Missed Backup"}
             </Button>
           </div>
         </CardContent>

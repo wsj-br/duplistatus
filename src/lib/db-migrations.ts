@@ -72,46 +72,18 @@ interface BackupRecord {
   backend_errors_actual_length: number;
 }
 
-// Migration to add 'last_backup_date' and 'backup_list_count'
-const migration_2_1 = {
-  version: '2.1',
-  description: "Add 'last_backup_date' and 'backup_list_count' to backups table",
-  up: (db: Database.Database) => {
-    console.log("Running migration 2.1: Add 'last_backup_date' and 'backup_list_count'...");
-    
-    // Check if columns exist before adding them
-    const tableInfo = db.pragma('table_info(backups)') as { name: string }[];
-    const columnExists = (name: string) => tableInfo.some(col => col.name === name);
-
-    if (!columnExists('last_backup_date')) {
-      db.exec('ALTER TABLE backups ADD COLUMN last_backup_date DATETIME');
-    }
-
-    if (!columnExists('backup_list_count')) {
-      db.exec('ALTER TABLE backups ADD COLUMN backup_list_count INTEGER NOT NULL DEFAULT 0');
-    }
-    
-    console.log("Migration 2.1 completed.");
-  },
-  down: () => {
-    console.log("Reverting migration 2.1: This migration is not fully reversible without data loss. Skipping.");
-    // Down migration is not fully supported for ALTER TABLE ADD COLUMN in SQLite without recreating the table.
-    // If needed, a full table recreation and data copy would be necessary.
-  }
-};
-
 // Migration definitions
 const migrations: Migration[] = [
   {
     version: '2.0',
-    description: 'Add DEFAULT values to message arrays and add available_backups field',
+    description: 'Consolidated migration: Add DEFAULT values to message arrays, available_backups field, last_backup_date, backup_list_count, and create configurations table',
     up: (db: Database.Database) => {
-      console.log('Running migration 2.0: Adding DEFAULT values to message arrays and available_backups field...');
+      console.log('Running consolidated migration 2.0...');
       
       // First, get all existing data to preserve it
       const existingBackups = db.prepare(`SELECT * FROM backups`).all() as BackupRecord[];
       
-      // Create new table with the updated schema (including DEFAULT values)
+      // Create new table with the updated schema (including DEFAULT values and new columns)
       db.exec(`
         CREATE TABLE backups_new (
           id TEXT PRIMARY KEY,
@@ -264,7 +236,15 @@ const migrations: Migration[] = [
         CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
       `);
       
-      console.log(`Migration 2.0 completed: Added DEFAULT values to message arrays and available_backups column, processed ${processedCount} records, extracted available backups from ${extractedCount} records`);
+      // Create configurations table
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS configurations (
+          key TEXT PRIMARY KEY NOT NULL,
+          value TEXT
+        );
+      `);
+      
+      console.log(`Consolidated migration 2.0 completed: Added DEFAULT values to message arrays, available_backups column, last_backup_date, backup_list_count, created configurations table, processed ${processedCount} records, extracted available backups from ${extractedCount} records`);
     },
     down: (db: Database.Database) => {
       // Revert to the original schema without DEFAULT values and without available_backups
@@ -402,26 +382,9 @@ const migrations: Migration[] = [
         CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
         CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
       `);
-    }
-  },
-  migration_2_1,
-  {
-    version: '3.0',
-    description: 'Create configurations table',
-    up: (db: Database.Database) => {
-      console.log('Running migration 3.0: Create configurations table...');
-      db.exec(`
-        CREATE TABLE IF NOT EXISTS configurations (
-          key TEXT PRIMARY KEY NOT NULL,
-          value TEXT
-        );
-      `);
-      console.log('Migration 3.0 completed: Created configurations table.');
-    },
-    down: (db: Database.Database) => {
-      console.log('Reverting migration 3.0: Dropping configurations table...');
+      
+      // Drop configurations table
       db.exec(`DROP TABLE IF EXISTS configurations;`);
-      console.log('Reverted migration 3.0: Dropped configurations table.');
     }
   }
 ];

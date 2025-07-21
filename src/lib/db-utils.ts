@@ -2,6 +2,9 @@ import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
 import type { BackupStatus } from "@/lib/types";
 
+// Ensure this runs in Node.js runtime, not Edge Runtime
+export const runtime = 'nodejs';
+
 // Define the database backup record type
 interface BackupRecord {
   id: string;
@@ -302,6 +305,7 @@ export const dbUtils = {
   getMachineById: (machineId: string) => getMachineById(machineId),
   getMachineByName: (name: string) => withDb(() => safeDbOperation(() => dbOps.getMachineByName.get(name), 'getMachineByName')),
   getLatestBackup: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackup.get(machineId), 'getLatestBackup')),
+  getLatestBackupByName: (machineId: string, backupName: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackupByName.get(machineId, backupName), 'getLatestBackupByName')),
   getMachineBackups: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getMachineBackups.all(machineId), 'getMachineBackups', [])),
   getAllMachines: () => getAllMachines(),
   getOverallSummary: () => getOverallSummary(),

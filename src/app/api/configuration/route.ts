@@ -19,7 +19,7 @@ export async function GET() {
             title: "🕑 Missed - {backup_name}  @ {machine_name}"
         },
         success: {
-            message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date}  {link} ",
+            message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date} in {duration}.",
             priority: "default",
             tags: "duplicati, duplistatus, success",
             title: "✅ {status} - {backup_name}  @ {machine_name}"

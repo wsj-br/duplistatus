@@ -3,6 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import { DatabaseMigrator } from './db-migrations';
 
+// Ensure this runs in Node.js runtime, not Edge Runtime
+export const runtime = 'nodejs';
+
 // Ensure we're running on the server side
 if (typeof window !== 'undefined') {
   throw new Error('Database can only be initialized on the server side');
@@ -222,6 +225,15 @@ const dbOps = {
     ORDER BY b.date DESC
     LIMIT 1
   `, 'getLatestBackup'),
+
+  getLatestBackupByName: safePrepare(`
+    SELECT b.*, m.name as machine_name
+    FROM backups b
+    JOIN machines m ON b.machine_id = m.id
+    WHERE b.machine_id = ? AND b.backup_name = ?
+    ORDER BY b.date DESC
+    LIMIT 1
+  `, 'getLatestBackupByName'),
 
   getMachineBackups: safePrepare(`
     SELECT 
