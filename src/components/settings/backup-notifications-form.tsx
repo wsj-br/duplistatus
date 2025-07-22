@@ -10,10 +10,11 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval } from '@/lib/types';
+import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, ResendFrequencyConfig } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
+import { RefreshCw, TimerReset } from "lucide-react";
 
 interface MachineWithBackup {
   id: string;
@@ -45,6 +46,15 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [cronInterval, setCronIntervalState] = useState<CronInterval>('20min');
+  const [resendFrequency, setResendFrequency] = useState<ResendFrequencyConfig>('never');
+  const [resendLoading, setResendLoading] = useState(true);
+  const [resendError, setResendError] = useState<string | null>(null);
+  const resendOptions: { value: ResendFrequencyConfig; label: string }[] = [
+    { value: 'never', label: 'Never' },
+    { value: 'every_day', label: 'Every day' },
+    { value: 'every_week', label: 'Every week' },
+    { value: 'every_month', label: 'Every month' },
+  ];
 
   // Column configuration for sorting
   const columnConfig = {
@@ -59,6 +69,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   useEffect(() => {
     fetchMachinesWithBackups();
     loadCronInterval();
+    fetchResendFrequency();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadCronInterval = async () => {
@@ -306,6 +317,42 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     }
   };
 
+  const handleResendFrequencyChange = async (value: ResendFrequencyConfig) => {
+    setResendLoading(true);
+    setResendError(null);
+    try {
+      const response = await fetch('/api/notifications/resend-frequency', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value }),
+      });
+      if (!response.ok) throw new Error('Failed to update resend frequency');
+      setResendFrequency(value);
+      toast({ title: 'Success', description: 'Resend frequency updated.' });
+    } catch {
+      setResendError('Failed to update resend frequency');
+      toast({ title: 'Error', description: 'Failed to update resend frequency', variant: 'destructive' });
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  const fetchResendFrequency = async () => {
+    setResendLoading(true);
+    setResendError(null);
+    try {
+      const response = await fetch('/api/notifications/resend-frequency');
+      if (!response.ok) throw new Error('Failed to fetch resend frequency');
+      const data = await response.json();
+      setResendFrequency(data.value ?? 'never');
+    } catch {
+      setResendError('Failed to load resend frequency');
+      setResendFrequency('never');
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   const [isResetting, setIsResetting] = useState(false);
 
   const handleResetNotifications = async () => {
@@ -514,46 +561,77 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
             </TableBody>
           </Table>
           
-          <div className="flex items-end pt-6">
+          <div className="flex items-end pt-6 justify-between w-full">
+            {/* Left: Save button */}
             <div className="flex gap-3">
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Backup Settings"}
               </Button>
+            </div>
+
+            {/* Right: Other controls in specified order */}
+            <div className="flex gap-4 items-end">
+              <div className="flex flex-col items-start">
+                <Label htmlFor="cron-interval" className="mb-2 self-start">
+                  Check for missed backups every:
+                </Label>
+                <Select
+                  value={cronInterval}
+                  onValueChange={(value: CronInterval) => handleCronIntervalChange(value)}
+                >
+                  <SelectTrigger id="cron-interval" className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(cronIntervalMap).map(([value, { label }]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Button 
                 onClick={handleTestMissedBackups} 
                 variant="outline" 
                 disabled={isTesting}
+                className="self-end"
               >
+                <RefreshCw className="mr-2 h-4 w-4" />
                 {isTesting ? "Checking..." : "Check Missed Backup"}
               </Button>
+              <div className="flex flex-col items-start">
+                <Label htmlFor="resend-frequency" className="mb-2 self-start">
+                  Resend frequency:
+                </Label>
+                <Select
+                  value={resendFrequency}
+                  onValueChange={(value: ResendFrequencyConfig) => handleResendFrequencyChange(value)}
+                  disabled={resendLoading}
+                >
+                  <SelectTrigger id="resend-frequency" className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {resendOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {resendLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
+                {resendError && <span className="text-xs text-destructive mt-1">{resendError}</span>}
+              </div>
               <Button 
                 onClick={handleResetNotifications}
                 variant="outline"
                 disabled={isResetting}
+                className="self-end"
               >
-                {isResetting ? "Resetting..." : "Reset missed backup notifications"}
+                <TimerReset className="mr-2 h-4 w-4" />
+                {isResetting ? "Resetting..." : "Reset timer"}
               </Button>
-            </div>
-
-            <div className="flex flex-col items-center flex-1 pl-8">
-              <Label htmlFor="cron-interval" className="mb-2">
-                Check for missed backups every:
-              </Label>
-              <Select
-                value={cronInterval}
-                onValueChange={(value: CronInterval) => handleCronIntervalChange(value)}
-              >
-                <SelectTrigger id="cron-interval" className="w-[200px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(cronIntervalMap).map(([value, { label }]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
 

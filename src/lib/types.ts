@@ -121,3 +121,5 @@ export interface CronServiceConfig {
     };
   };
 }
+
+export type ResendFrequencyConfig = "never" | "every_day" | "every_week" | "every_month";

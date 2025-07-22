@@ -3,6 +3,7 @@ import { formatDurationFromSeconds } from "@/lib/db";
 import type { BackupStatus } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
+import type { ResendFrequencyConfig } from "@/lib/types";
 
 // Default cron service configuration
 const defaultCronConfig: CronServiceConfig = {
@@ -416,3 +417,21 @@ export const dbUtils = {
     });
   }
 }; 
+
+// Functions to get/set resend frequency config
+export function getResendFrequencyConfig(): ResendFrequencyConfig {
+  const value = getConfiguration("resend_frequency");
+  if (
+    value === "every_day" ||
+    value === "every_week" ||
+    value === "every_month" ||
+    value === "never"
+  ) {
+    return value;
+  }
+  return "never";
+}
+
+export function setResendFrequencyConfig(value: ResendFrequencyConfig): void {
+  setConfiguration("resend_frequency", value);
+} 
