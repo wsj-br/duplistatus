@@ -18,6 +18,7 @@
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "clean-db": "tsx scripts/clean-db.ts",
     "test-lastbackup": "tsx scripts/test-lastbackup.ts",
+    "test-missed-backup-checker": "tsx scripts/test-missed-backup-checker.ts",
     "release:patch": "pnpm version patch",
     "release:minor": "pnpm version minor",
     "release:major": "pnpm version major",

@@ -1,6 +1,6 @@
 import { dbUtils } from '@/lib/db-utils';
 import { sendMissedBackupNotification, MissedBackupContext } from '@/lib/notifications';
-import { getConfiguration, setConfiguration } from '@/lib/db-utils';
+import { getConfiguration, setConfiguration, getResendFrequencyConfig } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -38,6 +38,9 @@ export async function checkMissedBackups() {
     } else {
       config.backupSettings = {};
     }
+
+    // Get resend frequency configuration
+    const resendFrequency = getResendFrequencyConfig();
 
     // Get last notification timestamps
     const lastNotificationJson = getConfiguration('missed_backup_notifications');
@@ -125,10 +128,45 @@ export async function checkMissedBackups() {
       if (hoursSinceLastBackup > thresholdInHours) {
         missedBackupsFound++;
 
-        // Check if we should send a notification
+        // Check if we should send a notification (with resend frequency logic)
         const lastNotification = lastNotifications[backupKey];
-        const shouldSendNotification = !lastNotification || 
-          new Date(latestBackup.date) > new Date(lastNotification.lastBackupDate);
+        let shouldSendNotification = false;
+        if (!lastNotification) {
+          // No notification sent yet
+          shouldSendNotification = true;
+        } else {
+          // Notification was sent before
+          const lastBackupDate = new Date(lastNotification.lastBackupDate);
+          const lastNotificationSent = new Date(lastNotification.lastNotificationSent);
+          const latestBackupDate = new Date(latestBackup.date);
+
+          if (latestBackupDate > lastBackupDate) {
+            // New backup event, always notify
+            shouldSendNotification = true;
+          } else {
+            // No new backup, check resend frequency
+            if (resendFrequency !== 'never') {
+              let resendIntervalMs = 0;
+              switch (resendFrequency) {
+                case 'every_day':
+                  resendIntervalMs = 24 * 60 * 60 * 1000;
+                  break;
+                case 'every_week':
+                  resendIntervalMs = 7 * 24 * 60 * 60 * 1000;
+                  break;
+                case 'every_month':
+                  resendIntervalMs = 30 * 24 * 60 * 60 * 1000;
+                  break;
+                default:
+                  resendIntervalMs = 0;
+              }
+              if (resendIntervalMs > 0 && (currentTime - lastNotificationSent.getTime() >= resendIntervalMs)) {
+                shouldSendNotification = true;
+              }
+            }
+            // If resendFrequency is 'never', do not resend
+          }
+        }
 
         if (shouldSendNotification) {
           try {
