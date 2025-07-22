@@ -55,5 +55,8 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
 # Switch to the node user	
 USER node
 
-# Start the application
-CMD ["pnpm", "start"] 
+# Start the application and cron-service in parallel
+COPY keep-cron-alive.sh /app/keep-cron-alive.sh
+RUN chmod +x /app/keep-cron-alive.sh
+
+CMD ["sh", "-c", "pnpm start & /app/keep-cron-alive.sh"] 

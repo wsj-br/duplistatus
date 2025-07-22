@@ -1,6 +1,72 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
 import type { BackupStatus } from "@/lib/types";
+import { CronServiceConfig, CronInterval } from './types';
+import { cronIntervalMap } from './cron-interval-map';
+
+// Default cron service configuration
+const defaultCronConfig: CronServiceConfig = {
+  port: 9667,
+  tasks: {
+    'missed-backup-check': {
+      cronExpression: '0,20,40 * * * *', // Every 20 minutes
+      enabled: true
+    }
+  }
+};
+
+export function getCronConfig(): CronServiceConfig {
+  try {
+    const configJson = getConfiguration('cron_service');
+    if (configJson) {
+      const config = JSON.parse(configJson);
+      return {
+        ...defaultCronConfig,
+        ...config,
+        tasks: {
+          ...defaultCronConfig.tasks,
+          ...config.tasks
+        }
+      };
+    }
+  } catch (error) {
+    console.error('Failed to load cron service configuration:', error);
+  }
+  return defaultCronConfig;
+}
+
+export function setCronConfig(config: CronServiceConfig): void {
+  try {
+    setConfiguration('cron_service', JSON.stringify(config));
+  } catch (error) {
+    console.error('Failed to save cron service configuration:', error);
+    throw error;
+  }
+}
+
+export function getCurrentCronInterval(): CronInterval {
+  const config = getCronConfig();
+  const task = config.tasks['missed-backup-check'];
+  
+  // Find matching interval
+  const entry = Object.entries(cronIntervalMap).find(([, value]) => 
+    value.expression === task.cronExpression && value.enabled === task.enabled
+  );
+  
+  return entry ? entry[0] as CronInterval : '20min'; // Default to 20min if no match
+}
+
+export function setCronInterval(interval: CronInterval): void {
+  const config = getCronConfig();
+  const { expression, enabled } = cronIntervalMap[interval];
+  
+  config.tasks['missed-backup-check'] = {
+    cronExpression: expression,
+    enabled
+  };
+  
+  setCronConfig(config);
+}
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';

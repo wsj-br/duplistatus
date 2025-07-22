@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import * as cron from 'node-cron';
 import { checkMissedBackups } from '@/lib/missed-backup-checker';
 import { CronServiceStatus, TaskExecutionResult, CronServiceConfig } from './types';
+import { getCronConfig } from '@/lib/db-utils';
+
+const timestamp = () => new Date().toLocaleString().replace(',', '');
 
 class CronService {
   private app = express();
@@ -16,21 +19,31 @@ class CronService {
     this.setupTasks();
   }
 
+
+
+
   private setupExpress() {
+
+ 
+
     this.app.use(express.json());
 
     // Health check endpoint
     this.app.get('/health', (req: Request, res: Response) => {
+      console.log(`[CronService] ${timestamp()}: Health check requested`);
       res.json(this.getStatus());
     });
 
     // Trigger task manually endpoint
     this.app.post('/trigger/:taskName', async (req: Request, res: Response) => {
       const { taskName } = req.params;
+      console.log(`[CronService] ${timestamp()}: Manual trigger requested for task: ${taskName}`);
       try {
         const result = await this.executeTask(taskName);
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} triggered successfully:`, result);
         res.json(result);
       } catch (error) {
+        console.error(`[CronService] ${timestamp()}: Error triggering task ${taskName}:`, error);
         res.status(500).json({ error: String(error) });
       }
     });
@@ -38,12 +51,15 @@ class CronService {
     // Stop task endpoint
     this.app.post('/stop/:taskName', (req: Request, res: Response) => {
       const { taskName } = req.params;
+      console.log(`[CronService] ${timestamp()}: Stop requested for task: ${taskName}`);
       const task = this.tasks.get(taskName);
       if (task) {
         task.stop();
         this.tasks.delete(taskName);
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} stopped successfully`);
         res.json({ message: `Task ${taskName} stopped` });
       } else {
+        console.warn(`[CronService] ${timestamp()}: Task ${taskName} not found for stopping`);
         res.status(404).json({ error: `Task ${taskName} not found` });
       }
     });
@@ -51,16 +67,49 @@ class CronService {
     // Start task endpoint
     this.app.post('/start/:taskName', (req: Request, res: Response) => {
       const { taskName } = req.params;
+      console.log(`[CronService] ${timestamp()}: Start requested for task: ${taskName}`);
       if (this.config.tasks[taskName]) {
         this.startTask(taskName);
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} started successfully`);
         res.json({ message: `Task ${taskName} started` });
       } else {
+        console.warn(`[CronService] ${timestamp()}: Task ${taskName} not found in configuration`);
         res.status(404).json({ error: `Task ${taskName} not found in configuration` });
+      }
+    });
+
+    // Reload configuration endpoint
+    this.app.post('/reload-config', (req: Request, res: Response) => {
+      console.log('[CronService] ' + timestamp() + ': Configuration reload requested');
+      try {
+        this.reloadConfiguration();
+        console.log('[CronService] ' + timestamp() + ': Configuration reloaded successfully');
+        res.json({ message: 'Configuration reloaded successfully' });
+      } catch (error) {
+        console.error('[CronService] ' + timestamp() + ': Error reloading configuration:', error);
+        res.status(500).json({ error: String(error) });
       }
     });
   }
 
+  private reloadConfiguration() {
+    console.log('[CronService] ' + timestamp() + ': Stopping all tasks for configuration reload');
+    // Stop all current tasks
+    this.stop();
+    
+    // Reload configuration from database using the utility function
+    console.log('[CronService] ' + timestamp() + ': Loading new configuration from database');
+    const newConfig = getCronConfig();
+    
+    // Update the service configuration
+    this.config = newConfig;
+
+    // Setup tasks with new configuration
+    this.setupTasks();
+  }
+
   private setupTasks() {
+    console.log('[CronService] ' + timestamp() + ': Setting up tasks with new configuration');
     Object.entries(this.config.tasks).forEach(([taskName, config]) => {
       if (config.enabled) {
         this.startTask(taskName);
@@ -69,21 +118,27 @@ class CronService {
   }
 
   private startTask(taskName: string) {
+    console.log(`[CronService] ${timestamp()}: Setting up task: ${taskName}`);
     const taskConfig = this.config.tasks[taskName];
     if (!taskConfig || !cron.validate(taskConfig.cronExpression)) {
-      throw new Error(`Invalid task configuration for ${taskName}`);
+      const error = `Invalid task configuration for ${taskName}`;
+      console.error(`[CronService] ${timestamp()}: ${error}`);
+      throw new Error(error);
     }
 
     const task = cron.schedule(taskConfig.cronExpression, async () => {
+      console.log(`[CronService] ${timestamp()}: Running scheduled task: ${taskName}`);
       await this.executeTask(taskName);
     }, {
       timezone: 'UTC'
     });
 
     this.tasks.set(taskName, task);
+    console.log(`[CronService] ${timestamp()}: Task ${taskName} scheduled with cron expression: ${taskConfig.cronExpression.replace(/\s+/g, ' ').trim()}`);
   }
 
   private async executeTask(taskName: string): Promise<TaskExecutionResult> {
+    console.log(`[CronService] ${timestamp()}: Executing task: ${taskName}`);
     try {
       let result: unknown;
       
@@ -98,6 +153,7 @@ class CronService {
       this.lastRunTimes[taskName] = new Date().toISOString();
       delete this.errors[taskName];
 
+      console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully:`, result);
       return {
         taskName,
         success: true,
@@ -108,6 +164,7 @@ class CronService {
       const errorMessage = String(error);
       this.errors[taskName] = errorMessage;
       
+      console.error(`[CronService] ${timestamp()}: Error executing task ${taskName}:`, errorMessage);
       return {
         taskName,
         success: false,
@@ -127,7 +184,7 @@ class CronService {
 
   public start() {
     this.app.listen(this.config.port, () => {
-      console.log(`Cron service listening on port ${this.config.port}`);
+      console.log(`[CronService] ${timestamp()}: Cron service listening on port ${this.config.port}`);
     });
   }
 

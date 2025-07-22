@@ -109,3 +109,15 @@ export interface NotificationConfig {
     missedBackup: NotificationTemplate;
   };
 }
+
+export type CronInterval = 'disabled' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
+
+export interface CronServiceConfig {
+  port: number;
+  tasks: {
+    [taskName: string]: {
+      cronExpression: string;
+      enabled: boolean;
+    };
+  };
+}

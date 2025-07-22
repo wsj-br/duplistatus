@@ -10,8 +10,10 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationEvent, BackupNotificationConfig, BackupKey } from '@/lib/types';
+import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
+import { cronClient } from '@/lib/cron-client';
+import { cronIntervalMap } from '@/lib/cron-interval-map';
 
 interface MachineWithBackup {
   id: string;
@@ -42,6 +44,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const [isTesting, setIsTesting] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
+  const [cronInterval, setCronIntervalState] = useState<CronInterval>('20min');
 
   // Column configuration for sorting
   const columnConfig = {
@@ -55,7 +58,71 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
 
   useEffect(() => {
     fetchMachinesWithBackups();
+    loadCronInterval();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const loadCronInterval = async () => {
+    try {
+      const response = await fetch('/api/cron-config');
+      if (!response.ok) {
+        throw new Error('Failed to load cron configuration');
+      }
+      
+      const { enabled } = await response.json();
+      
+      // Find matching interval from the configuration
+      const entry = Object.entries(cronIntervalMap).find(([key]) => {
+        const interval = key as CronInterval;
+        return interval === (enabled ? '20min' : 'disabled'); // Default to 20min if enabled, disabled if not
+      });
+      
+      setCronIntervalState(entry ? entry[0] as CronInterval : '20min');
+    } catch (error) {
+      console.error('Failed to load cron interval:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load missed backup check interval",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCronIntervalChange = async (value: CronInterval) => {
+    try {
+      // First save the configuration
+      const response = await fetch('/api/cron-config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ interval: value }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update cron configuration');
+      }
+
+      // Update local state
+      setCronIntervalState(value);
+
+      // Restart the cron task to apply new configuration
+      //await cronClient.stopTask('missed-backup-check');
+      await cronClient.reloadConfig();
+      //await cronClient.startTask('missed-backup-check');
+
+      toast({
+        title: "Success",
+        description: "Missed backup check interval updated successfully",
+      });
+    } catch (error) {
+      console.error('Failed to update cron interval:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update missed backup check interval",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Initialize default settings for all machines when they are loaded
   useEffect(() => {
@@ -213,16 +280,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       // Save backup settings first
       await onSave(settings);
       
-      // Clear missed backup notification timestamps before running the check
-      const clearResponse = await fetch('/api/notifications/clear-missed-timestamps', {
-        method: 'POST',
-      });
-
-      if (!clearResponse.ok) {
-        console.warn('Failed to clear missed backup timestamps, continuing with check...');
-      }
-      
-      // Then run the missed backup check
+      // Run the missed backup check
       const response = await fetch('/api/notifications/check-missed', {
         method: 'POST',
       });
@@ -245,6 +303,35 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       });
     } finally {
       setIsTesting(false);
+    }
+  };
+
+  const [isResetting, setIsResetting] = useState(false);
+
+  const handleResetNotifications = async () => {
+    setIsResetting(true);
+    try {
+      const response = await fetch('/api/notifications/clear-missed-timestamps', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to reset missed backup notifications');
+      }
+
+      toast({
+        title: "Success",
+        description: "Missed backup notifications have been reset",
+      });
+    } catch (error) {
+      console.error('Error resetting missed backup notifications:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reset missed backup notifications",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -285,6 +372,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
           </CardDescription>
         </CardHeader>
         <CardContent>
+          
           <Table>
             <TableHeader>
               <TableRow>
@@ -426,18 +514,49 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
             </TableBody>
           </Table>
           
-          <div className="flex gap-3 pt-6">
-            <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Backup Settings"}
-            </Button>
-            <Button 
-              onClick={handleTestMissedBackups} 
-              variant="outline" 
-              disabled={isTesting}
-            >
-              {isTesting ? "Checking..." : "Check Missed Backup"}
-            </Button>
+          <div className="flex items-end pt-6">
+            <div className="flex gap-3">
+              <Button onClick={handleSave} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Backup Settings"}
+              </Button>
+              <Button 
+                onClick={handleTestMissedBackups} 
+                variant="outline" 
+                disabled={isTesting}
+              >
+                {isTesting ? "Checking..." : "Check Missed Backup"}
+              </Button>
+              <Button 
+                onClick={handleResetNotifications}
+                variant="outline"
+                disabled={isResetting}
+              >
+                {isResetting ? "Resetting..." : "Reset missed backup notifications"}
+              </Button>
+            </div>
+
+            <div className="flex flex-col items-center flex-1 pl-8">
+              <Label htmlFor="cron-interval" className="mb-2">
+                Check for missed backups every:
+              </Label>
+              <Select
+                value={cronInterval}
+                onValueChange={(value: CronInterval) => handleCronIntervalChange(value)}
+              >
+                <SelectTrigger id="cron-interval" className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(cronIntervalMap).map(([value, { label }]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
         </CardContent>
       </Card>
     </div>

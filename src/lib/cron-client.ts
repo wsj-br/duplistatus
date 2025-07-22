@@ -1,6 +1,7 @@
 import { CronServiceStatus, TaskExecutionResult } from '@/cron-service/types';
 
-const CRON_SERVICE_URL = process.env.CRON_SERVICE_URL || 'http://localhost:9667';
+// Use relative path to ensure requests go through our Next.js API route
+const CRON_SERVICE_URL = '/api/cron';
 
 export class CronServiceClient {
   private baseUrl: string;
@@ -55,6 +56,15 @@ export class CronServiceClient {
    */
   async startTask(taskName: string): Promise<{ message: string }> {
     return this.request<{ message: string }>(`/start/${taskName}`, {
+      method: 'POST',
+    });
+  }
+
+  /**
+   * Reload the service configuration from the database
+   */
+  async reloadConfig(): Promise<{ message: string }> {
+    return this.request<{ message: string }>('/reload-config', {
       method: 'POST',
     });
   }

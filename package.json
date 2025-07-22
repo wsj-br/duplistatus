@@ -22,8 +22,8 @@
     "release:minor": "pnpm version minor",
     "release:major": "pnpm version major",
     "postversion": "git push && git push --tags",
-    "cron:start": "tsx src/cron-service/index.ts",
-    "cron:dev": "tsx watch src/cron-service/index.ts"
+    "cron:start": "NODE_ENV=production CRON_PORT=9667 tsx src/cron-service/index.ts",
+    "cron:dev": "CRON_PORT=8668 tsx watch src/cron-service/index.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.11",
