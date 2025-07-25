@@ -3,7 +3,7 @@
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HardDrive, Archive, UploadCloud, Database, FileSearch } from "lucide-react";
+import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
 interface DashboardSummaryCardsProps {
@@ -42,10 +42,16 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
       icon: <UploadCloud className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "cloud upload",
     },
+    {
+      title: "Missed Backups",
+      value: summary.missedBackupsCount.toLocaleString(),
+      icon: <AlertTriangle className={`h-6 w-6 ${summary.missedBackupsCount > 0 ? 'text-red-600' : 'text-gray-500'}`} />,
+      "data-ai-hint": "alert warning",
+    },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mb-8">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 mb-8">
       {summaryItems.map((item) => (
         <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -55,7 +61,9 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
             {item.icon}
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{item.value}</div>
+            <div className={`text-2xl font-bold ${item.title === "Missed Backups" ? (summary.missedBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
+              {item.value}
+            </div>
           </CardContent>
         </Card>
       ))}

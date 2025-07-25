@@ -64,6 +64,7 @@ export interface OverallSummary {
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
   totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
+  missedBackupsCount: number; // count of currently missed backups
 }
 
 export interface NtfyConfig {

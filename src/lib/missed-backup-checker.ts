@@ -125,6 +125,18 @@ export async function checkMissedBackups() {
       // Add 2 hours buffer to accommodate backup durations and clock differences
       const thresholdInHours = expectedIntervalInHours + 2;
 
+      // Always update the lastBackupDate for this backup to ensure dashboard accuracy
+      // This ensures the dashboard shows real-time missed backup counts
+      if (!updatedNotifications[backupKey]) {
+        updatedNotifications[backupKey] = {
+          lastNotificationSent: "",
+          lastBackupDate: latestBackup.date
+        };
+      } else {
+        // Update the lastBackupDate to the current latest backup date
+        updatedNotifications[backupKey].lastBackupDate = latestBackup.date;
+      }
+
       // Check if backup is overdue
       if (hoursSinceLastBackup > thresholdInHours) {
         missedBackupsFound++;
@@ -203,11 +215,8 @@ export async function checkMissedBackups() {
             await sendMissedBackupNotification(machineId, machineName, backupName, missedBackupContext, config);
             notificationsSent++;
             
-            // Update the notification timestamp
-            updatedNotifications[backupKey] = {
-              lastNotificationSent: new Date().toISOString(),
-              lastBackupDate: latestBackup.date
-            };
+            // Update the notification timestamp when notification is sent
+            updatedNotifications[backupKey].lastNotificationSent = new Date().toISOString();
           } catch (error) {
             console.error(`Failed to send missed backup notification for ${backupKey}:`, error);
           }

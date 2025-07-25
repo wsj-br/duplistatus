@@ -270,6 +270,37 @@ interface OverallSummaryRow {
   total_backuped_size: number;
 }
 
+// Helper function to count missed backups from configuration
+function countMissedBackups(): number {
+  try {
+    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    if (!lastNotificationJson) return 0;
+    
+    const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
+      lastNotificationSent: string; // ISO timestamp
+      lastBackupDate: string; // ISO timestamp
+    }>;
+    
+    let missedCount = 0;
+    
+    for (const backupKey in lastNotifications) {
+      const notification = lastNotifications[backupKey];
+      const lastBackupDate = new Date(notification.lastBackupDate);
+      const lastNotificationSent = new Date(notification.lastNotificationSent);
+      
+      // If lastBackupDate is older than lastNotificationSent, it's a missed backup
+      if (lastBackupDate < lastNotificationSent) {
+        missedCount++;
+      }
+    }
+    
+    return missedCount;
+  } catch (error) {
+    console.error('Error counting missed backups:', error);
+    return 0;
+  }
+}
+
 export function getOverallSummary() {
   return withDb(() => {
     const summary = safeDbOperation(() => dbOps.getOverallSummary.get(), 'getOverallSummary') as OverallSummaryRow | undefined;
@@ -279,7 +310,8 @@ export function getOverallSummary() {
         totalBackups: 0,
         totalUploadedSize: 0,
         totalStorageUsed: 0,
-        totalBackupSize: 0
+        totalBackupSize: 0,
+        missedBackupsCount: 0
       };
     }
 
@@ -288,7 +320,8 @@ export function getOverallSummary() {
       totalBackups: summary.total_backups,
       totalUploadedSize: summary.total_uploaded_size,
       totalStorageUsed: summary.total_storage_used,
-      totalBackupSize: summary.total_backuped_size
+      totalBackupSize: summary.total_backuped_size,
+      missedBackupsCount: countMissedBackups()
     };
   });
 }
