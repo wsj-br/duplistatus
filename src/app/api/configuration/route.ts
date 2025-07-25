@@ -13,19 +13,19 @@ export async function GET() {
       backupSettings: {},
       templates: {
         missedBackup: {
-            message: "The backup {backup_name} was missing on {machine_name}. Please check the duplicati server. ",
+            message: "The backup {backup_name} is missing on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.",
             priority: "default",
             tags: "duplicati, duplistatus, missed",
             title: "🕑 Missed - {backup_name}  @ {machine_name}"
         },
         success: {
-            message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date} in {duration}.",
+              message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date} in {duration}.\n\n💾 Store usage:  {storage_size} \n🔃 Available versions:  {available_versions} ",
             priority: "default",
             tags: "duplicati, duplistatus, success",
             title: "✅ {status} - {backup_name}  @ {machine_name}"
         },
         warning: {
-            message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date} with {warnings} warnings, {errors} errors. ",
+            message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date}.\n\n🚨 {warnings} warnings\n🛑 {errors} errors.",
             priority: "high",
             tags: "duplicati, duplistatus, warning, error",
             title: " ⚠️{status} - {backup_name}  @ {machine_name}"

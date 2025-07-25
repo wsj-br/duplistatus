@@ -26,21 +26,10 @@ export interface MissedBackupContext {
   machine_name: string;
   machine_id: string;
   backup_name: string;
-  expected_interval: number; // hours
-  hours_since_last_backup: number;
-  last_backup_date?: string;
-  // Additional variables to match TEMPLATE_VARIABLES
-  backup_date: string; // Same as last_backup_date for consistency
-  status: string; // "Missed" for missed backup notifications
-  messages_count: number; // 0 for missed backups
-  warnings_count: number; // 0 for missed backups
-  errors_count: number; // 0 for missed backups
-  duration: string; // "N/A" for missed backups
-  file_count: number; // 0 for missed backups
-  file_size: string; // "N/A" for missed backups
-  uploaded_size: string; // "N/A" for missed backups
-  storage_size: string; // "N/A" for missed backups
-  available_versions: number; // 0 for missed backups
+  last_backup_date: string;
+  last_elapsed: string;
+  backup_interval_type: string;
+  backup_interval_value: number;
 }
 
 async function getNotificationConfig(): Promise<NotificationConfig | null> {
@@ -217,19 +206,20 @@ export async function sendMissedBackupNotification(
   machineId: string,
   machineName: string,
   backupName: string,
-  context: MissedBackupContext
+  context: MissedBackupContext,
+  config?: NotificationConfig
 ): Promise<void> {
-  const config = await getNotificationConfig();
-  if (!config) {
+  const notificationConfig = config || await getNotificationConfig();
+  if (!notificationConfig) {
     return;
   }
 
   try {
-    const processedTemplate = processTemplate(config.templates.missedBackup, context);
+    const processedTemplate = processTemplate(notificationConfig.templates.missedBackup, context);
     
     await sendNtfyNotification(
-      config.ntfy.url,
-      config.ntfy.topic,
+      notificationConfig.ntfy.url,
+      notificationConfig.ntfy.topic,
       processedTemplate.title,
       processedTemplate.message,
       processedTemplate.priority,

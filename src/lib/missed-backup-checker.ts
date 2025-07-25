@@ -2,6 +2,7 @@ import { dbUtils } from '@/lib/db-utils';
 import { sendMissedBackupNotification, MissedBackupContext } from '@/lib/notifications';
 import { getConfiguration, setConfiguration, getResendFrequencyConfig } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
+import { formatTimeAgo } from '@/lib/utils';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -170,28 +171,36 @@ export async function checkMissedBackups() {
 
         if (shouldSendNotification) {
           try {
+            // Calculate missed time ago using formatTimeAgo
+            const missedTimeAgo = formatTimeAgo(latestBackup.date);
+            
+            // Get interval information from backup config
+            const intervalUnit = backupConfig.intervalUnit || 'hours';
+            const intervalValue = backupConfig.expectedInterval;
+            
+            // Validate required fields
+            if (!machineName || !backupName || !latestBackup.date) {
+              console.error(`Missing required fields for missed backup notification: machineName=${machineName}, backupName=${backupName}, lastBackupDate=${latestBackup.date}`);
+              continue;
+            }
+            
+            // Validate interval configuration
+            if (!intervalValue || intervalValue <= 0) {
+              console.error(`Invalid interval configuration for ${backupKey}: intervalValue=${intervalValue}`);
+              continue;
+            }
+            
             const missedBackupContext: MissedBackupContext = {
               machine_name: machineName,
               machine_id: machineId,
               backup_name: backupName,
-              expected_interval: expectedIntervalInHours, // Store in hours for consistency
-              hours_since_last_backup: Math.round(hoursSinceLastBackup),
-              last_backup_date: latestBackup.date,
-              // Additional variables to match TEMPLATE_VARIABLES
-              backup_date: latestBackup.date,
-              status: 'Missed',
-              messages_count: 0,
-              warnings_count: 0,
-              errors_count: 0,
-              duration: 'N/A',
-              file_count: 0,
-              file_size: 'N/A',
-              uploaded_size: 'N/A',
-              storage_size: 'N/A',
-              available_versions: 0,
+              last_backup_date: new Date(latestBackup.date).toLocaleString(),
+              last_elapsed: missedTimeAgo,
+              backup_interval_type: intervalUnit,
+              backup_interval_value: intervalValue,
             };
 
-            await sendMissedBackupNotification(machineId, machineName, backupName, missedBackupContext);
+            await sendMissedBackupNotification(machineId, machineName, backupName, missedBackupContext, config);
             notificationsSent++;
             
             // Update the notification timestamp
