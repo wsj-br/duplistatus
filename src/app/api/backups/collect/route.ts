@@ -5,6 +5,8 @@ import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import http from 'http';
+import fs from 'fs';
+import path from 'path';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -240,6 +242,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 4: Process each backup
+    let receivedCount = 0;
     let processedCount = 0;
     let skippedCount = 0;
     let errorCount = 0;
@@ -266,6 +269,9 @@ export async function POST(request: NextRequest) {
           throw new Error(`Failed to get log for backup ${backupId}: ${logResponse.statusText}`);
         }
 
+        // Increment the received count
+        receivedCount++;
+
         const logs: LogEntry[] = await logResponse.json() as LogEntry[];
         const backupMessages = logs.filter((log) => {
           try {
@@ -277,6 +283,24 @@ export async function POST(request: NextRequest) {
             return false;
           }
         });
+
+        // Log received data in development mode
+        if (process.env.NODE_ENV !== 'production') {
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+          const filename = `backup-collect-${timestamp}-${receivedCount}.json`;
+          const dataDir = path.join(process.cwd(), 'data');
+          const filePath = path.join(dataDir, filename);
+
+          // Ensure data directory exists
+          if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+          }
+
+          // Write the data to file with pretty formatting
+          fs.writeFileSync(filePath, JSON.stringify(backupMessages, null, 2));
+          console.log(`Logged collected data to ${filePath}`);
+        }
+
 
         for (const log of backupMessages) {
           // Parse the message string into JSON for each log entry, with error handling
@@ -391,6 +415,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      machineName: machineName,
       stats: {
         processed: processedCount,
         skipped: skippedCount,

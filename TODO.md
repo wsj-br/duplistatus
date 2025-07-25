@@ -1,71 +1,72 @@
-# TODO List  
+# TODO List
 
-## Fix  
+## Fix
 
-- (No issues identified)  
+- (No issues identified)
 
-## Changes  
+## Changes needed
 
-- Include a page refresh after the successful "Collect Backup Logs" 🆕  
-- Standardize the column titles: "Available Backup Versions" / "Available Versions" 🛠️  
+- Include a page refresh after a successful "Collect Backup Logs" 🆕
 
-## New Features  
 
-- Send ntfy messages (https://ntfy.sh/) to a topic when receiving a backup log (`/api/upload`) ❓  
+## New Features (planned or under analysis)
+
 - Send notifications using shoutrrr (https://containrrr.dev/shoutrrr/v0.8/getting-started/) ❓
-- Send email messages to an address(es) when receiving a backup log (`/api/upload`) ❓  
-- Create a configuration to send notifications if no backup is received in X hours/days from a server. ❓
-- Include in documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍  
+- Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
 
-<br>  
+---
 
----  
+### Implemented in Version 0.3.8 ✅
 
-<br>  
+- Fixed documentation on Duplicati server configuration (upload URL incorrect). Thanks @Taomyn.
+- Added support to collect backup logs using HTTPS
 
-### Implemented in Version 0.3.8 ✅  
+### Implemented in Version 0.4.0 ✅
 
-- Fix documentation on Duplicati server configuration (upload URL incorrect). Thanks @Taomyn.  
-- Add support to collect backup logs using HTTPS  
+- Improved support for multiple backups on the same machine:
+  - In the dashboard table, show each backup in a row.
+  - When clicking on a row, go to the detail page of the selected backup.
+  - When clicking on the machine name, go to the detail page of all backups for the selected machine.
+  - On the detail page, the user can select all backups or a specific backup name.
+- Included the chart on the detail page (same as the dashboard page).
+- Added a link to the GitHub repo in the footer of the pages.
+- Changed the handling of the "Fatal" status with a red badge instead of the default grey.
 
-<br>  
+### Implemented in Version 0.5.0 ✅
 
-### Implemented in Version 0.4.0 ✅  
-
-- Improved support for multiple backups on the same machine:  
-  - In the dashboard table, show each backup in a row.  
-  - When clicking on the row, go to the detail page of the selected backup.  
-  - When clicking on the machine name, go to the detail page of all backups for the selected machine.  
-  - On the detail page, the user can select all backups or a specific backup name.  
-- Included the chart on the detail page (same as the dashboard page).  
-- Added a link to the GitHub repo in the footer of the pages.  
-- Changed the handling of the "Fatal" status with a red badge instead of the default gray.  
-
-<br>  
-
-### Implemented in Version 0.5.0 ✅  
-
-- Changed labels/fields from `Total Backuped Size` to `Total Backup Size`.  
-- Added version number in the page footer.  
-- Corrected the return link on the backup detail page.  
-- Improved error management for `JSON.parse` and the `backups/collect` API endpoint.  
-- Upgraded all dependencies/frameworks/tools to the latest available version.  
-- Reduced HTTP/HTTPS timeout to 30 seconds.  
-- Updated documentation, added Podman install guide.  
-
-<br>  
+- Changed labels/fields from `Total Backuped Size` to `Total Backup Size`.
+- Added version number in the page footer.
+- Corrected the return link on the backup detail page.
+- Improved error management for `JSON.parse` and the `backups/collect` API endpoint.
+- Upgraded all dependencies/frameworks/tools to the latest available version.
+- Reduced HTTP/HTTPS timeout to 30 seconds.
+- Updated documentation, added Podman install guide.
 
 ### Implemented in Version 0.6.0 🚧 (in progress)
 
-- Added sorting functions to the applications table (dashboard/detail) 
-  - feature request by @Taomyn (request #4)
-- Persisted (client side) the user-selected sort order on the dashboard table.  
-- Improved navigation:  
-  - Added a "Return to Dashboard" link on the detail page.  
-  - Clicking the status badge on the dashboard page now directly shows backup details.  
-- Added display of available backup versions (this information is received via upload unless truncated by Duplicati):  
-  - Included an icon in both dashboard and detail page tables.  
-  - When clicked, shows a table of available backups at the time of the selected backup.  
-  - On the detail page, versions are displayed in the summary box at the top.  
+**New Features:**
+- Application table sorting (Dashboard/Detail views)
+  - Requested by @Taomyn (#4)
+  - Client-side persistence of sort preferences
+- Enhanced backup version visibility:
+  - Version icons in tables
+  - Click-to-view available backups
+  - Version display in detail page summary
 
-<br>  
+**UI/Navigation Improvements:**
+- Added "Return to Dashboard" link on detail pages
+- Status badges now link directly to backup details
+- Standardise the column titles of available backup versions to "Available Backups"
+
+**Notification System:**
+- **ntfy.sh Integration:**
+  - Customizable notifications for backup logs
+  - Configurable title, priority, tags, and message templates
+  - Variable support in templates
+  - Status-based notification filtering
+
+- **Missed Backup Alerts:**
+  - Configurable notification settings
+  - Flexible timing options:
+    - Check interval for missed backups
+    - Notification frequency (once/daily/weekly/monthly)

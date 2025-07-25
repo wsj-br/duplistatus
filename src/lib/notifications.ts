@@ -29,7 +29,6 @@ export interface MissedBackupContext {
   expected_interval: number; // hours
   hours_since_last_backup: number;
   last_backup_date?: string;
-  link: string; // URL to machine detail page
   // Additional variables to match TEMPLATE_VARIABLES
   backup_date: string; // Same as last_backup_date for consistency
   status: string; // "Missed" for missed backup notifications

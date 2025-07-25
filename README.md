@@ -2,7 +2,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-This web application is used to monitor and visualise backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics and performance across multiple machines. It also provides an API endpoint that can be integrated with third-party tools such as the [Homepage](https://gethomepage.dev/).
+This web application is used to monitor and visualise backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines. It also provides an API endpoint that can be integrated with third-party tools such as the [Homepage](https://gethomepage.dev/).
 
 ## Features 
 
@@ -10,9 +10,9 @@ This web application is used to monitor and visualise backup operations from [Du
 - **Machine details**: Detailed view of backup history for each machine
 - **Data visualisation**: Interactive charts showing backup metrics over time
 - **Collect logs**: Collect backup logs directly from the Duplicati servers (http/https).
-- **Dark/light Theme**: Toggle between dark and light themes for comfortable viewing
-- **API access**: API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that suports RESTful APIs.
-- **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry)
+- **Dark/light Theme**: Toggle between dark and light themes for comfortable viewing.
+- **API access**: API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs.
+- **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry).
 
 <br><br>
 
@@ -31,7 +31,7 @@ This web application is used to monitor and visualise backup operations from [Du
 
 ## Installation
 
-The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) or Podman. 
+The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
 
 
 ### Container images:
@@ -44,7 +44,7 @@ You can use the images from:
 
 ### Option 1: Using Docker Compose
 
-This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker compose` file to define and run the container with all its settings.
+This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 Create a file named `duplistatus.yml` with the following content:
 
@@ -73,21 +73,22 @@ volumes:
     name: duplistatus_data 
 ```
 
-After creating the file, execute the `docker-compose` command to start the container in background (`-d`):
+After creating the file, execute the `docker-compose` command to start the container in the background (`-d`):
 ```bash
 docker-compose -f duplistatus.yml up -d
 ```
 
-The application will then be available at `http://localhost:9666`
+The application will be available at `http://localhost:9666`.
 
 <br>
 
 ### Option 2: Using Portainer Stacks (Docker Compose)
 
-1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack"
-2. Name your stack (e.g., "duplistatus")
-3. Choose "Build method" as "Web editor"
-4. Copy and paste these lines below into the web editor
+1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
+2. Name your stack (e.g., "duplistatus").
+3. Choose "Build method" as "Web editor".
+4. Copy and paste these lines below into the web editor:
+
 ```yaml
 services:
   duplistatus:
@@ -109,20 +110,20 @@ volumes:
   duplistatus_data:
     name: duplistatus_data 
 ```
-5. Click "Deploy the stack"
+5. Click "Deploy the stack".
 
 <br>
 
 ### Option 3: Using Portainer Stacks (GitHub Repository)
 
-1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack"
-2. Name your stack (e.g., "duplistatus")
-3. Choose "Build method" as "Repository"
+1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
+2. Name your stack (e.g., "duplistatus").
+3. Choose "Build method" as "Repository".
 4. Enter the repository URL: <br>
 `https://github.com/wsj-br/duplistatus.git`
 
 5. In the "Compose path" field, enter: `docker-compose.yml`
-6. Click "Deploy the stack"
+6. Click "Deploy the stack".
 
 <br>
 
@@ -139,7 +140,7 @@ docker run -d \
 ```
 
 - The application will be available at `http://localhost:9666`.
-- The `duplistatus_data` volume will be used for persistent storage.
+- The `duplistatus_data` volume is used for persistent storage.
 
 <br>
 
@@ -165,7 +166,7 @@ podman pod start Duplistatus
 
 ### Option 6: Using Podman Compose (CLI)
 
-Create the `docker-compose.yml` file as instructed in Option 1 above, then run:
+Create the `docker-compose.yml` file as instructed in Option 1 above, and then run:
 
 ```bash
 podman-compose -f docker-compose.yml up -d
@@ -176,7 +177,7 @@ podman-compose -f docker-compose.yml up -d
 # Duplicati Configuration
 
 
-1. **Allow remote access:**  login into the [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings` and allow remote access, including a list of hostnames (or use `*`). 
+1. **Allow remote access:**  Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
 
 ![Duplicati settings](docs/duplicati-settings.png)
 
@@ -186,7 +187,7 @@ podman-compose -f docker-compose.yml up -d
 
 
 
-2. **Configure to send the backup results to duplidash:** in the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options, adjusting the server name/IP:
+2. **Configure to send the backup results to duplistatus:** In the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options, adjusting the server name or IP address:
 
 
     | Advanced option                   | Value                                    |
@@ -194,16 +195,18 @@ podman-compose -f docker-compose.yml up -d
     | `send-http-url`                   | `http://my.local.server:9666/api/upload` |
     | `send-http-result-output-format`  | `Json`                                   |
     | `send-http-log-level`             | `Information`                            |
+    | `send-http-max-log-lines`         | `0`                                      |
 
 
 
 > [!TIP]
->  click on `Edit as text` and copy the  lines below, adjusting the server name/IP.
+>  Click on `Edit as text` and copy the lines below, adjusting the server name or IP address.
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
 --send-http-result-output-format=Json
 --send-http-log-level=Information
+--send-http-max-log-lines=0
 ```
 
 <br>
@@ -212,11 +215,16 @@ podman-compose -f docker-compose.yml up -d
 
 <br>
 
+Important notes on the messages sent by Duplicati:
+ - If you omit `--send-http-log-level`, no log messages will be sent to **duplistatus**, only the statistics. 
+ - You can use `--send-http-max-log-lines` to limit the number of messages sent. 
+   For example: `--send-http-max-log-lines=40` will only send the first 40 messages.
+ - The recommended configuration is `--send-http-max-log-lines=0` for unlimited messages, as the Duplicati default is 100 messages.
+ 
+
+
 > [!NOTE]
->    Alternatively you can include this configuration in the `Advanced Options` of each backup. <br>
->    If you ommit `--send-http-log-level` no log messages will be sent to **dupistatus**, only the statistics. <br>
->    You can use `--send-http-max-log-lines` to limit the number of messages sent. 
->    For example: `--send-http-max-log-lines=40` will only send the first 40 messages.
+>    Alternatively, you can include this configuration in the `Advanced Options` of each backup. <br>
 
 <br>
 
@@ -228,7 +236,7 @@ To integrate **duplistatus** with [Homepage](https://gethomepage.dev/), you can 
 
 ## Summary 
 
-Show the overall summary of the backup data stored in the duplistatus's database. Below is an example showing how to configure this integration.
+Shows the overall summary of the backup data stored in duplistatus's database. Below is an example showing how to configure this integration.
 
 ```yaml
     - Dashboard:
@@ -248,7 +256,7 @@ Show the overall summary of the backup data stored in the duplistatus's database
               label: Last backup
               format: duration
             - field: totalBackupSize
-              label: Backuped size
+              label: Backed up size
               format: number
               scale: 0.000000001
               suffix: GB     
@@ -264,7 +272,7 @@ Show the overall summary of the backup data stored in the duplistatus's database
               suffix: GB     
 ```
 
-Will show:
+This will show:
 
 <div style="padding-left: 60px;">
 
@@ -273,12 +281,12 @@ Will show:
 </div>
 
 > [!NOTE]
->    in version 0.5.0 the field `totalBackupedSize` was replaced by `totalBackupSize`
+>    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
 
 
 ## Last backup information
 
-Show the latest backup information for a given machine or server. The example below shows how to configure this integration.
+Shows the latest backup information for a given machine or server. The example below shows how to configure this integration.
 
 ```yaml
    - Test Machine 1:
@@ -307,7 +315,7 @@ Show the latest backup information for a given machine or server. The example be
               label: Versions  
 ```
 
-Will show:
+This will show:
 
 <div style="padding-left: 60px;">
 
@@ -338,8 +346,8 @@ The following endpoints are available:
 ## Upload Backup Data
 - **Endpoint**: `/api/upload`
 - **Method**: POST
-- **Description**: Uploads backup operation data for a machine
-- **Request Body**: Json sent by Duplicati with the following options:
+- **Description**: Uploads backup operation data for a machine.
+- **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
   --send-http-url=http://my.local.server:9666/api/upload
@@ -359,7 +367,7 @@ The following endpoints are available:
 ## Get Latest Backup
 - **Endpoint**: `/api/lastbackup/:machineId`
 - **Method**: GET
-- **Description**: Retrieves the latest backup information for a specific machine
+- **Description**: Retrieves the latest backup information for a specific machine.
 - **Parameters**:
   - `machineId`: the machine identifier (ID or name)
 
@@ -399,7 +407,7 @@ The following endpoints are available:
 ## Get Overall Summary
 - **Endpoint**: `/api/summary`
 - **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all machines
+- **Description**: Retrieves a summary of all backup operations across all machines.
 - **Response**:
   ```json
   {
@@ -413,14 +421,14 @@ The following endpoints are available:
   ```
 
 > [!NOTE]
->    in version 0.5.0 the field `totalBackupedSize` was replaced by `totalBackupSize`
+>    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
 
 <br>
 
 ## Health Check
 - **Endpoint**: `/api/health`
 - **Method**: GET
-- **Description**: Checks the health status of the application and database
+- **Description**: Checks the health status of the application and database.
 - **Response**:
   ```json
   {
@@ -439,7 +447,7 @@ The following endpoints are available:
 ## Collect Backups
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
-- **Description**: Collects backup data directly from a Duplicati server via its API
+- **Description**: Collects backup data directly from a Duplicati server via its API.
 - **Request Body**:
   ```json
   {
@@ -464,7 +472,7 @@ The following endpoints are available:
 ## Cleanup Backups
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
-- **Description**: Deletes old backup data based on retention period
+- **Description**: Deletes old backup data based on retention period.
 - **Request Body**:
   ```json
   {
@@ -484,9 +492,9 @@ The following endpoints are available:
 
 # Development
 
-Detailed instructions on how to download the source code, make changes, debug and run in development mode (debug) can be found in the file [DEVELOPMENT.md](DEVELOPMENT.md)
+Detailed instructions on how to download the source code, make changes, debug, and run in development mode (debug) can be found in the file [DEVELOPMENT.md](DEVELOPMENT.md).
 
-This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH-AI.md)
+This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH-AI.md).
 
 <br><br>
 

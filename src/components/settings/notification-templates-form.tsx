@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +27,6 @@ const TEMPLATE_VARIABLES = [
   { name: 'uploaded_size', description: 'Size of uploaded data' },
   { name: 'storage_size', description: 'Storage size used' },
   { name: 'available_versions', description: 'Number of available backup versions' },
-  { name: 'link', description: 'Link to duplistatus backup detail page' },
 ];
 
 interface NotificationTemplatesFormProps {
@@ -54,7 +53,8 @@ const TemplateEditor = ({
   setSelectedVariable,
   insertVariable,
   updateTemplate,
-  textareaRefs
+  fieldRefs,
+  onFieldFocus,
 }: { 
   templateType: 'success' | 'warning' | 'missedBackup';
   template: NotificationTemplate;
@@ -68,7 +68,8 @@ const TemplateEditor = ({
     field: keyof NotificationTemplate,
     value: string
   ) => void;
-  textareaRefs: React.RefObject<Record<string, HTMLTextAreaElement | null>>;
+  fieldRefs: React.MutableRefObject<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>;
+  onFieldFocus: (field: keyof NotificationTemplate) => void;
 }) => (
   <Card>
     <CardHeader>
@@ -115,6 +116,8 @@ const TemplateEditor = ({
             value={template.title || ''}
             onChange={(e) => updateTemplate(templateType, 'title', e.target.value)}
             placeholder="Enter notification title"
+            ref={el => { fieldRefs.current[`${templateType}-title`] = el; }}
+            onFocus={() => onFieldFocus('title')}
           />
         </div>
         
@@ -144,6 +147,8 @@ const TemplateEditor = ({
             value={template.tags || ''}
             onChange={(e) => updateTemplate(templateType, 'tags', e.target.value)}
             placeholder=""
+            ref={el => { fieldRefs.current[`${templateType}-tags`] = el; }}
+            onFocus={() => onFieldFocus('tags')}
           />
         </div>
       </div>
@@ -151,14 +156,13 @@ const TemplateEditor = ({
       <div className="space-y-2">
         <Label htmlFor={`${templateType}-message`}>Message Template</Label>
         <Textarea
-          ref={(el) => {
-            textareaRefs.current[`${templateType}-message`] = el;
-          }}
+          ref={el => { fieldRefs.current[`${templateType}-message`] = el; }}
           id={`${templateType}-message`}
           value={template.message || ''}
           onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
           placeholder="Enter your message template using variables like {machine_name}, {backup_name}, {status}, etc."
           className="min-h-[200px]"
+          onFocus={() => onFieldFocus('message')}
         />
         <p className="text-sm text-muted-foreground">
           Example: &quot;Backup &#123;backup_name&#125; on &#123;machine_name&#125; completed with status &#123;status&#125; at &#123;backup_date&#125;&quot;
@@ -175,7 +179,14 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'missed'>('success');
-  const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
+  // Store refs for all fields (title, tags, message) for each template type
+  const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
+  // Track which field is focused for each template type
+  const [focusedField, setFocusedField] = useState<Record<string, keyof NotificationTemplate | null>>({
+    success: null,
+    warning: null,
+    missedBackup: null,
+  });
 
   const updateTemplate = (
     templateType: 'success' | 'warning' | 'missedBackup',
@@ -191,30 +202,38 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     }));
   };
 
+  // Track focus for each field
+  const handleFieldFocus = useCallback((field: keyof NotificationTemplate) => {
+    setFocusedField(prev => ({ ...prev, [activeTab === 'missed' ? 'missedBackup' : activeTab]: field }));
+  }, [activeTab]);
+
+  // Insert variable into the currently focused field, fallback to message
   const insertVariable = (templateType: 'success' | 'warning' | 'missedBackup') => {
     if (!selectedVariable) return;
-
-    const textarea = textareaRefs.current[`${templateType}-message`];
-    if (!textarea) return;
-
-    const cursorPosition = textarea.selectionStart;
-    const currentValue = formData[templateType].message || '';
-    const variableText = `{${selectedVariable}}`;
-    
-    const newValue = 
-      currentValue.slice(0, cursorPosition) + 
-      variableText + 
+    const currentFocusedField = focusedField[templateType] || 'message';
+    const refKey = `${templateType}-${currentFocusedField}`;
+    const field = fieldRefs.current[refKey];
+    if (!field) return;
+    const currentValue = formData[templateType][currentFocusedField] || '';
+    let cursorPosition: number | null = null;
+    if (
+      typeof field.selectionStart !== 'number' ||
+      (field.selectionStart === 0 && field.selectionEnd === 0 && document.activeElement !== field)
+    ) {
+      cursorPosition = currentValue.length;
+    } else {
+      cursorPosition = field.selectionStart;
+    }
+    const variableText = ` {${selectedVariable}} `;
+    const newValue =
+      currentValue.slice(0, cursorPosition) +
+      variableText +
       currentValue.slice(cursorPosition);
-
-    updateTemplate(templateType, 'message', newValue);
-
-    // Set focus back to textarea and position cursor after inserted variable
+    updateTemplate(templateType, currentFocusedField, newValue);
     setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(
-        cursorPosition + variableText.length,
-        cursorPosition + variableText.length
-      );
+      field.focus();
+      const newCursorPos = (cursorPosition ?? currentValue.length) + variableText.length;
+      field.setSelectionRange(newCursorPos, newCursorPos);
     }, 0);
   };
 
@@ -289,7 +308,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}
             updateTemplate={updateTemplate}
-            textareaRefs={textareaRefs}
+            fieldRefs={fieldRefs}
+            onFieldFocus={handleFieldFocus}
           />
         </TabsContent>
         
@@ -303,7 +323,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}
             updateTemplate={updateTemplate}
-            textareaRefs={textareaRefs}
+            fieldRefs={fieldRefs}
+            onFieldFocus={handleFieldFocus}
           />
         </TabsContent>
         
@@ -317,7 +338,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}
             updateTemplate={updateTemplate}
-            textareaRefs={textareaRefs}
+            fieldRefs={fieldRefs}
+            onFieldFocus={handleFieldFocus}
           />
         </TabsContent>
       </Tabs>

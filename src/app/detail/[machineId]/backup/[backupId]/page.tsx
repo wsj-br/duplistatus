@@ -250,7 +250,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                 </dd>
               </div>
               <div>
-                <dt className="font-medium text-muted-foreground mb-2">Available backups:</dt>
+                <dt className="font-medium text-muted-foreground mb-2">Available backups at the time of the backup:</dt>
                 <dd className="text-sm">
                   <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} />
                 </dd>

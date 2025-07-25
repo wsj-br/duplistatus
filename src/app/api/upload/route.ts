@@ -68,6 +68,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Declare status in the outer scope so it can be used in the notification block
+    let status: string = data.Data.ParsedResult;
+
     // Start a transaction
     const transaction = db.transaction(() => {
       // Upsert machine information (only basic info now)
@@ -77,7 +80,7 @@ export async function POST(request: NextRequest) {
       });
 
       // Map backup status
-      let status = data.Data.ParsedResult;
+      status = data.Data.ParsedResult;
       if (status === "Success" && data.Data.WarningsActualLength > 0) {
         status = "Warning";
       }

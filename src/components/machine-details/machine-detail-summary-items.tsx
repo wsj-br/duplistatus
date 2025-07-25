@@ -57,7 +57,7 @@ export function MachineDetailSummaryItems({
         "data-ai-hint": "archive storage" 
       },
       { 
-        title: "Available Backup Versions", 
+        title: "Available Backups", 
         value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
         icon: <History className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "history versions" 

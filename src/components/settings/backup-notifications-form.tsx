@@ -50,7 +50,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const [resendLoading, setResendLoading] = useState(true);
   const [resendError, setResendError] = useState<string | null>(null);
   const resendOptions: { value: ResendFrequencyConfig; label: string }[] = [
-    { value: 'never', label: 'Never' },
+    { value: 'never', label: 'Never (just once)' },
     { value: 'every_day', label: 'Every day' },
     { value: 'every_week', label: 'Every week' },
     { value: 'every_month', label: 'Every month' },

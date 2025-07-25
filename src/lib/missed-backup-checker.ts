@@ -121,10 +121,10 @@ export async function checkMissedBackups() {
         expectedIntervalInHours = backupConfig.expectedInterval;
       }
 
-      // Add 1 hour buffer to accommodate backup durations and clock differences
-      const thresholdInHours = expectedIntervalInHours + 1;
+      // Add 2 hours buffer to accommodate backup durations and clock differences
+      const thresholdInHours = expectedIntervalInHours + 2;
 
-      // Check if backup is overdue (only trigger if threshold + 1 hour has elapsed)
+      // Check if backup is overdue
       if (hoursSinceLastBackup > thresholdInHours) {
         missedBackupsFound++;
 
@@ -177,7 +177,6 @@ export async function checkMissedBackups() {
               expected_interval: expectedIntervalInHours, // Store in hours for consistency
               hours_since_last_backup: Math.round(hoursSinceLastBackup),
               last_backup_date: latestBackup.date,
-              link: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9666'}/detail/${machineId}`,
               // Additional variables to match TEMPLATE_VARIABLES
               backup_date: latestBackup.date,
               status: 'Missed',

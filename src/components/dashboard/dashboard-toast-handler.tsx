@@ -1,0 +1,44 @@
+"use client";
+
+import { useEffect } from "react";
+import { useToast } from "@/components/ui/use-toast";
+
+interface StoredToastData {
+  title: string;
+  description: string;
+  variant?: "default" | "destructive";
+  duration?: number;
+}
+
+export function DashboardToastHandler() {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check for stored toast data in localStorage
+    const storedToastData = localStorage.getItem("backup-collection-toast");
+    
+    if (storedToastData) {
+      try {
+        const toastData: StoredToastData = JSON.parse(storedToastData);
+        
+        // Show the toast with the stored data
+        toast({
+          title: toastData.title,
+          description: toastData.description,
+          variant: toastData.variant || "default",
+          duration: toastData.duration || 10000, // 10 seconds
+        });
+        
+        // Remove the stored toast data
+        localStorage.removeItem("backup-collection-toast");
+      } catch (error) {
+        console.error("Error parsing stored toast data:", error);
+        // Clean up invalid data
+        localStorage.removeItem("backup-collection-toast");
+      }
+    }
+  }, [toast]);
+
+  // This component doesn't render anything
+  return null;
+} 

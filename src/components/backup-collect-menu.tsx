@@ -12,10 +12,11 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export function BackupCollectMenu() {
   const [isCollecting, setIsCollecting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState("8200");
   const [password, setPassword] = useState("");
@@ -24,6 +25,7 @@ export function BackupCollectMenu() {
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleCollect = async () => {
     if (!hostname) {
@@ -69,24 +71,36 @@ export function BackupCollectMenu() {
 
       const result = await response.json();
       setStats(result.stats);
+      const machineName = result.machineName;
 
-      // Show success toast
-      toast({
-        title: "Backups collected successfully",
-        description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
-        variant: "default",
-        duration: 5000,
-      });
+      // Clear stats and sensitive data immediately
+      setStats(null);
+      setPassword("");
 
-      // Refresh the page data
-      router.refresh();
+      // Close the modal
+      setIsOpen(false);
 
-      // Clear stats and sensitive data after a delay
-      setTimeout(() => {
-        setStats(null);
-        // Clear sensitive data
-        setPassword("");
-      }, 5000);
+      // Check if we're already on the dashboard page
+      if (pathname === "/") {
+        // If already on dashboard, show toast directly and refresh the page
+        toast({
+          title: `Backups collected successfully from ${machineName}`,
+          description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+          variant: "default",
+          duration: 10000,
+        });
+        router.refresh();
+      } else {
+        // If on another page, store toast data and redirect to dashboard
+        const toastData = {
+          title: `Backups collected successfully from ${machineName}`,
+          description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+          variant: "default" as const,
+          duration: 10000, // 10 seconds on dashboard
+        };
+        localStorage.setItem("backup-collection-toast", JSON.stringify(toastData));
+        router.push("/");
+      }
 
     } catch (error) {
       console.error('Error collecting backups:', error);
@@ -104,7 +118,7 @@ export function BackupCollectMenu() {
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon">
           <Download className="h-4 w-4" />

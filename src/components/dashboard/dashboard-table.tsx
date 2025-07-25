@@ -131,7 +131,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               Backup Name
             </SortableTableHead>
             <SortableTableHead column="lastBackupListCount" sortConfig={sortConfig} onSort={handleSort} align="center">
-              Available Backup Versions
+              Available Backups
             </SortableTableHead>
             <SortableTableHead column="backupCount" sortConfig={sortConfig} onSort={handleSort} align="center">
               Backup Count

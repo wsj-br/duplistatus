@@ -2,6 +2,7 @@ import { getMachinesSummary, getOverallSummary, getAggregatedChartData } from "@
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";
+import { DashboardToastHandler } from "@/components/dashboard/dashboard-toast-handler";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Force dynamic rendering and disable caching
@@ -25,6 +26,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
+      <DashboardToastHandler />
       <DashboardSummaryCards summary={overallSummary} />
 
       <Card className="shadow-lg">

@@ -209,7 +209,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
                     Errors
                   </SortableTableHead>
                   <SortableTableHead column="backup_list_count" sortConfig={sortConfig} onSort={handleSort} align="center">
-                    Available Versions
+                    Available Backups
                   </SortableTableHead>
                   <SortableTableHead column="fileCount" sortConfig={sortConfig} onSort={handleSort} align="right">
                     File Count
