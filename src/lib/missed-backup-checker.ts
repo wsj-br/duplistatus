@@ -113,6 +113,18 @@ export async function checkMissedBackups() {
       const currentTime = new Date().getTime();
       const hoursSinceLastBackup = (currentTime - lastBackupTime) / (1000 * 60 * 60);
 
+      // Always update the lastBackupDate for this backup to ensure dashboard accuracy
+      // This ensures the dashboard shows real-time missed backup counts
+      if (!updatedNotifications[backupKey]) {
+        updatedNotifications[backupKey] = {
+          lastNotificationSent: "",
+          lastBackupDate: latestBackup.date
+        };
+      } else {
+        // Update the lastBackupDate to the current latest backup date
+        updatedNotifications[backupKey].lastBackupDate = latestBackup.date;
+      }
+      
       // Convert expected interval to hours based on the configured unit
       let expectedIntervalInHours: number;
       const intervalUnit = backupConfig.intervalUnit || 'hours'; // Fallback for legacy configs
@@ -125,17 +137,6 @@ export async function checkMissedBackups() {
       // Add 2 hours buffer to accommodate backup durations and clock differences
       const thresholdInHours = expectedIntervalInHours + 2;
 
-      // Always update the lastBackupDate for this backup to ensure dashboard accuracy
-      // This ensures the dashboard shows real-time missed backup counts
-      if (!updatedNotifications[backupKey]) {
-        updatedNotifications[backupKey] = {
-          lastNotificationSent: "",
-          lastBackupDate: latestBackup.date
-        };
-      } else {
-        // Update the lastBackupDate to the current latest backup date
-        updatedNotifications[backupKey].lastBackupDate = latestBackup.date;
-      }
 
       // Check if backup is overdue
       if (hoursSinceLastBackup > thresholdInHours) {
@@ -144,8 +145,8 @@ export async function checkMissedBackups() {
         // Check if we should send a notification (with resend frequency logic)
         const lastNotification = lastNotifications[backupKey];
         let shouldSendNotification = false;
-        if (!lastNotification) {
-          // No notification sent yet
+        if (!lastNotification || !lastNotification.lastNotificationSent || lastNotification.lastNotificationSent === "") {
+          // No notification sent yet or lastNotificationSent is empty
           shouldSendNotification = true;
         } else {
           // Notification was sent before
@@ -153,7 +154,11 @@ export async function checkMissedBackups() {
           const lastNotificationSent = new Date(lastNotification.lastNotificationSent);
           const latestBackupDate = new Date(latestBackup.date);
 
-          if (latestBackupDate > lastBackupDate) {
+          // Check if lastNotificationSent is a valid date
+          if (isNaN(lastNotificationSent.getTime())) {
+            // Invalid date, treat as no notification sent
+            shouldSendNotification = true;
+          } else if (latestBackupDate > lastBackupDate) {
             // New backup event, always notify
             shouldSendNotification = true;
           } else {
