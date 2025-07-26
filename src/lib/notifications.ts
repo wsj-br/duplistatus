@@ -19,7 +19,6 @@ export interface NotificationContext {
   uploaded_size: string; // formatted size string
   storage_size: string; // formatted size string
   available_versions: number;
-  link: string; // URL to backup detail page
 }
 
 export interface MissedBackupContext {
@@ -129,15 +128,42 @@ export async function sendNtfyNotification(
   }
 }
 
+// Helper function to format date strings using toLocaleString()
+function formatDateString(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      // If the date is invalid, return the original string
+      return dateString;
+    }
+    return date.toLocaleString();
+  } catch {
+    // If there's any error parsing the date, return the original string
+    return dateString;
+  }
+}
+
 function processTemplate(template: NotificationTemplate, context: NotificationContext | MissedBackupContext): {
   title: string;
   message: string;
   priority: string;
   tags: string;
 } {
+  // Create a copy of the context with formatted dates
+  const formattedContext = { ...context };
+  
+  // Format date fields if they exist in the context
+  if ('backup_date' in formattedContext) {
+    formattedContext.backup_date = formatDateString(formattedContext.backup_date);
+  }
+  
+  if ('last_backup_date' in formattedContext) {
+    formattedContext.last_backup_date = formatDateString(formattedContext.last_backup_date);
+  }
+
   return {
-    title: format(template.title, context),
-    message: format(template.message, context),
+    title: format(template.title, formattedContext),
+    message: format(template.message, formattedContext),
     priority: template.priority,
     tags: template.tags,
   };

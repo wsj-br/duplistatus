@@ -534,3 +534,61 @@ export function getResendFrequencyConfig(): ResendFrequencyConfig {
 export function setResendFrequencyConfig(value: ResendFrequencyConfig): void {
   setConfiguration("resend_frequency", value);
 } 
+
+// Helper function to get missed backups for a specific machine
+export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
+  machineName: string;
+  backupName: string;
+  lastBackupDate: string;
+  lastNotificationSent: string;
+  notificationEvent?: NotificationEvent;
+}> {
+  try {
+    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    if (!lastNotificationJson) return [];
+    
+    const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
+      lastNotificationSent: string; // ISO timestamp
+      lastBackupDate: string; // ISO timestamp
+    }>;
+    
+    const missedBackups: Array<{
+      machineName: string;
+      backupName: string;
+      lastBackupDate: string;
+      lastNotificationSent: string;
+      notificationEvent?: NotificationEvent;
+    }> = [];
+    
+    for (const backupKey in lastNotifications) {
+      const notification = lastNotifications[backupKey];
+      const lastBackupDate = new Date(notification.lastBackupDate);
+      const lastNotificationSent = new Date(notification.lastNotificationSent);
+      
+      // Parse the backup key to get machine name and backup name
+      const [machineName, backupName] = backupKey.split(':');
+      
+      // Check if this is for the requested machine (by name or ID)
+      if (machineName === machineIdentifier || machineName.toLowerCase() === machineIdentifier.toLowerCase()) {
+        // If lastBackupDate is older than lastNotificationSent, it's a missed backup
+        if (lastBackupDate < lastNotificationSent) {
+          // Get notification event for this backup
+          const notificationEvent = getNotificationEvent(machineName, backupName);
+          
+          missedBackups.push({
+            machineName,
+            backupName,
+            lastBackupDate: notification.lastBackupDate,
+            lastNotificationSent: notification.lastNotificationSent,
+            notificationEvent
+          });
+        }
+      }
+    }
+    
+    return missedBackups;
+  } catch (error) {
+    console.error('Error getting missed backups for machine:', error);
+    return [];
+  }
+} 

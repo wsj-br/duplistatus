@@ -190,7 +190,7 @@ const migrations: Migration[] = [
         const warnings_array = backup.warnings_array || '[]';
         const errors_array = backup.errors_array || '[]';
         
-        // Extract available backups from messages_array
+        // Extract available versions from messages_array
         const availableBackups = extractAvailableBackups(messages_array);
         
         insertBackup.run(
@@ -244,7 +244,7 @@ const migrations: Migration[] = [
         );
       `);
       
-      console.log(`Consolidated migration 2.0 completed: Added DEFAULT values to message arrays, available_backups column, last_backup_date, backup_list_count, created configurations table, processed ${processedCount} records, extracted available backups from ${extractedCount} records`);
+      console.log(`Consolidated migration 2.0 completed: Added DEFAULT values to message arrays, available_backups column, last_backup_date, backup_list_count, created configurations table, processed ${processedCount} records, extracted available versions from ${extractedCount} records`);
     },
     down: (db: Database.Database) => {
       // Revert to the original schema without DEFAULT values and without available_backups

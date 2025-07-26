@@ -280,6 +280,8 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     setIsSaving(true);
     try {
       await onSave(settings);
+      // Dispatch custom event to notify other components about configuration change
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
     } finally {
       setIsSaving(false);
     }
@@ -290,6 +292,9 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     try {
       // Save backup settings first
       await onSave(settings);
+      
+      // Dispatch custom event to notify other components about configuration change
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
       
       // Run the missed backup check
       const response = await fetch('/api/notifications/check-missed', {

@@ -22,7 +22,7 @@ export interface Backup {
   messages_array: string | null;
   warnings_array: string | null;
   errors_array: string | null;
-  // Available backup timestamps (ISO format)
+  // Available version timestamps (ISO format)
   available_backups: string[] | null;
 }
 
@@ -39,7 +39,7 @@ export interface Machine {
     fileCount: number;
     fileSize: number; // in bytes
     storageSize: number; // in bytes
-    backupVersions: number; // available backup versions
+    backupVersions: number; // available versions
   }[];
 }
 

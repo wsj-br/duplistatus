@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationConfig } from '@/lib/types';
+import { NotificationConfig, BackupNotificationConfig } from '@/lib/types';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
@@ -79,11 +79,32 @@ function SettingsPageContent() {
         title: "Success",
         description: "Configuration saved successfully",
       });
+
+      // Dispatch custom event to notify other components about configuration change
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
     } catch (error) {
       console.error('Error saving configuration:', error);
       toast({
         title: "Error",
         description: "Failed to save configuration",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const saveBackupSettings = async (backupSettings: Record<string, BackupNotificationConfig>) => {
+    try {
+      // Save the backup settings (cleanup is handled in the API)
+      const newConfig: NotificationConfig = { 
+        ...config!, 
+        backupSettings 
+      };
+      await saveConfiguration(newConfig);
+    } catch (error) {
+      console.error('Error saving backup settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save backup settings",
         variant: "destructive",
       });
     }
@@ -162,7 +183,7 @@ function SettingsPageContent() {
               <BackupNotificationsForm 
                 backupSettings={config.backupSettings || {}} 
                 onSave={async (backupSettings) => {
-                  await saveConfiguration({ ...config, backupSettings });
+                  await saveBackupSettings(backupSettings);
                 }}
               />
             </TabsContent>

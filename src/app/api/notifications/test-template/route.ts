@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       uploaded_size: 'uploaded_size',
       storage_size: 'storage_size',
       available_versions: 'available_versions',
-      link: 'link',
     };
 
     // Process the template with sample data

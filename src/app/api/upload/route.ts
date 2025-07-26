@@ -168,24 +168,6 @@ export async function POST(request: NextRequest) {
       const machineName = data.Extra['machine-name'];
       const backupName = data.Extra['backup-name'];
       
-      // Create notification context
-      const notificationContext: NotificationContext = {
-        machine_name: machineName,
-        backup_name: backupName,
-        backup_date: new Date(data.Data.BeginTime).toISOString(),
-        status: status as BackupStatus,
-        messages_count: data.Data.MessagesActualLength || 0,
-        warnings_count: data.Data.WarningsActualLength || 0,
-        errors_count: data.Data.ErrorsActualLength || 0,
-        duration: formatDuration(parseDurationToSeconds(data.Data.Duration)),
-        file_count: data.Data.ExaminedFiles || 0,
-        file_size: formatBytes(data.Data.SizeOfExaminedFiles || 0),
-        uploaded_size: formatBytes(data.Data.BackendStatistics?.BytesUploaded || 0),
-        storage_size: formatBytes(data.Data.BackendStatistics?.KnownFileSize || 0),
-        available_versions: data.Data.BackendStatistics?.BackupListCount || 0,
-        link: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9666'}/detail/${machineId}`,
-      };
-
       // Create backup object for notification service
       const backup = {
         id: uuidv4(), // This should match the ID used in the transaction
@@ -208,6 +190,23 @@ export async function POST(request: NextRequest) {
         warnings_array: null,
         errors_array: null,
         available_backups: null,
+      };
+
+      // Create notification context derived from backup object to eliminate duplication
+      const notificationContext: NotificationContext = {
+        machine_name: machineName,
+        backup_name: backup.name,
+        backup_date: backup.date,
+        status: backup.status,
+        messages_count: backup.messages,
+        warnings_count: backup.warnings,
+        errors_count: backup.errors,
+        duration: backup.duration,
+        file_count: backup.fileCount,
+        file_size: formatBytes(backup.fileSize),
+        uploaded_size: formatBytes(backup.uploadedSize),
+        storage_size: formatBytes(backup.knownFileSize),
+        available_versions: backup.backup_list_count,
       };
 
       await sendBackupNotification(backup, machineName, notificationContext);

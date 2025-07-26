@@ -183,7 +183,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                 Backup Name
               </SortableTableHead>
               <SortableTableHead column="lastBackupListCount" sortConfig={sortConfig} onSort={handleSort} align="center">
-                Available Backups
+                Available Versions
               </SortableTableHead>
               <SortableTableHead column="backupCount" sortConfig={sortConfig} onSort={handleSort} align="center">
                 Backup Count
@@ -231,7 +231,10 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   </TableCell>
                   <TableCell>
                     {machine.isBackupMissed ? (
-                        <span className="text-red-400 font-medium">{machine.lastBackupName || 'N/A'}</span>
+                      <>
+                        <div className="font-medium">{machine.lastBackupName || 'N/A'}</div>
+                        <div className= "text-xs text-red-400">⚠️ missed scheduled backup</div>
+                      </>
                       ) : (
                         machine.lastBackupName || 'N/A'
                       )}
@@ -250,7 +253,6 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                       <>
                         <div>{new Date(machine.lastBackupDate).toLocaleString()}</div>
                         <div className="text-xs text-muted-foreground">{formatTimeAgo(machine.lastBackupDate)}
-                          <span className= "text-xs text-red-400"> {machine.isBackupMissed ? " ⚠️ missed backup" : ""}</span>
                         </div>
                       </>
                     ) : (

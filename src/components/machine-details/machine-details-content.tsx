@@ -7,11 +7,20 @@ import { MachineDetailSummaryItems } from "@/components/machine-details/machine-
 import type { Machine } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 
-interface MachineDetailsContentProps {
-  machine: Machine;
+interface MissedBackup {
+  machineName: string;
+  backupName: string;
+  lastBackupDate: string;
+  lastNotificationSent: string;
+  notificationEvent?: string;
 }
 
-export function MachineDetailsContent({ machine }: MachineDetailsContentProps) {
+interface MachineDetailsContentProps {
+  machine: Machine;
+  missedBackups: MissedBackup[];
+}
+
+export function MachineDetailsContent({ machine, missedBackups }: MachineDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   
   // Find the selected backup if one is selected
@@ -96,6 +105,7 @@ export function MachineDetailsContent({ machine }: MachineDetailsContentProps) {
             lastBackupListCount={lastBackupListCount}
             lastBackupFileSize={lastBackupFileSize}
             selectedBackup={selectedBackup}
+            missedBackups={missedBackups}
           />
         </CardContent>
       </Card>

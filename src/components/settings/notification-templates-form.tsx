@@ -26,7 +26,7 @@ const TEMPLATE_VARIABLES = [
   { name: 'file_size', description: 'Total file size' },
   { name: 'uploaded_size', description: 'Size of uploaded data' },
   { name: 'storage_size', description: 'Storage size used' },
-  { name: 'available_versions', description: 'Number of available backup versions' },
+  { name: 'available_versions', description: 'Number of available versions' },
 ];
 
 // Available placeholder variables for templates

@@ -172,7 +172,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
               <TableCell className="py-1 px-2 text-xs">{formatAvailableBackupDate(currentBackupDate)}</TableCell>
               <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(currentBackupDate)}</TableCell>
             </TableRow>
-            {/* Additional available backups starting from #2 */}
+            {/* Additional available versions starting from #2 */}
             {availableBackups.map((timestamp, index) => (
               <TableRow key={index} className="border-b">
                 <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
@@ -272,7 +272,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
 
               {/* Right Column */}
               <div>
-                <dt className="font-medium text-muted-foreground mb-2">Available backups at the time of the backup:</dt>
+                <dt className="font-medium text-muted-foreground mb-2">Available versions at the time of the backup:</dt>
                 <dd className="text-sm">
                   <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} />
                 </dd>

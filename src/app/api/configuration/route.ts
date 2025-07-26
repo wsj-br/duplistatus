@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getConfiguration, setConfiguration } from '@/lib/db-utils';
-import { NotificationConfig } from '@/lib/types';
+import { NotificationConfig, BackupKey, BackupNotificationConfig } from '@/lib/types';
 
 export async function GET() {
   try {
@@ -63,6 +63,46 @@ export async function POST(request: Request) {
     
     // Save backup settings separately
     setConfiguration('backup_settings', JSON.stringify(backupSettings || {}));
+    
+    // Clean up missed backup notifications for disabled backups
+    if (backupSettings) {
+      try {
+        // Get current missed backup notifications configuration
+        const missedNotificationsJson = getConfiguration('missed_backup_notifications');
+        if (missedNotificationsJson) {
+          const missedNotifications = JSON.parse(missedNotificationsJson) as Record<string, {
+            lastNotificationSent: string;
+            lastBackupDate: string;
+          }>;
+
+          // Find backups where missedBackupCheckEnabled is disabled
+          const disabledBackupKeys: BackupKey[] = [];
+          
+          for (const [backupKey, backupConfig] of Object.entries(backupSettings)) {
+            const config = backupConfig as BackupNotificationConfig;
+            if (!config.missedBackupCheckEnabled) {
+              disabledBackupKeys.push(backupKey);
+            }
+          }
+
+          // Remove entries for disabled backups from missed_backup_notifications
+          const updatedMissedNotifications = { ...missedNotifications };
+
+          for (const backupKey of disabledBackupKeys) {
+            if (updatedMissedNotifications[backupKey]) {
+              delete updatedMissedNotifications[backupKey];
+            }
+          }
+
+          // Save the updated configuration
+          setConfiguration('missed_backup_notifications', JSON.stringify(updatedMissedNotifications));
+
+        }
+      } catch (cleanupError) {
+        console.error('Failed to cleanup missed backup notifications:', cleanupError);
+        // Don't fail the entire save operation if cleanup fails
+      }
+    }
     
     return NextResponse.json({ message: 'Configuration saved successfully' });
   } catch (error) {

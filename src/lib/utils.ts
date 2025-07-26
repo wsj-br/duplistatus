@@ -278,7 +278,7 @@ function extractFromPlainText(text: string): string[] {
   return backupsToConsider.filter(backup => !backupsToDelete.includes(backup));
 }
 
-// Function to extract available backups from message array
+// Function to extract available versions from message array
 export function extractAvailableBackups(messagesArray: string | null): string[] {
   if (!messagesArray) return [];
   

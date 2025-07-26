@@ -2,19 +2,15 @@
 
 ## Fix
 
-- Check if why the templates are not being used when receive a log (/api/upload)
-- Check possible duplication in /api/upload (`const backup` and   `const notificationContext` )
+- (no issues)
 
 ## Changes needed
 
-- Include a page refresh after a successful "Collect Backup Logs" 🆕 (Check if already implemented)
-- Include a data refresh when navigating back to the dashboard page or backups page.
-
+- (no issues)
 
 
 ## New Features (planned or under analysis)
 
-- Send notifications using shoutrrr (https://containrrr.dev/shoutrrr/v0.8/getting-started/) ❓
 - Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
 
 ---
@@ -53,13 +49,19 @@
   - Client-side persistence of sort preferences
 - Enhanced backup version visibility:
   - Version icons in tables
-  - Click-to-view available backups
+  - Click-to-view available versions
   - Version display in detail page summary
+- Send notifications using ntfy.sh 
+- Check periodically for missed scheduled backups
 
 **UI/Navigation Improvements:**
 - Added "Return to Dashboard" link on detail pages
 - Status badges now link directly to backup details
-- Standardise the column titles of available backup versions to "Available Backups"
+- Standardise the column titles of available versions to "Available Versions" (was "Available Backups" in some places)
+- Navigate to the dashboard once 'Collect Backup Logs' has been successful.
+- Add a button to the application header that allows users to configure notifications and missed scheduled backup alerts.
+- Add a button to the application header to check the missed backups (this shows only if there is at least one monitored backup).
+
 
 **Notification System:**
 - **ntfy.sh Integration:**

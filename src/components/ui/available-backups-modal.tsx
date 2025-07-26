@@ -94,7 +94,7 @@ export function useAvailableBackupsModal() {
             style={getAnimationStyles()}
           >
             <DialogHeader className="pb-3">
-              <DialogTitle>Available Backups <span className="font-normal text-gray-400"> @ </span><span className="text-blue-400 font-normal">{new Date(selectedBackupDate).toLocaleString()}</span></DialogTitle>
+              <DialogTitle>Available Versions <span className="font-normal text-gray-400"> @ </span><span className="text-blue-400 font-normal">{new Date(selectedBackupDate).toLocaleString()}</span></DialogTitle>
             </DialogHeader>
             <div className="max-h-[500px] overflow-y-auto">
               <Table>
@@ -112,7 +112,7 @@ export function useAvailableBackupsModal() {
                     <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(selectedBackupDate)}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatTimeAgo(selectedBackupDate)}</TableCell>
                   </TableRow>
-                  {/* Additional available backups starting from #2 */}
+                  {/* Additional available versions starting from #2 */}
                   {selectedAvailableBackups.map((timestamp, index) => (
                     <TableRow key={index} className="border-b">
                       <TableCell className="w-16 py-1.5 px-3">{index + 2}</TableCell>
@@ -157,7 +157,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, onIc
             onIconClick(availableBackups, currentBackupDate, event);
           }}
           className="text-blue-600 hover:text-blue-800 transition-colors"
-          title="View available backups"
+          title="View available versions"
         >
           <History className="h-4 w-4" />
         </button>
