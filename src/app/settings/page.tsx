@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,22 +15,30 @@ import { NotificationTemplatesForm } from '@/components/settings/notification-te
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
 
-export default function SettingsPage() {
+function SettingsPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [config, setConfig] = useState<NotificationConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('ntfy');
 
   useEffect(() => {
-    // Load the last selected tab from localStorage
-    const savedTab = localStorage.getItem('settings-active-tab');
-    if (savedTab && ['ntfy', 'backups', 'templates'].includes(savedTab)) {
-      setActiveTab(savedTab);
+    // Check for tab parameter in URL first
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['ntfy', 'backups', 'templates'].includes(tabParam)) {
+      setActiveTab(tabParam);
+      localStorage.setItem('settings-active-tab', tabParam);
+    } else {
+      // Load the last selected tab from localStorage if no URL parameter
+      const savedTab = localStorage.getItem('settings-active-tab');
+      if (savedTab && ['ntfy', 'backups', 'templates'].includes(savedTab)) {
+        setActiveTab(savedTab);
+      }
     }
     
     fetchConfiguration();
-  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchParams]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchConfiguration = async () => {
     try {
@@ -188,5 +196,13 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SettingsPageContent />
+    </Suspense>
   );
 } 

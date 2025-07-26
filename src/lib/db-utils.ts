@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { ResendFrequencyConfig } from "@/lib/types";
@@ -15,6 +15,59 @@ const defaultCronConfig: CronServiceConfig = {
     }
   }
 };
+
+// Helper function to get backup key
+function getBackupKey(machineName: string, backupName: string): BackupKey {
+  return `${machineName}:${backupName}`;
+}
+
+// Helper function to check if a backup is missed
+function isBackupMissed(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
+  try {
+    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    if (!lastNotificationJson || !lastBackupDate) return false;
+    
+    const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
+      lastNotificationSent: string; // ISO timestamp
+      lastBackupDate: string; // ISO timestamp
+    }>;
+    
+    const backupKey = getBackupKey(machineName, backupName);
+    const notification = lastNotifications[backupKey];
+    
+    if (!notification) return false;
+    
+    const lastBackupDateObj = new Date(lastBackupDate);
+    const lastNotificationSent = new Date(notification.lastNotificationSent);
+    
+    // If lastBackupDate is older than lastNotificationSent, it's a missed backup
+    return lastBackupDateObj < lastNotificationSent;
+  } catch (error) {
+    console.error('Error checking if backup is missed:', error);
+    return false;
+  }
+}
+
+// Helper function to get notification event for a backup
+function getNotificationEvent(machineName: string, backupName: string): NotificationEvent | undefined {
+  try {
+    const backupSettingsJson = getConfiguration('backup_settings');
+    if (!backupSettingsJson) return undefined;
+    
+    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+      notificationEvent: NotificationEvent;
+      expectedInterval: number;
+      missedBackupCheckEnabled: boolean;
+      intervalUnit: 'hours' | 'days';
+    }>;
+    
+    const backupKey = getBackupKey(machineName, backupName);
+    return backupSettings[backupKey]?.notificationEvent;
+  } catch (error) {
+    console.error('Error getting notification event:', error);
+    return undefined;
+  }
+}
 
 export function getCronConfig(): CronServiceConfig {
   try {
@@ -177,7 +230,7 @@ export function getMachinesSummary() {
         normalizedStatus = 'N/A';
       } else {
         // Check if the status is a valid BackupStatus value
-        const validStatuses: BackupStatus[] = ['Success', 'Failed', 'InProgress', 'Warning', 'Fatal'];
+        const validStatuses: BackupStatus[] = ['Success', 'Failed', 'InProgress', 'Warning', 'Fatal', 'Missed'];
         if (validStatuses.includes(row.last_backup_status as BackupStatus)) {
           normalizedStatus = row.last_backup_status as BackupStatus;
         } else {
@@ -185,6 +238,19 @@ export function getMachinesSummary() {
           normalizedStatus = 'Failed';
         }
       }
+
+      // Check if backup is missed and override status if needed
+      if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
+        const isMissed = isBackupMissed(row.name, row.last_backup_name, row.last_backup_date);
+        if (isMissed) {
+          normalizedStatus = 'Missed';
+        }
+      }
+
+      // Get notification event for this backup
+      const notificationEvent = row.last_backup_name ? 
+        getNotificationEvent(row.name, row.last_backup_name) : 
+        undefined;
 
       return {
         id: row.machine_id,
@@ -198,7 +264,8 @@ export function getMachinesSummary() {
         backupCount: row.backup_count || 0,
         totalWarnings: row.total_warnings || 0,
         totalErrors: row.total_errors || 0,
-        availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null
+        availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null,
+        notificationEvent
       };
     });
   });

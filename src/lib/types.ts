@@ -1,4 +1,4 @@
-export type BackupStatus = "Success" | "Failed" | "InProgress" | "Warning" | "Fatal";
+export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal" | "Missed";
 
 export interface Backup {
   id: string;
@@ -56,6 +56,7 @@ export interface MachineSummary {
   totalWarnings: number;
   totalErrors: number;
   availableBackups: string[] | null;
+  notificationEvent?: NotificationEvent;
 }
 
 export interface OverallSummary {

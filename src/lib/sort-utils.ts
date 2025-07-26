@@ -45,7 +45,8 @@ export function parseDurationToSeconds(duration: string): number {
 // Status ordering: Failed/Error -> Warning -> Success
 export function getStatusSortValue(status: BackupStatus | 'N/A'): number {
   const statusOrder: Record<string, number> = {
-    'Success': 4,
+    'Success': 5,
+    'Missed': 4,
     'Unknown': 3,
     'Warning': 2,
     'Error': 1,

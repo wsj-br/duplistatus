@@ -128,6 +128,66 @@ export function formatTimeAgo(dateString: string): string {
   }
 }
 
+export function formatTimeElapsed(dateString: string): string {
+  if (!dateString || dateString === "N/A") return "";
+  try {
+    const date = parseISO(dateString);
+    if (!isValid(date)) {
+      return ""; 
+    }
+
+    // Use a fixed reference time (server-side) to avoid hydration mismatches
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 0) {
+      return "in the future";
+    }
+
+    if (diffInSeconds < 60) {
+      return "just now";
+    }
+
+    if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} hour${hours === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 604800) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} day${days === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 2592000) {
+      const weeks = Math.floor(diffInSeconds / 604800);
+      return `${weeks} week${weeks === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 31536000) {
+      const months = Math.floor(diffInSeconds / 2592000);
+      return `${months} month${months === 1 ? '' : 's'}`;
+    }
+
+    // Calculate years and remaining months for periods longer than 1 year
+    const years = Math.floor(diffInSeconds / 31536000);
+    const remainingSeconds = diffInSeconds % 31536000;
+    const months = Math.floor(remainingSeconds / 2592000);
+    
+    if (months === 0) {
+      return `${years} year${years === 1 ? '' : 's'}`;
+    } else {
+      return `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'}`;
+    }
+  } catch {
+    return "";
+  }
+}
+
 // Function to convert timestamp from Duplicati format to ISO format
 export function convertTimestampToISO(timestamp: string): string {
   try {
