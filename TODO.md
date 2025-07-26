@@ -2,11 +2,14 @@
 
 ## Fix
 
-- (No issues identified)
+- Check if why the templates are not being used when receive a log (/api/upload)
+- Check possible duplication in /api/upload (`const backup` and   `const notificationContext` )
 
 ## Changes needed
 
-- Include a page refresh after a successful "Collect Backup Logs" 🆕
+- Include a page refresh after a successful "Collect Backup Logs" 🆕 (Check if already implemented)
+- Include a data refresh when navigating back to the dashboard page or backups page.
+
 
 
 ## New Features (planned or under analysis)

@@ -230,21 +230,19 @@ export function getMachinesSummary() {
         normalizedStatus = 'N/A';
       } else {
         // Check if the status is a valid BackupStatus value
-        const validStatuses: BackupStatus[] = ['Success', 'Failed', 'InProgress', 'Warning', 'Fatal', 'Missed'];
+        const validStatuses: BackupStatus[] = ['Success', 'Unknown', 'Warning', 'Error', 'Fatal', 'Missed'];
         if (validStatuses.includes(row.last_backup_status as BackupStatus)) {
           normalizedStatus = row.last_backup_status as BackupStatus;
         } else {
           // If it's not a valid status, default to 'Failed'
-          normalizedStatus = 'Failed';
+          normalizedStatus = 'Unknown';
         }
       }
 
       // Check if backup is missed and override status if needed
+      let isMissed : boolean =false;
       if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
-        const isMissed = isBackupMissed(row.name, row.last_backup_name, row.last_backup_date);
-        if (isMissed) {
-          normalizedStatus = 'Missed';
-        }
+        isMissed = isBackupMissed(row.name, row.last_backup_name, row.last_backup_date);
       }
 
       // Get notification event for this backup
@@ -265,6 +263,7 @@ export function getMachinesSummary() {
         totalWarnings: row.total_warnings || 0,
         totalErrors: row.total_errors || 0,
         availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null,
+        isBackupMissed: isMissed,
         notificationEvent
       };
     });

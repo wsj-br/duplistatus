@@ -303,7 +303,7 @@ const dbOps = {
       GROUP BY mb.machine_id, mb.backup_name
     )
     SELECT * FROM numbered_results
-    ORDER BY name, last_backup_name
+    ORDER BY lower(name), lower(last_backup_name)
   `, 'getMachinesSummary'),
 
   getOverallSummary: safePrepare(`

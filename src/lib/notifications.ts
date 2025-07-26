@@ -170,13 +170,13 @@ export async function sendBackupNotification(
       return;
     }
     template = config.templates.success;
-  } else if (status === 'Warning' || backup.warnings > 0) {
+  } else if (status === 'Warning' || status=== "Unknown" || backup.warnings > 0) {
     if (backupConfig.notificationEvent === 'errors') {
       // Only send error notifications, skip warnings
       return;
     }
     template = config.templates.warning;
-  } else if (status === 'Failed' || status === 'Fatal' || status === 'InProgress' || backup.errors > 0) {
+  } else if (status === 'Error' || status === 'Fatal' || backup.errors > 0) {
     template = config.templates.warning; // Use warning template for errors
   } else {
     // Unknown status, use warning template

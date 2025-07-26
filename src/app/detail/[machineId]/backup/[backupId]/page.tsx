@@ -232,47 +232,52 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <dl className="space-y-4 text-sm">
-              <div>
-                <dt className="font-medium text-muted-foreground mb-2">Backup Information</dt>
-                <dd className="flex items-center gap-6">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-muted-foreground">Date:</span>
-                    <span>{new Date(safeBackup.date).toLocaleString()}</span>
-                    <span className="text-sm text-muted-foreground">
-                      ({formatTimeAgo(safeBackup.date)})
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-muted-foreground">ID:</span>
-                    <span>{backupId}</span>
-                  </div>
-                </dd>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-4">
+                <div>
+                  <dt className="font-medium text-muted-foreground mb-2">Backup Information</dt>
+                  <dd className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">Date:</span>
+                      <span>{new Date(safeBackup.date).toLocaleString()}</span>
+                      <span className="text-sm text-muted-foreground">
+                        ({formatTimeAgo(safeBackup.date)})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">ID:</span>
+                      <span>{backupId}</span>
+                    </div>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-muted-foreground mb-2">Log Summary</dt>
+                  <dd className="flex items-center gap-6">
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm">Messages: {safeBackup.messages.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm">Warnings: {safeBackup.warnings.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <XCircle className="h-4 w-4 text-red-500" />
+                      <span className="text-sm">Errors: {safeBackup.errors.toLocaleString()}</span>
+                    </div>
+                  </dd>
+                </div>
               </div>
+
+              {/* Right Column */}
               <div>
                 <dt className="font-medium text-muted-foreground mb-2">Available backups at the time of the backup:</dt>
                 <dd className="text-sm">
                   <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} />
                 </dd>
               </div>
-              <div>
-                <dt className="font-medium text-muted-foreground mb-2">Log Summary</dt>
-                <dd className="flex items-center gap-6">
-                  <div className="flex items-center gap-1">
-                    <MessageSquare className="h-4 w-4 text-blue-500" />
-                    <span className="text-sm">Messages: {safeBackup.messages.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                    <span className="text-sm">Warnings: {safeBackup.warnings.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <XCircle className="h-4 w-4 text-red-500" />
-                    <span className="text-sm">Errors: {safeBackup.errors.toLocaleString()}</span>
-                  </div>
-                </dd>
-              </div>
-            </dl>
+            </div>
           </CardContent>
         </Card>
 

@@ -56,6 +56,7 @@ export interface MachineSummary {
   totalWarnings: number;
   totalErrors: number;
   availableBackups: string[] | null;
+  isBackupMissed: boolean;
   notificationEvent?: NotificationEvent;
 }
 

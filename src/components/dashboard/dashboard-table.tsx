@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { useRouter } from "next/navigation"; // Import useRouter
-import { formatTimeAgo,formatTimeElapsed } from "@/lib/utils"; // Import the new function
+import { formatTimeAgo } from "@/lib/utils"; // Import the new function
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
 import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
-import { Bell, BellOff } from "lucide-react";
+import { MessageSquareMore, MessageSquareOff } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -37,13 +37,13 @@ function getNotificationIcon(notificationEvent: NotificationEvent | undefined) {
   
   switch (notificationEvent) {
     case 'errors':
-      return <Bell className="h-4 w-4 text-red-500" />;
+      return <MessageSquareMore className="h-4 w-4 text-red-400" />;
     case 'warnings':
-      return <Bell className="h-4 w-4 text-orange-500" />;
+      return <MessageSquareMore className="h-4 w-4 text-yellow-400" />;
     case 'all':
-      return <Bell className="h-4 w-4 text-blue-500" />;
+      return <MessageSquareMore className="h-4 w-4 text-blue-400" />;
     case 'off':
-      return <BellOff className="h-4 w-4 text-gray-800" />;
+      return <MessageSquareOff className="h-4 w-4 text-gray-400" />;
     default:
       return null;
   }
@@ -59,7 +59,7 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
     case 'warnings':
       return 'Notifications: Warnings & Errors';
     case 'all':
-      return 'Notifications: All Logs';
+      return 'Notifications: All Backups';
     case 'off':
       return 'Notifications: Off';
     default:
@@ -216,9 +216,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                 </TableCell>
               </TableRow>
             )}
-            {sortedMachines.map((machine) => {
-              const isMissedBackup = machine.lastBackupStatus === 'Missed';
-              
+            {sortedMachines.map((machine) => {              
               return (
                 <TableRow 
                   key={`${machine.id}-${machine.lastBackupName || 'no-backup'}`} 
@@ -232,7 +230,11 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     {machine.name}
                   </TableCell>
                   <TableCell>
-                    {machine.lastBackupName || 'N/A'}
+                    {machine.isBackupMissed ? (
+                        <span className="text-red-400 font-medium">{machine.lastBackupName || 'N/A'}</span>
+                      ) : (
+                        machine.lastBackupName || 'N/A'
+                      )}
                   </TableCell>
                   <TableCell className="text-center">
                     <AvailableBackupsIcon
@@ -247,12 +249,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     {machine.lastBackupDate !== "N/A" ? (
                       <>
                         <div>{new Date(machine.lastBackupDate).toLocaleString()}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {isMissedBackup ? (
-                            <span className="text-orange-600">{formatTimeAgo(machine.lastBackupDate)}  ⚠️ Missed</span>
-                          ) : (
-                            formatTimeAgo(machine.lastBackupDate)
-                          )}
+                        <div className="text-xs text-muted-foreground">{formatTimeAgo(machine.lastBackupDate)}
+                          <span className= "text-xs text-red-400"> {machine.isBackupMissed ? " ⚠️ missed backup" : ""}</span>
                         </div>
                       </>
                     ) : (

@@ -1,6 +1,6 @@
 import type { BackupStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, AlertTriangle, CalendarX2, HelpCircle, AlertOctagon, Clock } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, CalendarX2, HelpCircle, AlertOctagon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
