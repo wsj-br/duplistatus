@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error processing backup data:', error);
+    console.error('Error processing backup data:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to process backup data' },
       { status: 500 }

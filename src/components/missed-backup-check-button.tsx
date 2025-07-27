@@ -33,7 +33,7 @@ export function MissedBackupCheckButton() {
       
       setShouldShow(hasEnabledBackups);
     } catch (error) {
-      console.error('Error checking backup configuration:', error);
+      console.error('Error checking backup configuration:', error instanceof Error ? error.message : String(error));
       setShouldShow(false);
     } finally {
       setIsLoading(false);
@@ -110,7 +110,7 @@ export function MissedBackupCheckButton() {
         router.push("/");
       }
     } catch (error) {
-      console.error('Error running missed backup check:', error);
+      console.error('Error running missed backup check:', error instanceof Error ? error.message : String(error));
       
       // Show error toast
       toast({

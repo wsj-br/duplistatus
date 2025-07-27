@@ -7,7 +7,7 @@ export async function POST() {
     const result = await checkMissedBackups();
     return NextResponse.json(result);
   } catch (error) {
-    console.error('❌ Error in POST endpoint:', error);
+    console.error('❌ Error in POST endpoint:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to check for missed backups' },
       { status: 500 }

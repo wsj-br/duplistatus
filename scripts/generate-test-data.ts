@@ -21,7 +21,7 @@ async function checkServerHealth(url: string): Promise<boolean> {
     return response.ok;
   } catch (error) {
     clearTimeout(timeoutId);
-    console.error('Server health check failed:', error);
+    console.error('Server health check failed:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
@@ -223,7 +223,7 @@ async function sendTestData() {
           // Add a small delay between requests
           await new Promise(resolve => setTimeout(resolve, 100));
         } catch (error) {
-          console.error(`🚨 Error sending backup ${backupNumber} for ${machine.name}:`, error);
+          console.error(`🚨 Error sending backup ${backupNumber} for ${machine.name}:`, error instanceof Error ? error.message : String(error));
         }
       }
     }
@@ -236,6 +236,6 @@ console.log('  ℹ️ Generating 2 types of backups per machine (30 each) at reg
 sendTestData().then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {
-  console.error('🚨 Error generating test data:', error);
+  console.error('🚨 Error generating test data:', error instanceof Error ? error.message : String(error));
   process.exit(1);
 }); 

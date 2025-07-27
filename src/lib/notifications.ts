@@ -1,6 +1,7 @@
 import format from 'string-template';
-import { getConfiguration } from './db-utils';
+import { getConfiguration, getNtfyConfig } from './db-utils';
 import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey } from './types';
+import { createDefaultNotificationConfig, defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -36,9 +37,18 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
     const configJson = getConfiguration('notifications');
     const backupSettingsJson = getConfiguration('backup_settings');
     
-    if (!configJson) return null;
+    // Get ntfy config with default topic generation if needed
+    const ntfyConfig = getNtfyConfig();
+    
+    if (!configJson) {
+      // If no configuration exists, create a minimal one with default ntfy config
+      return createDefaultNotificationConfig(ntfyConfig);
+    }
     
     const config = JSON.parse(configJson) as NotificationConfig;
+    
+    // Ensure ntfy config is always set with the generated default if needed
+    config.ntfy = ntfyConfig;
     
     // Load backup settings from separate configuration if available
     if (backupSettingsJson) {
@@ -46,7 +56,7 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
         const backupSettings = JSON.parse(backupSettingsJson);
         config.backupSettings = backupSettings;
       } catch (error) {
-        console.error('Failed to parse backup settings:', error);
+        console.error('Failed to parse backup settings:', error instanceof Error ? error.message : String(error));
         config.backupSettings = {};
       }
     } else {
@@ -55,7 +65,7 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
     
     return config;
   } catch (error) {
-    console.error('Failed to get notification config:', error);
+    console.error('Failed to get notification config:', error instanceof Error ? error.message : String(error));
     return null;
   }
 }
@@ -195,18 +205,18 @@ export async function sendBackupNotification(
       // Only send error notifications, skip success
       return;
     }
-    template = config.templates.success;
+    template = config.templates?.success || defaultNotificationTemplates.success;
   } else if (status === 'Warning' || status=== "Unknown" || backup.warnings > 0) {
     if (backupConfig.notificationEvent === 'errors') {
       // Only send error notifications, skip warnings
       return;
     }
-    template = config.templates.warning;
+    template = config.templates?.warning || defaultNotificationTemplates.warning;
   } else if (status === 'Error' || status === 'Fatal' || backup.errors > 0) {
-    template = config.templates.warning; // Use warning template for errors
+    template = config.templates?.warning || defaultNotificationTemplates.warning; // Use warning template for errors
   } else {
     // Unknown status, use warning template
-    template = config.templates.warning;
+    template = config.templates?.warning || defaultNotificationTemplates.warning;
   }
 
   try {
@@ -223,7 +233,7 @@ export async function sendBackupNotification(
     
     console.log(`Notification sent for backup ${backup.name} on machine ${machineName}`);
   } catch (error) {
-    console.error(`Failed to send backup notification for ${machineName}:`, error);
+    console.error(`Failed to send backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -241,7 +251,7 @@ export async function sendMissedBackupNotification(
   }
 
   try {
-    const processedTemplate = processTemplate(notificationConfig.templates.missedBackup, context);
+    const processedTemplate = processTemplate(notificationConfig.templates?.missedBackup || defaultNotificationTemplates.missedBackup, context);
     
     await sendNtfyNotification(
       notificationConfig.ntfy.url,
@@ -253,7 +263,7 @@ export async function sendMissedBackupNotification(
     );
     
   } catch (error) {
-    console.error(`Failed to send missed backup notification for ${machineName}:`, error);
+    console.error(`Failed to send missed backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

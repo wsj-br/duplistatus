@@ -16,7 +16,7 @@ export async function GET() {
       enabled: task.enabled
     });
   } catch (error) {
-    console.error('Failed to get cron config:', error);
+    console.error('Failed to get cron config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to get cron configuration' },
       { status: 500 }
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Failed to update cron config:', error);
+    console.error('Failed to update cron config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to update cron configuration' },
       { status: 500 }

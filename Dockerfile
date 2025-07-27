@@ -37,6 +37,7 @@ RUN pnpm prune --prod && \
 # Set environment variables
 ENV NODE_ENV=production \
     PORT=9666 \
+    CRON_PORT=9667 \
     NEXT_TELEMETRY_DISABLED=1 \
     TZ=UTC
 

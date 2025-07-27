@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ClipboardPaste, Send } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { NotificationTemplate } from '@/lib/types';
+import { defaultNotificationTemplates } from '@/lib/default-config';
 
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES = [
@@ -40,10 +41,10 @@ const TEMPLATE_VARIABLES_MISSED_BACKUP = [
 ];
 
 interface NotificationTemplatesFormProps {
-  templates: {
-    success: NotificationTemplate;
-    warning: NotificationTemplate;
-    missedBackup: NotificationTemplate;
+  templates?: {
+    success?: NotificationTemplate;
+    warning?: NotificationTemplate;
+    missedBackup?: NotificationTemplate;
   };
   onSave: (templates: {
     success: NotificationTemplate;
@@ -191,7 +192,14 @@ const TemplateEditor = ({
 
 export function NotificationTemplatesForm({ templates, onSave, onSendTest }: NotificationTemplatesFormProps) {
   const { toast } = useToast();
-  const [formData, setFormData] = useState(templates);
+  const [formData, setFormData] = useState(() => {
+    // Ensure we have default templates if the provided templates are incomplete
+    return {
+      success: templates?.success || defaultNotificationTemplates.success,
+      warning: templates?.warning || defaultNotificationTemplates.warning,
+      missedBackup: templates?.missedBackup || defaultNotificationTemplates.missedBackup,
+    };
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
@@ -264,7 +272,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         description: "Template settings saved successfully",
       });
     } catch (error) {
-      console.error('Error saving templates:', error);
+      console.error('Error saving templates:', error instanceof Error ? error.message : String(error));
       toast({
         duration: 10000,
         title: "Error",
@@ -298,7 +306,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         description: `Test notification sent using ${activeTab} template`,
       });
     } catch (error) {
-      console.error('Error sending test notification:', error);
+      console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
       toast({
         duration: 10000,
         title: "Error",

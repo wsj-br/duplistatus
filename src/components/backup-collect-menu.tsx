@@ -13,12 +13,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter, usePathname } from "next/navigation";
+import { defaultAPIConfig } from '@/lib/default-config';
 
 export function BackupCollectMenu() {
   const [isCollecting, setIsCollecting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hostname, setHostname] = useState("");
-  const [port, setPort] = useState("8200");
+  const [port, setPort] = useState(defaultAPIConfig.duplicatiPort.toString());
   const [password, setPassword] = useState("");
   const [useHttps, setUseHttps] = useState(false);
   const [allowSelfSigned, setAllowSelfSigned] = useState(false);
@@ -57,9 +58,9 @@ export function BackupCollectMenu() {
         },
         body: JSON.stringify({ 
           hostname, 
-          port: parseInt(port) || 8200,
+          port: parseInt(port) || defaultAPIConfig.duplicatiPort,
           password,
-          protocol: useHttps ? 'https' : 'http',
+          protocol: useHttps ? 'https' : defaultAPIConfig.duplicatiProtocol,
           allowSelfSigned
         }),
       });
@@ -103,7 +104,7 @@ export function BackupCollectMenu() {
       }
 
     } catch (error) {
-      console.error('Error collecting backups:', error);
+      console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
       
       // Show error toast
       toast({

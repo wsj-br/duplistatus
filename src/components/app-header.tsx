@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Settings } from 'lucide-react';
+import { LayoutDashboard, Settings } from 'lucide-react';
 import { ThemeToggleButton } from '@/components/theme-toggle-button';
 import { DisplayMenu } from '@/components/display-menu';
 import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu';
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 
 export function AppHeader() {
   const pathname = usePathname();
-  const isDetailPage = pathname.startsWith('/detail/');
+  const isDashboardPage = pathname === '/';
 
   return (
     <div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,13 +33,13 @@ export function AppHeader() {
           </span>
         </Link>
         
-        {isDetailPage && (
+        {!isDashboardPage && (
           <Link 
             href="/" 
             className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors ml-4"
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm font-medium">return to Dashboard</span>
+            <LayoutDashboard className="h-4 w-4" />
+            <span className="text-sm font-medium">Return to Dashboard</span>
           </Link>
         )}
         

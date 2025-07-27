@@ -39,7 +39,7 @@ try {
   
   // log('Database initialized successfully');
 } catch (error) {
-  console.error('Failed to initialize database:', error);
+  console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
   throw error;
 }
 
@@ -135,7 +135,7 @@ try {
   `);
   // log('Database schema initialized successfully');
 } catch (error) {
-  console.error('Failed to initialize database schema:', error);
+  console.error('Failed to initialize database schema:', error instanceof Error ? error.message : String(error));
   throw error;
 }
 
@@ -144,7 +144,7 @@ try {
   const migrator = new DatabaseMigrator(db);
   migrator.runMigrations();
 } catch (error) {
-  console.error('Failed to run database migrations:', error);
+  console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));
   throw error;
 }
 
@@ -155,7 +155,7 @@ function safePrepare(sql: string, name: string) {
     // log(`Prepared statement '${name}' successfully`);
     return stmt;
   } catch (error) {
-    console.error(`Failed to prepare statement '${name}':`, error);
+    console.error(`Failed to prepare statement '${name}':`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

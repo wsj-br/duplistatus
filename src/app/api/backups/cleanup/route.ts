@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       status: 200,
     });
   } catch (error) {
-    console.error('Error deleting old backups:', error);
+    console.error('Error deleting old backups:', error instanceof Error ? error.message : String(error));
     
     // Enhanced error reporting
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';

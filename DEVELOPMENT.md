@@ -108,8 +108,20 @@ Removes all build artifacts, node_modules directory, and other generated files t
 - `dist/` directory
 - All docker build cache and perform a docker system prune
 - pnpm store cache
-- Docker system resources (images, networks, volumes)
+- Unused Docker system resources (images, networks, volumes)
 - Any other build cache files
+
+<br>
+
+### Clean docker compose and docker environment
+```bash
+scripts/clean-docker.sh
+```
+Perform a complete Docker cleanup, which is useful for:
+- Freeing up disk space
+- Removing old/unused Docker artifacts
+- Cleaning up after development or testing sessions
+- Maintaining a clean Docker environment
 
 <br>
 

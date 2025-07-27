@@ -4,17 +4,7 @@ import type { BackupStatus, NotificationEvent, BackupKey } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { ResendFrequencyConfig } from "@/lib/types";
-
-// Default cron service configuration
-const defaultCronConfig: CronServiceConfig = {
-  port: 9667,
-  tasks: {
-    'missed-backup-check': {
-      cronExpression: '0,20,40 * * * *', // Every 20 minutes
-      enabled: true
-    }
-  }
-};
+import { defaultCronConfig, generateDefaultNtfyTopic, defaultResendFrequencyConfig, defaultNtfyConfig } from './default-config';
 
 // Helper function to get backup key
 function getBackupKey(machineName: string, backupName: string): BackupKey {
@@ -43,7 +33,7 @@ function isBackupMissed(machineName: string, backupName: string, lastBackupDate:
     // If lastBackupDate is older than lastNotificationSent, it's a missed backup
     return lastBackupDateObj < lastNotificationSent;
   } catch (error) {
-    console.error('Error checking if backup is missed:', error);
+    console.error('Error checking if backup is missed:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
@@ -64,7 +54,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
     const backupKey = getBackupKey(machineName, backupName);
     return backupSettings[backupKey]?.notificationEvent;
   } catch (error) {
-    console.error('Error getting notification event:', error);
+    console.error('Error getting notification event:', error instanceof Error ? error.message : String(error));
     return undefined;
   }
 }
@@ -84,7 +74,7 @@ export function getCronConfig(): CronServiceConfig {
       };
     }
   } catch (error) {
-    console.error('Failed to load cron service configuration:', error);
+    console.error('Failed to load cron service configuration:', error instanceof Error ? error.message : String(error));
   }
   return defaultCronConfig;
 }
@@ -93,7 +83,7 @@ export function setCronConfig(config: CronServiceConfig): void {
   try {
     setConfiguration('cron_service', JSON.stringify(config));
   } catch (error) {
-    console.error('Failed to save cron service configuration:', error);
+    console.error('Failed to save cron service configuration:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -156,7 +146,7 @@ export function withDb<T>(operation: () => T): T {
   try {
     return operation();
   } catch (error) {
-    console.error('Database operation failed:', error);
+    console.error('Database operation failed:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -171,7 +161,7 @@ function safeDbOperation<T>(operation: () => T, operationName: string, fallback?
     const result = operation();
     return result;
   } catch (error) {
-    console.error(`Database operation '${operationName}' failed:`, error);
+    console.error(`Database operation '${operationName}' failed:`, error instanceof Error ? error.message : String(error));
     if (fallback !== undefined) {
       console.warn(`Using fallback value for '${operationName}'`);
       return fallback;
@@ -187,7 +177,7 @@ export function getConfiguration(key: string): string | null {
       const row = db.prepare('SELECT value FROM configurations WHERE key = ?').get(key) as { value: string } | undefined;
       return row ? row.value : null;
     } catch (error) {
-      console.error(`Failed to get configuration for key '${key}':`, error);
+      console.error(`Failed to get configuration for key '${key}':`, error instanceof Error ? error.message : String(error));
       return null;
     }
   });
@@ -198,7 +188,7 @@ export function setConfiguration(key: string, value: string): void {
     try {
       db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(key, value);
     } catch (error) {
-      console.error(`Failed to set configuration for key '${key}':`, error);
+      console.error(`Failed to set configuration for key '${key}':`, error instanceof Error ? error.message : String(error));
       throw error;
     }
   });
@@ -362,7 +352,7 @@ function countMissedBackups(): number {
     
     return missedCount;
   } catch (error) {
-    console.error('Error counting missed backups:', error);
+    console.error('Error counting missed backups:', error instanceof Error ? error.message : String(error));
     return 0;
   }
 }
@@ -444,7 +434,7 @@ export function getMachineById(machineId: string) {
         chartData
       };
     } catch (error) {
-      console.error(`Failed to get machine by ID ${machineId}:`, error);
+      console.error(`Failed to get machine by ID ${machineId}:`, error instanceof Error ? error.message : String(error));
       return null;
     }
   });
@@ -490,7 +480,7 @@ export const dbUtils = {
         const result = safeDbOperation(() => dbOps.checkDuplicateBackup.get(data), 'checkDuplicateBackup') as { count: number } | undefined;
         return (result?.count || 0) > 0;
       } catch (error) {
-        console.error('Failed to check duplicate backup:', error);
+        console.error('Failed to check duplicate backup:', error instanceof Error ? error.message : String(error));
         return false;
       }
     }),
@@ -510,7 +500,7 @@ export const dbUtils = {
         });
         return transaction();
       } catch (error) {
-        console.error(`Failed to delete machine ${machineId}:`, error);
+        console.error(`Failed to delete machine ${machineId}:`, error instanceof Error ? error.message : String(error));
         throw error;
       }
     });
@@ -528,7 +518,7 @@ export function getResendFrequencyConfig(): ResendFrequencyConfig {
   ) {
     return value;
   }
-  return "never";
+  return defaultResendFrequencyConfig;
 }
 
 export function setResendFrequencyConfig(value: ResendFrequencyConfig): void {
@@ -588,7 +578,62 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
     
     return missedBackups;
   } catch (error) {
-    console.error('Error getting missed backups for machine:', error);
+    console.error('Error getting missed backups for machine:', error instanceof Error ? error.message : String(error));
     return [];
+  }
+} 
+
+
+
+// Function to get ntfy configuration with default topic generation
+export function getNtfyConfig(): { url: string; topic: string } {
+  try {
+    const configJson = getConfiguration('notifications');
+    if (configJson) {
+      try {
+        const config = JSON.parse(configJson);
+        if (config.ntfy && config.ntfy.topic && config.ntfy.topic.trim() !== '') {
+          return config.ntfy;
+        }
+      } catch (parseError) {
+        console.error('Failed to parse notifications configuration JSON:', parseError);
+        // If JSON is corrupted, we'll fall through to generate a new one
+      }
+    }
+    
+    // If no configuration exists or topic is empty, generate default
+    const defaultTopic = generateDefaultNtfyTopic();
+    const defaultConfig = {
+      url: defaultNtfyConfig.url,
+      topic: defaultTopic
+    };
+    
+    // Save the default configuration with better error handling
+    try {
+      let currentConfig: Record<string, unknown> = {};
+      if (configJson) {
+        try {
+          currentConfig = JSON.parse(configJson) as Record<string, unknown>;
+        } catch (parseError) {
+          console.error('Failed to parse existing config, creating new one:', parseError);
+          currentConfig = {};
+        }
+      }
+      
+      currentConfig.ntfy = defaultConfig;
+      setConfiguration('notifications', JSON.stringify(currentConfig));
+    } catch (saveError) {
+      console.error('Failed to save default NTFY configuration:', saveError);
+      // Don't throw, just return the default config
+    }
+    
+    return defaultConfig;
+  } catch (error) {
+    console.error('Failed to get NTFY configuration:', error instanceof Error ? error.message : String(error));
+    // Return default even if there's an error
+    return {
+      url: defaultNtfyConfig.url,
+      topic: generateDefaultNtfyTopic()
+    };
   }
 } 

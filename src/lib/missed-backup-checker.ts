@@ -4,6 +4,7 @@ import { getConfiguration, setConfiguration, getResendFrequencyConfig } from '@/
 import { NotificationConfig } from '@/lib/types';
 import { formatTimeAgo } from '@/lib/utils';
 
+
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
 
@@ -33,7 +34,7 @@ export async function checkMissedBackups() {
         const backupSettings = JSON.parse(backupSettingsJson);
         config.backupSettings = backupSettings;
       } catch (error) {
-        console.error('Failed to parse backup settings:', error);
+        console.error('Failed to parse backup settings:', error instanceof Error ? error.message : String(error));
         config.backupSettings = {};
       }
     } else {
@@ -219,7 +220,7 @@ export async function checkMissedBackups() {
             // Update the notification timestamp when notification is sent
             updatedNotifications[backupKey].lastNotificationSent = new Date().toISOString();
           } catch (error) {
-            console.error(`Failed to send missed backup notification for ${backupKey}:`, error);
+            console.error(`Failed to send missed backup notification for ${backupKey}:`, error instanceof Error ? error.message : String(error));
           }
         }
       }
@@ -238,7 +239,7 @@ export async function checkMissedBackups() {
       },
     };
   } catch (error) {
-    console.error('Error checking for missed backups:', error);
+    console.error('Error checking for missed backups:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 } 

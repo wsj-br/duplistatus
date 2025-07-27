@@ -18,7 +18,7 @@ export async function GET() {
 
     return NextResponse.json(machinesWithBackups);
   } catch (error) {
-    console.error('Error fetching machines with backups:', error);
+    console.error('Error fetching machines with backups:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch machines with backups' },
       { status: 500 }

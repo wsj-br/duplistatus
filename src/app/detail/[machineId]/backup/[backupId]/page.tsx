@@ -2,10 +2,9 @@ import { getMachineById } from '@/lib/db-utils';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/status-badge';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, MessageSquare, AlertTriangle, XCircle } from 'lucide-react';
-import Link from 'next/link';
-import { formatTimeAgo } from '@/lib/utils';
+import { MessageSquare, AlertTriangle, XCircle } from 'lucide-react';
+import { formatTimeAgo, formatBytes } from '@/lib/utils';
+import { BackButton } from '@/components/ui/back-button';
 import {
   Table,
   TableHeader,
@@ -88,16 +87,12 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   try {
     machine = await getMachineById(machineId);
   } catch (error) {
-    console.error('Failed to fetch machine data:', error);
+    console.error('Failed to fetch machine data:', error instanceof Error ? error.message : String(error));
     // Return a more user-friendly error page
     return (
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
+          <BackButton />
           <h1 className="text-2xl font-bold text-red-600">Database Error</h1>
         </div>
         <Card>
@@ -132,24 +127,6 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
     }
   };
 
-  const formatAvailableBackupDate = (isoTimestamp: string): string => {
-    try {
-      const date = new Date(isoTimestamp);
-      if (isNaN(date.getTime())) return 'Invalid date';
-      
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-    } catch {
-      return 'Invalid date';
-    }
-  };
-
   const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availableBackups: string[] | null; currentBackupDate: string }) => {
     if (!availableBackups || availableBackups.length === 0) {
       return <span className="text-sm text-muted-foreground">(not available)</span>;
@@ -169,14 +146,14 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
             {/* First row: Current backup date */}
             <TableRow className="border-b">
               <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
-              <TableCell className="py-1 px-2 text-xs">{formatAvailableBackupDate(currentBackupDate)}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{new Date(currentBackupDate).toLocaleString()}</TableCell>
               <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(currentBackupDate)}</TableCell>
             </TableRow>
             {/* Additional available versions starting from #2 */}
             {availableBackups.map((timestamp, index) => (
               <TableRow key={index} className="border-b">
                 <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
-                <TableCell className="py-1 px-2 text-xs">{formatAvailableBackupDate(timestamp)}</TableCell>
+                <TableCell className="py-1 px-2 text-xs">{new Date(timestamp).toLocaleString()}</TableCell>
                 <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(timestamp)}</TableCell>
               </TableRow>
             ))}
@@ -207,15 +184,10 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center gap-4">
-        <Link href={`/detail/${machineId}?backup=${encodeURIComponent(backup.name)}`}>
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <Link href={`/detail/${machineId}?backup=${encodeURIComponent(backup.name)}`}>
-          <h1 className="text-2xl font-bold cursor-pointer hover:text-primary transition-colors">return to  
-            <span className="text-muted-foreground"> {backup.name}</span> list</h1>
-        </Link>
+        <BackButton />
+        <h1 className="text-2xl font-bold">Backup details: 
+            <span className="text-blue-600"> {backup.name}</span>
+        </h1>
       </div>
 
       <div className="space-y-6">
@@ -224,9 +196,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-xl">Backup Details: 
-                  <span className="text-blue-600"> {backup.name}  </span>
-                  <span className="text-muted-foreground"> ({machine.name}) </span></CardTitle>
+                <CardTitle className="text-xl">Backup Details:</CardTitle>
               </div>
               <StatusBadge status={safeBackup.status} />
             </div>
@@ -236,8 +206,8 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
               {/* Left Column */}
               <div className="space-y-4">
                 <div>
-                  <dt className="font-medium text-muted-foreground mb-2">Backup Information</dt>
-                  <dd className="flex items-center gap-6">
+                  <dt className="font-medium  mb-2">Backup Information</dt>
+                  <dd className="mx-4 flex items-center gap-6">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">Date:</span>
                       <span>{new Date(safeBackup.date).toLocaleString()}</span>
@@ -252,8 +222,33 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-medium text-muted-foreground mb-2">Log Summary</dt>
-                  <dd className="flex items-center gap-6">
+                  <dt className="font-medium mb-2">Backup Statistics</dt>
+                  <dd className="mx-4 grid grid-cols-2 gap-x-4 gap-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">File Count:</span>
+                      <span>{backup.fileCount?.toLocaleString() || '0'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">File Size:</span>
+                      <span>{formatBytes(backup.fileSize || 0)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">Uploaded Size:</span>
+                      <span>{formatBytes(backup.uploadedSize || 0)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">Duration:</span>
+                      <span>{backup.duration || '00:00:00'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-muted-foreground">Storage Size:</span>
+                      <span>{formatBytes(backup.knownFileSize || 0)}</span>
+                    </div>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="font-medium mb-2">Log Summary</dt>
+                  <dd className="mx-4 flex items-center gap-6">
                     <div className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4 text-blue-500" />
                       <span className="text-sm">Messages: {safeBackup.messages.toLocaleString()}</span>
@@ -272,7 +267,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
 
               {/* Right Column */}
               <div>
-                <dt className="font-medium text-muted-foreground mb-2">Available versions at the time of the backup:</dt>
+                <dt className="font-medium mb-2">Available versions at the time of the backup:</dt>
                 <dd className="text-sm">
                   <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} />
                 </dd>

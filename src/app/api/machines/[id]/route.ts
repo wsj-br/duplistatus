@@ -17,7 +17,7 @@ export async function DELETE(
       changes: result
     });
   } catch (error) {
-    console.error('Error deleting machine:', error);
+    console.error('Error deleting machine:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to delete machine' },
       { status: 500 }

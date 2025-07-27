@@ -98,7 +98,7 @@ async function clearDatabase() {
 
     console.log('Database cleared and schema recreated successfully!');
   } catch (error) {
-    console.error('Error clearing database:', error);
+    console.error('Error clearing database:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 }
@@ -107,6 +107,6 @@ async function clearDatabase() {
 clearDatabase().then(() => {
   process.exit(0);
 }).catch(error => {
-  console.error('Error:', error);
+  console.error('Error:', error instanceof Error ? error.message : String(error));
   process.exit(1);
 }); 

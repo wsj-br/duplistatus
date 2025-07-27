@@ -13,7 +13,7 @@ export async function GET() {
 
     return NextResponse.json(machineList);
   } catch (error) {
-    console.error('Error fetching machines:', error);
+    console.error('Error fetching machines:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch machines' },
       { status: 500 }

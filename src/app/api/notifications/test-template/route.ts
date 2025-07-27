@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error sending test template notification:', error);
+    console.error('Error sending test template notification:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to send test notification' },
       { status: 500 }

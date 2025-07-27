@@ -26,7 +26,24 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      const wasTopicEmpty = !formData.topic || formData.topic.trim() === '';
       await onSave(formData);
+      
+      // If the topic was empty, fetch the updated configuration to get the generated topic
+      if (wasTopicEmpty) {
+        try {
+          const response = await fetch('/api/configuration');
+          if (response.ok) {
+            const updatedConfig = await response.json();
+            setFormData(prev => ({
+              ...prev,
+              topic: updatedConfig.ntfy.topic
+            }));
+          }
+        } catch (error) {
+          console.error('Failed to fetch updated configuration:', error instanceof Error ? error.message : String(error));
+        }
+      }
     } finally {
       setIsSaving(false);
     }
@@ -62,7 +79,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
         description: "Test notification sent successfully! Check your device.",
       });
     } catch (error) {
-      console.error('Error sending test notification:', error);
+      console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Test Failed",
         description: error instanceof Error ? error.message : "Failed to send test notification",
@@ -112,10 +129,10 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               id="ntfy-topic"
               value={formData.topic || ''}
               onChange={(e) => handleInputChange('topic', e.target.value)}
-              placeholder="my-backup-notifications"
+              placeholder="duplistatus-my-notification-topic"
             />
             <p className="text-sm text-muted-foreground">
-              The topic name for your notifications. Choose something unique and secure.
+                Topic name for notifications. Leave empty to automatically generate a random name when you save.
             </p>
           </div>
 

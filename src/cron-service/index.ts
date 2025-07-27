@@ -18,8 +18,23 @@ function setupProcessHandlers(service: CronService) {
 
 // Start the service
 function main() {
-  // Read port from environment variable, fallback to 9667
-  const envPort = process.env.CRON_PORT ? parseInt(process.env.CRON_PORT, 10) : 9667;
+  // Read port from environment variables with fallback logic
+  const envPort = (() => {
+    // Try to get CRON_PORT first
+    const cronPort = process.env.CRON_PORT;
+    if (cronPort) {
+      return parseInt(cronPort, 10);
+    }
+    
+    // Fallback to PORT + 1
+    const basePort = process.env.PORT;
+    if (basePort) {
+      return parseInt(basePort, 10) + 1;
+    }
+    
+    // Default fallback
+    return 9667;
+  })();
 
   let config = getCronConfig();
   if (config.port !== envPort) {

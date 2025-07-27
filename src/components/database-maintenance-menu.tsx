@@ -60,7 +60,7 @@ export function DatabaseMaintenanceMenu() {
           setMachines(machineList);
         }
       } catch (error) {
-        console.error('Error fetching machines:', error);
+        console.error('Error fetching machines:', error instanceof Error ? error.message : String(error));
       }
     };
 
@@ -91,7 +91,7 @@ export function DatabaseMaintenanceMenu() {
         window.location.reload();
       }
     } catch (error) {
-      console.error('Error in handleCleanup:', error);
+      console.error('Error in handleCleanup:', error instanceof Error ? error.message : String(error));
       
       // Extract error message
       const errorMessage = error instanceof Error 
@@ -153,7 +153,7 @@ export function DatabaseMaintenanceMenu() {
       }
       
     } catch (error) {
-      console.error('Error deleting machine:', error);
+      console.error('Error deleting machine:', error instanceof Error ? error.message : String(error));
       
       // Extract error message
       const errorMessage = error instanceof Error 

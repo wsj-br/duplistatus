@@ -463,7 +463,7 @@ export class DatabaseMigrator {
           this.setVersion(migration.version);
           console.log(`Migration ${migration.version} completed successfully`);
         } catch (error) {
-          console.error(`Migration ${migration.version} failed:`, error);
+          console.error(`Migration ${migration.version} failed:`, error instanceof Error ? error.message : String(error));
           throw error;
         }
       }
@@ -473,7 +473,7 @@ export class DatabaseMigrator {
       transaction();
       console.log('All migrations completed successfully');
     } catch (error) {
-      console.error('Migration failed:', error);
+      console.error('Migration failed:', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }

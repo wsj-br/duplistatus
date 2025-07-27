@@ -33,7 +33,7 @@ export function DashboardToastHandler() {
         // Remove the stored toast data
         localStorage.removeItem("backup-collection-toast");
       } catch (error) {
-        console.error("Error parsing stored toast data:", error);
+        console.error("Error parsing stored toast data:", error instanceof Error ? error.message : String(error));
         // Clean up invalid data
         localStorage.removeItem("backup-collection-toast");
       }
@@ -54,7 +54,7 @@ export function DashboardToastHandler() {
         // Remove the stored toast data
         localStorage.removeItem("missed-backup-check-toast");
       } catch (error) {
-        console.error("Error parsing stored missed backup toast data:", error);
+        console.error("Error parsing stored missed backup toast data:", error instanceof Error ? error.message : String(error));
         // Clean up invalid data
         localStorage.removeItem("missed-backup-check-toast");
       }

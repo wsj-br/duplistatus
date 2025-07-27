@@ -14,6 +14,7 @@ import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, R
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
+import { defaultBackupNotificationConfig } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
 
 interface MachineWithBackup {
@@ -88,7 +89,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       
       setCronIntervalState(entry ? entry[0] as CronInterval : '20min');
     } catch (error) {
-      console.error('Failed to load cron interval:', error);
+      console.error('Failed to load cron interval:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to load missed backup check interval",
@@ -125,7 +126,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         description: "Missed backup check interval updated successfully",
       });
     } catch (error) {
-      console.error('Failed to update cron interval:', error);
+      console.error('Failed to update cron interval:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to update missed backup check interval",
@@ -144,12 +145,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         machinesWithBackups.forEach(machine => {
           const backupKey = getBackupKey(machine.name, machine.backupName);
           if (!prev[backupKey]) {
-            defaultSettings[backupKey] = {
-              notificationEvent: 'off',
-              expectedInterval: 1, // 1 day as default
-              missedBackupCheckEnabled: false,
-              intervalUnit: 'days',
-            };
+            defaultSettings[backupKey] = { ...defaultBackupNotificationConfig };
             hasChanges = true;
           }
         });
@@ -178,7 +174,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       );
       setMachinesWithBackups(sortedMachines);
     } catch (error) {
-      console.error('Error fetching machines with backups:', error);
+      console.error('Error fetching machines with backups:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to load machines with backups list",
@@ -198,12 +194,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     setSettings(prev => ({
       ...prev,
       [backupKey]: {
-        ...(prev[backupKey] || { 
-          notificationEvent: 'off', 
-          expectedInterval: 1, // Default to 1 day (24 hours)
-          missedBackupCheckEnabled: false,
-          intervalUnit: 'days'
-        }),
+        ...(prev[backupKey] || { ...defaultBackupNotificationConfig }),
         [field]: value,
       },
     }));
@@ -211,12 +202,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
 
   const getBackupSetting = (machineName: string, backupName: string): BackupNotificationConfig => {
     const backupKey = getBackupKey(machineName, backupName);
-    return settings[backupKey] || {
-      notificationEvent: 'off',
-      expectedInterval: 1, // Default to 1 day (24 hours)
-      missedBackupCheckEnabled: false,
-      intervalUnit: 'days',
-    };
+    return settings[backupKey] || { ...defaultBackupNotificationConfig };
   };
 
 
@@ -310,7 +296,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
       });
     } catch (error) {
-      console.error('Error running missed backup check:', error);
+      console.error('Error running missed backup check:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to run missed backup check",
@@ -375,7 +361,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         description: "Missed backup notifications have been reset",
       });
     } catch (error) {
-      console.error('Error resetting missed backup notifications:', error);
+      console.error('Error resetting missed backup notifications:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to reset missed backup notifications",

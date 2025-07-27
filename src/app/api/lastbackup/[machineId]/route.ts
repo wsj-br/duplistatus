@@ -124,7 +124,7 @@ export async function GET(request: Request) {
       status: 200
     });
   } catch (error) {
-    console.error('Error fetching machine details:', error);
+    console.error('Error fetching machine details:', error instanceof Error ? error.message : String(error));
     // Return JSON error response
     return jsonResponse({ 
       error: 'Internal server error',

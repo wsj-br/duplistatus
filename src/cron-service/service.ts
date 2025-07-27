@@ -43,7 +43,7 @@ class CronService {
         console.log(`[CronService] ${timestamp()}: Task ${taskName} triggered successfully:`, result);
         res.json(result);
       } catch (error) {
-        console.error(`[CronService] ${timestamp()}: Error triggering task ${taskName}:`, error);
+        console.error(`[CronService] ${timestamp()}: Error triggering task ${taskName}:`, error instanceof Error ? error.message : String(error));
         res.status(500).json({ error: String(error) });
       }
     });
@@ -86,7 +86,7 @@ class CronService {
         console.log('[CronService] ' + timestamp() + ': Configuration reloaded successfully');
         res.json({ message: 'Configuration reloaded successfully' });
       } catch (error) {
-        console.error('[CronService] ' + timestamp() + ': Error reloading configuration:', error);
+        console.error('[CronService] ' + timestamp() + ': Error reloading configuration:', error instanceof Error ? error.message : String(error));
         res.status(500).json({ error: String(error) });
       }
     });

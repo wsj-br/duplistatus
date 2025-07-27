@@ -1,37 +1,31 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, setConfiguration } from '@/lib/db-utils';
+import { getConfiguration, setConfiguration, getNtfyConfig } from '@/lib/db-utils';
 import { NotificationConfig, BackupKey, BackupNotificationConfig } from '@/lib/types';
+import { createDefaultNotificationConfig } from '@/lib/default-config';
 
 export async function GET() {
   try {
     const configJson = getConfiguration('notifications');
     const backupSettingsJson = getConfiguration('backup_settings');
     
-    const config: NotificationConfig = configJson ? JSON.parse(configJson) : {
-      ntfy: { url: 'https://ntfy.sh/', topic: '' },
-      machineSettings: {},
-      backupSettings: {},
-      templates: {
-        missedBackup: {
-            message: "The backup {backup_name} is missing on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.",
-            priority: "default",
-            tags: "duplicati, duplistatus, missed",
-            title: "🕑 Missed - {backup_name}  @ {machine_name}"
-        },
-        success: {
-              message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date} in {duration}.\n\n💾 Store usage:  {storage_size} \n🔃 Available versions:  {available_versions} ",
-            priority: "default",
-            tags: "duplicati, duplistatus, success",
-            title: "✅ {status} - {backup_name}  @ {machine_name}"
-        },
-        warning: {
-            message: "Backup {backup_name} on {machine_name} completed with status {status} at {backup_date}.\n\n🚨 {warnings} warnings\n🛑 {errors} errors.",
-            priority: "high",
-            tags: "duplicati, duplistatus, warning, error",
-            title: " ⚠️{status} - {backup_name}  @ {machine_name}"
-        }
-      },
-    };
+    // Get ntfy config with default topic generation if needed
+    const ntfyConfig = getNtfyConfig();
+    
+    let config: NotificationConfig;
+    
+    if (configJson) {
+      try {
+        config = JSON.parse(configJson) as NotificationConfig;
+      } catch (parseError) {
+        console.error('Failed to parse notifications configuration, creating default:', parseError);
+        config = createDefaultNotificationConfig(ntfyConfig);
+      }
+    } else {
+      config = createDefaultNotificationConfig(ntfyConfig);
+    }
+    
+    // Ensure ntfy config is always set with the generated default if needed
+    config.ntfy = ntfyConfig;
 
     // Load backup settings from separate configuration if available
     if (backupSettingsJson) {
@@ -39,7 +33,7 @@ export async function GET() {
         const backupSettings = JSON.parse(backupSettingsJson);
         config.backupSettings = backupSettings;
       } catch (error) {
-        console.error('Failed to parse backup settings:', error);
+        console.error('Failed to parse backup settings:', error instanceof Error ? error.message : String(error));
         config.backupSettings = {};
       }
     } else {
@@ -48,7 +42,7 @@ export async function GET() {
 
     return NextResponse.json(config);
   } catch (error) {
-    console.error('Failed to get configuration:', error);
+    console.error('Failed to get configuration:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to get configuration' }, { status: 500 });
   }
 }
@@ -106,7 +100,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json({ message: 'Configuration saved successfully' });
   } catch (error) {
-    console.error('Failed to save configuration:', error);
+    console.error('Failed to save configuration:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to save configuration' }, { status: 500 });
   }
 } 

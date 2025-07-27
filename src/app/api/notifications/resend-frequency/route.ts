@@ -7,7 +7,7 @@ export async function GET() {
     const value = getResendFrequencyConfig();
     return NextResponse.json({ value });
   } catch (error) {
-    console.error('Error fetching resend frequency config:', error);
+    console.error('Error fetching resend frequency config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch config' },
       { status: 500 }
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     setResendFrequencyConfig(value);
     return NextResponse.json({ value });
   } catch (error) {
-    console.error('Error setting resend frequency config:', error);
+    console.error('Error setting resend frequency config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to set config' },
       { status: 500 }

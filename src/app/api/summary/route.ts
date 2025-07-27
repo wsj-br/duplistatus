@@ -26,7 +26,7 @@ export async function GET() {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching summary:', error);
+    console.error('Error fetching summary:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch summary data' },
       { status: 500 }

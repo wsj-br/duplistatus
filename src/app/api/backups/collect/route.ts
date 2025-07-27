@@ -7,6 +7,7 @@ import https from 'https';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import { defaultAPIConfig } from '@/lib/default-config';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -45,12 +46,11 @@ interface RequestResponse {
   json: () => Promise<unknown>;
 }
 
-// Define a default timeout for requests (in milliseconds)
-const DEFAULT_REQUEST_TIMEOUT = 30000;
+
 
 // Helper function to make HTTP/HTTPS requests
 async function makeRequest(url: string, options: RequestOptions): Promise<RequestResponse> {
-  const { timeout = DEFAULT_REQUEST_TIMEOUT, ...requestOptions } = options;
+  const { timeout = defaultAPIConfig.requestTimeout, ...requestOptions } = options;
 
   return new Promise((resolve, reject) => {
     const protocol = url.startsWith('https') ? https : http;
@@ -104,9 +104,9 @@ export async function POST(request: NextRequest) {
   try {
     const { 
       hostname, 
-      port = 8200, 
+      port = defaultAPIConfig.duplicatiPort, 
       password, 
-      protocol = 'http',
+      protocol = defaultAPIConfig.duplicatiProtocol,
       allowSelfSigned = false
     } = await request.json();
 
@@ -163,8 +163,8 @@ export async function POST(request: NextRequest) {
         })
       });
     } catch (error) {
-      console.error('Error during login request:', error);
-      throw new Error(`Login request failed: ${error instanceof Error ? error.message : String(error)}`);
+      console.error('Error during login request:', error instanceof Error ? error.message : String(error));
+      throw new Error(`Login request failed: ${String(error)}`);
     }
 
     if (!loginResponse.ok) {
@@ -191,8 +191,8 @@ export async function POST(request: NextRequest) {
         }
       });
     } catch (error) {
-      console.error('Error during system info request:', error);
-      throw new Error(`System info request failed: ${error instanceof Error ? error.message : String(error)}`);
+      console.error('Error during system info request:', error instanceof Error ? error.message : String(error));
+      throw new Error(`System info request failed: ${String(error)}`);
     }
 
     if (!systemInfoResponse.ok) {
@@ -225,8 +225,8 @@ export async function POST(request: NextRequest) {
         }
       });
     } catch (error) {
-      console.error('Error during backups list request:', error);
-      throw new Error(`Backups list request failed: ${error instanceof Error ? error.message : String(error)}`);
+      console.error('Error during backups list request:', error instanceof Error ? error.message : String(error));
+      throw new Error(`Backups list request failed: ${String(error)}`);
     }
 
     if (!backupsResponse.ok) {
@@ -260,8 +260,8 @@ export async function POST(request: NextRequest) {
             }
           });
         } catch (error) {
-          console.error(`Error during log request for backup ${backupId}:`, error);
-          throw new Error(`Log request for backup ${backupId} failed: ${error instanceof Error ? error.message : String(error)}`);
+          console.error(`Error during log request for backup ${backupId}:`, error instanceof Error ? error.message : String(error));
+          throw new Error(`Log request for backup ${backupId} failed: ${String(error)}`);
         }
 
         if (!logResponse.ok) {
@@ -279,7 +279,7 @@ export async function POST(request: NextRequest) {
             const messageObj = JSON.parse(log.Message);
             return messageObj?.MainOperation === 'Backup';
           } catch (error) {
-            console.error('Error parsing log message:', error);
+            console.error('Error parsing log message:', error instanceof Error ? error.message : String(error));
             return false;
           }
         });
@@ -408,7 +408,7 @@ export async function POST(request: NextRequest) {
           processedCount++;
         }
       } catch (error) {
-        console.error(`Error processing backup ${backupId}:`, error);
+        console.error(`Error processing backup ${backupId}:`, error instanceof Error ? error.message : String(error));
         errorCount++;
       }
     }
@@ -424,7 +424,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error collecting backups:', error);
+    console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to collect backups' },
       { status: 500 }

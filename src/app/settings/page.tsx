@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { BackButton } from '@/components/ui/back-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
@@ -16,7 +16,6 @@ import { NotificationTemplatesForm } from '@/components/settings/notification-te
 export const dynamic = 'force-dynamic';
 
 function SettingsPageContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [config, setConfig] = useState<NotificationConfig | null>(null);
@@ -49,7 +48,7 @@ function SettingsPageContent() {
       const data = await response.json();
       setConfig(data);
     } catch (error) {
-      console.error('Error fetching configuration:', error);
+      console.error('Error fetching configuration:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to load configuration settings",
@@ -83,7 +82,7 @@ function SettingsPageContent() {
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
     } catch (error) {
-      console.error('Error saving configuration:', error);
+      console.error('Error saving configuration:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to save configuration",
@@ -101,7 +100,7 @@ function SettingsPageContent() {
       };
       await saveConfiguration(newConfig);
     } catch (error) {
-      console.error('Error saving backup settings:', error);
+      console.error('Error saving backup settings:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to save backup settings",
@@ -110,9 +109,7 @@ function SettingsPageContent() {
     }
   };
 
-  const handleBack = () => {
-    router.back();
-  };
+
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -145,10 +142,7 @@ function SettingsPageContent() {
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" onClick={handleBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
+        <BackButton />
         <div>
           <h1 className="text-3xl font-bold">Settings</h1>
           <p className="text-muted-foreground">Configure your duplistatus application</p>
@@ -190,7 +184,7 @@ function SettingsPageContent() {
             
             <TabsContent value="templates" className="mt-6">
               <NotificationTemplatesForm 
-                templates={config.templates} 
+                templates={config.templates || {}} 
                 onSave={async (templates) => {
                   await saveConfiguration({ ...config, templates });
                 }}

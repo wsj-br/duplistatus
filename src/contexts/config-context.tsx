@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { defaultUIConfig } from '@/lib/default-config';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 type TablePageSize = 5 | 10 | 15 | 20;
@@ -23,10 +24,10 @@ interface ConfigContextProps {
 const ConfigContext = createContext<ConfigContextProps | undefined>(undefined);
 
 export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
-  const [databaseCleanupPeriod, setDatabaseCleanupPeriod] = useState<DatabaseCleanupPeriod>('2 years');
-  const [tablePageSize, setTablePageSize] = useState<TablePageSize>(5);
-  const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>('All data');
-  const [chartMetricSelection, setChartMetricSelection] = useState<ChartMetricSelection>('uploadedSize');
+  const [databaseCleanupPeriod, setDatabaseCleanupPeriod] = useState<DatabaseCleanupPeriod>(defaultUIConfig.databaseCleanupPeriod);
+  const [tablePageSize, setTablePageSize] = useState<TablePageSize>(defaultUIConfig.tablePageSize);
+  const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>(defaultUIConfig.chartTimeRange);
+  const [chartMetricSelection, setChartMetricSelection] = useState<ChartMetricSelection>(defaultUIConfig.chartMetricSelection);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -87,7 +88,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         window.location.reload();
       }
     } catch (error) {
-      console.error('Error cleaning up database:', error);
+      console.error('Error cleaning up database:', error instanceof Error ? error.message : String(error));
       throw error; // Re-throw the error so the component can handle it
     }
   };
