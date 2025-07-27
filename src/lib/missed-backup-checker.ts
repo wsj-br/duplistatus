@@ -134,12 +134,8 @@ export async function checkMissedBackups() {
         expectedIntervalInHours = backupConfig.expectedInterval;
       }
 
-      // Add 2 hours buffer to accommodate backup durations and clock differences
-      const thresholdInHours = expectedIntervalInHours + 2;
-
-
       // Check if backup is overdue
-      if (hoursSinceLastBackup > thresholdInHours) {
+      if (hoursSinceLastBackup > expectedIntervalInHours) {
         missedBackupsFound++;
 
         // Check if we should send a notification (with resend frequency logic)

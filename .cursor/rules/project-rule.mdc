@@ -24,3 +24,6 @@ Network:
 Instructions:
   - don't run the application automaticaly, use pnpm build or pnpm lint to check for errors.
   - when creating or modifying code allways use a proper TypeScript interface instead of any.
+  - when creating the git commit message, don't include in the headline the version number change, but keep it in the change detail list.
+
+  

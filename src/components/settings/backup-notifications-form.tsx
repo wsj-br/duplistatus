@@ -79,13 +79,12 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         throw new Error('Failed to load cron configuration');
       }
       
-      const { enabled } = await response.json();
+      const { cronExpression, enabled } = await response.json();
       
-      // Find matching interval from the configuration
-      const entry = Object.entries(cronIntervalMap).find(([key]) => {
-        const interval = key as CronInterval;
-        return interval === (enabled ? '20min' : 'disabled'); // Default to 20min if enabled, disabled if not
-      });
+      // Find matching interval from the cron expression and enabled status
+      const entry = Object.entries(cronIntervalMap).find(([, value]) => 
+        value.expression === cronExpression && value.enabled === enabled
+      );
       
       setCronIntervalState(entry ? entry[0] as CronInterval : '20min');
     } catch (error) {
@@ -419,13 +418,14 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         <CardHeader>
           <CardTitle>Backup Notification Settings</CardTitle>
           <CardDescription>
-            Configure notification preferences for each backup. You can set when to receive notifications 
-            and define expected backup intervals to detect missed backups.
+             Configure notification settings for each backup. 
+             Choose when to receive alerts and set the timeout period for detecting missed backups.
           </CardDescription>
         </CardHeader>
         <CardContent>
           
-          <Table>
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader>
               <TableRow>
                 <SortableTableHead 
@@ -466,7 +466,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Expected Backup Interval
+                  Backup Timeout Period
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[100px]" 
@@ -565,17 +565,18 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
               })}
             </TableBody>
           </Table>
+          </div>
           
-          <div className="flex items-end pt-6 justify-between w-full">
-            {/* Left: Save button */}
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between pt-6 gap-4 w-full">
+            {/* Save button - always on top on mobile, left on desktop */}
             <div className="flex gap-3">
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Backup Settings"}
               </Button>
             </div>
 
-            {/* Right: Other controls in specified order */}
-            <div className="flex gap-4 items-end">
+            {/* Other controls - wrap on smaller screens, right-aligned on desktop */}
+            <div className="flex flex-wrap gap-4 items-end lg:justify-end">
               <div className="flex flex-col items-start">
                 <Label htmlFor="cron-interval" className="mb-2 self-start">
                   Check for missed backups every:
@@ -584,7 +585,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                   value={cronInterval}
                   onValueChange={(value: CronInterval) => handleCronIntervalChange(value)}
                 >
-                  <SelectTrigger id="cron-interval" className="w-[200px]">
+                  <SelectTrigger id="cron-interval" className="w-[200px] min-w-[150px] max-w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -603,7 +604,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                 className="self-end"
               >
                 <RefreshCw className="mr-2 h-4 w-4" />
-                {isTesting ? "Checking..." : "Check Missed Backup"}
+                {isTesting ? "Checking..." : "Check now"}
               </Button>
               <div className="flex flex-col items-start">
                 <Label htmlFor="resend-frequency" className="mb-2 self-start">
@@ -614,7 +615,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                   onValueChange={(value: ResendFrequencyConfig) => handleResendFrequencyChange(value)}
                   disabled={resendLoading}
                 >
-                  <SelectTrigger id="resend-frequency" className="w-[200px]">
+                  <SelectTrigger id="resend-frequency" className="w-[200px] min-w-[150px] max-w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
