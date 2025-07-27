@@ -20,7 +20,7 @@ export async function generateMetadata() {
 }
 
 export default async function DashboardPage() {
-  const machinesSummary = await getMachinesSummary();
+  const machinesSummary = getMachinesSummary();
   const overallSummary = await getOverallSummary();
   const aggregatedChartData = await getAggregatedChartData();
 

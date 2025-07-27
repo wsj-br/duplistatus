@@ -13,14 +13,17 @@ interface MissedBackup {
   lastBackupDate: string;
   lastNotificationSent: string;
   notificationEvent?: string;
+  expectedBackupDate: string;
+  expectedBackupElapsed: string;
 }
 
 interface MachineDetailsContentProps {
   machine: Machine;
   missedBackups: MissedBackup[];
+  lastMissedCheck: string;
 }
 
-export function MachineDetailsContent({ machine, missedBackups }: MachineDetailsContentProps) {
+export function MachineDetailsContent({ machine, missedBackups, lastMissedCheck }: MachineDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   
   // Find the selected backup if one is selected
@@ -106,6 +109,7 @@ export function MachineDetailsContent({ machine, missedBackups }: MachineDetails
             lastBackupFileSize={lastBackupFileSize}
             selectedBackup={selectedBackup}
             missedBackups={missedBackups}
+            lastMissedCheck={lastMissedCheck}
           />
         </CardContent>
       </Card>

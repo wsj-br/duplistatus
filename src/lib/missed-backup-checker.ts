@@ -229,6 +229,9 @@ export async function checkMissedBackups() {
     // Save updated notification timestamps
     setConfiguration('missed_backup_notifications', JSON.stringify(updatedNotifications));
 
+    // Save the timestamp of when this check was last run
+    setConfiguration('last_missed_check', new Date().toISOString());
+
     return {
       message: 'Missed backup check completed',
       statistics: {

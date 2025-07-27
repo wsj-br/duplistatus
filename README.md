@@ -228,6 +228,30 @@ Important notes on the messages sent by Duplicati:
 
 <br>
 
+# Environment Variables
+
+The application supports the following environment variables for configuration:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Port for the main web application | `9666` |
+| `CRON_PORT` | Port for the cron service. If not set, uses `PORT + 1` | `9667` |
+| `NODE_ENV` | Node.js environment (`development` or `production`) | `production` |
+| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry | `1` |
+| `TZ` | Timezone for the application | `UTC` |
+
+## Port Configuration Logic
+
+The cron service port is determined by the following logic:
+
+1. **If `CRON_PORT` is defined**: Use that value
+2. **If `CRON_PORT` is not defined but `PORT` is defined**: Use `PORT + 1`
+3. **If neither is defined**: Use `9667` as the default
+
+The application automatically checks and updates the cron configuration in the database during startup to ensure the correct port is used.
+
+<br>
+
 
 
 # Homepage integration (optional)

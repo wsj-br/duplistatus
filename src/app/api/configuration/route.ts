@@ -51,6 +51,12 @@ export async function POST(request: Request) {
   try {
     const config: NotificationConfig = await request.json();
     
+    // Get current backup settings to compare for changes
+    const currentBackupSettingsJson = getConfiguration('backup_settings');
+    const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = currentBackupSettingsJson 
+      ? JSON.parse(currentBackupSettingsJson) 
+      : {};
+    
     // Save main configuration (without backupSettings)
     const { backupSettings, ...mainConfig } = config;
     setConfiguration('notifications', JSON.stringify(mainConfig));
@@ -58,7 +64,7 @@ export async function POST(request: Request) {
     // Save backup settings separately
     setConfiguration('backup_settings', JSON.stringify(backupSettings || {}));
     
-    // Clean up missed backup notifications for disabled backups
+    // Clean up missed backup notifications for disabled backups and changed timeout settings
     if (backupSettings) {
       try {
         // Get current missed backup notifications configuration
@@ -69,20 +75,33 @@ export async function POST(request: Request) {
             lastBackupDate: string;
           }>;
 
-          // Find backups where missedBackupCheckEnabled is disabled
-          const disabledBackupKeys: BackupKey[] = [];
+          const backupKeysToClear: BackupKey[] = [];
           
           for (const [backupKey, backupConfig] of Object.entries(backupSettings)) {
             const config = backupConfig as BackupNotificationConfig;
+            const currentConfig = currentBackupSettings[backupKey];
+            
+            // Clear notifications if missed backup check is disabled
             if (!config.missedBackupCheckEnabled) {
-              disabledBackupKeys.push(backupKey);
+              backupKeysToClear.push(backupKey);
+              continue;
+            }
+            
+            // Clear notifications if timeout period settings have changed
+            if (currentConfig) {
+              const hasIntervalChanged = currentConfig.expectedInterval !== config.expectedInterval;
+              const hasUnitChanged = currentConfig.intervalUnit !== config.intervalUnit;
+              
+              if (hasIntervalChanged || hasUnitChanged) {
+                backupKeysToClear.push(backupKey);
+              }
             }
           }
 
-          // Remove entries for disabled backups from missed_backup_notifications
+          // Remove entries for backups that need clearing from missed_backup_notifications
           const updatedMissedNotifications = { ...missedNotifications };
 
-          for (const backupKey of disabledBackupKeys) {
+          for (const backupKey of backupKeysToClear) {
             if (updatedMissedNotifications[backupKey]) {
               delete updatedMissedNotifications[backupKey];
             }

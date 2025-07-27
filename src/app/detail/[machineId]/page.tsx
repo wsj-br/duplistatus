@@ -1,4 +1,4 @@
-import { getMachineById, getAllMachines, getMissedBackupsForMachine } from "@/lib/db-utils";
+import { getMachineById, getAllMachines, getMissedBackupsForMachine, getLastMissedBackupCheckTime } from "@/lib/db-utils";
 import { MachineDetailsContent } from "@/components/machine-details/machine-details-content";
 import { notFound } from 'next/navigation';
 import type { Machine } from "@/lib/types";
@@ -47,12 +47,15 @@ export default async function MachineDetailsPage({
   // Get missed backups for this machine
   const missedBackups = getMissedBackupsForMachine(machine.name);
 
+  // Get the last missed backup check time
+  const lastMissedCheck = getLastMissedBackupCheckTime();
+
   // Get the backup name from the URL if it exists
   const backupName = resolvedSearchParams.backup as string | undefined;
 
   return (
     <BackupSelectionProvider initialBackup={backupName || 'all'}>
-      <MachineDetailsContent machine={machine} missedBackups={missedBackups} />
+      <MachineDetailsContent machine={machine} missedBackups={missedBackups} lastMissedCheck={lastMissedCheck} />
     </BackupSelectionProvider>
   );
 } 

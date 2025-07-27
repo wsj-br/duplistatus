@@ -58,6 +58,9 @@ export interface MachineSummary {
   availableBackups: string[] | null;
   isBackupMissed: boolean;
   notificationEvent?: NotificationEvent;
+  expectedBackupDate: string; // ISO string or "N/A"
+  expectedBackupElapsed: string; // formatted time ago or "N/A"
+  lastMissedCheck: string; // ISO string or "N/A" - time of last run of checkMissedBackups()
 }
 
 export interface OverallSummary {

@@ -65,6 +65,8 @@ Start a stopped task.
 ## Environment Variables
 
 - `CRON_SERVICE_URL`: Base URL of the cron service (default: http://localhost:9667)
+- `CRON_PORT`: Port for the cron service (if not set, uses PORT + 1, or defaults to 9667)
+- `PORT`: Base port for the main application (used to calculate CRON_PORT if CRON_PORT is not set)
 
 ## Client Usage
 

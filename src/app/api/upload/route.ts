@@ -5,7 +5,8 @@ import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
-import { sendBackupNotification, formatBytes, formatDuration, NotificationContext } from '@/lib/notifications';
+import { sendBackupNotification, NotificationContext } from '@/lib/notifications';
+import { formatBytes, formatDurationHuman } from '@/lib/utils';
 import { BackupStatus } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
@@ -181,7 +182,7 @@ export async function POST(request: NextRequest) {
         fileCount: data.Data.ExaminedFiles || 0,
         fileSize: data.Data.SizeOfExaminedFiles || 0,
         uploadedSize: data.Data.BackendStatistics?.BytesUploaded || 0,
-        duration: formatDuration(parseDurationToSeconds(data.Data.Duration)),
+        duration: formatDurationHuman(parseDurationToSeconds(data.Data.Duration)),
         duration_seconds: parseDurationToSeconds(data.Data.Duration),
         durationInMinutes: parseDurationToSeconds(data.Data.Duration) / 60,
         knownFileSize: data.Data.BackendStatistics?.KnownFileSize || 0,

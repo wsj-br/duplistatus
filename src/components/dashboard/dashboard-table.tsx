@@ -17,7 +17,7 @@ import { formatTimeAgo } from "@/lib/utils"; // Import the new function
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
 import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
-import { MessageSquareMore, MessageSquareOff } from "lucide-react";
+import { MessageSquareMore, MessageSquareOff, Settings } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -231,10 +231,32 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   </TableCell>
                   <TableCell>
                     {machine.isBackupMissed ? (
-                      <>
-                        <div className="font-medium">{machine.lastBackupName || 'N/A'}</div>
-                        <div className= "text-xs text-red-400">⚠️ missed scheduled backup</div>
-                      </>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div>
+                            <div className="font-medium">{machine.lastBackupName || 'N/A'}</div>
+                            <div className="text-xs text-red-400">⚠️ {machine.expectedBackupElapsed} overdue</div>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="space-y-1">
+                            <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastMissedCheck !== "N/A" ? new Date(machine.lastMissedCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastMissedCheck) + ")"  	 : "N/A"}</span></div>
+                            <div><span>Last backup:</span> <span className="text-muted-foreground">{machine.lastBackupDate !== "N/A" ? new Date(machine.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.lastBackupDate) + ")" : "N/A"}</span></div>
+                            <div><span>Expected backup:</span> <span className="text-muted-foreground">{machine.expectedBackupDate !== "N/A" ? new Date(machine.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.expectedBackupDate) + ")" : "N/A"}</span></div>
+                            <div className="pt-2 border-t">
+                              <button 
+                                className="text-xs cursor-pointer flex items-center"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  router.push('/settings?tab=backups');
+                                }}
+                              >
+                              <Settings className="h-3 w-3 mr-1" /> Configure 
+                              </button>
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                       ) : (
                         machine.lastBackupName || 'N/A'
                       )}

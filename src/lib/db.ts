@@ -148,6 +148,19 @@ try {
   throw error;
 }
 
+// Check and update CRON_PORT configuration
+try {
+  // Import the function from db-utils
+  import('./db-utils').then(({ checkAndUpdateCronPort }) => {
+    checkAndUpdateCronPort();
+  }).catch((error) => {
+    console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
+  });
+} catch (error) {
+  console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
+  // Don't throw error to avoid crashing the application startup
+}
+
 // Helper function to safely prepare statements with error handling
 function safePrepare(sql: string, name: string) {
   try {

@@ -41,6 +41,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const { toast } = useToast();
   const [machinesWithBackups, setMachinesWithBackups] = useState<MachineWithBackup[]>([]);
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
+  const [originalSettings, setOriginalSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
@@ -72,6 +73,60 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     loadCronInterval();
     fetchResendFrequency();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Helper function to check if relevant settings have changed
+  const hasRelevantChanges = (): boolean => {
+    for (const [backupKey, currentConfig] of Object.entries(settings)) {
+      const originalConfig = originalSettings[backupKey];
+      if (!originalConfig) {
+        // New backup configuration, consider it a change
+        if (currentConfig.missedBackupCheckEnabled) {
+          return true;
+        }
+        continue;
+      }
+
+      // Check if missed backup check was enabled/disabled
+      if (originalConfig.missedBackupCheckEnabled !== currentConfig.missedBackupCheckEnabled) {
+        return true;
+      }
+
+      // Check if timeout period settings changed (only if missed backup check is enabled)
+      if (currentConfig.missedBackupCheckEnabled) {
+        if (originalConfig.expectedInterval !== currentConfig.expectedInterval ||
+            originalConfig.intervalUnit !== currentConfig.intervalUnit) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  // Helper function to run missed backup check
+  const runMissedBackupCheck = async () => {
+    try {
+      const response = await fetch('/api/notifications/check-missed', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to run missed backup check');
+      }
+
+      const result = await response.json();
+      toast({
+        title: "Missed Backup Check Complete",
+        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
+      });
+    } catch (error) {
+      console.error('Error running missed backup check:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Error",
+        description: "Failed to run missed backup check",
+        variant: "destructive",
+      });
+    }
+  };
 
   const loadCronInterval = async () => {
     try {
@@ -151,10 +206,13 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         });
         
         if (hasChanges) {
-          return {
+          const newSettings = {
             ...prev,
             ...defaultSettings,
           };
+          // Update original settings to match the new settings
+          setOriginalSettings(newSettings);
+          return newSettings;
         }
         return prev;
       });
@@ -267,6 +325,14 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       await onSave(settings);
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
+      // Check if relevant settings have changed and run missed backup check if needed
+      if (hasRelevantChanges()) {
+        await runMissedBackupCheck();
+      }
+      
+      // Update original settings to reflect the new state
+      setOriginalSettings(settings);
     } finally {
       setIsSaving(false);
     }
@@ -360,6 +426,9 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         title: "Success",
         description: "Missed backup notifications have been reset",
       });
+      
+      // Run missed backup check after resetting timers to ensure fresh state
+      await runMissedBackupCheck();
     } catch (error) {
       console.error('Error resetting missed backup notifications:', error instanceof Error ? error.message : String(error));
       toast({

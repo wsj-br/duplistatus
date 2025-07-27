@@ -5,6 +5,7 @@ import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { ResendFrequencyConfig } from "@/lib/types";
 import { defaultCronConfig, generateDefaultNtfyTopic, defaultResendFrequencyConfig, defaultNtfyConfig } from './default-config';
+import { formatTimeElapsed } from './utils';
 
 // Helper function to get backup key
 function getBackupKey(machineName: string, backupName: string): BackupKey {
@@ -59,6 +60,61 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
   }
 }
 
+// Helper function to get backup interval settings for expected backup calculations
+function getBackupIntervalSettings(machineName: string, backupName: string): {
+  expectedInterval: number;
+  intervalUnit: 'hours' | 'days';
+} | undefined {
+  try {
+    const backupSettingsJson = getConfiguration('backup_settings');
+    if (!backupSettingsJson) return undefined;
+    
+    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+      notificationEvent: NotificationEvent;
+      expectedInterval: number;
+      missedBackupCheckEnabled: boolean;
+      intervalUnit: 'hours' | 'days';
+    }>;
+    
+    const backupKey = getBackupKey(machineName, backupName);
+    const settings = backupSettings[backupKey];
+    
+    if (!settings) return undefined;
+    
+    return {
+      expectedInterval: settings.expectedInterval,
+      intervalUnit: settings.intervalUnit
+    };
+  } catch (error) {
+    console.error('Error getting backup interval settings:', error instanceof Error ? error.message : String(error));
+    return undefined;
+  }
+}
+
+// Helper function to calculate expected backup date
+function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hours' | 'days'): string {
+  try {
+    const lastBackup = new Date(lastBackupDate);
+    if (isNaN(lastBackup.getTime())) {
+      return 'N/A';
+    }
+    
+    const expectedDate = new Date(lastBackup);
+    if (intervalUnit === 'hours') {
+      expectedDate.setHours(expectedDate.getHours() + expectedInterval);
+    } else if (intervalUnit === 'days') {
+      expectedDate.setDate(expectedDate.getDate() + expectedInterval);
+    }
+    
+    return expectedDate.toISOString();
+  } catch (error) {
+    console.error('Error calculating expected backup date:', error instanceof Error ? error.message : String(error));
+    return 'N/A';
+  }
+}
+
+
+
 export function getCronConfig(): CronServiceConfig {
   try {
     const configJson = getConfiguration('cron_service');
@@ -100,16 +156,92 @@ export function getCurrentCronInterval(): CronInterval {
   return entry ? entry[0] as CronInterval : '20min'; // Default to 20min if no match
 }
 
-export function setCronInterval(interval: CronInterval): void {
-  const config = getCronConfig();
-  const { expression, enabled } = cronIntervalMap[interval];
-  
-  config.tasks['missed-backup-check'] = {
-    cronExpression: expression,
-    enabled
-  };
-  
-  setCronConfig(config);
+export function setCronInterval(interval: CronInterval) {
+  try {
+    const config = getCronConfig();
+    const intervalConfig = cronIntervalMap[interval];
+    
+    if (!intervalConfig) {
+      throw new Error(`Invalid interval: ${interval}`);
+    }
+    
+    const updatedConfig = {
+      ...config,
+      tasks: {
+        ...config.tasks,
+        'missed-backup-check': {
+          cronExpression: intervalConfig.expression,
+          enabled: intervalConfig.enabled
+        }
+      }
+    };
+    
+    setCronConfig(updatedConfig);
+  } catch (error) {
+    console.error('Failed to set cron interval:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+// Helper function to get the last missed backup check time from database
+export function getLastMissedBackupCheckTime(): string {
+  try {
+    const lastMissedCheck = getConfiguration('last_missed_check');
+    return lastMissedCheck || 'N/A';
+  } catch (error) {
+    console.error('Error getting last missed backup check time:', error instanceof Error ? error.message : String(error));
+    return 'N/A';
+  }
+}
+
+/**
+ * Checks the CRON_PORT environment variable and updates the cron configuration in the database if needed.
+ * 
+ * Logic:
+ * 1. If CRON_PORT is defined, use that value
+ * 2. If CRON_PORT is not defined, use PORT + 1
+ * 3. If PORT is not defined, fallback to 9667
+ */
+export function checkAndUpdateCronPort(): void {
+  try {
+    // Calculate the expected port based on environment variables
+    const expectedPort = (() => {
+      // Try to get CRON_PORT first
+      const cronPort = process.env.CRON_PORT;
+      if (cronPort) {
+        return parseInt(cronPort, 10);
+      }
+      
+      // Fallback to PORT + 1
+      const basePort = process.env.PORT;
+      if (basePort) {
+        return parseInt(basePort, 10) + 1;
+      }
+      
+      // Default fallback
+      return 9667;
+    })();
+
+    // Get current configuration from database
+    const currentConfig = getCronConfig();
+    
+    // Check if the port needs to be updated
+    if (currentConfig.port !== expectedPort) {
+      console.log(`[CronPortChecker] Updating cron service port from ${currentConfig.port} to ${expectedPort}`);
+      
+      // Update the configuration with the new port
+      const updatedConfig = {
+        ...currentConfig,
+        port: expectedPort
+      };
+      
+      // Save the updated configuration to the database
+      setCronConfig(updatedConfig);
+    }
+  } catch (error) {
+    console.error('[CronPortChecker] Failed to check and update cron port configuration:', error instanceof Error ? error.message : String(error));
+    // Don't throw the error to avoid crashing the application startup
+  }
 }
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -211,6 +343,9 @@ interface MachineSummaryRow {
 }
 
 export function getMachinesSummary() {
+  // Get the last missed backup check time once for all machines
+  const lastMissedCheck = getLastMissedBackupCheckTime();
+  
   return withDb(() => {
     const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as MachineSummaryRow[];
     return rows.map(row => {
@@ -240,6 +375,22 @@ export function getMachinesSummary() {
         getNotificationEvent(row.name, row.last_backup_name) : 
         undefined;
 
+      // Calculate expected backup date and elapsed time
+      let expectedBackupDate = 'N/A';
+      let expectedBackupElapsed = 'N/A';
+      
+      if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
+        const backupSettings = getBackupIntervalSettings(row.name, row.last_backup_name);
+        if (backupSettings) {
+          expectedBackupDate = calculateExpectedBackupDate(
+            row.last_backup_date, 
+            backupSettings.expectedInterval, 
+            backupSettings.intervalUnit
+          );
+                      expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
+        }
+      }
+
       return {
         id: row.machine_id,
         name: row.name,
@@ -254,7 +405,10 @@ export function getMachinesSummary() {
         totalErrors: row.total_errors || 0,
         availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null,
         isBackupMissed: isMissed,
-        notificationEvent
+        notificationEvent,
+        expectedBackupDate,
+        expectedBackupElapsed,
+        lastMissedCheck
       };
     });
   });
@@ -532,6 +686,8 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
   lastBackupDate: string;
   lastNotificationSent: string;
   notificationEvent?: NotificationEvent;
+  expectedBackupDate: string;
+  expectedBackupElapsed: string;
 }> {
   try {
     const lastNotificationJson = getConfiguration('missed_backup_notifications');
@@ -548,6 +704,8 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
       lastBackupDate: string;
       lastNotificationSent: string;
       notificationEvent?: NotificationEvent;
+      expectedBackupDate: string;
+      expectedBackupElapsed: string;
     }> = [];
     
     for (const backupKey in lastNotifications) {
@@ -565,12 +723,28 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
           // Get notification event for this backup
           const notificationEvent = getNotificationEvent(machineName, backupName);
           
+          // Calculate expected backup date and elapsed time
+          let expectedBackupDate = 'N/A';
+          let expectedBackupElapsed = 'N/A';
+          
+          const backupSettings = getBackupIntervalSettings(machineName, backupName);
+          if (backupSettings) {
+            expectedBackupDate = calculateExpectedBackupDate(
+              notification.lastBackupDate, 
+              backupSettings.expectedInterval, 
+              backupSettings.intervalUnit
+            );
+            expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
+          }
+          
           missedBackups.push({
             machineName,
             backupName,
             lastBackupDate: notification.lastBackupDate,
             lastNotificationSent: notification.lastNotificationSent,
-            notificationEvent
+            notificationEvent,
+            expectedBackupDate,
+            expectedBackupElapsed
           });
         }
       }

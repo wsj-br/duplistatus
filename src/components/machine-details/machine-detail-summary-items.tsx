@@ -7,7 +7,7 @@ import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, Settings } from "lucide-react";
-import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
+import { formatBytes, formatDurationFromMinutes, formatTimeAgo } from "@/lib/utils";
 import type { Backup } from "@/lib/types";
 
 interface MissedBackup {
@@ -16,6 +16,8 @@ interface MissedBackup {
   lastBackupDate: string;
   lastNotificationSent: string;
   notificationEvent?: string;
+  expectedBackupDate: string;
+  expectedBackupElapsed: string;
 }
 
 interface MachineDetailSummaryItemsProps {
@@ -28,6 +30,7 @@ interface MachineDetailSummaryItemsProps {
   lastBackupFileSize: number; // in bytes
   selectedBackup?: Backup | null; // Add this prop for selected backup data
   missedBackups: MissedBackup[]; // Add missed backups as prop
+  lastMissedCheck?: string; // Time of last missed backup check
 }
 
 export function MachineDetailSummaryItems({
@@ -39,6 +42,7 @@ export function MachineDetailSummaryItems({
   lastBackupFileSize,
   selectedBackup,
   missedBackups,
+  lastMissedCheck,
 }: MachineDetailSummaryItemsProps) {
   const router = useRouter();
   // Use a try/catch for each item to ensure nothing breaks
@@ -63,6 +67,22 @@ export function MachineDetailSummaryItems({
   const isSelectedBackupMissed = selectedBackup && missedBackups.some(
     missed => missed.backupName === selectedBackup.name
   );
+
+  // Get the expected backup elapsed time for the selected backup
+  const SelectedExpectedBackupElapsed = selectedBackup && missedBackups.find(
+    missed => missed.backupName === selectedBackup.name
+  )?.expectedBackupElapsed;
+  
+  // Get the expected backup date for the selected backup
+  const SelectedExpectedBackupDate = selectedBackup && missedBackups.find(
+    missed => missed.backupName === selectedBackup.name
+  )?.expectedBackupDate;
+  
+  // Format the expected backup date with toLocaleString()
+  const formattedExpectedBackupDate = SelectedExpectedBackupDate && SelectedExpectedBackupDate !== 'N/A' 
+    ? new Date(SelectedExpectedBackupDate).toLocaleString()
+    : SelectedExpectedBackupDate;
+
 
   const getSummaryItems = () => {
  
@@ -145,8 +165,10 @@ export function MachineDetailSummaryItems({
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm">
-                    <span className="text-muted-foreground">Missed scheduled backups:</span> {missedBackups.map(mb => `'${mb.backupName}'`).join(', ')}.
-                    <span className="px-3 text-muted-foreground">Check the Duplicati server.</span>
+                    <span className="text-muted-foreground">Missed scheduled backups:</span> {missedBackups.map(mb => `'${mb.backupName} (${mb.expectedBackupElapsed} overdue)'`).join(', ')}.
+                    {lastMissedCheck && lastMissedCheck !== 'N/A' && (
+                      <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastMissedCheck)}</span>
+                    )}
                   </span>
                 </div>
                 <Button
@@ -169,7 +191,10 @@ export function MachineDetailSummaryItems({
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm font-medium text-muted-foreground">
-                     Scheduled backup was missed. Check the Duplicati server.
+                     Scheduled backup was missed. Expected backup date: {formattedExpectedBackupDate} ({SelectedExpectedBackupElapsed} overdue).
+                     {lastMissedCheck && lastMissedCheck !== 'N/A' && (
+                       <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastMissedCheck)}</span>
+                     )}
                   </span>
                 </div>
                 <Button

@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "private": true,
   "packageManager": "pnpm@10.13.1",
   "engines": {
@@ -11,18 +11,19 @@
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev -p 8666",
     "build": "next build",
-    "start-local": "NODE_ENV=production PORT=8666 NEXT_TELEMETRY_DISABLED=1 next start",
-    "start": "NODE_ENV=production PORT=9666 NEXT_TELEMETRY_DISABLED=1 next start",
+    "start-local": "NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 next start",
+    "start": "NODE_ENV=production PORT=9666 CRON_PORT=9667 NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "clean-db": "tsx scripts/clean-db.ts",
+    "test-cron-port": "tsx scripts/test-cron-port.ts",
     "release:patch": "pnpm version patch",
     "release:minor": "pnpm version minor",
     "release:major": "pnpm version major",
     "postversion": "git push && git push --tags",
     "cron:start": "NODE_ENV=production CRON_PORT=9667 tsx src/cron-service/index.ts",
-    "cron:dev": "CRON_PORT=8668 tsx watch src/cron-service/index.ts"
+    "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.11",
