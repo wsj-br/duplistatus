@@ -229,11 +229,11 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   >
                     {machine.name}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-left">
                     {machine.isBackupMissed ? (
                       <Tooltip>
                         <TooltipTrigger>
-                          <div>
+                          <div className="text-left w-full">
                             <div className="font-medium">{machine.lastBackupName || 'N/A'}</div>
                             <div className="text-xs text-red-400">⚠️ {machine.expectedBackupElapsed} overdue</div>
                           </div>
