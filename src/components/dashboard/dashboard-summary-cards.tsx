@@ -43,9 +43,9 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
       "data-ai-hint": "cloud upload",
     },
     {
-      title: "Missed Backups",
-      value: summary.missedBackupsCount.toLocaleString(),
-      icon: <AlertTriangle className={`h-6 w-6 ${summary.missedBackupsCount > 0 ? 'text-red-600' : 'text-gray-500'}`} />,
+      title: "Overdue Backups",
+      value: summary.overdueBackupsCount.toLocaleString(),
+      icon: <AlertTriangle className={`h-6 w-6 ${summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500'}`} />,
       "data-ai-hint": "alert warning",
     },
   ];
@@ -61,7 +61,7 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
             {item.icon}
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${item.title === "Missed Backups" ? (summary.missedBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
+            <div className={`text-2xl font-bold ${item.title === "Overdue Backups" ? (summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
               {item.value}
             </div>
           </CardContent>

@@ -1,6 +1,6 @@
 import type { BackupStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, AlertTriangle, CalendarX2, HelpCircle, AlertOctagon } from "lucide-react";
+import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, AlertOctagon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
@@ -24,7 +24,6 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
     Warning: { icon: AlertTriangle, color: "bg-yellow-500 hover:bg-yellow-600", text: "text-yellow-50" },
     Error:   { icon: XCircle, color: "bg-red-500 hover:bg-red-600", text: "text-red-50" },
     Fatal:   { icon: AlertOctagon, color: "bg-red-500 hover:bg-red-600", text: "text-red-50" },
-    Missed:  { icon: CalendarX2, color: "bg-yellow-600 hover:bg-yellow-700", text: "text-yellow-50"},
     'N/A':   { icon: HelpCircle, color: "bg-gray-600 hover:bg-gray-600", text: "text-gray-50" },
   };
 

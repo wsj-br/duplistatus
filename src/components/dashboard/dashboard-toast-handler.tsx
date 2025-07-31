@@ -16,7 +16,7 @@ export function DashboardToastHandler() {
   useEffect(() => {
     // Check for stored toast data in localStorage
     const storedToastData = localStorage.getItem("backup-collection-toast");
-    const storedMissedBackupToastData = localStorage.getItem("missed-backup-check-toast");
+    const storedOverdueBackupToastData = localStorage.getItem("overdue-backup-check-toast");
     
     if (storedToastData) {
       try {
@@ -39,9 +39,9 @@ export function DashboardToastHandler() {
       }
     }
 
-    if (storedMissedBackupToastData) {
+    if (storedOverdueBackupToastData) {
       try {
-        const toastData: StoredToastData = JSON.parse(storedMissedBackupToastData);
+        const toastData: StoredToastData = JSON.parse(storedOverdueBackupToastData);
         
         // Show the toast with the stored data
         toast({
@@ -52,11 +52,11 @@ export function DashboardToastHandler() {
         });
         
         // Remove the stored toast data
-        localStorage.removeItem("missed-backup-check-toast");
+        localStorage.removeItem("overdue-backup-check-toast");
       } catch (error) {
-        console.error("Error parsing stored missed backup toast data:", error instanceof Error ? error.message : String(error));
+        console.error("Error parsing stored overdue backup toast data:", error instanceof Error ? error.message : String(error));
         // Clean up invalid data
-        localStorage.removeItem("missed-backup-check-toast");
+        localStorage.removeItem("overdue-backup-check-toast");
       }
     }
   }, [toast]);

@@ -64,13 +64,13 @@ export async function POST(request: Request) {
     // Save backup settings separately
     setConfiguration('backup_settings', JSON.stringify(backupSettings || {}));
     
-    // Clean up missed backup notifications for disabled backups and changed timeout settings
+    // Clean up overdue backup notifications for disabled backups and changed timeout settings
     if (backupSettings) {
       try {
-        // Get current missed backup notifications configuration
-        const missedNotificationsJson = getConfiguration('missed_backup_notifications');
-        if (missedNotificationsJson) {
-          const missedNotifications = JSON.parse(missedNotificationsJson) as Record<string, {
+        // Get current overdue backup notifications configuration
+        const overdueNotificationsJson = getConfiguration('overdue_backup_notifications');
+        if (overdueNotificationsJson) {
+          const overdueNotifications = JSON.parse(overdueNotificationsJson) as Record<string, {
             lastNotificationSent: string;
             lastBackupDate: string;
           }>;
@@ -81,8 +81,8 @@ export async function POST(request: Request) {
             const config = backupConfig as BackupNotificationConfig;
             const currentConfig = currentBackupSettings[backupKey];
             
-            // Clear notifications if missed backup check is disabled
-            if (!config.missedBackupCheckEnabled) {
+            // Clear notifications if overdue backup check is disabled
+            if (!config.overdueBackupCheckEnabled) {
               backupKeysToClear.push(backupKey);
               continue;
             }
@@ -98,21 +98,21 @@ export async function POST(request: Request) {
             }
           }
 
-          // Remove entries for backups that need clearing from missed_backup_notifications
-          const updatedMissedNotifications = { ...missedNotifications };
+          // Remove entries for backups that need clearing from overdue_backup_notifications
+          const updatedOverdueNotifications = { ...overdueNotifications };
 
           for (const backupKey of backupKeysToClear) {
-            if (updatedMissedNotifications[backupKey]) {
-              delete updatedMissedNotifications[backupKey];
+            if (updatedOverdueNotifications[backupKey]) {
+              delete updatedOverdueNotifications[backupKey];
             }
           }
 
           // Save the updated configuration
-          setConfiguration('missed_backup_notifications', JSON.stringify(updatedMissedNotifications));
+          setConfiguration('overdue_backup_notifications', JSON.stringify(updatedOverdueNotifications));
 
         }
       } catch (cleanupError) {
-        console.error('Failed to cleanup missed backup notifications:', cleanupError);
+        console.error('Failed to cleanup overdue backup notifications:', cleanupError);
         // Don't fail the entire save operation if cleanup fails
       }
     }

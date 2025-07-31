@@ -10,7 +10,7 @@ import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, 
 import { formatBytes, formatDurationFromMinutes, formatTimeAgo } from "@/lib/utils";
 import type { Backup } from "@/lib/types";
 
-interface MissedBackup {
+interface OverdueBackup {
   machineName: string;
   backupName: string;
   lastBackupDate: string;
@@ -29,8 +29,8 @@ interface MachineDetailSummaryItemsProps {
   lastBackupListCount: number | null;
   lastBackupFileSize: number; // in bytes
   selectedBackup?: Backup | null; // Add this prop for selected backup data
-  missedBackups: MissedBackup[]; // Add missed backups as prop
-  lastMissedCheck?: string; // Time of last missed backup check
+  overdueBackups: OverdueBackup[]; // Add overdue backups as prop
+  lastOverdueCheck?: string; // Time of last overdue backup check
 }
 
 export function MachineDetailSummaryItems({
@@ -41,8 +41,8 @@ export function MachineDetailSummaryItems({
   lastBackupListCount,
   lastBackupFileSize,
   selectedBackup,
-  missedBackups,
-  lastMissedCheck,
+  overdueBackups,
+  lastOverdueCheck,
 }: MachineDetailSummaryItemsProps) {
   const router = useRouter();
   // Use a try/catch for each item to ensure nothing breaks
@@ -63,19 +63,19 @@ export function MachineDetailSummaryItems({
     }
   };
 
-  // Check if the selected backup is in the missed backups list
-  const isSelectedBackupMissed = selectedBackup && missedBackups.some(
-    missed => missed.backupName === selectedBackup.name
+  // Check if the selected backup is in the overdue backups list
+  const isSelectedBackupOverdue = selectedBackup && overdueBackups.some(
+    overdue => overdue.backupName === selectedBackup.name
   );
 
   // Get the expected backup elapsed time for the selected backup
-  const SelectedExpectedBackupElapsed = selectedBackup && missedBackups.find(
-    missed => missed.backupName === selectedBackup.name
+  const SelectedExpectedBackupElapsed = selectedBackup && overdueBackups.find(
+    overdue => overdue.backupName === selectedBackup.name
   )?.expectedBackupElapsed;
   
   // Get the expected backup date for the selected backup
-  const SelectedExpectedBackupDate = selectedBackup && missedBackups.find(
-    missed => missed.backupName === selectedBackup.name
+  const SelectedExpectedBackupDate = selectedBackup && overdueBackups.find(
+    overdue => overdue.backupName === selectedBackup.name
   )?.expectedBackupDate;
   
   // Format the expected backup date with toLocaleString()
@@ -156,18 +156,18 @@ export function MachineDetailSummaryItems({
           ))}
         </div>
         
-        {/* Missed Backups Warning */}
+        {/* Overdue Backups Warning */}
         <>
-          {/* Show missed backups list when "all backups" is selected */}
-          {!selectedBackup && missedBackups.length > 0 && (
+          {/* Show overdue backups list when "all backups" is selected */}
+          {!selectedBackup && overdueBackups.length > 0 && (
             <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm">
-                    <span className="text-muted-foreground">Missed scheduled backups:</span> {missedBackups.map(mb => `'${mb.backupName} (${mb.expectedBackupElapsed} overdue)'`).join(', ')}.
-                    {lastMissedCheck && lastMissedCheck !== 'N/A' && (
-                      <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastMissedCheck)}</span>
+                    <span className="text-muted-foreground">Overdue scheduled backups:</span> {overdueBackups.map(ob => `'${ob.backupName} (${ob.expectedBackupElapsed} overdue)'`).join(', ')}.
+                    {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
+                      <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastOverdueCheck)}</span>
                     )}
                   </span>
                 </div>
@@ -184,16 +184,16 @@ export function MachineDetailSummaryItems({
             </div>
           )}
           
-          {/* Show warning when specific backup is selected and is missed */}
-          {selectedBackup && isSelectedBackupMissed && (
+          {/* Show warning when specific backup is selected and is overdue */}
+          {selectedBackup && isSelectedBackupOverdue && (
             <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm font-medium text-muted-foreground">
-                     Scheduled backup was missed. Expected backup date: {formattedExpectedBackupDate} ({SelectedExpectedBackupElapsed} overdue).
-                     {lastMissedCheck && lastMissedCheck !== 'N/A' && (
-                       <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastMissedCheck)}</span>
+                     Scheduled backup is overdue. Expected backup date: {formattedExpectedBackupDate} ({SelectedExpectedBackupElapsed} overdue).
+                     {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
+                       <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastOverdueCheck)}</span>
                      )}
                   </span>
                 </div>

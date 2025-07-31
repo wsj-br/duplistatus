@@ -20,7 +20,7 @@ export async function GET() {
       totalUploadedSize: summary.totalUploadedSize,
       totalStorageUsed: summary.totalStorageUsed,
       totalBackupSize: summary.totalBackupSize,
-      missedBackupsCount: summary.missedBackupsCount,
+      overdueBackupsCount: summary.overdueBackupsCount,
       secondsSinceLastBackup
     };
 

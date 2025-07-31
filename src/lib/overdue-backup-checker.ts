@@ -1,6 +1,6 @@
 import { dbUtils } from '@/lib/db-utils';
-import { sendMissedBackupNotification, MissedBackupContext } from '@/lib/notifications';
-import { getConfiguration, setConfiguration, getResendFrequencyConfig } from '@/lib/db-utils';
+import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
+import { getConfiguration, setConfiguration, getNotificationFrequencyConfig } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { formatTimeAgo } from '@/lib/utils';
 
@@ -16,7 +16,7 @@ interface LastNotificationTimestamps {
 }
 
 // Core function that can be called directly
-export async function checkMissedBackups() {
+export async function checkOverdueBackups() {
   try {
     // Get notification configuration
     const configJson = getConfiguration('notifications');
@@ -41,11 +41,11 @@ export async function checkMissedBackups() {
       config.backupSettings = {};
     }
 
-    // Get resend frequency configuration
-    const resendFrequency = getResendFrequencyConfig();
+    // Get notification frequency configuration
+    const notificationFrequency = getNotificationFrequencyConfig();
 
     // Get last notification timestamps
-    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
     const lastNotifications: LastNotificationTimestamps = lastNotificationJson 
       ? JSON.parse(lastNotificationJson) 
       : {};
@@ -64,7 +64,7 @@ export async function checkMissedBackups() {
     });
     
     let checkedBackups = 0;
-    let missedBackupsFound = 0;
+    let overdueBackupsFound = 0;
     let notificationsSent = 0;
     const updatedNotifications: LastNotificationTimestamps = { ...lastNotifications };
 
@@ -86,7 +86,7 @@ export async function checkMissedBackups() {
         continue;
       }
             
-      if (!backupConfig.missedBackupCheckEnabled) {
+      if (!backupConfig.overdueBackupCheckEnabled) {
         continue;
       }
       
@@ -115,7 +115,7 @@ export async function checkMissedBackups() {
       const hoursSinceLastBackup = (currentTime - lastBackupTime) / (1000 * 60 * 60);
 
       // Always update the lastBackupDate for this backup to ensure dashboard accuracy
-      // This ensures the dashboard shows real-time missed backup counts
+      // This ensures the dashboard shows real-time overdue backup counts
       if (!updatedNotifications[backupKey]) {
         updatedNotifications[backupKey] = {
           lastNotificationSent: "",
@@ -137,7 +137,7 @@ export async function checkMissedBackups() {
 
       // Check if backup is overdue
       if (hoursSinceLastBackup > expectedIntervalInHours) {
-        missedBackupsFound++;
+        overdueBackupsFound++;
 
         // Check if we should send a notification (with resend frequency logic)
         const lastNotification = lastNotifications[backupKey];
@@ -159,34 +159,34 @@ export async function checkMissedBackups() {
             // New backup event, always notify
             shouldSendNotification = true;
           } else {
-            // No new backup, check resend frequency
-            if (resendFrequency !== 'never') {
-              let resendIntervalMs = 0;
-              switch (resendFrequency) {
+            // No new backup, check notification frequency
+            if (notificationFrequency !== 'onetime') {
+              let notificationIntervalMs = 0;
+              switch (notificationFrequency) {
                 case 'every_day':
-                  resendIntervalMs = 24 * 60 * 60 * 1000;
+                  notificationIntervalMs = 24 * 60 * 60 * 1000;
                   break;
                 case 'every_week':
-                  resendIntervalMs = 7 * 24 * 60 * 60 * 1000;
+                  notificationIntervalMs = 7 * 24 * 60 * 60 * 1000;
                   break;
                 case 'every_month':
-                  resendIntervalMs = 30 * 24 * 60 * 60 * 1000;
+                  notificationIntervalMs = 30 * 24 * 60 * 60 * 1000;
                   break;
                 default:
-                  resendIntervalMs = 0;
+                  notificationIntervalMs = 0;
               }
-              if (resendIntervalMs > 0 && (currentTime - lastNotificationSent.getTime() >= resendIntervalMs)) {
+              if (notificationIntervalMs > 0 && (currentTime - lastNotificationSent.getTime() >= notificationIntervalMs)) {
                 shouldSendNotification = true;
               }
             }
-            // If resendFrequency is 'never', do not resend
+            // If notificationFrequency is 'onetime', do not resend
           }
         }
 
         if (shouldSendNotification) {
           try {
-            // Calculate missed time ago using formatTimeAgo
-            const missedTimeAgo = formatTimeAgo(latestBackup.date);
+            // Calculate overdue time ago using formatTimeAgo
+            const overdueTimeAgo = formatTimeAgo(latestBackup.date);
             
             // Get interval information from backup config
             const intervalUnit = backupConfig.intervalUnit || 'hours';
@@ -194,7 +194,7 @@ export async function checkMissedBackups() {
             
             // Validate required fields
             if (!machineName || !backupName || !latestBackup.date) {
-              console.error(`Missing required fields for missed backup notification: machineName=${machineName}, backupName=${backupName}, lastBackupDate=${latestBackup.date}`);
+              console.error(`Missing required fields for overdue backup notification: machineName=${machineName}, backupName=${backupName}, lastBackupDate=${latestBackup.date}`);
               continue;
             }
             
@@ -204,51 +204,51 @@ export async function checkMissedBackups() {
               continue;
             }
             
-            const missedBackupContext: MissedBackupContext = {
+            const overdueBackupContext: OverdueBackupContext = {
               machine_name: machineName,
               machine_id: machineId,
               backup_name: backupName,
               last_backup_date: new Date(latestBackup.date).toLocaleString(),
-              last_elapsed: missedTimeAgo,
+              last_elapsed: overdueTimeAgo,
               backup_interval_type: intervalUnit,
               backup_interval_value: intervalValue,
             };
 
-            await sendMissedBackupNotification(machineId, machineName, backupName, missedBackupContext, config);
+            await sendOverdueBackupNotification(machineId, machineName, backupName, overdueBackupContext, config);
             notificationsSent++;
             
             // Update the notification timestamp when notification is sent
             updatedNotifications[backupKey].lastNotificationSent = new Date().toISOString();
           } catch (error) {
-            console.error(`Failed to send missed backup notification for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+            console.error(`Failed to send overdue backup notification for ${backupKey}:`, error instanceof Error ? error.message : String(error));
           }
         }
       }
     }
 
     // Save updated notification timestamps
-    setConfiguration('missed_backup_notifications', JSON.stringify(updatedNotifications));
+    setConfiguration('overdue_backup_notifications', JSON.stringify(updatedNotifications));
 
     // Save the timestamp of when this check was last run
-    setConfiguration('last_missed_check', new Date().toISOString());
+    setConfiguration('last_overdue_check', new Date().toISOString());
 
     return {
-      message: 'Missed backup check completed',
+      message: 'Overdue backup check completed',
       statistics: {
         totalBackupConfigs: backupKeys.length,
         checkedBackups,
-        missedBackupsFound,
+        overdueBackupsFound,
         notificationsSent,
       },
     };
   } catch (error) {
-    console.error('Error checking for missed backups:', error instanceof Error ? error.message : String(error));
+    console.error('Error checking for overdue backups:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 } 
 
-// Clears missed backup notification timestamps configuration
-export function clearMissedBackupNotificationTimestamps(): { message: string } {
-  setConfiguration('missed_backup_notifications', JSON.stringify({}));
-  return { message: 'Missed backup notification timestamps cleared successfully' };
+// Clears overdue backup notification timestamps configuration
+export function clearOverdueBackupNotificationTimestamps(): { message: string } {
+  setConfiguration('overdue_backup_notifications', JSON.stringify({}));
+  return { message: 'Overdue backup notification timestamps cleared successfully' };
 } 

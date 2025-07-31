@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import * as cron from 'node-cron';
-import { checkMissedBackups } from '@/lib/missed-backup-checker';
+import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
 import { CronServiceStatus, TaskExecutionResult, CronServiceConfig } from './types';
 import { getCronConfig } from '@/lib/db-utils';
 
@@ -143,8 +143,8 @@ class CronService {
       let result: unknown;
       
       switch (taskName) {
-        case 'missed-backup-check':
-          result = await checkMissedBackups();
+        case 'overdue-backup-check':
+          result = await checkOverdueBackups();
           break;
         default:
           throw new Error(`Unknown task: ${taskName}`);

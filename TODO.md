@@ -2,11 +2,15 @@
 
 ## Fix
 
-- (no issues)
+- Change the label in the chart (select box) from "Backup Versions" to "Available Versions".
+- Check why collecting the logs don't receive the available versions, but same server when receiving the log via /upload works ok.
 
 ## Changes needed
 
-- (no issues)
+
+- Run the check for overdue backups when sucefully collect new backups
+- Change the name "overdue backups" to "overdue backups" in all the application.
+- Add the BackButton in the Summary card title in the detail page (/detail)
 
 
 ## New Features (planned or under analysis)
@@ -52,15 +56,15 @@
   - Click-to-view available versions
   - Version display in detail page summary
 - Send notifications using ntfy.sh 
-- Check periodically for missed scheduled backups
+- Check periodically for overdue scheduled backups
 
 **UI/Navigation Improvements:**
 - Added "Return to Dashboard" link on detail pages
 - Status badges now link directly to backup details
 - Standardise the column titles of available versions to "Available Versions" (was "Available Backups" in some places)
 - Navigate to the dashboard once 'Collect Backup Logs' has been successful.
-- Add a button to the application header that allows users to configure notifications and missed scheduled backup alerts.
-- Add a button to the application header to check the missed backups (this shows only if there is at least one monitored backup).
+- Add a button to the application header that allows users to configure notifications and overdue scheduled backup alerts.
+- Add a button to the application header to check the overdue backups (this shows only if there is at least one monitored backup).
 
 
 **Notification System:**
@@ -70,8 +74,8 @@
   - Variable support in templates
   - Status-based notification filtering
 
-- **Missed Backup Alerts:**
+- **Overdue Backup Alerts:**
   - Configurable notification settings
   - Flexible timing options:
-    - Check interval for missed backups
-    - Notification frequency (once/daily/weekly/monthly)
+    - Check interval for overdue backups
+    - Notification frequency (one time/daily/weekly/monthly)

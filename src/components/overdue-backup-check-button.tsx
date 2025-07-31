@@ -7,7 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useRouter, usePathname } from 'next/navigation';
 import type { NotificationConfig } from '@/lib/types';
 
-export function MissedBackupCheckButton() {
+export function OverdueBackupCheckButton() {
   const [isChecking, setIsChecking] = useState(false);
   const [shouldShow, setShouldShow] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,9 +26,9 @@ export function MissedBackupCheckButton() {
       
       const config: NotificationConfig = await response.json();
       
-      // Check if there's at least one backup with missedBackupCheckEnabled: true
+      // Check if there's at least one backup with overdueBackupCheckEnabled: true
       const hasEnabledBackups = Object.values(config.backupSettings || {}).some(
-        backupConfig => backupConfig.missedBackupCheckEnabled
+        backupConfig => backupConfig.overdueBackupCheckEnabled
       );
       
       setShouldShow(hasEnabledBackups);
@@ -74,17 +74,17 @@ export function MissedBackupCheckButton() {
     };
   }, []);
 
-  const handleCheckMissedBackups = async () => {
+  const handleCheckOverdueBackups = async () => {
     try {
       setIsChecking(true);
 
-      // Run the missed backup check
-      const response = await fetch('/api/notifications/check-missed', {
+      // Run the overdue backup check
+      const response = await fetch('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to run missed backup check');
+        throw new Error('Failed to run overdue backup check');
       }
 
       const result = await response.json();
@@ -93,29 +93,29 @@ export function MissedBackupCheckButton() {
       if (pathname === "/") {
         // If already on dashboard, show toast directly and refresh the page
         toast({
-          title: "Missed Backup Check Complete",
-          description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
+          title: "Overdue Backup Check Complete",
+          description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
           duration: 10000,
         });
         router.refresh();
       } else {
         // If on another page, store toast data and redirect to dashboard
         const toastData = {
-          title: "Missed Backup Check Complete",
-          description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
+          title: "Overdue Backup Check Complete",
+          description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
           variant: "default" as const,
           duration: 10000,
         };
-        localStorage.setItem("missed-backup-check-toast", JSON.stringify(toastData));
+        localStorage.setItem("overdue-backup-check-toast", JSON.stringify(toastData));
         router.push("/");
       }
     } catch (error) {
-      console.error('Error running missed backup check:', error instanceof Error ? error.message : String(error));
+      console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
       
       // Show error toast
       toast({
         title: "Error",
-        description: "Failed to run missed backup check",
+        description: "Failed to run overdue backup check",
         variant: "destructive",
         duration: 10000,
       });
@@ -133,9 +133,9 @@ export function MissedBackupCheckButton() {
     <Button
       variant="outline"
       size="icon"
-      onClick={handleCheckMissedBackups}
+      onClick={handleCheckOverdueBackups}
       disabled={isChecking}
-      title="Check Missed Backups"
+      title="Check Overdue Backups"
     >
       {isChecking ? (
         <Loader2 className="h-4 w-4 animate-spin" />

@@ -3,8 +3,8 @@ import { formatDurationFromSeconds } from "@/lib/db";
 import type { BackupStatus, NotificationEvent, BackupKey } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
-import type { ResendFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, generateDefaultNtfyTopic, defaultResendFrequencyConfig, defaultNtfyConfig } from './default-config';
+import type { NotificationFrequencyConfig } from "@/lib/types";
+import { defaultCronConfig, generateDefaultNtfyTopic, defaultNotificationFrequencyConfig, defaultNtfyConfig } from './default-config';
 import { formatTimeElapsed } from './utils';
 
 // Helper function to get backup key
@@ -12,10 +12,10 @@ function getBackupKey(machineName: string, backupName: string): BackupKey {
   return `${machineName}:${backupName}`;
 }
 
-// Helper function to check if a backup is missed
-function isBackupMissed(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
+// Helper function to check if a backup is overdue
+function isBackupOverdue(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
   try {
-    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
     if (!lastNotificationJson || !lastBackupDate) return false;
     
     const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
@@ -31,10 +31,10 @@ function isBackupMissed(machineName: string, backupName: string, lastBackupDate:
     const lastBackupDateObj = new Date(lastBackupDate);
     const lastNotificationSent = new Date(notification.lastNotificationSent);
     
-    // If lastBackupDate is older than lastNotificationSent, it's a missed backup
+    // If lastBackupDate is older than lastNotificationSent, it's an overdue backup
     return lastBackupDateObj < lastNotificationSent;
   } catch (error) {
-    console.error('Error checking if backup is missed:', error instanceof Error ? error.message : String(error));
+    console.error('Error checking if backup is overdue:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
@@ -48,7 +48,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
     const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
       notificationEvent: NotificationEvent;
       expectedInterval: number;
-      missedBackupCheckEnabled: boolean;
+      overdueBackupCheckEnabled: boolean;
       intervalUnit: 'hours' | 'days';
     }>;
     
@@ -72,7 +72,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
     const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
       notificationEvent: NotificationEvent;
       expectedInterval: number;
-      missedBackupCheckEnabled: boolean;
+      overdueBackupCheckEnabled: boolean;
       intervalUnit: 'hours' | 'days';
     }>;
     
@@ -146,7 +146,7 @@ export function setCronConfig(config: CronServiceConfig): void {
 
 export function getCurrentCronInterval(): CronInterval {
   const config = getCronConfig();
-  const task = config.tasks['missed-backup-check'];
+  const task = config.tasks['overdue-backup-check'];
   
   // Find matching interval
   const entry = Object.entries(cronIntervalMap).find(([, value]) => 
@@ -169,7 +169,7 @@ export function setCronInterval(interval: CronInterval) {
       ...config,
       tasks: {
         ...config.tasks,
-        'missed-backup-check': {
+        'overdue-backup-check': {
           cronExpression: intervalConfig.expression,
           enabled: intervalConfig.enabled
         }
@@ -183,13 +183,13 @@ export function setCronInterval(interval: CronInterval) {
   }
 }
 
-// Helper function to get the last missed backup check time from database
-export function getLastMissedBackupCheckTime(): string {
+// Helper function to get the last overdue backup check time from database
+export function getLastOverdueBackupCheckTime(): string {
   try {
-    const lastMissedCheck = getConfiguration('last_missed_check');
-    return lastMissedCheck || 'N/A';
+    const lastOverdueCheck = getConfiguration('last_overdue_check');
+    return lastOverdueCheck || 'N/A';
   } catch (error) {
-    console.error('Error getting last missed backup check time:', error instanceof Error ? error.message : String(error));
+    console.error('Error getting last overdue backup check time:', error instanceof Error ? error.message : String(error));
     return 'N/A';
   }
 }
@@ -343,8 +343,8 @@ interface MachineSummaryRow {
 }
 
 export function getMachinesSummary() {
-  // Get the last missed backup check time once for all machines
-  const lastMissedCheck = getLastMissedBackupCheckTime();
+  // Get the last overdue backup check time once for all machines
+  const lastOverdueCheck = getLastOverdueBackupCheckTime();
   
   return withDb(() => {
     const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as MachineSummaryRow[];
@@ -355,7 +355,7 @@ export function getMachinesSummary() {
         normalizedStatus = 'N/A';
       } else {
         // Check if the status is a valid BackupStatus value
-        const validStatuses: BackupStatus[] = ['Success', 'Unknown', 'Warning', 'Error', 'Fatal', 'Missed'];
+        const validStatuses: BackupStatus[] = ['Success', 'Unknown', 'Warning', 'Error', 'Fatal'];
         if (validStatuses.includes(row.last_backup_status as BackupStatus)) {
           normalizedStatus = row.last_backup_status as BackupStatus;
         } else {
@@ -364,10 +364,10 @@ export function getMachinesSummary() {
         }
       }
 
-      // Check if backup is missed and override status if needed
-      let isMissed : boolean =false;
+      // Check if backup is overdue and override status if needed
+      let isOverdue : boolean =false;
       if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
-        isMissed = isBackupMissed(row.name, row.last_backup_name, row.last_backup_date);
+        isOverdue = isBackupOverdue(row.name, row.last_backup_name, row.last_backup_date);
       }
 
       // Get notification event for this backup
@@ -404,11 +404,11 @@ export function getMachinesSummary() {
         totalWarnings: row.total_warnings || 0,
         totalErrors: row.total_errors || 0,
         availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null,
-        isBackupMissed: isMissed,
+        isBackupOverdue: isOverdue,
         notificationEvent,
         expectedBackupDate,
         expectedBackupElapsed,
-        lastMissedCheck
+        lastOverdueCheck
       };
     });
   });
@@ -480,10 +480,10 @@ interface OverallSummaryRow {
   total_backuped_size: number;
 }
 
-// Helper function to count missed backups from configuration
-function countMissedBackups(): number {
+// Helper function to count overdue backups from configuration
+function countOverdueBackups(): number {
   try {
-    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
     if (!lastNotificationJson) return 0;
     
     const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
@@ -491,22 +491,22 @@ function countMissedBackups(): number {
       lastBackupDate: string; // ISO timestamp
     }>;
     
-    let missedCount = 0;
+    let overdueCount = 0;
     
     for (const backupKey in lastNotifications) {
       const notification = lastNotifications[backupKey];
       const lastBackupDate = new Date(notification.lastBackupDate);
       const lastNotificationSent = new Date(notification.lastNotificationSent);
       
-      // If lastBackupDate is older than lastNotificationSent, it's a missed backup
+      // If lastBackupDate is older than lastNotificationSent, it's an overdue backup
       if (lastBackupDate < lastNotificationSent) {
-        missedCount++;
+        overdueCount++;
       }
     }
     
-    return missedCount;
+    return overdueCount;
   } catch (error) {
-    console.error('Error counting missed backups:', error instanceof Error ? error.message : String(error));
+    console.error('Error counting overdue backups:', error instanceof Error ? error.message : String(error));
     return 0;
   }
 }
@@ -521,7 +521,7 @@ export function getOverallSummary() {
         totalUploadedSize: 0,
         totalStorageUsed: 0,
         totalBackupSize: 0,
-        missedBackupsCount: 0
+        overdueBackupsCount: 0
       };
     }
 
@@ -531,7 +531,7 @@ export function getOverallSummary() {
       totalUploadedSize: summary.total_uploaded_size,
       totalStorageUsed: summary.total_storage_used,
       totalBackupSize: summary.total_backuped_size,
-      missedBackupsCount: countMissedBackups()
+      overdueBackupsCount: countOverdueBackups()
     };
   });
 }
@@ -661,26 +661,26 @@ export const dbUtils = {
   }
 }; 
 
-// Functions to get/set resend frequency config
-export function getResendFrequencyConfig(): ResendFrequencyConfig {
-  const value = getConfiguration("resend_frequency");
+// Functions to get/set notification frequency config
+export function getNotificationFrequencyConfig(): NotificationFrequencyConfig {
+  const value = getConfiguration("notification_frequency");
   if (
     value === "every_day" ||
     value === "every_week" ||
     value === "every_month" ||
-    value === "never"
+    value === "onetime"
   ) {
     return value;
   }
-  return defaultResendFrequencyConfig;
+  return defaultNotificationFrequencyConfig;
 }
 
-export function setResendFrequencyConfig(value: ResendFrequencyConfig): void {
-  setConfiguration("resend_frequency", value);
+export function setNotificationFrequencyConfig(value: NotificationFrequencyConfig): void {
+  setConfiguration("notification_frequency", value);
 } 
 
-// Helper function to get missed backups for a specific machine
-export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
+// Helper function to get overdue backups for a specific machine
+export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
   machineName: string;
   backupName: string;
   lastBackupDate: string;
@@ -690,7 +690,7 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
   expectedBackupElapsed: string;
 }> {
   try {
-    const lastNotificationJson = getConfiguration('missed_backup_notifications');
+    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
     if (!lastNotificationJson) return [];
     
     const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
@@ -698,7 +698,7 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
       lastBackupDate: string; // ISO timestamp
     }>;
     
-    const missedBackups: Array<{
+    const overdueBackups: Array<{
       machineName: string;
       backupName: string;
       lastBackupDate: string;
@@ -718,7 +718,7 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
       
       // Check if this is for the requested machine (by name or ID)
       if (machineName === machineIdentifier || machineName.toLowerCase() === machineIdentifier.toLowerCase()) {
-        // If lastBackupDate is older than lastNotificationSent, it's a missed backup
+        // If lastBackupDate is older than lastNotificationSent, it's a overdue backup
         if (lastBackupDate < lastNotificationSent) {
           // Get notification event for this backup
           const notificationEvent = getNotificationEvent(machineName, backupName);
@@ -737,7 +737,7 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
             expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
           }
           
-          missedBackups.push({
+          overdueBackups.push({
             machineName,
             backupName,
             lastBackupDate: notification.lastBackupDate,
@@ -747,12 +747,12 @@ export function getMissedBackupsForMachine(machineIdentifier: string): Array<{
             expectedBackupElapsed
           });
         }
+              }
       }
-    }
-    
-    return missedBackups;
+      
+      return overdueBackups;
   } catch (error) {
-    console.error('Error getting missed backups for machine:', error instanceof Error ? error.message : String(error));
+    console.error('Error getting overdue backups for machine:', error instanceof Error ? error.message : String(error));
     return [];
   }
 } 

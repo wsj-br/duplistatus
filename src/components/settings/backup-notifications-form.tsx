@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, ResendFrequencyConfig } from '@/lib/types';
+import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
@@ -31,7 +31,7 @@ interface BackupNotificationsFormProps {
 // Extended machine interface for sorting
 interface MachineWithBackupAndSettings extends MachineWithBackup {
   notificationEvent: NotificationEvent;
-  missedBackupCheckEnabled: boolean;
+  overdueBackupCheckEnabled: boolean;
   expectedInterval: number;
   intervalUnit: 'hours' | 'days';
   displayInterval: number;
@@ -48,11 +48,11 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [cronInterval, setCronIntervalState] = useState<CronInterval>('20min');
-  const [resendFrequency, setResendFrequency] = useState<ResendFrequencyConfig>('never');
-  const [resendLoading, setResendLoading] = useState(true);
-  const [resendError, setResendError] = useState<string | null>(null);
-  const resendOptions: { value: ResendFrequencyConfig; label: string }[] = [
-    { value: 'never', label: 'Never (just once)' },
+  const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>('onetime');
+  const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(true);
+  const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
+  const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
+    { value: 'onetime', label: 'One time' },
     { value: 'every_day', label: 'Every day' },
     { value: 'every_week', label: 'Every week' },
     { value: 'every_month', label: 'Every month' },
@@ -63,7 +63,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     name: { type: 'text' as keyof typeof sortFunctions, path: 'name' },
     backupName: { type: 'text' as keyof typeof sortFunctions, path: 'backupName' },
     notificationEvent: { type: 'notificationEvent' as keyof typeof sortFunctions, path: 'notificationEvent' },
-    missedBackupCheckEnabled: { type: 'text' as keyof typeof sortFunctions, path: 'missedBackupCheckEnabled' },
+    overdueBackupCheckEnabled: { type: 'text' as keyof typeof sortFunctions, path: 'overdueBackupCheckEnabled' },
     displayInterval: { type: 'number' as keyof typeof sortFunctions, path: 'displayInterval' },
     intervalUnit: { type: 'text' as keyof typeof sortFunctions, path: 'intervalUnit' },
   };
@@ -71,7 +71,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   useEffect(() => {
     fetchMachinesWithBackups();
     loadCronInterval();
-    fetchResendFrequency();
+    fetchNotificationFrequency();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Helper function to check if relevant settings have changed
@@ -80,19 +80,19 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       const originalConfig = originalSettings[backupKey];
       if (!originalConfig) {
         // New backup configuration, consider it a change
-        if (currentConfig.missedBackupCheckEnabled) {
+        if (currentConfig.overdueBackupCheckEnabled) {
           return true;
         }
         continue;
       }
 
-      // Check if missed backup check was enabled/disabled
-      if (originalConfig.missedBackupCheckEnabled !== currentConfig.missedBackupCheckEnabled) {
+      // Check if overdue backup check was enabled/disabled
+      if (originalConfig.overdueBackupCheckEnabled !== currentConfig.overdueBackupCheckEnabled) {
         return true;
       }
 
-      // Check if timeout period settings changed (only if missed backup check is enabled)
-      if (currentConfig.missedBackupCheckEnabled) {
+      // Check if timeout period settings changed (only if overdue backup check is enabled)
+      if (currentConfig.overdueBackupCheckEnabled) {
         if (originalConfig.expectedInterval !== currentConfig.expectedInterval ||
             originalConfig.intervalUnit !== currentConfig.intervalUnit) {
           return true;
@@ -102,27 +102,27 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     return false;
   };
 
-  // Helper function to run missed backup check
-  const runMissedBackupCheck = async () => {
+  // Helper function to run overdue backup check
+  const runOverdueBackupCheck = async () => {
     try {
-      const response = await fetch('/api/notifications/check-missed', {
+      const response = await fetch('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to run missed backup check');
+        throw new Error('Failed to run overdue backup check');
       }
 
       const result = await response.json();
       toast({
-        title: "Missed Backup Check Complete",
-        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
+        title: "Overdue Backup Check Complete",
+        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
       });
     } catch (error) {
-      console.error('Error running missed backup check:', error instanceof Error ? error.message : String(error));
+      console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
-        description: "Failed to run missed backup check",
+        description: "Failed to run overdue backup check",
         variant: "destructive",
       });
     }
@@ -147,7 +147,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       console.error('Failed to load cron interval:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
-        description: "Failed to load missed backup check interval",
+        description: "Failed to load overdue backup check interval",
         variant: "destructive",
       });
     }
@@ -172,19 +172,19 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       setCronIntervalState(value);
 
       // Restart the cron task to apply new configuration
-      //await cronClient.stopTask('missed-backup-check');
+      //await cronClient.stopTask('overdue-backup-check');
       await cronClient.reloadConfig();
-      //await cronClient.startTask('missed-backup-check');
+      //await cronClient.startTask('overdue-backup-check');
 
       toast({
         title: "Success",
-        description: "Missed backup check interval updated successfully",
+        description: "Overdue backup check interval updated successfully",
       });
     } catch (error) {
       console.error('Failed to update cron interval:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
-        description: "Failed to update missed backup check interval",
+        description: "Failed to update overdue backup check interval",
         variant: "destructive",
       });
     }
@@ -326,9 +326,9 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
       
-      // Check if relevant settings have changed and run missed backup check if needed
+      // Check if relevant settings have changed and run overdue backup check if needed
       if (hasRelevantChanges()) {
-        await runMissedBackupCheck();
+        await runOverdueBackupCheck();
       }
       
       // Update original settings to reflect the new state
@@ -338,7 +338,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     }
   };
 
-  const handleTestMissedBackups = async () => {
+  const handleTestOverdueBackups = async () => {
     setIsTesting(true);
     try {
       // Save backup settings first
@@ -347,25 +347,25 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
       
-      // Run the missed backup check
-      const response = await fetch('/api/notifications/check-missed', {
+      // Run the overdue backup check
+      const response = await fetch('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to run missed backup check');
+        throw new Error('Failed to run overdue backup check');
       }
 
       const result = await response.json();
       toast({
-        title: "Missed Backup Check Complete",
-        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.missedBackupsFound} missed backups, sent ${result.statistics.notificationsSent} notifications.`,
+        title: "Overdue Backup Check Complete",
+        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
       });
     } catch (error) {
-      console.error('Error running missed backup check:', error instanceof Error ? error.message : String(error));
+      console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
-        description: "Failed to run missed backup check",
+        description: "Failed to run overdue backup check",
         variant: "destructive",
       });
     } finally {
@@ -373,39 +373,39 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     }
   };
 
-  const handleResendFrequencyChange = async (value: ResendFrequencyConfig) => {
-    setResendLoading(true);
-    setResendError(null);
+  const handleNotificationFrequencyChange = async (value: NotificationFrequencyConfig) => {
+    setNotificationFrequencyLoading(true);
+    setNotificationFrequencyError(null);
     try {
       const response = await fetch('/api/notifications/resend-frequency', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value }),
       });
-      if (!response.ok) throw new Error('Failed to update resend frequency');
-      setResendFrequency(value);
-      toast({ title: 'Success', description: 'Resend frequency updated.' });
+      if (!response.ok) throw new Error('Failed to update notification frequency');
+      setNotificationFrequency(value);
+      toast({ title: 'Success', description: 'Notification frequency updated.' });
     } catch {
-      setResendError('Failed to update resend frequency');
-      toast({ title: 'Error', description: 'Failed to update resend frequency', variant: 'destructive' });
+      setNotificationFrequencyError('Failed to update notification frequency');
+      toast({ title: 'Error', description: 'Failed to update notification frequency', variant: 'destructive' });
     } finally {
-      setResendLoading(false);
+      setNotificationFrequencyLoading(false);
     }
   };
 
-  const fetchResendFrequency = async () => {
-    setResendLoading(true);
-    setResendError(null);
+  const fetchNotificationFrequency = async () => {
+    setNotificationFrequencyLoading(true);
+    setNotificationFrequencyError(null);
     try {
       const response = await fetch('/api/notifications/resend-frequency');
-      if (!response.ok) throw new Error('Failed to fetch resend frequency');
+      if (!response.ok) throw new Error('Failed to fetch notification frequency');
       const data = await response.json();
-      setResendFrequency(data.value ?? 'never');
+      setNotificationFrequency(data.value ?? 'onetime');
     } catch {
-      setResendError('Failed to load resend frequency');
-      setResendFrequency('never');
+      setNotificationFrequencyError('Failed to load notification frequency');
+      setNotificationFrequency('onetime');
     } finally {
-      setResendLoading(false);
+      setNotificationFrequencyLoading(false);
     }
   };
 
@@ -414,26 +414,26 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const handleResetNotifications = async () => {
     setIsResetting(true);
     try {
-      const response = await fetch('/api/notifications/clear-missed-timestamps', {
+      const response = await fetch('/api/notifications/clear-overdue-timestamps', {
         method: 'POST',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to reset missed backup notifications');
+        throw new Error('Failed to reset overdue backup notifications');
       }
 
       toast({
         title: "Success",
-        description: "Missed backup notifications have been reset",
+        description: "Overdue backup notifications have been reset",
       });
       
-      // Run missed backup check after resetting timers to ensure fresh state
-      await runMissedBackupCheck();
+      // Run overdue backup check after resetting timers to ensure fresh state
+      await runOverdueBackupCheck();
     } catch (error) {
-      console.error('Error resetting missed backup notifications:', error instanceof Error ? error.message : String(error));
+      console.error('Error resetting overdue backup notifications:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
-        description: "Failed to reset missed backup notifications",
+        description: "Failed to reset overdue backup notifications",
         variant: "destructive",
       });
     } finally {
@@ -473,8 +473,8 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         <CardHeader>
           <CardTitle>Backup Notification Settings</CardTitle>
           <CardDescription>
-             Configure notification settings for each backup. 
-             Choose when to receive alerts and set the timeout period for detecting missed backups.
+             Configure notification settings for each backup received from Duplicati. 
+             Enable/disable overdue backup monitoring, set the timeout period and notification frequency.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -509,11 +509,11 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[180px]" 
-                  column="missedBackupCheckEnabled" 
+                  column="overdueBackupCheckEnabled" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Enable Missed Backup Check
+                  Overdue Backup Monitoring
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[150px]" 
@@ -521,7 +521,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Backup Timeout Period
+                  Expected Backup Interval
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[100px]" 
@@ -574,14 +574,14 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Switch
-                          id={`missed-backup-${inputKey}`}
-                          checked={backupSetting.missedBackupCheckEnabled}
+                          id={`overdue-backup-${inputKey}`}
+                          checked={backupSetting.overdueBackupCheckEnabled}
                           onCheckedChange={(checked) => 
-                            updateBackupSetting(machine.name, machine.backupName, 'missedBackupCheckEnabled', checked)
+                            updateBackupSetting(machine.name, machine.backupName, 'overdueBackupCheckEnabled', checked)
                           }
                         />
-                        <Label htmlFor={`missed-backup-${inputKey}`} className="text-sm">
-                          {backupSetting.missedBackupCheckEnabled ? 'Enabled' : 'Disabled'}
+                        <Label htmlFor={`overdue-backup-${inputKey}`} className="text-sm">
+                          {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
                         </Label>
                       </div>
                     </TableCell>
@@ -595,8 +595,8 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                         onChange={(e) => handleIntervalInputChange(machine.name, machine.backupName, e.target.value)}
                         onBlur={(e) => handleIntervalBlur(machine.name, machine.backupName, e.target.value)}
                         placeholder={backupSetting.intervalUnit === 'hours' ? "24" : "1"}
-                        disabled={!backupSetting.missedBackupCheckEnabled}
-                        className={!backupSetting.missedBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}
+                        disabled={!backupSetting.overdueBackupCheckEnabled}
+                        className={!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}
                       />
                     </TableCell>
                     
@@ -604,9 +604,9 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                       <Select
                         value={backupSetting.intervalUnit}
                         onValueChange={(value: 'hours' | 'days') => handleUnitChange(machine.name, machine.backupName, value)}
-                        disabled={!backupSetting.missedBackupCheckEnabled}
+                        disabled={!backupSetting.overdueBackupCheckEnabled}
                       >
-                        <SelectTrigger className={`w-full ${!backupSetting.missedBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
+                        <SelectTrigger className={`w-full ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
                           <SelectValue placeholder={backupSetting.intervalUnit === 'days' ? 'Days' : 'Hours'} />
                         </SelectTrigger>
                         <SelectContent>
@@ -634,7 +634,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
             <div className="flex flex-wrap gap-4 items-end lg:justify-end">
               <div className="flex flex-col items-start">
                 <Label htmlFor="cron-interval" className="mb-2 self-start">
-                  Check for missed backups every:
+                  Overdue monitoring interval:
                 </Label>
                 <Select
                   value={cronInterval}
@@ -653,7 +653,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                 </Select>
               </div>
               <Button 
-                onClick={handleTestMissedBackups} 
+                onClick={handleTestOverdueBackups} 
                 variant="outline" 
                 disabled={isTesting}
                 className="self-end"
@@ -662,27 +662,27 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
                 {isTesting ? "Checking..." : "Check now"}
               </Button>
               <div className="flex flex-col items-start">
-                <Label htmlFor="resend-frequency" className="mb-2 self-start">
-                  Resend frequency:
+                <Label htmlFor="notification-frequency" className="mb-2 self-start">
+                    Notification frequency:
                 </Label>
                 <Select
-                  value={resendFrequency}
-                  onValueChange={(value: ResendFrequencyConfig) => handleResendFrequencyChange(value)}
-                  disabled={resendLoading}
+                  value={notificationFrequency}
+                  onValueChange={(value: NotificationFrequencyConfig) => handleNotificationFrequencyChange(value)}
+                  disabled={notificationFrequencyLoading}
                 >
-                  <SelectTrigger id="resend-frequency" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="notification-frequency" className="w-[200px] min-w-[150px] max-w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {resendOptions.map(option => (
+                    {notificationFrequencyOptions.map(option => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {resendLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
-                {resendError && <span className="text-xs text-destructive mt-1">{resendError}</span>}
+                {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
+                {notificationFrequencyError && <span className="text-xs text-destructive mt-1">{notificationFrequencyError}</span>}
               </div>
               <Button 
                 onClick={handleResetNotifications}

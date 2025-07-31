@@ -2,15 +2,15 @@ import { NotificationConfig, NotificationTemplate, CronServiceConfig, CronInterv
 
 // Default notification templates
 export const defaultNotificationTemplates: {
-  missedBackup: NotificationTemplate;
+  overdueBackup: NotificationTemplate;
   success: NotificationTemplate;
   warning: NotificationTemplate;
 } = {
-  missedBackup: {
-    message: "The backup {backup_name} is missing on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.",
+  overdueBackup: {
+    message: "The backup {backup_name} is overdue on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.",
     priority: "default",
-    tags: "duplicati, duplistatus, missed",
-    title: "🕑 Missed - {backup_name}  @ {machine_name}"
+    tags: "duplicati, duplistatus, overdue",
+    title: "🕑 Overdue - {backup_name}  @ {machine_name}"
   },
   success: {
     message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n💾 Store usage:  {storage_size} \n🔃 Available versions:  {available_versions} ",
@@ -45,7 +45,7 @@ export const defaultCronConfig: CronServiceConfig = {
     return 9667;
   })(),
   tasks: {
-    'missed-backup-check': {
+    'overdue-backup-check': {
       cronExpression: '0,20,40 * * * *', // Every 20 minutes
       enabled: true
     }
@@ -62,7 +62,7 @@ export const defaultNtfyConfig = {
 export const defaultBackupNotificationConfig: BackupNotificationConfig = {
   notificationEvent: 'off',
   expectedInterval: 1, // Default to 1 day (24 hours)
-  missedBackupCheckEnabled: false,
+  overdueBackupCheckEnabled: false,
   intervalUnit: 'days'
 };
 
@@ -82,14 +82,13 @@ export const defaultAPIConfig = {
   duplicatiProtocol: 'http' as const
 };
 
-// Default resend frequency configuration
-export const defaultResendFrequencyConfig = 'never' as const;
+// Default notification frequency configuration
+export const defaultNotificationFrequencyConfig = 'onetime' as const;
 
 // Function to create default notification configuration
 export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic: string }): NotificationConfig {
   return {
     ntfy: ntfyConfig,
-    machineSettings: {},
     backupSettings: {},
     templates: defaultNotificationTemplates
   };

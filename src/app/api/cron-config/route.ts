@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 export async function GET() {
   try {
     const config = getCronConfig();
-    const task = config.tasks['missed-backup-check'];
+    const task = config.tasks['overdue-backup-check'];
     
     // Return only what's needed by the client
     return NextResponse.json({

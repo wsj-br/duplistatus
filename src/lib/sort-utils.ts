@@ -46,11 +46,10 @@ export function parseDurationToSeconds(duration: string): number {
 export function getStatusSortValue(status: BackupStatus | 'N/A'): number {
   const statusOrder: Record<string, number> = {
     'Success': 5,
-    'Missed': 4,
+    'Warning': 4,
     'Unknown': 3,
-    'Warning': 2,
-    'Error': 1,
-    'Fatal': 0,
+    'Error': 2,
+    'Fatal': 1,
   };
   return statusOrder[status] ?? 3;
 }

@@ -7,7 +7,7 @@ import { ThemeToggleButton } from '@/components/theme-toggle-button';
 import { DisplayMenu } from '@/components/display-menu';
 import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
-import { MissedBackupCheckButton } from '@/components/missed-backup-check-button';
+import { OverdueBackupCheckButton } from '@/components/overdue-backup-check-button';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
@@ -44,7 +44,7 @@ export function AppHeader() {
         )}
         
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <MissedBackupCheckButton />
+          <OverdueBackupCheckButton />
           <BackupCollectMenu />
           <DatabaseMaintenanceMenu />
           <DisplayMenu />

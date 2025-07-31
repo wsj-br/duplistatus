@@ -22,7 +22,7 @@ export interface NotificationContext {
   available_versions: number;
 }
 
-export interface MissedBackupContext {
+export interface OverdueBackupContext {
   machine_name: string;
   machine_id: string;
   backup_name: string;
@@ -76,20 +76,11 @@ function getBackupKey(machineName: string, backupName: string): BackupKey {
 }
 
 // Helper function to get backup settings with fallback to machine settings
-function getBackupSettings(config: NotificationConfig, machineName: string, backupName: string, machineId?: string) {
+function getBackupSettings(config: NotificationConfig, machineName: string, backupName: string) {
   const backupKey = getBackupKey(machineName, backupName);
   const backupConfig = config.backupSettings?.[backupKey];
   
-  if (backupConfig) {
-    return backupConfig;
-  }
-  
-  // Fallback to machine settings for backward compatibility
-  if (machineId && config.machineSettings?.[machineId]) {
-    return config.machineSettings[machineId];
-  }
-  
-  return null;
+  return backupConfig || null;
 }
 
 export async function sendNtfyNotification(
@@ -153,7 +144,7 @@ function formatDateString(dateString: string): string {
   }
 }
 
-function processTemplate(template: NotificationTemplate, context: NotificationContext | MissedBackupContext): {
+function processTemplate(template: NotificationTemplate, context: NotificationContext | OverdueBackupContext): {
   title: string;
   message: string;
   priority: string;
@@ -190,7 +181,7 @@ export async function sendBackupNotification(
     return;
   }
 
-  const backupConfig = getBackupSettings(config, machineName, backup.name, backup.machine_id);
+      const backupConfig = getBackupSettings(config, machineName, backup.name);
   if (!backupConfig || backupConfig.notificationEvent === 'off') {
     console.log(`Notifications disabled for backup ${backup.name} on machine ${machineName}, skipping`);
     return;
@@ -238,11 +229,11 @@ export async function sendBackupNotification(
   }
 }
 
-export async function sendMissedBackupNotification(
+export async function sendOverdueBackupNotification(
   machineId: string,
   machineName: string,
   backupName: string,
-  context: MissedBackupContext,
+  context: OverdueBackupContext,
   config?: NotificationConfig
 ): Promise<void> {
   const notificationConfig = config || await getNotificationConfig();
@@ -251,7 +242,7 @@ export async function sendMissedBackupNotification(
   }
 
   try {
-    const processedTemplate = processTemplate(notificationConfig.templates?.missedBackup || defaultNotificationTemplates.missedBackup, context);
+    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context);
     
     await sendNtfyNotification(
       notificationConfig.ntfy.url,
@@ -263,7 +254,7 @@ export async function sendMissedBackupNotification(
     );
     
   } catch (error) {
-    console.error(`Failed to send missed backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to send overdue backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

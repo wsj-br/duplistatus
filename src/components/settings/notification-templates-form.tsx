@@ -31,7 +31,7 @@ const TEMPLATE_VARIABLES = [
 ];
 
 // Available placeholder variables for templates
-const TEMPLATE_VARIABLES_MISSED_BACKUP = [
+const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
   { name: 'machine_name', description: 'Name of the machine' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'last_backup_date', description: 'Date/time of the last backup' },
@@ -44,12 +44,12 @@ interface NotificationTemplatesFormProps {
   templates?: {
     success?: NotificationTemplate;
     warning?: NotificationTemplate;
-    missedBackup?: NotificationTemplate;
+    overdueBackup?: NotificationTemplate;
   };
   onSave: (templates: {
     success: NotificationTemplate;
     warning: NotificationTemplate;
-    missedBackup: NotificationTemplate;
+    overdueBackup: NotificationTemplate;
   }) => void;
   onSendTest?: (template: NotificationTemplate) => Promise<void>;
 }
@@ -68,24 +68,24 @@ const TemplateEditor = ({
   onFieldFocus,
   activeTab,
 }: { 
-  templateType: 'success' | 'warning' | 'missedBackup';
+  templateType: 'success' | 'warning' | 'overdueBackup';
   template: NotificationTemplate;
   title: string;
   description: string;
   selectedVariable: string;
   setSelectedVariable: (value: string) => void;
-  insertVariable: (templateType: 'success' | 'warning' | 'missedBackup') => void;
+  insertVariable: (templateType: 'success' | 'warning' | 'overdueBackup') => void;
   updateTemplate: (
-    templateType: 'success' | 'warning' | 'missedBackup',
+    templateType: 'success' | 'warning' | 'overdueBackup',
     field: keyof NotificationTemplate,
     value: string
   ) => void;
   fieldRefs: React.MutableRefObject<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>;
   onFieldFocus: (field: keyof NotificationTemplate) => void;
-  activeTab: 'success' | 'warning' | 'missed';
+  activeTab: 'success' | 'warning' | 'overdue';
 }) => {
   // Determine which variable list to use based on active tab
-  const variablesList = activeTab === 'missed' ? TEMPLATE_VARIABLES_MISSED_BACKUP : TEMPLATE_VARIABLES;
+  const variablesList = activeTab === 'overdue' ? TEMPLATE_VARIABLES_OVERDUE_BACKUP : TEMPLATE_VARIABLES;
 
   return (
     <Card>
@@ -197,24 +197,24 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     return {
       success: templates?.success || defaultNotificationTemplates.success,
       warning: templates?.warning || defaultNotificationTemplates.warning,
-      missedBackup: templates?.missedBackup || defaultNotificationTemplates.missedBackup,
+      overdueBackup: templates?.overdueBackup || defaultNotificationTemplates.overdueBackup,
     };
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'missed'>('success');
+  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue'>('success');
   // Store refs for all fields (title, tags, message) for each template type
   const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
   // Track which field is focused for each template type
   const [focusedField, setFocusedField] = useState<Record<string, keyof NotificationTemplate | null>>({
     success: null,
     warning: null,
-    missedBackup: null,
+          overdueBackup: null,
   });
 
   const updateTemplate = (
-    templateType: 'success' | 'warning' | 'missedBackup',
+    templateType: 'success' | 'warning' | 'overdueBackup',
     field: keyof NotificationTemplate,
     value: string
   ) => {
@@ -229,11 +229,11 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
   // Track focus for each field
   const handleFieldFocus = useCallback((field: keyof NotificationTemplate) => {
-    setFocusedField(prev => ({ ...prev, [activeTab === 'missed' ? 'missedBackup' : activeTab]: field }));
+    setFocusedField(prev => ({ ...prev, [activeTab === 'overdue' ? 'overdueBackup' : activeTab]: field }));
   }, [activeTab]);
 
   // Insert variable into the currently focused field, fallback to message
-  const insertVariable = (templateType: 'success' | 'warning' | 'missedBackup') => {
+  const insertVariable = (templateType: 'success' | 'warning' | 'overdueBackup') => {
     if (!selectedVariable) return;
     const currentFocusedField = focusedField[templateType] || 'message';
     const refKey = `${templateType}-${currentFocusedField}`;
@@ -289,7 +289,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     
     setIsSendingTest(true);
     try {
-      const templateType = activeTab === 'missed' ? 'missedBackup' : activeTab;
+      const templateType = activeTab === 'overdue' ? 'overdueBackup' : activeTab;
       const template = formData[templateType];
       
       // Create a test template with variables replaced by their names
@@ -321,13 +321,13 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={(value) => {
-        setActiveTab(value as 'success' | 'warning' | 'missed');
+        setActiveTab(value as 'success' | 'warning' | 'overdue');
         setSelectedVariable(''); // Reset selection when changing tabs
       }} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="success">Success Template</TabsTrigger>
           <TabsTrigger value="warning">Warning/Error Template</TabsTrigger>
-          <TabsTrigger value="missed">Missed Backup Template</TabsTrigger>
+          <TabsTrigger value="overdue">Overdue Backup Template</TabsTrigger>
         </TabsList>
         
         <TabsContent value="success" className="mt-6">
@@ -362,12 +362,12 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
           />
         </TabsContent>
         
-        <TabsContent value="missed" className="mt-6">
+        <TabsContent value="overdue" className="mt-6">
           <TemplateEditor
-            templateType="missedBackup"
-            template={formData.missedBackup}
-            title="Missed Backup Notification Template"
-            description="Template used when expected backups are missed based on the configured interval"
+            templateType="overdueBackup"
+            template={formData.overdueBackup}
+            title="Overdue Backup Notification Template"
+            description="Template used when expected backups are overdue based on the configured interval"
             selectedVariable={selectedVariable}
             setSelectedVariable={setSelectedVariable}
             insertVariable={insertVariable}

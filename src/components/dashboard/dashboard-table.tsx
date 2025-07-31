@@ -230,7 +230,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     {machine.name}
                   </TableCell>
                   <TableCell className="text-left">
-                    {machine.isBackupMissed ? (
+                    {machine.isBackupOverdue ? (
                       <Tooltip>
                         <TooltipTrigger>
                           <div className="text-left w-full">
@@ -240,7 +240,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                         </TooltipTrigger>
                         <TooltipContent>
                           <div className="space-y-1">
-                            <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastMissedCheck !== "N/A" ? new Date(machine.lastMissedCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastMissedCheck) + ")"  	 : "N/A"}</span></div>
+                            <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastOverdueCheck !== "N/A" ? new Date(machine.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastOverdueCheck) + ")"  	 : "N/A"}</span></div>
                             <div><span>Last backup:</span> <span className="text-muted-foreground">{machine.lastBackupDate !== "N/A" ? new Date(machine.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.lastBackupDate) + ")" : "N/A"}</span></div>
                             <div><span>Expected backup:</span> <span className="text-muted-foreground">{machine.expectedBackupDate !== "N/A" ? new Date(machine.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.expectedBackupDate) + ")" : "N/A"}</span></div>
                             <div className="pt-2 border-t">

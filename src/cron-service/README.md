@@ -46,7 +46,7 @@ interface CronServiceConfig {
 Default configuration:
 - Port: 9667
 - Tasks:
-  - missed-backup-check: Runs every 20 minutes (0,20,40 * * * *)
+  - overdue-backup-check: Runs every 20 minutes (0,20,40 * * * *)
 
 ## API Endpoints
 
@@ -79,13 +79,13 @@ import { cronClient } from '@/lib/cron-client';
 const status = await cronClient.getStatus();
 
 // Trigger a task manually
-await cronClient.triggerTask('missed-backup-check');
+await cronClient.triggerTask('overdue-backup-check');
 
 // Stop a task
-await cronClient.stopTask('missed-backup-check');
+await cronClient.stopTask('overdue-backup-check');
 
 // Start a task
-await cronClient.startTask('missed-backup-check');
+await cronClient.startTask('overdue-backup-check');
 ```
 
 ## Architecture

@@ -1,4 +1,4 @@
-export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal" | "Missed";
+export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal";
 
 export interface Backup {
   id: string;
@@ -56,11 +56,11 @@ export interface MachineSummary {
   totalWarnings: number;
   totalErrors: number;
   availableBackups: string[] | null;
-  isBackupMissed: boolean;
+  isBackupOverdue: boolean;
   notificationEvent?: NotificationEvent;
   expectedBackupDate: string; // ISO string or "N/A"
   expectedBackupElapsed: string; // formatted time ago or "N/A"
-  lastMissedCheck: string; // ISO string or "N/A" - time of last run of checkMissedBackups()
+  lastOverdueCheck: string; // ISO string or "N/A" - time of last run of checkOverdueBackups()
 }
 
 export interface OverallSummary {
@@ -69,7 +69,7 @@ export interface OverallSummary {
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
   totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
-  missedBackupsCount: number; // count of currently missed backups
+  overdueBackupsCount: number; // count of currently overdue backups
 }
 
 export interface NtfyConfig {
@@ -79,19 +79,11 @@ export interface NtfyConfig {
 
 export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
 
-// Legacy interface for backward compatibility
-export interface MachineNotificationConfig {
-  notificationEvent: NotificationEvent;
-  expectedInterval: number; // in hours
-  missedBackupCheckEnabled: boolean;
-  intervalUnit: 'hours' | 'days';
-}
-
-// New interface for backup-based notifications
+// Interface for backup-based notifications
 export interface BackupNotificationConfig {
   notificationEvent: NotificationEvent;
   expectedInterval: number; // raw value as entered by user
-  missedBackupCheckEnabled: boolean;
+  overdueBackupCheckEnabled: boolean;
   intervalUnit: 'hours' | 'days';
 }
 
@@ -107,16 +99,15 @@ export interface NotificationTemplate {
 
 export interface NotificationConfig {
   ntfy: NtfyConfig;
-  machineSettings: Record<string, MachineNotificationConfig>; // Legacy - for backward compatibility
-  backupSettings: Record<BackupKey, BackupNotificationConfig>; // New - for backup-based notifications
+  backupSettings: Record<BackupKey, BackupNotificationConfig>;
   templates: {
     success: NotificationTemplate;
     warning: NotificationTemplate;
-    missedBackup: NotificationTemplate;
+    overdueBackup: NotificationTemplate;
   };
 }
 
-export type CronInterval = 'disabled' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
+export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
 
 export interface CronServiceConfig {
   port: number;
@@ -128,4 +119,4 @@ export interface CronServiceConfig {
   };
 }
 
-export type ResendFrequencyConfig = "never" | "every_day" | "every_week" | "every_month";
+export type NotificationFrequencyConfig = "onetime" | "every_day" | "every_week" | "every_month";

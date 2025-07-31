@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { clearMissedBackupNotificationTimestamps } from '@/lib/missed-backup-checker';
+import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
 
 // HTTP endpoint that uses the core function
 export async function POST() {
   try {
-    const result = await clearMissedBackupNotificationTimestamps();
+    const result = await checkOverdueBackups();
     return NextResponse.json(result);
   } catch (error) {
     console.error('❌ Error in POST endpoint:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
-      { error: 'Failed to check for missed backups' },
+      { error: 'Failed to check for overdue backups' },
       { status: 500 }
     );
   }

@@ -82,13 +82,19 @@ This script generates and uploads test backup data for multiple machines.
 
 <br>
 
-### Test Last Backup Endpoint
+### 
+
 ```bash
-pnpm run test-lastbackup [machineName]
+# Add 24 hours to all lastNotificationSent timestamps
+pnpm tsx scripts/add-hours-to-notifications.ts 24
+
+# Subtract 24 hours from all lastNotificationSent timestamps  
+pnpm tsx scripts/add-hours-to-notifications.ts -24
 ```
-Tests the `/api/lastbackup` endpoint. If no machine name is provided, it defaults to "Test Machine 1".
+Change the notification timestamp `lastNotificationSent` to test the notification frequency. 
 
 <br>
+
 
 ### Clean Database
 ```bash

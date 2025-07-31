@@ -1,4 +1,4 @@
-import { getMachineById, getAllMachines, getMissedBackupsForMachine, getLastMissedBackupCheckTime } from "@/lib/db-utils";
+import { getMachineById, getAllMachines, getOverdueBackupsForMachine, getLastOverdueBackupCheckTime } from "@/lib/db-utils";
 import { MachineDetailsContent } from "@/components/machine-details/machine-details-content";
 import { notFound } from 'next/navigation';
 import type { Machine } from "@/lib/types";
@@ -44,18 +44,18 @@ export default async function MachineDetailsPage({
     notFound();
   }
 
-  // Get missed backups for this machine
-  const missedBackups = getMissedBackupsForMachine(machine.name);
+      // Get overdue backups for this machine
+    const overdueBackups = getOverdueBackupsForMachine(machine.name);
 
-  // Get the last missed backup check time
-  const lastMissedCheck = getLastMissedBackupCheckTime();
+    // Get the last overdue backup check time
+    const lastOverdueCheck = getLastOverdueBackupCheckTime();
 
   // Get the backup name from the URL if it exists
   const backupName = resolvedSearchParams.backup as string | undefined;
 
   return (
     <BackupSelectionProvider initialBackup={backupName || 'all'}>
-      <MachineDetailsContent machine={machine} missedBackups={missedBackups} lastMissedCheck={lastMissedCheck} />
+      <MachineDetailsContent machine={machine} overdueBackups={overdueBackups} lastOverdueCheck={lastOverdueCheck} />
     </BackupSelectionProvider>
   );
 } 

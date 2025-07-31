@@ -7,7 +7,7 @@ import { MachineDetailSummaryItems } from "@/components/machine-details/machine-
 import type { Machine } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 
-interface MissedBackup {
+interface OverdueBackup {
   machineName: string;
   backupName: string;
   lastBackupDate: string;
@@ -19,11 +19,11 @@ interface MissedBackup {
 
 interface MachineDetailsContentProps {
   machine: Machine;
-  missedBackups: MissedBackup[];
-  lastMissedCheck: string;
+  overdueBackups: OverdueBackup[];
+  lastOverdueCheck: string;
 }
 
-export function MachineDetailsContent({ machine, missedBackups, lastMissedCheck }: MachineDetailsContentProps) {
+export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck }: MachineDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   
   // Find the selected backup if one is selected
@@ -108,8 +108,8 @@ export function MachineDetailsContent({ machine, missedBackups, lastMissedCheck 
             lastBackupListCount={lastBackupListCount}
             lastBackupFileSize={lastBackupFileSize}
             selectedBackup={selectedBackup}
-            missedBackups={missedBackups}
-            lastMissedCheck={lastMissedCheck}
+            overdueBackups={overdueBackups}
+                          lastOverdueCheck={lastOverdueCheck}
           />
         </CardContent>
       </Card>
