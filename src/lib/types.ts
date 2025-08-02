@@ -61,6 +61,7 @@ export interface MachineSummary {
   expectedBackupDate: string; // ISO string or "N/A"
   expectedBackupElapsed: string; // formatted time ago or "N/A"
   lastOverdueCheck: string; // ISO string or "N/A" - time of last run of checkOverdueBackups()
+  lastNotificationSent: string; // ISO string or "N/A" - time of last notification sent
 }
 
 export interface OverallSummary {

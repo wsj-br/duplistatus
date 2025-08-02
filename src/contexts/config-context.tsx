@@ -8,6 +8,7 @@ type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 year
 type TablePageSize = 5 | 10 | 15 | 20;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
 export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize' | 'storageSize' | 'backupVersions';
+type AutoRefreshInterval = 1 | 2 | 3 | 4 | 5 | 10;
 
 interface ConfigContextProps {
   databaseCleanupPeriod: DatabaseCleanupPeriod;
@@ -18,6 +19,10 @@ interface ConfigContextProps {
   setChartTimeRange: (range: ChartTimeRange) => void;
   chartMetricSelection: ChartMetricSelection;
   setChartMetricSelection: (metric: ChartMetricSelection) => void;
+  autoRefreshInterval: AutoRefreshInterval;
+  setAutoRefreshInterval: (interval: AutoRefreshInterval) => void;
+  autoRefreshEnabled: boolean;
+  setAutoRefreshEnabled: (enabled: boolean) => void;
   cleanupDatabase: () => Promise<void>;
 }
 
@@ -28,6 +33,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [tablePageSize, setTablePageSize] = useState<TablePageSize>(defaultUIConfig.tablePageSize);
   const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>(defaultUIConfig.chartTimeRange);
   const [chartMetricSelection, setChartMetricSelection] = useState<ChartMetricSelection>(defaultUIConfig.chartMetricSelection);
+  const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(1);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -40,6 +47,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       if (config.tablePageSize) setTablePageSize(config.tablePageSize);
       if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
       if (config.chartMetricSelection) setChartMetricSelection(config.chartMetricSelection);
+      if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
+      if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
     }
   }, []);
 
@@ -50,8 +59,10 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       tablePageSize,
       chartTimeRange,
       chartMetricSelection,
+      autoRefreshInterval,
+      autoRefreshEnabled,
     }));
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartMetricSelection]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartMetricSelection, autoRefreshInterval, autoRefreshEnabled]);
 
   const cleanupDatabase = async () => {
     try {
@@ -104,6 +115,10 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setChartTimeRange,
         chartMetricSelection,
         setChartMetricSelection,
+        autoRefreshInterval,
+        setAutoRefreshInterval,
+        autoRefreshEnabled,
+        setAutoRefreshEnabled,
         cleanupDatabase,
       }}
     >

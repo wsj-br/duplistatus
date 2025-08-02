@@ -45,6 +45,12 @@ CREATE TABLE backups (
     errors INTEGER NOT NULL DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     
+    -- Message arrays stored as JSON blobs
+    messages_array TEXT DEFAULT '[]',
+    warnings_array TEXT DEFAULT '[]',
+    errors_array TEXT DEFAULT '[]',
+    available_backups TEXT DEFAULT '[]',
+    
     -- Data fields
     deleted_files INTEGER NOT NULL DEFAULT 0,
     deleted_folders INTEGER NOT NULL DEFAULT 0,
@@ -73,6 +79,7 @@ CREATE TABLE backups (
     end_time DATETIME NOT NULL,
     warnings_actual_length INTEGER NOT NULL DEFAULT 0,
     errors_actual_length INTEGER NOT NULL DEFAULT 0,
+    messages_actual_length INTEGER NOT NULL DEFAULT 0,
     
     -- BackendStatistics fields
     bytes_downloaded INTEGER NOT NULL DEFAULT 0,
@@ -108,6 +115,12 @@ CREATE TABLE backups (
 - `warnings` (INTEGER): Number of warnings during backup
 - `errors` (INTEGER): Number of errors during backup
 
+#### Message Arrays (JSON Storage)
+- `messages_array` (TEXT): JSON array of log messages from the backup operation
+- `warnings_array` (TEXT): JSON array of warning messages
+- `errors_array` (TEXT): JSON array of error messages
+- `available_backups` (TEXT): JSON array of available backup versions
+
 #### File Operation Fields
 - `deleted_files`: Number of files deleted
 - `deleted_folders`: Number of folders deleted
@@ -138,6 +151,7 @@ CREATE TABLE backups (
 - `end_time`: When the backup ended
 - `warnings_actual_length`: Number of actual warnings
 - `errors_actual_length`: Number of actual errors
+- `messages_actual_length`: Number of actual messages
 
 #### Backend Statistics Fields
 - `bytes_downloaded`: Amount of data downloaded
@@ -154,6 +168,31 @@ CREATE TABLE backups (
 - `backend_duration`: Backend operation duration
 - `backend_warnings_actual_length`: Number of backend warnings
 - `backend_errors_actual_length`: Number of backend errors
+
+### Configurations Table
+
+Stores application configuration settings as key-value pairs.
+
+```sql
+CREATE TABLE configurations (
+    key TEXT PRIMARY KEY NOT NULL,
+    value TEXT
+);
+```
+
+#### Fields
+- `key` (TEXT, PRIMARY KEY): Configuration key
+- `value` (TEXT): Configuration value (stored as JSON for complex objects)
+
+#### Common Configuration Keys
+
+- `notifications`: JSON object containing notification settings
+- `backup_settings`: JSON object containing backup-specific settings 
+- `cron_service`: JSON object containing cron service configuration
+- `overdue_backup_notifications`: JSON object tracking overdue backup notification history
+- `last_overdue_check`: String containing the timestamp of the last overdue backup check
+- `notification_frequency`: String value controlling notification frequency
+
 
 ## Indexes
 
@@ -174,7 +213,7 @@ CREATE INDEX idx_backups_backup_id ON backups(backup_id);
 
 ## Data Types
 
-- `TEXT`: Used for string values (IDs, names, statuses)
+- `TEXT`: Used for string values (IDs, names, statuses, JSON arrays)
 - `INTEGER`: Used for numeric values (sizes, counts, durations)
 - `DATETIME`: Used for timestamps
 - `BOOLEAN`: Used for flags (stored as 0 or 1 in SQLite)
@@ -301,6 +340,14 @@ The following tables show how the JSON data from the API maps to the database co
 | `Data.PartialBackup` | `partial_backup` | Whether this was a partial backup | BOOLEAN | 0 |
 | `Data.Dryrun` | `dryrun` | Whether this was a dry run | BOOLEAN | 0 |
 
+#### Message Arrays
+| JSON Path | Database Column | Description | Type | Default |
+|-----------|----------------|-------------|------|---------|
+| `Data.LogLines` | `messages_array` | Array of log messages | TEXT (JSON) | '[]' |
+| `Data.Data.Warnings` | `warnings_array` | Array of warning messages | TEXT (JSON) | '[]' |
+| `Data.Data.Errors` | `errors_array` | Array of error messages | TEXT (JSON) | '[]' |
+| `Data.Data.Messages` | `messages_array` | Alternative source for messages | TEXT (JSON) | '[]' |
+
 #### File Operation Statistics
 | JSON Path | Database Column | Description | Type | Default |
 |-----------|----------------|-------------|------|---------|
@@ -358,6 +405,7 @@ The following tables show how the JSON data from the API maps to the database co
 | `warnings` | Number of warnings | INTEGER | Copied from `warnings_actual_length` |
 | `errors` | Number of errors | INTEGER | Copied from `errors_actual_length` |
 | `created_at` | Record creation timestamp | DATETIME | Current timestamp |
+| `available_backups` | Available backup versions | TEXT (JSON) | Extracted from messages array |
 
 ### Example JSON to Database Insert
 
@@ -373,6 +421,10 @@ The following tables show how the JSON data from the API maps to the database co
     "Interrupted": false,
     "PartialBackup": false,
     "Dryrun": false,
+    
+    "LogLines": ["Starting backup...", "Backup completed successfully"],
+    "Warnings": ["Some files were skipped"],
+    "Errors": [],
     
     "DeletedFiles": 10,
     "DeletedFolders": 2,
@@ -456,6 +508,12 @@ INSERT INTO backups (
     partial_backup,       -- 0
     dryrun,               -- 0
     
+    -- Message arrays
+    messages_array,       -- '["Starting backup...", "Backup completed successfully"]'
+    warnings_array,       -- '["Some files were skipped"]'
+    errors_array,         -- '[]'
+    available_backups,    -- '["v1", "v2", "v3"]' (extracted from messages)
+    
     -- File operation statistics
     deleted_files,        -- 10
     deleted_folders,      -- 2
@@ -496,8 +554,9 @@ INSERT INTO backups (
     warnings,                  -- 0 (from WarningsActualLength)
     errors,                    -- 0 (from ErrorsActualLength)
     warnings_actual_length,    -- 0
-    errors_actual_length       -- 0
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    errors_actual_length,      -- 0
+    messages_actual_length     -- 2 (from LogLines length)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 ```
 
 Note: The actual implementation includes data validation, type conversion, and error handling. Some fields may be optional in the API but required in the database (with default values). 
@@ -572,6 +631,117 @@ The data is then processed on the client side to:
 3. Convert units (e.g., bytes to human-readable format)
 4. Apply any necessary aggregations
 
+## Configuration Management
+
+The application uses the `configurations` table to store application settings. Configuration values are stored as JSON strings and can be retrieved using the following functions:
+
+### Configuration Functions
+
+```typescript
+// Get configuration value
+getConfiguration(key: string): string | null
+
+// Set configuration value
+setConfiguration(key: string, value: string): void
+```
+
+### Common Configuration Keys
+
+- `notifications`: JSON object containing notification settings including:
+  - Ntfy configuration (URL, topic, authentication)
+  - Notification events and schedules
+  - Overdue backup settings
+  - Notification frequency settings
+
+- `backup_settings`: JSON object containing backup-specific settings including:
+  - Per-backup configuration (keyed by `machine_name:backup_name`)
+  - Expected backup intervals and units (hours/days)
+  - Overdue backup check enabled/disabled flags
+  - Notification events for each backup
+  - Timeout and alert settings
+
+- `cron_service`: JSON object containing cron service configuration including:
+  - Service port settings
+  - Task configurations (overdue-backup-check, etc.)
+  - Cron expressions and enabled/disabled states
+  - Service health check settings
+
+- `overdue_backup_notifications`: JSON object tracking overdue backup notification history:
+  - Per-backup notification timestamps (keyed by `machine_name:backup_name`)
+  - Last notification sent timestamps
+  - Last backup date when notification was sent
+  - Used to prevent duplicate notifications
+
+- `last_overdue_check`: String containing the timestamp of the last overdue backup check:
+  - ISO timestamp format
+  - Used to track when the cron service last ran
+  - Helps with debugging and monitoring
+
+- `notification_frequency`: String value controlling notification frequency:
+  - Values: `"every_day"`, `"every_week"`, `"every_month"`, `"onetime"`
+  - Controls how often overdue backup notifications are sent
+  - Defaults to `"every_day"` if not set
+
+### Configuration API Endpoints
+
+- `GET /api/configuration`: Retrieve all configuration settings
+- `POST /api/configuration`: Update configuration settings
+
+The configuration system provides a centralized way to manage application settings that persist across application restarts and can be modified through the web interface.
+
+### Configuration Data Structures
+
+#### Notifications Configuration (`notifications`)
+```json
+{
+  "ntfy": {
+    "enabled": boolean,
+    "url": string,
+    "topic": string,
+    "username": string,
+    "password": string
+  },
+  "overdueBackupCheck": {
+    "enabled": boolean,
+    "checkInterval": string
+  }
+}
+```
+
+#### Backup Settings Configuration (`backup_settings`)
+```json
+{
+  "machine_name:backup_name": {
+    "notificationEvent": "ntfy",
+    "expectedInterval": number,
+    "overdueBackupCheckEnabled": boolean,
+    "intervalUnit": "hours" | "days"
+  }
+}
+```
+
+#### Cron Service Configuration (`cron_service`)
+```json
+{
+  "port": number,
+  "tasks": {
+    "overdue-backup-check": {
+      "cronExpression": string,
+      "enabled": boolean
+    }
+  }
+}
+```
+
+#### Overdue Backup Notifications (`overdue_backup_notifications`)
+```json
+{
+  "machine_name:backup_name": {
+    "lastNotificationSent": "ISO-timestamp",
+    "lastBackupDate": "ISO-timestamp"
+  }
+}
+```
 
 
 

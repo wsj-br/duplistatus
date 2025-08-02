@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { CustomThemeProvider } from '@/contexts/theme-context';
 import { ConfigProvider } from '@/contexts/config-context';
+import { GlobalRefreshProvider } from '@/contexts/global-refresh-context';
 import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/use-toast";
@@ -100,17 +101,19 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CustomThemeProvider>
           <ConfigProvider>
-            <ToastProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <AppHeader />
-                <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
-                <div className="flex items-center justify-center gap-4">
-                  <AppVersion />
-                  <GithubLink />
+            <GlobalRefreshProvider>
+              <ToastProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <AppHeader />
+                  <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
+                  <div className="flex items-center justify-center gap-4">
+                    <AppVersion />
+                    <GithubLink />
+                  </div>
                 </div>
-              </div>
-              <Toaster />
-            </ToastProvider>
+                <Toaster />
+              </ToastProvider>
+            </GlobalRefreshProvider>
           </ConfigProvider>
         </CustomThemeProvider>
       </body>

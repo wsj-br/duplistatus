@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.5.17",
+  "version": "0.5.18",
   "private": true,
   "packageManager": "pnpm@10.13.1",
   "engines": {
@@ -16,6 +16,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
+    "show-overdue-notifications": "tsx scripts/show-overdue-notifications.ts",
+    "run-overdue-check": "tsx scripts/run-overdue-check.ts",
     "clean-db": "tsx scripts/clean-db.ts",
     "test-cron-port": "tsx scripts/test-cron-port.ts",
     "release:patch": "pnpm version patch",

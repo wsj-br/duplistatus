@@ -1,5 +1,5 @@
 import { getMachineById, getAllMachines, getOverdueBackupsForMachine, getLastOverdueBackupCheckTime } from "@/lib/db-utils";
-import { MachineDetailsContent } from "@/components/machine-details/machine-details-content";
+import { DetailAutoRefresh } from "@/components/machine-details/detail-auto-refresh";
 import { notFound } from 'next/navigation';
 import type { Machine } from "@/lib/types";
 import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
@@ -55,7 +55,13 @@ export default async function MachineDetailsPage({
 
   return (
     <BackupSelectionProvider initialBackup={backupName || 'all'}>
-      <MachineDetailsContent machine={machine} overdueBackups={overdueBackups} lastOverdueCheck={lastOverdueCheck} />
+      <DetailAutoRefresh 
+        initialData={{
+          machine,
+          overdueBackups,
+          lastOverdueCheck
+        }} 
+      />
     </BackupSelectionProvider>
   );
 } 

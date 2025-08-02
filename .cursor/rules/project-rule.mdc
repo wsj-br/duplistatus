@@ -1,8 +1,6 @@
 ---
 description: Basic project tooling and version context for AI assistance
-globs:
-  - "**/*"
-alwaysApply: true
+alwaysApply: false
 ---
 tools:
   Node.js: ^20.x
@@ -19,11 +17,13 @@ other tools:
   package manager: pnpm
 
 Network:
-  port used: 9666
+  port used in production: 9666 (for instance `pnpm start`)
+  port used in development: 8666 (for instance `pnpm run dev`)
 
 Instructions:
   - don't run the application automaticaly, use pnpm build or pnpm lint to check for errors.
   - when creating or modifying code allways use a proper TypeScript interface instead of any.
   - when creating the git commit message, don't include in the headline the version number change, but keep it in the change detail list.
+  - always follows the DRY (Don't Repeat Yourself) principle and makes the codebase more maintainable. 
 
   

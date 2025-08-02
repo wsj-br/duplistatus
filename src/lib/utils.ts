@@ -68,7 +68,7 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
   return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
 }
 
-export function formatTimeAgo(dateString: string): string {
+export function formatTimeAgo(dateString: string, currentTime?: Date): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -77,7 +77,7 @@ export function formatTimeAgo(dateString: string): string {
     }
 
     // Use a fixed reference time (server-side) to avoid hydration mismatches
-    const now = new Date();
+    const now = currentTime || new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {
@@ -128,7 +128,7 @@ export function formatTimeAgo(dateString: string): string {
   }
 }
 
-export function formatTimeElapsed(dateString: string): string {
+export function formatTimeElapsed(dateString: string, currentTime?: Date): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -137,7 +137,7 @@ export function formatTimeElapsed(dateString: string): string {
     }
 
     // Use a fixed reference time (server-side) to avoid hydration mismatches
-    const now = new Date();
+    const now = currentTime || new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {

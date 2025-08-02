@@ -12,6 +12,8 @@ This web application is used to monitor and visualise backup operations from [Du
 - **Collect logs**: Collect backup logs directly from the Duplicati servers (http/https).
 - **Dark/light Theme**: Toggle between dark and light themes for comfortable viewing.
 - **API access**: API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs.
+- **Notification System**: Ntfy.sh integration for backup notifications and overdue backup alerts
+- **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups
 - **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry).
 
 <br><br>
@@ -228,6 +230,127 @@ Important notes on the messages sent by Duplicati:
 
 <br>
 
+# Notification System
+
+**duplistatus** includes a comprehensive notification system using [ntfy.sh](https://ntfy.sh/) for push notifications. The system supports:
+
+## Features
+
+- **Backup Notifications**: Receive notifications for successful, failed, or warning backup operations
+- **Overdue Backup Alerts**: Automated monitoring and alerting for overdue scheduled backups
+- **Customizable Templates**: Configurable message templates with variable substitution
+- **Flexible Scheduling**: Configurable check intervals and notification frequencies
+- **Test Notifications**: Built-in testing functionality to verify notification setup
+
+## Configuration
+
+### Ntfy.sh Setup
+
+The system will generate a random topic (public) on instalation or in the configuration page. 
+
+If you wish to use your own topic or use other ntfy functionalities (for instance emails):
+
+1. **Create an ntfy.sh account** at [ntfy.sh](https://ntfy.sh/)
+2. **Create a topic** for your notifications
+3. **Configure the notification settings** in the duplistatus web interface:
+   - Go to Settings → Notifications
+   - Enter your ntfy.sh URL and topic
+   - Configure notification templates and priorities
+
+### Notification and Overdue Backup Monitoring
+
+Configure per-backup monitoring settings:
+
+- **Notification Events**: Choose when to send notifications (success, warnings, errors, or all)
+- **Expected Interval**: Set how often each backup is expected to run (hours or days)
+- **Check Frequency**: Configure how often to check for overdue backups
+- **Notification Frequency**: Set how often to send overdue alerts (once, daily, weekly, monthly)
+
+### Notification Templates
+
+The system supports customizable templates with variables for three different notification types:
+
+#### 1. Success Notifications
+Sent when a backup completes successfully.
+
+**Default Template:**
+- **Title**: `✅ {status} - {backup_name} @ {machine_name}`
+- **Message**: `Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n💾 Store usage: {storage_size}\n🔃 Available versions: {available_versions}`
+- **Priority**: `default`
+- **Tags**: `duplicati, duplistatus, success`
+
+**Available Variables:**
+- `{machine_name}`: Name of the machine
+- `{backup_name}`: Name of the backup operation
+- `{status}`: Backup status (Success)
+- `{backup_date}`: Date and time of the backup
+- `{duration}`: Duration of the backup operation
+- `{storage_size}`: Storage usage information (formatted)
+- `{available_versions}`: Number of available backup versions
+- `{file_count}`: Number of files processed
+- `{file_size}`: Total size of files backed up
+- `{uploaded_size}`: Amount of data uploaded
+- `{warnings}`: Number of warnings (if any)
+- `{errors}`: Number of errors (if any)
+
+#### 2. Warning Notifications
+Sent when a backup completes with warnings or errors.
+
+**Default Template:**
+- **Title**: `⚠️ {status} - {backup_name} @ {machine_name}`
+- **Message**: `Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings} warnings\n🛑 {errors} errors.`
+- **Priority**: `high`
+- **Tags**: `duplicati, duplistatus, warning, error`
+
+**Available Variables:**
+- `{machine_name}`: Name of the machine
+- `{backup_name}`: Name of the backup operation
+- `{status}`: Backup status (Warning, Error, Fatal)
+- `{backup_date}`: Date and time of the backup
+- `{duration}`: Duration of the backup operation
+- `{warnings}`: Number of warnings
+- `{errors}`: Number of errors
+- `{file_count}`: Number of files processed
+- `{file_size}`: Total size of files backed up
+- `{uploaded_size}`: Amount of data uploaded
+- `{storage_size}`: Storage usage information (formatted)
+- `{available_versions}`: Number of available backup versions
+
+#### 3. Overdue Backup Notifications
+Sent when a backup is overdue based on the configured interval.
+
+**Default Template:**
+- **Title**: `🕑 Overdue - {backup_name} @ {machine_name}`
+- **Message**: `The backup {backup_name} is overdue on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.`
+- **Priority**: `default`
+- **Tags**: `duplicati, duplistatus, overdue`
+
+**Available Variables:**
+- `{machine_name}`: Name of the machine
+- `{backup_name}`: Name of the backup operation
+- `{last_backup_date}`: Date and time of the last backup
+- `{last_elapsed}`: Time elapsed since the last backup
+- `{backup_interval_type}`: Interval unit (hours/days)
+- `{backup_interval_value}`: Expected interval value
+- `{expected_backup_date}`: When the backup was expected
+- `{machine_id}`: Machine identifier
+
+#### Template Configuration
+
+You can customize these templates in the Settings → Notifications page:
+
+1. **Edit Templates**: Modify the title, message, priority, and tags for each notification type
+2. **Test Templates**: Send a notification to your topic to preview how your notification templates will appear.
+3. **Variable Substitution**: All variables are automatically replaced with actual values when notifications are sent
+4. **Priority Levels**: Choose from `min`, `low`, `default`, `high`, `urgent`, `emergency`
+5. **Tags**: Add custom tags to help organize and filter notifications
+
+
+> [!TIP]
+> You can use any combination of variables in your templates. Variables not found in the data will be left as-is in the message.
+
+<br>
+
 # Environment Variables
 
 The application supports the following environment variables for configuration:
@@ -258,7 +381,7 @@ The application automatically checks and updates the cron configuration in the d
 
 To integrate **duplistatus** with [Homepage](https://gethomepage.dev/), you can add a widget to your `services.yaml` configuration file using the [Custom API widget](https://gethomepage.dev/widgets/services/customapi/) to fetch backup status information from **duplistatus**.
 
-## Summary 
+## Summary Widget
 
 Shows the overall summary of the backup data stored in duplistatus's database. Below is an example showing how to configure this integration.
 
@@ -308,7 +431,7 @@ This will show:
 >    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
 
 
-## Last backup information
+## Last backup information Widget
 
 Shows the latest backup information for a given machine or server. The example below shows how to configure this integration.
 
@@ -352,165 +475,16 @@ This will show:
 
 <br><br>
 
+# API Reference
 
-# API Endpoints
+For detailed information about all available API endpoints, request/response formats, and integration examples, please refer to the [API Endpoints Documentation](API-ENDPOINTS.md).
 
-The following endpoints are available:
-
-- [Upload Backup Data](#upload-backup-data)
-- [Get Latest Backup](#get-latest-backup)
-- [Get Overall Summary](#get-overall-summary)
-- [Health Check](#health-check)
-- [Collect Backups](#collect-backups)
-- [Cleanup Backups](#cleanup-backups)
-
-
-<br>
-
-## Upload Backup Data
-- **Endpoint**: `/api/upload`
-- **Method**: POST
-- **Description**: Uploads backup operation data for a machine.
-- **Request Body**: JSON sent by Duplicati with the following options:
-
-  ```bash
-  --send-http-url=http://my.local.server:9666/api/upload
-  --send-http-result-output-format=Json
-  --send-http-log-level=Information
-  ```
-  
-- **Response**: 
-  ```json
-  {
-    "success": true
-  }
-  ```
-
-<br>
-
-## Get Latest Backup
-- **Endpoint**: `/api/lastbackup/:machineId`
-- **Method**: GET
-- **Description**: Retrieves the latest backup information for a specific machine.
-- **Parameters**:
-  - `machineId`: the machine identifier (ID or name)
-
-> [!NOTE]
-> The machine identifier has to be URL Encoded.
-  
-- **Response**:
-  ```json
-  {
-    "machine": {
-      "id": "unique-machine-id",
-      "name": "Machine Name",
-      "created_at": "2024-03-20T10:00:00Z"
-    },
-    "latest_backup": {
-      "id": "backup-id",
-      "name": "Backup Name",
-      "date": "2024-03-20T10:00:00Z",
-      "status": "Success",
-      "warnings": 0,
-      "errors": 0,
-      "fileCount": 249426,
-      "fileSize": 113395849938,
-      "uploadedSize": 331318892,
-      "duration": "00:38:31",
-      "duration_seconds": 2311.6018052,
-      "durationInMinutes": 38.52669675333333,
-      "knownFileSize": 27203688543,
-      "backup_list_count": 10
-    },
-    "status": 200
-  }
-  ```
-
-<br>
-
-## Get Overall Summary
-- **Endpoint**: `/api/summary`
-- **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all machines.
-- **Response**:
-  ```json
-  {
-    "totalMachines": 3,
-    "totalBackups": 9,
-    "totalUploadedSize": 2397229507,
-    "totalStorageUsed": 43346796938,
-    "totalBackupSize": 126089687807,
-    "secondsSinceLastBackup": 264
-  }
-  ```
-
-> [!NOTE]
->    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
-
-<br>
-
-## Health Check
-- **Endpoint**: `/api/health`
-- **Method**: GET
-- **Description**: Checks the health status of the application and database.
-- **Response**:
-  ```json
-  {
-    "status": "healthy",
-    "database": "connected",
-    "basicConnection": true,
-    "tablesFound": 2,
-    "tables": ["machines", "backups"],
-    "preparedStatements": true,
-    "timestamp": "2024-03-20T10:00:00Z"
-  }
-  ```
-
-<br>
-
-## Collect Backups
-- **Endpoint**: `/api/backups/collect`
-- **Method**: POST
-- **Description**: Collects backup data directly from a Duplicati server via its API.
-- **Request Body**:
-  ```json
-  {
-    "hostname": "duplicati-server.local",
-    "port": 8200,
-    "password": "your-password",
-    "protocol": "http",
-    "allowSelfSigned": false
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "message": "Successfully collected 5 backups",
-    "processedCount": 5,
-    "status": 200
-  }
-  ```
-
-<br>
-
-## Cleanup Backups
-- **Endpoint**: `/api/backups/cleanup`
-- **Method**: POST
-- **Description**: Deletes old backup data based on retention period.
-- **Request Body**:
-  ```json
-  {
-    "retentionPeriod": "6 months"
-  }
-  ```
-- **Retention Periods**: `"6 months"`, `"1 year"`, `"2 years"`, `"Delete all data"`
-- **Response**:
-  ```json
-  {
-    "message": "Successfully deleted 15 old backups",
-    "status": 200
-  }
-  ```
+The API provides endpoints for:
+- **Data Management**: Upload backup data, retrieve machine and backup information
+- **Configuration**: Manage notification settings and backup configurations
+- **Monitoring**: Health checks and system status
+- **Integration**: Homepage and third-party tool integration
+- **Maintenance**: Backup collection and cleanup operations
 
 <br><br>
 
@@ -520,27 +494,4 @@ Detailed instructions on how to download the source code, make changes, debug, a
 
 This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH-AI.md).
 
-<br><br>
-
-# Copyright Notice
-
-**Copyright © 2025 Waldemar Scudeller Jr.**
-
-```
-SPDX-License-Identifier: Apache-2.0
-```
-
-## License Summary
-
-This work is licensed under the Apache License, Version 2.0 (the "License").
-You may not use this work except in compliance with the License.  
-You may obtain a copy of the License at:
-
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-Unless required by applicable law or agreed to in writing, software  
-distributed under the License is distributed on an **"AS IS" BASIS**,  
-**WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND**, either express or implied.  
-See the License for the specific language governing permissions and  
-limitations under the License.
 

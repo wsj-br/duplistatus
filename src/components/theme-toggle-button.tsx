@@ -14,7 +14,7 @@ export function ThemeToggleButton() {
   }, []);
 
   return (
-    <Button variant="outline" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+    <Button variant="outline" size="icon" onClick={toggleTheme} title="Toggle theme" aria-label="Toggle theme">
       {isClient ? (
         theme === "light" ? (
           <Moon className="h-[1.2rem] w-[1.2rem]" />

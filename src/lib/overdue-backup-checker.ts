@@ -1,6 +1,6 @@
 import { dbUtils } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
-import { getConfiguration, setConfiguration, getNotificationFrequencyConfig } from '@/lib/db-utils';
+import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, calculateExpectedBackupDate } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { formatTimeAgo } from '@/lib/utils';
 
@@ -16,8 +16,15 @@ interface LastNotificationTimestamps {
 }
 
 // Core function that can be called directly
-export async function checkOverdueBackups() {
+export async function checkOverdueBackups(checkDate?: Date) {
   try {
+    // Get current time
+    const currentTime = checkDate || new Date();
+    const currentTimeMs = currentTime.getTime();
+
+    if(checkDate) {
+      console.log('[checkOverdueBackups] Current time: '+currentTime.toLocaleString());
+    }
     // Get notification configuration
     const configJson = getConfiguration('notifications');
     const backupSettingsJson = getConfiguration('backup_settings');
@@ -49,7 +56,7 @@ export async function checkOverdueBackups() {
     const lastNotifications: LastNotificationTimestamps = lastNotificationJson 
       ? JSON.parse(lastNotificationJson) 
       : {};
-
+      
     // Get machines summary for machine ID lookup
     const machinesSummary = dbUtils.getMachinesSummary() as { 
       id: string; 
@@ -109,11 +116,6 @@ export async function checkOverdueBackups() {
         continue;
       }
 
-      // Calculate hours since last backup
-      const lastBackupTime = new Date(latestBackup.date).getTime();
-      const currentTime = new Date().getTime();
-      const hoursSinceLastBackup = (currentTime - lastBackupTime) / (1000 * 60 * 60);
-
       // Always update the lastBackupDate for this backup to ensure dashboard accuracy
       // This ensures the dashboard shows real-time overdue backup counts
       if (!updatedNotifications[backupKey]) {
@@ -126,22 +128,24 @@ export async function checkOverdueBackups() {
         updatedNotifications[backupKey].lastBackupDate = latestBackup.date;
       }
       
-      // Convert expected interval to hours based on the configured unit
-      let expectedIntervalInHours: number;
+      // Get interval configuration
       const intervalUnit = backupConfig.intervalUnit || 'hours'; // Fallback for legacy configs
-      if (intervalUnit === 'days') {
-        expectedIntervalInHours = backupConfig.expectedInterval * 24;
-      } else {
-        expectedIntervalInHours = backupConfig.expectedInterval;
-      }
-
-      // Check if backup is overdue
-      if (hoursSinceLastBackup > expectedIntervalInHours) {
+      const expectedInterval = backupConfig.expectedInterval;
+      
+      // Calculate expected backup date using the helper function
+      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, intervalUnit);
+      
+      // Check if backup is overdue by comparing expected date with current time
+      const expectedBackupTime = new Date(expectedBackupDate);
+      
+      // Check if backup is overdue (expected date is in the past)
+      if (expectedBackupDate !== 'N/A' && !isNaN(expectedBackupTime.getTime()) && currentTime > expectedBackupTime) {
         overdueBackupsFound++;
 
         // Check if we should send a notification (with resend frequency logic)
         const lastNotification = lastNotifications[backupKey];
         let shouldSendNotification = false;
+        
         if (!lastNotification || !lastNotification.lastNotificationSent || lastNotification.lastNotificationSent === "") {
           // No notification sent yet or lastNotificationSent is empty
           shouldSendNotification = true;
@@ -175,14 +179,19 @@ export async function checkOverdueBackups() {
                 default:
                   notificationIntervalMs = 0;
               }
-              if (notificationIntervalMs > 0 && (currentTime - lastNotificationSent.getTime() >= notificationIntervalMs)) {
+              
+              if (notificationIntervalMs > 0 && (currentTimeMs - lastNotificationSent.getTime() >= notificationIntervalMs)) {
                 shouldSendNotification = true;
+              } else {
+                shouldSendNotification = false;
               }
+            } else {
+              // If notificationFrequency is 'onetime', do not resend
+              shouldSendNotification = false;
             }
-            // If notificationFrequency is 'onetime', do not resend
           }
         }
-
+        
         if (shouldSendNotification) {
           try {
             // Calculate overdue time ago using formatTimeAgo
@@ -218,7 +227,7 @@ export async function checkOverdueBackups() {
             notificationsSent++;
             
             // Update the notification timestamp when notification is sent
-            updatedNotifications[backupKey].lastNotificationSent = new Date().toISOString();
+            updatedNotifications[backupKey].lastNotificationSent = currentTime.toISOString();
           } catch (error) {
             console.error(`Failed to send overdue backup notification for ${backupKey}:`, error instanceof Error ? error.message : String(error));
           }
@@ -230,8 +239,8 @@ export async function checkOverdueBackups() {
     setConfiguration('overdue_backup_notifications', JSON.stringify(updatedNotifications));
 
     // Save the timestamp of when this check was last run
-    setConfiguration('last_overdue_check', new Date().toISOString());
-
+    setConfiguration('last_overdue_check', currentTime.toISOString());
+    
     return {
       message: 'Overdue backup check completed',
       statistics: {

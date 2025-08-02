@@ -23,12 +23,14 @@ export function DisplayMenu() {
     setTablePageSize,
     chartTimeRange,
     setChartTimeRange,
+    autoRefreshInterval,
+    setAutoRefreshInterval,
   } = useConfig();
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title="Display Settings">
           <MonitorCog className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -75,6 +77,25 @@ export function DisplayMenu() {
                   <SelectItem value="1 year">Last year</SelectItem>
                   <SelectItem value="2 years">Last 2 years</SelectItem>
                   <SelectItem value="All data">All available data</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="auto-refresh-interval">Auto-refresh Interval</Label>
+              <Select
+                value={autoRefreshInterval.toString()}
+                onValueChange={(value) => setAutoRefreshInterval(parseInt(value) as 1 | 2 | 3 | 4 | 5 | 10)}
+              >
+                <SelectTrigger id="auto-refresh-interval">
+                  <SelectValue placeholder="Select refresh interval" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 minute</SelectItem>
+                  <SelectItem value="2">2 minutes</SelectItem>
+                  <SelectItem value="3">3 minutes</SelectItem>
+                  <SelectItem value="4">4 minutes</SelectItem>
+                  <SelectItem value="5">5 minutes</SelectItem>
+                  <SelectItem value="10">10 minutes</SelectItem>
                 </SelectContent>
               </Select>
             </div>

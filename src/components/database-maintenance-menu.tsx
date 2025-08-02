@@ -175,7 +175,7 @@ export function DatabaseMaintenanceMenu() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title="Database Maintenance">
           <Database className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

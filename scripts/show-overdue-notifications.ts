@@ -1,4 +1,4 @@
-import { getConfiguration } from '../src/lib/db-utils';
+import { getConfiguration, getLastOverdueBackupCheckTime } from '../src/lib/db-utils';
 import { formatTimeElapsed } from '../src/lib/utils';
 
 interface NotificationTimestamp {
@@ -10,9 +10,15 @@ interface OverdueBackupNotifications {
   [backupKey: string]: NotificationTimestamp;
 }
 
-function displayOverdueNotifications(): void {
+export function displayOverdueNotifications(checkDate?: Date): void {
   try {
-    console.log('Overdue Backup Notifications Configuration\n');
+    // Get current time
+    const currentTime = checkDate || new Date();
+
+    // If checkDate is provided, display a message to indicate that it is being used as the current time
+    if(checkDate) {
+      console.log('  Using current time as: '+currentTime.toLocaleString());
+    }
 
     // Get the current overdue backup notifications configuration
     const lastNotificationJson = getConfiguration('overdue_backup_notifications');
@@ -42,11 +48,11 @@ function displayOverdueNotifications(): void {
     }), 'Last Backup Date'.length);
     const maxNotificationElapsedLength = Math.max(...backupKeys.map(key => {
       const timestamp = notifications[key].lastNotificationSent;
-      return timestamp ? formatTimeElapsed(timestamp).length : 'N/A'.length;
+      return timestamp ? formatTimeElapsed(timestamp, currentTime).length : 'N/A'.length;
     }), 'Notification Elapsed'.length);
     const maxBackupElapsedLength = Math.max(...backupKeys.map(key => {
       const timestamp = notifications[key].lastBackupDate;
-      return timestamp ? formatTimeElapsed(timestamp).length : 'N/A'.length;
+      return timestamp ? formatTimeElapsed(timestamp, currentTime).length : 'N/A'.length;
     }), 'Backup Elapsed'.length);
 
     // Calculate max length for the difference column
@@ -74,8 +80,8 @@ function displayOverdueNotifications(): void {
       'Notification-Backup Diff'.padEnd(maxDifferenceLength)
     ].join(' | ');
 
-    console.log(header);
-    console.log('-'.repeat(header.length));
+    console.log('  '+header);
+    console.log('  '+'-'.repeat(header.length));
 
     // Display each entry
     for (const [backupKey, notification] of Object.entries(notifications)) {
@@ -90,11 +96,11 @@ function displayOverdueNotifications(): void {
         : 'N/A';
 
       const notificationElapsed = lastNotificationSent && lastNotificationSent !== "" 
-        ? formatTimeElapsed(lastNotificationSent) 
+        ? formatTimeElapsed(lastNotificationSent, currentTime) 
         : 'N/A';
 
       const backupElapsed = lastBackupDate && lastBackupDate !== "" 
-        ? formatTimeElapsed(lastBackupDate) 
+        ? formatTimeElapsed(lastBackupDate, currentTime) 
         : 'N/A';
 
       // Calculate difference between notification sent and backup date
@@ -127,10 +133,28 @@ function displayOverdueNotifications(): void {
         notificationBackupDiff.padEnd(maxDifferenceLength)
       ].join(' | ');
 
-      console.log(row);
+      console.log('  '+row);
     }
 
-    console.log(`\nTotal entries: ${Object.keys(notifications).length}`);
+    console.log(`\n  Total entries: ${Object.keys(notifications).length}`);
+        
+    const lastOverdueCheck = getLastOverdueBackupCheckTime();
+    
+    if (lastOverdueCheck && lastOverdueCheck !== 'N/A') {
+      try {
+        const lastCheckDate = new Date(lastOverdueCheck);
+        if (!isNaN(lastCheckDate.getTime())) {
+          console.log(`\n\n     Last Overdue Check: ${lastCheckDate.toLocaleString()}  (${formatTimeElapsed(lastOverdueCheck, currentTime)} ago)`);
+        } else {
+          console.log('Last Overdue Check: Invalid date format');
+        }
+      } catch (error) {
+        console.log(`Last Overdue Check: ${lastOverdueCheck} (raw value)`);
+        console.error('Error parsing last overdue check date:', error instanceof Error ? error.message : String(error));
+      }
+    } else {
+      console.log('Last Overdue Check: No overdue check has been performed yet');
+    }
     
   } catch (error) {
     console.error('Error displaying overdue notifications:', error instanceof Error ? error.message : String(error));
@@ -138,7 +162,11 @@ function displayOverdueNotifications(): void {
   }
 }
 
-// Main execution
-displayOverdueNotifications();
-console.log('\nScript completed successfully!');
-process.exit(0); 
+// Main execution - only run when this file is executed directly
+if (require.main === module) {
+  console.log('\n  Overdue Backup Notifications Configuration\n');
+  displayOverdueNotifications();
+  console.log('           Current time: '+new Date().toLocaleString());
+  console.log('\n');
+  process.exit(0);
+} 

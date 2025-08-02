@@ -157,7 +157,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, onIc
             onIconClick(availableBackups, currentBackupDate, event);
           }}
           className="text-blue-600 hover:text-blue-800 transition-colors"
-          title="View available versions"
+          title="Click to view available versions"
         >
           <History className="h-4 w-4" />
         </button>

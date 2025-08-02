@@ -46,7 +46,7 @@ export const defaultCronConfig: CronServiceConfig = {
   })(),
   tasks: {
     'overdue-backup-check': {
-      cronExpression: '0,20,40 * * * *', // Every 20 minutes
+      cronExpression: '*/20 * * * *', // Every 20 minutes
       enabled: true
     }
   }

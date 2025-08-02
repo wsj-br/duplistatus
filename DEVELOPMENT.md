@@ -4,7 +4,7 @@
 
 - docker / docker compose
 - Node.js 18.19.0 or later
-- pnpm 10.12.4 or later (install with `npm install -g pnpm`)
+- pnpm 10.13.1 or later (install with `npm install -g pnpm`)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 
@@ -27,15 +27,11 @@ pnpm install
 
 3. Start the development server:
 
-For the default tcp port (9666)
+For the default tcp port (8666)
 ```bash
 pnpm run dev
 ```
 
-For an alternative TCP port (8666)
-```bash
-pnpm run dev-alt
-```
 
 <br>
 
@@ -60,11 +56,13 @@ pnpm build
 pnpm start-local
 ```
 
+
 ### Start a docker stack (docker compose)
 
 ```bash
 docker compose up --build -d
 ```
+
 
 The Docker image supports multiple architectures (AMD64 and ARM64) and will automatically use the appropriate version for your system.
 
@@ -82,25 +80,51 @@ This script generates and uploads test backup data for multiple machines.
 
 <br>
 
-### 
-
-```bash
-# Add 24 hours to all lastNotificationSent timestamps
-pnpm tsx scripts/add-hours-to-notifications.ts 24
-
-# Subtract 24 hours from all lastNotificationSent timestamps  
-pnpm tsx scripts/add-hours-to-notifications.ts -24
-```
-Change the notification timestamp `lastNotificationSent` to test the notification frequency. 
-
-<br>
-
 
 ### Clean Database
 ```bash
 pnpm run clean-db
 ```
 Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
+
+<br>
+
+### Show the overdue notifications contents (to debug notification system)
+```bash
+pnpm show-overdue-notifications
+```
+
+
+### Run overdue-check at a specific date/time (to debug notification system)
+
+```bash
+pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
+``` 
+
+
+### Test CRON_PORT functionality
+```bash
+pnpm test-cron-port
+```
+Tests the CRON_PORT environment variable handling and configuration.
+
+<br>
+
+### Cron Service
+
+The application includes a separate cron service for handling scheduled tasks:
+
+#### Start cron service in development mode:
+```bash
+pnpm cron:dev
+```
+
+#### Start cron service in production mode:
+```bash
+pnpm cron:start
+```
+
+The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications.
 
 <br>
 
@@ -135,6 +159,7 @@ Perform a complete Docker cleanup, which is useful for:
 ```bash
 scripts/convert_svg_logo.sh
 ```
+
 
 > The svg files are located in the `docs` folder. This script requires ImageMagick to be installed on your system.
 
@@ -174,6 +199,7 @@ pnpm run release:minor
 # For major changes that may break compatibility (x.0.0)
 pnpm run release:major
 ```
+
 
 These commands will:
 1. Update the version in package.json
@@ -223,24 +249,28 @@ This script cleans up Docker resources:
 
 1. **Runtime & Package Management**
    - Node.js (>= 18.19.0)
-   - pnpm (v10.12.4)
+   - pnpm (v10.13.1)
 
 2. **Core Frameworks & Libraries**
-   - Next.js (^15.3.4) – React-based SSR/SSG framework (uses Turbopack in dev)
+   - Next.js (^15.4.4) – React-based SSR/SSG framework
    - React (^19.1.0)
    - Radix UI (@radix-ui/react-*) – headless component primitives
    - Tailwind CSS (^4.1.11) + tailwindcss-animate plugin
    - PostCSS (postcss.config.mjs)
    - Better-sqlite3 (^12.2.0) + SQLite3 (data store)
-   - Recharts (^3.0.2) – charting library
-   - react-day-picker (^9.7.0) – date picker
-   - react-hook-form (^7.59.0) – forms
-   - lucide-react (^0.525.0) – icon components
+   - Recharts (^3.1.0) – charting library
+   - react-day-picker (^9.8.1) – date picker
+   - react-hook-form (^7.61.1) – forms
+   - lucide-react (^0.526.0) – icon components
    - clsx (^2.1.1) – utility for conditional classNames
    - class-variance-authority (^0.7.1) – variant styling helper
    - date-fns (^4.1.0) – date utilities
    - uuid (^11.1.0) – unique IDs
    - server-only – Next helper for server-only modules
+   - express (^5.1.0) – web framework for cron service
+   - node-cron (^4.2.1) – cron job scheduling
+   - string-template (^1.0.0) – string templating
+   - tailwind-merge (^3.3.1) – Tailwind class merging utility
 
 3. **Type Checking & Linting**
    - TypeScript (^5.8.3) + tsc (noEmit)
@@ -266,11 +296,19 @@ This script cleans up Docker resources:
    - `tailwind.config.ts`
    - `postcss.config.mjs`
    - `pnpm-workspace.yaml`
+   - `components.json` (shadcn/ui configuration)
 
 7. **Version Control & Release**
    - Git (preinstall hook enforces pnpm)
    - Semantic-versioning scripts (`release:patch`, `release:minor`, `release:major`)
    - GitHub Releases (via Actions on `release` events)
 
-8. **Other tools**
+8. **Cron Service**
+   - Separate cron service (`src/cron-service/`) for scheduled tasks
+   - Runs on separate port (8667 dev, 9667 prod)
+   - Handles overdue backup notifications and other scheduled tasks
+   - Uses `keep-cron-alive.sh` script for process management
+
+9. **Other tools**
    - ["Easy Screenshot"](https://webextension.org/listing/screenshot.html) extension 
+

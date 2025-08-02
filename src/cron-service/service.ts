@@ -20,11 +20,7 @@ class CronService {
   }
 
 
-
-
   private setupExpress() {
-
- 
 
     this.app.use(express.json());
 
@@ -93,7 +89,6 @@ class CronService {
   }
 
   private reloadConfiguration() {
-    console.log('[CronService] ' + timestamp() + ': Stopping all tasks for configuration reload');
     // Stop all current tasks
     this.stop();
     
@@ -109,7 +104,6 @@ class CronService {
   }
 
   private setupTasks() {
-    console.log('[CronService] ' + timestamp() + ': Setting up tasks with new configuration');
     Object.entries(this.config.tasks).forEach(([taskName, config]) => {
       if (config.enabled) {
         this.startTask(taskName);
@@ -118,7 +112,6 @@ class CronService {
   }
 
   private startTask(taskName: string) {
-    console.log(`[CronService] ${timestamp()}: Setting up task: ${taskName}`);
     const taskConfig = this.config.tasks[taskName];
     if (!taskConfig || !cron.validate(taskConfig.cronExpression)) {
       const error = `Invalid task configuration for ${taskName}`;
@@ -127,7 +120,7 @@ class CronService {
     }
 
     const task = cron.schedule(taskConfig.cronExpression, async () => {
-      console.log(`[CronService] ${timestamp()}: Running scheduled task: ${taskName}`);
+      //console.log(`[CronService] ${timestamp()}: Running scheduled task: ${taskName}`);
       await this.executeTask(taskName);
     }, {
       timezone: 'UTC'
@@ -138,7 +131,7 @@ class CronService {
   }
 
   private async executeTask(taskName: string): Promise<TaskExecutionResult> {
-    console.log(`[CronService] ${timestamp()}: Executing task: ${taskName}`);
+    // console.log(`[CronService] ${timestamp()}: Executing task: ${taskName}`);
     try {
       let result: unknown;
       
@@ -153,7 +146,7 @@ class CronService {
       this.lastRunTimes[taskName] = new Date().toISOString();
       delete this.errors[taskName];
 
-      console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully:`, result);
+      console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: checked:${result.statistics.checkedBackups}, overdue:${result.statistics.overdueBackupsFound}, notifications:${result.statistics.notificationsSent}`);
       return {
         taskName,
         success: true,

@@ -12,29 +12,31 @@ function getBackupKey(machineName: string, backupName: string): BackupKey {
   return `${machineName}:${backupName}`;
 }
 
-// Helper function to check if a backup is overdue
-function isBackupOverdue(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
+// Helper function to check if a backup is overdue based on expected interval
+function isBackupOverdueByInterval(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
   try {
-    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-    if (!lastNotificationJson || !lastBackupDate) return false;
+    if (!lastBackupDate || lastBackupDate === 'N/A') return false;
     
-    const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
-      lastNotificationSent: string; // ISO timestamp
-      lastBackupDate: string; // ISO timestamp
-    }>;
+    // Get backup interval settings
+    const backupSettings = getBackupIntervalSettings(machineName, backupName);
+    if (!backupSettings) return false;
     
-    const backupKey = getBackupKey(machineName, backupName);
-    const notification = lastNotifications[backupKey];
+    // Calculate expected backup date
+    const expectedBackupDate = calculateExpectedBackupDate(
+      lastBackupDate, 
+      backupSettings.expectedInterval, 
+      backupSettings.intervalUnit
+    );
     
-    if (!notification) return false;
+    if (expectedBackupDate === 'N/A') return false;
     
-    const lastBackupDateObj = new Date(lastBackupDate);
-    const lastNotificationSent = new Date(notification.lastNotificationSent);
+    // Check if current time is past the expected backup date
+    const currentTime = new Date();
+    const expectedTime = new Date(expectedBackupDate);
     
-    // If lastBackupDate is older than lastNotificationSent, it's an overdue backup
-    return lastBackupDateObj < lastNotificationSent;
+    return currentTime > expectedTime;
   } catch (error) {
-    console.error('Error checking if backup is overdue:', error instanceof Error ? error.message : String(error));
+    console.error('Error checking if backup is overdue by interval:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
@@ -92,7 +94,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
 }
 
 // Helper function to calculate expected backup date
-function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hours' | 'days'): string {
+export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hours' | 'days'): string {
   try {
     const lastBackup = new Date(lastBackupDate);
     if (isNaN(lastBackup.getTime())) {
@@ -365,15 +367,36 @@ export function getMachinesSummary() {
       }
 
       // Check if backup is overdue and override status if needed
-      let isOverdue : boolean =false;
+      let isOverdue : boolean = false;
       if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
-        isOverdue = isBackupOverdue(row.name, row.last_backup_name, row.last_backup_date);
+        isOverdue = isBackupOverdueByInterval(row.name, row.last_backup_name, row.last_backup_date);
       }
 
       // Get notification event for this backup
       const notificationEvent = row.last_backup_name ? 
         getNotificationEvent(row.name, row.last_backup_name) : 
         undefined;
+
+      // Get last notification sent (if any)
+      let lastNotificationSent = 'N/A';
+      if (row.last_backup_name) {
+        const backupKey = `${row.name}:${row.last_backup_name}`;
+        const lastNotificationJson = getConfiguration('overdue_backup_notifications');
+        if (lastNotificationJson) {
+          try {
+            const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
+              lastNotificationSent: string;
+              lastBackupDate: string;
+            }>;
+            const notification = lastNotifications[backupKey];
+            if (notification && notification.lastNotificationSent) {
+              lastNotificationSent = notification.lastNotificationSent;
+            }
+          } catch (error) {
+            console.warn('Failed to parse overdue backup notifications:', error);
+          }
+        }
+      }
 
       // Calculate expected backup date and elapsed time
       let expectedBackupDate = 'N/A';
@@ -408,7 +431,8 @@ export function getMachinesSummary() {
         notificationEvent,
         expectedBackupDate,
         expectedBackupElapsed,
-        lastOverdueCheck
+        lastOverdueCheck,
+        lastNotificationSent
       };
     });
   });
@@ -679,7 +703,7 @@ export function setNotificationFrequencyConfig(value: NotificationFrequencyConfi
   setConfiguration("notification_frequency", value);
 } 
 
-// Helper function to get overdue backups for a specific machine
+// Helper function to get overdue backups for a specific machine based on interval calculation
 export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
   machineName: string;
   backupName: string;
@@ -690,12 +714,14 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
   expectedBackupElapsed: string;
 }> {
   try {
-    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-    if (!lastNotificationJson) return [];
+    const backupSettingsJson = getConfiguration('backup_settings');
+    if (!backupSettingsJson) return [];
     
-    const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
-      lastNotificationSent: string; // ISO timestamp
-      lastBackupDate: string; // ISO timestamp
+    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+      notificationEvent: NotificationEvent;
+      expectedInterval: number;
+      overdueBackupCheckEnabled: boolean;
+      intervalUnit: 'hours' | 'days';
     }>;
     
     const overdueBackups: Array<{
@@ -708,49 +734,79 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
       expectedBackupElapsed: string;
     }> = [];
     
-    for (const backupKey in lastNotifications) {
-      const notification = lastNotifications[backupKey];
-      const lastBackupDate = new Date(notification.lastBackupDate);
-      const lastNotificationSent = new Date(notification.lastNotificationSent);
-      
-      // Parse the backup key to get machine name and backup name
+    // Get the latest backup for each backup configuration
+    for (const backupKey in backupSettings) {
       const [machineName, backupName] = backupKey.split(':');
       
       // Check if this is for the requested machine (by name or ID)
       if (machineName === machineIdentifier || machineName.toLowerCase() === machineIdentifier.toLowerCase()) {
-        // If lastBackupDate is older than lastNotificationSent, it's a overdue backup
-        if (lastBackupDate < lastNotificationSent) {
+        const settings = backupSettings[backupKey];
+        
+        // Skip if overdue backup check is not enabled
+        if (!settings.overdueBackupCheckEnabled) continue;
+        
+        // Get machine ID for database lookup
+        const machinesSummary = getMachinesSummary();
+        const machine = machinesSummary.find(m => m.name === machineName);
+        if (!machine) continue;
+        
+        // Get the latest backup for this machine and backup name
+        const latestBackup = dbUtils.getLatestBackupByName(machine.id, backupName) as {
+          date: string;
+          machine_name: string;
+          backup_name?: string;
+        } | null;
+        
+        if (!latestBackup) continue;
+        
+        // Calculate expected backup date and check if overdue
+        const expectedBackupDate = calculateExpectedBackupDate(
+          latestBackup.date, 
+          settings.expectedInterval, 
+          settings.intervalUnit
+        );
+        
+        if (expectedBackupDate === 'N/A') continue;
+        
+        const currentTime = new Date();
+        const expectedTime = new Date(expectedBackupDate);
+        
+        // Check if backup is overdue
+        if (currentTime > expectedTime) {
           // Get notification event for this backup
           const notificationEvent = getNotificationEvent(machineName, backupName);
           
-          // Calculate expected backup date and elapsed time
-          let expectedBackupDate = 'N/A';
-          let expectedBackupElapsed = 'N/A';
+          // Calculate elapsed time
+          const expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
           
-          const backupSettings = getBackupIntervalSettings(machineName, backupName);
-          if (backupSettings) {
-            expectedBackupDate = calculateExpectedBackupDate(
-              notification.lastBackupDate, 
-              backupSettings.expectedInterval, 
-              backupSettings.intervalUnit
-            );
-            expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
+          // Get last notification sent (if any)
+          const lastNotificationJson = getConfiguration('overdue_backup_notifications');
+          let lastNotificationSent = "";
+          if (lastNotificationJson) {
+            const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
+              lastNotificationSent: string;
+              lastBackupDate: string;
+            }>;
+            const notification = lastNotifications[backupKey];
+            if (notification) {
+              lastNotificationSent = notification.lastNotificationSent;
+            }
           }
           
           overdueBackups.push({
             machineName,
             backupName,
-            lastBackupDate: notification.lastBackupDate,
-            lastNotificationSent: notification.lastNotificationSent,
+            lastBackupDate: latestBackup.date,
+            lastNotificationSent,
             notificationEvent,
             expectedBackupDate,
             expectedBackupElapsed
           });
         }
-              }
       }
-      
-      return overdueBackups;
+    }
+    
+    return overdueBackups;
   } catch (error) {
     console.error('Error getting overdue backups for machine:', error instanceof Error ? error.message : String(error));
     return [];
