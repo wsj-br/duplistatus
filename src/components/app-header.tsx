@@ -9,6 +9,7 @@ import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu'
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { OverdueBackupCheckButton } from '@/components/overdue-backup-check-button';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
+import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
@@ -46,6 +47,7 @@ export function AppHeader() {
         
         <div className="flex flex-1 items-center justify-end space-x-2">
           <GlobalRefreshControls />
+          <NtfyMessagesButton />
           <OverdueBackupCheckButton />
           <BackupCollectMenu />
           <DatabaseMaintenanceMenu />

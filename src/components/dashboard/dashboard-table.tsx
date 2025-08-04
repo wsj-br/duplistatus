@@ -69,7 +69,7 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
 
 export function DashboardTable({ machines }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
-  const { handleAvailableBackupsClick, AvailableBackupsModal } = useAvailableBackupsModal();
+  const { handleAvailableBackupsClick } = useAvailableBackupsModal();
   
   // Initialize with default state to match server rendering
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
@@ -266,6 +266,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     <AvailableBackupsIcon
                       availableBackups={machine.availableBackups}
                       currentBackupDate={machine.lastBackupDate}
+                      machineName={machine.name}
+                      backupName={machine.lastBackupName || 'N/A'}
                       onIconClick={handleAvailableBackupsClick}
                       count={machine.lastBackupListCount}
                     />
@@ -315,7 +317,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
             })}
           </TableBody>
         </Table>
-        <AvailableBackupsModal />
+        {/* AvailableBackupsModal is now rendered globally */}
       </div>
     </TooltipProvider>
   );

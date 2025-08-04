@@ -28,6 +28,8 @@ export interface OverdueBackupContext {
   backup_name: string;
   last_backup_date: string;
   last_elapsed: string;
+  expected_date: string;
+  expected_elapsed: string;
   backup_interval_type: string;
   backup_interval_value: number;
 }
@@ -181,7 +183,7 @@ export async function sendBackupNotification(
     return;
   }
 
-      const backupConfig = getBackupSettings(config, machineName, backup.name);
+  const backupConfig = getBackupSettings(config, machineName, backup.name);
   if (!backupConfig || backupConfig.notificationEvent === 'off') {
     console.log(`Notifications disabled for backup ${backup.name} on machine ${machineName}, skipping`);
     return;
@@ -209,10 +211,10 @@ export async function sendBackupNotification(
     // Unknown status, use warning template
     template = config.templates?.warning || defaultNotificationTemplates.warning;
   }
-
+  console.log("backupConfig.notificationEvent:", backupConfig.notificationEvent, "status:",  status, "\ntemplate:", template);
   try {
     const processedTemplate = processTemplate(template, context);
-    
+    console.log("processedTemplate:", processedTemplate);
     await sendNtfyNotification(
       config.ntfy.url,
       config.ntfy.topic,

@@ -4,15 +4,15 @@ WHERE id = (
   SELECT b.id
   FROM backups b
   JOIN machines m ON b.machine_id = m.id
-  WHERE m.name = 'g5-server'
+  WHERE m.name = 'pi-piro'
   ORDER BY b.date DESC
-  LIMIT 1
+  LIMIT 3
 );
 
   SELECT b.id, b.date
   FROM backups b
   JOIN machines m ON b.machine_id = m.id
-  WHERE m.name = 'g5-server'
+  WHERE m.name = 'pi-piro'
   ORDER BY b.date DESC
   LIMIT 5;
 

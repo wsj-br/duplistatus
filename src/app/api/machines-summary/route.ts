@@ -6,7 +6,7 @@ export async function GET() {
     const machinesSummary = getMachinesSummary();
     return NextResponse.json(machinesSummary);
   } catch (error) {
-    console.error('Error fetching machines summary:', error);
+    console.error('Error fetching machines summary:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch machines summary' },
       { status: 500 }

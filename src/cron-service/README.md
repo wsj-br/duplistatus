@@ -1,4 +1,4 @@
-# Cron Service
+# Duplistatus Cron Service
 
 This is an external service that handles periodic tasks for the DupliStatus application. It runs as a separate process to ensure better reliability and scalability of background tasks.
 
@@ -40,13 +40,14 @@ interface CronServiceConfig {
       enabled: boolean;
     };
   };
+  notificationConfig?: NotificationConfig;
 }
 ```
 
 Default configuration:
-- Port: 9667
+- Port: `CRON_PORT` or `PORT+1` or defaults to 9667 (see Environment Variables below)
 - Tasks:
-  - overdue-backup-check: Runs every 20 minutes (0,20,40 * * * *)
+  - overdue-backup-check: Runs every 20 minutes (`*/20 * * * * *`)
 
 ## API Endpoints
 
@@ -99,10 +100,18 @@ The cron service is designed to:
 
 ## Adding New Tasks
 
-1. Add the task function to the appropriate module
-2. Update the task execution logic in `service.ts`
-3. Add the task configuration to the database
-4. Update types if necessary
+1. Add the task function to the appropriate module (e.g., `/lib/overdue-backup-checker.ts`)
+2. Update the task execution logic in `service.ts` to handle the new task
+3. Add the task configuration to the database using the cron service configuration
+4. Update types in `/lib/types.ts` if new interfaces are needed
+
+## Type Definitions
+
+All type definitions for the cron service are centralized in `/lib/types.ts`:
+- `CronServiceConfig`: Service configuration interface
+- `CronServiceStatus`: Service status interface  
+- `TaskExecutionResult`: Task execution result interface
+- `OverdueBackupCheckResult`: Result interface for overdue backup checks
 
 ## Benefits Over Previous Implementation
 

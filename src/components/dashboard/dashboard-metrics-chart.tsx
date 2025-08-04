@@ -53,7 +53,7 @@ const metricDisplayInfo: Record<ChartMetricSelection, { label: string; unit?: st
   fileCount: { label: "File Count" },
   fileSize: { label: "File Size" },
   storageSize: { label: "Storage Size" },
-  backupVersions: { label: "Backup Versions" },
+  backupVersions: { label: "Available Versions" },
 };
 
 // Helper function to format duration from minutes to HH:MM

@@ -1,6 +1,6 @@
 import { dbUtils } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
-import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, calculateExpectedBackupDate } from '@/lib/db-utils';
+import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, calculateExpectedBackupDate, getOverdueToleranceConfig, getNtfyConfig } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { formatTimeAgo } from '@/lib/utils';
 
@@ -25,15 +25,37 @@ export async function checkOverdueBackups(checkDate?: Date) {
     if(checkDate) {
       console.log('[checkOverdueBackups] Current time: '+currentTime.toLocaleString());
     }
+
+    // Check if cron configuration exists in database, if not use default and persist
+    const cronConfigJson = getConfiguration('cron_service');
+    if (!cronConfigJson) {
+      console.log('[checkOverdueBackups] No cron configuration found in database, using default configuration');
+      const { defaultCronConfig } = await import('@/lib/default-config');
+      setConfiguration('cron_service', JSON.stringify(defaultCronConfig));
+      console.log('[checkOverdueBackups] Default cron configuration persisted to database');
+    }
+
     // Get notification configuration
     const configJson = getConfiguration('notifications');
     const backupSettingsJson = getConfiguration('backup_settings');
     
     if (!configJson) {
-      return { message: 'No notification configuration found' };
+      return { 
+        message: 'No notification configuration found',
+        statistics: {
+          totalBackupConfigs: 0,
+          checkedBackups: 0,
+          overdueBackupsFound: 0,
+          notificationsSent: 0,
+        }
+      };
     }
 
     const config: NotificationConfig = JSON.parse(configJson);
+    
+    // Ensure ntfy config is properly set
+    const ntfyConfig = getNtfyConfig();
+    config.ntfy = ntfyConfig;
     
     // Load backup settings from separate configuration if available
     if (backupSettingsJson) {
@@ -132,8 +154,9 @@ export async function checkOverdueBackups(checkDate?: Date) {
       const intervalUnit = backupConfig.intervalUnit || 'hours'; // Fallback for legacy configs
       const expectedInterval = backupConfig.expectedInterval;
       
-      // Calculate expected backup date using the helper function
-      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, intervalUnit);
+      // Calculate expected backup date using the helper function with tolerance
+      const globalTolerance = getOverdueToleranceConfig();
+      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, intervalUnit, globalTolerance);
       
       // Check if backup is overdue by comparing expected date with current time
       const expectedBackupTime = new Date(expectedBackupDate);
@@ -213,12 +236,19 @@ export async function checkOverdueBackups(checkDate?: Date) {
               continue;
             }
             
+            // Calculate expected backup date and elapsed time
+            const globalTolerance = getOverdueToleranceConfig();
+            const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, intervalValue, intervalUnit, globalTolerance);
+            const expectedBackupElapsed = expectedBackupDate !== 'N/A' ? formatTimeAgo(expectedBackupDate) : 'N/A';
+            
             const overdueBackupContext: OverdueBackupContext = {
               machine_name: machineName,
               machine_id: machineId,
               backup_name: backupName,
               last_backup_date: new Date(latestBackup.date).toLocaleString(),
               last_elapsed: overdueTimeAgo,
+              expected_date: expectedBackupDate !== 'N/A' ? new Date(expectedBackupDate).toLocaleString() : 'N/A',
+              expected_elapsed: expectedBackupElapsed,
               backup_interval_type: intervalUnit,
               backup_interval_value: intervalValue,
             };

@@ -1,6 +1,5 @@
 ---
-description: Basic project tooling and version context for AI assistance
-alwaysApply: false
+alwaysApply: true
 ---
 tools:
   Node.js: ^20.x

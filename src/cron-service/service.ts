@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import * as cron from 'node-cron';
 import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
-import { CronServiceStatus, TaskExecutionResult, CronServiceConfig } from './types';
+import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, OverdueBackupCheckResult } from '@/lib/types';
 import { getCronConfig } from '@/lib/db-utils';
 
 const timestamp = () => new Date().toLocaleString().replace(',', '');
@@ -133,7 +133,7 @@ class CronService {
   private async executeTask(taskName: string): Promise<TaskExecutionResult> {
     // console.log(`[CronService] ${timestamp()}: Executing task: ${taskName}`);
     try {
-      let result: unknown;
+      let result: OverdueBackupCheckResult;
       
       switch (taskName) {
         case 'overdue-backup-check':
@@ -146,13 +146,24 @@ class CronService {
       this.lastRunTimes[taskName] = new Date().toISOString();
       delete this.errors[taskName];
 
-      console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: checked:${result.statistics.checkedBackups}, overdue:${result.statistics.overdueBackupsFound}, notifications:${result.statistics.notificationsSent}`);
-      return {
-        taskName,
-        success: true,
-        message: 'Task executed successfully',
-        statistics: result as Record<string, unknown>
-      };
+      // Check if statistics exist before accessing them
+      if (result.statistics) {
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: checked:${result.statistics.checkedBackups}, overdue:${result.statistics.overdueBackupsFound}, notifications:${result.statistics.notificationsSent}`);
+        return {
+          taskName,
+          success: true,
+          message: 'Task executed successfully',
+          statistics: result.statistics
+        };
+      } else {
+        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed with message: ${result.message}`);
+        return {
+          taskName,
+          success: true,
+          message: result.message,
+          statistics: { checkedBackups: 0, overdueBackupsFound: 0, notificationsSent: 0 }
+        };
+      }
     } catch (error) {
       const errorMessage = String(error);
       this.errors[taskName] = errorMessage;

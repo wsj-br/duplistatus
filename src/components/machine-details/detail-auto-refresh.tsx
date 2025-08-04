@@ -80,7 +80,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
           title: "Update Failed",
           description: `Failed to refresh detail data: ${errorMessage}`,
           variant: "destructive",
-          duration: 5000,
+          duration: 2000,
         });
       }
     };

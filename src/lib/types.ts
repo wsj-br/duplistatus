@@ -86,6 +86,8 @@ export interface BackupNotificationConfig {
   expectedInterval: number; // raw value as entered by user
   overdueBackupCheckEnabled: boolean;
   intervalUnit: 'hours' | 'days';
+  overdueTolerance?: OverdueTolerance; // New field for tolerance
+  cronInterval?: CronInterval; // Cron interval for notification checks
 }
 
 // Helper type for backup identification
@@ -118,6 +120,34 @@ export interface CronServiceConfig {
       enabled: boolean;
     };
   };
+  notificationConfig?: NotificationConfig;
+}
+
+export interface CronServiceStatus {
+  isRunning: boolean;
+  activeTasks: string[];
+  lastRunTimes: Record<string, string>;
+  errors: Record<string, string>;
+}
+
+export interface TaskExecutionResult {
+  taskName: string;
+  success: boolean;
+  message?: string;
+  error?: string;
+  statistics?: Record<string, unknown>;
+}
+
+export interface OverdueBackupCheckResult {
+  message: string;
+  statistics?: {
+    checkedBackups: number;
+    overdueBackupsFound: number;
+    notificationsSent: number;
+  };
 }
 
 export type NotificationFrequencyConfig = "onetime" | "every_day" | "every_week" | "every_month";
+
+// New type for overdue tolerance options
+export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '6h' | '12h' | '1d';

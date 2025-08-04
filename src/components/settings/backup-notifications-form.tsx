@@ -10,11 +10,11 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig } from '@/lib/types';
+import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
-import { defaultBackupNotificationConfig } from '@/lib/default-config';
+import { defaultBackupNotificationConfig, defaultUIConfig, defaultNotificationFrequencyConfig } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
 
 interface MachineWithBackup {
@@ -25,7 +25,7 @@ interface MachineWithBackup {
 
 interface BackupNotificationsFormProps {
   backupSettings: Record<BackupKey, BackupNotificationConfig>;
-  onSave: (settings: Record<BackupKey, BackupNotificationConfig>) => void;
+  onSave?: (settings: Record<BackupKey, BackupNotificationConfig>) => void;
 }
 
 // Extended machine interface for sorting
@@ -37,7 +37,7 @@ interface MachineWithBackupAndSettings extends MachineWithBackup {
   displayInterval: number;
 }
 
-export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotificationsFormProps) {
+export function BackupNotificationsForm({ backupSettings }: BackupNotificationsFormProps) {
   const { toast } = useToast();
   const [machinesWithBackups, setMachinesWithBackups] = useState<MachineWithBackup[]>([]);
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
@@ -47,15 +47,29 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const [isTesting, setIsTesting] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
-  const [cronInterval, setCronIntervalState] = useState<CronInterval>('20min');
-  const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>('onetime');
+  const [cronInterval, setCronIntervalState] = useState<CronInterval>(defaultBackupNotificationConfig.cronInterval || '20min');
+  const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>(defaultNotificationFrequencyConfig);
   const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(true);
   const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
+  const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultBackupNotificationConfig.overdueTolerance || '1h');
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
     { value: 'onetime', label: 'One time' },
     { value: 'every_day', label: 'Every day' },
     { value: 'every_week', label: 'Every week' },
     { value: 'every_month', label: 'Every month' },
+  ];
+
+  const overdueToleranceOptions: { value: OverdueTolerance; label: string }[] = [
+    { value: 'no_tolerance', label: 'No tolerance' },
+    { value: '5min', label: '5 min' },
+    { value: '15min', label: '15 min' },
+    { value: '30min', label: '30 min' },
+    { value: '1h', label: '1 hour' },
+    { value: '2h', label: '2 hours' },
+    { value: '4h', label: '4 hours' },
+    { value: '6h', label: '6 hours' },
+    { value: '12h', label: '12 hours' },
+    { value: '1d', label: '1 day' },
   ];
 
   // Column configuration for sorting
@@ -72,35 +86,11 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
     fetchMachinesWithBackups();
     loadCronInterval();
     fetchNotificationFrequency();
+    fetchOverdueTolerance();
+    loadExistingBackupSettings();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Helper function to check if relevant settings have changed
-  const hasRelevantChanges = (): boolean => {
-    for (const [backupKey, currentConfig] of Object.entries(settings)) {
-      const originalConfig = originalSettings[backupKey];
-      if (!originalConfig) {
-        // New backup configuration, consider it a change
-        if (currentConfig.overdueBackupCheckEnabled) {
-          return true;
-        }
-        continue;
-      }
 
-      // Check if overdue backup check was enabled/disabled
-      if (originalConfig.overdueBackupCheckEnabled !== currentConfig.overdueBackupCheckEnabled) {
-        return true;
-      }
-
-      // Check if timeout period settings changed (only if overdue backup check is enabled)
-      if (currentConfig.overdueBackupCheckEnabled) {
-        if (originalConfig.expectedInterval !== currentConfig.expectedInterval ||
-            originalConfig.intervalUnit !== currentConfig.intervalUnit) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
 
   // Helper function to run overdue backup check
   const runOverdueBackupCheck = async () => {
@@ -124,6 +114,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         title: "Error",
         description: "Failed to run overdue backup check",
         variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -142,13 +133,14 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         value.expression === cronExpression && value.enabled === enabled
       );
       
-      setCronIntervalState(entry ? entry[0] as CronInterval : '20min');
+      setCronIntervalState(entry ? entry[0] as CronInterval : defaultBackupNotificationConfig.cronInterval || '20min');
     } catch (error) {
       console.error('Failed to load cron interval:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to load overdue backup check interval",
         variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -171,21 +163,30 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       // Update local state
       setCronIntervalState(value);
 
-      // Restart the cron task to apply new configuration
-      //await cronClient.stopTask('overdue-backup-check');
-      await cronClient.reloadConfig();
-      //await cronClient.startTask('overdue-backup-check');
-
-      toast({
-        title: "Success",
-        description: "Overdue backup check interval updated successfully",
-      });
+      // Try to reload the cron service configuration
+      try {
+        await cronClient.reloadConfig();
+        toast({
+          title: "Success",
+          description: "Overdue backup check interval updated successfully",
+          duration: 2000,
+        });
+      } catch (cronError) {
+        // Cron service might not be running, but the config was saved successfully
+        console.warn('Cron service not available, but configuration was saved:', cronError);
+        toast({
+          title: "Success",
+          description: "Configuration saved successfully. Note: Cron service is not running - start it with 'npm run cron:start' to enable scheduled tasks.",
+          duration: 2000,
+        });
+      }
     } catch (error) {
       console.error('Failed to update cron interval:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to update overdue backup check interval",
         variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -237,6 +238,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         title: "Error",
         description: "Failed to load machines with backups list",
         variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setLoading(false);
@@ -322,17 +324,52 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSave(settings);
+      // Save backup settings using the dedicated endpoint
+      const backupResponse = await fetch('/api/configuration/backup-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          backupSettings: settings
+        }),
+      });
+      
+      if (!backupResponse.ok) {
+        throw new Error('Failed to save backup settings');
+      }
+      
+      // Save overdue tolerance using the dedicated endpoint
+      const toleranceResponse = await fetch('/api/configuration/overdue-tolerance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ overdue_tolerance: overdueTolerance }),
+      });
+      
+      if (!toleranceResponse.ok) {
+        throw new Error('Failed to save overdue tolerance');
+      }
+      
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
       
-      // Check if relevant settings have changed and run overdue backup check if needed
-      if (hasRelevantChanges()) {
-        await runOverdueBackupCheck();
-      }
+      // Always run overdue backup check when saving to ensure tolerance is applied
+      await runOverdueBackupCheck();
       
       // Update original settings to reflect the new state
       setOriginalSettings(settings);
+      
+      toast({
+        title: "Success",
+        description: "Backup settings and tolerance saved successfully",
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error('Error saving settings:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Error",
+        description: "Failed to save settings",
+        variant: "destructive",
+        duration: 3000,
+      });
     } finally {
       setIsSaving(false);
     }
@@ -341,8 +378,29 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
   const handleTestOverdueBackups = async () => {
     setIsTesting(true);
     try {
-      // Save backup settings first
-      await onSave(settings);
+      // Save backup settings using the dedicated endpoint
+      const backupResponse = await fetch('/api/configuration/backup-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          backupSettings: settings
+        }),
+      });
+      
+      if (!backupResponse.ok) {
+        throw new Error('Failed to save backup settings');
+      }
+      
+      // Save overdue tolerance using the dedicated endpoint
+      const toleranceResponse = await fetch('/api/configuration/overdue-tolerance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ overdue_tolerance: overdueTolerance }),
+      });
+      
+      if (!toleranceResponse.ok) {
+        throw new Error('Failed to save overdue tolerance');
+      }
       
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
@@ -360,6 +418,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       toast({
         title: "Overdue Backup Check Complete",
         description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
+        duration: 2000,
       });
     } catch (error) {
       console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
@@ -367,6 +426,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         title: "Error",
         description: "Failed to run overdue backup check",
         variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsTesting(false);
@@ -384,12 +444,29 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       });
       if (!response.ok) throw new Error('Failed to update notification frequency');
       setNotificationFrequency(value);
-      toast({ title: 'Success', description: 'Notification frequency updated.' });
+      toast({ title: 'Success', description: 'Notification frequency updated.', duration: 2000 });
     } catch {
       setNotificationFrequencyError('Failed to update notification frequency');
-      toast({ title: 'Error', description: 'Failed to update notification frequency', variant: 'destructive' });
+      toast({ title: 'Error', description: 'Failed to update notification frequency', variant: 'destructive', duration: 3000 });
     } finally {
       setNotificationFrequencyLoading(false);
+    }
+  };
+
+  const handleOverdueToleranceChange = async (value: OverdueTolerance) => {
+    try {
+      // Create a separate API call just for overdue tolerance to avoid affecting other settings
+      const response = await fetch('/api/configuration/overdue-tolerance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ overdue_tolerance: value }),
+      });
+      if (!response.ok) throw new Error('Failed to update overdue tolerance');
+      setOverdueTolerance(value);
+      toast({ title: 'Success', description: 'Overdue tolerance updated.', duration: 2000 });
+    } catch (error) {
+      console.error('Failed to update overdue tolerance:', error instanceof Error ? error.message : String(error));
+      toast({ title: 'Error', description: 'Failed to update overdue tolerance', variant: 'destructive', duration: 3000 });
     }
   };
 
@@ -400,12 +477,39 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       const response = await fetch('/api/notifications/resend-frequency');
       if (!response.ok) throw new Error('Failed to fetch notification frequency');
       const data = await response.json();
-      setNotificationFrequency(data.value ?? 'onetime');
+      setNotificationFrequency(data.value ?? defaultNotificationFrequencyConfig);
     } catch {
       setNotificationFrequencyError('Failed to load notification frequency');
-      setNotificationFrequency('onetime');
+      setNotificationFrequency(defaultNotificationFrequencyConfig);
     } finally {
       setNotificationFrequencyLoading(false);
+    }
+  };
+
+  const fetchOverdueTolerance = async () => {
+    try {
+      const response = await fetch('/api/configuration');
+      if (!response.ok) throw new Error('Failed to fetch configuration');
+      const data = await response.json();
+      setOverdueTolerance(data.overdue_tolerance ?? (defaultBackupNotificationConfig.overdueTolerance || '1h'));
+    } catch (error) {
+      console.error('Failed to load overdue tolerance:', error instanceof Error ? error.message : String(error));
+      setOverdueTolerance(defaultBackupNotificationConfig.overdueTolerance || '1h');
+    }
+  };
+
+  const loadExistingBackupSettings = async () => {
+    try {
+      const response = await fetch('/api/configuration');
+      if (!response.ok) throw new Error('Failed to fetch configuration');
+      const data = await response.json();
+      
+      if (data.backupSettings && Object.keys(data.backupSettings).length > 0) {
+        setSettings(data.backupSettings);
+        setOriginalSettings(data.backupSettings);
+      }
+    } catch (error) {
+      console.error('Failed to load existing backup settings:', error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -425,6 +529,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
       toast({
         title: "Success",
         description: "Overdue backup notifications have been reset",
+        duration: 2000,
       });
       
       // Run overdue backup check after resetting timers to ensure fresh state
@@ -435,6 +540,7 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
         title: "Error",
         description: "Failed to reset overdue backup notifications",
         variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsResetting(false);
@@ -632,6 +738,26 @@ export function BackupNotificationsForm({ backupSettings, onSave }: BackupNotifi
 
             {/* Other controls - wrap on smaller screens, right-aligned on desktop */}
             <div className="flex flex-wrap gap-4 items-end lg:justify-end">
+              <div className="flex flex-col items-start">
+                <Label htmlFor="overdue-tolerance" className="mb-2 self-start">
+                  Overdue tolerance:
+                </Label>
+                <Select
+                  value={overdueTolerance}
+                  onValueChange={(value: OverdueTolerance) => handleOverdueToleranceChange(value)}
+                >
+                  <SelectTrigger id="overdue-tolerance" className="w-[200px] min-w-[150px] max-w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {overdueToleranceOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex flex-col items-start">
                 <Label htmlFor="cron-interval" className="mb-2 self-start">
                   Overdue monitoring interval:

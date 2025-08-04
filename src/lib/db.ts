@@ -43,103 +43,129 @@ try {
   throw error;
 }
 
-// Initialize database schema
+// Check if database is empty and initialize schema if needed
 try {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS machines (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
+  // Check if any tables exist by querying sqlite_master
+  const tableCount = db.prepare(`
+    SELECT COUNT(*) as count 
+    FROM sqlite_master 
+    WHERE type='table' AND name IN ('machines', 'backups')
+  `).get() as { count: number };
+  
+  // If no tables exist, create the complete schema
+  if (tableCount.count === 0) {
+    console.log('Initializing new database with latest schema...');
+    
+    db.exec(`
+      CREATE TABLE machines (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
 
-    CREATE TABLE IF NOT EXISTS backups (
-      id TEXT PRIMARY KEY,
-      machine_id TEXT NOT NULL,
-      backup_name TEXT NOT NULL,
-      backup_id TEXT NOT NULL,
-      date DATETIME NOT NULL,
-      status TEXT NOT NULL,
-      duration_seconds INTEGER NOT NULL,
-      size INTEGER NOT NULL DEFAULT 0,
-      uploaded_size INTEGER NOT NULL DEFAULT 0,
-      examined_files INTEGER NOT NULL DEFAULT 0,
-      warnings INTEGER NOT NULL DEFAULT 0,
-      errors INTEGER NOT NULL DEFAULT 0,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      
-      -- Message arrays stored as JSON blobs
-      messages_array TEXT DEFAULT '[]',
-      warnings_array TEXT DEFAULT '[]',
-      errors_array TEXT DEFAULT '[]',
-      available_backups TEXT DEFAULT '[]',
-      
-      -- Data fields
-      deleted_files INTEGER NOT NULL DEFAULT 0,
-      deleted_folders INTEGER NOT NULL DEFAULT 0,
-      modified_files INTEGER NOT NULL DEFAULT 0,
-      opened_files INTEGER NOT NULL DEFAULT 0,
-      added_files INTEGER NOT NULL DEFAULT 0,
-      size_of_modified_files INTEGER NOT NULL DEFAULT 0,
-      size_of_added_files INTEGER NOT NULL DEFAULT 0,
-      size_of_examined_files INTEGER NOT NULL DEFAULT 0,
-      size_of_opened_files INTEGER NOT NULL DEFAULT 0,
-      not_processed_files INTEGER NOT NULL DEFAULT 0,
-      added_folders INTEGER NOT NULL DEFAULT 0,
-      too_large_files INTEGER NOT NULL DEFAULT 0,
-      files_with_error INTEGER NOT NULL DEFAULT 0,
-      modified_folders INTEGER NOT NULL DEFAULT 0,
-      modified_symlinks INTEGER NOT NULL DEFAULT 0,
-      added_symlinks INTEGER NOT NULL DEFAULT 0,
-      deleted_symlinks INTEGER NOT NULL DEFAULT 0,
-      partial_backup BOOLEAN NOT NULL DEFAULT 0,
-      dryrun BOOLEAN NOT NULL DEFAULT 0,
-      main_operation TEXT NOT NULL,
-      parsed_result TEXT NOT NULL,
-      interrupted BOOLEAN NOT NULL DEFAULT 0,
-      version TEXT,
-      begin_time DATETIME NOT NULL,
-      end_time DATETIME NOT NULL,
-      warnings_actual_length INTEGER NOT NULL DEFAULT 0,
-      errors_actual_length INTEGER NOT NULL DEFAULT 0,
-      messages_actual_length INTEGER NOT NULL DEFAULT 0,
-      
-      -- BackendStatistics fields
-      bytes_downloaded INTEGER NOT NULL DEFAULT 0,
-      known_file_size INTEGER NOT NULL DEFAULT 0,
-      last_backup_date DATETIME,
-      backup_list_count INTEGER NOT NULL DEFAULT 0,
-      reported_quota_error BOOLEAN NOT NULL DEFAULT 0,
-      reported_quota_warning BOOLEAN NOT NULL DEFAULT 0,
-      backend_main_operation TEXT,
-      backend_parsed_result TEXT,
-      backend_interrupted BOOLEAN NOT NULL DEFAULT 0,
-      backend_version TEXT,
-      backend_begin_time DATETIME,
-      backend_duration TEXT,
-      backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
-      backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
-      
-      FOREIGN KEY (machine_id) REFERENCES machines(id)
-    );
+      CREATE TABLE backups (
+        id TEXT PRIMARY KEY,
+        machine_id TEXT NOT NULL,
+        backup_name TEXT NOT NULL,
+        backup_id TEXT NOT NULL,
+        date DATETIME NOT NULL,
+        status TEXT NOT NULL,
+        duration_seconds INTEGER NOT NULL,
+        size INTEGER NOT NULL DEFAULT 0,
+        uploaded_size INTEGER NOT NULL DEFAULT 0,
+        examined_files INTEGER NOT NULL DEFAULT 0,
+        warnings INTEGER NOT NULL DEFAULT 0,
+        errors INTEGER NOT NULL DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        
+        -- Message arrays stored as JSON blobs
+        messages_array TEXT DEFAULT '[]',
+        warnings_array TEXT DEFAULT '[]',
+        errors_array TEXT DEFAULT '[]',
+        available_backups TEXT DEFAULT '[]',
+        
+        -- Data fields
+        deleted_files INTEGER NOT NULL DEFAULT 0,
+        deleted_folders INTEGER NOT NULL DEFAULT 0,
+        modified_files INTEGER NOT NULL DEFAULT 0,
+        opened_files INTEGER NOT NULL DEFAULT 0,
+        added_files INTEGER NOT NULL DEFAULT 0,
+        size_of_modified_files INTEGER NOT NULL DEFAULT 0,
+        size_of_added_files INTEGER NOT NULL DEFAULT 0,
+        size_of_examined_files INTEGER NOT NULL DEFAULT 0,
+        size_of_opened_files INTEGER NOT NULL DEFAULT 0,
+        not_processed_files INTEGER NOT NULL DEFAULT 0,
+        added_folders INTEGER NOT NULL DEFAULT 0,
+        too_large_files INTEGER NOT NULL DEFAULT 0,
+        files_with_error INTEGER NOT NULL DEFAULT 0,
+        modified_folders INTEGER NOT NULL DEFAULT 0,
+        modified_symlinks INTEGER NOT NULL DEFAULT 0,
+        added_symlinks INTEGER NOT NULL DEFAULT 0,
+        deleted_symlinks INTEGER NOT NULL DEFAULT 0,
+        partial_backup BOOLEAN NOT NULL DEFAULT 0,
+        dryrun BOOLEAN NOT NULL DEFAULT 0,
+        main_operation TEXT NOT NULL,
+        parsed_result TEXT NOT NULL,
+        interrupted BOOLEAN NOT NULL DEFAULT 0,
+        version TEXT,
+        begin_time DATETIME NOT NULL,
+        end_time DATETIME NOT NULL,
+        warnings_actual_length INTEGER NOT NULL DEFAULT 0,
+        errors_actual_length INTEGER NOT NULL DEFAULT 0,
+        messages_actual_length INTEGER NOT NULL DEFAULT 0,
+        
+        -- BackendStatistics fields
+        bytes_downloaded INTEGER NOT NULL DEFAULT 0,
+        known_file_size INTEGER NOT NULL DEFAULT 0,
+        last_backup_date DATETIME,
+        backup_list_count INTEGER NOT NULL DEFAULT 0,
+        reported_quota_error BOOLEAN NOT NULL DEFAULT 0,
+        reported_quota_warning BOOLEAN NOT NULL DEFAULT 0,
+        backend_main_operation TEXT,
+        backend_parsed_result TEXT,
+        backend_interrupted BOOLEAN NOT NULL DEFAULT 0,
+        backend_version TEXT,
+        backend_begin_time DATETIME,
+        backend_duration TEXT,
+        backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
+        backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
+        
+        FOREIGN KEY (machine_id) REFERENCES machines(id)
+      );
 
-    CREATE INDEX IF NOT EXISTS idx_backups_machine_id ON backups(machine_id);
-    CREATE INDEX IF NOT EXISTS idx_backups_date ON backups(date);
-    CREATE INDEX IF NOT EXISTS idx_backups_begin_time ON backups(begin_time);
-    CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
-    CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
+      CREATE INDEX idx_backups_machine_id ON backups(machine_id);
+      CREATE INDEX idx_backups_date ON backups(date);
+      CREATE INDEX idx_backups_begin_time ON backups(begin_time);
+      CREATE INDEX idx_backups_end_time ON backups(end_time);
+      CREATE INDEX idx_backups_backup_id ON backups(backup_id);
 
-    CREATE TABLE IF NOT EXISTS configurations (
-      key TEXT PRIMARY KEY NOT NULL,
-      value TEXT
-    );
-  `);
-  // log('Database schema initialized successfully');
+      CREATE TABLE configurations (
+        key TEXT PRIMARY KEY NOT NULL,
+        value TEXT
+      );
+
+      CREATE TABLE db_version (
+        version TEXT PRIMARY KEY,
+        applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- Set initial database version for new databases
+      INSERT INTO db_version (version) VALUES ('2.0');
+    `);
+    
+    console.log('Database schema initialized successfully');
+    
+    // Populate default configurations for new databases
+    populateDefaultConfigurations().catch(error => {
+      console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
+    });
+  } 
 } catch (error) {
   console.error('Failed to initialize database schema:', error instanceof Error ? error.message : String(error));
   throw error;
 }
 
-// Run database migrations
+// Run database migrations (only for existing databases that need upgrading)
 try {
   const migrator = new DatabaseMigrator(db);
   migrator.runMigrations();
@@ -169,6 +195,52 @@ function safePrepare(sql: string, name: string) {
     return stmt;
   } catch (error) {
     console.error(`Failed to prepare statement '${name}':`, error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+// Function to populate default configurations
+async function populateDefaultConfigurations() {
+  try {
+    console.log('Populating default configurations...');
+    
+    // Import default configurations
+    const { 
+      defaultCronConfig, 
+      defaultBackupNotificationConfig, 
+      generateDefaultNtfyTopic,
+      createDefaultNotificationConfig,
+      defaultNtfyConfig
+    } = await import('./default-config');
+    
+    // Generate default ntfy topic
+    const defaultTopic = generateDefaultNtfyTopic();
+    const ntfyConfig = { ...defaultNtfyConfig, topic: defaultTopic };
+    
+    // Create default notification configuration with templates
+    const defaultNotificationConfig = createDefaultNotificationConfig(ntfyConfig);
+    
+    // Set cron_service configuration
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'cron_service', 
+      JSON.stringify(defaultCronConfig)
+    );
+    
+    // Set overdue_tolerance configuration
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'overdue_tolerance', 
+      defaultBackupNotificationConfig.overdueTolerance
+    );
+    
+    // Set notifications configuration with templates
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'notifications', 
+      JSON.stringify(defaultNotificationConfig)
+    );
+    
+    console.log('Default configurations populated successfully');
+  } catch (error) {
+    console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

@@ -1,4 +1,4 @@
-import { CronServiceStatus, TaskExecutionResult } from '@/cron-service/types';
+import { CronServiceStatus, TaskExecutionResult } from './types';
 
 // Use relative path to ensure requests go through our Next.js API route
 const CRON_SERVICE_URL = '/api/cron';

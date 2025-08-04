@@ -38,7 +38,7 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress 
         onClick={onToggle}
         title={isEnabled ? "Disable auto-refresh" : "Enable auto-refresh"}
       >
-        Auto-refresh ({interval} min)
+        Auto-refresh ({interval < 1 ? `${interval * 60} sec` : `${interval} min`})
       </button>
     </div>
   );
@@ -51,7 +51,7 @@ export function GlobalRefreshControls() {
   const pathname = usePathname();
   
   const [progress, setProgress] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(autoRefreshInterval * 60); // Convert to seconds
+  const [timeRemaining, setTimeRemaining] = useState(autoRefreshInterval * 60); // Convert minutes to seconds
 
   // Calculate progress based on time remaining
   useEffect(() => {
@@ -64,6 +64,14 @@ export function GlobalRefreshControls() {
     const progressPercent = ((totalSeconds - timeRemaining) / totalSeconds) * 100;
     setProgress(progressPercent);
   }, [timeRemaining, state.isEnabled, state.interval]);
+
+  // Reset timer when pathname changes (page navigation)
+  useEffect(() => {
+    if (state.isEnabled) {
+      setTimeRemaining(state.interval * 60);
+      setProgress(0);
+    }
+  }, [pathname, state.isEnabled, state.interval]);
 
   // Progress timer
   useEffect(() => {
@@ -109,7 +117,7 @@ export function GlobalRefreshControls() {
         title: "Refresh Failed",
         description: "Failed to refresh data. Please try again.",
         variant: "destructive",
-        duration: 5000,
+        duration: 2000,
       });
     }
   };

@@ -4,9 +4,8 @@ import { version } from './package.json';
 // Use require for webpack to avoid missing type declarations
 const webpack = require('webpack');
 
-
 const nextConfig: NextConfig = {
-
+  output: "standalone",
   
   // Configure webpack to handle binary files
   webpack: (config, { isServer }) => {
@@ -48,7 +47,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   
-  allowedDevOrigins: ['192.168.1.*', '192.168.1.20'],
+  allowedDevOrigins: ['192.168.1.20', 'g5-server'],
   typescript: {
     ignoreBuildErrors: false,
   },

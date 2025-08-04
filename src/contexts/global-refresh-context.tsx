@@ -75,7 +75,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
   useEffect(() => {
     if (!state.isEnabled || state.currentPage === 'none') return;
 
-    const intervalMs = state.interval * 60 * 1000;
+    const intervalMs = state.interval * 60 * 1000; // interval is in minutes
     const interval = setInterval(() => {
       if (state.currentPage === 'dashboard') {
         refreshDashboard();
@@ -118,7 +118,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: false },
       }));
     } catch (error) {
-      console.error('Error refreshing dashboard:', error);
+      console.error('Error refreshing dashboard:', error instanceof Error ? error.message : String(error));
       setState(prev => ({
         ...prev,
         isRefreshing: false,
@@ -153,7 +153,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         pageSpecificLoading: { ...prev.pageSpecificLoading, detail: false },
       }));
     } catch (error) {
-      console.error('Error refreshing detail page:', error);
+      console.error('Error refreshing detail page:', error instanceof Error ? error.message : String(error));
       setState(prev => ({
         ...prev,
         isRefreshing: false,

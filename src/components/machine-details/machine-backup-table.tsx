@@ -36,14 +36,15 @@ import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
 
 interface MachineBackupTableProps {
   backups: Backup[];
+  machineName: string;
 }
 
-export function MachineBackupTable({ backups }: MachineBackupTableProps) {
+export function MachineBackupTable({ backups, machineName }: MachineBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
-  const { handleAvailableBackupsClick, AvailableBackupsModal } = useAvailableBackupsModal();
+  const { handleAvailableBackupsClick } = useAvailableBackupsModal();
 
   // Get unique backup names for the filter
   const uniqueBackupNames = ["all", ...new Set(backups.map(backup => backup.name))];
@@ -272,6 +273,8 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
                       <AvailableBackupsIcon
                         availableBackups={backup.available_backups}
                         currentBackupDate={backup.date}
+                        machineName={machineName}
+                        backupName={backup.name}
                         onIconClick={handleAvailableBackupsClick}
                         count={backup.backup_list_count}
                       />
@@ -312,7 +315,7 @@ export function MachineBackupTable({ backups }: MachineBackupTableProps) {
             </Button>
           </div>
         )}
-        <AvailableBackupsModal />
+        {/* AvailableBackupsModal is now rendered globally */}
       </div>
     </TooltipProvider>
   );

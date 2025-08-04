@@ -7,7 +7,7 @@ export const defaultNotificationTemplates: {
   warning: NotificationTemplate;
 } = {
   overdueBackup: {
-    message: "The backup {backup_name} is overdue on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.",
+    message: "The backup {backup_name} is overdue on {machine_name}.\n\n🚨 Last backup was {last_backup_date} ({last_elapsed})\n⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n🔍 Please check the duplicati server.",
     priority: "default",
     tags: "duplicati, duplistatus, overdue",
     title: "🕑 Overdue - {backup_name}  @ {machine_name}"
@@ -19,7 +19,7 @@ export const defaultNotificationTemplates: {
     title: "✅ {status} - {backup_name}  @ {machine_name}"
   },
   warning: {
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings} warnings\n🛑 {errors} errors.",
+    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings_count} warnings\n🛑 {errors_count} errors.",
     priority: "high",
     tags: "duplicati, duplistatus, warning, error",
     title: " ⚠️{status} - {backup_name}  @ {machine_name}"
@@ -61,9 +61,11 @@ export const defaultNtfyConfig = {
 // Default backup notification configuration
 export const defaultBackupNotificationConfig: BackupNotificationConfig = {
   notificationEvent: 'off',
-  expectedInterval: 1, // Default to 1 day (24 hours)
   overdueBackupCheckEnabled: false,
-  intervalUnit: 'days'
+  expectedInterval: 1, // Default to 1 day (24 hours)
+  intervalUnit: 'days',
+  overdueTolerance: '1h', // Default to 1h tolerance
+  cronInterval: '20min' as CronInterval
 };
 
 // Default UI configuration
@@ -72,12 +74,12 @@ export const defaultUIConfig = {
   tablePageSize: 5 as const,
   chartTimeRange: 'All data' as const,
   chartMetricSelection: 'uploadedSize' as const,
-  cronInterval: '20min' as CronInterval
+  autoRefreshInterval: 1 as const
 };
 
 // Default API configuration
 export const defaultAPIConfig = {
-  requestTimeout: 30000, // 30 seconds
+  requestTimeout: 15000, // 15 seconds
   duplicatiPort: 8200,
   duplicatiProtocol: 'http' as const
 };
@@ -89,7 +91,7 @@ export const defaultNotificationFrequencyConfig = 'onetime' as const;
 export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic: string }): NotificationConfig {
   return {
     ntfy: ntfyConfig,
-    backupSettings: {},
+    backupSettings: {}, // Keep empty - API handles defaults via separate storage
     templates: defaultNotificationTemplates
   };
 }

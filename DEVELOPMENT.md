@@ -309,6 +309,67 @@ This script cleans up Docker resources:
    - Handles overdue backup notifications and other scheduled tasks
    - Uses `keep-cron-alive.sh` script for process management
 
-9. **Other tools**
-   - ["Easy Screenshot"](https://webextension.org/listing/screenshot.html) extension 
+9. **Notification System**
+   - ntfy.sh integration for push notifications
+   - Configurable notification templates with variable substitution
+   - Overdue backup monitoring and alerting
+   - Test notification functionality
+   - Flexible notification scheduling (one time/daily/weekly/monthly)
+
+10. **Auto-refresh System**
+    - Configurable automatic refresh of dashboard and detail pages
+    - Manual refresh controls with visual feedback
+    - Progress indicators and loading states
+    - Persistent refresh preferences
+    - Page-specific refresh behavior
+
+11. **Enhanced UI Features**
+    - Sortable tables with persistent preferences
+    - Enhanced backup version display with icons
+    - Click-to-view available versions functionality
+    - Improved navigation with return links
+    - Status badges that link to backup details
+
+12. **Other tools**
+    - ["Easy Screenshot"](https://webextension.org/listing/screenshot.html) extension 
+
+## Current Development Status
+
+The project is currently in active development with the following major features implemented:
+
+### ✅ Completed Features (v0.5.19+)
+- **Notification System**: Complete ntfy.sh integration with customizable templates
+- **Overdue Backup Monitoring**: Automated checking and alerting for overdue backups
+- **Auto-refresh System**: Configurable automatic refresh of dashboard and detail pages
+- **Enhanced UI**: Sortable tables, improved navigation, and better backup version display
+- **Cron Service**: Separate service for handling scheduled tasks
+- **API Enhancements**: New endpoints for notification management and cron configuration
+
+### 🚧 In Progress Features
+- **Table Sorting**: Client-side persistence of sort preferences
+- **Enhanced Backup Version Visibility**: Version icons and click-to-view functionality
+- **UI/Navigation Improvements**: Return links and status badge navigation
+
+### 📋 Planned Features
+- **HTTPS Support**: Documentation for serving with HTTPS (nginx/certbot or Caddy)
+- **Additional Integrations**: Enhanced third-party tool support
+
+## Development Guidelines
+
+### Code Organization
+- **Components**: Located in `src/components/` with subdirectories for specific features
+- **API Routes**: Located in `src/app/api/` with RESTful endpoint structure
+- **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`
+- **Types**: TypeScript interfaces in `src/lib/types.ts`
+- **Configuration**: Default configs in `src/lib/default-config.ts`
+
+### Testing
+- Use the provided test scripts for generating data and testing functionality
+- Test notification system with the built-in test endpoints
+- Verify cron service functionality with the test scripts
+
+### Debugging
+- Development mode provides verbose logging and JSON file storage
+- Use the browser's developer tools for frontend debugging
+- Check the console for detailed error messages and API responses
 

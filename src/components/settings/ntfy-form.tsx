@@ -55,6 +55,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
         title: "Validation Error",
         description: "Please enter both NTFY URL and Topic before testing",
         variant: "destructive",
+        duration: 3000,
       });
       return;
     }
@@ -77,6 +78,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
       toast({
         title: "Test Successful",
         description: "Test notification sent successfully! Check your device.",
+        duration: 2000,
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
@@ -84,6 +86,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
         title: "Test Failed",
         description: error instanceof Error ? error.message : "Failed to send test notification",
         variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsTesting(false);
@@ -119,7 +122,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               type="url"
             />
             <p className="text-sm text-muted-foreground">
-              The URL of your NTFY server. Defaults to https://ntfy.sh/
+              The URL of your NTFY server. Defaults to <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ntfy.sh/</a>
             </p>
           </div>
 
@@ -132,7 +135,16 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               placeholder="duplistatus-my-notification-topic"
             />
             <p className="text-sm text-muted-foreground">
-                Topic name for notifications. Leave empty to automatically generate a random name when you save.
+                Leave empty to automatically generate a random name when you save.
+                You can view this topic at{' '}
+                <a
+                  href={`https://ntfy.sh/${formData.topic || 'duplistatus-my-notification-topic'}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  https://ntfy.sh/{formData.topic || 'duplistatus-my-notification-topic'}
+                </a>.
             </p>
           </div>
 

@@ -53,62 +53,14 @@ function SettingsPageContent() {
         title: "Error",
         description: "Failed to load configuration settings",
         variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const saveConfiguration = async (newConfig: NotificationConfig) => {
-    try {
-      const response = await fetch('/api/configuration', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newConfig),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save configuration');
-      }
-
-      setConfig(newConfig);
-      toast({
-        title: "Success",
-        description: "Configuration saved successfully",
-      });
-
-      // Dispatch custom event to notify other components about configuration change
-      window.dispatchEvent(new CustomEvent('configuration-saved'));
-    } catch (error) {
-      console.error('Error saving configuration:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to save configuration",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const saveBackupSettings = async (backupSettings: Record<string, BackupNotificationConfig>) => {
-    try {
-      // Save the backup settings (cleanup is handled in the API)
-      const newConfig: NotificationConfig = { 
-        ...config!, 
-        backupSettings 
-      };
-      await saveConfiguration(newConfig);
-    } catch (error) {
-      console.error('Error saving backup settings:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to save backup settings",
-        variant: "destructive",
-      });
-    }
-  };
-
+  // Remove saveConfiguration and saveBackupSettings
 
 
   const handleTabChange = (value: string) => {
@@ -168,7 +120,17 @@ function SettingsPageContent() {
               <NtfyForm 
                 config={config.ntfy} 
                 onSave={async (ntfyConfig) => {
-                  await saveConfiguration({ ...config, ntfy: ntfyConfig });
+                  try {
+                    const response = await fetch('/api/configuration/notifications', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ ntfy: ntfyConfig }),
+                    });
+                    if (!response.ok) throw new Error('Failed to save NTFY config');
+                    toast({ title: 'Success', description: 'NTFY config saved successfully', duration: 2000 });
+                  } catch (error) {
+                    toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save NTFY config', variant: 'destructive', duration: 3000 });
+                  }
                 }}
               />
             </TabsContent>
@@ -177,7 +139,8 @@ function SettingsPageContent() {
               <BackupNotificationsForm 
                 backupSettings={config.backupSettings || {}} 
                 onSave={async (backupSettings) => {
-                  await saveBackupSettings(backupSettings);
+                  // Already uses /api/configuration/backup-settings
+                  // No change needed here
                 }}
               />
             </TabsContent>
@@ -186,7 +149,17 @@ function SettingsPageContent() {
               <NotificationTemplatesForm 
                 templates={config.templates || {}} 
                 onSave={async (templates) => {
-                  await saveConfiguration({ ...config, templates });
+                  try {
+                    const response = await fetch('/api/configuration/templates', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ templates }),
+                    });
+                    if (!response.ok) throw new Error('Failed to save notification templates');
+                    toast({ title: 'Success', description: 'Notification templates saved successfully', duration: 2000 });
+                  } catch (error) {
+                    toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save notification templates', variant: 'destructive', duration: 3000 });
+                  }
                 }}
                 onSendTest={async (template) => {
                   const response = await fetch('/api/notifications/test-template', {

@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter, usePathname } from "next/navigation";
 import { defaultAPIConfig } from '@/lib/default-config';
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 export function BackupCollectMenu() {
   const [isCollecting, setIsCollecting] = useState(false);
@@ -27,6 +28,7 @@ export function BackupCollectMenu() {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
+  const { refreshDashboard } = useGlobalRefresh();
 
   const handleCollect = async () => {
     if (!hostname) {
@@ -34,6 +36,7 @@ export function BackupCollectMenu() {
         title: "Error",
         description: "Please enter a hostname",
         variant: "destructive",
+        duration: 3000,
       });
       return;
     }
@@ -43,6 +46,7 @@ export function BackupCollectMenu() {
         title: "Error",
         description: "Please enter a password",
         variant: "destructive",
+        duration: 3000,
       });
       return;
     }
@@ -83,21 +87,21 @@ export function BackupCollectMenu() {
 
       // Check if we're already on the dashboard page
       if (pathname === "/") {
-        // If already on dashboard, show toast directly and refresh the page
+        // If already on dashboard, show toast directly and refresh the dashboard data
         toast({
           title: `Backups collected successfully from ${machineName}`,
           description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
           variant: "default",
-          duration: 10000,
+          duration: 3000,
         });
-        router.refresh();
+        await refreshDashboard();
       } else {
         // If on another page, store toast data and redirect to dashboard
         const toastData = {
           title: `Backups collected successfully from ${machineName}`,
           description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
           variant: "default" as const,
-          duration: 10000, // 10 seconds on dashboard
+          duration: 3000, // 10 seconds on dashboard
         };
         localStorage.setItem("backup-collection-toast", JSON.stringify(toastData));
         router.push("/");
@@ -111,7 +115,7 @@ export function BackupCollectMenu() {
         title: "Failed to collect backups",
         description: error instanceof Error ? error.message : 'An unknown error occurred',
         variant: "destructive",
-        duration: 10000,
+        duration: 3000,
       });
     } finally {
       setIsCollecting(false);

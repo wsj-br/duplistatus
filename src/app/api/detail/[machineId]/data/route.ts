@@ -29,7 +29,7 @@ export async function GET(
       lastOverdueCheck
     });
   } catch (error) {
-    console.error('Error fetching machine details:', error);
+    console.error('Error fetching machine details:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch machine details' },
       { status: 500 }

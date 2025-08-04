@@ -5,6 +5,14 @@ export async function GET() {
   try {
     // Get the overall summary from the database using the consolidated function
     const summary = getOverallSummary();
+    
+    if (!summary) {
+      console.error('getOverallSummary returned null or undefined');
+      return NextResponse.json(
+        { error: 'Failed to fetch summary data - summary is null' },
+        { status: 500 }
+      );
+    }
 
     // Get the latest backup date across all machines
     const latestBackup = dbUtils.getLatestBackupDate() as { last_backup_date: string | null };
@@ -15,21 +23,30 @@ export async function GET() {
     const secondsSinceLastBackup = lastBackupDate ? Math.floor((now.getTime() - lastBackupDate.getTime()) / 1000) : null;
 
     const response = {
-      totalMachines: summary.totalMachines,
-      totalBackups: summary.totalBackups,
-      totalUploadedSize: summary.totalUploadedSize,
-      totalStorageUsed: summary.totalStorageUsed,
-      totalBackupSize: summary.totalBackupSize,
-      overdueBackupsCount: summary.overdueBackupsCount,
+      totalMachines: summary.totalMachines || 0,
+      totalBackups: summary.totalBackups || 0,
+      totalUploadedSize: summary.totalUploadedSize || 0,
+      totalStorageUsed: summary.totalStorageUsed || 0,
+      totalBackupSize: summary.totalBackupSize || 0,
+      overdueBackupsCount: summary.overdueBackupsCount || 0,
       secondsSinceLastBackup
     };
 
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching summary:', error instanceof Error ? error.message : String(error));
-    return NextResponse.json(
-      { error: 'Failed to fetch summary data' },
-      { status: 500 }
-    );
+    
+    // Return a fallback response instead of an error to prevent JSON parsing issues
+    const fallbackResponse = {
+      totalMachines: 0,
+      totalBackups: 0,
+      totalUploadedSize: 0,
+      totalStorageUsed: 0,
+      totalBackupSize: 0,
+      overdueBackupsCount: 0,
+      secondsSinceLastBackup: null
+    };
+    
+    return NextResponse.json(fallbackResponse);
   }
 } 

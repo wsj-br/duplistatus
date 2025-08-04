@@ -84,12 +84,14 @@ export function DisplayMenu() {
               <Label htmlFor="auto-refresh-interval">Auto-refresh Interval</Label>
               <Select
                 value={autoRefreshInterval.toString()}
-                onValueChange={(value) => setAutoRefreshInterval(parseInt(value) as 1 | 2 | 3 | 4 | 5 | 10)}
+                onValueChange={(value) => setAutoRefreshInterval(parseFloat(value) as 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10)}
               >
                 <SelectTrigger id="auto-refresh-interval">
                   <SelectValue placeholder="Select refresh interval" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="0.25">15 seconds</SelectItem>
+                  <SelectItem value="0.5">30 seconds</SelectItem>
                   <SelectItem value="1">1 minute</SelectItem>
                   <SelectItem value="2">2 minutes</SelectItem>
                   <SelectItem value="3">3 minutes</SelectItem>

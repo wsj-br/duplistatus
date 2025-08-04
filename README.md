@@ -14,6 +14,9 @@ This web application is used to monitor and visualise backup operations from [Du
 - **API access**: API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs.
 - **Notification System**: Ntfy.sh integration for backup notifications and overdue backup alerts
 - **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups
+- **Auto-refresh**: Configurable automatic refresh of dashboard and detail pages
+- **Table Sorting**: Sortable tables in dashboard and detail views with persistent preferences
+- **Enhanced Backup Version Display**: Improved visibility of backup versions with icons and click-to-view functionality
 - **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry).
 
 <br><br>
@@ -241,6 +244,7 @@ Important notes on the messages sent by Duplicati:
 - **Customizable Templates**: Configurable message templates with variable substitution
 - **Flexible Scheduling**: Configurable check intervals and notification frequencies
 - **Test Notifications**: Built-in testing functionality to verify notification setup
+- **Auto-refresh**: Configurable automatic refresh of dashboard and detail pages
 
 ## Configuration
 
@@ -290,15 +294,15 @@ Sent when a backup completes successfully.
 - `{file_count}`: Number of files processed
 - `{file_size}`: Total size of files backed up
 - `{uploaded_size}`: Amount of data uploaded
-- `{warnings}`: Number of warnings (if any)
-- `{errors}`: Number of errors (if any)
+- `{warnings_count}`: Number of warnings (if any)
+- `{errors_count}`: Number of errors (if any)
 
 #### 2. Warning Notifications
 Sent when a backup completes with warnings or errors.
 
 **Default Template:**
 - **Title**: `⚠️ {status} - {backup_name} @ {machine_name}`
-- **Message**: `Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings} warnings\n🛑 {errors} errors.`
+- **Message**: `Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings_count} warnings\n🛑 {errors_count} errors.`
 - **Priority**: `high`
 - **Tags**: `duplicati, duplistatus, warning, error`
 
@@ -308,8 +312,8 @@ Sent when a backup completes with warnings or errors.
 - `{status}`: Backup status (Warning, Error, Fatal)
 - `{backup_date}`: Date and time of the backup
 - `{duration}`: Duration of the backup operation
-- `{warnings}`: Number of warnings
-- `{errors}`: Number of errors
+- `{warnings_count}`: Number of warnings
+- `{errors_count}`: Number of errors
 - `{file_count}`: Number of files processed
 - `{file_size}`: Total size of files backed up
 - `{uploaded_size}`: Amount of data uploaded
@@ -321,7 +325,7 @@ Sent when a backup is overdue based on the configured interval.
 
 **Default Template:**
 - **Title**: `🕑 Overdue - {backup_name} @ {machine_name}`
-- **Message**: `The backup {backup_name} is overdue on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n🔍 Please check the duplicati server.`
+- **Message**: `The backup {backup_name} is overdue on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n⏰ Expected backup was {expected_date} ({expected_elapsed})\n🔍 Please check the duplicati server.`
 - **Priority**: `default`
 - **Tags**: `duplicati, duplistatus, overdue`
 
@@ -330,9 +334,10 @@ Sent when a backup is overdue based on the configured interval.
 - `{backup_name}`: Name of the backup operation
 - `{last_backup_date}`: Date and time of the last backup
 - `{last_elapsed}`: Time elapsed since the last backup
+- `{expected_date}`: Date and time when the backup was expected
+- `{expected_elapsed}`: Time elapsed since the expected backup date
 - `{backup_interval_type}`: Interval unit (hours/days)
 - `{backup_interval_value}`: Expected interval value
-- `{expected_backup_date}`: When the backup was expected
 - `{machine_id}`: Machine identifier
 
 #### Template Configuration
@@ -348,6 +353,40 @@ You can customize these templates in the Settings → Notifications page:
 
 > [!TIP]
 > You can use any combination of variables in your templates. Variables not found in the data will be left as-is in the message.
+
+<br>
+
+# Auto-refresh System
+
+**duplistatus** includes an auto-refresh system that automatically updates dashboard and detail pages:
+
+## Features
+
+- **Configurable Intervals**: Set refresh intervals from 1 to 60 minutes
+- **Page-specific Refresh**: Different refresh behavior for dashboard and detail pages
+- **Manual Refresh**: One-click manual refresh with visual feedback
+- **Progress Indicators**: Visual progress bars showing time until next refresh
+- **Persistent Settings**: Auto-refresh preferences are saved and restored
+- **Smart Loading States**: Visual indicators during refresh operations
+
+## Configuration
+
+### Auto-refresh Settings
+
+Configure auto-refresh in the Settings page:
+
+1. **Enable/Disable**: Toggle auto-refresh on or off
+2. **Refresh Interval**: Set how often pages should refresh (1-60 minutes)
+3. **Global Controls**: Access refresh controls from the application header
+4. **Page-specific Behavior**: 
+   - Dashboard: Refreshes machine summaries, overall statistics, and chart data
+   - Detail pages: Refreshes machine-specific data and charts
+
+### Manual Refresh
+
+- **Dashboard**: Click the refresh button in the header to manually refresh all dashboard data
+- **Detail Pages**: Click the refresh button to update machine-specific information
+- **Visual Feedback**: Loading spinners and progress indicators show refresh status
 
 <br>
 
@@ -485,6 +524,8 @@ The API provides endpoints for:
 - **Monitoring**: Health checks and system status
 - **Integration**: Homepage and third-party tool integration
 - **Maintenance**: Backup collection and cleanup operations
+- **Notification System**: Test and manage notification templates
+- **Cron Service**: Configure and manage scheduled tasks
 
 <br><br>
 

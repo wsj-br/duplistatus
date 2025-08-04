@@ -8,7 +8,7 @@ type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 year
 type TablePageSize = 5 | 10 | 15 | 20;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
 export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize' | 'storageSize' | 'backupVersions';
-type AutoRefreshInterval = 1 | 2 | 3 | 4 | 5 | 10;
+type AutoRefreshInterval = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10;
 
 interface ConfigContextProps {
   databaseCleanupPeriod: DatabaseCleanupPeriod;
@@ -33,7 +33,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [tablePageSize, setTablePageSize] = useState<TablePageSize>(defaultUIConfig.tablePageSize);
   const [chartTimeRange, setChartTimeRange] = useState<ChartTimeRange>(defaultUIConfig.chartTimeRange);
   const [chartMetricSelection, setChartMetricSelection] = useState<ChartMetricSelection>(defaultUIConfig.chartMetricSelection);
-  const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(1);
+  const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(defaultUIConfig.autoRefreshInterval);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const pathname = usePathname();
   const router = useRouter();

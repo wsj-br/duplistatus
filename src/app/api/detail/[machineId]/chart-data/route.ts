@@ -20,7 +20,7 @@ export async function GET(
     // Return the chart data from the machine
     return NextResponse.json(machine.chartData);
   } catch (error) {
-    console.error('Error fetching machine chart data:', error);
+    console.error('Error fetching machine chart data:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch machine chart data' },
       { status: 500 }

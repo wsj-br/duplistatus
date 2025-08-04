@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.5.18",
+  "version": "0.5.19",
   "private": true,
   "packageManager": "pnpm@10.13.1",
   "engines": {
@@ -66,6 +66,8 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -79,8 +81,6 @@
     "@types/string-template": "^1.0.7",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.32.0",
-    "eslint-config-next": "15.4.4",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "eslint-config-next": "15.4.4"
   }
 }

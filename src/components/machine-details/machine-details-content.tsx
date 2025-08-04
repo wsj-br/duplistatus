@@ -140,7 +140,7 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <MachineBackupTable backups={machine.backups} />
+          <MachineBackupTable backups={machine.backups} machineName={machine.name} />
         </CardContent>
       </Card>
 

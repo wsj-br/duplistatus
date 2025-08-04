@@ -1,11 +1,39 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, generateDefaultNtfyTopic, defaultNotificationFrequencyConfig, defaultNtfyConfig } from './default-config';
+import { defaultCronConfig, generateDefaultNtfyTopic, defaultNotificationFrequencyConfig, defaultNtfyConfig, defaultBackupNotificationConfig, defaultUIConfig } from './default-config';
 import { formatTimeElapsed } from './utils';
+
+// Helper function to convert overdue tolerance to minutes
+function getToleranceInMinutes(tolerance: OverdueTolerance): number {
+  switch (tolerance) {
+    case 'no_tolerance':
+      return 0;
+    case '5min':
+      return 5;
+    case '15min':
+      return 15;
+    case '30min':
+      return 30;
+    case '1h':
+      return 60;
+    case '2h':
+      return 120;
+    case '4h':
+      return 240;
+    case '6h':
+      return 360;
+    case '12h':
+      return 720;
+    case '1d':
+      return 1440; 
+    default:
+      return 0;
+  }
+}
 
 // Helper function to get backup key
 function getBackupKey(machineName: string, backupName: string): BackupKey {
@@ -17,15 +45,35 @@ function isBackupOverdueByInterval(machineName: string, backupName: string, last
   try {
     if (!lastBackupDate || lastBackupDate === 'N/A') return false;
     
-    // Get backup interval settings
-    const backupSettings = getBackupIntervalSettings(machineName, backupName);
-    if (!backupSettings) return false;
+    // Get backup settings to check if overdue backup check is enabled
+    const backupSettingsJson = getConfiguration('backup_settings');
+    if (!backupSettingsJson) return false;
     
-    // Calculate expected backup date
+    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+      notificationEvent: NotificationEvent;
+      expectedInterval: number;
+      overdueBackupCheckEnabled: boolean;
+      intervalUnit: 'hours' | 'days';
+      overdueTolerance?: OverdueTolerance;
+    }>;
+    
+    const backupKey = getBackupKey(machineName, backupName);
+    const settings = backupSettings[backupKey];
+    
+    // If no settings found or overdue backup check is disabled, return false
+    if (!settings || !settings.overdueBackupCheckEnabled) return false;
+    
+    // Get backup interval settings
+    const backupIntervalSettings = getBackupIntervalSettings(machineName, backupName);
+    if (!backupIntervalSettings) return false;
+    
+    // Calculate expected backup date with tolerance
+    const globalTolerance = getOverdueToleranceConfig();
     const expectedBackupDate = calculateExpectedBackupDate(
       lastBackupDate, 
-      backupSettings.expectedInterval, 
-      backupSettings.intervalUnit
+      backupIntervalSettings.expectedInterval, 
+      backupIntervalSettings.intervalUnit,
+      globalTolerance
     );
     
     if (expectedBackupDate === 'N/A') return false;
@@ -66,6 +114,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
 function getBackupIntervalSettings(machineName: string, backupName: string): {
   expectedInterval: number;
   intervalUnit: 'hours' | 'days';
+  overdueTolerance?: OverdueTolerance;
 } | undefined {
   try {
     const backupSettingsJson = getConfiguration('backup_settings');
@@ -76,6 +125,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
       intervalUnit: 'hours' | 'days';
+      overdueTolerance?: OverdueTolerance;
     }>;
     
     const backupKey = getBackupKey(machineName, backupName);
@@ -85,7 +135,8 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
     
     return {
       expectedInterval: settings.expectedInterval,
-      intervalUnit: settings.intervalUnit
+      intervalUnit: settings.intervalUnit,
+      overdueTolerance: settings.overdueTolerance
     };
   } catch (error) {
     console.error('Error getting backup interval settings:', error instanceof Error ? error.message : String(error));
@@ -94,7 +145,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
 }
 
 // Helper function to calculate expected backup date
-export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hours' | 'days'): string {
+export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hours' | 'days', tolerance: OverdueTolerance = defaultBackupNotificationConfig.overdueTolerance || '1h'): string {
   try {
     const lastBackup = new Date(lastBackupDate);
     if (isNaN(lastBackup.getTime())) {
@@ -106,6 +157,12 @@ export function calculateExpectedBackupDate(lastBackupDate: string, expectedInte
       expectedDate.setHours(expectedDate.getHours() + expectedInterval);
     } else if (intervalUnit === 'days') {
       expectedDate.setDate(expectedDate.getDate() + expectedInterval);
+    }
+    
+    // Add tolerance to the expected date
+    const toleranceMinutes = getToleranceInMinutes(tolerance);
+    if (toleranceMinutes > 0) {
+      expectedDate.setMinutes(expectedDate.getMinutes() + toleranceMinutes);
     }
     
     return expectedDate.toISOString();
@@ -155,7 +212,7 @@ export function getCurrentCronInterval(): CronInterval {
     value.expression === task.cronExpression && value.enabled === task.enabled
   );
   
-  return entry ? entry[0] as CronInterval : '20min'; // Default to 20min if no match
+  return entry ? entry[0] as CronInterval : defaultBackupNotificationConfig.cronInterval || '20min'; // Default to default if no match
 }
 
 export function setCronInterval(interval: CronInterval) {
@@ -405,12 +462,15 @@ export function getMachinesSummary() {
       if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
         const backupSettings = getBackupIntervalSettings(row.name, row.last_backup_name);
         if (backupSettings) {
+          // Get global tolerance setting
+          const globalTolerance = getOverdueToleranceConfig();
           expectedBackupDate = calculateExpectedBackupDate(
             row.last_backup_date, 
             backupSettings.expectedInterval, 
-            backupSettings.intervalUnit
+            backupSettings.intervalUnit,
+            globalTolerance
           );
-                      expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
+          expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
         }
       }
 
@@ -507,23 +567,97 @@ interface OverallSummaryRow {
 // Helper function to count overdue backups from configuration
 function countOverdueBackups(): number {
   try {
-    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-    if (!lastNotificationJson) return 0;
+    // Get backup settings to check which backups have overdue check enabled
+    const backupSettingsJson = getConfiguration('backup_settings');
+    if (!backupSettingsJson) {
+      return 0;
+    }
     
-    const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
-      lastNotificationSent: string; // ISO timestamp
-      lastBackupDate: string; // ISO timestamp
+    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+      notificationEvent: NotificationEvent;
+      expectedInterval: number;
+      overdueBackupCheckEnabled: boolean;
+      intervalUnit: 'hours' | 'days';
+      overdueTolerance?: OverdueTolerance;
     }>;
     
+    // Get notification frequency configuration
+    const notificationFrequency = getNotificationFrequencyConfig();
+    
+    // Get last notification timestamps
+    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
+    const lastNotifications = lastNotificationJson 
+      ? JSON.parse(lastNotificationJson) as Record<string, {
+          lastNotificationSent: string; // ISO timestamp
+          lastBackupDate: string; // ISO timestamp
+        }>
+      : {};
+    
+    // Get machines summary for machine ID lookup
+    const machinesSummary = withDb(() => {
+      return safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as { 
+        id: string; 
+        name: string; 
+      }[];
+    });
+    
+    // Create a map for quick machine name to ID lookup
+    const machineNameToId = new Map<string, string>();
+    machinesSummary.forEach(machine => {
+      machineNameToId.set(machine.name, machine.id);
+    });
+    
+    const currentTime = new Date();
     let overdueCount = 0;
     
-    for (const backupKey in lastNotifications) {
-      const notification = lastNotifications[backupKey];
-      const lastBackupDate = new Date(notification.lastBackupDate);
-      const lastNotificationSent = new Date(notification.lastNotificationSent);
+    // Iterate through backup settings keys (machine_name:backup_name)
+    const backupKeys = Object.keys(backupSettings);
+    
+    for (const backupKey of backupKeys) {
+      // Parse machine name and backup name from the key
+      const [machineName, backupName] = backupKey.split(':');
       
-      // If lastBackupDate is older than lastNotificationSent, it's an overdue backup
-      if (lastBackupDate < lastNotificationSent) {
+      if (!machineName || !backupName) {
+        continue;
+      }
+      
+      // Get the backup configuration
+      const backupConfig = backupSettings[backupKey];
+      
+      if (!backupConfig || !backupConfig.overdueBackupCheckEnabled) {
+        continue;
+      }
+      
+      // Get machine ID from the machine name
+      const machineId = machineNameToId.get(machineName);
+      if (!machineId) {
+        continue;
+      }
+      
+      // Get the latest backup for this machine and backup name
+      const latestBackup = safeDbOperation(() => dbOps.getLatestBackupByName.get(machineId, backupName), 'getLatestBackupByName') as {
+        date: string;
+        machine_name: string;
+        backup_name?: string;
+      } | null;
+      
+      if (!latestBackup) {
+        continue;
+      }
+      
+      // Get interval configuration
+      const intervalUnit = backupConfig.intervalUnit || 'hours';
+      const expectedInterval = backupConfig.expectedInterval;
+      
+      // Calculate expected backup date using the helper function with tolerance
+      const globalTolerance = getOverdueToleranceConfig();
+      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, intervalUnit, globalTolerance);
+      
+      // Check if backup is overdue by comparing expected date with current time
+      const expectedBackupTime = new Date(expectedBackupDate);
+      
+      // Check if backup is overdue (expected date is in the past)
+      if (expectedBackupDate !== 'N/A' && !isNaN(expectedBackupTime.getTime()) && currentTime > expectedBackupTime) {
         overdueCount++;
       }
     }
@@ -536,28 +670,38 @@ function countOverdueBackups(): number {
 }
 
 export function getOverallSummary() {
-  return withDb(() => {
-    const summary = safeDbOperation(() => dbOps.getOverallSummary.get(), 'getOverallSummary') as OverallSummaryRow | undefined;
-    if (!summary) {
-      return {
-        totalMachines: 0,
-        totalBackups: 0,
-        totalUploadedSize: 0,
-        totalStorageUsed: 0,
-        totalBackupSize: 0,
-        overdueBackupsCount: 0
-      };
-    }
+  try {
+    const result = withDb(() => {
+      const summary = safeDbOperation(() => dbOps.getOverallSummary.get(), 'getOverallSummary') as OverallSummaryRow | undefined;
+      
+      if (!summary) {
+        return {
+          totalMachines: 0,
+          totalBackups: 0,
+          totalUploadedSize: 0,
+          totalStorageUsed: 0,
+          totalBackupSize: 0,
+          overdueBackupsCount: 0
+        };
+      }
 
-    return {
-      totalMachines: summary.total_machines,
-      totalBackups: summary.total_backups,
-      totalUploadedSize: summary.total_uploaded_size,
-      totalStorageUsed: summary.total_storage_used,
-      totalBackupSize: summary.total_backuped_size,
-      overdueBackupsCount: countOverdueBackups()
-    };
-  });
+      const overdueCount = countOverdueBackups();
+
+      return {
+        totalMachines: summary.total_machines,
+        totalBackups: summary.total_backups,
+        totalUploadedSize: summary.total_uploaded_size,
+        totalStorageUsed: summary.total_storage_used,
+        totalBackupSize: summary.total_backuped_size,
+        overdueBackupsCount: overdueCount
+      };
+    });
+    
+    return result;
+  } catch (error) {
+    console.error('[getOverallSummary] Error:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
 }
 
 export function getMachineById(machineId: string) {
@@ -701,7 +845,31 @@ export function getNotificationFrequencyConfig(): NotificationFrequencyConfig {
 
 export function setNotificationFrequencyConfig(value: NotificationFrequencyConfig): void {
   setConfiguration("notification_frequency", value);
-} 
+}
+
+// Functions to get/set overdue tolerance config
+export function getOverdueToleranceConfig(): OverdueTolerance {
+  const value = getConfiguration("overdue_tolerance");
+  if (
+    value === "no_tolerance" ||
+    value === "5min" ||
+    value === "15min" ||
+    value === "30min" ||
+    value === "1h" ||
+    value === "2h" ||
+    value === "4h" ||
+    value === "6h" ||
+    value === "12h" ||
+    value === "1d"
+  ) {
+    return value;
+  }
+  return defaultBackupNotificationConfig.overdueTolerance || '1h';
+}
+
+export function setOverdueToleranceConfig(value: OverdueTolerance): void {
+  setConfiguration("overdue_tolerance", value);
+}
 
 // Helper function to get overdue backups for a specific machine based on interval calculation
 export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
@@ -722,6 +890,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
       intervalUnit: 'hours' | 'days';
+      overdueTolerance?: OverdueTolerance;
     }>;
     
     const overdueBackups: Array<{
@@ -760,10 +929,12 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
         if (!latestBackup) continue;
         
         // Calculate expected backup date and check if overdue
+        const globalTolerance = getOverdueToleranceConfig();
         const expectedBackupDate = calculateExpectedBackupDate(
           latestBackup.date, 
           settings.expectedInterval, 
-          settings.intervalUnit
+          settings.intervalUnit,
+          globalTolerance
         );
         
         if (expectedBackupDate === 'N/A') continue;

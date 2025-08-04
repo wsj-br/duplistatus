@@ -77,7 +77,7 @@ export function DatabaseMaintenanceMenu() {
         title: "Database cleaned",
         description: "Old records have been successfully removed.",
         variant: "default",
-        duration: 5000,
+        duration: 2000,
       });
       
       // Force a complete refresh of the page data
@@ -103,7 +103,7 @@ export function DatabaseMaintenanceMenu() {
         title: "Database Cleanup Failed",
         description: errorMessage,
         variant: "destructive",
-        duration: 10000,
+        duration: 3000,
       });
     } finally {
       setIsCleaning(false);
@@ -131,7 +131,7 @@ export function DatabaseMaintenanceMenu() {
         title: "Machine deleted",
         description: result.message,
         variant: "default",
-        duration: 5000,
+        duration: 2000,
       });
       
       // Reset selected machine
@@ -165,7 +165,7 @@ export function DatabaseMaintenanceMenu() {
         title: "Machine Deletion Failed",
         description: errorMessage,
         variant: "destructive",
-        duration: 10000,
+        duration: 3000,
       });
     } finally {
       setIsDeletingMachine(false);

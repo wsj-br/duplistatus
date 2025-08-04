@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ClipboardPaste, Send } from 'lucide-react';
+import { ClipboardPaste, Send, RotateCcw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { NotificationTemplate } from '@/lib/types';
 import { defaultNotificationTemplates } from '@/lib/default-config';
@@ -36,6 +36,8 @@ const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'last_backup_date', description: 'Date/time of the last backup' },
   { name: 'last_elapsed', description: 'Time ago since the last backup' },
+  { name: 'expected_date', description: 'Date/time when the backup was expected' },
+  { name: 'expected_elapsed', description: 'Time elapsed since the expected backup date' },
   { name: 'backup_interval_type', description: 'Backup interval type (days, hours)' },
   { name: 'backup_interval_value', description: 'Backup interval value (1, 2, 3, etc.)' },
 ];
@@ -267,14 +269,14 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     try {
       await onSave(formData);
       toast({
-        duration: 5000,
+        duration: 2000,
         title: "Success",
         description: "Template settings saved successfully",
       });
     } catch (error) {
       console.error('Error saving templates:', error instanceof Error ? error.message : String(error));
       toast({
-        duration: 10000,
+        duration: 3000,
         title: "Error",
         description: "Failed to save template settings",
         variant: "destructive",
@@ -301,14 +303,14 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       
       await onSendTest(testTemplate);
       toast({
-        duration: 5000,
+        duration: 2000,
         title: "Test Sent",
         description: `Test notification sent using ${activeTab} template`,
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
       toast({
-        duration: 10000,
+        duration: 3000,
         title: "Error",
         description: "Failed to send test notification",
         variant: "destructive",
@@ -316,6 +318,22 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     } finally {
       setIsSendingTest(false);
     }
+  };
+
+  const handleResetToDefault = () => {
+    const templateType = activeTab === 'overdue' ? 'overdueBackup' : activeTab;
+    const defaultTemplate = defaultNotificationTemplates[templateType];
+    
+    setFormData(prev => ({
+      ...prev,
+      [templateType]: defaultTemplate,
+    }));
+    
+    toast({
+      duration: 2000,
+      title: "Reset to Default",
+      description: `${activeTab} template has been reset to default values`,
+    });
   };
 
   return (
@@ -394,6 +412,14 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             {isSendingTest ? "Sending..." : "Send Test Notification"}
           </Button>
         )}
+        <Button 
+          onClick={handleResetToDefault} 
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          <RotateCcw className="h-4 w-4" />
+          Reset to Default
+        </Button>
       </div>
     </div>
   );

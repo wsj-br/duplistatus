@@ -129,7 +129,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
 
   const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availableBackups: string[] | null; currentBackupDate: string }) => {
     if (!availableBackups || availableBackups.length === 0) {
-      return <span className="text-sm text-muted-foreground">(not available)</span>;
+      return <span className="text-sm text-muted-foreground"> </span>;
     }
 
     return (
@@ -186,7 +186,8 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
       <div className="flex items-center gap-4">
         <BackButton />
         <h1 className="text-2xl font-bold">Backup details: 
-            <span className="text-blue-600"> {backup.name}</span>
+            <span className="text-blue-600 font-normal"> {backup.name}</span>
+            <span className="text-muted-foreground font-normal"> ({machine.name})</span>
         </h1>
       </div>
 
@@ -267,7 +268,9 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
 
               {/* Right Column */}
               <div>
-                <dt className="font-medium mb-2">Available versions at the time of the backup:</dt>
+                <dt className="font-medium mb-2">
+                     {!availableBackups || availableBackups.length === 0 ? '' : 'Available versions at the time of the backup:'}
+                </dt>
                 <dd className="text-sm">
                   <AvailableBackupsTable availableBackups={availableBackups} currentBackupDate={safeBackup.date} />
                 </dd>

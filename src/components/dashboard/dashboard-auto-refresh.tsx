@@ -77,14 +77,14 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
         
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-        console.error('Error refreshing dashboard data:', error);
+        console.error('Error refreshing dashboard data:', error instanceof Error ? error.message : String(error));
         setLastError(errorMessage);
         
         toast({
           title: "Update Failed",
           description: `Failed to refresh dashboard data: ${errorMessage}`,
           variant: "destructive",
-          duration: 5000,
+          duration: 2000,
         });
       }
     };
