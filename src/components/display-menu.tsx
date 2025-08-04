@@ -30,7 +30,7 @@ export function DisplayMenu() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" title="Display Settings">
+        <Button variant="outline" size="icon" title="Display settings">
           <MonitorCog className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

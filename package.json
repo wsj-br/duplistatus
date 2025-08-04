@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.5.20",
+  "version": "0.5.21",
   "private": true,
   "packageManager": "pnpm@10.14.0",
   "engines": {
@@ -10,9 +10,9 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "next dev -p 8666",
-    "build": "next build",
-    "start-local": "NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 next start",
-    "start": "NODE_ENV=production PORT=9666 CRON_PORT=9667 NEXT_TELEMETRY_DISABLED=1 next start",
+    "build": "next build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static",
+    "start-local": "NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
+    "start": "NODE_ENV=production PORT=9666 CRON_PORT=9667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "generate-test-data": "tsx scripts/generate-test-data.ts",

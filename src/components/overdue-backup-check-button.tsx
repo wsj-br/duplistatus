@@ -77,7 +77,7 @@ export function OverdueBackupCheckButton() {
       size="icon"
       onClick={handleCheckOverdueBackups}
       disabled={isChecking}
-      title="Check Overdue Backups"
+      title="Check overdue backups now"
     >
       {isChecking ? (
         <Loader2 className="h-4 w-4 animate-spin" />

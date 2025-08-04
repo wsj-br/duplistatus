@@ -125,7 +125,7 @@ export function BackupCollectMenu() {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" title="Collect Backup Logs">
+        <Button variant="outline" size="icon" title="Collect backup logs">
           <Download className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

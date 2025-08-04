@@ -61,7 +61,7 @@ export function NtfyMessagesButton() {
       size="icon"
       onClick={handleOpenNtfyMessages}
       disabled={isLoading || !ntfyConfig?.topic}
-      title="NTFY Messages"
+      title="View ntfy messages"
     >
       <MessagesSquare className="h-4 w-4" />
     </Button>

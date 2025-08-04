@@ -40,6 +40,7 @@ const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
   { name: 'expected_elapsed', description: 'Time elapsed since the expected backup date' },
   { name: 'backup_interval_type', description: 'Backup interval type (days, hours)' },
   { name: 'backup_interval_value', description: 'Backup interval value (1, 2, 3, etc.)' },
+  { name: 'overdue_tolerance', description: 'Configured overdue tolerance (1 hour, 1 day, etc.)' },
 ];
 
 interface NotificationTemplatesFormProps {
@@ -99,7 +100,7 @@ const TemplateEditor = ({
           </div>
           <div className="flex items-center gap-2">
             <Select value={selectedVariable} onValueChange={setSelectedVariable}>
-              <SelectTrigger className="w-64">
+              <SelectTrigger className="w-80">
                 <SelectValue placeholder="Select variable..." />
               </SelectTrigger>
               <SelectContent>

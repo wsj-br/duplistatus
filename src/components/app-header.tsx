@@ -53,7 +53,7 @@ export function AppHeader() {
           <DatabaseMaintenanceMenu />
           <DisplayMenu />
           <Link href="/settings">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" title="Settings">
               <Settings className="h-4 w-4" />
             </Button>
           </Link>

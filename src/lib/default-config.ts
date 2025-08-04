@@ -7,19 +7,27 @@ export const defaultNotificationTemplates: {
   warning: NotificationTemplate;
 } = {
   overdueBackup: {
-    message: "The backup {backup_name} is overdue on {machine_name}.\n\n🚨 Last backup was {last_backup_date} ({last_elapsed})\n⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n🔍 Please check the duplicati server.",
+    message: "The backup {backup_name} is overdue on {machine_name}.\n\n" + 
+             "🚨 Last backup was {last_backup_date} ({last_elapsed})\n" + 
+              "⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n" + 
+              "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance} \n\n" + 
+             "🔍 Please check the duplicati server.",
     priority: "default",
     tags: "duplicati, duplistatus, overdue",
     title: "🕑 Overdue - {backup_name}  @ {machine_name}"
   },
   success: {
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n💾 Store usage:  {storage_size} \n🔃 Available versions:  {available_versions} ",
+    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
+             "💾 Store usage:  {storage_size} \n" + 
+             "🔃 Available versions:  {available_versions} ",
     priority: "default",
     tags: "duplicati, duplistatus, success",
     title: "✅ {status} - {backup_name}  @ {machine_name}"
   },
   warning: {
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings_count} warnings\n🛑 {errors_count} errors.",
+    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n" + 
+             "🚨 {warnings_count} warnings\n" + 
+             "🛑 {errors_count} errors.",
     priority: "high",
     tags: "duplicati, duplistatus, warning, error",
     title: " ⚠️{status} - {backup_name}  @ {machine_name}"

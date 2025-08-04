@@ -1,6 +1,6 @@
 import format from 'string-template';
-import { getConfiguration, getNtfyConfig } from './db-utils';
-import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey } from './types';
+import { getConfiguration, getNtfyConfig, getOverdueToleranceConfig } from './db-utils';
+import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey, OverdueTolerance } from './types';
 import { createDefaultNotificationConfig, defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -32,6 +32,25 @@ export interface OverdueBackupContext {
   expected_elapsed: string;
   backup_interval_type: string;
   backup_interval_value: number;
+  overdue_tolerance: string; // Human-readable tolerance label
+}
+
+// Helper function to convert overdue tolerance value to human-readable label
+function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
+  const toleranceLabels: Record<OverdueTolerance, string> = {
+    'no_tolerance': 'No tolerance',
+    '5min': '5 min',
+    '15min': '15 min',
+    '30min': '30 min',
+    '1h': '1 hour',
+    '2h': '2 hours',
+    '4h': '4 hours',
+    '6h': '6 hours',
+    '12h': '12 hours',
+    '1d': '1 day',
+  };
+  
+  return toleranceLabels[tolerance] || tolerance;
 }
 
 async function getNotificationConfig(): Promise<NotificationConfig | null> {
@@ -163,6 +182,10 @@ function processTemplate(template: NotificationTemplate, context: NotificationCo
   if ('last_backup_date' in formattedContext) {
     formattedContext.last_backup_date = formatDateString(formattedContext.last_backup_date);
   }
+  
+  if ('expected_date' in formattedContext) {
+    formattedContext.expected_date = formatDateString(formattedContext.expected_date);
+  }
 
   return {
     title: format(template.title, formattedContext),
@@ -243,8 +266,15 @@ export async function sendOverdueBackupNotification(
     return;
   }
 
+  // Get the overdue tolerance configuration and add it to the context
+  const overdueTolerance = getOverdueToleranceConfig();
+  const contextWithTolerance: OverdueBackupContext = {
+    ...context,
+    overdue_tolerance: getOverdueToleranceLabel(overdueTolerance),
+  };
+
   try {
-    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context);
+    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, contextWithTolerance);
     
     await sendNtfyNotification(
       notificationConfig.ntfy.url,

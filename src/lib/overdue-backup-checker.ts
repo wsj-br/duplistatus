@@ -245,12 +245,13 @@ export async function checkOverdueBackups(checkDate?: Date) {
               machine_name: machineName,
               machine_id: machineId,
               backup_name: backupName,
-              last_backup_date: new Date(latestBackup.date).toLocaleString(),
+              last_backup_date: latestBackup.date,
               last_elapsed: overdueTimeAgo,
-              expected_date: expectedBackupDate !== 'N/A' ? new Date(expectedBackupDate).toLocaleString() : 'N/A',
+              expected_date: expectedBackupDate,
               expected_elapsed: expectedBackupElapsed,
               backup_interval_type: intervalUnit,
               backup_interval_value: intervalValue,
+              overdue_tolerance: '', // This will be set by sendOverdueBackupNotification
             };
 
             await sendOverdueBackupNotification(machineId, machineName, backupName, overdueBackupContext, config);
