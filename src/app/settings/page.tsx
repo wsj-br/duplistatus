@@ -7,7 +7,7 @@ import { BackButton } from '@/components/ui/back-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationConfig, BackupNotificationConfig } from '@/lib/types';
+import { NotificationConfig } from '@/lib/types';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
@@ -138,7 +138,7 @@ function SettingsPageContent() {
             <TabsContent value="backups" className="mt-6">
               <BackupNotificationsForm 
                 backupSettings={config.backupSettings || {}} 
-                onSave={async (backupSettings) => {
+                onSave={async () => {
                   // Already uses /api/configuration/backup-settings
                   // No change needed here
                 }}

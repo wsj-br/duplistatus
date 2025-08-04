@@ -1,8 +1,8 @@
 {
   "name": "duplistatus",
-  "version": "0.5.19",
+  "version": "0.5.20",
   "private": true,
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "engines": {
     "node": ">=18.19.0",
     "pnpm": ">=10.12.4"
@@ -53,13 +53,13 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "express": "^5.1.0",
-    "lucide-react": "^0.526.0",
-    "next": "^15.4.4",
+    "lucide-react": "^0.536.0",
+    "next": "^15.4.5",
     "node-cron": "^4.2.1",
-    "react": "^19.1.0",
+    "react": "^19.1.1",
     "react-day-picker": "^9.8.1",
-    "react-dom": "^19.1.0",
-    "react-hook-form": "^7.61.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.62.0",
     "recharts": "^3.1.0",
     "server-only": "^0.0.1",
     "string-template": "^1.0.0",
@@ -67,20 +67,20 @@
     "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.2.0",
     "@types/node-cron": "^3.0.11",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
     "@types/string-template": "^1.0.7",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.32.0",
-    "eslint-config-next": "15.4.4"
+    "eslint-config-next": "15.4.5"
   }
 }

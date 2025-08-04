@@ -54,68 +54,7 @@ interface Migration {
   up: (db: Database.Database) => void;
 }
 
-// Interface for backup records from database
-interface BackupRecord {
-  id: string;
-  machine_id: string;
-  backup_name: string;
-  backup_id: string;
-  date: string;
-  status: string;
-  duration_seconds: number;
-  size: number;
-  uploaded_size: number;
-  examined_files: number;
-  warnings: number;
-  errors: number;
-  created_at: string;
-  messages_array: string | null;
-  warnings_array: string | null;
-  errors_array: string | null;
-  available_backups?: string | null;
-  deleted_files: number;
-  deleted_folders: number;
-  modified_files: number;
-  opened_files: number;
-  added_files: number;
-  size_of_modified_files: number;
-  size_of_added_files: number;
-  size_of_examined_files: number;
-  size_of_opened_files: number;
-  not_processed_files: number;
-  added_folders: number;
-  too_large_files: number;
-  files_with_error: number;
-  modified_folders: number;
-  modified_symlinks: number;
-  added_symlinks: number;
-  deleted_symlinks: number;
-  partial_backup: number;
-  dryrun: number;
-  main_operation: string;
-  parsed_result: string;
-  interrupted: number;
-  version: string | null;
-  begin_time: string;
-  end_time: string;
-  warnings_actual_length: number;
-  errors_actual_length: number;
-  messages_actual_length: number;
-  bytes_downloaded: number;
-  known_file_size: number;
-  last_backup_date: string | null;
-  backup_list_count: number;
-  reported_quota_error: number;
-  reported_quota_warning: number;
-  backend_main_operation: string | null;
-  backend_parsed_result: string | null;
-  backend_interrupted: number;
-  backend_version: string | null;
-  backend_begin_time: string | null;
-  backend_duration: string | null;
-  backend_warnings_actual_length: number;
-  backend_errors_actual_length: number;
-}
+
 
 // Migration definitions
 const migrations: Migration[] = [

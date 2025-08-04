@@ -4,7 +4,7 @@ import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance } fro
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, generateDefaultNtfyTopic, defaultNotificationFrequencyConfig, defaultNtfyConfig, defaultBackupNotificationConfig, defaultUIConfig } from './default-config';
+import { defaultCronConfig, generateDefaultNtfyTopic, defaultNotificationFrequencyConfig, defaultNtfyConfig, defaultBackupNotificationConfig } from './default-config';
 import { formatTimeElapsed } from './utils';
 
 // Helper function to convert overdue tolerance to minutes
@@ -580,18 +580,6 @@ function countOverdueBackups(): number {
       intervalUnit: 'hours' | 'days';
       overdueTolerance?: OverdueTolerance;
     }>;
-    
-    // Get notification frequency configuration
-    const notificationFrequency = getNotificationFrequencyConfig();
-    
-    // Get last notification timestamps
-    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-    const lastNotifications = lastNotificationJson 
-      ? JSON.parse(lastNotificationJson) as Record<string, {
-          lastNotificationSent: string; // ISO timestamp
-          lastBackupDate: string; // ISO timestamp
-        }>
-      : {};
     
     // Get machines summary for machine ID lookup
     const machinesSummary = withDb(() => {

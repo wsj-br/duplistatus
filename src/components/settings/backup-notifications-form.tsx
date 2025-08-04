@@ -14,7 +14,7 @@ import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, N
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
-import { defaultBackupNotificationConfig, defaultUIConfig, defaultNotificationFrequencyConfig } from '@/lib/default-config';
+import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
 
 interface MachineWithBackup {
@@ -41,7 +41,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const { toast } = useToast();
   const [machinesWithBackups, setMachinesWithBackups] = useState<MachineWithBackup[]>([]);
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
-  const [originalSettings, setOriginalSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
@@ -211,8 +210,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
             ...prev,
             ...defaultSettings,
           };
-          // Update original settings to match the new settings
-          setOriginalSettings(newSettings);
           return newSettings;
         }
         return prev;
@@ -353,9 +350,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       
       // Always run overdue backup check when saving to ensure tolerance is applied
       await runOverdueBackupCheck();
-      
-      // Update original settings to reflect the new state
-      setOriginalSettings(settings);
       
       toast({
         title: "Success",
@@ -506,7 +500,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       
       if (data.backupSettings && Object.keys(data.backupSettings).length > 0) {
         setSettings(data.backupSettings);
-        setOriginalSettings(data.backupSettings);
       }
     } catch (error) {
       console.error('Failed to load existing backup settings:', error instanceof Error ? error.message : String(error));

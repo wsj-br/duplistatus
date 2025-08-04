@@ -15,6 +15,7 @@ The following endpoints are available:
 - [Health Check](#health-check)
 - [Collect Backups](#collect-backups)
 - [Cleanup Backups](#cleanup-backups)
+- [Delete Machine](#delete-machine)
 
 
 <br>
@@ -22,7 +23,7 @@ The following endpoints are available:
 ## Upload Backup Data
 - **Endpoint**: `/api/upload`
 - **Method**: POST
-- **Description**: Uploads backup operation data for a machine.
+- **Description**: Uploads backup operation data for a machine. Supports duplicate detection and sends notifications.
 - **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
@@ -37,6 +38,11 @@ The following endpoints are available:
     "success": true
   }
   ```
+
+- **Error Responses**:
+  - `400`: Missing required fields or invalid operation type
+  - `409`: Duplicate backup data (ignored)
+  - `500`: Server error processing backup data
 
 <br>
 
@@ -225,6 +231,8 @@ The following endpoints are available:
 <br>
 
 ## Configuration Management
+
+### Get Configuration
 - **Endpoint**: `/api/configuration`
 - **Method**: GET
 - **Description**: Retrieves the current notification and backup settings configuration.
@@ -265,13 +273,74 @@ The following endpoints are available:
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
       }
+    },
+    "overdue_tolerance": 1
+  }
+  ```
+
+### Update Notification Configuration
+- **Endpoint**: `/api/configuration/notifications`
+- **Method**: POST
+- **Description**: Updates the notification configuration (ntfy settings).
+- **Request Body**:
+  ```json
+  {
+    "ntfy": {
+      "enabled": true,
+      "url": "https://ntfy.sh",
+      "topic": "duplistatus-notifications",
+      "username": "",
+      "password": ""
     }
   }
   ```
 
+### Update Backup Settings
+- **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
-- **Description**: Updates the notification and backup settings configuration.
-- **Request Body**: Same structure as GET response
+- **Description**: Updates the backup notification settings for specific machines/backups.
+- **Request Body**:
+  ```json
+  {
+    "backupSettings": {
+      "Machine Name:Backup Name": {
+        "notificationEvent": "all",
+        "expectedInterval": 24,
+        "overdueBackupCheckEnabled": true,
+        "intervalUnit": "hours"
+      }
+    }
+  }
+  ```
+
+### Update Notification Templates
+- **Endpoint**: `/api/configuration/templates`
+- **Method**: POST
+- **Description**: Updates the notification templates.
+- **Request Body**:
+  ```json
+  {
+    "templates": {
+      "success": {
+        "title": "✅ {status} - {backup_name} @ {machine_name}",
+        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.",
+        "priority": "default",
+        "tags": "duplicati, duplistatus, success"
+      }
+    }
+  }
+  ```
+
+### Update Overdue Tolerance
+- **Endpoint**: `/api/configuration/overdue-tolerance`
+- **Method**: POST
+- **Description**: Updates the overdue tolerance setting (in hours).
+- **Request Body**:
+  ```json
+  {
+    "overdue_tolerance": 2
+  }
+  ```
 
 <br>
 
@@ -280,7 +349,7 @@ The following endpoints are available:
 ### Test Notification
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
-- **Description**: Sends a test notification using the current ntfy configuration.
+- **Description**: Sends a test notification using the provided ntfy configuration.
 - **Request Body**:
   ```json
   {
@@ -294,6 +363,32 @@ The following endpoints are available:
   ```json
   {
     "message": "Test notification sent successfully"
+  }
+  ```
+
+### Test Template
+- **Endpoint**: `/api/notifications/test-template`
+- **Method**: POST
+- **Description**: Tests a notification template with sample data.
+- **Request Body**:
+  ```json
+  {
+    "template": {
+      "title": "Test Title",
+      "message": "Test message with {variable}",
+      "priority": "default",
+      "tags": "test"
+    },
+    "ntfyConfig": {
+      "url": "https://ntfy.sh",
+      "topic": "test-topic"
+    }
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true
   }
   ```
 
@@ -339,36 +434,6 @@ The following endpoints are available:
   ```json
   {
     "frequency": "every_week"
-  }
-  ```
-
-### Test Template
-- **Endpoint**: `/api/notifications/test-template`
-- **Method**: POST
-- **Description**: Tests a notification template with sample data.
-- **Request Body**:
-  ```json
-  {
-    "template": {
-      "title": "Test Title",
-      "message": "Test message with {variable}",
-      "priority": "default",
-      "tags": "test"
-    },
-    "variables": {
-      "variable": "test value"
-    }
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "processedTemplate": {
-      "title": "Test Title",
-      "message": "Test message with test value",
-      "priority": "default",
-      "tags": "test"
-    }
   }
   ```
 
@@ -419,6 +484,16 @@ The following endpoints are available:
   }
   ```
 
+- **Error Response** (503):
+  ```json
+  {
+    "status": "unhealthy",
+    "error": "Database connection failed",
+    "message": "Connection timeout",
+    "timestamp": "2024-03-20T10:00:00Z"
+  }
+  ```
+
 <br>
 
 ## Collect Backups
@@ -438,9 +513,13 @@ The following endpoints are available:
 - **Response**:
   ```json
   {
-    "message": "Successfully collected 5 backups",
-    "processedCount": 5,
-    "status": 200
+    "success": true,
+    "machineName": "Machine Name",
+    "stats": {
+      "processed": 5,
+      "skipped": 2,
+      "errors": 0
+    }
   }
   ```
 
@@ -464,3 +543,41 @@ The following endpoints are available:
     "status": 200
   }
   ```
+
+<br>
+
+## Delete Machine
+- **Endpoint**: `/api/machines/:id`
+- **Method**: DELETE
+- **Description**: Deletes a machine and all its associated backups.
+- **Parameters**:
+  - `id`: the machine identifier
+
+- **Response**:
+  ```json
+  {
+    "message": "Successfully deleted machine and 15 backups",
+    "status": 200,
+    "changes": {
+      "backupChanges": 15,
+      "machineChanges": 1
+    }
+  }
+  ```
+
+<br>
+
+## Error Handling
+
+All endpoints follow a consistent error handling pattern:
+
+- **400 Bad Request**: Invalid request data or missing required fields
+- **409 Conflict**: Duplicate data (for upload endpoints)
+- **500 Internal Server Error**: Server-side errors with detailed error messages
+- **503 Service Unavailable**: Health check failures or database connection issues
+
+Error responses include:
+- `error`: Human-readable error message
+- `message`: Technical error details (in development mode)
+- `stack`: Error stack trace (in development mode)
+- `timestamp`: When the error occurred

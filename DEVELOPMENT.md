@@ -124,7 +124,7 @@ pnpm cron:dev
 pnpm cron:start
 ```
 
-The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications.
+The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using `CRON_PORT` environment variable.
 
 <br>
 
@@ -248,33 +248,33 @@ This script cleans up Docker resources:
 ## Frameworks, libraries and tools used
 
 1. **Runtime & Package Management**
-   - Node.js (>= 18.19.0)
-   - pnpm (v10.13.1)
+   - Node.js
+   - pnpm
 
 2. **Core Frameworks & Libraries**
-   - Next.js (^15.4.4) – React-based SSR/SSG framework
-   - React (^19.1.0)
+   - Next.js – React-based SSR/SSG framework
+   - React
    - Radix UI (@radix-ui/react-*) – headless component primitives
-   - Tailwind CSS (^4.1.11) + tailwindcss-animate plugin
+   - Tailwind CSS + tailwindcss-animate plugin
    - PostCSS (postcss.config.mjs)
-   - Better-sqlite3 (^12.2.0) + SQLite3 (data store)
-   - Recharts (^3.1.0) – charting library
-   - react-day-picker (^9.8.1) – date picker
-   - react-hook-form (^7.61.1) – forms
-   - lucide-react (^0.526.0) – icon components
-   - clsx (^2.1.1) – utility for conditional classNames
-   - class-variance-authority (^0.7.1) – variant styling helper
-   - date-fns (^4.1.0) – date utilities
-   - uuid (^11.1.0) – unique IDs
+   - Better-sqlite3 + SQLite3 (data store)
+   - Recharts – charting library
+   - react-day-picker – date picker
+   - react-hook-form – forms
+   - lucide-react – icon components
+   - clsx – utility for conditional classNames
+   - class-variance-authority – variant styling helper
+   - date-fns – date utilities
+   - uuid – unique IDs
    - server-only – Next helper for server-only modules
-   - express (^5.1.0) – web framework for cron service
-   - node-cron (^4.2.1) – cron job scheduling
-   - string-template (^1.0.0) – string templating
-   - tailwind-merge (^3.3.1) – Tailwind class merging utility
+   - express – web framework for cron service
+   - node-cron – cron job scheduling
+   - string-template – string templating
+   - tailwind-merge – Tailwind class merging utility
 
 3. **Type Checking & Linting**
-   - TypeScript (^5.8.3) + tsc (noEmit)
-   - TSX (^4.20.3) – lightweight runner for TS scripts
+   - TypeScript + tsc (noEmit)
+   - TSX – lightweight runner for TS scripts
    - ESLint (via `next lint`)
 
 4. **Build & Dev Tools**

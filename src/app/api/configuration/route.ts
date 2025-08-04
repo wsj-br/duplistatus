@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, setConfiguration, getNtfyConfig } from '@/lib/db-utils';
-import { NotificationConfig, BackupKey, BackupNotificationConfig } from '@/lib/types';
+import { getConfiguration, getNtfyConfig } from '@/lib/db-utils';
+import { NotificationConfig } from '@/lib/types';
 import { createDefaultNotificationConfig, defaultBackupNotificationConfig } from '@/lib/default-config';
 
 export async function GET() {

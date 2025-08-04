@@ -2,9 +2,11 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
+**Version 0.5.19**
+
 This web application is used to monitor and visualise backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines. It also provides an API endpoint that can be integrated with third-party tools such as the [Homepage](https://gethomepage.dev/).
 
-## Features 
+## Features
 
 - **Overview**: Real-time display of backup status for all machines
 - **Machine details**: Detailed view of backup history for each machine
@@ -17,6 +19,8 @@ This web application is used to monitor and visualise backup operations from [Du
 - **Auto-refresh**: Configurable automatic refresh of dashboard and detail pages
 - **Table Sorting**: Sortable tables in dashboard and detail views with persistent preferences
 - **Enhanced Backup Version Display**: Improved visibility of backup versions with icons and click-to-view functionality
+- **Machine Management**: Delete machines and their associated backups
+- **Enhanced API**: Comprehensive REST API with detailed documentation
 - **Easy to install**: Run inside a container (images in Docker Hub and GitHub Container Registry).
 
 <br><br>
@@ -24,12 +28,15 @@ This web application is used to monitor and visualise backup operations from [Du
 ## Screenshots
 
 ### Dashboard
+
 ![dashboard](docs/screen-dashboard.png)
 
 ### Machine detail
+
 ![machine-detail](docs/screen-machine.png)
 
 ### Backup detail
+
 ![backup-detail](docs/screen-backup.png)
 
 <br><br>
@@ -38,12 +45,12 @@ This web application is used to monitor and visualise backup operations from [Du
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
 
-
 ### Container images:
 
 You can use the images from:
- - **Docker Hub**:  `wsjbr/duplistatus:latest`
- - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
+
+- **Docker Hub**:  `wsjbr/duplistatus:latest`
+- **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
 <br>
 
@@ -79,6 +86,7 @@ volumes:
 ```
 
 After creating the file, execute the `docker-compose` command to start the container in the background (`-d`):
+
 ```bash
 docker-compose -f duplistatus.yml up -d
 ```
@@ -115,6 +123,7 @@ volumes:
   duplistatus_data:
     name: duplistatus_data 
 ```
+
 5. Click "Deploy the stack".
 
 <br>
@@ -122,12 +131,16 @@ volumes:
 ### Option 3: Using Portainer Stacks (GitHub Repository)
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
+
 2. Name your stack (e.g., "duplistatus").
+
 3. Choose "Build method" as "Repository".
+
 4. Enter the repository URL: <br>
-`https://github.com/wsj-br/duplistatus.git`
+   `https://github.com/wsj-br/duplistatus.git`
 
 5. In the "Compose path" field, enter: `docker-compose.yml`
+
 6. Click "Deploy the stack".
 
 <br>
@@ -165,7 +178,7 @@ podman create \
 
 # Start the pod (which starts the container)
 podman pod start Duplistatus
-``` 
+```
 
 <br>
 
@@ -175,25 +188,20 @@ Create the `docker-compose.yml` file as instructed in Option 1 above, and then r
 
 ```bash
 podman-compose -f docker-compose.yml up -d
-``` 
+```
 
 <br><br>
 
 # Duplicati Configuration
 
-
 1. **Allow remote access:**  Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
 
 ![Duplicati settings](docs/duplicati-settings.png)
 
-
 > [!WARNING]
 >  Only enable remote access if your Duplicati server is protected by a secure network (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet without proper security measures could lead to unauthorised access.
 
-
-
 2. **Configure to send the backup results to duplistatus:** In the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options, adjusting the server name or IP address:
-
 
     | Advanced option                   | Value                                    |
     | --------------------------------- | ---------------------------------------- |
@@ -201,8 +209,6 @@ podman-compose -f docker-compose.yml up -d
     | `send-http-result-output-format`  | `Json`                                   |
     | `send-http-log-level`             | `Information`                            |
     | `send-http-max-log-lines`         | `0`                                      |
-
-
 
 > [!TIP]
 >  Click on `Edit as text` and copy the lines below, adjusting the server name or IP address.
@@ -221,12 +227,11 @@ podman-compose -f docker-compose.yml up -d
 <br>
 
 Important notes on the messages sent by Duplicati:
- - If you omit `--send-http-log-level`, no log messages will be sent to **duplistatus**, only the statistics. 
- - You can use `--send-http-max-log-lines` to limit the number of messages sent. 
-   For example: `--send-http-max-log-lines=40` will only send the first 40 messages.
- - The recommended configuration is `--send-http-max-log-lines=0` for unlimited messages, as the Duplicati default is 100 messages.
- 
 
+- If you omit `--send-http-log-level`, no log messages will be sent to **duplistatus**, only the statistics. 
+- You can use `--send-http-max-log-lines` to limit the number of messages sent. 
+  For example: `--send-http-max-log-lines=40` will only send the first 40 messages.
+- The recommended configuration is `--send-http-max-log-lines=0` for unlimited messages, as the Duplicati default is 100 messages.
 
 > [!NOTE]
 >    Alternatively, you can include this configuration in the `Advanced Options` of each backup. <br>
@@ -275,15 +280,18 @@ Configure per-backup monitoring settings:
 The system supports customizable templates with variables for three different notification types:
 
 #### 1. Success Notifications
+
 Sent when a backup completes successfully.
 
 **Default Template:**
+
 - **Title**: `✅ {status} - {backup_name} @ {machine_name}`
 - **Message**: `Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n💾 Store usage: {storage_size}\n🔃 Available versions: {available_versions}`
 - **Priority**: `default`
 - **Tags**: `duplicati, duplistatus, success`
 
 **Available Variables:**
+
 - `{machine_name}`: Name of the machine
 - `{backup_name}`: Name of the backup operation
 - `{status}`: Backup status (Success)
@@ -298,15 +306,18 @@ Sent when a backup completes successfully.
 - `{errors_count}`: Number of errors (if any)
 
 #### 2. Warning Notifications
+
 Sent when a backup completes with warnings or errors.
 
 **Default Template:**
+
 - **Title**: `⚠️ {status} - {backup_name} @ {machine_name}`
 - **Message**: `Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n🚨 {warnings_count} warnings\n🛑 {errors_count} errors.`
 - **Priority**: `high`
 - **Tags**: `duplicati, duplistatus, warning, error`
 
 **Available Variables:**
+
 - `{machine_name}`: Name of the machine
 - `{backup_name}`: Name of the backup operation
 - `{status}`: Backup status (Warning, Error, Fatal)
@@ -321,15 +332,18 @@ Sent when a backup completes with warnings or errors.
 - `{available_versions}`: Number of available backup versions
 
 #### 3. Overdue Backup Notifications
+
 Sent when a backup is overdue based on the configured interval.
 
 **Default Template:**
+
 - **Title**: `🕑 Overdue - {backup_name} @ {machine_name}`
 - **Message**: `The backup {backup_name} is overdue on {machine_name}.\n\n🚨 The last backup was {last_backup_date} ({last_elapsed})\n⏰ Expected backup was {expected_date} ({expected_elapsed})\n🔍 Please check the duplicati server.`
 - **Priority**: `default`
 - **Tags**: `duplicati, duplistatus, overdue`
 
 **Available Variables:**
+
 - `{machine_name}`: Name of the machine
 - `{backup_name}`: Name of the backup operation
 - `{last_backup_date}`: Date and time of the last backup
@@ -349,7 +363,6 @@ You can customize these templates in the Settings → Notifications page:
 3. **Variable Substitution**: All variables are automatically replaced with actual values when notifications are sent
 4. **Priority Levels**: Choose from `min`, `low`, `default`, `high`, `urgent`, `emergency`
 5. **Tags**: Add custom tags to help organize and filter notifications
-
 
 > [!TIP]
 > You can use any combination of variables in your templates. Variables not found in the data will be left as-is in the message.
@@ -376,17 +389,19 @@ You can customize these templates in the Settings → Notifications page:
 Configure auto-refresh in the Settings page:
 
 1. **Enable/Disable**: Toggle auto-refresh on or off
-2. **Refresh Interval**: Set how often pages should refresh (1-60 minutes)
+2. **Refresh Interval**: Set how often pages should refresh (15 seconds-10 minutes)
 3. **Global Controls**: Access refresh controls from the application header
 4. **Page-specific Behavior**: 
    - Dashboard: Refreshes machine summaries, overall statistics, and chart data
    - Detail pages: Refreshes machine-specific data and charts
+5. **Persistent Preferences**: Auto-refresh settings are saved and restored across sessions
 
 ### Manual Refresh
 
 - **Dashboard**: Click the refresh button in the header to manually refresh all dashboard data
 - **Detail Pages**: Click the refresh button to update machine-specific information
 - **Visual Feedback**: Loading spinners and progress indicators show refresh status
+- **Progress Indicators**: Visual countdown showing time until next auto-refresh
 
 <br>
 
@@ -394,13 +409,16 @@ Configure auto-refresh in the Settings page:
 
 The application supports the following environment variables for configuration:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Port for the main web application | `9666` |
-| `CRON_PORT` | Port for the cron service. If not set, uses `PORT + 1` | `9667` |
-| `NODE_ENV` | Node.js environment (`development` or `production`) | `production` |
-| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry | `1` |
-| `TZ` | Timezone for the application | `UTC` |
+| Variable                  | Description                                            | Default      |
+| ------------------------- | ------------------------------------------------------ | ------------ |
+| `PORT`                    | Port for the main web application                      | `9666`       |
+| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `9667`       |
+| `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production` |
+| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`          |
+| `TZ`                      | Timezone for the application                           | `UTC`        |
+
+> [!NOTE]
+> In development mode, the application runs on port 8666 and the cron service on port 8667.
 
 ## Port Configuration Logic
 
@@ -413,8 +431,6 @@ The cron service port is determined by the following logic:
 The application automatically checks and updates the cron configuration in the database during startup to ensure the correct port is used.
 
 <br>
-
-
 
 # Homepage integration (optional)
 
@@ -469,7 +485,6 @@ This will show:
 > [!NOTE]
 >    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
 
-
 ## Last backup information Widget
 
 Shows the latest backup information for a given machine or server. The example below shows how to configure this integration.
@@ -519,6 +534,7 @@ This will show:
 For detailed information about all available API endpoints, request/response formats, and integration examples, please refer to the [API Endpoints Documentation](API-ENDPOINTS.md).
 
 The API provides endpoints for:
+
 - **Data Management**: Upload backup data, retrieve machine and backup information
 - **Configuration**: Manage notification settings and backup configurations
 - **Monitoring**: Health checks and system status
@@ -526,6 +542,7 @@ The API provides endpoints for:
 - **Maintenance**: Backup collection and cleanup operations
 - **Notification System**: Test and manage notification templates
 - **Cron Service**: Configure and manage scheduled tasks
+- **Machine Management**: Delete machines and their associated backups
 
 <br><br>
 
@@ -534,5 +551,3 @@ The API provides endpoints for:
 Detailed instructions on how to download the source code, make changes, debug, and run in development mode (debug) can be found in the file [DEVELOPMENT.md](DEVELOPMENT.md).
 
 This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH_AI.md](docs/HOW-I-BUILD-WITH-AI.md).
-
-

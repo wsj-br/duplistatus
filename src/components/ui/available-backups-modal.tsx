@@ -139,6 +139,8 @@ const GlobalAvailableBackupsModal = React.memo(() => {
   );
 });
 
+GlobalAvailableBackupsModal.displayName = 'GlobalAvailableBackupsModal';
+
 export const AvailableBackupsModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
