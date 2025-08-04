@@ -211,10 +211,10 @@ export async function sendBackupNotification(
     // Unknown status, use warning template
     template = config.templates?.warning || defaultNotificationTemplates.warning;
   }
-  console.log("backupConfig.notificationEvent:", backupConfig.notificationEvent, "status:",  status, "\ntemplate:", template);
+
   try {
     const processedTemplate = processTemplate(template, context);
-    console.log("processedTemplate:", processedTemplate);
+
     await sendNtfyNotification(
       config.ntfy.url,
       config.ntfy.topic,
