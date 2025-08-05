@@ -4,10 +4,10 @@ import { extractAvailableBackups } from './utils';
 // Import default configurations
 import { 
   defaultCronConfig, 
-  defaultBackupNotificationConfig, 
   generateDefaultNtfyTopic,
   createDefaultNotificationConfig,
-  defaultNtfyConfig
+  defaultNtfyConfig,
+  defaultOverdueTolerance
 } from './default-config';
 
 // Function to populate default configurations
@@ -31,7 +31,7 @@ function populateDefaultConfigurations(db: Database.Database) {
     // Set overdue_tolerance configuration
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
       'overdue_tolerance', 
-      defaultBackupNotificationConfig.overdueTolerance
+      defaultOverdueTolerance
     );
     
     // Set notifications configuration with templates

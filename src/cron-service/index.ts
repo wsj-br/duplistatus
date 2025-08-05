@@ -47,7 +47,7 @@ function main() {
   service.start();
 }
 
-// Only start if this file is being run directly
-if (require.main === module) {
+// Only start if this file is being run directly (ES module equivalent)
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 } 

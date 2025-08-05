@@ -59,7 +59,7 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
     const backupSettingsJson = getConfiguration('backup_settings');
     
     // Get ntfy config with default topic generation if needed
-    const ntfyConfig = getNtfyConfig();
+    const ntfyConfig = await getNtfyConfig();
     
     if (!configJson) {
       // If no configuration exists, create a minimal one with default ntfy config
@@ -215,23 +215,28 @@ export async function sendBackupNotification(
   // Determine which template to use based on backup status and backup settings
   let template: NotificationTemplate;
   const status = backup.status;
+  const notificationConf = backupConfig.notificationEvent;
   
+  // Check if needed to send a notification
+  switch(notificationConf) {
+    case 'warnings': // send warnings and errors (all but success)
+        if (status === 'Success') {
+          return;
+        }
+        break;
+    case 'errors': // send errors (only errors and fatals and errors count > 0)
+        if (status != 'Error' && status != 'Fatal' && backup.errors == 0) {
+          return;
+        }
+        break;
+    default: // default is to send messages (all)
+        break;
+  }
+  // select the template based on the status
   if (status === 'Success') {
-    if (backupConfig.notificationEvent === 'errors') {
-      // Only send error notifications, skip success
-      return;
-    }
     template = config.templates?.success || defaultNotificationTemplates.success;
-  } else if (status === 'Warning' || status=== "Unknown" || backup.warnings > 0) {
-    if (backupConfig.notificationEvent === 'errors') {
-      // Only send error notifications, skip warnings
-      return;
-    }
-    template = config.templates?.warning || defaultNotificationTemplates.warning;
-  } else if (status === 'Error' || status === 'Fatal' || backup.errors > 0) {
-    template = config.templates?.warning || defaultNotificationTemplates.warning; // Use warning template for errors
-  } else {
-    // Unknown status, use warning template
+  }
+  else {
     template = config.templates?.warning || defaultNotificationTemplates.warning;
   }
 
@@ -247,7 +252,7 @@ export async function sendBackupNotification(
       processedTemplate.tags
     );
     
-    console.log(`Notification sent for backup ${backup.name} on machine ${machineName}`);
+    console.log(`Notification sent for backup ${backup.name} on machine ${machineName}, status: ${status}, notification config: ${notificationConf}`);
   } catch (error) {
     console.error(`Failed to send backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
     throw error;

@@ -148,7 +148,9 @@ class CronService {
 
       // Check if statistics exist before accessing them
       if (result.statistics) {
-        console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: checked:${result.statistics.checkedBackups}, overdue:${result.statistics.overdueBackupsFound}, notifications:${result.statistics.notificationsSent}`);
+        if(result.statistics.notificationsSent>0) { // only log if notifications were sent
+          console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: checked:${result.statistics.checkedBackups}, overdue:${result.statistics.overdueBackupsFound}, notifications:${result.statistics.notificationsSent}`);
+        }
         return {
           taskName,
           success: true,

@@ -163,7 +163,7 @@ export function displayOverdueNotifications(checkDate?: Date): void {
 }
 
 // Main execution - only run when this file is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   console.log('\n  Overdue Backup Notifications Configuration\n');
   displayOverdueNotifications();
   console.log('           Current time: '+new Date().toLocaleString());

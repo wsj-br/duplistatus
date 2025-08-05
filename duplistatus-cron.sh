@@ -4,13 +4,13 @@
 #
 
 # wait for the server to be ready
-sleep 2
+sleep 5
 echo ""
 
 while true; do
   echo "[duplistatus] Starting cron-service at $(date)"
   pnpm cron:start
   EXIT_CODE=$?
-  echo "[duplistatus] cron-service exited with code $EXIT_CODE at $(date). Restarting in 5 seconds..."
-  sleep 5
+  echo "[duplistatus] cron-service exited with code $EXIT_CODE at $(date). Restarting in 30 seconds..."
+  sleep 30
 done 

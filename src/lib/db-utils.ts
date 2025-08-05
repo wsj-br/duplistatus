@@ -1,10 +1,10 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, generateDefaultNtfyTopic, defaultNotificationFrequencyConfig, defaultNtfyConfig, defaultBackupNotificationConfig } from './default-config';
+import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from './default-config';
 import { formatTimeElapsed } from './utils';
 
 // Helper function to convert overdue tolerance to minutes
@@ -53,7 +53,7 @@ function isBackupOverdueByInterval(machineName: string, backupName: string, last
       notificationEvent: NotificationEvent;
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hours' | 'days';
+      intervalUnit: 'hour' | 'day';
       overdueTolerance?: OverdueTolerance;
     }>;
     
@@ -99,7 +99,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
       notificationEvent: NotificationEvent;
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hours' | 'days';
+      intervalUnit: 'hour' | 'day';
     }>;
     
     const backupKey = getBackupKey(machineName, backupName);
@@ -113,7 +113,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
 // Helper function to get backup interval settings for expected backup calculations
 function getBackupIntervalSettings(machineName: string, backupName: string): {
   expectedInterval: number;
-  intervalUnit: 'hours' | 'days';
+  intervalUnit: 'hour' | 'day';
   overdueTolerance?: OverdueTolerance;
 } | undefined {
   try {
@@ -124,7 +124,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
       notificationEvent: NotificationEvent;
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hours' | 'days';
+      intervalUnit: 'hour' | 'day';
       overdueTolerance?: OverdueTolerance;
     }>;
     
@@ -145,7 +145,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
 }
 
 // Helper function to calculate expected backup date
-export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hours' | 'days', tolerance: OverdueTolerance = defaultBackupNotificationConfig.overdueTolerance || '1h'): string {
+export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hour' | 'day', tolerance: OverdueTolerance = defaultOverdueTolerance): string {
   try {
     const lastBackup = new Date(lastBackupDate);
     if (isNaN(lastBackup.getTime())) {
@@ -153,9 +153,9 @@ export function calculateExpectedBackupDate(lastBackupDate: string, expectedInte
     }
     
     const expectedDate = new Date(lastBackup);
-    if (intervalUnit === 'hours') {
+    if (intervalUnit === 'hour') {
       expectedDate.setHours(expectedDate.getHours() + expectedInterval);
-    } else if (intervalUnit === 'days') {
+    } else if (intervalUnit === 'day') {
       expectedDate.setDate(expectedDate.getDate() + expectedInterval);
     }
     
@@ -212,7 +212,7 @@ export function getCurrentCronInterval(): CronInterval {
     value.expression === task.cronExpression && value.enabled === task.enabled
   );
   
-  return entry ? entry[0] as CronInterval : defaultBackupNotificationConfig.cronInterval || '20min'; // Default to default if no match
+  return entry ? entry[0] as CronInterval : defaultCronInterval; // Default to default if no match
 }
 
 export function setCronInterval(interval: CronInterval) {
@@ -286,7 +286,7 @@ export function checkAndUpdateCronPort(): void {
     
     // Check if the port needs to be updated
     if (currentConfig.port !== expectedPort) {
-      console.log(`[CronPortChecker] Updating cron service port from ${currentConfig.port} to ${expectedPort}`);
+      // console.log(`[CronPortChecker] Updating cron service port from ${currentConfig.port} to ${expectedPort}`);
       
       // Update the configuration with the new port
       const updatedConfig = {
@@ -573,13 +573,20 @@ function countOverdueBackups(): number {
       return 0;
     }
     
-    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+    let backupSettings: Record<BackupKey, {
       notificationEvent: NotificationEvent;
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hours' | 'days';
+      intervalUnit: 'hour' | 'day';
       overdueTolerance?: OverdueTolerance;
     }>;
+    
+    try {
+      backupSettings = JSON.parse(backupSettingsJson);
+    } catch (parseError) {
+      console.error('Failed to parse backup settings JSON in countOverdueBackups:', parseError);
+      return 0;
+    }
     
     // Get machines summary for machine ID lookup
     const machinesSummary = withDb(() => {
@@ -634,7 +641,7 @@ function countOverdueBackups(): number {
       }
       
       // Get interval configuration
-      const intervalUnit = backupConfig.intervalUnit || 'hours';
+      const intervalUnit = backupConfig.intervalUnit || 'hour';
       const expectedInterval = backupConfig.expectedInterval;
       
       // Calculate expected backup date using the helper function with tolerance
@@ -673,7 +680,13 @@ export function getOverallSummary() {
         };
       }
 
-      const overdueCount = countOverdueBackups();
+      let overdueCount = 0;
+      try {
+        overdueCount = countOverdueBackups();
+      } catch (overdueError) {
+        console.error('[getOverallSummary] Error counting overdue backups:', overdueError instanceof Error ? overdueError.message : String(overdueError));
+        // Continue with overdueCount = 0
+      }
 
       return {
         totalMachines: summary.total_machines,
@@ -688,7 +701,15 @@ export function getOverallSummary() {
     return result;
   } catch (error) {
     console.error('[getOverallSummary] Error:', error instanceof Error ? error.message : String(error));
-    throw error;
+    // Return a fallback instead of throwing
+    return {
+      totalMachines: 0,
+      totalBackups: 0,
+      totalUploadedSize: 0,
+      totalStorageUsed: 0,
+      totalBackupSize: 0,
+      overdueBackupsCount: 0
+    };
   }
 }
 
@@ -751,18 +772,27 @@ export function getMachineById(machineId: string) {
 }
 
 export function getAggregatedChartData() {
-  return withDb(() => {
-    return safeDbOperation(() => dbOps.getAggregatedChartData.all(), 'getAggregatedChartData', []) as {
-      date: string;
-      isoDate: string;
-      uploadedSize: number;
-      duration: number;
-      fileCount: number;
-      fileSize: number;
-      storageSize: number;
-      backupVersions: number;
-    }[];
-  });
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getAggregatedChartData.all(), 'getAggregatedChartData', []) as {
+        date: string;
+        isoDate: string;
+        uploadedSize: number;
+        duration: number;
+        fileCount: number;
+        fileSize: number;
+        storageSize: number;
+        backupVersions: number;
+      }[];
+      
+      // Ensure we always return an array, even if empty
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getAggregatedChartData] Error:', error instanceof Error ? error.message : String(error));
+    // Return empty array as fallback
+    return [];
+  }
 }
 
 // Wrapper functions for database operations (keeping for backward compatibility)
@@ -852,7 +882,7 @@ export function getOverdueToleranceConfig(): OverdueTolerance {
   ) {
     return value;
   }
-  return defaultBackupNotificationConfig.overdueTolerance || '1h';
+  return defaultOverdueTolerance;
 }
 
 export function setOverdueToleranceConfig(value: OverdueTolerance): void {
@@ -877,7 +907,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
       notificationEvent: NotificationEvent;
       expectedInterval: number;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hours' | 'days';
+      intervalUnit: 'hour' | 'day';
       overdueTolerance?: OverdueTolerance;
     }>;
     
@@ -975,54 +1005,75 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
 
 
 // Function to get ntfy configuration with default topic generation
-export function getNtfyConfig(): { url: string; topic: string } {
+export async function getNtfyConfig(): Promise<{ url: string; topic: string }> {
   try {
     const configJson = getConfiguration('notifications');
     if (configJson) {
-      try {
-        const config = JSON.parse(configJson);
-        if (config.ntfy && config.ntfy.topic && config.ntfy.topic.trim() !== '') {
-          return config.ntfy;
-        }
-      } catch (parseError) {
-        console.error('Failed to parse notifications configuration JSON:', parseError);
-        // If JSON is corrupted, we'll fall through to generate a new one
+      const config = JSON.parse(configJson);
+      if (config.ntfy) {
+        return config.ntfy;
       }
     }
-    
-    // If no configuration exists or topic is empty, generate default
-    const defaultTopic = generateDefaultNtfyTopic();
-    const defaultConfig = {
-      url: defaultNtfyConfig.url,
-      topic: defaultTopic
-    };
-    
-    // Save the default configuration with better error handling
-    try {
-      let currentConfig: Record<string, unknown> = {};
-      if (configJson) {
-        try {
-          currentConfig = JSON.parse(configJson) as Record<string, unknown>;
-        } catch (parseError) {
-          console.error('Failed to parse existing config, creating new one:', parseError);
-          currentConfig = {};
-        }
-      }
-      
-      currentConfig.ntfy = defaultConfig;
-      setConfiguration('notifications', JSON.stringify(currentConfig));
-    } catch (saveError) {
-      console.error('Failed to save default NTFY configuration:', saveError);
-      // Don't throw, just return the default config
-    }
-    
-    return defaultConfig;
   } catch (error) {
-    console.error('Failed to get NTFY configuration:', error instanceof Error ? error.message : String(error));
-    // Return default even if there's an error
+    console.error('Failed to get ntfy config from notifications:', error instanceof Error ? error.message : String(error));
+  }
+  
+  // Generate default topic if no configuration exists
+  const { generateDefaultNtfyTopic, defaultNtfyConfig } = await import('./default-config');
+  const defaultTopic = generateDefaultNtfyTopic();
+  return { ...defaultNtfyConfig, topic: defaultTopic };
+}
+
+// Function to ensure backup settings are complete for all machines and backups
+export async function ensureBackupSettingsComplete(): Promise<{ added: number; total: number }> {
+  try {
+    // Get current backup settings
+    const backupSettingsJson = getConfiguration('backup_settings');
+    const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = backupSettingsJson 
+      ? JSON.parse(backupSettingsJson) 
+      : {};
+    
+    // Get all machines with backups
+    const machinesSummary = getMachinesSummary() as { 
+      id: string; 
+      name: string; 
+      lastBackupName: string | null;
+    }[];
+    
+    // Create a set of all machine-backup combinations
+    const machineBackupCombinations = new Set<string>();
+    machinesSummary.forEach(machine => {
+      if (machine.lastBackupName) {
+        const backupKey = getBackupKey(machine.name, machine.lastBackupName);
+        machineBackupCombinations.add(backupKey);
+      }
+    });
+    
+    // Check for missing backup settings and add defaults
+    let addedSettings = 0;
+    const updatedBackupSettings = { ...currentBackupSettings };
+    
+    for (const backupKey of machineBackupCombinations) {
+      if (!currentBackupSettings[backupKey]) {
+        // Import default configuration
+        const { defaultBackupNotificationConfig } = await import('./default-config');
+        updatedBackupSettings[backupKey] = { ...defaultBackupNotificationConfig };
+        addedSettings++;
+      }
+    }
+    
+    // Save updated settings if any were added
+    if (addedSettings > 0) {
+      setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
+      console.log(`[ensureBackupSettingsComplete] Added ${addedSettings} default backup settings`);
+    }
+    
     return {
-      url: defaultNtfyConfig.url,
-      topic: generateDefaultNtfyTopic()
+      added: addedSettings,
+      total: machineBackupCombinations.size
     };
+  } catch (error) {
+    console.error('Error ensuring backup settings complete:', error instanceof Error ? error.message : String(error));
+    return { added: 0, total: 0 };
   }
 } 

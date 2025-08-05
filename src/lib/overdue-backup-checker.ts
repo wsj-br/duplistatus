@@ -1,4 +1,4 @@
-import { dbUtils } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
 import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, calculateExpectedBackupDate, getOverdueToleranceConfig, getNtfyConfig } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
@@ -35,6 +35,13 @@ export async function checkOverdueBackups(checkDate?: Date) {
       console.log('[checkOverdueBackups] Default cron configuration persisted to database');
     }
 
+    // Ensure backup settings are complete for all machines and backups
+    // This will add default settings for any missing machine-backup combinations
+    const backupSettingsResult = await ensureBackupSettingsComplete();
+    if (backupSettingsResult.added > 0) {
+      console.log(`[checkOverdueBackups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
+    }
+
     // Get notification configuration
     const configJson = getConfiguration('notifications');
     const backupSettingsJson = getConfiguration('backup_settings');
@@ -54,7 +61,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
     const config: NotificationConfig = JSON.parse(configJson);
     
     // Ensure ntfy config is properly set
-    const ntfyConfig = getNtfyConfig();
+    const ntfyConfig = await getNtfyConfig();
     config.ntfy = ntfyConfig;
     
     // Load backup settings from separate configuration if available
@@ -151,7 +158,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
       }
       
       // Get interval configuration
-      const intervalUnit = backupConfig.intervalUnit || 'hours'; // Fallback for legacy configs
+      const intervalUnit = backupConfig.intervalUnit || 'hour'; // Fallback for legacy configs
       const expectedInterval = backupConfig.expectedInterval;
       
       // Calculate expected backup date using the helper function with tolerance
@@ -221,7 +228,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
             const overdueTimeAgo = formatTimeAgo(latestBackup.date);
             
             // Get interval information from backup config
-            const intervalUnit = backupConfig.intervalUnit || 'hours';
+            const intervalUnit = backupConfig.intervalUnit || 'hour';
             const intervalValue = backupConfig.expectedInterval;
             
             // Validate required fields

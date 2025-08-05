@@ -85,9 +85,7 @@ export interface BackupNotificationConfig {
   notificationEvent: NotificationEvent;
   expectedInterval: number; // raw value as entered by user
   overdueBackupCheckEnabled: boolean;
-  intervalUnit: 'hours' | 'days';
-  overdueTolerance?: OverdueTolerance; // New field for tolerance
-  cronInterval?: CronInterval; // Cron interval for notification checks
+  intervalUnit: 'hour' | 'day';
 }
 
 // Helper type for backup identification

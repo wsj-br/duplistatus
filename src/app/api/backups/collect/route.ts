@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
@@ -213,6 +213,13 @@ export async function POST(request: NextRequest) {
         id: machineId,
         name: machineName
       });
+    
+    // Ensure backup settings are complete for all machines and backups
+    // This will add default settings for any missing machine-backup combinations
+    const backupSettingsResult = await ensureBackupSettingsComplete();
+    if (backupSettingsResult.added > 0) {
+      console.log(`[collect-backups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
+    }
   
     // Step 3: Get list of backups
     let backupsResponse;
@@ -420,6 +427,10 @@ export async function POST(request: NextRequest) {
         processed: processedCount,
         skipped: skippedCount,
         errors: errorCount
+      },
+      backupSettings: {
+        added: backupSettingsResult.added,
+        total: backupSettingsResult.total
       }
     });
 

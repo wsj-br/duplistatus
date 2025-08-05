@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
@@ -162,6 +162,13 @@ export async function POST(request: NextRequest) {
 
     // Execute the transaction
     transaction();
+
+    // Ensure backup settings are complete for all machines and backups
+    // This will add default settings for any missing machine-backup combinations
+    const backupSettingsResult = await ensureBackupSettingsComplete();
+    if (backupSettingsResult.added > 0) {
+      console.log(`[upload] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
+    }
 
     // Send notification after successful backup insertion
     try {

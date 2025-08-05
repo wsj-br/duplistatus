@@ -14,7 +14,7 @@ import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, N
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
-import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig } from '@/lib/default-config';
+import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
 
 interface MachineWithBackup {
@@ -33,7 +33,7 @@ interface MachineWithBackupAndSettings extends MachineWithBackup {
   notificationEvent: NotificationEvent;
   overdueBackupCheckEnabled: boolean;
   expectedInterval: number;
-  intervalUnit: 'hours' | 'days';
+  intervalUnit: 'hour' | 'day';
   displayInterval: number;
 }
 
@@ -46,11 +46,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const [isTesting, setIsTesting] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
-  const [cronInterval, setCronIntervalState] = useState<CronInterval>(defaultBackupNotificationConfig.cronInterval || '20min');
+  const [cronInterval, setCronIntervalState] = useState<CronInterval>(defaultCronInterval);
   const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>(defaultNotificationFrequencyConfig);
   const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(true);
   const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
-  const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultBackupNotificationConfig.overdueTolerance || '1h');
+  const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
     { value: 'onetime', label: 'One time' },
     { value: 'every_day', label: 'Every day' },
@@ -132,7 +132,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         value.expression === cronExpression && value.enabled === enabled
       );
       
-      setCronIntervalState(entry ? entry[0] as CronInterval : defaultBackupNotificationConfig.cronInterval || '20min');
+      setCronIntervalState(entry ? entry[0] as CronInterval : defaultCronInterval);
     } catch (error) {
       console.error('Failed to load cron interval:', error instanceof Error ? error.message : String(error));
       toast({
@@ -284,7 +284,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     });
   };
 
-  const handleUnitChange = (machineName: string, backupName: string, newUnit: 'hours' | 'days') => {
+  const handleUnitChange = (machineName: string, backupName: string, newUnit: 'hour' | 'day') => {
     updateBackupSetting(machineName, backupName, 'intervalUnit', newUnit);
     
     // Clear any local input value since the unit has changed
@@ -485,10 +485,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       const response = await fetch('/api/configuration');
       if (!response.ok) throw new Error('Failed to fetch configuration');
       const data = await response.json();
-      setOverdueTolerance(data.overdue_tolerance ?? (defaultBackupNotificationConfig.overdueTolerance || '1h'));
+      setOverdueTolerance(data.overdue_tolerance ?? defaultOverdueTolerance);
     } catch (error) {
       console.error('Failed to load overdue tolerance:', error instanceof Error ? error.message : String(error));
-      setOverdueTolerance(defaultBackupNotificationConfig.overdueTolerance || '1h');
+      setOverdueTolerance(defaultOverdueTolerance);
     }
   };
 
@@ -689,11 +689,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       <Input
                         type="number"
                         min="1"
-                        max={backupSetting.intervalUnit === 'hours' ? "8760" : "365"}
+                        max={backupSetting.intervalUnit === 'hour' ? "8760" : "365"}
                         value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
                         onChange={(e) => handleIntervalInputChange(machine.name, machine.backupName, e.target.value)}
                         onBlur={(e) => handleIntervalBlur(machine.name, machine.backupName, e.target.value)}
-                        placeholder={backupSetting.intervalUnit === 'hours' ? "24" : "1"}
+                        placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                         className={!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}
                       />
@@ -702,15 +702,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     <TableCell>
                       <Select
                         value={backupSetting.intervalUnit}
-                        onValueChange={(value: 'hours' | 'days') => handleUnitChange(machine.name, machine.backupName, value)}
+                        onValueChange={(value: 'hour' | 'day') => handleUnitChange(machine.name, machine.backupName, value)}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                       >
                         <SelectTrigger className={`w-full ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
-                          <SelectValue placeholder={backupSetting.intervalUnit === 'days' ? 'Days' : 'Hours'} />
+                          <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Day' : 'Hour'} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="hours">Hours</SelectItem>
-                          <SelectItem value="days">Days</SelectItem>
+                          <SelectItem value="hour">Hour</SelectItem>
+                          <SelectItem value="day">Day</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>

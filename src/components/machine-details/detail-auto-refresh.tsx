@@ -85,11 +85,12 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
       }
     };
 
-    // Fetch data when global refresh is triggered
-    if (state.isRefreshing && state.pageSpecificLoading.detail) {
+    // Only fetch data when global refresh completes and no refresh is in progress
+    // This prevents race conditions with the global refresh context
+    if (!state.isRefreshing && !state.pageSpecificLoading.detail && !state.refreshInProgress && state.lastRefresh) {
       fetchData();
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.lastRefresh, machineId, toast]);
+  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, machineId, toast]);
 
   return (
     <div className="flex flex-col gap-8">

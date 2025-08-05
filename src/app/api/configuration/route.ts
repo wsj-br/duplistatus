@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getConfiguration, getNtfyConfig } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
-import { createDefaultNotificationConfig, defaultBackupNotificationConfig } from '@/lib/default-config';
+import { createDefaultNotificationConfig, defaultOverdueTolerance } from '@/lib/default-config';
 
 export async function GET() {
   try {
@@ -10,7 +10,7 @@ export async function GET() {
     const overdueTolerance = getConfiguration('overdue_tolerance');
     
     // Get ntfy config with default topic generation if needed
-    const ntfyConfig = getNtfyConfig();
+    const ntfyConfig = await getNtfyConfig();
     
     let config: NotificationConfig;
     
@@ -44,7 +44,7 @@ export async function GET() {
     // Add overdue tolerance to the response
     const response = {
       ...config,
-      overdue_tolerance: overdueTolerance || defaultBackupNotificationConfig.overdueTolerance
+      overdue_tolerance: overdueTolerance || defaultOverdueTolerance
     };
 
     return NextResponse.json(response);

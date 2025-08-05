@@ -99,6 +99,5 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
   CMD curl -f -s http://localhost:9666/api/health || exit 1
 
 # server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
 CMD ["sh", "-c", "node server.js & /app/duplistatus-cron.sh"] 

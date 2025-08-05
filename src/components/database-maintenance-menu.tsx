@@ -57,7 +57,11 @@ export function DatabaseMaintenanceMenu() {
         const response = await fetch('/api/machines');
         if (response.ok) {
           const machineList = await response.json();
-          setMachines(machineList);
+          // Sort machines alphabetically by name
+          const sortedMachines = machineList.sort((a: Machine, b: Machine) => 
+            a.name.localeCompare(b.name)
+          );
+          setMachines(sortedMachines);
         }
       } catch (error) {
         console.error('Error fetching machines:', error instanceof Error ? error.message : String(error));
@@ -80,14 +84,17 @@ export function DatabaseMaintenanceMenu() {
         duration: 2000,
       });
       
-      // Force a complete refresh of the page data
-      router.refresh();
+      // Navigate to dashboard and refresh its contents
+      router.push('/');
       
-      // Wait a short delay to ensure the refresh completes
+      // Wait a short delay to ensure navigation completes
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Location reload as a fallback if router.refresh() doesn't fully update
-      if (pathname.startsWith('/detail/')) {
+      // Force a complete refresh of the dashboard data
+      router.refresh();
+      
+      // Additional refresh for the dashboard page
+      if (pathname === '/') {
         window.location.reload();
       }
     } catch (error) {
@@ -141,15 +148,25 @@ export function DatabaseMaintenanceMenu() {
       const machinesResponse = await fetch('/api/machines');
       if (machinesResponse.ok) {
         const machineList = await machinesResponse.json();
-        setMachines(machineList);
+        // Sort machines alphabetically by name
+        const sortedMachines = machineList.sort((a: Machine, b: Machine) => 
+          a.name.localeCompare(b.name)
+        );
+        setMachines(sortedMachines);
       }
       
-      // Force a complete refresh of the page data
+      // Navigate to dashboard and refresh its contents
+      router.push('/');
+      
+      // Wait a short delay to ensure navigation completes
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Force a complete refresh of the dashboard data
       router.refresh();
       
-      // If we're on the detail page of the deleted machine, redirect to home
-      if (pathname.startsWith(`/detail/${selectedMachine}`)) {
-        router.push('/');
+      // Additional refresh for the dashboard page
+      if (pathname === '/') {
+        window.location.reload();
       }
       
     } catch (error) {

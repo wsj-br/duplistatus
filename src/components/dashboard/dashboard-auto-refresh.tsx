@@ -89,11 +89,12 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       }
     };
 
-    // Fetch data when global refresh is triggered
-    if (state.isRefreshing && state.pageSpecificLoading.dashboard) {
+    // Only fetch data when global refresh completes and no refresh is in progress
+    // This prevents race conditions with the global refresh context
+    if (!state.isRefreshing && !state.pageSpecificLoading.dashboard && !state.refreshInProgress && state.lastRefresh) {
       fetchData();
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.dashboard, state.lastRefresh, toast]);
+  }, [state.isRefreshing, state.pageSpecificLoading.dashboard, state.refreshInProgress, state.lastRefresh, toast]);
 
   return (
     <div className="flex flex-col gap-8">

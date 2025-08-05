@@ -15,7 +15,13 @@ export async function GET() {
     }
 
     // Get the latest backup date across all machines
-    const latestBackup = dbUtils.getLatestBackupDate() as { last_backup_date: string | null };
+    let latestBackup: { last_backup_date: string | null } | null = null;
+    try {
+      latestBackup = dbUtils.getLatestBackupDate() as { last_backup_date: string | null };
+    } catch (error) {
+      console.error('Error getting latest backup date:', error instanceof Error ? error.message : String(error));
+      latestBackup = null;
+    }
         
     // Calculate the time difference in seconds
     const lastBackupDate = latestBackup?.last_backup_date ? new Date(latestBackup.last_backup_date) : null;

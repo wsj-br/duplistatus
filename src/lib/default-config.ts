@@ -6,31 +6,35 @@ export const defaultNotificationTemplates: {
   success: NotificationTemplate;
   warning: NotificationTemplate;
 } = {
+  success: {
+    title: "✅ {status} - {backup_name}  @ {machine_name}",
+    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
+             "☁️ Uploaded: {uploaded_size}\n" + 
+             "💾 Store usage:  {storage_size}\n" +
+             "🔃 Available versions:  {available_versions}\n",
+    priority: "default",
+    tags: "duplicati, duplistatus, success"
+  },
+  warning: {
+    title: " ⚠️{status} - {backup_name}  @ {machine_name}",
+    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n" + 
+             "⏰ Duration: {duration}\n" + 
+             "☁️ Uploaded: {uploaded_size}\n\n" + 
+             "🚨 {warnings_count} warnings\n" + 
+             "🛑 {errors_count} errors.\n\n" + 
+             "🔍 Please check the duplicati server.\n",
+    priority: "high",
+    tags: "duplicati, duplistatus, warning, error"
+  },
   overdueBackup: {
+    title: "🕑 Overdue - {backup_name}  @ {machine_name}",
     message: "The backup {backup_name} is overdue on {machine_name}.\n\n" + 
              "🚨 Last backup was {last_backup_date} ({last_elapsed})\n" + 
               "⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n" + 
-              "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance} \n\n" + 
-             "🔍 Please check the duplicati server.",
+              "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance}\n\n" + 
+             "🔍 Please check the duplicati server.\n",
     priority: "default",
-    tags: "duplicati, duplistatus, overdue",
-    title: "🕑 Overdue - {backup_name}  @ {machine_name}"
-  },
-  success: {
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
-             "💾 Store usage:  {storage_size} \n" + 
-             "🔃 Available versions:  {available_versions} ",
-    priority: "default",
-    tags: "duplicati, duplistatus, success",
-    title: "✅ {status} - {backup_name}  @ {machine_name}"
-  },
-  warning: {
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n" + 
-             "🚨 {warnings_count} warnings\n" + 
-             "🛑 {errors_count} errors.",
-    priority: "high",
-    tags: "duplicati, duplistatus, warning, error",
-    title: " ⚠️{status} - {backup_name}  @ {machine_name}"
+    tags: "duplicati, duplistatus, overdue"
   }
 };
 
@@ -66,14 +70,22 @@ export const defaultNtfyConfig = {
   topic: '' // Will be generated dynamically
 };
 
+// Global overdue tolerance configuration
+export const defaultOverdueTolerance = '1h' as const;
+
+// Global cron interval configuration
+export const defaultCronInterval = '20min' as CronInterval;
+
+// Default notification frequency configuration
+export const defaultNotificationFrequencyConfig = 'every_day' as const;
+
+
 // Default backup notification configuration
 export const defaultBackupNotificationConfig: BackupNotificationConfig = {
-  notificationEvent: 'off',
-  overdueBackupCheckEnabled: false,
+  notificationEvent: 'warnings',
+  overdueBackupCheckEnabled: true,
   expectedInterval: 1, // Default to 1 day (24 hours)
-  intervalUnit: 'days',
-  overdueTolerance: '1h', // Default to 1h tolerance
-  cronInterval: '20min' as CronInterval
+  intervalUnit: 'day'
 };
 
 // Default UI configuration
@@ -92,8 +104,6 @@ export const defaultAPIConfig = {
   duplicatiProtocol: 'http' as const
 };
 
-// Default notification frequency configuration
-export const defaultNotificationFrequencyConfig = 'onetime' as const;
 
 // Function to create default notification configuration
 export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic: string }): NotificationConfig {

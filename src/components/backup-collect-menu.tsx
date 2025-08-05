@@ -101,7 +101,7 @@ export function BackupCollectMenu() {
           title: `Backups collected successfully from ${machineName}`,
           description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
           variant: "default" as const,
-          duration: 3000, // 10 seconds on dashboard
+          duration: 10000, // 10 seconds on dashboard
         };
         localStorage.setItem("backup-collection-toast", JSON.stringify(toastData));
         router.push("/");

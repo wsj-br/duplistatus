@@ -57,13 +57,13 @@ try {
     console.log('Initializing new database with latest schema...');
     
     db.exec(`
-      CREATE TABLE machines (
+      CREATE TABLE IF NOT EXISTS machines (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
-      CREATE TABLE backups (
+      CREATE TABLE IF NOT EXISTS backups (
         id TEXT PRIMARY KEY,
         machine_id TEXT NOT NULL,
         backup_name TEXT NOT NULL,
@@ -133,24 +133,24 @@ try {
         FOREIGN KEY (machine_id) REFERENCES machines(id)
       );
 
-      CREATE INDEX idx_backups_machine_id ON backups(machine_id);
-      CREATE INDEX idx_backups_date ON backups(date);
-      CREATE INDEX idx_backups_begin_time ON backups(begin_time);
-      CREATE INDEX idx_backups_end_time ON backups(end_time);
-      CREATE INDEX idx_backups_backup_id ON backups(backup_id);
+      CREATE INDEX IF NOT EXISTS idx_backups_machine_id ON backups(machine_id);
+      CREATE INDEX IF NOT EXISTS idx_backups_date ON backups(date);
+      CREATE INDEX IF NOT EXISTS idx_backups_begin_time ON backups(begin_time);
+      CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
+      CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
 
-      CREATE TABLE configurations (
+      CREATE TABLE IF NOT EXISTS configurations (
         key TEXT PRIMARY KEY NOT NULL,
         value TEXT
       );
 
-      CREATE TABLE db_version (
+      CREATE TABLE IF NOT EXISTS db_version (
         version TEXT PRIMARY KEY,
         applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- Set initial database version for new databases
-      INSERT INTO db_version (version) VALUES ('2.0');
+      -- Set initial database version for new databases (only if not exists)
+      INSERT OR IGNORE INTO db_version (version) VALUES ('2.0');
     `);
     
     console.log('Database schema initialized successfully');
@@ -207,10 +207,10 @@ async function populateDefaultConfigurations() {
     // Import default configurations
     const { 
       defaultCronConfig, 
-      defaultBackupNotificationConfig, 
       generateDefaultNtfyTopic,
       createDefaultNotificationConfig,
-      defaultNtfyConfig
+      defaultNtfyConfig,
+      defaultOverdueTolerance
     } = await import('./default-config');
     
     // Generate default ntfy topic
@@ -229,7 +229,7 @@ async function populateDefaultConfigurations() {
     // Set overdue_tolerance configuration
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
       'overdue_tolerance', 
-      defaultBackupNotificationConfig.overdueTolerance
+      defaultOverdueTolerance
     );
     
     // Set notifications configuration with templates

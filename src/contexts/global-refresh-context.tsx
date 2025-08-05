@@ -17,6 +17,7 @@ interface GlobalRefreshState {
     dashboard: boolean;
     detail: boolean;
   };
+  refreshInProgress: boolean;
 }
 
 interface GlobalRefreshContextProps {
@@ -44,6 +45,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       dashboard: false,
       detail: false,
     },
+    refreshInProgress: false,
   });
 
   // Update state when config changes
@@ -97,9 +99,10 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         ...prev,
         isRefreshing: true,
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: true },
+        refreshInProgress: true,
       }));
 
-      // Fetch dashboard data
+      // Fetch dashboard data and parse JSON responses
       const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
         fetch('/api/machines-summary'),
         fetch('/api/summary'),
@@ -110,12 +113,25 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         throw new Error('Failed to fetch dashboard data');
       }
 
+      // Parse JSON responses to ensure they are valid
+      const [machinesData, summaryData, chartData] = await Promise.all([
+        machinesResponse.json(),
+        summaryResponse.json(),
+        chartResponse.json()
+      ]);
+
+      // Validate that we got valid data
+      if (!machinesData || !summaryData || !Array.isArray(chartData)) {
+        throw new Error('Invalid data received from API');
+      }
+
       setState(prev => ({
         ...prev,
         lastRefresh: new Date(),
         nextRefresh: new Date(Date.now() + prev.interval * 60 * 1000),
         isRefreshing: false,
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: false },
+        refreshInProgress: false,
       }));
     } catch (error) {
       console.error('Error refreshing dashboard:', error instanceof Error ? error.message : String(error));
@@ -123,6 +139,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         ...prev,
         isRefreshing: false,
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: false },
+        refreshInProgress: false,
       }));
     }
   };
@@ -133,9 +150,10 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         ...prev,
         isRefreshing: true,
         pageSpecificLoading: { ...prev.pageSpecificLoading, detail: true },
+        refreshInProgress: true,
       }));
 
-      // Fetch detail page data
+      // Fetch detail page data and parse JSON responses
       const [dataResponse, chartResponse] = await Promise.all([
         fetch(`/api/detail/${machineId}/data`),
         fetch(`/api/detail/${machineId}/chart-data`)
@@ -145,12 +163,24 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         throw new Error('Failed to fetch detail data');
       }
 
+      // Parse JSON responses to ensure they are valid
+      const [detailData, chartData] = await Promise.all([
+        dataResponse.json(),
+        chartResponse.json()
+      ]);
+
+      // Validate that we got valid data
+      if (!detailData || !Array.isArray(chartData)) {
+        throw new Error('Invalid data received from API');
+      }
+
       setState(prev => ({
         ...prev,
         lastRefresh: new Date(),
         nextRefresh: new Date(Date.now() + prev.interval * 60 * 1000),
         isRefreshing: false,
         pageSpecificLoading: { ...prev.pageSpecificLoading, detail: false },
+        refreshInProgress: false,
       }));
     } catch (error) {
       console.error('Error refreshing detail page:', error instanceof Error ? error.message : String(error));
@@ -158,6 +188,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         ...prev,
         isRefreshing: false,
         pageSpecificLoading: { ...prev.pageSpecificLoading, detail: false },
+        refreshInProgress: false,
       }));
     }
   };
