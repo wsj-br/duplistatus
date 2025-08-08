@@ -220,7 +220,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, mach
       <span>
         {count !== null ? count.toLocaleString() : 'N/A'}
       </span>
-      {hasAvailableBackups && (
+      {hasAvailableBackups ? (
         <button
           onClick={(event) => {
             event.stopPropagation();
@@ -231,6 +231,8 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, mach
         >
           <History className="h-4 w-4" />
         </button>
+      ) : (
+        <History className="h-4 w-4 text-gray-400 opacity-30" />
       )}
     </div>
   );
