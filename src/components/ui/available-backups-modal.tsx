@@ -110,22 +110,22 @@ const GlobalAvailableBackupsModal = React.memo(() => {
             <Table>
               <TableHeader>
                 <TableRow className="border-b">
-                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">#</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Backup Date</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">When</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">Version</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Created</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Age</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {/* First row: Selected backup date */}
                 <TableRow className="border-b">
-                  <TableCell className="w-16 py-1.5 px-3">1</TableCell>
-                  <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(modalState.backupDate)}</TableCell>
-                  <TableCell className="py-1.5 px-3">{formatTimeAgo(modalState.backupDate)}</TableCell>
+                  <TableCell className="w-16 py-1.5 px-3 text-green-500">0</TableCell>
+                  <TableCell className="py-1.5 px-3 text-green-500">{formatAvailableBackupDate(modalState.backupDate)}</TableCell>
+                  <TableCell className="py-1.5 px-3 text-green-500">{formatTimeAgo(modalState.backupDate)}</TableCell>
                 </TableRow>
-                {/* Additional available versions starting from #2 */}
+                {/* Additional available versions starting from #1 */}
                 {modalState.availableBackups.map((timestamp, index) => (
                   <TableRow key={index} className="border-b">
-                    <TableCell className="w-16 py-1.5 px-3">{index + 2}</TableCell>
+                    <TableCell className="w-16 py-1.5 px-3">{index + 1}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(timestamp)}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatTimeAgo(timestamp)}</TableCell>
                   </TableRow>

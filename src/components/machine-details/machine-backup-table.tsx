@@ -45,6 +45,11 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
+  
+  // Display-only sort config to show chevron on Date (desc) by default without changing data order
+  const displaySortConfig = useMemo<SortConfig>(() => (
+    sortConfig.column ? sortConfig : { column: 'date', direction: 'desc' }
+  ), [sortConfig]);
 
   // Get unique backup names for the filter
   const uniqueBackupNames = ["all", ...new Set(backups.map(backup => backup.name))];
@@ -98,9 +103,10 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
       } else {
         // New column - use descending for dates, ascending for others
         const isDateColumn = column === 'date';
+        const isFirstSort = !prevConfig.column;
         return {
           column,
-          direction: isDateColumn ? 'desc' : 'asc'
+          direction: isDateColumn ? (isFirstSort ? 'asc' : 'desc') : 'asc'
         };
       }
     });
@@ -194,37 +200,37 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
             <Table>
               <TableHeader>
                 <TableRow>
-                  <SortableTableHead column="name" sortConfig={sortConfig} onSort={handleSort}>
+                  <SortableTableHead column="name" sortConfig={displaySortConfig} onSort={handleSort}>
                     Backup Name
                   </SortableTableHead>
-                  <SortableTableHead column="date" sortConfig={sortConfig} onSort={handleSort}>
+                  <SortableTableHead column="date" sortConfig={displaySortConfig} onSort={handleSort}>
                     Date
                   </SortableTableHead>
-                  <SortableTableHead column="status" sortConfig={sortConfig} onSort={handleSort}>
+                  <SortableTableHead column="status" sortConfig={displaySortConfig} onSort={handleSort}>
                     Status
                   </SortableTableHead>
-                  <SortableTableHead column="warnings" sortConfig={sortConfig} onSort={handleSort} align="center">
+                  <SortableTableHead column="warnings" sortConfig={displaySortConfig} onSort={handleSort} align="center">
                     Warnings
                   </SortableTableHead>
-                  <SortableTableHead column="errors" sortConfig={sortConfig} onSort={handleSort} align="center">
+                  <SortableTableHead column="errors" sortConfig={displaySortConfig} onSort={handleSort} align="center">
                     Errors
                   </SortableTableHead>
-                  <SortableTableHead column="backup_list_count" sortConfig={sortConfig} onSort={handleSort} align="center">
+                  <SortableTableHead column="backup_list_count" sortConfig={displaySortConfig} onSort={handleSort} align="center">
                     Available Versions
                   </SortableTableHead>
-                  <SortableTableHead column="fileCount" sortConfig={sortConfig} onSort={handleSort} align="right">
+                  <SortableTableHead column="fileCount" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     File Count
                   </SortableTableHead>
-                  <SortableTableHead column="fileSize" sortConfig={sortConfig} onSort={handleSort} align="right">
+                  <SortableTableHead column="fileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     File Size
                   </SortableTableHead>
-                  <SortableTableHead column="uploadedSize" sortConfig={sortConfig} onSort={handleSort} align="right">
+                  <SortableTableHead column="uploadedSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     Uploaded Size
                   </SortableTableHead>
-                  <SortableTableHead column="duration" sortConfig={sortConfig} onSort={handleSort} align="right">
+                  <SortableTableHead column="duration" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     Duration
                   </SortableTableHead>
-                  <SortableTableHead column="knownFileSize" sortConfig={sortConfig} onSort={handleSort} align="right">
+                  <SortableTableHead column="knownFileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     Storage Size
                   </SortableTableHead>
                 </TableRow>

@@ -1,6 +1,6 @@
 import React from "react";
 import { TableHead } from "@/components/ui/table";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SortConfig } from "@/lib/sort-utils";
 
@@ -33,12 +33,12 @@ export function SortableTableHead({
 
   const getSortIcon = () => {
     if (isAsc) {
-      return <ChevronUp className="h-4 w-4" />;
+        return <ChevronUp className="h-4 w-4" />;
     }
     if (isDesc) {
-      return <ChevronDown className="h-4 w-4" />;
+      return <ChevronDown  className="h-4 w-4" />;
     }
-    return;  //<ChevronsUpDown className="h-4 w-4 opacity-50" />;
+    return <ChevronUp className="h-4 w-4 opacity-0" />;
   };
 
   return (
