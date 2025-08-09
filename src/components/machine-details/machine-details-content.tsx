@@ -7,6 +7,7 @@ import { MachineDetailSummaryItems } from "@/components/machine-details/machine-
 import type { Machine } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 
 interface OverdueBackup {
   machineName: string;
@@ -124,13 +125,9 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
               : <>List of all backups for  <span className="text-primary font-medium">{machine.name}</span></>
             }
             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="inline-flex items-center ml-2 cursor-help">
-                    <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </span>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Last refresh: {new Date().toLocaleString()}</p>

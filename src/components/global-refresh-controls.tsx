@@ -106,7 +106,8 @@ export function GlobalRefreshControls() {
       if (currentPage === 'dashboard') {
         await refreshDashboard();
       } else if (currentPage === 'detail') {
-        const match = pathname.match(/\/detail\/([^\/]+)/);
+        // Only match main detail pages, not backup detail pages
+        const match = pathname.match(/^\/detail\/([^\/]+)$/);
         if (match) {
           await refreshDetail(match[1]);
         }
@@ -127,6 +128,11 @@ export function GlobalRefreshControls() {
   };
 
   // Only show on dashboard and detail pages
+  // Check if pathname is available and determine page type
+  if (!pathname) {
+    return null;
+  }
+  
   const currentPage = getCurrentPageType();
   if (currentPage === 'none') {
     return null;

@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -441,10 +441,7 @@ export function getMachinesSummary() {
         const lastNotificationJson = getConfiguration('overdue_backup_notifications');
         if (lastNotificationJson) {
           try {
-            const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
-              lastNotificationSent: string;
-              lastBackupDate: string;
-            }>;
+            const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
             const notification = lastNotifications[backupKey];
             if (notification && notification.lastNotificationSent) {
               lastNotificationSent = notification.lastNotificationSent;
@@ -829,10 +826,20 @@ export const dbUtils = {
     return withDb(() => {
       try {
         const transaction = db.transaction(() => {
+          // First get the machine name before deleting
+          const machine = safeDbOperation(() => dbOps.getMachine.get(machineId), 'getMachine') as { id: string; name: string } | undefined;
+          if (!machine) {
+            throw new Error(`Machine with ID ${machineId} not found`);
+          }
+          
           // First delete all backups for the machine
           const backupResult = safeDbOperation(() => dbOps.deleteMachineBackups.run(machineId), 'deleteMachineBackups');
           // Then delete the machine itself
           const machineResult = safeDbOperation(() => dbOps.deleteMachine.run(machineId), 'deleteMachine');
+          
+          // Clean up configuration data for this machine
+          cleanupMachineConfiguration(machine.name);
+          
           return {
             backupChanges: backupResult?.changes || 0,
             machineChanges: machineResult?.changes || 0
@@ -846,6 +853,59 @@ export const dbUtils = {
     });
   }
 }; 
+
+// Helper function to clean up configuration data for a machine
+function cleanupMachineConfiguration(machineName: string): void {
+  try {
+    // Clean up backup_settings
+    const backupSettingsJson = getConfiguration('backup_settings');
+    if (backupSettingsJson) {
+      try {
+        const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, BackupNotificationConfig>;
+        const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
+        
+        // Keep only entries that don't match the machine name
+        for (const [backupKey, settings] of Object.entries(backupSettings)) {
+          const [keyMachineName] = backupKey.split(':');
+          if (keyMachineName !== machineName) {
+            updatedBackupSettings[backupKey] = settings;
+          }
+        }
+        
+        // Save the updated backup settings
+        setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
+        console.log(`[cleanupMachineConfiguration] Cleaned up backup_settings for machine: ${machineName}`);
+      } catch (error) {
+        console.error('Failed to parse backup_settings during cleanup:', error instanceof Error ? error.message : String(error));
+      }
+    }
+    
+    // Clean up overdue_backup_notifications
+    const overdueNotificationsJson = getConfiguration('overdue_backup_notifications');
+    if (overdueNotificationsJson) {
+      try {
+        const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
+        const updatedOverdueNotifications: OverdueNotifications = {};
+        
+        // Keep only entries that don't match the machine name
+        for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
+          const [keyMachineName] = backupKey.split(':');
+          if (keyMachineName !== machineName) {
+            updatedOverdueNotifications[backupKey] = notification;
+          }
+        }
+        
+        // Save the updated overdue notifications
+        setConfiguration('overdue_backup_notifications', JSON.stringify(updatedOverdueNotifications));
+        console.log(`[cleanupMachineConfiguration] Cleaned up overdue_backup_notifications for machine: ${machineName}`);
+      } catch (error) {
+        console.error('Failed to parse overdue_backup_notifications during cleanup:', error instanceof Error ? error.message : String(error));
+      }
+    }
+  } catch (error) {
+    console.error(`Failed to cleanup configuration for machine ${machineName}:`, error instanceof Error ? error.message : String(error));
+  }
+}
 
 // Functions to get/set notification frequency config
 export function getNotificationFrequencyConfig(): NotificationFrequencyConfig {
@@ -972,10 +1032,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
           const lastNotificationJson = getConfiguration('overdue_backup_notifications');
           let lastNotificationSent = "";
           if (lastNotificationJson) {
-            const lastNotifications = JSON.parse(lastNotificationJson) as Record<string, {
-              lastNotificationSent: string;
-              lastBackupDate: string;
-            }>;
+            const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
             const notification = lastNotifications[backupKey];
             if (notification) {
               lastNotificationSent = notification.lastNotificationSent;

@@ -16,6 +16,12 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Global context for modal state to persist across auto refresh
 interface ModalState {
@@ -216,24 +222,39 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, mach
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
   return (
-    <div className="flex items-center justify-center gap-2">
-      <span>
-        {count !== null ? count.toLocaleString() : 'N/A'}
-      </span>
-      {hasAvailableBackups ? (
-        <button
-          onClick={(event) => {
-            event.stopPropagation();
-            onIconClick(availableBackups, currentBackupDate, machineName, backupName, event);
-          }}
-          className="text-blue-600 hover:text-blue-800 transition-colors"
-          title="Click to view available versions"
-        >
-          <History className="h-4 w-4" />
-        </button>
-      ) : (
-        <History className="h-4 w-4 text-gray-400 opacity-30" />
-      )}
-    </div>
+    <TooltipProvider>
+      <div className="flex items-center justify-center gap-2">
+        <span>
+          {count !== null ? count.toLocaleString() : 'N/A'}
+        </span>
+        {hasAvailableBackups ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onIconClick(availableBackups, currentBackupDate, machineName, backupName, event);
+                }}
+                className="text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                <History className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Click to view available versions</p>
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <History className="h-4 w-4 text-gray-400 opacity-30 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>No available versions</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+    </TooltipProvider>
   );
 } 

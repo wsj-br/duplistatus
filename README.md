@@ -2,7 +2,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-**Version 0.5.19**
+**Version 0.6.0**
 
 This web application is used to monitor and visualise backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines. It also provides an API endpoint that can be integrated with third-party tools such as the [Homepage](https://gethomepage.dev/).
 
@@ -38,6 +38,10 @@ This web application is used to monitor and visualise backup operations from [Du
 ### Backup detail
 
 ![backup-detail](docs/screen-backup.png)
+
+### Available backup versions
+
+![available versions](docs\screen-versions.png)
 
 <br><br>
 
@@ -148,8 +152,10 @@ volumes:
 ### Option 4: Using Docker CLI
 
 ```bash
+# create the volume
 docker volume create duplistatus_data
 
+# start the container
 docker run -d \
   --name duplistatus \
   -p 9666:9666 \
@@ -157,7 +163,7 @@ docker run -d \
   wsjbr/duplistatus:latest
 ```
 
-- The application will be available at `http://localhost:9666`.
+- The application will be available at `http://localhost:9666` or `http://my.ip.adress:9666`.
 - The `duplistatus_data` volume is used for persistent storage.
 
 <br>
@@ -202,13 +208,13 @@ podman-compose -f docker-compose.yml up -d
 >  Only enable remote access if your Duplicati server is protected by a secure network (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet without proper security measures could lead to unauthorised access.
 
 2. **Configure to send the backup results to duplistatus:** In the Duplicati configuration page, select `Settings` and in the `Default Options` section, include these options, adjusting the server name or IP address:
-
-    | Advanced option                   | Value                                    |
-    | --------------------------------- | ---------------------------------------- |
-    | `send-http-url`                   | `http://my.local.server:9666/api/upload` |
-    | `send-http-result-output-format`  | `Json`                                   |
-    | `send-http-log-level`             | `Information`                            |
-    | `send-http-max-log-lines`         | `0`                                      |
+   
+   | Advanced option                  | Value                                    |
+   | -------------------------------- | ---------------------------------------- |
+   | `send-http-url`                  | `http://my.local.server:9666/api/upload` |
+   | `send-http-result-output-format` | `Json`                                   |
+   | `send-http-log-level`            | `Information`                            |
+   | `send-http-max-log-lines`        | `0`                                      |
 
 > [!TIP]
 >  Click on `Edit as text` and copy the lines below, adjusting the server name or IP address.
@@ -228,13 +234,11 @@ podman-compose -f docker-compose.yml up -d
 
 Important notes on the messages sent by Duplicati:
 
-- If you omit `--send-http-log-level`, no log messages will be sent to **duplistatus**, only the statistics. 
-- You can use `--send-http-max-log-lines` to limit the number of messages sent. 
-  For example: `--send-http-max-log-lines=40` will only send the first 40 messages.
+- If you omit `--send-http-log-level`, no log messages will be sent to **duplistatus**, only the statistics.  The main side effect is that the available versions will stop working.
 - The recommended configuration is `--send-http-max-log-lines=0` for unlimited messages, as the Duplicati default is 100 messages.
-
-> [!NOTE]
->    Alternatively, you can include this configuration in the `Advanced Options` of each backup. <br>
+- If there is a limit on the number of messages, the log messages needed to obtain the available backup versions will eventually not be received and the available versions will not be shown for that backup run.
+  
+  
 
 <br>
 

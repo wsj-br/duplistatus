@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getConfiguration, setConfiguration } from '@/lib/db-utils';
-import { BackupKey, BackupNotificationConfig } from '@/lib/types';
+import { BackupKey, BackupNotificationConfig, OverdueNotifications } from '@/lib/types';
 
 export async function POST(request: Request) {
   try {
@@ -25,10 +25,7 @@ export async function POST(request: Request) {
       // Get current overdue backup notifications configuration
       const overdueNotificationsJson = getConfiguration('overdue_backup_notifications');
       if (overdueNotificationsJson) {
-        const overdueNotifications = JSON.parse(overdueNotificationsJson) as Record<string, {
-          lastNotificationSent: string;
-          lastBackupDate: string;
-        }>;
+        const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
 
         const backupKeysToClear: BackupKey[] = [];
         

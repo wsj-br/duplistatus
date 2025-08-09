@@ -1,8 +1,8 @@
 import { getMachineById } from '@/lib/db-utils';
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { StatusBadge } from '@/components/status-badge';
-import { MessageSquare, AlertTriangle, XCircle } from 'lucide-react';
+import { MessageSquare, AlertTriangle, XCircle, Info } from 'lucide-react';
 import { formatTimeAgo, formatBytes } from '@/lib/utils';
 import { BackButton } from '@/components/ui/back-button';
 import {
@@ -12,6 +12,12 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface BackupLogPageProps {
   params: Promise<{
@@ -24,28 +30,31 @@ const cleanLogMessage = (message: string): string => {
   return message.replace(/\[.*?\]:/g, '');
 };
 
-const getLogSectionBorderClass = (variant: "default" | "destructive" | "warning") => {
+const getLogSectionBorderClass = (variant: "messages" | "errors" | "warning") => {
   switch (variant) {
-    case "destructive": return "border-red-500";
+    case "errors": return "border-red-500";
     case "warning": return "border-yellow-500";
     default: return "";
   }
 };
 
-const getLogSectionTitleClass = (variant: "default" | "destructive" | "warning") => {
+const getLogSectionTitleClass = (variant: "messages" | "errors" | "warning") => {
   switch (variant) {
-    case "destructive": return "text-red-600";
+    case "errors": return "text-red-600";
     case "warning": return "text-yellow-600";
     default: return "";
   }
 };
 
-const LogSection = ({ title, items, variant = "default" }: { 
+const LogSection = ({ title, items, variant = "messages", expectedLines }: { 
   title: string; 
   items: string[]; 
-  variant?: "default" | "destructive" | "warning" 
+  variant?: "messages" | "errors" | "warning";
+  expectedLines: number;
 }) => {
   if (items.length === 0) return null;
+
+  const isTruncated = items.length < expectedLines;
 
   return (
     <Card className={getLogSectionBorderClass(variant)}>
@@ -53,6 +62,30 @@ const LogSection = ({ title, items, variant = "default" }: {
         <CardTitle className={getLogSectionTitleClass(variant)}>
           {title}
         </CardTitle>
+        <CardDescription>
+          {isTruncated ? (
+            <div className="text-sm font-normal text-muted-foreground flex items-center gap-2">
+              Showing only first {items.length} of {expectedLines} messages
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <Info className="h-3 w-3 text-muted-foreground cursor-help ml-1" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-lg">
+                  <p className="mt-1">
+                    If the backup log was collected using the <span className="text-teal-500 font-mono">Collect backup logs</span> button,  the number of messages is limited to 20 due to the Duplicati Server limit (hardcoded) when saving to the local database.
+                  </p>
+                  <p className="mt-2">
+                    Also check if you are using the option <span className="text-teal-500 font-mono">send-http-max-log-lines=0</span> on the Duplicati server.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          ) : (
+            <div className="text-sm font-normal text-muted-foreground">
+              Showing all messages ({expectedLines})
+            </div>
+          )}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div 
@@ -280,10 +313,11 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
         </Card>
 
         {/* Log Sections */}
-        <LogSection title="Errors" items={errors} variant="destructive" />
-        <LogSection title="Warnings" items={warnings} variant="warning" />
-        <LogSection title="Messages" items={messages} variant="default" />
-        <span className="text-xs text-muted-foreground ml-3">Note: the number of messages can be limited by the Duplicati configuration.</span>
+        <TooltipProvider>
+          <LogSection title="Errors" items={errors} variant="errors" expectedLines={safeBackup.errors} />
+          <LogSection title="Warnings" items={warnings} variant="warning" expectedLines={safeBackup.warnings} />
+          <LogSection title="Messages" items={messages} variant="messages" expectedLines={safeBackup.messages} />
+        </TooltipProvider>
       </div>
     </div>
   );

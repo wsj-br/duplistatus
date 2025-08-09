@@ -244,7 +244,11 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
                   </TableRow>
                 )}
                 {paginatedBackups.map((backup) => (
-                  <TableRow key={backup.id}>
+                  <TableRow 
+                    key={backup.id}
+                    className={!hasNoMessages(backup) ? "cursor-pointer hover:bg-muted/50" : ""}
+                    onClick={() => !hasNoMessages(backup) && handleBackupClick(backup)}
+                  >
                     <TableCell className="font-medium">{backup.name}</TableCell>
                     <TableCell>
                       <div>{new Date(backup.date).toLocaleString()}</div>
@@ -265,10 +269,7 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
                           </TooltipContent>
                         </Tooltip>
                       ) : (
-                        <div 
-                          onClick={() => handleBackupClick(backup)}
-                          className="cursor-pointer"
-                        >
+                        <div>
                           <StatusBadge status={backup.status} />
                         </div>
                       )}

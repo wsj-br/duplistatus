@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -11,48 +11,43 @@ interface NtfyConfig {
 }
 
 export function NtfyMessagesButton() {
-  const [ntfyConfig, setNtfyConfig] = useState<NtfyConfig | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchNtfyConfig = async () => {
-      try {
-        const response = await fetch('/api/configuration');
-        if (!response.ok) {
-          throw new Error('Failed to fetch configuration');
-        }
-        const data = await response.json();
-        setNtfyConfig(data.ntfy);
-      } catch (error) {
-        console.error('Error fetching NTFY configuration:', error instanceof Error ? error.message : String(error));
+  const handleOpenNtfyMessages = async () => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/configuration');
+      if (!response.ok) {
+        throw new Error('Failed to fetch configuration');
+      }
+      const data = await response.json();
+      const ntfyConfig: NtfyConfig | null = data.ntfy;
+
+      if (!ntfyConfig?.topic) {
         toast({
           title: "Error",
-          description: "Failed to load NTFY configuration",
+          description: "NTFY topic not configured",
           variant: "destructive",
           duration: 3000,
         });
-      } finally {
-        setIsLoading(false);
+        return;
       }
-    };
 
-    fetchNtfyConfig();
-  }, [toast]);
-
-  const handleOpenNtfyMessages = () => {
-    if (!ntfyConfig?.topic) {
+      const ntfyUrl = `https://ntfy.sh/${ntfyConfig.topic}`;
+      window.open(ntfyUrl, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error('Error fetching NTFY configuration:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
-        description: "NTFY topic not configured",
+        description: "Failed to load NTFY configuration",
         variant: "destructive",
         duration: 3000,
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    const ntfyUrl = `https://ntfy.sh/${ntfyConfig.topic}`;
-    window.open(ntfyUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -60,7 +55,7 @@ export function NtfyMessagesButton() {
       variant="outline"
       size="icon"
       onClick={handleOpenNtfyMessages}
-      disabled={isLoading || !ntfyConfig?.topic}
+      disabled={isLoading}
       title="View ntfy messages"
     >
       <MessagesSquare className="h-4 w-4" />

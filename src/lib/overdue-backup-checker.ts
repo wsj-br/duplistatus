@@ -1,19 +1,12 @@
 import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
 import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, calculateExpectedBackupDate, getOverdueToleranceConfig, getNtfyConfig } from '@/lib/db-utils';
-import { NotificationConfig } from '@/lib/types';
+import { NotificationConfig, OverdueNotifications } from '@/lib/types';
 import { formatTimeAgo } from '@/lib/utils';
 
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
-
-interface LastNotificationTimestamps {
-  [backupKey: string]: {
-    lastNotificationSent: string; // ISO timestamp
-    lastBackupDate: string; // ISO timestamp of the backup that was current when notification was sent
-  };
-}
 
 // Core function that can be called directly
 export async function checkOverdueBackups(checkDate?: Date) {
@@ -82,7 +75,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
 
     // Get last notification timestamps
     const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-    const lastNotifications: LastNotificationTimestamps = lastNotificationJson 
+    const lastNotifications: OverdueNotifications = lastNotificationJson 
       ? JSON.parse(lastNotificationJson) 
       : {};
       
@@ -102,7 +95,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
     let checkedBackups = 0;
     let overdueBackupsFound = 0;
     let notificationsSent = 0;
-    const updatedNotifications: LastNotificationTimestamps = { ...lastNotifications };
+    const updatedNotifications: OverdueNotifications = { ...lastNotifications };
 
     // Iterate through backup settings keys (machine_name:backup_name)
     const backupKeys = Object.keys(config.backupSettings || {});

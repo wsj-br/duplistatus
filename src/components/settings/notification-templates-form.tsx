@@ -185,7 +185,7 @@ const TemplateEditor = ({
             onFocus={() => onFieldFocus('message')}
           />
           <p className="text-sm text-muted-foreground">
-            Example: &quot;Backup &#123;backup_name&#125; on &#123;machine_name&#125; completed with status &#123;status&#125; at &#123;backup_date&#125;&quot;
+            Tip: to insert a variable, place your cursor where you want it, choose the variable, and click &apos;Insert&apos;.
           </p>
         </div>
       </CardContent>
@@ -206,7 +206,18 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue'>('success');
+  
+  // Initialize activeTab from localStorage or default to 'success'
+  const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue'>(() => {
+    if (typeof window !== 'undefined') {
+      const savedTab = localStorage.getItem('notification-templates-active-tab');
+      if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue') {
+        return savedTab;
+      }
+    }
+    return 'success';
+  });
+  
   // Store refs for all fields (title, tags, message) for each template type
   const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
   // Track which field is focused for each template type
@@ -215,6 +226,18 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     warning: null,
           overdueBackup: null,
   });
+
+  // Update localStorage when activeTab changes
+  const handleTabChange = (value: string) => {
+    const newTab = value as 'success' | 'warning' | 'overdue';
+    setActiveTab(newTab);
+    setSelectedVariable(''); // Reset selection when changing tabs
+    
+    // Persist to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('notification-templates-active-tab', newTab);
+    }
+  };
 
   const updateTemplate = (
     templateType: 'success' | 'warning' | 'overdueBackup',
@@ -339,10 +362,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
 
   return (
     <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={(value) => {
-        setActiveTab(value as 'success' | 'warning' | 'overdue');
-        setSelectedVariable(''); // Reset selection when changing tabs
-      }} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="success">Success Template</TabsTrigger>
           <TabsTrigger value="warning">Warning/Error Template</TabsTrigger>

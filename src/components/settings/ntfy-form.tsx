@@ -10,7 +10,7 @@ import { NtfyConfig } from '@/lib/types';
 
 interface NtfyFormProps {
   config: NtfyConfig;
-  onSave: (config: NtfyConfig) => void;
+  onSave: (config: NtfyConfig) => Promise<{ ntfy?: NtfyConfig } | void>;
 }
 
 export function NtfyForm({ config, onSave }: NtfyFormProps) {
@@ -27,22 +27,14 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
     setIsSaving(true);
     try {
       const wasTopicEmpty = !formData.topic || formData.topic.trim() === '';
-      await onSave(formData);
+      const result = await onSave(formData);
       
-      // If the topic was empty, fetch the updated configuration to get the generated topic
-      if (wasTopicEmpty) {
-        try {
-          const response = await fetch('/api/configuration');
-          if (response.ok) {
-            const updatedConfig = await response.json();
-            setFormData(prev => ({
-              ...prev,
-              topic: updatedConfig.ntfy.topic
-            }));
-          }
-        } catch (error) {
-          console.error('Failed to fetch updated configuration:', error instanceof Error ? error.message : String(error));
-        }
+      // If the topic was empty, check if the API returned an updated configuration
+      if (wasTopicEmpty && result && result.ntfy && result.ntfy.topic) {
+        setFormData(prev => ({
+          ...prev,
+          topic: result.ntfy!.topic
+        }));
       }
     } finally {
       setIsSaving(false);
@@ -107,8 +99,9 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
-              docs.ntfy.sh
+              docs.ntfy.sh 
             </a>
+            {' '} and <a href="https://docs.ntfy.sh/subscribe/phone/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">here</a> to subscribe to your topic in your phone.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

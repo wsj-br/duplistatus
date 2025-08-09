@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 
 // Machine configurations
 const machines = [
@@ -88,9 +88,23 @@ function generateMessageArrays(warningsCount: number, errorsCount: number, messa
     `Error ${(i + 1).toString().padStart(3, '0')}`
   );
   
-  const messages = Array.from({ length: messagesCount }, (_, i) => 
+  // Include the specific retention policy messages
+  const retentionPolicyMessages = [
+    "2025-08-05 18:26:53 +01 - [Information-Duplicati.Library.Main.Operation.DeleteHandler:RetentionPolicy-StartCheck]: Start checking if backups can be removed",
+    "2025-08-05 18:26:53 +01 - [Information-Duplicati.Library.Main.Operation.DeleteHandler:RetentionPolicy-FramesAndIntervals]: Time frames and intervals pairs: 7.00:00:00 / 1.00:00:00, 28.00:00:00 / 7.00:00:00, 365.00:00:00 / 31.00:00:00",
+    "2025-08-05 18:26:53 +01 - [Information-Duplicati.Library.Main.Operation.DeleteHandler:RetentionPolicy-BackupList]: Backups to consider: 04/08/2025 00:14:55, 31/07/2025 15:10:00, 18/07/2025 15:10:00, 30/06/2025 23:34:57, 29/06/2025 16:08:11, 18/05/2025 20:39:59, 12/04/2025 16:31:15",
+    "2025-08-05 18:26:53 +01 - [Information-Duplicati.Library.Main.Operation.DeleteHandler:RetentionPolicy-BackupsToDelete]: Backups outside of all time frames and thus getting deleted: ",
+    "2025-08-05 18:26:53 +01 - [Information-Duplicati.Library.Main.Operation.DeleteHandler:RetentionPolicy-AllBackupsToDelete]: All backups to delete: ",
+    "2025-08-05 18:26:53 +01 - [Information-Duplicati.Library.Main.Operation.DeleteHandler-DeleteResults]: No remote filesets were deleted"
+  ];
+  
+  // Generate additional random messages to fill the requested count
+  const additionalMessages = Array.from({ length: Math.max(0, messagesCount - retentionPolicyMessages.length) }, (_, i) => 
     `Message ${(i + 1).toString().padStart(3, '0')}`
   );
+  
+  // Combine retention policy messages with additional random messages
+  const messages = [...retentionPolicyMessages, ...additionalMessages];
 
   return { warnings, errors, messages };
 }
@@ -107,7 +121,7 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
   // Generate message counts
   const warningsCount = hasWarnings ? Math.floor(Math.random() * 5) + 1 : 0;
   const errorsCount = hasErrors ? Math.floor(Math.random() * 3) + 1 : 0;
-  const messagesCount = Math.floor(Math.random() * 20) + 5; // 5-24 messages
+  const messagesCount = Math.floor(Math.random() * 20) + 10; // At least 10 messages (6 retention policy + 4+ additional)
   
   // Generate the message arrays
   const { warnings, errors, messages } = generateMessageArrays(
@@ -175,7 +189,7 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       OperationName: backupType,
       'machine-id': machine.id,
       'machine-name': machine.name,
-      'backup-name': `${machine.backupName} ${backupType}`,
+      'backup-name': backupType,
       'backup-id': `DB-${backupNumber}`
     }
   };
@@ -183,9 +197,9 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 
 // Main function to send test data
 async function sendTestData() {
-  const API_URL = 'http://localhost:9666/api/upload';
-  const HEALTH_CHECK_URL = 'http://localhost:9666/api/health'; // Adjust this URL based on your actual health endpoint
-  const TOTAL_BACKUPS_PER_TYPE = 30;
+  const API_URL = 'http://localhost:8666/api/upload';
+  const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
+  const TOTAL_BACKUPS_PER_TYPE = 20;
   const BACKUP_TYPES = ['Files', 'Databases'];
 
   // Check server health before proceeding

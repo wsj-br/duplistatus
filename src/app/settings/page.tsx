@@ -126,9 +126,12 @@ function SettingsPageContent() {
                       body: JSON.stringify({ ntfy: ntfyConfig }),
                     });
                     if (!response.ok) throw new Error('Failed to save NTFY config');
+                    const result = await response.json();
                     toast({ title: 'Success', description: 'NTFY config saved successfully', duration: 2000 });
+                    return result;
                   } catch (error) {
                     toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save NTFY config', variant: 'destructive', duration: 3000 });
+                    throw error;
                   }
                 }}
               />

@@ -149,3 +149,12 @@ export type NotificationFrequencyConfig = "onetime" | "every_day" | "every_week"
 
 // New type for overdue tolerance options
 export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '6h' | '12h' | '1d';
+
+// Interface for overdue backup notification timestamps
+export interface OverdueNotificationTimestamp {
+  lastNotificationSent: string; // ISO timestamp
+  lastBackupDate: string; // ISO timestamp of the backup that was current when notification was sent
+}
+
+// Type for overdue backup notifications configuration
+export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;

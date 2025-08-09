@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { subMonths } from 'date-fns';
 import { db } from '@/lib/db';
+import { setConfiguration } from '@/lib/db-utils';
 
 export async function POST(request: Request) {
   try {
@@ -25,8 +26,22 @@ export async function POST(request: Request) {
       // Execute the transaction
       const { backupChanges, machineChanges } = transaction();
 
+      // Clear configuration settings
+      try {
+        // Clear backup_settings
+        setConfiguration('backup_settings', JSON.stringify({}));
+        console.log('[cleanup] Cleared backup_settings configuration');
+        
+        // Clear overdue_backup_notifications
+        setConfiguration('overdue_backup_notifications', JSON.stringify({}));
+        console.log('[cleanup] Cleared overdue_backup_notifications configuration');
+      } catch (configError) {
+        console.error('Failed to clear configuration settings:', configError instanceof Error ? configError.message : String(configError));
+        // Don't fail the entire operation if config cleanup fails
+      }
+
       return NextResponse.json({
-        message: `Successfully deleted all ${backupChanges} backups and ${machineChanges} machines`,
+        message: `Successfully deleted all ${backupChanges} backups and ${machineChanges} machines, and cleared configuration settings`,
         status: 200,
       });
     }

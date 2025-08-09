@@ -60,7 +60,8 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
   // Determine current page type
   const getCurrentPageType = useCallback((): PageType => {
     if (pathname === '/') return 'dashboard';
-    if (pathname.startsWith('/detail/')) return 'detail';
+    // Only show on main detail pages, not on backup detail pages
+    if (pathname.startsWith('/detail/') && !pathname.includes('/backup/')) return 'detail';
     return 'none';
   }, [pathname]);
 
@@ -83,7 +84,8 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshDashboard();
       } else if (state.currentPage === 'detail') {
         // For detail pages, we need the machineId from the URL
-        const match = pathname.match(/\/detail\/([^\/]+)/);
+        // Only match main detail pages, not backup detail pages
+        const match = pathname.match(/^\/detail\/([^\/]+)$/);
         if (match) {
           refreshDetail(match[1]);
         }

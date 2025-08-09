@@ -7,7 +7,7 @@ import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-
 import { DashboardToastHandler } from "@/components/dashboard/dashboard-toast-handler";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Info } from "lucide-react";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -114,21 +114,17 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
 
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Overview</CardTitle>
+          <CardTitle className="text-2xl cursor-default">Overview</CardTitle>
           <CardDescription className="cursor-default">
             Latest backup status for all machines.
             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="inline-flex items-center ml-2 cursor-help">
-                    <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  Last refresh: {new Date().toLocaleString()}
-                </TooltipContent>
+              <Tooltip delayDuration={0}>
+                  <TooltipTrigger>
+                    <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Last refresh: {new Date().toLocaleString()}
+                  </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </CardDescription>
