@@ -1062,7 +1062,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
 
 
 // Function to get ntfy configuration with default topic generation
-export async function getNtfyConfig(): Promise<{ url: string; topic: string }> {
+export async function getNtfyConfig(): Promise<{ url: string; topic: string; accessToken?: string }> {
   try {
     const configJson = getConfiguration('notifications');
     if (configJson) {

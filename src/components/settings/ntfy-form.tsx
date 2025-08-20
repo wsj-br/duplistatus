@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
+import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { NtfyConfig } from '@/lib/types';
 
 interface NtfyFormProps {
@@ -138,6 +139,28 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
                 >
                   https://ntfy.sh/{formData.topic || 'duplistatus-my-notification-topic'}
                 </a>.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ntfy-access-token">NTFY Access Token (Optional)</Label>
+            <TogglePasswordInput
+              id="ntfy-access-token"
+              value={formData.accessToken || ''}
+              onChange={(value) => handleInputChange('accessToken', value)}
+              placeholder="Enter your NTFY access token"
+            />
+            <p className="text-sm text-muted-foreground">
+              Optional access token for authenticated NTFY servers. Leave blank if not required.
+              Learn more about{' '}
+              <a 
+                href="https://docs.ntfy.sh/config/#access-tokens" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                NTFY authentication
+              </a>.
             </p>
           </div>
 

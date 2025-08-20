@@ -110,7 +110,8 @@ export async function sendNtfyNotification(
   title: string,
   message: string,
   priority: string,
-  tags: string
+  tags: string,
+  accessToken?: string
 ): Promise<void> {
   if (!ntfyUrl || !topic) {
     throw new Error('NTFY URL and topic are required');
@@ -136,12 +137,20 @@ export async function sendNtfyNotification(
   const encoder = new TextEncoder();
   const messageBytes = encoder.encode(message);
 
+  // Prepare headers
+  const headers: Record<string, string> = {
+    'Content-Type': 'text/plain; charset=utf-8',
+  };
+
+  // Add authorization header if access token is provided
+  if (accessToken && accessToken.trim()) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+
   const response = await fetch(url.toString(), {
     method: 'POST',
     body: messageBytes,
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-    },
+    headers,
   });
 
   if (!response.ok) {
@@ -249,7 +258,8 @@ export async function sendBackupNotification(
       processedTemplate.title,
       processedTemplate.message,
       processedTemplate.priority,
-      processedTemplate.tags
+      processedTemplate.tags,
+      config.ntfy.accessToken
     );
     
     console.log(`Notification sent for backup ${backup.name} on machine ${machineName}, status: ${status}, notification config: ${notificationConf}`);
@@ -287,7 +297,8 @@ export async function sendOverdueBackupNotification(
       processedTemplate.title,
       processedTemplate.message,
       processedTemplate.priority,
-      processedTemplate.tags
+      processedTemplate.tags,
+      notificationConfig.ntfy.accessToken
     );
     
   } catch (error) {

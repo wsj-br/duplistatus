@@ -3,8 +3,8 @@
 ## Prerequisites
 
 - docker / docker compose
-- Node.js 18.19.0 or later
-- pnpm 10.13.1 or later (install with `npm install -g pnpm`)
+- Node.js 20.19.2 or later
+- pnpm 10.15 or later (install with `npm install -g pnpm`)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 
@@ -252,33 +252,32 @@ This script cleans up Docker resources:
    - pnpm
 
 2. **Core Frameworks & Libraries**
-   - Next.js – React-based SSR/SSG framework
-   - React
-   - Radix UI (@radix-ui/react-*) – headless component primitives
-   - Tailwind CSS + tailwindcss-animate plugin
-   - PostCSS (postcss.config.mjs)
-   - Better-sqlite3 + SQLite3 (data store)
-   - Recharts – charting library
-   - react-day-picker – date picker
-   - react-hook-form – forms
-   - lucide-react – icon components
-   - clsx – utility for conditional classNames
-   - class-variance-authority – variant styling helper
-   - date-fns – date utilities
-   - uuid – unique IDs
-   - server-only – Next helper for server-only modules
-   - express – web framework for cron service
-   - node-cron – cron job scheduling
-   - string-template – string templating
-   - tailwind-merge – Tailwind class merging utility
+   - Next.js 15.5.0 – React-based SSR/SSG framework
+   - React 19.1.1 & React-DOM 19.1.1
+   - Radix UI (@radix-ui/react-*) – headless component primitives (latest versions)
+   - Tailwind CSS 4.1.12 + tailwindcss-animate 1.0.7 plugin
+   - PostCSS (@tailwindcss/postcss 4.1.12 + autoprefixer 10.4.21)
+   - Better-sqlite3 12.2.0 + SQLite3 (data store)
+   - Recharts 3.1.2 – charting library
+   - react-day-picker 9.9.0 – date picker
+   - react-hook-form 7.62.0 – forms
+   - lucide-react 0.540.0 – icon components
+   - clsx 2.1.1 – utility for conditional classNames
+   - class-variance-authority 0.7.1 – variant styling helper
+   - date-fns 4.1.0 – date utilities
+   - uuid 11.1.0 – unique IDs
+   - server-only 0.0.1 – Next helper for server-only modules
+   - express 5.1.0 – web framework for cron service
+   - node-cron 4.2.1 – cron job scheduling
+   - string-template 1.0.0 – string templating
+   - tailwind-merge 3.3.1 – Tailwind class merging utility
 
 3. **Type Checking & Linting**
-   - TypeScript + tsc (noEmit)
-   - TSX – lightweight runner for TS scripts
-   - ESLint (via `next lint`)
+   - TypeScript 5.9.2 + tsc (noEmit)
+   - TSX 4.20.4 – lightweight runner for TS scripts
+   - ESLint 9.33.0 (via `next lint`)
 
 4. **Build & Dev Tools**
-   - Turbopack (Next dev server)
    - Web/CSS bundling via Next's built-in toolchain
    - Scripts under `scripts/` (shell & TS) for test data generation, DB reset, SVG conversion, workspace cleanup, etc.
 
@@ -304,24 +303,24 @@ This script cleans up Docker resources:
    - GitHub Releases (via Actions on `release` events)
 
 8. **Cron Service**
-   - Separate cron service (`src/cron-service/`) for scheduled tasks
+   - Separate cron service (`src/cron-service/`) for scheduled tasks 
+   - The cron service is started by `duplistatus-cron.sh`, which restarts it if it crashes.
    - Runs on separate port (8667 dev, 9667 prod)
    - Handles overdue backup notifications and other scheduled tasks
-   - Uses `keep-cron-alive.sh` script for process management
+   - Configurable via environment variables and database settings
 
 9. **Notification System**
    - ntfy.sh integration for push notifications
    - Configurable notification templates with variable substitution
    - Overdue backup monitoring and alerting
    - Test notification functionality
-   - Flexible notification scheduling (one time/daily/weekly/monthly)
+   - Flexible overdue backup notification scheduling (one time/daily/weekly/monthly)
 
 10. **Auto-refresh System**
     - Configurable automatic refresh of dashboard and detail pages
     - Manual refresh controls with visual feedback
     - Progress indicators and loading states
-    - Persistent refresh preferences
-    - Page-specific refresh behavior
+
 
 11. **Enhanced UI Features**
     - Sortable tables with persistent preferences
@@ -329,30 +328,38 @@ This script cleans up Docker resources:
     - Click-to-view available versions functionality
     - Improved navigation with return links
     - Status badges that link to backup details
+    - Database maintenance menu
+    - NTFY messages button
+    - Global refresh controls
+    - Overdue backup check button
+    - Enhanced backup collection menu
+    - Display menu component
 
-12. **Other tools**
-    - ["Easy Screenshot"](https://webextension.org/listing/screenshot.html) extension 
+12. **API Documentation**
+    - Comprehensive API endpoints documented in `API-ENDPOINTS.md`
+    - RESTful API structure with consistent error handling
+    - Configuration management endpoints
+    - Notification system endpoints
+    - Cron service management endpoints
+    - Health check and monitoring endpoints
 
 ## Current Development Status
 
 The project is currently in active development with the following major features implemented:
 
-### ✅ Completed Features (v0.5.19+)
+### ✅ Completed Features (v0.6.0)
 - **Notification System**: Complete ntfy.sh integration with customizable templates
 - **Overdue Backup Monitoring**: Automated checking and alerting for overdue backups
 - **Auto-refresh System**: Configurable automatic refresh of dashboard and detail pages
 - **Enhanced UI**: Sortable tables, improved navigation, and better backup version display
 - **Cron Service**: Separate service for handling scheduled tasks
-- **API Enhancements**: New endpoints for notification management and cron configuration
-
-### 🚧 In Progress Features
+- **API Enhancements**: Comprehensive API endpoints for all functionality
+- **Database Management**: Cleanup and maintenance tools
+- **Enhanced Components**: Database maintenance menu, NTFY messages button, global refresh controls
 - **Table Sorting**: Client-side persistence of sort preferences
 - **Enhanced Backup Version Visibility**: Version icons and click-to-view functionality
 - **UI/Navigation Improvements**: Return links and status badge navigation
 
-### 📋 Planned Features
-- **HTTPS Support**: Documentation for serving with HTTPS (nginx/certbot or Caddy)
-- **Additional Integrations**: Enhanced third-party tool support
 
 ## Development Guidelines
 
@@ -372,4 +379,11 @@ The project is currently in active development with the following major features
 - Development mode provides verbose logging and JSON file storage
 - Use the browser's developer tools for frontend debugging
 - Check the console for detailed error messages and API responses
+
+### API Development
+- All API endpoints are documented in `API-ENDPOINTS.md`
+- Follow the established RESTful patterns for new endpoints
+- Maintain consistent error handling and response formats
+- Test new endpoints with the provided test scripts
+
 

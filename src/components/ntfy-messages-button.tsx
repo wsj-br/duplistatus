@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 interface NtfyConfig {
   url: string;
   topic: string;
+  accessToken?: string;
 }
 
 export function NtfyMessagesButton() {

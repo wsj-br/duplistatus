@@ -53,7 +53,8 @@ export async function POST(request: NextRequest) {
       processedTitle,
       processedMessage,
       template.priority || 'default',
-      template.tags || ''
+      template.tags || '',
+      ntfyConfig.accessToken
     );
 
     return NextResponse.json({ success: true });

@@ -2,20 +2,28 @@ import { NextResponse } from 'next/server';
 import { NtfyConfig } from '@/lib/types';
 
 async function sendNtfyNotification(config: NtfyConfig, message: string, title: string, priority: string, tags: string) {
-  const { url, topic } = config;
+  const { url, topic, accessToken } = config;
   
   if (!url || !topic) {
     throw new Error('NTFY URL and topic are required');
   }
 
+  // Prepare headers
+  const headers: Record<string, string> = {
+    'Title': title,
+    'Priority': priority,
+    'Tags': tags,
+  };
+
+  // Add authorization header if access token is provided
+  if (accessToken && accessToken.trim()) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+
   const response = await fetch(`${url.replace(/\/$/, '')}/${topic}`, {
     method: 'POST',
     body: message,
-    headers: {
-      'Title': title,
-      'Priority': priority,
-      'Tags': tags,
-    },
+    headers,
   });
 
   if (!response.ok) {

@@ -35,28 +35,75 @@ function generateRandomDuration(): string {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// Generate a date at a specific interval from now
-function generateIntervalDate(intervalIndex: number, totalIntervals: number): string {
+// Generate backup dates according to the specified patterns
+function generateBackupDates(machineIndex: number): string[] {
+  const dates: string[] = [];
   const now = new Date();
-  const twoYearsAgo = new Date();
-  twoYearsAgo.setFullYear(now.getFullYear() - 2);
+  const isOddMachine = (machineIndex + 1) % 2 === 1;
   
-  // Calculate the time span between two years ago and now
-  const timeSpan = now.getTime() - twoYearsAgo.getTime();
+  // Start with today (in the past)
+  const today = new Date(now);
+  today.setDate(today.getDate() - 1); // Yesterday to ensure it's in the past
+  dates.push(today.toISOString());
   
-  // Calculate the interval size
-  const intervalSize = timeSpan / (totalIntervals - 1);
+  if (isOddMachine) {
+    // Odd machine pattern: daily for a week, then weekly for 2 months, then monthly for 2 years
+    
+    // Daily backups for 6 more days (total 7 days including today)
+    for (let i = 1; i <= 6; i++) {
+      const dailyDate = new Date(today);
+      dailyDate.setDate(dailyDate.getDate() - i);
+      dates.push(dailyDate.toISOString());
+    }
+    
+    // Weekly backups for 2 months (8 weeks)
+    for (let i = 1; i <= 8; i++) {
+      const weeklyDate = new Date(today);
+      weeklyDate.setDate(weeklyDate.getDate() - (7 * i));
+      dates.push(weeklyDate.toISOString());
+    }
+    
+    // Monthly backups for remaining time until 2 years ago
+    let monthCount = 1;
+    let currentDate = new Date(today);
+    currentDate.setDate(currentDate.getDate() - (7 * 8)); // Start after weekly backups
+    
+    while (currentDate.getTime() > now.getTime() - (2 * 365 * 24 * 60 * 60 * 1000)) {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      dates.push(currentDate.toISOString());
+      monthCount++;
+    }
+  } else {
+    // Even machine pattern: daily for a week, then weekly for 6 months, then monthly for 2 years
+    
+    // Daily backups for 6 more days (total 7 days including today)
+    for (let i = 1; i <= 6; i++) {
+      const dailyDate = new Date(today);
+      dailyDate.setDate(dailyDate.getDate() - i);
+      dates.push(dailyDate.toISOString());
+    }
+    
+    // Weekly backups for 6 months (26 weeks)
+    for (let i = 1; i <= 26; i++) {
+      const weeklyDate = new Date(today);
+      weeklyDate.setDate(weeklyDate.getDate() - (7 * i));
+      dates.push(weeklyDate.toISOString());
+    }
+    
+    // Monthly backups for remaining time until 2 years ago
+    let monthCount = 1;
+    let currentDate = new Date(today);
+    currentDate.setDate(currentDate.getDate() - (7 * 26)); // Start after weekly backups
+    
+    while (currentDate.getTime() > now.getTime() - (2 * 365 * 24 * 60 * 60 * 1000)) {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      dates.push(currentDate.toISOString());
+      monthCount++;
+    }
+  }
   
-  // Calculate the date for this specific interval
-  const intervalDate = new Date(twoYearsAgo.getTime() + (intervalSize * intervalIndex));
-  
-  // Add some randomness within a day to make it look more natural
-  const randomHours = Math.floor(Math.random() * 24);
-  const randomMinutes = Math.floor(Math.random() * 60);
-  intervalDate.setHours(randomHours);
-  intervalDate.setMinutes(randomMinutes);
-  
-  return intervalDate.toISOString();
+  // Sort dates in descending order (newest first)
+  return dates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 }
 
 // Helper function to generate random file statistics
@@ -110,8 +157,7 @@ function generateMessageArrays(warningsCount: number, errorsCount: number, messa
 }
 
 // Modify the generateBackupPayload function
-function generateBackupPayload(machine: typeof machines[0], backupNumber: number, intervalIndex: number, totalIntervals: number, backupType: string = "Backup") {
-  const beginTime = generateIntervalDate(intervalIndex, totalIntervals);
+function generateBackupPayload(machine: typeof machines[0], backupNumber: number, beginTime: string, backupType: string = "Backup") {
   const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000);
   const duration = generateRandomDuration();
   const stats = generateRandomFileStats();
@@ -169,9 +215,9 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
         BytesUploaded: stats.uploadedSize,
         BytesDownloaded: Math.floor(stats.uploadedSize * 0.1),
         KnownFileSize: stats.fileSize,
-        LastBackupDate: intervalIndex > 0 
-          ? generateIntervalDate(intervalIndex - 1, totalIntervals) 
-          : new Date(new Date(beginTime).getTime() - 86400000).toISOString(), // Previous interval or 1 day before
+        LastBackupDate: backupNumber > 1 
+          ? new Date(new Date(beginTime).getTime() - 86400000).toISOString() // 1 day before
+          : new Date(new Date(beginTime).getTime() - 86400000).toISOString(),
         BackupListCount: backupNumber,
         ReportedQuotaError: false,
         ReportedQuotaWarning: Math.random() > 0.9, // 10% chance of quota warning
@@ -199,7 +245,6 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 async function sendTestData() {
   const API_URL = 'http://localhost:8666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
-  const TOTAL_BACKUPS_PER_TYPE = 20;
   const BACKUP_TYPES = ['Files', 'Databases'];
 
   // Check server health before proceeding
@@ -211,12 +256,23 @@ async function sendTestData() {
   }
   console.log('  👍 Server is healthy, proceeding with data generation...');
 
-  for (const machine of machines) {
+  for (let machineIndex = 0; machineIndex < machines.length; machineIndex++) {
+    const machine = machines[machineIndex];
+    const isOddMachine = (machineIndex + 1) % 2 === 1;
+    
+    // Generate backup dates according to the pattern
+    const backupDates = generateBackupDates(machineIndex);
+    
+    console.log(`\n    🔄 Generating ${backupDates.length} backups for ${machine.name} (${isOddMachine ? 'Odd' : 'Even'} machine pattern)...`);
+    console.log(`      📅 Pattern: ${isOddMachine ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
+    
     for (const backupType of BACKUP_TYPES) {
-      console.log(`\n    🔄 Generating ${TOTAL_BACKUPS_PER_TYPE} ${backupType} backups for ${machine.name}...`);
-      for (let i = 0; i < TOTAL_BACKUPS_PER_TYPE; i++) {
+      console.log(`        📁 Generating ${backupType} backups...`);
+      
+      for (let i = 0; i < backupDates.length; i++) {
         const backupNumber = i + 1;
-        const payload = generateBackupPayload(machine, backupNumber, i, TOTAL_BACKUPS_PER_TYPE, backupType);
+        const beginTime = backupDates[i];
+        const payload = generateBackupPayload(machine, backupNumber, beginTime, backupType);
         
         try {
           const response = await fetch(API_URL, {
@@ -232,7 +288,8 @@ async function sendTestData() {
           }
 
           const result = await response.json();
-          console.log(`      📄 ${backupType} Backup ${backupNumber}/${TOTAL_BACKUPS_PER_TYPE} for ${machine.name}: ${result.success ? 'Success' : 'Failed'}`);
+          const backupDate = new Date(beginTime).toLocaleDateString();
+          console.log(`          📄 ${backupType} Backup ${backupNumber}/${backupDates.length} for ${machine.name} (${backupDate}): ${result.success ? 'Success' : 'Failed'}`);
           
           // Add a small delay between requests
           await new Promise(resolve => setTimeout(resolve, 100));
@@ -246,7 +303,11 @@ async function sendTestData() {
 
 // Run the script
 console.log('🛫 Starting test data generation...\n');
-console.log('  ℹ️ Generating 2 types of backups per machine (30 each) at regular intervals from 2 years ago to today\n');
+console.log('  ℹ️ Generating backups with specific date patterns:');
+console.log('     • Odd machines: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
+console.log('     • Even machines: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
+console.log('     • 2 backup types per machine (Files and Databases)\n');
+
 sendTestData().then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {

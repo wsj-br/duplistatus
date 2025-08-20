@@ -16,6 +16,8 @@
 /coverage
 data/*
 backups.db
+tmp/*
+
 
 # next.js
 /.next/
@@ -40,8 +42,12 @@ yarn-error.log*
 .pnpm-debug.log*
 run.log*
 
-# vercel
-.vercel
+# ide
+.vscode/*
+!.vscode/launch.json
+.cursor/*
+!.cursor/rules/project-rule.mdc
+
 
 # typescript
 *.tsbuildinfo

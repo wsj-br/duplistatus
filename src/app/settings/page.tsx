@@ -112,7 +112,7 @@ function SettingsPageContent() {
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="ntfy">NTFY Settings</TabsTrigger>
               <TabsTrigger value="backups">Backup Notifications</TabsTrigger>
-              <TabsTrigger value="templates">Notification Messages</TabsTrigger>
+              <TabsTrigger value="templates">Notification Templates</TabsTrigger>
             </TabsList>
             
             <TabsContent value="ntfy" className="mt-6">

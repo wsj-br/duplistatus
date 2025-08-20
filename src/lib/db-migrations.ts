@@ -1,5 +1,7 @@
 import Database from 'better-sqlite3';
 import { extractAvailableBackups } from './utils';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Import default configurations
 import { 
@@ -43,6 +45,25 @@ function populateDefaultConfigurations(db: Database.Database) {
     console.log('Default configurations populated successfully');
   } catch (error) {
     console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+// Function to create a backup of the database file
+function createDatabaseBackup(dbPath: string): string {
+  try {
+    const dbDir = path.dirname(dbPath);
+    const dbName = path.basename(dbPath, path.extname(dbPath));
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = path.join(dbDir, `${dbName}-copy-${timestamp}.db`);
+    
+    // Copy the database file
+    fs.copyFileSync(dbPath, backupPath);
+    console.log(`Database backup created: ${backupPath}`);
+    
+    return backupPath;
+  } catch (error) {
+    console.error('Failed to create database backup:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -170,9 +191,11 @@ const migrations: Migration[] = [
 // Database migration functions
 export class DatabaseMigrator {
   private db: Database.Database;
+  private dbPath: string;
   
-  constructor(db: Database.Database) {
+  constructor(db: Database.Database, dbPath: string) {
     this.db = db;
+    this.dbPath = dbPath;
     this.initializeVersionTable();
   }
   
@@ -243,6 +266,15 @@ export class DatabaseMigrator {
     
     console.log(`Found ${pendingMigrations.length} pending migrations`);
     
+    // Create backup before running migrations
+    let backupPath: string | undefined;
+    try {
+      backupPath = createDatabaseBackup(this.dbPath);
+    } catch (error) {
+      console.error('Failed to create database backup. Aborting migrations for safety.');
+      throw error;
+    }
+    
     // Run migrations with retry logic for database locking issues
     for (const migration of pendingMigrations) {
       console.log(`Applying migration ${migration.version}: ${migration.description}`);
@@ -274,10 +306,12 @@ export class DatabaseMigrator {
               setTimeout(() => {}, waitTime);
             } else {
               console.error(`Migration ${migration.version} failed after ${maxRetries} attempts due to database lock:`, errorMessage);
+              console.log(`Database backup is available at: ${backupPath}`);
               throw error;
             }
           } else {
             console.error(`Migration ${migration.version} failed:`, errorMessage);
+            console.log(`Database backup is available at: ${backupPath}`);
             throw error;
           }
         }
@@ -285,5 +319,8 @@ export class DatabaseMigrator {
     }
     
     console.log('All migrations completed successfully');
+    if (backupPath) {
+      console.log(`Database backup created at: ${backupPath}`);
+    }
   }
 } 

@@ -67,7 +67,8 @@ export const defaultCronConfig: CronServiceConfig = {
 // Default NTFY configuration
 export const defaultNtfyConfig = {
   url: 'https://ntfy.sh/',
-  topic: '' // Will be generated dynamically
+  topic: '', // Will be generated dynamically
+  accessToken: '' // Optional access token for authenticated servers
 };
 
 // Global overdue tolerance configuration
@@ -106,7 +107,7 @@ export const defaultAPIConfig = {
 
 
 // Function to create default notification configuration
-export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic: string }): NotificationConfig {
+export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic: string; accessToken?: string }): NotificationConfig {
   return {
     ntfy: ntfyConfig,
     backupSettings: {}, // Keep empty - API handles defaults via separate storage
@@ -116,7 +117,7 @@ export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic
 
 // Helper function to generate a random string for ntfy topic
 export function generateDefaultNtfyTopic(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = 'duplistatus-';
   for (let i = 0; i < 12; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));

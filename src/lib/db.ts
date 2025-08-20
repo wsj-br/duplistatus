@@ -18,9 +18,9 @@ if (!fs.existsSync(dataDir)) {
 }
 
 let db: Database.Database;
+const dbPath = path.join(dataDir, 'backups.db');
 
 try {
-  const dbPath = path.join(dataDir, 'backups.db');
   // log(`Initializing database at: ${dbPath}`);
   
   db = new Database(dbPath, {
@@ -167,7 +167,7 @@ try {
 
 // Run database migrations (only for existing databases that need upgrading)
 try {
-  const migrator = new DatabaseMigrator(db);
+  const migrator = new DatabaseMigrator(db, dbPath);
   migrator.runMigrations();
 } catch (error) {
   console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));

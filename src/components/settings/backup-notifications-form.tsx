@@ -706,11 +706,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                       >
                         <SelectTrigger className={`w-full ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
-                          <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Day' : 'Hour'} />
+                          <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Days' : 'Hours'} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="hour">Hour</SelectItem>
-                          <SelectItem value="day">Day</SelectItem>
+                          <SelectItem value="hour">Hour(s)</SelectItem>
+                          <SelectItem value="day">Day(s)</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>

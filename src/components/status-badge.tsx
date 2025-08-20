@@ -32,7 +32,7 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
 
   return (
     <Badge 
-      variant="default" 
+      variant="success" 
       className={cn(
         "flex items-center gap-1.5 whitespace-nowrap", 
         config.color, 

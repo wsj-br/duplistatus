@@ -1,26 +1,96 @@
 # API Endpoints
 
-The following endpoints are available:
+![](https://img.shields.io/badge/version-0.6.0-blue)
 
-- [Upload Backup Data](#upload-backup-data)
-- [Get Latest Backup](#get-latest-backup)
-- [Get Overall Summary](#get-overall-summary)
-- [Get Machines Summary](#get-machines-summary)
-- [Get All Machines](#get-all-machines)
-- [Get Machine Details](#get-machine-details)
-- [Get Chart Data](#get-chart-data)
-- [Configuration Management](#configuration-management)
-- [Notification System](#notification-system-endpoints)
-- [Cron Service Management](#cron-service-management)
-- [Health Check](#health-check)
-- [Collect Backups](#collect-backups)
-- [Cleanup Backups](#cleanup-backups)
-- [Delete Machine](#delete-machine)
+<br>
+
+
+This document describes all available API endpoints for the DupliStatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
+
+<br>
+
+## API Structure
+
+The API is organized into logical groups:
+- **Core Operations**: Upload, retrieval, and management of backup data
+- **Configuration**: Notification settings, backup preferences, and system configuration
+- **Monitoring**: Health checks, status monitoring, and overdue backup tracking
+- **Administration**: Database maintenance, cleanup operations, and system management
+
+<br>
+
+## Response Format
+
+All API responses are returned in JSON format with consistent error handling patterns. Successful responses typically include a `status` field, while error responses include `error` and `message` fields.
 
 
 <br>
 
-## Upload Backup Data
+---
+
+<br>
+
+## Table of Contents
+
+
+### [Core Operations](#core-operations-1)
+- [Upload Backup Data (`/api/upload`)](#upload-backup-data)
+- [Get Latest Backup (`/api/lastbackup/:machineId`)](#get-latest-backup)
+- [Get Latest Backups (`/api/lastbackups/:machineId`)](#get-latest-backups)
+- [Get Overall Summary (`/api/summary`)](#get-overall-summary)
+- [Get Machines Summary (`/api/machines-summary`)](#get-machines-summary)
+- [Get All Machines (`/api/machines`)](#get-all-machines)
+- [Get Machines with Backups (`/api/machines-with-backups`)](#get-machines-with-backups)
+- [Get Machine Details (`/api/machines/:id`)](#get-machine-details)
+- [Get Machine Chart Data (`/api/detail/:machineId/chart-data`)](#get-machine-chart-data)
+- [Get Machine Data with Overdue Info (`/api/detail/:machineId/data`)](#get-machine-data-with-overdue-info)
+- [Get Chart Data (`/api/chart-data`)](#get-chart-data)
+
+### [Configuration Management](#configuration-management-1)
+- [Get Configuration (`/api/configuration`)](#get-configuration)
+- [Update Notification Configuration (`/api/configuration/notifications`)](#update-notification-configuration)
+- [Update Backup Settings (`/api/configuration/backup-settings`)](#update-backup-settings)
+- [Update Notification Templates (`/api/configuration/templates`)](#update-notification-templates)
+- [Update Overdue Tolerance (`/api/configuration/overdue-tolerance`)](#update-overdue-tolerance)
+
+### [Notification System](#notification-system-1)
+- [Test Notification (`/api/notifications/test`)](#test-notification)
+- [Test Template (`/api/notifications/test-template`)](#test-template)
+- [Check Overdue Backups (`/api/notifications/check-overdue`)](#check-overdue-backups)
+- [Clear Overdue Timestamps (`/api/notifications/clear-overdue-timestamps`)](#clear-overdue-timestamps)
+- [Resend Frequency Configuration (`/api/notifications/resend-frequency`)](#resend-frequency-configuration)
+
+### [Monitoring & Health](#monitoring--health-1)
+- [Health Check (`/api/health`)](#health-check)
+
+### [Administration](#administration-1)
+- [Collect Backups (`/api/backups/collect`)](#collect-backups)
+- [Cleanup Backups (`/api/backups/cleanup`)](#cleanup-backups)
+- [Delete Machine (`/api/machines/:id`)](#delete-machine)
+
+### [Cron Service Management](#cron-service-management-1)
+- [Get Cron Configuration (`/api/cron-config`)](#get-cron-configuration)
+- [Update Cron Configuration (`/api/cron-config`)](#update-cron-configuration)
+
+### [Error Handling](#error-handling-1)
+### [Data Type Notes](#data-type-notes-1)
+- [Message Arrays](#message-arrays)
+- [Available Backups](#available-backups)
+- [Duration Fields](#duration-fields)
+- [File Size Fields](#file-size-fields)
+### [Authentication & Security](#authentication--security-1)
+### [Rate Limiting](#rate-limiting-1)
+
+
+<br>
+
+---
+
+<br>
+
+## Core Operations
+
+### Upload Backup Data
 - **Endpoint**: `/api/upload`
 - **Method**: POST
 - **Description**: Uploads backup operation data for a machine. Supports duplicate detection and sends notifications.
@@ -46,7 +116,7 @@ The following endpoints are available:
 
 <br>
 
-## Get Latest Backup
+### Get Latest Backup
 - **Endpoint**: `/api/lastbackup/:machineId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for a specific machine.
@@ -62,15 +132,19 @@ The following endpoints are available:
     "machine": {
       "id": "unique-machine-id",
       "name": "Machine Name",
+      "backup_name": "Backup Name",
+      "backup_id": "backup-id",
       "created_at": "2024-03-20T10:00:00Z"
     },
     "latest_backup": {
       "id": "backup-id",
+      "machine_id": "unique-machine-id",
       "name": "Backup Name",
       "date": "2024-03-20T10:00:00Z",
       "status": "Success",
       "warnings": 0,
       "errors": 0,
+      "messages": 150,
       "fileCount": 249426,
       "fileSize": 113395849938,
       "uploadedSize": 331318892,
@@ -78,7 +152,11 @@ The following endpoints are available:
       "duration_seconds": 2311.6018052,
       "durationInMinutes": 38.52669675333333,
       "knownFileSize": 27203688543,
-      "backup_list_count": 10
+      "backup_list_count": 10,
+      "messages_array": "[\"message1\", \"message2\"]",
+      "warnings_array": "[\"warning1\"]",
+      "errors_array": "[]",
+      "available_backups": ["v1", "v2", "v3"]
     },
     "status": 200
   }
@@ -86,7 +164,84 @@ The following endpoints are available:
 
 <br>
 
-## Get Overall Summary
+### Get Latest Backups
+- **Endpoint**: `/api/lastbackups/:machineId`
+- **Method**: GET
+- **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific machine.
+- **Parameters**:
+  - `machineId`: the machine identifier (ID or name)
+
+> [!NOTE]
+> The machine identifier has to be URL Encoded.
+  
+- **Response**:
+  ```json
+  {
+    "machine": {
+      "id": "unique-machine-id",
+      "name": "Machine Name",
+      "backup_name": "Default Backup",
+      "backup_id": "backup-id",
+      "created_at": "2024-03-20T10:00:00Z"
+    },
+    "latest_backups": [
+      {
+        "id": "backup1",
+        "machine_id": "unique-machine-id",
+        "name": "Files",
+        "date": "2024-03-20T10:00:00Z",
+        "status": "Success",
+        "warnings": 0,
+        "errors": 0,
+        "messages": 150,
+        "fileCount": 249426,
+        "fileSize": 113395849938,
+        "uploadedSize": 331318892,
+        "duration": "00:38:31",
+        "duration_seconds": 2311.6018052,
+        "durationInMinutes": 38.52669675333333,
+        "knownFileSize": 27203688543,
+        "backup_list_count": 10,
+        "messages_array": "[\"message1\", \"message2\"]",
+        "warnings_array": "[\"warning1\"]",
+        "errors_array": "[]",
+        "available_backups": ["v1", "v2", "v3"]
+      },
+      {
+        "id": "backup2",
+        "machine_id": "unique-machine-id",
+        "name": "Databases",
+        "date": "2024-03-20T11:00:00Z",
+        "status": "Success",
+        "warnings": 1,
+        "errors": 0,
+        "messages": 75,
+        "fileCount": 125000,
+        "fileSize": 56789012345,
+        "uploadedSize": 123456789,
+        "duration": "00:25:15",
+        "duration_seconds": 1515.1234567,
+        "durationInMinutes": 25.25205761166667,
+        "knownFileSize": 12345678901,
+        "backup_list_count": 5,
+        "messages_array": "[\"message1\"]",
+        "warnings_array": "[\"warning1\"]",
+        "errors_array": "[]",
+        "available_backups": ["v1", "v2"]
+      }
+    ],
+    "backup_types_count": 2,
+    "backup_names": ["Files", "Databases"],
+    "status": 200
+  }
+  ```
+
+> [!NOTE]
+> This endpoint returns the latest backup for each backup (backup_name) that the machine has, unlike `/api/lastbackup/:machineId` which returns only the single most recent backup.
+
+<br>
+
+### Get Overall Summary
 - **Endpoint**: `/api/summary`
 - **Method**: GET
 - **Description**: Retrieves a summary of all backup operations across all machines.
@@ -98,16 +253,19 @@ The following endpoints are available:
     "totalUploadedSize": 2397229507,
     "totalStorageUsed": 43346796938,
     "totalBackupSize": 126089687807,
-    "secondsSinceLastBackup": 264
+    "overdueBackupsCount": 2,
+    "secondsSinceLastBackup": 7200
   }
   ```
 
 > [!NOTE]
 >    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
+>    The field `overdueBackupsCount` shows the number of currently overdue backups.
+>    The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all machines.
 
 <br>
 
-## Get Machines Summary
+### Get Machines Summary
 - **Endpoint**: `/api/machines-summary`
 - **Method**: GET
 - **Description**: Retrieves a summary of all machines with their latest backup information and overdue status.
@@ -139,7 +297,7 @@ The following endpoints are available:
 
 <br>
 
-## Get All Machines
+### Get All Machines
 - **Endpoint**: `/api/machines`
 - **Method**: GET
 - **Description**: Retrieves a list of all machines with their basic information.
@@ -155,7 +313,24 @@ The following endpoints are available:
 
 <br>
 
-## Get Machine Details
+### Get Machines with Backups
+- **Endpoint**: `/api/machines-with-backups`
+- **Method**: GET
+- **Description**: Retrieves a list of all machines with their backup names.
+- **Response**:
+  ```json
+  [
+    {
+      "id": "machine-id",
+      "name": "Machine Name",
+      "backupName": "Backup Name"
+    }
+  ]
+  ```
+
+<br>
+
+### Get Machine Details
 - **Endpoint**: `/api/machines/:id`
 - **Method**: GET
 - **Description**: Retrieves detailed information about a specific machine including all its backups and chart data.
@@ -185,9 +360,9 @@ The following endpoints are available:
         "durationInMinutes": 38,
         "knownFileSize": 27203688543,
         "backup_list_count": 10,
-        "messages_array": ["message1", "message2"],
-        "warnings_array": ["warning1"],
-        "errors_array": [],
+        "messages_array": "[\"message1\", \"message2\"]",
+        "warnings_array": "[\"warning1\"]",
+        "errors_array": "[]",
         "available_backups": ["v1", "v2", "v3"]
       }
     ],
@@ -208,7 +383,65 @@ The following endpoints are available:
 
 <br>
 
-## Get Chart Data
+### Get Machine Chart Data
+- **Endpoint**: `/api/detail/:machineId/chart-data`
+- **Method**: GET
+- **Description**: Retrieves chart data for a specific machine.
+- **Parameters**:
+  - `machineId`: the machine identifier
+
+- **Response**:
+  ```json
+  [
+    {
+      "date": "20/03/2024",
+      "isoDate": "2024-03-20T10:00:00Z",
+      "uploadedSize": 331318892,
+      "duration": 38,
+      "fileCount": 249426,
+      "fileSize": 113395849938,
+      "storageSize": 27203688543,
+      "backupVersions": 10
+    }
+  ]
+  ```
+
+<br>
+
+### Get Machine Data with Overdue Info
+- **Endpoint**: `/api/detail/:machineId/data`
+- **Method**: GET
+- **Description**: Retrieves detailed machine information including overdue backup status.
+- **Parameters**:
+  - `machineId`: the machine identifier
+
+- **Response**:
+  ```json
+  {
+    "machine": {
+      "id": "machine-id",
+      "name": "Machine Name",
+      "backups": [...],
+      "chartData": [...]
+    },
+    "overdueBackups": [
+      {
+        "machineName": "Machine Name",
+        "backupName": "Backup Name",
+        "lastBackupDate": "2024-03-20T10:00:00Z",
+        "lastNotificationSent": "2024-03-20T12:00:00Z",
+        "notificationEvent": "all",
+        "expectedBackupDate": "2024-03-21T10:00:00Z",
+        "expectedBackupElapsed": "2 hours ago"
+      }
+    ],
+    "lastOverdueCheck": "2024-03-20T12:00:00Z"
+  }
+  ```
+
+<br>
+
+### Get Chart Data
 - **Endpoint**: `/api/chart-data`
 - **Method**: GET
 - **Description**: Retrieves aggregated chart data for all machines over time.
@@ -240,11 +473,9 @@ The following endpoints are available:
   ```json
   {
     "ntfy": {
-      "enabled": true,
       "url": "https://ntfy.sh",
       "topic": "duplistatus-notifications",
-      "username": "",
-      "password": ""
+      "accessToken": ""
     },
     "backupSettings": {
       "Machine Name:Backup Name": {
@@ -274,7 +505,7 @@ The following endpoints are available:
         "tags": "duplicati, duplistatus, overdue"
       }
     },
-    "overdue_tolerance": 1
+    "overdue_tolerance": "1h"
   }
   ```
 
@@ -285,6 +516,19 @@ The following endpoints are available:
 - **Request Body**:
   ```json
   {
+    "ntfy": {
+      "enabled": true,
+      "url": "https://ntfy.sh",
+      "topic": "duplistatus-notifications",
+      "username": "",
+      "password": ""
+    }
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Notification config updated successfully",
     "ntfy": {
       "enabled": true,
       "url": "https://ntfy.sh",
@@ -312,6 +556,12 @@ The following endpoints are available:
     }
   }
   ```
+- **Response**:
+  ```json
+  {
+    "message": "Backup settings updated successfully"
+  }
+  ```
 
 ### Update Notification Templates
 - **Endpoint**: `/api/configuration/templates`
@@ -330,6 +580,12 @@ The following endpoints are available:
     }
   }
   ```
+- **Response**:
+  ```json
+  {
+    "message": "Notification templates updated successfully"
+  }
+  ```
 
 ### Update Overdue Tolerance
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -341,10 +597,16 @@ The following endpoints are available:
     "overdue_tolerance": 2
   }
   ```
+- **Response**:
+  ```json
+  {
+    "message": "Overdue tolerance updated successfully"
+  }
+  ```
 
 <br>
 
-## Notification System Endpoints
+## Notification System
 
 ### Test Notification
 - **Endpoint**: `/api/notifications/test`
@@ -400,9 +662,12 @@ The following endpoints are available:
   ```json
   {
     "message": "Overdue backup check completed",
-    "checkedBackups": 5,
-    "overdueBackupsFound": 2,
-    "notificationsSent": 2
+    "statistics": {
+      "totalBackupConfigs": 5,
+      "checkedBackups": 5,
+      "overdueBackupsFound": 2,
+      "notificationsSent": 2
+    }
   }
   ```
 
@@ -424,7 +689,7 @@ The following endpoints are available:
 - **Response**:
   ```json
   {
-    "frequency": "every_day"
+    "value": "every_day"
   }
   ```
 
@@ -433,9 +698,10 @@ The following endpoints are available:
 - **Request Body**:
   ```json
   {
-    "frequency": "every_week"
+    "value": "every_week"
   }
   ```
+- **Available Values**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
 <br>
 
@@ -467,7 +733,11 @@ The following endpoints are available:
 
 <br>
 
-## Health Check
+## Monitoring & Health
+
+
+
+### Health Check
 - **Endpoint**: `/api/health`
 - **Method**: GET
 - **Description**: Checks the health status of the application and database.
@@ -478,7 +748,10 @@ The following endpoints are available:
     "database": "connected",
     "basicConnection": true,
     "tablesFound": 2,
-    "tables": ["machines", "backups"],
+    "tables": [
+      "machines",
+      "backups"
+    ],
     "preparedStatements": true,
     "timestamp": "2024-03-20T10:00:00Z"
   }
@@ -490,16 +763,19 @@ The following endpoints are available:
     "status": "unhealthy",
     "error": "Database connection failed",
     "message": "Connection timeout",
+    "stack": "Error: Connection timeout\n    at...",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
 
 <br>
 
-## Collect Backups
+## Administration
+
+### Collect Backups
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
-- **Description**: Collects backup data directly from a Duplicati server via its API.
+- **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint connects to the Duplicati server, retrieves backup information, and processes it into the local database.
 - **Request Body**:
   ```json
   {
@@ -519,16 +795,27 @@ The following endpoints are available:
       "processed": 5,
       "skipped": 2,
       "errors": 0
+    },
+    "backupSettings": {
+      "added": 2,
+      "total": 7
     }
   }
   ```
+- **Error Responses**:
+  - `400`: Invalid request parameters or connection failed
+  - `500`: Server error during backup collection
+- **Notes**: 
+  - The endpoint supports both HTTP and HTTPS protocols
+  - Self-signed certificates can be allowed with `allowSelfSigned: true`
+  - Connection timeouts are configurable via environment variables
 
 <br>
 
-## Cleanup Backups
+### Cleanup Backups
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
-- **Description**: Deletes old backup data based on retention period.
+- **Description**: Deletes old backup data based on retention period. This endpoint helps manage database size by removing outdated backup records while preserving recent and important data.
 - **Request Body**:
   ```json
   {
@@ -543,10 +830,18 @@ The following endpoints are available:
     "status": 200
   }
   ```
+- **Error Responses**:
+  - `400`: Invalid retention period specified
+  - `500`: Server error during cleanup operation
+- **Notes**: 
+  - The cleanup operation is irreversible
+  - Backup data is permanently deleted from the database
+  - Machine records are preserved even if all backups are deleted
+  - When "Delete all data" is selected, all machines and backups are removed and configuration is cleared
 
 <br>
 
-## Delete Machine
+### Delete Machine
 - **Endpoint**: `/api/machines/:id`
 - **Method**: DELETE
 - **Description**: Deletes a machine and all its associated backups.
@@ -564,6 +859,14 @@ The following endpoints are available:
     }
   }
   ```
+- **Error Responses**:
+  - `400`: Invalid machine ID
+  - `404`: Machine not found
+  - `500`: Server error during deletion
+- **Notes**: 
+  - This operation is irreversible
+  - All backup data associated with the machine will be permanently deleted
+  - The machine record itself will also be removed
 
 <br>
 
@@ -581,3 +884,40 @@ Error responses include:
 - `message`: Technical error details (in development mode)
 - `stack`: Error stack trace (in development mode)
 - `timestamp`: When the error occurred
+
+<br>
+
+## Data Type Notes
+
+### Message Arrays
+The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as parsed arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
+
+<br>
+
+### Available Backups
+The `available_backups` field contains an array of backup version timestamps (in ISO format) that are available for restoration. This is extracted from the backup log messages.
+
+<br>
+
+### Duration Fields
+- `duration`: Human-readable format (e.g., "00:38:31")
+- `duration_seconds`: Raw duration in seconds
+- `durationInMinutes`: Duration converted to minutes for charting purposes
+
+<br>
+
+### File Size Fields
+All file size fields are returned in bytes as numbers, not formatted strings. The frontend is responsible for converting these to human-readable formats (KB, MB, GB, etc.).
+
+<br>
+
+## Authentication & Security
+
+Currently, the API does not require authentication for local network access. It's designed for internal network use where the application is deployed. 
+
+<br>
+
+## Rate Limiting
+
+The API does not currently implement rate limiting. 
+

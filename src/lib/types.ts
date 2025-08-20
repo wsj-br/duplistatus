@@ -76,6 +76,7 @@ export interface OverallSummary {
 export interface NtfyConfig {
   url: string;
   topic: string;
+  accessToken?: string;
 }
 
 export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';

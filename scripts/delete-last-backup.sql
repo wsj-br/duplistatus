@@ -6,13 +6,26 @@ WHERE id = (
   JOIN machines m ON b.machine_id = m.id
   WHERE m.name = 'Test Machine 1'
   ORDER BY b.date DESC
-  LIMIT 3
+  LIMIT 1
 );
 
-  SELECT b.id, b.date
+
+DELETE FROM backups 
+WHERE id = (
+  SELECT b.id
   FROM backups b
   JOIN machines m ON b.machine_id = m.id
-  WHERE m.name = 'Test Machine 1'
+  WHERE m.name = 'Test Machine 2'
   ORDER BY b.date DESC
-  LIMIT 5;
+  LIMIT 1
+);
 
+DELETE FROM backups 
+WHERE id = (
+  SELECT b.id
+  FROM backups b
+  JOIN machines m ON b.machine_id = m.id
+  WHERE m.name = 'Test Machine 3'
+  ORDER BY b.date DESC
+  LIMIT 1
+);

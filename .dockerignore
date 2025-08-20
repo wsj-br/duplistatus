@@ -18,6 +18,7 @@ dist
 
 # Development files
 .vscode
+.cursor
 .idea
 *.log
 *.md

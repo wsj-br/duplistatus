@@ -1,21 +1,22 @@
+![duplistatus](docs/duplistatus_banner.png)
+
+
+
 # TODO List
 
 ## Fix
 
-- Change the label in the chart (select box) from "Backup Versions" to "Available Versions".
-- Check why collecting the logs don't receive the available versions, but same server when receiving the log via /upload works ok.
+none
 
 ## Changes needed
 
-
-- Run the check for overdue backups when sucefully collect new backups
-- Change the name "overdue backups" to "overdue backups" in all the application.
-- Add the BackButton in the Summary card title in the detail page (/detail)
+none
 
 
 ## New Features (planned or under analysis)
 
 - Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
+- Check to add support to send emails / support 
 
 ---
 
@@ -68,7 +69,7 @@
 
 
 **Notification System:**
-- **ntfy.sh Integration:**
+- **ntfy Integration:**
   - Customizable notifications for backup logs
   - Configurable title, priority, tags, and message templates
   - Variable support in templates
