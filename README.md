@@ -11,6 +11,26 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 <br>
 
+## Table of Contents
+
+- [Features](#features)
+- [Screenshots](#screenshots)
+  - [Dashboard](#dashboard)
+  - [Backup History](#backup-history)
+  - [Backup Details](#backup-details)
+  - [Available Backup Versions](#available-backup-versions)
+  - [Overdue Backups](#overdue-backups)
+- [Installation](#installation)
+- [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
+- [User Guide](#user-guide)
+- [API Reference](#api-reference)
+- [Development](#development)
+- [Migrating to Version 0.6.0](#migrating-to-version-060)
+  - [The Migration Process](#the-migration-process)
+  - [How to Monitor](#how-to-monitor)
+  - [If You Need to Roll Back](#if-you-need-to-roll-back)
+- [License](#license)
+
 ## Features
 
 - **Easy Installation**: Run inside a container with images available on Docker Hub and GitHub Container Registry
