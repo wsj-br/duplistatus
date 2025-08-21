@@ -30,57 +30,52 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-## Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Core Operations](#core-operations)
+  - [Upload Backup Data](#upload-backup-data)
+  - [Get Latest Backup](#get-latest-backup)
+  - [Get Latest Backups](#get-latest-backups)
+  - [Get Overall Summary](#get-overall-summary)
+  - [Get Machines Summary](#get-machines-summary)
+  - [Get All Machines](#get-all-machines)
+  - [Get Machines with Backups](#get-machines-with-backups)
+  - [Get Machine Details](#get-machine-details)
+  - [Get Machine Chart Data](#get-machine-chart-data)
+  - [Get Machine Data with Overdue Info](#get-machine-data-with-overdue-info)
+  - [Get Chart Data](#get-chart-data)
+- [Configuration Management](#configuration-management)
+  - [Get Configuration](#get-configuration)
+  - [Update Notification Configuration](#update-notification-configuration)
+  - [Update Backup Settings](#update-backup-settings)
+  - [Update Notification Templates](#update-notification-templates)
+  - [Update Overdue Tolerance](#update-overdue-tolerance)
+- [Notification System](#notification-system)
+  - [Test Notification](#test-notification)
+  - [Test Template](#test-template)
+  - [Check Overdue Backups](#check-overdue-backups)
+  - [Clear Overdue Timestamps](#clear-overdue-timestamps)
+  - [Resend Frequency Configuration](#resend-frequency-configuration)
+- [Cron Service Management](#cron-service-management)
+  - [Get Cron Configuration](#get-cron-configuration)
+  - [Update Cron Configuration](#update-cron-configuration)
+- [Monitoring & Health](#monitoring--health)
+  - [Health Check](#health-check)
+- [Administration](#administration)
+  - [Collect Backups](#collect-backups)
+  - [Cleanup Backups](#cleanup-backups)
+  - [Delete Machine](#delete-machine)
+- [Error Handling](#error-handling)
+- [Data Type Notes](#data-type-notes)
+  - [Message Arrays](#message-arrays)
+  - [Available Backups](#available-backups)
+  - [Duration Fields](#duration-fields)
+  - [File Size Fields](#file-size-fields)
+- [Authentication & Security](#authentication--security)
+- [License](#license)
 
-### [Core Operations](#core-operations-1)
-- [Upload Backup Data (`/api/upload`)](#upload-backup-data)
-- [Get Latest Backup (`/api/lastbackup/:machineId`)](#get-latest-backup)
-- [Get Latest Backups (`/api/lastbackups/:machineId`)](#get-latest-backups)
-- [Get Overall Summary (`/api/summary`)](#get-overall-summary)
-- [Get Machines Summary (`/api/machines-summary`)](#get-machines-summary)
-- [Get All Machines (`/api/machines`)](#get-all-machines)
-- [Get Machines with Backups (`/api/machines-with-backups`)](#get-machines-with-backups)
-- [Get Machine Details (`/api/machines/:id`)](#get-machine-details)
-- [Get Machine Chart Data (`/api/detail/:machineId/chart-data`)](#get-machine-chart-data)
-- [Get Machine Data with Overdue Info (`/api/detail/:machineId/data`)](#get-machine-data-with-overdue-info)
-- [Get Chart Data (`/api/chart-data`)](#get-chart-data)
-
-### [Configuration Management](#configuration-management-1)
-- [Get Configuration (`/api/configuration`)](#get-configuration)
-- [Update Notification Configuration (`/api/configuration/notifications`)](#update-notification-configuration)
-- [Update Backup Settings (`/api/configuration/backup-settings`)](#update-backup-settings)
-- [Update Notification Templates (`/api/configuration/templates`)](#update-notification-templates)
-- [Update Overdue Tolerance (`/api/configuration/overdue-tolerance`)](#update-overdue-tolerance)
-
-### [Notification System](#notification-system-1)
-- [Test Notification (`/api/notifications/test`)](#test-notification)
-- [Test Template (`/api/notifications/test-template`)](#test-template)
-- [Check Overdue Backups (`/api/notifications/check-overdue`)](#check-overdue-backups)
-- [Clear Overdue Timestamps (`/api/notifications/clear-overdue-timestamps`)](#clear-overdue-timestamps)
-- [Resend Frequency Configuration (`/api/notifications/resend-frequency`)](#resend-frequency-configuration)
-
-### [Monitoring & Health](#monitoring--health-1)
-- [Health Check (`/api/health`)](#health-check)
-
-### [Administration](#administration-1)
-- [Collect Backups (`/api/backups/collect`)](#collect-backups)
-- [Cleanup Backups (`/api/backups/cleanup`)](#cleanup-backups)
-- [Delete Machine (`/api/machines/:id`)](#delete-machine)
-
-### [Cron Service Management](#cron-service-management-1)
-- [Get Cron Configuration (`/api/cron-config`)](#get-cron-configuration)
-- [Update Cron Configuration (`/api/cron-config`)](#update-cron-configuration)
-
-### [Error Handling](#error-handling-1)
-### [Data Type Notes](#data-type-notes-1)
-- [Message Arrays](#message-arrays)
-- [Available Backups](#available-backups)
-- [Duration Fields](#duration-fields)
-- [File Size Fields](#file-size-fields)
-### [Authentication & Security](#authentication--security-1)
-### [Rate Limiting](#rate-limiting-1)
-
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 <br>
 
@@ -917,7 +912,19 @@ Currently, the API does not require authentication for local network access. It'
 
 <br>
 
-## Rate Limiting
+> [!CAUTION]
+>  Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
+> (e.g., local LAN protected by a firewall).
+>
+> Exposing the **duplistatus** interface to the public
+>  internet without proper security measures could lead to unauthorized access.
 
-The API does not currently implement rate limiting. 
 
+<br>
+
+
+## License
+
+The project is licensed under the [Apache License 2.0](../LICENSE).   
+
+**Copyright © 2025 Waldemar Scudeller Jr.**

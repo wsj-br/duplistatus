@@ -4,17 +4,17 @@
 #
 #
 BASEDIR=$(dirname "$0") 
-DOCS=$BASEDIR/../docs
+DOCS_IMG=$BASEDIR/../DOCS_IMG/img
 IMAGES=$BASEDIR/../public/images
 APP=$BASEDIR/../src/app
 
 # convert the banner (svg) to a png (transparent background)
 echo "Converting banner to png"
-convert -background none -resize 25% $DOCS/duplistatus_banner.svg $DOCS/duplistatus_banner.png 
+convert -background none -resize 25% $DOCS_IMG/duplistatus_banner.svg $DOCS_IMG/duplistatus_banner.png 
 
 # convert the logo (svg) to a png (transparent background)
 echo "Converting logo to png"
-convert -background none  $DOCS/duplistatus_logo.svg $IMAGES/duplistatus_logo.png 
+convert -background none  $DOCS_IMG/duplistatus_logo.svg $IMAGES/duplistatus_logo.png 
 
 # convert the logo (png) to an ico
 echo "Converting logo to ico"

@@ -1,4 +1,52 @@
+
+
+![duplistatus](img/duplistatus_banner.png)
+
+
 # Development instructions
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  
+
+  - [Prerequisites](#prerequisites)
+  - [Steps](#steps)
+  - [Development Mode Features](#development-mode-features)
+    - [Build the application for production](#build-the-application-for-production)
+    - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
+    - [Start a docker stack (docker compose)](#start-a-docker-stack-docker-compose)
+  - [Test Scripts](#test-scripts)
+    - [Generate Test Data](#generate-test-data)
+    - [Clean Database](#clean-database)
+    - [Show the overdue notifications contents (to debug notification system)](#show-the-overdue-notifications-contents-to-debug-notification-system)
+    - [Run overdue-check at a specific date/time (to debug notification system)](#run-overdue-check-at-a-specific-datetime-to-debug-notification-system)
+    - [Cron Service](#cron-service)
+      - [Start cron service in development mode:](#start-cron-service-in-development-mode)
+      - [Start cron service in production mode:](#start-cron-service-in-production-mode)
+    - [Clean build artifacts and dependencies](#clean-build-artifacts-and-dependencies)
+    - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
+    - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
+    - [Update the packages to the last version](#update-the-packages-to-the-last-version)
+    - [Updating the Table of Contents on the documentation](#updating-the-table-of-contents-on-the-documentation)
+    - [Checking for broken links](#checking-for-broken-links)
+  - [Release Management](#release-management)
+    - [Versioning (Semantic Versioning)](#versioning-semantic-versioning)
+    - [Release Commands](#release-commands)
+    - [Creating a GitHub Release](#creating-a-github-release)
+    - [Manual Docker Image Build](#manual-docker-image-build)
+  - [Additional Scripts](#additional-scripts)
+    - [Clean up Docker Environment](#clean-up-docker-environment)
+  - [Frameworks, libraries and tools used](#frameworks-libraries-and-tools-used)
+  - [Development Guidelines](#development-guidelines)
+    - [Code Organization](#code-organization)
+    - [Testing](#testing)
+    - [Debugging](#debugging)
+    - [API Development](#api-development)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
 
 ## Prerequisites
 
@@ -7,6 +55,8 @@
 - pnpm 10.15 or later (install with `npm install -g pnpm`)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
+- doctoc for markdown TOC generation
+- markdown-link-check 
 
 ## Steps
 
@@ -20,7 +70,7 @@ cd duplistatus
 ```bash
 sudo apt update
 sudo apt install nodejs npm sqlite3 imagemagick -y
-sudo npm install -g pnpm npm-check-updates
+sudo npm install -g pnpm npm-check-updates doctoc markdown-link-check
 pnpm install
 ```
 
@@ -94,19 +144,11 @@ Clears all data from the database and recreates the schema. Use with caution as 
 pnpm show-overdue-notifications
 ```
 
-
 ### Run overdue-check at a specific date/time (to debug notification system)
 
 ```bash
 pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 ``` 
-
-
-### Test CRON_PORT functionality
-```bash
-pnpm test-cron-port
-```
-Tests the CRON_PORT environment variable handling and configuration.
 
 <br>
 
@@ -161,7 +203,7 @@ scripts/convert_svg_logo.sh
 ```
 
 
-> The svg files are located in the `docs` folder. This script requires ImageMagick to be installed on your system.
+> The svg files are located in the `docs/img` folder. This script requires ImageMagick to be installed on your system.
 
 <br>
 
@@ -171,6 +213,22 @@ scripts/convert_svg_logo.sh
 ncu --upgrade
 pnpm update
 ```
+
+<br>
+
+### Updating the Table of Contents on the documentation
+
+```bash
+doctoc *.md docs/*.md
+```
+<br>
+
+### Checking for broken links
+
+```bash
+markdown-link-check *.md docs/*.md
+```
+
 
 
 <br><br>
@@ -343,24 +401,6 @@ This script cleans up Docker resources:
     - Cron service management endpoints
     - Health check and monitoring endpoints
 
-## Current Development Status
-
-The project is currently in active development with the following major features implemented:
-
-### ✅ Completed Features (v0.6.0)
-- **Notification System**: Complete ntfy.sh integration with customizable templates
-- **Overdue Backup Monitoring**: Automated checking and alerting for overdue backups
-- **Auto-refresh System**: Configurable automatic refresh of dashboard and detail pages
-- **Enhanced UI**: Sortable tables, improved navigation, and better backup version display
-- **Cron Service**: Separate service for handling scheduled tasks
-- **API Enhancements**: Comprehensive API endpoints for all functionality
-- **Database Management**: Cleanup and maintenance tools
-- **Enhanced Components**: Database maintenance menu, NTFY messages button, global refresh controls
-- **Table Sorting**: Client-side persistence of sort preferences
-- **Enhanced Backup Version Visibility**: Version icons and click-to-view functionality
-- **UI/Navigation Improvements**: Return links and status badge navigation
-
-
 ## Development Guidelines
 
 ### Code Organization
@@ -386,4 +426,9 @@ The project is currently in active development with the following major features
 - Maintain consistent error handling and response formats
 - Test new endpoints with the provided test scripts
 
+<br>
 
+# License
+The project is licensed under the [Apache License 2.0](../LICENSE).   
+
+**Copyright © 2025 Waldemar Scudeller Jr.**

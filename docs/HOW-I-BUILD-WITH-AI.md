@@ -1,28 +1,51 @@
+
+
+![duplistatus](img/duplistatus_banner.png)
+
+# How I Build this Application using AI tools
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  
+
+- [Motivation](#motivation)
+- [Tools used](#tools-used)
+- [UI](#ui)
+- [Backend](#backend)
+  - [Setup](#setup)
+  - [Implementation](#implementation)
+    - [Using AI to generate the prompt](#using-ai-to-generate-the-prompt)
+    - [Start the implementation journey](#start-the-implementation-journey)
+- [Notes](#notes)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Motivation
 
-I started using Duplicati as the backup tool for my home servers. I tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with [Homepage](https://gethomepage.dev/), as I use it for my home lab's homepage.
+I started using Duplicati as a backup tool for my home servers. I tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with [Homepage](https://gethomepage.dev/), as I use it for my home lab's homepage.
 
-I also tried connecting directly to each Duplicati server on the network, but the authentication method of the Duplicati server was not compatible with Homepage (or I was not able to configure it properly).
+I also tried connecting directly to each Duplicati server on the network, but the authentication method was not compatible with Homepage (or I was not able to configure it properly).
 
-Since I was also experimenting with AI code tools, I decided to try using AI to build this tool for me. Here is the process I used...
+Since I was also experimenting with AI code tools, I decided to try using AI to build this tool. Here is the process I used...
 
 <br>
 
 # Tools used
 
-1. for the UI: [Google's Firebase Studio](https://firebase.studio/)
-2. for the implementation: Cursor (https://www.cursor.com/)
+1. For the UI: [Google's Firebase Studio](https://firebase.studio/)
+2. For the implementation: Cursor (https://www.cursor.com/)
 
 <br>
 
 > [!NOTE]
-> I used Firebase for the UI, but you can also use [v0.dev](https://v0.dev/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
+> I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
 
 <br>
 
 # UI
 
-Create a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI"
+I created a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI" feature:
 
 
 <br>
@@ -46,12 +69,12 @@ Create a new project in [Firebase Studio](https://studio.firebase.google.com/) a
 <br>
 
 
-this generated an App Blueprint, I then modified it slightly (as below) before clicking in `Prototype this App`: 
+this generated an App Blueprint, which I then modified slightly (as below) before clicking `Prototype this App`:
 
-![appblueprint](app-blueprint.png)
+![appblueprint](img/app-blueprint.png)
 
 
-and later used these prompts to adjust/refine the design and behaviour:
+I later used these prompts to adjust and refine the design and behavior:
 
 <br>
 
@@ -72,7 +95,7 @@ and later used these prompts to adjust/refine the design and behaviour:
 
 > make the summary smaller and more compact to reduce the footprint used.
 
-> when presenting the last backup date, show in the same cell, in small gray font the time ago the backup happen (for instance, x minute ago, x hours ago, x days ago, x weeks ago, x months ago, x years ago).
+> when presenting the last backup date, show in the same cell, in a small gray font, the time ago the backup happened (for instance, x minute ago, x hours ago, x days ago, x weeks ago, x months ago, x years ago).
 
 > in the dashboard overview put last backup date before last backup status
 
@@ -81,9 +104,9 @@ and later used these prompts to adjust/refine the design and behaviour:
 
 After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
 
-![prototype](screen-prototype.png)
+![prototype](img/screen-prototype.png)
 
-![prototype-detail](screen-prototype-detail.png)
+![prototype-detail](img/screen-prototype-detail.png)
 
 > [!NOTE]
 > One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
@@ -99,7 +122,7 @@ After completing the initial prototype, I accessed the source code by clicking t
 
 ## Setup
 
-I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running linux), installed the dependencies node.js, npm and pnpm. See more details on [DEVELOPMENT.md](../DEVELOPMENT.md).
+I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running Linux) and installed the dependencies Node.js, npm, and pnpm. See more details in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 I set up Cursor to access the code folder from my Windows machine using an SSH connection.
 
@@ -109,7 +132,7 @@ I copied a sample of the JSON sent by Duplicati into a file called [`database_va
 
 ## Implementation
 
-I used an initial prompt to start the implementation, persistence, fixes, and new features. It was a long but very interesting process.
+I used an initial prompt to begin the implementation, focusing on persistence, fixes, and new features. It was a long but very interesting process.
 
 ### Using AI to generate the prompt
 
@@ -161,50 +184,34 @@ The AI generated the following prompt:
 >
 >Please provide a detailed implementation plan that covers all these aspects while maintaining the existing visual design and user experience.
 
-Copied the generated prompt to the clipboard.
+I copied the generated prompt to the clipboard.
 
 ### Start the implementation journey
 
-Created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
+I created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
 
-After the plan was generated, typed `please, implement this plan` in the chat to begin implementation.
+After the plan was generated, I typed `please, implement this plan` in the chat to begin the implementation.
 
 > [!NOTE]
-> I only included the starting point since I didn't record the prompts used. There were many of them.
+> I only included the starting point since I didn't record all the prompts used. There were many of them.
 
 <br><br>
 
-# Notes:
+# Notes
 
 - Some models can get stuck when fixing bugs. "claude-3.5" and "claude-4" are usually better, but sometimes you have to try another model (GPT, Gemini, etc.).
-For complex bugs or errors, use a prompt to analyse possible causes of the error instead of simply asking to fix it.
+For complex bugs or errors, use a prompt to analyze possible causes of the error instead of simply asking to fix it.
 - When making complex modifications, use a prompt to create a plan and then ask the AI agent to implement it. This always works better.
 - Be specific when changing the source code. If possible, select the relevant part of the code in the editor and press Ctrl+L to include it in the chat as context.
-- Also include a reference to the file you are mentioning in the chat to help the AI agent focus on the relevant part of the code and avoic making changes in other parts of the code.
-- I have the tendency to anthropomorphise the AI agent given that it persistently uses 'we', 'our code' and 'would you like me to...'. This is also to improve my odds of survival in case (or [when](https://ai-2027.com/)) Skynet becomes sentient and the Terminator is invented.
-- Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions to the AI agent. 
+- Also include a reference to the file you are mentioning in the chat to help the AI agent focus on the relevant part of the code and avoid making changes in other parts of the code.
+- I have the tendency to anthropomorphize the AI agent given that it persistently uses 'we', 'our code' and 'would you like me to...'. This is also to improve my odds of survival in case (or [when](https://ai-2027.com/)) Skynet becomes sentient and the Terminator is invented.
+- Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions for the AI agent. 
 
 
 <br><br>
 
-# Copyright Notice
+# License
+
+The project is licensed under the [Apache License 2.0](../LICENSE).   
 
 **Copyright © 2025 Waldemar Scudeller Jr.**
-
-```
-SPDX-License-Identifier: Apache-2.0
-```
-
-## License Summary
-
-This work is licensed under the Apache License, Version 2.0 (the "License").
-You may not use this work except in compliance with the License.  
-You may obtain a copy of the License at:
-
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-Unless required by applicable law or agreed to in writing, software  
-distributed under the License is distributed on an **"AS IS" BASIS**,  
-**WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND**, either express or implied.  
-See the License for the specific language governing permissions and  
-limitations under the License.

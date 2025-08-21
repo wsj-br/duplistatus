@@ -1,4 +1,6 @@
-![duplistatus](docs/duplistatus_banner.png)
+
+
+![duplistatus](img/duplistatus_banner.png)
 
 
 # Installation Guide
@@ -9,7 +11,9 @@ This document describes how to install and configure the **duplistatus** server.
 
 <br>
 
-## Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  
 
 - [Prerequisites](#prerequisites)
 - [Container Images](#container-images)
@@ -24,6 +28,9 @@ This document describes how to install and configure the **duplistatus** server.
 - [Environment Variables](#environment-variables)
 - [Duplicati Server Configuration (Required)](#duplicati-server-configuration-required)
 - [Next Steps](#next-steps)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 <br>
 
@@ -213,7 +220,7 @@ Apply this configuration to all your Duplicati servers:
 
 <div style="padding-left: 60px;">
 
-![Duplicati settings](docs/duplicati-settings.png)
+![Duplicati settings](img/duplicati-settings.png)
 
 <br>
 
@@ -249,7 +256,7 @@ Apply this configuration to all your Duplicati servers:
 <br>
 
 
-![Duplicati configuration](docs/duplicati-options.png)
+![Duplicati configuration](img/duplicati-options.png)
 
 
 
@@ -264,7 +271,7 @@ Apply this configuration to all your Duplicati servers:
 <br>
 
  > [!TIP]
-> After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](#collect-backup-logs).
+> After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
 </div>
 
@@ -274,3 +281,9 @@ Apply this configuration to all your Duplicati servers:
 
 Check the [User Guide](USER-GUIDE.md) on how to use **duplistatus**.
 
+
+## License
+
+The project is licensed under the [Apache License 2.0](../LICENSE).   
+
+**Copyright © 2025 Waldemar Scudeller Jr.**

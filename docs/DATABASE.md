@@ -1,6 +1,66 @@
+
+![duplistatus](img/duplistatus_banner.png)
+
 # duplistatus Database Schema
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
+
+<br>
+
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents** 
+
+- [Database Location](#database-location)
+- [Tables](#tables)
+  - [Machines Table](#machines-table)
+    - [Fields](#fields)
+  - [Backups Table](#backups-table)
+    - [Key Fields](#key-fields)
+    - [Message Arrays (JSON Storage)](#message-arrays-json-storage)
+    - [File Operation Fields](#file-operation-fields)
+    - [Operation Status Fields](#operation-status-fields)
+    - [Backend Statistics Fields](#backend-statistics-fields)
+  - [Configurations Table](#configurations-table)
+    - [Fields](#fields-1)
+    - [Common Configuration Keys](#common-configuration-keys)
+- [Indexes](#indexes)
+- [Relationships](#relationships)
+- [Data Types](#data-types)
+- [Backup Status Values](#backup-status-values)
+- [Common Queries](#common-queries)
+  - [Get Latest Backup for a Machine](#get-latest-backup-for-a-machine)
+  - [Get All Backups for a Machine](#get-all-backups-for-a-machine)
+  - [Get Machine Summary](#get-machine-summary)
+  - [Get Overall Summary](#get-overall-summary)
+  - [Database Cleanup](#database-cleanup)
+- [JSON to Database Mapping](#json-to-database-mapping)
+  - [API Request Body to Database Columns Mapping](#api-request-body-to-database-columns-mapping)
+    - [Main Operation Data](#main-operation-data)
+    - [Message Arrays](#message-arrays)
+    - [File Operation Statistics](#file-operation-statistics)
+    - [Backend Statistics](#backend-statistics)
+    - [Extra Information](#extra-information)
+    - [Generated Fields](#generated-fields)
+  - [Example JSON to Database Insert](#example-json-to-database-insert)
+- [Chart Metrics](#chart-metrics)
+  - [Chart Data Generation](#chart-data-generation)
+- [Configuration Management](#configuration-management)
+  - [Configuration Functions](#configuration-functions)
+  - [Common Configuration Keys](#common-configuration-keys-1)
+  - [Configuration API Endpoints](#configuration-api-endpoints)
+  - [Configuration Data Structures](#configuration-data-structures)
+    - [Notifications Configuration (`notifications`)](#notifications-configuration-notifications)
+    - [Backup Settings Configuration (`backup_settings`)](#backup-settings-configuration-backup_settings)
+    - [Cron Service Configuration (`cron_service`)](#cron-service-configuration-cron_service)
+    - [Overdue Backup Notifications (`overdue_backup_notifications`)](#overdue-backup-notifications-overdue_backup_notifications)
+    - [Overdue Tolerance Configuration (`overdue_tolerance`)](#overdue-tolerance-configuration-overdue_tolerance)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+<br>
 
 ## Database Location
 
@@ -192,7 +252,7 @@ CREATE TABLE configurations (
 - `overdue_backup_notifications`: JSON object tracking overdue backup notification history
 - `last_overdue_check`: String containing the timestamp of the last overdue backup check
 - `notification_frequency`: String value controlling notification frequency
-
+- `overdue_tolerance`: String value controlling the tolerance for overdue backups (e.g., "24h", "7d")
 
 ## Indexes
 
@@ -743,5 +803,16 @@ The configuration system provides a centralized way to manage application settin
 }
 ```
 
+#### Overdue Tolerance Configuration (`overdue_tolerance`)
+```json
+string // e.g., "24h", "7d"
+```
 
 
+
+
+## License
+
+The project is licensed under the [Apache License 2.0](../LICENSE).   
+
+**Copyright © 2025 Waldemar Scudeller Jr.**

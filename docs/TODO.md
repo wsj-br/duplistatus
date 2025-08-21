@@ -1,8 +1,24 @@
-![duplistatus](docs/duplistatus_banner.png)
 
-
+![duplistatus](img/duplistatus_banner.png)
 
 # TODO List
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Fix](#fix)
+- [Changes needed](#changes-needed)
+- [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
+  - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
+  - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
+  - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
+  - [Implemented in Version 0.6.0 🚧 (in progress)](#implemented-in-version-060--in-progress)
+  - [✅ Completed Features (v0.6.0)](#-completed-features-v060)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
 
 ## Fix
 
@@ -80,3 +96,17 @@ none
   - Flexible timing options:
     - Check interval for overdue backups
     - Notification frequency (one time/daily/weekly/monthly)
+
+
+### ✅ Completed Features (v0.6.0)
+- **Notification System**: Complete ntfy.sh integration with customizable templates
+- **Overdue Backup Monitoring**: Automated checking and alerting for overdue backups
+- **Auto-refresh System**: Configurable automatic refresh of dashboard and detail pages
+- **Enhanced UI**: Sortable tables, improved navigation, and better backup version display
+- **Cron Service**: Separate service for handling scheduled tasks
+- **API Enhancements**: Comprehensive API endpoints for all functionality
+- **Database Management**: Cleanup and maintenance tools
+- **Enhanced Components**: Database maintenance menu, NTFY messages button, global refresh controls
+- **Table Sorting**: Client-side persistence of sort preferences
+- **Enhanced Backup Version Visibility**: Version icons and click-to-view functionality
+- **UI/Navigation Improvements**: Return links and status badge navigation

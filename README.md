@@ -1,4 +1,30 @@
-![duplistatus](docs/duplistatus_banner.png)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [**duplistatus** - Another Duplicati Dashboard](#duplistatus---another-duplicati-dashboard)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Screenshots](#screenshots)
+    - [Dashboard](#dashboard)
+    - [Backup History](#backup-history)
+    - [Backup Details](#backup-details)
+    - [Available Backup Versions](#available-backup-versions)
+    - [Overdue Backups](#overdue-backups)
+  - [Installation](#installation)
+  - [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
+  - [User Guide](#user-guide)
+  - [API Reference](#api-reference)
+  - [Development](#development)
+  - [Migrating to Version 0.6.0](#migrating-to-version-060)
+    - [The Migration Process](#the-migration-process)
+    - [Monitoring the Migration](#monitoring-the-migration)
+    - [Rolling Back (If Needed)](#rolling-back-if-needed)
+  - [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+![duplistatus](docs/img/duplistatus_banner.png)
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
@@ -56,55 +82,58 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 ### Dashboard
 
-![dashboard](docs/screen-dashboard.png)
+![dashboard](docs/img/screen-dashboard.png)
 
 ### Backup History
 
-![machine-detail](docs/screen-machine.png)
+![machine-detail](docs/img/screen-machine.png)
 
 ### Backup Details
 
-![backup-detail](docs/screen-backup.png)
+![backup-detail](docs/img/screen-backup.png)
 
 ### Available Backup Versions
 
-![available versions](docs/screen-versions.png)
+![available versions](docs/img/screen-versions.png)
 
 
 ### Overdue Backups
 
-![overdue backups](docs/screen-overdue-tooltip.png)
+![overdue backups](docs/img/screen-overdue-tooltip.png)
 
 <br>
 
 
 ## Installation
 
-The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. See details in the [Installation Guide](INSTALL.md).
+The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
+See details in the [Installation Guide](docs/INSTALL.md).
 
 <br>
 
 ## Duplicati Servers Configuration (Required)
 
-Once your **duplistatus** server is up and running, you must configure your **Duplicati** servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](INSTALL.md#duplicati-configuration-required) section of the Installation Guide. Without this configuration, the dashboard will not function properly.
+Once your **duplistatus** server is up and running, you must configure your **Duplicati** servers to 
+send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](docs/INSTALL.md#duplicati-configuration-required) 
+section of the Installation Guide. Without this configuration, the dashboard will not function properly.
 
 <br>
 
 ## User Guide
 
-See the [User Guide](USER-GUIDE.md) for detailed instructions on how to configure and use **duplistatus**, including setup, features, and troubleshooting.
+See the [User Guide](docs/USER-GUIDE.md) for detailed instructions on how to configure and use **duplistatus**, including setup, features, and troubleshooting.
 
 <br>
 
 ## API Reference
 
-For detailed information about all available API endpoints, request/response formats, and integration examples, please refer to the [API Endpoints Documentation](API-ENDPOINTS.md).
+For detailed information about all available API endpoints, request/response formats, and integration examples, please refer to the [API Endpoints Documentation](docs/API-ENDPOINTS.md).
 
 <br>
 
 ## Development
 
-Detailed instructions on how to download the source code, make changes, debug, and run in development mode can be found in the [DEVELOPMENT.md](DEVELOPMENT.md) file.
+Detailed instructions on how to download the source code, make changes, debug, and run in development mode can be found in the [DEVELOPMENT.md](docs/DEVELOPMENT.md) file.
 This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH-AI.md](docs/HOW-I-BUILD-WITH-AI.md).
 
 <br>
@@ -112,23 +141,23 @@ This application was developed almost entirely using AI tools. The step-by-step 
 
 ## Migrating to Version 0.6.0
 
-Your database will automatically be updated when you start the new version. The process is safe, and your data will be preserved.
+Your database will automatically update when you start the new version. This process is safe and preserves all your existing data.
 
 <br>
 
 ### The Migration Process
 
-The system performs these steps automatically:
+The system automatically performs the following steps:
 
-  - **Creates a backup** of your existing database. The backup file is named `duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db`.
-  - **Runs the migration**, which adds new columns to the `backups` table, a `configurations` table for settings, and a table to track the database version.
-  - **Keeps all your existing data** while enhancing the database structure.
+- **Creates a backup** of your current database. The backup file is named `duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db`.
+- **Runs the migration**, which adds new columns to the `backups` table, creates a `configurations` table for settings, and adds a table to track the database version.
+- **Preserves all your existing data** while improving the database structure.
 
 <br>
 
-### How to Monitor
+### Monitoring the Migration
 
-Check the Docker logs for progress by running:
+To monitor progress, check the Docker logs by running:
 
 ```bash
 docker logs <container-name>
@@ -136,30 +165,31 @@ docker logs <container-name>
 
 Look for these messages to confirm a successful migration:
 
-  - `"Found 1 pending migrations"`
-  - `"Running consolidated migration 2.0..."`
-  - `"Migration 2.0 completed successfully"`
-  - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
-  - `All migrations completed successfully`
-
+- `"Found 1 pending migrations"`
+- `"Running consolidated migration 2.0..."`
+- `"Migration 2.0 completed successfully"`
+- `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
+- `"All migrations completed successfully"`
 
 <br>
 
-### If You Need to Roll Back
+### Rolling Back (If Needed)
 
-In the rare event of an issue, you can restore your database by following these steps:
+If you encounter issues, you can restore your database by following these steps:
 
-1.  Stop the `duplistatus` container.
-2.  Replace the current database file with the backup file. 
-    - usual location is `/var/lib/docker/volumes/duplistatus_data/_data/`
-    - check your current configuration and installation to the correct path.
-3.  Restart the container.
+1. Stop the `duplistatus` container.
+2. Replace the current database file `backups.db` with the backup file.
+   - The default location is `/var/lib/docker/volumes/duplistatus_data/_data/`
+   - Verify the correct path based on your current configuration and installation.
+3. Install the previous version of `duplistatus` container image (`wsjbr/duplistatus:v0.5.0`)
+4. Restart the container.
+5. Please report the issue in the [duplistatus project](https://github.com/wsj-br/duplistatus/issues) on GitHub, including the Docker logs.
 
 <br>
 
 ## License
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+The project is licensed under the [Apache License 2.0](LICENSE).   
 
-The project is licensed under the [Apache License 2.0](LICENSE). 
+**Copyright © 2025 Waldemar Scudeller Jr.**
 
