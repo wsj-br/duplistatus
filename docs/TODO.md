@@ -62,7 +62,7 @@ none
 - Reduced HTTP/HTTPS timeout to 30 seconds.
 - Updated documentation, added Podman install guide.
 
-### Implemented in Version 0.6.0 🚧 (in progress)
+### Implemented in Version 0.6.0 
 
 **New Features:**
 - Application table sorting (Dashboard/Detail views)
@@ -98,15 +98,3 @@ none
     - Notification frequency (one time/daily/weekly/monthly)
 
 
-### ✅ Completed Features (v0.6.0)
-- **Notification System**: Complete ntfy.sh integration with customizable templates
-- **Overdue Backup Monitoring**: Automated checking and alerting for overdue backups
-- **Auto-refresh System**: Configurable automatic refresh of dashboard and detail pages
-- **Enhanced UI**: Sortable tables, improved navigation, and better backup version display
-- **Cron Service**: Separate service for handling scheduled tasks
-- **API Enhancements**: Comprehensive API endpoints for all functionality
-- **Database Management**: Cleanup and maintenance tools
-- **Enhanced Components**: Database maintenance menu, NTFY messages button, global refresh controls
-- **Table Sorting**: Client-side persistence of sort preferences
-- **Enhanced Backup Version Visibility**: Version icons and click-to-view functionality
-- **UI/Navigation Improvements**: Return links and status badge navigation
