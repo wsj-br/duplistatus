@@ -213,7 +213,7 @@ echo LANG=\"$LANG\"; echo TZ=\"$(</etc/timezone)\"
 
 <br>
 
-### List of available Locales and Timezones
+### List of Locales and Timezones
 
 
 | Configuration |  List                                                                                      |
