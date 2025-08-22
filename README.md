@@ -1,28 +1,4 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [**duplistatus** - Another Duplicati Dashboard](#duplistatus---another-duplicati-dashboard)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Screenshots](#screenshots)
-    - [Dashboard](#dashboard)
-    - [Backup History](#backup-history)
-    - [Backup Details](#backup-details)
-    - [Available Backup Versions](#available-backup-versions)
-    - [Overdue Backups](#overdue-backups)
-  - [Installation](#installation)
-  - [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
-  - [User Guide](#user-guide)
-  - [API Reference](#api-reference)
-  - [Development](#development)
-  - [Migrating to Version 0.6.0](#migrating-to-version-060)
-    - [The Migration Process](#the-migration-process)
-    - [Monitoring the Migration](#monitoring-the-migration)
-    - [Rolling Back (If Needed)](#rolling-back-if-needed)
-  - [License](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ![duplistatus](docs/img/duplistatus_banner.png)
 
@@ -37,7 +13,9 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 <br>
 
-## Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
 
 - [Features](#features)
 - [Screenshots](#screenshots)
@@ -53,9 +31,13 @@ This web application monitors and visualizes backup operations from [Duplicati](
 - [Development](#development)
 - [Migrating to Version 0.6.0](#migrating-to-version-060)
   - [The Migration Process](#the-migration-process)
-  - [How to Monitor](#how-to-monitor)
-  - [If You Need to Roll Back](#if-you-need-to-roll-back)
+  - [Monitoring the Migration](#monitoring-the-migration)
+  - [Rolling Back (If Needed)](#rolling-back-if-needed)
 - [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+<br>
 
 ## Features
 
