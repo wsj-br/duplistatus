@@ -278,10 +278,13 @@ Apply this configuration to all your Duplicati servers:
    | `send-http-log-level`            | `Information`                            |
    | `send-http-max-log-lines`        | `0`                                      |
 
+</div>
+
 
 > [!TIP]
 >  Click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
 
+<div style="padding-left: 60px;">
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
