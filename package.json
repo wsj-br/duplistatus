@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.5.26",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.15.0",
@@ -10,26 +10,20 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-
     "build": "next build",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-
     "start": "node .next/standalone/server.js",
     "cron:start": "tsx src/cron-service/index.ts",
-
     "dev": "next dev -p 8666",
-    "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts", 
-
+    "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts",
     "build-local": "next build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static",
     "start-local": "NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
     "cron:start-local": "NODE_ENV=production CRON_PORT=8667 tsx watch src/cron-service/index.ts",
-
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "show-overdue-notifications": "tsx scripts/show-overdue-notifications.ts",
     "run-overdue-check": "tsx scripts/run-overdue-check.ts",
     "test-cron-port": "tsx scripts/test-cron-port.ts",
-
     "release:patch": "pnpm version patch",
     "release:minor": "pnpm version minor",
     "release:major": "pnpm version major",
