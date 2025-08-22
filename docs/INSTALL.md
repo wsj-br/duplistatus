@@ -310,10 +310,12 @@ Apply this configuration to all your Duplicati servers:
 
 <br>
 
+</div>
+
 > [!TIP]
 > After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
-</div>
+
 
 <br><br>
 

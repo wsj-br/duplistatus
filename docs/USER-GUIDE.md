@@ -187,13 +187,11 @@ Shows the list the last backup log received for all machines and backups, see be
 
 </div>
 
-<div style="padding-left: 120px;">
 
 >[!NOTE]
 > The notification configuration is valid only when receiving a new backup log from the Duplicati server. <br>
 > Overdue notifications will be sent regardless of this configuration.
 
-</div>
 
 <br>
 
@@ -230,12 +228,11 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
  
  <br>
   
+</div>  
+
 >[!NOTE] 
 > If the icon is greyed out, it means that no detailed information was received in the message logs. <br>
 > See the [Duplicati Configuration](INSTALL.md#duplicati-configuration-required) section in the installation manual for details.
-
-  
-</div>
 
 
 <br><br>
@@ -263,12 +260,13 @@ A chart of backup metrics over time is shown on both the dashboard and the backu
  
  
  <br>
-  
+   
+</div>
+
+
 >[!NOTE] 
 > The user can use the [Display settings](#display-settings) control to configure the time range to be displayed in the chart.
 
-  
-</div>
 
 <br><br>
 
@@ -304,6 +302,9 @@ The statistics show the following for all or the selected backup:
 
 <br>
 
+
+</div>
+
 >[!TIP]
 > Use the dropdown in the **Backup History** section to select all backups or any specific backup for this machine.
 
@@ -311,8 +312,6 @@ The statistics show the following for all or the selected backup:
 > [!NOTE]
 > If you clean the database with Database Maintenance, it will change the average duration and total uploaded values as they are calculated from the **duplistatus** database records.
 
-
-</div>
 
 <br>
 
@@ -334,6 +333,9 @@ Shows the list of backup logs for the selected machine. You can select all backu
 
 <br>
 
+</div>
+
+
 >[!TIP]
 > • You can sort by any column by clicking on the column header. Click again to change the order (asc/desc) <br>
 > • Click anywhere on a row to show the backup details.<br>
@@ -342,8 +344,6 @@ Shows the list of backup logs for the selected machine. You can select all backu
 >[!NOTE]
 > Selecting `All Backups` shows all backups ordered from newest to oldest by default, regardless of the backup name. You can change the order by clicking on any column header.
 
-
-</div>
 
 ## Backup Details
 
@@ -354,13 +354,13 @@ Clicking on the status badge in the dashboard overview table or any row in the b
 
 ![Backup Details](img/screen-backup.png)
 
-</div>
-
 - **Backup Information**: The timestamp of the backup execution with the elapsed time since the current time (last screen update) and the ID
 - **Backup Statistics**: Summary of reported counters, size, and duration
 - **Log Summary**: Number of reported messages
 - **Available Versions**: List of available versions reported (only displayed if the information was received in the logs)
 - **Messages/Warnings/Errors**: Complete logs of execution, as well as any warnings or error messages received. The subtitle indicates whether all messages are being displayed or if the log has been truncated by the Duplicati server. Refer to the [Duplicati Configuration](INSTALL.md#duplicati-configuration-required) section in the installation manual for information on how to configure Duplicati to send all messages without truncating them.
+
+</div>
 
 <br><br>
 
@@ -414,14 +414,14 @@ Configure user interface and display preferences:
 
 <br>
 
+</div>
+
 >[!NOTE]
 > Manual collection requires the Duplicati server to be accessible to **duplistatus** and properly configured for remote access.
 > If you encounter issues, verify the following:
 > - Confirm that the hostname or IP address and port number are correct. You can test this by accessing the [Duplicati server UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui) using the URL format `http://hostname:port` or `https://hostname:port` with the values entered in the form.
 > - Check if the Docker server where **duplistatus** is running can connect to the Duplicati server. A common problem is DNS name resolution.
 > - Ensure the password you provided is valid and functioning correctly.
-
-</div>
 
 <br><br>
 
@@ -479,13 +479,15 @@ Remove specific machines and all their associated backup data:
 
 <br>
 
+</div>
+
 >[!NOTE] 
 > All statistics displayed on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. 
 > Deleting old information will impact these calculations. <br> <br>
 > If you accidentally delete data or remove a machine, you can recollect the logs using
 >  [Collect Backup Logs](#collect-backup-logs).
 
-</div>
+
 
 <br><br>
 
@@ -520,6 +522,8 @@ The NTFY configuration section allows you to set up your notification server con
 - **NTFY Access Token**: An optional access token for authenticated NTFY servers. Leave this field blank if your server doesn't require authentication.
 
 
+</div>
+
 <br>
 
 >[!CAUTION]
@@ -532,11 +536,7 @@ The NTFY configuration section allows you to set up your notification server con
 > $62^{12} = 3.2 \times 10^{21}$ possible combinations. <br><br>
 >
 
-<br>
-
-</div>
-
-<br>
+<br><br>
 
 ### Backup Notifications Settings
 
@@ -566,11 +566,16 @@ The NTFY configuration section allows you to set up your notification server con
 - `errors`: Send notifications for errors only
 - `off`: Disable notifications for this backup
 
+</div>
+<div style="padding-left: 60px;">
+
 >[!NOTE]
 > These options control notifications sent when 
 > [a new backup log is received](INSTALL.md#duplicati-configuration-required) 
 > from the Duplicati server. Overdue notifications will be sent regardless of these settings.
 
+</div>
+<div style="padding-left: 60px;">
 
 <br>
 
@@ -640,9 +645,6 @@ gantt
 
 ```
 
-
-
-
 **Examples based on the timeline above:**
 
 - At `2024-01-01 21:00` (🔹Check 1), the backup is **on time** because it is before the `Adjusted Next Backup`.
@@ -700,11 +702,11 @@ In all templates, you can include variables that will be populated during execut
 
 <br> 
 
+</div>
+
+
 >[!TIP]
 > After updating the template, test it using the `Send Test Notification` option. The variables will be replaced with their respective names.
-
-
-</div>
 
 <br><br>
 
