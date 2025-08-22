@@ -344,6 +344,7 @@ Shows the list of backup logs for the selected machine. You can select all backu
 >[!NOTE]
 > Selecting `All Backups` shows all backups ordered from newest to oldest by default, regardless of the backup name. You can change the order by clicking on any column header.
 
+<br><br>
 
 ## Backup Details
 
@@ -536,7 +537,7 @@ The NTFY configuration section allows you to set up your notification server con
 > $62^{12} = 3.2 \times 10^{21}$ possible combinations. <br><br>
 >
 
-<br><br>
+<br>
 
 ### Backup Notifications Settings
 
@@ -654,7 +655,7 @@ gantt
 </div>
 
 
-<br><br>
+<br>
 
 ### Notification Templates
 
@@ -760,6 +761,7 @@ Display overall backup statistics on your Homepage dashboard:
 ![Homepage Summary Widget](img/homepage-summary.png)
 
 </div>
+
 <br>
 
 ### Last Backup Information Widget
