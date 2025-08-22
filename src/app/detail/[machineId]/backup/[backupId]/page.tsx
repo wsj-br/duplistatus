@@ -71,12 +71,15 @@ const LogSection = ({ title, items, variant = "messages", expectedLines }: {
                   <Info className="h-3 w-3 text-muted-foreground cursor-help ml-1" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-lg">
-                  <p className="mt-1">
-                    If the backup log was collected using the <span className="text-teal-500 font-mono">Collect backup logs</span> button,  the number of messages is limited to 20 due to the Duplicati Server limit (hardcoded) when saving to the local database.
-                  </p>
-                  <p className="mt-2">
-                    Also check if you are using the option <span className="text-teal-500 font-mono">send-http-max-log-lines=0</span> on the Duplicati server.
-                  </p>
+                <p className="mt-1">
+                  If the backup log was collected using the <span className="text-teal-500 font-mono">Collect backup logs</span> feature, the number of 
+                  messages is limited to 20 due to a hardcoded limit in the Duplicati Server when saving to the local database.
+                </p>
+                <p className="mt-2">
+                  If the backup log was received directly from the Duplicati server, ensure you are using the following options: 
+                  <span className="text-teal-500 font-mono">send-http-log-level=Information</span> and 
+                  <span className="text-teal-500 font-mono">send-http-max-log-lines=0</span> in the Duplicati server configuration. 
+                </p>
                 </TooltipContent>
               </Tooltip>
             </div>

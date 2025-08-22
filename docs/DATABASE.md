@@ -3,6 +3,9 @@
 
 # duplistatus Database Schema
 
+![](https://img.shields.io/badge/version-0.6.0-blue)
+
+
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
 
 <br>
@@ -805,7 +808,7 @@ The configuration system provides a centralized way to manage application settin
 
 #### Overdue Tolerance Configuration (`overdue_tolerance`)
 ```json
-string // e.g., "24h", "7d"
+string // e.g., "1h"
 ```
 
 

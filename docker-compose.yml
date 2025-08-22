@@ -1,9 +1,11 @@
 # duplistatus docker-compose.yml
 services:
   duplistatus:
+  
     build:
       context: .
       dockerfile: Dockerfile
+
     image: wsj-br/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped

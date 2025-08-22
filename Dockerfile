@@ -2,7 +2,7 @@
 
 # now following the instructions from https://nextjs.org/docs/app/getting-started/deploying#docker-image
 
-FROM node:lts-alpine AS base
+FROM node:alpine AS base
 
 # ------------------------------------------------------------
 # Install dependencies only when needed
@@ -44,6 +44,10 @@ RUN mkdir -p /app/data && pnpm run build
 # Production image, copy all the files and run next
 # ------------------------------------------------------------
 FROM base AS runner
+
+# install curl for healthcheck
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -64,26 +68,27 @@ COPY --from=builder /app/public ./public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=node:node /app/.next/standalone ./
-COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 # Copy source code needed for cron service
-COPY --from=builder --chown=node:node /app/src/cron-service ./src/cron-service
-COPY --from=builder --chown=node:node /app/src/lib ./src/lib
+COPY --from=builder /app/src/cron-service ./src/cron-service
+COPY --from=builder /app/src/lib ./src/lib
 
 # Copy TypeScript configuration files
-COPY --from=builder --chown=node:node /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
 
 # Copy duplistatus-cron script
-COPY --chmod=755 --chown=node:node duplistatus-cron.sh /app/duplistatus-cron.sh
+COPY duplistatus-cron.sh /app/duplistatus-cron.sh
 
-# Create data directory
-RUN mkdir -p /app/data && chown node:node /app/data
+# Create data directory & adjust permissions
+RUN mkdir -p /app/data && chown -R node:node /app && chmod 755 /app/duplistatus-cron.sh
 
-# Set environment variables
+# Set the application environment variables
 ENV PORT=9666 \
     CRON_PORT=9667 \
-    TZ=UTC
+    LANG=en_GB.UTF-8 \
+    TZ=Europe/London
 
 # Labels
 LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplistatus

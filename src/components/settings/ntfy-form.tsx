@@ -151,8 +151,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               placeholder="Enter your NTFY access token"
             />
             <p className="text-sm text-muted-foreground">
-              Optional access token for authenticated NTFY servers. Leave blank if not required.
-              Learn more about{' '}
+            If your NTFY server requires authentication, please enter your access token.
+            For more details, refer to the {' '}
               <a 
                 href="https://docs.ntfy.sh/config/#access-tokens" 
                 target="_blank" 
@@ -160,7 +160,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
                 className="text-primary hover:underline"
               >
                 NTFY authentication
-              </a>.
+              </a>  documentation.
             </p>
           </div>
 

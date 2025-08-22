@@ -25,6 +25,9 @@ This document describes how to install and configure the **duplistatus** server.
   - [Option 4: Using Docker CLI](#option-4-using-docker-cli)
   - [Option 5: Using Podman with Pod (CLI)](#option-5-using-podman-with-pod-cli)
   - [Option 6: Using Podman Compose (CLI)](#option-6-using-podman-compose-cli)
+- [Configuring the locale and timezone](#configuring-the-locale-and-timezone)
+  - [Using your Linux Configuration](#using-your-linux-configuration)
+  - [List of available Locales and Timezones](#list-of-available-locales-and-timezones)
 - [Environment Variables](#environment-variables)
 - [Duplicati Server Configuration (Required)](#duplicati-server-configuration-required)
 - [Next Steps](#next-steps)
@@ -108,30 +111,7 @@ docker-compose -f duplistatus.yml up -d
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Web editor".
-4. Copy and paste the following lines into the web editor:
-
-```yaml
-services:
-  duplistatus:
-    image: wsjbr/duplistatus:latest
-    container_name: duplistatus
-    restart: unless-stopped
-    ports:
-      - "9666:9666"
-    volumes:
-      - duplistatus_data:/app/data
-    networks:
-      - duplistatus_network
-
-networks:
-  duplistatus_network:
-    driver: bridge
-
-volumes:
-  duplistatus_data:
-    name: duplistatus_data 
-```
-
+4. Copy and paste content of `duplistatus.yml` on "Option 1"
 5. Click "Deploy the stack".
 
 <br>
@@ -195,17 +175,68 @@ podman-compose -f duplistatus.yml up -d
 
 <br><br>
 
+## Configuring the locale and timezone
+
+The application's user interface will be displayed according to the browser's locale settings. However, for logging and notification purposes, the application will use the values defined in the `LANG` and `TZ` environment variables to format values and time zones. 
+
+<br>
+
+>[!NOTE]
+> Changing the locale setting (`LANG`) from the default `en.GB.UTF-8` to a different value 
+> will only affect the formatting of numbers and dates. 
+> The language used by the application will remain English.
+
+<br>
+
+For example, to change the locale/timezone to Brazilian Portuguese/São Paulo, add these lines to the `duplistatus.yml`:
+
+```yaml
+    environment:
+      - LANG="pt-BR.UTF-8"
+      - TZ="America/Sao_Paulo"
+```
+
+or pass these variables in the command line
+
+```bash
+  --env  LANG="pt-BR.UTF-8" --env TZ="America/Sao_Paulo" 
+``` 
+<br>
+
+### Using your Linux Configuration
+
+To obtain your Linux host's configuration, you can use execute:
+
+```bash
+echo LANG=\"$LANG\"; echo TZ=\"$(</etc/timezone)\"
+```
+
+<br>
+
+### List of available Locales and Timezones
+
+
+| Configuration |  List                                                                                      |
+| ----          | ------------------------------------------------------------------------------------------ |
+| TZ            |  [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) |
+| LANG          | execute `ls -c /usr/share/i18n/locales`                                                    |
+
+When selecting a locale, remember to append the `.UTF-8` encoding to ensure proper functionality.
+
+<br><br>
+
 ## Environment Variables
 
 The application supports the following environment variables for configuration:
 
-| Variable                  | Description                                            | Default      |
-| ------------------------- | ------------------------------------------------------ | ------------ |
-| `PORT`                    | Port for the main web application                      | `9666`       |
-| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `9667`       |
-| `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production` |
-| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`          |
-| `TZ`                      | Timezone for the application                           | `UTC`        |
+| Variable                  | Description                                            | Default         |
+| ------------------------- | ------------------------------------------------------ | :------------   |
+| `PORT`                    | Port for the main web application                      | `9666`          |
+| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `9667`          |
+| `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production`    |
+| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`             |
+| `LANG`                    | Language and locale setting for the application        | `en_GB.UTF-8`   |
+| `TZ`                      | Timezone for the application                           | `Europe/London` |
 
 <br><br>
 

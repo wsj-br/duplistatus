@@ -3,6 +3,9 @@
 
 # duplistatus User Guide
 
+![](https://img.shields.io/badge/version-0.6.0-blue)
+
+
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
 
 <br>
@@ -49,8 +52,6 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
   - [Last Backup Information Widget](#last-backup-information-widget)
   - [Configuration Notes](#configuration-notes)
 - [Troubleshooting](#troubleshooting)
-  - [Common Issues and Solutions](#common-issues-and-solutions)
-- [Getting Help](#getting-help)
 - [Additional Resources](#additional-resources)
 - [License](#license)
 
@@ -604,6 +605,21 @@ These configurations apply to all backups:
 ### Overdue check process
 
 
+
+**How it works:**
+
+| **Step** | **Value**            | **Description**                                              | **Example**           |
+|:--------:|:---------------------|:-------------------------------------------------------------|:----------------------|
+| 1        | Last Backup          | Get the timestamp when the last backup was executed (start)  | `2024-01-01 08:00`    |
+| 2        | Expected Interval    | Get the configured backup frequency                          | `1 day`               |
+| 3        | Expected Next Backup | Calculated using `Last Backup` + `Expected Interval`         | `2024-01-02 08:00`    |
+| 4        | Tolerance            | Get the tolerance (grace period)                             | `1 hour`              |
+| 5        | Adjusted Next Backup | Calculated using `Expected Next Backup` + `Tolerance`        | `2024-01-02 09:00`    |
+
+
+A backup is considered overdue if the current time (as displayed on the dashboard or detail pages) is later than the `Adjusted Next Backup` time. This verification is performed either periodically or manually to trigger a notification when an overdue backup is detected.
+
+
 ```mermaid
 gantt
     title Backup Schedule Timeline with Tolerance
@@ -625,19 +641,6 @@ gantt
 ```
 
 
-
-**How it works:**
-
-| **Step** | **Value**            | **Description**                                              | **Example**           |
-|:--------:|:---------------------|:-------------------------------------------------------------|:----------------------|
-| 1        | Last Backup          | Get the timestamp when the last backup was executed (start)  | `2024-01-01 08:00`    |
-| 2        | Expected Interval    | Get the configured backup frequency                          | `1 day`               |
-| 3        | Expected Next Backup | Calculated using `Last Backup` + `Expected Interval`         | `2024-01-02 08:00`    |
-| 4        | Tolerance            | Get the tolerance (grace period)                             | `1 hour`              |
-| 5        | Adjusted Next Backup | Calculated using `Expected Next Backup` + `Tolerance`        | `2024-01-02 09:00`    |
-
-
-A backup is considered overdue if the current time (as displayed on the dashboard or detail pages) is later than the `Adjusted Next Backup` time. This verification is performed either periodically or manually to trigger a notification when an overdue backup is detected.
 
 
 **Examples based on the timeline above:**
@@ -697,7 +700,8 @@ In all templates, you can include variables that will be populated during execut
 
 <br> 
 
-To verify your notification settings, click the `Send Test Notification` button.
+>[!TIP]
+> After updating the template, test it using the `Send Test Notification` option. The variables will be replaced with their respective names.
 
 
 </div>
@@ -807,38 +811,39 @@ Display the latest backup information for a specific machine:
 
 ## Troubleshooting
 
-### Common Issues and Solutions
+Common Issues and Solutions
 
-| Issue                                 | Problem Description                              | Solutions                  |
-| ------------------------------------- | ------------------------------------------------ | -------------------------- |
-| **Notifications Not Working**         | Notifications are not being sent or received.    | **Check ntfy.sh Configuration**:<br>• Verify the ntfy.sh URL is correct (`https://ntfy.sh`)<br>• Ensure the topic is properly configured<br>• Test the notification using the `Send Test Message` button<br><br>**Check Network Connectivity**:<br>• Ensure **duplistatus** can reach ntfy.sh<br>• Check firewall settings if applicable<br>• Verify DNS resolution<br><br>**Check Notification Settings**:<br>• Ensure notifications are enabled for the specific backup<br>• Verify notification events are configured correctly<br>• Check that the backup has overdue monitoring enabled |
-| **Backup Data Not Appearing**         | Backups are not showing up in the dashboard.     | **Check Duplicati Configuration**:<br>• Verify Duplicati is configured to send data to **duplistatus**<br>• Check the HTTP URL configuration in Duplicati settings<br>• Ensure `send-http-log-level=Information` is set<br><br>**Check Network Connectivity**:<br>• Verify Duplicati can reach the **duplistatus** server<br>• Check the port configuration (default 9666)<br>• Test connectivity between Duplicati and **duplistatus**<br><br>**Check Duplicati Logs**:<br>• Review Duplicati logs for HTTP request errors<br>• Verify the backup completed successfully<br>• Check for authentication issues |
-| **Overdue Backup Alerts Not Working** | Overdue backup notifications are not being sent. | **Check Overdue Configuration**:<br>• Verify overdue backup check is enabled for the backup<br>• Check the expected interval and unit settings<br>• Ensure the backup has been configured for monitoring<br><br>**Check Notification Frequency**:<br>• Verify notification frequency is not set to "onetime" if already sent<br>• Check that notifications are enabled for the backup<br>• Review the overdue tolerance setting<br><br>**Check Cron Service**:<br>• Verify the cron service is running<br>• Check cron service logs for errors<br>• Ensure the service port is accessible |
-| **Dashboard Not Updating**            | Dashboard data is not refreshing automatically.  | **Check Auto-refresh Settings**:<br>• Verify auto-refresh is enabled in display settings<br>• Check the refresh interval configuration (15 seconds to 10 minutes)<br>• Try manual refresh using the refresh button<br>• Check for progress indicators showing refresh countdown<br><br>**Check Browser Settings**:<br>• Ensure JavaScript is enabled<br>• Check for browser extensions blocking updates<br>• Try a different browser or incognito mode<br>• Clear browser cache and localStorage<br><br>**Check Network Issues**:<br>• Verify connectivity to the **duplistatus** server<br>• Check for proxy or firewall issues<br>• Review browser console for errors<br>• Check if the page is on dashboard or detail views (auto-refresh only works on these pages)                          |
-| **Manual Backup Collection Failing**  | Manual backup collection is not working.         | **Check Duplicati Server Access**:<br>• Verify the Duplicati server hostname and port are correct<br>• Check that remote access is enabled in Duplicati settings<br>• Ensure authentication password is correct<br>• Verify the protocol (HTTP/HTTPS) is correct<br><br>**Check Network Connectivity**:<br>• Test connectivity from **duplistatus** to Duplicati server<br>• Verify the Duplicati server port is accessible (default: 8200)<br>• Check firewall settings<br>• Test with ping or telnet to the server<br><br>**Check Duplicati Configuration**:<br>• Ensure Duplicati is configured for remote access<br>• Verify the API endpoints are accessible<br>• Check Duplicati logs for access errors<br>• Enable "Allow self-signed certificates" if using HTTPS with self-signed certs |
+| Issue | Problem Description | Solutions |
+| :--- | :--- | :--- |
+| **New backups are not showing**<br><br>Duplicati server warnings:<br>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history. | **Check Duplicati Configuration**:<br>• Confirm that Duplicati is configured to send data to **duplistatus**<br>• Verify the HTTP URL settings in Duplicati<br><br>**Check Network Connectivity**:<br>• Ensure Duplicati can connect to the **duplistatus** server<br>• Confirm the port configuration (default: 9666)<br>• Test connectivity between Duplicati and **duplistatus**<br><br>**Review Duplicati Logs**:<br>• Check for HTTP request errors in the logs<br>• Verify that the backup completed successfully |
+| **Notifications Not Working** | Notifications are not being sent or received. | **Check ntfy.sh Configuration**:<br>• Ensure the ntfy.sh URL is correct (`https://ntfy.sh`)<br>• Confirm the topic is properly set<br>• Use the `Send Test Message` button to test notifications<br><br>**Check Network Connectivity**:<br>• Verify that **duplistatus** can reach ntfy.sh<br>• Review firewall settings, if applicable<br>• Ensure DNS resolution is working<br><br>**Check Notification Settings**:<br>• Confirm notifications are enabled for the backup<br>• Verify that notification events are configured correctly<br>• Ensure overdue monitoring is enabled for the backup |
+| **Available versions not appearing** | Available backup versions do not appear in the dashboard or detail page. | **Check Duplicati Configuration**:<br>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured |
+| **Overdue Backup Alerts Not Working** | Overdue backup notifications are not being sent. | **Check Overdue Configuration**:<br>• Confirm that overdue backup monitoring is enabled for the backup<br>• Verify the expected interval and unit settings<br>• Ensure the backup is set up for monitoring<br><br>**Check Notification Frequency**:<br>• If using "onetime" frequency, note that alerts are sent only once<br>• Confirm notifications are enabled for the backup<br>• Review the overdue tolerance setting<br><br>**Check Cron Service**:<br>• Ensure the cron service is running<br>• Check cron service logs for errors<br>• Verify that the service port is accessible |
+| **Collect Backup Logs not working** | Manual backup log collection fails when clicking `Collect Logs`. | **Check Duplicati Server Access**:<br>• Verify the Duplicati server hostname and port are correct<br>• Confirm remote access is enabled in Duplicati settings<br>• Ensure the authentication password is correct<br>• Check that the correct protocol (HTTP/HTTPS) is used<br><br>**Check Network Connectivity**:<br>• Test connectivity from **duplistatus** to the Duplicati server<br>• Confirm the Duplicati server port is accessible (default: 8200)<br>• Review firewall settings<br>• Test with ping or telnet to the server<br><br>**Check Duplicati Configuration**:<br>• Ensure Duplicati is set up for remote access<br>• Verify that API endpoints are accessible<br>• Check Duplicati logs for access errors<br>• Enable "Allow self-signed certificates" if using HTTPS with self-signed certificates |
 
-<br><br>
+<br>
 
-## Getting Help
+If you're still experiencing issues, try the following steps:
 
-If you continue to experience issues:
-
-1. **Check Application Logs**: Review the application logs for detailed error information
-2. **Verify Configuration**: Double-check all configuration settings
-3. **Test Connectivity**: Ensure all network connections are working properly
-4. **Review Documentation**: Check the README.md and API documentation for additional information
-5. **Submit an issue report**: Send an issue, bug report, or feature request on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues)
+1. **Inspect Application Logs**: Run `docker logs <container-name>` to review detailed error information and identify potential causes.
+2. **Validate Configuration**: Double-check all configuration settings to ensure they are accurate and complete.
+3. **Verify Network Connectivity**: Confirm that all network connections are stable and functioning properly.
+   - Use `docker exec -it <container-name> /bin/sh` and use standard network test applications like `ping`, `traceroute`, `curl`, ...
+4. **Consult Documentation**: Refer to the Installation Guide and README files for additional troubleshooting guidance and information.
+5. **Report Issues or Request Support**: If none of the above steps resolve the issue, submit a detailed issue report, bug report, or feature request on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues) for further assistance.
 
 
 <br><br>
 
 ## Additional Resources
 
-- **GitHub Repository**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
-- **API Documentation**: See [API-ENDPOINTS.md](API-ENDPOINTS.md) for detailed API reference
-- **Development Guide**: See [DEVELOPMENT.md](DEVELOPMENT.md) for development information
-- **Installation**: See [README.md](../README.md) for installation instructions
+- **Installation Guide**: See [INSTALL.md](INSTALL.md) for installation instructions
 - **Duplicati Documentation**: [docs.duplicati.com](https://docs.duplicati.com)
+- **API Documentation**: See [API-ENDPOINTS.md](API-ENDPOINTS.md) for detailed API reference
+- **GitHub Repository**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
+- **Development Guide**: See [DEVELOPMENT.md](DEVELOPMENT.md) for development information
+- **Database Schema**: See [DATABASE.md](DATABASE.md) for database schema, queries and JSON mappings.
+
 
 <br><br>
 
