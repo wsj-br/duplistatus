@@ -27,7 +27,7 @@ This document describes how to install and configure the **duplistatus** server.
   - [Option 6: Using Podman Compose (CLI)](#option-6-using-podman-compose-cli)
 - [Configuring the locale and timezone](#configuring-the-locale-and-timezone)
   - [Using your Linux Configuration](#using-your-linux-configuration)
-  - [List of available Locales and Timezones](#list-of-available-locales-and-timezones)
+  - [List of Locales and Timezones](#list-of-locales-and-timezones)
 - [Environment Variables](#environment-variables)
 - [Duplicati Server Configuration (Required)](#duplicati-server-configuration-required)
 - [Next Steps](#next-steps)
