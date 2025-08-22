@@ -255,13 +255,15 @@ Apply this configuration to all your Duplicati servers:
 
 <br>
 
+</div>
+
 >[!CAUTION]
 >  Only enable remote access if your Duplicati server is protected by a secure network 
 >  (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet
 >  without proper security measures could lead to unauthorized access.
 
 
-</div>
+
 
 <br>
 
