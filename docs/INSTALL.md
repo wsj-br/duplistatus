@@ -276,8 +276,10 @@ Apply this configuration to all your Duplicati servers:
    | `send-http-log-level`            | `Information`                            |
    | `send-http-max-log-lines`        | `0`                                      |
 
+
 > [!TIP]
 >  Click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
+
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
@@ -303,7 +305,7 @@ Apply this configuration to all your Duplicati servers:
 
 <br>
 
- > [!TIP]
+> [!TIP]
 > After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
 </div>
