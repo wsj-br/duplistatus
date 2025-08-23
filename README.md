@@ -29,7 +29,7 @@ This web application monitors and visualizes backup operations from [Duplicati](
 - [User Guide](#user-guide)
 - [API Reference](#api-reference)
 - [Development](#development)
-- [Migrating to Version 0.6.0](#migrating-to-version-060)
+- [Migrating to Version 0.6.1](#migrating-to-version-061)
   - [The Migration Process](#the-migration-process)
   - [Monitoring the Migration](#monitoring-the-migration)
   - [Rolling Back (If Needed)](#rolling-back-if-needed)
@@ -56,7 +56,7 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 >[!IMPORTANT]
 > If you are upgrading from version 0.5.0 or earlier, your database will be automatically 
-> [migrated](#migrating-to-version-060) to the new schema during the upgrade process.
+> [migrated](#migrating-to-version-061) to the new schema during the upgrade process.
 
 <br>
 
@@ -121,7 +121,7 @@ This application was developed almost entirely using AI tools. The step-by-step 
 <br>
 
 
-## Migrating to Version 0.6.0
+## Migrating to Version 0.6.1
 
 Your database will automatically update when you start the new version. This process is safe and preserves all your existing data.
 
