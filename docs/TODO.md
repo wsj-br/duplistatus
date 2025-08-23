@@ -61,7 +61,7 @@ none
 - Reduced HTTP/HTTPS timeout to 30 seconds.
 - Updated documentation, added Podman install guide.
 
-### Implemented in Version 0.6.0 
+### Implemented in Version 0.6.1 
 
 **New Features:**
 - Application table sorting (Dashboard/Detail views)
