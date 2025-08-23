@@ -1,0 +1,4 @@
+#!/bin/bash
+
+podman exec -it duplistatus /bin/sh
+

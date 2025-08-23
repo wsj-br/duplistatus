@@ -1,0 +1,11 @@
+ #!/bin/bash
+
+echo "stop pod"
+podman pod stop Duplistatus
+
+echo ""
+echo "delete container"
+
+podman rm duplistatus
+
+echo ""

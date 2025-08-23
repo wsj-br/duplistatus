@@ -16,27 +16,29 @@
     - [Build the application for production](#build-the-application-for-production)
     - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
     - [Start a docker stack (docker compose)](#start-a-docker-stack-docker-compose)
-  - [Test Scripts](#test-scripts)
-    - [Generate Test Data](#generate-test-data)
-    - [Clean Database](#clean-database)
-    - [Show the overdue notifications contents (to debug notification system)](#show-the-overdue-notifications-contents-to-debug-notification-system)
-    - [Run overdue-check at a specific date/time (to debug notification system)](#run-overdue-check-at-a-specific-datetime-to-debug-notification-system)
-    - [Cron Service](#cron-service)
+    - [Create a devel image (to test locally or with podman)](#create-a-devel-image-to-test-locally-or-with-podman)
+  - [Cron Service](#cron-service)
       - [Start cron service in development mode:](#start-cron-service-in-development-mode)
       - [Start cron service in production mode:](#start-cron-service-in-production-mode)
+  - [Test Scripts](#test-scripts)
+    - [Generate Test Data](#generate-test-data)
+    - [Show the overdue notifications contents (to debug notification system)](#show-the-overdue-notifications-contents-to-debug-notification-system)
+    - [Run overdue-check at a specific date/time (to debug notification system)](#run-overdue-check-at-a-specific-datetime-to-debug-notification-system)
+  - [Workspace admin scripts & commands](#workspace-admin-scripts--commands)
+    - [Clean Database](#clean-database)
     - [Clean build artifacts and dependencies](#clean-build-artifacts-and-dependencies)
     - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
+  - [Documentation tools](#documentation-tools)
     - [Updating the Table of Contents on the documentation](#updating-the-table-of-contents-on-the-documentation)
     - [Checking for broken links](#checking-for-broken-links)
+  - [Podman testing](#podman-testing)
   - [Release Management](#release-management)
     - [Versioning (Semantic Versioning)](#versioning-semantic-versioning)
     - [Release Commands](#release-commands)
     - [Creating a GitHub Release](#creating-a-github-release)
     - [Manual Docker Image Build](#manual-docker-image-build)
-  - [Additional Scripts](#additional-scripts)
-    - [Clean up Docker Environment](#clean-up-docker-environment)
   - [Frameworks, libraries and tools used](#frameworks-libraries-and-tools-used)
   - [Development Guidelines](#development-guidelines)
     - [Code Organization](#code-organization)
@@ -114,46 +116,15 @@ pnpm start-local
 docker compose up --build -d
 ```
 
+### Create a devel image (to test locally or with podman)
 
-The Docker image supports multiple architectures (AMD64 and ARM64) and will automatically use the appropriate version for your system.
+```bash
+docker build . -t wsj-br/duplistatus:devel
+```
 
 <br><br>
 
-## Test Scripts
-
-The project includes several test scripts to help with development and testing:
-
-### Generate Test Data
-```bash
-pnpm run generate-test-data
-```
-This script generates and uploads test backup data for multiple machines. 
-
-<br>
-
-
-### Clean Database
-```bash
-pnpm run clean-db
-```
-Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
-
-<br>
-
-### Show the overdue notifications contents (to debug notification system)
-```bash
-pnpm show-overdue-notifications
-```
-
-### Run overdue-check at a specific date/time (to debug notification system)
-
-```bash
-pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
-``` 
-
-<br>
-
-### Cron Service
+## Cron Service
 
 The application includes a separate cron service for handling scheduled tasks:
 
@@ -169,7 +140,45 @@ pnpm cron:start
 
 The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using `CRON_PORT` environment variable.
 
+
+<br><br>
+
+## Test Scripts
+
+The project includes several test scripts to help with development and testing:
+
+### Generate Test Data
+```bash
+pnpm run generate-test-data
+```
+This script generates and uploads test backup data for multiple machines and backups. 
+
+
+
+### Show the overdue notifications contents (to debug notification system)
+```bash
+pnpm show-overdue-notifications
+```
+
+### Run overdue-check at a specific date/time (to debug notification system)
+
+```bash
+pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
+``` 
+
+
+<br><br>
+
+## Workspace admin scripts & commands
+
+### Clean Database
+```bash
+pnpm run clean-db
+```
+Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
+
 <br>
+
 
 ### Clean build artifacts and dependencies
 ```bash
@@ -215,7 +224,9 @@ ncu --upgrade
 pnpm update
 ```
 
-<br>
+<br><br>
+
+## Documentation tools
 
 ### Updating the Table of Contents on the documentation
 
@@ -230,6 +241,23 @@ doctoc *.md docs/*.md
 markdown-link-check *.md docs/*.md
 ```
 
+
+## Podman testing
+
+Copy and execute the scripts located at "scripts/podman_testing" in the podman test server
+
+1. `initialize.duplistatus`: to create the pod
+2. `copy.docker.duplistatus`: to copy the docker image create in the devel server to the podman test server.
+   - create the image using the command `docker build . -t wsj-br/duplistatus:devel`
+3. `start.duplistatus`: to start the container
+4. `check.duplistatus`: to check the logs, connectivity and application health.
+5. `stop.duplistatus`: to stop the pod and remove the container
+
+To debug use these commands:
+
+- `logs.duplistatus`: to show the logs of the pod
+- `exec.shell.duplistatus`: open a shell in the container
+- `restart.duplistaus`: stop the pod, remove the container, copy the image, create the container and start the pod.
 
 
 <br><br>
@@ -282,6 +310,8 @@ This will automatically:
 - Push the images to Docker Hub 
 - Push the images to GitHub Container Registry (ghcr.io/wsj-br/duplistatus:latest)
 
+<br>
+
 ### Manual Docker Image Build
 
 To manually trigger the Docker image build workflow:
@@ -293,16 +323,7 @@ To manually trigger the Docker image build workflow:
 5. Select the branch to build from
 6. Click "Run workflow"
 
-## Additional Scripts
-
-### Clean up Docker Environment
-```bash
-scripts/clean-docker.sh
-```
-This script cleans up Docker resources:
-- Removes all Docker builder cache
-- Prunes unused Docker system resources (images, networks, volumes)
-- Useful when you need to free up disk space or resolve Docker-related issues
+<br><br>
 
 ## Frameworks, libraries and tools used
 
@@ -402,6 +423,8 @@ This script cleans up Docker resources:
     - Cron service management endpoints
     - Health check and monitoring endpoints
 
+<br><br>
+
 ## Development Guidelines
 
 ### Code Organization
@@ -415,6 +438,7 @@ This script cleans up Docker resources:
 - Use the provided test scripts for generating data and testing functionality
 - Test notification system with the built-in test endpoints
 - Verify cron service functionality with the test scripts
+- Test the docker and podman images
 
 ### Debugging
 - Development mode provides verbose logging and JSON file storage

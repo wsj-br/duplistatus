@@ -1,0 +1,43 @@
+#!/bin/bash
+
+if [ -f ".env" ]; then
+    set -a  # automatically export all variables
+    source .env
+    set +a  # disable automatic export
+    
+else
+    echo "Error: .env file not found"
+    echo "Please create a .env file in the current directory with the following variables:"
+    echo ""
+    echo "IMAGE=your_image_name"
+    echo "REMOTE_USER=your_username"
+    echo "REMOTE_HOST=your_hostname"
+    echo ""
+    echo "Example:"
+    echo ""
+    echo "IMAGE=wsj-br/duplistatus:devel"
+    echo "REMOTE_USER=devel"
+    echo "REMOTE_HOST=devel-server"
+    exit 1
+fi
+
+
+
+# Get image size
+SIZE=$(ssh $REMOTE_USER@$REMOTE_HOST "docker image inspect $IMAGE --format='{{.Size}}'")
+
+# add a overhead of +5%
+SIZE=$((SIZE + SIZE * 5 / 100))
+
+echo "Transferring $IMAGE ($(numfmt --to=iec $SIZE))..."
+
+# Transfer with progress
+ssh $REMOTE_USER@$REMOTE_HOST "docker save $IMAGE" | pv -s $SIZE | podman load
+
+if [ $? -eq 0 ]; then
+    echo "Transfer completed successfully!"
+else
+    echo "Transfer failed!"
+    exit 1
+fi
+

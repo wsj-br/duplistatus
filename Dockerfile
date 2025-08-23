@@ -78,6 +78,9 @@ COPY --from=builder /app/src/lib ./src/lib
 # Copy TypeScript configuration files
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 
+# copy duplistatus-server.ts custom server
+COPY --from=builder /app/duplistatus-server.ts ./duplistatus-server.ts
+
 # Copy duplistatus-cron script
 COPY duplistatus-cron.sh /app/duplistatus-cron.sh
 
@@ -103,6 +106,6 @@ EXPOSE 9666 9667
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
   CMD curl -f -s http://localhost:9666/api/health || exit 1
 
-# server.js is created by next build from the standalone output
-ENV HOSTNAME="0.0.0.0"
-CMD ["sh", "-c", "node server.js & /app/duplistatus-cron.sh"] 
+CMD ["sh", "-c", "node duplistatus-server.ts & /app/duplistatus-cron.sh"]
+
+

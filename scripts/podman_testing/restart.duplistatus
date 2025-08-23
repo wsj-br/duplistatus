@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "stop"
+./stop.duplistatus
+echo "copy image from the devel server"
+./copy.docker.duplistatus
+echo "start"
+./start.duplistatus

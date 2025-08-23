@@ -1,0 +1,48 @@
+#!/bin/bash
+
+if [ -f ".env" ]; then
+    set -a  # automatically export all variables
+    source .env
+    set +a  # disable automatic export
+
+else
+    echo "Error: .env file not found"
+    echo "Please create a .env file in the current directory with the following variables:"
+    echo ""
+    echo "IMAGE=your_image_name"
+    echo "REMOTE_USER=your_username"
+    echo "REMOTE_HOST=your_hostname"
+    echo ""
+    echo "Example:"
+    echo ""
+    echo "IMAGE=wsj-br/duplistatus:devel"
+    echo "REMOTE_USER=devel"
+    echo "REMOTE_HOST=devel-server"
+    exit 1
+fi
+
+# create the folder (if not exist)
+mkdir -p /root/duplistatus_home/data
+
+echo "creating the container"
+podman create                               \
+  --name duplistatus                        \
+   --pod Duplistatus                        \
+   --user root                              \
+   -v /root/duplistatus_home/data:/app/data \
+   $IMAGE
+
+echo ""
+
+echo "starting the pod"
+
+podman pod start Duplistatus
+
+
+echo ""
+echo ""
+echo "containers running:"
+echo ""
+podman ps
+
+echo ""

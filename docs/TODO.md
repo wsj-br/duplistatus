@@ -13,8 +13,7 @@
   - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
   - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
   - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
-  - [Implemented in Version 0.6.0 🚧 (in progress)](#implemented-in-version-060--in-progress)
-  - [✅ Completed Features (v0.6.0)](#-completed-features-v060)
+  - [Implemented in Version 0.6.0](#implemented-in-version-060)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    image: wsj-br/duplistatus:latest
+    image: wsj-br/duplistatus
     container_name: duplistatus
     restart: unless-stopped
     ports:
@@ -23,3 +23,5 @@ networks:
 volumes:
   duplistatus_data:
     name: duplistatus_data 
+
+    

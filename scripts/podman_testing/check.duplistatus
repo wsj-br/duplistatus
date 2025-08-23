@@ -1,0 +1,28 @@
+#!/bin/bash
+
+IPADDR=$(echo localhost && echo 127.0.0.1 && hostname -I)
+
+export GREP_COLORS='ms=01;32' # bold green
+
+echo "📄 container logs"
+echo ""
+podman pod logs Duplistatus | egrep --color=always "(http://0.0.0.0\:9666|Cron service listening on port 9667|^)" | pr -to 6
+echo ""
+echo ""
+echo "📡 listening address/ports (inside container)"
+echo ""
+podman exec -it duplistatus /bin/sh -c "netstat -an" 2>&1 | egrep '(tcp|Address)' | egrep --color=always "(0.0.0.0\:9666|0.0.0.0\:\*|LISTEN|^)" | pr -to 6
+echo ""
+echo ""
+echo "🔀 connectivity check (from podman host to all it IPs)"
+echo ""
+for i in $IPADDR; do
+  echo "    $(printf "%-20.20s" "$i")" $( curl -f -s http://$i:9666/api/health|grep -c "healthy" >/dev/null && echo "🟢" || echo "🔴") 
+done
+echo ""
+echo ""
+echo "🩺 heathy check results"
+echo ""
+curl -f -s http://localhost:9666/api/health 2>&1 | jq -C . | pr -to 6
+echo ""
+echo ""
