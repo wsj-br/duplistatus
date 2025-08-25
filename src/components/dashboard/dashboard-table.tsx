@@ -10,6 +10,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  TableHead,
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { useRouter } from "next/navigation"; // Import useRouter
@@ -104,8 +105,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     lastBackupDate: { type: 'date' as const, path: 'lastBackupDate' },
     lastBackupStatus: { type: 'status' as const, path: 'lastBackupStatus' },
     lastBackupDuration: { type: 'duration' as const, path: 'lastBackupDuration' },
-    totalWarnings: { type: 'number' as const, path: 'totalWarnings' },
-    totalErrors: { type: 'number' as const, path: 'totalErrors' },
+
     notification: { type: 'notificationEvent' as const, path: 'notificationEvent' }
   }), []);
 
@@ -197,12 +197,12 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               <SortableTableHead column="lastBackupDuration" sortConfig={sortConfig} onSort={handleSort} align="right">
                 Duration
               </SortableTableHead>
-              <SortableTableHead column="totalWarnings" sortConfig={sortConfig} onSort={handleSort} align="center">
+              <TableHead className="text-center">
                 Warnings
-              </SortableTableHead>
-              <SortableTableHead column="totalErrors" sortConfig={sortConfig} onSort={handleSort} align="center">
+              </TableHead>
+              <TableHead className="text-center">
                 Errors
-              </SortableTableHead>
+              </TableHead>
               <SortableTableHead column="notification" sortConfig={sortConfig} onSort={handleSort} align="center">
                 Notification
               </SortableTableHead>
@@ -230,37 +230,49 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     {machine.name}
                   </TableCell>
                   <TableCell className="text-left">
-                    {machine.isBackupOverdue ? (
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div className="text-left w-full">
-                            <div className="font-medium">{machine.lastBackupName || 'N/A'}</div>
-                            <div className="text-xs text-red-400">⚠️ {machine.expectedBackupElapsed} overdue</div>
+                    {machine.backupTypes.length > 0 ? (
+                      <div className="space-y-1">
+                        {machine.backupTypes.map((backupType, index) => (
+                          <div key={index} className="flex items-center justify-between">
+                            <span className="font-medium text-xs">{backupType.name}</span>
+                            {backupType.isBackupOverdue ? (
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <div className="text-xs text-red-400">⚠️ {backupType.expectedBackupElapsed} overdue</div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <div className="space-y-1">
+                                    <div><span>Checked:</span> <span className="text-muted-foreground">{backupType.lastOverdueCheck !== "N/A" ? new Date(backupType.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(backupType.lastOverdueCheck) + ")" : "N/A"}</span></div>
+                                    <div><span>Last backup:</span> <span className="text-muted-foreground">{backupType.lastBackupDate !== "N/A" ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")" : "N/A"}</span></div>
+                                    <div><span>Expected backup:</span> <span className="text-muted-foreground">{backupType.expectedBackupDate !== "N/A" ? new Date(backupType.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.expectedBackupDate) + ")" : "N/A"}</span></div>
+                                    <div><span>Last notification:</span> <span className="text-muted-foreground">{backupType.lastNotificationSent !== "N/A" ? new Date(backupType.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(backupType.lastNotificationSent) + ")" : "N/A"}</span></div>
+                                    <div className="pt-2 border-t">
+                                      <button 
+                                        className="text-xs cursor-pointer flex items-center"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          router.push('/settings?tab=backups');
+                                        }}
+                                      >
+                                      <Settings className="h-3 w-3 mr-1" /> Configure 
+                                      </button>
+                                    </div>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">
+                                {backupType.lastBackupDate !== "N/A" 
+                                  ? formatTimeAgo(backupType.lastBackupDate)
+                                  : "N/A"}
+                              </span>
+                            )}
                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="space-y-1">
-                            <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastOverdueCheck !== "N/A" ? new Date(machine.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastOverdueCheck) + ")"  	 : "N/A"}</span></div>
-                            <div><span>Last backup:</span> <span className="text-muted-foreground">{machine.lastBackupDate !== "N/A" ? new Date(machine.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.lastBackupDate) + ")" : "N/A"}</span></div>
-                            <div><span>Expected backup:</span> <span className="text-muted-foreground">{machine.expectedBackupDate !== "N/A" ? new Date(machine.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.expectedBackupDate) + ")" : "N/A"}</span></div>
-                            <div><span>Last notification:</span> <span className="text-muted-foreground">{machine.lastNotificationSent !== "N/A" ? new Date(machine.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(machine.lastNotificationSent) + ")" : "N/A"}</span></div>
-                            <div className="pt-2 border-t">
-                              <button 
-                                className="text-xs cursor-pointer flex items-center"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  router.push('/settings?tab=backups');
-                                }}
-                              >
-                              <Settings className="h-3 w-3 mr-1" /> Configure 
-                              </button>
-                            </div>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                      ) : (
-                        machine.lastBackupName || 'N/A'
-                      )}
+                        ))}
+                      </div>
+                    ) : (
+                      'N/A'
+                    )}
                   </TableCell>
                   <TableCell className="text-center">
                     <AvailableBackupsIcon
@@ -272,7 +284,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                       count={machine.lastBackupListCount}
                     />
                   </TableCell>
-                  <TableCell className="text-center">{machine.backupCount}</TableCell>
+                  <TableCell className="text-center">{machine.totalBackupCount}</TableCell>
                   <TableCell>
                     {machine.lastBackupDate !== "N/A" ? (
                       <>
@@ -293,24 +305,32 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     </div>
                   </TableCell>
                   <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
-                  <TableCell className="text-center">{machine.totalWarnings}</TableCell>
-                  <TableCell className="text-center">{machine.totalErrors}</TableCell>
+                  <TableCell className="text-center">N/A</TableCell>
+                  <TableCell className="text-center">N/A</TableCell>
                   <TableCell className="text-center">
-                    {machine.notificationEvent && (
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div 
-                            onClick={handleNotificationIconClick}
-                            className="cursor-pointer inline-block"
-                          >
-                            {getNotificationIcon(machine.notificationEvent)}
+                    {machine.backupTypes.length > 0 ? (
+                      <div className="space-y-1">
+                        {machine.backupTypes.map((backupType, index) => (
+                          <div key={index} className="flex justify-center">
+                            {backupType.notificationEvent && (
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <div 
+                                    onClick={handleNotificationIconClick}
+                                    className="cursor-pointer inline-block"
+                                  >
+                                    {getNotificationIcon(backupType.notificationEvent)}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{getNotificationTooltip(backupType.notificationEvent)}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{getNotificationTooltip(machine.notificationEvent)}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
+                        ))}
+                      </div>
+                    ) : null}
                   </TableCell>
                 </TableRow>
               );

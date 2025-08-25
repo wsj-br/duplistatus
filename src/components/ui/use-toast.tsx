@@ -21,11 +21,13 @@ const ToastContext = React.createContext<ToastContextType | undefined>(undefined
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = React.useState<ToastType[]>([]);
+  const [counter, setCounter] = React.useState(0);
 
   const toast = React.useCallback((options: Omit<ToastType, "id">) => {
-    const id = Math.random().toString(36).substr(2, 9);
+    const id = `toast-${counter}`;
+    setCounter(prev => prev + 1);
     setToasts((prev) => [...prev, { ...options, id }]);
-  }, []);
+  }, [counter]);
 
   const removeToast = React.useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));

@@ -12,9 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter, usePathname } from "next/navigation";
-import { defaultAPIConfig } from '@/lib/default-config';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { defaultAPIConfig } from '@/lib/default-config';
 
 export function BackupCollectMenu() {
   const [isCollecting, setIsCollecting] = useState(false);
@@ -26,8 +25,6 @@ export function BackupCollectMenu() {
   const [allowSelfSigned, setAllowSelfSigned] = useState(false);
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const { toast } = useToast();
-  const router = useRouter();
-  const pathname = usePathname();
   const { refreshDashboard } = useGlobalRefresh();
 
   const handleCollect = async () => {
@@ -85,27 +82,16 @@ export function BackupCollectMenu() {
       // Close the modal
       setIsOpen(false);
 
-      // Check if we're already on the dashboard page
-      if (pathname === "/") {
-        // If already on dashboard, show toast directly and refresh the dashboard data
-        toast({
-          title: `Backups collected successfully from ${machineName}`,
-          description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
-          variant: "default",
-          duration: 3000,
-        });
-        await refreshDashboard();
-      } else {
-        // If on another page, store toast data and redirect to dashboard
-        const toastData = {
-          title: `Backups collected successfully from ${machineName}`,
-          description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
-          variant: "default" as const,
-          duration: 10000, // 10 seconds on dashboard
-        };
-        localStorage.setItem("backup-collection-toast", JSON.stringify(toastData));
-        router.push("/");
-      }
+      // Show success toast
+      toast({
+        title: `Backups collected successfully from ${machineName}`,
+        description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+        variant: "default",
+        duration: 3000,
+      });
+
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
 
     } catch (error) {
       console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));

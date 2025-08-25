@@ -43,6 +43,8 @@ interface DashboardMetricsChartProps {
     fileSize: number;
     storageSize: number;
     backupVersions: number;
+    machineId?: string;
+    backupId?: string;
   }[];
 }
 

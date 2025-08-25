@@ -27,6 +27,8 @@ interface ChartDataPoint {
   fileSize: number;
   storageSize: number;
   backupVersions: number;
+  machineId?: string;
+  backupId?: string;
 }
 
 interface DashboardData {
@@ -123,7 +125,7 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
                     <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    Last refresh: {new Date().toLocaleString()}
+                    Last refresh: {state.lastRefresh ? new Date(state.lastRefresh).toLocaleString() : '--'}
                   </TooltipContent>
               </Tooltip>
             </TooltipProvider>

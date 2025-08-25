@@ -34,10 +34,11 @@ import type { ChartMetricSelection } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears, parseISO } from "date-fns";
 import type { ValueType } from "recharts/types/component/DefaultTooltipContent";
 
-import type { Machine } from "@/lib/types";
+import type { Machine, ChartDataPoint } from "@/lib/types";
 
 interface MachineMetricsChartProps {
-  machine: Machine;
+  machine?: Machine;
+  aggregatedData?: ChartDataPoint[];
 }
 
 // Use the imported ChartMetricSelection type
@@ -57,7 +58,7 @@ const formatDuration = (minutes: number): string => {
   return `${hours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
 };
 
-export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
+export function MachineMetricsChart({ machine, aggregatedData }: MachineMetricsChartProps) {
   const { chartTimeRange, chartMetricSelection, setChartMetricSelection } = useConfig();
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const currentMetricInfo = metricDisplayInfo[chartMetricSelection] || { label: chartMetricSelection };
@@ -65,21 +66,30 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     ? `${currentMetricInfo.label} (${currentMetricInfo.unit})` 
     : currentMetricInfo.label;
 
-  // Extract unique backup names from the machine's backups
+  // Determine if we're using machine-specific data or aggregated data
+  const isAggregatedMode = !machine && aggregatedData;
+  
+  // Extract unique backup names from the machine's backups (only for machine mode)
   const backupNames = React.useMemo(() => {
+    if (isAggregatedMode || !machine) return [];
     const uniqueNames = Array.from(new Set(machine.backups.map(b => b.name)));
     return uniqueNames.sort();
-  }, [machine.backups]);
+  }, [machine, isAggregatedMode]);
 
-  // Ensure machine chartData is defined and memoize it  
-  const safeChartData = useMemo(() => machine.chartData || [], [machine.chartData]);
+  // Determine which chart data to use
+  const safeChartData = useMemo(() => {
+    if (isAggregatedMode) {
+      return aggregatedData || [];
+    }
+    return machine?.chartData || [];
+  }, [isAggregatedMode, aggregatedData, machine?.chartData]);
   
   // Filter chart data based on selected backup and time range
   const filteredChartData = useMemo(() => {
     let baseData = safeChartData;
     
-    // Filter by backup name if not "all"
-    if (selectedBackup !== "all") {
+    // Filter by backup name if not "all" (only for machine mode)
+    if (!isAggregatedMode && machine && selectedBackup !== "all") {
       const backupDates = machine.backups
         .filter(b => b.name === selectedBackup)
         .map(b => b.date);
@@ -145,7 +155,7 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         date: item.date,
         [chartMetricSelection]: item[chartMetricSelection]
       }));
-  }, [safeChartData, machine.backups, selectedBackup, chartMetricSelection, chartTimeRange]);
+  }, [safeChartData, machine, selectedBackup, chartMetricSelection, chartTimeRange, isAggregatedMode]);
 
   // useMemo for chartConfig to prevent re-creation on every render if selectedMetric doesn't change
   const chartConfig = useMemo(() => ({
@@ -177,13 +187,35 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
     return value.toLocaleString();
   };
 
+  // Validate props - either machine or aggregatedData must be provided
+  if (!machine && !aggregatedData) {
+    return (
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle>Backup Metrics Over Time</CardTitle>
+          <CardDescription>Invalid component usage: either machine or aggregatedData must be provided.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] flex items-center justify-center text-muted-foreground">
+            Component configuration error.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   // Early return if no data
   if (!safeChartData.length) {
     return (
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Backup Metrics Over Time</CardTitle>
-          <CardDescription>No backup data available for {machine.name}.</CardDescription>
+          <CardDescription>
+            {isAggregatedMode 
+              ? "No backup data available across all machines."
+              : `No backup data available for ${machine?.name || 'the selected machine'}.`
+            }
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] flex items-center justify-center text-muted-foreground">
@@ -200,29 +232,34 @@ export function MachineMetricsChart({ machine }: MachineMetricsChartProps) {
         <div>
           <CardTitle>Backup Metrics Over Time</CardTitle>
           <CardDescription>
-            Data of {selectedBackup === "all" ? `${machine.name} (all backups)` : `${selectedBackup}`}
+            {isAggregatedMode 
+              ? `Aggregated data from all machines`
+              : `Data of ${selectedBackup === "all" ? `${machine?.name} (all backups)` : `${selectedBackup}`}`
+            }
             {chartTimeRange === 'All data' 
               ? ' for all available data.'
               : ` over the last ${chartTimeRange}.`}
           </CardDescription>
         </div>
         <div className="flex gap-2">
-          <Select 
-            value={selectedBackup} 
-            onValueChange={setSelectedBackup}
-          >
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Select Backup" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Backups</SelectItem>
-              {backupNames.map(backupName => (
-                <SelectItem key={backupName} value={backupName}>
-                  {backupName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {!isAggregatedMode && (
+            <Select 
+              value={selectedBackup} 
+              onValueChange={setSelectedBackup}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select Backup" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Backups</SelectItem>
+                {backupNames.map(backupName => (
+                  <SelectItem key={backupName} value={backupName}>
+                    {backupName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           
           <Select 
             value={chartMetricSelection} 

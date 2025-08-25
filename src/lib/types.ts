@@ -46,22 +46,36 @@ export interface Machine {
 export interface MachineSummary {
   id: string;
   name: string;
-  backupCount: number;
+  backupTypes: Array<{
+    name: string;
+    lastBackupDate: string;
+    lastBackupStatus: BackupStatus | 'N/A';
+    lastBackupDuration: string;
+    lastBackupListCount: number | null;
+    backupCount: number;
+    statusHistory: BackupStatus[];
+    fileCount: number;
+    fileSize: number;
+    storageSize: number;
+    uploadedSize: number;
+    // Backup status fields moved to backup type level
+    isBackupOverdue: boolean;
+    notificationEvent?: NotificationEvent;
+    expectedBackupDate: string;
+    expectedBackupElapsed: string;
+    lastOverdueCheck: string;
+    lastNotificationSent: string;
+  }>;
+  totalBackupCount: number;
+  lastBackupDate: string;
   lastBackupStatus: BackupStatus | 'N/A';
-  lastBackupDate: string; // ISO string or "N/A"
-  lastBackupDuration: string; // or "N/A"
+  lastBackupDuration: string;
   lastBackupListCount: number | null;
   lastBackupName: string | null;
   lastBackupId: string | null;
   totalWarnings: number;
   totalErrors: number;
   availableBackups: string[] | null;
-  isBackupOverdue: boolean;
-  notificationEvent?: NotificationEvent;
-  expectedBackupDate: string; // ISO string or "N/A"
-  expectedBackupElapsed: string; // formatted time ago or "N/A"
-  lastOverdueCheck: string; // ISO string or "N/A" - time of last run of checkOverdueBackups()
-  lastNotificationSent: string; // ISO string or "N/A" - time of last notification sent
 }
 
 export interface OverallSummary {
@@ -159,3 +173,57 @@ export interface OverdueNotificationTimestamp {
 
 // Type for overdue backup notifications configuration
 export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;
+
+// Chart data interface for dashboard components
+export interface ChartDataPoint {
+  date: string;
+  isoDate: string;
+  uploadedSize: number;
+  duration: number;
+  fileCount: number;
+  fileSize: number;
+  storageSize: number;
+  backupVersions: number;
+  machineId?: string;
+  backupId?: string;
+}
+
+// Machine card data interface for dashboard UI components
+export interface MachineCardData {
+  id: string;
+  name: string;
+  backupTypes: Array<{
+    name: string;
+    lastBackupDate: string;
+    lastBackupStatus: BackupStatus | 'N/A';
+    lastBackupDuration: string;
+    lastBackupListCount: number | null;
+    backupCount: number;
+    statusHistory: BackupStatus[];
+    // New fields from updated query
+    fileCount: number;
+    fileSize: number;
+    storageSize: number;
+    uploadedSize: number;
+    // Backup status fields moved from machine level
+    isBackupOverdue: boolean;
+    notificationEvent?: string;
+    expectedBackupDate: string;
+    expectedBackupElapsed: string;
+    lastOverdueCheck: string;
+    lastNotificationSent: string;
+  }>;
+  totalBackupCount: number;
+  lastBackupDate: string;
+  lastBackupStatus: BackupStatus | 'N/A';
+  lastBackupDuration: string;
+  lastBackupListCount: number | null;
+  availableBackups: string[];
+}
+
+// Dashboard data grouping interface
+export interface DashboardData {
+  machinesSummary: MachineSummary[];
+  overallSummary: OverallSummary;
+  allMachinesChartData: ChartDataPoint[];
+}

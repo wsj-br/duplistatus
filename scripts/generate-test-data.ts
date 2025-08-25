@@ -4,7 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 const machines = [
   { id: 'machine-1', name: 'Test Machine 1', backupName: 'Machine 1' },
   { id: 'machine-2', name: 'Test Machine 2', backupName: 'Machine 2' },
-  { id: 'machine-3', name: 'Test Machine 3', backupName: 'Machine 3' }
+  { id: 'machine-3', name: 'Test Machine 3', backupName: 'Machine 3' },
+  { id: 'machine-4', name: 'Test Machine 4', backupName: 'Machine 4' },
+  { id: 'machine-5', name: 'Test Machine 5', backupName: 'Machine 5' },
+  { id: 'machine-6', name: 'Test Machine 6', backupName: 'Machine 6' },
+  { id: 'machine-7', name: 'Test Machine 7', backupName: 'Machine 7' }
 ];
 
 // Server health check function

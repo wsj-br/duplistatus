@@ -424,48 +424,17 @@ const dbOps = {
   `, 'getLatestBackupDate'),
 
   getAggregatedChartData: safePrepare(`
-    WITH latest_backups_per_day AS (
-      SELECT 
-        DATE(date) as backup_date,
-        machine_id,
-        date,
-        COALESCE(uploaded_size, 0) as uploaded_size,
-        COALESCE(size, 0) as file_size,
-        COALESCE(examined_files, 0) as file_count,
-        COALESCE(known_file_size, 0) as storage_size,
-        COALESCE(backup_list_count, 0) as backup_versions,
-        duration_seconds,
-        ROW_NUMBER() OVER (
-          PARTITION BY machine_id, DATE(date) 
-          ORDER BY date DESC
-        ) as rn
-      FROM backups
-    ),
-    aggregated_by_date AS (
-      SELECT 
-        backup_date,
-        MAX(date) as iso_date,
-        SUM(uploaded_size) as total_uploaded_size,
-        SUM(duration_seconds) as total_duration_seconds,
-        SUM(file_count) as total_file_count,
-        SUM(file_size) as total_file_size,
-        SUM(storage_size) as total_storage_size,
-        SUM(backup_versions) as total_backup_versions
-      FROM latest_backups_per_day
-      WHERE rn = 1
-      GROUP BY backup_date
-    )
     SELECT 
-      strftime('%d/%m/%Y', backup_date) as date,
-      iso_date as isoDate,
-      total_uploaded_size as uploadedSize,
-      CAST(total_duration_seconds / 60 AS INTEGER) as duration,
-      total_file_count as fileCount,
-      total_file_size as fileSize,
-      total_storage_size as storageSize,
-      total_backup_versions as backupVersions
-    FROM aggregated_by_date
-    ORDER BY backup_date
+      strftime('%d/%m/%Y', DATE(b.date)) as date,
+      b.date as isoDate,
+      COALESCE(b.uploaded_size, 0) as uploadedSize,
+      CAST(b.duration_seconds / 60 AS INTEGER) as duration,
+      COALESCE(b.examined_files, 0) as fileCount,
+      COALESCE(b.size, 0) as fileSize,
+      COALESCE(b.known_file_size, 0) as storageSize,
+      COALESCE(b.backup_list_count, 0) as backupVersions
+    FROM backups b
+    ORDER BY b.date
   `, 'getAggregatedChartData'),
 
   checkDuplicateBackup: safePrepare(`
@@ -483,7 +452,71 @@ const dbOps = {
 
   deleteMachineBackups: safePrepare(`
     DELETE FROM backups WHERE machine_id = ?
-  `, 'deleteMachineBackups')
+  `, 'deleteMachineBackups'),
+
+  // New query for machine cards - get backup status history for status bars
+  getMachineCardsData: safePrepare(`
+    SELECT
+      m.id AS machine_id,
+      m.name AS machine_name,
+      b.backup_name,
+      lb.last_backup_date,
+      b2.status AS last_backup_status,
+      b2.duration_seconds AS last_backup_duration,
+      (
+        SELECT COUNT(*)
+        FROM backups b_count
+        WHERE b_count.machine_id = m.id AND b_count.backup_name = b.backup_name
+      ) AS backup_count,
+      b2.examined_files AS file_count,
+      b2.size AS file_size,
+      b2.known_file_size AS storage_size,
+      b2.backup_list_count AS backup_versions,
+      b2.uploaded_size AS uploaded_size,
+      (
+        SELECT GROUP_CONCAT(b_hist_status, ',')
+        FROM (
+          SELECT b_hist.status as b_hist_status
+          FROM backups b_hist
+          WHERE b_hist.machine_id = m.id AND b_hist.backup_name = b.backup_name
+          ORDER BY b_hist.date
+        )
+      ) AS status_history
+    FROM machines m
+    JOIN backups b ON b.machine_id = m.id
+    LEFT JOIN (
+      SELECT
+        machine_id,
+        backup_name,
+        MAX(date) AS last_backup_date
+      FROM backups
+      GROUP BY machine_id, backup_name
+    ) lb ON lb.machine_id = m.id AND lb.backup_name = b.backup_name
+    LEFT JOIN backups b2
+      ON b2.machine_id = m.id
+      AND b2.backup_name = b.backup_name
+      AND b2.date = lb.last_backup_date
+    WHERE lb.last_backup_date IS NOT NULL
+    GROUP BY m.id, m.name, b.backup_name, lb.last_backup_date, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
+    ORDER BY m.name, b.backup_name  
+  `, 'getMachineCardsData'),
+
+  // Query to get all machines chart data grouped by date and machine
+  getAllMachinesChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      b.machine_id AS machineId,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    GROUP BY b.date, b.machine_id
+    ORDER BY b.date
+  `, 'getAllMachinesChartData')
 };
 
 // Helper function to parse duration string to seconds

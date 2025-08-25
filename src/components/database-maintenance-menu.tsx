@@ -29,7 +29,7 @@ import { useConfig } from "@/contexts/config-context";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { usePathname, useRouter } from "next/navigation";
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 interface Machine {
   id: string;
@@ -47,8 +47,7 @@ export function DatabaseMaintenanceMenu() {
   const [machines, setMachines] = useState<Machine[]>([]);
   const [selectedMachine, setSelectedMachine] = useState<string>("");
   const { toast } = useToast();
-  const pathname = usePathname();
-  const router = useRouter();
+  const { refreshDashboard } = useGlobalRefresh();
 
   // Fetch machines on component mount
   useEffect(() => {
@@ -84,19 +83,9 @@ export function DatabaseMaintenanceMenu() {
         duration: 2000,
       });
       
-      // Navigate to dashboard and refresh its contents
-      router.push('/');
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
       
-      // Wait a short delay to ensure navigation completes
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Force a complete refresh of the dashboard data
-      router.refresh();
-      
-      // Additional refresh for the dashboard page
-      if (pathname === '/') {
-        window.location.reload();
-      }
     } catch (error) {
       console.error('Error in handleCleanup:', error instanceof Error ? error.message : String(error));
       
@@ -155,19 +144,8 @@ export function DatabaseMaintenanceMenu() {
         setMachines(sortedMachines);
       }
       
-      // Navigate to dashboard and refresh its contents
-      router.push('/');
-      
-      // Wait a short delay to ensure navigation completes
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Force a complete refresh of the dashboard data
-      router.refresh();
-      
-      // Additional refresh for the dashboard page
-      if (pathname === '/') {
-        window.location.reload();
-      }
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
       
     } catch (error) {
       console.error('Error deleting machine:', error instanceof Error ? error.message : String(error));

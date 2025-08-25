@@ -59,7 +59,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
   // Determine current page type
   const getCurrentPageType = useCallback((): PageType => {
-    if (pathname === '/') return 'dashboard';
+    if (pathname === '/' || pathname === '/dashboard-auto') return 'dashboard';
     // Only show on main detail pages, not on backup detail pages
     if (pathname.startsWith('/detail/') && !pathname.includes('/backup/')) return 'detail';
     return 'none';
@@ -74,28 +74,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     }));
   }, [pathname, getCurrentPageType]);
 
-  // Auto-refresh effect
-  useEffect(() => {
-    if (!state.isEnabled || state.currentPage === 'none') return;
-
-    const intervalMs = state.interval * 60 * 1000; // interval is in minutes
-    const interval = setInterval(() => {
-      if (state.currentPage === 'dashboard') {
-        refreshDashboard();
-      } else if (state.currentPage === 'detail') {
-        // For detail pages, we need the machineId from the URL
-        // Only match main detail pages, not backup detail pages
-        const match = pathname.match(/^\/detail\/([^\/]+)$/);
-        if (match) {
-          refreshDetail(match[1]);
-        }
-      }
-    }, intervalMs);
-
-    return () => clearInterval(interval);
-  }, [state.isEnabled, state.interval, state.currentPage, pathname]);
-
-  const refreshDashboard = async () => {
+  const refreshDashboard = useCallback(async () => {
     try {
       setState(prev => ({
         ...prev,
@@ -144,9 +123,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  };
+  }, []);
 
-  const refreshDetail = async (machineId: string) => {
+  const refreshDetail = useCallback(async (machineId: string) => {
     try {
       setState(prev => ({
         ...prev,
@@ -193,7 +172,28 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  };
+  }, []);
+
+  // Auto-refresh effect
+  useEffect(() => {
+    if (!state.isEnabled || state.currentPage === 'none') return;
+
+    const intervalMs = state.interval * 60 * 1000; // interval is in minutes
+    const interval = setInterval(() => {
+      if (state.currentPage === 'dashboard') {
+        refreshDashboard();
+      } else if (state.currentPage === 'detail') {
+        // For detail pages, we need the machineId from the URL
+        // Only match main detail pages, not backup detail pages
+        const match = pathname.match(/^\/detail\/([^\/]+)$/);
+        if (match) {
+          refreshDetail(match[1]);
+        }
+      }
+    }, intervalMs);
+
+    return () => clearInterval(interval);
+  }, [state.isEnabled, state.interval, state.currentPage, pathname, refreshDashboard, refreshDetail]);
 
   const toggleAutoRefresh = () => {
     const newEnabled = !state.isEnabled;

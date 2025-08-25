@@ -19,7 +19,7 @@ export function AppHeader() {
 
   return (
     <div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-screen-2xl items-center py-4">
+      <div className="w-[95%] mx-auto flex h-16 items-center py-4">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image

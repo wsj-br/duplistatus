@@ -51,16 +51,16 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 mb-8">
+    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-6">
       {summaryItems.map((item) => (
         <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
             <CardTitle className="text-sm font-medium">
               {item.title}
             </CardTitle>
             {item.icon}
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 pb-3">
             <div className={`text-2xl font-bold ${item.title === "Overdue Backups" ? (summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
               {item.value}
             </div>

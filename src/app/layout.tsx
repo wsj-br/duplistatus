@@ -107,7 +107,7 @@ export default function RootLayout({
                 <ToastProvider>
                   <div className="relative flex min-h-screen flex-col">
                     <AppHeader />
-                    <main className="flex-1 w-[90%] max-w-screen-2xl mx-auto py-8">{children}</main>
+                    <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
                     <div className="flex items-center justify-center gap-4">
                       <AppVersion />
                       <GithubLink />

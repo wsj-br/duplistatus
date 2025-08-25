@@ -126,7 +126,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
     console.error('Failed to fetch machine data:', error instanceof Error ? error.message : String(error));
     // Return a more user-friendly error page
     return (
-      <div className="container mx-auto py-6 space-y-6">
+      <div className="w-[95%] mx-auto py-6 space-y-6">
         <div className="flex items-center gap-4">
           <BackButton />
           <h1 className="text-2xl font-bold text-red-600">Database Error</h1>
@@ -218,7 +218,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="w-[95%] mx-auto py-6 space-y-6">
       <div className="flex items-center gap-4">
         <BackButton />
         <h1 className="text-2xl font-bold">Backup details: 

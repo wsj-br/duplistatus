@@ -130,7 +130,7 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
                   <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Last refresh: {new Date().toLocaleString()}</p>
+                  <p>Last refresh: --</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

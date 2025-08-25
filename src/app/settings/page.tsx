@@ -92,7 +92,7 @@ function SettingsPageContent() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="w-[95%] mx-auto py-8 space-y-6">
       <div className="flex items-center gap-4">
         <BackButton />
         <div>

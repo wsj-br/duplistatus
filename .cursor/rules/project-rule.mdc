@@ -20,7 +20,7 @@ Network:
   port used in development: 8666 (for instance `pnpm run dev`)
 
 Instructions:
-  - don't run the application automaticaly, use pnpm build or pnpm lint to check for errors.
+  - don'tstart the dev (`pnpm dev`) or production server (`pnpm start`), use only `pnpm build` or `pnpm lint` to check for errors.
   - when creating or modifying code allways use a proper TypeScript interface instead of any.
   - when creating the git commit message, don't include in the headline the version number change, but keep it in the change detail list.
   - always follows the DRY (Don't Repeat Yourself) principle and makes the codebase more maintainable. 
