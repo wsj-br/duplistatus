@@ -56,7 +56,7 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
         
         // Fetch data from API endpoints
         const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-          fetch('/api/machines-summary'),
+          fetch('/api/machines-summary'), // Changed to use machine-summary endpoint
           fetch('/api/summary'),
           fetch('/api/chart-data')
         ]);
@@ -112,7 +112,10 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
         </Alert>
       )}
 
-      <DashboardSummaryCards summary={data.overallSummary} />
+      <DashboardSummaryCards 
+        summary={data.overallSummary} 
+        onViewModeChange={() => {}} // No-op since this component doesn't support view switching
+      />
 
       <Card className="shadow-lg">
         <CardHeader>

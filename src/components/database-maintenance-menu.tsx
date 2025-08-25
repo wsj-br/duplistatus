@@ -46,6 +46,7 @@ export function DatabaseMaintenanceMenu() {
   const [isDeletingMachine, setIsDeletingMachine] = useState(false);
   const [machines, setMachines] = useState<Machine[]>([]);
   const [selectedMachine, setSelectedMachine] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
 
@@ -85,6 +86,9 @@ export function DatabaseMaintenanceMenu() {
       
       // Refresh dashboard data using global refresh context
       await refreshDashboard();
+      
+      // Close the menu after successful execution
+      setIsOpen(false);
       
     } catch (error) {
       console.error('Error in handleCleanup:', error instanceof Error ? error.message : String(error));
@@ -147,6 +151,9 @@ export function DatabaseMaintenanceMenu() {
       // Refresh dashboard data using global refresh context
       await refreshDashboard();
       
+      // Close the menu after successful execution
+      setIsOpen(false);
+      
     } catch (error) {
       console.error('Error deleting machine:', error instanceof Error ? error.message : String(error));
       
@@ -168,7 +175,7 @@ export function DatabaseMaintenanceMenu() {
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" title="Database maintenance">
           <Database className="h-4 w-4" />

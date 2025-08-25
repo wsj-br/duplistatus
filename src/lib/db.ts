@@ -320,6 +320,16 @@ const dbOps = {
     LIMIT 1
   `, 'getLatestBackupByName'),
 
+  getMachinesBackupNames: safePrepare(`
+    SELECT 
+      m.name AS machine_name,
+      b.backup_name
+    FROM machines m
+    JOIN backups b ON b.machine_id = m.id
+    GROUP BY m.name, b.backup_name
+    ORDER BY m.name, b.backup_name
+  `, 'getMachinesBackupNames'),
+
   getMachineBackups: safePrepare(`
     SELECT 
       b.id,
@@ -349,49 +359,7 @@ const dbOps = {
     ORDER BY b.date DESC
   `, 'getMachineBackups'),
 
-  getMachinesSummary: safePrepare(`
-    WITH machine_backups AS (
-      SELECT DISTINCT 
-        m.id as machine_id,
-        m.name as machine_name,
-        b.backup_name
-      FROM machines m
-      JOIN backups b ON b.machine_id = m.id
-    ),
-    latest_backups AS (
-      SELECT 
-        machine_id,
-        backup_name,
-        MAX(date) as last_backup_date
-      FROM backups
-      GROUP BY machine_id, backup_name
-    ),
-    numbered_results AS (
-      SELECT 
-        ROW_NUMBER() OVER (ORDER BY mb.machine_name, mb.backup_name) as id,
-        mb.machine_id as machine_id,
-        mb.machine_name as name,
-        mb.backup_name as last_backup_name,
-        lb.last_backup_date,
-        b.id as last_backup_id,
-        b.status as last_backup_status,
-        b.duration_seconds as last_backup_duration,
-        b.warnings as total_warnings,
-        b.errors as total_errors,
-        b.backup_list_count as last_backup_list_count,
-        b.available_backups as available_backups,
-        COUNT(b2.id) as backup_count
-      FROM machine_backups mb
-      LEFT JOIN latest_backups lb ON mb.machine_id = lb.machine_id AND mb.backup_name = lb.backup_name
-      LEFT JOIN backups b ON b.machine_id = mb.machine_id AND b.date = lb.last_backup_date AND b.backup_name = mb.backup_name
-      LEFT JOIN backups b2 ON b2.machine_id = mb.machine_id AND b2.backup_name = mb.backup_name
-      GROUP BY mb.machine_id, mb.backup_name
-    )
-    SELECT * FROM numbered_results
-    ORDER BY lower(name), lower(last_backup_name)
-  `, 'getMachinesSummary'),
-
-  getOverallSummary: safePrepare(`
+   getOverallSummary: safePrepare(`
     SELECT 
       COUNT(DISTINCT m.id) as total_machines,
       COUNT(b.id) as total_backups,
@@ -455,12 +423,13 @@ const dbOps = {
   `, 'deleteMachineBackups'),
 
   // New query for machine cards - get backup status history for status bars
-  getMachineCardsData: safePrepare(`
+   getMachinesSummary: safePrepare(`
     SELECT
       m.id AS machine_id,
       m.name AS machine_name,
       b.backup_name,
       lb.last_backup_date,
+      b2.id AS last_backup_id,
       b2.status AS last_backup_status,
       b2.duration_seconds AS last_backup_duration,
       (
@@ -472,7 +441,10 @@ const dbOps = {
       b2.size AS file_size,
       b2.known_file_size AS storage_size,
       b2.backup_list_count AS backup_versions,
+      b2.available_backups AS available_backups,
       b2.uploaded_size AS uploaded_size,
+      b2.warnings AS warnings,
+      b2.errors AS errors,
       (
         SELECT GROUP_CONCAT(b_hist_status, ',')
         FROM (
@@ -497,9 +469,9 @@ const dbOps = {
       AND b2.backup_name = b.backup_name
       AND b2.date = lb.last_backup_date
     WHERE lb.last_backup_date IS NOT NULL
-    GROUP BY m.id, m.name, b.backup_name, lb.last_backup_date, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
+    GROUP BY m.id, m.name, b.backup_name, lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
     ORDER BY m.name, b.backup_name  
-  `, 'getMachineCardsData'),
+  `, 'getMachineSummary'),
 
   // Query to get all machines chart data grouped by date and machine
   getAllMachinesChartData: safePrepare(`

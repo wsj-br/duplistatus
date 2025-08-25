@@ -17,7 +17,7 @@ export async function generateMetadata() {
 
 export default async function DashboardPage() {
   // Fetch initial data server-side
-  const machinesSummary = getMachinesSummary();
+  const machinesSummary = await getMachinesSummary();
   
   // Ensure backup settings are complete for all machines and backups
   // This will add default settings for any missing machine-backup combinations

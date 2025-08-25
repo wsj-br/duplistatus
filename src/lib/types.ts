@@ -46,9 +46,10 @@ export interface Machine {
 export interface MachineSummary {
   id: string;
   name: string;
-  backupTypes: Array<{
+  backupInfo: Array<{
     name: string;
     lastBackupDate: string;
+    lastBackupId: string;
     lastBackupStatus: BackupStatus | 'N/A';
     lastBackupDuration: string;
     lastBackupListCount: number | null;
@@ -58,13 +59,14 @@ export interface MachineSummary {
     fileSize: number;
     storageSize: number;
     uploadedSize: number;
-    // Backup status fields moved to backup type level
+    warnings: number;
+    errors: number;
     isBackupOverdue: boolean;
     notificationEvent?: NotificationEvent;
     expectedBackupDate: string;
     expectedBackupElapsed: string;
-    lastOverdueCheck: string;
     lastNotificationSent: string;
+    availableBackups: string[];
   }>;
   totalBackupCount: number;
   lastBackupDate: string;
@@ -72,10 +74,8 @@ export interface MachineSummary {
   lastBackupDuration: string;
   lastBackupListCount: number | null;
   lastBackupName: string | null;
-  lastBackupId: string | null;
-  totalWarnings: number;
-  totalErrors: number;
-  availableBackups: string[] | null;
+  lastOverdueCheck: string;
+  backupNames: string[];
 }
 
 export interface OverallSummary {
@@ -188,38 +188,6 @@ export interface ChartDataPoint {
   backupId?: string;
 }
 
-// Machine card data interface for dashboard UI components
-export interface MachineCardData {
-  id: string;
-  name: string;
-  backupTypes: Array<{
-    name: string;
-    lastBackupDate: string;
-    lastBackupStatus: BackupStatus | 'N/A';
-    lastBackupDuration: string;
-    lastBackupListCount: number | null;
-    backupCount: number;
-    statusHistory: BackupStatus[];
-    // New fields from updated query
-    fileCount: number;
-    fileSize: number;
-    storageSize: number;
-    uploadedSize: number;
-    // Backup status fields moved from machine level
-    isBackupOverdue: boolean;
-    notificationEvent?: string;
-    expectedBackupDate: string;
-    expectedBackupElapsed: string;
-    lastOverdueCheck: string;
-    lastNotificationSent: string;
-  }>;
-  totalBackupCount: number;
-  lastBackupDate: string;
-  lastBackupStatus: BackupStatus | 'N/A';
-  lastBackupDuration: string;
-  lastBackupListCount: number | null;
-  availableBackups: string[];
-}
 
 // Dashboard data grouping interface
 export interface DashboardData {

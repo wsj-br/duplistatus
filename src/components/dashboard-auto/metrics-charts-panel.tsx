@@ -29,7 +29,6 @@ interface InterpolatedChartPoint {
 
 interface MetricsChartsPanelProps {
   chartData: ChartDataPoint[];
-  selectedMachineId?: string | null;
   selectedMachineName?: string | null;
   selectedBackupId?: string | null;
   lastRefreshTime: Date;
@@ -105,17 +104,17 @@ const chartMetrics = [
   }
 ];
 
-const SmallMetricChart = ({ 
+const SmallMetricChart = memo(function SmallMetricChart({ 
   data, 
   metricKey, 
   label, 
-  color
+  color,
 }: { 
   data: ChartDataPoint[]; 
-  metricKey: keyof ChartDataPoint;
-  label: string;
+  metricKey: keyof ChartDataPoint; 
+  label: string; 
   color: string;
-}) => {
+}) {
 
   
   // Create chart config
@@ -222,7 +221,7 @@ const SmallMetricChart = ({
       <CardContent className="flex-1 p-1 min-h-0">
         <ChartContainer config={chartConfig} className="!aspect-auto w-full h-full">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={resampledData} margin={{ top: 5, right: 10, bottom: 5, left: 5 }}>
+            <ComposedChart data={resampledData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#666" />
               <XAxis 
                 dataKey="date" 
@@ -251,6 +250,8 @@ const SmallMetricChart = ({
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 10, fill: '#9ca3af' }}
+                tickMargin={8}
+                width={80}
                 domain={yAxisConfig.domain}
                 tickFormatter={(value) => {
                   if (typeof value === 'number') {
@@ -282,15 +283,13 @@ const SmallMetricChart = ({
       </CardContent>
     </Card>
   );
-};
+});
 
 export const MetricsChartsPanel = memo(function MetricsChartsPanel({ 
   chartData, 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  selectedMachineId, 
   selectedMachineName,
   selectedBackupId,
-  lastRefreshTime 
+  lastRefreshTime,
 }: MetricsChartsPanelProps) {
   const { chartTimeRange } = useConfig();
   const [mounted, setMounted] = useState(false);
@@ -412,8 +411,7 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
   const chartDataEqual = JSON.stringify(prevProps.chartData) === JSON.stringify(nextProps.chartData);
   
   // Compare other props
-  const otherPropsEqual = prevProps.selectedMachineId === nextProps.selectedMachineId &&
-                         prevProps.selectedMachineName === nextProps.selectedMachineName &&
+  const otherPropsEqual = prevProps.selectedMachineName === nextProps.selectedMachineName &&
                          prevProps.selectedBackupId === nextProps.selectedBackupId;
   
   // Don't compare lastRefreshTime as it changes on every refresh but doesn't affect the visual content

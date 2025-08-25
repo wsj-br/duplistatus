@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react';
-import type { BackupStatus, MachineCardData } from "@/lib/types";
+import type { BackupStatus, MachineSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -13,18 +13,18 @@ import { useRouter } from "next/navigation";
 
 
 interface MachineCardProps {
-  machine: MachineCardData;
+  machine: MachineSummary;
   isSelected: boolean;
   onSelect: (machineId: string) => void;
 }
 
 // Helper function to get overall machine status
-function getMachineStatus(machine: MachineCardData): BackupStatus {
+function getMachineStatus(machine: MachineSummary): BackupStatus {
   if (machine.lastBackupStatus === 'Error' || machine.lastBackupStatus === 'Fatal') {
     return 'Error';
   }
   // Check if any backup type is overdue
-  const hasOverdueBackup = machine.backupTypes.some(backupType => backupType.isBackupOverdue);
+  const hasOverdueBackup = machine.backupInfo.some(backupType => backupType.isBackupOverdue);
   if (machine.lastBackupStatus === 'Warning' || hasOverdueBackup) {
     return 'Warning';
   }
@@ -148,13 +148,13 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
           <div className="text-center">
             <div className="text-muted-foreground text-xs">Files</div>
             <div className="font-semibold text-sm">
-              {machine.backupTypes.length > 0 ? machine.backupTypes[0].fileCount : 'N/A'}
+              {machine.backupInfo.length > 0 ? machine.backupInfo[0].fileCount : 'N/A'}
             </div>
           </div>
           <div className="text-center">
             <div className="text-muted-foreground text-xs">Size</div>
             <div className="font-semibold text-xs">
-              {machine.backupTypes.length > 0 ? formatBytes(machine.backupTypes[0].fileSize) : 'N/A'}
+              {machine.backupInfo.length > 0 ? formatBytes(machine.backupInfo[0].fileSize) : 'N/A'}
             </div>
           </div>
           <div className="text-center">
@@ -171,8 +171,8 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
         <div className="space-y-1 flex-1 flex flex-col">
           <div className="text-xs text-muted-foreground font-medium flex-shrink-0">Backup Types:</div>
           <div className="flex-1 space-y-1">
-            {machine.backupTypes.length > 0 ? (
-              machine.backupTypes.map((backupType, index) => (
+            {machine.backupInfo.length > 0 ? (
+              machine.backupInfo.map((backupType, index) => (
                 <div 
                   key={index} 
                   className="space-y-1 py-1 border-b border-border/30 last:border-b-0 cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-2 -mx-2"
@@ -195,7 +195,7 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                             </TooltipTrigger>
                             <TooltipContent>
                               <div className="space-y-1">
-                                <div><span>Checked:</span> <span className="text-muted-foreground">{backupType.lastOverdueCheck !== "N/A" ? new Date(backupType.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(backupType.lastOverdueCheck) + ")" : "N/A"}</span></div>
+                                <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastOverdueCheck !== "N/A" ? new Date(machine.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastOverdueCheck) + ")" : "N/A"}</span></div>
                                 <div><span>Last backup:</span> <span className="text-muted-foreground">{backupType.lastBackupDate !== "N/A" ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")" : "N/A"}</span></div>
                                 <div><span>Expected backup:</span> <span className="text-muted-foreground">{backupType.expectedBackupDate !== "N/A" ? new Date(backupType.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.expectedBackupDate) + ")" : "N/A"}</span></div>
                                 <div><span>Last notification:</span> <span className="text-muted-foreground">{backupType.lastNotificationSent !== "N/A" ? new Date(backupType.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(backupType.lastNotificationSent) + ")" : "N/A"}</span></div>
@@ -236,7 +236,7 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
 };
 
 interface MachineCardsProps {
-  machines: MachineCardData[];
+  machines: MachineSummary[];
   selectedMachineId?: string | null;
   onSelect: (machineId: string | null) => void;
   visibleCardIndex?: number;
@@ -481,8 +481,8 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
            machine.lastBackupStatus === nextMachine.lastBackupStatus &&
            machine.lastBackupDate === nextMachine.lastBackupDate &&
            machine.totalBackupCount === nextMachine.totalBackupCount &&
-           machine.backupTypes.length === nextMachine.backupTypes.length &&
-           JSON.stringify(machine.backupTypes) === JSON.stringify(nextMachine.backupTypes);
+           machine.backupInfo.length === nextMachine.backupInfo.length &&
+           JSON.stringify(machine.backupInfo) === JSON.stringify(nextMachine.backupInfo);
   });
   
   // Check other props

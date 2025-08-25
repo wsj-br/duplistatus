@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState, useEffect, useRef } from "react";
-import type { MachineSummary, Backup, ChartDataPoint, MachineCardData, DashboardData } from "@/lib/types";
+import type { MachineSummary, Backup, ChartDataPoint, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
+import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { MachineCards } from "./machine-cards";
 import { MetricsChartsPanel } from "./metrics-charts-panel";
@@ -35,8 +36,9 @@ export function DashboardAutoLayout({
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardAutoLayoutProps) {
   
-  const [machineCardsData, setMachineCardsData] = useState<MachineCardData[]>([]);
+  const [machineCardsData, setMachineCardsData] = useState<MachineSummary[]>([]);
   const [machineCardsLoading, setMachineCardsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   const previousMachineCardsDataRef = useRef<string>('');
   // Preserve visible card index across component remounts
   const [visibleCardIndex, setVisibleCardIndex] = useState<number>(0);
@@ -45,6 +47,19 @@ export function DashboardAutoLayout({
   const handleVisibleCardIndexChange = (index: number) => {
     setVisibleCardIndex(index);
   };
+
+  // Handle view mode changes
+  const handleViewModeChange = (newViewMode: 'cards' | 'table') => {
+    setViewMode(newViewMode);
+  };
+
+  // Load view mode from localStorage on mount
+  useEffect(() => {
+    const savedViewMode = localStorage.getItem('dashboard-view-mode');
+    if (savedViewMode === 'cards' || savedViewMode === 'table') {
+      setViewMode(savedViewMode);
+    }
+  }, []);
 
   // Fetch machine cards data on component mount and when refresh is triggered
   useEffect(() => {
@@ -56,20 +71,20 @@ export function DashboardAutoLayout({
           setMachineCardsLoading(true);
         }
         
-        const response = await fetch('/api/machine-cards');
+        const response = await fetch('/api/machines-summary');
         if (response.ok) {
           const newData = await response.json();
           
           // Create a more comprehensive hash to detect actual data changes
-          const newDataHash = JSON.stringify(newData.map((m: MachineCardData) => ({
+          const newDataHash = JSON.stringify(newData.map((m: MachineSummary) => ({
             id: m.id,
             name: m.name,
             lastBackupStatus: m.lastBackupStatus,
             lastBackupDate: m.lastBackupDate,
             totalBackupCount: m.totalBackupCount,
-            backupTypesCount: m.backupTypes.length,
+            backupTypesCount: m.backupInfo.length,
             // Include a simplified version of backup types to detect changes
-            backupTypes: m.backupTypes.map(bt => ({
+            backupInfo: m.backupInfo.map(bt => ({
               name: bt.name,
               lastBackupDate: bt.lastBackupDate,
               isBackupOverdue: bt.isBackupOverdue,
@@ -120,10 +135,18 @@ export function DashboardAutoLayout({
   }, [data.overallSummary, selectedMachine, machineBackups]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] px-2 pb-4 overflow-hidden">
+    <div className={`flex flex-col px-2 pb-4 ${
+      viewMode === 'table' 
+        ? 'min-h-screen' // Allow content to extend beyond viewport for table view
+        : 'h-[calc(100vh-4rem)] overflow-hidden' // Keep current behavior for cards view
+    }`}>
       {/* Top Row: Summary Cards - auto height */}
       <div>
-        <DashboardSummaryCards summary={summary} />
+        <DashboardSummaryCards 
+          summary={summary} 
+          onViewModeChange={handleViewModeChange}
+          defaultViewMode={viewMode}
+        />
       </div>
       
       {/* Machine Overview Panel - auto height */}
@@ -134,7 +157,7 @@ export function DashboardAutoLayout({
               <div className="flex items-center justify-center py-8">
                 <div className="text-muted-foreground">Loading machine data...</div>
               </div>
-            ) : (
+            ) : viewMode === 'cards' ? (
               <MachineCards 
                 machines={machineCardsData} 
                 selectedMachineId={selectedMachineId}
@@ -142,18 +165,19 @@ export function DashboardAutoLayout({
                 visibleCardIndex={visibleCardIndex}
                 onVisibleCardIndexChange={handleVisibleCardIndexChange}
               />
+            ) : (
+              <DashboardTable machines={machineCardsData} />
             )}
           </CardContent>
         </Card>
       </div>
       
       {/* Main Content: Metrics Panel - responsive height to fill remaining space */}
-      <div className="flex-1 min-h-0 overflow-hidden">
-        <Card className="h-full shadow-lg border-2 border-border">
-          <CardContent className="h-full p-4">
+      <div className={`${viewMode === 'table' ? 'h-[470px]' : 'flex-1 min-h-0'} ${viewMode === 'table' ? '' : 'overflow-hidden'}`}>
+        <Card className={`${viewMode === 'table' ? 'h-[470px]' : 'h-full'} shadow-lg border-2 border-border`}>
+          <CardContent className={`${viewMode === 'table' ? 'h-[470px]' : 'h-full'} p-4`}>
             <MetricsChartsPanel 
               chartData={chartData} 
-              selectedMachineId={selectedMachineId}
               selectedMachineName={selectedMachine?.name || null}
               lastRefreshTime={lastRefreshTime}
             />

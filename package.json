@@ -69,7 +69,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.12",
     "tailwindcss-animate": "^1.0.7",
-    "tsx": "^4.20.4",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "uuid": "^11.1.0"
   },
@@ -82,7 +82,7 @@
     "@types/react": "19.1.11",
     "@types/string-template": "^1.0.7",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9.33.0",
+    "eslint": "^9.34.0",
     "eslint-config-next": "15.5.0"
   }
 }

@@ -385,219 +385,6 @@ export function setConfiguration(key: string, value: string): void {
   });
 }
 
-// Enhanced data functions with better formatting (consolidated from data.ts)
-interface MachineSummaryRow {
-  machine_id: string;
-  name: string;
-  backup_name: string;
-  last_backup_date: string | null;
-  last_backup_status: BackupStatus | null;
-  last_backup_duration: number | null;
-  last_backup_list_count: number | null;
-  backup_count: number;
-  total_warnings: number;
-  total_errors: number;
-  available_backups: string | null;
-  status_history: string | null;
-  file_count: number;
-  file_size: number;
-  storage_size: number;
-  uploaded_size: number;
-}
-
-export function getMachinesSummary() {
-  return withDb(() => {
-    const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as MachineSummaryRow[];
-    
-    // Group by machine to create the structure needed for machine summary
-    const machineMap = new Map<string, {
-      id: string;
-      name: string;
-      backupTypes: Array<{
-        name: string;
-        lastBackupDate: string;
-        lastBackupStatus: BackupStatus | 'N/A';
-        lastBackupDuration: string;
-        lastBackupListCount: number | null;
-        backupCount: number;
-        statusHistory: BackupStatus[];
-        fileCount: number;
-        fileSize: number;
-        storageSize: number;
-        uploadedSize: number;
-        isBackupOverdue: boolean;
-        notificationEvent?: NotificationEvent;
-        expectedBackupDate: string;
-        expectedBackupElapsed: string;
-        lastOverdueCheck: string;
-        lastNotificationSent: string;
-      }>;
-      totalBackupCount: number;
-      lastBackupDate: string;
-      lastBackupStatus: BackupStatus | 'N/A';
-      lastBackupDuration: string;
-      lastBackupListCount: number | null;
-      lastBackupName: string | null;
-      lastBackupId: string | null;
-      totalWarnings: number;
-      totalErrors: number;
-      availableBackups: string[] | null;
-    }>();
-    
-    rows.forEach(row => {
-      const machineId = row.machine_id;
-      
-      if (!machineMap.has(machineId)) {
-        // Initialize machine data
-        machineMap.set(machineId, {
-          id: machineId,
-          name: row.name,
-          backupTypes: [],
-          totalBackupCount: 0,
-          lastBackupDate: 'N/A',
-          lastBackupStatus: 'N/A',
-          lastBackupDuration: 'N/A',
-          lastBackupListCount: null,
-          lastBackupName: null,
-          lastBackupId: null,
-          totalWarnings: 0,
-          totalErrors: 0,
-          availableBackups: null
-        });
-      }
-      
-      const machine = machineMap.get(machineId)!;
-      
-      // Parse status history for status bars
-      const statusHistory: BackupStatus[] = [];
-      if (row.status_history) {
-        const statuses = row.status_history.split(',');
-        statuses.forEach(status => {
-          if (status && status !== 'null') {
-            // Validate status
-            const validStatuses: BackupStatus[] = ['Success', 'Unknown', 'Warning', 'Error', 'Fatal'];
-            if (validStatuses.includes(status as BackupStatus)) {
-              statusHistory.push(status as BackupStatus);
-            } else {
-              statusHistory.push('Unknown');
-            }
-          }
-        });
-      }
-      
-      // Add backup type data
-      const backupType = {
-        name: row.backup_name,
-        lastBackupDate: row.last_backup_date || 'N/A',
-        lastBackupStatus: (row.last_backup_status || 'N/A') as BackupStatus | 'N/A',
-        lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
-        lastBackupListCount: row.last_backup_list_count || null,
-        backupCount: row.backup_count || 0,
-        statusHistory,
-        fileCount: row.file_count || 0,
-        fileSize: row.file_size || 0,
-        storageSize: row.storage_size || 0,
-        uploadedSize: row.uploaded_size || 0,
-        // Initialize backup status fields
-        isBackupOverdue: false,
-        notificationEvent: undefined,
-        expectedBackupDate: 'N/A',
-        expectedBackupElapsed: 'N/A',
-        lastOverdueCheck: getLastOverdueBackupCheckTime(),
-        lastNotificationSent: 'N/A'
-      };
-      
-      machine.backupTypes.push(backupType);
-      
-      // Update machine totals
-      machine.totalBackupCount += row.backup_count || 0;
-      machine.totalWarnings += row.total_warnings || 0;
-      machine.totalErrors += row.total_errors || 0;
-      
-      // Update latest backup info (use the most recent backup across all types)
-      if (row.last_backup_date && (machine.lastBackupDate === 'N/A' || new Date(row.last_backup_date) > new Date(machine.lastBackupDate))) {
-        machine.lastBackupDate = row.last_backup_date;
-        machine.lastBackupStatus = row.last_backup_status || 'N/A';
-        machine.lastBackupDuration = row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A';
-        machine.lastBackupListCount = row.last_backup_list_count || null;
-        machine.lastBackupName = row.backup_name;
-        machine.lastBackupId = machineId; // Using machine ID as backup ID for now
-      }
-      
-      // Collect available backups
-      if (row.available_backups) {
-        try {
-          const availableBackups = JSON.parse(row.available_backups);
-          if (Array.isArray(availableBackups)) {
-            machine.availableBackups = availableBackups;
-          }
-        } catch (error) {
-          console.warn('Failed to parse available backups:', error);
-        }
-      }
-    });
-    
-    // Process each machine to add overdue status and other derived data per backup type
-    const result = Array.from(machineMap.values()).map(machine => {
-      // Process each backup type to add overdue status and other derived data
-      machine.backupTypes = machine.backupTypes.map(backupType => {
-        let isOverdue = false;
-        let expectedBackupDate = 'N/A';
-        let expectedBackupElapsed = 'N/A';
-        
-        if (backupType.lastBackupDate !== 'N/A') {
-          isOverdue = isBackupOverdueByInterval(machine.name, backupType.name, backupType.lastBackupDate);
-          
-          // Get expected backup date
-          const backupSettings = getBackupIntervalSettings(machine.name, backupType.name);
-          if (backupSettings) {
-            const globalTolerance = getOverdueToleranceConfig();
-            expectedBackupDate = calculateExpectedBackupDate(
-              backupType.lastBackupDate,
-              backupSettings.expectedInterval,
-              backupSettings.intervalUnit,
-              globalTolerance
-            );
-            expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
-          }
-        }
-        
-        // Get notification event for this backup type
-        const notificationEvent = getNotificationEvent(machine.name, backupType.name);
-        
-        // Get last notification sent for this backup type
-        let lastNotificationSent = 'N/A';
-        const backupKey = `${machine.name}:${backupType.name}`;
-        const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-        if (lastNotificationJson) {
-          try {
-            const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
-            const notification = lastNotifications[backupKey];
-            if (notification && notification.lastNotificationSent) {
-              lastNotificationSent = notification.lastNotificationSent;
-            }
-          } catch (error) {
-            console.warn('Failed to parse overdue backup notifications:', error);
-          }
-        }
-        
-        return {
-          ...backupType,
-          isBackupOverdue: isOverdue,
-          notificationEvent,
-          expectedBackupDate,
-          expectedBackupElapsed,
-          lastNotificationSent
-        };
-      });
-      
-      return machine;
-    });
-    
-    return result;
-  });
-}
-
 interface MachineRow {
   id: string;
   name: string;
@@ -920,15 +707,16 @@ export function getAllMachinesChartData() {
   }
 }
 
-// New function to get machine cards data efficiently
-export function getMachineCardsData() {
+// New function to get machine summary for the new dashboard
+export function  getMachinesSummary() {
   try {
     return withDb(() => {
-      const rows = safeDbOperation(() => dbOps.getMachineCardsData.all(), 'getMachineCardsData', []) as Array<{
+      const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as Array<{
         machine_id: string;
         machine_name: string;
         backup_name: string;
         last_backup_date: string | null;
+        last_backup_id: string | null;
         last_backup_status: BackupStatus | null;
         last_backup_duration: number | null;
         backup_count: number;
@@ -936,17 +724,21 @@ export function getMachineCardsData() {
         file_size: number;
         storage_size: number;
         backup_versions: number;
+        available_backups: string | null;
         uploaded_size: number;
+        warnings: number;
+        errors: number;
         status_history: string | null;
       }>;
       
-      // Group by machine to create the structure needed for machine cards
+      // Group by machine to create the structure needed for machine cards/table
       const machineMap = new Map<string, {
         id: string;
         name: string;
-        backupTypes: Array<{
+        backupInfo: Array<{
           name: string;
           lastBackupDate: string;
+          lastBackupId: string;
           lastBackupStatus: BackupStatus | 'N/A';
           lastBackupDuration: string;
           lastBackupListCount: number | null;
@@ -956,12 +748,13 @@ export function getMachineCardsData() {
           fileSize: number;
           storageSize: number;
           uploadedSize: number;
-          // Backup status fields moved to backup type level
+          availableBackups: string[];
+          warnings: number;
+          errors: number;
           isBackupOverdue: boolean;
           notificationEvent?: NotificationEvent;
           expectedBackupDate: string;
           expectedBackupElapsed: string;
-          lastOverdueCheck: string;
           lastNotificationSent: string;
         }>;
         totalBackupCount: number;
@@ -969,7 +762,9 @@ export function getMachineCardsData() {
         lastBackupStatus: BackupStatus | 'N/A';
         lastBackupDuration: string;
         lastBackupListCount: number | null;
-        availableBackups: string[];
+        lastBackupName: string | null;
+        lastOverdueCheck: string;
+        backupNames: string[];
       }>();
       
       rows.forEach(row => {
@@ -980,13 +775,15 @@ export function getMachineCardsData() {
           machineMap.set(machineId, {
             id: machineId,
             name: row.machine_name,
-            backupTypes: [],
+            backupInfo: [],
             totalBackupCount: 0,
             lastBackupDate: 'N/A',
-            lastBackupStatus: 'N/A',
+            lastBackupStatus:  'N/A',
             lastBackupDuration: 'N/A',
-            lastBackupListCount: null,
-            availableBackups: []
+            lastBackupListCount: 0,
+            lastBackupName: 'N/A',
+            lastOverdueCheck: getLastOverdueBackupCheckTime(),
+            backupNames: [],
           });
         }
         
@@ -1010,29 +807,34 @@ export function getMachineCardsData() {
         }
         
         // Add backup type data
-        const backupType = {
+        const backupInfo = {
           name: row.backup_name,
           lastBackupDate: row.last_backup_date || 'N/A',
+          lastBackupId: row.last_backup_id || 'N/A',
           lastBackupStatus: (row.last_backup_status || 'N/A') as BackupStatus | 'N/A',
           lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
           lastBackupListCount: row.backup_versions || null,
           backupCount: row.backup_count || 0,
           statusHistory,
-          // New fields from the updated query
           fileCount: row.file_count || 0,
           fileSize: row.file_size || 0,
           storageSize: row.storage_size || 0,
           uploadedSize: row.uploaded_size || 0,
+          warnings: row.warnings || 0,
+          errors: row.errors || 0,
+          availableBackups: row.available_backups ? JSON.parse(row.available_backups) : [],
           // Initialize backup status fields
           isBackupOverdue: false,
           notificationEvent: undefined,
           expectedBackupDate: 'N/A',
           expectedBackupElapsed: 'N/A',
-          lastOverdueCheck: getLastOverdueBackupCheckTime(),
           lastNotificationSent: 'N/A'
         };
         
-        machine.backupTypes.push(backupType);
+        machine.backupInfo.push(backupInfo);
+
+        // add the backup name to the backup names array
+        machine.backupNames.push(row.backup_name);
         
         // Update machine totals
         machine.totalBackupCount += row.backup_count || 0;
@@ -1045,29 +847,25 @@ export function getMachineCardsData() {
           machine.lastBackupListCount = row.backup_versions || null;
         }
         
-        // Collect available backups - not available in new query, so we'll use backup_versions
-        if (row.backup_versions) {
-          machine.availableBackups.push(`Backup version ${row.backup_versions}`);
-        }
       });
       
       // Process each machine to add overdue status and other derived data per backup type
       const result = Array.from(machineMap.values()).map(machine => {
         // Process each backup type to add overdue status and other derived data
-        machine.backupTypes = machine.backupTypes.map(backupType => {
+        machine.backupInfo = machine.backupInfo.map(thisBackupInfo => {
           let isOverdue = false;
           let expectedBackupDate = 'N/A';
           let expectedBackupElapsed = 'N/A';
           
-          if (backupType.lastBackupDate !== 'N/A') {
-            isOverdue = isBackupOverdueByInterval(machine.name, backupType.name, backupType.lastBackupDate);
+          if (thisBackupInfo.lastBackupDate !== 'N/A') {
+            isOverdue = isBackupOverdueByInterval(machine.name, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
             
             // Get expected backup date
-            const backupSettings = getBackupIntervalSettings(machine.name, backupType.name);
+            const backupSettings = getBackupIntervalSettings(machine.name, thisBackupInfo.name);
             if (backupSettings) {
               const globalTolerance = getOverdueToleranceConfig();
               expectedBackupDate = calculateExpectedBackupDate(
-                backupType.lastBackupDate,
+                thisBackupInfo.lastBackupDate,
                 backupSettings.expectedInterval,
                 backupSettings.intervalUnit,
                 globalTolerance
@@ -1077,10 +875,10 @@ export function getMachineCardsData() {
           }
           
           // Get notification event for this backup type
-          const notificationEvent = getNotificationEvent(machine.name, backupType.name);
+          const notificationEvent = getNotificationEvent(machine.name, thisBackupInfo.name);
           
           return {
-            ...backupType,
+            ...thisBackupInfo,
             isBackupOverdue: isOverdue,
             notificationEvent,
             expectedBackupDate,
@@ -1089,22 +887,21 @@ export function getMachineCardsData() {
         });
         
         // Remove duplicate available backups
-        machine.availableBackups = [...new Set(machine.availableBackups)];
+        machine.backupNames = [...new Set(machine.backupNames)];
         
         return machine;
       });
-      
+           
       return result;
     });
   } catch (error) {
-    console.error('[getMachineCardsData] Error:', error instanceof Error ? error.message : String(error));
+    console.error('[getMachineSummary] Error:', error instanceof Error ? error.message : String(error));
     return [];
   }
 }
 
 // Wrapper functions for database operations (keeping for backward compatibility)
 export const dbUtils = {
-  getMachinesSummary: () => getMachinesSummary(),
   getMachineById: (machineId: string) => getMachineById(machineId),
   getMachineByName: (name: string) => withDb(() => safeDbOperation(() => dbOps.getMachineByName.get(name), 'getMachineByName')),
   getLatestBackup: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackup.get(machineId), 'getLatestBackup')),
@@ -1115,7 +912,7 @@ export const dbUtils = {
   getLatestBackupDate: () => withDb(() => safeDbOperation(() => dbOps.getLatestBackupDate.get(), 'getLatestBackupDate')),
   getAggregatedChartData: () => getAggregatedChartData(),
   getAllMachinesChartData: () => getAllMachinesChartData(),
-  getMachineCardsData: () => getMachineCardsData(),
+  getMachinesSummary: () => getMachinesSummary(),
   
   insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => 
     withDb(() => safeDbOperation(() => dbOps.insertBackup.run(data), 'insertBackup')),
@@ -1393,6 +1190,11 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
   return { ...defaultNtfyConfig, topic: defaultTopic };
 }
 
+// Function to get all machine and their respective backup names
+export function getMachinesBackupNames() {
+  return withDb(() => safeDbOperation(() => dbOps.getMachinesBackupNames.all(), 'getMachinesBackupNames', []));
+}
+
 // Function to ensure backup settings are complete for all machines and backups
 export async function ensureBackupSettingsComplete(): Promise<{ added: number; total: number }> {
   try {
@@ -1403,17 +1205,16 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
       : {};
     
     // Get all machines with backups
-    const machinesSummary = getMachinesSummary() as { 
-      id: string; 
-      name: string; 
-      lastBackupName: string | null;
+    const machinesSummary = getMachinesBackupNames() as { 
+      machine_name: string; 
+      backup_name: string;
     }[];
     
     // Create a set of all machine-backup combinations
     const machineBackupCombinations = new Set<string>();
     machinesSummary.forEach(machine => {
-      if (machine.lastBackupName) {
-        const backupKey = getBackupKey(machine.name, machine.lastBackupName);
+      if (machine.backup_name) {
+        const backupKey = getBackupKey(machine.machine_name, machine.backup_name);
         machineBackupCombinations.add(backupKey);
       }
     });
