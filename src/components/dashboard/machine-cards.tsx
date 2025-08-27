@@ -52,15 +52,19 @@ function getStatusColor(status: BackupStatus): string {
 }
 
 // Custom status badge without text, just icon and color
-function CompactStatusBadge({ status, machineId, lastBackupId }: { status: BackupStatus; machineId: string; lastBackupId: string }) {
+function CompactStatusBadge({ status, machineId, lastBackupId, haveOverdueBackups }: { status: BackupStatus; machineId: string; lastBackupId: string | null; haveOverdueBackups: boolean }) {
   const router = useRouter();
   
   const getStatusIcon = (status: BackupStatus) => {
-    switch (status) {
+      switch (status) {
       case 'Success':
-        return <div className="w-3 h-3 bg-green-500 rounded-full" />;
+        if (!haveOverdueBackups) {
+          return <div className="w-3 h-3 bg-green-500 rounded-full" />;
+        } else { // return yelllow if have overdue backups
+          return <div className="w-3 h-3 bg-yellow-500 rounded-full" />;
+        }
       case 'Warning':
-        return <div className="w-3 h-3 bg-yellow-500 rounded-full" />;
+          return <div className="w-3 h-3 bg-yellow-500 rounded-full" />;
       case 'Error':
       case 'Fatal':
         return <div className="w-3 h-3 bg-red-500 rounded-full" />;
@@ -91,24 +95,22 @@ function BackupStatusBar({ statusHistory }: { statusHistory: BackupStatus[] }) {
   
   return (
     <div className="flex gap-0.5">
+      {/* Fill remaining slots if less than 10 statuses */}
+      {Array.from({ length: Math.max(0, 10 - recentStatuses.length) }, (_, index) => (
+        <div
+          key={`empty-${index}`}
+          className="w-1 h-3 border border-gray-700 rounded-sm bg-transparent"
+        />
+      ))}
       {recentStatuses.map((status, index) => {
-        const statusColor = getStatusColor(status);
+        const statusColor = getStatusColor(status);  
         return (
           <div 
             key={index} 
             className={`w-1 h-3 ${statusColor} rounded-sm`}
-            title={`Backup ${index + 1}: ${status}`}
           />
         );
       })}
-      {/* Fill remaining slots if less than 10 statuses */}
-      {Array.from({ length: Math.max(0, 10 - recentStatuses.length) }, (_, index) => (
-        <div 
-          key={`empty-${index}`} 
-          className="w-1 h-3 bg-gray-300 rounded-sm"
-          title="No backup data"
-        />
-      ))}
     </div>
   );
 }
@@ -148,7 +150,8 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
             <CompactStatusBadge 
               status={machineStatus} 
               machineId={machine.id}
-              lastBackupId={machine.lastBackupId}
+              lastBackupId={machine.lastBackupId || ''}
+              haveOverdueBackups={machine.haveOverdueBackups}
             />
           </div>
         </div>
@@ -157,10 +160,6 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
       <CardContent className="space-y-3 flex-1 flex flex-col">
         {/* Summary Information - Compact */}
         <div className="grid grid-cols-4 gap-2 text-xs flex-shrink-0">
-          <div className="text-center">
-            <div className="text-muted-foreground text-xs">Backups</div>
-            <div className="font-semibold text-sm">{machine.totalBackupCount}</div>
-          </div>
           <div className="text-center">
             <div className="text-muted-foreground text-xs">Files</div>
             <div className="font-semibold text-sm">
@@ -174,81 +173,191 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
             </div>
           </div>
           <div className="text-center">
+            <div className="text-muted-foreground text-xs">Storage</div>
+            <div className="font-semibold text-sm">
+              {machine.totalStorageSize > 0 ? formatBytes(machine.totalStorageSize) : 'N/A'}
+            </div>
+          </div>
+          <div className="text-center">
             <div className="text-muted-foreground text-xs">Last</div>
             <div className="font-semibold text-xs">
-              {machine.lastBackupDate !== "N/A" 
-                ? formatTimeAgo(machine.lastBackupDate)
-                : "N/A"}
+              {machine.lastBackupDate !== "N/A" ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="cursor-help">
+                        {formatTimeAgo(machine.lastBackupDate)}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {new Date(machine.lastBackupDate).toLocaleString()}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                "N/A"
+              )}
             </div>
           </div>
         </div>
 
         {/* Backup List - Each backup type on its own row */}
         <div className="space-y-1 flex-1 flex flex-col">
-          <div className="text-xs text-muted-foreground font-medium flex-shrink-0">Backup Types:</div>
+          <div className="text-xs text-muted-foreground font-medium flex-shrink-0">Backups:</div>
           <div className="flex-1 space-y-1">
             {machine.backupInfo.length > 0 ? (
               machine.backupInfo.map((backupType, index) => (
-                <div 
-                  key={index} 
-                  className="space-y-1 py-1 border-b border-border/30 last:border-b-0 cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-2 -mx-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    router.push(`/detail/${machine.id}?backup=${encodeURIComponent(backupType.name)}`);
-                  }}
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-foreground">{backupType.name}</span>
-                    <div className="flex items-center gap-2">
-                      {/* Status bar using actual backup history */}
-                      <BackupStatusBar statusHistory={backupType.statusHistory} />
-                      {/* Overdue icon - positioned between status bars and timeago */}
-                      {backupType.isBackupOverdue && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <AlertTriangle className="h-3 w-3 text-red-500" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <div className="space-y-1">
-                                <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastOverdueCheck !== "N/A" ? new Date(machine.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastOverdueCheck) + ")" : "N/A"}</span></div>
-                                <div><span>Last backup:</span> <span className="text-muted-foreground">{backupType.lastBackupDate !== "N/A" ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")" : "N/A"}</span></div>
-                                <div><span>Expected backup:</span> <span className="text-muted-foreground">{backupType.expectedBackupDate !== "N/A" ? new Date(backupType.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.expectedBackupDate) + ")" : "N/A"}</span></div>
-                                <div><span>Last notification:</span> <span className="text-muted-foreground">{backupType.lastNotificationSent !== "N/A" ? new Date(backupType.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(backupType.lastNotificationSent) + ")" : "N/A"}</span></div>
-                                <div className="pt-2 border-t">
-                                  <button 
-                                    className="text-xs cursor-pointer flex items-center"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      router.push('/settings?tab=backups');
-                                    }}
-                                  >
-                                  <Settings className="h-3 w-3 mr-1" /> Configure 
-                                  </button>
-                                </div>
-                              </div>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                      {/* Time ago - use backup type's last backup date */}
-                      <span 
-                        className="text-muted-foreground text-xs min-w-[60px] text-right cursor-pointer hover:text-foreground transition-colors"
+                <TooltipProvider key={index}>
+                  <Tooltip delayDuration={1000}>
+                    <TooltipTrigger asChild>
+                      <div 
+                        className="space-y-1 py-1 border-b border-border/30 last:border-b-0 cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-2 -mx-2"
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (backupType.lastBackupId && backupType.lastBackupId !== "N/A") {
-                            router.push(`/detail/${machine.id}/backup/${backupType.lastBackupId}`);
-                          }
+                          router.push(`/detail/${machine.id}?backup=${encodeURIComponent(backupType.name)}`);
                         }}
-                        title={backupType.lastBackupId && backupType.lastBackupId !== "N/A" ? "Click to view backup details" : ""}
                       >
-                        {backupType.lastBackupDate !== "N/A" 
-                          ? formatTimeAgo(backupType.lastBackupDate)
-                          : "N/A"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-medium text-foreground">{backupType.name}</span>
+                          <div className="flex items-center gap-2">
+                            {/* Status bar using actual backup history */}
+                            <BackupStatusBar statusHistory={backupType.statusHistory} />
+                            {/* Overdue icon - positioned between status bars and timeago */}
+                            {backupType.isBackupOverdue && (
+                              <AlertTriangle className="h-3 w-3 text-red-500" />
+                            )}
+                            {/* Time ago - use backup type's last backup date */}
+                            <span className="text-muted-foreground text-xs min-w-[60px] text-right">
+                              {backupType.lastBackupDate !== "N/A" 
+                                ? formatTimeAgo(backupType.lastBackupDate)
+                                : "N/A"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="cursor-default" onClick={(e) => {
+                      e.stopPropagation();
+                      // Close the tooltip by clicking outside
+                      const tooltip = e.currentTarget.closest('[data-radix-tooltip-content]');
+                      if (tooltip) {
+                        tooltip.remove();
+                      }
+                    }}>
+                      <div className="space-y-3">
+                        <div className="font-semibold text-sm text-left">
+                          <div className="font-semibold text-blue-600">{machine.name} : {backupType.name}</div>
+                        </div>
+
+                        <div className="border-t pt-3">
+                          <div className="text-semibold mb-4">
+                            Last Backup Details
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Date:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.lastBackupDate !== "N/A" 
+                                  ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")"
+                                  : "N/A"}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Status:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.lastBackupStatus !== "N/A" 
+                                  ? backupType.lastBackupStatus
+                                  : "N/A"}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Files:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.fileCount !== null && backupType.fileCount !== undefined
+                                  ? backupType.fileCount.toLocaleString()
+                                  : "N/A"}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Size:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.fileSize !== null && backupType.fileSize !== undefined
+                                  ? formatBytes(backupType.fileSize)
+                                  : "N/A"}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Storage:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.storageSize !== null && backupType.storageSize !== undefined
+                                  ? formatBytes(backupType.storageSize)
+                                  : "N/A"}
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Uploaded:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.uploadedSize !== null && backupType.uploadedSize !== undefined
+                                  ? formatBytes(backupType.uploadedSize)
+                                  : "N/A"}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                              <span className="text-muted-foreground  text-right">Versions:</span>
+                              <span className="font-semibold text-left">
+                                {backupType.backupCount !== null && backupType.backupCount !== undefined
+                                  ? backupType.backupCount.toLocaleString()
+                                  : "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Overdue information section */}
+                        {backupType.isBackupOverdue && (
+                          <>
+                            <div className="border-t pt-3">
+                              <div className="font-semibold text-sm text-red-600 mb-2 flex items-center gap-2 text-left">
+                                <AlertTriangle className="h-4 w-4" />
+                                Backup Overdue
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
+                                  <span className="text-muted-foreground  text-right">Expected:</span>
+                                  <span className="font-semibold text-left">
+                                    {backupType.expectedBackupDate !== "N/A" 
+                                      ? new Date(backupType.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.expectedBackupDate) + ")"
+                                      : "N/A"}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="mt-3 pt-2 border-t text-left">
+                                <button 
+                                  className="text-xs flex items-center hover:text-blue-500 transition-colors"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push('/settings?tab=backups');
+                                  }}
+                                >
+                                  <Settings className="h-3 w-3 mr-1" /> Configure
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               ))
             ) : (
               <div className="text-xs text-muted-foreground italic">No backup types available</div>

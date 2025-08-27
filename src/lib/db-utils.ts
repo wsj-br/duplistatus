@@ -110,6 +110,27 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
   }
 }
 
+// Helper function to get last notification sent timestamp for a backup
+function getLastNotificationSent(machineName: string, backupName: string): string {
+  try {
+    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
+    if (!lastNotificationJson) return 'N/A';
+    
+    const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
+    const backupKey = getBackupKey(machineName, backupName);
+    const notification = lastNotifications[backupKey];
+    
+    if (notification && notification.lastNotificationSent) {
+      return notification.lastNotificationSent;
+    }
+    
+    return 'N/A';
+  } catch (error) {
+    console.error('Error getting last notification sent:', error instanceof Error ? error.message : String(error));
+    return 'N/A';
+  }
+}
+
 // Helper function to get backup interval settings for expected backup calculations
 function getBackupIntervalSettings(machineName: string, backupName: string): {
   expectedInterval: number;
@@ -758,6 +779,7 @@ export function  getMachinesSummary() {
           lastNotificationSent: string;
         }>;
         totalBackupCount: number;
+        totalStorageSize: number;
         lastBackupDate: string;
         lastBackupStatus: BackupStatus | 'N/A';
         lastBackupDuration: string;
@@ -765,6 +787,7 @@ export function  getMachinesSummary() {
         lastBackupName: string | null;
         lastBackupId: string | null;
         lastOverdueCheck: string;
+        haveOverdueBackups: boolean;
         backupNames: string[];
       }>();
       
@@ -778,6 +801,7 @@ export function  getMachinesSummary() {
             name: row.machine_name,
             backupInfo: [],
             totalBackupCount: 0,
+            totalStorageSize: 0,
             lastBackupDate: 'N/A',
             lastBackupStatus:  'N/A',
             lastBackupDuration: 'N/A',
@@ -785,6 +809,7 @@ export function  getMachinesSummary() {
             lastBackupName: 'N/A',
             lastBackupId: 'N/A',
             lastOverdueCheck: getLastOverdueBackupCheckTime(),
+            haveOverdueBackups: false,
             backupNames: [],
           });
         }
@@ -840,6 +865,8 @@ export function  getMachinesSummary() {
         
         // Update machine totals
         machine.totalBackupCount += row.backup_count || 0;
+        // Calculate total storage size from backupInfo
+        machine.totalStorageSize += row.storage_size || 0;
         
         // Update latest backup info (use the most recent backup across all types)
         if (row.last_backup_date && (machine.lastBackupDate === 'N/A' || new Date(row.last_backup_date) > new Date(machine.lastBackupDate))) {
@@ -862,7 +889,12 @@ export function  getMachinesSummary() {
           
           if (thisBackupInfo.lastBackupDate !== 'N/A') {
             isOverdue = isBackupOverdueByInterval(machine.name, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
-            
+
+            // Check if the machine has overdue backups
+            if (isOverdue) {
+              machine.haveOverdueBackups = true;
+            }
+
             // Get expected backup date
             const backupSettings = getBackupIntervalSettings(machine.name, thisBackupInfo.name);
             if (backupSettings) {
@@ -880,12 +912,16 @@ export function  getMachinesSummary() {
           // Get notification event for this backup type
           const notificationEvent = getNotificationEvent(machine.name, thisBackupInfo.name);
           
+          // Get last notification sent (if any)
+          const lastNotificationSent = getLastNotificationSent(machine.name, thisBackupInfo.name);
+          
           return {
             ...thisBackupInfo,
             isBackupOverdue: isOverdue,
             notificationEvent,
             expectedBackupDate,
-            expectedBackupElapsed
+            expectedBackupElapsed,
+            lastNotificationSent
           };
         });
         
@@ -987,7 +1023,7 @@ function cleanupMachineConfiguration(machineName: string): void {
         
         // Save the updated backup settings
         setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
-        console.log(`[cleanupMachineConfiguration] Cleaned up backup_settings for machine: ${machineName}`);
+
       } catch (error) {
         console.error('Failed to parse backup_settings during cleanup:', error instanceof Error ? error.message : String(error));
       }
@@ -1010,7 +1046,7 @@ function cleanupMachineConfiguration(machineName: string): void {
         
         // Save the updated overdue notifications
         setConfiguration('overdue_backup_notifications', JSON.stringify(updatedOverdueNotifications));
-        console.log(`[cleanupMachineConfiguration] Cleaned up overdue_backup_notifications for machine: ${machineName}`);
+
       } catch (error) {
         console.error('Failed to parse overdue_backup_notifications during cleanup:', error instanceof Error ? error.message : String(error));
       }
@@ -1142,15 +1178,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
           const expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
           
           // Get last notification sent (if any)
-          const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-          let lastNotificationSent = "";
-          if (lastNotificationJson) {
-            const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
-            const notification = lastNotifications[backupKey];
-            if (notification) {
-              lastNotificationSent = notification.lastNotificationSent;
-            }
-          }
+          const lastNotificationSent = getLastNotificationSent(machineName, backupName);
           
           overdueBackups.push({
             machineName,
@@ -1222,7 +1250,7 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
       backup_name: string;
     }[];
 
-    console.log("machinesSummary", machinesSummary);
+
     
     // Create a set of all machine-backup combinations
     const machineBackupCombinations = new Set<string>();
@@ -1232,7 +1260,7 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
       }
     });
 
-    console.log("machineBackupCombinations", machineBackupCombinations);
+
     
     // Check for missing backup settings and add defaults
     let addedSettings = 0;
@@ -1244,14 +1272,14 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
         const { defaultBackupNotificationConfig } = await import('./default-config');
         updatedBackupSettings[backupKey] = { ...defaultBackupNotificationConfig };
         addedSettings++;
-        console.log(`[ensureBackupSettingsComplete] Added default backup settings for ${backupKey}`);
+
       }
     }
     
     // Save updated settings if any were added
     if (addedSettings > 0) {
       setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
-      console.log(`[ensureBackupSettingsComplete] Added ${addedSettings} default backup settings`);
+  
     }
     
     return {

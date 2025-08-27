@@ -29,3 +29,14 @@ WHERE id = (
   ORDER BY b.date DESC
   LIMIT 1
 );
+
+
+DELETE FROM backups 
+WHERE id = (
+  SELECT b.id
+  FROM backups b
+  JOIN machines m ON b.machine_id = m.id
+  WHERE m.name = 'g5-server'
+  ORDER BY b.date DESC
+  LIMIT 1
+);

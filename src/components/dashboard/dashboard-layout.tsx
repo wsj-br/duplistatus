@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MachineCards } from "./machine-cards";
 import { MetricsChartsPanel } from "./metrics-charts-panel";
 
-interface DashboardAutoLayoutProps {
+interface DashboardLayoutProps {
   data: DashboardData;
   selectedMachineId?: string | null;
   selectedMachine?: MachineSummary | null;
@@ -20,7 +20,7 @@ interface DashboardAutoLayoutProps {
   onRefresh: () => void;
 }
 
-export function DashboardAutoLayout({ 
+export function DashboardLayout({ 
   data, 
   selectedMachineId,
   selectedMachine,
@@ -30,7 +30,7 @@ export function DashboardAutoLayout({
   lastRefreshTime,
   onMachineSelect,
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
-}: DashboardAutoLayoutProps) {
+}: DashboardLayoutProps) {
   
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   // Preserve visible card index across component remounts

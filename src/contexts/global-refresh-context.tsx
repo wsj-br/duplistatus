@@ -67,7 +67,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
   // Determine current page type
   const getCurrentPageType = useCallback((): PageType => {
-    if (pathname === '/' || pathname === '/dashboard-auto') return 'dashboard';
+    if (pathname === '/') return 'dashboard';
     // Only show on main detail pages, not on backup detail pages
     if (pathname.startsWith('/detail/') && !pathname.includes('/backup/')) return 'detail';
     return 'none';

@@ -69,12 +69,14 @@ export interface MachineSummary {
     availableBackups: string[];
   }>;
   totalBackupCount: number;
+  totalStorageSize: number; 
+  haveOverdueBackups: boolean;
   lastBackupDate: string;
   lastBackupStatus: BackupStatus | 'N/A';
   lastBackupDuration: string;
-  lastBackupListCount: number;
-  lastBackupName: string;
-  lastBackupId: string
+  lastBackupListCount: number | null;
+  lastBackupName: string | null;
+  lastBackupId: string | null
   lastOverdueCheck: string;
   backupNames: string[];
 }

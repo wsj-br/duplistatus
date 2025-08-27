@@ -1,96 +1,190 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { DashboardTable } from "@/components/dashboard/dashboard-table";
-import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
-import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";
-import { DashboardToastHandler } from "@/components/dashboard/dashboard-toast-handler";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Info } from "lucide-react";
-import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { MachineSummary, OverallSummary } from "@/lib/types";
-
-interface ChartDataPoint {
-  date: string;
-  isoDate: string;
-  uploadedSize: number;
-  duration: number;
-  fileCount: number;
-  fileSize: number;
-  storageSize: number;
-  backupVersions: number;
-  machineId?: string;
-  backupId?: string;
-}
-
-interface DashboardData {
-  machinesSummary: MachineSummary[];
-  overallSummary: OverallSummary;
-  aggregatedChartData: ChartDataPoint[];
-}
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { DashboardLayout } from './dashboard-layout';
+import { useGlobalRefresh } from '@/contexts/global-refresh-context';
+import type { MachineSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 interface DashboardAutoRefreshProps {
-  initialData: DashboardData;
+  initialData: {
+    machinesSummary: MachineSummary[];
+    overallSummary: OverallSummary;
+    allMachinesChartData: ChartDataPoint[];
+  };
 }
 
-export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps) {
-  const [data, setData] = useState<DashboardData>(initialData);
-  const { state } = useGlobalRefresh();
 
-  // Listen for refresh events from global refresh context
+
+export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps) {
+  const { state } = useGlobalRefresh();
+  
+  // State for data
+  const [machinesSummary, setMachinesSummary] = useState<MachineSummary[]>(initialData.machinesSummary);
+  const [overallSummary, setOverallSummary] = useState<OverallSummary>(initialData.overallSummary);
+  const [allMachinesChartData, setAllMachinesChartData] = useState<ChartDataPoint[]>(initialData.allMachinesChartData);
+  
+  // State for selection
+  const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
+  
+  // State for loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(() => {
+    // Use a stable timestamp to prevent hydration mismatches
+    // We'll set the actual time after the component mounts
+    return new Date(0);
+  });
+
+  // Set the actual refresh time after component mounts
+  useEffect(() => {
+    setLastRefreshTime(new Date());
+  }, []);
+
+  // Refresh function - used only for manual refresh (user clicking refresh button)
+  // Auto-refresh is handled by the global refresh context to avoid duplicate API calls
+  const refreshData = useCallback(async () => {
+    if (isLoading) return;
+    
+    try {
+      setIsLoading(true);
+      
+      const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
+        fetch('/api/machines-summary'),
+        fetch('/api/summary'),
+        fetch('/api/chart-data')
+      ]);
+
+      if (!machinesResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
+        throw new Error('Failed to fetch dashboard data');
+      }
+
+      const [newMachinesSummary, newOverallSummary, newAllMachinesChartData] = await Promise.all([
+        machinesResponse.json(),
+        summaryResponse.json(),
+        chartResponse.json()
+      ]);
+      
+      // Update state with new data
+      setMachinesSummary(newMachinesSummary);
+      setOverallSummary(newOverallSummary);
+      setAllMachinesChartData(newAllMachinesChartData);
+      
+      // Small delay to show loading state briefly
+      setTimeout(() => setIsLoading(false), 100);
+      
+      // Always update refresh time for the UI
+      setLastRefreshTime(new Date());
+    } catch (error) {
+      console.error('Failed to refresh dashboard data:', error);
+      setIsLoading(false);
+    }
+  }, [isLoading]);
+
+  // Listen for global refresh events
   useEffect(() => {
     // When the global refresh completes for dashboard pages, use the data from the context
     // instead of making duplicate API calls
-    if (!state.isRefreshing && !state.pageSpecificLoading.dashboard && !state.refreshInProgress && state.lastRefresh && state.dashboardData) {
+    if (state.lastRefresh && !state.isRefreshing && !state.pageSpecificLoading.dashboard && state.dashboardData) {
       // Use the data from global refresh context to avoid duplicate API calls
-      const { machinesSummary: machinesData, overallSummary: summaryData, allMachinesChartData: chartData } = state.dashboardData;
+      const { machinesSummary: newMachinesSummary, overallSummary: newOverallSummary, allMachinesChartData: newAllMachinesChartData } = state.dashboardData;
       
-      setData({
-        machinesSummary: machinesData,
-        overallSummary: summaryData,
-        aggregatedChartData: chartData
-      });
+      // Compare data before updating to prevent unnecessary re-renders
+      const machinesChanged = JSON.stringify(newMachinesSummary) !== JSON.stringify(machinesSummary);
+      const summaryChanged = JSON.stringify(newOverallSummary) !== JSON.stringify(overallSummary);
+      const chartDataChanged = JSON.stringify(newAllMachinesChartData) !== JSON.stringify(allMachinesChartData);
+      
+      // Only update if there are actual changes
+      if (machinesChanged || summaryChanged || chartDataChanged) {
+        if (machinesChanged) setMachinesSummary(newMachinesSummary);
+        if (summaryChanged) setOverallSummary(newOverallSummary);
+        if (chartDataChanged) setAllMachinesChartData(newAllMachinesChartData);
+      }
+      
+      // Always update refresh time for the UI
+      setLastRefreshTime(new Date());
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.dashboard, state.refreshInProgress, state.lastRefresh, state.dashboardData]);
+  }, [state.lastRefresh, state.isRefreshing, state.pageSpecificLoading.dashboard, state.dashboardData, machinesSummary, overallSummary, allMachinesChartData]);
+
+  // Handle machine selection
+  const handleMachineSelect = useCallback((machineId: string | null) => {
+    if (selectedMachineId === machineId) {
+      // Toggle off if same machine is clicked
+      setSelectedMachineId(null);
+    } else {
+      // Select new machine
+      setSelectedMachineId(machineId);
+    }
+  }, [selectedMachineId]);
+
+  // Filter and aggregate chart data based on selection
+  const filteredChartData = useMemo(() => {
+    if (selectedMachineId) {
+      // Filter data for the selected machine
+      return allMachinesChartData.filter(item => item.machineId === selectedMachineId);
+    } else {
+      // Aggregate data by date when no machine is selected (sum all machines per date)
+      const aggregatedMap = new Map<string, ChartDataPoint>();
+      
+      allMachinesChartData.forEach(item => {
+        const existing = aggregatedMap.get(item.date);
+        if (existing) {
+          // Sum the numeric fields
+          existing.uploadedSize += item.uploadedSize;
+          existing.duration += item.duration;
+          existing.fileCount += item.fileCount;
+          existing.fileSize += item.fileSize;
+          existing.storageSize += item.storageSize;
+          existing.backupVersions += item.backupVersions;
+        } else {
+          // Create new aggregated entry (without machineId for aggregated data)
+          aggregatedMap.set(item.date, {
+            date: item.date,
+            isoDate: item.isoDate,
+            uploadedSize: item.uploadedSize,
+            duration: item.duration,
+            fileCount: item.fileCount,
+            fileSize: item.fileSize,
+            storageSize: item.storageSize,
+            backupVersions: item.backupVersions
+          });
+        }
+      });
+      
+      // Convert map to array and sort by date
+      return Array.from(aggregatedMap.values()).sort((a, b) => 
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+    }
+  }, [allMachinesChartData, selectedMachineId]);
+
+  // Get selected machine
+  const selectedMachine = useMemo(() => {
+    if (!selectedMachineId) return null;
+    return machinesSummary.find(machine => machine.id === selectedMachineId) || null;
+  }, [machinesSummary, selectedMachineId]);
+
+  // Get all backups for the selected machine
+  const machineBackups = useMemo(() => {
+    if (!selectedMachine) return [];
+    // This would need to be fetched from the database
+    // For now, we'll return an empty array and handle this in the layout
+    return [];
+  }, [selectedMachine]);
 
   return (
-    <div className="flex flex-col gap-8">
-      <DashboardToastHandler />
-
-      <DashboardSummaryCards 
-        summary={data.overallSummary} 
-        onViewModeChange={() => {}} // No-op since this component doesn't support view switching
-      />
-
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl cursor-default">Overview</CardTitle>
-          <CardDescription className="cursor-default">
-            Latest backup status for all machines.
-            <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Last refresh: {state.lastRefresh ? new Date(state.lastRefresh).toLocaleString() : '--'}
-                  </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DashboardTable machines={data.machinesSummary} />
-        </CardContent>
-      </Card>
-
-      <DashboardMetricsChart aggregatedData={data.aggregatedChartData} />
-    </div>
+    <DashboardLayout
+      data={{
+        machinesSummary,
+        overallSummary,
+        allMachinesChartData
+      }}
+      selectedMachineId={selectedMachineId}
+      selectedMachine={selectedMachine}
+      machineBackups={machineBackups}
+      chartData={filteredChartData}
+      isLoading={isLoading}
+      lastRefreshTime={lastRefreshTime}
+      onMachineSelect={handleMachineSelect}
+      onRefresh={refreshData}
+    />
   );
 }

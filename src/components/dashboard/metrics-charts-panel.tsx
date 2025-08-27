@@ -356,14 +356,44 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
 
   // Get selection info for display
   const selectionInfo = useMemo(() => {
+    let baseText = '';
     if (selectedMachineName) {
-      return `${selectedMachineName}`;
+      baseText = `${selectedMachineName}`;
+    } else if (selectedBackupId) {
+      baseText = `${selectedMachineName}:${selectedBackupId}`;
+    } else {
+      baseText = 'All Machines & Backups';
     }
-    if (selectedBackupId) {
-      return `${selectedMachineName}:${selectedBackupId}`;
-    }
-    return 'All Machines & Backups';
-  }, [selectedMachineName, selectedBackupId]);
+    
+    // Convert chartTimeRange to display label
+    const getTimeRangeLabel = (timeRange: string) => {
+      switch (timeRange) {
+        case '24 hours':
+          return 'Last 24 hours';
+        case '7 days':
+          return 'Last week';
+        case '2 weeks':
+          return 'Last 2 weeks';
+        case '1 month':
+          return 'Last month';
+        case '3 months':
+          return 'Last quarter';
+        case '6 months':
+          return 'Last semester';
+        case '1 year':
+          return 'Last year';
+        case '2 years':
+          return 'Last 2 years';
+        case 'All data':
+          return 'All available data';
+        default:
+          return timeRange;
+      }
+    };
+    
+    // Append chartTimeRange in brackets with proper label
+    return `${baseText} (${getTimeRangeLabel(chartTimeRange)})`;
+  }, [selectedMachineName, selectedBackupId, chartTimeRange]);
 
   return (
     <div className="h-full flex flex-col p-0.5">

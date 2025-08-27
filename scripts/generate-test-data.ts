@@ -310,7 +310,7 @@ console.log('🛫 Starting test data generation...\n');
 console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd machines: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
 console.log('     • Even machines: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
-console.log('     • 2 backup types per machine (Files and Databases)\n');
+console.log('     • 2 backups per machine (Files and Databases)\n');
 
 sendTestData().then(() => {
   console.log('\n🎉 Test data generation completed!');

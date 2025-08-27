@@ -43,7 +43,7 @@ export function OverdueBackupCheckButton() {
       });
 
       // Refresh the current page data using global refresh
-      if (pathname === "/" || pathname === "/dashboard-auto") {
+      if (pathname === "/") {
         // If on dashboard pages, refresh dashboard data
         await refreshDashboard();
       } else if (pathname.startsWith('/detail/') && !pathname.includes('/backup/')) {
