@@ -9,6 +9,7 @@ type TablePageSize = 5 | 10 | 15 | 20;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
 export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize' | 'storageSize' | 'backupVersions';
 type AutoRefreshInterval = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10;
+type DashboardCardsSortOrder = 'Machine name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)';
 
 interface ConfigContextProps {
   databaseCleanupPeriod: DatabaseCleanupPeriod;
@@ -23,6 +24,8 @@ interface ConfigContextProps {
   setAutoRefreshInterval: (interval: AutoRefreshInterval) => void;
   autoRefreshEnabled: boolean;
   setAutoRefreshEnabled: (enabled: boolean) => void;
+  dashboardCardsSortOrder: DashboardCardsSortOrder;
+  setDashboardCardsSortOrder: (order: DashboardCardsSortOrder) => void;
   cleanupDatabase: () => Promise<void>;
 }
 
@@ -35,6 +38,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [chartMetricSelection, setChartMetricSelection] = useState<ChartMetricSelection>(defaultUIConfig.chartMetricSelection);
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(defaultUIConfig.autoRefreshInterval);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
+  const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -49,6 +53,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       if (config.chartMetricSelection) setChartMetricSelection(config.chartMetricSelection);
       if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
       if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
+      if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
     }
   }, []);
 
@@ -61,8 +66,9 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       chartMetricSelection,
       autoRefreshInterval,
       autoRefreshEnabled,
+      dashboardCardsSortOrder,
     }));
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartMetricSelection, autoRefreshInterval, autoRefreshEnabled]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, chartMetricSelection, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder]);
 
   const cleanupDatabase = async () => {
     try {
@@ -119,6 +125,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setAutoRefreshInterval,
         autoRefreshEnabled,
         setAutoRefreshEnabled,
+        dashboardCardsSortOrder,
+        setDashboardCardsSortOrder,
         cleanupDatabase,
       }}
     >

@@ -25,13 +25,29 @@ none
 
 ## Changes needed
 
-none
+
+  1. move the dashboard-auto to be the first page, removing the old dashboard page.
+
+  2. change the content of the machine card: remove backups, include storage size and change the last backup date to full date + time ago
+
+  3. add to the new metrics panel the data visibility (all data, last week, last month,...)
+
+  4. change the chart on the machine detail page to use the new metrics panel. 
 
 
 ## New Features (planned or under analysis)
 
+### Duplicati connection
+
+- when collecting the backup logs, register the ip and port of the machine. 
+- create a tab in the settings to manage  the ip and port of the machines in the database
+- create a link in the dashboard, machine detail and backup detail pages to open a browser tab to connect to the duplicati server
+   - one idea is to create a button on the application toolbar to connect to a duplicati server, if it's in the dashboard, present a list of machines to connect to. if in a page with the machine selected, goes directly.
+   - add a icon in the backup settings tab to open the duplicati server directly.
+
+### Nice to have
 - Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
-- Check to add support to send emails / support 
+
 
 ---
 

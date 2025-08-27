@@ -252,13 +252,13 @@ export function DashboardTable({ machines }: DashboardTableProps) {
             {sortedMachines.map((machine) => {              
               return (
                 <TableRow 
-                  key={`${machine.id}-${machine.backupName || 'no-backup'}`} 
-                  onClick={() => handleRowClick(machine.id, machine.backupName)}
+                  key={`${machine.id} || 'no-backup'}`} 
+                  onClick={() => handleRowClick(machine.machineId, machine.backupName)}
                   className={`cursor-pointer hover:bg-muted/50`}
                 >
                   <TableCell 
                     className="font-medium"
-                    onClick={(e) => handleMachineNameClick(machine.id, e)}
+                    onClick={(e) => handleMachineNameClick(machine.machineId, e)}
                   >
                     {machine.name}
                   </TableCell>
@@ -319,7 +319,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   </TableCell>
                   <TableCell>
                     <div 
-                      onClick={(e) => handleStatusBadgeClick(machine.id, machine.lastBackupId, e)}
+                      onClick={(e) => handleStatusBadgeClick(machine.machineId, machine.lastBackupId, e)}
                       className="cursor-pointer"
                     >
                       <StatusBadge status={machine.lastBackupStatus} />

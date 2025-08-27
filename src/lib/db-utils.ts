@@ -763,6 +763,7 @@ export function  getMachinesSummary() {
         lastBackupDuration: string;
         lastBackupListCount: number | null;
         lastBackupName: string | null;
+        lastBackupId: string | null;
         lastOverdueCheck: string;
         backupNames: string[];
       }>();
@@ -782,6 +783,7 @@ export function  getMachinesSummary() {
             lastBackupDuration: 'N/A',
             lastBackupListCount: 0,
             lastBackupName: 'N/A',
+            lastBackupId: 'N/A',
             lastOverdueCheck: getLastOverdueBackupCheckTime(),
             backupNames: [],
           });
@@ -845,6 +847,7 @@ export function  getMachinesSummary() {
           machine.lastBackupStatus = row.last_backup_status || 'N/A';
           machine.lastBackupDuration = row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A';
           machine.lastBackupListCount = row.backup_versions || null;
+          machine.lastBackupId = row.last_backup_id || 'N/A';
         }
         
       });
@@ -913,6 +916,7 @@ export const dbUtils = {
   getAggregatedChartData: () => getAggregatedChartData(),
   getAllMachinesChartData: () => getAllMachinesChartData(),
   getMachinesSummary: () => getMachinesSummary(),
+  getMachinesBackupNames: () => getMachinesBackupNames(),
   
   insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => 
     withDb(() => safeDbOperation(() => dbOps.insertBackup.run(data), 'insertBackup')),
@@ -1192,7 +1196,14 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
 
 // Function to get all machine and their respective backup names
 export function getMachinesBackupNames() {
-  return withDb(() => safeDbOperation(() => dbOps.getMachinesBackupNames.all(), 'getMachinesBackupNames', []));
+  return withDb(() => safeDbOperation(() => {
+    const results = dbOps.getMachinesBackupNames.all() as Array<{ machine_name: string; backup_name: string }>;
+    return results.map(row => ({
+      id: getBackupKey(row.machine_name, row.backup_name),
+      machine_name: row.machine_name,
+      backup_name: row.backup_name
+    }));
+  }, 'getMachinesBackupNames', []));
 }
 
 // Function to ensure backup settings are complete for all machines and backups
@@ -1206,18 +1217,22 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
     
     // Get all machines with backups
     const machinesSummary = getMachinesBackupNames() as { 
+      id: string;
       machine_name: string; 
       backup_name: string;
     }[];
+
+    console.log("machinesSummary", machinesSummary);
     
     // Create a set of all machine-backup combinations
     const machineBackupCombinations = new Set<string>();
     machinesSummary.forEach(machine => {
-      if (machine.backup_name) {
-        const backupKey = getBackupKey(machine.machine_name, machine.backup_name);
-        machineBackupCombinations.add(backupKey);
+      if (machine.id) {
+        machineBackupCombinations.add(machine.id);
       }
     });
+
+    console.log("machineBackupCombinations", machineBackupCombinations);
     
     // Check for missing backup settings and add defaults
     let addedSettings = 0;
@@ -1229,6 +1244,7 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
         const { defaultBackupNotificationConfig } = await import('./default-config');
         updatedBackupSettings[backupKey] = { ...defaultBackupNotificationConfig };
         addedSettings++;
+        console.log(`[ensureBackupSettingsComplete] Added default backup settings for ${backupKey}`);
       }
     }
     

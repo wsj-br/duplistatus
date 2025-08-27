@@ -3,17 +3,17 @@ import { dbUtils } from '@/lib/db-utils';
 
 export async function GET() {
   try {
-    const machinesSummary = dbUtils.getMachinesSummary();
+    const machinesBackupNames = dbUtils.getMachinesBackupNames();
     
     // Transform the data to include machine name and backup name
-    const machinesWithBackups = (machinesSummary as { 
+    const machinesWithBackups = (machinesBackupNames as { 
       id: string; 
-      name: string; 
-      lastBackupName: string | null;
+      machine_name: string; 
+      backup_name: string;
     }[]).map((machine) => ({
       id: machine.id,
-      name: machine.name,
-      backupName: machine.lastBackupName || 'Unknown'
+      name: machine.machine_name,
+      backupName: machine.backup_name
     }));
 
     return NextResponse.json(machinesWithBackups);

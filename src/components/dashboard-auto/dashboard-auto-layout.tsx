@@ -1,16 +1,12 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { MachineSummary, Backup, ChartDataPoint, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { MachineCards } from "./machine-cards";
 import { MetricsChartsPanel } from "./metrics-charts-panel";
-
-
-
-
 
 interface DashboardAutoLayoutProps {
   data: DashboardData;
@@ -36,10 +32,7 @@ export function DashboardAutoLayout({
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardAutoLayoutProps) {
   
-  const [machineCardsData, setMachineCardsData] = useState<MachineSummary[]>([]);
-  const [machineCardsLoading, setMachineCardsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
-  const previousMachineCardsDataRef = useRef<string>('');
   // Preserve visible card index across component remounts
   const [visibleCardIndex, setVisibleCardIndex] = useState<number>(0);
   
@@ -60,58 +53,6 @@ export function DashboardAutoLayout({
       setViewMode(savedViewMode);
     }
   }, []);
-
-  // Fetch machine cards data on component mount and when refresh is triggered
-  useEffect(() => {
-    const fetchMachineCardsData = async () => {
-      try {
-        // Only show loading on initial load (when we have no data)
-        const isInitialLoad = previousMachineCardsDataRef.current === '';
-        if (isInitialLoad) {
-          setMachineCardsLoading(true);
-        }
-        
-        const response = await fetch('/api/machines-summary');
-        if (response.ok) {
-          const newData = await response.json();
-          
-          // Create a more comprehensive hash to detect actual data changes
-          const newDataHash = JSON.stringify(newData.map((m: MachineSummary) => ({
-            id: m.id,
-            name: m.name,
-            lastBackupStatus: m.lastBackupStatus,
-            lastBackupDate: m.lastBackupDate,
-            totalBackupCount: m.totalBackupCount,
-            backupTypesCount: m.backupInfo.length,
-            // Include a simplified version of backup types to detect changes
-            backupInfo: m.backupInfo.map(bt => ({
-              name: bt.name,
-              lastBackupDate: bt.lastBackupDate,
-              isBackupOverdue: bt.isBackupOverdue,
-              statusHistoryLength: bt.statusHistory.length
-            }))
-          })));
-          
-          // Only update if there's an actual change in machine data or if this is the initial load
-          if (newDataHash !== previousMachineCardsDataRef.current || isInitialLoad) {
-            setMachineCardsData(newData);
-            previousMachineCardsDataRef.current = newDataHash;
-          }
-        } else {
-          console.error('Failed to fetch machine cards data');
-        }
-      } catch (error) {
-        console.error('Error fetching machine cards data:', error);
-      } finally {
-        // Only set loading to false if we were actually loading
-        if (previousMachineCardsDataRef.current === '' || machineCardsLoading) {
-          setMachineCardsLoading(false);
-        }
-      }
-    };
-
-    fetchMachineCardsData();
-  }, [lastRefreshTime, machineCardsLoading]);
 
   // Calculate machine-specific summary if a machine is selected
   const summary = useMemo(() => {
@@ -153,20 +94,16 @@ export function DashboardAutoLayout({
       <div className="mt-2 mb-2">
         <Card className="shadow-lg border-2 border-border">
           <CardContent className="p-4">
-            {machineCardsLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="text-muted-foreground">Loading machine data...</div>
-              </div>
-            ) : viewMode === 'cards' ? (
+            {viewMode === 'cards' ? (
               <MachineCards 
-                machines={machineCardsData} 
+                machines={data.machinesSummary} 
                 selectedMachineId={selectedMachineId}
                 onSelect={onMachineSelect}
                 visibleCardIndex={visibleCardIndex}
                 onVisibleCardIndexChange={handleVisibleCardIndexChange}
               />
             ) : (
-              <DashboardTable machines={machineCardsData} />
+              <DashboardTable machines={data.machinesSummary} />
             )}
           </CardContent>
         </Card>

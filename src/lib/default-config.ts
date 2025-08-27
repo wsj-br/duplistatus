@@ -95,7 +95,8 @@ export const defaultUIConfig = {
   tablePageSize: 5 as const,
   chartTimeRange: 'All data' as const,
   chartMetricSelection: 'uploadedSize' as const,
-  autoRefreshInterval: 1 as const
+  autoRefreshInterval: 1 as const,
+  dashboardCardsSortOrder: 'Machine name (a-z)' as const
 };
 
 // Default API configuration

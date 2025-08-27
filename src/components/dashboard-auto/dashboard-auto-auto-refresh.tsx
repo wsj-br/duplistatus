@@ -39,11 +39,14 @@ export function DashboardAutoAutoRefresh({ initialData }: DashboardAutoAutoRefre
     setLastRefreshTime(new Date());
   }, []);
 
-  // Refresh function
+  // Refresh function - used only for manual refresh (user clicking refresh button)
+  // Auto-refresh is handled by the global refresh context to avoid duplicate API calls
   const refreshData = useCallback(async () => {
     if (isLoading) return;
     
     try {
+      setIsLoading(true);
+      
       const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
         fetch('/api/machines-summary'),
         fetch('/api/summary'),
@@ -60,22 +63,13 @@ export function DashboardAutoAutoRefresh({ initialData }: DashboardAutoAutoRefre
         chartResponse.json()
       ]);
       
-      // Compare data before updating to prevent unnecessary re-renders
-      const machinesChanged = JSON.stringify(newMachinesSummary) !== JSON.stringify(machinesSummary);
-      const summaryChanged = JSON.stringify(newOverallSummary) !== JSON.stringify(overallSummary);
-      const chartDataChanged = JSON.stringify(newAllMachinesChartData) !== JSON.stringify(allMachinesChartData);
+      // Update state with new data
+      setMachinesSummary(newMachinesSummary);
+      setOverallSummary(newOverallSummary);
+      setAllMachinesChartData(newAllMachinesChartData);
       
-      // Only show loading and update if there are actual changes
-      if (machinesChanged || summaryChanged || chartDataChanged) {
-        setIsLoading(true);
-        
-        if (machinesChanged) setMachinesSummary(newMachinesSummary);
-        if (summaryChanged) setOverallSummary(newOverallSummary);
-        if (chartDataChanged) setAllMachinesChartData(newAllMachinesChartData);
-        
-        // Small delay to show loading state briefly
-        setTimeout(() => setIsLoading(false), 100);
-      }
+      // Small delay to show loading state briefly
+      setTimeout(() => setIsLoading(false), 100);
       
       // Always update refresh time for the UI
       setLastRefreshTime(new Date());
@@ -83,21 +77,32 @@ export function DashboardAutoAutoRefresh({ initialData }: DashboardAutoAutoRefre
       console.error('Failed to refresh dashboard data:', error);
       setIsLoading(false);
     }
-  }, [isLoading, machinesSummary, overallSummary, allMachinesChartData]);
+  }, [isLoading]);
 
   // Listen for global refresh events
   useEffect(() => {
-    // When the global refresh completes for dashboard pages, refresh our data
-    // We check for lastRefresh changes to catch when the refresh cycle completes
-    if (state.lastRefresh && !state.isRefreshing && !state.pageSpecificLoading.dashboard) {
-      // Add a small delay to ensure we don't conflict with the global refresh
-      const timeoutId = setTimeout(() => {
-        refreshData();
-      }, 100);
+    // When the global refresh completes for dashboard pages, use the data from the context
+    // instead of making duplicate API calls
+    if (state.lastRefresh && !state.isRefreshing && !state.pageSpecificLoading.dashboard && state.dashboardData) {
+      // Use the data from global refresh context to avoid duplicate API calls
+      const { machinesSummary: newMachinesSummary, overallSummary: newOverallSummary, allMachinesChartData: newAllMachinesChartData } = state.dashboardData;
       
-      return () => clearTimeout(timeoutId);
+      // Compare data before updating to prevent unnecessary re-renders
+      const machinesChanged = JSON.stringify(newMachinesSummary) !== JSON.stringify(machinesSummary);
+      const summaryChanged = JSON.stringify(newOverallSummary) !== JSON.stringify(overallSummary);
+      const chartDataChanged = JSON.stringify(newAllMachinesChartData) !== JSON.stringify(allMachinesChartData);
+      
+      // Only update if there are actual changes
+      if (machinesChanged || summaryChanged || chartDataChanged) {
+        if (machinesChanged) setMachinesSummary(newMachinesSummary);
+        if (summaryChanged) setOverallSummary(newOverallSummary);
+        if (chartDataChanged) setAllMachinesChartData(newAllMachinesChartData);
+      }
+      
+      // Always update refresh time for the UI
+      setLastRefreshTime(new Date());
     }
-  }, [state.lastRefresh, state.isRefreshing, state.pageSpecificLoading.dashboard, refreshData]);
+  }, [state.lastRefresh, state.isRefreshing, state.pageSpecificLoading.dashboard, state.dashboardData, machinesSummary, overallSummary, allMachinesChartData]);
 
   // Handle machine selection
   const handleMachineSelect = useCallback((machineId: string | null) => {

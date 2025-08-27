@@ -25,6 +25,8 @@ export function DisplayMenu() {
     setChartTimeRange,
     autoRefreshInterval,
     setAutoRefreshInterval,
+    dashboardCardsSortOrder,
+    setDashboardCardsSortOrder,
   } = useConfig();
 
   return (
@@ -98,6 +100,22 @@ export function DisplayMenu() {
                   <SelectItem value="4">4 minutes</SelectItem>
                   <SelectItem value="5">5 minutes</SelectItem>
                   <SelectItem value="10">10 minutes</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="dashboard-cards-sort-order">Cards Sort Order</Label>
+              <Select
+                value={dashboardCardsSortOrder}
+                onValueChange={(value) => setDashboardCardsSortOrder(value as 'Machine name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)')}
+              >
+                <SelectTrigger id="dashboard-cards-sort-order">
+                  <SelectValue placeholder="Select sort order" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Machine name (a-z)">Machine name (a-z)</SelectItem>
+                  <SelectItem value="Status (error>warnings>success)">Status (error&gt;warnings&gt;success)</SelectItem>
+                  <SelectItem value="Last backup received (new>old)">Last backup received (new&gt;old)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { formatTimeAgo, formatBytes } from "@/lib/utils";
 import { HardDrive, AlertTriangle, Settings, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useConfig } from "@/contexts/config-context";
+import { getStatusSortValue } from "@/lib/sort-utils";
 
 
 
@@ -50,7 +52,9 @@ function getStatusColor(status: BackupStatus): string {
 }
 
 // Custom status badge without text, just icon and color
-function CompactStatusBadge({ status }: { status: BackupStatus }) {
+function CompactStatusBadge({ status, machineId, lastBackupId }: { status: BackupStatus; machineId: string; lastBackupId: string }) {
+  const router = useRouter();
+  
   const getStatusIcon = (status: BackupStatus) => {
     switch (status) {
       case 'Success':
@@ -65,8 +69,16 @@ function CompactStatusBadge({ status }: { status: BackupStatus }) {
     }
   };
 
+  const handleClick = () => {
+    router.push(`/detail/${machineId}/backup/${lastBackupId}`);
+  };
+
   return (
-    <div className="flex items-center gap-1">
+    <div 
+      className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+      onClick={handleClick}
+      title="Click to view backup details"
+    >
       {getStatusIcon(status)}
     </div>
   );
@@ -133,7 +145,11 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
             </button>
           </CardTitle>
           <div className="flex items-center gap-2">
-            <CompactStatusBadge status={machineStatus} />
+            <CompactStatusBadge 
+              status={machineStatus} 
+              machineId={machine.id}
+              lastBackupId={machine.lastBackupId}
+            />
           </div>
         </div>
       </CardHeader>
@@ -216,7 +232,16 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                         </TooltipProvider>
                       )}
                       {/* Time ago - use backup type's last backup date */}
-                      <span className="text-muted-foreground text-xs min-w-[60px] text-right">
+                      <span 
+                        className="text-muted-foreground text-xs min-w-[60px] text-right cursor-pointer hover:text-foreground transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (backupType.lastBackupId && backupType.lastBackupId !== "N/A") {
+                            router.push(`/detail/${machine.id}/backup/${backupType.lastBackupId}`);
+                          }
+                        }}
+                        title={backupType.lastBackupId && backupType.lastBackupId !== "N/A" ? "Click to view backup details" : ""}
+                      >
                         {backupType.lastBackupDate !== "N/A" 
                           ? formatTimeAgo(backupType.lastBackupDate)
                           : "N/A"}
@@ -249,13 +274,47 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
   const [canScrollRight, setCanScrollRight] = useState(false);
   const isInitialMount = useRef(true);
   const previousMachinesRef = useRef<string>('');
+  const previousSortOrderRef = useRef<string>('');
+  const isSortOrderChanging = useRef(false); // New ref to track sort order change
 
-  // Remove duplicates by machine ID and memoize to prevent unnecessary re-renders
-  const uniqueMachines = useMemo(() => 
-    machines.filter((machine, index, self) => 
+  const { dashboardCardsSortOrder } = useConfig();
+
+  // Remove duplicates by machine ID, sort based on configuration, and memoize to prevent unnecessary re-renders
+  const uniqueMachines = useMemo(() => {
+    const filtered = machines.filter((machine, index, self) => 
       index === self.findIndex(m => m.id === machine.id)
-    ), [machines]
-  );
+    );
+    
+    // Sort based on dashboardCardsSortOrder configuration
+    return [...filtered].sort((a, b) => {
+      switch (dashboardCardsSortOrder) {
+        case 'Machine name (a-z)':
+          return a.name.localeCompare(b.name);
+        
+        case 'Status (error>warnings>success)':
+          const aStatus = getMachineStatus(a);
+          const bStatus = getMachineStatus(b);
+          // First sort by status, then by machine name within the same status
+          const statusComparison = getStatusSortValue(aStatus) - getStatusSortValue(bStatus);
+          if (statusComparison !== 0) {
+            return statusComparison;
+          }
+          // If status is the same, sort alphabetically by machine name
+          return a.name.localeCompare(b.name);
+        
+        case 'Last backup received (new>old)':
+          // Handle "N/A" dates by putting them at the end
+          if (a.lastBackupDate === "N/A" && b.lastBackupDate === "N/A") return 0;
+          if (a.lastBackupDate === "N/A") return 1;
+          if (b.lastBackupDate === "N/A") return -1;
+          // Sort by newest first (descending)
+          return new Date(b.lastBackupDate).getTime() - new Date(a.lastBackupDate).getTime();
+        
+        default:
+          return 0;
+      }
+    });
+  }, [machines, dashboardCardsSortOrder]);
 
   // Calculate card width to show exactly 6 cards (or fewer if less machines available)
   // Total available width: 100% - 16px (px-2) - 32px (p-4) = 100% - 48px
@@ -361,8 +420,12 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
       setCanScrollLeft(currentIndex > 0);
       setCanScrollRight(currentIndex < maxIndex);
       
-      // Restore card position if we have a saved index and this is not the initial mount
-      if (!isInitialMount.current && visibleCardIndex > 0) {
+      // Only restore card position if machines actually changed (not just reordered)
+      // and this is not the initial mount, and we're not in the middle of a sort order change
+      if (!isInitialMount.current && 
+          visibleCardIndex > 0 && 
+          currentMachinesHash !== previousMachinesRef.current &&
+          !isSortOrderChanging.current) {
         scrollToCardIndex(visibleCardIndex, false); // No smooth scroll for restoration
       }
     }, 100);
@@ -387,6 +450,51 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     
     return () => clearTimeout(timeoutId);
   }, [visibleCardIndex, scrollToCardIndex]);
+
+  // Reset scroll position to first position when sort order changes
+  useEffect(() => {
+    // Only reset scroll if sort order actually changed (not on every render)
+    if (!isInitialMount.current && 
+        previousSortOrderRef.current !== '' && 
+        previousSortOrderRef.current !== dashboardCardsSortOrder &&
+        scrollContainerRef.current) {
+      
+      console.log('Sort order changed from', previousSortOrderRef.current, 'to', dashboardCardsSortOrder, '- resetting scroll');
+      
+      // Set flag to prevent position restoration from interfering
+      isSortOrderChanging.current = true;
+      
+      // Use a delay to ensure DOM is updated with new sort order
+      const timeoutId = setTimeout(() => {
+        if (scrollContainerRef.current) {
+          // Reset scroll to the beginning when sort order changes
+          scrollContainerRef.current.scrollTo({
+            left: 0,
+            behavior: 'smooth'
+          });
+          
+          // Update scroll button states
+          setCanScrollLeft(false);
+          setCanScrollRight(uniqueMachines.length > 6);
+          
+          // Reset visible card index if callback is provided
+          if (onVisibleCardIndexChange) {
+            onVisibleCardIndexChange(0);
+          }
+          
+          // Clear the flag after a delay to allow scroll to complete
+          setTimeout(() => {
+            isSortOrderChanging.current = false;
+          }, 500);
+        }
+      }, 150); // Delay to ensure DOM is updated
+      
+      return () => clearTimeout(timeoutId);
+    }
+    
+    // Update the previous sort order ref
+    previousSortOrderRef.current = dashboardCardsSortOrder;
+  }, [dashboardCardsSortOrder, uniqueMachines.length, onVisibleCardIndexChange]);
 
   // Show message if no machines
   if (uniqueMachines.length === 0) {

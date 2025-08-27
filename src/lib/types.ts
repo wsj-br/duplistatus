@@ -72,8 +72,9 @@ export interface MachineSummary {
   lastBackupDate: string;
   lastBackupStatus: BackupStatus | 'N/A';
   lastBackupDuration: string;
-  lastBackupListCount: number | null;
-  lastBackupName: string | null;
+  lastBackupListCount: number;
+  lastBackupName: string;
+  lastBackupId: string
   lastOverdueCheck: string;
   backupNames: string[];
 }

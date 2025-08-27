@@ -6,10 +6,8 @@ import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-
 import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";
 import { DashboardToastHandler } from "@/components/dashboard/dashboard-toast-handler";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import { useToast } from "@/components/ui/use-toast";
 import {
   Tooltip,
   TooltipContent,
@@ -43,74 +41,27 @@ interface DashboardAutoRefreshProps {
 
 export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps) {
   const [data, setData] = useState<DashboardData>(initialData);
-  const [lastError, setLastError] = useState<string | null>(null);
-  
   const { state } = useGlobalRefresh();
-  const { toast } = useToast();
 
   // Listen for refresh events from global refresh context
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLastError(null);
-        
-        // Fetch data from API endpoints
-        const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-          fetch('/api/machines-summary'), // Changed to use machine-summary endpoint
-          fetch('/api/summary'),
-          fetch('/api/chart-data')
-        ]);
-
-        if (!machinesResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
-          throw new Error('Failed to fetch dashboard data');
-        }
-
-        const [machinesData, summaryData, chartData] = await Promise.all([
-          machinesResponse.json(),
-          summaryResponse.json(),
-          chartResponse.json()
-        ]);
-
-        setData({
-          machinesSummary: machinesData,
-          overallSummary: summaryData,
-          aggregatedChartData: chartData
-        });
-        
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-        console.log('Error refreshing dashboard data:', error instanceof Error ? error.message : String(error));
-        setLastError(errorMessage);
-        
-        toast({
-          title: "Update Failed",
-          description: `Failed to refresh dashboard data: ${errorMessage}`,
-          variant: "destructive",
-          duration: 2000,
-        });
-      }
-    };
-
-    // Only fetch data when global refresh completes and no refresh is in progress
-    // This prevents race conditions with the global refresh context
-    if (!state.isRefreshing && !state.pageSpecificLoading.dashboard && !state.refreshInProgress && state.lastRefresh) {
-      fetchData();
+    // When the global refresh completes for dashboard pages, use the data from the context
+    // instead of making duplicate API calls
+    if (!state.isRefreshing && !state.pageSpecificLoading.dashboard && !state.refreshInProgress && state.lastRefresh && state.dashboardData) {
+      // Use the data from global refresh context to avoid duplicate API calls
+      const { machinesSummary: machinesData, overallSummary: summaryData, allMachinesChartData: chartData } = state.dashboardData;
+      
+      setData({
+        machinesSummary: machinesData,
+        overallSummary: summaryData,
+        aggregatedChartData: chartData
+      });
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.dashboard, state.refreshInProgress, state.lastRefresh, toast]);
+  }, [state.isRefreshing, state.pageSpecificLoading.dashboard, state.refreshInProgress, state.lastRefresh, state.dashboardData]);
 
   return (
     <div className="flex flex-col gap-8">
       <DashboardToastHandler />
-      
-      {/* Error Alert */}
-      {lastError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Failed to update dashboard data: {lastError}
-          </AlertDescription>
-        </Alert>
-      )}
 
       <DashboardSummaryCards 
         summary={data.overallSummary} 

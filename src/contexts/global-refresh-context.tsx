@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useConfig } from './config-context';
+import type { MachineSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 type PageType = 'dashboard' | 'detail' | 'none';
 
@@ -18,6 +19,12 @@ interface GlobalRefreshState {
     detail: boolean;
   };
   refreshInProgress: boolean;
+  // Store fetched data to avoid duplicate API calls
+  dashboardData: {
+    machinesSummary: MachineSummary[];
+    overallSummary: OverallSummary;
+    allMachinesChartData: ChartDataPoint[];
+  } | null;
 }
 
 interface GlobalRefreshContextProps {
@@ -46,6 +53,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       detail: false,
     },
     refreshInProgress: false,
+    dashboardData: null,
   });
 
   // Update state when config changes
@@ -113,6 +121,11 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         isRefreshing: false,
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: false },
         refreshInProgress: false,
+        dashboardData: {
+          machinesSummary: machinesData,
+          overallSummary: summaryData,
+          allMachinesChartData: chartData,
+        },
       }));
     } catch (error) {
       console.error('Error refreshing dashboard:', error instanceof Error ? error.message : String(error));
