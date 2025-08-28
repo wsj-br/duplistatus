@@ -34,7 +34,12 @@ none
 
   3. ✅ add to the new metrics panel the data visibility (all data, last week, last month,...)
 
-  4. change the chart on the machine detail page to use the new metrics panel. 
+  4. ✅change the chart on the machine detail page to use the new metrics panel. 
+
+  5. ✅ add a tooltip information in the chart to show the datapoint information (date, value)
+
+  6. fix the autosize of the metrics panel. in some update loose the logic that make it responsive.
+  
 
 
 ## New Features (planned or under analysis)

@@ -147,24 +147,18 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: true,
       }));
 
-      // Fetch detail page data and parse JSON responses
-      const [dataResponse, chartResponse] = await Promise.all([
-        fetch(`/api/detail/${machineId}/data`),
-        fetch(`/api/detail/${machineId}/chart-data`)
-      ]);
+      // Only fetch basic detail data - chart data is handled by MetricsChartsPanel
+      const dataResponse = await fetch(`/api/detail/${machineId}`);
 
-      if (!dataResponse.ok || !chartResponse.ok) {
+      if (!dataResponse.ok) {
         throw new Error('Failed to fetch detail data');
       }
 
-      // Parse JSON responses to ensure they are valid
-      const [detailData, chartData] = await Promise.all([
-        dataResponse.json(),
-        chartResponse.json()
-      ]);
+      // Parse JSON response to ensure it is valid
+      const detailData = await dataResponse.json();
 
       // Validate that we got valid data
-      if (!detailData || !Array.isArray(chartData)) {
+      if (!detailData) {
         throw new Error('Invalid data received from API');
       }
 

@@ -165,6 +165,7 @@ export function BackupCollectMenu() {
                 id="hostname"
                 value={hostname}
                 onChange={(e) => setHostname(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 placeholder="server name or IP"
                 disabled={isCollecting}
               />
@@ -175,6 +176,7 @@ export function BackupCollectMenu() {
                 id="port"
                 value={port}
                 onChange={(e) => setPort(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 placeholder="8200"
                 disabled={isCollecting}
               />
@@ -186,6 +188,7 @@ export function BackupCollectMenu() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 placeholder="Enter Duplicati password"
                 disabled={isCollecting}
               />

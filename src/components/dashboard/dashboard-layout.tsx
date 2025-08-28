@@ -1,19 +1,18 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import type { MachineSummary, Backup, ChartDataPoint, DashboardData } from "@/lib/types";
+import type { MachineSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { MachineCards } from "./machine-cards";
-import { MetricsChartsPanel } from "./metrics-charts-panel";
+import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
 
 interface DashboardLayoutProps {
   data: DashboardData;
   selectedMachineId?: string | null;
   selectedMachine?: MachineSummary | null;
   machineBackups: Backup[];
-  chartData: ChartDataPoint[];
   isLoading: boolean;
   lastRefreshTime: Date;
   onMachineSelect: (machineId: string | null) => void;
@@ -25,7 +24,6 @@ export function DashboardLayout({
   selectedMachineId,
   selectedMachine,
   machineBackups,
-  chartData,
   isLoading: _isLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
   lastRefreshTime,
   onMachineSelect,
@@ -110,12 +108,11 @@ export function DashboardLayout({
       </div>
       
       {/* Main Content: Metrics Panel - responsive height to fill remaining space */}
-      <div className={`${viewMode === 'table' ? 'h-[470px]' : 'flex-1 min-h-0'} ${viewMode === 'table' ? '' : 'overflow-hidden'}`}>
-        <Card className={`${viewMode === 'table' ? 'h-[470px]' : 'h-full'} shadow-lg border-2 border-border`}>
-          <CardContent className={`${viewMode === 'table' ? 'h-[470px]' : 'h-full'} p-4`}>
+      <div className={`${viewMode === 'table' ? 'min-h-[470px]' : 'flex-1 min-h-0'} ${viewMode === 'table' ? '' : 'overflow-hidden'}`}>
+        <Card className={`${viewMode === 'table' ? 'min-h-[470px]' : 'h-full'} shadow-lg border-2 border-border`}>
+          <CardContent className={`${viewMode === 'table' ? 'min-h-[470px]' : 'h-full'} p-4`}>
             <MetricsChartsPanel 
-              chartData={chartData} 
-              selectedMachineName={selectedMachine?.name || null}
+              machineId={selectedMachineId || undefined}
               lastRefreshTime={lastRefreshTime}
             />
           </CardContent>

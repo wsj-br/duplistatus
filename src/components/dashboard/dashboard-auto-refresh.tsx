@@ -115,46 +115,7 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
     }
   }, [selectedMachineId]);
 
-  // Filter and aggregate chart data based on selection
-  const filteredChartData = useMemo(() => {
-    if (selectedMachineId) {
-      // Filter data for the selected machine
-      return allMachinesChartData.filter(item => item.machineId === selectedMachineId);
-    } else {
-      // Aggregate data by date when no machine is selected (sum all machines per date)
-      const aggregatedMap = new Map<string, ChartDataPoint>();
-      
-      allMachinesChartData.forEach(item => {
-        const existing = aggregatedMap.get(item.date);
-        if (existing) {
-          // Sum the numeric fields
-          existing.uploadedSize += item.uploadedSize;
-          existing.duration += item.duration;
-          existing.fileCount += item.fileCount;
-          existing.fileSize += item.fileSize;
-          existing.storageSize += item.storageSize;
-          existing.backupVersions += item.backupVersions;
-        } else {
-          // Create new aggregated entry (without machineId for aggregated data)
-          aggregatedMap.set(item.date, {
-            date: item.date,
-            isoDate: item.isoDate,
-            uploadedSize: item.uploadedSize,
-            duration: item.duration,
-            fileCount: item.fileCount,
-            fileSize: item.fileSize,
-            storageSize: item.storageSize,
-            backupVersions: item.backupVersions
-          });
-        }
-      });
-      
-      // Convert map to array and sort by date
-      return Array.from(aggregatedMap.values()).sort((a, b) => 
-        new Date(a.date).getTime() - new Date(b.date).getTime()
-      );
-    }
-  }, [allMachinesChartData, selectedMachineId]);
+  // We no longer need to filter chart data here, as the MetricsChartsPanel component now handles this internally
 
   // Get selected machine
   const selectedMachine = useMemo(() => {
@@ -180,7 +141,6 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       selectedMachineId={selectedMachineId}
       selectedMachine={selectedMachine}
       machineBackups={machineBackups}
-      chartData={filteredChartData}
       isLoading={isLoading}
       lastRefreshTime={lastRefreshTime}
       onMachineSelect={handleMachineSelect}

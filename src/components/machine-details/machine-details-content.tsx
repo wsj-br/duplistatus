@@ -2,8 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
-import { MachineMetricsChart } from "@/components/machine-details/machine-metrics-chart";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
+import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
 import type { Machine } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -23,9 +23,10 @@ interface MachineDetailsContentProps {
   machine: Machine;
   overdueBackups: OverdueBackup[];
   lastOverdueCheck: string;
+  lastRefreshTime: Date;
 }
 
-export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck }: MachineDetailsContentProps) {
+export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck, lastRefreshTime }: MachineDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   
   // Find the selected backup if one is selected
@@ -142,7 +143,15 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
       </Card>
 
       {/* Machine-specific metrics chart */}
-      <MachineMetricsChart machine={machine} />
+      <Card className="shadow-lg">
+        <CardContent className="pt-6">
+          <MetricsChartsPanel 
+            machineId={machine.id}
+            backupName={selectedBackupName === 'all' ? undefined : selectedBackupName}
+            lastRefreshTime={lastRefreshTime}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 } 

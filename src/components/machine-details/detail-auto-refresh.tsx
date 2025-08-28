@@ -32,6 +32,7 @@ interface DetailAutoRefreshProps {
 export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
   const [data, setData] = useState<DetailData>(initialData);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
   
   const { state } = useGlobalRefresh();
   const { toast } = useToast();
@@ -44,32 +45,23 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
       try {
         setLastError(null);
         
-        // Fetch data from API endpoints
-        const [dataResponse, chartResponse] = await Promise.all([
-          fetch(`/api/detail/${machineId}/data`),
-          fetch(`/api/detail/${machineId}/chart-data`)
-        ]);
+        // Only fetch basic machine data - chart data is handled by MetricsChartsPanel
+        const dataResponse = await fetch(`/api/detail/${machineId}`);
 
-        if (!dataResponse.ok || !chartResponse.ok) {
+        if (!dataResponse.ok) {
           throw new Error('Failed to fetch detail data');
         }
 
-        const [detailData, chartData] = await Promise.all([
-          dataResponse.json(),
-          chartResponse.json()
-        ]);
-
-        // Update the machine's chart data with the fresh chart data
-        const updatedMachine = {
-          ...detailData.machine,
-          chartData: chartData
-        };
+        const detailData = await dataResponse.json();
 
         setData({
-          machine: updatedMachine,
+          machine: detailData.machine,
           overdueBackups: detailData.overdueBackups,
           lastOverdueCheck: detailData.lastOverdueCheck
         });
+        
+        // Update last refresh time
+        setLastRefreshTime(new Date());
         
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -107,7 +99,8 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
       <MachineDetailsContent 
         machine={data.machine} 
         overdueBackups={data.overdueBackups} 
-        lastOverdueCheck={data.lastOverdueCheck} 
+        lastOverdueCheck={data.lastOverdueCheck}
+        lastRefreshTime={lastRefreshTime}
       />
     </div>
   );

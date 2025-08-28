@@ -488,7 +488,96 @@ const dbOps = {
     FROM backups b
     GROUP BY b.date, b.machine_id
     ORDER BY b.date
-  `, 'getAllMachinesChartData')
+  `, 'getAllMachinesChartData'),
+
+  // New query for aggregated chart data with time range filtering
+  getAggregatedChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getAggregatedChartDataWithTimeRange'),
+
+  // New query for machine chart data (no date filtering)
+  getMachineChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.machine_id = ?
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getMachineChartData'),
+
+  // New query for machine chart data with time range filtering
+  getMachineChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.machine_id = @machineId
+      AND b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getMachineChartDataWithTimeRange'),
+
+  // New query for machine/backup chart data (no date filtering)
+  getMachineBackupChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.machine_id = @machineId
+      AND b.backup_name = @backupName
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getMachineBackupChartData'),
+
+  // New query for machine/backup chart data with time range filtering
+  getMachineBackupChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.machine_id = @machineId
+      AND b.backup_name = @backupName
+      AND b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getMachineBackupChartDataWithTimeRange')
 };
 
 // Helper function to parse duration string to seconds

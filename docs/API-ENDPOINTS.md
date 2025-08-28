@@ -378,33 +378,10 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Machine Chart Data
-- **Endpoint**: `/api/detail/:machineId/chart-data`
-- **Method**: GET
-- **Description**: Retrieves chart data for a specific machine.
-- **Parameters**:
-  - `machineId`: the machine identifier
 
-- **Response**:
-  ```json
-  [
-    {
-      "date": "20/03/2024",
-      "isoDate": "2024-03-20T10:00:00Z",
-      "uploadedSize": 331318892,
-      "duration": 38,
-      "fileCount": 249426,
-      "fileSize": 113395849938,
-      "storageSize": 27203688543,
-      "backupVersions": 10
-    }
-  ]
-  ```
-
-<br>
 
 ### Get Machine Data with Overdue Info
-- **Endpoint**: `/api/detail/:machineId/data`
+- **Endpoint**: `/api/detail/:machineId`
 - **Method**: GET
 - **Description**: Retrieves detailed machine information including overdue backup status.
 - **Parameters**:
@@ -416,8 +393,7 @@ All API responses are returned in JSON format with consistent error handling pat
     "machine": {
       "id": "machine-id",
       "name": "Machine Name",
-      "backups": [...],
-      "chartData": [...]
+      "backups": [...]
     },
     "overdueBackups": [
       {

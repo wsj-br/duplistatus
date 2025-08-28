@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -728,6 +728,91 @@ export function getAllMachinesChartData() {
   }
 }
 
+// New function to get aggregated chart data with time range filtering
+export function getAggregatedChartDataWithTimeRange(startDate: Date, endDate: Date) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getAggregatedChartDataWithTimeRange.all({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }), 'getAggregatedChartDataWithTimeRange', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getAggregatedChartDataWithTimeRange] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get machine chart data (no date filtering)
+export function getMachineChartData(machineId: string) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getMachineChartData.all(machineId), 'getMachineChartData', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getMachineChartData] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get machine chart data with time range filtering
+export function getMachineChartDataWithTimeRange(machineId: string, startDate: Date, endDate: Date) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getMachineChartDataWithTimeRange.all({
+        machineId,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }), 'getMachineChartDataWithTimeRange', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getMachineChartDataWithTimeRange] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get machine/backup chart data (no date filtering)
+export function getMachineBackupChartData(machineId: string, backupName: string) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getMachineBackupChartData.all({
+        machineId,
+        backupName
+      }), 'getMachineBackupChartData', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getMachineBackupChartData] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get machine/backup chart data with time range filtering
+export function getMachineBackupChartDataWithTimeRange(machineId: string, backupName: string, startDate: Date, endDate: Date) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getMachineBackupChartDataWithTimeRange.all({
+        machineId,
+        backupName,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }), 'getMachineBackupChartDataWithTimeRange', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getMachineBackupChartDataWithTimeRange] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
 // New function to get machine summary for the new dashboard
 export function  getMachinesSummary() {
   try {
@@ -950,7 +1035,15 @@ export const dbUtils = {
   getOverallSummary: () => getOverallSummary(),
   getLatestBackupDate: () => withDb(() => safeDbOperation(() => dbOps.getLatestBackupDate.get(), 'getLatestBackupDate')),
   getAggregatedChartData: () => getAggregatedChartData(),
+  getAggregatedChartDataWithTimeRange: (startDate: Date, endDate: Date) => getAggregatedChartDataWithTimeRange(startDate, endDate),
   getAllMachinesChartData: () => getAllMachinesChartData(),
+  getMachineChartData: (machineId: string) => getMachineChartData(machineId),
+  getMachineChartDataWithTimeRange: (machineId: string, startDate: Date, endDate: Date) => 
+    getMachineChartDataWithTimeRange(machineId, startDate, endDate),
+  getMachineBackupChartData: (machineId: string, backupName: string) => 
+    getMachineBackupChartData(machineId, backupName),
+  getMachineBackupChartDataWithTimeRange: (machineId: string, backupName: string, startDate: Date, endDate: Date) => 
+    getMachineBackupChartDataWithTimeRange(machineId, backupName, startDate, endDate),
   getMachinesSummary: () => getMachinesSummary(),
   getMachinesBackupNames: () => getMachinesBackupNames(),
   

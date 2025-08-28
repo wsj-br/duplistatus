@@ -1,22 +1,24 @@
 "use client";
 
-import { useMemo, useState, useEffect, memo } from 'react';
+import { useMemo, useState, useEffect, memo, useCallback } from 'react';
 import { 
   Line, 
   ResponsiveContainer,
   ComposedChart,
   XAxis,
   YAxis,
-  CartesianGrid
+  CartesianGrid,
+  Tooltip
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
 import { useConfig } from "@/contexts/config-context";
-import { subWeeks, subMonths, subQuarters, subYears, parseISO } from "date-fns";
+import { subWeeks, subMonths, subQuarters, subYears } from "date-fns";
 import type { ChartDataPoint } from "@/lib/types";
+import { useToast } from "@/components/ui/use-toast";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -25,42 +27,40 @@ interface InterpolatedChartPoint {
   [key: string]: string | number;
 }
 
-
-
 interface MetricsChartsPanelProps {
-  chartData: ChartDataPoint[];
-  selectedMachineName?: string | null;
-  selectedBackupId?: string | null;
+  machineId?: string;
+  backupName?: string;
   lastRefreshTime: Date;
 }
 
-// Helper function to format duration from minutes to HH:MM
+// Use existing library function for duration formatting
 const formatDuration = (minutes: number): string => {
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = Math.floor(minutes % 60); // Remove decimal positions from minutes
-  return `${hours.toString().padStart(2, '0')}:${remainingMinutes.toString().padStart(2, '0')}`;
+  // Extract just HH:MM from the HH:MM:SS format for chart display
+  const formatted = formatDurationFromMinutes(minutes);
+  return formatted.split(':').slice(0, 2).join(':');
 };
 
-// Helper function to format bytes with specific precision for Y-axis labels
+// Use existing library function for bytes formatting with Y-axis specific precision
 const formatBytesForYAxis = (bytes: number): string => {
   if (bytes === 0) return '0 B';
   
+  // Determine the appropriate precision based on the size for Y-axis labels
+  // For GB, use 1 decimal place; for others, use 0 decimal places
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
   if (i >= sizes.length) return formatBytes(bytes, 1);
   
-  const value = bytes / Math.pow(k, i);
   const size = sizes[i];
   
-  // Apply specific precision rules
+  // Apply specific precision rules for Y-axis labels using the library function
   if (size === 'GB') {
-    return `${value.toFixed(1)} ${size}`;
+    return formatBytes(bytes, 1);  // 1 decimal place for GB
   } else if (size === 'MB' || size === 'KB' || size === 'B') {
-    return `${Math.round(value)} ${size}`;
+    return formatBytes(bytes, 0);  // 0 decimal places for MB, KB, B
   } else {
-    return `${value.toFixed(1)} ${size}`;
+    return formatBytes(bytes, 1);  // 1 decimal place for TB+
   }
 };
 
@@ -103,6 +103,56 @@ const chartMetrics = [
     color: "#06b6d4" // Cyan
   }
 ];
+
+// Custom tooltip component for Recharts
+const CustomTooltip = ({ active, payload, label, metricKey }: {
+  active?: boolean;
+  payload?: Array<{ value: number; dataKey: string; payload: { isoDate: string } }>;
+  label?: string;
+  metricKey: keyof ChartDataPoint;
+}) => {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
+
+  const data = payload[0];
+  const value = data.value;
+  
+  // Format the date for display
+  let formattedDate = label;
+  try {
+    if (data.payload?.isoDate) {
+      const date = new Date(data.payload.isoDate);
+      formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    }
+  } catch {
+    // Fallback to original label if date parsing fails
+  }
+  
+  // Format the value based on metric type
+  let formattedValue: string;
+  if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
+    formattedValue = formatBytesForYAxis(value);
+  } else if (metricKey === 'duration') {
+    formattedValue = formatDuration(value);
+  } else {
+    formattedValue = value.toLocaleString();
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3">
+      <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        {formattedDate}
+      </div>
+      <div className="text-sm text-gray-900 dark:text-gray-100">
+        {formattedValue}
+      </div>
+    </div>
+  );
+};
 
 const SmallMetricChart = memo(function SmallMetricChart({ 
   data, 
@@ -224,7 +274,7 @@ const SmallMetricChart = memo(function SmallMetricChart({
             <ComposedChart data={resampledData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#666" />
               <XAxis 
-                dataKey="date" 
+                dataKey="isoDate" 
                 hide={false}
                 tickLine={false}
                 axisLine={false}
@@ -232,10 +282,10 @@ const SmallMetricChart = memo(function SmallMetricChart({
                 interval="preserveStartEnd"
                 tickFormatter={(value) => {
                   // Show only first and last labels to avoid crowding
-                  const dataIndex = resampledData.findIndex(item => item.date === value);
+                  const dataIndex = resampledData.findIndex(item => item.isoDate === value);
                   if (dataIndex === 0 || dataIndex === resampledData.length - 1) {
                     try {
-                      // Parse the date (YYYY-MM-DD format) and format using browser locale
+                      // Parse the ISO date and format using browser locale
                       const date = new Date(value);
                       return date.toLocaleDateString();
                     } catch {
@@ -277,6 +327,7 @@ const SmallMetricChart = memo(function SmallMetricChart({
                 connectNulls
                 isAnimationActive={false}
               />
+              <Tooltip content={<CustomTooltip metricKey={metricKey} />} />
             </ComposedChart>
           </ResponsiveContainer>
         </ChartContainer>
@@ -285,82 +336,150 @@ const SmallMetricChart = memo(function SmallMetricChart({
   );
 });
 
+
+
 export const MetricsChartsPanel = memo(function MetricsChartsPanel({ 
-  chartData, 
-  selectedMachineName,
-  selectedBackupId,
+  machineId,
+  backupName,
   lastRefreshTime,
 }: MetricsChartsPanelProps) {
   const { chartTimeRange } = useConfig();
   const [mounted, setMounted] = useState(false);
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [selectedMachineName, setSelectedMachineName] = useState<string | null>(null);
   
+  // Calculate time range dates
+  const { startDate, endDate } = useMemo(() => {
+    if (chartTimeRange === 'All data') {
+      return { startDate: null, endDate: null };
+    }
+    
+    const now = new Date();
+    let startDate: Date;
+    
+    switch (chartTimeRange) {
+      case '2 weeks':
+        startDate = subWeeks(now, 2);
+        break;
+      case '1 month':
+        startDate = subMonths(now, 1);
+        break;
+      case '3 months':
+        startDate = subQuarters(now, 1);
+        break;
+      case '6 months':
+        startDate = subMonths(now, 6);
+        break;
+      case '1 year':
+        startDate = subYears(now, 1);
+        break;
+      case '2 years':
+        startDate = subYears(now, 2);
+        break;
+      default:
+        startDate = subMonths(now, 1);
+    }
+    
+    return { startDate, endDate: now };
+  }, [chartTimeRange]);
 
+
+
+  // Fetch chart data based on parameters - properly memoized
+  const fetchChartData = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      let data: ChartDataPoint[] = [];
+      
+      // Select the appropriate API endpoint based on parameters
+      if (!machineId) {
+        // Aggregated data (all machines)
+        if (startDate && endDate) {
+          const response = await fetch(`/api/chart-data/aggregated?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          if (!response.ok) throw new Error('Failed to fetch aggregated chart data with time range');
+          data = await response.json();
+        } else {
+          const response = await fetch('/api/chart-data/aggregated');
+          if (!response.ok) throw new Error('Failed to fetch aggregated chart data');
+          data = await response.json();
+        }
+      } else if (machineId && !backupName) {
+        // Machine-specific data (all backups)
+        if (startDate && endDate) {
+          const response = await fetch(`/api/chart-data/machine/${machineId}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          if (!response.ok) throw new Error('Failed to fetch machine chart data with time range');
+          data = await response.json();
+        } else {
+          const response = await fetch(`/api/chart-data/machine/${machineId}`);
+          if (!response.ok) throw new Error('Failed to fetch machine chart data');
+          data = await response.json();
+        }
+        
+        // Get machine name for display
+        const machineResponse = await fetch(`/api/machines/${machineId}`);
+        if (machineResponse.ok) {
+          const machineData = await machineResponse.json();
+          setSelectedMachineName(machineData.name);
+        }
+      } else if (machineId && backupName) {
+        // Machine and backup specific data
+        if (startDate && endDate) {
+          const response = await fetch(`/api/chart-data/machine/${machineId}/backup/${encodeURIComponent(backupName)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          if (!response.ok) throw new Error('Failed to fetch machine backup chart data with time range');
+          data = await response.json();
+        } else {
+          const response = await fetch(`/api/chart-data/machine/${machineId}/backup/${encodeURIComponent(backupName)}`);
+          if (!response.ok) throw new Error('Failed to fetch machine backup chart data');
+          data = await response.json();
+        }
+        
+        // Get machine name for display
+        const machineResponse = await fetch(`/api/machines/${machineId}`);
+        if (machineResponse.ok) {
+          const machineData = await machineResponse.json();
+          setSelectedMachineName(machineData.name);
+        }
+      }
+      
+      setChartData(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      toast({
+        title: "Error loading chart data",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [machineId, backupName, startDate, endDate, toast]);
+
+  // Fetch data only when API parameters actually change
+  useEffect(() => {
+    fetchChartData();
+  }, [fetchChartData]);
 
   // Prevent hydration mismatch by only showing time after client-side mount
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Filter chart data based on the selected time range
-  const filteredChartData = useMemo(() => {
-    if (!chartData.length) {
-      return [];
-    }
-    
-    // The chart data is already filtered/aggregated in the parent component
-    // If a machine is selected, chartData contains only that machine's data
-    // If no machine is selected, chartData contains aggregated data for all machines
-    const machineFilteredData = chartData;
-    
-    // If 'All data' is selected, return the machine-filtered data without time filtering
-    if (chartTimeRange === 'All data') {
-      return machineFilteredData;
-    }
-    
-    const now = new Date();
-    let cutoffDate: Date;
-
-    switch (chartTimeRange) {
-      case '2 weeks':
-        cutoffDate = subWeeks(now, 2);
-        break;
-      case '1 month':
-        cutoffDate = subMonths(now, 1);
-        break;
-      case '3 months':
-        cutoffDate = subQuarters(now, 1);
-        break;
-      case '6 months':
-        cutoffDate = subMonths(now, 6);
-        break;
-      case '1 year':
-        cutoffDate = subYears(now, 1);
-        break;
-      case '2 years':
-        cutoffDate = subYears(now, 2);
-        break;
-      default:
-        cutoffDate = subMonths(now, 1);
-    }
-
-    return machineFilteredData.filter(item => {
-      try {
-        // Use the date field (YYYY-MM-DD format) instead of isoDate for filtering
-        const itemDate = parseISO(item.date);
-        return itemDate >= cutoffDate;
-      } catch {
-        return false;
-      }
-    });
-  }, [chartData, chartTimeRange]);
-
   // Get selection info for display
   const selectionInfo = useMemo(() => {
     let baseText = '';
     if (selectedMachineName) {
       baseText = `${selectedMachineName}`;
-    } else if (selectedBackupId) {
-      baseText = `${selectedMachineName}:${selectedBackupId}`;
+      if (backupName) {
+        baseText += `:${backupName}`;
+      } else {
+        baseText += ' (all backups)';
+      }
     } else {
       baseText = 'All Machines & Backups';
     }
@@ -393,12 +512,12 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
     
     // Append chartTimeRange in brackets with proper label
     return `${baseText} (${getTimeRangeLabel(chartTimeRange)})`;
-  }, [selectedMachineName, selectedBackupId, chartTimeRange]);
+  }, [selectedMachineName, backupName, chartTimeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="h-full flex flex-col p-0.5">
+    <div className="flex flex-col p-0.5 min-h-[470px]">
       {/* Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">
           <FileBarChart2 className="h-4 w-4 text-blue-600" />
           <h2 className="text-sm font-semibold">Metrics<span className="text-xs text-muted-foreground"> {selectionInfo}</span></h2>
@@ -411,24 +530,48 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
                     }) : '--:--:--'}</div>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-muted-foreground">
+            <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
+            <p className="text-xs">Loading chart data...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {!isLoading && error && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-destructive">
+            <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p className="text-xs">Error loading chart data</p>
+          </div>
+        </div>
+      )}
+
       {/* Charts - Responsive grid layout */}
-      <div className="flex-1 grid grid-cols-3 grid-rows-2 gap-4 overflow-hidden min-h-0">
-        {chartMetrics.map((metric) => (
-          <SmallMetricChart
-            key={metric.key}
-            data={filteredChartData}
-            metricKey={metric.key as keyof ChartDataPoint}
-            label={metric.label}
-            color={metric.color}
-          />
-        ))}
-      </div>
+      {!isLoading && !error && chartData.length > 0 && (
+        <div className="flex-1 grid grid-cols-3 grid-rows-2 gap-4 pb-2 min-h-0">
+          {chartMetrics.map((metric) => (
+            <SmallMetricChart
+              key={metric.key}
+              data={chartData}
+              metricKey={metric.key as keyof ChartDataPoint}
+              label={metric.label}
+              color={metric.color}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Empty State */}
-      {filteredChartData.length === 0 && (
-        <div className="text-center text-muted-foreground py-4">
-          <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p className="text-xs">No data available</p>
+      {!isLoading && !error && chartData.length === 0 && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center text-muted-foreground">
+            <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p className="text-xs">No data available</p>
+          </div>
         </div>
       )}
     </div>
@@ -437,14 +580,11 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
   // Custom comparison function for React.memo
   // Only re-render if there are actual changes in the data we care about
   
-  // Compare chart data (this is the most important for performance)
-  const chartDataEqual = JSON.stringify(prevProps.chartData) === JSON.stringify(nextProps.chartData);
-  
-  // Compare other props
-  const otherPropsEqual = prevProps.selectedMachineName === nextProps.selectedMachineName &&
-                         prevProps.selectedBackupId === nextProps.selectedBackupId;
+  // Compare props that would cause a re-fetch
+  const paramsEqual = prevProps.machineId === nextProps.machineId && 
+                     prevProps.backupName === nextProps.backupName;
   
   // Don't compare lastRefreshTime as it changes on every refresh but doesn't affect the visual content
   
-  return chartDataEqual && otherPropsEqual;
+  return paramsEqual;
 });
