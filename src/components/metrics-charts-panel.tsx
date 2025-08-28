@@ -3,7 +3,6 @@
 import { useMemo, useState, useEffect, memo, useCallback } from 'react';
 import { 
   Line, 
-  ResponsiveContainer,
   ComposedChart,
   XAxis,
   YAxis,
@@ -264,21 +263,20 @@ const SmallMetricChart = memo(function SmallMetricChart({
   }, [resampledData, metricKey]);
 
   return (
-    <Card className="flex flex-col h-full">
+    <Card className="flex flex-col h-full min-h-0">
       <CardHeader className="pb-0 pt-1 px-2 flex-shrink-0">
         <CardTitle className="text-xs font-medium">{label}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-1 min-h-0">
         <ChartContainer config={chartConfig} className="!aspect-auto w-full h-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={resampledData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
+          <ComposedChart data={resampledData} margin={{ top: 2, right: 5, bottom: 2, left: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#666" />
-              <XAxis 
-                dataKey="isoDate" 
+              <XAxis
+                dataKey="isoDate"
                 hide={false}
                 tickLine={false}
                 axisLine={false}
-                tick={{ fontSize: 9, fill: '#9ca3af', dy: 7 }}
+                tick={{ fontSize: 8, fill: '#9ca3af', dy: 5 }}
                 interval="preserveStartEnd"
                 tickFormatter={(value) => {
                   // Show only first and last labels to avoid crowding
@@ -295,13 +293,13 @@ const SmallMetricChart = memo(function SmallMetricChart({
                   return '';
                 }}
               />
-              <YAxis 
+              <YAxis
                 hide={false}
                 tickLine={false}
                 axisLine={false}
                 tick={{ fontSize: 10, fill: '#9ca3af' }}
-                tickMargin={8}
-                width={80}
+                tickMargin={5}
+                width={60}
                 domain={yAxisConfig.domain}
                 tickFormatter={(value) => {
                   if (typeof value === 'number') {
@@ -328,8 +326,7 @@ const SmallMetricChart = memo(function SmallMetricChart({
                 isAnimationActive={false}
               />
               <Tooltip content={<CustomTooltip metricKey={metricKey} />} />
-            </ComposedChart>
-          </ResponsiveContainer>
+          </ComposedChart>
         </ChartContainer>
       </CardContent>
     </Card>
@@ -515,7 +512,7 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
   }, [selectedMachineName, backupName, chartTimeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex flex-col p-0.5 min-h-[470px]">
+    <div className="flex flex-col p-3 h-full min-h-0">
       {/* Header */}
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">
@@ -550,9 +547,9 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
         </div>
       )}
 
-      {/* Charts - Responsive grid layout */}
+      {/* Charts - Responsive grid layout: fixed 3x2 in available space */}
       {!isLoading && !error && chartData.length > 0 && (
-        <div className="flex-1 grid grid-cols-3 grid-rows-2 gap-4 pb-2 min-h-0">
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 auto-rows-fr items-stretch gap-3 pb-2 min-h-0">
           {chartMetrics.map((metric) => (
             <SmallMetricChart
               key={metric.key}

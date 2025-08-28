@@ -77,7 +77,7 @@ export function DashboardLayout({
     <div className={`flex flex-col px-2 pb-4 ${
       viewMode === 'table' 
         ? 'min-h-screen' // Allow content to extend beyond viewport for table view
-        : 'h-[calc(100vh-4rem)] overflow-hidden' // Keep current behavior for cards view
+        : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
     }`}>
       {/* Top Row: Summary Cards - auto height */}
       <div>
@@ -108,10 +108,10 @@ export function DashboardLayout({
       </div>
       
       {/* Main Content: Metrics Panel - responsive height to fill remaining space */}
-      <div className={`${viewMode === 'table' ? 'min-h-[470px]' : 'flex-1 min-h-0'} ${viewMode === 'table' ? '' : 'overflow-hidden'}`}>
-        <Card className={`${viewMode === 'table' ? 'min-h-[470px]' : 'h-full'} shadow-lg border-2 border-border`}>
-          <CardContent className={`${viewMode === 'table' ? 'min-h-[470px]' : 'h-full'} p-4`}>
-            <MetricsChartsPanel 
+      <div className={`${viewMode === 'table' ? 'min-h-[550px]' : 'flex-1 min-h-0 overflow-hidden'}`}>
+        <Card className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} shadow-lg border-2 border-border`}>
+          <CardContent className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} p-0`}>
+            <MetricsChartsPanel
               machineId={selectedMachineId || undefined}
               lastRefreshTime={lastRefreshTime}
             />
