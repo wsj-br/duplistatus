@@ -38,7 +38,7 @@ none
 
   5. ✅ add a tooltip information in the chart to show the datapoint information (date, value)
 
-  6. fix the autosize of the metrics panel. in some update loose the logic that make it responsive.
+  6. ✅ fix the autosize of the metrics panel. in some update loose the logic that make it responsive.
   
 
 

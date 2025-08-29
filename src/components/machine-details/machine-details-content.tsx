@@ -90,6 +90,9 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
   const lastBackupListCount = backup_list_count;
   const lastBackupFileSize = fileSize;
 
+  // this page is always show in the table view
+  const viewMode = 'table';
+
   return (
     <div className="flex flex-col gap-8">
       <Card className="shadow-lg">
@@ -143,15 +146,17 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
       </Card>
 
       {/* Machine-specific metrics chart */}
-      <Card className="shadow-lg">
-        <CardContent className="pt-6 min-h-[470px]">
-          <MetricsChartsPanel
-            machineId={machine.id}
-            backupName={selectedBackupName === 'all' ? undefined : selectedBackupName}
-            lastRefreshTime={lastRefreshTime}
-          />
-        </CardContent>
-      </Card>
+      <div className={`${viewMode === 'table' ? 'min-h-[550px]' : 'flex-1 min-h-0 overflow-hidden'}`}>
+        <Card className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} shadow-lg border-2 border-border`}>
+          <CardContent className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} p-0`}>
+            <MetricsChartsPanel
+              machineId={machine.id}
+              backupName={selectedBackupName === 'all' ? undefined : selectedBackupName}
+              lastRefreshTime={lastRefreshTime}
+            />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 } 
