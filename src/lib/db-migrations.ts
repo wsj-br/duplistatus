@@ -185,6 +185,37 @@ const migrations: Migration[] = [
       
       console.log('Consolidated migration 2.0 completed successfully');
     }
+  },
+  {
+    version: '3.0',
+    description: 'Add server_url to machines table',
+    up: (db: Database.Database) => {
+      console.log('Running migration 3.0: Adding server_url to machines table...');
+      
+      // Check if the machines table exists
+      const machinesTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='machines'").get();
+      if (!machinesTableExists) {
+        console.log('Machines table does not exist, skipping migration 3.0');
+        return;
+      }
+      
+      // Check existing columns in machines table
+      const tableInfo = db.prepare("PRAGMA table_info(machines)").all() as Array<{name: string, type: string}>;
+      const columnNames = tableInfo.map(col => col.name);
+      
+      // Add server_url column if it doesn't exist
+      if (!columnNames.includes('server_url')) {
+        console.log('Adding server_url column to machines table...');
+        try {
+          db.exec('ALTER TABLE machines ADD COLUMN server_url TEXT DEFAULT ""');
+          console.log('Added server_url column successfully');
+        } catch (error) {
+          console.warn('server_url column might already exist:', error instanceof Error ? error.message : String(error));
+        }
+      }
+            
+      console.log('Migration 3.0 completed successfully');
+    }
   }
 ];
 

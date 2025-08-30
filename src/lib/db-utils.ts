@@ -409,6 +409,18 @@ export function setConfiguration(key: string, value: string): void {
 interface MachineRow {
   id: string;
   name: string;
+  server_url: string;
+}
+
+export function getAllMachineConnections() {
+  return withDb(() => {
+    const machines = safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as MachineRow[];
+    return machines.map(machine => ({
+      id: machine.id,
+      name: machine.name,
+      server_url: machine.server_url || ''
+    }));
+  });
 }
 
 export function getAllMachines() {
@@ -820,6 +832,7 @@ export function  getMachinesSummary() {
       const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as Array<{
         machine_id: string;
         machine_name: string;
+        server_url: string;
         backup_name: string;
         last_backup_date: string | null;
         last_backup_id: string | null;
@@ -841,6 +854,7 @@ export function  getMachinesSummary() {
       const machineMap = new Map<string, {
         id: string;
         name: string;
+        server_url: string;
         backupInfo: Array<{
           name: string;
           lastBackupDate: string;
@@ -884,6 +898,7 @@ export function  getMachinesSummary() {
           machineMap.set(machineId, {
             id: machineId,
             name: row.machine_name,
+            server_url: row.server_url,
             backupInfo: [],
             totalBackupCount: 0,
             totalStorageSize: 0,

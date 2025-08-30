@@ -11,6 +11,7 @@ import { NotificationConfig } from '@/lib/types';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
+import { ServerConnectionsForm } from '@/components/settings/server-connections-form';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -20,18 +21,18 @@ function SettingsPageContent() {
   const { toast } = useToast();
   const [config, setConfig] = useState<NotificationConfig | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>('ntfy');
+  const [activeTab, setActiveTab] = useState<string>('backups');
 
   useEffect(() => {
     // Check for tab parameter in URL first
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['ntfy', 'backups', 'templates'].includes(tabParam)) {
+    if (tabParam && ['backups', 'connections', 'ntfy', 'templates'].includes(tabParam)) {
       setActiveTab(tabParam);
       localStorage.setItem('settings-active-tab', tabParam);
     } else {
       // Load the last selected tab from localStorage if no URL parameter
       const savedTab = localStorage.getItem('settings-active-tab');
-      if (savedTab && ['ntfy', 'backups', 'templates'].includes(savedTab)) {
+      if (savedTab && ['backups', 'connections', 'ntfy', 'templates'].includes(savedTab)) {
         setActiveTab(savedTab);
       }
     }
@@ -109,11 +110,32 @@ function SettingsPageContent() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="ntfy">NTFY Settings</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="backups">Backup Notifications</TabsTrigger>
+              <TabsTrigger value="connections">Server Connections</TabsTrigger>
+              <TabsTrigger value="ntfy">NTFY Settings</TabsTrigger>
               <TabsTrigger value="templates">Notification Templates</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="backups" className="mt-6">
+              <BackupNotificationsForm 
+                backupSettings={config.backupSettings || {}} 
+                onSave={async () => {
+                  // Already uses /api/configuration/backup-settings
+                  // No change needed here
+                }}
+              />
+            </TabsContent>
+            
+            <TabsContent value="connections" className="mt-6">
+              <ServerConnectionsForm 
+                machineConnections={config.machineConnections || []} 
+                onSave={async () => {
+                  // The form handles saving individual machine URLs
+                  // No additional action needed here
+                }}
+              />
+            </TabsContent>
             
             <TabsContent value="ntfy" className="mt-6">
               <NtfyForm 
@@ -133,16 +155,6 @@ function SettingsPageContent() {
                     toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save NTFY config', variant: 'destructive', duration: 3000 });
                     throw error;
                   }
-                }}
-              />
-            </TabsContent>
-            
-            <TabsContent value="backups" className="mt-6">
-              <BackupNotificationsForm 
-                backupSettings={config.backupSettings || {}} 
-                onSave={async () => {
-                  // Already uses /api/configuration/backup-settings
-                  // No change needed here
                 }}
               />
             </TabsContent>

@@ -1,0 +1,15 @@
+ README.md                                  |  6 [32m++++++[m
+ package.json                               |  2 [32m+[m[31m-[m
+ src/app/api/backups/collect/route.ts       |  3 [32m++[m[31m-[m
+ src/app/api/configuration/route.ts         |  5 [32m+++[m[31m--[m
+ src/app/api/upload/route.ts                |  3 [32m++[m[31m-[m
+ src/app/settings/page.tsx                  | 42 [32m+++++++++++++++++++++++++++[m[31m---------------[m
+ src/components/app-header.tsx              |  2 [32m++[m
+ src/components/dashboard/machine-cards.tsx | 56 [32m++++++++++++++++++++++++++++++++++++++++++++++[m[31m----------[m
+ src/components/ui/use-toast.tsx            |  6 [32m++[m[31m----[m
+ src/lib/db-migrations.ts                   | 31 [32m+++++++++++++++++++++++++++++++[m
+ src/lib/db-utils.ts                        | 15 [32m+++++++++++++++[m
+ src/lib/db.ts                              | 23 [32m++++++++++++++++[m[31m-------[m
+ src/lib/default-config.ts                  |  3 [32m++[m[31m-[m
+ src/lib/types.ts                           |  8 [32m++++++++[m
+ 14 files changed, 163 insertions(+), 42 deletions(-)

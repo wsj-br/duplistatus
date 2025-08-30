@@ -211,7 +211,8 @@ export async function POST(request: NextRequest) {
     // Upsert machine information in the database
     dbOps.upsertMachine.run({
         id: machineId,
-        name: machineName
+        name: machineName,
+        server_url: baseUrl
       });
     
     // Ensure backup settings are complete for all machines and backups

@@ -77,7 +77,8 @@ export async function POST(request: NextRequest) {
       // Upsert machine information (only basic info now)
       dbOps.upsertMachine.run({
         id: data.Extra['machine-id'],
-        name: data.Extra['machine-name']
+        name: data.Extra['machine-name'],
+        server_url: '' // No URL available for upload route
       });
 
       // Map backup status

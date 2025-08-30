@@ -112,7 +112,8 @@ export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic
   return {
     ntfy: ntfyConfig,
     backupSettings: {}, // Keep empty - API handles defaults via separate storage
-    templates: defaultNotificationTemplates
+    templates: defaultNotificationTemplates,
+    machineConnections: [] // Empty array for machine connections
   };
 }
 

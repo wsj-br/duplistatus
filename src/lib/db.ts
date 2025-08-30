@@ -60,6 +60,7 @@ try {
       CREATE TABLE IF NOT EXISTS machines (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
+        server_url TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -150,7 +151,7 @@ try {
       );
 
       -- Set initial database version for new databases (only if not exists)
-      INSERT OR IGNORE INTO db_version (version) VALUES ('2.0');
+      INSERT OR IGNORE INTO db_version (version) VALUES ('3.0');
     `);
     
     console.log('Database schema initialized successfully');
@@ -249,22 +250,29 @@ async function populateDefaultConfigurations() {
 const dbOps = {
   // Machine operations
   upsertMachine: safePrepare(`
-    INSERT INTO machines (id, name)
-    VALUES (@id, @name)
+    INSERT INTO machines (id, name, server_url)
+    VALUES (@id, @name, @server_url)
     ON CONFLICT(id) DO UPDATE SET
-      name = @name
+      name = @name,
+      server_url = @server_url
   `, 'upsertMachine'),
 
+  updateMachineServerUrl: safePrepare(`
+    UPDATE machines 
+    SET server_url = @server_url 
+    WHERE id = @id
+  `, 'updateMachineServerUrl'),
+
   getMachine: safePrepare(`
-    SELECT * FROM machines WHERE id = ?
+    SELECT id, name, server_url, created_at FROM machines WHERE id = ?
   `, 'getMachine'),
 
   getMachineByName: safePrepare(`
-    SELECT * FROM machines WHERE name = ?
+    SELECT id, name, server_url, created_at FROM machines WHERE name = ?
   `, 'getMachineByName'),
 
   getAllMachines: safePrepare(`
-    SELECT * FROM machines ORDER BY name
+    SELECT id, name, server_url, created_at FROM machines ORDER BY name
   `, 'getAllMachines'),
 
   // Backup operations
@@ -427,6 +435,7 @@ const dbOps = {
     SELECT
       m.id AS machine_id,
       m.name AS machine_name,
+      m.server_url AS server_url,
       b.backup_name,
       lb.last_backup_date,
       b2.id AS last_backup_id,

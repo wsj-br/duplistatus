@@ -169,6 +169,12 @@ If you encounter issues, you can restore your database by following these steps:
 
 <br>
 
+## Credits
+
+Duplicati SVG icon from: https://dashboardicons.com/icons/duplicati
+
+<br>
+
 ## License
 
 The project is licensed under the [Apache License 2.0](LICENSE).   
