@@ -9,6 +9,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useToast } from '@/components/ui/use-toast';
+import { ServerIcon } from '@/components/ui/server-icon';
+import { useMachineSelection } from '@/contexts/machine-selection-context';
 
 interface MachineConnection {
   id: string;
@@ -22,6 +24,7 @@ export function DuplicatiServerButton() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const pathname = usePathname();
   const { toast } = useToast();
+  const { state: machineSelectionState, getSelectedMachine } = useMachineSelection();
 
   const fetchMachineConnections = useCallback(async () => {
     try {
@@ -128,9 +131,9 @@ export function DuplicatiServerButton() {
                 // Don't show popup when successfully opening server URL
                 return;
               }
-                          } catch {
-                // Invalid URL, fall through to show popover
-              }
+            } catch {
+              // Invalid URL, fall through to show popover
+            }
           }
           
           // If no valid server_url, show popover with all machines
@@ -146,10 +149,33 @@ export function DuplicatiServerButton() {
         setIsPopoverOpen(true);
         return;
       }
-    } else {
-      // For all other cases (dashboard, config page, etc.), show popover
-      setIsPopoverOpen(true);
     }
+    
+    // Check if we're on dashboard page and have a selected machine in cards view
+    if (pathname === '/' && machineSelectionState.viewMode === 'cards' && machineSelectionState.selectedMachineId) {
+      const selectedMachine = getSelectedMachine();
+      
+      if (selectedMachine && selectedMachine.server_url && selectedMachine.server_url.trim() !== '') {
+        try {
+          const url = new URL(selectedMachine.server_url);
+          
+          if (['http:', 'https:'].includes(url.protocol)) {
+            // Open the selected machine's server directly
+            window.open(selectedMachine.server_url, '_blank', 'noopener,noreferrer');
+            return;
+          }
+        } catch {
+          // Invalid URL, fall through to show popover
+        }
+      }
+      
+      // If selected machine has no valid server_url, fall back to popover
+      setIsPopoverOpen(true);
+      return;
+    }
+    
+    // For all other cases (dashboard in table view, no machine selected, etc.), show popover
+    setIsPopoverOpen(true);
   };
 
   return (
@@ -171,19 +197,7 @@ export function DuplicatiServerButton() {
           disabled={isLoading}
           title="Connect to Duplicati server"
         >
-          <svg
-            className="h-4 w-4"
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs id="defs6" />
-            <path d="m 240,440 c -27.2,0 -48,-20.8 -48,-48 v -80 c 0,-27.2 20.8,-48 48,-48 h 128 c 27.2,0 48,20.8 48,48 v 80 c 0,27.2 -20.8,48 -48,48 z" style={{display:"inline",fill:"#b2b2b2",fillOpacity:1}} id="path1" />
-            <path d="M368 280c17.6 0 32 14.4 32 32v80c0 17.6-14.4 32-32 32H240c-17.6 0-32-14.4-32-32v-80c0-17.6 14.4-32 32-32zm0-32H240c-35.2 0-64 28.8-64 64v80c0 35.2 28.8 64 64 64h128c35.2 0 64-28.8 64-64v-80c0-35.2-28.8-64-64-64" style={{fill:"#ffffff",fillOpacity:1}} id="path2" />
-            <path d="M64 472c-27.2 0-48-20.8-48-48V312c0-27.2 20.8-48 48-48h160c27.2 0 48 20.8 48 48v112c0 27.2-20.8 48-48 48z" style={{fill:"#808080",fillOpacity:1}} id="path3" />
-            <path d="m 224,280 c 17.6,0 32,14.4 32,32 v 112 c 0,17.6 -14.4,32 -32,32 H 64 C 46.4,456 32,441.6 32,424 V 312 c 0,-17.6 14.4,-32 32,-32 z m 0,-32 H 64 C 28.8,248 0,276.8 0,312 v 112 c 0,35.2 28.8,64 64,64 h 160 c 35.2,0 64,-28.8 64,-64 V 312 c 0,-35.2 -28.8,-64 -64,-64" style={{fill:"#ffffff",fillOpacity:1}} id="path4" />
-            <path d="m 192,328 c -27.2,0 -48,-20.8 -48,-48 V 88 c 0,-27.2 20.8,-48 48,-48 h 256 c 27.2,0 48,20.8 48,48 v 192 c 0,27.2 -20.8,48 -48,48 z" style={{display:"inline",fill:"#404040",fillOpacity:1}} id="path5" />
-            <path d="m 448,56 c 17.6,0 32,14.4 32,32 v 192 c 0,17.6 -14.4,32 -32,32 H 192 c -17.6,0 -32,-14.4 -32,-32 V 88 c 0,-17.6 14.4,-32 32,-32 z m 0,-32 H 192 c -35.2,0 -64,28.8 -64,64 v 192 c 0,35.2 28.8,64 64,64 h 256 c 35.2,0 64,-28.8 64-64 V 88 C 512,52.8 483.2,24 448,24" style={{fill:"#ffffff",fillOpacity:1}} id="path6" />
-          </svg>
+          <ServerIcon className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">

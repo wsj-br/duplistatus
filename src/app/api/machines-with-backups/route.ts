@@ -10,10 +10,12 @@ export async function GET() {
       id: string; 
       machine_name: string; 
       backup_name: string;
+      server_url: string;
     }[]).map((machine) => ({
       id: machine.id,
       name: machine.machine_name,
-      backupName: machine.backup_name
+      backupName: machine.backup_name,
+      server_url: machine.server_url
     }));
 
     return NextResponse.json(machinesWithBackups);

@@ -130,10 +130,6 @@ function SettingsPageContent() {
             <TabsContent value="connections" className="mt-6">
               <ServerConnectionsForm 
                 machineConnections={config.machineConnections || []} 
-                onSave={async () => {
-                  // The form handles saving individual machine URLs
-                  // No additional action needed here
-                }}
               />
             </TabsContent>
             

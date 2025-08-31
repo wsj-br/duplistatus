@@ -5,7 +5,6 @@ import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, LayoutDashboard, Sheet } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -13,28 +12,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useMachineSelection } from "@/contexts/machine-selection-context";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
   onViewModeChange?: (viewMode: 'cards' | 'table') => void;
-  defaultViewMode?: 'cards' | 'table';
 }
 
 export function DashboardSummaryCards({ 
   summary, 
-  onViewModeChange,
-  defaultViewMode = 'cards'
+  onViewModeChange
 }: DashboardSummaryCardsProps) {
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>(defaultViewMode);
-
-  // Load view mode from localStorage on mount
-  useEffect(() => {
-    const savedViewMode = localStorage.getItem('dashboard-view-mode');
-    if (savedViewMode === 'cards' || savedViewMode === 'table') {
-      setViewMode(savedViewMode);
-      onViewModeChange?.(savedViewMode);
-    }
-  }, [onViewModeChange]);
+  const { state: machineSelectionState, setViewMode } = useMachineSelection();
+  const { viewMode } = machineSelectionState;
 
   // Handle view mode toggle
   const handleViewModeToggle = () => {
@@ -79,7 +69,7 @@ export function DashboardSummaryCards({
       title: "Overdue Backups",
       value: summary.overdueBackupsCount.toLocaleString(),
       icon: <AlertTriangle className={`h-6 w-6 ${summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500'}`} />,
-      "data-ai-hint": "alert warning",
+      "data-ai-hint": "alert triangle",
     },
   ];
 
@@ -111,26 +101,25 @@ export function DashboardSummaryCards({
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0 hover:bg-transparent"
+                  className="h-8 w-8 p-0 hover:bg-transparent [&_svg]:!h-8 [&_svg]:!w-8"
                   onClick={handleViewModeToggle}
-                  aria-label={`Switch to ${viewMode === 'cards' ? 'table' : 'cards'} view`}
                 >
                   {viewMode === 'cards' ? (
-                    <Sheet className="h-6 w-6 text-blue-600" />
-                  ) : (
                     <LayoutDashboard className="h-6 w-6 text-blue-600" />
+                    
+                  ) : (
+                    <Sheet className="h-8 w-8 text-blue-600" />
                   )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Switch between Cards view and Table view</p>
+                <p>Show {viewMode === 'cards' ? 'table' : 'cards'} view</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <div className="text-xs text-muted-foreground mt-2">
+          {/* <div className="text-xs text-muted-foreground mt-2">
             {viewMode === 'cards' ? 'Switch to Table' : 'Switch to Cards'}
-          </div>
+          </div> */}
         </div>
       </Card>
     </div>

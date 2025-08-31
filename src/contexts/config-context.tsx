@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { defaultUIConfig } from '@/lib/default-config';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
-type TablePageSize = 5 | 10 | 15 | 20;
+export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
 export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize' | 'storageSize' | 'backupVersions';
 type AutoRefreshInterval = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10;

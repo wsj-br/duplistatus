@@ -118,7 +118,7 @@ export function GlobalRefreshControls() {
         title: "Refresh Failed",
         description: "Failed to refresh data. Please try again.",
         variant: "destructive",
-        duration: 2000,
+        duration: 3000,
       });
     }
   };

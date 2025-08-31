@@ -8,6 +8,7 @@ import type { Machine } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 interface OverdueBackup {
   machineName: string;
@@ -28,6 +29,7 @@ interface MachineDetailsContentProps {
 
 export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck, lastRefreshTime }: MachineDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
+  const { refreshDetail } = useGlobalRefresh();
   
   // Find the selected backup if one is selected
   const selectedBackup = selectedBackupName === 'all' 
@@ -90,6 +92,15 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
   const lastBackupListCount = backup_list_count;
   const lastBackupFileSize = fileSize;
 
+  // Handle backup deletion
+  const handleBackupDeleted = async () => {
+    try {
+      await refreshDetail(machine.id);
+    } catch (error) {
+      console.error('Error refreshing data after backup deletion:', error);
+    }
+  };
+
   // this page is always show in the table view
   const viewMode = 'table';
 
@@ -141,7 +152,11 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <MachineBackupTable backups={machine.backups} machineName={machine.name} />
+          <MachineBackupTable 
+            backups={machine.backups} 
+            machineName={machine.name} 
+            onBackupDeleted={handleBackupDeleted}
+          />
         </CardContent>
       </Card>
 

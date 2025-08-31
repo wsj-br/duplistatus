@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { isDevelopmentMode } from "@/lib/utils";
 import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
 import {
   Select,
@@ -33,15 +34,18 @@ import {
 } from "@/components/ui/select";
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
+import { DeleteBackupButton } from "@/components/ui/delete-backup-button";
 
 interface MachineBackupTableProps {
   backups: Backup[];
   machineName: string;
+  onBackupDeleted?: () => void;
 }
 
-export function MachineBackupTable({ backups, machineName }: MachineBackupTableProps) {
+export function MachineBackupTable({ backups, machineName, onBackupDeleted }: MachineBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
+  const [isDevMode, setIsDevMode] = useState(false);
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
@@ -139,6 +143,21 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
     }
   }, [currentPage, totalPages]);
 
+  // Check development mode on component mount
+  useEffect(() => {
+    const checkDevMode = async () => {
+      try {
+        const devMode = await isDevelopmentMode();
+        setIsDevMode(devMode);
+      } catch (error) {
+        console.warn('Failed to check development mode:', error);
+        setIsDevMode(false);
+      }
+    };
+    
+    checkDevMode();
+  }, []);
+
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
@@ -233,12 +252,18 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
                   <SortableTableHead column="knownFileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     Storage Size
                   </SortableTableHead>
+                  {/* Development mode delete column */}
+                  {isDevMode && (
+                    <TableHeader className="w-12">
+                      <div className="sr-only">Actions</div>
+                    </TableHeader>
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedBackups.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={11} className="text-center h-24">
+                    <TableCell colSpan={isDevMode ? 12 : 11} className="text-center h-24">
                       No backups found for this machine.
                     </TableCell>
                   </TableRow>
@@ -291,6 +316,17 @@ export function MachineBackupTable({ backups, machineName }: MachineBackupTableP
                     <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
                     <TableCell className="text-right">{backup.duration}</TableCell>
                     <TableCell className="text-right">{formatBytes(backup.knownFileSize)}</TableCell>
+                    {/* Development mode delete button */}
+                    {isDevMode && (
+                      <TableCell className="text-center">
+                        <DeleteBackupButton
+                          backupId={backup.id}
+                          backupName={backup.name}
+                          backupDate={backup.date}
+                          onDelete={onBackupDeleted}
+                        />
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>

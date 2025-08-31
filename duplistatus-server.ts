@@ -22,6 +22,12 @@ app.prepare().then(() => {
   .listen(port, hostname, () => {
     console.log('\n\n🌐 \x1b[34mduplistatus-server\x1b[0m');
     console.log(`✅ Ready on http://${hostname}:${port} \n\n`);
+    if(dev) {
+      console.log(`🔧 dev mode`);
+    }
+    else {
+      console.log(`🚀 production mode`);
+    }
   });
 });
 

@@ -450,7 +450,8 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
       toast({
         title: "Error loading chart data",
         description: errorMessage,
-        variant: "destructive"
+        variant: "destructive",
+        duration: 3000
       });
     } finally {
       setIsLoading(false);

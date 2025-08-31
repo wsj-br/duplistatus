@@ -1333,11 +1333,12 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
 // Function to get all machine and their respective backup names
 export function getMachinesBackupNames() {
   return withDb(() => safeDbOperation(() => {
-    const results = dbOps.getMachinesBackupNames.all() as Array<{ machine_name: string; backup_name: string }>;
+    const results = dbOps.getMachinesBackupNames.all() as Array<{ machine_name: string; backup_name: string; server_url: string }>;
     return results.map(row => ({
       id: getBackupKey(row.machine_name, row.backup_name),
       machine_name: row.machine_name,
-      backup_name: row.backup_name
+      backup_name: row.backup_name,
+      server_url: row.server_url
     }));
   }, 'getMachinesBackupNames', []));
 }

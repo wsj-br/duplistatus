@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,18 +8,17 @@ import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
 import { MachineConnection } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Circle, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Ellipsis, Loader2, Play } from 'lucide-react';
+import { ServerConnectionButton } from '@/components/ui/server-connection-button';
 
 interface ServerConnectionsFormProps {
   machineConnections: MachineConnection[];
-  onSave: (machineConnections: MachineConnection[]) => Promise<void>;
 }
 
 type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing';
 
 interface MachineConnectionWithStatus extends MachineConnection {
   connectionStatus: ConnectionStatus;
-  isEditing: boolean;
   originalServerUrl: string;
 }
 
@@ -39,14 +38,13 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
     connectionStatus: { type: 'text' as keyof typeof sortFunctions, path: 'connectionStatus' },
   };
 
+  // Initialize connections with unknown status
   useEffect(() => {
-    // Initialize connections with status
-    const initialConnections: MachineConnectionWithStatus[] = machineConnections.map(conn => ({
-      ...conn,
-      connectionStatus: conn.server_url ? 'unknown' : 'unknown',
-      isEditing: false,
-      originalServerUrl: conn.server_url
-    }));
+          const initialConnections: MachineConnectionWithStatus[] = machineConnections.map(conn => ({
+        ...conn,
+        connectionStatus: 'unknown' as ConnectionStatus,
+        originalServerUrl: conn.server_url
+      }));
     setConnections(initialConnections);
   }, [machineConnections]);
 
@@ -65,41 +63,40 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
   const hasInvalidUrls = connections.some(conn => !isValidUrl(conn.server_url));
 
   const handleUrlChange = (machineId: string, newUrl: string) => {
-    setConnections(prev => prev.map(conn => {
-      if (conn.id === machineId) {
-        const hasChanged = newUrl !== conn.originalServerUrl;
-        setHasChanges(hasChanged);
-        return {
-          ...conn,
-          server_url: newUrl,
-          connectionStatus: 'unknown' as ConnectionStatus,
-          isEditing: true
-        };
-      }
-      return conn;
-    }));
+    setConnections(prev => {
+      const newConnections = prev.map(conn => {
+        if (conn.id === machineId) {
+          const hasChanged = newUrl !== conn.originalServerUrl;
+          setHasChanges(hasChanged);
+          
+          return {
+            ...conn,
+            server_url: newUrl,
+            connectionStatus: 'unknown' as ConnectionStatus
+          };
+        }
+        return conn;
+      });
+      
+      return newConnections;
+    });
   };
 
   const handleUrlFocus = (machineId: string, currentUrl: string) => {
-    // If the URL field is empty, insert the default template with cursor before the ":8200"
     if (!currentUrl || currentUrl.trim() === '') {
       const defaultUrl = "http://:8200";
       setConnections(prev => prev.map(conn => {
         if (conn.id === machineId) {
           return {
             ...conn,
-            server_url: defaultUrl,
-            connectionStatus: 'unknown' as ConnectionStatus,
-            isEditing: true
+            server_url: defaultUrl
           };
         }
         return conn;
       }));
       
-      // Set hasChanges to true since we're adding a default value
       setHasChanges(true);
       
-      // Position cursor before ":8200" after the state update
       setTimeout(() => {
         const inputElement = inputRefs.current[machineId];
         if (inputElement) {
@@ -112,26 +109,27 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
   };
 
   const handleUrlBlur = (machineId: string) => {
-    setConnections(prev => prev.map(conn => {
-      if (conn.id === machineId) {
-        // If the field is empty or only contains the default template without changes, clear it
-        if (!conn.server_url || conn.server_url.trim() === '' || conn.server_url === "http://:8200") {
-          return {
-            ...conn,
-            server_url: '',
-            isEditing: false
-          };
+    setConnections(prev => {
+      const updatedConnections = prev.map(conn => {
+        if (conn.id === machineId) {
+          if (!conn.server_url || conn.server_url.trim() === '' || conn.server_url === "http://:8200") {
+            return {
+              ...conn,
+              server_url: '',
+              connectionStatus: 'unknown' as ConnectionStatus
+            };
+          }
+          
+          return conn;
         }
-        return {
-          ...conn,
-          isEditing: false
-        };
-      }
-      return conn;
-    }));
+        return conn;
+      });
+      
+      return updatedConnections;
+    });
   };
 
-  const testConnection = async (machineId: string, serverUrl: string, triggeredByEnter: boolean = false) => {
+  const testConnection = async (machineId: string, serverUrl: string) => {
     if (!serverUrl || serverUrl.trim() === '') {
       toast({
         title: "Error",
@@ -173,7 +171,7 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
         if (conn.id === machineId) {
           return { 
             ...conn, 
-            connectionStatus: result.success ? 'success' : 'failed' as ConnectionStatus 
+            connectionStatus: result.success ? 'success' : 'failed' as ConnectionStatus
           };
         }
         return conn;
@@ -192,14 +190,6 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
           description: "Server connection test passed",
           duration: 3000,
         });
-        
-        // If test was successful and triggered by ENTER, auto-save the changes
-        if (triggeredByEnter) {
-          // Small delay to ensure the success toast is displayed before auto-save
-          setTimeout(async () => {
-            await handleSave();
-          }, 100);
-        }
       }
 
     } catch (error) {
@@ -216,6 +206,101 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
         variant: "destructive",
         duration: 5000,
       });
+    }
+  };
+
+  // Manual test all connections function
+  const handleTestAllConnections = async () => {
+    setIsTestingAll(true);
+    try {
+      const connectionsWithUrls = connections.filter(conn => conn.server_url && conn.server_url.trim() !== '');
+      
+      if (connectionsWithUrls.length === 0) {
+        toast({
+          title: "No URLs to Test",
+          description: "No server URLs are configured to test",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // Set status to testing for all machines with server_url
+      setConnections(prev => prev.map(conn => {
+        if (conn.server_url && conn.server_url.trim() !== '') {
+          return { ...conn, connectionStatus: 'testing' as ConnectionStatus };
+        }
+        return conn;
+      }));
+
+      let successCount = 0;
+      let failureCount = 0;
+
+      // Helper function to test a single connection
+      const testConnectionInBatch = async (connection: typeof connectionsWithUrls[0]) => {
+        try {
+          const response = await fetch('/api/machines/test-connection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ server_url: connection.server_url }),
+          });
+
+          const result = await response.json();
+
+          setConnections(prev => prev.map(conn => {
+            if (conn.id === connection.id) {
+              return { 
+                ...conn, 
+                connectionStatus: result.success ? 'success' : 'failed' as ConnectionStatus
+              };
+            }
+            return conn;
+          }));
+          
+          return { success: result.success, connectionId: connection.id };
+        } catch {
+          setConnections(prev => prev.map(conn => {
+            if (conn.id === connection.id) {
+              return { ...conn, connectionStatus: 'failed' as ConnectionStatus };
+            }
+            return conn;
+          }));
+          return { success: false, connectionId: connection.id };
+        }
+      };
+
+      // Test all connections in parallel
+      const results = await Promise.allSettled(
+        connectionsWithUrls.map(connection => testConnectionInBatch(connection))
+      );
+
+      // Process results
+      results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          if (result.value.success) {
+            successCount++;
+          } else {
+            failureCount++;
+          }
+        } else {
+          failureCount++;
+        }
+      });
+      
+      toast({
+        title: "Connection Tests Complete",
+        description: `Tested ${connectionsWithUrls.length} connections: ${successCount} successful, ${failureCount} failed`,
+        duration: 5000,
+      });
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to test all connections",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsTestingAll(false);
     }
   };
 
@@ -243,11 +328,10 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
         }
       }
 
-      // Update original URLs and reset editing state
+      // Update original URLs
       setConnections(prev => prev.map(conn => ({
         ...conn,
-        originalServerUrl: conn.server_url,
-        isEditing: false
+        originalServerUrl: conn.server_url
       })));
       setHasChanges(false);
 
@@ -276,78 +360,6 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
     }));
   };
 
-  const handleTestAllConnections = async () => {
-    setIsTestingAll(true);
-    try {
-      const connectionsWithUrls = connections.filter(conn => conn.server_url && conn.server_url.trim() !== '');
-      
-      if (connectionsWithUrls.length === 0) {
-        toast({
-          title: "No URLs to Test",
-          description: "No server URLs are configured to test",
-          variant: "destructive",
-          duration: 3000,
-        });
-        return;
-      }
-
-      let successCount = 0;
-      let failureCount = 0;
-
-      // Test each connection sequentially
-      for (const connection of connectionsWithUrls) {
-        try {
-          const response = await fetch('/api/machines/test-connection', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ server_url: connection.server_url }),
-          });
-
-          const result = await response.json();
-
-          setConnections(prev => prev.map(conn => {
-            if (conn.id === connection.id) {
-              return { 
-                ...conn, 
-                connectionStatus: result.success ? 'success' : 'failed' as ConnectionStatus 
-              };
-            }
-            return conn;
-          }));
-
-          if (result.success) {
-            successCount++;
-          } else {
-            failureCount++;
-          }
-        } catch {
-          setConnections(prev => prev.map(conn => {
-            if (conn.id === connection.id) {
-              return { ...conn, connectionStatus: 'failed' as ConnectionStatus };
-            }
-            return conn;
-          }));
-          failureCount++;
-        }
-      }
-
-      toast({
-        title: "Connection Tests Complete",
-        description: `Tested ${connectionsWithUrls.length} connections: ${successCount} successful, ${failureCount} failed`,
-        duration: 5000,
-      });
-    } catch {
-      toast({
-        title: "Error",
-        description: "Failed to test all connections",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setIsTestingAll(false);
-    }
-  };
-
   const getConnectionIcon = (status: ConnectionStatus) => {
     switch (status) {
       case 'success':
@@ -357,7 +369,7 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
       case 'testing':
         return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
       default:
-        return <Circle className="h-5 w-5 text-gray-400" />;
+        return <Ellipsis className="h-5 w-5 text-gray-400" />;
     }
   };
 
@@ -430,7 +442,7 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
-                          testConnection(connection.id, connection.server_url, true);
+                          testConnection(connection.id, connection.server_url);
                         }
                       }}
                       placeholder="https://server:8200"
@@ -448,24 +460,39 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
                   <div className="flex items-center space-x-2">
                     {getConnectionIcon(connection.connectionStatus)}
                     <span className="text-sm">
-                      {connection.connectionStatus === 'success' && 'Connected'}
-                      {connection.connectionStatus === 'failed' && 'Failed'}
-                      {connection.connectionStatus === 'testing' && 'Testing...'}
-                      {connection.connectionStatus === 'unknown' && 'Unknown'}
+                      {(() => {
+                        const statusToDisplay = connection.connectionStatus;
+                        
+                        if (statusToDisplay === 'success') return 'Connected';
+                        if (statusToDisplay === 'failed') return 'Failed';
+                        if (statusToDisplay === 'testing') return 'Testing...';
+                        return '';
+                      })()}
                     </span>
                   </div>
                 </TableCell>
                 
                 <TableCell>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => testConnection(connection.id, connection.server_url, false)}
-                    disabled={!connection.server_url || !isValidUrl(connection.server_url)}
-                  >
-                    Test
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => testConnection(connection.id, connection.server_url)}
+                      disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                    >
+                      <Play className="h-4 w-4" />
+                      Test
+                    </Button>
+                    <ServerConnectionButton
+                      serverUrl={connection.server_url}
+                      machineName={connection.name}
+                      size="sm"
+                      variant="outline"
+                      showText={true}
+                      disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

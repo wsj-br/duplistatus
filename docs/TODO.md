@@ -44,7 +44,7 @@ none
 
 ## New Features (planned or under analysis)
 
-### Duplicati connection
+### ✅ Duplicati connection 
   - when collecting the backup logs, register the ip and port of the machine. 
   - create a tab in the settings to manage  the ip and port of the machines in the database
   - create a link in the dashboard, machine detail and backup detail pages to open a browser tab to connect to the duplicati server

@@ -331,7 +331,8 @@ const dbOps = {
   getMachinesBackupNames: safePrepare(`
     SELECT 
       m.name AS machine_name,
-      b.backup_name
+      b.backup_name,
+      m.server_url
     FROM machines m
     JOIN backups b ON b.machine_id = m.id
     GROUP BY m.name, b.backup_name

@@ -171,7 +171,8 @@ If you encounter issues, you can restore your database by following these steps:
 
 ## Credits
 
-Duplicati SVG icon from: https://dashboardicons.com/icons/duplicati
+- Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
+- Github SVG icon from https://github.com/logos
 
 <br>
 

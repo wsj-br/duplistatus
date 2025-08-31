@@ -370,3 +370,39 @@ export function formatDurationHuman(seconds: number): string {
     return `${secs}s`;
   }
 }
+
+// Cache for development mode check
+let developmentModeCache: boolean | null = null;
+
+/**
+ * Check if the application is running in development mode
+ * Always uses the /api/environment endpoint and caches the result for the session
+ * Assumes this function only runs on the client side
+ */
+export async function isDevelopmentMode(): Promise<boolean> {
+  // Return cached value if available
+  if (developmentModeCache !== null) {
+    return developmentModeCache;
+  }
+
+  // Client-side: call the environment API endpoint
+  try {
+    const response = await fetch('/api/environment');
+    if (response.ok) {
+      const data = await response.json();
+      developmentModeCache = data.NODE_ENV !== 'production';
+      return developmentModeCache;
+    }
+  } catch (error) {
+    console.error('Failed to fetch environment info:', error);
+    // No fallback - throw error if API call fails
+    throw new Error('Failed to determine development mode: API call failed');
+  }
+
+  // If response was not ok, throw error
+  throw new Error('Failed to determine development mode: Invalid API response');
+}
+
+
+
+

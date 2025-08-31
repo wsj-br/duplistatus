@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DashboardLayout } from './dashboard-layout';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import type { MachineSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
@@ -12,8 +12,6 @@ interface DashboardAutoRefreshProps {
     allMachinesChartData: ChartDataPoint[];
   };
 }
-
-
 
 export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps) {
   const { state } = useGlobalRefresh();
@@ -40,13 +38,13 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
   }, []);
 
   // Refresh function - used only for manual refresh (user clicking refresh button)
-  // Auto-refresh is handled by the global refresh context to avoid duplicate API calls
   const refreshData = useCallback(async () => {
-    if (isLoading) return;
+    if (isLoading) return; // Prevent multiple simultaneous refreshes
     
     try {
       setIsLoading(true);
       
+      // Fetch all required data
       const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
         fetch('/api/machines-summary'),
         fetch('/api/summary'),
@@ -57,24 +55,20 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
         throw new Error('Failed to fetch dashboard data');
       }
 
-      const [newMachinesSummary, newOverallSummary, newAllMachinesChartData] = await Promise.all([
+      const [machinesData, summaryData, chartData] = await Promise.all([
         machinesResponse.json(),
         summaryResponse.json(),
         chartResponse.json()
       ]);
-      
+
       // Update state with new data
-      setMachinesSummary(newMachinesSummary);
-      setOverallSummary(newOverallSummary);
-      setAllMachinesChartData(newAllMachinesChartData);
-      
-      // Small delay to show loading state briefly
-      setTimeout(() => setIsLoading(false), 100);
-      
-      // Always update refresh time for the UI
+      setMachinesSummary(machinesData);
+      setOverallSummary(summaryData);
+      setAllMachinesChartData(chartData);
       setLastRefreshTime(new Date());
     } catch (error) {
-      console.error('Failed to refresh dashboard data:', error);
+      console.error('Error refreshing dashboard data:', error);
+    } finally {
       setIsLoading(false);
     }
   }, [isLoading]);

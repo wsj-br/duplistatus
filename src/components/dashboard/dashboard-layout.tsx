@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import type { MachineSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { MachineCards } from "./machine-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
+import { useMachineSelection } from "@/contexts/machine-selection-context";
 
 interface DashboardLayoutProps {
   data: DashboardData;
@@ -29,8 +30,14 @@ export function DashboardLayout({
   onMachineSelect,
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardLayoutProps) {
+  const { state: machineSelectionState, setSelectedMachineId, setViewMode, setMachines } = useMachineSelection();
+  const { viewMode } = machineSelectionState;
   
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  // Use refs to track initialization and prevent infinite loops
+  const isViewModeInitialized = useRef(false);
+  const previousSelectedMachineId = useRef<string | null>(null);
+  const previousMachinesData = useRef<string>('');
+  
   // Preserve visible card index across component remounts
   const [visibleCardIndex, setVisibleCardIndex] = useState<number>(0);
   
@@ -44,13 +51,33 @@ export function DashboardLayout({
     setViewMode(newViewMode);
   };
 
-  // Load view mode from localStorage on mount
+  // Load view mode from localStorage on mount (only once)
   useEffect(() => {
-    const savedViewMode = localStorage.getItem('dashboard-view-mode');
-    if (savedViewMode === 'cards' || savedViewMode === 'table') {
-      setViewMode(savedViewMode);
+    if (!isViewModeInitialized.current) {
+      const savedViewMode = localStorage.getItem('dashboard-view-mode');
+      if (savedViewMode === 'cards' || savedViewMode === 'table') {
+        setViewMode(savedViewMode);
+      }
+      isViewModeInitialized.current = true;
     }
-  }, []);
+  }, [setViewMode]);
+
+  // Update context when selected machine changes (only if actually changed)
+  useEffect(() => {
+    if (previousSelectedMachineId.current !== selectedMachineId) {
+      setSelectedMachineId(selectedMachineId || null);
+      previousSelectedMachineId.current = selectedMachineId || null;
+    }
+  }, [selectedMachineId, setSelectedMachineId]);
+
+  // Update context when machines data changes (only if actually changed)
+  useEffect(() => {
+    const machinesDataString = JSON.stringify(data.machinesSummary);
+    if (previousMachinesData.current !== machinesDataString) {
+      setMachines(data.machinesSummary);
+      previousMachinesData.current = machinesDataString;
+    }
+  }, [data.machinesSummary, setMachines]);
 
   // Calculate machine-specific summary if a machine is selected
   const summary = useMemo(() => {
@@ -61,7 +88,6 @@ export function DashboardLayout({
         totalMachines: 1,
         totalBackups: machineBackups.length,
         totalUploadedSize: machineBackups.reduce((sum, backup) => sum + backup.uploadedSize, 0),
-        totalStorageUsed: machineBackups.reduce((sum, backup) => sum + backup.fileSize, 0),
         totalBackupSize: machineBackups.reduce((sum, backup) => sum + backup.knownFileSize || 0, 0),
         overdueBackupsCount: machineBackups.filter(() => {
           // This would need proper overdue logic
@@ -74,17 +100,16 @@ export function DashboardLayout({
   }, [data.overallSummary, selectedMachine, machineBackups]);
 
   return (
-    <div className={`flex flex-col px-2 pb-4 ${
-      viewMode === 'table' 
+    <div className={`flex flex-col px-2 pb-4 
+      ${viewMode === 'table' 
         ? 'min-h-screen' // Allow content to extend beyond viewport for table view
         : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
-    }`}>
+      }`}>
       {/* Top Row: Summary Cards - auto height */}
       <div>
         <DashboardSummaryCards 
           summary={summary} 
           onViewModeChange={handleViewModeChange}
-          defaultViewMode={viewMode}
         />
       </div>
       

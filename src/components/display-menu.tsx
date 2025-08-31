@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useConfig } from "@/contexts/config-context";
+import type { TablePageSize } from "@/contexts/config-context";
 import { Label } from "@/components/ui/label";
 
 export function DisplayMenu() {
@@ -49,7 +50,7 @@ export function DisplayMenu() {
               <Label htmlFor="table-page-size">Table Page Size</Label>
               <Select
                 value={tablePageSize.toString()}
-                onValueChange={(value) => setTablePageSize(parseInt(value) as 5 | 10 | 15 | 20)}
+                onValueChange={(value) => setTablePageSize(parseInt(value) as TablePageSize)}
               >
                 <SelectTrigger id="table-page-size">
                   <SelectValue placeholder="Select page size" />
@@ -59,6 +60,10 @@ export function DisplayMenu() {
                   <SelectItem value="10">10 rows</SelectItem>
                   <SelectItem value="15">15 rows</SelectItem>
                   <SelectItem value="20">20 rows</SelectItem>
+                  <SelectItem value="25">25 rows</SelectItem>
+                  <SelectItem value="30">30 rows</SelectItem>
+                  <SelectItem value="40">40 rows</SelectItem>
+                  <SelectItem value="50">50 rows</SelectItem>
                 </SelectContent>
               </Select>
             </div>

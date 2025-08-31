@@ -10,7 +10,7 @@ import { HardDrive, AlertTriangle, Settings, Download, ChevronLeft, ChevronRight
 import { useRouter } from "next/navigation";
 import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
-
+import { ServerConnectionButton } from "@/components/ui/server-connection-button";
 
 
 
@@ -132,21 +132,21 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
       }`}
       onClick={handleCardClick}
     >
-      <CardHeader className="pb-2 flex-shrink-0">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
+      <CardHeader className="pb-1 pt-2 flex-shrink-0">
+        <div className="flex items-start gap-2">
+          <CardTitle className="text-base font-semibold flex items-center flex-1">
+            <ServerConnectionButton className="h-8 w-8 flex-shrink-0" variant="ghost" serverUrl={machine.server_url} showText={false}  />
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 router.push(`/detail/${machine.id}`);
               }}
-              className="flex items-center gap-2 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+              className="flex items-center hover:text-blue-600 transition-colors duration-200 cursor-pointer"
             >
-              <HardDrive className="h-4 w-4 text-blue-600" />
               {machine.name}
             </button>
           </CardTitle>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center flex-shrink-0">
             <CompactStatusBadge 
               status={machineStatus} 
               machineId={machine.id}
@@ -247,39 +247,17 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                       <div className="space-y-3">
                         <div className="font-semibold text-sm text-left">
                           <div className="flex justify-between items-center">
-                            <div className="font-semibold text-blue-600">{machine.name} : {backupType.name}</div>
-                            {machine.server_url && machine.server_url.trim() !== '' && (
-                              <button 
-                                className="text-xs flex items-center hover:text-blue-500 transition-colors"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  try {
-                                    const url = new URL(machine.server_url);
-                                    if (['http:', 'https:'].includes(url.protocol)) {
-                                      window.open(machine.server_url, '_blank', 'noopener,noreferrer');
-                                    }
-                                  } catch (error) {
-                                    console.error('Invalid server URL:', error);
-                                  }
-                                }}
-                                title="Connect to Duplicati server"
-                              >
-                                <svg
-                                  className="h-3 w-3 mr-1"
-                                  viewBox="0 0 512 512"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <defs id="defs6" />
-                                  <path d="m 240,440 c -27.2,0 -48,-20.8 -48,-48 v -80 c 0,-27.2 20.8,-48 48,-48 h 128 c 27.2,0 48,20.8 48,48 v 80 c 0,27.2 -20.8,48 -48,48 z" style={{display:"inline",fill:"#b2b2b2",fillOpacity:1}} id="path1" />
-                                  <path d="M368 280c17.6 0 32 14.4 32 32v80c0 17.6-14.4 32-32 32H240c-17.6 0-32-14.4-32-32v-80c0-17.6 14.4-32 32-32zm0-32H240c-35.2 0-64 28.8-64 64v80c0 35.2 28.8 64 64 64h128c35.2 0 64-28.8 64-64v-80c0-35.2-28.8-64-64-64" style={{fill:"#ffffff",fillOpacity:1}} id="path2" />
-                                  <path d="M64 472c-27.2 0-48-20.8-48-48V312c0-27.2 20.8-48 48-48h160c27.2 0 48 20.8 48 48v112c0 27.2-20.8 48-48 48z" style={{fill:"#808080",fillOpacity:1}} id="path3" />
-                                  <path d="m 224,280 c 17.6,0 32,14.4 32,32 v 112 c 0,17.6 -14.4,32 -32,32 H 64 C 46.4,456 32,441.6 32,424 V 312 c 0,-17.6 14.4,-32 32,-32 z m 0,-32 H 64 C 28.8,248 0,276.8 0,312 v 112 c 0,35.2 28.8,64 64,64 h 160 c 35.2,0 64,-28.8 64,-64 V 312 c 0,-35.2 -28.8,-64 -64,-64" style={{fill:"#ffffff",fillOpacity:1}} id="path4" />
-                                  <path d="m 192,328 c -27.2,0 -48,-20.8 -48,-48 V 88 c 0,-27.2 20.8,-48 48,-48 h 256 c 27.2,0 48,20.8 48,48 v 192 c 0,27.2 -20.8,48 -48,48 z" style={{display:"inline",fill:"#404040",fillOpacity:1}} id="path5" />
-                                  <path d="m 448,56 c 17.6,0 32,14.4 32,32 v 192 c 0,17.6 -14.4,32 -32,32 H 192 c -17.6,0 -32,-14.4 -32,-32 V 88 c 0,-17.6 14.4,-32 32,-32 z m 0,-32 H 192 c -35.2,0 -64,28.8 -64,64 v 192 c 0,35.2 28.8,64 64,64 h 256 c 35.2,0 64,-28.8 64,-64 V 88 C 512,52.8 483.2,24 448,24" style={{fill:"#ffffff",fillOpacity:1}} id="path6" />
-                                </svg>
-                                Connect to server
-                              </button>
-                            )}
+                            <div className="font-bold">{machine.name} : {backupType.name}</div>
+                            {/* {machine.server_url && machine.server_url.trim() !== '' && (
+                              <ServerConnectionButton
+                                serverUrl={machine.server_url}
+                                machineName={machine.name}
+                                size="sm"
+                                variant="ghost"
+                                className="text-xs hover:text-blue-500 transition-colors"
+                                showText={true}
+                              />
+                            )} */}
                           </div>
                         </div>
 
@@ -701,7 +679,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
           }}
         >
           {uniqueMachines.map((machine) => (
-            <div key={machine.id} className="flex-shrink-0" style={{ width: cardWidth }} data-card>
+            <div key={machine.id} className="flex-shrink-0" style={{ width: cardWidth, maxWidth: '370px' }} data-card>
               <MachineCard
                 machine={machine}
                 isSelected={selectedMachineId === machine.id}

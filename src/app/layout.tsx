@@ -4,6 +4,7 @@ import './globals.css';
 import { CustomThemeProvider } from '@/contexts/theme-context';
 import { ConfigProvider } from '@/contexts/config-context';
 import { GlobalRefreshProvider } from '@/contexts/global-refresh-context';
+import { MachineSelectionProvider } from '@/contexts/machine-selection-context';
 import { AvailableBackupsModalProvider } from '@/components/ui/available-backups-modal';
 import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
@@ -103,19 +104,21 @@ export default function RootLayout({
         <CustomThemeProvider>
           <ConfigProvider>
             <GlobalRefreshProvider>
-              <AvailableBackupsModalProvider>
-                <ToastProvider>
-                  <div className="relative flex min-h-screen flex-col">
-                    <AppHeader />
-                    <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
-                    <div className="flex items-center justify-center gap-4">
-                      <AppVersion />
-                      <GithubLink />
+              <MachineSelectionProvider>
+                <AvailableBackupsModalProvider>
+                  <ToastProvider>
+                    <div className="relative flex min-h-screen flex-col">
+                      <AppHeader />
+                      <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
+                      <div className="flex items-center justify-center gap-4">
+                        <AppVersion />
+                        <GithubLink />
+                      </div>
                     </div>
-                  </div>
-                  <Toaster />
-                </ToastProvider>
-              </AvailableBackupsModalProvider>
+                    <Toaster />
+                  </ToastProvider>
+                </AvailableBackupsModalProvider>
+              </MachineSelectionProvider>
             </GlobalRefreshProvider>
           </ConfigProvider>
         </CustomThemeProvider>

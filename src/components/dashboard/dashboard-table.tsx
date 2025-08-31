@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ServerConnectionButton } from "@/components/ui/server-connection-button";
 
 interface DashboardTableProps {
   machines: MachineSummary[];
@@ -120,7 +121,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
           warnings: backup.warnings || 0,
           errors: backup.errors || 0,
           notificationEvent: backup.notificationEvent as NotificationEvent | undefined,
-          availableBackups: backup.availableBackups || []
+          availableBackups: backup.availableBackups || [],
+          server_url: machine.server_url
         });
       }
     }
@@ -139,7 +141,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     lastBackupDuration: { type: 'duration' as const, path: 'lastBackupDuration' },
     warnings: { type: 'number' as const, path: 'warnings' },
     errors: { type: 'number' as const, path: 'errors' },
-    notification: { type: 'notificationEvent' as const, path: 'notificationEvent' }
+    notification: { type: 'notificationEvent' as const, path: 'notificationEvent' },
+    server_url: { type: 'serverUrl' as const, path: 'server_url' }
   }), []);
 
   // Persist sort configuration to localStorage whenever it changes (only after initial load)
@@ -238,6 +241,9 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               </SortableTableHead>
               <SortableTableHead column="notification" sortConfig={sortConfig} onSort={handleSort} align="center">
                 Notification
+              </SortableTableHead>
+              <SortableTableHead column="server_url" sortConfig={sortConfig} onSort={handleSort} align="center">
+                Connect
               </SortableTableHead>
             </TableRow>
           </TableHeader>
@@ -344,6 +350,13 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                         </TooltipContent>
                       </Tooltip>
                     )}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <ServerConnectionButton 
+                      serverUrl={machine.server_url} 
+                      showText={false}
+                      disabled={machine.server_url === ''}
+                    />
                   </TableCell>
                 </TableRow>
               );
