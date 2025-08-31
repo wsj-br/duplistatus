@@ -19,8 +19,8 @@ This document describes how to install and configure the **duplistatus** server.
 - [Container Images](#container-images)
 - [Installation](#installation)
   - [Container Images](#container-images-1)
-  - [Option 1: Using Docker Compose](#option-1-using-docker-compose)
-  - [Option 2: Using Portainer Stacks (Docker Compose)](#option-2-using-portainer-stacks-docker-compose)
+  - [Option 1: Using Docker Compose](#option-1-using-docker compose)
+  - [Option 2: Using Portainer Stacks (Docker Compose)](#option-2-using-portainer-stacks-docker compose)
   - [Option 3: Using Portainer Stacks (GitHub Repository)](#option-3-using-portainer-stacks-github-repository)
   - [Option 4: Using Docker CLI](#option-4-using-docker-cli)
   - [Option 5: Using Podman with Pod (CLI)](#option-5-using-podman-with-pod-cli)
@@ -72,7 +72,7 @@ You can use the images from:
 
 ### Option 1: Using Docker Compose
 
-This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker-compose` file to define and run the container with all its settings.
+This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 Create a file called `duplistatus.yml` containing the following:
 
@@ -98,10 +98,10 @@ volumes:
     name: duplistatus_data 
 ```
 
-After creating the file, execute the `docker-compose` command to start the container in the background (`-d`):
+After creating the file, execute the `docker compose` command to start the container in the background (`-d`):
 
 ```bash
-docker-compose -f duplistatus.yml up -d
+docker compose -f duplistatus.yml up -d
 ```
 
 <br>
@@ -122,7 +122,7 @@ docker-compose -f duplistatus.yml up -d
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
-5. In the "Compose path" field, enter: `docker-compose.yml`
+5. In the "Compose path" field, enter: `docker compose.yml`
 6. Click "Deploy the stack".
 
 <br>

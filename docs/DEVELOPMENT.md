@@ -15,7 +15,7 @@
   - [Development Mode Features](#development-mode-features)
     - [Build the application for production](#build-the-application-for-production)
     - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
-    - [Start a docker stack (docker compose)](#start-a-docker-stack-docker-compose)
+    - [Start a docker stack (docker compose)](#start-a-docker-stack-docker compose)
     - [Create a devel image (to test locally or with podman)](#create-a-devel-image-to-test-locally-or-with-podman)
   - [Cron Service](#cron-service)
       - [Start cron service in development mode:](#start-cron-service-in-development-mode)
@@ -27,7 +27,7 @@
   - [Workspace admin scripts & commands](#workspace-admin-scripts--commands)
     - [Clean Database](#clean-database)
     - [Clean build artifacts and dependencies](#clean-build-artifacts-and-dependencies)
-    - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
+    - [Clean docker compose and docker environment](#clean-docker compose-and-docker-environment)
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
   - [Documentation tools](#documentation-tools)
@@ -363,7 +363,7 @@ To manually trigger the Docker image build workflow:
 
 5. **Containerization & Deployment**
    - Docker (node:lts-alpine base)
-   - Docker Compose (`docker-compose.yml`)
+   - Docker Compose (`docker compose.yml`)
    - Alpine build tooling (`apk add` curl, python3, make, g++, …) for compiling better-sqlite3
    - cURL (healthchecks)
    - GitHub Actions workflows (docker/setup-*, buildx, metadata-action, build-push-action)

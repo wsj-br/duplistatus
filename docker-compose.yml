@@ -1,12 +1,13 @@
 # duplistatus docker-compose.yml
 services:
   duplistatus:
-  
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION}
 
-    image: wsj-br/duplistatus
+    image: wsj-br/duplistatus:${VERSION}
     container_name: duplistatus
     restart: unless-stopped
     ports:
@@ -23,5 +24,4 @@ networks:
 volumes:
   duplistatus_data:
     name: duplistatus_data 
-
-    
+    external: true
