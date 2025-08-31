@@ -6,8 +6,9 @@ services:
       dockerfile: Dockerfile
       args:
         VERSION: ${VERSION}
-
     image: wsj-br/duplistatus:${VERSION}
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     container_name: duplistatus
     restart: unless-stopped
     ports:
