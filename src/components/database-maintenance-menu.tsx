@@ -1,7 +1,6 @@
 "use client";
 
-import { Loader2, Trash2, Server } from "lucide-react";
-import { IconDatabaseCog } from '@tabler/icons-react';
+import { Database, Loader2, Trash2, Server } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -179,7 +178,7 @@ export function DatabaseMaintenanceMenu() {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" title="Database maintenance">
-          <IconDatabaseCog className="h-4 w-4" />
+          <Database className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
