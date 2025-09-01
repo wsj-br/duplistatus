@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { MessagesSquare } from 'lucide-react';
+import { NotificationIcon } from '@/components/ui/notification-icon';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -59,7 +59,7 @@ export function NtfyMessagesButton() {
       disabled={isLoading}
       title="View ntfy messages"
     >
-      <MessagesSquare className="h-4 w-4" />
+      <NotificationIcon className="h-4 w-4" />
     </Button>
   );
 } 

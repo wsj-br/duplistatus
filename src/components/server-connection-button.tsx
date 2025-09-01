@@ -18,7 +18,7 @@ interface MachineConnection {
   server_url: string;
 }
 
-export function DuplicatiServerButton() {
+export function ServerConnectionButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [machineConnections, setMachineConnections] = useState<MachineConnection[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);

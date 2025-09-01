@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { RefreshCcwDot, Loader2 } from 'lucide-react';
+import { CalendarSync, Loader2 } from 'lucide-react';
+import { IconCalendarCheck  } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
@@ -79,7 +80,7 @@ export function OverdueBackupCheckButton() {
       {isChecking ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
-        <RefreshCcwDot className="h-4 w-4" />
+        <IconCalendarCheck  className="h-4 w-4" />
       )}
     </Button>
   );

@@ -10,7 +10,7 @@ import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { OverdueBackupCheckButton } from '@/components/overdue-backup-check-button';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
 import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
-import { DuplicatiServerButton } from '@/components/duplicati-server-button';
+import { ServerConnectionButton } from '@/components/server-connection-button';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
@@ -49,7 +49,7 @@ export function AppHeader() {
         <div className="flex flex-1 items-center justify-end space-x-2">
           <GlobalRefreshControls />
           <NtfyMessagesButton />
-          <DuplicatiServerButton />
+          <ServerConnectionButton />
           <OverdueBackupCheckButton />
           <BackupCollectMenu />
           <DatabaseMaintenanceMenu />

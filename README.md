@@ -172,7 +172,11 @@ If you encounter issues, you can restore your database by following these steps:
 ## Credits
 
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
+- Notify SVG icon from https://dashboardicons.com/icons/ntfy
 - Github SVG icon from https://github.com/logos
+
+>[!NOTE]
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons are used for identification purposes only and do not imply endorsement.
 
 <br>
 
