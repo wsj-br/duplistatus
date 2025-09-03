@@ -1,12 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import type { MachineSummary } from '@/lib/types';
 
 interface MachineSelectionState {
   selectedMachineId: string | null;
   viewMode: 'cards' | 'table';
   machines: MachineSummary[];
+  isInitialized: boolean;
 }
 
 interface MachineSelectionContextProps {
@@ -26,9 +27,29 @@ interface MachineSelectionProviderProps {
 export function MachineSelectionProvider({ children }: MachineSelectionProviderProps) {
   const [state, setState] = useState<MachineSelectionState>({
     selectedMachineId: null,
-    viewMode: 'cards',
+    viewMode: 'cards', // Default fallback
     machines: [],
+    isInitialized: false,
   });
+
+  // Initialize view mode from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedViewMode = localStorage.getItem('dashboard-view-mode');
+      if (savedViewMode === 'cards' || savedViewMode === 'table') {
+        setState(prev => ({ 
+          ...prev, 
+          viewMode: savedViewMode,
+          isInitialized: true 
+        }));
+      } else {
+        setState(prev => ({ ...prev, isInitialized: true }));
+      }
+    } catch (error) {
+      console.error('Error loading view mode from localStorage:', error);
+      setState(prev => ({ ...prev, isInitialized: true }));
+    }
+  }, []);
 
   const setSelectedMachineId = useCallback((machineId: string | null) => {
     setState(prev => ({ ...prev, selectedMachineId: machineId }));
@@ -36,6 +57,12 @@ export function MachineSelectionProvider({ children }: MachineSelectionProviderP
 
   const setViewMode = useCallback((viewMode: 'cards' | 'table') => {
     setState(prev => ({ ...prev, viewMode }));
+    // Save to localStorage
+    try {
+      localStorage.setItem('dashboard-view-mode', viewMode);
+    } catch (error) {
+      console.error('Error saving view mode to localStorage:', error);
+    }
   }, []);
 
   const setMachines = useCallback((machines: MachineSummary[]) => {

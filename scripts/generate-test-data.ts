@@ -30,9 +30,9 @@ async function checkServerHealth(url: string): Promise<boolean> {
   }
 }
 
-// Helper function to generate a random duration between 30 seconds and 2 hours
+// Helper function to generate a random duration between 5 minutes and 15 minutes
 function generateRandomDuration(): string {
-  const totalSeconds = Math.floor(Math.random() * (7200 - 30) + 30);
+  const totalSeconds = Math.floor(Math.random() * (900 - 300) + 300);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -112,11 +112,11 @@ function generateBackupDates(machineIndex: number): string[] {
 
 // Helper function to generate random file statistics
 function generateRandomFileStats() {
-  const examinedFiles = Math.floor(Math.random() * 10000) + 1000;
+  const examinedFiles = Math.floor(Math.random() * 3000) + 5000;
   const addedFiles = Math.floor(Math.random() * examinedFiles * 0.3);
   const modifiedFiles = Math.floor(Math.random() * examinedFiles * 0.1);
   const deletedFiles = Math.floor(Math.random() * examinedFiles * 0.05);
-  const fileSize = Math.floor(Math.random() * 1000000000) + 1000000; // 1MB to 1GB
+  const fileSize = Math.floor(Math.random() * 200000000) + 500000000; // 500MB to 700MB
   const uploadedSize = Math.floor(fileSize * (Math.random() * 0.3 + 0.7)); // 70-100% of file size
 
   return {
@@ -169,9 +169,9 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
   const hasErrors = Math.random() > 0.9; // 10% chance of errors
   
   // Generate message counts
-  const warningsCount = hasWarnings ? Math.floor(Math.random() * 5) + 1 : 0;
-  const errorsCount = hasErrors ? Math.floor(Math.random() * 3) + 1 : 0;
-  const messagesCount = Math.floor(Math.random() * 20) + 10; // At least 10 messages (6 retention policy + 4+ additional)
+  const warningsCount = hasWarnings ? Math.floor(Math.random() * 5) : 0; // 0 to 4
+  const errorsCount = hasErrors ? Math.floor(Math.random() * 3) : 0; // 0 to 2
+  const messagesCount = Math.floor(Math.random() * 11) + 10; // 10 to 20
   
   // Generate the message arrays
   const { warnings, errors, messages } = generateMessageArrays(
@@ -231,8 +231,8 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
         Version: "2.1.0.5 (2.1.0.5_stable_2025-03-04)",
         BeginTime: beginTime,
         Duration: duration,
-        WarningsActualLength: hasWarnings ? Math.floor(Math.random() * 5) + 1 : 0,
-        ErrorsActualLength: hasErrors ? Math.floor(Math.random() * 3) + 1 : 0
+        WarningsActualLength: warningsCount,
+        ErrorsActualLength: errorsCount
       }
     },
     Extra: {
@@ -249,7 +249,7 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
 async function sendTestData() {
   const API_URL = 'http://localhost:8666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
-  const BACKUP_TYPES = ['Files', 'Databases'];
+  const BACKUP_TYPES = ['Files', 'Databases', 'System'];
 
   // Check server health before proceeding
   console.log('  🩺 Checking server health...');

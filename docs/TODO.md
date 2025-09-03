@@ -10,6 +10,8 @@
 - [Fix](#fix)
 - [Changes needed](#changes-needed)
 - [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
+  - [✅ Duplicati connection](#-duplicati-connection)
+  - [Nice to have](#nice-to-have)
   - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
   - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
   - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
@@ -26,30 +28,12 @@ none
 ## Changes needed
 
 
-  1. ✅ move the dashboard-auto to be the first page, removing the old dashboard page. 
-
-  2. ✅ change the content of the machine card:
-     - remove backups, include storage size and change the last backup date to full date + time ago
-     - include a tooltip when hovering the backup types.  
-
-  3. ✅ add to the new metrics panel the data visibility (all data, last week, last month,...)
-
-  4. ✅change the chart on the machine detail page to use the new metrics panel. 
-
-  5. ✅ add a tooltip information in the chart to show the datapoint information (date, value)
-
-  6. ✅ fix the autosize of the metrics panel. in some update loose the logic that make it responsive.
-  
+none 
 
 
 ## New Features (planned or under analysis)
 
-### ✅ Duplicati connection 
-  - when collecting the backup logs, register the ip and port of the machine. 
-  - create a tab in the settings to manage  the ip and port of the machines in the database
-  - create a link in the dashboard, machine detail and backup detail pages to open a browser tab to connect to the duplicati server
-    - one idea is to create a button on the application toolbar to connect to a duplicati server, if it's in the dashboard, present a list of machines to connect to. if in a page with the machine selected, goes directly.
-    - add a icon in the backup settings tab to open the duplicati server directly.
+- Include a SMTP/EMAIL support (to send notifications)
 
 ### Nice to have
 - Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
@@ -83,7 +67,7 @@ none
 - Reduced HTTP/HTTPS timeout to 30 seconds.
 - Updated documentation, added Podman install guide.
 
-### Implemented in Version 0.6.1 
+### Implemented in Version 0.6.1 ✅
 
 **New Features:**
 - Application table sorting (Dashboard/Detail views)
@@ -104,7 +88,6 @@ none
 - Add a button to the application header that allows users to configure notifications and overdue scheduled backup alerts.
 - Add a button to the application header to check the overdue backups (this shows only if there is at least one monitored backup).
 
-
 **Notification System:**
 - **ntfy Integration:**
   - Customizable notifications for backup logs
@@ -119,3 +102,72 @@ none
     - Notification frequency (one time/daily/weekly/monthly)
 
 
+### Implemented in Version 0.7.8 ✅
+
+**New Features:**
+
+- Easy open Duplicati Server Web Interface
+   - automatic store/update the URL when using the "Collect Bckup Logs" functionality
+   - can configure and test connection in the Settings > 
+
+
+This release introduces seamless integration with Duplicati servers, allowing you to connect directly to your backup servers from the DupliStatus interface.
+
+#### **Key Features:**
+
+- **Automatic Server Discovery**: When collecting backup logs, the system now automatically registers the IP address and port of each Duplicati server
+- **Centralized Server Management**: New settings tab to manage and configure IP addresses and ports for all monitored machines
+- **One-Click Access**: Direct links to Duplicati servers from multiple locations:
+  - Dashboard page
+  - Machine detail pages  
+  - Backup detail pages
+
+#### **Enhanced Navigation:**
+
+- **Application Toolbar Integration**: New connection button in the application toolbar
+  - When on dashboard: presents a list of available machines to connect to
+  - When on machine-specific pages: connects directly to the selected machine's Duplicati server
+- **Backup Settings Enhancement**: Added connection icon in backup settings for direct server access
+
+#### **Benefits:**
+
+- **Streamlined Workflow**: No more manual URL typing or bookmark management
+- **Improved Efficiency**: Quick access to Duplicati web interfaces from within DupliStatus
+- **Better Organization**: Centralized management of server connection details
+- **Enhanced User Experience**: Seamless navigation between monitoring and management interfaces
+
+---
+
+## 🔧 Technical Improvements
+
+- Enhanced backup log collection with server metadata capture
+- Improved database schema to store server connection information
+- Optimized UI components for better integration with Duplicati web interface
+
+
+
+
+
+
+
+  1. ✅ move the dashboard-auto to be the first page, removing the old dashboard page. 
+
+  2. ✅ change the content of the machine card:
+     - remove backups, include storage size and change the last backup date to full date + time ago
+     - include a tooltip when hovering the backup types.  
+
+  3. ✅ add to the new metrics panel the data visibility (all data, last week, last month,...)
+
+  4. ✅change the chart on the machine detail page to use the new metrics panel. 
+
+  5. ✅ add a tooltip information in the chart to show the datapoint information (date, value)
+
+  6. ✅ fix the autosize of the metrics panel. in some update loose the logic that make it responsive.
+
+
+  ### ✅ Duplicati connection 
+  - when collecting the backup logs, register the ip and port of the machine. 
+  - create a tab in the settings to manage  the ip and port of the machines in the database
+  - create a link in the dashboard, machine detail and backup detail pages to open a browser tab to connect to the duplicati server
+    - one idea is to create a button on the application toolbar to connect to a duplicati server, if it's in the dashboard, present a list of machines to connect to. if in a page with the machine selected, goes directly.
+    - add a icon in the backup settings tab to open the duplicati server directly.

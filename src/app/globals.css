@@ -170,3 +170,7 @@ body {
     background: hsl(var(--muted-foreground) / 0.5);
   }
 }
+
+@theme {
+  --text-tiny: 0.5rem;
+}

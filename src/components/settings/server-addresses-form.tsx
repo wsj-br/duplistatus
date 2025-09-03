@@ -6,23 +6,24 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
-import { MachineConnection } from '@/lib/types';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { MachineAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { CheckCircle, XCircle, Ellipsis, Loader2, Play } from 'lucide-react';
-import { ServerConnectionButton } from '@/components/ui/server-connection-button';
+import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 
-interface ServerConnectionsFormProps {
-  machineConnections: MachineConnection[];
+interface ServerAddressesFormProps {
+  machineAddresses: MachineAddress[];
 }
 
 type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing';
 
-interface MachineConnectionWithStatus extends MachineConnection {
+interface MachineConnectionWithStatus extends MachineAddress {
   connectionStatus: ConnectionStatus;
   originalServerUrl: string;
 }
 
-export function ServerConnectionsForm({ machineConnections }: ServerConnectionsFormProps) {
+export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormProps) {
   const { toast } = useToast();
   const [connections, setConnections] = useState<MachineConnectionWithStatus[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -40,13 +41,13 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
 
   // Initialize connections with unknown status
   useEffect(() => {
-          const initialConnections: MachineConnectionWithStatus[] = machineConnections.map(conn => ({
+          const initialConnections: MachineConnectionWithStatus[] = machineAddresses.map(conn => ({
         ...conn,
         connectionStatus: 'unknown' as ConnectionStatus,
         originalServerUrl: conn.server_url
       }));
     setConnections(initialConnections);
-  }, [machineConnections]);
+  }, [machineAddresses]);
 
   // Check for URL validity
   const isValidUrl = (url: string): boolean => {
@@ -337,14 +338,14 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
 
       toast({
         title: "Success",
-        description: "Server connections saved successfully",
+        description: "Server addresses saved successfully",
         duration: 3000,
       });
 
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save server connections",
+        description: error instanceof Error ? error.message : "Failed to save server addresses",
         variant: "destructive",
         duration: 5000,
       });
@@ -378,159 +379,175 @@ export function ServerConnectionsForm({ machineConnections }: ServerConnectionsF
 
   if (connections.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">No machines found</p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Server Addresses</CardTitle>
+          <CardDescription>No machines found</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">No machines have been registered yet.</p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <SortableTableHead 
-                className="w-[200px]" 
-                column="name" 
-                sortConfig={sortConfig} 
-                onSort={handleSort}
-              >
-                Machine Name
-              </SortableTableHead>
-              <SortableTableHead 
-                className="w-[300px]" 
-                column="server_url" 
-                sortConfig={sortConfig} 
-                onSort={handleSort}
-              >
-                Server Connection URL
-              </SortableTableHead>
-              <SortableTableHead 
-                className="w-[100px]" 
-                column="connectionStatus" 
-                sortConfig={sortConfig} 
-                onSort={handleSort}
-              >
-                Status
-              </SortableTableHead>
-              <TableCell className="w-[150px]">
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sortedConnections.map((connection) => (
-              <TableRow key={connection.id}>
-                <TableCell>
-                  <div>
-                    <div className="font-xl">{connection.name}</div>
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      ref={(el) => {
-                        inputRefs.current[connection.id] = el;
-                      }}
-                      type="url"
-                      value={connection.server_url}
-                      onChange={(e) => handleUrlChange(connection.id, e.target.value)}
-                      onFocus={() => handleUrlFocus(connection.id, connection.server_url)}
-                      onBlur={() => handleUrlBlur(connection.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          testConnection(connection.id, connection.server_url);
-                        }
-                      }}
-                      placeholder="https://server:8200"
-                      className={!isValidUrl(connection.server_url) ? 'border-red-500' : ''}
-                    />
-                    {!isValidUrl(connection.server_url) && (
-                      <div className="text-xs text-red-600">
-                        Invalid URL
+      <Card>
+        <CardHeader>
+          <CardTitle>Configure Machine Addresses</CardTitle>
+          <CardDescription>
+            Configure the web interface addresses for each machine. Test connections to ensure they are accessible.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <SortableTableHead 
+                    className="w-[200px]" 
+                    column="name" 
+                    sortConfig={sortConfig} 
+                    onSort={handleSort}
+                  >
+                    Machine Name
+                  </SortableTableHead>
+                  <SortableTableHead 
+                    className="w-[300px]" 
+                    column="server_url" 
+                    sortConfig={sortConfig} 
+                    onSort={handleSort}
+                  >
+                    Web Interface Address (URL)
+                  </SortableTableHead>
+                  <SortableTableHead 
+                    className="w-[100px]" 
+                    column="connectionStatus" 
+                    sortConfig={sortConfig} 
+                    onSort={handleSort}
+                  >
+                    Status
+                  </SortableTableHead>
+                  <TableCell className="w-[150px]">
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedConnections.map((connection) => (
+                  <TableRow key={connection.id}>
+                    <TableCell>
+                      <div>
+                        <div className="font-xl">{connection.name}</div>
                       </div>
-                    )}
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="flex items-center space-x-2">
-                    {getConnectionIcon(connection.connectionStatus)}
-                    <span className="text-sm">
-                      {(() => {
-                        const statusToDisplay = connection.connectionStatus;
-                        
-                        if (statusToDisplay === 'success') return 'Connected';
-                        if (statusToDisplay === 'failed') return 'Failed';
-                        if (statusToDisplay === 'testing') return 'Testing...';
-                        return '';
-                      })()}
-                    </span>
-                  </div>
-                </TableCell>
-                
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => testConnection(connection.id, connection.server_url)}
-                      disabled={!connection.server_url || !isValidUrl(connection.server_url)}
-                    >
-                      <Play className="h-4 w-4" />
-                      Test
-                    </Button>
-                    <ServerConnectionButton
-                      serverUrl={connection.server_url}
-                      machineName={connection.name}
-                      size="sm"
-                      variant="outline"
-                      showText={true}
-                      disabled={!connection.server_url || !isValidUrl(connection.server_url)}
-                    />
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          ref={(el) => {
+                            inputRefs.current[connection.id] = el;
+                          }}
+                          type="url"
+                          value={connection.server_url}
+                          onChange={(e) => handleUrlChange(connection.id, e.target.value)}
+                          onFocus={() => handleUrlFocus(connection.id, connection.server_url)}
+                          onBlur={() => handleUrlBlur(connection.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              testConnection(connection.id, connection.server_url);
+                            }
+                          }}
+                          placeholder="https://server:8200"
+                          className={!isValidUrl(connection.server_url) ? 'border-red-500' : ''}
+                        />
+                        {!isValidUrl(connection.server_url) && (
+                          <div className="text-xs text-red-600">
+                            Invalid URL
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        {getConnectionIcon(connection.connectionStatus)}
+                        <span className="text-sm">
+                          {(() => {
+                            const statusToDisplay = connection.connectionStatus;
+                            
+                            if (statusToDisplay === 'success') return 'Connected';
+                            if (statusToDisplay === 'failed') return 'Failed';
+                            if (statusToDisplay === 'testing') return 'Testing...';
+                            return '';
+                          })()}
+                        </span>
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => testConnection(connection.id, connection.server_url)}
+                          disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                        >
+                          <Play className="h-4 w-4" />
+                          Test
+                        </Button>
+                        <ServerConfigurationButton
+                          serverUrl={connection.server_url}
+                          machineName={connection.name}
+                          size="sm"
+                          variant="outline"
+                          showText={true}
+                          disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-      <div className="flex justify-between">
-        <div className="flex gap-3">
-          <Button
-            onClick={handleSave}
-            disabled={isSaving || hasInvalidUrls || !hasChanges}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              'Save Changes'
-            )}
-          </Button>
-          <Button
-            onClick={handleTestAllConnections}
-            variant="outline"
-            disabled={isTestingAll || connections.filter(conn => conn.server_url && conn.server_url.trim() !== '').length === 0}
-          >
-            {isTestingAll ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Testing All...
-              </>
-            ) : (
-              'Test All'
-            )}
-          </Button>
-        </div>
-      </div>
+          <div className="flex justify-between pt-6">
+            <div className="flex gap-3">
+              <Button
+                onClick={handleSave}
+                disabled={isSaving || hasInvalidUrls || !hasChanges}
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+              <Button
+                onClick={handleTestAllConnections}
+                variant="outline"
+                disabled={isTestingAll || connections.filter(conn => conn.server_url && conn.server_url.trim() !== '').length === 0}
+              >
+                {isTestingAll ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Testing All...
+                  </>
+                ) : (
+                  'Test All'
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

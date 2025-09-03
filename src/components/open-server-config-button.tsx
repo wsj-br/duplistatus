@@ -1,32 +1,30 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+
 import { useToast } from '@/components/ui/use-toast';
 import { ServerIcon } from '@/components/ui/server-icon';
+import { Settings } from 'lucide-react';
 import { useMachineSelection } from '@/contexts/machine-selection-context';
+import { MachineAddress } from '@/lib/types';
 
-interface MachineConnection {
-  id: string;
-  name: string;
-  server_url: string;
-}
-
-export function ServerConnectionButton() {
+export function OpenServerConfigButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const [machineConnections, setMachineConnections] = useState<MachineConnection[]>([]);
+  const [machineAddresses, setMachineAddresses] = useState<MachineAddress[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { toast } = useToast();
   const { state: machineSelectionState, getSelectedMachine } = useMachineSelection();
 
-  const fetchMachineConnections = useCallback(async () => {
+  const fetchMachineAddresses = useCallback(async () => {
     try {
       setIsLoading(true);
       
@@ -34,7 +32,7 @@ export function ServerConnectionButton() {
       if (pathname.startsWith('/detail/')) {
         // On detail page, don't fetch machine connections for popup
         // The popup should not be shown for single machines
-        setMachineConnections([]);
+        setMachineAddresses([]);
         return;
       }
       
@@ -46,8 +44,8 @@ export function ServerConnectionButton() {
       const data = await response.json();
       
       // Filter machines with valid HTTP/HTTPS server_url
-      const validMachines = (data.machineConnections || [])
-        .filter((machine: MachineConnection) => {
+      const validMachines = (data.machineAddresses || [])
+        .filter((machine: MachineAddress) => {
           if (!machine.server_url || machine.server_url.trim() === '') return false;
           try {
             const url = new URL(machine.server_url);
@@ -56,11 +54,11 @@ export function ServerConnectionButton() {
             return false;
           }
         })
-        .sort((a: MachineConnection, b: MachineConnection) => 
+        .sort((a: MachineAddress, b: MachineAddress) => 
           a.name.localeCompare(b.name)
         );
       
-      setMachineConnections(validMachines);
+      setMachineAddresses(validMachines);
     } catch (error) {
       console.error('Error fetching machine connections:', error instanceof Error ? error.message : String(error));
       toast({
@@ -76,10 +74,10 @@ export function ServerConnectionButton() {
 
   // Fetch machine connections when popover opens
   useEffect(() => {
-    if (isPopoverOpen && machineConnections.length === 0) {
-      fetchMachineConnections();
+    if (isPopoverOpen && machineAddresses.length === 0) {
+      fetchMachineAddresses();
     }
-  }, [isPopoverOpen, machineConnections.length, fetchMachineConnections]);
+  }, [isPopoverOpen, machineAddresses.length, fetchMachineAddresses]);
 
   const handleMachineClick = (serverUrl: string) => {
     try {
@@ -96,15 +94,14 @@ export function ServerConnectionButton() {
     }
   };
 
+  const handleSettingsClick = () => {
+    router.push('/settings?tab=addresses');
+    setIsPopoverOpen(false);
+  };
+
   const handleButtonClick = async () => {
     // Check if we're on a machine detail page (including backup detail pages)
     if (pathname.startsWith('/detail/')) {
-      
-      // Ensure popup is closed on detail pages
-      if (isPopoverOpen) {
-        setIsPopoverOpen(false);
-      }
-      
       // Extract machineId from the pathname
       const pathMatch = pathname.match(/^\/detail\/([^\/\?]+)/);
       const currentMachineId = pathMatch ? pathMatch[1] : undefined;
@@ -128,7 +125,6 @@ export function ServerConnectionButton() {
               
               if (['http:', 'https:'].includes(url.protocol)) {
                 window.open(serverUrl, '_blank', 'noopener,noreferrer');
-                // Don't show popup when successfully opening server URL
                 return;
               }
             } catch {
@@ -151,30 +147,23 @@ export function ServerConnectionButton() {
       }
     }
     
-    // Check if we're on dashboard page and have a selected machine in cards view
+    // Check if we have a selected machine on dashboard
     if (pathname === '/' && machineSelectionState.viewMode === 'cards' && machineSelectionState.selectedMachineId) {
       const selectedMachine = getSelectedMachine();
-      
       if (selectedMachine && selectedMachine.server_url && selectedMachine.server_url.trim() !== '') {
         try {
           const url = new URL(selectedMachine.server_url);
-          
           if (['http:', 'https:'].includes(url.protocol)) {
-            // Open the selected machine's server directly
             window.open(selectedMachine.server_url, '_blank', 'noopener,noreferrer');
             return;
           }
         } catch {
-          // Invalid URL, fall through to show popover
+          // Invalid URL, fall through to popover
         }
       }
-      
-      // If selected machine has no valid server_url, fall back to popover
-      setIsPopoverOpen(true);
-      return;
     }
     
-    // For all other cases (dashboard in table view, no machine selected, etc.), show popover
+    // Only open popover if no machine is selected or no valid server URL
     setIsPopoverOpen(true);
   };
 
@@ -182,11 +171,12 @@ export function ServerConnectionButton() {
     <Popover 
       open={isPopoverOpen} 
       onOpenChange={(open) => {
-        // Prevent popup from opening on detail pages unless explicitly needed
-        if (open && pathname.startsWith('/detail/')) {
-          return;
+        // Only allow closing the popover manually (when user clicks outside or presses escape)
+        // Don't allow opening via onOpenChange - that should only happen via button click
+        if (!open && isPopoverOpen) {
+          setIsPopoverOpen(false);
         }
-        setIsPopoverOpen(open);
+        // If trying to open via onOpenChange, ignore it - only button click should open
       }}
     >
       <PopoverTrigger asChild>
@@ -195,17 +185,17 @@ export function ServerConnectionButton() {
           size="icon"
           onClick={handleButtonClick}
           disabled={isLoading}
-          title="Connect to Duplicati server"
+          title="Duplicati configuration"
         >
           <ServerIcon className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+            <PopoverContent className="w-80">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="text-xl font-medium leading-none">Connect to Duplicati Server</h4>
+            <h4 className="text-xl font-medium leading-none">Open Duplicati Configuration</h4>
             <p className="text-sm text-muted-foreground">
-              Select a machine to connect to its Duplicati server.
+               Select a server below to manage its settings and backups.
             </p>
           </div>
           <div className="grid gap-2">
@@ -213,21 +203,32 @@ export function ServerConnectionButton() {
               <div className="text-center py-4 text-muted-foreground">
                 Loading server connections...
               </div>
-            ) : machineConnections.length === 0 ? (
+            ) : machineAddresses.length === 0 ? (
               <div className="text-center py-4 text-muted-foreground">
                 No machines with server URLs configured.
               </div>
             ) : (
-              machineConnections.map((machine) => (
+              machineAddresses.map((machine: MachineAddress) => (
                 <button
                   key={machine.id}
                   onClick={() => handleMachineClick(machine.server_url)}
-                  className="flex items-center justify-between p-1 text-left hover:bg-muted rounded-md transition-colors"
+                  className="flex items-center gap-3 p-2 text-left hover:bg-muted rounded-md transition-colors border border-border"
                 >
+                  <ServerIcon className="h-4 w-4" />
                   <span className="font-medium">{machine.name}</span>
                 </button>
               ))
             )}
+          </div>
+          <div className="space-y-3">
+            <div className="h-px bg-border"></div>
+            <button
+              className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded w-full text-left"
+              onClick={handleSettingsClick}
+            >
+              <Settings className="h-3 w-3" />
+              <span>Configure addresses</span>
+            </button>
           </div>
         </div>
       </PopoverContent>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ServerIcon } from './server-icon';
 
-interface ServerConnectionButtonProps {
+interface ServerConfigurationButtonProps {
   serverUrl: string;
   machineName?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -11,9 +11,10 @@ interface ServerConnectionButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   showText?: boolean;
+  debugText?: string;
 }
 
-export function ServerConnectionButton({
+export function ServerConfigurationButton({
   serverUrl,
   machineName,
   size = 'md',
@@ -21,8 +22,9 @@ export function ServerConnectionButton({
   className = '',
   onClick,
   disabled = false,
-  showText = false
-}: ServerConnectionButtonProps) {
+  showText = false,
+  debugText = ''
+}: ServerConfigurationButtonProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
@@ -64,7 +66,23 @@ export function ServerConnectionButton({
   };
 
   const isDisabled = disabled || !isUrlValid();
-  
+
+  if (debugText) {
+    console.log('--------------------------------');
+    console.log('ServerConfigurationButton: machineName', machineName);
+    console.log('ServerConfigurationButton: isDisabled', isDisabled);
+    console.log('ServerConfigurationButton: isUrlValid', isUrlValid());
+    console.log('ServerConfigurationButton: disabled', disabled);
+    console.log('ServerConfigurationButton: serverUrl', serverUrl);
+    console.log('ServerConfigurationButton: onClick', onClick);
+    console.log('ServerConfigurationButton: showText', showText);
+    console.log('ServerConfigurationButton: variant', variant);
+    console.log('ServerConfigurationButton: size', size);
+    console.log('ServerConfigurationButton: className', className);
+    console.log('ServerConfigurationButton: debugText', debugText);
+    console.log('--------------------------------');
+  }
+
   return (
     <Button
       variant={variant}
@@ -72,10 +90,10 @@ export function ServerConnectionButton({
       className={`${className} ${isDisabled ? 'cursor-not-allowed disabled:pointer-events-auto' : ''}`}
       onClick={handleClick}
       disabled={isDisabled}
-      title={machineName ? `Connect to ${machineName} server` : "Connect to Duplicati server"}
+      title={isDisabled ? "No URL configured" : (machineName ? `Open ${machineName} configuration` : "Open Duplicati configuration")}
     >
       <ServerIcon size={getIconSize()} className="mr-1" />
-      {showText && "Connect"}
+      {showText && "Duplicati configuration"}
     </Button>
   );
 }

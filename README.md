@@ -33,6 +33,7 @@ This web application monitors and visualizes backup operations from [Duplicati](
   - [The Migration Process](#the-migration-process)
   - [Monitoring the Migration](#monitoring-the-migration)
   - [Rolling Back (If Needed)](#rolling-back-if-needed)
+- [Credits](#credits)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->

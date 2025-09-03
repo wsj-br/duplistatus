@@ -8,15 +8,15 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  TableHead,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, formatTimeAgo } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { useRouter } from 'next/navigation';
-import { formatDistanceToNow } from 'date-fns';
 import {
   Tooltip,
   TooltipContent,
@@ -254,9 +254,9 @@ export function MachineBackupTable({ backups, machineName, onBackupDeleted }: Ma
                   </SortableTableHead>
                   {/* Development mode delete column */}
                   {isDevMode && (
-                    <TableHeader className="w-12">
+                    <TableHead className="w-12">
                       <div className="sr-only">Actions</div>
-                    </TableHeader>
+                    </TableHead>
                   )}
                 </TableRow>
               </TableHeader>
@@ -278,7 +278,7 @@ export function MachineBackupTable({ backups, machineName, onBackupDeleted }: Ma
                     <TableCell>
                       <div>{new Date(backup.date).toLocaleString()}</div>
                       <div className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(backup.date), { addSuffix: true })}
+                        {formatTimeAgo(backup.date)}
                       </div>
                     </TableCell>
                     <TableCell>

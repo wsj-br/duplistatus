@@ -10,7 +10,7 @@ FROM node:alpine AS base
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat tzdata
 
 WORKDIR /app
 
@@ -46,17 +46,17 @@ RUN mkdir -p /app/data && pnpm run build
 FROM base AS runner
 
 # install curl for healthcheck
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl tzdata
 
-WORKDIR /app
-
+# set environment variables
 ENV NODE_ENV=production
-
-# Disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install pnpm globally
 RUN npm install -g pnpm@latest-10
+
+# set working directory
+WORKDIR /app
 
 # Copy package files for production dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -64,30 +64,30 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Install only production dependencies
 RUN pnpm install --frozen-lockfile --prod
 
-COPY --from=builder /app/public ./public
+COPY --chown=node:node --from=builder /app/public ./public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --chown=node:node --from=builder /app/.next/standalone ./
+COPY --chown=node:node --from=builder /app/.next/static ./.next/static
 
 # Copy source code needed for cron service
-COPY --from=builder /app/src/cron-service ./src/cron-service
-COPY --from=builder /app/src/lib ./src/lib
+COPY --chown=node:node --from=builder /app/src/cron-service ./src/cron-service
+COPY --chown=node:node --from=builder /app/src/lib ./src/lib
 
 # Copy TypeScript configuration files
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --chown=node:node --from=builder /app/tsconfig.json ./tsconfig.json
 
 # copy duplistatus-server.ts custom server
-COPY --from=builder /app/duplistatus-server.ts ./duplistatus-server.ts
+COPY --chown=node:node --from=builder /app/duplistatus-server.ts ./duplistatus-server.ts
 
 # Copy duplistatus-cron script
-COPY duplistatus-cron.sh /app/duplistatus-cron.sh
+COPY --chown=node:node --chmod=755 duplistatus-cron.sh /app/duplistatus-cron.sh
 
 # Create data directory & adjust permissions
-RUN mkdir -p /app/data && chown -R node:node /app && chmod 755 /app/duplistatus-cron.sh
+RUN mkdir -p /app/data && chown -R node:node /app/data
 
-# Set the application environment variables
+# Set the application default environment variables
 ENV PORT=9666 \
     CRON_PORT=9667 \
     LANG=en_GB.UTF-8 \

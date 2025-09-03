@@ -125,7 +125,7 @@ export interface NotificationConfig {
     warning: NotificationTemplate;
     overdueBackup: NotificationTemplate;
   };
-  machineConnections: MachineConnection[];
+  machineAddresses: MachineAddress[];
 }
 
 export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
@@ -201,7 +201,7 @@ export interface DashboardData {
   allMachinesChartData: ChartDataPoint[];
 }
 
-export interface MachineConnection {
+export interface MachineAddress {
   id: string;
   name: string;
   server_url: string;

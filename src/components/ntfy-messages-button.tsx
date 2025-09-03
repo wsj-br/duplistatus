@@ -57,7 +57,7 @@ export function NtfyMessagesButton() {
       size="icon"
       onClick={handleOpenNtfyMessages}
       disabled={isLoading}
-      title="View ntfy messages"
+      title="View NTFY messages"
     >
       <NotificationIcon className="h-4 w-4" />
     </Button>

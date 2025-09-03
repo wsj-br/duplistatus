@@ -128,6 +128,68 @@ export function formatTimeAgo(dateString: string, currentTime?: Date): string {
   }
 }
 
+
+export function formatShortTimeAgo(dateString: string, currentTime?: Date): string {
+  if (!dateString || dateString === "N/A") return "";
+  try {
+    const date = parseISO(dateString);
+    if (!isValid(date)) {
+      return ""; 
+    }
+
+    // Use a fixed reference time (server-side) to avoid hydration mismatches
+    const now = currentTime || new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 0) {
+      return "future";
+    }
+
+    if (diffInSeconds < 60) {
+      return "now";
+    }
+
+    if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} min${minutes === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} hour${hours === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 604800) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} day${days === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 2592000) {
+      const weeks = Math.floor(diffInSeconds / 604800);
+      return `${weeks} week${weeks === 1 ? '' : 's'}`;
+    }
+
+    if (diffInSeconds < 31536000) {
+      const months = Math.floor(diffInSeconds / 2592000);
+      return `${months} month${months === 1 ? '' : 's'}`;
+    }
+
+    // Calculate years and remaining months for periods longer than 1 year
+    const years = Math.floor(diffInSeconds / 31536000);
+    const remainingSeconds = diffInSeconds % 31536000;
+    const months = Math.floor(remainingSeconds / 2592000);
+    
+    if (months === 0) {
+      return `${years} y`;
+    } else {
+      return `${years} y ${months} month${months === 1 ? '' : 's'}`;
+    }
+  } catch {
+    return "";
+  }
+}
+
+
 export function formatTimeElapsed(dateString: string, currentTime?: Date): string {
   if (!dateString || dateString === "N/A") return "";
   try {

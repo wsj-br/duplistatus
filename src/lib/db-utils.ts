@@ -412,7 +412,7 @@ interface MachineRow {
   server_url: string;
 }
 
-export function getAllMachineConnections() {
+export function getAllMachineAddresses() {
   return withDb(() => {
     const machines = safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as MachineRow[];
     return machines.map(machine => ({

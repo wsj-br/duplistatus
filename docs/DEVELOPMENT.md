@@ -15,7 +15,7 @@
   - [Development Mode Features](#development-mode-features)
     - [Build the application for production](#build-the-application-for-production)
     - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
-    - [Start a docker stack (docker compose)](#start-a-docker-stack-docker compose)
+    - [Start a docker stack (docker compose)](#start-a-docker-stack-docker-compose)
     - [Create a devel image (to test locally or with podman)](#create-a-devel-image-to-test-locally-or-with-podman)
   - [Cron Service](#cron-service)
       - [Start cron service in development mode:](#start-cron-service-in-development-mode)
@@ -27,7 +27,7 @@
   - [Workspace admin scripts & commands](#workspace-admin-scripts--commands)
     - [Clean Database](#clean-database)
     - [Clean build artifacts and dependencies](#clean-build-artifacts-and-dependencies)
-    - [Clean docker compose and docker environment](#clean-docker compose-and-docker-environment)
+    - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
   - [Documentation tools](#documentation-tools)
@@ -45,6 +45,8 @@
     - [Testing](#testing)
     - [Debugging](#debugging)
     - [API Development](#api-development)
+    - [Database Development](#database-development)
+    - [UI Development](#ui-development)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -54,8 +56,8 @@
 ## Prerequisites
 
 - docker / docker compose
-- Node.js 20.19.2 or later
-- pnpm 10.15 or later (install with `npm install -g pnpm`)
+- Node.js 18.19.0 or later (recommended: 20.x)
+- pnpm 10.12.4 or later (install with `npm install -g pnpm`)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 - doctoc for markdown TOC generation
@@ -140,6 +142,13 @@ pnpm cron:start
 
 The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using `CRON_PORT` environment variable.
 
+The cron service includes:
+- **Health check endpoint**: `/health` - Returns service status and active tasks
+- **Manual task triggering**: `POST /trigger/:taskName` - Manually execute scheduled tasks
+- **Task management**: `POST /start/:taskName` and `POST /stop/:taskName` - Control individual tasks
+- **Configuration reload**: `POST /reload-config` - Reload configuration from database
+- **Automatic restart**: The service automatically restarts if it crashes (managed by `duplistatus-cron.sh`)
+
 
 <br><br>
 
@@ -173,9 +182,12 @@ pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 
 ### Clean Database
 ```bash
-pnpm run clean-db
+./scripts/clean-db
 ```
-Clears all data from the database and recreates the schema. Use with caution as this will delete all existing data.
+Delete the database (.db + shm + wal) files. The database will recreated automatically when running the application.
+
+>[!CAUTION]
+> Use with caution as this will delete all existing data.
 
 <br>
 
@@ -318,7 +330,7 @@ To manually trigger the Docker image build workflow:
 
 1. Go to the GitHub repository
 2. Click on "Actions" tab
-3. Select the "Build and Push Docker Image" workflow
+3. Select the "Build and Publish Docker Image" workflow
 4. Click "Run workflow"
 5. Select the branch to build from
 6. Click "Run workflow"
@@ -328,11 +340,11 @@ To manually trigger the Docker image build workflow:
 ## Frameworks, libraries and tools used
 
 1. **Runtime & Package Management**
-   - Node.js
-   - pnpm
+   - Node.js 18.19.0+ (recommended: 20.x)
+   - pnpm 10.12.4+ (enforced via preinstall hook)
 
 2. **Core Frameworks & Libraries**
-   - Next.js 15.5.0 – React-based SSR/SSG framework
+   - Next.js 15.5.2 – React-based SSR/SSG framework with App Router
    - React 19.1.1 & React-DOM 19.1.1
    - Radix UI (@radix-ui/react-*) – headless component primitives (latest versions)
    - Tailwind CSS 4.1.12 + tailwindcss-animate 1.0.7 plugin
@@ -351,27 +363,30 @@ To manually trigger the Docker image build workflow:
    - node-cron 4.2.1 – cron job scheduling
    - string-template 1.0.0 – string templating
    - tailwind-merge 3.3.1 – Tailwind class merging utility
+   - framer-motion 12.23.12 – animation library
 
 3. **Type Checking & Linting**
    - TypeScript 5.9.2 + tsc (noEmit)
-   - TSX 4.20.4 – lightweight runner for TS scripts
-   - ESLint 9.33.0 (via `next lint`)
+   - TSX 4.20.5 – lightweight runner for TS scripts
+   - ESLint 9.34.0 (via `next lint`)
 
 4. **Build & Dev Tools**
    - Web/CSS bundling via Next's built-in toolchain
    - Scripts under `scripts/` (shell & TS) for test data generation, DB reset, SVG conversion, workspace cleanup, etc.
+   - Custom server implementation (`duplistatus-server.ts`)
 
 5. **Containerization & Deployment**
-   - Docker (node:lts-alpine base)
-   - Docker Compose (`docker compose.yml`)
+   - Docker (node:alpine base)
+   - Docker Compose (`docker-compose.yml`)
    - Alpine build tooling (`apk add` curl, python3, make, g++, …) for compiling better-sqlite3
    - cURL (healthchecks)
    - GitHub Actions workflows (docker/setup-*, buildx, metadata-action, build-push-action)
    - Docker Hub & GitHub Container Registry
+   - Multi-architecture builds (AMD64, ARM64)
 
 6. **Project Configuration & Monorepo Support**
    - `tsconfig.json` & `scripts/tsconfig.json`
-   - `next.config.ts`
+   - `next.config.ts` (standalone output, webpack configuration)
    - `tailwind.config.ts`
    - `postcss.config.mjs`
    - `pnpm-workspace.yaml`
@@ -384,7 +399,9 @@ To manually trigger the Docker image build workflow:
 
 8. **Cron Service**
    - Separate cron service (`src/cron-service/`) for scheduled tasks 
-   - The cron service is started by `duplistatus-cron.sh`, which restarts it if it crashes.
+   - Express-based REST API for service management
+   - Health check and task management endpoints
+   - Automatic restart via `duplistatus-cron.sh` script
    - Runs on separate port (8667 dev, 9667 prod)
    - Handles overdue backup notifications and other scheduled tasks
    - Configurable via environment variables and database settings
@@ -401,7 +418,6 @@ To manually trigger the Docker image build workflow:
     - Manual refresh controls with visual feedback
     - Progress indicators and loading states
 
-
 11. **Enhanced UI Features**
     - Sortable tables with persistent preferences
     - Enhanced backup version display with icons
@@ -414,6 +430,9 @@ To manually trigger the Docker image build workflow:
     - Overdue backup check button
     - Enhanced backup collection menu
     - Display menu component
+    - Theme toggle (light/dark mode)
+    - Server connection management
+    - Metrics charts panel
 
 12. **API Documentation**
     - Comprehensive API endpoints documented in `API-ENDPOINTS.md`
@@ -423,33 +442,72 @@ To manually trigger the Docker image build workflow:
     - Cron service management endpoints
     - Health check and monitoring endpoints
 
+13. **Database & Data Management**
+    - Database schema and key queries documented in `DATABASE.md`
+    - SQLite with better-sqlite3 for data persistence
+    - Database migrations system (`src/lib/db-migrations.ts`)
+    - Utility functions for database operations (`src/lib/db-utils.ts`)
+    - Type-safe database operations with TypeScript interfaces
+    - Backup data collection and processing
+    - Machine and backup relationship management
+
+14. **Development & Debugging Tools**
+    - TypeScript strict mode enabled
+    - ESLint configuration for code quality
+    - Development mode features (JSON file storage, verbose logging)
+    - Test data generation scripts
+    - Database cleanup utilities
+    - Workspace management scripts
+
 <br><br>
 
 ## Development Guidelines
 
 ### Code Organization
 - **Components**: Located in `src/components/` with subdirectories for specific features
+  - `ui/` - shadcn/ui components
+  - `dashboard/` - Dashboard-specific components
+  - `settings/` - Settings page components
+  - `machine-details/` - Machine detail page components
 - **API Routes**: Located in `src/app/api/` with RESTful endpoint structure
 - **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`
 - **Types**: TypeScript interfaces in `src/lib/types.ts`
 - **Configuration**: Default configs in `src/lib/default-config.ts`
+- **Cron Service**: Located in `src/cron-service/` with separate service implementation
 
 ### Testing
 - Use the provided test scripts for generating data and testing functionality
 - Test notification system with the built-in test endpoints
 - Verify cron service functionality with the test scripts
 - Test the docker and podman images
+- Use TypeScript strict mode for compile-time error checking
 
 ### Debugging
 - Development mode provides verbose logging and JSON file storage
 - Use the browser's developer tools for frontend debugging
 - Check the console for detailed error messages and API responses
+- Cron service includes health check endpoints for monitoring
+- Database utilities include debugging and maintenance functions
 
 ### API Development
 - All API endpoints are documented in `API-ENDPOINTS.md`
 - Follow the established RESTful patterns for new endpoints
 - Maintain consistent error handling and response formats
 - Test new endpoints with the provided test scripts
+- Use TypeScript interfaces for type safety
+
+### Database Development
+- Use the migration system for schema changes
+- Follow the established patterns in `src/lib/db-utils.ts`
+- Maintain type safety with TypeScript interfaces
+- Test database operations with the provided utilities
+
+### UI Development
+- Use shadcn/ui components for consistency
+- Follow the established patterns in existing components
+- Use Tailwind CSS for styling
+- Maintain responsive design principles
+- Test components in both light and dark themes
 
 <br>
 

@@ -10,13 +10,14 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
+import { useConfiguration } from '@/contexts/configuration-context';
 import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
 import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
-import { ServerConnectionButton } from '../ui/server-connection-button';
+import { ServerConfigurationButton } from '../ui/server-configuration-button';
 
 interface MachineWithBackup {
   id: string;
@@ -41,16 +42,15 @@ interface MachineWithBackupAndSettings extends MachineWithBackup {
 
 export function BackupNotificationsForm({ backupSettings }: BackupNotificationsFormProps) {
   const { toast } = useToast();
-  const [machinesWithBackups, setMachinesWithBackups] = useState<MachineWithBackup[]>([]);
+  const { config, refreshConfigSilently } = useConfiguration();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
-  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [cronInterval, setCronIntervalState] = useState<CronInterval>(defaultCronInterval);
   const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>(defaultNotificationFrequencyConfig);
-  const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(true);
+  const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(false);
   const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
   const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
@@ -84,12 +84,30 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   };
 
   useEffect(() => {
-    fetchMachinesWithBackups();
-    loadCronInterval();
-    fetchNotificationFrequency();
-    fetchOverdueTolerance();
-    loadExistingBackupSettings();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (config) {
+      // Initialize settings from config
+      if (config.backupSettings && Object.keys(config.backupSettings).length > 0) {
+        setSettings(config.backupSettings);
+      }
+      
+      // Initialize other settings from config
+      if (config.overdue_tolerance) {
+        setOverdueTolerance(config.overdue_tolerance);
+      }
+      
+      if (config.notificationFrequency) {
+        setNotificationFrequency(config.notificationFrequency);
+      }
+      
+      // Initialize cron interval from config
+      if (config.cronConfig) {
+        const entry = Object.entries(cronIntervalMap).find(([, value]) => 
+          value.expression === config.cronConfig.cronExpression && value.enabled === config.cronConfig.enabled
+        );
+        setCronIntervalState(entry ? entry[0] as CronInterval : defaultCronInterval);
+      }
+    }
+  }, [config]);
 
 
 
@@ -115,32 +133,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       toast({
         title: "Error",
         description: "Failed to run overdue backup check",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
-
-  const loadCronInterval = async () => {
-    try {
-      const response = await fetch('/api/cron-config');
-      if (!response.ok) {
-        throw new Error('Failed to load cron configuration');
-      }
-      
-      const { cronExpression, enabled } = await response.json();
-      
-      // Find matching interval from the cron expression and enabled status
-      const entry = Object.entries(cronIntervalMap).find(([, value]) => 
-        value.expression === cronExpression && value.enabled === enabled
-      );
-      
-      setCronIntervalState(entry ? entry[0] as CronInterval : defaultCronInterval);
-    } catch (error) {
-      console.error('Failed to load cron interval:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to load overdue backup check interval",
         variant: "destructive",
         duration: 3000,
       });
@@ -195,12 +187,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
   // Initialize default settings for all machines when they are loaded
   useEffect(() => {
-    if (machinesWithBackups.length > 0) {
+    if (config?.machinesWithBackups && config.machinesWithBackups.length > 0) {
       setSettings(prev => {
         const defaultSettings: Record<BackupKey, BackupNotificationConfig> = {};
         let hasChanges = false;
         
-        machinesWithBackups.forEach(machine => {
+        config.machinesWithBackups.forEach((machine: MachineWithBackup) => {
           if (!prev[machine.id]) {
             defaultSettings[machine.id] = { ...defaultBackupNotificationConfig };
             hasChanges = true;
@@ -217,32 +209,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         return prev;
       });
     }
-  }, [machinesWithBackups]);
-
-  const fetchMachinesWithBackups = async () => {
-    try {
-      const response = await fetch('/api/machines-with-backups');
-      if (!response.ok) {
-        throw new Error('Failed to fetch machines with backups');
-      }
-      const data = await response.json();
-      // Sort machines alphabetically by name initially
-      const sortedMachines = data.sort((a: MachineWithBackup, b: MachineWithBackup) => 
-        a.name.localeCompare(b.name) || a.backupName.localeCompare(b.backupName)
-      );
-      setMachinesWithBackups(sortedMachines);
-    } catch (error) {
-      console.error('Error fetching machines with backups:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to load machines with backups list",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [config?.machinesWithBackups]);
 
   const updateBackupSettingById = (machineId: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
     setSettings(prev => ({
@@ -257,8 +224,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const getBackupSettingById = (machineId: string): BackupNotificationConfig => {
     return settings[machineId] || { ...defaultBackupNotificationConfig };
   };
-
-
 
   const handleIntervalInputChangeById = (machineId: string, value: string) => {
     setInputValues(prev => ({
@@ -299,7 +264,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
   // Create machines with settings for sorting
   const getMachinesWithBackupAndSettings = (): MachineWithBackupAndSettings[] => {
-    return machinesWithBackups.map(machine => {
+    if (!config?.machinesWithBackups) return [];
+    
+    return config.machinesWithBackups.map((machine: MachineWithBackup) => {
       const backupSetting = getBackupSettingById(machine.id);
       
       return {
@@ -342,6 +309,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
       
       // Always run overdue backup check when saving to ensure tolerance is applied
       await runOverdueBackupCheck();
@@ -393,6 +363,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
       
       // Run the overdue backup check
       const response = await fetch('/api/notifications/check-overdue', {
@@ -459,48 +432,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   };
 
-  const fetchNotificationFrequency = async () => {
-    setNotificationFrequencyLoading(true);
-    setNotificationFrequencyError(null);
-    try {
-      const response = await fetch('/api/notifications/resend-frequency');
-      if (!response.ok) throw new Error('Failed to fetch notification frequency');
-      const data = await response.json();
-      setNotificationFrequency(data.value ?? defaultNotificationFrequencyConfig);
-    } catch {
-      setNotificationFrequencyError('Failed to load notification frequency');
-      setNotificationFrequency(defaultNotificationFrequencyConfig);
-    } finally {
-      setNotificationFrequencyLoading(false);
-    }
-  };
-
-  const fetchOverdueTolerance = async () => {
-    try {
-      const response = await fetch('/api/configuration');
-      if (!response.ok) throw new Error('Failed to fetch configuration');
-      const data = await response.json();
-      setOverdueTolerance(data.overdue_tolerance ?? defaultOverdueTolerance);
-    } catch (error) {
-      console.error('Failed to load overdue tolerance:', error instanceof Error ? error.message : String(error));
-      setOverdueTolerance(defaultOverdueTolerance);
-    }
-  };
-
-  const loadExistingBackupSettings = async () => {
-    try {
-      const response = await fetch('/api/configuration');
-      if (!response.ok) throw new Error('Failed to fetch configuration');
-      const data = await response.json();
-      
-      if (data.backupSettings && Object.keys(data.backupSettings).length > 0) {
-        setSettings(data.backupSettings);
-      }
-    } catch (error) {
-      console.error('Failed to load existing backup settings:', error instanceof Error ? error.message : String(error));
-    }
-  };
-
   const [isResetting, setIsResetting] = useState(false);
 
   const handleResetNotifications = async () => {
@@ -535,26 +466,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-center">
-          <div className="text-lg font-medium">Loading machines with backups...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (machinesWithBackups.length === 0) {
+  if (!config?.machinesWithBackups || config.machinesWithBackups.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Backup Notifications</CardTitle>
+          <CardTitle>Backup Alerts</CardTitle>
           <CardDescription>No machines with backups found in the database</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            No machines with backups have been registered yet. Add some backup data first to see backup notification settings.
+            No machines with backups have been registered yet. Add some backup data first to see backup alerts settings.
           </p>
         </CardContent>
       </Card>
@@ -565,7 +486,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Backup Notification Settings</CardTitle>
+          <CardTitle>Configure Backup Alerts</CardTitle>
           <CardDescription>
              Configure notification settings for each backup received from Duplicati. 
              Enable/disable overdue backup monitoring, set the timeout period and notification frequency.
@@ -637,7 +558,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     <TableCell>
                       <div>
                         <div className="font-xl">
-                          <ServerConnectionButton
+                          <ServerConfigurationButton
                             serverUrl={machine.server_url}
                             size="sm"
                             variant="ghost"

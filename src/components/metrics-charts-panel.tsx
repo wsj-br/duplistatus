@@ -582,7 +582,8 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
   const paramsEqual = prevProps.machineId === nextProps.machineId && 
                      prevProps.backupName === nextProps.backupName;
   
-  // Don't compare lastRefreshTime as it changes on every refresh but doesn't affect the visual content
+  // Compare lastRefreshTime since it affects the UI display
+  const refreshTimeEqual = prevProps.lastRefreshTime.getTime() === nextProps.lastRefreshTime.getTime();
   
-  return paramsEqual;
+  return paramsEqual && refreshTimeEqual;
 });

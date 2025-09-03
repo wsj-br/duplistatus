@@ -31,10 +31,9 @@ export function DashboardLayout({
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardLayoutProps) {
   const { state: machineSelectionState, setSelectedMachineId, setViewMode, setMachines } = useMachineSelection();
-  const { viewMode } = machineSelectionState;
+  const { viewMode, isInitialized } = machineSelectionState;
   
   // Use refs to track initialization and prevent infinite loops
-  const isViewModeInitialized = useRef(false);
   const previousSelectedMachineId = useRef<string | null>(null);
   const previousMachinesData = useRef<string>('');
   
@@ -50,17 +49,6 @@ export function DashboardLayout({
   const handleViewModeChange = (newViewMode: 'cards' | 'table') => {
     setViewMode(newViewMode);
   };
-
-  // Load view mode from localStorage on mount (only once)
-  useEffect(() => {
-    if (!isViewModeInitialized.current) {
-      const savedViewMode = localStorage.getItem('dashboard-view-mode');
-      if (savedViewMode === 'cards' || savedViewMode === 'table') {
-        setViewMode(savedViewMode);
-      }
-      isViewModeInitialized.current = true;
-    }
-  }, [setViewMode]);
 
   // Update context when selected machine changes (only if actually changed)
   useEffect(() => {
@@ -98,6 +86,38 @@ export function DashboardLayout({
     }
     return data.overallSummary;
   }, [data.overallSummary, selectedMachine, machineBackups]);
+
+  // Don't render until the view mode is initialized to prevent flash
+  if (!isInitialized) {
+    return (
+      <div className="flex flex-col px-2 pb-4 h-[calc(100vh-4rem)] overflow-hidden">
+        <div>
+          <DashboardSummaryCards 
+            summary={summary} 
+            onViewModeChange={handleViewModeChange}
+          />
+        </div>
+        <div className="mt-2 mb-2">
+          <Card className="shadow-lg border-2 border-border">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-center h-32">
+                <div className="text-muted-foreground">Loading...</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <Card className="h-full shadow-lg border-2 border-border">
+            <CardContent className="h-full p-0">
+              <div className="flex items-center justify-center h-full">
+                <div className="text-muted-foreground">Loading...</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex flex-col px-2 pb-4 

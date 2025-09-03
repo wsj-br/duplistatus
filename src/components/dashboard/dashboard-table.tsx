@@ -24,7 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ServerConnectionButton } from "@/components/ui/server-connection-button";
+import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
 interface DashboardTableProps {
   machines: MachineSummary[];
@@ -56,13 +56,13 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
   
   switch (notificationEvent) {
     case 'errors':
-      return 'Notifications: Errors Only';
+      return <>Errors Only.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
     case 'warnings':
-      return 'Notifications: Warnings & Errors';
+      return <>Warnings & Errors.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
     case 'all':
-      return 'Notifications: All Backups';
+      return <>All Backups.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
     case 'off':
-      return 'Notifications: Off';
+      return <>Off.<br />Click to configure.</>;
     default:
       return '';
   }
@@ -243,7 +243,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                 Notification
               </SortableTableHead>
               <SortableTableHead column="server_url" sortConfig={sortConfig} onSort={handleSort} align="center">
-                Connect
+                Duplicati configuration
               </SortableTableHead>
             </TableRow>
           </TableHeader>
@@ -283,16 +283,26 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                             <div><span>Last backup:</span> <span className="text-muted-foreground">{machine.lastBackupDate !== "N/A" ? new Date(machine.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.lastBackupDate) + ")" : "N/A"}</span></div>
                             <div><span>Expected backup:</span> <span className="text-muted-foreground">{machine.expectedBackupDate !== "N/A" ? new Date(machine.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.expectedBackupDate) + ")" : "N/A"}</span></div>
                             <div><span>Last notification:</span> <span className="text-muted-foreground">{machine.lastNotificationSent !== "N/A" ? new Date(machine.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(machine.lastNotificationSent) + ")" : "N/A"}</span></div>
-                            <div className="pt-2 border-t">
+
+                            <div className="border-t pt-2 flex items-center gap-2">
                               <button 
-                                className="text-xs cursor-pointer flex items-center"
+                                className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   router.push('/settings?tab=backups');
                                 }}
                               >
-                              <Settings className="h-3 w-3 mr-1" /> Configure 
+                                <Settings className="h-3 w-3" />
+                                <span>Overdue configuration</span>
                               </button>
+                              <ServerConfigurationButton 
+                                className="text-xs !p-1" 
+                                variant="ghost"
+                                size="sm"
+                                machineName={machine.name}
+                                serverUrl={machine.server_url} 
+                                showText={true} 
+                              />
                             </div>
                           </div>
                         </TooltipContent>
@@ -352,7 +362,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     )}
                   </TableCell>
                   <TableCell className="text-center">
-                    <ServerConnectionButton 
+                    <ServerConfigurationButton 
+                      machineName={machine.name}
                       serverUrl={machine.server_url} 
                       showText={false}
                       disabled={machine.server_url === ''}

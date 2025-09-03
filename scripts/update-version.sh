@@ -13,21 +13,22 @@ if [ -f .env ]; then
         
         # Compare versions
         if [ "$CURRENT_VERSION" = "$VERSION" ]; then
-            echo "Version is already up to date: $VERSION"
             exit 0
         else
-            echo "Updating version from $CURRENT_VERSION to $VERSION"
             # Update VERSION variable
             sed "s/^VERSION=.*/VERSION=$VERSION/" .env > .env.tmp && mv .env.tmp .env
-            echo "Updated VERSION=$VERSION in existing .env file"
+            echo "✅ Updated VERSION=$VERSION in existing .env file"
+            echo ""
         fi
     else
         # VERSION variable doesn't exist, append it
         echo "VERSION=$VERSION" >> .env
-        echo "Added VERSION=$VERSION to existing .env file"
+        echo "➕ Added VERSION=$VERSION to existing .env file"
+        echo ""
     fi
 else
     # If .env doesn't exist, create it with just VERSION
     echo "VERSION=$VERSION" > .env
-    echo "Created new .env file with VERSION=$VERSION"
+    echo "📄 Created new .env file with VERSION=$VERSION"
+    echo ""
 fi

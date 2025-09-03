@@ -2,16 +2,15 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { BackButton } from '@/components/ui/back-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { NotificationConfig } from '@/lib/types';
+import { useConfiguration } from '@/contexts/configuration-context';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
-import { ServerConnectionsForm } from '@/components/settings/server-connections-form';
+import { ServerAddressesForm } from '@/components/settings/server-addresses-form';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -19,47 +18,23 @@ export const dynamic = 'force-dynamic';
 function SettingsPageContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const [config, setConfig] = useState<NotificationConfig | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { config, loading, refreshConfigSilently } = useConfiguration();
   const [activeTab, setActiveTab] = useState<string>('backups');
 
   useEffect(() => {
     // Check for tab parameter in URL first
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['backups', 'connections', 'ntfy', 'templates'].includes(tabParam)) {
+    if (tabParam && ['backups', 'addresses', 'ntfy', 'templates'].includes(tabParam)) {
       setActiveTab(tabParam);
       localStorage.setItem('settings-active-tab', tabParam);
     } else {
       // Load the last selected tab from localStorage if no URL parameter
       const savedTab = localStorage.getItem('settings-active-tab');
-      if (savedTab && ['backups', 'connections', 'ntfy', 'templates'].includes(savedTab)) {
+      if (savedTab && ['backups', 'addresses', 'ntfy', 'templates'].includes(savedTab)) {
         setActiveTab(savedTab);
       }
     }
-    
-    fetchConfiguration();
   }, [searchParams]);  // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchConfiguration = async () => {
-    try {
-      const response = await fetch('/api/configuration');
-      if (!response.ok) {
-        throw new Error('Failed to fetch configuration');
-      }
-      const data = await response.json();
-      setConfig(data);
-    } catch (error) {
-      console.error('Error fetching configuration:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to load configuration settings",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Remove saveConfiguration and saveBackupSettings
 
@@ -83,10 +58,7 @@ function SettingsPageContent() {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-center">
-          <div className="text-lg font-medium text-red-600">Failed to load configuration</div>
-          <Button onClick={fetchConfiguration} className="mt-4">
-            Retry
-          </Button>
+          <div className="text-lg font-medium text-red-600">No configuration available</div>
         </div>
       </div>
     );
@@ -96,23 +68,20 @@ function SettingsPageContent() {
     <div className="w-[95%] mx-auto py-8 space-y-6">
       <div className="flex items-center gap-4">
         <BackButton />
-        <div>
-          <h1 className="text-3xl font-bold">Settings</h1>
-        </div>
       </div>
 
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Notification Configuration</CardTitle>
+          <CardTitle className="text-2xl">System settings</CardTitle>
           <CardDescription>
-            Configure how duplistatus sends notifications about backup events
+             Configure backup notifications, overdue backup monitoring, Machine addresses, and notification settings.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="backups">Backup Notifications</TabsTrigger>
-              <TabsTrigger value="connections">Server Connections</TabsTrigger>
+              <TabsTrigger value="backups">Backup Alerts</TabsTrigger>
+              <TabsTrigger value="addresses">Machine Addresses</TabsTrigger>
               <TabsTrigger value="ntfy">NTFY Settings</TabsTrigger>
               <TabsTrigger value="templates">Notification Templates</TabsTrigger>
             </TabsList>
@@ -127,9 +96,9 @@ function SettingsPageContent() {
               />
             </TabsContent>
             
-            <TabsContent value="connections" className="mt-6">
-              <ServerConnectionsForm 
-                machineConnections={config.machineConnections || []} 
+            <TabsContent value="addresses" className="mt-6">
+              <ServerAddressesForm 
+                machineAddresses={config.machineAddresses || []} 
               />
             </TabsContent>
             
@@ -146,6 +115,10 @@ function SettingsPageContent() {
                     if (!response.ok) throw new Error('Failed to save NTFY config');
                     const result = await response.json();
                     toast({ title: 'Success', description: 'NTFY config saved successfully', duration: 2000 });
+                    
+                    // Refresh the configuration cache to reflect the changes
+                    await refreshConfigSilently();
+                    
                     return result;
                   } catch (error) {
                     toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save NTFY config', variant: 'destructive', duration: 3000 });
@@ -167,6 +140,9 @@ function SettingsPageContent() {
                     });
                     if (!response.ok) throw new Error('Failed to save notification templates');
                     toast({ title: 'Success', description: 'Notification templates saved successfully', duration: 2000 });
+                    
+                    // Refresh the configuration cache to reflect the changes
+                    await refreshConfigSilently();
                   } catch (error) {
                     toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save notification templates', variant: 'destructive', duration: 3000 });
                   }

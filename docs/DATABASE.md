@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.8.dev-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -16,6 +16,9 @@ This document describes the SQLite database schema used by duplistatus to store 
 **Table of Contents** 
 
 - [Database Location](#database-location)
+- [Database Migration System](#database-migration-system)
+  - [Current Migration Versions](#current-migration-versions)
+  - [Migration Process](#migration-process)
 - [Tables](#tables)
   - [Machines Table](#machines-table)
     - [Fields](#fields)
@@ -28,6 +31,8 @@ This document describes the SQLite database schema used by duplistatus to store 
   - [Configurations Table](#configurations-table)
     - [Fields](#fields-1)
     - [Common Configuration Keys](#common-configuration-keys)
+  - [Database Version Table](#database-version-table)
+    - [Fields](#fields-2)
 - [Indexes](#indexes)
 - [Relationships](#relationships)
 - [Data Types](#data-types)
@@ -69,6 +74,34 @@ This document describes the SQLite database schema used by duplistatus to store 
 
 The database file (`backups.db`) is stored in the `data` directory of the application. The database is automatically created when the application starts if it doesn't exist.
 
+## Database Migration System
+
+The application includes an automatic database migration system that ensures your database schema stays up to date with the application version. The migration system:
+
+- **Automatically detects** when migrations are needed
+- **Creates backups** before running migrations (named `backups-copy-YYYY-MM-DDTHH-MM-SS.db`)
+- **Runs migrations safely** with retry logic for database locking issues
+- **Tracks migration history** in the `db_version` table
+- **Preserves all existing data** during migrations
+
+### Current Migration Versions
+
+- **Version 2.0**: Added missing columns to backups table and created configurations table
+- **Version 3.0**: Added `server_url` field to machines table
+
+### Migration Process
+
+When the application starts, it automatically:
+
+1. Checks the current database version
+2. Identifies pending migrations
+3. Creates a backup of the current database
+4. Runs each migration in a transaction
+5. Updates the version tracking table
+6. Populates default configurations for new databases
+
+The migration system is designed to be safe and non-destructive, ensuring your data is preserved throughout the upgrade process.
+
 ## Tables
 
 ### Machines Table
@@ -79,6 +112,7 @@ Stores information about machines that perform backups.
 CREATE TABLE machines (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
+    server_url TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -86,6 +120,7 @@ CREATE TABLE machines (
 #### Fields
 - `id` (TEXT, PRIMARY KEY): Unique identifier for the machine
 - `name` (TEXT, NOT NULL): Display name of the machine
+- `server_url` (TEXT, DEFAULT ''): URL of the Duplicati server for this machine (optional)
 - `created_at` (DATETIME): Timestamp when the machine was first registered
 
 ### Backups Table
@@ -256,6 +291,23 @@ CREATE TABLE configurations (
 - `last_overdue_check`: String containing the timestamp of the last overdue backup check
 - `notification_frequency`: String value controlling notification frequency
 - `overdue_tolerance`: String value controlling the tolerance for overdue backups (e.g., "24h", "7d")
+
+### Database Version Table
+
+Tracks the database schema version and migration history.
+
+```sql
+CREATE TABLE db_version (
+    version TEXT PRIMARY KEY,
+    applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Fields
+- `version` (TEXT, PRIMARY KEY): Database schema version (e.g., "3.0")
+- `applied_at` (DATETIME): Timestamp when this version was applied
+
+This table is used by the migration system to track which migrations have been applied and ensure migrations are only run once.
 
 ## Indexes
 
@@ -541,8 +593,8 @@ This JSON would be processed in two steps:
 
 1. First, insert/update the machine:
 ```sql
-INSERT INTO machines (id, name)
-VALUES ('unique-machine-id', 'Machine Name')
+INSERT INTO machines (id, name, server_url)
+VALUES ('unique-machine-id', 'Machine Name', '')
 ON CONFLICT(id) DO UPDATE SET name = 'Machine Name';
 ```
 

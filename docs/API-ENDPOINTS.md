@@ -1,6 +1,10 @@
+
+![duplistatus](img/duplistatus_banner.png)
+
+
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.8.dev-blue)
 
 <br>
 
@@ -16,6 +20,7 @@ The API is organized into logical groups:
 - **Configuration**: Notification settings, backup preferences, and system configuration
 - **Monitoring**: Health checks, status monitoring, and overdue backup tracking
 - **Administration**: Database maintenance, cleanup operations, and system management
+- **Chart Data**: Time-series data for visualization and analytics
 
 <br>
 
@@ -42,15 +47,20 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get All Machines](#get-all-machines)
   - [Get Machines with Backups](#get-machines-with-backups)
   - [Get Machine Details](#get-machine-details)
-  - [Get Machine Chart Data](#get-machine-chart-data)
   - [Get Machine Data with Overdue Info](#get-machine-data-with-overdue-info)
   - [Get Chart Data](#get-chart-data)
+- [Chart Data](#chart-data)
+  - [Get All Machines Chart Data](#get-all-machines-chart-data)
+  - [Get Aggregated Chart Data](#get-aggregated-chart-data)
+  - [Get Machine Chart Data](#get-machine-chart-data)
+  - [Get Machine Backup Chart Data](#get-machine-backup-chart-data)
 - [Configuration Management](#configuration-management)
   - [Get Configuration](#get-configuration)
   - [Update Notification Configuration](#update-notification-configuration)
   - [Update Backup Settings](#update-backup-settings)
   - [Update Notification Templates](#update-notification-templates)
   - [Update Overdue Tolerance](#update-overdue-tolerance)
+  - [Get Server Connections](#get-server-connections)
 - [Notification System](#notification-system)
   - [Test Notification](#test-notification)
   - [Test Template](#test-template)
@@ -60,12 +70,18 @@ All API responses are returned in JSON format with consistent error handling pat
 - [Cron Service Management](#cron-service-management)
   - [Get Cron Configuration](#get-cron-configuration)
   - [Update Cron Configuration](#update-cron-configuration)
+  - [Cron Service Proxy](#cron-service-proxy)
 - [Monitoring & Health](#monitoring--health)
   - [Health Check](#health-check)
+  - [Environment Information](#environment-information)
 - [Administration](#administration)
   - [Collect Backups](#collect-backups)
   - [Cleanup Backups](#cleanup-backups)
   - [Delete Machine](#delete-machine)
+  - [Delete Backup](#delete-backup)
+  - [Test Server Connection](#test-server-connection)
+  - [Get Machine Server URL](#get-machine-server-url)
+  - [Update Machine Server URL](#update-machine-server-url)
 - [Error Handling](#error-handling)
 - [Data Type Notes](#data-type-notes)
   - [Message Arrays](#message-arrays)
@@ -378,8 +394,6 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-
-
 ### Get Machine Data with Overdue Info
 - **Endpoint**: `/api/detail/:machineId`
 - **Method**: GET
@@ -416,6 +430,110 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Endpoint**: `/api/chart-data`
 - **Method**: GET
 - **Description**: Retrieves aggregated chart data for all machines over time.
+- **Response**:
+  ```json
+  [
+    {
+      "date": "20/03/2024",
+      "isoDate": "2024-03-20T10:00:00Z",
+      "uploadedSize": 331318892,
+      "duration": 38,
+      "fileCount": 249426,
+      "fileSize": 113395849938,
+      "storageSize": 27203688543,
+      "backupVersions": 10
+    }
+  ]
+  ```
+
+<br>
+
+## Chart Data
+
+### Get All Machines Chart Data
+- **Endpoint**: `/api/chart-data`
+- **Method**: GET
+- **Description**: Retrieves aggregated chart data for all machines over time.
+- **Response**:
+  ```json
+  [
+    {
+      "date": "20/03/2024",
+      "isoDate": "2024-03-20T10:00:00Z",
+      "uploadedSize": 331318892,
+      "duration": 38,
+      "fileCount": 249426,
+      "fileSize": 113395849938,
+      "storageSize": 27203688543,
+      "backupVersions": 10
+    }
+  ]
+  ```
+
+<br>
+
+### Get Aggregated Chart Data
+- **Endpoint**: `/api/chart-data/aggregated`
+- **Method**: GET
+- **Description**: Retrieves aggregated chart data with optional time range filtering.
+- **Query Parameters**:
+  - `startDate` (optional): Start date for filtering (ISO format)
+  - `endDate` (optional): End date for filtering (ISO format)
+- **Response**:
+  ```json
+  [
+    {
+      "date": "20/03/2024",
+      "isoDate": "2024-03-20T10:00:00Z",
+      "uploadedSize": 331318892,
+      "duration": 38,
+      "fileCount": 249426,
+      "fileSize": 113395849938,
+      "storageSize": 27203688543,
+      "backupVersions": 10
+    }
+  ]
+  ```
+
+<br>
+
+### Get Machine Chart Data
+- **Endpoint**: `/api/chart-data/machine/:machineId`
+- **Method**: GET
+- **Description**: Retrieves chart data for a specific machine with optional time range filtering.
+- **Parameters**:
+  - `machineId`: the machine identifier
+- **Query Parameters**:
+  - `startDate` (optional): Start date for filtering (ISO format)
+  - `endDate` (optional): End date for filtering (ISO format)
+- **Response**:
+  ```json
+  [
+    {
+      "date": "20/03/2024",
+      "isoDate": "2024-03-20T10:00:00Z",
+      "uploadedSize": 331318892,
+      "duration": 38,
+      "fileCount": 249426,
+      "fileSize": 113395849938,
+      "storageSize": 27203688543,
+      "backupVersions": 10
+    }
+  ]
+  ```
+
+<br>
+
+### Get Machine Backup Chart Data
+- **Endpoint**: `/api/chart-data/machine/:machineId/backup/:backupName`
+- **Method**: GET
+- **Description**: Retrieves chart data for a specific machine and backup with optional time range filtering.
+- **Parameters**:
+  - `machineId`: the machine identifier
+  - `backupName`: the backup name (URL encoded)
+- **Query Parameters**:
+  - `startDate` (optional): Start date for filtering (ISO format)
+  - `endDate` (optional): End date for filtering (ISO format)
 - **Response**:
   ```json
   [
@@ -476,7 +594,14 @@ All API responses are returned in JSON format with consistent error handling pat
         "tags": "duplicati, duplistatus, overdue"
       }
     },
-    "overdue_tolerance": "1h"
+    "overdue_tolerance": "1h",
+    "machineConnections": [
+      {
+        "id": "machine-id",
+        "name": "Machine Name",
+        "server_url": "http://localhost:8200"
+      }
+    ]
   }
   ```
 
@@ -572,6 +697,23 @@ All API responses are returned in JSON format with consistent error handling pat
   ```json
   {
     "message": "Overdue tolerance updated successfully"
+  }
+  ```
+
+### Get Server Connections
+- **Endpoint**: `/api/configuration/server-connections`
+- **Method**: GET
+- **Description**: Retrieves the current server connections configuration.
+- **Response**:
+  ```json
+  {
+    "machineConnections": [
+      {
+        "id": "machine-id",
+        "name": "Machine Name",
+        "server_url": "http://localhost:8200"
+      }
+    ]
   }
   ```
 
@@ -702,11 +844,24 @@ All API responses are returned in JSON format with consistent error handling pat
   ```
 - **Available Intervals**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
 
+### Cron Service Proxy
+- **Endpoint**: `/api/cron/*`
+- **Method**: GET, POST
+- **Description**: Proxies requests to the cron service. This endpoint forwards all requests to the cron service running on a separate port.
+- **Parameters**:
+  - `*`: Any path that will be forwarded to the cron service
+- **Response**: Depends on the cron service endpoint being accessed
+- **Error Response** (503):
+  ```json
+  {
+    "error": "Cron service is not running",
+    "message": "The cron service is not available. Please start it with: npm run cron:start"
+  }
+  ```
+
 <br>
 
 ## Monitoring & Health
-
-
 
 ### Health Check
 - **Endpoint**: `/api/health`
@@ -735,6 +890,23 @@ All API responses are returned in JSON format with consistent error handling pat
     "error": "Database connection failed",
     "message": "Connection timeout",
     "stack": "Error: Connection timeout\n    at...",
+    "timestamp": "2024-03-20T10:00:00Z"
+  }
+  ```
+
+### Environment Information
+- **Endpoint**: `/api/environment`
+- **Method**: GET
+- **Description**: Retrieves current environment variables and system information.
+- **Response**:
+  ```json
+  {
+    "PORT": "9666",
+    "CRON_PORT": "9667",
+    "NODE_ENV": "production",
+    "NEXT_TELEMETRY_DISABLED": "1",
+    "LANG": "en_US.UTF-8",
+    "TZ": "UTC",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
@@ -841,14 +1013,125 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
+### Delete Backup
+- **Endpoint**: `/api/backups/:backupId`
+- **Method**: DELETE
+- **Description**: Deletes a specific backup record. This endpoint is only available in development mode.
+- **Parameters**:
+  - `backupId`: the backup identifier
+
+- **Response**:
+  ```json
+  {
+    "message": "Successfully deleted backup Files from 2024-03-20T10:00:00Z",
+    "status": 200,
+    "deletedBackup": {
+      "id": "backup-id",
+      "machine_id": "machine-id",
+      "backup_name": "Files",
+      "date": "2024-03-20T10:00:00Z"
+    }
+  }
+  ```
+- **Error Responses**:
+  - `403`: Backup deletion is only available in development mode
+  - `400`: Invalid backup ID
+  - `404`: Backup not found
+  - `500`: Server error during deletion
+- **Notes**: 
+  - This operation is only available in development mode
+  - This operation is irreversible
+  - The backup data will be permanently deleted from the database
+
+<br>
+
+### Test Server Connection
+- **Endpoint**: `/api/machines/test-connection`
+- **Method**: POST
+- **Description**: Tests the connection to a Duplicati server to verify it's accessible.
+- **Request Body**:
+  ```json
+  {
+    "server_url": "http://localhost:8200"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Connection successful"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid URL format or missing server URL
+  - `500`: Server error during connection test
+- **Notes**: 
+  - The endpoint validates URL format and tests connectivity
+  - Returns success if the server responds with a 401 status (expected for login endpoint without credentials)
+
+<br>
+
+### Get Machine Server URL
+- **Endpoint**: `/api/machines/:machineId/server-url`
+- **Method**: GET
+- **Description**: Retrieves the server URL for a specific machine.
+- **Parameters**:
+  - `machineId`: the machine identifier
+
+- **Response**:
+  ```json
+  {
+    "machineId": "machine-id",
+    "server_url": "http://localhost:8200"
+  }
+  ```
+- **Error Responses**:
+  - `404`: Machine not found
+  - `500`: Server error
+
+<br>
+
+### Update Machine Server URL
+- **Endpoint**: `/api/machines/:machineId/server-url`
+- **Method**: PATCH
+- **Description**: Updates the server URL for a specific machine.
+- **Parameters**:
+  - `machineId`: the machine identifier
+- **Request Body**:
+  ```json
+  {
+    "server_url": "http://localhost:8200"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Server URL updated successfully",
+    "machineId": "machine-id",
+    "machineName": "Machine Name",
+    "server_url": "http://localhost:8200"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid URL format
+  - `404`: Machine not found
+  - `500`: Server error during update
+- **Notes**: 
+  - The endpoint validates URL format before updating
+  - Empty or null server URLs are allowed
+
+<br>
+
 ## Error Handling
 
 All endpoints follow a consistent error handling pattern:
 
 - **400 Bad Request**: Invalid request data or missing required fields
+- **403 Forbidden**: Operation not allowed (e.g., backup deletion in production)
+- **404 Not Found**: Resource not found
 - **409 Conflict**: Duplicate data (for upload endpoints)
 - **500 Internal Server Error**: Server-side errors with detailed error messages
-- **503 Service Unavailable**: Health check failures or database connection issues
+- **503 Service Unavailable**: Health check failures, database connection issues, or cron service unavailable
 
 Error responses include:
 - `error`: Human-readable error message

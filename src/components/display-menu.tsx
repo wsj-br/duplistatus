@@ -119,8 +119,8 @@ export function DisplayMenu() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Machine name (a-z)">Machine name (a-z)</SelectItem>
-                  <SelectItem value="Status (error>warnings>success)">Status (error&gt;warnings&gt;success)</SelectItem>
-                  <SelectItem value="Last backup received (new>old)">Last backup received (new&gt;old)</SelectItem>
+                  <SelectItem value="Status (error>warnings>success)">Status (error &gt; warning &gt; success)</SelectItem>
+                  <SelectItem value="Last backup received (new>old)">Last backup received (new &gt; old)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

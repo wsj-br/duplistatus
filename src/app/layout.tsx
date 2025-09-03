@@ -5,6 +5,7 @@ import { CustomThemeProvider } from '@/contexts/theme-context';
 import { ConfigProvider } from '@/contexts/config-context';
 import { GlobalRefreshProvider } from '@/contexts/global-refresh-context';
 import { MachineSelectionProvider } from '@/contexts/machine-selection-context';
+import { ConfigurationProvider } from '@/contexts/configuration-context';
 import { AvailableBackupsModalProvider } from '@/components/ui/available-backups-modal';
 import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
@@ -66,7 +67,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'duplistatus',
-  description: 'Monitor the status and metrics of your Duplicati backups.',
+  description: 'Monitor the execution and metrics of your Duplicatibackups.',
   icons: {
     icon: '/favicon.ico',
   },
@@ -105,19 +106,26 @@ export default function RootLayout({
           <ConfigProvider>
             <GlobalRefreshProvider>
               <MachineSelectionProvider>
-                <AvailableBackupsModalProvider>
-                  <ToastProvider>
-                    <div className="relative flex min-h-screen flex-col">
-                      <AppHeader />
-                      <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
-                      <div className="flex items-center justify-center gap-4">
-                        <AppVersion />
-                        <GithubLink />
+                <ConfigurationProvider>
+                  <AvailableBackupsModalProvider>
+                    <ToastProvider>
+                      <div className="relative flex min-h-screen flex-col">
+                        <AppHeader />
+                        <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
+                        <div className="flex flex-col items-center gap-0.5">
+                          <div className="flex items-center gap-6">
+                            <AppVersion />
+                            <GithubLink />
+                          </div>
+                          <span className="text-tiny text-muted-foreground text-center mb-4">
+                             Product names and icons belong to their respective owners and are used for identification purposes only.
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <Toaster />
-                  </ToastProvider>
-                </AvailableBackupsModalProvider>
+                      <Toaster />
+                    </ToastProvider>
+                  </AvailableBackupsModalProvider>
+                </ConfigurationProvider>
               </MachineSelectionProvider>
             </GlobalRefreshProvider>
           </ConfigProvider>
