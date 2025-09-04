@@ -4,7 +4,7 @@ import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
 import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, OverdueBackupCheckResult } from '@/lib/types';
 import { getCronConfig } from '@/lib/db-utils';
 
-const timestamp = () => new Date().toLocaleString().replace(',', '');
+const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
 
 class CronService {
   private app = express();

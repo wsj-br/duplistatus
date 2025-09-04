@@ -81,7 +81,7 @@ COPY --chown=node:node --from=builder /app/tsconfig.json ./tsconfig.json
 # copy duplistatus-server.ts custom server
 COPY --chown=node:node --from=builder /app/duplistatus-server.ts ./duplistatus-server.ts
 
-# Copy duplistatus-cron script
+# Copy duplistatus-server.sh and duplistatus-cron script
 COPY --chown=node:node --chmod=755 duplistatus-cron.sh /app/duplistatus-cron.sh
 
 # Create data directory & adjust permissions
@@ -90,7 +90,6 @@ RUN mkdir -p /app/data && chown -R node:node /app/data
 # Set the application default environment variables
 ENV PORT=9666 \
     CRON_PORT=9667 \
-    LANG=en_GB.UTF-8 \
     TZ=Europe/London
 
 # Labels

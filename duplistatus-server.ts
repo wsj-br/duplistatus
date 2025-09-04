@@ -36,7 +36,7 @@ app.prepare().then(() => {
   process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
 
   server.listen(port, hostname, () => {
-    console.log('\n\n🌐 duplistatus-server (v' + process.env.VERSION + ')');
+    console.log('\n🌐 duplistatus (v' + process.env.VERSION + ')');
     console.log(`  🛜 Ready on http://${hostname}:${port}`);
     if(dev) {
       console.log(`  🔧 dev mode`);
@@ -50,9 +50,8 @@ app.prepare().then(() => {
     console.log('      CRON_PORT=' + process.env.CRON_PORT);
     console.log('      NODE_ENV=' + process.env.NODE_ENV);
     console.log('      NEXT_TELEMETRY_DISABLED=' + process.env.NEXT_TELEMETRY_DISABLED);
-    console.log('      LANG=' + process.env.LANG);
     console.log('      TZ=' + process.env.TZ);
-    console.log('\nstarted at:', new Date().toLocaleString());
+    console.log('\nstarted at:', new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }));
   });
 });
 

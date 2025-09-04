@@ -163,7 +163,7 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
           <section>
             <p className="text-muted-foreground text-xs">Files</p>
             <p className="font-semibold text-sm">
-              {machine.backupInfo.length > 0 ? machine.backupInfo[0].fileCount : 'N/A'}
+              {machine.backupInfo.length > 0 ? machine.backupInfo[0].fileCount.toLocaleString() : 'N/A'}
             </p>
           </section>
           <section>
@@ -271,7 +271,14 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                               ? backupType.lastBackupStatus
                               : "N/A"}
                           </div>
-                          
+
+                          <div className="text-muted-foreground text-right">Duration:</div>
+                          <div className="font-semibold text-left">
+                            {backupType.lastBackupDuration !== null && backupType.lastBackupDuration !== undefined
+                              ? backupType.lastBackupDuration
+                              : "N/A"}
+                          </div>
+                                                    
                           <div className="text-muted-foreground text-right">Files:</div>
                           <div className="font-semibold text-left">
                             {backupType.fileCount !== null && backupType.fileCount !== undefined
@@ -299,11 +306,11 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                               ? formatBytes(backupType.uploadedSize)
                               : "N/A"}
                           </div>
-                          
+
                           <div className="text-muted-foreground text-right">Versions:</div>
                           <div className="font-semibold text-left">
-                            {backupType.backupCount !== null && backupType.backupCount !== undefined
-                              ? backupType.backupCount.toLocaleString()
+                            {backupType.lastBackupListCount !== null && backupType.lastBackupListCount !== undefined
+                              ? backupType.lastBackupListCount.toLocaleString()
                               : "N/A"}
                           </div>
                         </div>

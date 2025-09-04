@@ -175,31 +175,24 @@ podman-compose -f duplistatus.yml up -d
 
 <br><br>
 
-## Configuring the locale and timezone
+## Configuring the timezone
 
-The application's user interface will be displayed according to the browser's locale settings. However, for logging and notification purposes, the application will use the values defined in the `LANG` and `TZ` environment variables to format values and time zones. 
-
-<br>
-
->[!NOTE]
-> Changing the locale setting (`LANG`) from the default `en.GB.UTF-8` to a different value 
-> will only affect the formatting of numbers and dates. 
-> The language used by the application will remain English.
+The application date and time will displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones. 
 
 <br>
 
-For example, to change the locale/timezone to Brazilian Portuguese/São Paulo, add these lines to the `duplistatus.yml`:
+
+For example, to change the timezone to São Paulo, add these lines to the `duplistatus.yml` under `duplistatus:`:
 
 ```yaml
     environment:
-      - LANG="pt-BR.UTF-8"
       - TZ="America/Sao_Paulo"
 ```
 
-or pass these variables in the command line
+or pass TZ value in the command line
 
 ```bash
-  --env  LANG="pt-BR.UTF-8" --env TZ="America/Sao_Paulo" 
+  --env --env TZ="America/Sao_Paulo" 
 ``` 
 <br>
 
@@ -208,20 +201,15 @@ or pass these variables in the command line
 To obtain your Linux host's configuration, you can use execute:
 
 ```bash
-echo LANG=\"$LANG\"; echo TZ=\"$(</etc/timezone)\"
+echo TZ=\"$(</etc/timezone)\"
 ```
 
 <br>
 
-### List of Locales and Timezones
+### List of Timezones
 
+You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) |
 
-| Configuration |  List                                                                                      |
-| ----          | ------------------------------------------------------------------------------------------ |
-| TZ            |  [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) |
-| LANG          | execute `ls -c /usr/share/i18n/locales`                                                    |
-
-When selecting a locale, remember to append the `.UTF-8` encoding to ensure proper functionality.
 
 <br><br>
 
@@ -235,7 +223,6 @@ The application supports the following environment variables for configuration:
 | `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `9667`          |
 | `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production`    |
 | `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`             |
-| `LANG`                    | Language and locale setting for the application        | `en_GB.UTF-8`   |
 | `TZ`                      | Timezone for the application                           | `Europe/London` |
 
 <br><br>

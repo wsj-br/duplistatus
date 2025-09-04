@@ -74,11 +74,10 @@ export async function POST(request: NextRequest) {
 
     // Start a transaction
     const transaction = db.transaction(() => {
-      // Upsert machine information (only basic info now)
-      dbOps.upsertMachine.run({
+      // Insert machine information only if it doesn't exist (preserves existing server_url)
+      dbOps.insertMachineIfNotExists.run({
         id: data.Extra['machine-id'],
-        name: data.Extra['machine-name'],
-        server_url: '' // No URL available for upload route
+        name: data.Extra['machine-name']
       });
 
       // Map backup status

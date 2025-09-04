@@ -257,6 +257,12 @@ const dbOps = {
       server_url = @server_url
   `, 'upsertMachine'),
 
+  insertMachineIfNotExists: safePrepare(`
+    INSERT INTO machines (id, name)
+    VALUES (@id, @name)
+    ON CONFLICT(id) DO NOTHING
+  `, 'insertMachineIfNotExists'),
+
   updateMachineServerUrl: safePrepare(`
     UPDATE machines 
     SET server_url = @server_url 

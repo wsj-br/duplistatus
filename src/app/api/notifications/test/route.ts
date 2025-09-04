@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'NTFY configuration is required' }, { status: 400 });
     }
 
-    await sendNtfyNotification(ntfyConfig, 'This is a test notification from duplistatus.', 'Test Notification', 'default', 'test');
+    await sendNtfyNotification(ntfyConfig, 'This is a test notification from duplistatus.\n(test sent at ' + new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }) + ')', 'Test Notification', 'default', 'test');
     
     return NextResponse.json({ message: 'Test notification sent successfully' });
   } catch (error) {

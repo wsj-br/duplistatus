@@ -46,12 +46,13 @@ export async function POST(request: NextRequest) {
       return sampleData[key as keyof typeof sampleData] || match;
     }) || 'Test message';
 
+ 
     // Send the test notification
     await sendNtfyNotification(
       ntfyConfig.url,
       ntfyConfig.topic,
       processedTitle,
-      processedMessage,
+      processedMessage + '\n(test sent at ' + new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short'  }) + ')',
       template.priority || 'default',
       template.tags || '',
       ntfyConfig.accessToken
