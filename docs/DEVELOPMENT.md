@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.13.dev-blue)
+![](https://img.shields.io/badge/version-0.7.14.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -90,6 +90,41 @@ For the default tcp port (8666)
 pnpm dev
 ```
 
+## Available Scripts
+
+The project includes several npm scripts for different development tasks:
+
+### Development Scripts
+- `pnpm dev` - Start development server on port 8666
+- `pnpm build` - Build the application for production
+- `pnpm lint` - Run ESLint to check code quality
+- `pnpm typecheck` - Run TypeScript type checking
+
+### Production Scripts
+- `pnpm start` - Start production server (port 9666)
+- `pnpm start-local` - Start production server locally (port 8666)
+- `pnpm build-local` - Build and prepare for local production
+
+### Docker Scripts
+- `pnpm docker-up` - Start Docker Compose stack
+- `pnpm docker-down` - Stop Docker Compose stack
+- `pnpm docker-clean` - Clean Docker environment and cache
+
+### Cron Service Scripts
+- `pnpm cron:start` - Start cron service in production mode
+- `pnpm cron:dev` - Start cron service in development mode with file watching
+- `pnpm cron:start-local` - Start cron service locally for testing
+
+### Testing Scripts
+- `pnpm generate-test-data` - Generate test backup data
+- `pnpm show-overdue-notifications` - Show overdue notification contents
+- `pnpm run-overdue-check` - Run overdue check at specific date/time
+
+### Release Scripts
+- `pnpm release:patch` - Create a patch release (0.0.x)
+- `pnpm release:minor` - Create a minor release (0.x.0)
+- `pnpm release:major` - Create a major release (x.0.0)
+
 
 <br>
 
@@ -129,8 +164,41 @@ pnpm start-local
 ### Start a docker stack (docker compose)
 
 ```bash
+pnpm docker-up
+```
+
+Or manually:
+```bash
 docker compose up --build -d
 ```
+
+### Stop a docker stack (docker compose)
+
+```bash
+pnpm docker-down
+```
+
+Or manually:
+```bash
+docker compose down
+```
+
+### Clean docker environment
+
+```bash
+pnpm docker-clean
+```
+
+Or manually:
+```bash
+./scripts/clean-docker.sh
+```
+
+This script performs a complete Docker cleanup, which is useful for:
+- Freeing up disk space
+- Removing old/unused Docker artifacts
+- Cleaning up after development or testing sessions
+- Maintaining a clean Docker environment
 
 ### Create a devel image (to test locally or with podman)
 
@@ -192,6 +260,9 @@ Use the option `--upload` to send the generated data to the `/api/upload`
 pnpm run generate-test-data --upload
 ```
 
+>[!CAUTION]
+> This script delete all the previous data in the database and replace it with the test data.
+> Backup your database before running this script.
 
 
 
@@ -208,10 +279,17 @@ pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 
 ### Test cron service port connectivity
 
+The `test-cron-port` script is referenced in `package.json` but the actual script file is not present in the repository. To test cron service connectivity, you can:
+
+1. Check if the cron service is running:
 ```bash
-pnpm test-cron-port
+curl http://localhost:8667/health
 ```
-This script tests the connectivity to the cron service port and verifies that the service is responding correctly.
+
+2. Or use the cron service API endpoints directly through the main application:
+```bash
+curl http://localhost:8666/api/cron/health
+```
 
 
 <br><br>
@@ -274,6 +352,30 @@ ncu --upgrade
 pnpm update
 ```
 
+### Update version information
+
+```bash
+./scripts/update-version.sh
+```
+
+This script automatically updates the `.env` file with the current version from `package.json`. It:
+- Extracts the version from `package.json`
+- Creates or updates the `.env` file with the `VERSION` variable
+- Only updates if the version has changed
+- Provides feedback on the operation
+
+### Update documentation
+
+```bash
+./scripts/update-docs.sh
+```
+
+This script updates all documentation files with the current version and regenerates table of contents:
+- Updates version badges in all `.md` files to match `package.json`
+- Runs `doctoc` to regenerate table of contents
+- Provides feedback on updated files
+- Requires `doctoc` to be installed globally
+
 <br><br>
 
 ## Documentation tools
@@ -296,18 +398,28 @@ markdown-link-check *.md docs/*.md
 
 Copy and execute the scripts located at "scripts/podman_testing" in the podman test server
 
+### Initial Setup and Management
 1. `initialize.duplistatus`: to create the pod
-2. `copy.docker.duplistatus`: to copy the docker image create in the devel server to the podman test server.
-   - create the image using the command `docker build . -t wsj-br/duplistatus:devel`
+2. `copy.docker.duplistatus`: to copy the docker image created in the devel server to the podman test server.
+   - Create the image using the command `docker build . -t wsj-br/duplistatus:devel`
 3. `start.duplistatus`: to start the container
-4. `check.duplistatus`: to check the logs, connectivity and application health.
-5. `stop.duplistatus`: to stop the pod and remove the container
+4. `stop.duplistatus`: to stop the pod and remove the container
 
-To debug use these commands:
+### Monitoring and Health Checks
+5. `check.duplistatus`: to check the logs, connectivity and application health.
 
+### Debugging Commands
 - `logs.duplistatus`: to show the logs of the pod
 - `exec.shell.duplistatus`: open a shell in the container
-- `restart.duplistaus`: stop the pod, remove the container, copy the image, create the container and start the pod.
+- `restart.duplistatus`: stop the pod, remove the container, copy the image, create the container and start the pod.
+
+### Usage Workflow
+1. First run `initialize.duplistatus` to set up the pod
+2. Use `copy.docker.duplistatus` to transfer the Docker image
+3. Start the container with `start.duplistatus`
+4. Monitor with `check.duplistatus` and `logs.duplistatus`
+5. Stop with `stop.duplistatus` when done
+6. Use `restart.duplistatus` for a complete restart cycle
 
 
 <br><br>
@@ -531,7 +643,7 @@ To manually trigger the Docker image build workflow:
 ### Testing
 - Use the provided test scripts for generating data and testing functionality
 - Test notification system with the built-in test endpoints (`/api/notifications/test`)
-- Verify cron service functionality with the test scripts (`pnpm test-cron-port`)
+- Verify cron service functionality by checking the health endpoints (`curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`)
 - Test the docker and podman images using the provided scripts
 - Use TypeScript strict mode for compile-time error checking
 - Test database operations with the provided utilities

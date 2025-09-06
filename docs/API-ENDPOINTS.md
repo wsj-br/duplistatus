@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.13.dev-blue)
+![](https://img.shields.io/badge/version-0.7.14.dev-blue)
 
 <br>
 
@@ -801,8 +801,7 @@ All API responses are returned in JSON format with consistent error handling pat
       "enabled": true,
       "url": "https://ntfy.sh",
       "topic": "duplistatus-notifications",
-      "username": "",
-      "password": ""
+      "accessToken": "optional-access-token"
     }
   }
   ```
@@ -814,8 +813,7 @@ All API responses are returned in JSON format with consistent error handling pat
       "enabled": true,
       "url": "https://ntfy.sh",
       "topic": "duplistatus-notifications",
-      "username": "",
-      "password": ""
+      "accessToken": "optional-access-token"
     }
   }
   ```
@@ -826,6 +824,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Updates only the NTFY configuration
   - Generates default topic if none provided
   - Preserves existing configuration settings
+  - Uses `accessToken` field instead of separate username/password fields
 
 ### Update Backup Settings
 - **Endpoint**: `/api/configuration/backup-settings`
@@ -892,11 +891,11 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Update Overdue Tolerance
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST
-- **Description**: Updates the overdue tolerance setting (in hours).
+- **Description**: Updates the overdue tolerance setting.
 - **Request Body**:
   ```json
   {
-    "overdue_tolerance": 2
+    "overdue_tolerance": "1h"
   }
   ```
 - **Response**:
@@ -909,7 +908,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - `400`: Overdue tolerance is required
   - `500`: Server error updating overdue tolerance
 - **Notes**:
-  - Updates the overdue tolerance setting in hours
+  - Updates the overdue tolerance setting (accepts string format like "1h", "2h", etc.)
   - Affects when backups are considered overdue
   - Used by the overdue backup checker
 
@@ -967,6 +966,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Sends a test notification to verify NTFY configuration
   - Includes timestamp in the test message
   - Validates NTFY URL and topic before sending
+  - Uses `accessToken` field for authentication
 
 ### Test Template
 - **Endpoint**: `/api/notifications/test-template`
@@ -1252,6 +1252,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Connection timeouts are configurable via environment variables
   - Logs collected data in development mode for debugging
   - Ensures backup settings are complete for all machines and backups
+  - Uses default port 8200 and protocol "http" if not specified
 
 <br>
 
@@ -1374,6 +1375,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Returns success if the server responds with a 401 status (expected for login endpoint without credentials)
   - Tests connection to the Duplicati server's login endpoint
   - Supports both HTTP and HTTPS protocols
+  - Uses timeout configuration for connection testing
 
 <br>
 
