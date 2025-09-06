@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";
@@ -30,6 +31,27 @@ interface MachineDetailsContentProps {
 export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck, lastRefreshTime: _lastRefreshTime }: MachineDetailsContentProps) { // eslint-disable-line @typescript-eslint/no-unused-vars
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   const { refreshDetail } = useGlobalRefresh();
+  
+  // Track screen width for responsive height behavior
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+  
+  useEffect(() => {
+    const updateScreenWidth = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    // Set initial width
+    updateScreenWidth();
+
+    // Add event listener
+    window.addEventListener('resize', updateScreenWidth);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateScreenWidth);
+  }, []);
+  
+  // Determine if we should use content-based height (when screen width < 1010px)
+  const useContentBasedHeight = screenWidth < 1010;
   
   // Find the selected backup if one is selected
   const selectedBackup = selectedBackupName === 'all' 
@@ -102,7 +124,6 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
   };
 
   // this page is always show in the table view
-  const viewMode = 'table';
 
   return (
     <div className="flex flex-col gap-8">
@@ -161,9 +182,9 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
       </Card>
 
       {/* Machine-specific metrics chart */}
-      <div className={`${viewMode === 'table' ? 'min-h-[550px]' : 'flex-1 min-h-0 overflow-hidden'}`}>
-        <Card className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} shadow-lg border-2 border-border`}>
-          <CardContent className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} p-0`}>
+      <div className={`${useContentBasedHeight ? 'min-h-fit' : 'flex-1 min-h-0 overflow-hidden'}`}>
+        <Card className={`${useContentBasedHeight ? 'min-h-fit' : 'h-full'} shadow-lg border-2 border-border`}>
+          <CardContent className={`${useContentBasedHeight ? 'min-h-fit' : 'h-full'} p-0`}>
             <MetricsChartsPanel
               machineId={machine.id}
               backupName={selectedBackupName === 'all' ? undefined : selectedBackupName}

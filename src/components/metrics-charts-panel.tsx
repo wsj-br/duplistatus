@@ -288,7 +288,7 @@ function SmallMetricChart({
   })();
 
   return (
-    <Card className="flex flex-col h-full min-h-0">
+    <Card className="flex flex-col h-full min-h-[150px] min-w-[200px] sm:min-w-[300px] overflow-hidden">
       <CardHeader className="pb-0 pt-1 px-2 flex-shrink-0">
         <CardTitle className="text-xs font-medium">{label}</CardTitle>
       </CardHeader>
@@ -375,6 +375,27 @@ function MetricsChartsPanelCore({
   const lastGlobalRefreshTime = useRef<Date | null>(null);
   const lastChartDataRef = useRef<string | null>(null);
   const isLoadingRef = useRef<boolean>(false);
+  
+  // Track screen width for responsive height behavior
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+  
+  useEffect(() => {
+    const updateScreenWidth = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    // Set initial width
+    updateScreenWidth();
+
+    // Add event listener
+    window.addEventListener('resize', updateScreenWidth);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateScreenWidth);
+  }, []);
+  
+  // Determine if we should use content-based height (when screen width < 1010px)
+  const useContentBasedHeight = screenWidth < 1010;
   
   // Calculate time range dates
   const { startDate, endDate } = (() => {
@@ -599,7 +620,7 @@ function MetricsChartsPanelCore({
   })();
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="flex flex-col h-full min-h-[150px] min-w-[200px] sm:min-w-[300px] overflow-hidden">
       {/* Selection info header */}
       {selectionInfo && (
         <div className="mb-1 flex-shrink-0">
@@ -609,7 +630,7 @@ function MetricsChartsPanelCore({
 
       {/* Loading State */}
       {isLoading && (
-        <div className="flex-1 flex items-center justify-center">
+        <div className={`${useContentBasedHeight ? 'min-h-[200px]' : 'flex-1'} flex items-center justify-center`}>
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
             <p className="text-xs">Loading chart data...</p>
@@ -619,7 +640,7 @@ function MetricsChartsPanelCore({
 
       {/* Error State */}
       {!isLoading && error && (
-        <div className="flex-1 flex items-center justify-center">
+        <div className={`${useContentBasedHeight ? 'min-h-[200px]' : 'flex-1'} flex items-center justify-center`}>
           <div className="text-center text-destructive">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p className="text-xs">Error loading chart data</p>
@@ -627,9 +648,9 @@ function MetricsChartsPanelCore({
         </div>
       )}
 
-      {/* Charts - Responsive grid layout: fixed 3x2 in available space */}
+      {/* Charts - Responsive grid layout: 1 column mobile/small, 3 columns medium/large */}
       {!isLoading && !error && chartData.length > 0 && (
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 auto-rows-fr items-stretch gap-3 pb-2 min-h-0">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr items-stretch gap-2 sm:gap-3 pb-2 ${useContentBasedHeight ? 'min-h-fit' : 'flex-1 min-h-0'}`}>
           {chartMetrics.map((metric) => (
             <SmallMetricChart
               key={metric.key}
@@ -644,7 +665,7 @@ function MetricsChartsPanelCore({
 
       {/* Empty State */}
       {!isLoading && !error && chartData.length === 0 && (
-        <div className="flex-1 flex items-center justify-center">
+        <div className={`${useContentBasedHeight ? 'min-h-[200px]' : 'flex-1'} flex items-center justify-center`}>
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p className="text-xs">No data available</p>
@@ -690,7 +711,7 @@ export const MetricsChartsPanel = ({
 }: MetricsChartsPanelProps) => {
   
   return (
-    <div className="flex flex-col p-3 h-full min-h-0">
+    <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden">
       {/* Header with independent refresh time display */}
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">

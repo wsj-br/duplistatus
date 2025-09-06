@@ -25,6 +25,8 @@ interface GlobalRefreshState {
     overallSummary: OverallSummary;
     allMachinesChartData: ChartDataPoint[];
   } | null;
+  // Persist scroll position across data refreshes
+  visibleCardIndex: number;
 }
 
 interface GlobalRefreshContextProps {
@@ -33,6 +35,7 @@ interface GlobalRefreshContextProps {
   refreshDetail: (machineId: string) => Promise<void>;
   toggleAutoRefresh: () => void;
   getCurrentPageType: () => PageType;
+  setVisibleCardIndex: (index: number) => void;
 }
 
 const GlobalRefreshContext = createContext<GlobalRefreshContextProps | undefined>(undefined);
@@ -54,6 +57,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     },
     refreshInProgress: false,
     dashboardData: null,
+    visibleCardIndex: 0,
   });
 
   // Track previous pathname to detect navigation back to dashboard
@@ -231,6 +235,13 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     }));
   };
 
+  const setVisibleCardIndex = useCallback((index: number) => {
+    setState(prev => ({
+      ...prev,
+      visibleCardIndex: index,
+    }));
+  }, []);
+
   return (
     <GlobalRefreshContext.Provider
       value={{
@@ -239,6 +250,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshDetail,
         toggleAutoRefresh,
         getCurrentPageType,
+        setVisibleCardIndex,
       }}
     >
       {children}

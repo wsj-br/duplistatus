@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
 import type { MachineSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MachineCards } from "./machine-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
 import { useMachineSelection } from "@/contexts/machine-selection-context";
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 interface DashboardLayoutProps {
   data: DashboardData;
@@ -32,18 +33,35 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
   const { state: machineSelectionState, setSelectedMachineId, setViewMode, setMachines } = useMachineSelection();
   const { viewMode, isInitialized } = machineSelectionState;
+  const { state: globalRefreshState, setVisibleCardIndex } = useGlobalRefresh();
+  
+  // Track screen width for responsive height behavior
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+  
+  useEffect(() => {
+    const updateScreenWidth = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    // Set initial width
+    updateScreenWidth();
+
+    // Add event listener
+    window.addEventListener('resize', updateScreenWidth);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateScreenWidth);
+  }, []);
+  
+  // Determine if we should use content-based height (when screen width < 1010px)
+  const useContentBasedHeight = screenWidth < 1010;
   
   // Use refs to track initialization and prevent infinite loops
   const previousSelectedMachineId = useRef<string | null>(null);
   const previousMachinesData = useRef<string>('');
   
-  // Preserve visible card index across component remounts
-  const [visibleCardIndex, setVisibleCardIndex] = useState<number>(0);
-  
-  // Handle visible card index changes
-  const handleVisibleCardIndexChange = (index: number) => {
-    setVisibleCardIndex(index);
-  };
+  // Get visible card index from global context instead of local state
+  const visibleCardIndex = globalRefreshState.visibleCardIndex;
 
   // Handle view mode changes
   const handleViewModeChange = (newViewMode: 'cards' | 'table') => {
@@ -123,7 +141,9 @@ export function DashboardLayout({
     <div className={`flex flex-col px-2 pb-4 
       ${viewMode === 'table' 
         ? 'min-h-screen' // Allow content to extend beyond viewport for table view
-        : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
+        : useContentBasedHeight 
+          ? 'min-h-screen' // Allow content-based height when screen is narrow
+          : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
       }`}>
       {/* Top Row: Summary Cards - auto height */}
       <div>
@@ -143,7 +163,7 @@ export function DashboardLayout({
                 selectedMachineId={selectedMachineId}
                 onSelect={onMachineSelect}
                 visibleCardIndex={visibleCardIndex}
-                onVisibleCardIndexChange={handleVisibleCardIndexChange}
+                onVisibleCardIndexChange={setVisibleCardIndex}
               />
             ) : (
               <DashboardTable machines={data.machinesSummary} />
@@ -153,9 +173,24 @@ export function DashboardLayout({
       </div>
       
       {/* Main Content: Metrics Panel - responsive height to fill remaining space */}
-      <div className={`${viewMode === 'table' ? 'min-h-[550px]' : 'flex-1 min-h-0 overflow-hidden'}`}>
-        <Card className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} shadow-lg border-2 border-border`}>
-          <CardContent className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} p-0`}>
+      <div className={`${viewMode === 'table' 
+        ? 'min-h-[550px]' 
+        : useContentBasedHeight 
+          ? 'min-h-fit' 
+          : 'flex-1 min-h-0 overflow-hidden'
+      }`}>
+        <Card className={`${viewMode === 'table' 
+          ? 'min-h-[550px] h-[550px]' 
+          : useContentBasedHeight 
+            ? 'min-h-fit' 
+            : 'h-full'
+        } shadow-lg border-2 border-border`}>
+          <CardContent className={`${viewMode === 'table' 
+            ? 'min-h-[550px] h-[550px]' 
+            : useContentBasedHeight 
+              ? 'min-h-fit' 
+              : 'h-full'
+          } p-0`}>
             <MetricsChartsPanel
               machineId={selectedMachineId || undefined}
               chartData={selectedMachineId ? undefined : data.allMachinesChartData}

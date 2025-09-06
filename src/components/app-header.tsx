@@ -20,7 +20,7 @@ export function AppHeader() {
 
   return (
     <div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="w-[95%] mx-auto flex h-16 items-center py-4">
+      <div className="w-[95%] mx-auto flex flex-wrap items-center py-4 min-h-16">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image
@@ -45,7 +45,7 @@ export function AppHeader() {
           </Link>
         )}
         
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex flex-1 items-center justify-end flex-wrap gap-2 self-start">
           <GlobalRefreshControls />
           <NtfyMessagesButton />
           <OpenServerConfigButton />

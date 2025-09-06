@@ -101,6 +101,13 @@ body {
   .machine-cards-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+    /* Improve touch scrolling behavior */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    /* Improve smooth scrolling performance */
+    will-change: scroll-position;
+    transform: translateZ(0); /* Force hardware acceleration */
   }
 
   /* Modern thin scrollbars */

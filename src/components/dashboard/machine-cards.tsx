@@ -13,12 +13,10 @@ import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
 
-
-interface MachineCardProps {
-  machine: MachineSummary;
-  isSelected: boolean;
-  onSelect: (machineId: string) => void;
-}
+const MIN_CARD_WIDTH = 230;         // the minimum width of a card
+const MAX_CARD_WIDTH = 350;         // the maximum width of a card
+const CARD_GAP = 12;                // the gap between cards
+const CARD_WIDTH_SHOW_PARTIAL = 50; // the width of the partial card
 
 // Helper function to get overall machine status
 function getMachineStatus(machine: MachineSummary): BackupStatus {
@@ -71,7 +69,7 @@ function getStatusColor(status: BackupStatus): string {
 }
 
 // Custom status badge without text, just icon and color
-function CompactStatusBadge({ status, machineId, lastBackupId, haveOverdueBackups }: { status: BackupStatus; machineId: string; lastBackupId: string | null; haveOverdueBackups: boolean }) {
+function CompactStatusBadge({ status, machineId, haveOverdueBackups }: { status: BackupStatus; machineId: string; haveOverdueBackups: boolean }) {
   const router = useRouter();
   
   const getStatusIcon = (status: BackupStatus) => {
@@ -134,6 +132,12 @@ function BackupStatusBar({ statusHistory }: { statusHistory: BackupStatus[] }) {
   );
 }
 
+interface MachineCardProps {
+  machine: MachineSummary;
+  isSelected: boolean;
+  onSelect: (machineId: string) => void;
+}
+
 const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
   const machineStatus = getMachineStatus(machine);
   const router = useRouter();
@@ -169,7 +173,6 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
             <CompactStatusBadge 
               status={machineStatus} 
               machineId={machine.id}
-              lastBackupId={machine.lastBackupId || ''}
               haveOverdueBackups={machine.haveOverdueBackups}
             />
           </div>
@@ -403,8 +406,20 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
   const previousMachinesRef = useRef<string>('');
   const previousSortOrderRef = useRef<string>('');
   const isSortOrderChanging = useRef(false); // New ref to track sort order change
+  const [, forceUpdate] = useState({}); // Force re-render when window resizes
+  const isScrollingRef = useRef(false); // Track if user is actively scrolling
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Timeout for scroll end detection
+  const isButtonScrollingRef = useRef(false); // Track if button scroll is in progress
 
   const { dashboardCardsSortOrder } = useConfig();
+
+  // Move getContainerPadding function here - inside the component
+  const getContainerPadding = useCallback((container: HTMLElement) => {
+    const computedStyle = window.getComputedStyle(container);
+    const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+    const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+    return paddingLeft + paddingRight;
+  }, []);
 
   // Remove duplicates by machine ID, sort based on configuration, and memoize to prevent unnecessary re-renders
   const uniqueMachines = useMemo(() => {
@@ -443,56 +458,113 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     });
   }, [machines, dashboardCardsSortOrder]);
 
-  // Calculate card width to show exactly 6 cards (or fewer if less machines available)
-  // Total available width: 100% - 16px (px-2) - 32px (p-4) = 100% - 48px
-  // Gap between cards: 12px (gap-3 = 0.75rem = 12px)
-  // Cards to show: min(uniqueMachines.length, 6)
-  // Total gaps needed: cardsToShow - 1
-  // Formula: (available width - total gaps) / cards to show
-  const cardsToShow = Math.min(uniqueMachines.length, 6);
-  const cardWidth = cardsToShow < 5 ? '370px' : `calc((100% - 48px - ${12 * (cardsToShow - 1)}px) / ${cardsToShow})`; 
+  // Calculate how many cards can fit with min/max width constraints
+  const calculateCardsToShow = useCallback(() => {
+    if (!scrollContainerRef.current) return Math.min(uniqueMachines.length, 5); // fallback
+    
+    const containerWidth = scrollContainerRef.current.clientWidth;
+    const containerPadding = getContainerPadding(scrollContainerRef.current);
+    const availableWidth = containerWidth - containerPadding;
+    
+    // Calculate max cards that can fit with minimum width
+    const maxCardsWithMinWidth = Math.floor((availableWidth + CARD_GAP - CARD_WIDTH_SHOW_PARTIAL) / (MIN_CARD_WIDTH + CARD_GAP));
+    
+    // Calculate max cards that can fit with maximum width  
+    const maxCardsWithMaxWidth = Math.floor((availableWidth + CARD_GAP - CARD_WIDTH_SHOW_PARTIAL) / (MAX_CARD_WIDTH + CARD_GAP));
+    
+    // Use the smaller of the two, but ensure we don't exceed available machines
+    const calculatedCardsToShow = Math.min(
+      uniqueMachines.length,
+      Math.max(maxCardsWithMinWidth, maxCardsWithMaxWidth)
+    );
+
+    return calculatedCardsToShow;
+  }, [uniqueMachines.length, getContainerPadding]);
   
+  const calculatedCardsToShow = calculateCardsToShow();
+  
+  // Calculate the optimal card width respecting MIN_CARD_WIDTH and MAX_CARD_WIDTH limits
+  const calculateCardWidth = useCallback(() => {
+    if (!scrollContainerRef.current || calculatedCardsToShow === 0) return MIN_CARD_WIDTH;
+    
+    const containerWidth = scrollContainerRef.current.clientWidth;
+    const containerPadding = getContainerPadding(scrollContainerRef.current);
+    const availableWidth = containerWidth - containerPadding - CARD_WIDTH_SHOW_PARTIAL;
+    const totalGaps = CARD_GAP * (calculatedCardsToShow - 1);
+    const idealCardWidth = (availableWidth - totalGaps) / calculatedCardsToShow;
+    
+    // Clamp the width between MIN_CARD_WIDTH and MAX_CARD_WIDTH
+    const clampedCardWidth = Math.max(MIN_CARD_WIDTH, Math.min(MAX_CARD_WIDTH, idealCardWidth));
+    
+    return Math.floor(clampedCardWidth);
+  }, [calculatedCardsToShow, getContainerPadding]);
+  
+  const cardWidth = calculateCardWidth();
+
   // Calculate visible card index from scroll position
   const getVisibleCardIndex = useCallback(() => {
     if (!scrollContainerRef.current) return 0;
     
     const container = scrollContainerRef.current;
-    const cardElement = container.querySelector('[data-card]') as HTMLElement;
-    if (!cardElement) return 0;
+    const cardWidthWithGap = cardWidth + CARD_GAP;
     
-    const cardWidth = cardElement.offsetWidth;
-    const gap = 12; // gap-3 = 12px
-    const cardWidthWithGap = cardWidth + gap;
+    // Use Math.floor instead of Math.round to prevent oscillation
+    // This ensures we always snap to the card that's most visible
+    const rawIndex = container.scrollLeft / cardWidthWithGap;
     
-    return Math.round(container.scrollLeft / cardWidthWithGap);
-  }, []);
+    // Add a threshold to prevent oscillation when scroll position is very close to card boundaries
+    const threshold = 0.3; // 30% of card width
+    const fractionalPart = rawIndex - Math.floor(rawIndex);
+    
+    if (fractionalPart < threshold) {
+      return Math.floor(rawIndex);
+    } else if (fractionalPart > (1 - threshold)) {
+      return Math.ceil(rawIndex);
+    } else {
+      return Math.floor(rawIndex);
+    }
+  }, [cardWidth]);
 
   // Scroll to specific card index
   const scrollToCardIndex = useCallback((index: number, smooth = true) => {
     if (!scrollContainerRef.current) return;
     
     const container = scrollContainerRef.current;
-    const cardElement = container.querySelector('[data-card]') as HTMLElement;
-    if (!cardElement) return;
-    
-    const cardWidth = cardElement.offsetWidth;
-    const gap = 12; // gap-3 = 12px
-    const cardWidthWithGap = cardWidth + gap;
+    const cardWidthWithGap = cardWidth + CARD_GAP;
     
     const targetScroll = index * cardWidthWithGap;
     const maxScroll = container.scrollWidth - container.clientWidth;
     const clampedScroll = Math.max(0, Math.min(targetScroll, maxScroll));
     
-    container.scrollTo({
-      left: clampedScroll,
-      behavior: smooth ? 'smooth' : 'auto'
-    });
-  }, []);
+    // Use requestAnimationFrame for smoother animation on button clicks
+    if (smooth) {
+      requestAnimationFrame(() => {
+        container.scrollTo({
+          left: clampedScroll,
+          behavior: 'smooth'
+        });
+      });
+    } else {
+      container.scrollTo({
+        left: clampedScroll,
+        behavior: 'auto'
+      });
+    }
+  }, [cardWidth]);
 
   // Scroll left or right by one card
   const scroll = useCallback((direction: 'left' | 'right') => {
-    const currentIndex = getVisibleCardIndex();
-    const maxIndex = Math.max(0, uniqueMachines.length - 6); // -6 because we show 6 cards at once
+    if (!scrollContainerRef.current || isButtonScrollingRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    const cardWidthWithGap = cardWidth + CARD_GAP;
+    
+    // Get current scroll position directly instead of using getVisibleCardIndex
+    // to avoid issues during smooth scrolling animation
+    const currentScrollLeft = container.scrollLeft;
+    const currentIndex = Math.floor(currentScrollLeft / cardWidthWithGap);
+    
+    const maxIndex = Math.max(0, uniqueMachines.length - calculatedCardsToShow);
     
     let newIndex;
     if (direction === 'left') {
@@ -501,8 +573,17 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
       newIndex = Math.min(maxIndex, currentIndex + 1);
     }
     
-    scrollToCardIndex(newIndex);
-  }, [getVisibleCardIndex, scrollToCardIndex, uniqueMachines.length]);
+    // Only scroll if we're actually moving to a different index
+    if (newIndex !== currentIndex) {
+      isButtonScrollingRef.current = true;
+      scrollToCardIndex(newIndex);
+      
+      // Reset button scrolling flag after animation completes
+      setTimeout(() => {
+        isButtonScrollingRef.current = false;
+      }, 500); // Match the smooth scroll duration
+    }
+  }, [cardWidth, scrollToCardIndex, uniqueMachines.length, calculatedCardsToShow]);
 
   // Update scroll buttons and track visible card index
   useEffect(() => {
@@ -510,29 +591,75 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     if (container) {
       const updateScrollButtons = () => {
         const currentIndex = getVisibleCardIndex();
-        const maxIndex = Math.max(0, uniqueMachines.length - 6);
+        const maxIndex = Math.max(0, uniqueMachines.length - calculatedCardsToShow);
         setCanScrollLeft(currentIndex > 0);
         setCanScrollRight(currentIndex < maxIndex);
       };
 
       const handleScroll = () => {
+        // Mark that user is actively scrolling
+        isScrollingRef.current = true;
+        
+        // Clear any existing timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        
         // Update scroll buttons based on card index
         updateScrollButtons();
         
-        // Save visible card index if it's from actual user scrolling (not initial mount)
-        if (!isInitialMount.current && onVisibleCardIndexChange) {
-          const currentIndex = getVisibleCardIndex();
-          onVisibleCardIndexChange(currentIndex);
+        // Set timeout to detect when scrolling ends
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+          
+          // Only update visible card index when scrolling has stopped
+          // This prevents oscillation during touch scrolling
+          if (!isInitialMount.current && onVisibleCardIndexChange) {
+            const currentIndex = getVisibleCardIndex();
+            onVisibleCardIndexChange(currentIndex);
+          }
+        }, 150); // 150ms delay to detect scroll end
+      };
+      
+      // Add touch-specific event listeners for better touch handling
+      const handleTouchStart = () => {
+        isScrollingRef.current = true;
+      };
+      
+      const handleTouchEnd = () => {
+        // Clear timeout and set a shorter one for touch end
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
         }
+        
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+          
+          // Update visible card index after touch scrolling ends
+          if (!isInitialMount.current && onVisibleCardIndexChange) {
+            const currentIndex = getVisibleCardIndex();
+            onVisibleCardIndexChange(currentIndex);
+          }
+        }, 100); // Shorter delay for touch end
       };
       
       container.addEventListener('scroll', handleScroll);
+      container.addEventListener('touchstart', handleTouchStart);
+      container.addEventListener('touchend', handleTouchEnd);
+      
       // Initial check for buttons only (don't save index)
       updateScrollButtons();
       
-      return () => container.removeEventListener('scroll', handleScroll);
+      return () => {
+        container.removeEventListener('scroll', handleScroll);
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchend', handleTouchEnd);
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+      };
     }
-  }, [getVisibleCardIndex, onVisibleCardIndexChange, uniqueMachines.length]);
+  }, [getVisibleCardIndex, onVisibleCardIndexChange, uniqueMachines.length, calculatedCardsToShow]);
 
   // Update scroll buttons when machines change and restore card position
   useEffect(() => {
@@ -543,7 +670,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     const timeoutId = setTimeout(() => {
       // Update scroll buttons based on card index
       const currentIndex = getVisibleCardIndex();
-      const maxIndex = Math.max(0, uniqueMachines.length - 6);
+      const maxIndex = Math.max(0, uniqueMachines.length - calculatedCardsToShow);
       setCanScrollLeft(currentIndex > 0);
       setCanScrollRight(currentIndex < maxIndex);
       
@@ -561,7 +688,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     previousMachinesRef.current = currentMachinesHash;
     
     return () => clearTimeout(timeoutId);
-  }, [uniqueMachines, visibleCardIndex, scrollToCardIndex, getVisibleCardIndex]);
+  }, [uniqueMachines, visibleCardIndex, scrollToCardIndex, getVisibleCardIndex, calculatedCardsToShow]);
 
   // Restore card position on mount and mark initial mount as complete
   useEffect(() => {
@@ -585,9 +712,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
         previousSortOrderRef.current !== '' && 
         previousSortOrderRef.current !== dashboardCardsSortOrder &&
         scrollContainerRef.current) {
-      
-      console.log('Sort order changed from', previousSortOrderRef.current, 'to', dashboardCardsSortOrder, '- resetting scroll');
-      
+   
       // Set flag to prevent position restoration from interfering
       isSortOrderChanging.current = true;
       
@@ -602,7 +727,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
           
           // Update scroll button states
           setCanScrollLeft(false);
-          setCanScrollRight(uniqueMachines.length > 6);
+          setCanScrollRight(uniqueMachines.length > calculatedCardsToShow);
           
           // Reset visible card index if callback is provided
           if (onVisibleCardIndexChange) {
@@ -621,7 +746,30 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     
     // Update the previous sort order ref
     previousSortOrderRef.current = dashboardCardsSortOrder;
-  }, [dashboardCardsSortOrder, uniqueMachines.length, onVisibleCardIndexChange]);
+  }, [dashboardCardsSortOrder, uniqueMachines.length, onVisibleCardIndexChange, calculatedCardsToShow]);
+
+  // Handle window resize to recalculate cards
+  useEffect(() => {
+    let resizeTimeout: NodeJS.Timeout;
+    
+    const handleResize = () => {
+      // Debounce resize events to prevent excessive recalculations
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        // Force re-render to trigger calculateCardsToShow recalculation
+        forceUpdate({});
+      }, 150); // 150ms debounce delay
+    };
+
+    // Add resize event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, []);
 
   // Show message if no machines
   if (uniqueMachines.length === 0) {
@@ -679,7 +827,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
           className="flex gap-3 overflow-x-auto scroll-smooth items-stretch machine-cards-scrollbar"
         >
           {uniqueMachines.map((machine) => (
-            <div key={machine.id} className="flex-shrink-0" style={{ width: cardWidth, minHeight: '170px' }} data-card>
+            <div key={machine.id} className="flex-shrink-0" style={{ width: `${cardWidth}px`, minHeight: '170px' }} data-card>
               <MachineCard
                 machine={machine}
                 isSelected={selectedMachineId === machine.id}

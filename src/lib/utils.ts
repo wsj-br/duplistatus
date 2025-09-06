@@ -129,13 +129,15 @@ export function formatTimeAgo(dateString: string, currentTime?: Date): string {
 }
 
 
-export function formatShortTimeAgo(dateString: string, currentTime?: Date): string {
+export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
     if (!isValid(date)) {
       return ""; 
     }
+
+    const plural = addPlural === undefined ? '' : addPlural ? 's' : '';
 
     // Use a fixed reference time (server-side) to avoid hydration mismatches
     const now = currentTime || new Date();
@@ -151,27 +153,27 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date): stri
 
     if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes} min${minutes === 1 ? '' : 's'}`;
+      return `${minutes} m${minutes === 1 ? '' : plural}`;
     }
 
     if (diffInSeconds < 86400) {
       const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours} hour${hours === 1 ? '' : 's'}`;
+      return `${hours} h${hours === 1 ? '' : plural}`;
     }
 
     if (diffInSeconds < 604800) {
       const days = Math.floor(diffInSeconds / 86400);
-      return `${days} day${days === 1 ? '' : 's'}`;
+      return `${days} d${days === 1 ? '' : plural}`;
     }
 
     if (diffInSeconds < 2592000) {
       const weeks = Math.floor(diffInSeconds / 604800);
-      return `${weeks} week${weeks === 1 ? '' : 's'}`;
+      return `${weeks} w${weeks === 1 ? '' : plural}`;
     }
 
     if (diffInSeconds < 31536000) {
       const months = Math.floor(diffInSeconds / 2592000);
-      return `${months} month${months === 1 ? '' : 's'}`;
+      return `${months} mo${months === 1 ? '' : plural}`;
     }
 
     // Calculate years and remaining months for periods longer than 1 year
@@ -182,7 +184,7 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date): stri
     if (months === 0) {
       return `${years} y`;
     } else {
-      return `${years} y ${months} month${months === 1 ? '' : 's'}`;
+      return `${years} y ${months} mo${months === 1 ? '' : plural}`;
     }
   } catch {
     return "";
