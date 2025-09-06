@@ -10,6 +10,8 @@ import {
   TableCell,
   TableHead,
 } from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -215,7 +217,8 @@ export function MachineBackupTable({ backups, machineName, onBackupDeleted }: Ma
               </SelectContent>
             </Select>
           </div>
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -331,6 +334,136 @@ export function MachineBackupTable({ backups, machineName, onBackupDeleted }: Ma
                 ))}
               </TableBody>
             </Table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 p-4">
+            {paginatedBackups.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                No backups found for this machine.
+              </div>
+            )}
+            {paginatedBackups.map((backup) => (
+              <Card key={backup.id} className="p-4">
+                <div className="space-y-3">
+                  {/* Header with Backup Name and Status */}
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">{backup.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(backup.date).toLocaleString()}
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col items-end gap-1">
+                      {hasNoMessages(backup) ? (
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <div className="cursor-default">
+                              <StatusBadge status={backup.status} />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" align="center">
+                            <p>No messages were received for this backup.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <div 
+                          onClick={() => handleBackupClick(backup)}
+                          className="cursor-pointer"
+                        >
+                          <StatusBadge status={backup.status} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Grid Layout - 2 columns × 3 rows */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Row 1 */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Available Versions</Label>
+                      <div className="flex justify-start">
+                        <AvailableBackupsIcon
+                          availableBackups={backup.available_backups}
+                          currentBackupDate={backup.date}
+                          machineName={machineName}
+                          backupName={backup.name}
+                          onIconClick={handleAvailableBackupsClick}
+                          count={backup.backup_list_count}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">File Count</Label>
+                      <div className="text-sm">{backup.fileCount.toLocaleString()}</div>
+                    </div>
+
+                    {/* Row 2 */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">File Size</Label>
+                      <div className="text-sm">{formatBytes(backup.fileSize)}</div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Uploaded Size</Label>
+                      <div className="text-sm">{formatBytes(backup.uploadedSize)}</div>
+                    </div>
+
+                    {/* Row 3 */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Duration</Label>
+                      <div className="text-sm">{backup.duration}</div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Storage Size</Label>
+                      <div className="text-sm">{formatBytes(backup.knownFileSize)}</div>
+                    </div>
+                  </div>
+
+                  {/* Additional Info Row */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Warnings</Label>
+                      <div className="text-sm">{backup.warnings}</div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Errors</Label>
+                      <div className="text-sm">{backup.errors}</div>
+                    </div>
+                  </div>
+
+                  {/* Development mode delete button */}
+                  {isDevMode && (
+                    <div className="border-t pt-3">
+                      <DeleteBackupButton
+                        backupId={backup.id}
+                        backupName={backup.name}
+                        backupDate={backup.date}
+                        onDelete={onBackupDeleted}
+                      />
+                    </div>
+                  )}
+
+                  {/* Card Click Action */}
+                  {!hasNoMessages(backup) && (
+                    <div className="border-t pt-3">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleBackupClick(backup)}
+                        className="w-full"
+                      >
+                        View Details
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
         {totalPages > 1 && (

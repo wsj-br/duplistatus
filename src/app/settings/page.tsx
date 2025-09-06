@@ -79,11 +79,23 @@ function SettingsPageContent() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="backups">Backup Alerts</TabsTrigger>
-              <TabsTrigger value="addresses">Machine Addresses</TabsTrigger>
-              <TabsTrigger value="ntfy">NTFY Settings</TabsTrigger>
-              <TabsTrigger value="templates">Notification Templates</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
+              <TabsTrigger value="backups" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Backup Alerts</span>
+                <span className="lg:hidden">Backup</span>
+              </TabsTrigger>
+              <TabsTrigger value="addresses" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Machine Addresses</span>
+                <span className="lg:hidden">Addresses</span>
+              </TabsTrigger>
+              <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">NTFY Settings</span>
+                <span className="lg:hidden">NTFY</span>
+              </TabsTrigger>
+              <TabsTrigger value="templates" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Notification Templates</span>
+                <span className="lg:hidden">Templates</span>
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="backups" className="mt-6">

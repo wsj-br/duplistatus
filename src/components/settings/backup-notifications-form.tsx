@@ -494,12 +494,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         </CardHeader>
         <CardContent>
           
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <Table>
             <TableHeader>
               <TableRow>
                 <SortableTableHead 
-                  className="w-[200px]" 
+                  className="w-[150px] min-w-[120px]" 
                   column="name" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -507,7 +508,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Machine Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[200px]" 
+                  className="w-[150px] min-w-[120px]" 
                   column="backupName" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -515,7 +516,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[180px]" 
+                  className="w-[140px] min-w-[120px]" 
                   column="notificationEvent" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -523,7 +524,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Notification Events
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[180px]" 
+                  className="w-[140px] min-w-[120px]" 
                   column="overdueBackupCheckEnabled" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -531,7 +532,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Overdue Backup Monitoring
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[150px]" 
+                  className="w-[120px] min-w-[100px]" 
                   column="displayInterval" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -539,7 +540,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Expected Backup Interval
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[100px]" 
+                  className="w-[80px] min-w-[60px]" 
                   column="intervalUnit" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -557,22 +558,24 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   <TableRow key={`${machine.id}-${machine.backupName}`}>
                     <TableCell>
                       <div>
-                        <div className="font-xl">
-                          <ServerConfigurationButton
-                            serverUrl={machine.server_url}
-                            size="sm"
-                            variant="ghost"
-                            className="text-xs hover:text-blue-500 transition-colors"
-                            showText={false}
-                          />
-                          {machine.name}
+                        <div className="font-medium text-sm">
+                          <div className="flex items-center gap-1">
+                            <ServerConfigurationButton
+                              serverUrl={machine.server_url}
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs hover:text-blue-500 transition-colors"
+                              showText={false}
+                            />
+                            <span className="truncate">{machine.name}</span>
+                          </div>
                         </div>
                       </div>
                     </TableCell>
                     
                     <TableCell>
                       <div>
-                        <div className="font-xl">{machine.backupName}</div>
+                        <div className="font-medium text-sm truncate">{machine.backupName}</div>
                       </div>
                     </TableCell>
                     
@@ -583,7 +586,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           updateBackupSettingById(machine.id, 'notificationEvent', value)
                         }
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -596,7 +599,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     </TableCell>
                     
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
                         <Switch
                           id={`overdue-backup-${inputKey}`}
                           checked={backupSetting.overdueBackupCheckEnabled}
@@ -604,7 +607,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             updateBackupSettingById(machine.id, 'overdueBackupCheckEnabled', checked)
                           }
                         />
-                        <Label htmlFor={`overdue-backup-${inputKey}`} className="text-sm">
+                        <Label htmlFor={`overdue-backup-${inputKey}`} className="text-xs">
                           {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
                         </Label>
                       </div>
@@ -620,7 +623,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         onBlur={(e) => handleIntervalBlurById(machine.id, e.target.value)}
                         placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
-                        className={!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}
+                        className={`text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}
                       />
                     </TableCell>
                     
@@ -630,7 +633,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(machine.id, value)}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                       >
-                        <SelectTrigger className={`w-full ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
+                        <SelectTrigger className={`w-full text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
                           <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Days' : 'Hours'} />
                         </SelectTrigger>
                         <SelectContent>
@@ -645,26 +648,127 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
             </TableBody>
           </Table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {sortedMachines.map((machine) => {
+              const backupSetting = getBackupSettingById(machine.id);
+              const inputKey = machine.id;
+              
+              return (
+                <Card key={`${machine.id}-${machine.backupName}`} className="p-4">
+                  <div className="space-y-3">
+                    {/* Header with Machine and Backup Name */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ServerConfigurationButton
+                          serverUrl={machine.server_url}
+                          size="sm"
+                          variant="ghost"
+                          className="text-xs hover:text-blue-500 transition-colors"
+                          showText={false}
+                        />
+                        <div>
+                          <div className="font-medium text-sm">{machine.name}</div>
+                          <div className="text-xs text-muted-foreground">{machine.backupName}</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Notification Events */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Notification Events</Label>
+                      <Select
+                        value={backupSetting.notificationEvent}
+                        onValueChange={(value: NotificationEvent) => 
+                          updateBackupSettingById(machine.id, 'notificationEvent', value)
+                        }
+                      >
+                        <SelectTrigger className="w-full text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="off">Off</SelectItem>
+                          <SelectItem value="all">All</SelectItem>
+                          <SelectItem value="warnings">Warnings</SelectItem>
+                          <SelectItem value="errors">Errors</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Overdue Backup Monitoring */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Overdue Backup Monitoring</Label>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id={`overdue-backup-mobile-${inputKey}`}
+                          checked={backupSetting.overdueBackupCheckEnabled}
+                          onCheckedChange={(checked) => 
+                            updateBackupSettingById(machine.id, 'overdueBackupCheckEnabled', checked)
+                          }
+                        />
+                        <Label htmlFor={`overdue-backup-mobile-${inputKey}`} className="text-xs">
+                          {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
+                        </Label>
+                      </div>
+                    </div>
+                    
+                    {/* Expected Backup Interval */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Expected Backup Interval</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="number"
+                          min="1"
+                          max={backupSetting.intervalUnit === 'hour' ? "8760" : "365"}
+                          value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
+                          onChange={(e) => handleIntervalInputChangeById(machine.id, e.target.value)}
+                          onBlur={(e) => handleIntervalBlurById(machine.id, e.target.value)}
+                          placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
+                          disabled={!backupSetting.overdueBackupCheckEnabled}
+                          className={`text-xs flex-1 ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}
+                        />
+                        <Select
+                          value={backupSetting.intervalUnit}
+                          onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(machine.id, value)}
+                          disabled={!backupSetting.overdueBackupCheckEnabled}
+                        >
+                          <SelectTrigger className={`w-20 text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
+                            <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Days' : 'Hours'} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hour">Hour(s)</SelectItem>
+                            <SelectItem value="day">Day(s)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
           
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between pt-6 gap-4 w-full">
-            {/* Save button - always on top on mobile, left on desktop */}
+          <div className="flex flex-col gap-6 pt-6 w-full">
+            {/* Save button */}
             <div className="flex gap-3">
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Backup Settings"}
               </Button>
             </div>
 
-            {/* Other controls - wrap on smaller screens, right-aligned on desktop */}
-            <div className="flex flex-wrap gap-4 items-end lg:justify-end">
-              <div className="flex flex-col items-start">
-                <Label htmlFor="overdue-tolerance" className="mb-2 self-start">
-                  Overdue tolerance:
+            {/* Controls grid - responsive layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex flex-col">
+                <Label htmlFor="overdue-tolerance" className="mb-2 text-sm">
+                  <span className="hidden sm:inline">Overdue tolerance:</span>
+                  <span className="sm:hidden">Tolerance:</span>
                 </Label>
                 <Select
                   value={overdueTolerance}
                   onValueChange={(value: OverdueTolerance) => handleOverdueToleranceChange(value)}
                 >
-                  <SelectTrigger id="overdue-tolerance" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="overdue-tolerance" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -676,15 +780,18 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col items-start">
-                <Label htmlFor="cron-interval" className="mb-2 self-start">
-                  Overdue monitoring interval:
+              
+              <div className="flex flex-col">
+                <Label htmlFor="cron-interval" className="mb-2 text-sm">
+                  <span className="hidden lg:inline">Overdue monitoring interval:</span>
+                  <span className="lg:hidden hidden sm:inline">Monitoring interval:</span>
+                  <span className="sm:hidden">Interval:</span>
                 </Label>
                 <Select
                   value={cronInterval}
                   onValueChange={(value: CronInterval) => handleCronIntervalChange(value)}
                 >
-                  <SelectTrigger id="cron-interval" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="cron-interval" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -696,25 +803,19 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   </SelectContent>
                 </Select>
               </div>
-              <Button 
-                onClick={handleTestOverdueBackups} 
-                variant="outline" 
-                disabled={isTesting}
-                className="self-end"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                {isTesting ? "Checking..." : "Check now"}
-              </Button>
-              <div className="flex flex-col items-start">
-                <Label htmlFor="notification-frequency" className="mb-2 self-start">
-                    Notification frequency:
+              
+              <div className="flex flex-col">
+                <Label htmlFor="notification-frequency" className="mb-2 text-sm">
+                  <span className="hidden lg:inline">Notification frequency:</span>
+                  <span className="lg:hidden hidden sm:inline">Notification freq:</span>
+                  <span className="sm:hidden">Frequency:</span>
                 </Label>
                 <Select
                   value={notificationFrequency}
                   onValueChange={(value: NotificationFrequencyConfig) => handleNotificationFrequencyChange(value)}
                   disabled={notificationFrequencyLoading}
                 >
-                  <SelectTrigger id="notification-frequency" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="notification-frequency" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -728,15 +829,34 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
                 {notificationFrequencyError && <span className="text-xs text-destructive mt-1">{notificationFrequencyError}</span>}
               </div>
-              <Button 
-                onClick={handleResetNotifications}
-                variant="outline"
-                disabled={isResetting}
-                className="self-end"
-              >
-                <TimerReset className="mr-2 h-4 w-4" />
-                {isResetting ? "Resetting..." : "Reset timer"}
-              </Button>
+              
+              <div className="flex flex-col gap-2">
+                <div className="flex-1"></div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleTestOverdueBackups} 
+                    variant="outline" 
+                    disabled={isTesting}
+                    size="sm"
+                    className="flex-1"
+                  >
+                    <RefreshCw className="mr-1 h-3 w-3" />
+                    <span className="hidden sm:inline">{isTesting ? "Checking..." : "Check now"}</span>
+                    <span className="sm:hidden">{isTesting ? "..." : "Check"}</span>
+                  </Button>
+                  <Button 
+                    onClick={handleResetNotifications}
+                    variant="outline"
+                    disabled={isResetting}
+                    size="sm"
+                    className="flex-1"
+                  >
+                    <TimerReset className="mr-1 h-3 w-3" />
+                    <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset timer"}</span>
+                    <span className="sm:hidden">{isResetting ? "..." : "Reset"}</span>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
 

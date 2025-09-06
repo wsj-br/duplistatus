@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
@@ -401,12 +402,13 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
                   <SortableTableHead 
-                    className="w-[200px]" 
+                    className="w-[150px] min-w-[120px]" 
                     column="name" 
                     sortConfig={sortConfig} 
                     onSort={handleSort}
@@ -414,7 +416,7 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                     Machine Name
                   </SortableTableHead>
                   <SortableTableHead 
-                    className="w-[300px]" 
+                    className="w-[250px] min-w-[200px]" 
                     column="server_url" 
                     sortConfig={sortConfig} 
                     onSort={handleSort}
@@ -422,14 +424,14 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                     Web Interface Address (URL)
                   </SortableTableHead>
                   <SortableTableHead 
-                    className="w-[100px]" 
+                    className="w-[100px] min-w-[80px]" 
                     column="connectionStatus" 
                     sortConfig={sortConfig} 
                     onSort={handleSort}
                   >
                     Status
                   </SortableTableHead>
-                  <TableCell className="w-[150px]">
+                  <TableCell className="w-[120px] min-w-[100px]">
                     Actions
                   </TableCell>
                 </TableRow>
@@ -439,12 +441,12 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                   <TableRow key={connection.id}>
                     <TableCell>
                       <div>
-                        <div className="font-xl">{connection.name}</div>
+                        <div className="font-medium text-sm truncate">{connection.name}</div>
                       </div>
                     </TableCell>
                     
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex flex-col space-y-1">
                         <Input
                           ref={(el) => {
                             inputRefs.current[connection.id] = el;
@@ -461,7 +463,7 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                             }
                           }}
                           placeholder="https://server:8200"
-                          className={!isValidUrl(connection.server_url) ? 'border-red-500' : ''}
+                          className={`text-xs ${!isValidUrl(connection.server_url) ? 'border-red-500' : ''}`}
                         />
                         {!isValidUrl(connection.server_url) && (
                           <div className="text-xs text-red-600">
@@ -472,9 +474,9 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                     </TableCell>
                     
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
                         {getConnectionIcon(connection.connectionStatus)}
-                        <span className="text-sm">
+                        <span className="text-xs">
                           {(() => {
                             const statusToDisplay = connection.connectionStatus;
                             
@@ -488,23 +490,24 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                     </TableCell>
                     
                     <TableCell>
-                      <div className="flex gap-2">
+                      <div className="flex gap-1">
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           onClick={() => testConnection(connection.id, connection.server_url)}
                           disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                          className="px-2"
                         >
-                          <Play className="h-4 w-4" />
-                          Test
+                          <Play className="h-3 w-3" />
+                          <span className="hidden sm:inline ml-1">Test</span>
                         </Button>
                         <ServerConfigurationButton
                           serverUrl={connection.server_url}
                           machineName={connection.name}
                           size="sm"
                           variant="outline"
-                          showText={true}
+                          showText={false}
                           disabled={!connection.server_url || !isValidUrl(connection.server_url)}
                         />
                       </div>
@@ -515,7 +518,96 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
             </Table>
           </div>
 
-          <div className="flex justify-between pt-6">
+          {/* Mobile Card View */}
+          <div className="sm:hidden space-y-3">
+            {sortedConnections.map((connection) => (
+              <Card key={connection.id} className="p-4">
+                <div className="space-y-3">
+                  {/* Header with Machine Name */}
+                  <div className="flex items-center justify-between">
+                    <div className="font-medium text-sm">{connection.name}</div>
+                  </div>
+                  
+                  {/* Server URL */}
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">Web Interface Address (URL)</Label>
+                    <div className="flex flex-col space-y-1">
+                      <Input
+                        ref={(el) => {
+                          inputRefs.current[connection.id] = el;
+                        }}
+                        type="url"
+                        value={connection.server_url}
+                        onChange={(e) => handleUrlChange(connection.id, e.target.value)}
+                        onFocus={() => handleUrlFocus(connection.id, connection.server_url)}
+                        onBlur={() => handleUrlBlur(connection.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            testConnection(connection.id, connection.server_url);
+                          }
+                        }}
+                        placeholder="https://server:8200"
+                        className={`text-xs ${!isValidUrl(connection.server_url) ? 'border-red-500' : ''}`}
+                      />
+                      {!isValidUrl(connection.server_url) && (
+                        <div className="text-xs text-red-600">
+                          Invalid URL
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Status */}
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">Status</Label>
+                    <div className="flex items-center space-x-2">
+                      {getConnectionIcon(connection.connectionStatus)}
+                      <span className="text-xs">
+                        {(() => {
+                          const statusToDisplay = connection.connectionStatus;
+                          
+                          if (statusToDisplay === 'success') return 'Connected';
+                          if (statusToDisplay === 'failed') return 'Failed';
+                          if (statusToDisplay === 'testing') return 'Testing...';
+                          return 'Unknown';
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Actions */}
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">Actions</Label>
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => testConnection(connection.id, connection.server_url)}
+                        disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                        className="w-full"
+                      >
+                        <Play className="h-3 w-3 mr-1" />
+                        Test
+                      </Button>
+                      <ServerConfigurationButton
+                        serverUrl={connection.server_url}
+                        machineName={connection.name}
+                        size="sm"
+                        variant="outline"
+                        showText={true}
+                        disabled={!connection.server_url || !isValidUrl(connection.server_url)}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-between pt-6 gap-4">
             <div className="flex gap-3">
               <Button
                 onClick={handleSave}
@@ -538,10 +630,14 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                 {isTestingAll ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Testing All...
+                    <span className="hidden sm:inline">Testing All...</span>
+                    <span className="sm:hidden">Testing...</span>
                   </>
                 ) : (
-                  'Test All'
+                  <>
+                    <span className="hidden sm:inline">Test All</span>
+                    <span className="sm:hidden">Test All</span>
+                  </>
                 )}
               </Button>
             </div>
