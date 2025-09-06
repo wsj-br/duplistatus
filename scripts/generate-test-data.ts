@@ -3,6 +3,37 @@ import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
 import { dbUtils, ensureBackupSettingsComplete } from '../src/lib/db-utils';
 import { extractAvailableBackups } from '../src/lib/utils';
 
+// Function to clean database tables before generating test data
+async function cleanDatabaseTables() {
+  console.log('🧹 Cleaning database tables before generating test data...');
+  
+  try {
+    // Start a transaction for atomic cleanup
+    const transaction = db.transaction(() => {
+      // Delete all backups first (due to foreign key constraint)
+      const backupsResult = db.prepare('DELETE FROM backups').run();
+      console.log(`  🗑️  Deleted ${backupsResult.changes} backup records`);
+      
+      // Delete all machines
+      const machinesResult = db.prepare('DELETE FROM machines').run();
+      console.log(`  🗑️  Deleted ${machinesResult.changes} machine records`);
+      
+      // Delete all configurations
+      const configsResult = db.prepare('DELETE FROM configurations').run();
+      console.log(`  🗑️  Deleted ${configsResult.changes} configuration records`);
+    });
+    
+    // Execute the transaction
+    transaction();
+    
+    console.log('✅ Database cleanup completed successfully!');
+    return true;
+  } catch (error) {
+    console.error('🚨 Error during database cleanup:', error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
+
 // Machine configurations
 const machines = [
   { id: 'machine-1', name: 'Test Machine 1', backupName: 'Machine 1' },
@@ -178,8 +209,8 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
   const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000);
   const duration = generateRandomDuration();
   const stats = generateRandomFileStats();
-  const hasWarnings = Math.random() > 0.7; // 30% chance of warnings
-  const hasErrors = Math.random() > 0.9; // 10% chance of errors
+  const hasWarnings = Math.random() > 0.9; // 10% chance of warnings
+  const hasErrors = Math.random() > 0.98; // 2% chance of errors
   
   // Generate message counts
   const warningsCount = hasWarnings ? Math.floor(Math.random() * 5) : 0; // 0 to 4
@@ -216,7 +247,7 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       PartialBackup: Math.random() > 0.95, // 5% chance of partial backup
       Dryrun: false,
       MainOperation: "Backup",
-      ParsedResult: hasErrors ? "Failed" : (hasWarnings ? "Warning" : "Success"),
+      ParsedResult: hasErrors ? "Error" : (hasWarnings ? "Warning" : "Success"),
       Interrupted: false,
       Version: "2.1.0.5 (2.1.0.5_stable_2025-03-04)",
       BeginTime: beginTime,
@@ -231,10 +262,8 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       BackendStatistics: {
         BytesUploaded: stats.uploadedSize,
         BytesDownloaded: Math.floor(stats.uploadedSize * 0.1),
-        KnownFileSize: Math.floor(stats.fileSize * ((Math.random() * 0.3) + 1) ),
-        LastBackupDate: backupNumber > 1 
-          ? new Date(new Date(beginTime).getTime() - 86400000).toISOString() // 1 day before
-          : new Date(new Date(beginTime).getTime() - 86400000).toISOString(),
+        KnownFileSize: Math.floor(stats.fileSize * ((Math.random() * 2) + 1) ),
+        LastBackupDate: new Date(new Date(beginTime).getTime() - 86400000).toISOString(), // 1 day before
         BackupListCount: Math.floor(Math.random()*3+9),
         ReportedQuotaError: false,
         ReportedQuotaWarning: Math.random() > 0.9, // 10% chance of quota warning
@@ -378,11 +407,154 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
   }
 }
 
+// Function to cleanup backups - keep only 5-8 random backups for 1 random backup type from 2 random machines
+async function cleanupBackupsForUserManual(){
+  console.log('\n  🧹 Cleaning up backups for user manual demonstration...');
+  
+  // Select 2 random machines from the first 6 machines
+  const firstSixMachines = machines.slice(0, 6);
+  const shuffledMachines = [...firstSixMachines].sort(() => Math.random() - 0.5);
+  const selectedMachines = shuffledMachines.slice(0, 2);
+  
+  // Generate random number of backups to keep (5-8)
+  const backupsToKeep = Math.floor(Math.random() * 4) + 5; // 5 to 8
+  
+  console.log(`    🎯 Selected machines: ${selectedMachines.map(m => m.name).join(', ')}`);
+  console.log(`    📊 Keeping ${backupsToKeep} most recent backups for each selected machine-backup combination`);
+  
+  for (const machine of selectedMachines) {
+    try {
+      // Get all backup types that exist for this machine
+      const backupTypesResult = db.prepare(`
+        SELECT DISTINCT backup_name FROM backups 
+        WHERE machine_id = ?
+        ORDER BY backup_name
+      `).all(machine.id) as { backup_name: string }[];
+      
+      const availableBackupTypes = backupTypesResult.map(row => row.backup_name);
+      
+      if (availableBackupTypes.length === 0) {
+        console.log(`      ⚠️  ${machine.name}: No backups found, skipping...`);
+        continue;
+      }
+      
+      // Select 1 random backup type from the available ones for this machine
+      const selectedBackupType = availableBackupTypes[Math.floor(Math.random() * availableBackupTypes.length)];
+      
+      console.log(`      📁 ${machine.name} - Selected backup type: ${selectedBackupType} (from available: ${availableBackupTypes.join(', ')})`);
+      
+      // Count total backups for this machine-backup combination
+      const countResult = db.prepare(`
+        SELECT COUNT(*) as total FROM backups 
+        WHERE machine_id = ? AND backup_name = ?
+      `).get(machine.id, selectedBackupType) as { total: number };
+      
+      const totalBackups = countResult.total;
+      
+      if (totalBackups <= backupsToKeep) {
+        console.log(`      ✅ ${machine.name} - ${selectedBackupType}: Only ${totalBackups} backups exist, no cleanup needed`);
+        continue;
+      }
+      
+      const backupsToDelete = totalBackups - backupsToKeep;
+      
+      // Delete older backups, keeping the most recent ones
+      const deleteResult = db.prepare(`
+        DELETE FROM backups 
+        WHERE id IN (
+          SELECT id FROM backups 
+          WHERE machine_id = ? AND backup_name = ? 
+          ORDER BY date DESC 
+          LIMIT -1 OFFSET ?
+        )
+      `).run(machine.id, selectedBackupType, backupsToKeep);
+      
+      console.log(`      🗑️  ${machine.name} - ${selectedBackupType}: Deleted ${deleteResult.changes} backups, kept ${backupsToKeep} most recent`);
+      
+    } catch (error) {
+      console.error(`      🚨 Error cleaning up backups for ${machine.name}:`, 
+        error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  try {
+    // Get all available machine-backup combinations
+    const combinationsResult = db.prepare(`
+      SELECT DISTINCT b.machine_id, b.backup_name, m.name as machine_name
+      FROM backups b
+      JOIN machines m ON b.machine_id = m.id
+      ORDER BY b.machine_id, b.backup_name
+    `).all() as { machine_id: number; backup_name: string; machine_name: string }[];
+    
+    if (combinationsResult.length === 0) {
+      console.log('    ⚠️  No machine-backup combinations found for additional cleanup');
+      return;
+    }
+    
+    // Shuffle and select 2 random combinations
+    const shuffledCombinations = [...combinationsResult].sort(() => Math.random() - 0.5);
+    const selectedCombinations = shuffledCombinations.slice(0, Math.min(2, shuffledCombinations.length));
+    
+    console.log(`    🎯 Selected ${selectedCombinations.length} combinations for last backup deletion:`);
+    selectedCombinations.forEach(combo => {
+      console.log(`      - ${combo.machine_name} (${combo.backup_name})`);
+    });
+    
+    for (const combination of selectedCombinations) {
+      try {
+        // Get the most recent backup for this combination
+        const lastBackupResult = db.prepare(`
+          SELECT id, date FROM backups 
+          WHERE machine_id = ? AND backup_name = ? 
+          ORDER BY date DESC 
+          LIMIT 1
+        `).get(combination.machine_id, combination.backup_name) as { id: number; date: string } | undefined;
+        
+        if (!lastBackupResult) {
+          console.log(`      ⚠️  ${combination.machine_name} (${combination.backup_name}): No backups found`);
+          continue;
+        }
+        
+        // Delete the last backup
+        const deleteResult = db.prepare(`
+          DELETE FROM backups 
+          WHERE id = ?
+        `).run(lastBackupResult.id);
+        
+        if (deleteResult.changes > 0) {
+          const backupDate = new Date(lastBackupResult.date).toLocaleDateString();
+          console.log(`      🗑️  ${combination.machine_name} (${combination.backup_name}): Deleted last backup from ${backupDate}`);
+        } else {
+          console.log(`      ⚠️  ${combination.machine_name} (${combination.backup_name}): Failed to delete backup`);
+        }
+        
+      } catch (error) {
+        console.error(`      🚨 Error deleting last backup for ${combination.machine_name} (${combination.backup_name}):`, 
+          error instanceof Error ? error.message : String(error));
+      }
+    }
+    
+  console.log('  ✅ Backup cleanup completed!');
+    
+  } catch (error) {
+    console.error('  🚨 Error during additional cleanup:', 
+      error instanceof Error ? error.message : String(error));
+  }
+}
+
 // Main function to send test data
 async function sendTestData(useUpload: boolean = false) {
   const API_URL = 'http://localhost:8666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
   const BACKUP_TYPES = ['Files', 'Databases', 'System', 'Users'];
+
+  // Clean database tables before generating test data 
+  const cleanupSuccess = await cleanDatabaseTables();
+  if (!cleanupSuccess) {
+    console.error('🚨 Database cleanup failed. Aborting test data generation.');
+    process.exit(1);
+  }
+  console.log(''); // Add spacing after cleanup
 
   // Check server health before proceeding (only when using upload mode)
   if (useUpload) {
@@ -466,6 +638,9 @@ async function sendTestData(useUpload: boolean = false) {
     if (backupSettingsResult.added > 0) {
       console.log(`  ✅ Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
     }
+    
+    // Cleanup backups for user manual demonstration
+    await cleanupBackupsForUserManual();
   }
 }
 
@@ -478,10 +653,13 @@ if (useUpload) {
 } else {
   console.log('  💾 Mode: Direct database write');
 }
+console.log('  🧹 Database cleanup: Will clear machines, backups, and configurations tables before generation');
 console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd machines: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
 console.log('     • Even machines: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
-console.log('     • Random backup types per machine (1-3 types from: Files, Databases, System)\n');
+console.log('     • Random backup types per machine (1-3 types from: Files, Databases, System)');
+console.log('     • After generation: Random cleanup some machines/backup types and last backups for the user manual screenshots\n');
+
 
 sendTestData(useUpload).then(() => {
   console.log('\n🎉 Test data generation completed!');

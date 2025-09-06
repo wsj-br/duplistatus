@@ -22,17 +22,36 @@ interface MachineCardProps {
 
 // Helper function to get overall machine status
 function getMachineStatus(machine: MachineSummary): BackupStatus {
-  if (machine.lastBackupStatus === 'Error' || machine.lastBackupStatus === 'Fatal') {
+  // Check if any backup has an error or fatal status
+  const hasErrorOrFatal = machine.backupInfo.some(backupType => 
+    backupType.lastBackupStatus === 'Error' || backupType.lastBackupStatus === 'Fatal'
+  );
+  if (hasErrorOrFatal) {
     return 'Error';
   }
+  
+  // Check if any backup has a warning status
+  const hasWarning = machine.backupInfo.some(backupType => 
+    backupType.lastBackupStatus === 'Warning'
+  );
+  
   // Check if any backup type is overdue
   const hasOverdueBackup = machine.backupInfo.some(backupType => backupType.isBackupOverdue);
-  if (machine.lastBackupStatus === 'Warning' || hasOverdueBackup) {
+  
+  if (hasWarning || hasOverdueBackup) {
     return 'Warning';
   }
-  if (machine.lastBackupStatus === 'Success') {
+  
+  // Check if all backup statuses are success
+  const allBackupsHaveStatus = machine.backupInfo.length > 0;
+  const allBackupsSuccess = allBackupsHaveStatus && machine.backupInfo.every(backupType => 
+    backupType.lastBackupStatus === 'Success'
+  );
+  
+  if (allBackupsSuccess && !hasOverdueBackup) {
     return 'Success';
   }
+  
   return 'Unknown';
 }
 
@@ -74,7 +93,7 @@ function CompactStatusBadge({ status, machineId, lastBackupId, haveOverdueBackup
   };
 
   const handleClick = () => {
-    router.push(`/detail/${machineId}/backup/${lastBackupId}`);
+    router.push(`/detail/${machineId}`);
   };
 
   return (
@@ -133,7 +152,7 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
       onClick={handleCardClick}
     >
       <CardHeader className="pb-1 pt-1 px-3 flex-shrink-0">
-        <div className="flex items-start gap-2">
+        <div className="flex items-center gap-2">
           <CardTitle className="text-base font-semibold flex items-center flex-1">
             <ServerConfigurationButton className="h-8 w-8 flex-shrink-0" variant="ghost" serverUrl={machine.server_url} showText={false}  />
             <button
@@ -657,11 +676,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
         {/* Scrollable Container */}
         <div 
           ref={scrollContainerRef}
-          className="flex gap-3 overflow-x-auto scroll-smooth items-stretch"
-          style={{ 
-            scrollbarWidth: 'none', 
-            msOverflowStyle: 'none'
-          }}
+          className="flex gap-3 overflow-x-auto scroll-smooth items-stretch machine-cards-scrollbar"
         >
           {uniqueMachines.map((machine) => (
             <div key={machine.id} className="flex-shrink-0" style={{ width: cardWidth, minHeight: '170px' }} data-card>
@@ -673,13 +688,6 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
             </div>
           ))}
         </div>
-
-        {/* Custom scrollbar styles */}
-        <style jsx>{`
-          div::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, LayoutDashboard, Sheet } from "lucide-react";
+import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,7 +68,11 @@ export function DashboardSummaryCards({
     {
       title: "Overdue Backups",
       value: summary.overdueBackupsCount.toLocaleString(),
-      icon: <AlertTriangle className={`h-6 w-6 ${summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500'}`} />,
+      icon: summary.overdueBackupsCount > 0 ? (
+        <AlertTriangle className="h-6 w-6 text-red-600" />
+      ) : (
+        <ThumbsUp className="h-6 w-6 text-green-600" />
+      ),
       "data-ai-hint": "alert triangle",
     },
   ];

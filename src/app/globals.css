@@ -94,6 +94,14 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  
+  .machine-cards-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .machine-cards-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
   /* Modern thin scrollbars */
   .custom-scrollbar {

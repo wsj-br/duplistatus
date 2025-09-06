@@ -27,7 +27,7 @@ interface MachineDetailsContentProps {
   lastRefreshTime: Date;
 }
 
-export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck, lastRefreshTime }: MachineDetailsContentProps) {
+export function MachineDetailsContent({ machine, overdueBackups, lastOverdueCheck, lastRefreshTime: _lastRefreshTime }: MachineDetailsContentProps) { // eslint-disable-line @typescript-eslint/no-unused-vars
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   const { refreshDetail } = useGlobalRefresh();
   

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, memo, useMemo } from 'react';
+import { useState, useEffect, useRef, memo, useCallback } from 'react';
 import { 
   Line, 
   ComposedChart,
@@ -412,7 +412,7 @@ function MetricsChartsPanelCore({
   })();
 
   // Fetch chart data based on parameters
-  const fetchChartData = async (skipLoadingState = false) => {
+  const fetchChartData = useCallback(async (skipLoadingState = false) => {
     try {
       isLoadingRef.current = true;
       
@@ -495,7 +495,7 @@ function MetricsChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  };
+  }, [machineId, backupName, startDate, endDate, toast]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -513,7 +513,7 @@ function MetricsChartsPanelCore({
       }
       setIsLoading(false);
     }
-  }, [machineId, backupName, startDate, endDate, externalChartData]);
+  }, [machineId, backupName, startDate, endDate, externalChartData, fetchChartData]);
 
   // Clear selected machine name when no machine is selected
   useEffect(() => {
@@ -549,10 +549,13 @@ function MetricsChartsPanelCore({
         // and passes it via externalChartData prop, so no need to fetch here.
       }
     }
-  }, [globalRefreshState.isRefreshing, globalRefreshState.pageSpecificLoading.dashboard, globalRefreshState.lastRefresh, externalChartData, machineId]);
+  }, [globalRefreshState.isRefreshing, globalRefreshState.pageSpecificLoading.dashboard, globalRefreshState.lastRefresh, externalChartData, machineId, fetchChartData]);
   
   // Get selection info for display
   const selectionInfo = (() => {
+
+    if(isLoading) return '';
+
     let baseText = '';
     if (selectedMachineName) {
       baseText = `${selectedMachineName}`;

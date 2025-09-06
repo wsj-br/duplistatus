@@ -56,6 +56,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     dashboardData: null,
   });
 
+  // Track previous pathname to detect navigation back to dashboard
+  const [previousPathname, setPreviousPathname] = useState<string | null>(null);
+
   // Update state when config changes
   useEffect(() => {
     setState(prev => ({
@@ -72,15 +75,6 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     if (pathname.startsWith('/detail/') && !pathname.includes('/backup/')) return 'detail';
     return 'none';
   }, [pathname]);
-
-  // Update current page when pathname changes
-  useEffect(() => {
-    const pageType = getCurrentPageType();
-    setState(prev => ({
-      ...prev,
-      currentPage: pageType,
-    }));
-  }, [pathname, getCurrentPageType]);
 
   const refreshDashboard = useCallback(async () => {
     try {
@@ -180,6 +174,32 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       }));
     }
   }, []);
+
+  // Update current page when pathname changes and detect dashboard returns
+  useEffect(() => {
+    const pageType = getCurrentPageType();
+    const isDashboardPage = pageType === 'dashboard';
+    
+    // Check if user is returning to dashboard from another page
+    const isReturningToDashboard = isDashboardPage && 
+      previousPathname && 
+      previousPathname !== '/' && 
+      previousPathname !== pathname;
+    
+    setState(prev => ({
+      ...prev,
+      currentPage: pageType,
+    }));
+    
+    // Trigger refresh when returning to dashboard
+    if (isReturningToDashboard && !state.isRefreshing && !state.refreshInProgress) {
+      console.log('User returned to dashboard, triggering refresh');
+      refreshDashboard();
+    }
+    
+    // Update previous pathname for next comparison
+    setPreviousPathname(pathname);
+  }, [pathname, getCurrentPageType, previousPathname, state.isRefreshing, state.refreshInProgress, refreshDashboard]);
 
   // Auto-refresh effect
   useEffect(() => {

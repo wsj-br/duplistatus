@@ -27,6 +27,7 @@ interface ConfigContextProps {
   dashboardCardsSortOrder: DashboardCardsSortOrder;
   setDashboardCardsSortOrder: (order: DashboardCardsSortOrder) => void;
   cleanupDatabase: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const ConfigContext = createContext<ConfigContextProps | undefined>(undefined);
@@ -39,6 +40,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(defaultUIConfig.autoRefreshInterval);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -55,6 +57,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
       if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
     }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -128,6 +131,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         dashboardCardsSortOrder,
         setDashboardCardsSortOrder,
         cleanupDatabase,
+        isLoading,
       }}
     >
       {children}

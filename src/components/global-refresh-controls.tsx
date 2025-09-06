@@ -13,9 +13,10 @@ interface AutoRefreshButtonProps {
   interval: number;
   onToggle: () => void;
   progress: number;
+  isLoading?: boolean;
 }
 
-const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress }: AutoRefreshButtonProps) => {
+const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress, isLoading = false }: AutoRefreshButtonProps) => {
   return (
     <div className={`relative ${className}`}>
       {/* Progress background - only show when enabled */}
@@ -38,7 +39,11 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress 
         onClick={onToggle}
         title={isEnabled ? "Disable auto-refresh" : "Enable auto-refresh"}
       >
-        Auto-refresh ({interval < 1 ? `${interval * 60} sec` : `${interval} min`})
+        {isLoading ? (
+          'Auto-refresh'
+        ) : (
+          `Auto-refresh (${interval < 1 ? `${interval * 60} sec` : `${interval} min`})`
+        )}
       </button>
     </div>
   );
@@ -46,7 +51,7 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress 
 
 export function GlobalRefreshControls() {
   const { state, refreshDashboard, refreshDetail, toggleAutoRefresh, getCurrentPageType } = useGlobalRefresh();
-  const { autoRefreshInterval } = useConfig();
+  const { autoRefreshInterval, isLoading: configLoading } = useConfig();
   const { toast } = useToast();
   const pathname = usePathname();
   
@@ -163,6 +168,7 @@ export function GlobalRefreshControls() {
         interval={state.interval}
         onToggle={handleToggleAutoRefresh}
         progress={progress}
+        isLoading={configLoading}
       />
     </div>
   );

@@ -26,7 +26,7 @@ export function DashboardLayout({
   selectedMachine,
   machineBackups,
   isLoading: _isLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
-  lastRefreshTime,
+  lastRefreshTime: _lastRefreshTime, // eslint-disable-line @typescript-eslint/no-unused-vars
   onMachineSelect,
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardLayoutProps) {
