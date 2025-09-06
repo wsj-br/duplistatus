@@ -167,7 +167,6 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
             <MetricsChartsPanel
               machineId={machine.id}
               backupName={selectedBackupName === 'all' ? undefined : selectedBackupName}
-              lastRefreshTime={lastRefreshTime}
             />
           </CardContent>
         </Card>

@@ -1,4 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
+import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
+import { dbUtils, ensureBackupSettingsComplete } from '../src/lib/db-utils';
+import { extractAvailableBackups } from '../src/lib/utils';
 
 // Machine configurations
 const machines = [
@@ -30,9 +33,9 @@ async function checkServerHealth(url: string): Promise<boolean> {
   }
 }
 
-// Helper function to generate a random duration between 5 minutes and 15 minutes
+// Helper function to generate a random duration between 2 minutes and 10 minutes
 function generateRandomDuration(): string {
-  const totalSeconds = Math.floor(Math.random() * (900 - 300) + 300);
+  const totalSeconds = Math.floor(Math.random() * (600 - 120) + 120);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -40,14 +43,24 @@ function generateRandomDuration(): string {
 }
 
 // Generate backup dates according to the specified patterns
-function generateBackupDates(machineIndex: number): string[] {
+function generateBackupDates(machineIndex: number, backupType: string): string[] {
   const dates: string[] = [];
   const now = new Date();
   const isOddMachine = (machineIndex + 1) % 2 === 1;
   
+  // Generate a time offset based on backup type to ensure different timestamps
+  const backupTypeOffsets: { [key: string]: number } = {
+    'Files': 0,        // No offset
+    'Databases': 15,   // 15 minutes later
+    'System': 30,      // 30 minutes later
+    'Users': 45        // 45 minutes later
+  };
+  const timeOffsetMinutes = backupTypeOffsets[backupType] || 0;
+  
   // Start with today (in the past)
   const today = new Date(now);
   today.setDate(today.getDate() - 1); // Yesterday to ensure it's in the past
+  today.setMinutes(today.getMinutes() + timeOffsetMinutes); // Add backup type offset
   dates.push(today.toISOString());
   
   if (isOddMachine) {
@@ -218,11 +231,11 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
       BackendStatistics: {
         BytesUploaded: stats.uploadedSize,
         BytesDownloaded: Math.floor(stats.uploadedSize * 0.1),
-        KnownFileSize: stats.fileSize,
+        KnownFileSize: Math.floor(stats.fileSize * ((Math.random() * 0.3) + 1) ),
         LastBackupDate: backupNumber > 1 
           ? new Date(new Date(beginTime).getTime() - 86400000).toISOString() // 1 day before
           : new Date(new Date(beginTime).getTime() - 86400000).toISOString(),
-        BackupListCount: backupNumber,
+        BackupListCount: Math.floor(Math.random()*3+9),
         ReportedQuotaError: false,
         ReportedQuotaWarning: Math.random() > 0.9, // 10% chance of quota warning
         MainOperation: "Backup",
@@ -245,33 +258,165 @@ function generateBackupPayload(machine: typeof machines[0], backupNumber: number
   };
 }
 
+// Parse command line arguments
+function parseArgs(): { useUpload: boolean } {
+  const args = process.argv.slice(2);
+  const useUpload = args.includes('--upload');
+  return { useUpload };
+}
+
+// Function to write backup data directly to database
+async function writeBackupToDatabase(payload: any): Promise<boolean> {
+  try {
+    // Check for duplicate backup
+    const backupDate = new Date(payload.Data.BeginTime).toISOString();
+    const isDuplicate = await dbUtils.checkDuplicateBackup({
+      machine_id: payload.Extra['machine-id'],
+      backup_name: payload.Extra['backup-name'],
+      date: backupDate
+    });
+
+    if (isDuplicate) {
+      console.log('          ⚠️  Duplicate backup detected, skipping...');
+      return false;
+    }
+
+    // Start a transaction
+    const transaction = db.transaction(() => {
+      // Insert machine information only if it doesn't exist (preserves existing server_url)
+      dbOps.insertMachineIfNotExists.run({
+        id: payload.Extra['machine-id'],
+        name: payload.Extra['machine-name']
+      });
+
+      // Map backup status
+      let status = payload.Data.ParsedResult;
+      if (status === "Success" && payload.Data.WarningsActualLength > 0) {
+        status = "Warning";
+      }
+
+      // Insert backup data with all fields
+      dbOps.insertBackup.run({
+        // Primary fields
+        id: uuidv4(),
+        machine_id: payload.Extra['machine-id'],
+        backup_name: payload.Extra['backup-name'],
+        backup_id: payload.Extra['backup-id'],
+        date: new Date(payload.Data.BeginTime).toISOString(),
+        status: status,
+        duration_seconds: parseDurationToSeconds(payload.Data.Duration),
+        size: payload.Data.SizeOfExaminedFiles || 0,
+        uploaded_size: payload.Data.BackendStatistics?.BytesUploaded || 0,
+        examined_files: payload.Data.ExaminedFiles || 0,
+        warnings: payload.Data.WarningsActualLength || 0,
+        errors: payload.Data.ErrorsActualLength || 0,
+
+        // Message arrays stored as JSON blobs
+        messages_array: payload.LogLines ? JSON.stringify(payload.LogLines) : 
+                        (payload.Data.Messages ? JSON.stringify(payload.Data.Messages) : null), 
+        warnings_array: payload.Data.Warnings ? JSON.stringify(payload.Data.Warnings) : null,
+        errors_array: payload.Data.Errors ? JSON.stringify(payload.Data.Errors) : null,
+        available_backups: JSON.stringify(extractAvailableBackups(
+          payload.LogLines ? JSON.stringify(payload.LogLines) : 
+          (payload.Data.Messages ? JSON.stringify(payload.Data.Messages) : null)
+        )),
+
+        // Data fields
+        deleted_files: payload.Data.DeletedFiles || 0,
+        deleted_folders: payload.Data.DeletedFolders || 0,
+        modified_files: payload.Data.ModifiedFiles || 0,
+        opened_files: payload.Data.OpenedFiles || 0,
+        added_files: payload.Data.AddedFiles || 0,
+        size_of_modified_files: payload.Data.SizeOfModifiedFiles || 0,
+        size_of_added_files: payload.Data.SizeOfAddedFiles || 0,
+        size_of_examined_files: payload.Data.SizeOfExaminedFiles || 0,
+        size_of_opened_files: payload.Data.SizeOfOpenedFiles || 0,
+        not_processed_files: payload.Data.NotProcessedFiles || 0,
+        added_folders: payload.Data.AddedFolders || 0,
+        too_large_files: payload.Data.TooLargeFiles || 0,
+        files_with_error: payload.Data.FilesWithError || 0,
+        modified_folders: payload.Data.ModifiedFolders || 0,
+        modified_symlinks: payload.Data.ModifiedSymlinks || 0,
+        added_symlinks: payload.Data.AddedSymlinks || 0,
+        deleted_symlinks: payload.Data.DeletedSymlinks || 0,
+        partial_backup: payload.Data.PartialBackup ? 1 : 0,
+        dryrun: payload.Data.Dryrun ? 1 : 0,
+        main_operation: payload.Data.MainOperation,
+        parsed_result: payload.Data.ParsedResult,
+        interrupted: payload.Data.Interrupted ? 1 : 0,
+        version: payload.Data.Version,
+        begin_time: new Date(payload.Data.BeginTime).toISOString(),
+        end_time: new Date(payload.Data.EndTime).toISOString(),
+        warnings_actual_length: payload.Data.WarningsActualLength || 0,
+        errors_actual_length: payload.Data.ErrorsActualLength || 0,
+        messages_actual_length: payload.Data.MessagesActualLength || 0,
+
+        // BackendStatistics fields
+        bytes_downloaded: payload.Data.BackendStatistics?.BytesDownloaded || 0,
+        known_file_size: payload.Data.BackendStatistics?.KnownFileSize || 0,
+        last_backup_date: payload.Data.BackendStatistics?.LastBackupDate ? new Date(payload.Data.BackendStatistics.LastBackupDate).toISOString() : null,
+        backup_list_count: payload.Data.BackendStatistics?.BackupListCount || 0,
+        reported_quota_error: payload.Data.BackendStatistics?.ReportedQuotaError ? 1 : 0,
+        reported_quota_warning: payload.Data.BackendStatistics?.ReportedQuotaWarning ? 1 : 0,
+        backend_main_operation: payload.Data.BackendStatistics?.MainOperation,
+        backend_parsed_result: payload.Data.BackendStatistics?.ParsedResult,
+        backend_interrupted: payload.Data.BackendStatistics?.Interrupted ? 1 : 0,
+        backend_version: payload.Data.BackendStatistics?.Version,
+        backend_begin_time: payload.Data.BackendStatistics?.BeginTime ? new Date(payload.Data.BackendStatistics.BeginTime).toISOString() : null,
+        backend_duration: payload.Data.BackendStatistics?.Duration,
+        backend_warnings_actual_length: payload.Data.BackendStatistics?.WarningsActualLength || 0,
+        backend_errors_actual_length: payload.Data.BackendStatistics?.ErrorsActualLength || 0
+      });
+    });
+
+    // Execute the transaction
+    transaction();
+    return true;
+  } catch (error) {
+    console.error('Error writing backup to database:', error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
+
 // Main function to send test data
-async function sendTestData() {
+async function sendTestData(useUpload: boolean = false) {
   const API_URL = 'http://localhost:8666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
-  const BACKUP_TYPES = ['Files', 'Databases', 'System'];
+  const BACKUP_TYPES = ['Files', 'Databases', 'System', 'Users'];
 
-  // Check server health before proceeding
-  console.log('  🩺 Checking server health...');
-  const isServerHealthy = await checkServerHealth(HEALTH_CHECK_URL);
-  if (!isServerHealthy) {
-    console.error('🚨 Server is not reachable. Please ensure the server is running and try again.');
-    process.exit(1);
+  // Check server health before proceeding (only when using upload mode)
+  if (useUpload) {
+    console.log('  🩺 Checking server health...');
+    const isServerHealthy = await checkServerHealth(HEALTH_CHECK_URL);
+    if (!isServerHealthy) {
+      console.error('🚨 Server is not reachable. Please ensure the server is running and try again.');
+      process.exit(1);
+    }
+    console.log('  👍 Server is healthy, proceeding with data generation...');
+  } else {
+    console.log('  💾 Writing directly to database...');
   }
-  console.log('  👍 Server is healthy, proceeding with data generation...');
 
   for (let machineIndex = 0; machineIndex < machines.length; machineIndex++) {
     const machine = machines[machineIndex];
     const isOddMachine = (machineIndex + 1) % 2 === 1;
     
-    // Generate backup dates according to the pattern
-    const backupDates = generateBackupDates(machineIndex);
+    // Randomly select a subset of backup types for this machine
+    // 70% chance of 2 types, 30% chance of 3-4 types
+    const randomBackupCount = Math.random() < 0.6 
+      ? 2 
+      : Math.floor(Math.random() * 2) + 3; // 3 or 4 types  
+    const shuffledBackupTypes = [...BACKUP_TYPES].sort(() => Math.random() - 0.5);
+    const selectedBackupTypes = shuffledBackupTypes.slice(0, randomBackupCount);
     
-    console.log(`\n    🔄 Generating ${backupDates.length} backups for ${machine.name} (${isOddMachine ? 'Odd' : 'Even'} machine pattern)...`);
+    console.log(`\n    🔄 Generating backups for ${machine.name} (${isOddMachine ? 'Odd' : 'Even'} machine pattern)...`);
     console.log(`      📅 Pattern: ${isOddMachine ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
+    console.log(`      🎯 Selected backup types (${selectedBackupTypes.length}/${BACKUP_TYPES.length}): ${selectedBackupTypes.join(', ')}`);
     
-    for (const backupType of BACKUP_TYPES) {
-      console.log(`        📁 Generating ${backupType} backups...`);
+    for (const backupType of selectedBackupTypes) {
+      // Generate backup dates for this specific backup type
+      const backupDates = generateBackupDates(machineIndex, backupType);
+      console.log(`        📁 Generating ${backupDates.length} ${backupType} backups...`);
       
       for (let i = 0; i < backupDates.length; i++) {
         const backupNumber = i + 1;
@@ -279,40 +424,66 @@ async function sendTestData() {
         const payload = generateBackupPayload(machine, backupNumber, beginTime, backupType);
         
         try {
-          const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-          });
+          const backupDate = new Date(beginTime).toLocaleDateString();
+          let success = false;
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+          if (useUpload) {
+            // Upload via API endpoint
+            const response = await fetch(API_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            success = result.success;
+            
+            // Add a small delay between requests
+            await new Promise(resolve => setTimeout(resolve, 100));
+          } else {
+            // Write directly to database
+            success = await writeBackupToDatabase(payload);
           }
 
-          const result = await response.json();
-          const backupDate = new Date(beginTime).toLocaleDateString();
-          console.log(`          📄 ${backupType} Backup ${backupNumber}/${backupDates.length} for ${machine.name} (${backupDate}): ${result.success ? 'Success' : 'Failed'}`);
-          
-          // Add a small delay between requests
-          await new Promise(resolve => setTimeout(resolve, 100));
+          console.log(`          📄 ${backupType} Backup ${backupNumber}/${backupDates.length} for ${machine.name} (${backupDate}): ${success ? 'Success' : 'Failed'}`);
         } catch (error) {
-          console.error(`🚨 Error sending backup ${backupNumber} for ${machine.name}:`, error instanceof Error ? error.message : String(error));
+          console.error(`🚨 Error processing backup ${backupNumber} for ${machine.name}:`, error instanceof Error ? error.message : String(error));
         }
       }
+    }
+  }
+
+  // Ensure backup settings are complete for all machines and backups (only for direct DB mode)
+  if (!useUpload) {
+    console.log('\n  🔧 Ensuring backup settings are complete...');
+    const backupSettingsResult = await ensureBackupSettingsComplete();
+    if (backupSettingsResult.added > 0) {
+      console.log(`  ✅ Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
     }
   }
 }
 
 // Run the script
+const { useUpload } = parseArgs();
+
 console.log('🛫 Starting test data generation...\n');
+if (useUpload) {
+  console.log('  📤 Mode: Upload via API endpoint');
+} else {
+  console.log('  💾 Mode: Direct database write');
+}
 console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd machines: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
 console.log('     • Even machines: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
-console.log('     • 2 backups per machine (Files and Databases)\n');
+console.log('     • Random backup types per machine (1-3 types from: Files, Databases, System)\n');
 
-sendTestData().then(() => {
+sendTestData(useUpload).then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {
   console.error('🚨 Error generating test data:', error instanceof Error ? error.message : String(error));

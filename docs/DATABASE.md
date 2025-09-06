@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.7.8.dev-blue)
+![](https://img.shields.io/badge/version-0.7.12.dev-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -53,9 +53,11 @@ This document describes the SQLite database schema used by duplistatus to store 
     - [Generated Fields](#generated-fields)
   - [Example JSON to Database Insert](#example-json-to-database-insert)
 - [Chart Metrics](#chart-metrics)
+  - [Chart Data Functions](#chart-data-functions)
   - [Chart Data Generation](#chart-data-generation)
 - [Configuration Management](#configuration-management)
   - [Configuration Functions](#configuration-functions)
+  - [TypeScript Interfaces](#typescript-interfaces)
   - [Common Configuration Keys](#common-configuration-keys-1)
   - [Configuration API Endpoints](#configuration-api-endpoints)
   - [Configuration Data Structures](#configuration-data-structures)
@@ -284,13 +286,38 @@ CREATE TABLE configurations (
 
 #### Common Configuration Keys
 
-- `notifications`: JSON object containing notification settings
-- `backup_settings`: JSON object containing backup-specific settings 
-- `cron_service`: JSON object containing cron service configuration
-- `overdue_backup_notifications`: JSON object tracking overdue backup notification history
-- `last_overdue_check`: String containing the timestamp of the last overdue backup check
-- `notification_frequency`: String value controlling notification frequency
-- `overdue_tolerance`: String value controlling the tolerance for overdue backups (e.g., "24h", "7d")
+- `notifications`: JSON object containing notification settings including:
+  - Ntfy configuration (URL, topic, authentication)
+  - Notification templates for different event types
+  - Machine addresses for Duplicati server connections
+- `backup_settings`: JSON object containing backup-specific settings including:
+  - Per-backup configuration (keyed by `machine_name:backup_name`)
+  - Expected backup intervals and units (hours/days)
+  - Overdue backup check enabled/disabled flags
+  - Notification events for each backup
+  - Overdue tolerance settings
+- `cron_service`: JSON object containing cron service configuration including:
+  - Service port settings
+  - Task configurations (overdue-backup-check, etc.)
+  - Cron expressions and enabled/disabled states
+  - Service health check settings
+- `overdue_backup_notifications`: JSON object tracking overdue backup notification history:
+  - Per-backup notification timestamps (keyed by `machine_name:backup_name`)
+  - Last notification sent timestamps
+  - Last backup date when notification was sent
+  - Used to prevent duplicate notifications
+- `last_overdue_check`: String containing the timestamp of the last overdue backup check:
+  - ISO timestamp format
+  - Used to track when the cron service last ran
+  - Helps with debugging and monitoring
+- `notification_frequency`: String value controlling notification frequency:
+  - Values: `"every_day"`, `"every_week"`, `"every_month"`, `"onetime"`
+  - Controls how often overdue backup notifications are sent
+  - Defaults to `"every_day"` if not set
+- `overdue_tolerance`: String value controlling the tolerance for overdue backups:
+  - Values: `"no_tolerance"`, `"5min"`, `"15min"`, `"30min"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"12h"`, `"1d"`
+  - Controls how much time to add to expected backup intervals before considering a backup overdue
+  - Defaults to `"1h"` if not set
 
 ### Database Version Table
 
@@ -337,9 +364,10 @@ CREATE INDEX idx_backups_backup_id ON backups(backup_id);
 
 The `status` field in the `backups` table can have the following values:
 - `Success`: Backup completed successfully
-- `Failed`: Backup failed
-- `InProgress`: Backup is currently running
+- `Unknown`: Backup status is unknown or not determined
 - `Warning`: Backup completed with warnings
+- `Error`: Backup completed with errors
+- `Fatal`: Backup failed with fatal errors
 
 ## Common Queries
 
@@ -691,6 +719,33 @@ The application provides visualization of backup metrics over time. The followin
 
 These metrics are used in the chart visualization and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
 
+### Chart Data Functions
+
+The application provides several functions for retrieving chart data:
+
+```typescript
+// Get aggregated chart data for all machines
+getAggregatedChartData(): ChartDataPoint[]
+
+// Get aggregated chart data with time range filtering
+getAggregatedChartDataWithTimeRange(startDate: Date, endDate: Date): ChartDataPoint[]
+
+// Get chart data for all machines (with machine IDs)
+getAllMachinesChartData(): ChartDataPoint[]
+
+// Get chart data for a specific machine
+getMachineChartData(machineId: string): ChartDataPoint[]
+
+// Get chart data for a specific machine with time range filtering
+getMachineChartDataWithTimeRange(machineId: string, startDate: Date, endDate: Date): ChartDataPoint[]
+
+// Get chart data for a specific machine and backup
+getMachineBackupChartData(machineId: string, backupName: string): ChartDataPoint[]
+
+// Get chart data for a specific machine and backup with time range filtering
+getMachineBackupChartDataWithTimeRange(machineId: string, backupName: string, startDate: Date, endDate: Date): ChartDataPoint[]
+```
+
 ### Chart Data Generation
 
 The chart data is generated from the backups table using the following query:
@@ -758,6 +813,133 @@ getConfiguration(key: string): string | null
 
 // Set configuration value
 setConfiguration(key: string, value: string): void
+
+// Get cron service configuration
+getCronConfig(): CronServiceConfig
+
+// Set cron service configuration
+setCronConfig(config: CronServiceConfig): void
+
+// Get notification frequency configuration
+getNotificationFrequencyConfig(): NotificationFrequencyConfig
+
+// Set notification frequency configuration
+setNotificationFrequencyConfig(value: NotificationFrequencyConfig): void
+
+// Get overdue tolerance configuration
+getOverdueToleranceConfig(): OverdueTolerance
+
+// Set overdue tolerance configuration
+setOverdueToleranceConfig(value: OverdueTolerance): void
+```
+
+### TypeScript Interfaces
+
+```typescript
+export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal";
+
+export interface Backup {
+  id: string;
+  machine_id: string;
+  name: string;
+  date: string; // ISO string
+  status: BackupStatus;
+  warnings: number;
+  errors: number;
+  messages: number;
+  fileCount: number;
+  fileSize: number; // in bytes
+  uploadedSize: number; // in bytes
+  duration: string; // e.g., "30m 15s"
+  duration_seconds: number; // raw duration in seconds
+  durationInMinutes: number;
+  knownFileSize: number;
+  backup_list_count: number | null;
+  messages_array: string | null;
+  warnings_array: string | null;
+  errors_array: string | null;
+  available_backups: string[] | null;
+}
+
+export interface Machine {
+  id: string;
+  name: string;
+  server_url: string;
+  backups: Backup[];
+  chartData: ChartDataPoint[];
+}
+
+export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
+
+export interface BackupNotificationConfig {
+  notificationEvent: NotificationEvent;
+  expectedInterval: number;
+  overdueBackupCheckEnabled: boolean;
+  intervalUnit: 'hour' | 'day';
+}
+
+export type BackupKey = string; // Format: "machineName:backupName"
+
+export interface NotificationTemplate {
+  title: string;
+  priority: string;
+  tags: string;
+  message: string;
+}
+
+export interface NotificationConfig {
+  ntfy: NtfyConfig;
+  backupSettings: Record<BackupKey, BackupNotificationConfig>;
+  templates: {
+    success: NotificationTemplate;
+    warning: NotificationTemplate;
+    overdueBackup: NotificationTemplate;
+  };
+  machineAddresses: MachineAddress[];
+}
+
+export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
+
+export interface CronServiceConfig {
+  port: number;
+  tasks: {
+    [taskName: string]: {
+      cronExpression: string;
+      enabled: boolean;
+    };
+  };
+  notificationConfig?: NotificationConfig;
+}
+
+export type NotificationFrequencyConfig = "onetime" | "every_day" | "every_week" | "every_month";
+
+export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '6h' | '12h' | '1d';
+
+export interface OverdueNotificationTimestamp {
+  lastNotificationSent: string; // ISO timestamp
+  lastBackupDate: string; // ISO timestamp of the backup that was current when notification was sent
+}
+
+export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;
+
+export interface ChartDataPoint {
+  date: string;
+  isoDate: string;
+  uploadedSize: number;
+  duration: number;
+  fileCount: number;
+  fileSize: number;
+  storageSize: number;
+  backupVersions: number;
+  machineId?: string;
+  backupId?: string;
+}
+
+export interface MachineAddress {
+  id: string;
+  name: string;
+  server_url: string;
+}
 ```
 
 ### Common Configuration Keys
@@ -801,6 +983,8 @@ setConfiguration(key: string, value: string): void
 
 - `GET /api/configuration`: Retrieve all configuration settings
 - `POST /api/configuration`: Update configuration settings
+- `GET /api/configuration/unified`: Retrieve unified configuration including cron settings, notification frequency, and machines with backups
+- `POST /api/configuration/unified`: Update unified configuration
 
 The configuration system provides a centralized way to manage application settings that persist across application restarts and can be modified through the web interface.
 
@@ -810,16 +994,45 @@ The configuration system provides a centralized way to manage application settin
 ```json
 {
   "ntfy": {
-    "enabled": boolean,
     "url": string,
     "topic": string,
-    "username": string,
-    "password": string
+    "accessToken": string
   },
-  "overdueBackupCheck": {
-    "enabled": boolean,
-    "checkInterval": string
-  }
+  "backupSettings": {
+    "machine_name:backup_name": {
+      "notificationEvent": "all" | "warnings" | "errors" | "off",
+      "expectedInterval": number,
+      "overdueBackupCheckEnabled": boolean,
+      "intervalUnit": "hour" | "day"
+    }
+  },
+  "templates": {
+    "success": {
+      "title": string,
+      "priority": string,
+      "tags": string,
+      "message": string
+    },
+    "warning": {
+      "title": string,
+      "priority": string,
+      "tags": string,
+      "message": string
+    },
+    "overdueBackup": {
+      "title": string,
+      "priority": string,
+      "tags": string,
+      "message": string
+    }
+  },
+  "machineAddresses": [
+    {
+      "id": string,
+      "name": string,
+      "server_url": string
+    }
+  ]
 }
 ```
 
@@ -827,10 +1040,10 @@ The configuration system provides a centralized way to manage application settin
 ```json
 {
   "machine_name:backup_name": {
-    "notificationEvent": "ntfy",
+    "notificationEvent": "all" | "warnings" | "errors" | "off",
     "expectedInterval": number,
     "overdueBackupCheckEnabled": boolean,
-    "intervalUnit": "hours" | "days"
+    "intervalUnit": "hour" | "day"
   }
 }
 ```
@@ -860,7 +1073,7 @@ The configuration system provides a centralized way to manage application settin
 
 #### Overdue Tolerance Configuration (`overdue_tolerance`)
 ```json
-string // e.g., "1h"
+"no_tolerance" | "5min" | "15min" | "30min" | "1h" | "2h" | "4h" | "6h" | "12h" | "1d"
 ```
 
 

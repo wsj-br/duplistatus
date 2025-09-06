@@ -220,7 +220,7 @@ export async function POST(request: NextRequest) {
       await sendBackupNotification(backup, machineName, notificationContext);
     } catch (notificationError) {
       // Log notification errors but don't fail the request
-      console.error('Failed to send backup notification:', notificationError);
+      console.error('Failed to send backup notification:', notificationError instanceof Error ? notificationError.message : String(notificationError));
     }
 
     return NextResponse.json({ success: true });

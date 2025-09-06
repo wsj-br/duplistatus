@@ -158,7 +158,7 @@ export function DashboardLayout({
           <CardContent className={`${viewMode === 'table' ? 'min-h-[550px] h-[550px]' : 'h-full'} p-0`}>
             <MetricsChartsPanel
               machineId={selectedMachineId || undefined}
-              lastRefreshTime={lastRefreshTime}
+              chartData={selectedMachineId ? undefined : data.allMachinesChartData}
             />
           </CardContent>
         </Card>

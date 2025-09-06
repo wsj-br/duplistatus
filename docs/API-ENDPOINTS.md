@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.8.dev-blue)
+![](https://img.shields.io/badge/version-0.7.12.dev-blue)
 
 <br>
 
@@ -47,6 +47,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get All Machines](#get-all-machines)
   - [Get Machines with Backups](#get-machines-with-backups)
   - [Get Machine Details](#get-machine-details)
+  - [Delete Machine](#delete-machine)
   - [Get Machine Data with Overdue Info](#get-machine-data-with-overdue-info)
   - [Get Chart Data](#get-chart-data)
 - [Chart Data](#chart-data)
@@ -56,6 +57,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Machine Backup Chart Data](#get-machine-backup-chart-data)
 - [Configuration Management](#configuration-management)
   - [Get Configuration](#get-configuration)
+  - [Get Unified Configuration](#get-unified-configuration)
   - [Update Notification Configuration](#update-notification-configuration)
   - [Update Backup Settings](#update-backup-settings)
   - [Update Notification Templates](#update-notification-templates)
@@ -77,7 +79,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - [Administration](#administration)
   - [Collect Backups](#collect-backups)
   - [Cleanup Backups](#cleanup-backups)
-  - [Delete Machine](#delete-machine)
+  - [Delete Machine](#delete-machine-1)
   - [Delete Backup](#delete-backup)
   - [Test Server Connection](#test-server-connection)
   - [Get Machine Server URL](#get-machine-server-url)
@@ -108,7 +110,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
-  --send-http-url=http://my.local.server:9666/api/upload
+  --send-http-url=http://my.local.server:8666/api/upload
   --send-http-result-output-format=Json
   --send-http-log-level=Information
   ```
@@ -124,6 +126,12 @@ All API responses are returned in JSON format with consistent error handling pat
   - `400`: Missing required fields or invalid operation type
   - `409`: Duplicate backup data (ignored)
   - `500`: Server error processing backup data
+- **Notes**:
+  - Only processes backup operations (MainOperation must be "Backup")
+  - Supports duplicate detection to prevent data redundancy
+  - Automatically sends notifications after successful backup insertion
+  - Logs request data in development mode for debugging
+  - Ensures backup settings are complete for all machines and backups
 
 <br>
 
@@ -172,6 +180,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "status": 200
   }
   ```
+- **Error Responses**:
+  - `404`: Machine not found
+  - `500`: Internal server error
+- **Notes**:
+  - Machine identifier can be either ID or name
+  - Returns null for latest_backup if no backups exist
+  - Includes cache control headers to prevent caching
 
 <br>
 
@@ -246,9 +261,14 @@ All API responses are returned in JSON format with consistent error handling pat
     "status": 200
   }
   ```
-
-> [!NOTE]
-> This endpoint returns the latest backup for each backup (backup_name) that the machine has, unlike `/api/lastbackup/:machineId` which returns only the single most recent backup.
+- **Error Responses**:
+  - `404`: Machine not found
+  - `500`: Internal server error
+- **Notes**:
+  - Machine identifier can be either ID or name
+  - Returns latest backup for each backup type (backup_name) that the machine has
+  - Unlike `/api/lastbackup/:machineId` which returns only the single most recent backup
+  - Includes cache control headers to prevent caching
 
 <br>
 
@@ -268,11 +288,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "secondsSinceLastBackup": 7200
   }
   ```
-
-> [!NOTE]
->    In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`.
->    The field `overdueBackupsCount` shows the number of currently overdue backups.
->    The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all machines.
+- **Error Responses**:
+  - `500`: Server error fetching summary data
+- **Notes**:
+  - In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`
+  - The field `overdueBackupsCount` shows the number of currently overdue backups
+  - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all machines
+  - Returns fallback response with zeros if data fetching fails
 
 <br>
 
@@ -305,6 +327,12 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
+- **Error Responses**:
+  - `500`: Server error fetching machines summary
+- **Notes**:
+  - Returns array of machine summaries with overdue status
+  - Includes notification event and expected backup date information
+  - Shows last overdue check timestamp and last notification sent
 
 <br>
 
@@ -321,6 +349,11 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
+- **Error Responses**:
+  - `500`: Server error fetching machines
+- **Notes**:
+  - Returns only id and name for dropdown usage
+  - Simple list format for machine selection
 
 <br>
 
@@ -334,10 +367,17 @@ All API responses are returned in JSON format with consistent error handling pat
     {
       "id": "machine-id",
       "name": "Machine Name",
-      "backupName": "Backup Name"
+      "backupName": "Backup Name",
+      "server_url": "http://localhost:8200"
     }
   ]
   ```
+- **Error Responses**:
+  - `500`: Server error fetching machines with backups
+- **Notes**:
+  - Returns machine name and backup name combinations
+  - Includes server URL for each machine-backup combination
+  - Used for configuration and management purposes
 
 <br>
 
@@ -391,6 +431,40 @@ All API responses are returned in JSON format with consistent error handling pat
     ]
   }
   ```
+- **Error Responses**:
+  - `404`: Machine not found
+  - `500`: Server error fetching machine details
+- **Notes**:
+  - Returns detailed machine information including all backups
+  - Includes chart data for visualization
+  - Used for machine-specific views and analysis
+
+### Delete Machine
+- **Endpoint**: `/api/machines/:id`
+- **Method**: DELETE
+- **Description**: Deletes a machine and all its associated backups.
+- **Parameters**:
+  - `id`: the machine identifier
+
+- **Response**:
+  ```json
+  {
+    "message": "Successfully deleted machine and 15 backups",
+    "status": 200,
+    "changes": {
+      "backupChanges": 15,
+      "machineChanges": 1
+    }
+  }
+  ```
+- **Error Responses**:
+  - `404`: Machine not found
+  - `500`: Server error during deletion
+- **Notes**: 
+  - This operation is irreversible
+  - All backup data associated with the machine will be permanently deleted
+  - The machine record itself will also be removed
+  - Returns count of deleted backups and machines
 
 <br>
 
@@ -423,6 +497,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "lastOverdueCheck": "2024-03-20T12:00:00Z"
   }
   ```
+- **Error Responses**:
+  - `404`: Machine not found
+  - `500`: Server error fetching machine details
+- **Notes**:
+  - Returns machine data with overdue backup information
+  - Includes overdue backup details and timestamps
+  - Used for overdue backup management and monitoring
 
 <br>
 
@@ -445,6 +526,12 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
+- **Error Responses**:
+  - `500`: Server error fetching chart data
+- **Notes**:
+  - Returns empty array if data fetching fails
+  - Used for visualization and analytics
+  - Aggregates data across all machines
 
 <br>
 
@@ -494,6 +581,13 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
+- **Error Responses**:
+  - `400`: Invalid date parameters
+  - `500`: Server error fetching chart data
+- **Notes**:
+  - Supports time range filtering with startDate and endDate parameters
+  - Validates date format before processing
+  - Returns aggregated data across all machines
 
 <br>
 
@@ -521,6 +615,13 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
+- **Error Responses**:
+  - `400`: Invalid date parameters
+  - `500`: Server error fetching chart data
+- **Notes**:
+  - Supports time range filtering with startDate and endDate parameters
+  - Validates date format before processing
+  - Returns chart data for specific machine
 
 <br>
 
@@ -549,6 +650,14 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
+- **Error Responses**:
+  - `400`: Invalid date parameters
+  - `500`: Server error fetching chart data
+- **Notes**:
+  - Supports time range filtering with startDate and endDate parameters
+  - Validates date format before processing
+  - Returns chart data for specific machine and backup combination
+  - Backup name must be URL encoded
 
 <br>
 
@@ -595,7 +704,7 @@ All API responses are returned in JSON format with consistent error handling pat
       }
     },
     "overdue_tolerance": "1h",
-    "machineConnections": [
+    "machineAddresses": [
       {
         "id": "machine-id",
         "name": "Machine Name",
@@ -604,6 +713,82 @@ All API responses are returned in JSON format with consistent error handling pat
     ]
   }
   ```
+- **Error Responses**:
+  - `500`: Server error fetching configuration
+- **Notes**:
+  - Returns complete notification and backup settings configuration
+  - Includes machine addresses and overdue tolerance
+  - Creates default configuration if none exists
+
+### Get Unified Configuration
+- **Endpoint**: `/api/configuration/unified`
+- **Method**: GET
+- **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and machines with backups.
+- **Response**:
+  ```json
+  {
+    "ntfy": {
+      "url": "https://ntfy.sh",
+      "topic": "duplistatus-notifications",
+      "accessToken": ""
+    },
+    "backupSettings": {
+      "Machine Name:Backup Name": {
+        "notificationEvent": "all",
+        "expectedInterval": 24,
+        "overdueBackupCheckEnabled": true,
+        "intervalUnit": "hours"
+      }
+    },
+    "templates": {
+      "success": {
+        "title": "✅ {status} - {backup_name} @ {machine_name}",
+        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.",
+        "priority": "default",
+        "tags": "duplicati, duplistatus, success"
+      },
+      "warning": {
+        "title": "⚠️ {status} - {backup_name} @ {machine_name}",
+        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.",
+        "priority": "high",
+        "tags": "duplicati, duplistatus, warning, error"
+      },
+      "overdueBackup": {
+        "title": "🕑 Overdue - {backup_name} @ {machine_name}",
+        "message": "The backup {backup_name} is overdue on {machine_name}.",
+        "priority": "default",
+        "tags": "duplicati, duplistatus, overdue"
+      }
+    },
+    "overdue_tolerance": "1h",
+    "machineAddresses": [
+      {
+        "id": "machine-id",
+        "name": "Machine Name",
+        "server_url": "http://localhost:8200"
+      }
+    ],
+    "cronConfig": {
+      "cronExpression": "*/20 * * * *",
+      "enabled": true
+    },
+    "notificationFrequency": "every_day",
+    "machinesWithBackups": [
+      {
+        "id": "machine-id",
+        "name": "Machine Name",
+        "backupName": "Backup Name",
+        "server_url": "http://localhost:8200"
+      }
+    ]
+  }
+  ```
+- **Error Responses**:
+  - `500`: Server error fetching unified configuration
+- **Notes**:
+  - Returns all configuration data in a single response
+  - Includes cron settings, notification frequency, and machines with backups
+  - Fetches all data in parallel for better performance
 
 ### Update Notification Configuration
 - **Endpoint**: `/api/configuration/notifications`
@@ -634,6 +819,13 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   }
   ```
+- **Error Responses**:
+  - `400`: NTFY configuration is required
+  - `500`: Server error updating notification configuration
+- **Notes**:
+  - Updates only the NTFY configuration
+  - Generates default topic if none provided
+  - Preserves existing configuration settings
 
 ### Update Backup Settings
 - **Endpoint**: `/api/configuration/backup-settings`
@@ -658,6 +850,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "message": "Backup settings updated successfully"
   }
   ```
+- **Error Responses**:
+  - `400`: Backup settings are required
+  - `500`: Server error updating backup settings
+- **Notes**:
+  - Updates backup notification settings for specific machines/backups
+  - Cleans up overdue backup notifications for disabled backups
+  - Clears notifications when timeout settings change
 
 ### Update Notification Templates
 - **Endpoint**: `/api/configuration/templates`
@@ -682,6 +881,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "message": "Notification templates updated successfully"
   }
   ```
+- **Error Responses**:
+  - `400`: Templates are required
+  - `500`: Server error updating notification templates
+- **Notes**:
+  - Updates notification templates for different backup statuses
+  - Preserves existing configuration settings
+  - Templates support variable substitution
 
 ### Update Overdue Tolerance
 - **Endpoint**: `/api/configuration/overdue-tolerance`
@@ -699,6 +905,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "message": "Overdue tolerance updated successfully"
   }
   ```
+- **Error Responses**:
+  - `400`: Overdue tolerance is required
+  - `500`: Server error updating overdue tolerance
+- **Notes**:
+  - Updates the overdue tolerance setting in hours
+  - Affects when backups are considered overdue
+  - Used by the overdue backup checker
 
 ### Get Server Connections
 - **Endpoint**: `/api/configuration/server-connections`
@@ -707,7 +920,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Response**:
   ```json
   {
-    "machineConnections": [
+    "machineAddresses": [
       {
         "id": "machine-id",
         "name": "Machine Name",
@@ -716,6 +929,12 @@ All API responses are returned in JSON format with consistent error handling pat
     ]
   }
   ```
+- **Error Responses**:
+  - `500`: Server error fetching server connections
+- **Notes**:
+  - Returns current server connections configuration
+  - Includes machine addresses and server URLs
+  - Used for server connection management
 
 <br>
 
@@ -730,7 +949,8 @@ All API responses are returned in JSON format with consistent error handling pat
   {
     "ntfyConfig": {
       "url": "https://ntfy.sh",
-      "topic": "test-topic"
+      "topic": "test-topic",
+      "accessToken": "optional-access-token"
     }
   }
   ```
@@ -740,6 +960,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "message": "Test notification sent successfully"
   }
   ```
+- **Error Responses**:
+  - `400`: NTFY configuration is required
+  - `500`: Failed to send test notification with error details
+- **Notes**:
+  - Sends a test notification to verify NTFY configuration
+  - Includes timestamp in the test message
+  - Validates NTFY URL and topic before sending
 
 ### Test Template
 - **Endpoint**: `/api/notifications/test-template`
@@ -766,6 +993,13 @@ All API responses are returned in JSON format with consistent error handling pat
     "success": true
   }
   ```
+- **Error Responses**:
+  - `400`: Template and NTFY configuration are required
+  - `500`: Failed to send test notification
+- **Notes**:
+  - Tests notification template with sample data
+  - Processes template variables with sample values
+  - Includes timestamp in the test message
 
 ### Check Overdue Backups
 - **Endpoint**: `/api/notifications/check-overdue`
@@ -783,6 +1017,12 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   }
   ```
+- **Error Responses**:
+  - `500`: Failed to check for overdue backups
+- **Notes**:
+  - Manually triggers overdue backup check
+  - Returns statistics about the check process
+  - Sends notifications for overdue backups found
 
 ### Clear Overdue Timestamps
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
@@ -794,6 +1034,12 @@ All API responses are returned in JSON format with consistent error handling pat
     "message": "Overdue backup notification timestamps cleared successfully"
   }
   ```
+- **Error Responses**:
+  - `500`: Failed to clear overdue backup timestamps
+- **Notes**:
+  - Clears all overdue backup notification timestamps
+  - Allows notifications to be sent again
+  - Useful for testing notification system
 
 ### Resend Frequency Configuration
 - **Endpoint**: `/api/notifications/resend-frequency`
@@ -805,6 +1051,11 @@ All API responses are returned in JSON format with consistent error handling pat
     "value": "every_day"
   }
   ```
+- **Error Responses**:
+  - `500`: Failed to fetch config
+- **Notes**:
+  - Retrieves current notification frequency configuration
+  - Used for overdue backup notification management
 
 - **Method**: POST
 - **Description**: Updates the notification frequency configuration.
@@ -814,7 +1065,20 @@ All API responses are returned in JSON format with consistent error handling pat
     "value": "every_week"
   }
   ```
+- **Response**:
+  ```json
+  {
+    "value": "every_week"
+  }
+  ```
 - **Available Values**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
+- **Error Responses**:
+  - `400`: Invalid value
+  - `500`: Failed to set config
+- **Notes**:
+  - Updates notification frequency configuration
+  - Validates value against allowed options
+  - Affects how often overdue notifications are sent
 
 <br>
 
@@ -831,6 +1095,12 @@ All API responses are returned in JSON format with consistent error handling pat
     "enabled": true
   }
   ```
+- **Error Responses**:
+  - `500`: Failed to get cron configuration
+- **Notes**:
+  - Returns current cron service configuration
+  - Includes cron expression and enabled status
+  - Used for cron service management
 
 ### Update Cron Configuration
 - **Endpoint**: `/api/cron-config`
@@ -842,7 +1112,20 @@ All API responses are returned in JSON format with consistent error handling pat
     "interval": "20min"
   }
   ```
+- **Response**:
+  ```json
+  {
+    "success": true
+  }
+  ```
 - **Available Intervals**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
+- **Error Responses**:
+  - `400`: Interval is required
+  - `500`: Failed to update cron configuration
+- **Notes**:
+  - Updates cron service configuration
+  - Validates interval against allowed options
+  - Affects overdue backup check frequency
 
 ### Cron Service Proxy
 - **Endpoint**: `/api/cron/*`
@@ -858,6 +1141,10 @@ All API responses are returned in JSON format with consistent error handling pat
     "message": "The cron service is not available. Please start it with: npm run cron:start"
   }
   ```
+- **Notes**:
+  - Proxies requests to the cron service
+  - Returns 503 if cron service is not available
+  - Supports both GET and POST methods
 
 <br>
 
@@ -893,6 +1180,12 @@ All API responses are returned in JSON format with consistent error handling pat
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
+- **Notes**: 
+  - Returns 200 status for healthy systems
+  - Returns 503 status for unhealthy systems or prepared statement failures
+  - Includes `preparedStatementsError` field when prepared statements fail
+  - Stack trace only included in development mode
+  - Tests basic database connection and prepared statements
 
 ### Environment Information
 - **Endpoint**: `/api/environment`
@@ -901,15 +1194,20 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Response**:
   ```json
   {
-    "PORT": "9666",
-    "CRON_PORT": "9667",
-    "NODE_ENV": "production",
+    "PORT": "8666",
+    "CRON_PORT": "8667",
+    "NODE_ENV": "development",
     "NEXT_TELEMETRY_DISABLED": "1",
-    "LANG": "en_US.UTF-8",
     "TZ": "UTC",
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
+- **Error Responses**:
+  - `500`: Server error fetching environment information
+- **Notes**:
+  - Returns current environment variables
+  - Includes system information and timestamp
+  - Used for debugging and system monitoring
 
 <br>
 
@@ -952,6 +1250,8 @@ All API responses are returned in JSON format with consistent error handling pat
   - The endpoint supports both HTTP and HTTPS protocols
   - Self-signed certificates can be allowed with `allowSelfSigned: true`
   - Connection timeouts are configurable via environment variables
+  - Logs collected data in development mode for debugging
+  - Ensures backup settings are complete for all machines and backups
 
 <br>
 
@@ -975,12 +1275,14 @@ All API responses are returned in JSON format with consistent error handling pat
   ```
 - **Error Responses**:
   - `400`: Invalid retention period specified
-  - `500`: Server error during cleanup operation
+  - `500`: Server error during cleanup operation with detailed error information
 - **Notes**: 
   - The cleanup operation is irreversible
   - Backup data is permanently deleted from the database
   - Machine records are preserved even if all backups are deleted
   - When "Delete all data" is selected, all machines and backups are removed and configuration is cleared
+  - Enhanced error reporting includes details and stack trace in development mode
+  - Supports both time-based retention and complete data deletion
 
 <br>
 
@@ -1037,11 +1339,13 @@ All API responses are returned in JSON format with consistent error handling pat
   - `403`: Backup deletion is only available in development mode
   - `400`: Invalid backup ID
   - `404`: Backup not found
-  - `500`: Server error during deletion
+  - `500`: Server error during deletion with detailed error information
 - **Notes**: 
   - This operation is only available in development mode
   - This operation is irreversible
   - The backup data will be permanently deleted from the database
+  - Enhanced error reporting includes details and timestamp
+  - Returns information about the deleted backup
 
 <br>
 
@@ -1068,6 +1372,8 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**: 
   - The endpoint validates URL format and tests connectivity
   - Returns success if the server responds with a 401 status (expected for login endpoint without credentials)
+  - Tests connection to the Duplicati server's login endpoint
+  - Supports both HTTP and HTTPS protocols
 
 <br>
 
@@ -1088,6 +1394,10 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Error Responses**:
   - `404`: Machine not found
   - `500`: Server error
+- **Notes**:
+  - Returns server URL for specific machine
+  - Used for server connection management
+  - Returns empty string if no server URL is set
 
 <br>
 
@@ -1119,6 +1429,8 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**: 
   - The endpoint validates URL format before updating
   - Empty or null server URLs are allowed
+  - Supports both HTTP and HTTPS protocols
+  - Returns updated machine information
 
 <br>
 

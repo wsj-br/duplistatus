@@ -5,7 +5,7 @@
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.12.dev-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
@@ -25,9 +25,9 @@ This document describes how to install and configure the **duplistatus** server.
   - [Option 4: Using Docker CLI](#option-4-using-docker-cli)
   - [Option 5: Using Podman with Pod (CLI)](#option-5-using-podman-with-pod-cli)
   - [Option 6: Using Podman Compose (CLI)](#option-6-using-podman-compose-cli)
-- [Configuring the locale and timezone](#configuring-the-locale-and-timezone)
+- [Configuring the timezone](#configuring-the-timezone)
   - [Using your Linux Configuration](#using-your-linux-configuration)
-  - [List of Locales and Timezones](#list-of-locales-and-timezones)
+  - [List of Timezones](#list-of-timezones)
 - [Environment Variables](#environment-variables)
 - [Duplicati Server Configuration (Required)](#duplicati-server-configuration-required)
 - [Next Steps](#next-steps)
@@ -303,13 +303,13 @@ Apply this configuration to all your Duplicati servers:
 > After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
 
-
-<br><br>
+<br>
 
 ## Next Steps
 
 Check the [User Guide](USER-GUIDE.md) on how to use **duplistatus**.
 
+<br>
 
 ## License
 

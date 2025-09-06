@@ -4,7 +4,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.12.dev-blue)
 
 <br>
 
@@ -29,7 +29,7 @@ This web application monitors and visualizes backup operations from [Duplicati](
 - [User Guide](#user-guide)
 - [API Reference](#api-reference)
 - [Development](#development)
-- [Migrating to Version 0.6.1](#migrating-to-version-061)
+- [Migrating to Version 0.7.x](#migrating-to-version-07x)
   - [The Migration Process](#the-migration-process)
   - [Monitoring the Migration](#monitoring-the-migration)
   - [Rolling Back (If Needed)](#rolling-back-if-needed)
@@ -122,7 +122,7 @@ This application was developed almost entirely using AI tools. The step-by-step 
 <br>
 
 
-## Migrating to Version 0.6.1
+## Migrating to Version 0.7.x
 
 Your database will automatically update when you start the new version. This process is safe and preserves all your existing data.
 
@@ -148,9 +148,9 @@ docker logs <container-name>
 
 Look for these messages to confirm a successful migration:
 
-- `"Found 1 pending migrations"`
-- `"Running consolidated migration 2.0..."`
-- `"Migration 2.0 completed successfully"`
+- `"Found X pending migrations"`
+- `"Running consolidated migration X.0..."`
+- `"Migration X.0 completed successfully"`
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
@@ -164,7 +164,7 @@ If you encounter issues, you can restore your database by following these steps:
 2. Replace the current database file `backups.db` with the backup file.
    - The default location is `/var/lib/docker/volumes/duplistatus_data/_data/`
    - Verify the correct path based on your current configuration and installation.
-3. Install the previous version of `duplistatus` container image (`wsjbr/duplistatus:v0.5.0`)
+3. Install the previous version of `duplistatus` container image.
 4. Restart the container.
 5. Please report the issue in the [duplistatus project](https://github.com/wsj-br/duplistatus/issues) on GitHub, including the Docker logs.
 

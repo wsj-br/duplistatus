@@ -3,7 +3,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.12.dev-blue)
 
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
@@ -117,19 +117,20 @@ Provides easy access to functions and configurations.
 
 <div style="padding-left: 60px;">
 
-![application toolbar](img/duplistatus_toolbar.png)
+ ![application toolbar](img/duplistatus_toolbar.png)
 
 
-| Button                | Description                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------ |
-| Refresh screen        | Execute a refresh immediately                                                        |
-| Auto-refresh          | Enable/disable auto-refresh. Configure the interval in `Display Settings`            |
-| Open NTFY             | Open the ntfy.sh website on the topic configured in `Settings → NTFY Settings`       |
-| Check overdue backups | Execute the check for overdue backups now                                            |
-| Collect  logs         | Connect to a Duplicati server to collect all backup logs from its database           |
-| Database maintenance  | Clean the database, remove old backup logs, or delete data for a specific machine    |
-| Settings              | Configure notifications for received backup logs and overdue backups                 |
-| Theme                 | Toggle between dark (default) and light themes                                       |
+| Button                  | Description                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| Refresh screen          | Execute a refresh immediately                                                        |
+| Auto-refresh            | Enable/disable auto-refresh. Configure the interval in `Display Settings`            |
+| Open NTFY               | Open the ntfy.sh website on the topic configured in `Settings → NTFY Settings`       |
+| Duplicati configuration | Open the Duplicati configuration (web interface)                                     |
+| Check overdue backups   | Execute the check for overdue backups now                                            |
+| Collect  logs           | Connect to a Duplicati server to collect all backup logs from its database           |
+| Database maintenance    | Clean the database, remove old backup logs, or delete data for a specific machine    |
+| Settings                | Configure notifications, overdue monitoring, machine addresses and templates         |
+| Theme                   | Toggle between dark (default) and light themes                                       |
 
 </div>
 

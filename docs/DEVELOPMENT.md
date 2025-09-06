@@ -5,6 +5,7 @@
 
 # Development instructions
 
+![](https://img.shields.io/badge/version-0.7.12.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -20,10 +21,12 @@
   - [Cron Service](#cron-service)
       - [Start cron service in development mode:](#start-cron-service-in-development-mode)
       - [Start cron service in production mode:](#start-cron-service-in-production-mode)
+      - [Start cron service locally (for testing):](#start-cron-service-locally-for-testing)
   - [Test Scripts](#test-scripts)
     - [Generate Test Data](#generate-test-data)
     - [Show the overdue notifications contents (to debug notification system)](#show-the-overdue-notifications-contents-to-debug-notification-system)
     - [Run overdue-check at a specific date/time (to debug notification system)](#run-overdue-check-at-a-specific-datetime-to-debug-notification-system)
+    - [Test cron service port connectivity](#test-cron-service-port-connectivity)
   - [Workspace admin scripts & commands](#workspace-admin-scripts--commands)
     - [Clean Database](#clean-database)
     - [Clean build artifacts and dependencies](#clean-build-artifacts-and-dependencies)
@@ -56,8 +59,8 @@
 ## Prerequisites
 
 - docker / docker compose
-- Node.js 18.19.0 or later (recommended: 20.x)
-- pnpm 10.12.4 or later (install with `npm install -g pnpm`)
+- Node.js ^20.x (minimum: 18.19.0, recommended: 20.x)
+- pnpm ^10.x (minimum: 10.12.4, recommended: 10.15.1+)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 - doctoc for markdown TOC generation
@@ -74,7 +77,7 @@ cd duplistatus
 2. Install dependencies (debian/ubuntu):
 ```bash
 sudo apt update
-sudo apt install nodejs npm sqlite3 imagemagick -y
+sudo apt install nodejs npm sqlite3 imagemagick  -y
 sudo npm install -g pnpm npm-check-updates doctoc markdown-link-check
 pnpm install
 ```
@@ -84,7 +87,7 @@ pnpm install
 
 For the default tcp port (8666)
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
 
@@ -92,11 +95,22 @@ pnpm run dev
 
 ## Development Mode Features
 
-When running in development mode (`pnpm run dev`), the application includes additional features to help with debugging and development:
+When running in development mode (`pnpm dev`), the application includes additional features to help with debugging and development:
 
 - **JSON File Storage**: All received backup data is stored as JSON files in the `data` directory. These files are named using the timestamp of when they were received, in the format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC time). This feature is only active in development mode and helps with debugging by preserving the raw data received from Duplicati.
 
--  **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.
+- **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.
+
+- **Version Update**: The development server automatically updates the version information before starting, ensuring the latest version is displayed in the application.
+
+- **Backup Deletion**: On the machine detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
+
+- **Enhanced Debugging Tools**: Development mode includes additional debugging features such as:
+  - Database maintenance menu with cleanup options
+  - Test notification functionality
+  - Overdue backup check button for manual testing
+  - Server connection testing tools
+  - Backup collection utilities
 
 <br>
 
@@ -140,6 +154,11 @@ pnpm cron:dev
 pnpm cron:start
 ```
 
+#### Start cron service locally (for testing):
+```bash
+pnpm cron:start-local
+```
+
 The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using `CRON_PORT` environment variable.
 
 The cron service includes:
@@ -148,6 +167,11 @@ The cron service includes:
 - **Task management**: `POST /start/:taskName` and `POST /stop/:taskName` - Control individual tasks
 - **Configuration reload**: `POST /reload-config` - Reload configuration from database
 - **Automatic restart**: The service automatically restarts if it crashes (managed by `duplistatus-cron.sh`)
+- **Watch mode**: Development mode includes file watching for automatic restarts on code changes
+- **Overdue backup monitoring**: Automated checking and notification of overdue backups
+- **Flexible scheduling**: Configurable cron expressions for different tasks
+- **Database integration**: Shares the same SQLite database with the main application
+- **RESTful API**: Complete API for service management and monitoring
 
 
 <br><br>
@@ -160,7 +184,14 @@ The project includes several test scripts to help with development and testing:
 ```bash
 pnpm run generate-test-data
 ```
-This script generates and uploads test backup data for multiple machines and backups. 
+This script generates test backup data for multiple machines and backups. 
+
+Use the option `--upload` to send the generated data to the `/api/upload`
+
+```bash
+pnpm run generate-test-data --upload
+```
+
 
 
 
@@ -175,6 +206,13 @@ pnpm show-overdue-notifications
 pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 ``` 
 
+### Test cron service port connectivity
+
+```bash
+pnpm test-cron-port
+```
+This script tests the connectivity to the cron service port and verifies that the service is responding correctly.
+
 
 <br><br>
 
@@ -182,9 +220,9 @@ pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 
 ### Clean Database
 ```bash
-./scripts/clean-db
+./scripts/clean-db.sh
 ```
-Delete the database (.db + shm + wal) files. The database will recreated automatically when running the application.
+Cleans the database by removing all data while preserving the database schema and structure.
 
 >[!CAUTION]
 > Use with caution as this will delete all existing data.
@@ -340,24 +378,24 @@ To manually trigger the Docker image build workflow:
 ## Frameworks, libraries and tools used
 
 1. **Runtime & Package Management**
-   - Node.js 18.19.0+ (recommended: 20.x)
-   - pnpm 10.12.4+ (enforced via preinstall hook)
+   - Node.js ^20.x (minimum: 18.19.0, recommended: 20.x)
+   - pnpm ^10.x (minimum: 10.12.4, enforced via preinstall hook)
 
 2. **Core Frameworks & Libraries**
    - Next.js 15.5.2 – React-based SSR/SSG framework with App Router
    - React 19.1.1 & React-DOM 19.1.1
    - Radix UI (@radix-ui/react-*) – headless component primitives (latest versions)
-   - Tailwind CSS 4.1.12 + tailwindcss-animate 1.0.7 plugin
-   - PostCSS (@tailwindcss/postcss 4.1.12 + autoprefixer 10.4.21)
+   - Tailwind CSS 4.1.13 + tailwindcss-animate 1.0.7 plugin
+   - PostCSS (@tailwindcss/postcss 4.1.13 + autoprefixer 10.4.21)
    - Better-sqlite3 12.2.0 + SQLite3 (data store)
    - Recharts 3.1.2 – charting library
    - react-day-picker 9.9.0 – date picker
    - react-hook-form 7.62.0 – forms
-   - lucide-react 0.540.0 – icon components
+   - lucide-react 0.542.0 – icon components
    - clsx 2.1.1 – utility for conditional classNames
    - class-variance-authority 0.7.1 – variant styling helper
    - date-fns 4.1.0 – date utilities
-   - uuid 11.1.0 – unique IDs
+   - uuid 12.0.0 – unique IDs
    - server-only 0.0.1 – Next helper for server-only modules
    - express 5.1.0 – web framework for cron service
    - node-cron 4.2.1 – cron job scheduling
@@ -368,7 +406,7 @@ To manually trigger the Docker image build workflow:
 3. **Type Checking & Linting**
    - TypeScript 5.9.2 + tsc (noEmit)
    - TSX 4.20.5 – lightweight runner for TS scripts
-   - ESLint 9.34.0 (via `next lint`)
+   - ESLint 9.35.0 (via `next lint`)
 
 4. **Build & Dev Tools**
    - Web/CSS bundling via Next's built-in toolchain
@@ -424,23 +462,32 @@ To manually trigger the Docker image build workflow:
     - Click-to-view available versions functionality
     - Improved navigation with return links
     - Status badges that link to backup details
-    - Database maintenance menu
-    - NTFY messages button
-    - Global refresh controls
-    - Overdue backup check button
+    - Database maintenance menu with cleanup operations
+    - NTFY messages button for notification management
+    - Global refresh controls with visual feedback
+    - Overdue backup check button for manual testing
     - Enhanced backup collection menu
-    - Display menu component
+    - Display menu component for UI customization
     - Theme toggle (light/dark mode)
-    - Server connection management
-    - Metrics charts panel
+    - Server connection management and testing
+    - Metrics charts panel with interactive visualizations
+    - Machine cards with comprehensive backup information
+    - Auto-refresh functionality for real-time updates
+    - Progress indicators and loading states
+    - Responsive design for mobile and desktop
 
 12. **API Documentation**
     - Comprehensive API endpoints documented in `API-ENDPOINTS.md`
     - RESTful API structure with consistent error handling
-    - Configuration management endpoints
-    - Notification system endpoints
-    - Cron service management endpoints
+    - Core operations: Upload, retrieval, and management of backup data
+    - Configuration management endpoints for notifications, server connections, and backup settings
+    - Notification system endpoints with NTFY integration
+    - Cron service management endpoints for task control
     - Health check and monitoring endpoints
+    - Chart data endpoints for visualization
+    - Machine and backup management endpoints
+    - Database maintenance and cleanup endpoints
+    - Environment and system information endpoints
 
 13. **Database & Data Management**
     - Database schema and key queries documented in `DATABASE.md`
@@ -465,29 +512,41 @@ To manually trigger the Docker image build workflow:
 
 ### Code Organization
 - **Components**: Located in `src/components/` with subdirectories for specific features
-  - `ui/` - shadcn/ui components
-  - `dashboard/` - Dashboard-specific components
-  - `settings/` - Settings page components
-  - `machine-details/` - Machine detail page components
+  - `ui/` - shadcn/ui components and reusable UI elements
+  - `dashboard/` - Dashboard-specific components (machine cards, tables, summary cards)
+  - `settings/` - Settings page components (forms, configuration panels)
+  - `machine-details/` - Machine detail page components (backup tables, charts, summaries)
 - **API Routes**: Located in `src/app/api/` with RESTful endpoint structure
+  - Core operations: upload, machines, backups, summary
+  - Configuration: notifications, server connections, backup settings
+  - Chart data: machine-specific and aggregated data
+  - Cron service: task management and monitoring
+  - Health and environment endpoints
 - **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`
 - **Types**: TypeScript interfaces in `src/lib/types.ts`
 - **Configuration**: Default configs in `src/lib/default-config.ts`
 - **Cron Service**: Located in `src/cron-service/` with separate service implementation
+- **Scripts**: Utility scripts in `scripts/` directory for testing and maintenance
 
 ### Testing
 - Use the provided test scripts for generating data and testing functionality
-- Test notification system with the built-in test endpoints
-- Verify cron service functionality with the test scripts
-- Test the docker and podman images
+- Test notification system with the built-in test endpoints (`/api/notifications/test`)
+- Verify cron service functionality with the test scripts (`pnpm test-cron-port`)
+- Test the docker and podman images using the provided scripts
 - Use TypeScript strict mode for compile-time error checking
+- Test database operations with the provided utilities
+- Use the test data generation script (`pnpm generate-test-data`) for comprehensive testing
+- Test overdue backup functionality with manual triggers (`pnpm run-overdue-check`)
 
 ### Debugging
 - Development mode provides verbose logging and JSON file storage
 - Use the browser's developer tools for frontend debugging
 - Check the console for detailed error messages and API responses
-- Cron service includes health check endpoints for monitoring
+- Cron service includes health check endpoints for monitoring (`/api/cron/health`)
 - Database utilities include debugging and maintenance functions
+- Use the database maintenance menu for cleanup and debugging operations
+- Test server connections with the built-in connection testing tools
+- Monitor notification system with the NTFY messages button
 
 ### API Development
 - All API endpoints are documented in `API-ENDPOINTS.md`
@@ -495,12 +554,19 @@ To manually trigger the Docker image build workflow:
 - Maintain consistent error handling and response formats
 - Test new endpoints with the provided test scripts
 - Use TypeScript interfaces for type safety
+- Implement proper validation and error handling
+- Follow the established patterns for configuration endpoints
+- Ensure proper CORS handling for cross-origin requests
 
 ### Database Development
-- Use the migration system for schema changes
+- Use the migration system for schema changes (`src/lib/db-migrations.ts`)
 - Follow the established patterns in `src/lib/db-utils.ts`
 - Maintain type safety with TypeScript interfaces
 - Test database operations with the provided utilities
+- Use the database maintenance tools for cleanup and debugging
+- Follow the established schema patterns for new tables
+- Implement proper indexing for performance
+- Use prepared statements for security
 
 ### UI Development
 - Use shadcn/ui components for consistency
@@ -508,6 +574,11 @@ To manually trigger the Docker image build workflow:
 - Use Tailwind CSS for styling
 - Maintain responsive design principles
 - Test components in both light and dark themes
+- Use TypeScript interfaces for component props
+- Implement proper error boundaries and loading states
+- Follow accessibility best practices
+- Use the established patterns for forms and validation
+- Implement proper state management with React hooks
 
 <br>
 

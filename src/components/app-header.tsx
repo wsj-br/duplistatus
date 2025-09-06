@@ -26,9 +26,8 @@ export function AppHeader() {
             <Image
               src="/images/duplistatus_logo.png"
               alt="duplistatus Logo"
-              width={64}
-              height={64}
-              className="h-14 w-14"
+              width={40}
+              height={40}
             />
           </div>
           <span className="text-3xl text-blue-600 sm:inline-block">

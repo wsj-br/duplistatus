@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MachineDetailsContent } from "@/components/machine-details/machine-details-content";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -33,6 +33,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
   const [data, setData] = useState<DetailData>(initialData);
   const [lastError, setLastError] = useState<string | null>(null);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
+  const lastDataRef = useRef<string>('');
   
   const { state } = useGlobalRefresh();
   const { toast } = useToast();
@@ -54,11 +55,18 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
 
         const detailData = await dataResponse.json();
 
-        setData({
+        const newData = {
           machine: detailData.machine,
           overdueBackups: detailData.overdueBackups,
           lastOverdueCheck: detailData.lastOverdueCheck
-        });
+        };
+        
+        // Compare data before updating to prevent unnecessary re-renders
+        const newDataString = JSON.stringify(newData);
+        if (newDataString !== lastDataRef.current) {
+          setData(newData);
+          lastDataRef.current = newDataString;
+        }
         
         // Update last refresh time
         setLastRefreshTime(new Date());

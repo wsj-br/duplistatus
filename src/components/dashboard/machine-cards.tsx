@@ -163,13 +163,13 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
           <section>
             <p className="text-muted-foreground text-xs">Files</p>
             <p className="font-semibold text-sm">
-              {machine.backupInfo.length > 0 ? machine.backupInfo[0].fileCount.toLocaleString() : 'N/A'}
+              {machine.totalFileCount > 0 ? machine.totalFileCount.toLocaleString() : 'N/A'}
             </p>
           </section>
           <section>
             <p className="text-muted-foreground text-xs">Size</p>
             <p className="font-semibold text-xs">
-              {machine.backupInfo.length > 0 ? formatBytes(machine.backupInfo[0].fileSize) : 'N/A'}
+              {machine.totalFileSize > 0 ? formatBytes(machine.totalFileSize) : 'N/A'}
             </p>
           </section>
           <section>
@@ -180,7 +180,7 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
           </section>
           <section>
             <p className="text-muted-foreground text-xs">Last</p>
-            <p className="font-semibold text-xs">
+            <div className="font-semibold text-xs">
               {machine.lastBackupDate !== "N/A" ? (
                 <TooltipProvider>
                   <Tooltip>
@@ -195,7 +195,7 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
               ) : (
                 "N/A"
               )}
-            </p>
+            </div>
           </section>
         </div>
 

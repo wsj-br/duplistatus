@@ -155,7 +155,21 @@ export async function sendNtfyNotification(
 
   if (!response.ok) {
     const errorBody = await response.text();
-    throw new Error(`Failed to send notification to NTFY: ${response.statusText} - ${errorBody}`);
+    let userFriendlyMessage = `Failed to send notification to NTFY: ${response.statusText}`;
+    
+    // Parse error response to provide user-friendly messages
+    try {
+      const errorData = JSON.parse(errorBody);
+      if (errorData.code === 42901) {
+        userFriendlyMessage = 'Notification service is temporarily unavailable due to rate limiting. Please try again later or upgrade your notification service plan.';
+      } else if (errorData.error) {
+        userFriendlyMessage = `Notification service error: ${errorData.error}`;
+      }
+    } catch {
+      // If we can't parse the error body, use the original message
+    }
+    
+    throw new Error(userFriendlyMessage);
   }
 }
 

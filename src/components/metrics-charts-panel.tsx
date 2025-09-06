@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, memo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo, useMemo } from 'react';
 import { 
   Line, 
   ComposedChart,
@@ -18,6 +18,7 @@ import { useConfig } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears } from "date-fns";
 import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -29,7 +30,8 @@ interface InterpolatedChartPoint {
 interface MetricsChartsPanelProps {
   machineId?: string;
   backupName?: string;
-  lastRefreshTime: Date;
+  // Add chartData prop to receive data directly from parent
+  chartData?: ChartDataPoint[];
 }
 
 // Use existing library function for duration formatting
@@ -62,6 +64,30 @@ const formatBytesForYAxis = (bytes: number): string => {
     return formatBytes(bytes, 1);  // 1 decimal place for TB+
   }
 };
+
+// Component to display refresh time that updates independently
+function RefreshTimeDisplay() {
+  const { state: globalRefreshState } = useGlobalRefresh();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only showing time after client-side mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const refreshTime = globalRefreshState.lastRefresh || new Date();
+
+  return (
+    <div className="text-xs text-muted-foreground font-medium">
+      last update: {mounted ? refreshTime.toLocaleTimeString('en-US', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }) : '--:--:--'}
+    </div>
+  );
+}
 
 // Configuration for each chart type
 const chartMetrics = [
@@ -153,7 +179,7 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   );
 };
 
-const SmallMetricChart = memo(function SmallMetricChart({ 
+function SmallMetricChart({ 
   data, 
   metricKey, 
   label, 
@@ -165,25 +191,24 @@ const SmallMetricChart = memo(function SmallMetricChart({
   color: string;
 }) {
 
-  
   // Create chart config
-  const chartConfig = useMemo(() => ({
+  const chartConfig = {
     [metricKey]: {
       label,
       color,
     },
-  }), [metricKey, label, color]) as ChartConfig;
+  } as ChartConfig;
   
   // Prepare data for chart
-  const chartReady = useMemo(() => data.map(item => ({
+  const chartReady = data.map(item => ({
     date: item.date,
     isoDate: item.isoDate,
     [metricKey]: item[metricKey]
-  })), [data, metricKey]);
+  }));
 
   // Resample data for small charts using linear interpolation
   const maxPoints = 50;
-  const resampledData = useMemo(() => {
+  const resampledData = (() => {
     // Only resample if there are more than maxPoints in the data
     if (chartReady.length <= maxPoints) return chartReady;
     
@@ -235,10 +260,10 @@ const SmallMetricChart = memo(function SmallMetricChart({
     }
     
     return resampledPoints;
-  }, [chartReady, metricKey]);
+  })();
 
   // Calculate Y-axis domain and ticks
-  const yAxisConfig = useMemo(() => {
+  const yAxisConfig = (() => {
     const values = resampledData.map(item => item[metricKey]).filter((v): v is number => typeof v === 'number');
     if (values.length === 0) return { domain: [0, 1], ticks: [] };
     
@@ -260,7 +285,7 @@ const SmallMetricChart = memo(function SmallMetricChart({
     ticks.push(domainMax);
     
     return { domain: [domainMin, domainMax], ticks };
-  }, [resampledData, metricKey]);
+  })();
 
   return (
     <Card className="flex flex-col h-full min-h-0">
@@ -331,25 +356,28 @@ const SmallMetricChart = memo(function SmallMetricChart({
       </CardContent>
     </Card>
   );
-});
+}
 
-
-
-export const MetricsChartsPanel = memo(function MetricsChartsPanel({ 
+function MetricsChartsPanelCore({ 
   machineId,
   backupName,
-  lastRefreshTime,
+  chartData: externalChartData, // Use external chart data if provided
 }: MetricsChartsPanelProps) {
+  
   const { chartTimeRange } = useConfig();
-  const [mounted, setMounted] = useState(false);
-  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const { state: globalRefreshState } = useGlobalRefresh();
+  // If externalChartData is provided, use it instead of fetching
+  const [chartData, setChartData] = useState<ChartDataPoint[]>(externalChartData || []);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const [selectedMachineName, setSelectedMachineName] = useState<string | null>(null);
+  const lastGlobalRefreshTime = useRef<Date | null>(null);
+  const lastChartDataRef = useRef<string | null>(null);
+  const isLoadingRef = useRef<boolean>(false);
   
   // Calculate time range dates
-  const { startDate, endDate } = useMemo(() => {
+  const { startDate, endDate } = (() => {
     if (chartTimeRange === 'All data') {
       return { startDate: null, endDate: null };
     }
@@ -381,14 +409,17 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
     }
     
     return { startDate, endDate: now };
-  }, [chartTimeRange]);
+  })();
 
-
-
-  // Fetch chart data based on parameters - properly memoized
-  const fetchChartData = useCallback(async () => {
+  // Fetch chart data based on parameters
+  const fetchChartData = async (skipLoadingState = false) => {
     try {
-      setIsLoading(true);
+      isLoadingRef.current = true;
+      
+      // Only show loading state if this is not a background refresh
+      if (!skipLoadingState) {
+        setIsLoading(true);
+      }
       setError(null);
       
       let data: ChartDataPoint[] = [];
@@ -443,7 +474,14 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
         }
       }
       
-      setChartData(data);
+      // Only update state if data actually changed (same logic as dashboard-auto-refresh)
+      const newDataString = JSON.stringify(data);
+      const currentDataString = lastChartDataRef.current;
+      
+      if (newDataString !== currentDataString) {
+        setChartData(data);
+        lastChartDataRef.current = newDataString;
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
@@ -454,22 +492,67 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
         duration: 3000
       });
     } finally {
+      isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [machineId, backupName, startDate, endDate, toast]);
+  };
 
-  // Fetch data only when API parameters actually change
+  // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
-    fetchChartData();
-  }, [fetchChartData]);
+    // Only fetch if no external data is provided
+    if (!externalChartData) {
+      fetchChartData();
+    } else {
+      // If external data is provided, compare before updating state
+      const newDataString = JSON.stringify(externalChartData);
+      const currentDataString = lastChartDataRef.current;
+      
+      if (newDataString !== currentDataString) {
+        setChartData(externalChartData);
+        lastChartDataRef.current = newDataString;
+      }
+      setIsLoading(false);
+    }
+  }, [machineId, backupName, startDate, endDate, externalChartData]);
 
-  // Prevent hydration mismatch by only showing time after client-side mount
+  // Clear selected machine name when no machine is selected
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!machineId) {
+      setSelectedMachineName(null);
+    }
+  }, [machineId]);
 
+  // Listen for global refresh events and refetch data when refresh completes
+  useEffect(() => {
+    // Skip if external chart data is provided
+    if (externalChartData) return;
+    
+    // Only refetch if we're not currently loading and a refresh just completed
+    if (!globalRefreshState.isRefreshing && 
+        !globalRefreshState.pageSpecificLoading.dashboard && 
+        globalRefreshState.lastRefresh && 
+        !isLoadingRef.current) {
+      
+      // Check if this is actually a new refresh by comparing timestamps
+      const currentRefreshTime = globalRefreshState.lastRefresh;
+      if (!lastGlobalRefreshTime.current || 
+          lastGlobalRefreshTime.current.getTime() !== currentRefreshTime.getTime()) {
+        lastGlobalRefreshTime.current = currentRefreshTime;
+        
+        // For machine-specific data, we still need to fetch it since global refresh
+        // only provides aggregated data. But we can optimize this by checking if
+        // the data has actually changed before triggering a re-render.
+        if (machineId) {
+          fetchChartData(true); // Skip loading state for background refresh
+        }
+        // For aggregated data (no machineId), the parent component handles the data
+        // and passes it via externalChartData prop, so no need to fetch here.
+      }
+    }
+  }, [globalRefreshState.isRefreshing, globalRefreshState.pageSpecificLoading.dashboard, globalRefreshState.lastRefresh, externalChartData, machineId]);
+  
   // Get selection info for display
-  const selectionInfo = useMemo(() => {
+  const selectionInfo = (() => {
     let baseText = '';
     if (selectedMachineName) {
       baseText = `${selectedMachineName}`;
@@ -510,23 +593,16 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
     
     // Append chartTimeRange in brackets with proper label
     return `${baseText} (${getTimeRangeLabel(chartTimeRange)})`;
-  }, [selectedMachineName, backupName, chartTimeRange]); // eslint-disable-line react-hooks/exhaustive-deps
+  })();
 
   return (
-    <div className="flex flex-col p-3 h-full min-h-0">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-1 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <FileBarChart2 className="h-4 w-4 text-blue-600" />
-          <h2 className="text-sm font-semibold">Metrics<span className="text-xs text-muted-foreground"> {selectionInfo}</span></h2>
+    <div className="flex flex-col h-full min-h-0">
+      {/* Selection info header */}
+      {selectionInfo && (
+        <div className="mb-1 flex-shrink-0">
+          <span className="text-xs text-muted-foreground">{selectionInfo}</span>
         </div>
-        <div className="text-xs text-muted-foreground font-medium"> last update: {mounted ? lastRefreshTime.toLocaleTimeString('en-US', { 
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                    }) : '--:--:--'}</div>
-      </div>
+      )}
 
       {/* Loading State */}
       {isLoading && (
@@ -574,16 +650,59 @@ export const MetricsChartsPanel = memo(function MetricsChartsPanel({
       )}
     </div>
   );
-}, (prevProps, nextProps) => {
+}
+
+// Memoized core charts component (without refresh time display)
+const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) => {
   // Custom comparison function for React.memo
   // Only re-render if there are actual changes in the data we care about
   
-  // Compare props that would cause a re-fetch
-  const paramsEqual = prevProps.machineId === nextProps.machineId && 
-                     prevProps.backupName === nextProps.backupName;
+  // Compare basic props
+  if (prevProps.machineId !== nextProps.machineId ||
+      prevProps.backupName !== nextProps.backupName) {
+    return false; // Props changed, re-render
+  }
   
-  // Compare lastRefreshTime since it affects the UI display
-  const refreshTimeEqual = prevProps.lastRefreshTime.getTime() === nextProps.lastRefreshTime.getTime();
+  // Compare chart data using JSON.stringify (same approach as dashboard-auto-refresh)
+  const prevChartData = prevProps.chartData || [];
+  const nextChartData = nextProps.chartData || [];
   
-  return paramsEqual && refreshTimeEqual;
+  // If lengths are different, definitely re-render
+  if (prevChartData.length !== nextChartData.length) {
+    return false;
+  }
+  
+  // Deep comparison using JSON.stringify
+  const chartDataChanged = JSON.stringify(prevChartData) !== JSON.stringify(nextChartData);
+  
+  // Return true to prevent re-render if data is the same
+  return !chartDataChanged;
 });
+
+// Main wrapper component that combines charts with refresh time display
+export const MetricsChartsPanel = ({ 
+  machineId,
+  backupName,
+  chartData
+}: MetricsChartsPanelProps) => {
+  
+  return (
+    <div className="flex flex-col p-3 h-full min-h-0">
+      {/* Header with independent refresh time display */}
+      <div className="flex items-center justify-between mb-1 flex-shrink-0">
+        <div className="flex items-center gap-2">
+          <FileBarChart2 className="h-4 w-4 text-blue-600" />
+          <h2 className="text-sm font-semibold">Metrics</h2>
+        </div>
+        <RefreshTimeDisplay />
+      </div>
+
+      {/* Memoized charts component */}
+      <MemoizedChartsCore 
+        machineId={machineId}
+        backupName={backupName}
+        chartData={chartData}
+      />
+    </div>
+  );
+};

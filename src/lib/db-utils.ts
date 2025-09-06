@@ -879,6 +879,10 @@ export function  getMachinesSummary() {
         }>;
         totalBackupCount: number;
         totalStorageSize: number;
+        totalFileCount: number;
+        totalFileSize: number;
+        totalUploadedSize: number;
+        haveOverdueBackups: boolean;
         lastBackupDate: string;
         lastBackupStatus: BackupStatus | 'N/A';
         lastBackupDuration: string;
@@ -886,7 +890,6 @@ export function  getMachinesSummary() {
         lastBackupName: string | null;
         lastBackupId: string | null;
         lastOverdueCheck: string;
-        haveOverdueBackups: boolean;
         backupNames: string[];
       }>();
       
@@ -902,6 +905,9 @@ export function  getMachinesSummary() {
             backupInfo: [],
             totalBackupCount: 0,
             totalStorageSize: 0,
+            totalFileCount: 0,
+            totalFileSize: 0,
+            totalUploadedSize: 0,
             lastBackupDate: 'N/A',
             lastBackupStatus:  'N/A',
             lastBackupDuration: 'N/A',
@@ -965,8 +971,10 @@ export function  getMachinesSummary() {
         
         // Update machine totals
         machine.totalBackupCount += row.backup_count || 0;
-        // Calculate total storage size from backupInfo
         machine.totalStorageSize += row.storage_size || 0;
+        machine.totalFileCount += row.file_count || 0;
+        machine.totalFileSize += row.file_size || 0;
+        machine.totalUploadedSize += row.uploaded_size || 0;
         
         // Update latest backup info (use the most recent backup across all types)
         if (row.last_backup_date && (machine.lastBackupDate === 'N/A' || new Date(row.last_backup_date) > new Date(machine.lastBackupDate))) {

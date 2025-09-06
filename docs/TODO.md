@@ -10,12 +10,12 @@
 - [Fix](#fix)
 - [Changes needed](#changes-needed)
 - [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
-  - [✅ Duplicati connection](#-duplicati-connection)
   - [Nice to have](#nice-to-have)
   - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
   - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
   - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
-  - [Implemented in Version 0.6.1](#implemented-in-version-061)
+  - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
+  - [Implemented in Version 0.7.x ✅](#implemented-in-version-07x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -33,7 +33,7 @@ none
 
 ## New Features (planned or under analysis)
 
-- Include a SMTP/EMAIL support (to send notifications)
+- Include SMTP/EMAIL support (to send notifications)
 
 ### Nice to have
 - Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
@@ -43,29 +43,29 @@ none
 
 ### Implemented in Version 0.3.8 ✅
 
-- Fixed documentation on Duplicati server configuration (upload URL incorrect). Thanks @Taomyn.
+- Fixed documentation on Duplicati server configuration (upload URL was incorrect). Thanks @Taomyn.
 - Added support to collect backup logs using HTTPS
 
 ### Implemented in Version 0.4.0 ✅
 
 - Improved support for multiple backups on the same machine:
-  - In the dashboard table, show each backup in a row.
-  - When clicking on a row, go to the detail page of the selected backup.
-  - When clicking on the machine name, go to the detail page of all backups for the selected machine.
-  - On the detail page, the user can select all backups or a specific backup name.
-- Included the chart on the detail page (same as the dashboard page).
+  - In the dashboard table, show each backup in a row
+  - When clicking on a row, go to the detail page of the selected backup
+  - When clicking on the machine name, go to the detail page of all backups for the selected machine
+  - On the detail page, the user can select all backups or a specific backup name
+- Included the chart on the detail page (same as the dashboard page)
 - Added a link to the GitHub repo in the footer of the pages.
 - Changed the handling of the "Fatal" status with a red badge instead of the default grey.
 
 ### Implemented in Version 0.5.0 ✅
 
-- Changed labels/fields from `Total Backuped Size` to `Total Backup Size`.
-- Added version number in the page footer.
-- Corrected the return link on the backup detail page.
-- Improved error management for `JSON.parse` and the `backups/collect` API endpoint.
-- Upgraded all dependencies/frameworks/tools to the latest available version.
-- Reduced HTTP/HTTPS timeout to 30 seconds.
-- Updated documentation, added Podman install guide.
+- Changed labels/fields from `Total Backed Up Size` to `Total Backup Size`
+- Added version number to the page footer
+- Corrected the return link on the backup detail page
+- Improved error management for `JSON.parse` and the `backups/collect` API endpoint
+- Upgraded all dependencies/frameworks/tools to the latest available versions
+- Reduced HTTP/HTTPS timeout to 30 seconds
+- Updated documentation and added Podman install guide
 
 ### Implemented in Version 0.6.1 ✅
 
@@ -77,16 +77,16 @@ none
   - Version icons in tables
   - Click-to-view available versions
   - Version display in detail page summary
-- Send notifications using ntfy.sh 
+- Send notifications using ntfy.sh
 - Check periodically for overdue scheduled backups
 
 **UI/Navigation Improvements:**
 - Added "Return to Dashboard" link on detail pages
 - Status badges now link directly to backup details
-- Standardise the column titles of available versions to "Available Versions" (was "Available Backups" in some places)
-- Navigate to the dashboard once 'Collect Backup Logs' has been successful.
-- Add a button to the application header that allows users to configure notifications and overdue scheduled backup alerts.
-- Add a button to the application header to check the overdue backups (this shows only if there is at least one monitored backup).
+- Standardized the column titles of available versions to "Available Versions" (was "Available Backups" in some places)
+- Navigate to the dashboard once 'Collect Backup Logs' has been successful
+- Add a button to the application header that allows users to configure notifications and overdue scheduled backup alerts
+- Add a button to the application header to check overdue backups (this shows only if there is at least one monitored backup)
 
 **Notification System:**
 - **ntfy Integration:**
@@ -102,72 +102,30 @@ none
     - Notification frequency (one time/daily/weekly/monthly)
 
 
-### Implemented in Version 0.7.8 ✅
+### Implemented in Version 0.7.x ✅
 
 **New Features:**
+- Duplicati Server Web Interface Integration
+  - Automatic server URL registration when executing `Collect Backup Logs`
+  - Centralized address management in Settings > `Machine Addresses`
+  - One-click access to open Duplicati configuration from dashboard, machine detail, and backup detail pages
+- Enhanced Dashboard and Machine Cards
+  - Replaced old dashboard with new dashboard using cards (previous table format still available)
+  - Cards can be sorted by machine name, last backup status, or date
+- Advanced Metrics Panel
+  - Show all metrics at the same time
+  - Data visibility controls (all data, last week, last month, etc.)
+  - Responsive auto-sizing with improved logic
+  - Interactive tooltips showing datapoint information (date, value)
 
-- Easy open Duplicati Server Web Interface
-   - automatic store/update the URL when using the "Collect Bckup Logs" functionality
-   - can configure and test connection in the Settings > 
+**UI/Navigation Improvements:**
+- Application toolbar integration with Duplicati connection button
+  - Dashboard view: presents list of available machines to connect to
+  - Machine-specific pages: direct connection to selected machine's Duplicati server
 
-
-This release introduces seamless integration with Duplicati servers, allowing you to connect directly to your backup servers from the DupliStatus interface.
-
-#### **Key Features:**
-
-- **Automatic Server Discovery**: When collecting backup logs, the system now automatically registers the IP address and port of each Duplicati server
-- **Centralized Server Management**: New settings tab to manage and configure IP addresses and ports for all monitored machines
-- **One-Click Access**: Direct links to Duplicati servers from multiple locations:
-  - Dashboard page
-  - Machine detail pages  
-  - Backup detail pages
-
-#### **Enhanced Navigation:**
-
-- **Application Toolbar Integration**: New connection button in the application toolbar
-  - When on dashboard: presents a list of available machines to connect to
-  - When on machine-specific pages: connects directly to the selected machine's Duplicati server
-- **Backup Settings Enhancement**: Added connection icon in backup settings for direct server access
-
-#### **Benefits:**
-
-- **Streamlined Workflow**: No more manual URL typing or bookmark management
-- **Improved Efficiency**: Quick access to Duplicati web interfaces from within DupliStatus
-- **Better Organization**: Centralized management of server connection details
-- **Enhanced User Experience**: Seamless navigation between monitoring and management interfaces
-
----
-
-## 🔧 Technical Improvements
-
-- Enhanced backup log collection with server metadata capture
-- Improved database schema to store server connection information
+**Technical Improvements:**
+- Enhanced backup log collection with server URL persistence
+- Improved database schema to store server address information
 - Optimized UI components for better integration with Duplicati web interface
 
 
-
-
-
-
-
-  1. ✅ move the dashboard-auto to be the first page, removing the old dashboard page. 
-
-  2. ✅ change the content of the machine card:
-     - remove backups, include storage size and change the last backup date to full date + time ago
-     - include a tooltip when hovering the backup types.  
-
-  3. ✅ add to the new metrics panel the data visibility (all data, last week, last month,...)
-
-  4. ✅change the chart on the machine detail page to use the new metrics panel. 
-
-  5. ✅ add a tooltip information in the chart to show the datapoint information (date, value)
-
-  6. ✅ fix the autosize of the metrics panel. in some update loose the logic that make it responsive.
-
-
-  ### ✅ Duplicati connection 
-  - when collecting the backup logs, register the ip and port of the machine. 
-  - create a tab in the settings to manage  the ip and port of the machines in the database
-  - create a link in the dashboard, machine detail and backup detail pages to open a browser tab to connect to the duplicati server
-    - one idea is to create a button on the application toolbar to connect to a duplicati server, if it's in the dashboard, present a list of machines to connect to. if in a page with the machine selected, goes directly.
-    - add a icon in the backup settings tab to open the duplicati server directly.
