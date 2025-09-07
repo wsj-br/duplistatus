@@ -35,26 +35,27 @@ export function DashboardLayout({
   const { viewMode, isInitialized } = machineSelectionState;
   const { state: globalRefreshState, setVisibleCardIndex } = useGlobalRefresh();
   
-  // Track screen width for responsive height behavior
-  const [screenWidth, setScreenWidth] = useState<number>(0);
+  // Track screen height for responsive height behavior
+  const [screenHeight, setScreenHeight] = useState<number>(0);
   
   useEffect(() => {
-    const updateScreenWidth = () => {
-      setScreenWidth(window.innerWidth);
+    const updateScreenHeight = () => {
+      setScreenHeight(window.innerHeight);
     };
 
-    // Set initial width
-    updateScreenWidth();
+    // Set initial height
+    updateScreenHeight();
 
     // Add event listener
-    window.addEventListener('resize', updateScreenWidth);
+    window.addEventListener('resize', updateScreenHeight);
 
     // Cleanup
-    return () => window.removeEventListener('resize', updateScreenWidth);
+    return () => window.removeEventListener('resize', updateScreenHeight);
   }, []);
   
-  // Determine if we should use content-based height (when screen width < 1010px)
-  const useContentBasedHeight = screenWidth < 1010;
+  // Determine if we should use content-based height (when screen height < 865px)
+  // Table view always uses content-based height regardless of window height
+  const useContentBasedHeight = viewMode === 'table' || screenHeight < 865;
   
   // Use refs to track initialization and prevent infinite loops
   const previousSelectedMachineId = useRef<string | null>(null);
@@ -177,7 +178,7 @@ export function DashboardLayout({
         ? 'min-h-[550px]' 
         : useContentBasedHeight 
           ? 'min-h-fit' 
-          : 'flex-1 min-h-0 overflow-hidden'
+          : 'flex-1 min-h-0 overflow-hidden pb-4'
       }`}>
         <Card className={`${viewMode === 'table' 
           ? 'min-h-[550px] h-[550px]' 

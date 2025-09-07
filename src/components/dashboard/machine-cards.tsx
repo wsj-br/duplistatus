@@ -406,7 +406,6 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
   const previousMachinesRef = useRef<string>('');
   const previousSortOrderRef = useRef<string>('');
   const isSortOrderChanging = useRef(false); // New ref to track sort order change
-  const [, forceUpdate] = useState({}); // Force re-render when window resizes
   const isScrollingRef = useRef(false); // Track if user is actively scrolling
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Timeout for scroll end detection
   const isButtonScrollingRef = useRef(false); // Track if button scroll is in progress
@@ -458,9 +457,17 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     });
   }, [machines, dashboardCardsSortOrder]);
 
+  // State for calculated cards to show - initialized with fallback
+  const [calculatedCardsToShow, setCalculatedCardsToShow] = useState(() => Math.min(uniqueMachines.length, 5));
+  
+  // State for card width - initialized with fallback
+  const [cardWidth, setCardWidth] = useState(MIN_CARD_WIDTH);
+
   // Calculate how many cards can fit with min/max width constraints
   const calculateCardsToShow = useCallback(() => {
-    if (!scrollContainerRef.current) return Math.min(uniqueMachines.length, 5); // fallback
+    if (!scrollContainerRef.current) {
+      return Math.min(uniqueMachines.length, 5); // fallback
+    }
     
     const containerWidth = scrollContainerRef.current.clientWidth;
     const containerPadding = getContainerPadding(scrollContainerRef.current);
@@ -480,12 +487,18 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
 
     return calculatedCardsToShow;
   }, [uniqueMachines.length, getContainerPadding]);
-  
-  const calculatedCardsToShow = calculateCardsToShow();
+
+  // Calculate cards to show after component mounts and when dependencies change
+  useEffect(() => {
+    const newCardsToShow = calculateCardsToShow();
+    setCalculatedCardsToShow(newCardsToShow);
+  }, [calculateCardsToShow]);
   
   // Calculate the optimal card width respecting MIN_CARD_WIDTH and MAX_CARD_WIDTH limits
   const calculateCardWidth = useCallback(() => {
-    if (!scrollContainerRef.current || calculatedCardsToShow === 0) return MIN_CARD_WIDTH;
+    if (!scrollContainerRef.current || calculatedCardsToShow === 0) {
+      return MIN_CARD_WIDTH;
+    }
     
     const containerWidth = scrollContainerRef.current.clientWidth;
     const containerPadding = getContainerPadding(scrollContainerRef.current);
@@ -498,12 +511,18 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     
     return Math.floor(clampedCardWidth);
   }, [calculatedCardsToShow, getContainerPadding]);
-  
-  const cardWidth = calculateCardWidth();
+
+  // Calculate card width after component mounts and when dependencies change
+  useEffect(() => {
+    const newCardWidth = calculateCardWidth();
+    setCardWidth(newCardWidth);
+  }, [calculateCardWidth]);
 
   // Calculate visible card index from scroll position
   const getVisibleCardIndex = useCallback(() => {
-    if (!scrollContainerRef.current) return 0;
+    if (!scrollContainerRef.current) {
+      return 0;
+    }
     
     const container = scrollContainerRef.current;
     const cardWidthWithGap = cardWidth + CARD_GAP;
@@ -516,18 +535,23 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     const threshold = 0.3; // 30% of card width
     const fractionalPart = rawIndex - Math.floor(rawIndex);
     
+    let result;
     if (fractionalPart < threshold) {
-      return Math.floor(rawIndex);
+      result = Math.floor(rawIndex);
     } else if (fractionalPart > (1 - threshold)) {
-      return Math.ceil(rawIndex);
+      result = Math.ceil(rawIndex);
     } else {
-      return Math.floor(rawIndex);
+      result = Math.floor(rawIndex);
     }
+    
+    return result;
   }, [cardWidth]);
 
   // Scroll to specific card index
   const scrollToCardIndex = useCallback((index: number, smooth = true) => {
-    if (!scrollContainerRef.current) return;
+    if (!scrollContainerRef.current) {
+      return;
+    }
     
     const container = scrollContainerRef.current;
     const cardWidthWithGap = cardWidth + CARD_GAP;
@@ -554,7 +578,9 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
 
   // Scroll left or right by one card
   const scroll = useCallback((direction: 'left' | 'right') => {
-    if (!scrollContainerRef.current || isButtonScrollingRef.current) return;
+    if (!scrollContainerRef.current || isButtonScrollingRef.current) {
+      return;
+    }
     
     const container = scrollContainerRef.current;
     const cardWidthWithGap = cardWidth + CARD_GAP;
@@ -756,8 +782,11 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
       // Debounce resize events to prevent excessive recalculations
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        // Force re-render to trigger calculateCardsToShow recalculation
-        forceUpdate({});
+        // Recalculate cards to show and card width on resize
+        const newCardsToShow = calculateCardsToShow();
+        const newCardWidth = calculateCardWidth();
+        setCalculatedCardsToShow(newCardsToShow);
+        setCardWidth(newCardWidth);
       }, 150); // 150ms debounce delay
     };
 
@@ -769,7 +798,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
-  }, []);
+  }, [calculateCardsToShow, calculateCardWidth]);
 
   // Show message if no machines
   if (uniqueMachines.length === 0) {
@@ -826,15 +855,17 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
           ref={scrollContainerRef}
           className="flex gap-3 overflow-x-auto scroll-smooth items-stretch machine-cards-scrollbar"
         >
-          {uniqueMachines.map((machine) => (
-            <div key={machine.id} className="flex-shrink-0" style={{ width: `${cardWidth}px`, minHeight: '170px' }} data-card>
-              <MachineCard
-                machine={machine}
-                isSelected={selectedMachineId === machine.id}
-                onSelect={onSelect}
-              />
-            </div>
-          ))}
+          {uniqueMachines.map((machine) => {
+            return (
+              <div key={machine.id} className="flex-shrink-0" style={{ width: `${cardWidth}px`, minHeight: '170px' }} data-card>
+                <MachineCard
+                  machine={machine}
+                  isSelected={selectedMachineId === machine.id}
+                  onSelect={onSelect}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -32,26 +32,9 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   const { refreshDetail } = useGlobalRefresh();
   
-  // Track screen width for responsive height behavior
-  const [screenWidth, setScreenWidth] = useState<number>(0);
-  
-  useEffect(() => {
-    const updateScreenWidth = () => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    // Set initial width
-    updateScreenWidth();
-
-    // Add event listener
-    window.addEventListener('resize', updateScreenWidth);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', updateScreenWidth);
-  }, []);
-  
-  // Determine if we should use content-based height (when screen width < 1010px)
-  const useContentBasedHeight = screenWidth < 1010;
+  // Machine details always uses content-based height regardless of window dimensions
+  // This ensures the content can expand naturally like a table view
+  const useContentBasedHeight = true;
   
   // Find the selected backup if one is selected
   const selectedBackup = selectedBackupName === 'all' 
