@@ -98,7 +98,7 @@ const TemplateEditor = ({
             <CardTitle className="text-lg">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <div className="flex flex-col sm:flex-row justify-end-safe items-start sm:items-center gap-2">
             <Select value={selectedVariable} onValueChange={setSelectedVariable}>
               <SelectTrigger className="w-full sm:w-80">
                 <SelectValue placeholder="Select variable..." />

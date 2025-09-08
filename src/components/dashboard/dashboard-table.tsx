@@ -11,7 +11,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";

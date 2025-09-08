@@ -227,9 +227,8 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
           {machine.backupInfo.length > 0 ? (
             <div className="flex-1 flex flex-col divide-y divide-border/30">
               {machine.backupInfo.map((backupType, index) => (
-                <TooltipProvider key={index}>
-                  <Tooltip delayDuration={1000}>
-                    <TooltipTrigger asChild>
+                <Tooltip key={index} delayDuration={1000}>
+                  <TooltipTrigger asChild>
                       <div 
                         className="grid grid-cols-[45%_25%_30%] cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-1 -mx-1"
                         onClick={(e) => {
@@ -245,24 +244,30 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                         <div className="flex justify-center items-center">
                           <BackupStatusBar statusHistory={backupType.statusHistory} />
                         </div>
+
                         {/* Overdue icon and time ago */}
                         <div className="flex items-center gap-1 justify-end">
+                          
+                          {/* Overdue icon */}
+                          {backupType.isBackupOverdue && (
+                            <AlertTriangle className="h-3 w-3 text-red-500 flex-shrink-0" />
+                          )}
+
                           {/* Time ago - use backup type's last backup date */}
                           <span className="text-muted-foreground text-xs truncate">
                             {backupType.lastBackupDate !== "N/A" 
                               ? formatShortTimeAgo(backupType.lastBackupDate)
                               : "N/A"}
                           </span>
-                          {/* Overdue icon */}
-                          {backupType.isBackupOverdue && (
-                            <AlertTriangle className="h-3 w-3 text-red-500 flex-shrink-0" />
-                          )}
+
                         </div>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent 
                       side="top" 
-                      className="cursor-default space-y-3 min-w-[300px]"
+                      align="start"
+                      sideOffset={8}
+                      className="cursor-default space-y-3 min-w-[300px] max-w-[400px] z-[9999]"
                       onClick={(e) => {
                         e.stopPropagation();
                         // Close the tooltip by clicking outside
@@ -271,69 +276,88 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                           tooltip.remove();
                         }
                       }}
+                      onPointerDownOutside={(e) => {
+                        e.preventDefault();
+                      }}
                     >
                       <div className="font-bold text-sm text-left">
                         {machine.name} : {backupType.name}
                       </div>
 
                       <div className="space-y-2 border-t pt-3">
-                        <div className="text-semibold mb-4">Last Backup Details</div>
+                        <div className="text-bold mb-4">Last Backup Details</div>
                         
-                        <div className="grid grid-cols-[80px_1fr] gap-x-3 gap-y-2 text-xs">
-                          <div className="text-muted-foreground text-right">Date:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.lastBackupDate !== "N/A" 
-                              ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")"
-                              : "N/A"}
+                        <div className="grid grid-cols-[65%_35%] gap-x-3 gap-y-2 text-xs">
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Date:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.lastBackupDate !== "N/A" 
+                                ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")"
+                                : "N/A"}
+                            </div>
                           </div>
                           
-                          <div className="text-muted-foreground text-right">Status:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.lastBackupStatus !== "N/A" 
-                              ? backupType.lastBackupStatus
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Status:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.lastBackupStatus !== "N/A" 
+                                ? backupType.lastBackupStatus
+                                : "N/A"}
+                            </div>
                           </div>
 
-                          <div className="text-muted-foreground text-right">Duration:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.lastBackupDuration !== null && backupType.lastBackupDuration !== undefined
-                              ? backupType.lastBackupDuration
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Duration:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.lastBackupDuration !== null && backupType.lastBackupDuration !== undefined
+                                ? backupType.lastBackupDuration
+                                : "N/A"}
+                            </div>
                           </div>
                                                     
-                          <div className="text-muted-foreground text-right">Files:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.fileCount !== null && backupType.fileCount !== undefined
-                              ? backupType.fileCount.toLocaleString()
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Files:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.fileCount !== null && backupType.fileCount !== undefined
+                                ? backupType.fileCount.toLocaleString()
+                                : "N/A"}
+                            </div>
                           </div>
                           
-                          <div className="text-muted-foreground text-right">Size:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.fileSize !== null && backupType.fileSize !== undefined
-                              ? formatBytes(backupType.fileSize)
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Size:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.fileSize !== null && backupType.fileSize !== undefined
+                                ? formatBytes(backupType.fileSize)
+                                : "N/A"}
+                            </div>
                           </div>
                           
-                          <div className="text-muted-foreground text-right">Storage:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.storageSize !== null && backupType.storageSize !== undefined
-                              ? formatBytes(backupType.storageSize)
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Storage:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.storageSize !== null && backupType.storageSize !== undefined
+                                ? formatBytes(backupType.storageSize)
+                                : "N/A"}
+                            </div>
                           </div>
 
-                          <div className="text-muted-foreground text-right">Uploaded:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.uploadedSize !== null && backupType.uploadedSize !== undefined
-                              ? formatBytes(backupType.uploadedSize)
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Uploaded:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.uploadedSize !== null && backupType.uploadedSize !== undefined
+                                ? formatBytes(backupType.uploadedSize)
+                                : "N/A"}
+                            </div>
                           </div>
 
-                          <div className="text-muted-foreground text-right">Versions:</div>
-                          <div className="font-semibold text-left">
-                            {backupType.lastBackupListCount !== null && backupType.lastBackupListCount !== undefined
-                              ? backupType.lastBackupListCount.toLocaleString()
-                              : "N/A"}
+                          <div>
+                            <div className="text-muted-foreground text-left mb-1">Versions:</div>
+                            <div className="font-semibold text-left">
+                              {backupType.lastBackupListCount !== null && backupType.lastBackupListCount !== undefined
+                                ? backupType.lastBackupListCount.toLocaleString()
+                                : "N/A"}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -378,7 +402,6 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                       )}
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>
               ))}
             </div>
           ) : (
@@ -475,15 +498,9 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
     
     // Calculate max cards that can fit with minimum width
     const maxCardsWithMinWidth = Math.floor((availableWidth + CARD_GAP - CARD_WIDTH_SHOW_PARTIAL) / (MIN_CARD_WIDTH + CARD_GAP));
-    
-    // Calculate max cards that can fit with maximum width  
-    const maxCardsWithMaxWidth = Math.floor((availableWidth + CARD_GAP - CARD_WIDTH_SHOW_PARTIAL) / (MAX_CARD_WIDTH + CARD_GAP));
-    
+        
     // Use the smaller of the two, but ensure we don't exceed available machines
-    const calculatedCardsToShow = Math.min(
-      uniqueMachines.length,
-      Math.max(maxCardsWithMinWidth, maxCardsWithMaxWidth)
-    );
+    const calculatedCardsToShow = Math.min(uniqueMachines.length,maxCardsWithMinWidth);
 
     return calculatedCardsToShow;
   }, [uniqueMachines.length, getContainerPadding]);
@@ -582,13 +599,9 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
       return;
     }
     
-    const container = scrollContainerRef.current;
-    const cardWidthWithGap = cardWidth + CARD_GAP;
-    
-    // Get current scroll position directly instead of using getVisibleCardIndex
-    // to avoid issues during smooth scrolling animation
-    const currentScrollLeft = container.scrollLeft;
-    const currentIndex = Math.floor(currentScrollLeft / cardWidthWithGap);
+    // Use getVisibleCardIndex for consistent index calculation
+    // This ensures the scroll logic matches the visual state
+    const currentIndex = getVisibleCardIndex();
     
     const maxIndex = Math.max(0, uniqueMachines.length - calculatedCardsToShow);
     
@@ -609,7 +622,7 @@ export const MachineCards = memo(function MachineCards({ machines, selectedMachi
         isButtonScrollingRef.current = false;
       }, 500); // Match the smooth scroll duration
     }
-  }, [cardWidth, scrollToCardIndex, uniqueMachines.length, calculatedCardsToShow]);
+  }, [getVisibleCardIndex, scrollToCardIndex, uniqueMachines.length, calculatedCardsToShow]);
 
   // Update scroll buttons and track visible card index
   useEffect(() => {

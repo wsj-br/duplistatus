@@ -10,6 +10,7 @@ import { AvailableBackupsModalProvider } from '@/components/ui/available-backups
 import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/use-toast";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { GithubLink } from '@/components/github-link';
 import AppVersion from '@/components/app-version';
 
@@ -108,7 +109,8 @@ export default function RootLayout({
               <MachineSelectionProvider>
                 <ConfigurationProvider>
                   <AvailableBackupsModalProvider>
-                    <ToastProvider>
+                    <TooltipProvider delayDuration={300}>
+                      <ToastProvider>
                       <div className="relative flex min-h-screen flex-col">
                         <AppHeader />
                         <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
@@ -124,6 +126,7 @@ export default function RootLayout({
                       </div>
                       <Toaster />
                     </ToastProvider>
+                    </TooltipProvider>
                   </AvailableBackupsModalProvider>
                 </ConfigurationProvider>
               </MachineSelectionProvider>

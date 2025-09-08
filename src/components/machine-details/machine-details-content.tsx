@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MachineBackupTable } from "@/components/machine-details/machine-backup-table";
 import { MachineDetailSummaryItems } from "@/components/machine-details/machine-detail-summary-items";

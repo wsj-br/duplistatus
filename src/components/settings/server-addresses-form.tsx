@@ -87,6 +87,7 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
   const handleUrlFocus = (machineId: string, currentUrl: string) => {
     if (!currentUrl || currentUrl.trim() === '') {
       const defaultUrl = "http://:8200";
+      
       setConnections(prev => prev.map(conn => {
         if (conn.id === machineId) {
           return {
@@ -98,17 +99,9 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
       }));
       
       setHasChanges(true);
-      
-      setTimeout(() => {
-        const inputElement = inputRefs.current[machineId];
-        if (inputElement) {
-          const cursorPosition = defaultUrl.indexOf(':8200');
-          inputElement.setSelectionRange(cursorPosition, cursorPosition);
-          inputElement.focus();
-        }
-      }, 0);
     }
   };
+
 
   const handleUrlBlur = (machineId: string) => {
     setConnections(prev => {

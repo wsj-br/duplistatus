@@ -540,6 +540,46 @@ async function cleanupBackupsForUserManual(){
     console.error('  🚨 Error during additional cleanup:', 
       error instanceof Error ? error.message : String(error));
   }
+
+  // Update server_url for 5 random machines
+  try {
+    console.log('\n  🌐 Updating server URLs for random machines...');
+    
+    // Select 5 random machines
+    const shuffledMachines = [...machines].sort(() => Math.random() - 0.5);
+    const selectedMachines = shuffledMachines.slice(0, 5);
+    
+    console.log(`    🎯 Selected machines for server URL update: ${selectedMachines.map(m => m.name).join(', ')}`);
+    
+    const serverUrl = "http://192.168.1.55:8200";
+    let updatedCount = 0;
+    
+    for (const machine of selectedMachines) {
+      try {
+        const updateResult = db.prepare(`
+          UPDATE machines 
+          SET server_url = ? 
+          WHERE id = ?
+        `).run(serverUrl, machine.id);
+        
+        if (updateResult.changes > 0) {
+          console.log(`      🔗 ${machine.name}: Server URL updated to ${serverUrl}`);
+          updatedCount++;
+        } else {
+          console.log(`      ⚠️  ${machine.name}: No update performed (machine may not exist in DB)`);
+        }
+      } catch (error) {
+        console.error(`      🚨 Error updating server URL for ${machine.name}:`, 
+          error instanceof Error ? error.message : String(error));
+      }
+    }
+    
+    console.log(`  ✅ Server URL update completed! Updated ${updatedCount} out of ${selectedMachines.length} machines`);
+    
+  } catch (error) {
+    console.error('  🚨 Error during server URL update:', 
+      error instanceof Error ? error.message : String(error));
+  }
 }
 
 // Main function to send test data
