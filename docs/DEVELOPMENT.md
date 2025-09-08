@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.14.dev-blue)
+![](https://img.shields.io/badge/version-0.7.17.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -13,10 +13,19 @@
 
   - [Prerequisites](#prerequisites)
   - [Steps](#steps)
+  - [Available Scripts](#available-scripts)
+    - [Development Scripts](#development-scripts)
+    - [Production Scripts](#production-scripts)
+    - [Docker Scripts](#docker-scripts)
+    - [Cron Service Scripts](#cron-service-scripts)
+    - [Testing Scripts](#testing-scripts)
+    - [Release Scripts](#release-scripts)
   - [Development Mode Features](#development-mode-features)
     - [Build the application for production](#build-the-application-for-production)
     - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
     - [Start a docker stack (docker compose)](#start-a-docker-stack-docker-compose)
+    - [Stop a docker stack (docker compose)](#stop-a-docker-stack-docker-compose)
+    - [Clean docker environment](#clean-docker-environment)
     - [Create a devel image (to test locally or with podman)](#create-a-devel-image-to-test-locally-or-with-podman)
   - [Cron Service](#cron-service)
       - [Start cron service in development mode:](#start-cron-service-in-development-mode)
@@ -33,10 +42,16 @@
     - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
+    - [Update version information](#update-version-information)
+    - [Update documentation](#update-documentation)
   - [Documentation tools](#documentation-tools)
     - [Updating the Table of Contents on the documentation](#updating-the-table-of-contents-on-the-documentation)
     - [Checking for broken links](#checking-for-broken-links)
   - [Podman testing](#podman-testing)
+    - [Initial Setup and Management](#initial-setup-and-management)
+    - [Monitoring and Health Checks](#monitoring-and-health-checks)
+    - [Debugging Commands](#debugging-commands)
+    - [Usage Workflow](#usage-workflow)
   - [Release Management](#release-management)
     - [Versioning (Semantic Versioning)](#versioning-semantic-versioning)
     - [Release Commands](#release-commands)

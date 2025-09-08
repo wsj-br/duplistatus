@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react';
-import type { BackupStatus, MachineSummary } from "@/lib/types";
+import type { BackupStatus, MachineSummary, NotificationEvent } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { formatTimeAgo, formatBytes, formatShortTimeAgo } from "@/lib/utils";
-import { HardDrive, AlertTriangle, Settings, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { HardDrive, AlertTriangle, Settings, Download, ChevronLeft, ChevronRight, MessageSquareMore, MessageSquareOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
@@ -65,6 +65,42 @@ function getStatusColor(status: BackupStatus): string {
       return 'bg-red-500';
     default:
       return 'bg-gray-400';
+  }
+}
+
+// Helper function to get notification icon
+function getNotificationIcon(notificationEvent: NotificationEvent | undefined) {
+  if (!notificationEvent) return null;
+  
+  switch (notificationEvent) {
+    case 'errors':
+      return <MessageSquareMore className="h-4 w-4 text-red-400" />;
+    case 'warnings':
+      return <MessageSquareMore className="h-4 w-4 text-yellow-400" />;
+    case 'all':
+      return <MessageSquareMore className="h-4 w-4 text-blue-400" />;
+    case 'off':
+      return <MessageSquareOff className="h-4 w-4 text-gray-400" />;
+    default:
+      return null;
+  }
+}
+
+// Helper function to get notification tooltip
+function getNotificationTooltip(notificationEvent: NotificationEvent | undefined) {
+  if (!notificationEvent) return '';
+  
+  switch (notificationEvent) {
+    case 'errors':
+      return <>Errors Only.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
+    case 'warnings':
+      return <>Warnings & Errors.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
+    case 'all':
+      return <>All Backups.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
+    case 'off':
+      return <>Off.<br />Click to configure.</>;
+    default:
+      return '';
   }
 }
 
@@ -280,8 +316,13 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                         e.preventDefault();
                       }}
                     >
-                      <div className="font-bold text-sm text-left">
-                        {machine.name} : {backupType.name}
+                      <div className="font-bold text-sm text-left flex items-center justify-between">
+                        <span>{machine.name} : {backupType.name}</span>
+                        {backupType.notificationEvent && (
+                          <div className="inline-block mr-2">
+                            {getNotificationIcon(backupType.notificationEvent as NotificationEvent)}
+                          </div>
+                        )}
                       </div>
 
                       <div className="space-y-2 border-t pt-3">

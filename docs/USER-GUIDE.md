@@ -3,7 +3,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.7.14.dev-blue)
+![](https://img.shields.io/badge/version-0.7.17.dev-blue)
 
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
@@ -24,7 +24,10 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
 - [User Interface](#user-interface)
 - [Application Toolbar](#application-toolbar)
 - [Dashboard Summary](#dashboard-summary)
-- [Dashboard Overview](#dashboard-overview)
+- [Cards Layout](#cards-layout)
+  - [Backup details](#backup-details)
+- [Table Layout](#table-layout)
+  - [Notifications Icons](#notifications-icons)
   - [Overdue Details](#overdue-details)
   - [Available Backup Versions](#available-backup-versions)
 - [Backup Metrics](#backup-metrics)
@@ -32,6 +35,7 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
   - [Machine/Backup Statistics](#machinebackup-statistics)
   - [Backup History](#backup-history)
 - [Backup Details](#backup-details)
+- [Duplicati Configuration](#duplicati-configuration)
 - [Display Settings](#display-settings)
 - [Collect Backup Logs](#collect-backup-logs)
   - [Steps to Collect Backup Logs](#steps-to-collect-backup-logs)
@@ -39,13 +43,14 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
 - [Database Maintenance](#database-maintenance)
   - [Data Cleanup Period](#data-cleanup-period)
   - [Delete Machine Data](#delete-machine-data)
-- [Notification System](#notification-system)
+- [Settings](#settings)
   - [NTFY Settings](#ntfy-settings)
   - [Backup Notifications Settings](#backup-notifications-settings)
     - [Configure Per-Backup Notification Settings](#configure-per-backup-notification-settings)
     - [Global Configurations](#global-configurations)
     - [Action Buttons](#action-buttons)
   - [Overdue check process](#overdue-check-process)
+  - [Machine Addresses](#machine-addresses)
   - [Notification Templates](#notification-templates)
 - [Homepage Integration (Optional)](#homepage-integration-optional)
   - [Summary Widget](#summary-widget)
@@ -100,10 +105,10 @@ The user interface consists of several elements and views, organised into differ
 
 1. [Application toolbar](#application-toolbar): Toolbar with easy access to main functionalities and configurations
 2. [Dashboard Summary](#dashboard-summary): Summary of monitored machines
-3. [Dashboard Overview](#dashboard-overview): Table showing the latest status of all backups configured in monitored Duplicati servers
+3. [Machines Overview](#dashboard-overview): Cards or table showing the latest status of all backups configured in monitored Duplicati servers
 4. [Overdue details](#overdue-details): Visual warning for overdue backups with details on hover
 5. [Available backup versions](#available-backup-versions): Click the blue icon in "Available Versions" to view backup versions in the backend
-6. [Backup metrics chart](#backup-metrics): Chart displaying backup metrics over time
+6. [Backup metrics charts](#backup-metrics): Charts displaying backup metrics over time
 7. [Machine details](#machine-details): List of recorded backups for a specific machine with statistics
 8. [Backup details](#backup-details): Detailed information for a specific backup, including log messages (execution, warnings, and errors) 
 
@@ -152,14 +157,71 @@ Display the aggregated statistics for all backups.
 - **Storage Used**: Total storage space used by backups, based on the last backups received (reported by the backend)
 - **Uploaded Size**: Total amount of data uploaded/transmitted during backups from Duplicati server to the destination (local storage, ftp, cloud provider,... )
 - **Overdue backups**: Number of backups that are overdue (see `Settings → Backup notifications`)
+- **Layout toggle**: Select the Cards layout (default) or the table layout
 
 </div>
 
 <br><br>
 
-##  Dashboard Overview
+##  Cards Layout
 
-Shows the list the last backup log received for all machines and backups, see below a description on how to use this table.
+The cards layout shows the status of the most recent backup logs received for all machines and backups. The following description explains how to use these cards.
+
+
+<div style="padding-left: 60px;">
+
+![Dashboard Overview](img/duplistatus_dash-cards.png)
+
+
+- **Machine Name**: Name of the Duplicati server
+- **Overall Status**: The status of the machine. Overdue backups will show as a `Warning`  status
+- **Summary information**: The consolidated number of files, size and storage used for all backups of this machine. Also shows the elapsed time of  most recent backup received (hover over to show the timestamp)
+- **Backups list**: a table with all the backups configured for this machine, with 3 columns:
+   - **Backup Name**: Name of the backup in the Duplicati server
+   - **Status history**: status of the last 10 backups received. 
+   - **Last backup received**: the elapsed time since the current time of the last log received. It will show a warning icon if the backup is overdue.
+
+
+
+>[!NOTE] 
+> The user can use the [Display settings](#display-settings) control to configure the cards order, the available orders are: 
+> 
+> `Machine name (a-z)`, `Status (error > warning > success)`  and   `Last backup received (new > old)`.
+
+
+<br>
+
+### Backup details 
+
+Hovering over backups list on the card, it will display details of the last backup received and any overdue information:
+
+<div style="padding-left: 60px;">
+
+![Overdue details](img/screen-backup-tooltip.png)
+
+
+- **Machine Name : Backup** - Name of the Duplicati server and backup
+- **Notification**: Icon showing the [configured notification](#notifications-icons) when a new backup log is received 
+- **Date**: The timestamp of the backup execution and the elapsed time since the current time (last screen update)
+- **Status**: The status of the last backup received (Success, Warning, Error, Fatal)
+- **Duration, File count, File Size, Storage size, Uploaded Size**: Values as reported by the Duplicati server
+- **Available Versions**: The number of available backup versions on the backend at the time of the backup.
+
+If this backup is overdue, shows:
+
+- **Expected Backup**: When the backup was expected plus the configured tolerance (grace period). 
+
+
+Also, you can click on the buttons in the bottom to open `Settings → Backup Notifications` to configure the overdue (expected interval and tolerance) and to open the Duplicati server configurations web interface, if the machine address is configured in `Settings → Machine Addresses`.
+
+</div>
+
+<br>
+
+## Table Layout
+
+
+The table layout shows a list of the most recent backup logs received for all machines and backups. The following description explains how to use this table.
 
 <div style="padding-left: 60px;">
 
@@ -175,7 +237,11 @@ Shows the list the last backup log received for all machines and backups, see be
 - **Duration**: Duration of the backup in HH:MM:SS
 - **Warnings/Errors**: Number of warnings/errors reported in the backup log
 - **Notification**: Icon showing the configured notification when a new backup log is received
+- **Duplicati configuration**: Click on button to open the Duplicati server configurations web interface, if the machine address is configured in `Settings → Machine Addresses`.
 
+<br>
+
+### Notifications Icons
   
   |  Icon                                    | Notification Option | Description                                                                                         |
   | ---------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
@@ -242,9 +308,9 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
 
 A chart of backup metrics over time is shown on both the dashboard and the backup details page.
 
--  [Dashboard](#dashboard-overview): the total number of backups recorded in the **duplistatus** database is shown.
+-  In the [Dashboard](#dashboard-overview): the total number of backups recorded in the **duplistatus** database is shown, if using the Cards layout, the user can select a machine. If the server is selected, it will show the consolidated metrics for that machine.
 
--  [Machine details](#machine-details): the metrics are shown for the selected machine (if 'All backups' are selected) or for the selected backup.
+-  In the [Machine details](#machine-details): the metrics are shown for the selected machine (if 'All backups' are selected) or for the selected backup.
 
 
 <div style="padding-left: 60px;">
@@ -258,8 +324,8 @@ A chart of backup metrics over time is shown on both the dashboard and the backu
  - **File Size**: The sum of the file size reported by Duplicati server for all backups received per day.
  - **Storage Size**: the sum of the backend storage size used reported by Duplicati server per day.
  - **Available Versions**:  the sum of all available versions for all backup per day.
- 
- 
+ - **last update**: time of the last screen update.
+  
  <br>
    
 </div>
@@ -366,6 +432,19 @@ Clicking on the status badge in the dashboard overview table or any row in the b
 
 <br><br>
 
+## Duplicati Configuration
+
+If no machine is selected, this function will show a list of machines with address configured, clicking on the machine it will open a new tab with the Duplicati server web interface (as configured in `Settings → Machine Addresses`). If a machine is selected it opens directly the new tab.
+
+<div style="padding-left: 60px;">
+
+  ![Display Settings](img/screen-duplicati-configuration.png)
+
+</div>
+
+<br><br>
+
+
 ## Display Settings
 
 Configure user interface and display preferences:
@@ -380,6 +459,7 @@ Configure user interface and display preferences:
 | Table Size               | Number of rows per page in the machine detail page | 5 rows             |
 | Chart Time Range         | Time interval to show in the charts                | All available data |
 | Auto-refresh Interval    | How often to refresh pages (dashboard/detail)      | 1 minute           |
+| Cards Sort Order         | How the cards are sorted in the dashboard          | machines (a-z)     |
 
 </div>
 
@@ -493,7 +573,9 @@ Remove specific machines and all their associated backup data:
 
 <br><br>
 
-## Notification System
+## Settings
+
+
 
 **duplistatus** includes a comprehensive notification system that uses **ntfy** to send push notifications about backup events. You can choose to [self-host ntfy](https://docs.ntfy.sh/install/#docker), use the free public server at **ntfy.sh**, or subscribe to a paid plan.
 
@@ -656,7 +738,33 @@ gantt
 </div>
 
 
+<br> <br>
+
+
+### Machine Addresses
+
+You can configure the address of the Duplicati Servers on this form. If a server doesn't have an address (URL) configured, the `Duplicati configuration` button will be disabled, also, the server name will not be shown on the `Duplicati configuration`  list on the application header.
+
+
+
+<div style="padding-left: 60px;">
+
+
+![notification templates](img/screen-settings-machine-addresses.png)
+
 <br>
+
+Enter the address (URL) for each machine on this form. If an URL is configured, the `Duplicati` icon will be enabled and if clicked open a new tab with the Duplicati server web interface. You can use HTTP and HTTPS urls.
+
+<br> 
+
+</div>
+
+
+>[!TIP]
+> After entering an address, test it using the `Test` or `Test All` button.
+
+<br> <br>
 
 ### Notification Templates
 
