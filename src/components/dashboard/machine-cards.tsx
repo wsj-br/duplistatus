@@ -86,28 +86,8 @@ function getNotificationIcon(notificationEvent: NotificationEvent | undefined) {
   }
 }
 
-// Helper function to get notification tooltip
-function getNotificationTooltip(notificationEvent: NotificationEvent | undefined) {
-  if (!notificationEvent) return '';
-  
-  switch (notificationEvent) {
-    case 'errors':
-      return <>Errors Only.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
-    case 'warnings':
-      return <>Warnings & Errors.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
-    case 'all':
-      return <>All Backups.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
-    case 'off':
-      return <>Off.<br />Click to configure.</>;
-    default:
-      return '';
-  }
-}
-
 // Custom status badge without text, just icon and color
 function CompactStatusBadge({ status, machineId, haveOverdueBackups }: { status: BackupStatus; machineId: string; haveOverdueBackups: boolean }) {
-  const router = useRouter();
-  
   const getStatusIcon = (status: BackupStatus) => {
       switch (status) {
       case 'Success':
@@ -126,16 +106,8 @@ function CompactStatusBadge({ status, machineId, haveOverdueBackups }: { status:
     }
   };
 
-  const handleClick = () => {
-    router.push(`/detail/${machineId}`);
-  };
-
   return (
-    <div 
-      className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
-      onClick={handleClick}
-      title="Click to view backup details"
-    >
+    <div className="flex items-center gap-1">
       {getStatusIcon(status)}
     </div>
   );
@@ -323,6 +295,9 @@ const MachineCard = ({ machine, isSelected, onSelect }: MachineCardProps) => {
                             {getNotificationIcon(backupType.notificationEvent as NotificationEvent)}
                           </div>
                         )}
+                      </div>
+                      <div className="text-xs text-muted-foreground text-left -mt-3">
+                        ({machine.id})
                       </div>
 
                       <div className="space-y-2 border-t pt-3">

@@ -193,8 +193,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         let hasChanges = false;
         
         config.machinesWithBackups.forEach((machine: MachineWithBackup) => {
-          if (!prev[machine.id]) {
-            defaultSettings[machine.id] = { ...defaultBackupNotificationConfig };
+          const backupKey = `${machine.id}:${machine.backupName}`;
+          if (!prev[backupKey]) {
+            defaultSettings[backupKey] = { ...defaultBackupNotificationConfig };
             hasChanges = true;
           }
         });
@@ -211,46 +212,51 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   }, [config?.machinesWithBackups]);
 
-  const updateBackupSettingById = (machineId: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
+  const updateBackupSettingById = (machineId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
+    const backupKey = `${machineId}:${backupName}`;
     setSettings(prev => ({
       ...prev,
-      [machineId]: {
-        ...(prev[machineId] || { ...defaultBackupNotificationConfig }),
+      [backupKey]: {
+        ...(prev[backupKey] || { ...defaultBackupNotificationConfig }),
         [field]: value,
       },
     }));
   };
 
-  const getBackupSettingById = (machineId: string): BackupNotificationConfig => {
-    return settings[machineId] || { ...defaultBackupNotificationConfig };
+  const getBackupSettingById = (machineId: string, backupName: string): BackupNotificationConfig => {
+    const backupKey = `${machineId}:${backupName}`;
+    return settings[backupKey] || { ...defaultBackupNotificationConfig };
   };
 
-  const handleIntervalInputChangeById = (machineId: string, value: string) => {
+  const handleIntervalInputChangeById = (machineId: string, backupName: string, value: string) => {
+    const inputKey = `${machineId}:${backupName}`;
     setInputValues(prev => ({
       ...prev,
-      [machineId]: value
+      [inputKey]: value
     }));
   };
 
-  const handleIntervalBlurById = (machineId: string, value: string) => {
+  const handleIntervalBlurById = (machineId: string, backupName: string, value: string) => {
     const numValue = parseInt(value) || 1;
-    updateBackupSettingById(machineId, 'expectedInterval', numValue);
+    updateBackupSettingById(machineId, backupName, 'expectedInterval', numValue);
     
     // Clear the local input value since we've saved the setting
+    const inputKey = `${machineId}:${backupName}`;
     setInputValues(prev => {
       const newValues = { ...prev };
-      delete newValues[machineId];
+      delete newValues[inputKey];
       return newValues;
     });
   };
 
-  const handleUnitChangeById = (machineId: string, newUnit: 'hour' | 'day') => {
-    updateBackupSettingById(machineId, 'intervalUnit', newUnit);
+  const handleUnitChangeById = (machineId: string, backupName: string, newUnit: 'hour' | 'day') => {
+    updateBackupSettingById(machineId, backupName, 'intervalUnit', newUnit);
     
     // Clear any local input value since the unit has changed
+    const inputKey = `${machineId}:${backupName}`;
     setInputValues(prev => {
       const newValues = { ...prev };
-      delete newValues[machineId];
+      delete newValues[inputKey];
       return newValues;
     });
   };
@@ -267,7 +273,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     if (!config?.machinesWithBackups) return [];
     
     return config.machinesWithBackups.map((machine: MachineWithBackup) => {
-      const backupSetting = getBackupSettingById(machine.id);
+      const backupSetting = getBackupSettingById(machine.id, machine.backupName);
       
       return {
         ...machine,
@@ -551,8 +557,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
             </TableHeader>
             <TableBody>
               {sortedMachines.map((machine) => {
-                const backupSetting = getBackupSettingById(machine.id);
-                const inputKey = machine.id;
+                const backupSetting = getBackupSettingById(machine.id, machine.backupName);
+                const inputKey = `${machine.id}:${machine.backupName}`;
                 
                 return (
                   <TableRow key={`${machine.id}-${machine.backupName}`}>
@@ -567,7 +573,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               className="text-xs hover:text-blue-500 transition-colors"
                               showText={false}
                             />
-                            <span className="truncate">{machine.name}</span>
+                            <div className="flex flex-col">
+                              <span className="truncate">{machine.name}</span>
+                              <span className="text-xs text-muted-foreground truncate">({machine.id})</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -583,7 +592,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       <Select
                         value={backupSetting.notificationEvent}
                         onValueChange={(value: NotificationEvent) => 
-                          updateBackupSettingById(machine.id, 'notificationEvent', value)
+                          updateBackupSettingById(machine.id, machine.backupName, 'notificationEvent', value)
                         }
                       >
                         <SelectTrigger className="w-full text-xs">
@@ -604,7 +613,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           id={`overdue-backup-${inputKey}`}
                           checked={backupSetting.overdueBackupCheckEnabled}
                           onCheckedChange={(checked) => 
-                            updateBackupSettingById(machine.id, 'overdueBackupCheckEnabled', checked)
+                            updateBackupSettingById(machine.id, machine.backupName, 'overdueBackupCheckEnabled', checked)
                           }
                         />
                         <Label htmlFor={`overdue-backup-${inputKey}`} className="text-xs">
@@ -619,8 +628,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         min="1"
                         max={backupSetting.intervalUnit === 'hour' ? "8760" : "365"}
                         value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
-                        onChange={(e) => handleIntervalInputChangeById(machine.id, e.target.value)}
-                        onBlur={(e) => handleIntervalBlurById(machine.id, e.target.value)}
+                        onChange={(e) => handleIntervalInputChangeById(machine.id, machine.backupName, e.target.value)}
+                        onBlur={(e) => handleIntervalBlurById(machine.id, machine.backupName, e.target.value)}
                         placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                         className={`text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}
@@ -630,7 +639,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     <TableCell>
                       <Select
                         value={backupSetting.intervalUnit}
-                        onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(machine.id, value)}
+                        onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(machine.id, machine.backupName, value)}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                       >
                         <SelectTrigger className={`w-full text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
@@ -652,8 +661,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           {/* Mobile Card View */}
           <div className="md:hidden space-y-3">
             {sortedMachines.map((machine) => {
-              const backupSetting = getBackupSettingById(machine.id);
-              const inputKey = machine.id;
+              const backupSetting = getBackupSettingById(machine.id, machine.backupName);
+              const inputKey = `${machine.id}:${machine.backupName}`;
               
               return (
                 <Card key={`${machine.id}-${machine.backupName}`} className="p-4">
@@ -681,7 +690,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       <Select
                         value={backupSetting.notificationEvent}
                         onValueChange={(value: NotificationEvent) => 
-                          updateBackupSettingById(machine.id, 'notificationEvent', value)
+                          updateBackupSettingById(machine.id, machine.backupName, 'notificationEvent', value)
                         }
                       >
                         <SelectTrigger className="w-full text-xs">
@@ -704,7 +713,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           id={`overdue-backup-mobile-${inputKey}`}
                           checked={backupSetting.overdueBackupCheckEnabled}
                           onCheckedChange={(checked) => 
-                            updateBackupSettingById(machine.id, 'overdueBackupCheckEnabled', checked)
+                            updateBackupSettingById(machine.id, machine.backupName, 'overdueBackupCheckEnabled', checked)
                           }
                         />
                         <Label htmlFor={`overdue-backup-mobile-${inputKey}`} className="text-xs">
@@ -722,15 +731,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           min="1"
                           max={backupSetting.intervalUnit === 'hour' ? "8760" : "365"}
                           value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
-                          onChange={(e) => handleIntervalInputChangeById(machine.id, e.target.value)}
-                          onBlur={(e) => handleIntervalBlurById(machine.id, e.target.value)}
+                          onChange={(e) => handleIntervalInputChangeById(machine.id, machine.backupName, e.target.value)}
+                          onBlur={(e) => handleIntervalBlurById(machine.id, machine.backupName, e.target.value)}
                           placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
                           disabled={!backupSetting.overdueBackupCheckEnabled}
                           className={`text-xs flex-1 ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}
                         />
                         <Select
                           value={backupSetting.intervalUnit}
-                          onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(machine.id, value)}
+                          onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(machine.id, machine.backupName, value)}
                           disabled={!backupSetting.overdueBackupCheckEnabled}
                         >
                           <SelectTrigger className={`w-20 text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>

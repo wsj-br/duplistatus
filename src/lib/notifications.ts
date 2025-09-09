@@ -92,7 +92,23 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
 }
 
 // Helper function to get backup key
+// Helper function to get backup key (supports both old and new formats)
 function getBackupKey(machineName: string, backupName: string): BackupKey {
+  // Try to find machine ID from machine name for new format
+  try {
+    const { getMachinesSummary } = require('./db-utils');
+    const machinesSummary = getMachinesSummary();
+    const machine = machinesSummary.find((m: any) => m.name === machineName);
+    
+    if (machine) {
+      // Use new format: machine_id:backup_name
+      return `${machine.id}:${backupName}`;
+    }
+  } catch (error) {
+    console.warn('Failed to get machine ID, falling back to old format:', error);
+  }
+  
+  // Fallback to old format: machine_name:backup_name
   return `${machineName}:${backupName}`;
 }
 

@@ -434,7 +434,10 @@ export function ServerAddressesForm({ machineAddresses }: ServerAddressesFormPro
                   <TableRow key={connection.id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium text-sm truncate">{connection.name}</div>
+                        <div className="flex flex-col">
+                              <span className="font-medium truncate">{connection.name}</span>
+                              <span className="text-xs text-muted-foreground truncate">({connection.id})</span>
+                            </div>
                       </div>
                     </TableCell>
                     

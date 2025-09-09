@@ -35,13 +35,18 @@ function getToleranceInMinutes(tolerance: OverdueTolerance): number {
   }
 }
 
-// Helper function to get backup key
-function getBackupKey(machineName: string, backupName: string): BackupKey {
+// Helper function to get backup key (new format: machine_id:backup_name)
+function getBackupKey(machineId: string, backupName: string): BackupKey {
+  return `${machineId}:${backupName}`;
+}
+
+// Helper function to get backup key from names (for backward compatibility during migration)
+function getBackupKeyFromNames(machineName: string, backupName: string): BackupKey {
   return `${machineName}:${backupName}`;
 }
 
 // Helper function to check if a backup is overdue based on expected interval
-function isBackupOverdueByInterval(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
+function isBackupOverdueByInterval(machineId: string, backupName: string, lastBackupDate: string | null): boolean {
   try {
     if (!lastBackupDate || lastBackupDate === 'N/A') return false;
     
@@ -57,14 +62,14 @@ function isBackupOverdueByInterval(machineName: string, backupName: string, last
       overdueTolerance?: OverdueTolerance;
     }>;
     
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(machineId, backupName);
     const settings = backupSettings[backupKey];
     
     // If no settings found or overdue backup check is disabled, return false
     if (!settings || !settings.overdueBackupCheckEnabled) return false;
     
     // Get backup interval settings
-    const backupIntervalSettings = getBackupIntervalSettings(machineName, backupName);
+    const backupIntervalSettings = getBackupIntervalSettings(machineId, backupName);
     if (!backupIntervalSettings) return false;
     
     // Calculate expected backup date with tolerance
@@ -90,7 +95,7 @@ function isBackupOverdueByInterval(machineName: string, backupName: string, last
 }
 
 // Helper function to get notification event for a backup
-function getNotificationEvent(machineName: string, backupName: string): NotificationEvent | undefined {
+function getNotificationEvent(machineId: string, backupName: string): NotificationEvent | undefined {
   try {
     const backupSettingsJson = getConfiguration('backup_settings');
     if (!backupSettingsJson) return undefined;
@@ -102,7 +107,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
       intervalUnit: 'hour' | 'day';
     }>;
     
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(machineId, backupName);
     return backupSettings[backupKey]?.notificationEvent;
   } catch (error) {
     console.error('Error getting notification event:', error instanceof Error ? error.message : String(error));
@@ -111,13 +116,13 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
 }
 
 // Helper function to get last notification sent timestamp for a backup
-function getLastNotificationSent(machineName: string, backupName: string): string {
+function getLastNotificationSent(machineId: string, backupName: string): string {
   try {
     const lastNotificationJson = getConfiguration('overdue_backup_notifications');
     if (!lastNotificationJson) return 'N/A';
     
     const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(machineId, backupName);
     const notification = lastNotifications[backupKey];
     
     if (notification && notification.lastNotificationSent) {
@@ -132,7 +137,7 @@ function getLastNotificationSent(machineName: string, backupName: string): strin
 }
 
 // Helper function to get backup interval settings for expected backup calculations
-function getBackupIntervalSettings(machineName: string, backupName: string): {
+function getBackupIntervalSettings(machineId: string, backupName: string): {
   expectedInterval: number;
   intervalUnit: 'hour' | 'day';
   overdueTolerance?: OverdueTolerance;
@@ -149,7 +154,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
       overdueTolerance?: OverdueTolerance;
     }>;
     
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(machineId, backupName);
     const settings = backupSettings[backupKey];
     
     if (!settings) return undefined;
@@ -508,31 +513,17 @@ function countOverdueBackups(): number {
       return 0;
     }
     
-    // Get machines summary for machine ID lookup
-    const machinesSummary = withDb(() => {
-      return safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as { 
-        id: string; 
-        name: string; 
-      }[];
-    });
-    
-    // Create a map for quick machine name to ID lookup
-    const machineNameToId = new Map<string, string>();
-    machinesSummary.forEach(machine => {
-      machineNameToId.set(machine.name, machine.id);
-    });
-    
     const currentTime = new Date();
     let overdueCount = 0;
     
-    // Iterate through backup settings keys (machine_name:backup_name)
+    // Iterate through backup settings keys (machine_id:backup_name)
     const backupKeys = Object.keys(backupSettings);
     
     for (const backupKey of backupKeys) {
-      // Parse machine name and backup name from the key
-      const [machineName, backupName] = backupKey.split(':');
+      // Parse machine ID and backup name from the key
+      const [machineId, backupName] = backupKey.split(':');
       
-      if (!machineName || !backupName) {
+      if (!machineId || !backupName) {
         continue;
       }
       
@@ -540,12 +531,6 @@ function countOverdueBackups(): number {
       const backupConfig = backupSettings[backupKey];
       
       if (!backupConfig || !backupConfig.overdueBackupCheckEnabled) {
-        continue;
-      }
-      
-      // Get machine ID from the machine name
-      const machineId = machineNameToId.get(machineName);
-      if (!machineId) {
         continue;
       }
       
@@ -996,7 +981,7 @@ export function  getMachinesSummary() {
           let expectedBackupElapsed = 'N/A';
           
           if (thisBackupInfo.lastBackupDate !== 'N/A') {
-            isOverdue = isBackupOverdueByInterval(machine.name, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
+            isOverdue = isBackupOverdueByInterval(machine.id, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
 
             // Check if the machine has overdue backups
             if (isOverdue) {
@@ -1004,7 +989,7 @@ export function  getMachinesSummary() {
             }
 
             // Get expected backup date
-            const backupSettings = getBackupIntervalSettings(machine.name, thisBackupInfo.name);
+            const backupSettings = getBackupIntervalSettings(machine.id, thisBackupInfo.name);
             if (backupSettings) {
               const globalTolerance = getOverdueToleranceConfig();
               expectedBackupDate = calculateExpectedBackupDate(
@@ -1018,10 +1003,10 @@ export function  getMachinesSummary() {
           }
           
           // Get notification event for this backup type
-          const notificationEvent = getNotificationEvent(machine.name, thisBackupInfo.name);
+          const notificationEvent = getNotificationEvent(machine.id, thisBackupInfo.name);
           
           // Get last notification sent (if any)
-          const lastNotificationSent = getLastNotificationSent(machine.name, thisBackupInfo.name);
+          const lastNotificationSent = getLastNotificationSent(machine.id, thisBackupInfo.name);
           
           return {
             ...thisBackupInfo,
@@ -1103,7 +1088,7 @@ export const dbUtils = {
           const machineResult = safeDbOperation(() => dbOps.deleteMachine.run(machineId), 'deleteMachine');
           
           // Clean up configuration data for this machine
-          cleanupMachineConfiguration(machine.name);
+          cleanupMachineConfiguration(machine.id);
           
           return {
             backupChanges: backupResult?.changes || 0,
@@ -1120,7 +1105,7 @@ export const dbUtils = {
 }; 
 
 // Helper function to clean up configuration data for a machine
-function cleanupMachineConfiguration(machineName: string): void {
+function cleanupMachineConfiguration(machineId: string): void {
   try {
     // Clean up backup_settings
     const backupSettingsJson = getConfiguration('backup_settings');
@@ -1129,10 +1114,10 @@ function cleanupMachineConfiguration(machineName: string): void {
         const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, BackupNotificationConfig>;
         const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
         
-        // Keep only entries that don't match the machine name
+        // Keep only entries that don't match the machine ID
         for (const [backupKey, settings] of Object.entries(backupSettings)) {
-          const [keyMachineName] = backupKey.split(':');
-          if (keyMachineName !== machineName) {
+          const [keyMachineId] = backupKey.split(':');
+          if (keyMachineId !== machineId) {
             updatedBackupSettings[backupKey] = settings;
           }
         }
@@ -1152,10 +1137,10 @@ function cleanupMachineConfiguration(machineName: string): void {
         const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
         const updatedOverdueNotifications: OverdueNotifications = {};
         
-        // Keep only entries that don't match the machine name
+        // Keep only entries that don't match the machine ID
         for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
-          const [keyMachineName] = backupKey.split(':');
-          if (keyMachineName !== machineName) {
+          const [keyMachineId] = backupKey.split(':');
+          if (keyMachineId !== machineId) {
             updatedOverdueNotifications[backupKey] = notification;
           }
         }
@@ -1168,7 +1153,7 @@ function cleanupMachineConfiguration(machineName: string): void {
       }
     }
   } catch (error) {
-    console.error(`Failed to cleanup configuration for machine ${machineName}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to cleanup configuration for machine ${machineId}:`, error instanceof Error ? error.message : String(error));
   }
 }
 
@@ -1248,18 +1233,18 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
     
     // Get the latest backup for each backup configuration
     for (const backupKey in backupSettings) {
-      const [machineName, backupName] = backupKey.split(':');
+      const [machineId, backupName] = backupKey.split(':');
       
-      // Check if this is for the requested machine (by name or ID)
-      if (machineName === machineIdentifier || machineName.toLowerCase() === machineIdentifier.toLowerCase()) {
+      // Check if this is for the requested machine (by ID or name)
+      if (machineId === machineIdentifier) {
         const settings = backupSettings[backupKey];
         
         // Skip if overdue backup check is not enabled
         if (!settings.overdueBackupCheckEnabled) continue;
         
-        // Get machine ID for database lookup
+        // Get machine info for database lookup
         const machinesSummary = getMachinesSummary();
-        const machine = machinesSummary.find(m => m.name === machineName);
+        const machine = machinesSummary.find(m => m.id === machineId);
         if (!machine) continue;
         
         // Get the latest backup for this machine and backup name
@@ -1288,16 +1273,16 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
         // Check if backup is overdue
         if (currentTime > expectedTime) {
           // Get notification event for this backup
-          const notificationEvent = getNotificationEvent(machineName, backupName);
+          const notificationEvent = getNotificationEvent(machineId, backupName);
           
           // Calculate elapsed time
           const expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
           
           // Get last notification sent (if any)
-          const lastNotificationSent = getLastNotificationSent(machineName, backupName);
+          const lastNotificationSent = getLastNotificationSent(machineId, backupName);
           
           overdueBackups.push({
-            machineName,
+            machineName: machine.name,
             backupName,
             lastBackupDate: latestBackup.date,
             lastNotificationSent,
@@ -1341,9 +1326,10 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
 // Function to get all machine and their respective backup names
 export function getMachinesBackupNames() {
   return withDb(() => safeDbOperation(() => {
-    const results = dbOps.getMachinesBackupNames.all() as Array<{ machine_name: string; backup_name: string; server_url: string }>;
+    const results = dbOps.getMachinesBackupNames.all() as Array<{ machine_id: string; machine_name: string; backup_name: string; server_url: string }>;
     return results.map(row => ({
-      id: getBackupKey(row.machine_name, row.backup_name),
+      id: getBackupKey(row.machine_id, row.backup_name),
+      machine_id: row.machine_id,
       machine_name: row.machine_name,
       backup_name: row.backup_name,
       server_url: row.server_url
@@ -1363,6 +1349,7 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
     // Get all machines with backups
     const machinesSummary = getMachinesBackupNames() as { 
       id: string;
+      machine_id: string;
       machine_name: string; 
       backup_name: string;
     }[];
@@ -1372,8 +1359,9 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
     // Create a set of all machine-backup combinations
     const machineBackupCombinations = new Set<string>();
     machinesSummary.forEach(machine => {
-      if (machine.id) {
-        machineBackupCombinations.add(machine.id);
+      if (machine.machine_id && machine.backup_name) {
+        const backupKey = getBackupKey(machine.machine_id, machine.backup_name);
+        machineBackupCombinations.add(backupKey);
       }
     });
 

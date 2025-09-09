@@ -47,11 +47,12 @@ export async function GET() {
     // Transform machines data
     const machinesWithBackups = (machinesBackupNames as { 
       id: string; 
+      machine_id: string;
       machine_name: string; 
       backup_name: string;
       server_url: string;
     }[]).map((machine) => ({
-      id: machine.id,
+      id: machine.machine_id,
       name: machine.machine_name,
       backupName: machine.backup_name,
       server_url: machine.server_url

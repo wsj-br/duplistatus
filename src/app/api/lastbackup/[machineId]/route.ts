@@ -84,7 +84,19 @@ export async function GET(request: Request) {
     
     // If not found by ID, try to find by name
     if (!machine) {
-      machine = dbOps.getMachineByName.get(identifier) as MachineRow | null;
+      // Check for duplicate machine names
+      const machinesWithSameName = dbOps.getAllMachinesByName.all(identifier) as MachineRow[];
+      
+      if (machinesWithSameName.length > 1) {
+        return jsonResponse({ 
+          error: 'Multiple machines found with the same name',
+          message: `Multiple machines found with name "${identifier}". Please use the machine ID instead of the name. Available IDs: ${machinesWithSameName.map(m => m.id).join(', ')}`,
+          status: 400,
+          duplicate_machines: machinesWithSameName.map(m => ({ id: m.id, name: m.name }))
+        }, 400);
+      }
+      
+      machine = machinesWithSameName[0] || null;
     }
 
     if (!machine) {     

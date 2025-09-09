@@ -213,6 +213,77 @@ const migrations: Migration[] = [
           console.warn('server_url column might already exist:', error instanceof Error ? error.message : String(error));
         }
       }
+      
+      // Migrate backup_settings configuration from machine_name:backup_name to machine_id:backup_name
+      console.log('Migrating backup_settings configuration...');
+      try {
+        const backupSettingsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('backup_settings') as { value: string } | undefined;
+        
+        if (backupSettingsRow && backupSettingsRow.value) {
+          const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, any>;
+          const newBackupSettings: Record<string, any> = {};
+          let migratedCount = 0;
+          let skippedCount = 0;
+          
+          console.log(`Found ${Object.keys(oldBackupSettings).length} backup settings to migrate`);
+          
+          for (const [oldKey, settings] of Object.entries(oldBackupSettings)) {
+            const [machineName, backupName] = oldKey.split(':');
+            
+            if (!machineName || !backupName) {
+              console.warn(`Skipping invalid key format: ${oldKey}`);
+              skippedCount++;
+              continue;
+            }
+            
+            // Find machine by name
+            const machine = db.prepare('SELECT id, name FROM machines WHERE name = ?').get(machineName) as { id: string; name: string } | undefined;
+            
+            if (!machine) {
+              console.warn(`Skipping backup setting - machine not found: ${machineName}`);
+              skippedCount++;
+              continue;
+            }
+            
+            // Verify that backups exist for this machine and backup name
+            const backupExists = db.prepare('SELECT 1 FROM backups WHERE machine_id = ? AND backup_name = ? LIMIT 1').get(machine.id, backupName);
+            
+            if (!backupExists) {
+              console.warn(`Skipping backup setting - no backups found: ${machineName}:${backupName}`);
+              skippedCount++;
+              continue;
+            }
+            
+            // Create new key with machine_id:backup_name
+            const newKey = `${machine.id}:${backupName}`;
+            
+            // Add debug field to settings
+            const newSettings = {
+              ...settings,
+              machineName: machineName
+            };
+            
+            newBackupSettings[newKey] = newSettings;
+            migratedCount++;
+          }
+          
+          // Update the configuration with migrated settings
+          if (Object.keys(newBackupSettings).length > 0) {
+            db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+              'backup_settings',
+              JSON.stringify(newBackupSettings)
+            );
+            console.log(`Successfully migrated ${migratedCount} backup settings, skipped ${skippedCount}`);
+          } else {
+            console.log('No backup settings could be migrated');
+          }
+        } else {
+          console.log('No existing backup_settings configuration found');
+        }
+      } catch (error) {
+        console.error('Failed to migrate backup_settings:', error instanceof Error ? error.message : String(error));
+        // Don't throw - this is not critical for the migration
+      }
             
       console.log('Migration 3.0 completed successfully');
     }

@@ -233,7 +233,9 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-xl">Backup Details:</CardTitle>
+                <CardTitle className="text-xl">
+                    {machine.name}  (<span className="text-muted-foreground mr-2">ID:</span> {machineId})
+                </CardTitle>
               </div>
               <StatusBadge status={safeBackup.status} />
             </div>
@@ -243,7 +245,8 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
               {/* Left Column */}
               <div className="space-y-4">
                 <div>
-                  <dt className="font-medium  mb-2">Backup Information</dt>
+                  <dt className="font-medium  mb-2">Backup Information - {backup.name}</dt>
+                  
                   <dd className="mx-4 flex items-center gap-6">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">Date:</span>

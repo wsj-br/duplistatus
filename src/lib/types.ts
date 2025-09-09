@@ -108,10 +108,12 @@ export interface BackupNotificationConfig {
   expectedInterval: number; // raw value as entered by user
   overdueBackupCheckEnabled: boolean;
   intervalUnit: 'hour' | 'day';
+  // Debug field for migration (always included)
+  machineName?: string;  // For debugging - original machine name
 }
 
 // Helper type for backup identification
-export type BackupKey = string; // Format: "machineName:backupName"
+export type BackupKey = string; // Format: "machineId:backupName"
 
 export interface NotificationTemplate {
   title: string;

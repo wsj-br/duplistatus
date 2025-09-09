@@ -277,6 +277,10 @@ const dbOps = {
     SELECT id, name, server_url, created_at FROM machines WHERE name = ?
   `, 'getMachineByName'),
 
+  getAllMachinesByName: safePrepare(`
+    SELECT id, name, server_url, created_at FROM machines WHERE name = ?
+  `, 'getAllMachinesByName'),
+
   getAllMachines: safePrepare(`
     SELECT id, name, server_url, created_at FROM machines ORDER BY name
   `, 'getAllMachines'),
@@ -336,12 +340,13 @@ const dbOps = {
 
   getMachinesBackupNames: safePrepare(`
     SELECT 
+      m.id AS machine_id,
       m.name AS machine_name,
       b.backup_name,
       m.server_url
     FROM machines m
     JOIN backups b ON b.machine_id = m.id
-    GROUP BY m.name, b.backup_name
+    GROUP BY m.id, m.name, b.backup_name
     ORDER BY m.name, b.backup_name
   `, 'getMachinesBackupNames'),
 

@@ -111,7 +111,10 @@ export function MachineDetailsContent({ machine, overdueBackups, lastOverdueChec
     <div className="flex flex-col gap-8">
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl">{machine.name}</CardTitle>
+          <CardTitle className="text-3xl flex justify-between items-center">
+            <span>{machine.name}</span>
+            <span className="text-xs text-muted-foreground">Machine ID: <span className="text-xl text-foreground">{machine.id}</span></span>
+          </CardTitle>
           <CardDescription>
             {selectedBackup 
               ? <>Details for backup <span className="text-primary font-medium">{selectedBackup.name}</span></>

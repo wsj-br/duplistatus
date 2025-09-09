@@ -271,7 +271,10 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                       className="font-medium"
                       onClick={(e) => handleMachineNameClick(machine.machineId, e)}
                     >
-                      {machine.name}
+                      <div>
+                        {machine.name}
+                        <div className="text-xs text-muted-foreground">({machine.machineId})</div>
+                      </div>
                     </TableCell>
                     <TableCell className="text-left">
                       {machine.isBackupOverdue ? (
@@ -398,6 +401,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     onClick={(e) => handleMachineNameClick(machine.machineId, e)}
                   >
                     <div className="font-medium text-sm">{machine.name}</div>
+                    <div className="text-xs text-muted-foreground">({machine.machineId})</div>
                     <div className="font-medium text-sm">{machine.backupName || 'N/A'}</div>
                   </div>
                   
