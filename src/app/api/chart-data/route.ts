@@ -1,17 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getAllMachinesChartData } from '@/lib/db-utils';
+import { getAllServersChartData } from '@/lib/db-utils';
 
 export async function GET() {
   try {
-    const allMachinesChartData = await getAllMachinesChartData();
+    const allServersChartData = await getAllServersChartData();
     
     // Ensure we always return a valid JSON array
-    if (!Array.isArray(allMachinesChartData)) {
-      console.error('getAllMachinesChartData returned non-array:', allMachinesChartData);
+    if (!Array.isArray(allServersChartData)) {
+      console.error('getAllServersChartData returned non-array:', allServersChartData);
       return NextResponse.json([]);
     }
-    
-    return NextResponse.json(allMachinesChartData);
+
+    return NextResponse.json(allServersChartData);
   } catch (error) {
     console.error('Error fetching chart data:', error instanceof Error ? error.message : String(error));
     // Return empty array instead of error to prevent JSON parsing issues

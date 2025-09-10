@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, getNtfyConfig, getAllMachineAddresses, getCronConfig, getNotificationFrequencyConfig } from '@/lib/db-utils';
+import { getConfiguration, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig } from '@/lib/db-utils';
 import { dbUtils } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { createDefaultNotificationConfig, defaultOverdueTolerance } from '@/lib/default-config';
@@ -7,14 +7,14 @@ import { createDefaultNotificationConfig, defaultOverdueTolerance } from '@/lib/
 export async function GET() {
   try {
     // Fetch all configuration data in parallel
-    const [configJson, backupSettingsJson, overdueTolerance, ntfyConfig, cronConfig, notificationFrequency, machinesBackupNames] = await Promise.all([
+    const [configJson, backupSettingsJson, overdueTolerance, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames] = await Promise.all([
       Promise.resolve(getConfiguration('notifications')),
       Promise.resolve(getConfiguration('backup_settings')),
       Promise.resolve(getConfiguration('overdue_tolerance')),
       getNtfyConfig(),
       Promise.resolve(getCronConfig()),
       Promise.resolve(getNotificationFrequencyConfig()),
-      Promise.resolve(dbUtils.getMachinesBackupNames())
+      Promise.resolve(dbUtils.getServersBackupNames())
     ]);
 
     // Build the main configuration
@@ -44,31 +44,31 @@ export async function GET() {
       config.backupSettings = {};
     }
 
-    // Transform machines data
-    const machinesWithBackups = (machinesBackupNames as { 
+    // Transform servers data
+    const serversWithBackups = (serversBackupNames as { 
       id: string; 
-      machine_id: string;
-      machine_name: string; 
+      server_id: string;
+      server_name: string; 
       backup_name: string;
       server_url: string;
-    }[]).map((machine) => ({
-      id: machine.machine_id,
-      name: machine.machine_name,
-      backupName: machine.backup_name,
-      server_url: machine.server_url
+    }[]).map((server) => ({
+      id: server.server_id,
+      name: server.server_name,
+      backupName: server.backup_name,
+      server_url: server.server_url
     }));
 
     // Return unified configuration object
     const unifiedConfig = {
       ...config,
       overdue_tolerance: overdueTolerance || defaultOverdueTolerance,
-      machineAddresses: getAllMachineAddresses(),
+      serverAddresses: getAllServerAddresses(),
       cronConfig: {
         cronExpression: cronConfig.tasks['overdue-backup-check'].cronExpression,
         enabled: cronConfig.tasks['overdue-backup-check'].enabled
       },
       notificationFrequency,
-      machinesWithBackups
+      serversWithBackups
     };
 
     return NextResponse.json(unifiedConfig);

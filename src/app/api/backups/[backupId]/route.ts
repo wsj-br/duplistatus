@@ -28,10 +28,10 @@ export async function DELETE(
     const transaction = db.transaction(() => {
       // First check if the backup exists
       const existingBackup = db.prepare(`
-        SELECT id, machine_id, backup_name, date 
+        SELECT id, server_id, backup_name, date 
         FROM backups 
         WHERE id = ?
-      `).get(backupId) as { id: string; machine_id: string; backup_name: string; date: string } | undefined;
+      `).get(backupId) as { id: string; server_id: string; backup_name: string; date: string } | undefined;
 
       if (!existingBackup) {
         throw new Error(`Backup with ID ${backupId} not found`);

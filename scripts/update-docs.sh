@@ -16,19 +16,13 @@ fi
 echo "📦 Current version: $VERSION"
 echo ""
 
-# Find all .md files in the project
-MD_FILES=$(find . -name "*.md" -type f)
-
-if [ -z "$MD_FILES" ]; then
-    echo "⚠️  No .md files found"
-    exit 0
-fi
-
-# Counter for updated files
+# Find all .md files in the project and handle files with spaces properly
+# Use find with -print0 and read with -d '' to handle filenames with spaces
 UPDATED_COUNT=0
 
-# Process each .md file
-for file in $MD_FILES; do
+# Process each .md file using find with proper null termination
+# Skip files in hidden directories (directories starting with .)
+while IFS= read -r -d '' file; do
     # Check if file contains version badge pattern
     if grep -q "img\.shields\.io.*version.*blue" "$file"; then
         echo "🔍 Processing: $file"
@@ -51,7 +45,13 @@ for file in $MD_FILES; do
         # Remove backup file
         rm "$file.bak"
     fi
-done
+done < <(find . -name "*.md" -type f -not -path "*/.*" -print0)
+
+# Check if any files were found
+if [ $UPDATED_COUNT -eq 0 ] && ! find . -name "*.md" -type f -not -path "*/.*" -print0 | grep -q .; then
+    echo "⚠️  No .md files found"
+    exit 0
+fi
 
 echo ""
 if [ $UPDATED_COUNT -gt 0 ]; then
@@ -69,8 +69,12 @@ if ! command -v doctoc &> /dev/null; then
     exit 1
 fi
 
-# Run doctoc on all markdown files
+# Run doctoc on all markdown files, handling spaces properly
 echo "🔍 Running doctoc on all .md files..."
-doctoc *.md docs/*.md
+# Process each file individually to handle spaces properly
+while IFS= read -r -d '' file; do
+    echo "  📝 Processing: $file"
+    doctoc "$file"
+done < <(find . -name "*.md" -type f -not -path "*/.*" -print0)
 
 echo "✅ Table of contents updated successfully"

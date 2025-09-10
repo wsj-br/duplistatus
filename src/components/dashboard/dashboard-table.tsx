@@ -1,7 +1,7 @@
 // src/components/dashboard/dashboard-table.tsx
 "use client";
 
-import type { MachineSummary } from "@/lib/types";
+import type { ServerSummary } from "@/lib/types";
 import type { NotificationEvent } from "@/lib/types";
 import React, { useState, useMemo, useEffect } from "react";
 import {
@@ -30,7 +30,7 @@ import {
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
 interface DashboardTableProps {
-  machines: MachineSummary[];
+  servers: ServerSummary[];
 }
 
 const DASHBOARD_SORT_KEY = 'dashboard-table-sort';
@@ -71,7 +71,7 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
   }
 }
 
-export function DashboardTable({ machines }: DashboardTableProps) {
+export function DashboardTable({ servers }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
   
@@ -99,16 +99,16 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     }
   }, []);
 
-  // Convert MachineSummary to table-compatible format
+  // Convert ServerSummary to table-compatible format
   const tableData = useMemo(() => {
     const flattenedData = [];
     
-    for (const machine of machines) {
-      for (const backup of machine.backupInfo) {
+    for (const server of servers) {
+      for (const backup of server.backupInfo) {
         flattenedData.push({
-          id: `${machine.id}-${backup.name}`,
-          machineId: machine.id,
-          name: machine.name,
+          id: `${server.id}-${backup.name}`,
+          serverId: server.id,
+          name: server.name,
           backupName: backup.name,
           lastBackupListCount: backup.lastBackupListCount || 0,
           backupCount: backup.backupCount,
@@ -117,7 +117,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
           lastBackupStatus: backup.lastBackupStatus,
           isBackupOverdue: backup.isBackupOverdue,
           expectedBackupElapsed: backup.expectedBackupElapsed,
-          lastOverdueCheck: machine.lastOverdueCheck,
+          lastOverdueCheck: server.lastOverdueCheck,
           expectedBackupDate: backup.expectedBackupDate,
           lastNotificationSent: backup.lastNotificationSent,
           lastBackupDuration: backup.lastBackupDuration,
@@ -125,13 +125,13 @@ export function DashboardTable({ machines }: DashboardTableProps) {
           errors: backup.errors || 0,
           notificationEvent: backup.notificationEvent as NotificationEvent | undefined,
           availableBackups: backup.availableBackups || [],
-          server_url: machine.server_url
+          server_url: server.server_url
         });
       }
     }
     
     return flattenedData;
-  }, [machines]);
+  }, [servers]);
 
   // Column configuration for sorting
   const columnConfig = useMemo(() => ({
@@ -159,8 +159,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     }
   }, [sortConfig, isLoaded]);
 
-  // Sort machines based on current sort configuration
-  const sortedMachines = useMemo(() => {
+  // Sort servers based on current sort configuration
+  const sortedServers = useMemo(() => {
     return createSortedArray(tableData, sortConfig, columnConfig);
   }, [tableData, sortConfig, columnConfig]);
 
@@ -183,23 +183,23 @@ export function DashboardTable({ machines }: DashboardTableProps) {
     });
   };
 
-  const handleMachineNameClick = (machineId: string, e: React.MouseEvent) => {
+  const handleServerNameClick = (serverId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the row click from firing
-    router.push(`/detail/${machineId}`);
+    router.push(`/detail/${serverId}`);
   };
 
-  const handleRowClick = (machineId: string, backupName: string | null) => {
+  const handleRowClick = (serverId: string, backupName: string | null) => {
     const queryParams = new URLSearchParams();
     if (backupName) {
       queryParams.set('backup', backupName);
     }
-    router.push(`/detail/${machineId}?${queryParams.toString()}`);
+    router.push(`/detail/${serverId}?${queryParams.toString()}`);
   };
 
-  const handleStatusBadgeClick = (machineId: string, backupId: string | null, e: React.MouseEvent) => {
+  const handleStatusBadgeClick = (serverId: string, backupId: string | null, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the row click from firing
     if (backupId) {
-      router.push(`/detail/${machineId}/backup/${backupId}`);
+      router.push(`/detail/${serverId}/backup/${backupId}`);
     }
   };
 
@@ -218,7 +218,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
             <TableHeader>
               <TableRow>
                 <SortableTableHead column="name" sortConfig={sortConfig} onSort={handleSort}>
-                  Machine Name
+                  Server Name
                 </SortableTableHead>
               <SortableTableHead column="backupName" sortConfig={sortConfig} onSort={handleSort}>
                   Backup Name
@@ -253,44 +253,44 @@ export function DashboardTable({ machines }: DashboardTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedMachines.length === 0 && (
+              {sortedServers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">
-                    No machines found.
+                    No servers found.
                   </TableCell>
                 </TableRow>
               )}
-              {sortedMachines.map((machine) => {              
+              {sortedServers.map((server) => {              
                 return (
                   <TableRow 
-                    key={`${machine.id} || 'no-backup'}`} 
-                    onClick={() => handleRowClick(machine.machineId, machine.backupName)}
+                    key={`${server.id} || 'no-backup'}`} 
+                    onClick={() => handleRowClick(server.serverId, server.backupName)}
                     className={`cursor-pointer hover:bg-muted/50`}
                   >
                     <TableCell 
                       className="font-medium"
-                      onClick={(e) => handleMachineNameClick(machine.machineId, e)}
+                      onClick={(e) => handleServerNameClick(server.serverId, e)}
                     >
                       <div>
-                        {machine.name}
-                        <div className="text-xs text-muted-foreground">({machine.machineId})</div>
+                        {server.name}
+                        <div className="text-xs text-muted-foreground">({server.serverId})</div>
                       </div>
                     </TableCell>
                     <TableCell className="text-left">
-                      {machine.isBackupOverdue ? (
+                      {server.isBackupOverdue ? (
                         <Tooltip>
                           <TooltipTrigger>
                             <div className="text-left w-full">
-                              <div className="font-medium">{machine.backupName || 'N/A'}</div>
-                              <div className="text-xs text-red-400">⚠️ {machine.expectedBackupElapsed} overdue</div>
+                              <div className="font-medium">{server.backupName || 'N/A'}</div>
+                              <div className="text-xs text-red-400">⚠️ {server.expectedBackupElapsed} overdue</div>
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="space-y-1">
-                              <div><span>Checked:</span> <span className="text-muted-foreground">{machine.lastOverdueCheck !== "N/A" ? new Date(machine.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastOverdueCheck) + ")"  	 : "N/A"}</span></div>
-                              <div><span>Last backup:</span> <span className="text-muted-foreground">{machine.lastBackupDate !== "N/A" ? new Date(machine.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.lastBackupDate) + ")" : "N/A"}</span></div>
-                              <div><span>Expected backup:</span> <span className="text-muted-foreground">{machine.expectedBackupDate !== "N/A" ? new Date(machine.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.expectedBackupDate) + ")" : "N/A"}</span></div>
-                              <div><span>Last notification:</span> <span className="text-muted-foreground">{machine.lastNotificationSent !== "N/A" ? new Date(machine.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(machine.lastNotificationSent) + ")" : "N/A"}</span></div>
+                              <div><span>Checked:</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? new Date(server.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(server.lastOverdueCheck) + ")"  	 : "N/A"}</span></div>
+                              <div><span>Last backup:</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? new Date(server.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(server.lastBackupDate) + ")" : "N/A"}</span></div>
+                              <div><span>Expected backup:</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? new Date(server.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(server.expectedBackupDate) + ")" : "N/A"}</span></div>
+                              <div><span>Last notification:</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? new Date(server.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(server.lastNotificationSent) + ")" : "N/A"}</span></div>
 
                               <div className="border-t pt-2 flex items-center gap-2">
                                 <button 
@@ -307,8 +307,8 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                                   className="text-xs !p-1" 
                                   variant="ghost"
                                   size="sm"
-                                  machineName={machine.name}
-                                  serverUrl={machine.server_url} 
+                                  serverName={server.name}
+                                  serverUrl={server.server_url}
                                   showText={true} 
                                 />
                               </div>
@@ -316,25 +316,25 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                           </TooltipContent>
                         </Tooltip>
                         ) : (
-                          machine.backupName || 'N/A'
+                          server.backupName || 'N/A'
                         )}
                     </TableCell>
                     <TableCell className="text-center">
                       <AvailableBackupsIcon
-                        availableBackups={machine.availableBackups}
-                        currentBackupDate={machine.lastBackupDate}
-                        machineName={machine.name}
-                        backupName={machine.backupName || 'N/A'}
+                        availableBackups={server.availableBackups}
+                        currentBackupDate={server.lastBackupDate}
+                        serverName={server.name}
+                        backupName={server.backupName || 'N/A'}
                         onIconClick={handleAvailableBackupsClick}
-                        count={machine.lastBackupListCount}
+                        count={server.lastBackupListCount}
                       />
                     </TableCell>
-                    <TableCell className="text-center">{machine.backupCount}</TableCell>
+                    <TableCell className="text-center">{server.backupCount}</TableCell>
                     <TableCell>
-                      {machine.lastBackupDate !== "N/A" ? (
+                      {server.lastBackupDate !== "N/A" ? (
                         <>
-                          <div>{new Date(machine.lastBackupDate).toLocaleString()}</div>
-                          <div className="text-xs text-muted-foreground">{formatTimeAgo(machine.lastBackupDate)}
+                          <div>{new Date(server.lastBackupDate).toLocaleString()}</div>
+                          <div className="text-xs text-muted-foreground">{formatTimeAgo(server.lastBackupDate)}
                           </div>
                         </>
                       ) : (
@@ -343,38 +343,38 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     </TableCell>
                     <TableCell>
                       <div 
-                        onClick={(e) => handleStatusBadgeClick(machine.machineId, machine.lastBackupId, e)}
+                        onClick={(e) => handleStatusBadgeClick(server.serverId, server.lastBackupId, e)}
                         className="cursor-pointer"
                       >
-                        <StatusBadge status={machine.lastBackupStatus} />
+                        <StatusBadge status={server.lastBackupStatus} />
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">{machine.lastBackupDuration}</TableCell>
-                    <TableCell className="text-center">{machine.warnings}</TableCell>
-                    <TableCell className="text-center">{machine.errors}</TableCell>
+                    <TableCell className="text-right">{server.lastBackupDuration}</TableCell>
+                    <TableCell className="text-center">{server.warnings}</TableCell>
+                    <TableCell className="text-center">{server.errors}</TableCell>
                     <TableCell className="text-center">
-                      {machine.notificationEvent && (
+                      {server.notificationEvent && (
                         <Tooltip>
                           <TooltipTrigger>
                             <div 
                               onClick={handleNotificationIconClick}
                               className="cursor-pointer inline-block"
                             >
-                              {getNotificationIcon(machine.notificationEvent)}
+                              {getNotificationIcon(server.notificationEvent)}
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>{getNotificationTooltip(machine.notificationEvent)}</p>
+                            <p>{getNotificationTooltip(server.notificationEvent)}</p>
                           </TooltipContent>
                         </Tooltip>
                       )}
                     </TableCell>
                     <TableCell className="text-center">
                       <ServerConfigurationButton 
-                        machineName={machine.name}
-                        serverUrl={machine.server_url} 
+                        serverName={server.name}
+                        serverUrl={server.server_url}
                         showText={false}
-                        disabled={machine.server_url === ''}
+                        disabled={server.server_url === ''}
                       />
                     </TableCell>
                   </TableRow>
@@ -386,34 +386,34 @@ export function DashboardTable({ machines }: DashboardTableProps) {
 
         {/* Mobile Card View */}
         <div className="md:hidden space-y-3 p-4">
-          {sortedMachines.length === 0 && (
+          {sortedServers.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
-              No machines found.
+              No servers found.
             </div>
           )}
-          {sortedMachines.map((machine) => (
-            <Card key={`${machine.id} || 'no-backup'}`} className="p-4">
+          {sortedServers.map((server) => (
+            <Card key={`${server.id} || 'no-backup'}`} className="p-4">
               <div className="space-y-3">
-                {/* Header with Machine, Backup Name and Status */}
+                {/* Header with Server, Backup Name and Status */}
                 <div className="flex items-center justify-between border-b pb-2">
                   <div 
                     className="cursor-pointer flex-1"
-                    onClick={(e) => handleMachineNameClick(machine.machineId, e)}
+                    onClick={(e) => handleServerNameClick(server.serverId, e)}
                   >
-                    <div className="font-medium text-sm">{machine.name}</div>
-                    <div className="text-xs text-muted-foreground">({machine.machineId})</div>
-                    <div className="font-medium text-sm">{machine.backupName || 'N/A'}</div>
+                    <div className="font-medium text-sm">{server.name}</div>
+                    <div className="text-xs text-muted-foreground">({server.serverId})</div>
+                    <div className="font-medium text-sm">{server.backupName || 'N/A'}</div>
                   </div>
                   
                   <div className="flex flex-col items-end gap-1">
                     <div 
-                      onClick={(e) => handleStatusBadgeClick(machine.machineId, machine.lastBackupId, e)}
+                      onClick={(e) => handleStatusBadgeClick(server.serverId, server.lastBackupId, e)}
                       className="cursor-pointer"
                     >
-                      <StatusBadge status={machine.lastBackupStatus} />
+                      <StatusBadge status={server.lastBackupStatus} />
                     </div>
-                    {machine.isBackupOverdue && (
-                      <div className="text-red-400 text-xs">⚠️ {machine.expectedBackupElapsed} overdue</div>
+                    {server.isBackupOverdue && (
+                      <div className="text-red-400 text-xs">⚠️ {server.expectedBackupElapsed} overdue</div>
                     )}
                   </div>
                 </div>
@@ -425,29 +425,29 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     <Label className="text-xs text-muted-foreground">Available Versions</Label>
                     <div className="flex justify-start">
                       <AvailableBackupsIcon
-                        availableBackups={machine.availableBackups}
-                        currentBackupDate={machine.lastBackupDate}
-                        machineName={machine.name}
-                        backupName={machine.backupName || 'N/A'}
+                        availableBackups={server.availableBackups}
+                        currentBackupDate={server.lastBackupDate}
+                        serverName={server.name}
+                        backupName={server.backupName || 'N/A'}
                         onIconClick={handleAvailableBackupsClick}
-                        count={machine.lastBackupListCount}
+                        count={server.lastBackupListCount}
                       />
                     </div>
                   </div>
                   
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Backup Count</Label>
-                    <div className="text-sm">{machine.backupCount}</div>
+                    <div className="text-sm">{server.backupCount}</div>
                   </div>
 
                   {/* Row 2 */}
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Last Backup</Label>
                     <div className="text-sm">
-                      {machine.lastBackupDate !== "N/A" ? (
+                      {server.lastBackupDate !== "N/A" ? (
                         <>
-                          <div className="text-xs">{new Date(machine.lastBackupDate).toLocaleDateString()}</div>
-                          <div className="text-xs text-muted-foreground">{formatTimeAgo(machine.lastBackupDate)}</div>
+                          <div className="text-xs">{new Date(server.lastBackupDate).toLocaleDateString()}</div>
+                          <div className="text-xs text-muted-foreground">{formatTimeAgo(server.lastBackupDate)}</div>
                         </>
                       ) : (
                         <div className="text-xs text-muted-foreground">N/A</div>
@@ -457,18 +457,18 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Duration</Label>
-                    <div className="text-sm">{machine.lastBackupDuration}</div>
+                    <div className="text-sm">{server.lastBackupDuration}</div>
                   </div>
 
                   {/* Row 3 */}
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Warnings</Label>
-                    <div className="text-sm">{machine.warnings}</div>
+                    <div className="text-sm">{server.warnings}</div>
                   </div>
                   
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Errors</Label>
-                    <div className="text-sm">{machine.errors}</div>
+                    <div className="text-sm">{server.errors}</div>
                   </div>
                 </div>
 
@@ -477,12 +477,12 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Notification</Label>
                     <div className="flex justify-start">
-                      {machine.notificationEvent ? (
+                      {server.notificationEvent ? (
                         <div 
                           onClick={handleNotificationIconClick}
                           className="cursor-pointer"
                         >
-                          {getNotificationIcon(machine.notificationEvent)}
+                          {getNotificationIcon(server.notificationEvent)}
                         </div>
                       ) : (
                         <div className="text-xs text-muted-foreground">Off</div>
@@ -494,24 +494,24 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                     <Label className="text-xs text-muted-foreground">Duplicati Config</Label>
                     <div className="flex justify-start">
                       <ServerConfigurationButton 
-                        machineName={machine.name}
-                        serverUrl={machine.server_url} 
+                        serverName={server.name}
+                        serverUrl={server.server_url}
                         showText={false}
-                        disabled={machine.server_url === ''}
+                        disabled={server.server_url === ''}
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Overdue Information (if applicable) */}
-                {machine.isBackupOverdue && (
+                {server.isBackupOverdue && (
                   <div className="space-y-1 border-t pt-3">
                     <Label className="text-xs text-muted-foreground">Overdue Details</Label>
                     <div className="text-xs space-y-1">
-                      <div><span className="font-medium">Checked:</span> <span className="text-muted-foreground">{machine.lastOverdueCheck !== "N/A" ? new Date(machine.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(machine.lastOverdueCheck) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">Last backup:</span> <span className="text-muted-foreground">{machine.lastBackupDate !== "N/A" ? new Date(machine.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.lastBackupDate) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">Expected backup:</span> <span className="text-muted-foreground">{machine.expectedBackupDate !== "N/A" ? new Date(machine.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(machine.expectedBackupDate) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">Last notification:</span> <span className="text-muted-foreground">{machine.lastNotificationSent !== "N/A" ? new Date(machine.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(machine.lastNotificationSent) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Checked:</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? new Date(server.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(server.lastOverdueCheck) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Last backup:</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? new Date(server.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(server.lastBackupDate) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Expected backup:</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? new Date(server.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(server.expectedBackupDate) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Last notification:</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? new Date(server.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(server.lastNotificationSent) + ")" : "N/A"}</span></div>
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button 
@@ -535,7 +535,7 @@ export function DashboardTable({ machines }: DashboardTableProps) {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => handleRowClick(machine.machineId, machine.backupName)}
+                    onClick={() => handleRowClick(server.serverId, server.backupName)}
                     className="w-full"
                   >
                     View Details

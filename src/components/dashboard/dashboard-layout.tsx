@@ -1,38 +1,38 @@
 "use client";
 
 import { useMemo, useEffect, useRef, useState } from "react";
-import type { MachineSummary, Backup, DashboardData } from "@/lib/types";
+import type { ServerSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { MachineCards } from "./machine-cards";
+import { ServerCards } from "./server-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
-import { useMachineSelection } from "@/contexts/machine-selection-context";
+import { useServerSelection } from "@/contexts/server-selection-context";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 interface DashboardLayoutProps {
   data: DashboardData;
-  selectedMachineId?: string | null;
-  selectedMachine?: MachineSummary | null;
-  machineBackups: Backup[];
+  selectedServerId?: string | null;
+  selectedServer?: ServerSummary | null;
+  serverBackups: Backup[];
   isLoading: boolean;
   lastRefreshTime: Date;
-  onMachineSelect: (machineId: string | null) => void;
+  onServerSelect: (serverId: string | null) => void;
   onRefresh: () => void;
 }
 
 export function DashboardLayout({ 
   data, 
-  selectedMachineId,
-  selectedMachine,
-  machineBackups,
+  selectedServerId,
+  selectedServer,
+  serverBackups,
   isLoading: _isLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
   lastRefreshTime: _lastRefreshTime, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onMachineSelect,
+  onServerSelect,
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardLayoutProps) {
-  const { state: machineSelectionState, setSelectedMachineId, setViewMode, setMachines } = useMachineSelection();
-  const { viewMode, isInitialized } = machineSelectionState;
+  const { state: serverSelectionState, setSelectedServerId, setViewMode, setServers } = useServerSelection();
+  const { viewMode, isInitialized } = serverSelectionState;
   const { state: globalRefreshState, setVisibleCardIndex } = useGlobalRefresh();
   
   // Track screen height for responsive height behavior
@@ -58,8 +58,8 @@ export function DashboardLayout({
   const useContentBasedHeight = viewMode === 'table' || screenHeight < 865;
   
   // Use refs to track initialization and prevent infinite loops
-  const previousSelectedMachineId = useRef<string | null>(null);
-  const previousMachinesData = useRef<string>('');
+  const previousSelectedServerId = useRef<string | null>(null);
+  const previousServersData = useRef<string>('');
   
   // Get visible card index from global context instead of local state
   const visibleCardIndex = globalRefreshState.visibleCardIndex;
@@ -69,42 +69,42 @@ export function DashboardLayout({
     setViewMode(newViewMode);
   };
 
-  // Update context when selected machine changes (only if actually changed)
+  // Update context when selected server changes (only if actually changed)
   useEffect(() => {
-    if (previousSelectedMachineId.current !== selectedMachineId) {
-      setSelectedMachineId(selectedMachineId || null);
-      previousSelectedMachineId.current = selectedMachineId || null;
+    if (previousSelectedServerId.current !== selectedServerId) {
+      setSelectedServerId(selectedServerId || null);
+      previousSelectedServerId.current = selectedServerId || null;
     }
-  }, [selectedMachineId, setSelectedMachineId]);
+  }, [selectedServerId, setSelectedServerId]);
 
-  // Update context when machines data changes (only if actually changed)
+  // Update context when servers data changes (only if actually changed)
   useEffect(() => {
-    const machinesDataString = JSON.stringify(data.machinesSummary);
-    if (previousMachinesData.current !== machinesDataString) {
-      setMachines(data.machinesSummary);
-      previousMachinesData.current = machinesDataString;
+    const serversDataString = JSON.stringify(data.serversSummary);
+    if (previousServersData.current !== serversDataString) {
+      setServers(data.serversSummary);
+      previousServersData.current = serversDataString;
     }
-  }, [data.machinesSummary, setMachines]);
+  }, [data.serversSummary, setServers]);
 
-  // Calculate machine-specific summary if a machine is selected
+  // Calculate server-specific summary if a server is selected
   const summary = useMemo(() => {
-    if (selectedMachine && machineBackups.length > 0) {
-      // Calculate machine-specific summary
-      const machineSummary = {
+    if (selectedServer && serverBackups.length > 0) {
+      // Calculate server-specific summary
+      const serverSummary = {
         ...data.overallSummary,
-        totalMachines: 1,
-        totalBackups: machineBackups.length,
-        totalUploadedSize: machineBackups.reduce((sum, backup) => sum + backup.uploadedSize, 0),
-        totalBackupSize: machineBackups.reduce((sum, backup) => sum + backup.knownFileSize || 0, 0),
-        overdueBackupsCount: machineBackups.filter(() => {
+        totalServers: 1,
+        totalBackups: serverBackups.length,
+        totalUploadedSize: serverBackups.reduce((sum, backup) => sum + backup.uploadedSize, 0),
+        totalBackupSize: serverBackups.reduce((sum, backup) => sum + backup.knownFileSize || 0, 0),
+        overdueBackupsCount: serverBackups.filter(() => {
           // This would need proper overdue logic
           return false;
         }).length
       };
-      return machineSummary;
+      return serverSummary;
     }
     return data.overallSummary;
-  }, [data.overallSummary, selectedMachine, machineBackups]);
+  }, [data.overallSummary, selectedServer, serverBackups]);
 
   // Don't render until the view mode is initialized to prevent flash
   if (!isInitialized) {
@@ -154,20 +154,20 @@ export function DashboardLayout({
         />
       </div>
       
-      {/* Machine Overview Panel - auto height */}
+      {/* Server Overview Panel - auto height */}
       <div className="mt-2 mb-2">
         <Card className="shadow-lg border-2 border-border">
           <CardContent className="p-4">
             {viewMode === 'cards' ? (
-              <MachineCards 
-                machines={data.machinesSummary} 
-                selectedMachineId={selectedMachineId}
-                onSelect={onMachineSelect}
+              <ServerCards 
+                servers={data.serversSummary} 
+                selectedServerId={selectedServerId}
+                onSelect={onServerSelect}
                 visibleCardIndex={visibleCardIndex}
                 onVisibleCardIndexChange={setVisibleCardIndex}
               />
             ) : (
-              <DashboardTable machines={data.machinesSummary} />
+              <DashboardTable servers={data.serversSummary} />
             )}
           </CardContent>
         </Card>
@@ -193,8 +193,8 @@ export function DashboardLayout({
               : 'h-full'
           } p-0`}>
             <MetricsChartsPanel
-              machineId={selectedMachineId || undefined}
-              chartData={selectedMachineId ? undefined : data.allMachinesChartData}
+              serverId={selectedServerId || undefined}
+              chartData={selectedServerId ? undefined : data.allServersChartData}
             />
           </CardContent>
         </Card>

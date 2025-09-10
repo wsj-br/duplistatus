@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DashboardLayout } from './dashboard-layout';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
-import type { MachineSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
+import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 interface DashboardAutoRefreshProps {
   initialData: {
-    machinesSummary: MachineSummary[];
+    serversSummary: ServerSummary[];
     overallSummary: OverallSummary;
-    allMachinesChartData: ChartDataPoint[];
+    allServersChartData: ChartDataPoint[];
   };
 }
 
@@ -17,12 +17,12 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
   const { state } = useGlobalRefresh();
   
   // State for data
-  const [machinesSummary, setMachinesSummary] = useState<MachineSummary[]>(initialData.machinesSummary);
+  const [serversSummary, setServersSummary] = useState<ServerSummary[]>(initialData.serversSummary);
   const [overallSummary, setOverallSummary] = useState<OverallSummary>(initialData.overallSummary);
-  const [allMachinesChartData, setAllMachinesChartData] = useState<ChartDataPoint[]>(initialData.allMachinesChartData);
+  const [allServersChartData, setAllServersChartData] = useState<ChartDataPoint[]>(initialData.allServersChartData);
   
   // State for selection
-  const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
+  const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
   
   // State for loading
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       
       // Fetch all required data
       const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-        fetch('/api/machines-summary'),
+        fetch('/api/servers-summary'),
         fetch('/api/summary'),
         fetch('/api/chart-data')
       ]);
@@ -62,9 +62,9 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       ]);
 
       // Update state with new data
-      setMachinesSummary(machinesData);
+      setServersSummary(machinesData);
       setOverallSummary(summaryData);
-      setAllMachinesChartData(chartData);
+      setAllServersChartData(chartData);
       setLastRefreshTime(new Date());
     } catch (error) {
       console.error('Error refreshing dashboard data:', error);
@@ -79,65 +79,65 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
     // instead of making duplicate API calls
     if (state.lastRefresh && !state.isRefreshing && !state.pageSpecificLoading.dashboard && state.dashboardData) {
       // Use the data from global refresh context to avoid duplicate API calls
-      const { machinesSummary: newMachinesSummary, overallSummary: newOverallSummary, allMachinesChartData: newAllMachinesChartData } = state.dashboardData;
+      const { serversSummary: newServersSummary, overallSummary: newOverallSummary, allServersChartData: newAllServersChartData } = state.dashboardData;
       
       // Compare data before updating to prevent unnecessary re-renders
-      const machinesChanged = JSON.stringify(newMachinesSummary) !== JSON.stringify(machinesSummary);
+      const serversChanged = JSON.stringify(newServersSummary) !== JSON.stringify(serversSummary);
       const summaryChanged = JSON.stringify(newOverallSummary) !== JSON.stringify(overallSummary);
-      const chartDataChanged = JSON.stringify(newAllMachinesChartData) !== JSON.stringify(allMachinesChartData);
+      const chartDataChanged = JSON.stringify(newAllServersChartData) !== JSON.stringify(allServersChartData);
       
       // Only update if there are actual changes
-      if (machinesChanged || summaryChanged || chartDataChanged) {
-        if (machinesChanged) setMachinesSummary(newMachinesSummary);
+      if (serversChanged || summaryChanged || chartDataChanged) {
+        if (serversChanged) setServersSummary(newServersSummary);
         if (summaryChanged) setOverallSummary(newOverallSummary);
-        if (chartDataChanged) setAllMachinesChartData(newAllMachinesChartData);
+        if (chartDataChanged) setAllServersChartData(newAllServersChartData);
       }
       
       // Always update refresh time for the UI
       setLastRefreshTime(new Date());
     }
-  }, [state.lastRefresh, state.isRefreshing, state.pageSpecificLoading.dashboard, state.dashboardData, machinesSummary, overallSummary, allMachinesChartData]);
+  }, [state.lastRefresh, state.isRefreshing, state.pageSpecificLoading.dashboard, state.dashboardData, serversSummary, overallSummary, allServersChartData]);
 
-  // Handle machine selection
-  const handleMachineSelect = useCallback((machineId: string | null) => {
-    if (selectedMachineId === machineId) {
-      // Toggle off if same machine is clicked
-      setSelectedMachineId(null);
+  // Handle server selection
+  const handleServerSelect = useCallback((serverId: string | null) => {
+    if (selectedServerId === serverId) {
+      // Toggle off if same server is clicked
+      setSelectedServerId(null);
     } else {
-      // Select new machine
-      setSelectedMachineId(machineId);
+      // Select new server
+      setSelectedServerId(serverId);
     }
-  }, [selectedMachineId]);
+  }, [selectedServerId]);
 
   // We no longer need to filter chart data here, as the MetricsChartsPanel component now handles this internally
 
-  // Get selected machine
-  const selectedMachine = useMemo(() => {
-    if (!selectedMachineId) return null;
-    return machinesSummary.find(machine => machine.id === selectedMachineId) || null;
-  }, [machinesSummary, selectedMachineId]);
+  // Get selected server
+  const selectedServer = useMemo(() => {
+    if (!selectedServerId) return null;
+    return serversSummary.find(server => server.id === selectedServerId) || null;
+  }, [serversSummary, selectedServerId]);
 
-  // Get all backups for the selected machine
-  const machineBackups = useMemo(() => {
-    if (!selectedMachine) return [];
+  // Get all backups for the selected server
+  const serverBackups = useMemo(() => {
+    if (!selectedServer) return [];
     // This would need to be fetched from the database
     // For now, we'll return an empty array and handle this in the layout
     return [];
-  }, [selectedMachine]);
+  }, [selectedServer]);
 
   return (
     <DashboardLayout
       data={{
-        machinesSummary,
+        serversSummary,
         overallSummary,
-        allMachinesChartData
+        allServersChartData
       }}
-      selectedMachineId={selectedMachineId}
-      selectedMachine={selectedMachine}
-      machineBackups={machineBackups}
+      selectedServerId={selectedServerId}
+      selectedServer={selectedServer}
+      serverBackups={serverBackups}
       isLoading={isLoading}
       lastRefreshTime={lastRefreshTime}
-      onMachineSelect={handleMachineSelect}
+      onServerSelect={handleServerSelect}
       onRefresh={refreshData}
     />
   );

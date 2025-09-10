@@ -4,12 +4,12 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.7.17.dev-blue)
+![](https://img.shields.io/badge/version-0.7.19.dev-blue)
 
 <br>
 
 
-This web application monitors and visualizes backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines. It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
+This web application monitors and visualizes backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple servers. It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
 <br>
 
@@ -43,8 +43,8 @@ This web application monitors and visualizes backup operations from [Duplicati](
 ## Features
 
 - **Easy Installation**: Run inside a container with images available on Docker Hub and GitHub Container Registry
-- **Dashboard**: This displays the backup status for all monitored machines.
-- **Backup history**: Detailed view of backup history for each machine
+- **Dashboard**: This displays the backup status for all monitored servers.
+- **Backup history**: Detailed view of backup history for each server
 - **Data Visualization**: Interactive charts showing backup metrics over time and other statistical information.
 - **Log Collection**: Collect backup logs directly from Duplicati servers via HTTP/HTTPS
 - **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts (NEW)
@@ -69,7 +69,7 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 ### Backup History
 
-![machine-detail](docs/img/screen-machine.png)
+![server-detail](docs/img/screen-machine.png)
 
 ### Backup Details
 

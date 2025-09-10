@@ -200,26 +200,26 @@ export async function POST(request: NextRequest) {
     }
 
     const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
-    const machineId = systemInfo.Options?.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
-    const machineName = systemInfo.MachineName;
+    const serverId = systemInfo.Options?.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
+    const serverName = systemInfo.MachineName;
 
-    if (!machineId || !machineName) {
-      console.error('Could not get machine information');
-      throw new Error('Could not get machine information');
+    if (!serverId || !serverName) {
+      console.error('Could not get server information');
+      throw new Error('Could not get server information');
     }
     
-    // Upsert machine information in the database
-    dbOps.upsertMachine.run({
-        id: machineId,
-        name: machineName,
+    // Upsert server information in the database
+    dbOps.upsertServer.run({
+        id: serverId,
+        name: serverName,
         server_url: baseUrl
       });
     
-    // Ensure backup settings are complete for all machines and backups
-    // This will add default settings for any missing machine-backup combinations
+    // Ensure backup settings are complete for all servers and backups
+    // This will add default settings for any missing server-backup combinations
     const backupSettingsResult = await ensureBackupSettingsComplete();
     if (backupSettingsResult.added > 0) {
-      console.log(`[collect-backups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
+      console.log(`[collect-backups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total server-backup combinations`);
     }
   
     // Step 3: Get list of backups
@@ -327,7 +327,7 @@ export async function POST(request: NextRequest) {
           if (!backupName) continue;
           
           const isDuplicate = await dbUtils.checkDuplicateBackup({
-            machine_id: machineId,
+            server_id: serverId,
             backup_name: backupName,
             date: backupDate
           });
@@ -346,7 +346,7 @@ export async function POST(request: NextRequest) {
           // Insert backup data
           dbOps.insertBackup.run({
             id: uuidv4(),
-            machine_id: machineId,
+            server_id: serverId,
             backup_name: backupName,
             backup_id: backupId,
             date: backupDate,
@@ -423,7 +423,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      machineName: machineName,
+      serverName: serverName,
       stats: {
         processed: processedCount,
         skipped: skippedCount,

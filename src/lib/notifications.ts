@@ -1,5 +1,5 @@
 import format from 'string-template';
-import { getConfiguration, getNtfyConfig, getOverdueToleranceConfig } from './db-utils';
+import { getConfiguration, getNtfyConfig, getOverdueToleranceConfig, getServerUrlById } from './db-utils';
 import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey, OverdueTolerance } from './types';
 import { createDefaultNotificationConfig, defaultNotificationTemplates } from './default-config';
 
@@ -7,7 +7,7 @@ import { createDefaultNotificationConfig, defaultNotificationTemplates } from '.
 export const runtime = 'nodejs';
 
 export interface NotificationContext {
-  machine_name: string;
+  server_name: string;
   backup_name: string;
   backup_date: string;
   status: BackupStatus;
@@ -20,11 +20,12 @@ export interface NotificationContext {
   uploaded_size: string; // formatted size string
   storage_size: string; // formatted size string
   available_versions: number;
+  server_url: string;
 }
 
 export interface OverdueBackupContext {
-  machine_name: string;
-  machine_id: string;
+  server_name: string;
+  server_id: string;
   backup_name: string;
   last_backup_date: string;
   last_elapsed: string;
@@ -33,6 +34,7 @@ export interface OverdueBackupContext {
   backup_interval_type: string;
   backup_interval_value: number;
   overdue_tolerance: string; // Human-readable tolerance label
+  server_url: string;
 }
 
 // Helper function to convert overdue tolerance value to human-readable label
@@ -91,34 +93,15 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
   }
 }
 
-// Helper function to get backup key
-// Helper function to get backup key (supports both old and new formats)
-function getBackupKey(machineName: string, backupName: string): BackupKey {
-  // Try to find machine ID from machine name for new format
-  try {
-    const { getMachinesSummary } = require('./db-utils');
-    const machinesSummary = getMachinesSummary();
-    const machine = machinesSummary.find((m: any) => m.name === machineName);
-    
-    if (machine) {
-      // Use new format: machine_id:backup_name
-      return `${machine.id}:${backupName}`;
-    }
-  } catch (error) {
-    console.warn('Failed to get machine ID, falling back to old format:', error);
-  }
-  
-  // Fallback to old format: machine_name:backup_name
-  return `${machineName}:${backupName}`;
-}
 
-// Helper function to get backup settings with fallback to machine settings
-function getBackupSettings(config: NotificationConfig, machineName: string, backupName: string) {
-  const backupKey = getBackupKey(machineName, backupName);
+// Helper function to get backup settings with fallback to server settings
+async function getBackupSettings(config: NotificationConfig, serverId: string, backupName: string) {
+  const backupKey: BackupKey = `${serverId}:${backupName}`;
   const backupConfig = config.backupSettings?.[backupKey];
   
   return backupConfig || null;
 }
+
 
 export async function sendNtfyNotification(
   ntfyUrl: string,
@@ -236,7 +219,8 @@ function processTemplate(template: NotificationTemplate, context: NotificationCo
 
 export async function sendBackupNotification(
   backup: Backup,
-  machineName: string,
+  serverId: string,
+  serverName: string,
   context: NotificationContext
 ): Promise<void> {
   const config = await getNotificationConfig();
@@ -245,9 +229,14 @@ export async function sendBackupNotification(
     return;
   }
 
-  const backupConfig = getBackupSettings(config, machineName, backup.name);
+  // Add server URL to context if not already present
+  if (!context.server_url) {
+    context.server_url = getServerUrlById(serverId);
+  }
+
+  const backupConfig = await getBackupSettings(config, serverId, backup.name);
   if (!backupConfig || backupConfig.notificationEvent === 'off') {
-    console.log(`Notifications disabled for backup ${backup.name} on machine ${machineName}, skipping`);
+    console.log(`Notifications disabled for backup ${backup.name} on server ${serverName}, skipping`);
     return;
   }
 
@@ -292,16 +281,16 @@ export async function sendBackupNotification(
       config.ntfy.accessToken
     );
     
-    console.log(`Notification sent for backup ${backup.name} on machine ${machineName}, status: ${status}, notification config: ${notificationConf}`);
+    console.log(`Notification sent for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
   } catch (error) {
-    console.error(`Failed to send backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to send backup notification for ${serverName}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
 
 export async function sendOverdueBackupNotification(
-  machineId: string,
-  machineName: string,
+  serverId: string,
+  serverName: string,
   backupName: string,
   context: OverdueBackupContext,
   config?: NotificationConfig
@@ -316,6 +305,7 @@ export async function sendOverdueBackupNotification(
   const contextWithTolerance: OverdueBackupContext = {
     ...context,
     overdue_tolerance: getOverdueToleranceLabel(overdueTolerance),
+    server_url: context.server_url || getServerUrlById(serverId),
   };
 
   try {
@@ -332,7 +322,7 @@ export async function sendOverdueBackupNotification(
     );
     
   } catch (error) {
-    console.error(`Failed to send overdue backup notification for ${machineName}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to send overdue backup notification for ${serverName}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

@@ -7,8 +7,8 @@ export const defaultNotificationTemplates: {
   warning: NotificationTemplate;
 } = {
   success: {
-    title: "✅ {status} - {backup_name}  @ {machine_name}",
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
+    title: "✅ {status} - {backup_name}  @ {server_name}",
+    message: "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
              "☁️ Uploaded: {uploaded_size}\n" + 
              "💾 Store usage:  {storage_size}\n" +
              "🔃 Available versions:  {available_versions}\n",
@@ -16,23 +16,23 @@ export const defaultNotificationTemplates: {
     tags: "duplicati, duplistatus, success"
   },
   warning: {
-    title: " ⚠️{status} - {backup_name}  @ {machine_name}",
-    message: "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.\n\n" + 
+    title: " ⚠️{status} - {backup_name}  @ {server_name}",
+    message: "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date}.\n\n" + 
              "⏰ Duration: {duration}\n" + 
              "☁️ Uploaded: {uploaded_size}\n\n" + 
              "🚨 {warnings_count} warnings\n" + 
              "🛑 {errors_count} errors.\n\n" + 
-             "🔍 Please check the duplicati server.\n",
+             "🔍 Please check the duplicati server {server_url}\n",
     priority: "high",
     tags: "duplicati, duplistatus, warning, error"
   },
   overdueBackup: {
-    title: "🕑 Overdue - {backup_name}  @ {machine_name}",
-    message: "The backup {backup_name} is overdue on {machine_name}.\n\n" + 
+    title: "🕑 Overdue - {backup_name}  @ {server_name}",
+    message: "The backup {backup_name} is overdue on {server_name}.\n\n" + 
              "🚨 Last backup was {last_backup_date} ({last_elapsed})\n" + 
               "⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n" + 
               "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance}\n\n" + 
-             "🔍 Please check the duplicati server.\n",
+             "🔍 Please check the duplicati server {server_url}\n",
     priority: "default",
     tags: "duplicati, duplistatus, overdue"
   }
@@ -96,7 +96,7 @@ export const defaultUIConfig = {
   chartTimeRange: 'All data' as const,
   chartMetricSelection: 'uploadedSize' as const,
   autoRefreshInterval: 1 as const,
-  dashboardCardsSortOrder: 'Machine name (a-z)' as const
+  dashboardCardsSortOrder: 'Server name (a-z)' as const
 };
 
 // Default API configuration
@@ -113,7 +113,7 @@ export function createDefaultNotificationConfig(ntfyConfig: { url: string; topic
     ntfy: ntfyConfig,
     backupSettings: {}, // Keep empty - API handles defaults via separate storage
     templates: defaultNotificationTemplates,
-    machineAddresses: [] // Empty array for machine addresses
+    serverAddresses: [] // Empty array for server addresses
   };
 }
 

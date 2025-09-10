@@ -7,15 +7,17 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Fix](#fix)
-- [Changes needed](#changes-needed)
-- [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
-  - [Nice to have](#nice-to-have)
-  - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
-  - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
-  - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
-  - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
-  - [Implemented in Version 0.7.x ✅](#implemented-in-version-07x-)
+  - [Fix](#fix)
+  - [Changes needed](#changes-needed)
+  - [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
+    - [Nice to have](#nice-to-have)
+    - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
+    - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
+    - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
+    - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
+    - [Implemented in Version 0.7.x ✅](#implemented-in-version-07x-)
+- [Machine to Server Nomenclature Migration](#machine-to-server-nomenclature-migration)
+- [pending actions](#pending-actions)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -48,10 +50,10 @@ none
 
 ### Implemented in Version 0.4.0 ✅
 
-- Improved support for multiple backups on the same machine:
+- Improved support for multiple backups on the same server:
   - In the dashboard table, show each backup in a row
   - When clicking on a row, go to the detail page of the selected backup
-  - When clicking on the machine name, go to the detail page of all backups for the selected machine
+  - When clicking on the server name, go to the detail page of all backups for the selected server
   - On the detail page, the user can select all backups or a specific backup name
 - Included the chart on the detail page (same as the dashboard page)
 - Added a link to the GitHub repo in the footer of the pages.
@@ -107,11 +109,11 @@ none
 **New Features:**
 - Duplicati Server Web Interface Integration
   - Automatic server URL registration when executing `Collect Backup Logs`
-  - Centralized address management in Settings > `Machine Addresses`
-  - One-click access to open Duplicati configuration from dashboard, machine detail, and backup detail pages
-- Enhanced Dashboard and Machine Cards
+  - Centralized address management in Settings > `Server Addresses`
+  - One-click access to open Duplicati configuration from dashboard, server detail, and backup detail pages
+- Enhanced Dashboard and Server Cards
   - Replaced old dashboard with new dashboard using cards (previous table format still available)
-  - Cards can be sorted by machine name, last backup status, or date
+  - Cards can be sorted by server name, last backup status, or date
 - Advanced Metrics Panel
   - Show all metrics at the same time
   - Data visibility controls (all data, last week, last month, etc.)
@@ -120,12 +122,23 @@ none
 
 **UI/Navigation Improvements:**
 - Application toolbar integration with Duplicati connection button
-  - Dashboard view: presents list of available machines to connect to
-  - Machine-specific pages: direct connection to selected machine's Duplicati server
+  - Dashboard view: presents list of available servers to connect to
+  - Server-specific pages: direct connection to selected server's Duplicati server
 
 **Technical Improvements:**
 - Enhanced backup log collection with server URL persistence
 - Improved database schema to store server address information
 - Optimized UI components for better integration with Duplicati web interface
 
+
+
+
+
+
+# Machine to Server Nomenclature Migration 
+
+# pending actions
+
+- check if can merge migration 4.0 with 3.0
+- review the export interface BackupNotificationConfig in types.ts to include the ServerName in the json.
 

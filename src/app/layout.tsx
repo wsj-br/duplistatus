@@ -4,7 +4,7 @@ import './globals.css';
 import { CustomThemeProvider } from '@/contexts/theme-context';
 import { ConfigProvider } from '@/contexts/config-context';
 import { GlobalRefreshProvider } from '@/contexts/global-refresh-context';
-import { MachineSelectionProvider } from '@/contexts/machine-selection-context';
+import { ServerSelectionProvider } from '@/contexts/server-selection-context';
 import { ConfigurationProvider } from '@/contexts/configuration-context';
 import { AvailableBackupsModalProvider } from '@/components/ui/available-backups-modal';
 import { AppHeader } from '@/components/app-header';
@@ -106,7 +106,7 @@ export default function RootLayout({
         <CustomThemeProvider>
           <ConfigProvider>
             <GlobalRefreshProvider>
-              <MachineSelectionProvider>
+              <ServerSelectionProvider>
                 <ConfigurationProvider>
                   <AvailableBackupsModalProvider>
                     <TooltipProvider delayDuration={300}>
@@ -129,7 +129,7 @@ export default function RootLayout({
                     </TooltipProvider>
                   </AvailableBackupsModalProvider>
                 </ConfigurationProvider>
-              </MachineSelectionProvider>
+              </ServerSelectionProvider>
             </GlobalRefreshProvider>
           </ConfigProvider>
         </CustomThemeProvider>

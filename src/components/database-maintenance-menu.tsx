@@ -54,7 +54,7 @@ export function DatabaseMaintenanceMenu() {
   useEffect(() => {
     const fetchMachines = async () => {
       try {
-        const response = await fetch('/api/machines');
+        const response = await fetch('/api/servers');
         if (response.ok) {
           const machineList = await response.json();
           // Sort machines alphabetically by name
@@ -116,7 +116,7 @@ export function DatabaseMaintenanceMenu() {
     try {
       setIsDeletingMachine(true);
       
-      const response = await fetch(`/api/machines/${selectedMachine}`, {
+      const response = await fetch(`/api/servers/${selectedMachine}`, {
         method: 'DELETE',
       });
 
@@ -138,7 +138,7 @@ export function DatabaseMaintenanceMenu() {
       setSelectedMachine("");
       
       // Refresh machines list
-      const machinesResponse = await fetch('/api/machines');
+      const machinesResponse = await fetch('/api/servers');
       if (machinesResponse.ok) {
         const machineList = await machinesResponse.json();
         // Sort machines alphabetically by name

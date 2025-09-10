@@ -1,4 +1,4 @@
-import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete, getServerUrlById } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
 import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, calculateExpectedBackupDate, getOverdueToleranceConfig, getNtfyConfig } from '@/lib/db-utils';
 import { NotificationConfig, OverdueNotifications } from '@/lib/types';
@@ -79,17 +79,17 @@ export async function checkOverdueBackups(checkDate?: Date) {
       ? JSON.parse(lastNotificationJson) 
       : {};
       
-    // Get machines summary for machine ID lookup
-    const machinesSummary = dbUtils.getMachinesSummary() as { 
+    // Get servers summary for server ID lookup
+    const serversSummary = dbUtils.getServersSummary() as { 
       id: string; 
       name: string; 
       lastBackupName: string | null;
     }[];
     
-    // Create a map for quick machine name to ID lookup
-    const machineNameToId = new Map<string, string>();
-    machinesSummary.forEach(machine => {
-      machineNameToId.set(machine.name, machine.id);
+    // Create a map for quick server name to ID lookup
+    const serverNameToId = new Map<string, string>();
+    serversSummary.forEach(server => {
+      serverNameToId.set(server.name, server.id);
     });
     
     let checkedBackups = 0;
@@ -97,14 +97,14 @@ export async function checkOverdueBackups(checkDate?: Date) {
     let notificationsSent = 0;
     const updatedNotifications: OverdueNotifications = { ...lastNotifications };
 
-    // Iterate through backup settings keys (machine_name:backup_name)
+    // Iterate through backup settings keys (server_name:backup_name)
     const backupKeys = Object.keys(config.backupSettings || {});
 
     for (const backupKey of backupKeys) {
-      // Parse machine name and backup name from the key
-      const [machineName, backupName] = backupKey.split(':');
+      // Parse server name and backup name from the key
+      const [serverName, backupName] = backupKey.split(':');
       
-      if (!machineName || !backupName) {
+      if (!serverName || !backupName) {
         continue;
       }
       
@@ -119,18 +119,18 @@ export async function checkOverdueBackups(checkDate?: Date) {
         continue;
       }
       
-      // Get machine ID from the machine name
-      const machineId = machineNameToId.get(machineName);
-      if (!machineId) {
+      // Get server ID from the server name
+      const serverId = serverNameToId.get(serverName);
+      if (!serverId) {
         continue;
       }
       
       checkedBackups++;
 
-      // Get the latest backup for this machine and backup name
-      const latestBackup = dbUtils.getLatestBackupByName(machineId, backupName) as {
+      // Get the latest backup for this server and backup name
+      const latestBackup = dbUtils.getLatestBackupByName(serverId, backupName) as {
         date: string;
-        machine_name: string;
+        server_name: string;
         backup_name?: string;
       } | null;
 
@@ -225,8 +225,8 @@ export async function checkOverdueBackups(checkDate?: Date) {
             const intervalValue = backupConfig.expectedInterval;
             
             // Validate required fields
-            if (!machineName || !backupName || !latestBackup.date) {
-              console.error(`Missing required fields for overdue backup notification: machineName=${machineName}, backupName=${backupName}, lastBackupDate=${latestBackup.date}`);
+            if (!serverName || !backupName || !latestBackup.date) {
+              console.error(`Missing required fields for overdue backup notification: serverName=${serverName}, backupName=${backupName}, lastBackupDate=${latestBackup.date}`);
               continue;
             }
             
@@ -241,9 +241,12 @@ export async function checkOverdueBackups(checkDate?: Date) {
             const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, intervalValue, intervalUnit, globalTolerance);
             const expectedBackupElapsed = expectedBackupDate !== 'N/A' ? formatTimeAgo(expectedBackupDate) : 'N/A';
             
+            // Get server URL for notification context
+            const serverUrl = getServerUrlById(serverId);
+
             const overdueBackupContext: OverdueBackupContext = {
-              machine_name: machineName,
-              machine_id: machineId,
+              server_name: serverName,
+              server_id: serverId,
               backup_name: backupName,
               last_backup_date: latestBackup.date,
               last_elapsed: overdueTimeAgo,
@@ -252,9 +255,10 @@ export async function checkOverdueBackups(checkDate?: Date) {
               backup_interval_type: intervalUnit,
               backup_interval_value: intervalValue,
               overdue_tolerance: '', // This will be set by sendOverdueBackupNotification
+              server_url: serverUrl,
             };
 
-            await sendOverdueBackupNotification(machineId, machineName, backupName, overdueBackupContext, config);
+            await sendOverdueBackupNotification(serverId, serverName, backupName, overdueBackupContext, config);
             notificationsSent++;
             
             // Update the notification timestamp when notification is sent

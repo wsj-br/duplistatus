@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.17.dev-blue)
+![](https://img.shields.io/badge/version-0.7.19.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -153,7 +153,7 @@ When running in development mode (`pnpm dev`), the application includes addition
 
 - **Version Update**: The development server automatically updates the version information before starting, ensuring the latest version is displayed in the application.
 
-- **Backup Deletion**: On the machine detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
+- **Backup Deletion**: On the server detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
 
 - **Enhanced Debugging Tools**: Development mode includes additional debugging features such as:
   - Database maintenance menu with cleanup options
@@ -267,7 +267,7 @@ The project includes several test scripts to help with development and testing:
 ```bash
 pnpm run generate-test-data
 ```
-This script generates test backup data for multiple machines and backups. 
+This script generates test backup data for multiple servers and backups. 
 
 Use the option `--upload` to send the generated data to the `/api/upload`
 
@@ -294,7 +294,7 @@ pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 
 ### Test cron service port connectivity
 
-The `test-cron-port` script is referenced in `package.json` but the actual script file is not present in the repository. To test cron service connectivity, you can:
+To test cron service connectivity, you can:
 
 1. Check if the cron service is running:
 ```bash
@@ -509,20 +509,20 @@ To manually trigger the Docker image build workflow:
    - pnpm ^10.x (minimum: 10.12.4, enforced via preinstall hook)
 
 2. **Core Frameworks & Libraries**
-   - Next.js 15.5.2 – React-based SSR/SSG framework with App Router
+   - Next.js 15.5.3 – React-based SSR/SSG framework with App Router
    - React 19.1.1 & React-DOM 19.1.1
    - Radix UI (@radix-ui/react-*) – headless component primitives (latest versions)
    - Tailwind CSS 4.1.13 + tailwindcss-animate 1.0.7 plugin
    - PostCSS (@tailwindcss/postcss 4.1.13 + autoprefixer 10.4.21)
    - Better-sqlite3 12.2.0 + SQLite3 (data store)
-   - Recharts 3.1.2 – charting library
+   - Recharts 3.2.0 – charting library
    - react-day-picker 9.9.0 – date picker
    - react-hook-form 7.62.0 – forms
-   - lucide-react 0.542.0 – icon components
+   - lucide-react 0.543.0 – icon components
    - clsx 2.1.1 – utility for conditional classNames
    - class-variance-authority 0.7.1 – variant styling helper
    - date-fns 4.1.0 – date utilities
-   - uuid 12.0.0 – unique IDs
+   - uuid 13.0.0 – unique IDs
    - server-only 0.0.1 – Next helper for server-only modules
    - express 5.1.0 – web framework for cron service
    - node-cron 4.2.1 – cron job scheduling
@@ -598,7 +598,7 @@ To manually trigger the Docker image build workflow:
     - Theme toggle (light/dark mode)
     - Server connection management and testing
     - Metrics charts panel with interactive visualizations
-    - Machine cards with comprehensive backup information
+    - Server cards with comprehensive backup information
     - Auto-refresh functionality for real-time updates
     - Progress indicators and loading states
     - Responsive design for mobile and desktop
@@ -612,7 +612,7 @@ To manually trigger the Docker image build workflow:
     - Cron service management endpoints for task control
     - Health check and monitoring endpoints
     - Chart data endpoints for visualization
-    - Machine and backup management endpoints
+    - Server and backup management endpoints
     - Database maintenance and cleanup endpoints
     - Environment and system information endpoints
 
@@ -623,7 +623,7 @@ To manually trigger the Docker image build workflow:
     - Utility functions for database operations (`src/lib/db-utils.ts`)
     - Type-safe database operations with TypeScript interfaces
     - Backup data collection and processing
-    - Machine and backup relationship management
+    - Server and backup relationship management
 
 14. **Development & Debugging Tools**
     - TypeScript strict mode enabled
@@ -640,13 +640,13 @@ To manually trigger the Docker image build workflow:
 ### Code Organization
 - **Components**: Located in `src/components/` with subdirectories for specific features
   - `ui/` - shadcn/ui components and reusable UI elements
-  - `dashboard/` - Dashboard-specific components (machine cards, tables, summary cards)
+  - `dashboard/` - Dashboard-specific components (server cards, tables, summary cards)
   - `settings/` - Settings page components (forms, configuration panels)
-  - `machine-details/` - Machine detail page components (backup tables, charts, summaries)
+  - `server-details/` - Server detail page components (backup tables, charts, summaries)
 - **API Routes**: Located in `src/app/api/` with RESTful endpoint structure
-  - Core operations: upload, machines, backups, summary
+  - Core operations: upload, servers, backups, summary
   - Configuration: notifications, server connections, backup settings
-  - Chart data: machine-specific and aggregated data
+  - Chart data: server-specific and aggregated data
   - Cron service: task management and monitoring
   - Health and environment endpoints
 - **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`

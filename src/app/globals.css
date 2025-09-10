@@ -95,10 +95,10 @@ body {
     scrollbar-width: none;
   }
   
-  .machine-cards-scrollbar::-webkit-scrollbar {
+  .server-cards-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  .machine-cards-scrollbar {
+  .server-cards-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
     /* Improve touch scrolling behavior */

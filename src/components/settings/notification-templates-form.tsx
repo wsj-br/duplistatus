@@ -15,7 +15,7 @@ import { defaultNotificationTemplates } from '@/lib/default-config';
 
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES = [
-  { name: 'machine_name', description: 'Name of the machine/server' },
+  { name: 'server_name', description: 'Name of the server' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'backup_date', description: 'Date/time of the backup' },
   { name: 'status', description: 'Backup status (Success, Failed, etc.)' },
@@ -32,7 +32,7 @@ const TEMPLATE_VARIABLES = [
 
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
-  { name: 'machine_name', description: 'Name of the machine' },
+  { name: 'server_name', description: 'Name of the server' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'last_backup_date', description: 'Date/time of the last backup' },
   { name: 'last_elapsed', description: 'Time ago since the last backup' },
@@ -180,7 +180,7 @@ const TemplateEditor = ({
             id={`${templateType}-message`}
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
-            placeholder="Enter your message template using variables like {machine_name}, {backup_name}, {status}, etc."
+            placeholder="Enter your message template using variables like {server_name}, {backup_name}, {status}, etc."
             className="min-h-[200px]"
             onFocus={() => onFieldFocus('message')}
           />

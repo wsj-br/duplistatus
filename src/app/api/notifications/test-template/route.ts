@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
     // Create sample data for testing
     const sampleData = {
-      machine_name: 'machine_name',
+      server_name: 'server_name',
       backup_name: 'backup_name',
       backup_date: 'backup_date',
       status: 'status',
@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       uploaded_size: 'uploaded_size',
       storage_size: 'storage_size',
       available_versions: 'available_versions',
+      server_url: 'server_url',
     };
 
     // Process the template with sample data

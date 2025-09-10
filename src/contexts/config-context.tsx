@@ -9,7 +9,7 @@ export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
 type ChartTimeRange = '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data';
 export type ChartMetricSelection = 'uploadedSize' | 'duration' | 'fileCount' | 'fileSize' | 'storageSize' | 'backupVersions';
 type AutoRefreshInterval = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10;
-type DashboardCardsSortOrder = 'Machine name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)';
+type DashboardCardsSortOrder = 'Server name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)';
 
 interface ConfigContextProps {
   databaseCleanupPeriod: DatabaseCleanupPeriod;

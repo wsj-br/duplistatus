@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useConfig } from './config-context';
-import type { MachineSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
+import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 type PageType = 'dashboard' | 'detail' | 'none';
 
@@ -21,9 +21,9 @@ interface GlobalRefreshState {
   refreshInProgress: boolean;
   // Store fetched data to avoid duplicate API calls
   dashboardData: {
-    machinesSummary: MachineSummary[];
+    serversSummary: ServerSummary[];
     overallSummary: OverallSummary;
-    allMachinesChartData: ChartDataPoint[];
+    allServersChartData: ChartDataPoint[];
   } | null;
   // Persist scroll position across data refreshes
   visibleCardIndex: number;
@@ -32,7 +32,7 @@ interface GlobalRefreshState {
 interface GlobalRefreshContextProps {
   state: GlobalRefreshState;
   refreshDashboard: () => Promise<void>;
-  refreshDetail: (machineId: string) => Promise<void>;
+  refreshDetail: (serverId: string) => Promise<void>;
   toggleAutoRefresh: () => void;
   getCurrentPageType: () => PageType;
   setVisibleCardIndex: (index: number) => void;
@@ -90,25 +90,25 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       }));
 
       // Fetch dashboard data and parse JSON responses
-      const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-        fetch('/api/machines-summary'),
+      const [serversResponse, summaryResponse, chartResponse] = await Promise.all([
+        fetch('/api/servers-summary'),
         fetch('/api/summary'),
         fetch('/api/chart-data')
       ]);
 
-      if (!machinesResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
+      if (!serversResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
       }
 
       // Parse JSON responses to ensure they are valid
-      const [machinesData, summaryData, chartData] = await Promise.all([
-        machinesResponse.json(),
+      const [serversData, summaryData, chartData] = await Promise.all([
+        serversResponse.json(),
         summaryResponse.json(),
         chartResponse.json()
       ]);
 
       // Validate that we got valid data
-      if (!machinesData || !summaryData || !Array.isArray(chartData)) {
+      if (!serversData || !summaryData || !Array.isArray(chartData)) {
         throw new Error('Invalid data received from API');
       }
 
@@ -120,9 +120,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: false },
         refreshInProgress: false,
         dashboardData: {
-          machinesSummary: machinesData,
+          serversSummary: serversData,
           overallSummary: summaryData,
-          allMachinesChartData: chartData,
+          allServersChartData: chartData,
         },
       }));
     } catch (error) {
@@ -136,7 +136,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     }
   }, []);
 
-  const refreshDetail = useCallback(async (machineId: string) => {
+  const refreshDetail = useCallback(async (serverId: string) => {
     try {
       setState(prev => ({
         ...prev,
@@ -146,7 +146,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       }));
 
       // Only fetch basic detail data - chart data is handled by MetricsChartsPanel
-      const dataResponse = await fetch(`/api/detail/${machineId}`);
+      const dataResponse = await fetch(`/api/detail/${serverId}`);
 
       if (!dataResponse.ok) {
         throw new Error('Failed to fetch detail data');
@@ -214,7 +214,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       if (state.currentPage === 'dashboard') {
         refreshDashboard();
       } else if (state.currentPage === 'detail') {
-        // For detail pages, we need the machineId from the URL
+        // For detail pages, we need the serverId from the URL
         // Only match main detail pages, not backup detail pages
         const match = pathname.match(/^\/detail\/([^\/]+)$/);
         if (match) {

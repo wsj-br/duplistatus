@@ -220,8 +220,8 @@ const migrations: Migration[] = [
         const backupSettingsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('backup_settings') as { value: string } | undefined;
         
         if (backupSettingsRow && backupSettingsRow.value) {
-          const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, any>;
-          const newBackupSettings: Record<string, any> = {};
+          const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, unknown>;
+          const newBackupSettings: Record<string, unknown> = {};
           let migratedCount = 0;
           let skippedCount = 0;
           
@@ -259,7 +259,7 @@ const migrations: Migration[] = [
             
             // Add debug field to settings
             const newSettings = {
-              ...settings,
+              ...(settings as Record<string, unknown>),
               machineName: machineName
             };
             
@@ -286,6 +286,210 @@ const migrations: Migration[] = [
       }
             
       console.log('Migration 3.0 completed successfully');
+    }
+  },
+  {
+    version: '4.0',
+    description: 'Rename machines table to servers and update all references',
+    up: (db: Database.Database) => {
+      console.log('Running migration 4.0: Renaming machines to servers...');
+      
+      // Step 1: Create new servers table with same structure as machines
+      db.exec(`
+        CREATE TABLE servers (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          server_url TEXT DEFAULT '',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      
+      // Step 2: Copy data from machines to servers
+      db.exec(`INSERT INTO servers SELECT * FROM machines;`);
+      
+      // Step 3: Add server_id column to backups table
+      db.exec(`ALTER TABLE backups ADD COLUMN server_id TEXT;`);
+      
+      // Step 4: Update server_id in backups table
+      db.exec(`UPDATE backups SET server_id = machine_id;`);
+      
+      // Step 5: Drop foreign key constraint and recreate with server_id
+      db.exec(`PRAGMA foreign_keys=OFF;`);
+      
+      // Step 6: Create new backups table with server_id
+      db.exec(`
+        CREATE TABLE backups_new (
+          id TEXT PRIMARY KEY,
+          server_id TEXT NOT NULL,
+          backup_name TEXT NOT NULL,
+          backup_id TEXT NOT NULL,
+          date DATETIME NOT NULL,
+          status TEXT NOT NULL,
+          duration_seconds INTEGER NOT NULL,
+          size INTEGER NOT NULL DEFAULT 0,
+          uploaded_size INTEGER NOT NULL DEFAULT 0,
+          examined_files INTEGER NOT NULL DEFAULT 0,
+          warnings INTEGER NOT NULL DEFAULT 0,
+          errors INTEGER NOT NULL DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          
+          -- Message arrays stored as JSON blobs
+          messages_array TEXT DEFAULT '[]',
+          warnings_array TEXT DEFAULT '[]',
+          errors_array TEXT DEFAULT '[]',
+          available_backups TEXT DEFAULT '[]',
+          
+          -- Data fields
+          deleted_files INTEGER NOT NULL DEFAULT 0,
+          deleted_folders INTEGER NOT NULL DEFAULT 0,
+          modified_files INTEGER NOT NULL DEFAULT 0,
+          opened_files INTEGER NOT NULL DEFAULT 0,
+          added_files INTEGER NOT NULL DEFAULT 0,
+          size_of_modified_files INTEGER NOT NULL DEFAULT 0,
+          size_of_added_files INTEGER NOT NULL DEFAULT 0,
+          size_of_examined_files INTEGER NOT NULL DEFAULT 0,
+          size_of_opened_files INTEGER NOT NULL DEFAULT 0,
+          not_processed_files INTEGER NOT NULL DEFAULT 0,
+          added_folders INTEGER NOT NULL DEFAULT 0,
+          too_large_files INTEGER NOT NULL DEFAULT 0,
+          files_with_error INTEGER NOT NULL DEFAULT 0,
+          modified_folders INTEGER NOT NULL DEFAULT 0,
+          modified_symlinks INTEGER NOT NULL DEFAULT 0,
+          added_symlinks INTEGER NOT NULL DEFAULT 0,
+          deleted_symlinks INTEGER NOT NULL DEFAULT 0,
+          partial_backup BOOLEAN NOT NULL DEFAULT 0,
+          dryrun BOOLEAN NOT NULL DEFAULT 0,
+          main_operation TEXT NOT NULL,
+          parsed_result TEXT NOT NULL,
+          interrupted BOOLEAN NOT NULL DEFAULT 0,
+          version TEXT,
+          begin_time DATETIME NOT NULL,
+          end_time DATETIME NOT NULL,
+          warnings_actual_length INTEGER NOT NULL DEFAULT 0,
+          errors_actual_length INTEGER NOT NULL DEFAULT 0,
+          messages_actual_length INTEGER NOT NULL DEFAULT 0,
+          
+          -- BackendStatistics fields
+          bytes_downloaded INTEGER NOT NULL DEFAULT 0,
+          known_file_size INTEGER NOT NULL DEFAULT 0,
+          last_backup_date DATETIME,
+          backup_list_count INTEGER NOT NULL DEFAULT 0,
+          reported_quota_error BOOLEAN NOT NULL DEFAULT 0,
+          reported_quota_warning BOOLEAN NOT NULL DEFAULT 0,
+          backend_main_operation TEXT,
+          backend_parsed_result TEXT,
+          backend_interrupted BOOLEAN NOT NULL DEFAULT 0,
+          backend_version TEXT,
+          backend_begin_time DATETIME,
+          backend_duration TEXT,
+          backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
+          backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
+          
+          FOREIGN KEY (server_id) REFERENCES servers(id)
+        );
+      `);
+      
+      // Step 7: Copy data from old backups table to new one
+      db.exec(`
+        INSERT INTO backups_new 
+        SELECT id, server_id, backup_name, backup_id, date, status, duration_seconds,
+               size, uploaded_size, examined_files, warnings, errors, created_at,
+               messages_array, warnings_array, errors_array, available_backups,
+               deleted_files, deleted_folders, modified_files, opened_files, added_files,
+               size_of_modified_files, size_of_added_files, size_of_examined_files,
+               size_of_opened_files, not_processed_files, added_folders, too_large_files,
+               files_with_error, modified_folders, modified_symlinks, added_symlinks,
+               deleted_symlinks, partial_backup, dryrun, main_operation, parsed_result,
+               interrupted, version, begin_time, end_time, warnings_actual_length,
+               errors_actual_length, messages_actual_length, bytes_downloaded,
+               known_file_size, last_backup_date, backup_list_count, reported_quota_error,
+               reported_quota_warning, backend_main_operation, backend_parsed_result,
+               backend_interrupted, backend_version, backend_begin_time, backend_duration,
+               backend_warnings_actual_length, backend_errors_actual_length
+        FROM backups;
+      `);
+      
+      // Step 8: Drop old tables and rename new ones
+      db.exec(`DROP TABLE backups;`);
+      db.exec(`ALTER TABLE backups_new RENAME TO backups;`);
+      db.exec(`DROP TABLE machines;`);
+      
+      // Step 9: Recreate indexes
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_backups_server_id ON backups(server_id);
+        CREATE INDEX IF NOT EXISTS idx_backups_date ON backups(date);
+        CREATE INDEX IF NOT EXISTS idx_backups_begin_time ON backups(begin_time);
+        CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
+        CREATE INDEX IF NOT EXISTS idx_backups_backup_id ON backups(backup_id);
+      `);
+      
+      // Step 10: Re-enable foreign keys
+      db.exec(`PRAGMA foreign_keys=ON;`);
+      
+      // Step 11: Migrate configuration data
+      console.log('Migrating configuration data...');
+      
+      // Migrate backup_settings from machine_id:backup_name to server_id:backup_name
+      const backupSettingsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('backup_settings') as { value: string } | undefined;
+      
+      if (backupSettingsRow && backupSettingsRow.value) {
+        const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, unknown>;
+        const newBackupSettings: Record<string, unknown> = {};
+        
+        for (const [oldKey, settings] of Object.entries(oldBackupSettings)) {
+          const [machineId, backupName] = oldKey.split(':');
+          
+          if (machineId && backupName) {
+            // Find server by old machine_id
+            const server = db.prepare('SELECT id FROM servers WHERE id = ?').get(machineId) as { id: string } | undefined;
+            
+            if (server) {
+              // Keep the same key format since we're using IDs
+              newBackupSettings[oldKey] = settings;
+            }
+          }
+        }
+        
+        // Update backup_settings configuration
+        if (Object.keys(newBackupSettings).length > 0) {
+          db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+            'backup_settings',
+            JSON.stringify(newBackupSettings)
+          );
+        }
+      }
+      
+      // Migrate overdue_backup_notifications
+      const overdueNotificationsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('overdue_backup_notifications') as { value: string } | undefined;
+      
+      if (overdueNotificationsRow && overdueNotificationsRow.value) {
+        const oldOverdueNotifications = JSON.parse(overdueNotificationsRow.value) as Record<string, unknown>;
+        const newOverdueNotifications: Record<string, unknown> = {};
+        
+        for (const [oldKey, notifications] of Object.entries(oldOverdueNotifications)) {
+          const [machineId, backupName] = oldKey.split(':');
+          
+          if (machineId && backupName) {
+            // Find server by old machine_id
+            const server = db.prepare('SELECT id FROM servers WHERE id = ?').get(machineId) as { id: string } | undefined;
+            
+            if (server) {
+              // Keep the same key format since we're using IDs
+              newOverdueNotifications[oldKey] = notifications;
+            }
+          }
+        }
+        
+        // Update overdue_backup_notifications configuration
+        if (Object.keys(newOverdueNotifications).length > 0) {
+          db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+            'overdue_backup_notifications',
+            JSON.stringify(newOverdueNotifications)
+          );
+        }
+      }
+      
+      console.log('Migration 4.0 completed successfully');
     }
   }
 ];
@@ -327,8 +531,8 @@ export class DatabaseMigrator {
   isNewDatabase(): boolean {
     try {
       const backupCount = this.db.prepare('SELECT COUNT(*) as count FROM backups').get() as { count: number };
-      const machineCount = this.db.prepare('SELECT COUNT(*) as count FROM machines').get() as { count: number };
-      return backupCount.count === 0 && machineCount.count === 0;
+      const serverCount = this.db.prepare('SELECT COUNT(*) as count FROM servers').get() as { count: number };
+      return backupCount.count === 0 && serverCount.count === 0;
     } catch (error) {
       console.warn('Error checking if database is new:', error);
       return false;

@@ -30,7 +30,7 @@ export async function GET() {
     
     try {
       // Test a simple query that uses prepared statements
-      dbOps.getAllMachines.all();
+      dbOps.getAllServers.all();
       dbOps.getOverallSummary.get();
     } catch (error) {
       preparedStatementsOk = false;

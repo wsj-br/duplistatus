@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete, getServerUrlById } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     // Validate required fields from Extra
     if (!data.Extra?.['machine-id'] || !data.Extra['machine-name'] || !data.Extra['backup-name'] || !data.Extra['backup-id']) {
       return NextResponse.json(
-        { error: 'Missing required machine or backup information' },
+        { error: 'Missing required server or backup information' },
         { status: 400 }
       );
     }
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     // Check for duplicate backup
     const backupDate = new Date(data.Data.BeginTime).toISOString();
     const isDuplicate = await dbUtils.checkDuplicateBackup({
-      machine_id: data.Extra['machine-id'],
+      server_id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
       backup_name: data.Extra['backup-name'],
       date: backupDate
     });
@@ -74,10 +74,10 @@ export async function POST(request: NextRequest) {
 
     // Start a transaction
     const transaction = db.transaction(() => {
-      // Insert machine information only if it doesn't exist (preserves existing server_url)
-      dbOps.insertMachineIfNotExists.run({
-        id: data.Extra['machine-id'],
-        name: data.Extra['machine-name']
+      // Insert server information only if it doesn't exist (preserves existing server_url)
+      dbOps.insertServerIfNotExists.run({
+        id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
+        name: data.Extra['machine-name'] // Note: Duplicati API uses 'machine-name' field name
       });
 
       // Map backup status
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
       dbOps.insertBackup.run({
         // Primary fields
         id: uuidv4(),
-        machine_id: data.Extra['machine-id'],
+        server_id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
         backup_name: data.Extra['backup-name'],
         backup_id: data.Extra['backup-id'],
         date: new Date(data.Data.BeginTime).toISOString(),
@@ -163,23 +163,23 @@ export async function POST(request: NextRequest) {
     // Execute the transaction
     transaction();
 
-    // Ensure backup settings are complete for all machines and backups
-    // This will add default settings for any missing machine-backup combinations
+    // Ensure backup settings are complete for all servers and backups
+    // This will add default settings for any missing server-backup combinations
     const backupSettingsResult = await ensureBackupSettingsComplete();
     if (backupSettingsResult.added > 0) {
-      console.log(`[upload] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
+      console.log(`[upload] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total server-backup combinations`);
     }
 
     // Send notification after successful backup insertion
     try {
-      const machineId = data.Extra['machine-id'];
-      const machineName = data.Extra['machine-name'];
+      const serverId = data.Extra['machine-id']; // Note: Duplicati API uses 'machine-id' field name
+      const serverName = data.Extra['machine-name']; // Note: Duplicati API uses 'machine-name' field name
       const backupName = data.Extra['backup-name'];
       
       // Create backup object for notification service
       const backup = {
         id: uuidv4(), // This should match the ID used in the transaction
-        machine_id: machineId,
+        server_id: serverId,
         name: backupName,
         date: new Date(data.Data.BeginTime).toISOString(),
         status: status as BackupStatus,
@@ -200,9 +200,12 @@ export async function POST(request: NextRequest) {
         available_backups: null,
       };
 
+      // Get server URL for notification context
+      const serverUrl = getServerUrlById(serverId);
+
       // Create notification context derived from backup object to eliminate duplication
       const notificationContext: NotificationContext = {
-        machine_name: machineName,
+        server_name: serverName,
         backup_name: backup.name,
         backup_date: backup.date,
         status: backup.status,
@@ -215,9 +218,10 @@ export async function POST(request: NextRequest) {
         uploaded_size: formatBytes(backup.uploadedSize),
         storage_size: formatBytes(backup.knownFileSize),
         available_versions: backup.backup_list_count,
+        server_url: serverUrl,
       };
 
-      await sendBackupNotification(backup, machineName, notificationContext);
+      await sendBackupNotification(backup, serverId, serverName, notificationContext);
     } catch (notificationError) {
       // Log notification errors but don't fail the request
       console.error('Failed to send backup notification:', notificationError instanceof Error ? notificationError.message : String(notificationError));

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { NotificationConfig, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 
-interface MachineWithBackup {
+interface ServerWithBackup {
   id: string;
   name: string;
   backupName: string;
@@ -16,7 +16,7 @@ interface UnifiedConfiguration extends NotificationConfig {
     enabled: boolean;
   };
   notificationFrequency: NotificationFrequencyConfig;
-  machinesWithBackups: MachineWithBackup[];
+  serversWithBackups: ServerWithBackup[];
   overdue_tolerance: OverdueTolerance;
 }
 

@@ -12,19 +12,19 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { ServerIcon } from '@/components/ui/server-icon';
 import { Settings } from 'lucide-react';
-import { useMachineSelection } from '@/contexts/machine-selection-context';
-import { MachineAddress } from '@/lib/types';
+import { useServerSelection } from '@/contexts/server-selection-context';
+import { ServerAddress } from '@/lib/types';
 
 export function OpenServerConfigButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const [machineAddresses, setMachineAddresses] = useState<MachineAddress[]>([]);
+  const [serverAddresses, setServerAddresses] = useState<ServerAddress[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
-  const { state: machineSelectionState, getSelectedMachine } = useMachineSelection();
+  const { state: serverSelectionState, getSelectedServer } = useServerSelection();
 
-  const fetchMachineAddresses = useCallback(async () => {
+  const fetchServerAddresses = useCallback(async () => {
     try {
       setIsLoading(true);
       
@@ -32,7 +32,7 @@ export function OpenServerConfigButton() {
       if (pathname.startsWith('/detail/')) {
         // On detail page, don't fetch machine connections for popup
         // The popup should not be shown for single machines
-        setMachineAddresses([]);
+        setServerAddresses([]);
         return;
       }
       
@@ -43,24 +43,24 @@ export function OpenServerConfigButton() {
       }
       const data = await response.json();
       
-      // Filter machines with valid HTTP/HTTPS server_url
-      const validMachines = (data.machineAddresses || [])
-        .filter((machine: MachineAddress) => {
-          if (!machine.server_url || machine.server_url.trim() === '') return false;
+      // Filter servers with valid HTTP/HTTPS server_url
+      const validServers = (data.serverAddresses || [])
+        .filter((server: ServerAddress) => {
+          if (!server.server_url || server.server_url.trim() === '') return false;
           try {
-            const url = new URL(machine.server_url);
+            const url = new URL(server.server_url);
             return ['http:', 'https:'].includes(url.protocol);
           } catch {
             return false;
           }
         })
-        .sort((a: MachineAddress, b: MachineAddress) => 
+        .sort((a: ServerAddress, b: ServerAddress) => 
           a.name.localeCompare(b.name)
         );
       
-      setMachineAddresses(validMachines);
+      setServerAddresses(validServers);
     } catch (error) {
-      console.error('Error fetching machine connections:', error instanceof Error ? error.message : String(error));
+      console.error('Error fetching server connections:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to load server connections",
@@ -72,14 +72,14 @@ export function OpenServerConfigButton() {
     }
   }, [toast, pathname]);
 
-  // Fetch machine connections when popover opens
+  // Fetch server connections when popover opens
   useEffect(() => {
-    if (isPopoverOpen && machineAddresses.length === 0) {
-      fetchMachineAddresses();
+    if (isPopoverOpen && serverAddresses.length === 0) {
+      fetchServerAddresses();
     }
-  }, [isPopoverOpen, machineAddresses.length, fetchMachineAddresses]);
+  }, [isPopoverOpen, serverAddresses.length, fetchServerAddresses]);
 
-  const handleMachineClick = (serverUrl: string) => {
+  const handleServerClick = (serverUrl: string) => {
     try {
       window.open(serverUrl, '_blank', 'noopener,noreferrer');
       setIsPopoverOpen(false);
@@ -108,7 +108,7 @@ export function OpenServerConfigButton() {
       
       if (currentMachineId) {
         try {
-          const response = await fetch(`/api/machines/${currentMachineId}/server-url`);
+          const response = await fetch(`/api/servers/${currentMachineId}/server-url`);
           
           if (!response.ok) {
             throw new Error(`Failed to fetch machine server URL: ${response.status}`);
@@ -147,14 +147,14 @@ export function OpenServerConfigButton() {
       }
     }
     
-    // Check if we have a selected machine on dashboard
-    if (pathname === '/' && machineSelectionState.viewMode === 'cards' && machineSelectionState.selectedMachineId) {
-      const selectedMachine = getSelectedMachine();
-      if (selectedMachine && selectedMachine.server_url && selectedMachine.server_url.trim() !== '') {
+    // Check if we have a selected server on dashboard
+    if (pathname === '/' && serverSelectionState.viewMode === 'cards' && serverSelectionState.selectedServerId) {
+      const selectedServer = getSelectedServer();
+      if (selectedServer && selectedServer.server_url && selectedServer.server_url.trim() !== '') {
         try {
-          const url = new URL(selectedMachine.server_url);
+          const url = new URL(selectedServer.server_url);
           if (['http:', 'https:'].includes(url.protocol)) {
-            window.open(selectedMachine.server_url, '_blank', 'noopener,noreferrer');
+            window.open(selectedServer.server_url, '_blank', 'noopener,noreferrer');
             return;
           }
         } catch {
@@ -163,7 +163,7 @@ export function OpenServerConfigButton() {
       }
     }
     
-    // Only open popover if no machine is selected or no valid server URL
+    // Only open popover if no server is selected or no valid server URL
     setIsPopoverOpen(true);
   };
 
@@ -203,19 +203,19 @@ export function OpenServerConfigButton() {
               <div className="text-center py-4 text-muted-foreground">
                 Loading server connections...
               </div>
-            ) : machineAddresses.length === 0 ? (
+            ) : serverAddresses.length === 0 ? (
               <div className="text-center py-4 text-muted-foreground">
-                No machines with server URLs configured.
+                No servers with server URLs configured.
               </div>
             ) : (
-              machineAddresses.map((machine: MachineAddress) => (
+              serverAddresses.map((server: ServerAddress) => (
                 <button
-                  key={machine.id}
-                  onClick={() => handleMachineClick(machine.server_url)}
+                  key={server.id}
+                  onClick={() => handleServerClick(server.server_url)}
                   className="flex items-center gap-3 p-2 text-left hover:bg-muted rounded-md transition-colors border border-border"
                 >
                   <ServerIcon className="h-4 w-4" />
-                  <span className="font-medium">{machine.name}</span>
+                  <span className="font-medium">{server.name}</span>
                 </button>
               ))
             )}

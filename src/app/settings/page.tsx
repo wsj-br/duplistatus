@@ -10,7 +10,7 @@ import { useConfiguration } from '@/contexts/configuration-context';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
-import { ServerAddressesForm } from '@/components/settings/server-addresses-form';
+import { ServerSettingsForm } from '@/components/settings/server-settings-form';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -74,7 +74,7 @@ function SettingsPageContent() {
         <CardHeader>
           <CardTitle className="text-2xl">System settings</CardTitle>
           <CardDescription>
-             Configure backup notifications, overdue backup monitoring, Machine addresses, and notification settings.
+             Configure backup notifications, overdue backup monitoring, server settings, and notification settings.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,9 +84,9 @@ function SettingsPageContent() {
                 <span className="hidden lg:inline">Backup Alerts</span>
                 <span className="lg:hidden">Backup</span>
               </TabsTrigger>
-              <TabsTrigger value="addresses" className="text-xs lg:text-sm py-2 px-3">
-                <span className="hidden lg:inline">Machine Addresses</span>
-                <span className="lg:hidden">Addresses</span>
+              <TabsTrigger value="serverSettings" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Server Settings</span>
+                <span className="lg:hidden">ServerSettings</span>
               </TabsTrigger>
               <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3">
                 <span className="hidden lg:inline">NTFY Settings</span>
@@ -108,9 +108,9 @@ function SettingsPageContent() {
               />
             </TabsContent>
             
-            <TabsContent value="addresses" className="mt-6">
-              <ServerAddressesForm 
-                machineAddresses={config.machineAddresses || []} 
+            <TabsContent value="serverSettings" className="mt-6">
+              <ServerSettingsForm 
+                serverAddresses={config.serverAddresses || []} 
               />
             </TabsContent>
             

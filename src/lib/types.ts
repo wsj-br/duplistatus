@@ -2,7 +2,7 @@ export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal"
 
 export interface Backup {
   id: string;
-  machine_id: string;
+  server_id: string;
   name: string;
   date: string; // ISO string
   status: BackupStatus;
@@ -26,7 +26,7 @@ export interface Backup {
   available_backups: string[] | null;
 }
 
-export interface Machine {
+export interface Server {
   id: string;
   name: string;
   backups: Backup[];
@@ -43,7 +43,7 @@ export interface Machine {
   }[];
 }
 
-export interface MachineSummary {
+export interface ServerSummary {
   id: string;
   name: string;
   server_url: string;
@@ -86,7 +86,7 @@ export interface MachineSummary {
 }
 
 export interface OverallSummary {
-  totalMachines: number;
+  totalServers: number;
   totalBackups: number;
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
@@ -108,12 +108,10 @@ export interface BackupNotificationConfig {
   expectedInterval: number; // raw value as entered by user
   overdueBackupCheckEnabled: boolean;
   intervalUnit: 'hour' | 'day';
-  // Debug field for migration (always included)
-  machineName?: string;  // For debugging - original machine name
 }
 
 // Helper type for backup identification
-export type BackupKey = string; // Format: "machineId:backupName"
+export type BackupKey = string; // Format: "serverId:backupName"
 
 export interface NotificationTemplate {
   title: string;
@@ -130,7 +128,7 @@ export interface NotificationConfig {
     warning: NotificationTemplate;
     overdueBackup: NotificationTemplate;
   };
-  machineAddresses: MachineAddress[];
+  serverAddresses: ServerAddress[];
 }
 
 export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
@@ -194,19 +192,19 @@ export interface ChartDataPoint {
   fileSize: number;
   storageSize: number;
   backupVersions: number;
-  machineId?: string;
+  serverId?: string;
   backupId?: string;
 }
 
 
 // Dashboard data grouping interface
 export interface DashboardData {
-  machinesSummary: MachineSummary[];
+  serversSummary: ServerSummary[];
   overallSummary: OverallSummary;
-  allMachinesChartData: ChartDataPoint[];
+  allServersChartData: ChartDataPoint[];
 }
 
-export interface MachineAddress {
+export interface ServerAddress {
   id: string;
   name: string;
   server_url: string;

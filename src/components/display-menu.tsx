@@ -112,13 +112,13 @@ export function DisplayMenu() {
               <Label htmlFor="dashboard-cards-sort-order">Cards Sort Order</Label>
               <Select
                 value={dashboardCardsSortOrder}
-                onValueChange={(value) => setDashboardCardsSortOrder(value as 'Machine name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)')}
+                onValueChange={(value) => setDashboardCardsSortOrder(value as 'Server name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)')}
               >
                 <SelectTrigger id="dashboard-cards-sort-order">
                   <SelectValue placeholder="Select sort order" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Machine name (a-z)">Machine name (a-z)</SelectItem>
+                  <SelectItem value="Server name (a-z)">Server name (a-z)</SelectItem>
                   <SelectItem value="Status (error>warnings>success)">Status (error &gt; warning &gt; success)</SelectItem>
                   <SelectItem value="Last backup received (new>old)">Last backup received (new &gt; old)</SelectItem>
                 </SelectContent>

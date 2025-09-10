@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getAllMachineAddresses } from '@/lib/db-utils';
+import { getAllServerAddresses } from '@/lib/db-utils';
 
 export async function GET() {
   try {
-    const machineAddresses = getAllMachineAddresses();
+    const serverAddresses = getAllServerAddresses();
 
   return NextResponse.json({
-    machineAddresses
+    serverAddresses
     });
   } catch (error) {
     console.error('Failed to get server connections:', error instanceof Error ? error.message : String(error));

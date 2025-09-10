@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.7.18.dev",
+  "version": "0.7.19.dev",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.15.1",
@@ -59,14 +59,14 @@
     "date-fns": "^4.1.0",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
-    "lucide-react": "^0.542.0",
-    "next": "^15.5.2",
+    "lucide-react": "^0.543.0",
+    "next": "^15.5.3",
     "node-cron": "^4.2.1",
     "react": "^19.1.1",
     "react-day-picker": "^9.9.0",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
-    "recharts": "^3.1.2",
+    "recharts": "^3.2.0",
     "server-only": "^0.0.1",
     "string-template": "^1.0.0",
     "tailwind-merge": "^3.3.1",
@@ -74,7 +74,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "uuid": "^12.0.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.13",
@@ -86,6 +86,6 @@
     "@types/string-template": "^1.0.7",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.35.0",
-    "eslint-config-next": "15.5.2"
+    "eslint-config-next": "15.5.3"
   }
 }

@@ -28,7 +28,7 @@ interface ModalState {
   isOpen: boolean;
   availableBackups: string[];
   backupDate: string;
-  machineName: string;
+  serverName: string;
   backupName: string;
   iconPosition: { x: number; y: number } | null;
 }
@@ -107,7 +107,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
             <DialogTitle>
             Available Backup Versions    <br /> <br />
 
-              <span className="font-medium text-muted-foreground">{modalState.machineName} : </span><span className="font-medium text-muted-foreground">{modalState.backupName}</span>
+              <span className="font-medium text-muted-foreground">{modalState.serverName} : </span><span className="font-medium text-muted-foreground">{modalState.backupName}</span>
               <span className="font-normal text-muted-foreground"> @ </span>
               <span className="text-blue-400 font-normal">{new Date(modalState.backupDate).toLocaleString()}</span>
             </DialogTitle>
@@ -152,7 +152,7 @@ export const AvailableBackupsModalProvider = ({ children }: { children: React.Re
     isOpen: false,
     availableBackups: [],
     backupDate: '',
-    machineName: '',
+    serverName: '',
     backupName: '',
     iconPosition: null,
   });
@@ -190,7 +190,7 @@ const useModalContext = () => {
 export function useAvailableBackupsModal() {
   const { openModal } = useModalContext();
 
-  const handleAvailableBackupsClick = useCallback((availableBackups: string[], backupDate: string, machineName: string, backupName: string, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAvailableBackupsClick = useCallback((availableBackups: string[], backupDate: string, serverName: string, backupName: string, event: React.MouseEvent<HTMLButtonElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
@@ -198,7 +198,7 @@ export function useAvailableBackupsModal() {
     openModal({
       availableBackups,
       backupDate,
-      machineName,
+      serverName,
       backupName,
       iconPosition: { x, y },
     });
@@ -212,13 +212,13 @@ export function useAvailableBackupsModal() {
 interface AvailableBackupsIconProps {
   availableBackups: string[] | null;
   currentBackupDate: string;
-  machineName: string;
+  serverName: string;
   backupName: string;
-  onIconClick: (availableBackups: string[], backupDate: string, machineName: string, backupName: string, event: React.MouseEvent<HTMLButtonElement>) => void;
+  onIconClick: (availableBackups: string[], backupDate: string, serverName: string, backupName: string, event: React.MouseEvent<HTMLButtonElement>) => void;
   count: number | null;
 }
 
-export function AvailableBackupsIcon({ availableBackups, currentBackupDate, machineName, backupName, onIconClick, count }: AvailableBackupsIconProps) {
+export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serverName, backupName, onIconClick, count }: AvailableBackupsIconProps) {
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
   return (
@@ -233,7 +233,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, mach
               <button
                 onClick={(event) => {
                   event.stopPropagation();
-                  onIconClick(availableBackups, currentBackupDate, machineName, backupName, event);
+                  onIconClick(availableBackups, currentBackupDate, serverName, backupName, event);
                 }}
                 className="text-blue-600 hover:text-blue-800 transition-colors"
               >

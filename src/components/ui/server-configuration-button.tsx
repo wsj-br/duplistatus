@@ -4,7 +4,7 @@ import { ServerIcon } from './server-icon';
 
 interface ServerConfigurationButtonProps {
   serverUrl: string;
-  machineName?: string;
+  serverName?: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'outline' | 'ghost';
   className?: string;
@@ -16,7 +16,7 @@ interface ServerConfigurationButtonProps {
 
 export function ServerConfigurationButton({
   serverUrl,
-  machineName,
+  serverName,
   size = 'md',
   variant = 'outline',
   className = '',
@@ -69,7 +69,7 @@ export function ServerConfigurationButton({
 
   if (debugText) {
     console.log('--------------------------------');
-    console.log('ServerConfigurationButton: machineName', machineName);
+    console.log('ServerConfigurationButton: serverName', serverName);
     console.log('ServerConfigurationButton: isDisabled', isDisabled);
     console.log('ServerConfigurationButton: isUrlValid', isUrlValid());
     console.log('ServerConfigurationButton: disabled', disabled);
@@ -90,7 +90,7 @@ export function ServerConfigurationButton({
       className={`${className} ${isDisabled ? 'cursor-not-allowed disabled:pointer-events-auto' : ''}`}
       onClick={handleClick}
       disabled={isDisabled}
-      title={isDisabled ? "No URL configured" : (machineName ? `Open ${machineName} configuration` : "Open Duplicati configuration")}
+      title={isDisabled ? "No URL configured" : (serverName ? `Open ${serverName} configuration` : "Open Duplicati configuration")}
     >
       <ServerIcon size={getIconSize()} className="mr-1" />
       {showText && "Duplicati configuration"}

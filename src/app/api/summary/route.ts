@@ -14,7 +14,7 @@ export async function GET() {
       );
     }
 
-    // Get the latest backup date across all machines
+    // Get the latest backup date across all servers
     let latestBackup: { last_backup_date: string | null } | null = null;
     try {
       latestBackup = dbUtils.getLatestBackupDate() as { last_backup_date: string | null };
@@ -29,7 +29,7 @@ export async function GET() {
     const secondsSinceLastBackup = lastBackupDate ? Math.floor((now.getTime() - lastBackupDate.getTime()) / 1000) : null;
 
     const response = {
-      totalMachines: summary.totalMachines || 0,
+      totalServers: summary.totalServers || 0,
       totalBackups: summary.totalBackups || 0,
       totalUploadedSize: summary.totalUploadedSize || 0,
       totalStorageUsed: summary.totalStorageUsed || 0,
@@ -44,7 +44,7 @@ export async function GET() {
     
     // Return a fallback response instead of an error to prevent JSON parsing issues
     const fallbackResponse = {
-      totalMachines: 0,
+      totalServers: 0,
       totalBackups: 0,
       totalUploadedSize: 0,
       totalStorageUsed: 0,

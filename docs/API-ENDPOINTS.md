@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.17.dev-blue)
+![](https://img.shields.io/badge/version-0.7.19.dev-blue)
 
 <br>
 
@@ -43,18 +43,18 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Latest Backup](#get-latest-backup)
   - [Get Latest Backups](#get-latest-backups)
   - [Get Overall Summary](#get-overall-summary)
-  - [Get Machines Summary](#get-machines-summary)
-  - [Get All Machines](#get-all-machines)
-  - [Get Machines with Backups](#get-machines-with-backups)
-  - [Get Machine Details](#get-machine-details)
-  - [Delete Machine](#delete-machine)
-  - [Get Machine Data with Overdue Info](#get-machine-data-with-overdue-info)
+  - [Get Servers Summary](#get-servers-summary)
+  - [Get All Servers](#get-all-servers)
+  - [Get Servers with Backups](#get-servers-with-backups)
+  - [Get Server Details](#get-server-details)
+  - [Delete Server](#delete-server)
+  - [Get Server Data with Overdue Info](#get-server-data-with-overdue-info)
   - [Get Chart Data](#get-chart-data)
 - [Chart Data](#chart-data)
-  - [Get All Machines Chart Data](#get-all-machines-chart-data)
+  - [Get All Servers Chart Data](#get-all-servers-chart-data)
   - [Get Aggregated Chart Data](#get-aggregated-chart-data)
-  - [Get Machine Chart Data](#get-machine-chart-data)
-  - [Get Machine Backup Chart Data](#get-machine-backup-chart-data)
+  - [Get Server Chart Data](#get-server-chart-data)
+  - [Get Server Backup Chart Data](#get-server-backup-chart-data)
 - [Configuration Management](#configuration-management)
   - [Get Configuration](#get-configuration)
   - [Get Unified Configuration](#get-unified-configuration)
@@ -79,11 +79,11 @@ All API responses are returned in JSON format with consistent error handling pat
 - [Administration](#administration)
   - [Collect Backups](#collect-backups)
   - [Cleanup Backups](#cleanup-backups)
-  - [Delete Machine](#delete-machine-1)
+  - [Delete Server](#delete-server-1)
   - [Delete Backup](#delete-backup)
   - [Test Server Connection](#test-server-connection)
-  - [Get Machine Server URL](#get-machine-server-url)
-  - [Update Machine Server URL](#update-machine-server-url)
+  - [Get Server Server URL](#get-server-server-url)
+  - [Update Server Server URL](#update-server-server-url)
 - [Error Handling](#error-handling)
 - [Data Type Notes](#data-type-notes)
   - [Message Arrays](#message-arrays)
@@ -106,7 +106,7 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Upload Backup Data
 - **Endpoint**: `/api/upload`
 - **Method**: POST
-- **Description**: Uploads backup operation data for a machine. Supports duplicate detection and sends notifications.
+- **Description**: Uploads backup operation data for a server. Supports duplicate detection and sends notifications.
 - **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
@@ -131,33 +131,33 @@ All API responses are returned in JSON format with consistent error handling pat
   - Supports duplicate detection to prevent data redundancy
   - Automatically sends notifications after successful backup insertion
   - Logs request data in development mode for debugging
-  - Ensures backup settings are complete for all machines and backups
+  - Ensures backup settings are complete for all servers and backups
 
 <br>
 
 ### Get Latest Backup
-- **Endpoint**: `/api/lastbackup/:machineId`
+- **Endpoint**: `/api/lastbackup/:serverId`
 - **Method**: GET
-- **Description**: Retrieves the latest backup information for a specific machine.
+- **Description**: Retrieves the latest backup information for a specific server.
 - **Parameters**:
-  - `machineId`: the machine identifier (ID or name)
+  - `serverId`: the server identifier (ID or name)
 
 > [!NOTE]
-> The machine identifier has to be URL Encoded.
+> The server identifier has to be URL Encoded.
   
 - **Response**:
   ```json
   {
-    "machine": {
-      "id": "unique-machine-id",
-      "name": "Machine Name",
+    "server": {
+      "id": "unique-server-id",
+      "name": "Server Name",
       "backup_name": "Backup Name",
       "backup_id": "backup-id",
       "created_at": "2024-03-20T10:00:00Z"
     },
     "latest_backup": {
       "id": "backup-id",
-      "machine_id": "unique-machine-id",
+      "server_id": "unique-server-id",
       "name": "Backup Name",
       "date": "2024-03-20T10:00:00Z",
       "status": "Success",
@@ -191,21 +191,21 @@ All API responses are returned in JSON format with consistent error handling pat
 <br>
 
 ### Get Latest Backups
-- **Endpoint**: `/api/lastbackups/:machineId`
+- **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific machine.
 - **Parameters**:
-  - `machineId`: the machine identifier (ID or name)
+  - `serverId`: the server identifier (ID or name)
 
 > [!NOTE]
-> The machine identifier has to be URL Encoded.
+> The server identifier has to be URL Encoded.
   
 - **Response**:
   ```json
   {
-    "machine": {
-      "id": "unique-machine-id",
-      "name": "Machine Name",
+    "server": {
+      "id": "unique-server-id",
+      "name": "Server Name",
       "backup_name": "Default Backup",
       "backup_id": "backup-id",
       "created_at": "2024-03-20T10:00:00Z"
@@ -213,7 +213,7 @@ All API responses are returned in JSON format with consistent error handling pat
     "latest_backups": [
       {
         "id": "backup1",
-        "machine_id": "unique-machine-id",
+        "server_id": "unique-server-id",
         "name": "Files",
         "date": "2024-03-20T10:00:00Z",
         "status": "Success",
@@ -235,7 +235,7 @@ All API responses are returned in JSON format with consistent error handling pat
       },
       {
         "id": "backup2",
-        "machine_id": "unique-machine-id",
+        "server_id": "unique-server-id",
         "name": "Databases",
         "date": "2024-03-20T11:00:00Z",
         "status": "Success",
@@ -267,7 +267,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**:
   - Machine identifier can be either ID or name
   - Returns latest backup for each backup type (backup_name) that the machine has
-  - Unlike `/api/lastbackup/:machineId` which returns only the single most recent backup
+  - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup
   - Includes cache control headers to prevent caching
 
 <br>
@@ -279,7 +279,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Response**:
   ```json
   {
-    "totalMachines": 3,
+    "totalServers": 3,
     "totalBackups": 9,
     "totalUploadedSize": 2397229507,
     "totalStorageUsed": 43346796938,
@@ -292,22 +292,23 @@ All API responses are returned in JSON format with consistent error handling pat
   - `500`: Server error fetching summary data
 - **Notes**:
   - In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`
+  - In version 0.8.0, the field `totalMachines` was replaced by `totalServers`
   - The field `overdueBackupsCount` shows the number of currently overdue backups
   - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all machines
   - Returns fallback response with zeros if data fetching fails
 
 <br>
 
-### Get Machines Summary
-- **Endpoint**: `/api/machines-summary`
+### Get Servers Summary
+- **Endpoint**: `/api/servers-summary`
 - **Method**: GET
 - **Description**: Retrieves a summary of all machines with their latest backup information and overdue status.
 - **Response**:
   ```json
   [
     {
-      "id": "machine-id",
-      "name": "Machine Name",
+      "id": "server-id",
+      "name": "Server Name",
       "lastBackupDate": "2024-03-20T10:00:00Z",
       "lastBackupStatus": "Success",
       "lastBackupDuration": "00:38:31",
@@ -328,75 +329,75 @@ All API responses are returned in JSON format with consistent error handling pat
   ]
   ```
 - **Error Responses**:
-  - `500`: Server error fetching machines summary
+  - `500`: Server error fetching servers summary
 - **Notes**:
-  - Returns array of machine summaries with overdue status
+  - Returns array of server summaries with overdue status
   - Includes notification event and expected backup date information
   - Shows last overdue check timestamp and last notification sent
 
 <br>
 
-### Get All Machines
-- **Endpoint**: `/api/machines`
+### Get All Servers
+- **Endpoint**: `/api/servers`
 - **Method**: GET
-- **Description**: Retrieves a list of all machines with their basic information.
+- **Description**: Retrieves a list of all servers with their basic information.
 - **Response**:
   ```json
   [
     {
-      "id": "machine-id",
-      "name": "Machine Name"
+      "id": "server-id",
+      "name": "Server Name"
     }
   ]
   ```
 - **Error Responses**:
-  - `500`: Server error fetching machines
+  - `500`: Server error fetching servers
 - **Notes**:
   - Returns only id and name for dropdown usage
-  - Simple list format for machine selection
+  - Simple list format for server selection
 
 <br>
 
-### Get Machines with Backups
-- **Endpoint**: `/api/machines-with-backups`
+### Get Servers with Backups
+- **Endpoint**: `/api/servers-with-backups`
 - **Method**: GET
-- **Description**: Retrieves a list of all machines with their backup names.
+- **Description**: Retrieves a list of all servers with their backup names.
 - **Response**:
   ```json
   [
     {
-      "id": "machine-id",
-      "name": "Machine Name",
+      "id": "server-id",
+      "name": "Server Name",
       "backupName": "Backup Name",
       "server_url": "http://localhost:8200"
     }
   ]
   ```
 - **Error Responses**:
-  - `500`: Server error fetching machines with backups
+  - `500`: Server error fetching servers with backups
 - **Notes**:
-  - Returns machine name and backup name combinations
-  - Includes server URL for each machine-backup combination
+  - Returns server name and backup name combinations
+  - Includes server URL for each server-backup combination
   - Used for configuration and management purposes
 
 <br>
 
-### Get Machine Details
-- **Endpoint**: `/api/machines/:id`
+### Get Server Details
+- **Endpoint**: `/api/servers/:id`
 - **Method**: GET
-- **Description**: Retrieves detailed information about a specific machine including all its backups and chart data.
+- **Description**: Retrieves detailed information about a specific server including all its backups and chart data.
 - **Parameters**:
-  - `id`: the machine identifier
+  - `id`: the server identifier
 
 - **Response**:
   ```json
   {
-    "id": "machine-id",
-    "name": "Machine Name",
+    "id": "server-id",
+    "name": "Server Name",
     "backups": [
       {
         "id": "backup-id",
-        "machine_id": "machine-id",
+        "server_id": "server-id",
         "name": "Backup Name",
         "date": "2024-03-20T10:00:00Z",
         "status": "Success",
@@ -432,60 +433,60 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `404`: Machine not found
-  - `500`: Server error fetching machine details
+  - `404`: Server not found
+  - `500`: Server error fetching server details
 - **Notes**:
-  - Returns detailed machine information including all backups
+  - Returns detailed server information including all backups
   - Includes chart data for visualization
-  - Used for machine-specific views and analysis
+  - Used for server-specific views and analysis
 
-### Delete Machine
-- **Endpoint**: `/api/machines/:id`
+### Delete Server
+- **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
-- **Description**: Deletes a machine and all its associated backups.
+- **Description**: Deletes a server and all its associated backups.
 - **Parameters**:
-  - `id`: the machine identifier
+  - `id`: the server identifier
 
 - **Response**:
   ```json
   {
-    "message": "Successfully deleted machine and 15 backups",
+    "message": "Successfully deleted server and 15 backups",
     "status": 200,
     "changes": {
       "backupChanges": 15,
-      "machineChanges": 1
+      "serverChanges": 1
     }
   }
   ```
 - **Error Responses**:
-  - `404`: Machine not found
+  - `404`: Server not found
   - `500`: Server error during deletion
 - **Notes**: 
   - This operation is irreversible
-  - All backup data associated with the machine will be permanently deleted
-  - The machine record itself will also be removed
-  - Returns count of deleted backups and machines
+  - All backup data associated with the server will be permanently deleted
+  - The server record itself will also be removed
+  - Returns count of deleted backups and servers
 
 <br>
 
-### Get Machine Data with Overdue Info
-- **Endpoint**: `/api/detail/:machineId`
+### Get Server Data with Overdue Info
+- **Endpoint**: `/api/detail/:serverId`
 - **Method**: GET
-- **Description**: Retrieves detailed machine information including overdue backup status.
+- **Description**: Retrieves detailed server information including overdue backup status.
 - **Parameters**:
-  - `machineId`: the machine identifier
+  - `serverId`: the server identifier
 
 - **Response**:
   ```json
   {
-    "machine": {
-      "id": "machine-id",
-      "name": "Machine Name",
+    "server": {
+      "id": "server-id",
+      "name": "Server Name",
       "backups": [...]
     },
     "overdueBackups": [
       {
-        "machineName": "Machine Name",
+        "serverName": "Server Name",
         "backupName": "Backup Name",
         "lastBackupDate": "2024-03-20T10:00:00Z",
         "lastNotificationSent": "2024-03-20T12:00:00Z",
@@ -498,10 +499,10 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `404`: Machine not found
-  - `500`: Server error fetching machine details
+  - `404`: Server not found
+  - `500`: Server error fetching server details
 - **Notes**:
-  - Returns machine data with overdue backup information
+  - Returns server data with overdue backup information
   - Includes overdue backup details and timestamps
   - Used for overdue backup management and monitoring
 
@@ -510,7 +511,7 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Get Chart Data
 - **Endpoint**: `/api/chart-data`
 - **Method**: GET
-- **Description**: Retrieves aggregated chart data for all machines over time.
+- **Description**: Retrieves aggregated chart data for all servers over time.
 - **Response**:
   ```json
   [
@@ -531,16 +532,16 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**:
   - Returns empty array if data fetching fails
   - Used for visualization and analytics
-  - Aggregates data across all machines
+  - Aggregates data across all servers
 
 <br>
 
 ## Chart Data
 
-### Get All Machines Chart Data
+### Get All Servers Chart Data
 - **Endpoint**: `/api/chart-data`
 - **Method**: GET
-- **Description**: Retrieves aggregated chart data for all machines over time.
+- **Description**: Retrieves aggregated chart data for all servers over time.
 - **Response**:
   ```json
   [
@@ -587,16 +588,16 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**:
   - Supports time range filtering with startDate and endDate parameters
   - Validates date format before processing
-  - Returns aggregated data across all machines
+  - Returns aggregated data across all servers
 
 <br>
 
-### Get Machine Chart Data
-- **Endpoint**: `/api/chart-data/machine/:machineId`
+### Get Server Chart Data
+- **Endpoint**: `/api/chart-data/server/:serverId`
 - **Method**: GET
-- **Description**: Retrieves chart data for a specific machine with optional time range filtering.
+- **Description**: Retrieves chart data for a specific server with optional time range filtering.
 - **Parameters**:
-  - `machineId`: the machine identifier
+  - `serverId`: the server identifier
 - **Query Parameters**:
   - `startDate` (optional): Start date for filtering (ISO format)
   - `endDate` (optional): End date for filtering (ISO format)
@@ -621,16 +622,16 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**:
   - Supports time range filtering with startDate and endDate parameters
   - Validates date format before processing
-  - Returns chart data for specific machine
+  - Returns chart data for specific server
 
 <br>
 
-### Get Machine Backup Chart Data
-- **Endpoint**: `/api/chart-data/machine/:machineId/backup/:backupName`
+### Get Server Backup Chart Data
+- **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
 - **Method**: GET
-- **Description**: Retrieves chart data for a specific machine and backup with optional time range filtering.
+- **Description**: Retrieves chart data for a specific server and backup with optional time range filtering.
 - **Parameters**:
-  - `machineId`: the machine identifier
+  - `serverId`: the server identifier
   - `backupName`: the backup name (URL encoded)
 - **Query Parameters**:
   - `startDate` (optional): Start date for filtering (ISO format)
@@ -656,7 +657,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Notes**:
   - Supports time range filtering with startDate and endDate parameters
   - Validates date format before processing
-  - Returns chart data for specific machine and backup combination
+  - Returns chart data for specific server and backup combination
   - Backup name must be URL encoded
 
 <br>
@@ -676,7 +677,7 @@ All API responses are returned in JSON format with consistent error handling pat
       "accessToken": ""
     },
     "backupSettings": {
-      "Machine Name:Backup Name": {
+      "Server Name:Backup Name": {
         "notificationEvent": "all",
         "expectedInterval": 24,
         "overdueBackupCheckEnabled": true,
@@ -685,29 +686,29 @@ All API responses are returned in JSON format with consistent error handling pat
     },
     "templates": {
       "success": {
-        "title": "✅ {status} - {backup_name} @ {machine_name}",
-        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.",
+        "title": "✅ {status} - {backup_name} @ {server_name}",
+        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, success"
       },
       "warning": {
-        "title": "⚠️ {status} - {backup_name} @ {machine_name}",
-        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.",
+        "title": "⚠️ {status} - {backup_name} @ {server_name}",
+        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date}.",
         "priority": "high",
         "tags": "duplicati, duplistatus, warning, error"
       },
       "overdueBackup": {
-        "title": "🕑 Overdue - {backup_name} @ {machine_name}",
-        "message": "The backup {backup_name} is overdue on {machine_name}.",
+        "title": "🕑 Overdue - {backup_name} @ {server_name}",
+        "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
       }
     },
     "overdue_tolerance": "1h",
-    "machineAddresses": [
+    "serverAddresses": [
       {
-        "id": "machine-id",
-        "name": "Machine Name",
+        "id": "server-id",
+        "name": "Server Name",
         "server_url": "http://localhost:8200"
       }
     ]
@@ -717,13 +718,13 @@ All API responses are returned in JSON format with consistent error handling pat
   - `500`: Server error fetching configuration
 - **Notes**:
   - Returns complete notification and backup settings configuration
-  - Includes machine addresses and overdue tolerance
+  - Includes server addresses and overdue tolerance
   - Creates default configuration if none exists
 
 ### Get Unified Configuration
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
-- **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and machines with backups.
+- **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and servers with backups.
 - **Response**:
   ```json
   {
@@ -733,7 +734,7 @@ All API responses are returned in JSON format with consistent error handling pat
       "accessToken": ""
     },
     "backupSettings": {
-      "Machine Name:Backup Name": {
+      "Server Name:Backup Name": {
         "notificationEvent": "all",
         "expectedInterval": 24,
         "overdueBackupCheckEnabled": true,
@@ -742,29 +743,29 @@ All API responses are returned in JSON format with consistent error handling pat
     },
     "templates": {
       "success": {
-        "title": "✅ {status} - {backup_name} @ {machine_name}",
-        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.",
+        "title": "✅ {status} - {backup_name} @ {server_name}",
+        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, success"
       },
       "warning": {
-        "title": "⚠️ {status} - {backup_name} @ {machine_name}",
-        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date}.",
+        "title": "⚠️ {status} - {backup_name} @ {server_name}",
+        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date}.",
         "priority": "high",
         "tags": "duplicati, duplistatus, warning, error"
       },
       "overdueBackup": {
-        "title": "🕑 Overdue - {backup_name} @ {machine_name}",
-        "message": "The backup {backup_name} is overdue on {machine_name}.",
+        "title": "🕑 Overdue - {backup_name} @ {server_name}",
+        "message": "The backup {backup_name} is overdue on {server_name}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, overdue"
       }
     },
     "overdue_tolerance": "1h",
-    "machineAddresses": [
+    "serverAddresses": [
       {
-        "id": "machine-id",
-        "name": "Machine Name",
+        "id": "server-id",
+        "name": "Server Name",
         "server_url": "http://localhost:8200"
       }
     ],
@@ -773,10 +774,10 @@ All API responses are returned in JSON format with consistent error handling pat
       "enabled": true
     },
     "notificationFrequency": "every_day",
-    "machinesWithBackups": [
+    "serversWithBackups": [
       {
-        "id": "machine-id",
-        "name": "Machine Name",
+        "id": "server-id",
+        "name": "Server Name",
         "backupName": "Backup Name",
         "server_url": "http://localhost:8200"
       }
@@ -787,7 +788,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - `500`: Server error fetching unified configuration
 - **Notes**:
   - Returns all configuration data in a single response
-  - Includes cron settings, notification frequency, and machines with backups
+  - Includes cron settings, notification frequency, and servers with backups
   - Fetches all data in parallel for better performance
 
 ### Update Notification Configuration
@@ -829,12 +830,12 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Update Backup Settings
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
-- **Description**: Updates the backup notification settings for specific machines/backups.
+- **Description**: Updates the backup notification settings for specific servers/backups.
 - **Request Body**:
   ```json
   {
     "backupSettings": {
-      "Machine Name:Backup Name": {
+      "Server Name:Backup Name": {
         "notificationEvent": "all",
         "expectedInterval": 24,
         "overdueBackupCheckEnabled": true,
@@ -853,7 +854,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - `400`: Backup settings are required
   - `500`: Server error updating backup settings
 - **Notes**:
-  - Updates backup notification settings for specific machines/backups
+  - Updates backup notification settings for specific servers/backups
   - Cleans up overdue backup notifications for disabled backups
   - Clears notifications when timeout settings change
 
@@ -866,8 +867,8 @@ All API responses are returned in JSON format with consistent error handling pat
   {
     "templates": {
       "success": {
-        "title": "✅ {status} - {backup_name} @ {machine_name}",
-        "message": "Backup {backup_name} on {machine_name} completed with status '{status}' at {backup_date} in {duration}.",
+        "title": "✅ {status} - {backup_name} @ {server_name}",
+        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",
         "priority": "default",
         "tags": "duplicati, duplistatus, success"
       }
@@ -919,10 +920,10 @@ All API responses are returned in JSON format with consistent error handling pat
 - **Response**:
   ```json
   {
-    "machineAddresses": [
+    "serverAddresses": [
       {
-        "id": "machine-id",
-        "name": "Machine Name",
+        "id": "server-id",
+        "name": "Server Name",
         "server_url": "http://localhost:8200"
       }
     ]
@@ -932,7 +933,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - `500`: Server error fetching server connections
 - **Notes**:
   - Returns current server connections configuration
-  - Includes machine addresses and server URLs
+  - Includes server addresses and server URLs
   - Used for server connection management
 
 <br>
@@ -1231,7 +1232,7 @@ All API responses are returned in JSON format with consistent error handling pat
   ```json
   {
     "success": true,
-    "machineName": "Machine Name",
+    "serverName": "Server Name",
     "stats": {
       "processed": 5,
       "skipped": 2,
@@ -1251,7 +1252,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Self-signed certificates can be allowed with `allowSelfSigned: true`
   - Connection timeouts are configurable via environment variables
   - Logs collected data in development mode for debugging
-  - Ensures backup settings are complete for all machines and backups
+  - Ensures backup settings are complete for all servers and backups
   - Uses default port 8200 and protocol "http" if not specified
 
 <br>
@@ -1287,32 +1288,32 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Delete Machine
-- **Endpoint**: `/api/machines/:id`
+### Delete Server
+- **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
-- **Description**: Deletes a machine and all its associated backups.
+- **Description**: Deletes a server and all its associated backups.
 - **Parameters**:
-  - `id`: the machine identifier
+  - `id`: the server identifier
 
 - **Response**:
   ```json
   {
-    "message": "Successfully deleted machine and 15 backups",
+    "message": "Successfully deleted server and 15 backups",
     "status": 200,
     "changes": {
       "backupChanges": 15,
-      "machineChanges": 1
+      "serverChanges": 1
     }
   }
   ```
 - **Error Responses**:
-  - `400`: Invalid machine ID
-  - `404`: Machine not found
+  - `400`: Invalid server ID
+  - `404`: Server not found
   - `500`: Server error during deletion
 - **Notes**: 
   - This operation is irreversible
-  - All backup data associated with the machine will be permanently deleted
-  - The machine record itself will also be removed
+  - All backup data associated with the server will be permanently deleted
+  - The server record itself will also be removed
 
 <br>
 
@@ -1351,7 +1352,7 @@ All API responses are returned in JSON format with consistent error handling pat
 <br>
 
 ### Test Server Connection
-- **Endpoint**: `/api/machines/test-connection`
+- **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
 - **Description**: Tests the connection to a Duplicati server to verify it's accessible.
 - **Request Body**:
@@ -1379,36 +1380,36 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Machine Server URL
-- **Endpoint**: `/api/machines/:machineId/server-url`
+### Get Server Server URL
+- **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
-- **Description**: Retrieves the server URL for a specific machine.
+- **Description**: Retrieves the server URL for a specific server.
 - **Parameters**:
-  - `machineId`: the machine identifier
+  - `serverId`: the server identifier
 
 - **Response**:
   ```json
   {
-    "machineId": "machine-id",
+    "serverId": "server-id",
     "server_url": "http://localhost:8200"
   }
   ```
 - **Error Responses**:
-  - `404`: Machine not found
+  - `404`: Server not found
   - `500`: Server error
 - **Notes**:
-  - Returns server URL for specific machine
+  - Returns server URL for specific server
   - Used for server connection management
   - Returns empty string if no server URL is set
 
 <br>
 
-### Update Machine Server URL
-- **Endpoint**: `/api/machines/:machineId/server-url`
+### Update Server Server URL
+- **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
-- **Description**: Updates the server URL for a specific machine.
+- **Description**: Updates the server URL for a specific server.
 - **Parameters**:
-  - `machineId`: the machine identifier
+  - `serverId`: the server identifier
 - **Request Body**:
   ```json
   {
@@ -1419,20 +1420,20 @@ All API responses are returned in JSON format with consistent error handling pat
   ```json
   {
     "message": "Server URL updated successfully",
-    "machineId": "machine-id",
-    "machineName": "Machine Name",
+    "serverId": "server-id",
+    "serverName": "Server Name",
     "server_url": "http://localhost:8200"
   }
   ```
 - **Error Responses**:
   - `400`: Invalid URL format
-  - `404`: Machine not found
+  - `404`: Server not found
   - `500`: Server error during update
 - **Notes**: 
   - The endpoint validates URL format before updating
   - Empty or null server URLs are allowed
   - Supports both HTTP and HTTPS protocols
-  - Returns updated machine information
+  - Returns updated server information
 
 <br>
 

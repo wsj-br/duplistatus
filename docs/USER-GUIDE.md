@@ -3,7 +3,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.7.17.dev-blue)
+![](https://img.shields.io/badge/version-0.7.19.dev-blue)
 
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
@@ -32,8 +32,8 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
   - [Overdue Details](#overdue-details)
   - [Available Backup Versions](#available-backup-versions)
 - [Backup Metrics](#backup-metrics)
-- [Machine Details](#machine-details)
-  - [Machine/Backup Statistics](#machinebackup-statistics)
+- [Server Details](#server-details)
+  - [Server/Backup Statistics](#serverbackup-statistics)
   - [Backup History](#backup-history)
 - [Backup Details](#backup-details)
 - [Duplicati Configuration](#duplicati-configuration)
@@ -43,7 +43,7 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
   - [How the Collection Process Works](#how-the-collection-process-works)
 - [Database Maintenance](#database-maintenance)
   - [Data Cleanup Period](#data-cleanup-period)
-  - [Delete Machine Data](#delete-machine-data)
+  - [Delete Server Data](#delete-server-data)
 - [Settings](#settings)
   - [NTFY Settings](#ntfy-settings)
   - [Backup Notifications Settings](#backup-notifications-settings)
@@ -51,7 +51,7 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
     - [Global Configurations](#global-configurations)
     - [Action Buttons](#action-buttons)
   - [Overdue Check Process](#overdue-check-process)
-  - [Machine Addresses](#machine-addresses)
+  - [Server Addresses](#server-addresses)
   - [Notification Templates](#notification-templates)
 - [Homepage Integration (Optional)](#homepage-integration-optional)
   - [Summary Widget](#summary-widget)
@@ -94,7 +94,7 @@ After installation, access the **duplistatus** web interface:
 ## User Interface
 
 
-**duplistatus** provides a comprehensive dashboard for monitoring Duplicati backup operations across multiple machines. 
+**duplistatus** provides a comprehensive dashboard for monitoring Duplicati backup operations across multiple servers. 
 
 <br>
 
@@ -107,12 +107,12 @@ After installation, access the **duplistatus** web interface:
 The user interface consists of several elements, organised into different sections to provide a clear and intuitive experience:
 
 1.  [**Application Toolbar**](#application-toolbar): Provides easy access to main functions and configurations.
-2.  [**Dashboard Summary**](#dashboard-summary): A summary of all monitored machines.
-3.  **Machines Overview**: [Cards](#cards-layout) or a [table](#table-layout) showing the latest status of all backups from monitored Duplicati servers.
+2.  [**Dashboard Summary**](#dashboard-summary): A summary of all monitored servers.
+3.  **Servers Overview**: [Cards](#cards-layout) or a [table](#table-layout) showing the latest status of all backups from monitored Duplicati servers.
 4.  [**Overdue Details**](#overdue-details): A visual warning for overdue backups with details on hover.
 5.  [**Available Backup Versions**](#available-backup-versions): Click the blue icon to view backup versions available on the backend.
 6.  [**Backup Metrics**](#backup-metrics): Charts displaying backup metrics over time.
-7.  [**Machine Details**](#machine-details): A list of recorded backups for a specific machine, including statistics.
+7.  [**Server Details**](#server-details): A list of recorded backups for a specific server, including statistics.
 8.  [**Backup Details**](#backup-details-2): Detailed information for a specific backup, including log messages (execution, warnings, and errors).
 
 </div>
@@ -135,8 +135,8 @@ The toolbar provides easy access to key functions and settings.
 | Duplicati configuration | Open the Duplicati configuration (web interface)                                     |
 | Check overdue backups   | Execute the check for overdue backups now                                            |
 | Collect  logs           | Connect to a Duplicati server to collect all backup logs from its database           |
-| Database maintenance    | Clean the database, remove old backup logs, or delete data for a specific machine    |
-| Settings                | Configure notifications, overdue monitoring, machine addresses and templates         |
+| Database maintenance    | Clean the database, remove old backup logs, or delete data for a specific server    |
+| Settings                | Configure notifications, overdue monitoring, server addresses and templates         |
 | Theme                   | Toggle between dark (default) and light themes                                       |
 
 </div>
@@ -152,8 +152,8 @@ This section displays aggregated statistics for all backups.
   ![Dashboard summary](img/screen-dashboard-summary.png)
 
 
-  - **Total Machines**: The number of machines being monitored.
-  - **Total Backups**: The total number of backup logs received or collected for all machines.
+  - **Total Servers**: The number of servers being monitored.
+  - **Total Backups**: The total number of backup logs received or collected for all servers.
   - **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.
   - **Storage Used**: The total storage space used by backups on the backend, based on the latest backup logs.
   - **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).
@@ -172,16 +172,16 @@ The cards layout shows the status of the most recent backup log received for eac
 
 ![Dashboard Overview](img/duplistatus_dash-cards.png)
 
-  - **Machine Name**: Name of the Duplicati server
-- **Overall Status**: The status of the machine. Overdue backups will show as a `Warning`  status
-- **Summary information**: The consolidated number of files, size and storage used for all backups of this machine. Also shows the elapsed time of  most recent backup received (hover over to show the timestamp)
-- **Backups list**: a table with all the backups configured for this machine, with 3 columns:
+  - **Server Name**: Name of the Duplicati server
+- **Overall Status**: The status of the server. Overdue backups will show as a `Warning`  status
+- **Summary information**: The consolidated number of files, size and storage used for all backups of this server. Also shows the elapsed time of  most recent backup received (hover over to show the timestamp)
+- **Backups list**: a table with all the backups configured for this server, with 3 columns:
    - **Backup Name**: Name of the backup in the Duplicati server
    - **Status history**: status of the last 10 backups received. 
    - **Last backup received**: the elapsed time since the current time of the last log received. It will show a warning icon if the backup is overdue.
 
 > [!NOTE]
-> You can use the [Display Settings](#display-settings) to configure the card sort order. The available options are `Machine name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
+> You can use the [Display Settings](#display-settings) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
 
 <br>
 
@@ -195,7 +195,7 @@ Hovering over a backup in the list displays details of the last backup log recei
   ![Overdue details](img/screen-backup-tooltip.png)
 
 
-  - **Machine Name : Backup**: The name of the Duplicati server and backup.
+  - **Server Name : Backup**: The name of the Duplicati server and backup.
   - **Notification**: An icon showing the [configured notification](#notifications-icons) setting for new backup logs.
   - **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
   - **Status**: The status of the last backup received (Success, Warning, Error, Fatal).
@@ -214,13 +214,13 @@ You can also click the buttons at the bottom to open `Settings → Backup Notifi
 
 ## Table Layout
 
-The table layout lists the most recent backup logs received for all machines and backups.
+The table layout lists the most recent backup logs received for all servers and backups.
 
 <div style="padding-left: 60px;">
 
   ![Dashboard Overview](img/duplistatus_dash-table.png)
 
-  - **Machine Name**: The name of the Duplicati server.
+  - **Server Name**: The name of the Duplicati server.
   - **Backup Name**: The name of the backup in the Duplicati server.
   - **Available Versions**: The number of backup versions available on the backend. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](https://www.google.com/search?q=INSTALL.md%23duplicati-configuration-required) for details.
   - **Backup Count**: The number of backups reported by the Duplicati server.
@@ -229,7 +229,7 @@ The table layout lists the most recent backup logs received for all machines and
   - **Duration**: The duration of the backup in HH:MM:SS.
   - **Warnings/Errors**: The number of warnings/errors reported in the backup log.
   - **Notification**: An icon showing the configured notification setting for new backup logs.
-  - **Duplicati configuration**: A button to open the Duplicati server's web interface (if configured in `Settings → Machine Addresses`).
+  - **Duplicati configuration**: A button to open the Duplicati server's web interface (if configured in `Settings → Server Addresses`).
 
 <br>
 
@@ -276,7 +276,7 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
 
 <br>
 
-  - **Backup Details**: Shows the machine name, backup name, and when the backup was executed.
+  - **Backup Details**: Shows the server name, backup name, and when the backup was executed.
   - **Version Details**: Shows the version number, creation date, and age.
 
 <br>
@@ -291,10 +291,10 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
 
 ##  Backup Metrics
 
-A chart of backup metrics over time is shown on both the dashboard and the machine details page.
+A chart of backup metrics over time is shown on both the dashboard and the server details page.
 
-  - On the **Dashboard**, the chart shows the total number of backups recorded in the **duplistatus** database. If you use the Cards layout, you can select a machine to see its consolidated metrics.
-  - On the **Machine Details** page, the chart shows metrics for the selected machine (for all its backups) or for a single, specific backup.
+  - On the **Dashboard**, the chart shows the total number of backups recorded in the **duplistatus** database. If you use the Cards layout, you can select a server to see its consolidated metrics.
+  - On the **Server Details** page, the chart shows metrics for the selected server (for all its backups) or for a single, specific backup.
 
 <div style="padding-left: 60px;">
 
@@ -317,21 +317,21 @@ A chart of backup metrics over time is shown on both the dashboard and the machi
 
 <br><br>
 
-## Machine Details
+## Server Details
 
-Clicking on a machine from the dashboard opens a page with a list of backups for that machine. You can view all backups or select a specific one if the machine has multiple backups configured.
+Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
 
 <div style="padding-left: 60px;">
 
-![Machine Details](img/screen-machine.png)
+![Server Details](img/screen-machine.png)
 
 </div>
 
 <br>
 
-### Machine/Backup Statistics
+### Server/Backup Statistics
 
-This section shows statistics for either all backups on the machine or a single selected backup.
+This section shows statistics for either all backups on the server or a single selected backup.
 
 <div style="padding-left: 60px;">
 
@@ -349,7 +349,7 @@ This section shows statistics for either all backups on the machine or a single 
 </div>
 
 > [!TIP]
-> Use the dropdown menu in the **Backup History** section to select all backups or a specific backup for this machine.
+> Use the dropdown menu in the **Backup History** section to select all backups or a specific backup for this server.
 
 > [!NOTE]
 > Cleaning the database via [Database Maintenance](#database-maintenance) will affect the **AVG DURATION** and **TOTAL UPLOADED** values, as they are calculated from the records stored in the **duplistatus** database.
@@ -358,7 +358,7 @@ This section shows statistics for either all backups on the machine or a single 
 
 ### Backup History
 
-This table lists the backup logs for the selected machine.
+This table lists the backup logs for the selected server.
 
 <div style="padding-left: 60px;">
 
@@ -407,15 +407,15 @@ Clicking on a status badge in the dashboard or any row in the backup history tab
 
 The `Duplicati configuration` button on the [Application Toolbar](#application-toolbar) opens that server's web interface in a new tab.
 
-You can select a server from the dropdown list. If you have already selected a machine (by clicking its card) or are viewing its details, the button will open that specific machine's Duplicati configuration directly.
+You can select a server from the dropdown list. If you have already selected a server (by clicking its card) or are viewing its details, the button will open that specific server's Duplicati configuration directly.
 
 <div style="padding-left: 60px;">
 
   ![Duplicati configuration](img/screen-duplicati-configuration.png)
 
-Server addresses are configured in `Settings → Machine Addresses`. The application automatically saves a machine's URL when you use the `Collect Backup Logs` feature.
+Server addresses are configured in `Settings → Server Addresses`. The application automatically saves a server's URL when you use the `Collect Backup Logs` feature.
 
-A machine will not appear in the server list if its address has not been configured, and the `Duplicati configuration` buttons for that machine will be disabled.
+A server will not appear in the server list if its address has not been configured, and the `Duplicati configuration` buttons for that server will be disabled.
 
 </div>
 
@@ -432,10 +432,10 @@ Configure user interface and display preferences.
 
 | Setting | Description | Default Value |
 | :--- | :--- | :--- |
-| **Table Size** | Number of rows per page on the machine details page. | 5 rows |
+| **Table Size** | Number of rows per page on the server details page. | 5 rows |
 | **Chart Time Range** | Time interval shown in the charts. | All available data |
 | **Auto-refresh Interval**| How often pages refresh automatically. | 1 minute |
-| **Cards Sort Order** | How cards are sorted on the dashboard. | `Machine name (a-z)` |
+| **Cards Sort Order** | How cards are sorted on the dashboard. | `Server name (a-z)` |
 
 </div>
 
@@ -503,7 +503,7 @@ Remove outdated backup records to free up storage space and improve system perfo
       - **6 months**: Retain records from the last 6 months.
       - **1 year**: Retain records from the last year.
       - **2 years**: Retain records from the last 2 years (default).
-      - **Delete all data**: Remove all backup records and machines.
+      - **Delete all data**: Remove all backup records and servers.
 3.  Click `Clear Old Records`.
 4.  Confirm the action in the dialogue box.
 
@@ -517,20 +517,20 @@ Remove outdated backup records to free up storage space and improve system perfo
 
 <br>
 
-### Delete Machine Data
+### Delete Server Data
 
-Remove a specific machine and all its associated backup data.
+Remove a specific server and all its associated backup data.
 
 1.  Click the `Database maintenance` icon on the [Application Toolbar](#application-toolbar).
-2.  Select a machine from the dropdown list.
-3.  Click `Delete Machine Data`.
+2.  Select a server from the dropdown list.
+3.  Click `Delete Server Data`.
 4.  Confirm the action in the dialogue box.
 
 <br>
 
 **Deletion Effects:**
 
-  - Permanently deletes the selected machine and all its backup records.
+  - Permanently deletes the selected server and all its backup records.
   - Cleans up associated configuration settings.
   - Updates dashboard statistics accordingly.
 
@@ -688,7 +688,7 @@ gantt
 
 <br><br>
 
-### Machine Addresses
+### Server Addresses
 
 You can configure the web addresses of your Duplicati Servers here. If a server does not have a URL configured, the `Duplicati configuration` button will be disabled for it.
 
@@ -699,7 +699,7 @@ You can configure the web addresses of your Duplicati Servers here. If a server 
 
 <br>
 
-Enter the URL for each machine in this form. If a URL is configured, you can click the corresponding Duplicati icon to open its web interface in a new tab. Both `HTTP` and `HTTPS` URLs are supported.
+Enter the URL for each server in this form. If a URL is configured, you can click the corresponding Duplicati icon to open its web interface in a new tab. Both `HTTP` and `HTTPS` URLs are supported.
 
 <br>
 
@@ -733,7 +733,7 @@ All templates support variables that will be replaced with actual values. The fo
 
 | Variable | Description | Available In |
 | :--- | :--- | :--- |
-| `{machine_name}` | Name of the machine. | All templates |
+| `{server_name}` | Name of the server. | All templates |
 | `{backup_name}` | Name of the backup. | All templates |
 | `{status}` | Backup status (Success, Warning, Error, Fatal). | Success, Warning |
 | `{backup_date}` | Date and time of the backup. | Success, Warning |
@@ -782,8 +782,8 @@ This widget displays overall backup statistics on your Homepage dashboard.
       display: list
       refreshInterval: 60000
       mappings:
-        - field: totalMachines
-          label: Machines
+        - field: totalServers
+          label: Servers
         - field: totalBackups
           label: Backups received
         - field: secondsSinceLastBackup

@@ -49,7 +49,7 @@ try {
   const tableCount = db.prepare(`
     SELECT COUNT(*) as count 
     FROM sqlite_master 
-    WHERE type='table' AND name IN ('machines', 'backups')
+    WHERE type='table' AND name IN ('servers', 'backups')
   `).get() as { count: number };
   
   // If no tables exist, create the complete schema
@@ -57,7 +57,7 @@ try {
     console.log('Initializing new database with latest schema...');
     
     db.exec(`
-      CREATE TABLE IF NOT EXISTS machines (
+      CREATE TABLE IF NOT EXISTS servers (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         server_url TEXT DEFAULT '',
@@ -66,7 +66,7 @@ try {
 
       CREATE TABLE IF NOT EXISTS backups (
         id TEXT PRIMARY KEY,
-        machine_id TEXT NOT NULL,
+        server_id TEXT NOT NULL,
         backup_name TEXT NOT NULL,
         backup_id TEXT NOT NULL,
         date DATETIME NOT NULL,
@@ -131,10 +131,10 @@ try {
         backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
         backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
         
-        FOREIGN KEY (machine_id) REFERENCES machines(id)
+        FOREIGN KEY (server_id) REFERENCES servers(id)
       );
 
-      CREATE INDEX IF NOT EXISTS idx_backups_machine_id ON backups(machine_id);
+      CREATE INDEX IF NOT EXISTS idx_backups_server_id ON backups(server_id);
       CREATE INDEX IF NOT EXISTS idx_backups_date ON backups(date);
       CREATE INDEX IF NOT EXISTS idx_backups_begin_time ON backups(begin_time);
       CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
@@ -248,47 +248,47 @@ async function populateDefaultConfigurations() {
 
 // Helper functions for database operations
 const dbOps = {
-  // Machine operations
-  upsertMachine: safePrepare(`
-    INSERT INTO machines (id, name, server_url)
+  // Server operations
+  upsertServer: safePrepare(`
+    INSERT INTO servers (id, name, server_url)
     VALUES (@id, @name, @server_url)
     ON CONFLICT(id) DO UPDATE SET
       name = @name,
       server_url = @server_url
-  `, 'upsertMachine'),
+  `, 'upsertServer'),
 
-  insertMachineIfNotExists: safePrepare(`
-    INSERT INTO machines (id, name)
+  insertServerIfNotExists: safePrepare(`
+    INSERT INTO servers (id, name)
     VALUES (@id, @name)
     ON CONFLICT(id) DO NOTHING
-  `, 'insertMachineIfNotExists'),
+  `, 'insertServerIfNotExists'),
 
-  updateMachineServerUrl: safePrepare(`
-    UPDATE machines 
+  updateServerServerUrl: safePrepare(`
+    UPDATE servers 
     SET server_url = @server_url 
     WHERE id = @id
-  `, 'updateMachineServerUrl'),
+  `, 'updateServerServerUrl'),
 
-  getMachine: safePrepare(`
-    SELECT id, name, server_url, created_at FROM machines WHERE id = ?
-  `, 'getMachine'),
+  getServerById: safePrepare(`
+    SELECT id, name, server_url, created_at FROM servers WHERE id = ?
+  `, 'getServer'),
 
-  getMachineByName: safePrepare(`
-    SELECT id, name, server_url, created_at FROM machines WHERE name = ?
-  `, 'getMachineByName'),
+  getServerByName: safePrepare(`
+    SELECT id, name, server_url, created_at FROM servers WHERE name = ?
+  `, 'getServerByName'),
 
-  getAllMachinesByName: safePrepare(`
-    SELECT id, name, server_url, created_at FROM machines WHERE name = ?
-  `, 'getAllMachinesByName'),
+  getAllServersByName: safePrepare(`
+    SELECT id, name, server_url, created_at FROM servers WHERE name = ?
+  `, 'getAllServersByName'),
 
-  getAllMachines: safePrepare(`
-    SELECT id, name, server_url, created_at FROM machines ORDER BY name
-  `, 'getAllMachines'),
+  getAllServers: safePrepare(`
+    SELECT id, name, server_url, created_at FROM servers ORDER BY name
+  `, 'getAllServers'),
 
   // Backup operations
   insertBackup: safePrepare(`
     INSERT INTO backups (
-      id, machine_id, backup_name, backup_id, date, status, duration_seconds,
+      id, server_id, backup_name, backup_id, date, status, duration_seconds,
       size, uploaded_size, examined_files, warnings, errors,
       messages_array, warnings_array, errors_array, available_backups,
       deleted_files, deleted_folders, modified_files, opened_files, added_files,
@@ -303,7 +303,7 @@ const dbOps = {
       backend_begin_time, backend_duration, backend_warnings_actual_length,
       backend_errors_actual_length
     ) VALUES (
-      @id, @machine_id, @backup_name, @backup_id, @date, @status, @duration_seconds,
+      @id, @server_id, @backup_name, @backup_id, @date, @status, @duration_seconds,
       @size, @uploaded_size, @examined_files, @warnings, @errors,
       @messages_array, @warnings_array, @errors_array, @available_backups,
       @deleted_files, @deleted_folders, @modified_files, @opened_files, @added_files,
@@ -321,39 +321,39 @@ const dbOps = {
   `, 'insertBackup'),
 
   getLatestBackup: safePrepare(`
-    SELECT b.*, m.name as machine_name
+    SELECT b.*, s.name as server_name
     FROM backups b
-    JOIN machines m ON b.machine_id = m.id
-    WHERE b.machine_id = ?
+    JOIN servers s ON b.server_id = s.id
+    WHERE b.server_id = ?
     ORDER BY b.date DESC
     LIMIT 1
   `, 'getLatestBackup'),
 
   getLatestBackupByName: safePrepare(`
-    SELECT b.*, m.name as machine_name
+    SELECT b.*, s.name as server_name
     FROM backups b
-    JOIN machines m ON b.machine_id = m.id
-    WHERE b.machine_id = ? AND b.backup_name = ?
+    JOIN servers s ON b.server_id = s.id
+    WHERE b.server_id = ? AND b.backup_name = ?
     ORDER BY b.date DESC
     LIMIT 1
   `, 'getLatestBackupByName'),
 
-  getMachinesBackupNames: safePrepare(`
+  getServersBackupNames: safePrepare(`
     SELECT 
-      m.id AS machine_id,
-      m.name AS machine_name,
+      s.id AS server_id,
+      s.name AS server_name,
       b.backup_name,
-      m.server_url
-    FROM machines m
-    JOIN backups b ON b.machine_id = m.id
-    GROUP BY m.id, m.name, b.backup_name
-    ORDER BY m.name, b.backup_name
-  `, 'getMachinesBackupNames'),
+      s.server_url
+    FROM servers s
+    JOIN backups b ON b.server_id = s.id
+    GROUP BY s.id, s.name, b.backup_name
+    ORDER BY s.name, b.backup_name
+  `, 'getServersBackupNames'),
 
-  getMachineBackups: safePrepare(`
+  getServerBackups: safePrepare(`
     SELECT 
       b.id,
-      b.machine_id,
+      b.server_id,
       b.backup_name,
       b.date,
       b.status,
@@ -372,38 +372,38 @@ const dbOps = {
       b.warnings_actual_length,
       b.errors_actual_length,
       b.messages_actual_length,
-      m.name as machine_name
+      s.name as server_name
     FROM backups b
-    JOIN machines m ON b.machine_id = m.id
-    WHERE b.machine_id = ?
+    JOIN servers s ON b.server_id = s.id
+    WHERE b.server_id = ?
     ORDER BY b.date DESC
-  `, 'getMachineBackups'),
+  `, 'getServerBackups'),
 
    getOverallSummary: safePrepare(`
     SELECT 
-      COUNT(DISTINCT m.id) as total_machines,
+      COUNT(DISTINCT s.id) as total_servers,
       COUNT(b.id) as total_backups,
       COALESCE(SUM(b.uploaded_size), 0) as total_uploaded_size,
       (
         SELECT COALESCE(SUM(b2.known_file_size), 0)
         FROM backups b2
         INNER JOIN (
-          SELECT machine_id, MAX(date) as max_date
+          SELECT server_id, MAX(date) as max_date
           FROM backups
-          GROUP BY machine_id
-        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+          GROUP BY server_id
+        ) latest ON b2.server_id = latest.server_id AND b2.date = latest.max_date
       ) as total_storage_used,
       (
         SELECT COALESCE(SUM(b2.size_of_examined_files), 0)
         FROM backups b2
         INNER JOIN (
-          SELECT machine_id, MAX(date) as max_date
+          SELECT server_id, MAX(date) as max_date
           FROM backups
-          GROUP BY machine_id
-        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+          GROUP BY server_id
+        ) latest ON b2.server_id = latest.server_id AND b2.date = latest.max_date
       ) as total_backuped_size
-    FROM machines m
-    LEFT JOIN backups b ON b.machine_id = m.id
+    FROM servers s
+    LEFT JOIN backups b ON b.server_id = s.id
   `, 'getOverallSummary'),
   
   getLatestBackupDate: safePrepare(`
@@ -428,26 +428,26 @@ const dbOps = {
   checkDuplicateBackup: safePrepare(`
     SELECT COUNT(*) as count
     FROM backups
-    WHERE machine_id = @machine_id
+    WHERE server_id = @server_id
     AND backup_name = @backup_name
     AND date = @date
   `, 'checkDuplicateBackup'),
 
-  // Add new operation to delete a specific machine and its backups
-  deleteMachine: safePrepare(`
-    DELETE FROM machines WHERE id = ?
-  `, 'deleteMachine'),
+  // Add new operation to delete a specific server and its backups
+  deleteServer: safePrepare(`
+    DELETE FROM servers WHERE id = ?
+  `, 'deleteServer'),
 
-  deleteMachineBackups: safePrepare(`
-    DELETE FROM backups WHERE machine_id = ?
-  `, 'deleteMachineBackups'),
+  deleteServerBackups: safePrepare(`
+    DELETE FROM backups WHERE server_id = ?
+  `, 'deleteServerBackups'),
 
-  // New query for machine cards - get backup status history for status bars
-   getMachinesSummary: safePrepare(`
+  // New query for server cards - get backup status history for status bars
+   getServersSummary: safePrepare(`
     SELECT
-      m.id AS machine_id,
-      m.name AS machine_name,
-      m.server_url AS server_url,
+      s.id AS server_id,
+      s.name AS server_name,
+      s.server_url AS server_url,
       b.backup_name,
       lb.last_backup_date,
       b2.id AS last_backup_id,
@@ -456,7 +456,7 @@ const dbOps = {
       (
         SELECT COUNT(*)
         FROM backups b_count
-        WHERE b_count.machine_id = m.id AND b_count.backup_name = b.backup_name
+        WHERE b_count.server_id = s.id AND b_count.backup_name = b.backup_name
       ) AS backup_count,
       b2.examined_files AS file_count,
       b2.size AS file_size,
@@ -471,35 +471,35 @@ const dbOps = {
         FROM (
           SELECT b_hist.status as b_hist_status
           FROM backups b_hist
-          WHERE b_hist.machine_id = m.id AND b_hist.backup_name = b.backup_name
+          WHERE b_hist.server_id = s.id AND b_hist.backup_name = b.backup_name
           ORDER BY b_hist.date
         )
       ) AS status_history
-    FROM machines m
-    JOIN backups b ON b.machine_id = m.id
+    FROM servers s
+    JOIN backups b ON b.server_id = s.id
     LEFT JOIN (
       SELECT
-        machine_id,
+        server_id,
         backup_name,
         MAX(date) AS last_backup_date
       FROM backups
-      GROUP BY machine_id, backup_name
-    ) lb ON lb.machine_id = m.id AND lb.backup_name = b.backup_name
+      GROUP BY server_id, backup_name
+    ) lb ON lb.server_id = s.id AND lb.backup_name = b.backup_name
     LEFT JOIN backups b2
-      ON b2.machine_id = m.id
+      ON b2.server_id = s.id
       AND b2.backup_name = b.backup_name
       AND b2.date = lb.last_backup_date
     WHERE lb.last_backup_date IS NOT NULL
-    GROUP BY m.id, m.name, b.backup_name, lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
-    ORDER BY m.name, b.backup_name  
-  `, 'getMachineSummary'),
+    GROUP BY s.id, s.name, b.backup_name, lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
+    ORDER BY s.name, b.backup_name  
+  `, 'getServersSummary'),
 
-  // Query to get all machines chart data grouped by date and machine
-  getAllMachinesChartData: safePrepare(`
+  // Query to get all servers chart data grouped by date and server
+  getAllServersChartData: safePrepare(`
     SELECT
       strftime('%Y-%m-%d', DATE(b.date)) AS date,
       b.date AS isoDate,
-      b.machine_id AS machineId,
+      b.server_id AS serverId,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
       SUM(COALESCE(b.examined_files, 0)) AS fileCount,
@@ -507,9 +507,9 @@ const dbOps = {
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
       SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
     FROM backups b
-    GROUP BY b.date, b.machine_id
+    GROUP BY b.date, b.server_id
     ORDER BY b.date
-  `, 'getAllMachinesChartData'),
+  `, 'getAllServersChartData'),
 
   // New query for aggregated chart data with time range filtering
   getAggregatedChartDataWithTimeRange: safePrepare(`
@@ -528,8 +528,8 @@ const dbOps = {
     ORDER BY b.date
   `, 'getAggregatedChartDataWithTimeRange'),
 
-  // New query for machine chart data (no date filtering)
-  getMachineChartData: safePrepare(`
+  // New query for server chart data (no date filtering)
+  getServerChartData: safePrepare(`
     SELECT
       strftime('%Y-%m-%d', DATE(b.date)) AS date,
       b.date AS isoDate,
@@ -540,13 +540,13 @@ const dbOps = {
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
       SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
     FROM backups b
-    WHERE b.machine_id = ?
+    WHERE b.server_id = ?
     GROUP BY DATE(b.date)
     ORDER BY b.date
-  `, 'getMachineChartData'),
+  `, 'getServerChartData'),
 
-  // New query for machine chart data with time range filtering
-  getMachineChartDataWithTimeRange: safePrepare(`
+  // New query for server chart data with time range filtering
+  getServerChartDataWithTimeRange: safePrepare(`
     SELECT
       strftime('%Y-%m-%d', DATE(b.date)) AS date,
       b.date AS isoDate,
@@ -557,48 +557,48 @@ const dbOps = {
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
       SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
     FROM backups b
-    WHERE b.machine_id = @machineId
+    WHERE b.server_id = @serverId
+    AND b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getServerChartDataWithTimeRange'),
+
+  // New query for server/backup chart data (no date filtering)
+  getServerBackupChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.server_id = @serverId
+    AND b.backup_name = @backupName
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getServerBackupChartData'),
+
+  // New query for server/backup chart data with time range filtering
+  getServerBackupChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.server_id = @serverId
+      AND b.backup_name = @backupName
       AND b.date BETWEEN @startDate AND @endDate
     GROUP BY DATE(b.date)
     ORDER BY b.date
-  `, 'getMachineChartDataWithTimeRange'),
-
-  // New query for machine/backup chart data (no date filtering)
-  getMachineBackupChartData: safePrepare(`
-    SELECT
-      strftime('%Y-%m-%d', DATE(b.date)) AS date,
-      b.date AS isoDate,
-      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
-      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
-      SUM(COALESCE(b.size, 0)) AS fileSize,
-      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
-    FROM backups b
-    WHERE b.machine_id = @machineId
-      AND b.backup_name = @backupName
-    GROUP BY DATE(b.date)
-    ORDER BY b.date
-  `, 'getMachineBackupChartData'),
-
-  // New query for machine/backup chart data with time range filtering
-  getMachineBackupChartDataWithTimeRange: safePrepare(`
-    SELECT
-      strftime('%Y-%m-%d', DATE(b.date)) AS date,
-      b.date AS isoDate,
-      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
-      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
-      SUM(COALESCE(b.size, 0)) AS fileSize,
-      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
-    FROM backups b
-    WHERE b.machine_id = @machineId
-      AND b.backup_name = @backupName
-      AND b.date BETWEEN @startDate AND @endDate
-    GROUP BY DATE(b.date)
-    ORDER BY b.date
-  `, 'getMachineBackupChartDataWithTimeRange')
+  `, 'getServerBackupChartDataWithTimeRange')
 };
 
 // Helper function to parse duration string to seconds

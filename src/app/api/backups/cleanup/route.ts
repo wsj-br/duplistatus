@@ -14,17 +14,17 @@ export async function POST(request: Request) {
         // Delete all backups
         const backupResult = db.prepare(`DELETE FROM backups`).run();
         
-        // Delete all machines
-        const machineResult = db.prepare(`DELETE FROM machines`).run();
+        // Delete all servers
+        const serverResult = db.prepare(`DELETE FROM servers`).run();
   
         return { 
           backupChanges: backupResult.changes,
-          machineChanges: machineResult.changes
+          serverChanges: serverResult.changes
         };
       });
 
       // Execute the transaction
-      const { backupChanges, machineChanges } = transaction();
+      const { backupChanges, serverChanges } = transaction();
 
       // Clear configuration settings
       try {
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json({
-        message: `Successfully deleted all ${backupChanges} backups and ${machineChanges} machines, and cleared configuration settings`,
+        message: `Successfully deleted all ${backupChanges} backups and ${serverChanges} servers, and cleared configuration settings`,
         status: 200,
       });
     }

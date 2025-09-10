@@ -1,3 +1,27 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Duplistatus Cron Service](#duplistatus-cron-service)
+  - [Features](#features)
+  - [Running the Service](#running-the-service)
+    - [Development](#development)
+    - [Production](#production)
+  - [Configuration](#configuration)
+  - [API Endpoints](#api-endpoints)
+    - [GET /health](#get-health)
+    - [POST /trigger/:taskName](#post-triggertaskname)
+    - [POST /stop/:taskName](#post-stoptaskname)
+    - [POST /start/:taskName](#post-starttaskname)
+  - [Environment Variables](#environment-variables)
+  - [Client Usage](#client-usage)
+  - [Architecture](#architecture)
+  - [Adding New Tasks](#adding-new-tasks)
+  - [Type Definitions](#type-definitions)
+  - [Benefits Over Previous Implementation](#benefits-over-previous-implementation)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Duplistatus Cron Service
 
 This is an external service that handles periodic tasks for the DupliStatus application. It runs as a separate process to ensure better reliability and scalability of background tasks.

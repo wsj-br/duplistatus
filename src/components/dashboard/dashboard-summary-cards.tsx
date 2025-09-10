@@ -12,7 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useMachineSelection } from "@/contexts/machine-selection-context";
+import { useServerSelection } from "@/contexts/server-selection-context";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
@@ -23,8 +23,8 @@ export function DashboardSummaryCards({
   summary, 
   onViewModeChange
 }: DashboardSummaryCardsProps) {
-  const { state: machineSelectionState, setViewMode } = useMachineSelection();
-  const { viewMode } = machineSelectionState;
+  const { state: serverSelectionState, setViewMode } = useServerSelection();
+  const { viewMode } = serverSelectionState;
 
   // Handle view mode toggle
   const handleViewModeToggle = () => {
@@ -36,8 +36,8 @@ export function DashboardSummaryCards({
 
   const summaryItems = [
     {
-      title: "Total Machines",
-      value: summary.totalMachines.toLocaleString(),
+      title: "Total Servers",
+      value: summary.totalServers.toLocaleString(),
       icon: <HardDrive className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "server computer",
     },

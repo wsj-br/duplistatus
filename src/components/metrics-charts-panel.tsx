@@ -28,7 +28,7 @@ interface InterpolatedChartPoint {
 }
 
 interface MetricsChartsPanelProps {
-  machineId?: string;
+  serverId?: string;
   backupName?: string;
   // Add chartData prop to receive data directly from parent
   chartData?: ChartDataPoint[];
@@ -359,7 +359,7 @@ function SmallMetricChart({
 }
 
 function MetricsChartsPanelCore({ 
-  machineId,
+  serverId,
   backupName,
   chartData: externalChartData, // Use external chart data if provided
 }: MetricsChartsPanelProps) {
@@ -371,7 +371,7 @@ function MetricsChartsPanelCore({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const [selectedMachineName, setSelectedMachineName] = useState<string | null>(null);
+  const [selectedServerName, setSelectedServerName] = useState<string | null>(null);
   const lastGlobalRefreshTime = useRef<Date | null>(null);
   const lastChartDataRef = useRef<string | null>(null);
   const isLoadingRef = useRef<boolean>(false);
@@ -446,8 +446,8 @@ function MetricsChartsPanelCore({
       let data: ChartDataPoint[] = [];
       
       // Select the appropriate API endpoint based on parameters
-      if (!machineId) {
-        // Aggregated data (all machines)
+      if (!serverId) {
+        // Aggregated data (all servers)
         if (startDate && endDate) {
           const response = await fetch(`/api/chart-data/aggregated?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
           if (!response.ok) throw new Error('Failed to fetch aggregated chart data with time range');
@@ -457,41 +457,41 @@ function MetricsChartsPanelCore({
           if (!response.ok) throw new Error('Failed to fetch aggregated chart data');
           data = await response.json();
         }
-      } else if (machineId && !backupName) {
-        // Machine-specific data (all backups)
+      } else if (serverId && !backupName) {
+        // Server-specific data (all backups)
         if (startDate && endDate) {
-          const response = await fetch(`/api/chart-data/machine/${machineId}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
-          if (!response.ok) throw new Error('Failed to fetch machine chart data with time range');
+          const response = await fetch(`/api/chart-data/server/${serverId}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          if (!response.ok) throw new Error('Failed to fetch server chart data with time range');
           data = await response.json();
         } else {
-          const response = await fetch(`/api/chart-data/machine/${machineId}`);
-          if (!response.ok) throw new Error('Failed to fetch machine chart data');
+          const response = await fetch(`/api/chart-data/server/${serverId}`);
+          if (!response.ok) throw new Error('Failed to fetch server chart data');
           data = await response.json();
         }
         
-        // Get machine name for display
-        const machineResponse = await fetch(`/api/machines/${machineId}`);
-        if (machineResponse.ok) {
-          const machineData = await machineResponse.json();
-          setSelectedMachineName(machineData.name);
+        // Get server name for display
+        const serverResponse = await fetch(`/api/servers/${serverId}`);
+        if (serverResponse.ok) {
+          const serverData = await serverResponse.json();
+          setSelectedServerName(serverData.name);
         }
-      } else if (machineId && backupName) {
-        // Machine and backup specific data
+      } else if (serverId && backupName) {
+        // Server and backup specific data
         if (startDate && endDate) {
-          const response = await fetch(`/api/chart-data/machine/${machineId}/backup/${encodeURIComponent(backupName)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
-          if (!response.ok) throw new Error('Failed to fetch machine backup chart data with time range');
+          const response = await fetch(`/api/chart-data/server/${serverId}/backup/${encodeURIComponent(backupName)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          if (!response.ok) throw new Error('Failed to fetch server backup chart data with time range');
           data = await response.json();
         } else {
-          const response = await fetch(`/api/chart-data/machine/${machineId}/backup/${encodeURIComponent(backupName)}`);
-          if (!response.ok) throw new Error('Failed to fetch machine backup chart data');
+          const response = await fetch(`/api/chart-data/server/${serverId}/backup/${encodeURIComponent(backupName)}`);
+          if (!response.ok) throw new Error('Failed to fetch server backup chart data');
           data = await response.json();
         }
         
-        // Get machine name for display
-        const machineResponse = await fetch(`/api/machines/${machineId}`);
-        if (machineResponse.ok) {
-          const machineData = await machineResponse.json();
-          setSelectedMachineName(machineData.name);
+        // Get server name for display
+        const serverResponse = await fetch(`/api/servers/${serverId}`);
+        if (serverResponse.ok) {
+          const serverData = await serverResponse.json();
+          setSelectedServerName(serverData.name);
         }
       }
       
@@ -516,7 +516,7 @@ function MetricsChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [machineId, backupName, startDate, endDate, toast]);
+  }, [serverId, backupName, startDate, endDate, toast]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -534,14 +534,14 @@ function MetricsChartsPanelCore({
       }
       setIsLoading(false);
     }
-  }, [machineId, backupName, startDate, endDate, externalChartData, fetchChartData]);
+  }, [serverId, backupName, startDate, endDate, externalChartData, fetchChartData]);
 
-  // Clear selected machine name when no machine is selected
+  // Clear selected server name when no server is selected
   useEffect(() => {
-    if (!machineId) {
-      setSelectedMachineName(null);
+    if (!serverId) {
+      setSelectedServerName(null);
     }
-  }, [machineId]);
+  }, [serverId]);
 
   // Listen for global refresh events and refetch data when refresh completes
   useEffect(() => {
@@ -560,17 +560,17 @@ function MetricsChartsPanelCore({
           lastGlobalRefreshTime.current.getTime() !== currentRefreshTime.getTime()) {
         lastGlobalRefreshTime.current = currentRefreshTime;
         
-        // For machine-specific data, we still need to fetch it since global refresh
+        // For server-specific data, we still need to fetch it since global refresh
         // only provides aggregated data. But we can optimize this by checking if
         // the data has actually changed before triggering a re-render.
-        if (machineId) {
+        if (serverId) {
           fetchChartData(true); // Skip loading state for background refresh
         }
-        // For aggregated data (no machineId), the parent component handles the data
+        // For aggregated data (no serverId), the parent component handles the data
         // and passes it via externalChartData prop, so no need to fetch here.
       }
     }
-  }, [globalRefreshState.isRefreshing, globalRefreshState.pageSpecificLoading.dashboard, globalRefreshState.lastRefresh, externalChartData, machineId, fetchChartData]);
+  }, [globalRefreshState.isRefreshing, globalRefreshState.pageSpecificLoading.dashboard, globalRefreshState.lastRefresh, externalChartData, serverId, fetchChartData]);
   
   // Get selection info for display
   const selectionInfo = (() => {
@@ -578,15 +578,15 @@ function MetricsChartsPanelCore({
     if(isLoading) return '';
 
     let baseText = '';
-    if (selectedMachineName) {
-      baseText = `${selectedMachineName}`;
+    if (selectedServerName) {
+      baseText = `${selectedServerName}`;
       if (backupName) {
         baseText += `:${backupName}`;
       } else {
         baseText += ' (all backups)';
       }
     } else {
-      baseText = 'All Machines & Backups';
+      baseText = 'All Servers & Backups';
     }
     
     // Convert chartTimeRange to display label
@@ -682,7 +682,7 @@ const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) =
   // Only re-render if there are actual changes in the data we care about
   
   // Compare basic props
-  if (prevProps.machineId !== nextProps.machineId ||
+  if (prevProps.serverId !== nextProps.serverId ||
       prevProps.backupName !== nextProps.backupName) {
     return false; // Props changed, re-render
   }
@@ -705,7 +705,7 @@ const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) =
 
 // Main wrapper component that combines charts with refresh time display
 export const MetricsChartsPanel = ({ 
-  machineId,
+  serverId,
   backupName,
   chartData
 }: MetricsChartsPanelProps) => {
@@ -723,7 +723,7 @@ export const MetricsChartsPanel = ({
 
       {/* Memoized charts component */}
       <MemoizedChartsCore 
-        machineId={machineId}
+        serverId={serverId}
         backupName={backupName}
         chartData={chartData}
       />

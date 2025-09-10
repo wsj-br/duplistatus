@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, getNtfyConfig, getAllMachineAddresses } from '@/lib/db-utils';
+import { getConfiguration, getNtfyConfig, getAllServerAddresses } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { createDefaultNotificationConfig, defaultOverdueTolerance } from '@/lib/default-config';
 
@@ -45,7 +45,7 @@ export async function GET() {
     const response = {
       ...config,
       overdue_tolerance: overdueTolerance || defaultOverdueTolerance,
-      machineAddresses: getAllMachineAddresses()
+      serverAddresses: getAllServerAddresses()
     };
 
     return NextResponse.json(response);
