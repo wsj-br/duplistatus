@@ -151,7 +151,7 @@ try {
       );
 
       -- Set initial database version for new databases (only if not exists)
-      INSERT OR IGNORE INTO db_version (version) VALUES ('3.0');
+      INSERT OR IGNORE INTO db_version (version) VALUES ('4.0');
     `);
     
     console.log('Database schema initialized successfully');
