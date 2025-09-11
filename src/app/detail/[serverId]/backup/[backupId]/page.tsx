@@ -223,7 +223,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
         <BackButton />
         <h1 className="text-2xl font-bold">Backup details: 
             <span className="text-blue-600 font-normal"> {backup.name}</span>
-            <span className="text-muted-foreground font-normal"> ({server.name})</span>
+            <span className="text-muted-foreground font-normal" title={server.alias ? server.name : undefined}> ({server.alias || server.name})</span>
         </h1>
       </div>
 
@@ -233,8 +233,16 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-xl">
-                    {server.name}  (<span className="text-muted-foreground mr-2">ID:</span> {serverId})
+                <CardTitle 
+                  className="text-xl"
+                  title={server.alias ? server.name : undefined}
+                >
+                    {server.alias || server.name}
+                    {server.note && (
+                      <span className="text-muted-foreground font-normal text-lg ml-2">
+                        {server.note}
+                      </span>
+                    )}
                 </CardTitle>
               </div>
               <StatusBadge status={safeBackup.status} />

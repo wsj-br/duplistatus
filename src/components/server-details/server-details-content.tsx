@@ -112,8 +112,14 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-3xl flex justify-between items-center">
-            <span>{server.name}</span>
-            <span className="text-xs text-muted-foreground">Server ID: <span className="text-xl text-foreground">{server.id}</span></span>
+            <span 
+              title={server.alias ? server.name : undefined}
+            >
+              {server.alias || server.name}
+            </span>
+            <span className="text-2xl text-muted-foreground">
+              {server.note ? server.note : `Server ID: ${server.id}`}
+            </span>
           </CardTitle>
           <CardDescription>
             {selectedBackup 
@@ -143,7 +149,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
           <CardDescription>
             {selectedBackup 
               ? <>List of all <span className="text-primary font-medium">{selectedBackup.name}</span> backups</>
-              : <>List of all backups for  <span className="text-primary font-medium">{server.name}</span></>
+              : <>List of all backups for  <span className="text-primary font-medium">{server.alias || server.name}</span></>
             }
             <TooltipProvider>
               <Tooltip delayDuration={0}>
@@ -160,7 +166,8 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
         <CardContent>
           <ServerBackupTable 
             backups={server.backups} 
-            serverName={server.name} 
+            serverName={server.name}
+            serverAlias={server.alias}
             onBackupDeleted={handleBackupDeleted}
           />
         </CardContent>

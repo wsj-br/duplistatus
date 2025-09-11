@@ -111,6 +111,15 @@ export const sortFunctions = {
     
     // If both are non-empty, sort alphabetically
     return a.toLowerCase().localeCompare(b.toLowerCase());
+  },
+
+  boolean: (a: boolean | null, b: boolean | null): number => {
+    // Handle null values - put them at the end
+    if (a === null && b === null) return 0;
+    if (a === null) return 1;
+    if (b === null) return -1;
+    // False comes before true
+    return (a ? 1 : 0) - (b ? 1 : 0);
   }
 };
 

@@ -22,6 +22,8 @@ type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing';
 interface ServerConnectionWithStatus extends ServerAddress {
   connectionStatus: ConnectionStatus;
   originalServerUrl: string;
+  originalAlias: string;
+  originalNote: string;
 }
 
 export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps) {
@@ -36,6 +38,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   // Column configuration for sorting
   const columnConfig = {
     name: { type: 'text' as keyof typeof sortFunctions, path: 'name' },
+    alias: { type: 'text' as keyof typeof sortFunctions, path: 'alias' },
+    note: { type: 'text' as keyof typeof sortFunctions, path: 'note' },
     server_url: { type: 'text' as keyof typeof sortFunctions, path: 'server_url' },
     connectionStatus: { type: 'text' as keyof typeof sortFunctions, path: 'connectionStatus' },
   };
@@ -45,7 +49,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           const initialConnections: ServerConnectionWithStatus[] = serverAddresses.map(conn => ({
         ...conn,
         connectionStatus: 'unknown' as ConnectionStatus,
-        originalServerUrl: conn.server_url
+        originalServerUrl: conn.server_url,
+        originalAlias: conn.alias || '',
+        originalNote: conn.note || ''
       }));
     setConnections(initialConnections);
   }, [serverAddresses]);
@@ -68,9 +74,6 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setConnections(prev => {
       const newConnections = prev.map(conn => {
         if (conn.id === serverId) {
-          const hasChanged = newUrl !== conn.originalServerUrl;
-          setHasChanges(hasChanged);
-          
           return {
             ...conn,
             server_url: newUrl,
@@ -79,6 +82,62 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         }
         return conn;
       });
+      
+      // Check if any connection has changes
+      const hasAnyChanges = newConnections.some(conn => 
+        conn.server_url !== conn.originalServerUrl ||
+        conn.alias !== conn.originalAlias ||
+        conn.note !== conn.originalNote
+      );
+      setHasChanges(hasAnyChanges);
+      
+      return newConnections;
+    });
+  };
+
+  const handleAliasChange = (serverId: string, newAlias: string) => {
+    setConnections(prev => {
+      const newConnections = prev.map(conn => {
+        if (conn.id === serverId) {
+          return {
+            ...conn,
+            alias: newAlias
+          };
+        }
+        return conn;
+      });
+      
+      // Check if any connection has changes
+      const hasAnyChanges = newConnections.some(conn => 
+        conn.server_url !== conn.originalServerUrl ||
+        conn.alias !== conn.originalAlias ||
+        conn.note !== conn.originalNote
+      );
+      setHasChanges(hasAnyChanges);
+      
+      return newConnections;
+    });
+  };
+
+  const handleNoteChange = (serverId: string, newNote: string) => {
+    setConnections(prev => {
+      const newConnections = prev.map(conn => {
+        if (conn.id === serverId) {
+          return {
+            ...conn,
+            note: newNote
+          };
+        }
+        return conn;
+      });
+      
+      // Check if any connection has changes
+      const hasAnyChanges = newConnections.some(conn => 
+        conn.server_url !== conn.originalServerUrl ||
+        conn.alias !== conn.originalAlias ||
+        conn.note !== conn.originalNote
+      );
+      setHasChanges(hasAnyChanges);
       
       return newConnections;
     });
@@ -312,34 +371,45 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
     setIsSaving(true);
     try {
-      // Save each server's server URL
+      // Save each server's details
       for (const connection of connections) {
-        if (connection.server_url !== connection.originalServerUrl) {
-          await fetch(`/api/servers/${connection.id}/server-url`, {
+        const hasChanges = 
+          connection.server_url !== connection.originalServerUrl ||
+          connection.alias !== connection.originalAlias ||
+          connection.note !== connection.originalNote;
+          
+        if (hasChanges) {
+          await fetch(`/api/servers/${connection.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ server_url: connection.server_url }),
+            body: JSON.stringify({ 
+              server_url: connection.server_url,
+              alias: connection.alias || '',
+              note: connection.note || ''
+            }),
           });
         }
       }
 
-      // Update original URLs
+      // Update original values
       setConnections(prev => prev.map(conn => ({
         ...conn,
-        originalServerUrl: conn.server_url
+        originalServerUrl: conn.server_url,
+        originalAlias: conn.alias || '',
+        originalNote: conn.note || ''
       })));
       setHasChanges(false);
 
       toast({
         title: "Success",
-        description: "Server addresses saved successfully",
+        description: "Server details updated successfully",
         duration: 3000,
       });
 
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save server addresses",
+        description: error instanceof Error ? error.message : "Failed to save server details",
         variant: "destructive",
         duration: 5000,
       });
@@ -391,7 +461,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         <CardHeader>
           <CardTitle>Configure Server Settings</CardTitle>
           <CardDescription>
-            Configure a optional note/description for each server and the web interface addresses for each server. Test connections to ensure they are accessible.
+            Configure an optional alias or name for each server. You can also add a descriptive note. Next, provide the web interface address for each server and test the connection to ensure it&apos;s accessible.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -401,7 +471,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <TableHeader>
                 <TableRow>
                   <SortableTableHead 
-                    className="w-[150px] min-w-[120px]" 
+                    className="w-[150px] min-w-[100px]" 
                     column="name" 
                     sortConfig={sortConfig} 
                     onSort={handleSort}
@@ -409,7 +479,23 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     Server Name
                   </SortableTableHead>
                   <SortableTableHead 
-                    className="w-[250px] min-w-[200px]" 
+                    className="w-[200px] min-w-[100px]" 
+                    column="alias" 
+                    sortConfig={sortConfig} 
+                    onSort={handleSort}
+                  >
+                    Alias
+                  </SortableTableHead>
+                  <SortableTableHead 
+                    className="w-[300px] min-w-[150px]" 
+                    column="note" 
+                    sortConfig={sortConfig} 
+                    onSort={handleSort}
+                  >
+                    Note
+                  </SortableTableHead>
+                  <SortableTableHead 
+                    className="w-[250px] min-w-[150px]" 
                     column="server_url" 
                     sortConfig={sortConfig} 
                     onSort={handleSort}
@@ -424,7 +510,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   >
                     Status
                   </SortableTableHead>
-                  <TableCell className="w-[120px] min-w-[100px]">
+                  <TableCell className="w-[120px] min-w-[120px]">
                     Actions
                   </TableCell>
                 </TableRow>
@@ -433,11 +519,30 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 {sortedConnections.map((connection) => (
                   <TableRow key={connection.id}>
                     <TableCell>
+                      <span className="font-medium truncate">{connection.name}</span>
+                    </TableCell>
+                    
+                    <TableCell>
                       <div>
-                        <div className="flex flex-col">
-                              <span className="font-medium truncate">{connection.name}</span>
-                              <span className="text-xs text-muted-foreground truncate">({connection.id})</span>
-                            </div>
+                        <Input
+                          type="text"
+                          value={connection.alias || ''}
+                          onChange={(e) => handleAliasChange(connection.id, e.target.value)}
+                          placeholder="Server alias"
+                          className="text-xs"
+                        />
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div>
+                        <Input
+                          type="text"
+                          value={connection.note || ''}
+                          onChange={(e) => handleNoteChange(connection.id, e.target.value)}
+                          placeholder="Notes about this server"
+                          className="text-xs"
+                        />
                       </div>
                     </TableCell>
                     
@@ -501,6 +606,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                         <ServerConfigurationButton
                           serverUrl={connection.server_url}
                           serverName={connection.name}
+                          serverAlias={connection.alias}
                           size="sm"
                           variant="outline"
                           showText={false}
@@ -522,6 +628,30 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   {/* Header with Machine Name */}
                   <div className="flex items-center justify-between">
                     <div className="font-medium text-sm">{connection.name}</div>
+                  </div>
+                  
+                  {/* Alias */}
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">Alias</Label>
+                    <Input
+                      type="text"
+                      value={connection.alias}
+                      onChange={(e) => handleAliasChange(connection.id, e.target.value)}
+                      placeholder="Server alias"
+                      className="text-xs"
+                    />
+                  </div>
+                  
+                  {/* Note */}
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">Note</Label>
+                    <Input
+                      type="text"
+                      value={connection.note}
+                      onChange={(e) => handleNoteChange(connection.id, e.target.value)}
+                      placeholder="Additional notes"
+                      className="text-xs"
+                    />
                   </div>
                   
                   {/* Server URL */}
@@ -590,6 +720,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                       <ServerConfigurationButton
                         serverUrl={connection.server_url}
                         serverName={connection.name}
+                        serverAlias={connection.alias}
                         size="sm"
                         variant="outline"
                         showText={true}

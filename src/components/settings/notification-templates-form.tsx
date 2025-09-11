@@ -16,6 +16,7 @@ import { defaultNotificationTemplates } from '@/lib/default-config';
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES = [
   { name: 'server_name', description: 'Name of the server' },
+  { name: 'server_url', description: 'URL of the Duplicati server' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'backup_date', description: 'Date/time of the backup' },
   { name: 'status', description: 'Backup status (Success, Failed, etc.)' },
@@ -33,6 +34,7 @@ const TEMPLATE_VARIABLES = [
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
   { name: 'server_name', description: 'Name of the server' },
+  { name: 'server_url', description: 'URL of the Duplicati server' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'last_backup_date', description: 'Date/time of the last backup' },
   { name: 'last_elapsed', description: 'Time ago since the last backup' },

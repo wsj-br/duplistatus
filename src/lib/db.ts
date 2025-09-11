@@ -61,6 +61,8 @@ try {
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         server_url TEXT DEFAULT '',
+        alias TEXT DEFAULT '',
+        note TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -151,7 +153,7 @@ try {
       );
 
       -- Set initial database version for new databases (only if not exists)
-      INSERT OR IGNORE INTO db_version (version) VALUES ('4.0');
+      INSERT OR IGNORE INTO db_version (version) VALUES ('3.0');
     `);
     
     console.log('Database schema initialized successfully');
@@ -250,16 +252,18 @@ async function populateDefaultConfigurations() {
 const dbOps = {
   // Server operations
   upsertServer: safePrepare(`
-    INSERT INTO servers (id, name, server_url)
-    VALUES (@id, @name, @server_url)
+    INSERT INTO servers (id, name, server_url, alias, note)
+    VALUES (@id, @name, @server_url, @alias, @note)
     ON CONFLICT(id) DO UPDATE SET
       name = @name,
-      server_url = @server_url
+      server_url = @server_url,
+      alias = @alias,
+      note = @note
   `, 'upsertServer'),
 
   insertServerIfNotExists: safePrepare(`
-    INSERT INTO servers (id, name)
-    VALUES (@id, @name)
+    INSERT INTO servers (id, name, alias, note)
+    VALUES (@id, @name, @alias, @note)
     ON CONFLICT(id) DO NOTHING
   `, 'insertServerIfNotExists'),
 
@@ -270,19 +274,19 @@ const dbOps = {
   `, 'updateServerServerUrl'),
 
   getServerById: safePrepare(`
-    SELECT id, name, server_url, created_at FROM servers WHERE id = ?
+    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE id = ?
   `, 'getServer'),
 
   getServerByName: safePrepare(`
-    SELECT id, name, server_url, created_at FROM servers WHERE name = ?
+    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE name = ?
   `, 'getServerByName'),
 
   getAllServersByName: safePrepare(`
-    SELECT id, name, server_url, created_at FROM servers WHERE name = ?
+    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE name = ?
   `, 'getAllServersByName'),
 
   getAllServers: safePrepare(`
-    SELECT id, name, server_url, created_at FROM servers ORDER BY name
+    SELECT id, name, server_url, alias, note, created_at FROM servers ORDER BY name
   `, 'getAllServers'),
 
   // Backup operations
@@ -343,7 +347,9 @@ const dbOps = {
       s.id AS server_id,
       s.name AS server_name,
       b.backup_name,
-      s.server_url
+      s.server_url,
+      s.alias,
+      s.note
     FROM servers s
     JOIN backups b ON b.server_id = s.id
     GROUP BY s.id, s.name, b.backup_name
@@ -448,6 +454,8 @@ const dbOps = {
       s.id AS server_id,
       s.name AS server_name,
       s.server_url AS server_url,
+      s.alias,
+      s.note,
       b.backup_name,
       lb.last_backup_date,
       b2.id AS last_backup_id,

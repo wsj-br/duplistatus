@@ -51,11 +51,15 @@ export async function GET() {
       server_name: string; 
       backup_name: string;
       server_url: string;
+      alias: string;
+      note: string;
     }[]).map((server) => ({
       id: server.server_id,
       name: server.server_name,
       backupName: server.backup_name,
-      server_url: server.server_url
+      server_url: server.server_url,
+      alias: server.alias,
+      note: server.note
     }));
 
     // Return unified configuration object

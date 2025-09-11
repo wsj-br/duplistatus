@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.19.dev-blue)
+![](https://img.shields.io/badge/version-0.7.20.dev-blue)
 
 <br>
 
@@ -47,6 +47,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get All Servers](#get-all-servers)
   - [Get Servers with Backups](#get-servers-with-backups)
   - [Get Server Details](#get-server-details)
+  - [Update Server](#update-server)
   - [Delete Server](#delete-server)
   - [Get Server Data with Overdue Info](#get-server-data-with-overdue-info)
   - [Get Chart Data](#get-chart-data)
@@ -79,7 +80,6 @@ All API responses are returned in JSON format with consistent error handling pat
 - [Administration](#administration)
   - [Collect Backups](#collect-backups)
   - [Cleanup Backups](#cleanup-backups)
-  - [Delete Server](#delete-server-1)
   - [Delete Backup](#delete-backup)
   - [Test Server Connection](#test-server-connection)
   - [Get Server Server URL](#get-server-server-url)
@@ -294,7 +294,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`
   - In version 0.8.0, the field `totalMachines` was replaced by `totalServers`
   - The field `overdueBackupsCount` shows the number of currently overdue backups
-  - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all machines
+  - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
   - Returns fallback response with zeros if data fetching fails
 
 <br>
@@ -302,7 +302,7 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Get Servers Summary
 - **Endpoint**: `/api/servers-summary`
 - **Method**: GET
-- **Description**: Retrieves a summary of all machines with their latest backup information and overdue status.
+- **Description**: Retrieves a summary of all servers with their latest backup information and overdue status.
 - **Response**:
   ```json
   [
@@ -346,15 +346,17 @@ All API responses are returned in JSON format with consistent error handling pat
   [
     {
       "id": "server-id",
-      "name": "Server Name"
+      "name": "Server Name",
+      "alias": "Server Alias",
+      "note": "Additional notes about the server"
     }
   ]
   ```
 - **Error Responses**:
   - `500`: Server error fetching servers
 - **Notes**:
-  - Returns only id and name for dropdown usage
-  - Simple list format for server selection
+  - Returns server information including alias and note fields
+  - Used for server selection and display purposes
 
 <br>
 
@@ -369,7 +371,9 @@ All API responses are returned in JSON format with consistent error handling pat
       "id": "server-id",
       "name": "Server Name",
       "backupName": "Backup Name",
-      "server_url": "http://localhost:8200"
+      "server_url": "http://localhost:8200",
+      "alias": "Server Alias",
+      "note": "Additional notes about the server"
     }
   ]
   ```
@@ -377,7 +381,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - `500`: Server error fetching servers with backups
 - **Notes**:
   - Returns server name and backup name combinations
-  - Includes server URL for each server-backup combination
+  - Includes server URL, alias, and note for each server-backup combination
   - Used for configuration and management purposes
 
 <br>
@@ -394,6 +398,9 @@ All API responses are returned in JSON format with consistent error handling pat
   {
     "id": "server-id",
     "name": "Server Name",
+    "alias": "Server Alias",
+    "note": "Additional notes about the server",
+    "server_url": "http://localhost:8200",
     "backups": [
       {
         "id": "backup-id",
@@ -439,6 +446,39 @@ All API responses are returned in JSON format with consistent error handling pat
   - Returns detailed server information including all backups
   - Includes chart data for visualization
   - Used for server-specific views and analysis
+  - Includes server alias, note, and server_url fields
+
+### Update Server
+- **Endpoint**: `/api/servers/:id`
+- **Method**: PATCH
+- **Description**: Updates server details including alias, note, and server URL.
+- **Parameters**:
+  - `id`: the server identifier
+- **Request Body**:
+  ```json
+  {
+    "server_url": "http://localhost:8200",
+    "alias": "Server Alias",
+    "note": "Additional notes about the server"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Server updated successfully",
+    "serverId": "server-id",
+    "server_url": "http://localhost:8200",
+    "alias": "Server Alias",
+    "note": "Additional notes about the server"
+  }
+  ```
+- **Error Responses**:
+  - `404`: Server not found
+  - `500`: Server error during update
+- **Notes**:
+  - Updates server alias, note, and server URL
+  - All fields are optional
+  - Empty strings are allowed for all fields
 
 ### Delete Server
 - **Endpoint**: `/api/servers/:id`
@@ -1288,34 +1328,6 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Delete Server
-- **Endpoint**: `/api/servers/:id`
-- **Method**: DELETE
-- **Description**: Deletes a server and all its associated backups.
-- **Parameters**:
-  - `id`: the server identifier
-
-- **Response**:
-  ```json
-  {
-    "message": "Successfully deleted server and 15 backups",
-    "status": 200,
-    "changes": {
-      "backupChanges": 15,
-      "serverChanges": 1
-    }
-  }
-  ```
-- **Error Responses**:
-  - `400`: Invalid server ID
-  - `404`: Server not found
-  - `500`: Server error during deletion
-- **Notes**: 
-  - This operation is irreversible
-  - All backup data associated with the server will be permanently deleted
-  - The server record itself will also be removed
-
-<br>
 
 ### Delete Backup
 - **Endpoint**: `/api/backups/:backupId`

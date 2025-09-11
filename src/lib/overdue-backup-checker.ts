@@ -79,32 +79,26 @@ export async function checkOverdueBackups(checkDate?: Date) {
       ? JSON.parse(lastNotificationJson) 
       : {};
       
-    // Get servers summary for server ID lookup
+    // Get servers summary for server name lookup
     const serversSummary = dbUtils.getServersSummary() as { 
       id: string; 
       name: string; 
       lastBackupName: string | null;
     }[];
     
-    // Create a map for quick server name to ID lookup
-    const serverNameToId = new Map<string, string>();
-    serversSummary.forEach(server => {
-      serverNameToId.set(server.name, server.id);
-    });
-    
     let checkedBackups = 0;
     let overdueBackupsFound = 0;
     let notificationsSent = 0;
     const updatedNotifications: OverdueNotifications = { ...lastNotifications };
 
-    // Iterate through backup settings keys (server_name:backup_name)
+    // Iterate through backup settings keys (server_id:backup_name)
     const backupKeys = Object.keys(config.backupSettings || {});
 
     for (const backupKey of backupKeys) {
-      // Parse server name and backup name from the key
-      const [serverName, backupName] = backupKey.split(':');
+      // Parse server ID and backup name from the key
+      const [serverId, backupName] = backupKey.split(':');
       
-      if (!serverName || !backupName) {
+      if (!serverId || !backupName) {
         continue;
       }
       
@@ -119,9 +113,9 @@ export async function checkOverdueBackups(checkDate?: Date) {
         continue;
       }
       
-      // Get server ID from the server name
-      const serverId = serverNameToId.get(serverName);
-      if (!serverId) {
+      // Get server name from the server ID for notification context
+      const serverName = serversSummary.find(s => s.id === serverId)?.name;
+      if (!serverName) {
         continue;
       }
       

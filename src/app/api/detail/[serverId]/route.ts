@@ -18,7 +18,7 @@ export async function GET(
     }
 
     // Get overdue backups for this server
-    const overdueBackups = getOverdueBackupsForServer(server.name);
+    const overdueBackups = getOverdueBackupsForServer(server.id);
 
     // Get the last overdue backup check time
     const lastOverdueCheck = getLastOverdueBackupCheckTime();

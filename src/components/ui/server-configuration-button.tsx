@@ -5,6 +5,7 @@ import { ServerIcon } from './server-icon';
 interface ServerConfigurationButtonProps {
   serverUrl: string;
   serverName?: string;
+  serverAlias?: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'outline' | 'ghost';
   className?: string;
@@ -17,13 +18,13 @@ interface ServerConfigurationButtonProps {
 export function ServerConfigurationButton({
   serverUrl,
   serverName,
+  serverAlias,
   size = 'md',
   variant = 'outline',
   className = '',
   onClick,
   disabled = false,
-  showText = false,
-  debugText = ''
+  showText = false
 }: ServerConfigurationButtonProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -67,22 +68,6 @@ export function ServerConfigurationButton({
 
   const isDisabled = disabled || !isUrlValid();
 
-  if (debugText) {
-    console.log('--------------------------------');
-    console.log('ServerConfigurationButton: serverName', serverName);
-    console.log('ServerConfigurationButton: isDisabled', isDisabled);
-    console.log('ServerConfigurationButton: isUrlValid', isUrlValid());
-    console.log('ServerConfigurationButton: disabled', disabled);
-    console.log('ServerConfigurationButton: serverUrl', serverUrl);
-    console.log('ServerConfigurationButton: onClick', onClick);
-    console.log('ServerConfigurationButton: showText', showText);
-    console.log('ServerConfigurationButton: variant', variant);
-    console.log('ServerConfigurationButton: size', size);
-    console.log('ServerConfigurationButton: className', className);
-    console.log('ServerConfigurationButton: debugText', debugText);
-    console.log('--------------------------------');
-  }
-
   return (
     <Button
       variant={variant}
@@ -90,7 +75,7 @@ export function ServerConfigurationButton({
       className={`${className} ${isDisabled ? 'cursor-not-allowed disabled:pointer-events-auto' : ''}`}
       onClick={handleClick}
       disabled={isDisabled}
-      title={isDisabled ? "No URL configured" : (serverName ? `Open ${serverName} configuration` : "Open Duplicati configuration")}
+      title={isDisabled ? "No URL configured" : (serverAlias ? `Open ${serverAlias}(${serverName}) configuration` : (serverName ? `Open ${serverName} configuration` : "Open Duplicati configuration"))}
     >
       <ServerIcon size={getIconSize()} className="mr-1" />
       {showText && "Duplicati configuration"}

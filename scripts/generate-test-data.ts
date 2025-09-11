@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { createHash } from 'crypto';
 import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
 import { dbUtils, ensureBackupSettingsComplete } from '../src/lib/db-utils';
 import { extractAvailableBackups } from '../src/lib/utils';
@@ -32,17 +33,17 @@ async function cleanDatabaseTables() {
     console.error('🚨 Error during database cleanup:', error instanceof Error ? error.message : String(error));
     return false;
   }
-}
+} 
 
 // Server configurations
 const servers = [
-  { id: 'machine-1', name: 'Test Server 1', backupName: 'S1' },
-  { id: 'machine-2', name: 'Test Server 2', backupName: 'S2' },
-  { id: 'machine-3', name: 'Test Server 3', backupName: 'S3' },
-  { id: 'machine-4', name: 'Test Server 4', backupName: 'S4' },
-  { id: 'machine-5', name: 'Test Server 5', backupName: 'S5' },
-  { id: 'machine-6', name: 'Test Server 6', backupName: 'S6' },
-  { id: 'machine-7', name: 'Test Server 7', backupName: 'S7' }
+  { id: createHash('md5').update('machine-1').digest('hex'), name: 'Test Server 1', alias: 'Production DB', note: 'Primary database server - critical backups', backupName: 'S1' },
+  { id: createHash('md5').update('machine-2').digest('hex'), name: 'Test Server 2', alias: 'Web Frontend', note: 'Main web application server', backupName: 'S2' },
+  { id: createHash('md5').update('machine-3').digest('hex'), name: 'Test Server 3', alias: 'File Storage', note: 'Document and media file storage', backupName: 'S3' },
+  { id: createHash('md5').update('machine-4').digest('hex'), name: 'Test Server 4', alias: '', note: 'Development environment - low priority', backupName: 'S4' },
+  { id: createHash('md5').update('machine-5').digest('hex'), name: 'Test Server 5', alias: 'Analytics', note: '', backupName: 'S5' },
+  { id: createHash('md5').update('machine-6').digest('hex'), name: 'Test Server 6', alias: 'Staging', note: 'Pre-production testing server', backupName: 'S6' },
+  { id: createHash('md5').update('machine-7').digest('hex'), name: 'Test Server 7', alias: 'Backup Storage', note: 'Secondary backup destination', backupName: 'S7' }
 ];
 
 // Server health check function
@@ -312,10 +313,15 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
 
     // Start a transaction
     const transaction = db.transaction(() => {
+      // Find the server configuration to get alias and note
+      const serverConfig = servers.find(s => s.id === payload.Extra['machine-id']);
+      
       // Insert server information only if it doesn't exist (preserves existing server_url)
       dbOps.insertServerIfNotExists.run({
         id: payload.Extra['machine-id'],
-        name: payload.Extra['machine-name']
+        name: payload.Extra['machine-name'],
+        alias: serverConfig?.alias || '',
+        note: serverConfig?.note || ''
       });
 
       // Map backup status
@@ -549,7 +555,7 @@ async function cleanupBackupsForUserManual(){
     const shuffledMachines = [...servers].sort(() => Math.random() - 0.5);
     const selectedMachines = shuffledMachines.slice(0, 5);
     
-    console.log(`    🎯 Selected servers for server URL update: ${selectedMachines.map(m => m.name).join(', ')}`);
+    console.log(`    🎯 Selected servers for server URL update: ${selectedMachines.map(m => m.alias ? `${m.name} (${m.alias})` : m.name).join(', ')}`);
     
     const serverUrl = "http://192.168.1.55:8200";
     let updatedCount = 0;
@@ -562,11 +568,12 @@ async function cleanupBackupsForUserManual(){
           WHERE id = ?
         `).run(serverUrl, server.id);
         
+        const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
         if (updateResult.changes > 0) {
-          console.log(`      🔗 ${server.name}: Server URL updated to ${serverUrl}`);
+          console.log(`      🔗 ${serverDisplayName}: Server URL updated to ${serverUrl}`);
           updatedCount++;
         } else {
-          console.log(`      ⚠️  ${server.name}: No update performed (server may not exist in DB)`);
+          console.log(`      ⚠️  ${serverDisplayName}: No update performed (server may not exist in DB)`);
         }
       } catch (error) {
         console.error(`      🚨 Error updating server URL for ${server.name}:`, 
@@ -621,7 +628,11 @@ async function sendTestData(useUpload: boolean = false) {
     const shuffledBackupTypes = [...BACKUP_TYPES].sort(() => Math.random() - 0.5);
     const selectedBackupTypes = shuffledBackupTypes.slice(0, randomBackupCount);
     
-    console.log(`\n    🔄 Generating backups for ${server.name} (${isOddMachine ? 'Odd' : 'Even'} server pattern)...`);
+    const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
+    console.log(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddMachine ? 'Odd' : 'Even'} server pattern)...`);
+    if (server.note) {
+      console.log(`      📝 Note: ${server.note}`);
+    }
     console.log(`      📅 Pattern: ${isOddMachine ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
     console.log(`      🎯 Selected backup types (${selectedBackupTypes.length}/${BACKUP_TYPES.length}): ${selectedBackupTypes.join(', ')}`);
     
@@ -698,6 +709,7 @@ console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd servers: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
 console.log('     • Even servers: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
 console.log('     • Random backup types per server (1-3 types from: Files, Databases, System)');
+console.log('     • Servers include alias and note fields for testing');
 console.log('     • After generation: Random cleanup some servers/backup types and last backups for the user manual screenshots\n');
 
 

@@ -23,6 +23,45 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ serverId: string }> }
+) {
+  try {
+    const { serverId } = await params;
+    const body = await request.json();
+    const { server_url, alias, note } = body;
+    
+    // Update server details
+    const result = dbUtils.updateServer(serverId, {
+      server_url: server_url || '',
+      alias: alias || '',
+      note: note || ''
+    });
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error || 'Server not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: 'Server updated successfully',
+      serverId,
+      server_url: server_url || '',
+      alias: alias || '',
+      note: note || ''
+    });
+  } catch (error) {
+    console.error('Error updating server:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json(
+      { error: 'Failed to update server' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ serverId: string }> }

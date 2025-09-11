@@ -411,6 +411,8 @@ interface ServerRow {
   id: string;
   name: string;
   server_url: string;
+  alias: string;
+  note: string;
 }
 
 export function getAllServerAddresses() {
@@ -419,7 +421,9 @@ export function getAllServerAddresses() {
     return servers.map(server => ({
       id: server.id,
       name: server.name,
-      server_url: server.server_url || ''
+      server_url: server.server_url || '',
+      alias: server.alias || '',
+      note: server.note || ''
     }));
   });
 }
@@ -470,6 +474,8 @@ export function getAllServers() {
       return {
         id: server.id,
         name: server.name,
+        alias: server.alias || '',
+        note: server.note || '',
         backups: formattedBackups,
         chartData
       };
@@ -617,7 +623,7 @@ export function getOverallSummary() {
 export function getServerById(serverId: string) {
   return withDb(() => {
     try {
-      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string } | undefined;
+      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
       if (!server) return null;
 
       const backups = safeDbOperation(() => dbOps.getServerBackups.all(serverId), 'getServerBackups', []) as BackupRecord[];
@@ -662,6 +668,8 @@ export function getServerById(serverId: string) {
       return {
         id: server.id,
         name: server.name,
+        alias: server.alias || '',
+        note: server.note || '',
         backups: formattedBackups,
         chartData
       };
@@ -814,6 +822,8 @@ export function getServersSummary() {
         server_id: string;
         server_name: string;
         server_url: string;
+        alias: string;
+        note: string;
         backup_name: string;
         last_backup_date: string | null;
         last_backup_id: string | null;
@@ -836,6 +846,8 @@ export function getServersSummary() {
         id: string;
         name: string;
         server_url: string;
+        alias: string;
+        note: string;
         backupInfo: Array<{
           name: string;
           lastBackupDate: string;
@@ -883,6 +895,8 @@ export function getServersSummary() {
             id: serverId,
             name: row.server_name,
             server_url: row.server_url,
+            alias: row.alias || '',
+            note: row.note || '',
             backupInfo: [],
             totalBackupCount: 0,
             totalStorageSize: 0,
@@ -1032,12 +1046,55 @@ export function getServersSummary() {
 export function getServerUrlById(serverId: string): string {
   try {
     const server = withDb(() => {
-      return safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string } | undefined;
+      return safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
     });
     return server?.server_url || '';
   } catch (error) {
     console.warn('Failed to get server URL:', error);
     return '';
+  }
+}
+
+export function updateServer(serverId: string, updates: { server_url?: string; alias?: string; note?: string }): { success: boolean; error?: string } {
+  try {
+    return withDb(() => {
+      // Get the current server to verify it exists
+      const existingServer = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      
+      if (!existingServer) {
+        return { success: false, error: 'Server not found' };
+      }
+
+      // Validate URL format if provided
+      if (updates.server_url && updates.server_url.trim() !== '') {
+        try {
+          const url = new URL(updates.server_url);
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            return { success: false, error: 'URL must use HTTP or HTTPS protocol' };
+          }
+        } catch {
+          return { success: false, error: 'Invalid URL format' };
+        }
+      }
+
+      // Update server with new values
+      const result = safeDbOperation(() => dbOps.upsertServer.run({
+        id: serverId,
+        name: existingServer.name, // Keep existing name
+        server_url: updates.server_url !== undefined ? updates.server_url : existingServer.server_url,
+        alias: updates.alias !== undefined ? updates.alias : existingServer.alias,
+        note: updates.note !== undefined ? updates.note : existingServer.note
+      }), 'upsertServer');
+
+      if (result.changes === 0) {
+        return { success: false, error: 'No changes were made' };
+      }
+
+      return { success: true };
+    });
+  } catch (error) {
+    console.error('Failed to update server:', error instanceof Error ? error.message : String(error));
+    return { success: false, error: 'Database error occurred' };
   }
 }
 
@@ -1110,7 +1167,10 @@ export const dbUtils = {
         throw error;
       }
     });
-  }
+  },
+
+  updateServer: (serverId: string, updates: { server_url?: string; alias?: string; note?: string }) => 
+    updateServer(serverId, updates)
 }; 
 
 // Helper function to clean up configuration data for a server
@@ -1335,13 +1395,15 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
 // Function to get all server and their respective backup names
 export function getServersBackupNames() {
   return withDb(() => safeDbOperation(() => {
-    const results = dbOps.getServersBackupNames.all() as Array<{ server_id: string; server_name: string; backup_name: string; server_url: string }>;
+    const results = dbOps.getServersBackupNames.all() as Array<{ server_id: string; server_name: string; backup_name: string; server_url: string; alias: string; note: string }>;
     return results.map(row => ({
       id: getBackupKey(row.server_id, row.backup_name),
       server_id: row.server_id,
       server_name: row.server_name,
       backup_name: row.backup_name,
-      server_url: row.server_url
+      server_url: row.server_url,
+      alias: row.alias || '',
+      note: row.note || ''
     }));
   }, 'getServersBackupNames', []));
 }

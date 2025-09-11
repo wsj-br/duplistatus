@@ -24,6 +24,8 @@ interface ServerWithBackup {
   name: string;
   backupName: string;
   server_url: string;
+  alias: string;
+  note: string;
 }
 
 interface BackupNotificationsFormProps {
@@ -568,14 +570,25 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <div className="flex items-center gap-1">
                             <ServerConfigurationButton
                               serverUrl={server.server_url}
+                              serverName={server.name}
+                              serverAlias={server.alias}
                               size="sm"
                               variant="ghost"
                               className="text-xs hover:text-blue-500 transition-colors"
                               showText={false}
                             />
                             <div className="flex flex-col">
-                              <span className="truncate">{server.name}</span>
-                              <span className="text-xs text-muted-foreground truncate">({server.id})</span>
+                              <span 
+                                className="truncate" 
+                                title={server.alias ? server.name : undefined}
+                              >
+                                {server.alias || server.name}
+                              </span>
+                              {server.note && (
+                                <span className="text-xs text-muted-foreground truncate">
+                                  {server.note}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -672,14 +685,26 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       <div className="flex items-center gap-2">
                         <ServerConfigurationButton
                           serverUrl={server.server_url}
+                          serverName={server.name}
+                          serverAlias={server.alias}
                           size="sm"
                           variant="ghost"
                           className="text-xs hover:text-blue-500 transition-colors"
                           showText={false}
                         />
                         <div>
-                          <div className="font-medium text-sm">{server.name}</div>
+                          <div 
+                            className="font-medium text-sm" 
+                            title={server.alias ? server.name : undefined}
+                          >
+                            {server.alias || server.name}
+                          </div>
                           <div className="text-xs text-muted-foreground">{server.backupName}</div>
+                          {server.note && (
+                            <div className="text-xs text-muted-foreground truncate mt-1">
+                              {server.note}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

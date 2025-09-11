@@ -29,6 +29,8 @@ export interface Backup {
 export interface Server {
   id: string;
   name: string;
+  alias: string;
+  note: string;
   backups: Backup[];
   // For chart data pre-computation
   chartData: {
@@ -47,6 +49,8 @@ export interface ServerSummary {
   id: string;
   name: string;
   server_url: string;
+  alias: string;
+  note: string;
   backupInfo: Array<{
     name: string;
     lastBackupDate: string;
@@ -208,4 +212,6 @@ export interface ServerAddress {
   id: string;
   name: string;
   server_url: string;
+  alias: string;
+  note: string;
 }

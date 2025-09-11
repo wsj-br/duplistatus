@@ -188,9 +188,9 @@ const migrations: Migration[] = [
   },
   {
     version: '3.0',
-    description: 'Add server_url to machines table',
+    description: 'Rename machines table to servers, add server_url, and update all references',
     up: (db: Database.Database) => {
-      console.log('Running migration 3.0: Adding server_url to machines table...');
+      console.log('Running migration 3.0: Renaming machines to servers and updating references...');
       
       // Check if the machines table exists
       const machinesTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='machines'").get();
@@ -199,107 +199,14 @@ const migrations: Migration[] = [
         return;
       }
       
-      // Check existing columns in machines table
-      const tableInfo = db.prepare("PRAGMA table_info(machines)").all() as Array<{name: string, type: string}>;
-      const columnNames = tableInfo.map(col => col.name);
-      
-      // Add server_url column if it doesn't exist
-      if (!columnNames.includes('server_url')) {
-        console.log('Adding server_url column to machines table...');
-        try {
-          db.exec('ALTER TABLE machines ADD COLUMN server_url TEXT DEFAULT ""');
-          console.log('Added server_url column successfully');
-        } catch (error) {
-          console.warn('server_url column might already exist:', error instanceof Error ? error.message : String(error));
-        }
-      }
-      
-      // Migrate backup_settings configuration from machine_name:backup_name to machine_id:backup_name
-      console.log('Migrating backup_settings configuration...');
-      try {
-        const backupSettingsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('backup_settings') as { value: string } | undefined;
-        
-        if (backupSettingsRow && backupSettingsRow.value) {
-          const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, unknown>;
-          const newBackupSettings: Record<string, unknown> = {};
-          let migratedCount = 0;
-          let skippedCount = 0;
-          
-          console.log(`Found ${Object.keys(oldBackupSettings).length} backup settings to migrate`);
-          
-          for (const [oldKey, settings] of Object.entries(oldBackupSettings)) {
-            const [machineName, backupName] = oldKey.split(':');
-            
-            if (!machineName || !backupName) {
-              console.warn(`Skipping invalid key format: ${oldKey}`);
-              skippedCount++;
-              continue;
-            }
-            
-            // Find machine by name
-            const machine = db.prepare('SELECT id, name FROM machines WHERE name = ?').get(machineName) as { id: string; name: string } | undefined;
-            
-            if (!machine) {
-              console.warn(`Skipping backup setting - machine not found: ${machineName}`);
-              skippedCount++;
-              continue;
-            }
-            
-            // Verify that backups exist for this machine and backup name
-            const backupExists = db.prepare('SELECT 1 FROM backups WHERE machine_id = ? AND backup_name = ? LIMIT 1').get(machine.id, backupName);
-            
-            if (!backupExists) {
-              console.warn(`Skipping backup setting - no backups found: ${machineName}:${backupName}`);
-              skippedCount++;
-              continue;
-            }
-            
-            // Create new key with machine_id:backup_name
-            const newKey = `${machine.id}:${backupName}`;
-            
-            // Add debug field to settings
-            const newSettings = {
-              ...(settings as Record<string, unknown>),
-              machineName: machineName
-            };
-            
-            newBackupSettings[newKey] = newSettings;
-            migratedCount++;
-          }
-          
-          // Update the configuration with migrated settings
-          if (Object.keys(newBackupSettings).length > 0) {
-            db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
-              'backup_settings',
-              JSON.stringify(newBackupSettings)
-            );
-            console.log(`Successfully migrated ${migratedCount} backup settings, skipped ${skippedCount}`);
-          } else {
-            console.log('No backup settings could be migrated');
-          }
-        } else {
-          console.log('No existing backup_settings configuration found');
-        }
-      } catch (error) {
-        console.error('Failed to migrate backup_settings:', error instanceof Error ? error.message : String(error));
-        // Don't throw - this is not critical for the migration
-      }
-            
-      console.log('Migration 3.0 completed successfully');
-    }
-  },
-  {
-    version: '4.0',
-    description: 'Rename machines table to servers and update all references',
-    up: (db: Database.Database) => {
-      console.log('Running migration 4.0: Renaming machines to servers...');
-      
       // Step 1: Create new servers table with same structure as machines
       db.exec(`
         CREATE TABLE servers (
           id TEXT PRIMARY KEY,
           name TEXT NOT NULL,
           server_url TEXT DEFAULT '',
+          alias TEXT DEFAULT '',
+          note TEXT DEFAULT '',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
       `);
@@ -429,34 +336,77 @@ const migrations: Migration[] = [
       // Step 11: Migrate configuration data
       console.log('Migrating configuration data...');
       
-      // Migrate backup_settings from machine_id:backup_name to server_id:backup_name
+      // Migrate backup_settings from machine_name:backup_name to server_id:backup_name
       const backupSettingsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('backup_settings') as { value: string } | undefined;
       
       if (backupSettingsRow && backupSettingsRow.value) {
         const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, unknown>;
         const newBackupSettings: Record<string, unknown> = {};
+        let migratedCount = 0;
+        let skippedCount = 0;
+        
+        console.log(`Found ${Object.keys(oldBackupSettings).length} backup settings to migrate`);
         
         for (const [oldKey, settings] of Object.entries(oldBackupSettings)) {
-          const [machineId, backupName] = oldKey.split(':');
+          const [machineName, backupName] = oldKey.split(':');
           
-          if (machineId && backupName) {
-            // Find server by old machine_id
-            const server = db.prepare('SELECT id FROM servers WHERE id = ?').get(machineId) as { id: string } | undefined;
-            
-            if (server) {
-              // Keep the same key format since we're using IDs
-              newBackupSettings[oldKey] = settings;
-            }
+          if (!machineName || !backupName) {
+            console.warn(`Skipping invalid key format: ${oldKey}`);
+            skippedCount++;
+            continue;
           }
+          
+          // Find server by name (now in servers table)
+          const servers = db.prepare('SELECT id, name FROM servers WHERE name = ?').all(machineName) as Array<{ id: string; name: string }>;
+          
+          if (servers.length === 0) {
+            console.warn(`Skipping backup setting - server not found: ${machineName}`);
+            skippedCount++;
+            continue;
+          }
+          
+          if (servers.length > 1) {
+            console.warn(`Skipping backup setting - multiple servers found with same name: ${machineName} (${servers.length} servers)`);
+            skippedCount++;
+            continue;
+          }
+          
+          const server = servers[0];
+          
+          // Verify that backups exist for this server and backup name
+          const backupExists = db.prepare('SELECT 1 FROM backups WHERE server_id = ? AND backup_name = ? LIMIT 1').get(server.id, backupName);
+          
+          if (!backupExists) {
+            console.warn(`Skipping backup setting - no backups found: ${machineName}:${backupName}`);
+            skippedCount++;
+            continue;
+          }
+          
+          // Create new key with server_id:backup_name
+          const newKey = `${server.id}:${backupName}`;
+          
+          // Add debug field to settings
+          const newSettings = {
+            ...(settings as Record<string, unknown>),
+            machineName: machineName
+          };
+          
+          newBackupSettings[newKey] = newSettings;
+          migratedCount++;
         }
         
-        // Update backup_settings configuration
+        // Update the configuration with migrated settings
         if (Object.keys(newBackupSettings).length > 0) {
           db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
             'backup_settings',
             JSON.stringify(newBackupSettings)
           );
+          console.log(`Successfully migrated ${migratedCount} backup settings, skipped ${skippedCount}`);
+        } else {
+          console.log('No backup settings could be migrated');
         }
+      } else {
+        console.log('No existing backup_settings configuration found');
       }
       
       // Migrate overdue_backup_notifications
@@ -489,7 +439,7 @@ const migrations: Migration[] = [
         }
       }
       
-      console.log('Migration 4.0 completed successfully');
+      console.log('Migration 3.0 completed successfully');
     }
   }
 ];

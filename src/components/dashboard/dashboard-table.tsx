@@ -20,7 +20,7 @@ import { formatTimeAgo } from "@/lib/utils"; // Import the new function
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
 import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
-import { MessageSquareMore, MessageSquareOff, Settings } from "lucide-react";
+import { MessageSquareMore, MessageSquareOff, Settings, HardDrive, Download } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -109,6 +109,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           id: `${server.id}-${backup.name}`,
           serverId: server.id,
           name: server.name,
+          alias: server.alias,
+          displayName: server.alias || server.name, // Computed field for sorting
+          note: server.note,
           backupName: backup.name,
           lastBackupListCount: backup.lastBackupListCount || 0,
           backupCount: backup.backupCount,
@@ -135,8 +138,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
   // Column configuration for sorting
   const columnConfig = useMemo(() => ({
-    name: { type: 'text' as const, path: 'name' },
+    name: { type: 'text' as const, path: 'displayName' },
     backupName: { type: 'text' as const, path: 'backupName' },
+    isBackupOverdue: { type: 'date' as const, path: 'expectedBackupDate' },
     lastBackupListCount: { type: 'number' as const, path: 'lastBackupListCount' },
     backupCount: { type: 'number' as const, path: 'backupCount' },
     lastBackupDate: { type: 'date' as const, path: 'lastBackupDate' },
@@ -223,6 +227,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               <SortableTableHead column="backupName" sortConfig={sortConfig} onSort={handleSort}>
                   Backup Name
                 </SortableTableHead>
+                <SortableTableHead column="isBackupOverdue" sortConfig={sortConfig} onSort={handleSort} align="center">
+                  Overdue
+                </SortableTableHead>
                 <SortableTableHead column="lastBackupListCount" sortConfig={sortConfig} onSort={handleSort} align="center">
                   Available Versions
                 </SortableTableHead>
@@ -245,10 +252,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   Errors
                 </SortableTableHead>
                 <SortableTableHead column="notification" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  Notification
-                </SortableTableHead>
-                <SortableTableHead column="server_url" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  Duplicati configuration
+                  Settings
                 </SortableTableHead>
               </TableRow>
             </TableHeader>
@@ -256,7 +260,21 @@ export function DashboardTable({ servers }: DashboardTableProps) {
               {sortedServers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">
-                    No servers found.
+                    <div className="flex items-center justify-center p-8">
+                      <div className="text-center space-y-3">
+                        <HardDrive className="h-12 w-12 text-muted-foreground mx-auto" />
+                        <div className="space-y-1">
+                          <h3 className="text-lg font-semibold text-muted-foreground">No servers found</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Collect data for your first server by clicking on{" "}
+                            <span className="inline-flex items-center">
+                              <Download className="inline w-4 h-4 mx-1" aria-label="Download" />
+                            </span>{" "}
+                            (Collect backups logs) in the toolbar.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
@@ -272,18 +290,22 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       onClick={(e) => handleServerNameClick(server.serverId, e)}
                     >
                       <div>
-                        {server.name}
-                        <div className="text-xs text-muted-foreground">({server.serverId})</div>
+                        <span title={server.alias ? server.name : undefined}>
+                          {server.alias || server.name}
+                        </span>
+                        {server.note && (
+                          <div className="text-xs text-muted-foreground">{server.note}</div>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="text-left">
+                      {server.backupName || 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {server.isBackupOverdue ? (
                         <Tooltip>
                           <TooltipTrigger>
-                            <div className="text-left w-full">
-                              <div className="font-medium">{server.backupName || 'N/A'}</div>
-                              <div className="text-xs text-red-400">⚠️ {server.expectedBackupElapsed} overdue</div>
-                            </div>
+                            <div className="text-red-400 text-xs">⚠️ {server.expectedBackupElapsed} overdue</div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="space-y-1">
@@ -308,6 +330,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                                   variant="ghost"
                                   size="sm"
                                   serverName={server.name}
+                                  serverAlias={server.alias}
                                   serverUrl={server.server_url}
                                   showText={true} 
                                 />
@@ -315,9 +338,9 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                             </div>
                           </TooltipContent>
                         </Tooltip>
-                        ) : (
-                          server.backupName || 'N/A'
-                        )}
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-center">
                       <AvailableBackupsIcon
@@ -353,29 +376,30 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     <TableCell className="text-center">{server.warnings}</TableCell>
                     <TableCell className="text-center">{server.errors}</TableCell>
                     <TableCell className="text-center">
-                      {server.notificationEvent && (
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div 
-                              onClick={handleNotificationIconClick}
-                              className="cursor-pointer inline-block"
-                            >
-                              {getNotificationIcon(server.notificationEvent)}
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{getNotificationTooltip(server.notificationEvent)}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <ServerConfigurationButton 
-                        serverName={server.name}
-                        serverUrl={server.server_url}
-                        showText={false}
-                        disabled={server.server_url === ''}
-                      />
+                      <div className="flex items-center justify-center gap-2">
+                        {server.notificationEvent && (
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <div 
+                                onClick={handleNotificationIconClick}
+                                className="cursor-pointer inline-block"
+                              >
+                                {getNotificationIcon(server.notificationEvent)}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{getNotificationTooltip(server.notificationEvent)}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                        <ServerConfigurationButton 
+                          serverName={server.name}
+                          serverAlias={server.alias}
+                          serverUrl={server.server_url}
+                          showText={false}
+                          disabled={server.server_url === ''}
+                        />
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -387,8 +411,20 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         {/* Mobile Card View */}
         <div className="md:hidden space-y-3 p-4">
           {sortedServers.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              No servers found.
+            <div className="flex items-center justify-center p-8">
+              <div className="text-center space-y-3">
+                <HardDrive className="h-12 w-12 text-muted-foreground mx-auto" />
+                <div className="space-y-1">
+                  <h3 className="text-lg font-semibold text-muted-foreground">No servers found</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Collect data for your first server by clicking on{" "}
+                    <span className="inline-flex items-center">
+                      <Download className="inline w-4 h-4 mx-1" aria-label="Download" />
+                    </span>{" "}
+                    (Collect backups logs) in the toolbar.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
           {sortedServers.map((server) => (
@@ -400,8 +436,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     className="cursor-pointer flex-1"
                     onClick={(e) => handleServerNameClick(server.serverId, e)}
                   >
-                    <div className="font-medium text-sm">{server.name}</div>
-                    <div className="text-xs text-muted-foreground">({server.serverId})</div>
+                    <div className="font-medium text-sm" title={server.alias ? server.name : undefined}>
+                      {server.alias || server.name}
+                    </div>
+                    {server.note && (
+                      <div className="text-xs text-muted-foreground">{server.note}</div>
+                    )}
                     <div className="font-medium text-sm">{server.backupName || 'N/A'}</div>
                   </div>
                   
@@ -472,34 +512,27 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   </div>
                 </div>
 
-                {/* Additional Info Row */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Notification</Label>
-                    <div className="flex justify-start">
-                      {server.notificationEvent ? (
-                        <div 
-                          onClick={handleNotificationIconClick}
-                          className="cursor-pointer"
-                        >
-                          {getNotificationIcon(server.notificationEvent)}
-                        </div>
-                      ) : (
-                        <div className="text-xs text-muted-foreground">Off</div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Duplicati Config</Label>
-                    <div className="flex justify-start">
-                      <ServerConfigurationButton 
-                        serverName={server.name}
-                        serverUrl={server.server_url}
-                        showText={false}
-                        disabled={server.server_url === ''}
-                      />
-                    </div>
+                {/* Settings Row */}
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">Settings</Label>
+                  <div className="flex items-center gap-2">
+                    {server.notificationEvent ? (
+                      <div 
+                        onClick={handleNotificationIconClick}
+                        className="cursor-pointer"
+                      >
+                        {getNotificationIcon(server.notificationEvent)}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-muted-foreground">Off</div>
+                    )}
+                    <ServerConfigurationButton 
+                      serverName={server.name}
+                      serverAlias={server.alias}
+                      serverUrl={server.server_url}
+                      showText={false}
+                      disabled={server.server_url === ''}
+                    />
                   </div>
                 </div>
 

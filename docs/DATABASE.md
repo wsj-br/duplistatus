@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.7.19.dev-blue)
+![](https://img.shields.io/badge/version-0.7.20.dev-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -89,8 +89,7 @@ The application includes an automatic database migration system that ensures you
 ### Current Migration Versions
 
 - **Version 2.0**: Added missing columns to backups table and created configurations table
-- **Version 3.0**: Added `server_url` field to machines table (now servers table)
-- **Version 4.0**: Renamed machines table to servers and updated all references (latest version)
+- **Version 3.0**: Renamed machines table to servers, added `server_url`, `alias`, and `note` fields, and updated all references (latest version)
 
 ### Migration Process
 
@@ -116,6 +115,8 @@ CREATE TABLE servers (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     server_url TEXT DEFAULT '',
+    alias TEXT DEFAULT '',
+    note TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -124,6 +125,8 @@ CREATE TABLE servers (
 - `id` (TEXT, PRIMARY KEY): Unique identifier for the server
 - `name` (TEXT, NOT NULL): Display name of the server
 - `server_url` (TEXT, DEFAULT ''): URL of the Duplicati server for this server (optional)
+- `alias` (TEXT, DEFAULT ''): Alternative display name for the server (optional)
+- `note` (TEXT, DEFAULT ''): Additional notes or description for the server (optional)
 - `created_at` (DATETIME): Timestamp when the server was first registered
 
 ### Backups Table
@@ -374,7 +377,7 @@ The `status` field in the `backups` table can have the following values:
 
 ### Get Latest Backup for a Server
 ```sql
-SELECT b.*, s.name as server_name
+SELECT b.*, s.name as server_name, s.alias, s.note, s.server_url
 FROM backups b
 JOIN servers s ON b.server_id = s.id
 WHERE b.server_id = ?
@@ -384,7 +387,7 @@ LIMIT 1
 
 ### Get All Backups for a Server
 ```sql
-SELECT b.*, s.name as server_name
+SELECT b.*, s.name as server_name, s.alias, s.note, s.server_url
 FROM backups b
 JOIN servers s ON b.server_id = s.id
 WHERE b.server_id = ?
@@ -401,7 +404,12 @@ WITH latest_backups AS (
     GROUP BY server_id
 )
 SELECT 
-    s.*,
+    s.id,
+    s.name,
+    s.server_url,
+    s.alias,
+    s.note,
+    s.created_at,
     lb.last_backup_date,
     b.status as last_backup_status,
     b.duration_seconds as last_backup_duration,
@@ -535,8 +543,8 @@ The following tables show how the JSON data from the API maps to the database co
 #### Extra Information
 | JSON Path | Database Column | Description | Type | Default |
 |-----------|----------------|-------------|------|---------|
-| `Extra.server-id` | `server_id` | Unique identifier for the server | TEXT | - |
-| `Extra.server-name` | `servers.name` | Display name of the server | TEXT | - |
+| `Extra.machine-id` | `server_id` | Unique identifier for the server | TEXT | - |
+| `Extra.machine-name` | `servers.name` | Display name of the server | TEXT | - |
 | `Extra.backup-name` | `backup_name` | Name of the backup operation | TEXT | - |
 | `Extra.backup-id` | `backup_id` | Duplicati backup identifier | TEXT | - |
 
@@ -610,8 +618,8 @@ The following tables show how the JSON data from the API maps to the database co
     "ErrorsActualLength": 0
   },
   "Extra": {
-    "server-id": "unique-server-id",
-    "server-name": "Server Name",
+    "machine-id": "unique-server-id",
+    "machine-name": "Server Name",
     "backup-name": "Backup Name",
     "backup-id": "unique-backup-id"
   }
@@ -622,9 +630,13 @@ This JSON would be processed in two steps:
 
 1. First, insert/update the server:
 ```sql
-INSERT INTO servers (id, name, server_url)
-VALUES ('unique-server-id', 'Server Name', '')
-ON CONFLICT(id) DO UPDATE SET name = 'Server Name';
+INSERT INTO servers (id, name, server_url, alias, note)
+VALUES ('unique-server-id', 'Server Name', '', '', '')
+ON CONFLICT(id) DO UPDATE SET 
+  name = 'Server Name',
+  server_url = COALESCE(server_url, ''),
+  alias = COALESCE(alias, ''),
+  note = COALESCE(note, '');
 ```
 
 2. Then, insert the backup record with all fields:
@@ -868,6 +880,8 @@ export interface Backup {
 export interface Server {
   id: string;
   name: string;
+  alias: string;
+  note: string;
   backups: Backup[];
   chartData: {
     date: string;
@@ -951,12 +965,16 @@ export interface ServerAddress {
   id: string;
   name: string;
   server_url: string;
+  alias: string;
+  note: string;
 }
 
 export interface ServerSummary {
   id: string;
   name: string;
   server_url: string;
+  alias: string;
+  note: string;
   backupInfo: Array<{
     name: string;
     lastBackupDate: string;
@@ -1106,7 +1124,9 @@ The configuration system provides a centralized way to manage application settin
     {
       "id": string,
       "name": string,
-      "server_url": string
+      "server_url": string,
+      "alias": string,
+      "note": string
     }
   ]
 }

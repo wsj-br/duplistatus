@@ -8,6 +8,8 @@ interface ServerWithBackup {
   name: string;
   backupName: string;
   server_url: string;
+  alias: string;
+  note: string;
 }
 
 interface UnifiedConfiguration extends NotificationConfig {

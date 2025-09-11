@@ -166,15 +166,16 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
       <CardHeader className="pb-1 pt-1 px-3 flex-shrink-0">
         <div className="flex items-center gap-2">
           <CardTitle className="text-base font-semibold flex items-center flex-1">
-            <ServerConfigurationButton className="h-8 w-8 flex-shrink-0" variant="ghost" serverUrl={server.server_url} showText={false}  />
+            <ServerConfigurationButton className="h-8 w-8 flex-shrink-0" variant="ghost" serverUrl={server.server_url} serverName={server.name} serverAlias={server.alias} showText={false}  />
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 router.push(`/detail/${server.id}`);
               }}
               className="flex items-center hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+              title={server.alias ? server.name : undefined}
             >
-              {server.name}
+              {server.alias || server.name}
             </button>
           </CardTitle>
           <div className="flex items-center flex-shrink-0">
@@ -271,9 +272,11 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent 
-                      side="top" 
+                      side="bottom" 
                       align="start"
                       sideOffset={8}
+                      avoidCollisions={true}
+                      collisionPadding={24}
                       className="cursor-default space-y-3 min-w-[300px] max-w-[400px] z-[9999]"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -288,7 +291,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                       }}
                     >
                       <div className="font-bold text-sm text-left flex items-center justify-between">
-                        <span>{server.name} : {backupType.name}</span>
+                        <span>{server.alias || server.name} : {backupType.name}</span>
                         {backupType.notificationEvent && (
                           <div className="inline-block mr-2">
                             {getNotificationIcon(backupType.notificationEvent as NotificationEvent)}
@@ -296,7 +299,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                         )}
                       </div>
                       <div className="text-xs text-muted-foreground text-left -mt-3">
-                        ({server.id})
+                        {server.note || `(${server.id})`}
                       </div>
 
                       <div className="space-y-2 border-t pt-3">
@@ -409,7 +412,9 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                               className="text-xs !p-1" 
                               variant="ghost"
                               size="sm"
-                              serverUrl={server.server_url} 
+                              serverUrl={server.server_url}
+                              serverName={server.name}
+                              serverAlias={server.alias}
                               showText={true} 
                             />
                           </div>
@@ -468,18 +473,23 @@ export const ServerCards = memo(function ServerCards({ servers, selectedServerId
     return [...filtered].sort((a, b) => {
       switch (dashboardCardsSortOrder) {
         case 'Server name (a-z)':
-          return a.name.localeCompare(b.name);
+          // Use alias with fallback to name for sorting
+          const aDisplayName = a.alias || a.name;
+          const bDisplayName = b.alias || b.name;
+          return aDisplayName.localeCompare(bDisplayName);
         
         case 'Status (error>warnings>success)':
           const aStatus = getServerStatus(a);
           const bStatus = getServerStatus(b);
-          // First sort by status, then by server name within the same status
+          // First sort by status, then by server alias/name within the same status
           const statusComparison = getStatusSortValue(aStatus) - getStatusSortValue(bStatus);
           if (statusComparison !== 0) {
             return statusComparison;
           }
-          // If status is the same, sort alphabetically by server name
-          return a.name.localeCompare(b.name);
+          // If status is the same, sort alphabetically by server alias/name
+          const aDisplayNameStatus = a.alias || a.name;
+          const bDisplayNameStatus = b.alias || b.name;
+          return aDisplayNameStatus.localeCompare(bDisplayNameStatus);
         
         case 'Last backup received (new>old)':
           // Handle "N/A" dates by putting them at the end

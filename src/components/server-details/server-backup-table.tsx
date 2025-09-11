@@ -41,10 +41,11 @@ import { DeleteBackupButton } from "@/components/ui/delete-backup-button";
 interface ServerBackupTableProps {
   backups: Backup[];
   serverName: string;
+  serverAlias?: string;
   onBackupDeleted?: () => void;
 }
 
-export function ServerBackupTable({ backups, serverName, onBackupDeleted }: ServerBackupTableProps) {
+export function ServerBackupTable({ backups, serverName, serverAlias, onBackupDeleted }: ServerBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const [isDevMode, setIsDevMode] = useState(false);
@@ -308,7 +309,7 @@ export function ServerBackupTable({ backups, serverName, onBackupDeleted }: Serv
                       <AvailableBackupsIcon
                         availableBackups={backup.available_backups}
                         currentBackupDate={backup.date}
-                        serverName={serverName}
+                        serverName={serverAlias || serverName}
                         backupName={backup.name}
                         onIconClick={handleAvailableBackupsClick}
                         count={backup.backup_list_count}
@@ -387,7 +388,7 @@ export function ServerBackupTable({ backups, serverName, onBackupDeleted }: Serv
                         <AvailableBackupsIcon
                           availableBackups={backup.available_backups}
                           currentBackupDate={backup.date}
-                          serverName={serverName}
+                          serverName={serverAlias || serverName}
                           backupName={backup.name}
                           onIconClick={handleAvailableBackupsClick}
                           count={backup.backup_list_count}
