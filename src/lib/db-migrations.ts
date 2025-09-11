@@ -212,7 +212,7 @@ const migrations: Migration[] = [
       `);
       
       // Step 2: Copy data from machines to servers
-      db.exec(`INSERT INTO servers SELECT * FROM machines;`);
+      db.exec(`INSERT INTO servers (id, name, created_at) SELECT id, name, created_at FROM machines;`);
       
       // Step 3: Add server_id column to backups table
       db.exec(`ALTER TABLE backups ADD COLUMN server_id TEXT;`);

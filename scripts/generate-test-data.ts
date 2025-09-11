@@ -43,7 +43,14 @@ const servers = [
   { id: createHash('md5').update('machine-4').digest('hex'), name: 'Test Server 4', alias: '', note: 'Development environment - low priority', backupName: 'S4' },
   { id: createHash('md5').update('machine-5').digest('hex'), name: 'Test Server 5', alias: 'Analytics', note: '', backupName: 'S5' },
   { id: createHash('md5').update('machine-6').digest('hex'), name: 'Test Server 6', alias: 'Staging', note: 'Pre-production testing server', backupName: 'S6' },
-  { id: createHash('md5').update('machine-7').digest('hex'), name: 'Test Server 7', alias: 'Backup Storage', note: 'Secondary backup destination', backupName: 'S7' }
+  { id: createHash('md5').update('machine-7').digest('hex'), name: 'Test Server 7', alias: 'Backup Storage', note: 'Secondary backup destination', backupName: 'S7' },
+  { id: createHash('md5').update('machine-8').digest('hex'), name: 'Test Server 8', alias: 'Mail Server', note: 'Corporate email and messaging system', backupName: 'S8' },
+  { id: createHash('md5').update('machine-9').digest('hex'), name: 'Test Server 9', alias: 'CRM System', note: 'Customer relationship management platform', backupName: 'S9' },
+  { id: createHash('md5').update('machine-10').digest('hex'), name: 'Test Server 10', alias: 'Monitoring', note: 'Infrastructure monitoring and alerting', backupName: 'S10' },
+  // { id: createHash('md5').update('machine-11').digest('hex'), name: 'Test Server 11', alias: 'Load Balancer', note: 'Traffic distribution and SSL termination', backupName: 'S11' },
+  // { id: createHash('md5').update('machine-12').digest('hex'), name: 'Test Server 12', alias: 'Cache Server', note: 'Redis and Memcached caching layer', backupName: 'S12' },
+  // { id: createHash('md5').update('machine-13').digest('hex'), name: 'Test Server 13', alias: 'CI/CD Pipeline', note: 'Continuous integration and deployment', backupName: 'S13' },
+  // { id: createHash('md5').update('machine-14').digest('hex'), name: 'Test Server 14', alias: 'Security Gateway', note: 'Firewall and intrusion detection system', backupName: 'S14' }
 ];
 
 // Server health check function

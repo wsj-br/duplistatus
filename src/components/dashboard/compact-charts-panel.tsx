@@ -27,7 +27,7 @@ interface InterpolatedChartPoint {
   [key: string]: string | number;
 }
 
-interface MetricsChartsPanelProps {
+interface CompactChartsPanelProps {
   serverId?: string;
   backupName?: string;
   // Add chartData prop to receive data directly from parent
@@ -89,25 +89,13 @@ function RefreshTimeDisplay() {
   );
 }
 
-// Configuration for each chart type
-const chartMetrics = [
-  { 
-    key: 'uploadedSize', 
-    label: 'Uploaded Size', 
-    formatter: formatBytes,
-    color: "#3b82f6" // Blue
-  },
+// Configuration for compact charts - only 3 metrics
+const compactChartMetrics = [
   { 
     key: 'duration', 
     label: 'Duration', 
     formatter: formatDuration,
     color: "#10b981" // Green
-  },
-  { 
-    key: 'fileCount', 
-    label: 'File Count', 
-    formatter: (v: number) => v.toLocaleString(),
-    color: "#f59e0b" // Amber
   },
   { 
     key: 'fileSize', 
@@ -120,12 +108,6 @@ const chartMetrics = [
     label: 'Storage Size', 
     formatter: formatBytes,
     color: "#8b5cf6" // Purple
-  },
-  { 
-    key: 'backupVersions', 
-    label: 'Available Versions', 
-    formatter: (v: number) => v.toLocaleString(),
-    color: "#06b6d4" // Cyan
   }
 ];
 
@@ -159,7 +141,7 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   
   // Format the value based on metric type
   let formattedValue: string;
-  if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
+  if (metricKey === 'fileSize' || metricKey === 'storageSize') {
     formattedValue = formatBytesForYAxis(value);
   } else if (metricKey === 'duration') {
     formattedValue = formatDuration(value);
@@ -179,7 +161,7 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   );
 };
 
-function SmallMetricChart({ 
+function CompactMetricChart({ 
   data, 
   metricKey, 
   label, 
@@ -206,7 +188,7 @@ function SmallMetricChart({
     [metricKey]: item[metricKey]
   }));
 
-  // Resample data for small charts using linear interpolation
+  // Resample data for compact charts using linear interpolation
   const maxPoints = 50;
   const resampledData = (() => {
     // Only resample if there are more than maxPoints in the data
@@ -288,7 +270,7 @@ function SmallMetricChart({
   })();
 
   return (
-    <Card className="flex flex-col h-full min-h-[150px] min-w-[200px] sm:min-w-[300px] overflow-hidden">
+    <Card className="flex flex-col h-full min-h-[150px] overflow-hidden">
       <CardHeader className="pb-0 pt-1 px-2 flex-shrink-0">
         <CardTitle className="text-xs font-medium">{label}</CardTitle>
       </CardHeader>
@@ -329,12 +311,12 @@ function SmallMetricChart({
                 tickFormatter={(value) => {
                   if (typeof value === 'number') {
                     // Format based on metric type with specific precision
-                    if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
+                    if (metricKey === 'fileSize' || metricKey === 'storageSize') {
                       return formatBytesForYAxis(value);
                     } else if (metricKey === 'duration') {
                       return formatDuration(value);
                     } else {
-                      // For counts (fileCount, backupVersions) - no decimal positions
+                      // For counts - no decimal positions
                       return Math.round(value).toLocaleString();
                     }
                   }
@@ -358,11 +340,11 @@ function SmallMetricChart({
   );
 }
 
-function MetricsChartsPanelCore({ 
+function CompactChartsPanelCore({ 
   serverId,
   backupName,
   chartData: externalChartData, // Use external chart data if provided
-}: MetricsChartsPanelProps) {
+}: CompactChartsPanelProps) {
   
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
@@ -375,27 +357,6 @@ function MetricsChartsPanelCore({
   const lastGlobalRefreshTime = useRef<Date | null>(null);
   const lastChartDataRef = useRef<string | null>(null);
   const isLoadingRef = useRef<boolean>(false);
-  
-  // Track screen height for responsive height behavior
-  const [screenHeight, setScreenHeight] = useState<number>(0);
-  
-  useEffect(() => {
-    const updateScreenHeight = () => {
-      setScreenHeight(window.innerHeight);
-    };
-
-    // Set initial height
-    updateScreenHeight();
-
-    // Add event listener
-    window.addEventListener('resize', updateScreenHeight);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', updateScreenHeight);
-  }, []);
-  
-  // Determine if we should use content-based height (when screen height < 865px)
-  const useContentBasedHeight = screenHeight < 865;
   
   // Calculate time range dates
   const { startDate, endDate } = (() => {
@@ -620,7 +581,7 @@ function MetricsChartsPanelCore({
   })();
 
   return (
-    <div className="flex flex-col h-full min-h-[390px] min-w-[200px] sm:min-w-[300px] overflow-hidden">
+    <div className="flex flex-col h-full min-h-[390px] overflow-hidden">
       {/* Selection info header */}
       {selectionInfo && (
         <div className="mb-1 flex-shrink-0">
@@ -648,17 +609,18 @@ function MetricsChartsPanelCore({
         </div>
       )}
 
-      {/* Charts - Responsive grid layout: 1 column mobile/small, 3 columns medium/large */}
+      {/* Charts - Vertical stack layout for compact view */}
       {!isLoading && !error && chartData.length > 0 && (
-        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${useContentBasedHeight ? 'auto-rows-auto' : 'auto-rows-fr'} items-stretch gap-2 sm:gap-3 pb-2 flex-1 min-h-0 overflow-hidden`}>
-          {chartMetrics.map((metric) => (
-            <SmallMetricChart
-              key={metric.key}
-              data={chartData}
-              metricKey={metric.key as keyof ChartDataPoint}
-              label={metric.label}
-              color={metric.color}
-            />
+        <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-hidden">
+          {compactChartMetrics.map((metric) => (
+            <div key={metric.key} className="flex-1 min-h-0">
+              <CompactMetricChart
+                data={chartData}
+                metricKey={metric.key as keyof ChartDataPoint}
+                label={metric.label}
+                color={metric.color}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -677,7 +639,7 @@ function MetricsChartsPanelCore({
 }
 
 // Memoized core charts component (without refresh time display)
-const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) => {
+const MemoizedCompactChartsCore = memo(CompactChartsPanelCore, (prevProps, nextProps) => {
   // Custom comparison function for React.memo
   // Only re-render if there are actual changes in the data we care about
   
@@ -704,11 +666,11 @@ const MemoizedChartsCore = memo(MetricsChartsPanelCore, (prevProps, nextProps) =
 });
 
 // Main wrapper component that combines charts with refresh time display
-export const MetricsChartsPanel = ({ 
+export const CompactChartsPanel = ({ 
   serverId,
   backupName,
   chartData
-}: MetricsChartsPanelProps) => {
+}: CompactChartsPanelProps) => {
   
   return (
     <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden">
@@ -722,7 +684,7 @@ export const MetricsChartsPanel = ({
       </div>
 
       {/* Memoized charts component */}
-      <MemoizedChartsCore 
+      <MemoizedCompactChartsCore 
         serverId={serverId}
         backupName={backupName}
         chartData={chartData}

@@ -6,7 +6,9 @@ import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { ServerCards } from "./server-cards";
+import { CompactCards } from "./compact-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
+import { CompactChartsPanel } from "./compact-charts-panel";
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
@@ -55,7 +57,8 @@ export function DashboardLayout({
   
   // Determine if we should use content-based height (when screen height < 865px)
   // Table view always uses content-based height regardless of window height
-  const useContentBasedHeight = viewMode === 'table' || screenHeight < 865;
+  // Compact view uses content-based height when screen height < 720px
+  const useContentBasedHeight = viewMode === 'table' || (viewMode === 'compact' && screenHeight < 720) || screenHeight < 865;
   
   // Use refs to track initialization and prevent infinite loops
   const previousSelectedServerId = useRef<string | null>(null);
@@ -65,7 +68,7 @@ export function DashboardLayout({
   const visibleCardIndex = globalRefreshState.visibleCardIndex;
 
   // Handle view mode changes
-  const handleViewModeChange = (newViewMode: 'cards' | 'table') => {
+  const handleViewModeChange = (newViewMode: 'cards' | 'table' | 'compact') => {
     setViewMode(newViewMode);
   };
 
@@ -142,9 +145,13 @@ export function DashboardLayout({
     <div className={`flex flex-col px-2 pb-4 
       ${viewMode === 'table' 
         ? 'min-h-screen' // Allow content to extend beyond viewport for table view
-        : useContentBasedHeight 
-          ? 'min-h-screen' // Allow content-based height when screen is narrow
-          : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
+        : viewMode === 'compact'
+          ? useContentBasedHeight 
+            ? 'min-h-screen' // Allow content-based height when screen is narrow
+            : 'h-[calc(100vh-4rem)] overflow-hidden min-h-[720px]' // Fit exactly into viewport in compact view
+          : useContentBasedHeight 
+            ? 'min-h-screen' // Allow content-based height when screen is narrow
+            : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
       }`}>
       {/* Top Row: Summary Cards - auto height */}
       <div>
@@ -154,51 +161,89 @@ export function DashboardLayout({
         />
       </div>
       
-      {/* Server Overview Panel - auto height */}
-      <div className="mt-2 mb-2">
-        <Card className="shadow-lg border-2 border-border">
-          <CardContent className="p-4">
-            {viewMode === 'cards' ? (
-              <ServerCards 
-                servers={data.serversSummary} 
-                selectedServerId={selectedServerId}
-                onSelect={onServerSelect}
-                visibleCardIndex={visibleCardIndex}
-                onVisibleCardIndexChange={setVisibleCardIndex}
-              />
-            ) : (
-              <DashboardTable servers={data.serversSummary} />
-            )}
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Main Content: Metrics Panel - responsive height to fill remaining space */}
-      <div className={`${viewMode === 'table' 
-        ? 'min-h-[550px]' 
-        : useContentBasedHeight 
-          ? 'min-h-fit' 
-          : 'flex-1 min-h-0 overflow-hidden pb-4'
-      }`}>
-        <Card className={`${viewMode === 'table' 
-          ? 'min-h-[550px] h-[550px]' 
-          : useContentBasedHeight 
-            ? 'min-h-fit' 
-            : 'h-full'
-        } shadow-lg border-2 border-border`}>
-          <CardContent className={`${viewMode === 'table' 
-            ? 'min-h-[550px] h-[550px]' 
+      {/* Compact View Layout */}
+      {viewMode === 'compact' ? (
+        <div className={`flex flex-col md:flex-row gap-3 mt-2 mb-4 flex-1 min-h-0 ${
+          useContentBasedHeight ? 'min-h-fit' : 'h-full'
+        }`}>
+          {/* Left Panel: Compact Cards - 65% width */}
+          <div className={`${useContentBasedHeight ? 'w-full md:w-[70%]' : 'w-[70%]'} ${
+            useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
+          }`}>
+            <Card className="shadow-lg border-2 border-border h-full">
+              <CardContent className="p-4 h-full">
+                <CompactCards 
+                  servers={data.serversSummary} 
+                  selectedServerId={selectedServerId}
+                  onSelect={onServerSelect}
+                />
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Right Panel: Compact Charts - 35% width */}
+          <div className={`${useContentBasedHeight ? 'w-full md:w-[35%]' : 'w-[35%]'} ${
+            useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
+          }`}>
+            <Card className="shadow-lg border-2 border-border h-full">
+              <CardContent className="p-0 h-full">
+                <CompactChartsPanel
+                  serverId={selectedServerId || undefined}
+                  chartData={selectedServerId ? undefined : data.allServersChartData}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Server Overview Panel - auto height */}
+          <div className="mt-2 mb-2">
+            <Card className="shadow-lg border-2 border-border">
+              <CardContent className="p-4">
+                {viewMode === 'cards' ? (
+                  <ServerCards 
+                    servers={data.serversSummary} 
+                    selectedServerId={selectedServerId}
+                    onSelect={onServerSelect}
+                    visibleCardIndex={visibleCardIndex}
+                    onVisibleCardIndexChange={setVisibleCardIndex}
+                  />
+                ) : (
+                  <DashboardTable servers={data.serversSummary} />
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Main Content: Metrics Panel - responsive height to fill remaining space */}
+          <div className={`${viewMode === 'table' 
+            ? 'min-h-[550px]' 
             : useContentBasedHeight 
               ? 'min-h-fit' 
-              : 'h-full'
-          } p-0`}>
-            <MetricsChartsPanel
-              serverId={selectedServerId || undefined}
-              chartData={selectedServerId ? undefined : data.allServersChartData}
-            />
-          </CardContent>
-        </Card>
-      </div>
+              : 'flex-1 min-h-0 overflow-hidden pb-4'
+          }`}>
+            <Card className={`${viewMode === 'table' 
+              ? 'min-h-[550px] h-[550px]' 
+              : useContentBasedHeight 
+                ? 'min-h-fit' 
+                : 'h-full'
+            } shadow-lg border-2 border-border`}>
+              <CardContent className={`${viewMode === 'table' 
+                ? 'min-h-[550px] h-[550px]' 
+                : useContentBasedHeight 
+                  ? 'min-h-fit' 
+                  : 'h-full'
+              } p-0`}>
+                <MetricsChartsPanel
+                  serverId={selectedServerId || undefined}
+                  chartData={selectedServerId ? undefined : data.allServersChartData}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
     </div>
   );
 }

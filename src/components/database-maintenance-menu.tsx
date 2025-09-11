@@ -30,10 +30,12 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useConfiguration } from "@/contexts/configuration-context";
 
-interface Machine {
+interface Server {
   id: string;
   name: string;
+  alias: string;
 }
 
 export function DatabaseMaintenanceMenu() {
@@ -43,32 +45,33 @@ export function DatabaseMaintenanceMenu() {
     cleanupDatabase,
   } = useConfig();
   const [isCleaning, setIsCleaning] = useState(false);
-  const [isDeletingMachine, setIsDeletingMachine] = useState(false);
-  const [machines, setMachines] = useState<Machine[]>([]);
-  const [selectedMachine, setSelectedMachine] = useState<string>("");
+  const [isDeletingServer, setIsDeletingServer] = useState(false);
+  const [servers, setServers] = useState<Server[]>([]);
+  const [selectedServer, setSelectedServer] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
+  const { refreshConfigSilently } = useConfiguration();
 
-  // Fetch machines on component mount
+  // Fetch servers on component mount
   useEffect(() => {
-    const fetchMachines = async () => {
+    const fetchServers = async () => {
       try {
         const response = await fetch('/api/servers');
         if (response.ok) {
-          const machineList = await response.json();
-          // Sort machines alphabetically by name
-          const sortedMachines = machineList.sort((a: Machine, b: Machine) => 
-            a.name.localeCompare(b.name)
+          const serverList = await response.json();
+          // Sort servers alphabetically by alias with fallback to name
+          const sortedServers = serverList.sort((a: Server, b: Server) => 
+            (a.alias || a.name).localeCompare(b.alias || b.name)
           );
-          setMachines(sortedMachines);
+          setServers(sortedServers);
         }
       } catch (error) {
-        console.error('Error fetching machines:', error instanceof Error ? error.message : String(error));
+        console.error('Error fetching servers:', error instanceof Error ? error.message : String(error));
       }
     };
 
-    fetchMachines();
+    fetchServers();
   }, []);
 
   const handleCleanup = async () => {
@@ -110,67 +113,78 @@ export function DatabaseMaintenanceMenu() {
     }
   };
 
-  const handleDeleteMachine = async () => {
-    if (!selectedMachine) return;
+  const handleDeleteServer = async () => {
+    if (!selectedServer) return;
 
     try {
-      setIsDeletingMachine(true);
+      setIsDeletingServer(true);
       
-      const response = await fetch(`/api/servers/${selectedMachine}`, {
+      // Find the selected server details for the toast
+      const selectedServerDetails = servers.find(server => server.id === selectedServer);
+      const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
+      
+      const response = await fetch(`/api/servers/${selectedServer}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete machine');
+        throw new Error('Failed to delete server');
       }
 
       const result = await response.json();
       
       // Show success toast
       toast({
-        title: "Machine deleted",
-        description: result.message,
+        title: `Server "${serverDisplayName}"	 deleted`,
+        description: `${result.message}`,
         variant: "default",
-        duration: 2000,
+        duration: 3000,
       });
       
-      // Reset selected machine
-      setSelectedMachine("");
+      // Reset selected server
+      setSelectedServer("");
       
-      // Refresh machines list
-      const machinesResponse = await fetch('/api/servers');
-      if (machinesResponse.ok) {
-        const machineList = await machinesResponse.json();
-        // Sort machines alphabetically by name
-        const sortedMachines = machineList.sort((a: Machine, b: Machine) => 
-          a.name.localeCompare(b.name)
+      // Refresh servers list
+      const serversResponse = await fetch('/api/servers');
+      if (serversResponse.ok) {
+        const serverList = await serversResponse.json();
+        // Sort servers alphabetically by alias with fallback to name
+        const sortedServers = serverList.sort((a: Server, b: Server) => 
+          (a.alias || a.name).localeCompare(b.alias || b.name)
         );
-        setMachines(sortedMachines);
+        setServers(sortedServers);
       }
       
       // Refresh dashboard data using global refresh context
       await refreshDashboard();
       
+      // Also refresh configuration data to update server lists in configuration tabs
+      await refreshConfigSilently();
+      
       // Close the menu after successful execution
       setIsOpen(false);
       
     } catch (error) {
-      console.error('Error deleting machine:', error instanceof Error ? error.message : String(error));
+      console.error('Error deleting server:', error instanceof Error ? error.message : String(error));
+      
+      // Find the selected server details for the error toast
+      const selectedServerDetails = servers.find(server => server.id === selectedServer);
+      const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
       
       // Extract error message
       const errorMessage = error instanceof Error 
         ? error.message 
-        : 'Failed to delete machine. Please try again.';
+        : 'Failed to delete server. Please try again.';
       
       // Show detailed error toast
       toast({
-        title: "Machine Deletion Failed",
-        description: errorMessage,
+        title: `Server "${serverDisplayName}" Deletion Failed`,
+        description: `${errorMessage}`,
         variant: "destructive",
         duration: 3000,
       });
     } finally {
-      setIsDeletingMachine(false);
+      setIsDeletingServer(false);
     }
   };
 
@@ -252,36 +266,36 @@ export function DatabaseMaintenanceMenu() {
               </p>
             </div>
             
-            {/* Machine Deletion Section */}
+            {/* Server Deletion Section */}
             <div className="grid gap-2 border-t pt-4">
-              <Label htmlFor="machine-select">Delete Machine Data</Label>
+              <Label htmlFor="server-select">Delete Server Data</Label>
               <Select
-                value={selectedMachine}
-                onValueChange={setSelectedMachine}
+                value={selectedServer}
+                onValueChange={setSelectedServer}
               >
-                <SelectTrigger id="machine-select">
-                  <SelectValue placeholder="Select machine to delete" />
+                <SelectTrigger id="server-select">
+                  <SelectValue placeholder="Select server to delete" />
                 </SelectTrigger>
                 <SelectContent>
-                  {machines.map((machine) => (
-                    <SelectItem key={machine.id} value={machine.id}>
-                      {machine.name}
+                  {servers.map((server) => (
+                    <SelectItem key={server.id} value={server.id}>
+                      {server.alias ? `${server.alias} (${server.name})` : server.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                Select a machine to delete all its backup data permanently.
+                Select a server to delete all its backup data permanently.
               </p>
               
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 
                     variant="destructive" 
-                    disabled={isDeletingMachine || !selectedMachine}
+                    disabled={isDeletingServer || !selectedServer}
                     className="mt-2"
                   >
-                    {isDeletingMachine ? (
+                    {isDeletingServer ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Deleting...
@@ -289,23 +303,26 @@ export function DatabaseMaintenanceMenu() {
                     ) : (
                       <>
                         <Server className="mr-2 h-4 w-4" />
-                        Delete Machine Data
+                        Delete Server Data
                       </>
                     )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Machine Data?</AlertDialogTitle>
+                    <AlertDialogTitle>Delete Server Data?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will permanently delete the selected machine and all its backup records. 
-                      This action cannot be undone.
+                      {(() => {
+                        const selectedServerDetails = servers.find(server => server.id === selectedServer);
+                        const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
+                        return `This will permanently delete server "${serverDisplayName}" and all its backup records. This action cannot be undone.`;
+                      })()}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteMachine} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                      Delete Machine
+                    <AlertDialogAction onClick={handleDeleteServer} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Delete Server
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

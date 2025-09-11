@@ -77,7 +77,9 @@ export async function POST(request: NextRequest) {
       // Insert server information only if it doesn't exist (preserves existing server_url)
       dbOps.insertServerIfNotExists.run({
         id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
-        name: data.Extra['machine-name'] // Note: Duplicati API uses 'machine-name' field name
+        name: data.Extra['machine-name'], // Note: Duplicati API uses 'machine-name' field name
+        alias: '',
+        note: ''
       });
 
       // Map backup status

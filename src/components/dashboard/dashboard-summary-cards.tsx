@@ -3,7 +3,7 @@
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
+import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, LayoutDashboard, Sheet, ThumbsUp, Radar } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import { useServerSelection } from "@/contexts/server-selection-context";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
-  onViewModeChange?: (viewMode: 'cards' | 'table') => void;
+  onViewModeChange?: (viewMode: 'cards' | 'table' | 'compact') => void;
 }
 
 export function DashboardSummaryCards({ 
@@ -28,7 +28,14 @@ export function DashboardSummaryCards({
 
   // Handle view mode toggle
   const handleViewModeToggle = () => {
-    const newViewMode = viewMode === 'cards' ? 'table' : 'cards';
+    let newViewMode: 'cards' | 'table' | 'compact';
+    if (viewMode === 'cards') {
+      newViewMode = 'table';
+    } else if (viewMode === 'table') {
+      newViewMode = 'compact';
+    } else {
+      newViewMode = 'cards';
+    }
     setViewMode(newViewMode);
     localStorage.setItem('dashboard-view-mode', newViewMode);
     onViewModeChange?.(newViewMode);
@@ -110,14 +117,15 @@ export function DashboardSummaryCards({
                 >
                   {viewMode === 'cards' ? (
                     <LayoutDashboard className="h-6 w-6 text-blue-600" />
-                    
-                  ) : (
+                  ) : viewMode === 'table' ? (
                     <Sheet className="h-8 w-8 text-blue-600" />
+                  ) : (
+                    <Radar className="h-6 w-6 text-blue-600" />
                   )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Show {viewMode === 'cards' ? 'table' : 'cards'} view</p>
+                <p>Show {viewMode === 'cards' ? 'table' : viewMode === 'table' ? 'compact' : 'cards'} view</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

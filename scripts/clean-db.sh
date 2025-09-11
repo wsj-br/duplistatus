@@ -26,7 +26,7 @@ BEGIN TRANSACTION;
 
 -- Clear all data from main tables
 DELETE FROM backups;
-DELETE FROM machines;
+DELETE FROM servers;
 DELETE FROM configurations;
 
 -- Reset auto-increment sequences if any (though we use TEXT primary keys)
@@ -35,7 +35,7 @@ DELETE FROM configurations;
 COMMIT;
 
 -- Show remaining data counts to verify cleanup
-SELECT 'machines' as table_name, COUNT(*) as remaining_rows FROM machines
+SELECT 'servers' as table_name, COUNT(*) as remaining_rows FROM servers
 UNION ALL
 SELECT 'backups' as table_name, COUNT(*) as remaining_rows FROM backups
 UNION ALL

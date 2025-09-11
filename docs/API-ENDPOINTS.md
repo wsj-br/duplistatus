@@ -1273,6 +1273,7 @@ All API responses are returned in JSON format with consistent error handling pat
   {
     "success": true,
     "serverName": "Server Name",
+    "serverAlias": "My Server",
     "stats": {
       "processed": 5,
       "skipped": 2,
@@ -1294,6 +1295,8 @@ All API responses are returned in JSON format with consistent error handling pat
   - Logs collected data in development mode for debugging
   - Ensures backup settings are complete for all servers and backups
   - Uses default port 8200 and protocol "http" if not specified
+  - `serverAlias` is retrieved from the database and may be empty if no alias is set
+  - Frontend should use `serverAlias || serverName` for display purposes
 
 <br>
 

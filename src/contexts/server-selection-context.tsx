@@ -5,7 +5,7 @@ import type { ServerSummary } from '@/lib/types';
 
 interface ServerSelectionState {
   selectedServerId: string | null;
-  viewMode: 'cards' | 'table';
+  viewMode: 'cards' | 'table' | 'compact';
   servers: ServerSummary[];
   isInitialized: boolean;
 }
@@ -13,7 +13,7 @@ interface ServerSelectionState {
 interface ServerSelectionContextProps {
   state: ServerSelectionState;
   setSelectedServerId: (serverId: string | null) => void;
-  setViewMode: (viewMode: 'cards' | 'table') => void;
+  setViewMode: (viewMode: 'cards' | 'table' | 'compact') => void;
   setServers: (servers: ServerSummary[]) => void;
   getSelectedServer: () => ServerSummary | null;
 }
@@ -27,7 +27,7 @@ interface ServerSelectionProviderProps {
 export function ServerSelectionProvider({ children }: ServerSelectionProviderProps) {
   const [state, setState] = useState<ServerSelectionState>({
     selectedServerId: null,
-    viewMode: 'cards', // Default fallback
+    viewMode: 'compact', // Default fallback
     servers: [],
     isInitialized: false,
   });
@@ -36,18 +36,18 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
   useEffect(() => {
     try {
       const savedViewMode = localStorage.getItem('dashboard-view-mode');
-      if (savedViewMode === 'cards' || savedViewMode === 'table') {
+      if (savedViewMode === 'cards' || savedViewMode === 'table' || savedViewMode === 'compact') {
         setState(prev => ({ 
           ...prev, 
           viewMode: savedViewMode,
           isInitialized: true 
         }));
       } else {
-        setState(prev => ({ ...prev, isInitialized: true }));
+        setState(prev => ({ ...prev, viewMode: 'compact', isInitialized: true }));
       }
     } catch (error) {
       console.error('Error loading view mode from localStorage:', error);
-      setState(prev => ({ ...prev, isInitialized: true }));
+      setState(prev => ({ ...prev, viewMode: 'compact', isInitialized: true }));
     }
   }, []);
 
@@ -55,7 +55,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
     setState(prev => ({ ...prev, selectedServerId: serverId }));
   }, []);
 
-  const setViewMode = useCallback((viewMode: 'cards' | 'table') => {
+  const setViewMode = useCallback((viewMode: 'cards' | 'table' | 'compact') => {
     setState(prev => ({ ...prev, viewMode }));
     // Save to localStorage
     try {

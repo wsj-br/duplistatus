@@ -212,8 +212,14 @@ export async function POST(request: NextRequest) {
     dbOps.upsertServer.run({
         id: serverId,
         name: serverName,
-        server_url: baseUrl
+        server_url: baseUrl,
+        alias: '',
+        note: ''
       });
+    
+    // Get the server information including alias from database
+    const serverInfo = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    const serverAlias = serverInfo?.alias || '';
     
     // Ensure backup settings are complete for all servers and backups
     // This will add default settings for any missing server-backup combinations
@@ -424,6 +430,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       serverName: serverName,
+      serverAlias: serverAlias,
       stats: {
         processed: processedCount,
         skipped: skippedCount,

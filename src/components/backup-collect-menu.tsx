@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useConfiguration } from "@/contexts/configuration-context";
 import { defaultAPIConfig } from '@/lib/default-config';
 
 export function BackupCollectMenu() {
@@ -26,6 +27,7 @@ export function BackupCollectMenu() {
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
+  const { refreshConfigSilently } = useConfiguration();
 
   const handleCollect = async () => {
     if (!hostname) {
@@ -73,7 +75,7 @@ export function BackupCollectMenu() {
 
       const result = await response.json();
       setStats(result.stats);
-      const machineName = result.machineName;
+      const serverName = result.serverAlias || result.serverName;
 
       // Clear stats and sensitive data immediately
       setStats(null);
@@ -84,7 +86,7 @@ export function BackupCollectMenu() {
 
       // Show success toast
       toast({
-        title: `Backups collected successfully from ${machineName}`,
+        title: `Backups collected successfully from ${serverName}`,
         description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
         variant: "default",
         duration: 3000,
@@ -92,6 +94,9 @@ export function BackupCollectMenu() {
 
       // Refresh dashboard data using global refresh context
       await refreshDashboard();
+      
+      // Also refresh configuration data to update server lists in configuration tabs
+      await refreshConfigSilently();
 
     } catch (error) {
       console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
