@@ -44,22 +44,19 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
     try {
       setIsLoading(true);
       
-      // Fetch all required data
-      const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-        fetch('/api/servers-summary'),
-        fetch('/api/summary'),
-        fetch('/api/chart-data')
-      ]);
+      // Fetch consolidated dashboard data
+      const dashboardResponse = await fetch('/api/dashboard');
 
-      if (!machinesResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
+      if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
       }
 
-      const [machinesData, summaryData, chartData] = await Promise.all([
-        machinesResponse.json(),
-        summaryResponse.json(),
-        chartResponse.json()
-      ]);
+      const dashboardData = await dashboardResponse.json();
+
+      // Extract individual data components for backward compatibility
+      const machinesData = dashboardData.serversSummary;
+      const summaryData = dashboardData.overallSummary;
+      const chartData = dashboardData.chartData;
 
       // Update state with new data
       setServersSummary(machinesData);

@@ -1,5 +1,8 @@
 #!/bin/sh
 # update-version.sh
+#
+# This script updates the VERSION variable in the .env file to the version in package.json
+
 
 # Extract version from package.json using basic shell commands
 VERSION=$(grep '"version"' package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/')

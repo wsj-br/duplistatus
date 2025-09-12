@@ -6,7 +6,7 @@ interface ServerConfigurationButtonProps {
   serverUrl: string;
   serverName?: string;
   serverAlias?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?:  'sm' | 'md' | 'lg';
   variant?: 'default' | 'outline' | 'ghost';
   className?: string;
   onClick?: () => void;
@@ -58,7 +58,7 @@ export function ServerConfigurationButton({
   const getIconSize = () => {
     switch (size) {
       case 'sm':
-        return 12;
+          return 10;
       case 'lg':
         return 20;
       default: // md

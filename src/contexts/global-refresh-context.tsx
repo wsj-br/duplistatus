@@ -89,28 +89,25 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: true,
       }));
 
-      // Fetch dashboard data and parse JSON responses
-      const [serversResponse, summaryResponse, chartResponse] = await Promise.all([
-        fetch('/api/servers-summary'),
-        fetch('/api/summary'),
-        fetch('/api/chart-data')
-      ]);
+      // Fetch consolidated dashboard data
+      const dashboardResponse = await fetch('/api/dashboard');
 
-      if (!serversResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
+      if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
       }
 
-      // Parse JSON responses to ensure they are valid
-      const [serversData, summaryData, chartData] = await Promise.all([
-        serversResponse.json(),
-        summaryResponse.json(),
-        chartResponse.json()
-      ]);
+      // Parse JSON response to ensure it is valid
+      const dashboardData = await dashboardResponse.json();
 
       // Validate that we got valid data
-      if (!serversData || !summaryData || !Array.isArray(chartData)) {
+      if (!dashboardData || !dashboardData.serversSummary || !dashboardData.overallSummary || !Array.isArray(dashboardData.chartData)) {
         throw new Error('Invalid data received from API');
       }
+
+      // Extract individual data components for backward compatibility
+      const serversData = dashboardData.serversSummary;
+      const summaryData = dashboardData.overallSummary;
+      const chartData = dashboardData.chartData;
 
       setState(prev => ({
         ...prev,

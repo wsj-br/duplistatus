@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ServerCards } from "./server-cards";
 import { CompactCards } from "./compact-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
-import { CompactChartsPanel } from "./compact-charts-panel";
+import { StatusCardsPanel } from "./status-cards-panel";
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
@@ -96,7 +96,8 @@ export function DashboardLayout({
       const serverSummary = {
         ...data.overallSummary,
         totalServers: 1,
-        totalBackups: serverBackups.length,
+        totalBackupsRuns: serverBackups.length,
+        totalBackups: data.overallSummary.totalBackups, // Keep the overall totalBackups count
         totalUploadedSize: serverBackups.reduce((sum, backup) => sum + backup.uploadedSize, 0),
         totalBackupSize: serverBackups.reduce((sum, backup) => sum + backup.knownFileSize || 0, 0),
         overdueBackupsCount: serverBackups.filter(() => {
@@ -166,31 +167,26 @@ export function DashboardLayout({
         <div className={`flex flex-col md:flex-row gap-3 mt-2 mb-4 flex-1 min-h-0 ${
           useContentBasedHeight ? 'min-h-fit' : 'h-full'
         }`}>
-          {/* Left Panel: Compact Cards - 65% width */}
-          <div className={`${useContentBasedHeight ? 'w-full md:w-[70%]' : 'w-[70%]'} ${
+          {/* Left Panel: Compact Cards - 80% width */}
+          <div className={`${useContentBasedHeight ? 'w-full md:w-[80%]' : 'w-[80%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
           }`}>
             <Card className="shadow-lg border-2 border-border h-full">
-              <CardContent className="p-4 h-full">
+              <CardContent className="p-2 h-full">
                 <CompactCards 
                   servers={data.serversSummary} 
-                  selectedServerId={selectedServerId}
-                  onSelect={onServerSelect}
                 />
               </CardContent>
             </Card>
           </div>
           
-          {/* Right Panel: Compact Charts - 35% width */}
-          <div className={`${useContentBasedHeight ? 'w-full md:w-[35%]' : 'w-[35%]'} ${
+          {/* Right Panel: Compact Charts - 20% width */}
+          <div className={`${useContentBasedHeight ? 'w-full md:w-[20%]' : 'w-[20%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
           }`}>
             <Card className="shadow-lg border-2 border-border h-full">
               <CardContent className="p-0 h-full">
-                <CompactChartsPanel
-                  serverId={selectedServerId || undefined}
-                  chartData={selectedServerId ? undefined : data.allServersChartData}
-                />
+                <StatusCardsPanel servers={data.serversSummary} totalBackups={summary.totalBackups} />
               </CardContent>
             </Card>
           </div>

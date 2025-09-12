@@ -388,7 +388,8 @@ const dbOps = {
    getOverallSummary: safePrepare(`
     SELECT 
       COUNT(DISTINCT s.id) as total_servers,
-      COUNT(b.id) as total_backups,
+      COUNT(b.id) as total_backups_runs,
+      COUNT(DISTINCT s.id || ':' || b.backup_name) as total_backups,
       COALESCE(SUM(b.uploaded_size), 0) as total_uploaded_size,
       (
         SELECT COALESCE(SUM(b2.known_file_size), 0)

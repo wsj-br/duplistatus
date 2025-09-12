@@ -160,12 +160,13 @@ function SettingsPageContent() {
                   }
                 }}
                 onSendTest={async (template) => {
-                  const response = await fetch('/api/notifications/test-template', {
+                  const response = await fetch('/api/notifications/test', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ 
+                      type: 'template',
                       template,
                       ntfyConfig: config.ntfy 
                     }),

@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.20.dev-blue)
+![](https://img.shields.io/badge/version-0.7.21.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -273,6 +273,19 @@ Use the option `--upload` to send the generated data to the `/api/upload`
 
 ```bash
 pnpm run generate-test-data --upload
+```
+
+Use the option `--machines=N` to specify the number of machines to generate (1-30, default: 30)
+
+```bash
+# Generate data for 5 machines
+pnpm run generate-test-data --machines=5
+
+# Generate data for 1 machine with upload mode
+pnpm run generate-test-data --upload --machines=1
+
+# Generate data for all 30 machines (default)
+pnpm run generate-test-data --machines=30
 ```
 
 >[!CAUTION]

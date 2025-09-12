@@ -49,8 +49,14 @@ export function DashboardSummaryCards({
       "data-ai-hint": "server computer",
     },
     {
-      title: "Total Backups",
+      title: "Total Backup Jobs",
       value: summary.totalBackups.toLocaleString(),
+      icon: <Archive className="h-6 w-6 text-blue-600" />,
+      "data-ai-hint": "archive box",
+    },
+    {
+      title: "Total Backup Runs",
+      value: summary.totalBackupsRuns.toLocaleString(),
       icon: <Archive className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "archive box",
     },
@@ -72,7 +78,8 @@ export function DashboardSummaryCards({
       icon: <UploadCloud className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "cloud upload",
     },
-    {
+    // Only show Overdue Backups card when not in compact mode
+    ...(viewMode !== 'compact' ? [{
       title: "Overdue Backups",
       value: summary.overdueBackupsCount.toLocaleString(),
       icon: summary.overdueBackupsCount > 0 ? (
@@ -81,12 +88,12 @@ export function DashboardSummaryCards({
         <ThumbsUp className="h-6 w-6 text-green-600" />
       ),
       "data-ai-hint": "alert triangle",
-    },
+    }] : []),
   ];
 
   return (
     <div className="flex gap-3">
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-6 flex-1">
+      <div className={`grid gap-3 md:grid-cols-2 ${viewMode === 'compact' ? 'lg:grid-cols-6' : 'lg:grid-cols-7'} flex-1`}>
         {summaryItems.map((item) => (
           <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">

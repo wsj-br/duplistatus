@@ -47,10 +47,26 @@ const servers = [
   { id: createHash('md5').update('machine-8').digest('hex'), name: 'Test Server 8', alias: 'Mail Server', note: 'Corporate email and messaging system', backupName: 'S8' },
   { id: createHash('md5').update('machine-9').digest('hex'), name: 'Test Server 9', alias: 'CRM System', note: 'Customer relationship management platform', backupName: 'S9' },
   { id: createHash('md5').update('machine-10').digest('hex'), name: 'Test Server 10', alias: 'Monitoring', note: 'Infrastructure monitoring and alerting', backupName: 'S10' },
-  // { id: createHash('md5').update('machine-11').digest('hex'), name: 'Test Server 11', alias: 'Load Balancer', note: 'Traffic distribution and SSL termination', backupName: 'S11' },
-  // { id: createHash('md5').update('machine-12').digest('hex'), name: 'Test Server 12', alias: 'Cache Server', note: 'Redis and Memcached caching layer', backupName: 'S12' },
-  // { id: createHash('md5').update('machine-13').digest('hex'), name: 'Test Server 13', alias: 'CI/CD Pipeline', note: 'Continuous integration and deployment', backupName: 'S13' },
-  // { id: createHash('md5').update('machine-14').digest('hex'), name: 'Test Server 14', alias: 'Security Gateway', note: 'Firewall and intrusion detection system', backupName: 'S14' }
+  { id: createHash('md5').update('machine-11').digest('hex'), name: 'Test Server 11', alias: 'Load Balancer', note: 'Traffic distribution and SSL termination', backupName: 'S11' },
+  { id: createHash('md5').update('machine-12').digest('hex'), name: 'Test Server 12', alias: 'Cache Server', note: 'Redis and Memcached caching layer', backupName: 'S12' },
+  { id: createHash('md5').update('machine-13').digest('hex'), name: 'Test Server 13', alias: 'CI/CD Pipeline', note: 'Continuous integration and deployment', backupName: 'S13' },
+  { id: createHash('md5').update('machine-14').digest('hex'), name: 'Test Server 14', alias: 'Security Gateway', note: 'Firewall and intrusion detection system', backupName: 'S14' },
+  { id: createHash('md5').update('machine-15').digest('hex'), name: 'Test Server 15', alias: 'API Gateway', note: 'REST API management and rate limiting', backupName: 'S15' },
+  { id: createHash('md5').update('machine-16').digest('hex'), name: 'Test Server 16', alias: 'Log Aggregator', note: 'Centralized logging and log analysis', backupName: 'S16' },
+  { id: createHash('md5').update('machine-17').digest('hex'), name: 'Test Server 17', alias: 'DNS Server', note: 'Domain name resolution and DNS management', backupName: 'S17' },
+  { id: createHash('md5').update('machine-18').digest('hex'), name: 'Test Server 18', alias: 'VPN Server', note: 'Remote access and secure tunneling', backupName: 'S18' },
+  { id: createHash('md5').update('machine-19').digest('hex'), name: 'Test Server 19', alias: 'Backup Replica', note: 'Tertiary backup storage for disaster recovery', backupName: 'S19' },
+  { id: createHash('md5').update('machine-20').digest('hex'), name: 'Test Server 20', alias: 'Test Environment', note: 'Automated testing and QA environment', backupName: 'S20' },
+  { id: createHash('md5').update('machine-21').digest('hex'), name: 'Test Server 21', alias: 'Document Server', note: 'Document management and collaboration platform', backupName: 'S21' },
+  { id: createHash('md5').update('machine-22').digest('hex'), name: 'Test Server 22', alias: 'Media Server', note: 'Video streaming and media content delivery', backupName: 'S22' },
+  { id: createHash('md5').update('machine-23').digest('hex'), name: 'Test Server 23', alias: 'Inventory System', note: 'Asset tracking and inventory management', backupName: 'S23' },
+  { id: createHash('md5').update('machine-24').digest('hex'), name: 'Test Server 24', alias: 'Payment Gateway', note: 'Financial transactions and payment processing', backupName: 'S24' },
+  { id: createHash('md5').update('machine-25').digest('hex'), name: 'Test Server 25', alias: 'HR System', note: 'Human resources and employee management', backupName: 'S25' },
+  { id: createHash('md5').update('machine-26').digest('hex'), name: 'Test Server 26', alias: 'DevOps Tools', note: 'Container orchestration and deployment tools', backupName: 'S26' },
+  { id: createHash('md5').update('machine-27').digest('hex'), name: 'Test Server 27', alias: 'Archive Server', note: 'Long-term data archival and compliance storage', backupName: 'S27' },
+  { id: createHash('md5').update('machine-28').digest('hex'), name: 'Test Server 28', alias: 'Reporting Server', note: 'Business intelligence and reporting platform', backupName: 'S28' },
+  { id: createHash('md5').update('machine-29').digest('hex'), name: 'Test Server 29', alias: 'Mobile API', note: 'Mobile application backend services', backupName: 'S29' },
+  { id: createHash('md5').update('machine-30').digest('hex'), name: 'Test Server 30', alias: 'Compliance Server', note: 'Regulatory compliance and audit logging', backupName: 'S30' }
 ];
 
 // Server health check function
@@ -82,24 +98,24 @@ function generateRandomDuration(): string {
 }
 
 // Generate backup dates according to the specified patterns
-function generateBackupDates(serverIndex: number, backupType: string): string[] {
+function generateBackupDates(serverIndex: number, backupJob: string): string[] {
   const dates: string[] = [];
   const now = new Date();
   const isOddServer = (serverIndex + 1) % 2 === 1;
   
-  // Generate a time offset based on backup type to ensure different timestamps
-  const backupTypeOffsets: { [key: string]: number } = {
+  // Generate a time offset based on backup job to ensure different timestamps
+  const backupJobOffsets: { [key: string]: number } = {
     'Files': 0,        // No offset
     'Databases': 15,   // 15 minutes later
     'System': 30,      // 30 minutes later
     'Users': 45        // 45 minutes later
   };
-  const timeOffsetMinutes = backupTypeOffsets[backupType] || 0;
+  const timeOffsetMinutes = backupJobOffsets[backupJob] || 0;
   
   // Start with today (in the past)
   const today = new Date(now);
   today.setDate(today.getDate() - 1); // Yesterday to ensure it's in the past
-  today.setMinutes(today.getMinutes() + timeOffsetMinutes); // Add backup type offset
+  today.setMinutes(today.getMinutes() + timeOffsetMinutes); // Add backup job offset
   dates.push(today.toISOString());
   
   if (isOddServer) {
@@ -213,7 +229,7 @@ function generateMessageArrays(warningsCount: number, errorsCount: number, messa
 }
 
 // Modify the generateBackupPayload function
-function generateBackupPayload(server: typeof servers[0], backupNumber: number, beginTime: string, backupType: string = "Backup") {
+function generateBackupPayload(server: typeof servers[0], backupNumber: number, beginTime: string, backupJob: string = "Backup") {
   const endTime = new Date(new Date(beginTime).getTime() + Math.random() * 7200000);
   const duration = generateRandomDuration();
   const stats = generateRandomFileStats();
@@ -286,20 +302,33 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
       }
     },
     Extra: {
-      OperationName: backupType,
+      OperationName: backupJob,
       'machine-id': server.id,
       'machine-name': server.name,
-      'backup-name': backupType,
+      'backup-name': backupJob,
       'backup-id': `DB-${backupNumber}`
     }
   };
 }
 
 // Parse command line arguments
-function parseArgs(): { useUpload: boolean } {
+function parseArgs(): { useUpload: boolean; machineCount: number } {
   const args = process.argv.slice(2);
   const useUpload = args.includes('--upload');
-  return { useUpload };
+  
+  // Parse machine count parameter
+  let machineCount = 30; // Default value
+  const machineCountArg = args.find(arg => arg.startsWith('--machines='));
+  if (machineCountArg) {
+    const count = parseInt(machineCountArg.split('=')[1], 10);
+    if (!isNaN(count) && count >= 1 && count <= 30) {
+      machineCount = count;
+    } else {
+      console.error('🚨 Invalid machine count. Must be between 1 and 30. Using default value of 30.');
+    }
+  }
+  
+  return { useUpload, machineCount };
 }
 
 // Function to write backup data directly to database
@@ -420,7 +449,7 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
   }
 }
 
-// Function to cleanup backups - keep only 5-8 random backups for 1 random backup type from 2 random servers
+// Function to cleanup backups - keep only 5-8 random backups for 1 random backup job from 2 random servers
 async function cleanupBackupsForUserManual(){
   console.log('\n  🧹 Cleaning up backups for user manual demonstration...');
   
@@ -437,35 +466,35 @@ async function cleanupBackupsForUserManual(){
   
   for (const server of selectedServers) {
     try {
-      // Get all backup types that exist for this server
-      const backupTypesResult = db.prepare(`
+      // Get all backup jobs that exist for this server
+      const backupJobsResult = db.prepare(`
         SELECT DISTINCT backup_name FROM backups 
         WHERE server_id = ?
         ORDER BY backup_name
       `).all(server.id) as { backup_name: string }[];
       
-      const availableBackupTypes = backupTypesResult.map(row => row.backup_name);
+      const availableBackupJobs = backupJobsResult.map(row => row.backup_name);
       
-      if (availableBackupTypes.length === 0) {
+      if (availableBackupJobs.length === 0) {
         console.log(`      ⚠️  ${server.name}: No backups found, skipping...`);
         continue;
       }
       
-      // Select 1 random backup type from the available ones for this server
-      const selectedBackupType = availableBackupTypes[Math.floor(Math.random() * availableBackupTypes.length)];
+      // Select 1 random backup job from the available ones for this server
+      const selectedBackupJob = availableBackupJobs[Math.floor(Math.random() * availableBackupJobs.length)];
       
-      console.log(`      📁 ${server.name} - Selected backup type: ${selectedBackupType} (from available: ${availableBackupTypes.join(', ')})`);
+      console.log(`      📁 ${server.name} - Selected backup job: ${selectedBackupJob} (from available: ${availableBackupJobs.join(', ')})`);
       
       // Count total backups for this server-backup combination
       const countResult = db.prepare(`
         SELECT COUNT(*) as total FROM backups 
         WHERE server_id = ? AND backup_name = ?
-      `).get(server.id, selectedBackupType) as { total: number };
+      `).get(server.id, selectedBackupJob) as { total: number };
       
       const totalBackups = countResult.total;
       
       if (totalBackups <= backupsToKeep) {
-        console.log(`      ✅ ${server.name} - ${selectedBackupType}: Only ${totalBackups} backups exist, no cleanup needed`);
+        console.log(`      ✅ ${server.name} - ${selectedBackupJob}: Only ${totalBackups} backups exist, no cleanup needed`);
         continue;
       }
       
@@ -480,9 +509,9 @@ async function cleanupBackupsForUserManual(){
           ORDER BY date DESC 
           LIMIT -1 OFFSET ?
         )
-      `).run(server.id, selectedBackupType, backupsToKeep);
+      `).run(server.id, selectedBackupJob, backupsToKeep);
       
-      console.log(`      🗑️  ${server.name} - ${selectedBackupType}: Deleted ${deleteResult.changes} backups, kept ${backupsToKeep} most recent`);
+      console.log(`      🗑️  ${server.name} - ${selectedBackupJob}: Deleted ${deleteResult.changes} backups, kept ${backupsToKeep} most recent`);
       
     } catch (error) {
       console.error(`      🚨 Error cleaning up backups for ${server.name}:`, 
@@ -597,10 +626,10 @@ async function cleanupBackupsForUserManual(){
 }
 
 // Main function to send test data
-async function sendTestData(useUpload: boolean = false) {
+async function sendTestData(useUpload: boolean = false, machineCount: number = 30) {
   const API_URL = 'http://localhost:8666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
-  const BACKUP_TYPES = ['Files', 'Databases', 'System', 'Users'];
+  const BACKUP_JOBS = ['Files', 'Databases', 'System', 'Users'];
 
   // Clean database tables before generating test data 
   const cleanupSuccess = await cleanDatabaseTables();
@@ -623,17 +652,17 @@ async function sendTestData(useUpload: boolean = false) {
     console.log('  💾 Writing directly to database...');
   }
 
-  for (let serverIndex = 0; serverIndex < servers.length; serverIndex++) {
+  for (let serverIndex = 0; serverIndex < Math.min(machineCount, servers.length); serverIndex++) {
     const server = servers[serverIndex];
     const isOddMachine = (serverIndex + 1) % 2 === 1;
     
-    // Randomly select a subset of backup types for this server
-    // 70% chance of 2 types, 30% chance of 3-4 types
+    // Randomly select a subset of backup jobs for this server
+    // 70% chance of 2 jobs, 30% chance of 3-4 jobs
     const randomBackupCount = Math.random() < 0.6 
       ? 2 
-      : Math.floor(Math.random() * 2) + 3; // 3 or 4 types  
-    const shuffledBackupTypes = [...BACKUP_TYPES].sort(() => Math.random() - 0.5);
-    const selectedBackupTypes = shuffledBackupTypes.slice(0, randomBackupCount);
+      : Math.floor(Math.random() * 2) + 3; // 3 or 4 jobs  
+    const shuffledBackupJobs = [...BACKUP_JOBS].sort(() => Math.random() - 0.5);
+    const selectedBackupJobs = shuffledBackupJobs.slice(0, randomBackupCount);
     
     const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
     console.log(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddMachine ? 'Odd' : 'Even'} server pattern)...`);
@@ -641,17 +670,17 @@ async function sendTestData(useUpload: boolean = false) {
       console.log(`      📝 Note: ${server.note}`);
     }
     console.log(`      📅 Pattern: ${isOddMachine ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
-    console.log(`      🎯 Selected backup types (${selectedBackupTypes.length}/${BACKUP_TYPES.length}): ${selectedBackupTypes.join(', ')}`);
+    console.log(`      🎯 Selected backup jobs (${selectedBackupJobs.length}/${BACKUP_JOBS.length}): ${selectedBackupJobs.join(', ')}`);
     
-    for (const backupType of selectedBackupTypes) {
-      // Generate backup dates for this specific backup type
-      const backupDates = generateBackupDates(serverIndex, backupType);
-      console.log(`        📁 Generating ${backupDates.length} ${backupType} backups...`);
+    for (const backupJob of selectedBackupJobs) {
+      // Generate backup dates for this specific backup job
+      const backupDates = generateBackupDates(serverIndex, backupJob);
+      console.log(`        📁 Generating ${backupDates.length} ${backupJob} backups...`);
       
       for (let i = 0; i < backupDates.length; i++) {
         const backupNumber = i + 1;
         const beginTime = backupDates[i];
-        const payload = generateBackupPayload(server, backupNumber, beginTime, backupType);
+        const payload = generateBackupPayload(server, backupNumber, beginTime, backupJob);
         
         try {
           const backupDate = new Date(beginTime).toLocaleDateString();
@@ -681,7 +710,7 @@ async function sendTestData(useUpload: boolean = false) {
             success = await writeBackupToDatabase(payload);
           }
 
-          console.log(`          📄 ${backupType} Backup ${backupNumber}/${backupDates.length} for ${server.name} (${backupDate}): ${success ? 'Success' : 'Failed'}`);
+          console.log(`          📄 ${backupJob} Backup ${backupNumber}/${backupDates.length} for ${server.name} (${backupDate}): ${success ? 'Success' : 'Failed'}`);
         } catch (error) {
           console.error(`🚨 Error processing backup ${backupNumber} for ${server.name}:`, error instanceof Error ? error.message : String(error));
         }
@@ -703,7 +732,7 @@ async function sendTestData(useUpload: boolean = false) {
 }
 
 // Run the script
-const { useUpload } = parseArgs();
+const { useUpload, machineCount } = parseArgs();
 
 console.log('🛫 Starting test data generation...\n');
 if (useUpload) {
@@ -711,16 +740,17 @@ if (useUpload) {
 } else {
   console.log('  💾 Mode: Direct database write');
 }
+console.log(`  🖥️  Generating data for ${machineCount} machine(s) (out of ${servers.length} available)`);
 console.log('  🧹 Database cleanup: Will clear servers, backups, and configurations tables before generation');
 console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd servers: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
 console.log('     • Even servers: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
-console.log('     • Random backup types per server (1-3 types from: Files, Databases, System)');
+console.log('     • Random backup jobs per server (1-3 jobs from: Files, Databases, System)');
 console.log('     • Servers include alias and note fields for testing');
-console.log('     • After generation: Random cleanup some servers/backup types and last backups for the user manual screenshots\n');
+console.log('     • After generation: Random cleanup some servers/backup jobs and last backups for the user manual screenshots\n');
 
 
-sendTestData(useUpload).then(() => {
+sendTestData(useUpload, machineCount).then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {
   console.error('🚨 Error generating test data:', error instanceof Error ? error.message : String(error));

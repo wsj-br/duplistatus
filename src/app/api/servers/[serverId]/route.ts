@@ -4,11 +4,14 @@ import { NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ serverId: string }> }
 ) {
   try {
     const { serverId } = await params;
+    const { searchParams } = new URL(request.url);
+    const includeBackups = searchParams.get('includeBackups') === 'true';
+    const includeChartData = searchParams.get('includeChartData') === 'true';
     
     const server = await dbUtils.getServerById(serverId);
     
@@ -16,6 +19,18 @@ export async function GET(
       return NextResponse.json({ error: 'Server not found' }, { status: 404 });
     }
     
+    // If no specific data is requested, return basic server info
+    if (!includeBackups && !includeChartData) {
+      return NextResponse.json({
+        id: server.id,
+        name: server.name,
+        alias: server.alias,
+        note: server.note,
+        server_url: server.server_url
+      });
+    }
+    
+    // Return full server data if any additional data is requested
     return NextResponse.json(server);
   } catch (error) {
     console.error('Error fetching server:', error instanceof Error ? error.message : String(error));

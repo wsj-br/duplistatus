@@ -30,7 +30,7 @@ interface BackupRecord {
   available_backups: string | null;
 }
 
-function mapBackupToType(backup: BackupRecord): Backup {
+function mapBackupToJob(backup: BackupRecord): Backup {
   return {
     id: backup.id,
     server_id: backup.server_id,
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
         backup_id: server.backup_id,
         created_at: server.created_at
       },
-      latest_backup: mapBackupToType(latestBackup),
+      latest_backup: mapBackupToJob(latestBackup),
       status: 200
     });
   } catch (error) {

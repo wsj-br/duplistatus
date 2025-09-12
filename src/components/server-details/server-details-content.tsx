@@ -6,8 +6,6 @@ import { ServerDetailSummaryItems } from "@/components/server-details/server-det
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
 import type { Server } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 interface OverdueBackup {
@@ -96,6 +94,9 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
   const lastBackupListCount = backup_list_count;
   const lastBackupFileSize = fileSize;
 
+  // Calculate total unique backup jobs (configurations)
+  const totalBackupJobs = new Set(server.backups.map(backup => backup.name)).size;
+
   // Handle backup deletion
   const handleBackupDeleted = async () => {
     try {
@@ -130,7 +131,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
         </CardHeader>
         <CardContent>
           <ServerDetailSummaryItems
-            totalBackups={selectedBackupTotal}
+            totalBackupsRuns={selectedBackupTotal}
             averageDuration={averageDuration}
             totalUploadedSize={totalUploadedSize}
             lastBackupStorageSize={lastBackupStorageSize}
@@ -138,7 +139,8 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
             lastBackupFileSize={lastBackupFileSize}
             selectedBackup={selectedBackup}
             overdueBackups={overdueBackups}
-                          lastOverdueCheck={lastOverdueCheck}
+            lastOverdueCheck={lastOverdueCheck}
+            totalBackupJobs={totalBackupJobs}
           />
         </CardContent>
       </Card>
@@ -151,16 +153,6 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
               ? <>List of all <span className="text-primary font-medium">{selectedBackup.name}</span> backups</>
               : <>List of all backups for  <span className="text-primary font-medium">{server.alias || server.name}</span></>
             }
-            <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger>
-                  <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Last refresh: --</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -1,12 +1,12 @@
 {
   "name": "duplistatus",
-  "version": "0.7.20.dev",
+  "version": "0.7.21.dev",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.0",
   "engines": {
-    "node": ">=18.19.0",
-    "pnpm": ">=10.12.4"
+    "node": ">=20.19.0",
+    "pnpm": ">=10.15.0"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -59,7 +59,7 @@
     "date-fns": "^4.1.0",
     "express": "^5.1.0",
     "framer-motion": "^12.23.12",
-    "lucide-react": "^0.543.0",
+    "lucide-react": "^0.544.0",
     "next": "^15.5.3",
     "node-cron": "^4.2.1",
     "react": "^19.1.1",

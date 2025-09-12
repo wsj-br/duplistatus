@@ -30,6 +30,7 @@ export async function GET() {
 
     const response = {
       totalServers: summary.totalServers || 0,
+      totalBackupsRuns: summary.totalBackupsRuns || 0,
       totalBackups: summary.totalBackups || 0,
       totalUploadedSize: summary.totalUploadedSize || 0,
       totalStorageUsed: summary.totalStorageUsed || 0,
@@ -40,19 +41,12 @@ export async function GET() {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching summary:', error instanceof Error ? error.message : String(error));
-    
-    // Return a fallback response instead of an error to prevent JSON parsing issues
-    const fallbackResponse = {
-      totalServers: 0,
-      totalBackups: 0,
-      totalUploadedSize: 0,
-      totalStorageUsed: 0,
-      totalBackupSize: 0,
-      overdueBackupsCount: 0,
-      secondsSinceLastBackup: null
-    };
-    
-    return NextResponse.json(fallbackResponse);
+    console.error('Error fetching summary:',
+      error instanceof Error ? error.message : String(error)
+    );
+    return NextResponse.json(
+      { error: 'Failed to fetch summary data' },
+      { status: 500 }
+    );
   }
-} 
+}

@@ -148,17 +148,8 @@ export function ServerBackupTable({ backups, serverName, serverAlias, onBackupDe
 
   // Check development mode on component mount
   useEffect(() => {
-    const checkDevMode = async () => {
-      try {
-        const devMode = await isDevelopmentMode();
-        setIsDevMode(devMode);
-      } catch (error) {
-        console.warn('Failed to check development mode:', error);
-        setIsDevMode(false);
-      }
-    };
-    
-    checkDevMode();
+    const devMode = isDevelopmentMode();
+    setIsDevMode(devMode);
   }, []);
 
   const handleNextPage = () => {

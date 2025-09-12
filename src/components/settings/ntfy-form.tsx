@@ -60,7 +60,10 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ntfyConfig: formData }),
+        body: JSON.stringify({ 
+          type: 'simple',
+          ntfyConfig: formData 
+        }),
       });
 
       if (!response.ok) {

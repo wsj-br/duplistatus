@@ -42,7 +42,7 @@ function getBackupKey(serverId: string, backupName: string): BackupKey {
 
 
 // Helper function to check if a backup is overdue based on expected interval
-function isBackupOverdueByInterval(serverId: string, backupName: string, lastBackupDate: string | null): boolean {
+export function isBackupOverdueByInterval(serverId: string, backupName: string, lastBackupDate: string | null): boolean {
   try {
     if (!lastBackupDate || lastBackupDate === 'N/A') return false;
     
@@ -485,6 +485,7 @@ export function getAllServers() {
 
 interface OverallSummaryRow {
   total_servers: number;
+  total_backups_runs: number;
   total_backups: number;
   total_uploaded_size: number;
   total_storage_used: number;
@@ -579,6 +580,7 @@ export function getOverallSummary() {
       if (!summary) {
         return {
           totalServers: 0,
+          totalBackupsRuns: 0,
           totalBackups: 0,
           totalUploadedSize: 0,
           totalStorageUsed: 0,
@@ -597,6 +599,7 @@ export function getOverallSummary() {
 
       return {
         totalServers: summary.total_servers,
+        totalBackupsRuns: summary.total_backups_runs,
         totalBackups: summary.total_backups,
         totalUploadedSize: summary.total_uploaded_size,
         totalStorageUsed: summary.total_storage_used,
@@ -611,6 +614,7 @@ export function getOverallSummary() {
     // Return a fallback instead of throwing
     return {
       totalServers: 0,
+      totalBackupsRuns: 0,
       totalBackups: 0,
       totalUploadedSize: 0,
       totalStorageUsed: 0,
@@ -670,6 +674,7 @@ export function getServerById(serverId: string) {
         name: server.name,
         alias: server.alias || '',
         note: server.note || '',
+        server_url: server.server_url || '',
         backups: formattedBackups,
         chartData
       };
@@ -934,7 +939,7 @@ export function getServersSummary() {
           });
         }
         
-        // Add backup type data
+        // Add backup job data
         const backupInfo = {
           name: row.backup_name,
           lastBackupDate: row.last_backup_date || 'N/A',
@@ -971,7 +976,7 @@ export function getServersSummary() {
         server.totalFileSize += row.file_size || 0;
         server.totalUploadedSize += row.uploaded_size || 0;
         
-        // Update latest backup info (use the most recent backup across all types)
+        // Update latest backup info (use the most recent backup across all jobs)
         if (row.last_backup_date && (server.lastBackupDate === 'N/A' || new Date(row.last_backup_date) > new Date(server.lastBackupDate))) {
           server.lastBackupDate = row.last_backup_date;
           server.lastBackupStatus = row.last_backup_status || 'N/A';
@@ -982,9 +987,9 @@ export function getServersSummary() {
         
       });
       
-      // Process each server to add overdue status and other derived data per backup type
+      // Process each server to add overdue status and other derived data per backup job
       const result = Array.from(serverMap.values()).map(server => {
-        // Process each backup type to add overdue status and other derived data
+        // Process each backup job to add overdue status and other derived data
         server.backupInfo = server.backupInfo.map(thisBackupInfo => {
           let isOverdue = false;
           let expectedBackupDate = 'N/A';
@@ -1012,7 +1017,7 @@ export function getServersSummary() {
             }
           }
           
-          // Get notification event for this backup type
+          // Get notification event for this backup job
           const notificationEvent = getNotificationEvent(server.id, thisBackupInfo.name);
           
           // Get last notification sent (if any)

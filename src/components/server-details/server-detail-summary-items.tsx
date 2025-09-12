@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, Settings } from "lucide-react";
+import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, Settings, FolderOpen } from "lucide-react";
 import { formatBytes, formatDurationFromMinutes, formatTimeAgo } from "@/lib/utils";
 import type { Backup } from "@/lib/types";
 
@@ -21,7 +21,7 @@ interface OverdueBackup {
 }
 
 interface ServerDetailSummaryItemsProps {
-  totalBackups: number;
+  totalBackupsRuns: number;
   statusCounts?: Record<BackupStatus, number>;
   averageDuration: number; // in minutes
   totalUploadedSize: number; // in bytes
@@ -31,10 +31,11 @@ interface ServerDetailSummaryItemsProps {
   selectedBackup?: Backup | null; // Add this prop for selected backup data
   overdueBackups: OverdueBackup[]; // Add overdue backups as prop
   lastOverdueCheck?: string; // Time of last overdue backup check
+  totalBackupJobs?: number; // Total number of unique backup job configurations
 }
 
 export function ServerDetailSummaryItems({
-  totalBackups,
+  totalBackupsRuns,
   averageDuration,
   totalUploadedSize,
   lastBackupStorageSize,
@@ -43,6 +44,7 @@ export function ServerDetailSummaryItems({
   selectedBackup,
   overdueBackups,
   lastOverdueCheck,
+  totalBackupJobs,
 }: ServerDetailSummaryItemsProps) {
   const router = useRouter();
   // Use a try/catch for each item to ensure nothing breaks
@@ -85,12 +87,23 @@ export function ServerDetailSummaryItems({
 
 
   const getSummaryItems = () => {
- 
-    // Show aggregate statistics for all backups (or selected backup)
-    return [
+    const items = [];
+
+    // Add total Backup Jobs card first when no specific backup is selected
+    if (!selectedBackup && totalBackupJobs !== undefined) {
+      items.push({
+        title: "Total Backup Jobs",
+        value: getFormattedNumber(totalBackupJobs),
+        icon: <FolderOpen className="h-4 w-4 text-blue-600" />,
+        "data-ai-hint": "folder backup jobs"
+      });
+    }
+
+    // Add the rest of the items
+    items.push(
       { 
-        title: "Total Backups", 
-        value: getFormattedNumber(totalBackups),
+        title: "Total Backup Runs", 
+        value: getFormattedNumber(totalBackupsRuns),
         icon: <Archive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "archive storage" 
       },
@@ -124,7 +137,9 @@ export function ServerDetailSummaryItems({
         icon: <UploadCloud className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "cloud data" 
       }
-    ];
+    );
+
+    return items;
   };
 
   const summaryItems = getSummaryItems();
@@ -140,7 +155,7 @@ export function ServerDetailSummaryItems({
           {selectedBackup ? `${selectedBackup.name} Statistics` : 'Machine Statistics'}
         </h3>
         
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 lg:gap-3">
+        <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 ${!selectedBackup ? 'lg:grid-cols-7' : 'lg:grid-cols-6'} gap-2 lg:gap-3`}>
           {summaryItems.map((item) => (
             <Card key={item.title} className="shadow-sm" data-ai-hint={item['data-ai-hint']}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 py-1.5 px-2 lg:px-3">

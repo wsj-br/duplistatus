@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react';
-import type { BackupStatus, ServerSummary, NotificationEvent } from "@/lib/types";
+import type { BackupStatus, ServerSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { formatTimeAgo, formatBytes, formatShortTimeAgo } from "@/lib/utils";
-import { HardDrive, AlertTriangle, Settings, Download, ChevronLeft, ChevronRight, MessageSquareMore, MessageSquareOff } from "lucide-react";
+import { HardDrive, AlertTriangle, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
+import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
 
 
 const MIN_CARD_WIDTH = 230;         // the minimum width of a card
@@ -21,20 +22,20 @@ const CARD_WIDTH_SHOW_PARTIAL = 50; // the width of the partial card
 // Helper function to get overall server status
 function getServerStatus(server: ServerSummary): BackupStatus {
   // Check if any backup has an error or fatal status
-  const hasErrorOrFatal = server.backupInfo.some(backupType => 
-    backupType.lastBackupStatus === 'Error' || backupType.lastBackupStatus === 'Fatal'
+  const hasErrorOrFatal = server.backupInfo.some(backupJob => 
+    backupJob.lastBackupStatus === 'Error' || backupJob.lastBackupStatus === 'Fatal'
   );
   if (hasErrorOrFatal) {
     return 'Error';
   }
   
   // Check if any backup has a warning status
-  const hasWarning = server.backupInfo.some(backupType => 
-    backupType.lastBackupStatus === 'Warning'
+  const hasWarning = server.backupInfo.some(backupJob => 
+    backupJob.lastBackupStatus === 'Warning'
   );
   
-  // Check if any backup type is overdue
-  const hasOverdueBackup = server.backupInfo.some(backupType => backupType.isBackupOverdue);
+  // Check if any backup job is overdue
+  const hasOverdueBackup = server.backupInfo.some(backupJob => backupJob.isBackupOverdue);
   
   if (hasWarning || hasOverdueBackup) {
     return 'Warning';
@@ -42,8 +43,8 @@ function getServerStatus(server: ServerSummary): BackupStatus {
   
   // Check if all backup statuses are success
   const allBackupsHaveStatus = server.backupInfo.length > 0;
-  const allBackupsSuccess = allBackupsHaveStatus && server.backupInfo.every(backupType => 
-    backupType.lastBackupStatus === 'Success'
+  const allBackupsSuccess = allBackupsHaveStatus && server.backupInfo.every(backupJob => 
+    backupJob.lastBackupStatus === 'Success'
   );
   
   if (allBackupsSuccess && !hasOverdueBackup) {
@@ -54,7 +55,7 @@ function getServerStatus(server: ServerSummary): BackupStatus {
 }
 
 // Helper function to get status color for backup status bars
-function getStatusColor(status: BackupStatus): string {
+function getStatusColorForBar(status: BackupStatus): string {
   switch (status) {
     case 'Success':
       return 'bg-green-500';
@@ -65,24 +66,6 @@ function getStatusColor(status: BackupStatus): string {
       return 'bg-red-500';
     default:
       return 'bg-gray-400';
-  }
-}
-
-// Helper function to get notification icon
-function getNotificationIcon(notificationEvent: NotificationEvent | undefined) {
-  if (!notificationEvent) return null;
-  
-  switch (notificationEvent) {
-    case 'errors':
-      return <MessageSquareMore className="h-4 w-4 text-red-400" />;
-    case 'warnings':
-      return <MessageSquareMore className="h-4 w-4 text-yellow-400" />;
-    case 'all':
-      return <MessageSquareMore className="h-4 w-4 text-blue-400" />;
-    case 'off':
-      return <MessageSquareOff className="h-4 w-4 text-gray-400" />;
-    default:
-      return null;
   }
 }
 
@@ -128,7 +111,7 @@ function BackupStatusBar({ statusHistory }: { statusHistory: BackupStatus[] }) {
         />
       ))}
       {recentStatuses.map((status, index) => {
-        const statusColor = getStatusColor(status);  
+        const statusColor = getStatusColorForBar(status);  
         return (
           <div 
             key={index} 
@@ -229,42 +212,42 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
           </section>
         </div>
 
-        {/* Backup List - Each backup type on its own row */}
+        {/* Backup List - Each backup job on its own row */}
         <section className="space-y-0.5 flex-1 flex flex-col mt-auto">
           <h3 className="text-xs text-muted-foreground font-medium">Backups:</h3>
           {server.backupInfo.length > 0 ? (
             <div className="flex-1 flex flex-col divide-y divide-border/30">
-              {server.backupInfo.map((backupType, index) => (
+              {server.backupInfo.map((backupJob, index) => (
                 <Tooltip key={index} delayDuration={1000}>
                   <TooltipTrigger asChild>
                       <div 
                         className="grid grid-cols-[45%_25%_30%] cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-1 -mx-1"
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/detail/${server.id}?backup=${encodeURIComponent(backupType.name)}`);
+                          router.push(`/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
                         }}
                       >
-                        {/* Backup type name */}
+                        {/* Backup job name */}
                         <div className="text-left text-xs truncate">
-                          {backupType.name}
+                          {backupJob.name}
                         </div>
                         {/* Status bar using actual backup history */}
                         <div className="flex justify-center items-center">
-                          <BackupStatusBar statusHistory={backupType.statusHistory} />
+                          <BackupStatusBar statusHistory={backupJob.statusHistory} />
                         </div>
 
                         {/* Overdue icon and time ago */}
                         <div className="flex items-center gap-1 justify-end">
                           
                           {/* Overdue icon */}
-                          {backupType.isBackupOverdue && (
+                          {backupJob.isBackupOverdue && (
                             <AlertTriangle className="h-3 w-3 text-red-500 flex-shrink-0" />
                           )}
 
-                          {/* Time ago - use backup type's last backup date */}
+                          {/* Time ago - use backup job's last backup date */}
                           <span className="text-muted-foreground text-xs truncate">
-                            {backupType.lastBackupDate !== "N/A" 
-                              ? formatShortTimeAgo(backupType.lastBackupDate)
+                            {backupJob.lastBackupDate !== "N/A" 
+                              ? formatShortTimeAgo(backupJob.lastBackupDate)
                               : "N/A"}
                           </span>
 
@@ -290,142 +273,31 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                         e.preventDefault();
                       }}
                     >
-                      <div className="font-bold text-sm text-left flex items-center justify-between">
-                        <span>{server.alias || server.name} : {backupType.name}</span>
-                        {backupType.notificationEvent && (
-                          <div className="inline-block mr-2">
-                            {getNotificationIcon(backupType.notificationEvent as NotificationEvent)}
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-xs text-muted-foreground text-left -mt-3">
-                        {server.note || `(${server.id})`}
-                      </div>
-
-                      <div className="space-y-2 border-t pt-3">
-                        <div className="text-bold mb-4">Last Backup Details</div>
-                        
-                        <div className="grid grid-cols-[65%_35%] gap-x-3 gap-y-2 text-xs">
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Date:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.lastBackupDate !== "N/A" 
-                                ? new Date(backupType.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.lastBackupDate) + ")"
-                                : "N/A"}
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Status:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.lastBackupStatus !== "N/A" 
-                                ? backupType.lastBackupStatus
-                                : "N/A"}
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Duration:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.lastBackupDuration !== null && backupType.lastBackupDuration !== undefined
-                                ? backupType.lastBackupDuration
-                                : "N/A"}
-                            </div>
-                          </div>
-                                                    
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Files:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.fileCount !== null && backupType.fileCount !== undefined
-                                ? backupType.fileCount.toLocaleString()
-                                : "N/A"}
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Size:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.fileSize !== null && backupType.fileSize !== undefined
-                                ? formatBytes(backupType.fileSize)
-                                : "N/A"}
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Storage:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.storageSize !== null && backupType.storageSize !== undefined
-                                ? formatBytes(backupType.storageSize)
-                                : "N/A"}
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Uploaded:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.uploadedSize !== null && backupType.uploadedSize !== undefined
-                                ? formatBytes(backupType.uploadedSize)
-                                : "N/A"}
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="text-muted-foreground text-left mb-1">Versions:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.lastBackupListCount !== null && backupType.lastBackupListCount !== undefined
-                                ? backupType.lastBackupListCount.toLocaleString()
-                                : "N/A"}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                        
-                      {/* Overdue information section */}
-                      {backupType.isBackupOverdue && (
-                        <div className="border-t pt-3 space-y-3">
-                          <div className="font-semibold text-sm text-red-600 flex items-center gap-2">
-                            <AlertTriangle className="h-4 w-4" />
-                            Backup Overdue
-                          </div>
-                          
-                          <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
-                            <div className="text-muted-foreground text-right">Expected:</div>
-                            <div className="font-semibold text-left">
-                              {backupType.expectedBackupDate !== "N/A" 
-                                ? new Date(backupType.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(backupType.expectedBackupDate) + ")"
-                                : "N/A"}
-                            </div>
-                          </div>
-                          
-                          <div className="border-t pt-2 flex items-center gap-2">
-                            <button 
-                              className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push('/settings?tab=backups');
-                              }}
-                            >
-                              <Settings className="h-3 w-3" />
-                              <span>Overdue configuration</span>
-                            </button>
-                            <ServerConfigurationButton 
-                              className="text-xs !p-1" 
-                              variant="ghost"
-                              size="sm"
-                              serverUrl={server.server_url}
-                              serverName={server.name}
-                              serverAlias={server.alias}
-                              showText={true} 
-                            />
-                          </div>
-                        </div>
-                      )}
+                      <BackupTooltipContent
+                        serverAlias={server.alias}
+                        serverName={server.name}
+                        serverId={server.id}
+                        serverNote={server.note}
+                        serverUrl={server.server_url}
+                        backupName={backupJob.name}
+                        lastBackupDate={backupJob.lastBackupDate}
+                        lastBackupStatus={backupJob.lastBackupStatus}
+                        lastBackupDuration={backupJob.lastBackupDuration}
+                        lastBackupListCount={backupJob.lastBackupListCount}
+                        fileCount={backupJob.fileCount}
+                        fileSize={backupJob.fileSize}
+                        storageSize={backupJob.storageSize}
+                        uploadedSize={backupJob.uploadedSize}
+                        isOverdue={backupJob.isBackupOverdue}
+                        expectedBackupDate={backupJob.expectedBackupDate}
+                        notificationEvent={backupJob.notificationEvent}
+                      />
                     </TooltipContent>
                   </Tooltip>
               ))}
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground italic">No backup types available</div>
+            <div className="text-xs text-muted-foreground italic">No backup jobs available</div>
           )}
         </section>
       </CardContent>

@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.20.dev-blue)
+![](https://img.shields.io/badge/version-0.7.21.dev-blue)
 
 <br>
 
@@ -43,40 +43,32 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Latest Backup](#get-latest-backup)
   - [Get Latest Backups](#get-latest-backups)
   - [Get Overall Summary](#get-overall-summary)
-  - [Get Servers Summary](#get-servers-summary)
+  - [Get Dashboard Data (Consolidated)](#get-dashboard-data-consolidated)
   - [Get All Servers](#get-all-servers)
-  - [Get Servers with Backups](#get-servers-with-backups)
   - [Get Server Details](#get-server-details)
   - [Update Server](#update-server)
   - [Delete Server](#delete-server)
   - [Get Server Data with Overdue Info](#get-server-data-with-overdue-info)
-  - [Get Chart Data](#get-chart-data)
 - [Chart Data](#chart-data)
-  - [Get All Servers Chart Data](#get-all-servers-chart-data)
   - [Get Aggregated Chart Data](#get-aggregated-chart-data)
   - [Get Server Chart Data](#get-server-chart-data)
   - [Get Server Backup Chart Data](#get-server-backup-chart-data)
 - [Configuration Management](#configuration-management)
-  - [Get Configuration](#get-configuration)
   - [Get Unified Configuration](#get-unified-configuration)
   - [Update Notification Configuration](#update-notification-configuration)
   - [Update Backup Settings](#update-backup-settings)
   - [Update Notification Templates](#update-notification-templates)
   - [Update Overdue Tolerance](#update-overdue-tolerance)
-  - [Get Server Connections](#get-server-connections)
 - [Notification System](#notification-system)
   - [Test Notification](#test-notification)
-  - [Test Template](#test-template)
   - [Check Overdue Backups](#check-overdue-backups)
   - [Clear Overdue Timestamps](#clear-overdue-timestamps)
-  - [Resend Frequency Configuration](#resend-frequency-configuration)
 - [Cron Service Management](#cron-service-management)
   - [Get Cron Configuration](#get-cron-configuration)
   - [Update Cron Configuration](#update-cron-configuration)
   - [Cron Service Proxy](#cron-service-proxy)
 - [Monitoring & Health](#monitoring--health)
   - [Health Check](#health-check)
-  - [Environment Information](#environment-information)
 - [Administration](#administration)
   - [Collect Backups](#collect-backups)
   - [Cleanup Backups](#cleanup-backups)
@@ -256,7 +248,7 @@ All API responses are returned in JSON format with consistent error handling pat
         "available_backups": ["v1", "v2"]
       }
     ],
-    "backup_types_count": 2,
+    "backup_jobs_count": 2,
     "backup_names": ["Files", "Databases"],
     "status": 200
   }
@@ -266,7 +258,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - `500`: Internal server error
 - **Notes**:
   - Machine identifier can be either ID or name
-  - Returns latest backup for each backup type (backup_name) that the machine has
+  - Returns latest backup for each backup job (backup_name) that the machine has
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup
   - Includes cache control headers to prevent caching
 
@@ -275,7 +267,7 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Get Overall Summary
 - **Endpoint**: `/api/summary`
 - **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all machines.
+- **Description**: Retrieves a summary of all backup operations across all machines. This endpoint is maintained for external applications and backward compatibility.
 - **Response**:
   ```json
   {
@@ -296,52 +288,80 @@ All API responses are returned in JSON format with consistent error handling pat
   - The field `overdueBackupsCount` shows the number of currently overdue backups
   - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
   - Returns fallback response with zeros if data fetching fails
+  - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
 
 <br>
 
-### Get Servers Summary
-- **Endpoint**: `/api/servers-summary`
+### Get Dashboard Data (Consolidated)
+- **Endpoint**: `/api/dashboard`
 - **Method**: GET
-- **Description**: Retrieves a summary of all servers with their latest backup information and overdue status.
+- **Description**: Retrieves all dashboard data in a single consolidated response, including server summaries, overall summary, and chart data.
 - **Response**:
   ```json
-  [
-    {
-      "id": "server-id",
-      "name": "Server Name",
-      "lastBackupDate": "2024-03-20T10:00:00Z",
-      "lastBackupStatus": "Success",
-      "lastBackupDuration": "00:38:31",
-      "lastBackupListCount": 10,
-      "lastBackupName": "Backup Name",
-      "lastBackupId": "backup-id",
-      "backupCount": 15,
-      "totalWarnings": 5,
-      "totalErrors": 0,
-      "availableBackups": ["v1", "v2", "v3"],
-      "isBackupOverdue": false,
-      "notificationEvent": "all",
-      "expectedBackupDate": "2024-03-21T10:00:00Z",
-      "expectedBackupElapsed": "2 hours ago",
-      "lastOverdueCheck": "2024-03-20T12:00:00Z",
-      "lastNotificationSent": "N/A"
-    }
-  ]
+  {
+    "serversSummary": [
+      {
+        "id": "server-id",
+        "name": "Server Name",
+        "lastBackupDate": "2024-03-20T10:00:00Z",
+        "lastBackupStatus": "Success",
+        "lastBackupDuration": "00:38:31",
+        "lastBackupListCount": 10,
+        "lastBackupName": "Backup Name",
+        "lastBackupId": "backup-id",
+        "backupCount": 15,
+        "totalWarnings": 5,
+        "totalErrors": 0,
+        "availableBackups": ["v1", "v2", "v3"],
+        "isBackupOverdue": false,
+        "notificationEvent": "all",
+        "expectedBackupDate": "2024-03-21T10:00:00Z",
+        "expectedBackupElapsed": "2 hours ago",
+        "lastOverdueCheck": "2024-03-20T12:00:00Z",
+        "lastNotificationSent": "N/A"
+      }
+    ],
+    "overallSummary": {
+      "totalServers": 3,
+      "totalBackups": 9,
+      "totalUploadedSize": 2397229507,
+      "totalStorageUsed": 43346796938,
+      "totalBackupSize": 126089687807,
+      "overdueBackupsCount": 2,
+      "secondsSinceLastBackup": 7200
+    },
+    "chartData": [
+      {
+        "date": "20/03/2024",
+        "isoDate": "2024-03-20T10:00:00Z",
+        "uploadedSize": 1024000,
+        "duration": 45,
+        "fileCount": 1500,
+        "fileSize": 2048000,
+        "storageSize": 3072000,
+        "backupVersions": 5
+      }
+    ]
+  }
   ```
 - **Error Responses**:
-  - `500`: Server error fetching servers summary
+  - `500`: Server error fetching dashboard data
 - **Notes**:
-  - Returns array of server summaries with overdue status
-  - Includes notification event and expected backup date information
-  - Shows last overdue check timestamp and last notification sent
+  - This endpoint consolidates the previous `/api/servers-summary` and `/api/chart-data/aggregated` endpoints
+  - The `overallSummary` field contains the same data as `/api/summary` (which is maintained for external applications)
+  - Provides better performance by reducing multiple API calls to a single request
+  - All data is fetched in parallel for optimal performance
+  - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
 
 <br>
 
 ### Get All Servers
 - **Endpoint**: `/api/servers`
 - **Method**: GET
-- **Description**: Retrieves a list of all servers with their basic information.
-- **Response**:
+- **Description**: Retrieves a list of all servers with their basic information. Optionally includes backup information.
+- **Query Parameters**:
+  - `includeBackups` (optional): Set to `true` to include backup information for each server
+- **Response** (without parameters):
   ```json
   [
     {
@@ -352,19 +372,7 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   ]
   ```
-- **Error Responses**:
-  - `500`: Server error fetching servers
-- **Notes**:
-  - Returns server information including alias and note fields
-  - Used for server selection and display purposes
-
-<br>
-
-### Get Servers with Backups
-- **Endpoint**: `/api/servers-with-backups`
-- **Method**: GET
-- **Description**: Retrieves a list of all servers with their backup names.
-- **Response**:
+- **Response** (with `includeBackups=true`):
   ```json
   [
     {
@@ -378,22 +386,35 @@ All API responses are returned in JSON format with consistent error handling pat
   ]
   ```
 - **Error Responses**:
-  - `500`: Server error fetching servers with backups
+  - `500`: Server error fetching servers
 - **Notes**:
-  - Returns server name and backup name combinations
-  - Includes server URL, alias, and note for each server-backup combination
-  - Used for configuration and management purposes
+  - Returns server information including alias and note fields
+  - When `includeBackups=true`, returns server-backup combinations with URLs
+  - Consolidates the previous `/api/servers-with-backups` functionality
+  - Used for server selection, display, and configuration purposes
 
 <br>
 
 ### Get Server Details
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
-- **Description**: Retrieves detailed information about a specific server including all its backups and chart data.
+- **Description**: Retrieves information about a specific server. Can return basic server info or detailed information including backups and chart data.
 - **Parameters**:
   - `id`: the server identifier
-
-- **Response**:
+- **Query Parameters**:
+  - `includeBackups` (optional): Set to `true` to include backup data
+  - `includeChartData` (optional): Set to `true` to include chart data
+- **Response** (without parameters):
+  ```json
+  {
+    "id": "server-id",
+    "name": "Server Name",
+    "alias": "Server Alias",
+    "note": "Additional notes about the server",
+    "server_url": "http://localhost:8200"
+  }
+  ```
+- **Response** (with parameters):
   ```json
   {
     "id": "server-id",
@@ -404,37 +425,27 @@ All API responses are returned in JSON format with consistent error handling pat
     "backups": [
       {
         "id": "backup-id",
-        "server_id": "server-id",
         "name": "Backup Name",
         "date": "2024-03-20T10:00:00Z",
         "status": "Success",
         "warnings": 0,
         "errors": 0,
-        "messages": 150,
-        "fileCount": 249426,
-        "fileSize": 113395849938,
-        "uploadedSize": 331318892,
-        "duration": "00:38:31",
-        "duration_seconds": 2311,
-        "durationInMinutes": 38,
-        "knownFileSize": 27203688543,
-        "backup_list_count": 10,
-        "messages_array": "[\"message1\", \"message2\"]",
-        "warnings_array": "[\"warning1\"]",
-        "errors_array": "[]",
-        "available_backups": ["v1", "v2", "v3"]
+        "fileCount": 1500,
+        "fileSize": 2048000,
+        "uploadedSize": 1024000,
+        "duration": "00:45:30"
       }
     ],
     "chartData": [
       {
         "date": "20/03/2024",
         "isoDate": "2024-03-20T10:00:00Z",
-        "uploadedSize": 331318892,
-        "duration": 38,
-        "fileCount": 249426,
-        "fileSize": 113395849938,
-        "storageSize": 27203688543,
-        "backupVersions": 10
+        "uploadedSize": 1024000,
+        "duration": 45,
+        "fileCount": 1500,
+        "fileSize": 2048000,
+        "storageSize": 3072000,
+        "backupVersions": 5
       }
     ]
   }
@@ -443,10 +454,11 @@ All API responses are returned in JSON format with consistent error handling pat
   - `404`: Server not found
   - `500`: Server error fetching server details
 - **Notes**:
-  - Returns detailed server information including all backups
-  - Includes chart data for visualization
-  - Used for server-specific views and analysis
-  - Includes server alias, note, and server_url fields
+  - Returns basic server information by default for better performance
+  - Use query parameters to include additional data when needed
+  - Optimized for different use cases (settings vs detail views)
+
+<br>
 
 ### Update Server
 - **Endpoint**: `/api/servers/:id`
@@ -548,55 +560,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Chart Data
-- **Endpoint**: `/api/chart-data`
-- **Method**: GET
-- **Description**: Retrieves aggregated chart data for all servers over time.
-- **Response**:
-  ```json
-  [
-    {
-      "date": "20/03/2024",
-      "isoDate": "2024-03-20T10:00:00Z",
-      "uploadedSize": 331318892,
-      "duration": 38,
-      "fileCount": 249426,
-      "fileSize": 113395849938,
-      "storageSize": 27203688543,
-      "backupVersions": 10
-    }
-  ]
-  ```
-- **Error Responses**:
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Returns empty array if data fetching fails
-  - Used for visualization and analytics
-  - Aggregates data across all servers
-
-<br>
-
 ## Chart Data
-
-### Get All Servers Chart Data
-- **Endpoint**: `/api/chart-data`
-- **Method**: GET
-- **Description**: Retrieves aggregated chart data for all servers over time.
-- **Response**:
-  ```json
-  [
-    {
-      "date": "20/03/2024",
-      "isoDate": "2024-03-20T10:00:00Z",
-      "uploadedSize": 331318892,
-      "duration": 38,
-      "fileCount": 249426,
-      "fileSize": 113395849938,
-      "storageSize": 27203688543,
-      "backupVersions": 10
-    }
-  ]
-  ```
 
 <br>
 
@@ -704,63 +668,6 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ## Configuration Management
 
-### Get Configuration
-- **Endpoint**: `/api/configuration`
-- **Method**: GET
-- **Description**: Retrieves the current notification and backup settings configuration.
-- **Response**:
-  ```json
-  {
-    "ntfy": {
-      "url": "https://ntfy.sh",
-      "topic": "duplistatus-notifications",
-      "accessToken": ""
-    },
-    "backupSettings": {
-      "Server Name:Backup Name": {
-        "notificationEvent": "all",
-        "expectedInterval": 24,
-        "overdueBackupCheckEnabled": true,
-        "intervalUnit": "hours"
-      }
-    },
-    "templates": {
-      "success": {
-        "title": "✅ {status} - {backup_name} @ {server_name}",
-        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",
-        "priority": "default",
-        "tags": "duplicati, duplistatus, success"
-      },
-      "warning": {
-        "title": "⚠️ {status} - {backup_name} @ {server_name}",
-        "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date}.",
-        "priority": "high",
-        "tags": "duplicati, duplistatus, warning, error"
-      },
-      "overdueBackup": {
-        "title": "🕑 Overdue - {backup_name} @ {server_name}",
-        "message": "The backup {backup_name} is overdue on {server_name}.",
-        "priority": "default",
-        "tags": "duplicati, duplistatus, overdue"
-      }
-    },
-    "overdue_tolerance": "1h",
-    "serverAddresses": [
-      {
-        "id": "server-id",
-        "name": "Server Name",
-        "server_url": "http://localhost:8200"
-      }
-    ]
-  }
-  ```
-- **Error Responses**:
-  - `500`: Server error fetching configuration
-- **Notes**:
-  - Returns complete notification and backup settings configuration
-  - Includes server addresses and overdue tolerance
-  - Creates default configuration if none exists
-
 ### Get Unified Configuration
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
@@ -833,9 +740,24 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ### Update Notification Configuration
 - **Endpoint**: `/api/configuration/notifications`
+- **Method**: GET
+- **Description**: Retrieves the current notification frequency configuration.
+- **Response**:
+  ```json
+  {
+    "value": "every_day"
+  }
+  ```
+- **Error Responses**:
+  - `500`: Failed to fetch config
+- **Notes**:
+  - Retrieves current notification frequency configuration
+  - Used for overdue backup notification management
+
 - **Method**: POST
-- **Description**: Updates the notification configuration (ntfy settings).
+- **Description**: Updates notification configuration (NTFY settings or notification frequency).
 - **Request Body**:
+  For NTFY configuration:
   ```json
   {
     "ntfy": {
@@ -846,7 +768,14 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   }
   ```
+  For notification frequency:
+  ```json
+  {
+    "value": "every_week"
+  }
+  ```
 - **Response**:
+  For NTFY configuration:
   ```json
   {
     "message": "Notification config updated successfully",
@@ -858,14 +787,25 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   }
   ```
+  For notification frequency:
+  ```json
+  {
+    "value": "every_week"
+  }
+  ```
+- **Available Values**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 - **Error Responses**:
-  - `400`: NTFY configuration is required
+  - `400`: NTFY configuration is required or invalid value
   - `500`: Server error updating notification configuration
 - **Notes**:
-  - Updates only the NTFY configuration
+  - Supports both NTFY configuration and notification frequency updates
+  - Updates only the NTFY configuration when ntfy field is provided
+  - Updates notification frequency when value field is provided
   - Generates default topic if none provided
   - Preserves existing configuration settings
   - Uses `accessToken` field instead of separate username/password fields
+  - Validates notification frequency value against allowed options
+  - Affects how often overdue notifications are sent
 
 ### Update Backup Settings
 - **Endpoint**: `/api/configuration/backup-settings`
@@ -953,29 +893,6 @@ All API responses are returned in JSON format with consistent error handling pat
   - Affects when backups are considered overdue
   - Used by the overdue backup checker
 
-### Get Server Connections
-- **Endpoint**: `/api/configuration/server-connections`
-- **Method**: GET
-- **Description**: Retrieves the current server connections configuration.
-- **Response**:
-  ```json
-  {
-    "serverAddresses": [
-      {
-        "id": "server-id",
-        "name": "Server Name",
-        "server_url": "http://localhost:8200"
-      }
-    ]
-  }
-  ```
-- **Error Responses**:
-  - `500`: Server error fetching server connections
-- **Notes**:
-  - Returns current server connections configuration
-  - Includes server addresses and server URLs
-  - Used for server connection management
-
 <br>
 
 ## Notification System
@@ -983,10 +900,12 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Test Notification
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
-- **Description**: Sends a test notification using the provided ntfy configuration.
+- **Description**: Send test notifications (simple or template-based) to verify NTFY configuration.
 - **Request Body**:
+  For simple test:
   ```json
   {
+    "type": "simple",
     "ntfyConfig": {
       "url": "https://ntfy.sh",
       "topic": "test-topic",
@@ -994,53 +913,45 @@ All API responses are returned in JSON format with consistent error handling pat
     }
   }
   ```
-- **Response**:
+  For template test:
   ```json
   {
-    "message": "Test notification sent successfully"
-  }
-  ```
-- **Error Responses**:
-  - `400`: NTFY configuration is required
-  - `500`: Failed to send test notification with error details
-- **Notes**:
-  - Sends a test notification to verify NTFY configuration
-  - Includes timestamp in the test message
-  - Validates NTFY URL and topic before sending
-  - Uses `accessToken` field for authentication
-
-### Test Template
-- **Endpoint**: `/api/notifications/test-template`
-- **Method**: POST
-- **Description**: Tests a notification template with sample data.
-- **Request Body**:
-  ```json
-  {
+    "type": "template",
+    "ntfyConfig": {
+      "url": "https://ntfy.sh",
+      "topic": "test-topic",
+      "accessToken": "optional-access-token"
+    },
     "template": {
       "title": "Test Title",
       "message": "Test message with {variable}",
       "priority": "default",
       "tags": "test"
-    },
-    "ntfyConfig": {
-      "url": "https://ntfy.sh",
-      "topic": "test-topic"
     }
   }
   ```
 - **Response**:
+  For simple test:
+  ```json
+  {
+    "message": "Test notification sent successfully"
+  }
+  ```
+  For template test:
   ```json
   {
     "success": true
   }
   ```
 - **Error Responses**:
-  - `400`: Template and NTFY configuration are required
-  - `500`: Failed to send test notification
+  - `400`: NTFY configuration is required or invalid
+  - `500`: Failed to send test notification with error details
 - **Notes**:
-  - Tests notification template with sample data
-  - Processes template variables with sample values
+  - Supports both simple test messages and template-based notifications
+  - Template testing uses sample data to replace template variables
   - Includes timestamp in the test message
+  - Validates NTFY URL and topic before sending
+  - Uses `accessToken` field for authentication
 
 ### Check Overdue Backups
 - **Endpoint**: `/api/notifications/check-overdue`
@@ -1081,45 +992,6 @@ All API responses are returned in JSON format with consistent error handling pat
   - Clears all overdue backup notification timestamps
   - Allows notifications to be sent again
   - Useful for testing notification system
-
-### Resend Frequency Configuration
-- **Endpoint**: `/api/notifications/resend-frequency`
-- **Method**: GET
-- **Description**: Retrieves the current notification frequency configuration.
-- **Response**:
-  ```json
-  {
-    "value": "every_day"
-  }
-  ```
-- **Error Responses**:
-  - `500`: Failed to fetch config
-- **Notes**:
-  - Retrieves current notification frequency configuration
-  - Used for overdue backup notification management
-
-- **Method**: POST
-- **Description**: Updates the notification frequency configuration.
-- **Request Body**:
-  ```json
-  {
-    "value": "every_week"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "value": "every_week"
-  }
-  ```
-- **Available Values**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
-- **Error Responses**:
-  - `400`: Invalid value
-  - `500`: Failed to set config
-- **Notes**:
-  - Updates notification frequency configuration
-  - Validates value against allowed options
-  - Affects how often overdue notifications are sent
 
 <br>
 
@@ -1227,28 +1099,6 @@ All API responses are returned in JSON format with consistent error handling pat
   - Includes `preparedStatementsError` field when prepared statements fail
   - Stack trace only included in development mode
   - Tests basic database connection and prepared statements
-
-### Environment Information
-- **Endpoint**: `/api/environment`
-- **Method**: GET
-- **Description**: Retrieves current environment variables and system information.
-- **Response**:
-  ```json
-  {
-    "PORT": "8666",
-    "CRON_PORT": "8667",
-    "NODE_ENV": "development",
-    "NEXT_TELEMETRY_DISABLED": "1",
-    "TZ": "UTC",
-    "timestamp": "2024-03-20T10:00:00Z"
-  }
-  ```
-- **Error Responses**:
-  - `500`: Server error fetching environment information
-- **Notes**:
-  - Returns current environment variables
-  - Includes system information and timestamp
-  - Used for debugging and system monitoring
 
 <br>
 

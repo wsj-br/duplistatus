@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, isValid } from 'date-fns';
+import type { BackupStatus, NotificationEvent } from './types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -435,36 +436,47 @@ export function formatDurationHuman(seconds: number): string {
   }
 }
 
-// Cache for development mode check
-let developmentModeCache: boolean | null = null;
+/**
+ * Get status color class for backup status
+ */
+export function getStatusColor(status: BackupStatus | 'N/A'): string {
+  switch (status) {
+    case 'Success':
+      return 'text-green-500';
+    case 'Unknown':
+      return 'text-gray-500';
+    case 'Warning':
+      return 'text-yellow-500';
+    case 'Error':
+    case 'Fatal':
+      return 'text-red-500';
+    default:
+      return 'text-gray-500';
+  }
+}
 
 /**
- * Check if the application is running in development mode
- * Always uses the /api/environment endpoint and caches the result for the session
- * Assumes this function only runs on the client side
+ * Get notification icon type for notification events
  */
-export async function isDevelopmentMode(): Promise<boolean> {
-  // Return cached value if available
-  if (developmentModeCache !== null) {
-    return developmentModeCache;
+export function getNotificationIconType(notificationEvent: NotificationEvent | undefined): 'errors' | 'warnings' | 'all' | 'off' | null {
+  if (!notificationEvent) return null;
+  
+  switch (notificationEvent) {
+    case 'errors':
+      return 'errors';
+    case 'warnings':
+      return 'warnings';
+    case 'all':
+      return 'all';
+    case 'off':
+      return 'off';
+    default:
+      return null;
   }
-
-  // Client-side: call the environment API endpoint
-  try {
-    const response = await fetch('/api/environment');
-    if (response.ok) {
-      const data = await response.json();
-      developmentModeCache = data.NODE_ENV !== 'production';
-      return developmentModeCache;
-    }
-  } catch (error) {
-    console.error('Failed to fetch environment info:', error);
-    // No fallback - throw error if API call fails
-    throw new Error('Failed to determine development mode: API call failed');
-  }
-
-  // If response was not ok, throw error
-  throw new Error('Failed to determine development mode: Invalid API response');
+}
+export function isDevelopmentMode(): boolean {
+  // In Next.js, NODE_ENV is available at build time and runtime
+  return process.env.NODE_ENV !== 'production';
 }
 
 

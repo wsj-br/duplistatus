@@ -1,4 +1,4 @@
-import { getServersSummary, getOverallSummary, getAllServersChartData, ensureBackupSettingsComplete } from "@/lib/db-utils";
+import { getServersSummary, getOverallSummary, getAggregatedChartData, ensureBackupSettingsComplete } from "@/lib/db-utils";
 import { DashboardAutoRefresh } from "@/components/dashboard/dashboard-auto-refresh";
 
 // Force dynamic rendering and disable caching
@@ -24,7 +24,7 @@ export default async function DashboardPage() {
   await ensureBackupSettingsComplete();
   
   const overallSummary = await getOverallSummary();
-  const allServersChartData = await getAllServersChartData();
+  const allServersChartData = await getAggregatedChartData();
 
   const initialData = {
     serversSummary,

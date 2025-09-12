@@ -91,7 +91,8 @@ export interface ServerSummary {
 
 export interface OverallSummary {
   totalServers: number;
-  totalBackups: number;
+  totalBackupsRuns: number; // count of all backup runs (individual executions)
+  totalBackups: number; // count of all backup jobs/configurations across all machines
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
   totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)

@@ -407,7 +407,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     setNotificationFrequencyLoading(true);
     setNotificationFrequencyError(null);
     try {
-      const response = await fetch('/api/notifications/resend-frequency', {
+      const response = await fetch('/api/configuration/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value }),

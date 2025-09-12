@@ -30,7 +30,7 @@ interface BackupRecord {
   available_backups: string | null;
 }
 
-function mapBackupToType(backup: BackupRecord): Backup {
+function mapBackupToJob(backup: BackupRecord): Backup {
   return {
     id: backup.id,
     server_id: backup.server_id,
@@ -112,12 +112,12 @@ export async function GET(request: Request) {
     const backupNames = dbOps.getServerBackups.all(server.id) as BackupRecord[];
     const uniqueBackupNames = [...new Set(backupNames.map(b => b.backup_name))];
 
-    // Get the latest backup for each backup type
+    // Get the latest backup for each backup job
     const latestBackups: Backup[] = [];
     for (const backupName of uniqueBackupNames) {
       const latestBackup = dbOps.getLatestBackupByName.get(server.id, backupName) as BackupRecord | undefined;
       if (latestBackup) {
-        latestBackups.push(mapBackupToType(latestBackup));
+        latestBackups.push(mapBackupToJob(latestBackup));
       }
     }
 
@@ -130,7 +130,7 @@ export async function GET(request: Request) {
         created_at: server.created_at
       },
       latest_backups: latestBackups,
-      backup_types_count: latestBackups.length,
+      backup_jobs_count: latestBackups.length,
       backup_names: uniqueBackupNames,
       status: 200
     });
