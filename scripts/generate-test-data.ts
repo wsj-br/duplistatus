@@ -37,36 +37,36 @@ async function cleanDatabaseTables() {
 
 // Server configurations
 const servers = [
-  { id: createHash('md5').update('machine-1').digest('hex'), name: 'Test Server 1', alias: 'Production DB', note: 'Primary database server - critical backups', backupName: 'S1' },
-  { id: createHash('md5').update('machine-2').digest('hex'), name: 'Test Server 2', alias: 'Web Frontend', note: 'Main web application server', backupName: 'S2' },
-  { id: createHash('md5').update('machine-3').digest('hex'), name: 'Test Server 3', alias: 'File Storage', note: 'Document and media file storage', backupName: 'S3' },
-  { id: createHash('md5').update('machine-4').digest('hex'), name: 'Test Server 4', alias: '', note: 'Development environment - low priority', backupName: 'S4' },
-  { id: createHash('md5').update('machine-5').digest('hex'), name: 'Test Server 5', alias: 'Analytics', note: '', backupName: 'S5' },
-  { id: createHash('md5').update('machine-6').digest('hex'), name: 'Test Server 6', alias: 'Staging', note: 'Pre-production testing server', backupName: 'S6' },
-  { id: createHash('md5').update('machine-7').digest('hex'), name: 'Test Server 7', alias: 'Backup Storage', note: 'Secondary backup destination', backupName: 'S7' },
-  { id: createHash('md5').update('machine-8').digest('hex'), name: 'Test Server 8', alias: 'Mail Server', note: 'Corporate email and messaging system', backupName: 'S8' },
-  { id: createHash('md5').update('machine-9').digest('hex'), name: 'Test Server 9', alias: 'CRM System', note: 'Customer relationship management platform', backupName: 'S9' },
-  { id: createHash('md5').update('machine-10').digest('hex'), name: 'Test Server 10', alias: 'Monitoring', note: 'Infrastructure monitoring and alerting', backupName: 'S10' },
-  { id: createHash('md5').update('machine-11').digest('hex'), name: 'Test Server 11', alias: 'Load Balancer', note: 'Traffic distribution and SSL termination', backupName: 'S11' },
-  { id: createHash('md5').update('machine-12').digest('hex'), name: 'Test Server 12', alias: 'Cache Server', note: 'Redis and Memcached caching layer', backupName: 'S12' },
-  { id: createHash('md5').update('machine-13').digest('hex'), name: 'Test Server 13', alias: 'CI/CD Pipeline', note: 'Continuous integration and deployment', backupName: 'S13' },
-  { id: createHash('md5').update('machine-14').digest('hex'), name: 'Test Server 14', alias: 'Security Gateway', note: 'Firewall and intrusion detection system', backupName: 'S14' },
-  { id: createHash('md5').update('machine-15').digest('hex'), name: 'Test Server 15', alias: 'API Gateway', note: 'REST API management and rate limiting', backupName: 'S15' },
-  { id: createHash('md5').update('machine-16').digest('hex'), name: 'Test Server 16', alias: 'Log Aggregator', note: 'Centralized logging and log analysis', backupName: 'S16' },
-  { id: createHash('md5').update('machine-17').digest('hex'), name: 'Test Server 17', alias: 'DNS Server', note: 'Domain name resolution and DNS management', backupName: 'S17' },
-  { id: createHash('md5').update('machine-18').digest('hex'), name: 'Test Server 18', alias: 'VPN Server', note: 'Remote access and secure tunneling', backupName: 'S18' },
-  { id: createHash('md5').update('machine-19').digest('hex'), name: 'Test Server 19', alias: 'Backup Replica', note: 'Tertiary backup storage for disaster recovery', backupName: 'S19' },
-  { id: createHash('md5').update('machine-20').digest('hex'), name: 'Test Server 20', alias: 'Test Environment', note: 'Automated testing and QA environment', backupName: 'S20' },
-  { id: createHash('md5').update('machine-21').digest('hex'), name: 'Test Server 21', alias: 'Document Server', note: 'Document management and collaboration platform', backupName: 'S21' },
-  { id: createHash('md5').update('machine-22').digest('hex'), name: 'Test Server 22', alias: 'Media Server', note: 'Video streaming and media content delivery', backupName: 'S22' },
-  { id: createHash('md5').update('machine-23').digest('hex'), name: 'Test Server 23', alias: 'Inventory System', note: 'Asset tracking and inventory management', backupName: 'S23' },
-  { id: createHash('md5').update('machine-24').digest('hex'), name: 'Test Server 24', alias: 'Payment Gateway', note: 'Financial transactions and payment processing', backupName: 'S24' },
-  { id: createHash('md5').update('machine-25').digest('hex'), name: 'Test Server 25', alias: 'HR System', note: 'Human resources and employee management', backupName: 'S25' },
-  { id: createHash('md5').update('machine-26').digest('hex'), name: 'Test Server 26', alias: 'DevOps Tools', note: 'Container orchestration and deployment tools', backupName: 'S26' },
-  { id: createHash('md5').update('machine-27').digest('hex'), name: 'Test Server 27', alias: 'Archive Server', note: 'Long-term data archival and compliance storage', backupName: 'S27' },
-  { id: createHash('md5').update('machine-28').digest('hex'), name: 'Test Server 28', alias: 'Reporting Server', note: 'Business intelligence and reporting platform', backupName: 'S28' },
-  { id: createHash('md5').update('machine-29').digest('hex'), name: 'Test Server 29', alias: 'Mobile API', note: 'Mobile application backend services', backupName: 'S29' },
-  { id: createHash('md5').update('machine-30').digest('hex'), name: 'Test Server 30', alias: 'Compliance Server', note: 'Regulatory compliance and audit logging', backupName: 'S30' }
+  { id: createHash('md5').update('server-1').digest('hex'), name: 'DB-PROD-01', alias: 'Production DB', note: 'Primary database server - critical backups', backupName: 'S1' },
+  { id: createHash('md5').update('server-2').digest('hex'), name: 'WEB-PROD-01', alias: 'Web Frontend', note: 'Main web application server', backupName: 'S2' },
+  { id: createHash('md5').update('server-3').digest('hex'), name: 'FS-PROD-01', alias: 'File Storage', note: 'Document and media file storage', backupName: 'S3' },
+  { id: createHash('md5').update('server-4').digest('hex'), name: 'DEV-TEST-01', alias: '', note: 'Development environment - low priority', backupName: 'S4' },
+  { id: createHash('md5').update('server-5').digest('hex'), name: 'ANL-PROD-01', alias: 'Analytics', note: '', backupName: 'S5' },
+  { id: createHash('md5').update('server-6').digest('hex'), name: 'STG-PROD-01', alias: 'Staging', note: 'Pre-production testing server', backupName: 'S6' },
+  { id: createHash('md5').update('server-7').digest('hex'), name: 'BK-DR-01', alias: 'Backup Storage', note: 'Secondary backup destination', backupName: 'S7' },
+  { id: createHash('md5').update('server-8').digest('hex'), name: 'MAIL-PROD-01', alias: 'Mail Server', note: 'Corporate email and messaging system', backupName: 'S8' },
+  { id: createHash('md5').update('server-9').digest('hex'), name: 'CRM-PROD-01', alias: 'CRM System', note: 'Customer relationship management platform', backupName: 'S9' },
+  { id: createHash('md5').update('server-10').digest('hex'), name: 'MON-PROD-01', alias: 'Monitoring', note: 'Infrastructure monitoring and alerting', backupName: 'S10' },
+  { id: createHash('md5').update('server-11').digest('hex'), name: 'LB-PROD-01', alias: 'Load Balancer', note: 'Traffic distribution and SSL termination', backupName: 'S11' },
+  { id: createHash('md5').update('server-12').digest('hex'), name: 'CACHE-PROD-01', alias: 'Cache Server', note: 'Redis and Memcached caching layer', backupName: 'S12' },
+  { id: createHash('md5').update('server-13').digest('hex'), name: 'CI-CD-PROD-01', alias: 'CI/CD Pipeline', note: 'Continuous integration and deployment', backupName: 'S13' },
+  { id: createHash('md5').update('server-14').digest('hex'), name: 'SEC-PROD-01', alias: 'Security Gateway', note: 'Firewall and intrusion detection system', backupName: 'S14' },
+  { id: createHash('md5').update('server-15').digest('hex'), name: 'API-PROD-01', alias: 'API Gateway', note: 'REST API management and rate limiting', backupName: 'S15' },
+  { id: createHash('md5').update('server-16').digest('hex'), name: 'LOG-PROD-01', alias: 'Log Aggregator', note: 'Centralized logging and log analysis', backupName: 'S16' },
+  { id: createHash('md5').update('server-17').digest('hex'), name: 'DNS-PROD-01', alias: 'DNS Server', note: 'Domain name resolution and DNS management', backupName: 'S17' },
+  { id: createHash('md5').update('server-18').digest('hex'), name: 'VPN-PROD-01', alias: 'VPN Server', note: 'Remote access and secure tunneling', backupName: 'S18' },
+  { id: createHash('md5').update('server-19').digest('hex'), name: 'BK-DR-02', alias: 'Backup Replica', note: 'Tertiary backup storage for disaster recovery', backupName: 'S19' },
+  { id: createHash('md5').update('server-20').digest('hex'), name: 'QA-TEST-01', alias: 'Test Environment', note: 'Automated testing and QA environment', backupName: 'S20' },
+  { id: createHash('md5').update('server-21').digest('hex'), name: 'DOC-PROD-01', alias: 'Document Server', note: 'Document management and collaboration platform', backupName: 'S21' },
+  { id: createHash('md5').update('server-22').digest('hex'), name: 'MEDIA-PROD-01', alias: 'Media Server', note: 'Video streaming and media content delivery', backupName: 'S22' },
+  { id: createHash('md5').update('server-23').digest('hex'), name: 'INV-PROD-01', alias: 'Inventory System', note: 'Asset tracking and inventory management', backupName: 'S23' },
+  { id: createHash('md5').update('server-24').digest('hex'), name: 'PAY-PROD-01', alias: 'Payment Gateway', note: 'Financial transactions and payment processing', backupName: 'S24' },
+  { id: createHash('md5').update('server-25').digest('hex'), name: 'HR-PROD-01', alias: 'HR System', note: 'Human resources and employee management', backupName: 'S25' },
+  { id: createHash('md5').update('server-26').digest('hex'), name: 'DEVOPS-PROD-01', alias: 'DevOps Tools', note: 'Container orchestration and deployment tools', backupName: 'S26' },
+  { id: createHash('md5').update('server-27').digest('hex'), name: 'ARCH-DR-01', alias: 'Archive Server', note: 'Long-term data archival and compliance storage', backupName: 'S27' },
+  { id: createHash('md5').update('server-28').digest('hex'), name: 'RPT-PROD-01', alias: 'Reporting Server', note: 'Business intelligence and reporting platform', backupName: 'S28' },
+  { id: createHash('md5').update('server-29').digest('hex'), name: 'MOBILE-PROD-01', alias: 'Mobile API', note: 'Mobile application backend services', backupName: 'S29' },
+  { id: createHash('md5').update('server-30').digest('hex'), name: 'COMP-PROD-01', alias: 'Compliance Server', note: 'Regulatory compliance and audit logging', backupName: 'S30' }
 ];
 
 // Server health check function
@@ -114,7 +114,7 @@ function generateBackupDates(serverIndex: number, backupJob: string): string[] {
   
   // Start with today (in the past)
   const today = new Date(now);
-  today.setDate(today.getDate() - 1); // Yesterday to ensure it's in the past
+  today.setHours(today.getHours() - 2); // 2 hours ago to ensure it's in the past
   today.setMinutes(today.getMinutes() + timeOffsetMinutes); // Add backup job offset
   dates.push(today.toISOString());
   
@@ -303,8 +303,8 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
     },
     Extra: {
       OperationName: backupJob,
-      'machine-id': server.id,
-      'machine-name': server.name,
+      'server-id': server.id,
+      'server-name': server.name,
       'backup-name': backupJob,
       'backup-id': `DB-${backupNumber}`
     }
@@ -312,23 +312,46 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
 }
 
 // Parse command line arguments
-function parseArgs(): { useUpload: boolean; machineCount: number } {
+function parseArgs(): { useUpload: boolean; serverCount: number } {
   const args = process.argv.slice(2);
   const useUpload = args.includes('--upload');
   
-  // Parse machine count parameter
-  let machineCount = 30; // Default value
-  const machineCountArg = args.find(arg => arg.startsWith('--machines='));
-  if (machineCountArg) {
-    const count = parseInt(machineCountArg.split('=')[1], 10);
-    if (!isNaN(count) && count >= 1 && count <= 30) {
-      machineCount = count;
-    } else {
-      console.error('🚨 Invalid machine count. Must be between 1 and 30. Using default value of 30.');
-    }
+  // Parse server count parameter (mandatory)
+  const serverCountArg = args.find(arg => arg.startsWith('--servers='));
+  if (!serverCountArg) {
+    console.error('🚨 Error: --servers parameter is required!');
+    console.log('');
+    console.log('Usage:');
+    console.log('  pnpm run generate-test-data --servers=N [--upload]');
+    console.log('');
+    console.log('Parameters:');
+    console.log('  --servers=N    Number of servers to generate (1-30, mandatory)');
+    console.log('  --upload       Optional: Send data via API instead of direct DB write');
+    console.log('');
+    console.log('Examples:');
+    console.log('  pnpm run generate-test-data --servers=5');
+    console.log('  pnpm run generate-test-data --servers=1 --upload');
+    console.log('  pnpm run generate-test-data --servers=30');
+    console.log('');
+    process.exit(1);
   }
   
-  return { useUpload, machineCount };
+  const count = parseInt(serverCountArg.split('=')[1], 10);
+  if (isNaN(count) || count < 1 || count > 30) {
+    console.error('🚨 Error: Invalid server count. Must be between 1 and 30.');
+    console.log('');
+    console.log('Usage:');
+    console.log('  pnpm run generate-test-data --servers=N [--upload]');
+    console.log('');
+    console.log('Examples:');
+    console.log('  pnpm run generate-test-data --servers=5');
+    console.log('  pnpm run generate-test-data --servers=1 --upload');
+    console.log('  pnpm run generate-test-data --servers=30');
+    console.log('');
+    process.exit(1);
+  }
+  
+  return { useUpload, serverCount: count };
 }
 
 // Function to write backup data directly to database
@@ -337,7 +360,7 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
     // Check for duplicate backup
     const backupDate = new Date(payload.Data.BeginTime).toISOString();
     const isDuplicate = await dbUtils.checkDuplicateBackup({
-      server_id: payload.Extra['machine-id'],
+      server_id: payload.Extra['server-id'],
       backup_name: payload.Extra['backup-name'],
       date: backupDate
     });
@@ -350,12 +373,12 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
     // Start a transaction
     const transaction = db.transaction(() => {
       // Find the server configuration to get alias and note
-      const serverConfig = servers.find(s => s.id === payload.Extra['machine-id']);
+      const serverConfig = servers.find(s => s.id === payload.Extra['server-id']);
       
       // Insert server information only if it doesn't exist (preserves existing server_url)
       dbOps.insertServerIfNotExists.run({
-        id: payload.Extra['machine-id'],
-        name: payload.Extra['machine-name'],
+        id: payload.Extra['server-id'],
+        name: payload.Extra['server-name'],
         alias: serverConfig?.alias || '',
         note: serverConfig?.note || ''
       });
@@ -370,7 +393,7 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
       dbOps.insertBackup.run({
         // Primary fields
         id: uuidv4(),
-        server_id: payload.Extra['machine-id'],
+        server_id: payload.Extra['server-id'],
         backup_name: payload.Extra['backup-name'],
         backup_id: payload.Extra['backup-id'],
         date: new Date(payload.Data.BeginTime).toISOString(),
@@ -583,20 +606,21 @@ async function cleanupBackupsForUserManual(){
       error instanceof Error ? error.message : String(error));
   }
 
-  // Update server_url for 5 random servers
+  // Update server_url for 70% of random servers
   try {
     console.log('\n  🌐 Updating server URLs for random servers...');
     
-    // Select 5 random servers
-    const shuffledMachines = [...servers].sort(() => Math.random() - 0.5);
-    const selectedMachines = shuffledMachines.slice(0, 5);
+    // Select 70% of random servers
+    const shuffledServers = [...servers].sort(() => Math.random() - 0.5);
+    const selectedCount = Math.ceil(servers.length * 0.7);
+    const selectedServers = shuffledServers.slice(0, selectedCount);
     
-    console.log(`    🎯 Selected servers for server URL update: ${selectedMachines.map(m => m.alias ? `${m.name} (${m.alias})` : m.name).join(', ')}`);
+    console.log(`    🎯 Selected servers for server URL update: ${selectedServers.map(s => s.alias ? `${s.name} (${s.alias})` : s.name).join(', ')}`);
     
     const serverUrl = "http://192.168.1.55:8200";
     let updatedCount = 0;
     
-    for (const server of selectedMachines) {
+    for (const server of selectedServers) {
       try {
         const updateResult = db.prepare(`
           UPDATE servers 
@@ -617,7 +641,7 @@ async function cleanupBackupsForUserManual(){
       }
     }
     
-    console.log(`  ✅ Server URL update completed! Updated ${updatedCount} out of ${selectedMachines.length} servers`);
+    console.log(`  ✅ Server URL update completed! Updated ${updatedCount} out of ${selectedServers.length} servers`);
     
   } catch (error) {
     console.error('  🚨 Error during server URL update:', 
@@ -626,7 +650,7 @@ async function cleanupBackupsForUserManual(){
 }
 
 // Main function to send test data
-async function sendTestData(useUpload: boolean = false, machineCount: number = 30) {
+async function sendTestData(useUpload: boolean = false, serverCount: number) {
   const API_URL = 'http://localhost:8666/api/upload';
   const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
   const BACKUP_JOBS = ['Files', 'Databases', 'System', 'Users'];
@@ -652,9 +676,9 @@ async function sendTestData(useUpload: boolean = false, machineCount: number = 3
     console.log('  💾 Writing directly to database...');
   }
 
-  for (let serverIndex = 0; serverIndex < Math.min(machineCount, servers.length); serverIndex++) {
+  for (let serverIndex = 0; serverIndex < Math.min(serverCount, servers.length); serverIndex++) {
     const server = servers[serverIndex];
-    const isOddMachine = (serverIndex + 1) % 2 === 1;
+    const isOddServer = (serverIndex + 1) % 2 === 1;
     
     // Randomly select a subset of backup jobs for this server
     // 70% chance of 2 jobs, 30% chance of 3-4 jobs
@@ -665,11 +689,11 @@ async function sendTestData(useUpload: boolean = false, machineCount: number = 3
     const selectedBackupJobs = shuffledBackupJobs.slice(0, randomBackupCount);
     
     const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
-    console.log(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddMachine ? 'Odd' : 'Even'} server pattern)...`);
+    console.log(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddServer ? 'Odd' : 'Even'} server pattern)...`);
     if (server.note) {
       console.log(`      📝 Note: ${server.note}`);
     }
-    console.log(`      📅 Pattern: ${isOddMachine ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
+    console.log(`      📅 Pattern: ${isOddServer ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
     console.log(`      🎯 Selected backup jobs (${selectedBackupJobs.length}/${BACKUP_JOBS.length}): ${selectedBackupJobs.join(', ')}`);
     
     for (const backupJob of selectedBackupJobs) {
@@ -732,7 +756,7 @@ async function sendTestData(useUpload: boolean = false, machineCount: number = 3
 }
 
 // Run the script
-const { useUpload, machineCount } = parseArgs();
+const { useUpload, serverCount } = parseArgs();
 
 console.log('🛫 Starting test data generation...\n');
 if (useUpload) {
@@ -740,7 +764,7 @@ if (useUpload) {
 } else {
   console.log('  💾 Mode: Direct database write');
 }
-console.log(`  🖥️  Generating data for ${machineCount} machine(s) (out of ${servers.length} available)`);
+console.log(`  🖥️  Generating data for ${serverCount} server(s) (out of ${servers.length} available)`);
 console.log('  🧹 Database cleanup: Will clear servers, backups, and configurations tables before generation');
 console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd servers: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
@@ -750,7 +774,7 @@ console.log('     • Servers include alias and note fields for testing');
 console.log('     • After generation: Random cleanup some servers/backup jobs and last backups for the user manual screenshots\n');
 
 
-sendTestData(useUpload, machineCount).then(() => {
+sendTestData(useUpload, serverCount).then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {
   console.error('🚨 Error generating test data:', error instanceof Error ? error.message : String(error));

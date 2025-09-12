@@ -265,27 +265,28 @@ The project includes several test scripts to help with development and testing:
 
 ### Generate Test Data
 ```bash
-pnpm run generate-test-data
+pnpm run generate-test-data --servers=N
 ```
 This script generates test backup data for multiple servers and backups. 
+
+The `--servers=N` parameter is **mandatory** and specifies the number of servers to generate (1-30).
 
 Use the option `--upload` to send the generated data to the `/api/upload`
 
 ```bash
-pnpm run generate-test-data --upload
+pnpm run generate-test-data --servers=N --upload
 ```
 
-Use the option `--machines=N` to specify the number of machines to generate (1-30, default: 30)
-
+**Examples:**
 ```bash
-# Generate data for 5 machines
-pnpm run generate-test-data --machines=5
+# Generate data for 5 servers
+pnpm run generate-test-data --servers=5
 
-# Generate data for 1 machine with upload mode
-pnpm run generate-test-data --upload --machines=1
+# Generate data for 1 server with upload mode
+pnpm run generate-test-data --upload --servers=1
 
-# Generate data for all 30 machines (default)
-pnpm run generate-test-data --machines=30
+# Generate data for all 30 servers
+pnpm run generate-test-data --servers=30
 ```
 
 >[!CAUTION]

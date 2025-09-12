@@ -36,15 +36,15 @@ export function OpenServerConfigButton() {
         return;
       }
       
-      // Fetch all machines from the new server-connections endpoint
-      const response = await fetch('/api/configuration/server-connections');
+      // Fetch all servers from the existing servers endpoint
+      const response = await fetch('/api/servers?includeBackups=true');
       if (!response.ok) {
         throw new Error('Failed to fetch server connections');
       }
       const data = await response.json();
       
       // Filter servers with valid HTTP/HTTPS server_url
-      const validServers = (data.serverAddresses || [])
+      const validServers = (data || [])
         .filter((server: ServerAddress) => {
           if (!server.server_url || server.server_url.trim() === '') return false;
           try {
@@ -54,9 +54,11 @@ export function OpenServerConfigButton() {
             return false;
           }
         })
-        .sort((a: ServerAddress, b: ServerAddress) => 
-          a.name.localeCompare(b.name)
-        );
+        .sort((a: ServerAddress, b: ServerAddress) => {
+          const aDisplayName = a.alias || a.name;
+          const bDisplayName = b.alias || b.name;
+          return aDisplayName.localeCompare(bDisplayName);
+        });
       
       setServerAddresses(validServers);
     } catch (error) {
@@ -190,7 +192,7 @@ export function OpenServerConfigButton() {
           <ServerIcon className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-auto max-w-100">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="text-xl font-medium leading-none">Open Duplicati Configuration</h4>
@@ -198,27 +200,31 @@ export function OpenServerConfigButton() {
                Select a server below to manage its settings and backups.
             </p>
           </div>
-          <div className="grid gap-2">
-            {isLoading ? (
-              <div className="text-center py-4 text-muted-foreground">
-                Loading server connections...
-              </div>
-            ) : serverAddresses.length === 0 ? (
-              <div className="text-center py-4 text-muted-foreground">
-                No servers with server URLs configured.
-              </div>
-            ) : (
-              serverAddresses.map((server: ServerAddress) => (
-                <button
-                  key={server.id}
-                  onClick={() => handleServerClick(server.server_url)}
-                  className="flex items-center gap-3 p-2 text-left hover:bg-muted rounded-md transition-colors border border-border"
-                >
-                  <ServerIcon className="h-4 w-4" />
-                  <span className="font-medium">{server.name}</span>
-                </button>
-              ))
-            )}
+          <div className="max-h-128 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+            <div className="grid gap-2">
+              {isLoading ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  Loading server connections...
+                </div>
+              ) : serverAddresses.length === 0 ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  No servers with server URLs configured.
+                </div>
+              ) : (
+                serverAddresses.map((server: ServerAddress) => (
+                  <button
+                    key={server.id}
+                    onClick={() => handleServerClick(server.server_url)}
+                    className="flex items-center gap-3 p-2 text-left hover:bg-muted rounded-md transition-colors border border-border"
+                  >
+                    <ServerIcon className="h-4 w-4" />
+                    <span className="font-medium">
+                      {server.alias ? `${server.alias} (${server.name})` : server.name}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
           </div>
           <div className="space-y-3">
             <div className="h-px bg-border"></div>
