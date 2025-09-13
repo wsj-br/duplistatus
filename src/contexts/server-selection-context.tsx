@@ -5,7 +5,7 @@ import type { ServerSummary } from '@/lib/types';
 
 interface ServerSelectionState {
   selectedServerId: string | null;
-  viewMode: 'cards' | 'table' | 'overview';
+  viewMode: 'analytics' | 'table' | 'overview';
   servers: ServerSummary[];
   isInitialized: boolean;
   overviewSidePanel: 'status' | 'chart';
@@ -14,7 +14,7 @@ interface ServerSelectionState {
 interface ServerSelectionContextProps {
   state: ServerSelectionState;
   setSelectedServerId: (serverId: string | null) => void;
-  setViewMode: (viewMode: 'cards' | 'table' | 'overview') => void;
+  setViewMode: (viewMode: 'analytics' | 'table' | 'overview') => void;
   setServers: (servers: ServerSummary[]) => void;
   getSelectedServer: () => ServerSummary | null;
   setOverviewSidePanel: (panel: 'status' | 'chart') => void;
@@ -41,7 +41,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
       const savedViewMode = localStorage.getItem('dashboard-view-mode');
       const savedOverviewSidePanel = localStorage.getItem('overview-side-panel');
       
-      const viewMode = (savedViewMode === 'cards' || savedViewMode === 'table' || savedViewMode === 'overview') 
+      const viewMode = (savedViewMode === 'analytics' || savedViewMode === 'table' || savedViewMode === 'overview') 
         ? savedViewMode 
         : 'overview';
       
@@ -65,7 +65,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
     setState(prev => ({ ...prev, selectedServerId: serverId }));
   }, []);
 
-  const setViewMode = useCallback((viewMode: 'cards' | 'table' | 'overview') => {
+  const setViewMode = useCallback((viewMode: 'analytics' | 'table' | 'overview') => {
     setState(prev => ({ ...prev, viewMode }));
     // Save to localStorage
     try {

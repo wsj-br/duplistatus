@@ -6,9 +6,9 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('Usage: pnpm run run-overdue-check <date-time-string>');
-    console.error('Example: pnpm run run-overdue-check "2025-08-15T10:30:00"');
-    console.error('Example: pnpm run run-overdue-check "2025-08-15 10:30:00"');
+    console.error('Usage: pnpm run-overdue-check <date-time-string>\n');
+    console.error('Example: pnpm run-overdue-check "2025-08-15T10:30:00"');
+    console.error('Example: pnpm run-overdue-check "2025-08-15 10:30:00"');
     process.exit(1);
   }
 

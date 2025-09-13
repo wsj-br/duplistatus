@@ -409,8 +409,8 @@ const migrations: Migration[] = [
         console.log('No existing backup_settings configuration found');
       }
       
-      // Migrate overdue_backup_notifications
-      const overdueNotificationsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('overdue_backup_notifications') as { value: string } | undefined;
+      // Migrate overdue_notifications
+      const overdueNotificationsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('overdue_notifications') as { value: string } | undefined;
       
       if (overdueNotificationsRow && overdueNotificationsRow.value) {
         const oldOverdueNotifications = JSON.parse(overdueNotificationsRow.value) as Record<string, unknown>;
@@ -430,10 +430,10 @@ const migrations: Migration[] = [
           }
         }
         
-        // Update overdue_backup_notifications configuration
+        // Update overdue_notifications configuration
         if (Object.keys(newOverdueNotifications).length > 0) {
           db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
-            'overdue_backup_notifications',
+            'overdue_notifications',
             JSON.stringify(newOverdueNotifications)
           );
         }

@@ -65,29 +65,6 @@ const formatBytesForYAxis = (bytes: number): string => {
   }
 };
 
-// Component to display refresh time that updates independently
-function RefreshTimeDisplay() {
-  const { state: globalRefreshState } = useGlobalRefresh();
-  const [mounted, setMounted] = useState(false);
-
-  // Prevent hydration mismatch by only showing time after client-side mount
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const refreshTime = globalRefreshState.lastRefresh || new Date();
-
-  return (
-    <div className="text-xs text-muted-foreground font-medium">
-      last update: {mounted ? refreshTime.toLocaleTimeString('en-US', { 
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      }) : '--:--:--'}
-    </div>
-  );
-}
 
 // Configuration for each chart type
 const chartMetrics = [
@@ -718,7 +695,7 @@ export const MetricsChartsPanel = ({
           <FileBarChart2 className="h-4 w-4 text-blue-600" />
           <h2 className="text-sm font-semibold">Metrics</h2>
         </div>
-        <RefreshTimeDisplay />
+        {/* <RefreshTimeDisplay /> */}
       </div>
 
       {/* Memoized charts component */}

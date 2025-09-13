@@ -150,7 +150,7 @@ export function OpenServerConfigButton() {
     }
     
     // Check if we have a selected server on dashboard
-    if (pathname === '/' && serverSelectionState.viewMode === 'cards' && serverSelectionState.selectedServerId) {
+    if (pathname === '/' && serverSelectionState.viewMode === 'analytics' && serverSelectionState.selectedServerId) {
       const selectedServer = getSelectedServer();
       if (selectedServer && selectedServer.server_url && selectedServer.server_url.trim() !== '') {
         try {

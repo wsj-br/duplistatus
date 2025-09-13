@@ -276,7 +276,6 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                       <BackupTooltipContent
                         serverAlias={server.alias}
                         serverName={server.name}
-                        serverId={server.id}
                         serverNote={server.note}
                         serverUrl={server.server_url}
                         backupName={backupJob.name}

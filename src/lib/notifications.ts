@@ -1,6 +1,6 @@
 import format from 'string-template';
-import { getConfiguration, getNtfyConfig, getOverdueToleranceConfig, getServerUrlById } from './db-utils';
-import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey, OverdueTolerance } from './types';
+import { getConfiguration, getNtfyConfig, getServerUrlById } from './db-utils';
+import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey } from './types';
 import { createDefaultNotificationConfig, defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -35,24 +35,6 @@ export interface OverdueBackupContext {
   backup_interval_value: number;
   overdue_tolerance: string; // Human-readable tolerance label
   server_url: string;
-}
-
-// Helper function to convert overdue tolerance value to human-readable label
-function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
-  const toleranceLabels: Record<OverdueTolerance, string> = {
-    'no_tolerance': 'No tolerance',
-    '5min': '5 min',
-    '15min': '15 min',
-    '30min': '30 min',
-    '1h': '1 hour',
-    '2h': '2 hours',
-    '4h': '4 hours',
-    '6h': '6 hours',
-    '12h': '12 hours',
-    '1d': '1 day',
-  };
-  
-  return toleranceLabels[tolerance] || tolerance;
 }
 
 async function getNotificationConfig(): Promise<NotificationConfig | null> {
@@ -289,27 +271,17 @@ export async function sendBackupNotification(
 }
 
 export async function sendOverdueBackupNotification(
-  serverId: string,
-  serverName: string,
-  backupName: string,
-  context: OverdueBackupContext,
-  config?: NotificationConfig
+  context: OverdueBackupContext
 ): Promise<void> {
-  const notificationConfig = config || await getNotificationConfig();
+  
+  const notificationConfig = await getNotificationConfig();
+  
   if (!notificationConfig) {
     return;
   }
 
-  // Get the overdue tolerance configuration and add it to the context
-  const overdueTolerance = getOverdueToleranceConfig();
-  const contextWithTolerance: OverdueBackupContext = {
-    ...context,
-    overdue_tolerance: getOverdueToleranceLabel(overdueTolerance),
-    server_url: context.server_url || getServerUrlById(serverId),
-  };
-
   try {
-    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, contextWithTolerance);
+    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context);
     
     await sendNtfyNotification(
       notificationConfig.ntfy.url,
@@ -322,7 +294,7 @@ export async function sendOverdueBackupNotification(
     );
     
   } catch (error) {
-    console.error(`Failed to send overdue backup notification for ${serverName}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to send overdue backup notification for ${context.server_name}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

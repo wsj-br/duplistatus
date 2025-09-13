@@ -181,7 +181,6 @@ export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h
 // Interface for overdue backup notification timestamps
 export interface OverdueNotificationTimestamp {
   lastNotificationSent: string; // ISO timestamp
-  lastBackupDate: string; // ISO timestamp of the backup that was current when notification was sent
 }
 
 // Type for overdue backup notifications configuration

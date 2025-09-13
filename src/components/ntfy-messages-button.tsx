@@ -19,7 +19,7 @@ export function NtfyMessagesButton() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/configuration');
+      const response = await fetch('/api/configuration/ntfy');
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }

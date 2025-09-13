@@ -20,20 +20,20 @@ export function OverviewSidePanelToggle({ className }: OverviewSidePanelTogglePr
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
       onClick={handleToggle}
       className={cn(
-        "absolute -top-2 -end-2 z-50 p-1 h-6 w-6 bg-gray-900 border border-blue-600 hover:bg-muted/50 transition-colors",
+        "absolute top-0 end-0 z-50 p-1 h-6 w-6 bg-black-100 backdrop-blur-sm border-white-500 text-blue-600 shadow-lg hover:bg-blue-900 hover:border-blue-600 transition-all duration-200",
         className
       )}
       aria-label={`Switch to ${overviewSidePanel === 'status' ? 'chart' : 'status'} view`}
     >
       {overviewSidePanel === 'status' ? (
 
-        <SquareMenu className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+        <SquareMenu className="h-3 w-3 hover:text-foreground" />
       ) : (
-        <ChartLine className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+        <ChartLine className="h-3 w-3 hover:text-foreground" />
       )}
     </Button>
   );

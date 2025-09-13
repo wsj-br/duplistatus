@@ -70,7 +70,7 @@ export function DashboardLayout({
   const visibleCardIndex = globalRefreshState.visibleCardIndex;
 
   // Handle view mode changes
-  const handleViewModeChange = (newViewMode: 'cards' | 'table' | 'overview') => {
+  const handleViewModeChange = (newViewMode: 'analytics' | 'table' | 'overview') => {
     setViewMode(newViewMode);
   };
 
@@ -164,7 +164,7 @@ export function DashboardLayout({
         />
       </div>
       
-      {/* Overview View Layout */}
+      {/* Overview Layout */}
       {viewMode === 'overview' ? (
         <div className={`flex flex-col md:flex-row gap-3 mt-2 mb-4 flex-1 min-h-0 ${
           useContentBasedHeight ? 'min-h-fit' : 'h-full'
@@ -209,7 +209,7 @@ export function DashboardLayout({
           <div className="mt-2 mb-2">
             <Card className="shadow-lg border-2 border-border">
               <CardContent className="p-4">
-                {viewMode === 'cards' ? (
+                {viewMode === 'analytics' ? (
                   <ServerCards 
                     servers={data.serversSummary} 
                     selectedServerId={selectedServerId}

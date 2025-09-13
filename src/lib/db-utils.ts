@@ -114,7 +114,7 @@ function getNotificationEvent(serverId: string, backupName: string): Notificatio
 // Helper function to get last notification sent timestamp for a backup
 function getLastNotificationSent(serverId: string, backupName: string): string {
   try {
-    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
+    const lastNotificationJson = getConfiguration('overdue_notifications');
     if (!lastNotificationJson) return 'N/A';
     
     const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
@@ -1204,8 +1204,8 @@ function cleanupServerConfiguration(serverId: string): void {
       }
     }
     
-    // Clean up overdue_backup_notifications
-    const overdueNotificationsJson = getConfiguration('overdue_backup_notifications');
+    // Clean up overdue_notifications
+    const overdueNotificationsJson = getConfiguration('overdue_notifications');
     if (overdueNotificationsJson) {
       try {
         const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
@@ -1220,10 +1220,10 @@ function cleanupServerConfiguration(serverId: string): void {
         }
         
         // Save the updated overdue notifications
-        setConfiguration('overdue_backup_notifications', JSON.stringify(updatedOverdueNotifications));
+        setConfiguration('overdue_notifications', JSON.stringify(updatedOverdueNotifications));
 
       } catch (error) {
-        console.error('Failed to parse overdue_backup_notifications during cleanup:', error instanceof Error ? error.message : String(error));
+        console.error('Failed to parse overdue_notifications during cleanup:', error instanceof Error ? error.message : String(error));
       }
     }
   } catch (error) {
@@ -1391,10 +1391,22 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
     console.error('Failed to get ntfy config from notifications:', error instanceof Error ? error.message : String(error));
   }
   
-  // Generate default topic if no configuration exists
+  // Generate default topic if no configuration exists and persist it
   const { generateDefaultNtfyTopic, defaultNtfyConfig } = await import('./default-config');
   const defaultTopic = generateDefaultNtfyTopic();
-  return { ...defaultNtfyConfig, topic: defaultTopic };
+  const generatedConfig = { ...defaultNtfyConfig, topic: defaultTopic };
+  
+  // Persist the generated configuration
+  try {
+    const configJson = getConfiguration('notifications');
+    const config = configJson ? JSON.parse(configJson) : {};
+    config.ntfy = generatedConfig;
+    setConfiguration('notifications', JSON.stringify(config));
+  } catch (error) {
+    console.error('Failed to persist generated ntfy config:', error instanceof Error ? error.message : String(error));
+  }
+  
+  return generatedConfig;
 }
 
 // Function to get all server and their respective backup names
@@ -1472,3 +1484,26 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
     return { added: 0, total: 0 };
   }
 } 
+
+
+// Helper function to convert overdue tolerance value to human-readable label
+export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
+  const toleranceLabels: Record<OverdueTolerance, string> = {
+    'no_tolerance': 'No tolerance',
+    '5min': '5 min',
+    '15min': '15 min',
+    '30min': '30 min',
+    '1h': '1 hour',
+    '2h': '2 hours',
+    '4h': '4 hours',
+    '6h': '6 hours',
+    '12h': '12 hours',
+    '1d': '1 day',
+  };
+  
+  return toleranceLabels[tolerance] || tolerance;
+}
+
+
+
+

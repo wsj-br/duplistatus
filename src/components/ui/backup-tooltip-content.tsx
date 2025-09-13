@@ -27,7 +27,6 @@ function getNotificationIcon(notificationEvent: NotificationEvent | undefined) {
 interface BackupTooltipContentProps {
   serverAlias?: string;
   serverName: string;
-  serverId: string;
   serverNote?: string;
   serverUrl: string;
   backupName: string;
@@ -47,7 +46,6 @@ interface BackupTooltipContentProps {
 export function BackupTooltipContent({
   serverAlias,
   serverName,
-  serverId,
   serverNote,
   serverUrl,
   backupName,

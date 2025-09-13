@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     // Clean up overdue backup notifications for disabled backups and changed timeout settings
     try {
       // Get current overdue backup notifications configuration
-      const overdueNotificationsJson = getConfiguration('overdue_backup_notifications');
+      const overdueNotificationsJson = getConfiguration('overdue_notifications');
       if (overdueNotificationsJson) {
         const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
           }
         }
 
-        // Remove entries for backups that need clearing from overdue_backup_notifications
+        // Remove entries for backups that need clearing from overdue_notifications
         const updatedOverdueNotifications = { ...overdueNotifications };
 
         for (const backupKey of backupKeysToClear) {
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
         }
 
         // Save the updated configuration
-        setConfiguration('overdue_backup_notifications', JSON.stringify(updatedOverdueNotifications));
+        setConfiguration('overdue_notifications', JSON.stringify(updatedOverdueNotifications));
       }
     } catch (cleanupError) {
       console.error('Failed to cleanup overdue backup notifications:', cleanupError);

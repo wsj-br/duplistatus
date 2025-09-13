@@ -3,7 +3,7 @@
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, LayoutDashboard, Sheet, ThumbsUp, Radar } from "lucide-react";
+import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, ChartLine, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import { useServerSelection } from "@/contexts/server-selection-context";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
-  onViewModeChange?: (viewMode: 'cards' | 'table' | 'overview') => void;
+  onViewModeChange?: (viewMode: 'analytics' | 'table' | 'overview') => void;
 }
 
 export function DashboardSummaryCards({ 
@@ -28,11 +28,11 @@ export function DashboardSummaryCards({
 
   // Handle view mode toggle
   const handleViewModeToggle = () => {
-    let newViewMode: 'cards' | 'table' | 'overview';
+    let newViewMode: 'analytics' | 'table' | 'overview';
     if (viewMode === 'overview') {
       newViewMode = 'table';
     } else if (viewMode === 'table') {
-      newViewMode = 'cards';
+      newViewMode = 'analytics';
     } else {
       newViewMode = 'overview';
     }
@@ -115,29 +115,30 @@ export function DashboardSummaryCards({
       <Card className="shadow-md hover:shadow-lg transition-shadow w-fit flex-shrink-0 flex items-center justify-center">
         <div className="p-3 text-center">
           <TooltipProvider>
-            <Tooltip delayDuration={0}>
+            <Tooltip delayDuration={1000}>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="h-8 w-8 p-0 hover:bg-transparent [&_svg]:!h-8 [&_svg]:!w-8"
+                  // className="h-8 w-8 p-0 hover:bg-transparent "
+                  className="h-8 w-8 p-6  [&_svg]:!h-8 [&_svg]:!w-8 text-blue-600 hover:text-foreground bg-black-100 backdrop-blur-sm border-white-500 text-blue-600 shadow-lg hover:bg-blue-900 hover:border-blue-600 transition-all duration-200"
                   onClick={handleViewModeToggle}
                 >
-                  {viewMode === 'cards' ? (
-                    <LayoutDashboard className="h-6 w-6 text-blue-600" />
+                  {viewMode === 'analytics' ? (
+                    <ChartLine className="h-6 w-6" />
                   ) : viewMode === 'table' ? (
-                    <Sheet className="h-8 w-8 text-blue-600" />
+                    <Sheet className="h-8 w-8" />
                   ) : (
-                    <Radar className="h-6 w-6 text-blue-600" />
+                    <LayoutDashboard className="h-6 w-6" />
                   )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Show {viewMode === 'overview' ? 'table' : viewMode === 'table' ? 'cards' : 'overview'} view</p>
+                <p>Show {viewMode === 'overview' ? 'table view' : viewMode === 'table' ? 'analytics view' : 'overview'}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
           {/* <div className="text-xs text-muted-foreground mt-2">
-            {viewMode === 'cards' ? 'Switch to Table' : 'Switch to Cards'}
+            {viewMode === 'analytics' ? 'Switch to Table' : 'Switch to Analytics'}
           </div> */}
         </div>
       </Card>

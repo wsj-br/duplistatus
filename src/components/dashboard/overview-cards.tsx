@@ -269,7 +269,6 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                     <BackupTooltipContent
                       serverAlias={server.alias}
                       serverName={server.name}
-                      serverId={server.id}
                       serverNote={server.note}
                       serverUrl={server.server_url}
                       backupName={backupJob.name}

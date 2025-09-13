@@ -1,9 +1,8 @@
-import { getConfiguration, getLastOverdueBackupCheckTime } from '../src/lib/db-utils';
+import { getConfiguration, getLastOverdueBackupCheckTime, dbUtils } from '../src/lib/db-utils';
 import { formatTimeElapsed } from '../src/lib/utils';
 
 interface NotificationTimestamp {
   lastNotificationSent: string; // ISO timestamp
-  lastBackupDate: string; // ISO timestamp
 }
 
 interface OverdueBackupNotifications {
@@ -21,10 +20,10 @@ export function displayOverdueNotifications(checkDate?: Date): void {
     }
 
     // Get the current overdue backup notifications configuration
-    const lastNotificationJson = getConfiguration('overdue_backup_notifications');
+    const lastNotificationJson = getConfiguration('overdue_notifications');
     
     if (!lastNotificationJson) {
-      console.log('No overdue_backup_notifications configuration found.');
+      console.log('No overdue_notifications configuration found.');
       return;
     }
 
@@ -42,33 +41,39 @@ export function displayOverdueNotifications(checkDate?: Date): void {
       const timestamp = notifications[key].lastNotificationSent;
       return timestamp ? new Date(timestamp).toLocaleString().length : 'N/A'.length;
     }), 'Last Notification Sent'.length);
-    const maxBackupDateLength = Math.max(...backupKeys.map(key => {
-      const timestamp = notifications[key].lastBackupDate;
-      return timestamp ? new Date(timestamp).toLocaleString().length : 'N/A'.length;
-    }), 'Last Backup Date'.length);
+    
+    // Calculate max lengths for backup date and elapsed time (we'll calculate these dynamically)
+    let maxBackupDateLength = 'Last Backup Date'.length;
+    let maxBackupElapsedLength = 'Backup Elapsed'.length;
+    let maxDifferenceLength = 'Notification-Backup Diff'.length;
+    
+    // Pre-calculate backup dates to determine column widths
+    const backupDates: Record<string, string> = {};
+    for (const backupKey of backupKeys) {
+      const [serverId, backupName] = backupKey.split(':');
+      try {
+        const latestBackup = dbUtils.getLatestBackupByName(serverId, backupName) as {
+          date: string;
+          server_name: string;
+          backup_name?: string;
+        } | null;
+        
+        if (latestBackup) {
+          backupDates[backupKey] = latestBackup.date;
+          const formattedDate = new Date(latestBackup.date).toLocaleString();
+          const elapsed = formatTimeElapsed(latestBackup.date, currentTime);
+          maxBackupDateLength = Math.max(maxBackupDateLength, formattedDate.length);
+          maxBackupElapsedLength = Math.max(maxBackupElapsedLength, elapsed.length);
+        }
+      } catch (error) {
+        console.error(`Error pre-calculating backup date for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+      }
+    }
+    
     const maxNotificationElapsedLength = Math.max(...backupKeys.map(key => {
       const timestamp = notifications[key].lastNotificationSent;
       return timestamp ? formatTimeElapsed(timestamp, currentTime).length : 'N/A'.length;
     }), 'Notification Elapsed'.length);
-    const maxBackupElapsedLength = Math.max(...backupKeys.map(key => {
-      const timestamp = notifications[key].lastBackupDate;
-      return timestamp ? formatTimeElapsed(timestamp, currentTime).length : 'N/A'.length;
-    }), 'Backup Elapsed'.length);
-
-    // Calculate max length for the difference column
-    const maxDifferenceLength = Math.max(...backupKeys.map(key => {
-      const notificationSent = notifications[key].lastNotificationSent;
-      const backupDate = notifications[key].lastBackupDate;
-      if (notificationSent && backupDate && notificationSent !== "" && backupDate !== "") {
-        const diff = Math.abs(new Date(notificationSent).getTime() - new Date(backupDate).getTime());
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        return `${days.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`.length;
-      }
-      return 'N/A'.length;
-    }), 'Notification-Backup Diff'.length);
 
     // Create header
     const header = [
@@ -85,7 +90,26 @@ export function displayOverdueNotifications(checkDate?: Date): void {
 
     // Display each entry
     for (const [backupKey, notification] of Object.entries(notifications)) {
-      const { lastNotificationSent, lastBackupDate } = notification;
+      const { lastNotificationSent } = notification;
+      
+      // Extract server ID and backup name from backup key
+      const [serverId, backupName] = backupKey.split(':');
+      
+      // Get the latest backup date from the database
+      let lastBackupDate = 'N/A';
+      try {
+        const latestBackup = dbUtils.getLatestBackupByName(serverId, backupName) as {
+          date: string;
+          server_name: string;
+          backup_name?: string;
+        } | null;
+        
+        if (latestBackup) {
+          lastBackupDate = latestBackup.date;
+        }
+      } catch (error) {
+        console.error(`Error fetching last backup date for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+      }
       
       const formattedNotificationSent = lastNotificationSent && lastNotificationSent !== "" 
         ? new Date(lastNotificationSent).toLocaleString() 
@@ -118,6 +142,7 @@ export function displayOverdueNotifications(checkDate?: Date): void {
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
             
             notificationBackupDiff = `${days.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            maxDifferenceLength = Math.max(maxDifferenceLength, notificationBackupDiff.length);
           }
         } catch (error) {
           console.error(`Error calculating difference for ${backupKey}:`, error instanceof Error ? error.message : String(error));

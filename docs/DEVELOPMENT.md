@@ -44,6 +44,7 @@
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
     - [Update version information](#update-version-information)
     - [Update documentation](#update-documentation)
+    - [Viewing the configurations on the database](#viewing-the-configurations-on-the-database)
   - [Documentation tools](#documentation-tools)
     - [Updating the Table of Contents on the documentation](#updating-the-table-of-contents-on-the-documentation)
     - [Checking for broken links](#checking-for-broken-links)
@@ -404,6 +405,15 @@ This script updates all documentation files with the current version and regener
 - Runs `doctoc` to regenerate table of contents
 - Provides feedback on updated files
 - Requires `doctoc` to be installed globally
+
+### Viewing the configurations on the database
+
+```bash
+sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
+  {print "\n" $1 ": "; 
+   if(index($2,"{")>0) {print $2 |"jq -C ."; close("jq -C .")} 
+   else {print $2;}}' | less -R
+```
 
 <br><br>
 

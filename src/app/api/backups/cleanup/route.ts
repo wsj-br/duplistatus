@@ -32,9 +32,9 @@ export async function POST(request: Request) {
         setConfiguration('backup_settings', JSON.stringify({}));
         console.log('[cleanup] Cleared backup_settings configuration');
         
-        // Clear overdue_backup_notifications
-        setConfiguration('overdue_backup_notifications', JSON.stringify({}));
-        console.log('[cleanup] Cleared overdue_backup_notifications configuration');
+        // Clear overdue_notifications
+        setConfiguration('overdue_notifications', JSON.stringify({}));
+        console.log('[cleanup] Cleared overdue_notifications configuration');
       } catch (configError) {
         console.error('Failed to clear configuration settings:', configError instanceof Error ? configError.message : String(configError));
         // Don't fail the entire operation if config cleanup fails

@@ -94,7 +94,6 @@ export const defaultUIConfig = {
   databaseCleanupPeriod: '2 years' as const,
   tablePageSize: 5 as const,
   chartTimeRange: 'All data' as const,
-  chartMetricSelection: 'uploadedSize' as const,
   autoRefreshInterval: 1 as const,
   dashboardCardsSortOrder: 'Server name (a-z)' as const
 };
