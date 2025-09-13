@@ -6,9 +6,11 @@ import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { ServerCards } from "./server-cards";
-import { CompactCards } from "./compact-cards";
+import { OverviewCards } from "./overview-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
-import { StatusCardsPanel } from "./status-cards-panel";
+import { OverviewStatusPanel } from "./overview-status-cards";
+import { OverviewChartsPanel } from "./overview-charts-panel";
+import { OverviewSidePanelToggle } from "@/components/ui/overview-side-panel-toggle";
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
@@ -34,7 +36,7 @@ export function DashboardLayout({
   onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
 }: DashboardLayoutProps) {
   const { state: serverSelectionState, setSelectedServerId, setViewMode, setServers } = useServerSelection();
-  const { viewMode, isInitialized } = serverSelectionState;
+  const { viewMode, isInitialized, overviewSidePanel } = serverSelectionState;
   const { state: globalRefreshState, setVisibleCardIndex } = useGlobalRefresh();
   
   // Track screen height for responsive height behavior
@@ -57,8 +59,8 @@ export function DashboardLayout({
   
   // Determine if we should use content-based height (when screen height < 865px)
   // Table view always uses content-based height regardless of window height
-  // Compact view uses content-based height when screen height < 720px
-  const useContentBasedHeight = viewMode === 'table' || (viewMode === 'compact' && screenHeight < 720) || screenHeight < 865;
+  // Overview view uses content-based height when screen height < 720px
+  const useContentBasedHeight = viewMode === 'table' || (viewMode === 'overview' && screenHeight < 720) || screenHeight < 865;
   
   // Use refs to track initialization and prevent infinite loops
   const previousSelectedServerId = useRef<string | null>(null);
@@ -68,7 +70,7 @@ export function DashboardLayout({
   const visibleCardIndex = globalRefreshState.visibleCardIndex;
 
   // Handle view mode changes
-  const handleViewModeChange = (newViewMode: 'cards' | 'table' | 'compact') => {
+  const handleViewModeChange = (newViewMode: 'cards' | 'table' | 'overview') => {
     setViewMode(newViewMode);
   };
 
@@ -146,10 +148,10 @@ export function DashboardLayout({
     <div className={`flex flex-col px-2 pb-4 
       ${viewMode === 'table' 
         ? 'min-h-screen' // Allow content to extend beyond viewport for table view
-        : viewMode === 'compact'
+        : viewMode === 'overview'
           ? useContentBasedHeight 
             ? 'min-h-screen' // Allow content-based height when screen is narrow
-            : 'h-[calc(100vh-4rem)] overflow-hidden min-h-[720px]' // Fit exactly into viewport in compact view
+            : 'h-[calc(100vh-4rem)] overflow-hidden min-h-[720px]' // Fit exactly into viewport in overview view
           : useContentBasedHeight 
             ? 'min-h-screen' // Allow content-based height when screen is narrow
             : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
@@ -162,31 +164,41 @@ export function DashboardLayout({
         />
       </div>
       
-      {/* Compact View Layout */}
-      {viewMode === 'compact' ? (
+      {/* Overview View Layout */}
+      {viewMode === 'overview' ? (
         <div className={`flex flex-col md:flex-row gap-3 mt-2 mb-4 flex-1 min-h-0 ${
           useContentBasedHeight ? 'min-h-fit' : 'h-full'
         }`}>
-          {/* Left Panel: Compact Cards - 80% width */}
+          {/* Left Panel: Overview Cards - 80% width */}
           <div className={`${useContentBasedHeight ? 'w-full md:w-[80%]' : 'w-[80%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
           }`}>
             <Card className="shadow-lg border-2 border-border h-full">
               <CardContent className="p-2 h-full">
-                <CompactCards 
-                  servers={data.serversSummary} 
+                <OverviewCards 
+                  servers={data.serversSummary}
+                  selectedServerId={selectedServerId}
+                  onSelect={onServerSelect}
                 />
               </CardContent>
             </Card>
           </div>
           
-          {/* Right Panel: Compact Charts - 20% width */}
+          {/* Right Panel: Overview Charts - 20% width */}
           <div className={`${useContentBasedHeight ? 'w-full md:w-[20%]' : 'w-[20%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
           }`}>
-            <Card className="shadow-lg border-2 border-border h-full">
+            <Card className="shadow-lg border-2 border-border h-full relative">
+              <OverviewSidePanelToggle />
               <CardContent className="p-0 h-full">
-                <StatusCardsPanel servers={data.serversSummary} totalBackups={summary.totalBackups} />
+                {overviewSidePanel === 'status' ? (
+                  <OverviewStatusPanel servers={data.serversSummary} totalBackups={summary.totalBackups} />
+                ) : (
+                  <OverviewChartsPanel 
+                    serverId={selectedServerId || undefined}
+                    chartData={selectedServerId ? undefined : data.allServersChartData}
+                  />
+                )}
               </CardContent>
             </Card>
           </div>

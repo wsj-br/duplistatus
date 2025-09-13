@@ -5,17 +5,19 @@ import type { ServerSummary } from '@/lib/types';
 
 interface ServerSelectionState {
   selectedServerId: string | null;
-  viewMode: 'cards' | 'table' | 'compact';
+  viewMode: 'cards' | 'table' | 'overview';
   servers: ServerSummary[];
   isInitialized: boolean;
+  overviewSidePanel: 'status' | 'chart';
 }
 
 interface ServerSelectionContextProps {
   state: ServerSelectionState;
   setSelectedServerId: (serverId: string | null) => void;
-  setViewMode: (viewMode: 'cards' | 'table' | 'compact') => void;
+  setViewMode: (viewMode: 'cards' | 'table' | 'overview') => void;
   setServers: (servers: ServerSummary[]) => void;
   getSelectedServer: () => ServerSummary | null;
+  setOverviewSidePanel: (panel: 'status' | 'chart') => void;
 }
 
 const ServerSelectionContext = createContext<ServerSelectionContextProps | undefined>(undefined);
@@ -27,27 +29,35 @@ interface ServerSelectionProviderProps {
 export function ServerSelectionProvider({ children }: ServerSelectionProviderProps) {
   const [state, setState] = useState<ServerSelectionState>({
     selectedServerId: null,
-    viewMode: 'compact', // Default fallback
+    viewMode: 'overview', // Default fallback
     servers: [],
     isInitialized: false,
+    overviewSidePanel: 'status',
   });
 
-  // Initialize view mode from localStorage on mount
+  // Initialize view mode and overview side panel from localStorage on mount
   useEffect(() => {
     try {
       const savedViewMode = localStorage.getItem('dashboard-view-mode');
-      if (savedViewMode === 'cards' || savedViewMode === 'table' || savedViewMode === 'compact') {
-        setState(prev => ({ 
-          ...prev, 
-          viewMode: savedViewMode,
-          isInitialized: true 
-        }));
-      } else {
-        setState(prev => ({ ...prev, viewMode: 'compact', isInitialized: true }));
-      }
+      const savedOverviewSidePanel = localStorage.getItem('overview-side-panel');
+      
+      const viewMode = (savedViewMode === 'cards' || savedViewMode === 'table' || savedViewMode === 'overview') 
+        ? savedViewMode 
+        : 'overview';
+      
+      const overviewSidePanel = (savedOverviewSidePanel === 'status' || savedOverviewSidePanel === 'chart')
+        ? savedOverviewSidePanel
+        : 'status';
+      
+      setState(prev => ({ 
+        ...prev, 
+        viewMode,
+        overviewSidePanel,
+        isInitialized: true 
+      }));
     } catch (error) {
-      console.error('Error loading view mode from localStorage:', error);
-      setState(prev => ({ ...prev, viewMode: 'compact', isInitialized: true }));
+      console.error('Error loading settings from localStorage:', error);
+      setState(prev => ({ ...prev, viewMode: 'overview', overviewSidePanel: 'status', isInitialized: true }));
     }
   }, []);
 
@@ -55,7 +65,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
     setState(prev => ({ ...prev, selectedServerId: serverId }));
   }, []);
 
-  const setViewMode = useCallback((viewMode: 'cards' | 'table' | 'compact') => {
+  const setViewMode = useCallback((viewMode: 'cards' | 'table' | 'overview') => {
     setState(prev => ({ ...prev, viewMode }));
     // Save to localStorage
     try {
@@ -69,6 +79,16 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
     setState(prev => ({ ...prev, servers }));
   }, []);
 
+  const setOverviewSidePanel = useCallback((panel: 'status' | 'chart') => {
+    setState(prev => ({ ...prev, overviewSidePanel: panel }));
+    // Save to localStorage
+    try {
+      localStorage.setItem('overview-side-panel', panel);
+    } catch (error) {
+      console.error('Error saving overview side panel to localStorage:', error);
+    }
+  }, []);
+
   const getSelectedServer = useCallback(() => {
     if (!state.selectedServerId) return null;
     return state.servers.find(server => server.id === state.selectedServerId) || null;
@@ -80,6 +100,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
     setViewMode,
     setServers,
     getSelectedServer,
+    setOverviewSidePanel,
   };
 
   return (

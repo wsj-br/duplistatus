@@ -63,7 +63,7 @@ function getStatusColorForBar(status: BackupStatus): string {
 }
 
 // Custom status badge without text, just icon and color
-function CompactStatusBadge({ status, haveOverdueBackups }: { status: BackupStatus; haveOverdueBackups: boolean }) {
+function OverviewStatusBadge({ status, haveOverdueBackups }: { status: BackupStatus; haveOverdueBackups: boolean }) {
   const getStatusIcon = (status: BackupStatus) => {
       switch (status) {
       case 'Success':
@@ -116,21 +116,27 @@ function BackupStatusBar({ statusHistory }: { statusHistory: BackupStatus[] }) {
   );
 }
 
-interface CompactCardProps {
+interface OverviewCardProps {
   server: ServerSummary;
+  isSelected: boolean;
+  onSelect: (serverId: string) => void;
 }
 
-const CompactCard = ({ server }: CompactCardProps) => {
+const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/detail/${server.id}`);
+    onSelect(server.id);
   };
 
   return (
     <Card 
-      className="cursor-pointer transition-all duration-200 hover:shadow-lg h-full flex flex-col hover:bg-muted/50"
+      className={`cursor-pointer transition-all duration-200 hover:shadow-lg h-full flex flex-col ${
+        isSelected 
+          ? 'border-2 border-primary bg-primary/5 shadow-lg' 
+          : 'hover:bg-muted/50'
+      }`}
       onClick={handleCardClick}
     >
       <CardHeader className="pb-1 pt-1 px-3 flex-shrink-0">
@@ -143,13 +149,13 @@ const CompactCard = ({ server }: CompactCardProps) => {
                 router.push(`/detail/${server.id}`);
               }}
               className="flex items-center hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-              title={server.alias ? server.name : undefined}
+              title={`${server.alias ? server.name : ''}${server.alias && server.note ? '\n': ''}${server.note ? server.note : ''}`}
             >
               {server.alias || server.name}
             </button>
           </CardTitle>
           <div className="flex items-center flex-shrink-0">
-            <CompactStatusBadge 
+            <OverviewStatusBadge 
               status={serverStatus} 
               haveOverdueBackups={server.haveOverdueBackups}
             />
@@ -158,7 +164,7 @@ const CompactCard = ({ server }: CompactCardProps) => {
       </CardHeader>
       
       <CardContent className="space-y-2 px-3 pb-3 flex-1 flex flex-col">
-        {/* Summary Information - Compact */}
+        {/* Summary Information - Overview */}
         <div className="grid grid-cols-4 gap-2 text-xs flex-shrink-0 text-center">
           <section>
             <p className="text-muted-foreground text-xs">Files</p>
@@ -292,11 +298,13 @@ const CompactCard = ({ server }: CompactCardProps) => {
   );
 };
 
-interface CompactCardsProps {
+interface OverviewCardsProps {
   servers: ServerSummary[];
+  selectedServerId?: string | null;
+  onSelect: (serverId: string | null) => void;
 }
 
-export const CompactCards = memo(function CompactCards({ servers }: CompactCardsProps) {
+export const OverviewCards = memo(function OverviewCards({ servers, selectedServerId, onSelect }: OverviewCardsProps) {
   const { dashboardCardsSortOrder } = useConfig();
 
   // Remove duplicates by server ID, sort based on configuration, and memoize to prevent unnecessary re-renders
@@ -376,8 +384,10 @@ export const CompactCards = memo(function CompactCards({ servers }: CompactCards
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 xxl:grid-cols-5 gap-2">
         {uniqueServers.map((server) => (
           <div key={server.id} className="w-full h-[200px]">
-            <CompactCard
+            <OverviewCard
               server={server}
+              isSelected={selectedServerId === server.id}
+              onSelect={onSelect}
             />
           </div>
         ))}
@@ -402,5 +412,8 @@ export const CompactCards = memo(function CompactCards({ servers }: CompactCards
            JSON.stringify(server.backupInfo) === JSON.stringify(nextServer.backupInfo);
   });
   
-  return serversEqual;
+  // Check other props
+  const otherPropsEqual = prevProps.selectedServerId === nextProps.selectedServerId;
+  
+  return serversEqual && otherPropsEqual;
 });

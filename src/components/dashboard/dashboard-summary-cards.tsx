@@ -16,7 +16,7 @@ import { useServerSelection } from "@/contexts/server-selection-context";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
-  onViewModeChange?: (viewMode: 'cards' | 'table' | 'compact') => void;
+  onViewModeChange?: (viewMode: 'cards' | 'table' | 'overview') => void;
 }
 
 export function DashboardSummaryCards({ 
@@ -28,13 +28,13 @@ export function DashboardSummaryCards({
 
   // Handle view mode toggle
   const handleViewModeToggle = () => {
-    let newViewMode: 'cards' | 'table' | 'compact';
-    if (viewMode === 'cards') {
+    let newViewMode: 'cards' | 'table' | 'overview';
+    if (viewMode === 'overview') {
       newViewMode = 'table';
     } else if (viewMode === 'table') {
-      newViewMode = 'compact';
-    } else {
       newViewMode = 'cards';
+    } else {
+      newViewMode = 'overview';
     }
     setViewMode(newViewMode);
     localStorage.setItem('dashboard-view-mode', newViewMode);
@@ -78,8 +78,8 @@ export function DashboardSummaryCards({
       icon: <UploadCloud className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "cloud upload",
     },
-    // Only show Overdue Backups card when not in compact mode
-    ...(viewMode !== 'compact' ? [{
+    // Only show Overdue Backups card when not in overview mode
+    ...(viewMode !== 'overview' ? [{
       title: "Overdue Backups",
       value: summary.overdueBackupsCount.toLocaleString(),
       icon: summary.overdueBackupsCount > 0 ? (
@@ -93,7 +93,7 @@ export function DashboardSummaryCards({
 
   return (
     <div className="flex gap-3">
-      <div className={`grid gap-3 md:grid-cols-2 ${viewMode === 'compact' ? 'lg:grid-cols-6' : 'lg:grid-cols-7'} flex-1`}>
+      <div className={`grid gap-3 md:grid-cols-2 ${viewMode === 'overview' ? 'lg:grid-cols-6' : 'lg:grid-cols-7'} flex-1`}>
         {summaryItems.map((item) => (
           <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
@@ -132,7 +132,7 @@ export function DashboardSummaryCards({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Show {viewMode === 'cards' ? 'table' : viewMode === 'table' ? 'compact' : 'cards'} view</p>
+                <p>Show {viewMode === 'overview' ? 'table' : viewMode === 'table' ? 'cards' : 'overview'} view</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

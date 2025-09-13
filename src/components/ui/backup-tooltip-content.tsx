@@ -75,8 +75,8 @@ export function BackupTooltipContent({
           </div>
         )}
       </div>
-      <div className="text-xs text-muted-foreground text-left -mt-3">
-        {serverNote || `(${serverId})`}
+      <div className="text-xs text-muted-foreground text-left -mt-3 truncate">
+        {serverAlias ? serverName : ''}{serverAlias && serverNote ? <br /> : ''}{serverNote ? serverNote : ''}
       </div>
 
       <div className="space-y-2 border-t pt-3">

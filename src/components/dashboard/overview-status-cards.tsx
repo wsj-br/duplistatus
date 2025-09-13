@@ -10,7 +10,7 @@ import { formatShortTimeAgo } from "@/lib/utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
 
-interface StatusCardsPanelProps {
+interface OverviewStatusPanelProps {
   servers: ServerSummary[];
   totalBackups: number;
 }
@@ -35,7 +35,7 @@ interface BackupWithServer {
   notificationEvent?: NotificationEvent;
 }
 
-export function StatusCardsPanel({ servers, totalBackups }: StatusCardsPanelProps) {
+export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPanelProps) {
   const router = useRouter();
 
   // Helper function to calculate percentage

@@ -119,7 +119,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
               {server.alias || server.name}
             </span>
             <span className="text-2xl text-muted-foreground">
-              {server.note ? server.note : `Server ID: ${server.id}`}
+              {server.note ? server.note : ''}
             </span>
           </CardTitle>
           <CardDescription>

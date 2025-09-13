@@ -24,13 +24,13 @@ function SettingsPageContent() {
   useEffect(() => {
     // Check for tab parameter in URL first
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['backups', 'addresses', 'ntfy', 'templates'].includes(tabParam)) {
+    if (tabParam && ['backups', 'serverSettings', 'ntfy', 'templates'].includes(tabParam)) {
       setActiveTab(tabParam);
       localStorage.setItem('settings-active-tab', tabParam);
     } else {
       // Load the last selected tab from localStorage if no URL parameter
       const savedTab = localStorage.getItem('settings-active-tab');
-      if (savedTab && ['backups', 'addresses', 'ntfy', 'templates'].includes(savedTab)) {
+      if (savedTab && ['backups', 'serverSettings', 'ntfy', 'templates'].includes(savedTab)) {
         setActiveTab(savedTab);
       }
     }

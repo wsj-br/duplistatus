@@ -70,7 +70,7 @@ function getStatusColorForBar(status: BackupStatus): string {
 }
 
 // Custom status badge without text, just icon and color
-function CompactStatusBadge({ status, haveOverdueBackups }: { status: BackupStatus; haveOverdueBackups: boolean }) {
+function OverviewStatusBadge({ status, haveOverdueBackups }: { status: BackupStatus; haveOverdueBackups: boolean }) {
   const getStatusIcon = (status: BackupStatus) => {
       switch (status) {
       case 'Success':
@@ -162,7 +162,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
             </button>
           </CardTitle>
           <div className="flex items-center flex-shrink-0">
-            <CompactStatusBadge 
+            <OverviewStatusBadge 
               status={serverStatus} 
               haveOverdueBackups={server.haveOverdueBackups}
             />
@@ -171,7 +171,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
       </CardHeader>
       
       <CardContent className="space-y-2 px-3 pb-3 flex-1 flex flex-col">
-        {/* Summary Information - Compact */}
+        {/* Summary Information - Overview */}
         <div className="grid grid-cols-4 gap-2 text-xs flex-shrink-0 text-center">
           <section>
             <p className="text-muted-foreground text-xs">Files</p>

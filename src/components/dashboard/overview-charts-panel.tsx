@@ -27,7 +27,7 @@ interface InterpolatedChartPoint {
   [key: string]: string | number;
 }
 
-interface CompactChartsPanelProps {
+interface OverviewChartsPanelProps {
   serverId?: string;
   backupName?: string;
   // Add chartData prop to receive data directly from parent
@@ -78,7 +78,7 @@ function RefreshTimeDisplay() {
   const refreshTime = globalRefreshState.lastRefresh || new Date();
 
   return (
-    <div className="text-xs text-muted-foreground font-medium">
+    <div className="text-xs text-muted-foreground font-medium mr-3">
       last update: {mounted ? refreshTime.toLocaleTimeString('en-US', { 
         hour12: false,
         hour: '2-digit',
@@ -89,8 +89,8 @@ function RefreshTimeDisplay() {
   );
 }
 
-// Configuration for compact charts - only 3 metrics
-const compactChartMetrics = [
+// Configuration for overview charts - only 3 metrics
+const overviewChartMetrics = [
   { 
     key: 'duration', 
     label: 'Duration', 
@@ -161,7 +161,7 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   );
 };
 
-function CompactMetricChart({ 
+function OverviewMetricChart({ 
   data, 
   metricKey, 
   label, 
@@ -188,7 +188,7 @@ function CompactMetricChart({
     [metricKey]: item[metricKey]
   }));
 
-  // Resample data for compact charts using linear interpolation
+  // Resample data for overview charts using linear interpolation
   const maxPoints = 50;
   const resampledData = (() => {
     // Only resample if there are more than maxPoints in the data
@@ -340,11 +340,11 @@ function CompactMetricChart({
   );
 }
 
-function CompactChartsPanelCore({ 
+function OverviewChartsPanelCore({ 
   serverId,
   backupName,
   chartData: externalChartData, // Use external chart data if provided
-}: CompactChartsPanelProps) {
+}: OverviewChartsPanelProps) {
   
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
@@ -609,12 +609,12 @@ function CompactChartsPanelCore({
         </div>
       )}
 
-      {/* Charts - Vertical stack layout for compact view */}
+      {/* Charts - Vertical stack layout for overview view */}
       {!isLoading && !error && chartData.length > 0 && (
         <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-hidden">
-          {compactChartMetrics.map((metric) => (
+          {overviewChartMetrics.map((metric) => (
             <div key={metric.key} className="flex-1 min-h-0">
-              <CompactMetricChart
+              <OverviewMetricChart
                 data={chartData}
                 metricKey={metric.key as keyof ChartDataPoint}
                 label={metric.label}
@@ -639,7 +639,7 @@ function CompactChartsPanelCore({
 }
 
 // Memoized core charts component (without refresh time display)
-const MemoizedCompactChartsCore = memo(CompactChartsPanelCore, (prevProps, nextProps) => {
+const MemoizedOverviewChartsCore = memo(OverviewChartsPanelCore, (prevProps, nextProps) => {
   // Custom comparison function for React.memo
   // Only re-render if there are actual changes in the data we care about
   
@@ -666,11 +666,11 @@ const MemoizedCompactChartsCore = memo(CompactChartsPanelCore, (prevProps, nextP
 });
 
 // Main wrapper component that combines charts with refresh time display
-export const CompactChartsPanel = ({ 
+export const OverviewChartsPanel = ({ 
   serverId,
   backupName,
   chartData
-}: CompactChartsPanelProps) => {
+}: OverviewChartsPanelProps) => {
   
   return (
     <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden">
@@ -684,7 +684,7 @@ export const CompactChartsPanel = ({
       </div>
 
       {/* Memoized charts component */}
-      <MemoizedCompactChartsCore 
+      <MemoizedOverviewChartsCore 
         serverId={serverId}
         backupName={backupName}
         chartData={chartData}

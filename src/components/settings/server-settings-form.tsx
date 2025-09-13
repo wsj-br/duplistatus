@@ -12,6 +12,7 @@ import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { CheckCircle, XCircle, Ellipsis, Loader2, Play } from 'lucide-react';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
+import { useConfiguration } from '@/contexts/configuration-context';
 
 interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
@@ -28,6 +29,7 @@ interface ServerConnectionWithStatus extends ServerAddress {
 
 export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps) {
   const { toast } = useToast();
+  const { refreshConfigSilently } = useConfiguration();
   const [connections, setConnections] = useState<ServerConnectionWithStatus[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -399,6 +401,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         originalNote: conn.note || ''
       })));
       setHasChanges(false);
+
+      // Dispatch custom event to notify other components about configuration change
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
 
       toast({
         title: "Success",
