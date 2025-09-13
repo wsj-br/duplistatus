@@ -4,7 +4,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.7.21.dev-blue)
+![](https://img.shields.io/badge/version-0.7.22.dev-blue)
 
 <br>
 

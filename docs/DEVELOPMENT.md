@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.21.dev-blue)
+![](https://img.shields.io/badge/version-0.7.22.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -45,6 +45,7 @@
     - [Update version information](#update-version-information)
     - [Update documentation](#update-documentation)
     - [Viewing the configurations on the database](#viewing-the-configurations-on-the-database)
+    - [SQL Maintenance Scripts](#sql-maintenance-scripts)
   - [Documentation tools](#documentation-tools)
     - [Updating the Table of Contents on the documentation](#updating-the-table-of-contents-on-the-documentation)
     - [Checking for broken links](#checking-for-broken-links)
@@ -75,8 +76,8 @@
 ## Prerequisites
 
 - docker / docker compose
-- Node.js ^20.x (minimum: 18.19.0, recommended: 20.x)
-- pnpm ^10.x (minimum: 10.12.4, recommended: 10.15.1+)
+- Node.js ^20.x (minimum: 20.19.0, recommended: 20.x)
+- pnpm ^10.x (minimum: 10.15.0, recommended: 10.16.1+)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 - doctoc for markdown TOC generation
@@ -131,10 +132,11 @@ The project includes several npm scripts for different development tasks:
 - `pnpm cron:dev` - Start cron service in development mode with file watching
 - `pnpm cron:start-local` - Start cron service locally for testing
 
-### Testing Scripts
+### Test Scripts
 - `pnpm generate-test-data` - Generate test backup data
 - `pnpm show-overdue-notifications` - Show overdue notification contents
 - `pnpm run-overdue-check` - Run overdue check at specific date/time
+- `pnpm test-cron-port` - Test cron service port connectivity
 
 ### Release Scripts
 - `pnpm release:patch` - Create a patch release (0.0.x)
@@ -321,6 +323,13 @@ curl http://localhost:8667/health
 curl http://localhost:8666/api/cron/health
 ```
 
+3. Use the test script to verify port connectivity:
+```bash
+pnpm test-cron-port
+```
+
+This script tests the connectivity to the cron service port and provides detailed information about the connection status.
+
 
 <br><br>
 
@@ -414,6 +423,27 @@ sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
    if(index($2,"{")>0) {print $2 |"jq -C ."; close("jq -C .")} 
    else {print $2;}}' | less -R
 ```
+
+### SQL Scripts for Debugging and Maintenance
+
+The project includes SQL scripts for database maintenance:
+
+#### Delete Backup Settings
+```bash
+sqlite3 data/backups.db < scripts/delete-backup-settings.sql
+```
+This script removes all backup settings from the configurations table. Use with caution as this will reset all backup notification configurations.
+
+#### Delete Last Backup
+```bash
+sqlite3 data/backups.db < scripts/delete-last-backup.sql
+```
+This script removes the most recent backup record for each server. By default, it deletes the last backup for ALL servers. The script includes commented examples for targeting specific servers by name. Useful for testing and debugging purposes.
+
+**Note**: The script has been updated to work with the current database schema (uses `servers` table and `server_id` column).
+
+>[!CAUTION]
+> These SQL scripts directly modify the database. Always backup your database before running these scripts.
 
 <br><br>
 
@@ -529,8 +559,8 @@ To manually trigger the Docker image build workflow:
 ## Frameworks, libraries and tools used
 
 1. **Runtime & Package Management**
-   - Node.js ^20.x (minimum: 18.19.0, recommended: 20.x)
-   - pnpm ^10.x (minimum: 10.12.4, enforced via preinstall hook)
+   - Node.js ^20.x (minimum: 20.19.0, recommended: 20.x)
+   - pnpm ^10.x (minimum: 10.15.0, enforced via preinstall hook)
 
 2. **Core Frameworks & Libraries**
    - Next.js 15.5.3 – React-based SSR/SSG framework with App Router
@@ -542,7 +572,7 @@ To manually trigger the Docker image build workflow:
    - Recharts 3.2.0 – charting library
    - react-day-picker 9.9.0 – date picker
    - react-hook-form 7.62.0 – forms
-   - lucide-react 0.543.0 – icon components
+   - lucide-react 0.544.0 – icon components
    - clsx 2.1.1 – utility for conditional classNames
    - class-variance-authority 0.7.1 – variant styling helper
    - date-fns 4.1.0 – date utilities

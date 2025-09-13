@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.21.dev-blue)
+![](https://img.shields.io/badge/version-0.7.22.dev-blue)
 
 <br>
 
@@ -55,6 +55,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Server Backup Chart Data](#get-server-backup-chart-data)
 - [Configuration Management](#configuration-management)
   - [Get Unified Configuration](#get-unified-configuration)
+  - [Get NTFY Configuration](#get-ntfy-configuration)
   - [Update Notification Configuration](#update-notification-configuration)
   - [Update Backup Settings](#update-backup-settings)
   - [Update Notification Templates](#update-notification-templates)
@@ -73,6 +74,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Collect Backups](#collect-backups)
   - [Cleanup Backups](#cleanup-backups)
   - [Delete Backup](#delete-backup)
+  - [Delete Backup Job](#delete-backup-job)
   - [Test Server Connection](#test-server-connection)
   - [Get Server Server URL](#get-server-server-url)
   - [Update Server Server URL](#update-server-server-url)
@@ -738,6 +740,26 @@ All API responses are returned in JSON format with consistent error handling pat
   - Includes cron settings, notification frequency, and servers with backups
   - Fetches all data in parallel for better performance
 
+### Get NTFY Configuration
+- **Endpoint**: `/api/configuration/ntfy`
+- **Method**: GET
+- **Description**: Retrieves the current NTFY configuration settings.
+- **Response**:
+  ```json
+  {
+    "ntfy": {
+      "url": "https://ntfy.sh",
+      "topic": "duplistatus-notifications",
+      "accessToken": "optional-access-token"
+    }
+  }
+  ```
+- **Error Responses**:
+  - `500`: Failed to fetch NTFY configuration
+- **Notes**:
+  - Returns current NTFY configuration settings
+  - Used for notification system management
+
 ### Update Notification Configuration
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: GET
@@ -1196,7 +1218,7 @@ All API responses are returned in JSON format with consistent error handling pat
     "status": 200,
     "deletedBackup": {
       "id": "backup-id",
-      "machine_id": "machine-id",
+      "server_id": "server-id",
       "backup_name": "Files",
       "date": "2024-03-20T10:00:00Z"
     }
@@ -1213,6 +1235,39 @@ All API responses are returned in JSON format with consistent error handling pat
   - The backup data will be permanently deleted from the database
   - Enhanced error reporting includes details and timestamp
   - Returns information about the deleted backup
+
+### Delete Backup Job
+- **Endpoint**: `/api/backups/delete-job`
+- **Method**: DELETE
+- **Description**: Deletes all backup records for a specific server-backup combination. This endpoint is only available in development mode.
+- **Request Body**:
+  ```json
+  {
+    "serverId": "server-id",
+    "backupName": "Backup Name"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Successfully deleted 5 backup record(s) for \"Files\" from server \"My Server\"",
+    "status": 200,
+    "deletedCount": 5,
+    "serverName": "My Server",
+    "backupName": "Files"
+  }
+  ```
+- **Error Responses**:
+  - `403`: Backup job deletion is only available in development mode
+  - `400`: Server ID and backup name are required
+  - `404`: No backups found to delete
+  - `500`: Server error during deletion with detailed error information
+- **Notes**: 
+  - This operation is only available in development mode
+  - This operation is irreversible
+  - All backup records for the specified server-backup combination will be permanently deleted
+  - Returns count of deleted backups and server information
+  - Uses server alias for display if available, otherwise falls back to server name
 
 <br>
 

@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.7.21.dev-blue)
+![](https://img.shields.io/badge/version-0.7.22.dev-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -64,7 +64,7 @@ This document describes the SQLite database schema used by duplistatus to store 
     - [Notifications Configuration (`notifications`)](#notifications-configuration-notifications)
     - [Backup Settings Configuration (`backup_settings`)](#backup-settings-configuration-backup_settings)
     - [Cron Service Configuration (`cron_service`)](#cron-service-configuration-cron_service)
-    - [Overdue Backup Notifications (`overdue_backup_notifications`)](#overdue-backup-notifications-overdue_backup_notifications)
+    - [Overdue Backup Notifications (`overdue_notifications`)](#overdue-backup-notifications-overdue_notifications)
     - [Overdue Tolerance Configuration (`overdue_tolerance`)](#overdue-tolerance-configuration-overdue_tolerance)
 - [License](#license)
 
@@ -305,7 +305,7 @@ CREATE TABLE configurations (
   - Task configurations (overdue-backup-check, etc.)
   - Cron expressions and enabled/disabled states
   - Service health check settings
-- `overdue_backup_notifications`: JSON object tracking overdue backup notification history:
+- `overdue_notifications`: JSON object tracking overdue backup notification history:
   - Per-backup notification timestamps (keyed by `server_id:backup_name`)
   - Last notification sent timestamps
   - Last backup date when notification was sent
@@ -1135,7 +1135,7 @@ The configuration system provides a centralized way to manage application settin
 #### Backup Settings Configuration (`backup_settings`)
 ```json
 {
-  "server_name:backup_name": {
+  "server_id:backup_name": {
     "notificationEvent": "all" | "warnings" | "errors" | "off",
     "expectedInterval": number,
     "overdueBackupCheckEnabled": boolean,
@@ -1157,10 +1157,10 @@ The configuration system provides a centralized way to manage application settin
 }
 ```
 
-#### Overdue Backup Notifications (`overdue_backup_notifications`)
+#### Overdue Backup Notifications (`overdue_notifications`)
 ```json
 {
-  "server_name:backup_name": {
+  "server_id:backup_name": {
     "lastNotificationSent": "ISO-timestamp",
     "lastBackupDate": "ISO-timestamp"
   }
