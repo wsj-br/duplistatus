@@ -24,10 +24,51 @@ export function BackupCollectMenu() {
   const [password, setPassword] = useState("");
   const [useHttps, setUseHttps] = useState(false);
   const [allowSelfSigned, setAllowSelfSigned] = useState(false);
+  const [downloadJson, setDownloadJson] = useState(false);
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
+
+  const downloadJsonFile = (jsonData: string, serverName: string) => {
+    try {
+      // Create a timestamp for the filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `${serverName}_collected_${timestamp}.json`;
+      
+      // Create a blob with the JSON data
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      
+      // Create a temporary URL for the blob
+      const url = URL.createObjectURL(blob);
+      
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "JSON file downloaded",
+        description: `Downloaded ${filename}`,
+        variant: "default",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error downloading JSON file:', error);
+      toast({
+        title: "Download failed",
+        description: "Failed to download JSON file",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
 
   const handleCollect = async () => {
     if (!hostname) {
@@ -64,7 +105,8 @@ export function BackupCollectMenu() {
           port: parseInt(port) || defaultAPIConfig.duplicatiPort,
           password,
           protocol: useHttps ? 'https' : defaultAPIConfig.duplicatiProtocol,
-          allowSelfSigned
+          allowSelfSigned,
+          downloadJson
         }),
       });
 
@@ -76,6 +118,11 @@ export function BackupCollectMenu() {
       const result = await response.json();
       setStats(result.stats);
       const serverName = result.serverAlias || result.serverName;
+
+      // Handle JSON download if requested and data is available
+      if (downloadJson && result.jsonData) {
+        downloadJsonFile(result.jsonData, serverName);
+      }
 
       // Clear stats and sensitive data immediately
       setStats(null);
@@ -125,10 +172,11 @@ export function BackupCollectMenu() {
           <div className="space-y-2">
             <h4 className="text-xl font-medium leading-none">Collect Backup Logs</h4>
             <p className="text-sm text-muted-foreground">
-              Download backup logs directly from the Duplicati servers.
+              Extract backup logs directly from the Duplicati servers.
             </p>
           </div>
           <div className="grid gap-4">
+
             <div className="flex flex-col space-y-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -164,6 +212,7 @@ export function BackupCollectMenu() {
                 </div>
               )}
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="hostname">Hostname</Label>
               <Input
@@ -198,6 +247,20 @@ export function BackupCollectMenu() {
                 disabled={isCollecting}
               />
               <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="downloadJson"
+                checked={downloadJson}
+                onCheckedChange={(checked) => setDownloadJson(checked as boolean)}
+                disabled={isCollecting}
+              />
+              <Label
+                htmlFor="downloadJson"
+                className="text-sm font-normal"
+              >
+                Download collected JSON data
+              </Label>
             </div>
             {isCollecting && (
               <div className="flex flex-col items-center justify-center space-y-4 py-4">

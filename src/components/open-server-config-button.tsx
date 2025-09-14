@@ -28,10 +28,10 @@ export function OpenServerConfigButton() {
     try {
       setIsLoading(true);
       
-      // Check if we're on a machine detail page
+      // Check if we're on a server detail page
       if (pathname.startsWith('/detail/')) {
-        // On detail page, don't fetch machine connections for popup
-        // The popup should not be shown for single machines
+        // On detail page, don't fetch server connections for popup
+        // The popup should not be shown for single servers
         setServerAddresses([]);
         return;
       }
@@ -43,7 +43,7 @@ export function OpenServerConfigButton() {
       }
       const data = await response.json();
       
-      // Filter servers with valid HTTP/HTTPS server_url
+      // Filter servers with valid HTTP/HTTPS server_url and remove duplicates
       const validServers = (data || [])
         .filter((server: ServerAddress) => {
           if (!server.server_url || server.server_url.trim() === '') return false;
@@ -54,6 +54,14 @@ export function OpenServerConfigButton() {
             return false;
           }
         })
+        .reduce((uniqueServers: ServerAddress[], server: ServerAddress) => {
+          // Check if we already have a server with this URL
+          const existingServer = uniqueServers.find(s => s.server_url === server.server_url);
+          if (!existingServer) {
+            uniqueServers.push(server);
+          }
+          return uniqueServers;
+        }, [])
         .sort((a: ServerAddress, b: ServerAddress) => {
           const aDisplayName = a.alias || a.name;
           const bDisplayName = b.alias || b.name;
@@ -102,23 +110,23 @@ export function OpenServerConfigButton() {
   };
 
   const handleButtonClick = async () => {
-    // Check if we're on a machine detail page (including backup detail pages)
+    // Check if we're on a server detail page (including backup detail pages)
     if (pathname.startsWith('/detail/')) {
-      // Extract machineId from the pathname
+      // Extract serverId from the pathname
       const pathMatch = pathname.match(/^\/detail\/([^\/\?]+)/);
-      const currentMachineId = pathMatch ? pathMatch[1] : undefined;
+      const currentServerId = pathMatch ? pathMatch[1] : undefined;
       
-      if (currentMachineId) {
+      if (currentServerId) {
         try {
-          const response = await fetch(`/api/servers/${currentMachineId}/server-url`);
+          const response = await fetch(`/api/servers/${currentServerId}/server-url`);
           
           if (!response.ok) {
-            throw new Error(`Failed to fetch machine server URL: ${response.status}`);
+            throw new Error(`Failed to fetch server URL: ${response.status}`);
           }
           
           const data = await response.json();
           
-          // The server-url endpoint returns { machineId, server_url }
+          // The server-url endpoint returns { serverId, server_url }
           const serverUrl = data.server_url;
           
           if (serverUrl && serverUrl.trim() !== '') {
@@ -134,23 +142,23 @@ export function OpenServerConfigButton() {
             }
           }
           
-          // If no valid server_url, show popover with all machines
+          // If no valid server_url, show popover with all servers
           setIsPopoverOpen(true);
         } catch (error) {
-          console.error('Error fetching machine data:', error);
+          console.error('Error fetching server data:', error);
           // Fall back to showing popover
           setIsPopoverOpen(true);
         }
         return;
       } else {
-        // Even on detail page, if we can't get machineId, show popover
+        // Even on detail page, if we can't get serverId, show popover
         setIsPopoverOpen(true);
         return;
       }
     }
     
-    // Check if we have a selected server on dashboard
-    if (pathname === '/' && serverSelectionState.viewMode === 'analytics' && serverSelectionState.selectedServerId) {
+    // Check if we have a selected server on dashboard (both analytics and overview view modes)
+    if (pathname === '/' && (serverSelectionState.viewMode === 'analytics' || serverSelectionState.viewMode === 'overview') && serverSelectionState.selectedServerId) {
       const selectedServer = getSelectedServer();
       if (selectedServer && selectedServer.server_url && selectedServer.server_url.trim() !== '') {
         try {

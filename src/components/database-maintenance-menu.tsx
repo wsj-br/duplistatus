@@ -71,34 +71,48 @@ export function DatabaseMaintenanceMenu() {
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
 
-  // Fetch servers on component mount
-  useEffect(() => {
-    const fetchServers = async () => {
-      try {
-        const response = await fetch('/api/servers');
-        if (response.ok) {
-          const serverList = await response.json();
-          // Sort servers alphabetically by alias with fallback to name
-          const sortedServers = serverList.sort((a: Server, b: Server) => 
-            (a.alias || a.name).localeCompare(b.alias || b.name)
-          );
-          setServers(sortedServers);
+  // Function to fetch servers and backup jobs
+  const fetchServers = async () => {
+    try {
+      // First get basic server information
+      const serversResponse = await fetch('/api/servers');
+      if (serversResponse.ok) {
+        const serverList = await serversResponse.json();
+        // Sort servers alphabetically by alias with fallback to name
+        const sortedServers = serverList.sort((a: Server, b: Server) => 
+          (a.alias || a.name).localeCompare(b.alias || b.name)
+        );
+        setServers(sortedServers);
+
+        // Then get servers with backup information to derive backup jobs
+        const serversWithBackupsResponse = await fetch('/api/servers?includeBackups=true');
+        if (serversWithBackupsResponse.ok) {
+          const serversWithBackups = await serversWithBackupsResponse.json();
           
-          // Derive backup jobs from servers data
+          // Group backup jobs by server
+          const serverBackupMap = new Map<string, Set<string>>();
+          serversWithBackups.forEach((server: any) => {
+            if (!serverBackupMap.has(server.id)) {
+              serverBackupMap.set(server.id, new Set());
+            }
+            serverBackupMap.get(server.id)!.add(server.backupName);
+          });
+
+          // Derive backup jobs from grouped data
           const derivedBackupJobs: BackupJob[] = [];
-          serverList.forEach((server: Server) => {
-            if (server.backups && server.backups.length > 0) {
-              // Get unique backup names for this server
-              const uniqueBackupNames = [...new Set(server.backups.map((backup) => backup.name))];
-              uniqueBackupNames.forEach(backupName => {
+          serverBackupMap.forEach((backupNames, serverId) => {
+            // Find server details from the basic server list
+            const serverDetails = sortedServers.find((server: Server) => server.id === serverId);
+            if (serverDetails) {
+              backupNames.forEach(backupName => {
                 derivedBackupJobs.push({
-                  id: `${server.id}:${backupName}`,
-                  server_id: server.id,
-                  server_name: server.name,
+                  id: `${serverId}:${backupName}`,
+                  server_id: serverId,
+                  server_name: serverDetails.name,
                   backup_name: backupName,
-                  server_url: server.server_url || '',
-                  alias: server.alias || '',
-                  note: server.note || ''
+                  server_url: serverDetails.server_url || '',
+                  alias: serverDetails.alias || '',
+                  note: serverDetails.note || ''
                 });
               });
             }
@@ -115,12 +129,28 @@ export function DatabaseMaintenanceMenu() {
           });
           setBackupJobs(sortedBackupJobs);
         }
-      } catch (error) {
-        console.error('Error fetching servers:', error instanceof Error ? error.message : String(error));
       }
+    } catch (error) {
+      console.error('Error fetching servers:', error instanceof Error ? error.message : String(error));
+    }
+  };
+
+  // Fetch servers on component mount
+  useEffect(() => {
+    fetchServers();
+  }, []);
+
+  // Listen for configuration change events to refresh data
+  useEffect(() => {
+    const handleConfigurationChange = () => {
+      fetchServers();
     };
 
-    fetchServers();
+    window.addEventListener('configuration-saved', handleConfigurationChange);
+    
+    return () => {
+      window.removeEventListener('configuration-saved', handleConfigurationChange);
+    };
   }, []);
 
   const handleCleanup = async () => {
@@ -193,16 +223,8 @@ export function DatabaseMaintenanceMenu() {
       // Reset selected server
       setSelectedServer("");
       
-      // Refresh servers list
-      const serversResponse = await fetch('/api/servers');
-      if (serversResponse.ok) {
-        const serverList = await serversResponse.json();
-        // Sort servers alphabetically by alias with fallback to name
-        const sortedServers = serverList.sort((a: Server, b: Server) => 
-          (a.alias || a.name).localeCompare(b.alias || b.name)
-        );
-        setServers(sortedServers);
-      }
+      // Refresh servers and backup jobs
+      await fetchServers();
       
       // Refresh dashboard data using global refresh context
       await refreshDashboard();
@@ -275,47 +297,8 @@ export function DatabaseMaintenanceMenu() {
       // Reset selected backup job
       setSelectedBackupJob("");
       
-      // Refresh servers list (which will also refresh backup jobs)
-      const serversResponse = await fetch('/api/servers');
-      if (serversResponse.ok) {
-        const serverList = await serversResponse.json();
-        // Sort servers alphabetically by alias with fallback to name
-        const sortedServers = serverList.sort((a: Server, b: Server) => 
-          (a.alias || a.name).localeCompare(b.alias || b.name)
-        );
-        setServers(sortedServers);
-        
-        // Derive backup jobs from servers data
-        const derivedBackupJobs: BackupJob[] = [];
-        serverList.forEach((server: Server) => {
-          if (server.backups && server.backups.length > 0) {
-            // Get unique backup names for this server
-            const uniqueBackupNames = [...new Set(server.backups.map((backup) => backup.name))];
-            uniqueBackupNames.forEach(backupName => {
-              derivedBackupJobs.push({
-                id: `${server.id}:${backupName}`,
-                server_id: server.id,
-                server_name: server.name,
-                backup_name: backupName,
-                server_url: server.server_url || '',
-                alias: server.alias || '',
-                note: server.note || ''
-              });
-            });
-          }
-        });
-        
-        // Sort backup jobs alphabetically by server alias/name, then by backup name
-        const sortedBackupJobs = derivedBackupJobs.sort((a: BackupJob, b: BackupJob) => {
-          const serverA = a.alias || a.server_name;
-          const serverB = b.alias || b.server_name;
-          if (serverA !== serverB) {
-            return serverA.localeCompare(serverB);
-          }
-          return a.backup_name.localeCompare(b.backup_name);
-        });
-        setBackupJobs(sortedBackupJobs);
-      }
+      // Refresh servers and backup jobs
+      await fetchServers();
       
       // Refresh dashboard data using global refresh context
       await refreshDashboard();

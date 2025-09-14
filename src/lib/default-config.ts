@@ -7,8 +7,9 @@ export const defaultNotificationTemplates: {
   warning: NotificationTemplate;
 } = {
   success: {
-    title: "✅ {status} - {backup_name}  @ {server_name}",
-    message: "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
+    title: "✅ {status} - {backup_name}  @ {server_alias}",
+    message: "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
+             "🔍 Note: {server_note}\n" + 
              "☁️ Uploaded: {uploaded_size}\n" + 
              "💾 Store usage:  {storage_size}\n" +
              "🔃 Available versions:  {available_versions}\n",
@@ -16,8 +17,9 @@ export const defaultNotificationTemplates: {
     tags: "duplicati, duplistatus, success"
   },
   warning: {
-    title: " ⚠️{status} - {backup_name}  @ {server_name}",
-    message: "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date}.\n\n" + 
+    title: " ⚠️{status} - {backup_name}  @ {server_alias}",
+    message: "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date}.\n\n" + 
+             "🔍 Note: {server_note}\n" + 
              "⏰ Duration: {duration}\n" + 
              "☁️ Uploaded: {uploaded_size}\n\n" + 
              "🚨 {warnings_count} warnings\n" + 
@@ -27,9 +29,10 @@ export const defaultNotificationTemplates: {
     tags: "duplicati, duplistatus, warning, error"
   },
   overdueBackup: {
-    title: "🕑 Overdue - {backup_name}  @ {server_name}",
-    message: "The backup {backup_name} is overdue on {server_name}.\n\n" + 
-             "🚨 Last backup was {last_backup_date} ({last_elapsed})\n" + 
+    title: "🕑 Overdue - {backup_name}  @ {server_alias}",
+    message: "The backup {backup_name} is overdue on {server_alias}.\n\n" + 
+              "🔍 Note: {server_note}\n" + 
+              "🚨 Last backup was {last_backup_date} ({last_elapsed})\n" + 
               "⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n" + 
               "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance}\n\n" + 
              "🔍 Please check the duplicati server {server_url}\n",

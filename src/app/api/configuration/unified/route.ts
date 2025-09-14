@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig } from '@/lib/db-utils';
+import { getConfiguration, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { dbUtils } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { createDefaultNotificationConfig, defaultOverdueTolerance } from '@/lib/default-config';
 
 export async function GET() {
   try {
+    // Ensure backup settings are complete for all servers and backups first
+    // This will add default settings for any missing server-backup combinations
+    await ensureBackupSettingsComplete();
+    
     // Fetch all configuration data in parallel
     const [configJson, backupSettingsJson, overdueTolerance, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames] = await Promise.all([
       Promise.resolve(getConfiguration('notifications')),

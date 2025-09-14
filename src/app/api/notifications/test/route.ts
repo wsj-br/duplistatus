@@ -8,11 +8,29 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
     throw new Error('NTFY URL and topic are required');
   }
 
+  // Build URL with parameters to handle Unicode characters properly (same approach as main function)
+  const urlObj = new URL(`${url.replace(/\/$/, '')}/${topic}`);
+  
+  // Add parameters to URL to avoid ByteString conversion issues with Unicode
+  if (title && title.trim()) {
+    urlObj.searchParams.set('title', title);
+  }
+  
+  if (priority && priority.trim()) {
+    urlObj.searchParams.set('priority', priority);
+  }
+  
+  if (tags && tags.trim()) {
+    urlObj.searchParams.set('tags', tags);
+  }
+
+  // Ensure the message is properly encoded as UTF-8 (same approach as main function)
+  const encoder = new TextEncoder();
+  const messageBytes = encoder.encode(message);
+
   // Prepare headers
   const headers: Record<string, string> = {
-    'Title': title,
-    'Priority': priority,
-    'Tags': tags,
+    'Content-Type': 'text/plain; charset=utf-8',
   };
 
   // Add authorization header if access token is provided
@@ -20,9 +38,9 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
     headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
-  const response = await fetch(`${url.replace(/\/$/, '')}/${topic}`, {
+  const response = await fetch(urlObj.toString(), {
     method: 'POST',
-    body: message,
+    body: messageBytes,
     headers,
   });
 
@@ -56,6 +74,9 @@ export async function POST(request: NextRequest) {
       // Create sample data for testing
       const sampleData = {
         server_name: 'server_name',
+        server_alias: 'server_alias',
+        server_note: 'server_note',
+        server_url: 'server_url',
         backup_name: 'backup_name',
         backup_date: 'backup_date',
         status: 'status',
@@ -68,7 +89,6 @@ export async function POST(request: NextRequest) {
         uploaded_size: 'uploaded_size',
         storage_size: 'storage_size',
         available_versions: 'available_versions',
-        server_url: 'server_url',
       };
 
       // Process the template with sample data

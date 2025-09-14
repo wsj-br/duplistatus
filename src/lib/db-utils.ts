@@ -624,6 +624,21 @@ export function getOverallSummary() {
   }
 }
 
+export function getServerInfoById(serverId: string) {
+  return withDb(() => {
+    try {
+      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      if (!server) return null;
+
+      return server;
+    } catch (error) {
+      console.error(`Failed to get server by ID ${serverId}:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
+  });
+}
+
+
 export function getServerById(serverId: string) {
   return withDb(() => {
     try {

@@ -204,7 +204,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                             <div className="flex items-center gap-2 justify-end">
                               {getStatusIcon(backup.lastBackupStatus)}
                               <span className="text-xs text-red-500 truncate">
-                                {formatShortTimeAgo(backup.expectedBackupDate)}
+                                {formatShortTimeAgo(backup.lastBackupDate)}
                               </span>
                               <ServerConfigurationButton
                                 serverUrl={backup.serverUrl}

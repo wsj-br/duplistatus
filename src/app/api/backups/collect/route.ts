@@ -24,6 +24,7 @@ interface BackupInfo {
   Backup: {
     ID: string;
     Name: string;
+    TargetURL?: string;
   };
 }
 
@@ -107,7 +108,8 @@ export async function POST(request: NextRequest) {
       port = defaultAPIConfig.duplicatiPort, 
       password, 
       protocol = defaultAPIConfig.duplicatiProtocol,
-      allowSelfSigned = false
+      allowSelfSigned = false,
+      downloadJson = false
     } = await request.json();
 
     if (!hostname) {
@@ -200,14 +202,29 @@ export async function POST(request: NextRequest) {
     }
 
     const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
-    const serverId = systemInfo.Options?.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
+
+    // Check if Options array exists and log its contents
+    if (!systemInfo.Options) {
+      console.error('System info Options array is missing');
+      throw new Error('System info Options array is missing - unable to find machine-id');
+    }
+   
+    const serverId = systemInfo.Options.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
     const serverName = systemInfo.MachineName;
 
-    if (!serverId || !serverName) {
-      console.error('Could not get server information');
-      throw new Error('Could not get server information');
+    // Detailed error reporting
+    if (!serverId) {
+      console.error('Could not find machine-id in system options');
+      console.error('Available option names:', systemInfo.Options.map(opt => opt.Name));
+      throw new Error('Could not find machine-id in system options.');
     }
     
+    if (!serverName) {
+      console.error('MachineName is missing from system info');
+      console.error('System info structure:', Object.keys(systemInfo));
+      throw new Error('MachineName is missing from system info');
+    }
+        
     // Upsert server information in the database
     dbOps.upsertServer.run({
         id: serverId,
@@ -260,6 +277,11 @@ export async function POST(request: NextRequest) {
     let processedCount = 0;
     let skippedCount = 0;
     let errorCount = 0;
+    const collectedJsonData: Array<{
+      backupId: string;
+      backupName: string | undefined;
+      messages: LogEntry[];
+    }> = [];
 
     for (const backupId of backupIds) {
       try {
@@ -297,6 +319,31 @@ export async function POST(request: NextRequest) {
             return false;
           }
         });
+
+        // Collect JSON data for download if requested
+        if (downloadJson) {
+          // Parse Message strings into proper JSON objects
+          const parsedMessages = backupMessages.map((log) => {
+            try {
+              return {
+                ...log,
+                Message: JSON.parse(log.Message)
+              };
+            } catch (error) {
+              console.error('Error parsing message for download:', error instanceof Error ? error.message : String(error));
+              return {
+                ...log,
+                Message: log.Message // Keep as string if parsing fails
+              };
+            }
+          });
+
+          collectedJsonData.push({
+            backupId: backupId,
+            backupName: backups.find((b) => b.Backup.ID === backupId)?.Backup.Name,
+            messages: parsedMessages
+          });
+        }
 
         // Log received data in development mode
         if (process.env.NODE_ENV !== 'production') {
@@ -427,7 +474,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    const responseData: {
+      success: boolean;
+      serverName: string;
+      serverAlias: string;
+      stats: {
+        processed: number;
+        skipped: number;
+        errors: number;
+      };
+      backupSettings: {
+        added: number;
+        total: number;
+      };
+      jsonData?: string;
+    } = {
       success: true,
       serverName: serverName,
       serverAlias: serverAlias,
@@ -440,7 +501,32 @@ export async function POST(request: NextRequest) {
         added: backupSettingsResult.added,
         total: backupSettingsResult.total
       }
-    });
+    };
+
+    // Include JSON data if download was requested
+    if (downloadJson) {
+       // remove sensitive data from the response 
+       // keep only the beginning of TargetURL until the first ":"
+       const backupsWithoutTargetURL = backups.map((backup) => {
+         return {
+           ...backup,
+           Backup: {
+             ...backup.Backup,
+             TargetURL: backup.Backup.TargetURL 
+               ? backup.Backup.TargetURL.split(':')[0] + ':***--REDACTED--***'
+               : backup.Backup.TargetURL
+           }
+         };
+       });
+      // return the response data
+      responseData.jsonData = JSON.stringify({
+        systemInfo,
+        backups: backupsWithoutTargetURL,
+        collectedJsonData
+      }, null, 2);
+    }
+
+    return NextResponse.json(responseData);
 
   } catch (error) {
     console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));

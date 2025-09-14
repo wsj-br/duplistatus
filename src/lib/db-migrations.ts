@@ -40,7 +40,6 @@ class MigrationLock {
         };
         fs.writeFileSync(this.lockFileHandle, JSON.stringify(lockInfo, null, 2));
         
-        console.log(`[MigrationLock] Acquired migration lock (PID: ${process.pid})`);
         return true;
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
@@ -53,18 +52,15 @@ class MigrationLock {
             try {
               process.kill(lockInfo.pid, 0); // Signal 0 just checks if process exists
               // Process exists, wait and retry
-              console.log(`[MigrationLock] Migration lock held by active process (PID: ${lockInfo.pid}), waiting...`);
               await new Promise(resolve => setTimeout(resolve, this.RETRY_INTERVAL));
               continue;
-            } catch (killError) {
+            } catch {
               // Process doesn't exist, remove stale lock
-              console.log(`[MigrationLock] Removing stale migration lock (PID: ${lockInfo.pid} no longer exists)`);
               fs.unlinkSync(this.lockFilePath);
               continue;
             }
-          } catch (parseError) {
+          } catch {
             // Lock file is corrupted, remove it
-            console.log('[MigrationLock] Removing corrupted migration lock file');
             fs.unlinkSync(this.lockFilePath);
             continue;
           }
@@ -83,7 +79,6 @@ class MigrationLock {
       try {
         fs.closeSync(this.lockFileHandle);
         fs.unlinkSync(this.lockFilePath);
-        console.log(`[MigrationLock] Released migration lock (PID: ${process.pid})`);
       } catch (error) {
         console.warn('[MigrationLock] Error releasing migration lock:', error);
       } finally {
@@ -96,8 +91,6 @@ class MigrationLock {
 // Function to populate default configurations
 function populateDefaultConfigurations(db: Database.Database) {
   try {
-    console.log('Populating default configurations...');
-    
     // Generate default ntfy topic
     const defaultTopic = generateDefaultNtfyTopic();
     const ntfyConfig = { ...defaultNtfyConfig, topic: defaultTopic };
@@ -122,8 +115,6 @@ function populateDefaultConfigurations(db: Database.Database) {
       'notifications', 
       JSON.stringify(defaultNotificationConfig)
     );
-    
-    console.log('Default configurations populated successfully');
   } catch (error) {
     console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
     throw error;
@@ -140,7 +131,6 @@ function createDatabaseBackup(dbPath: string): string {
     
     // Copy the database file
     fs.copyFileSync(dbPath, backupPath);
-    console.log(`Database backup created: ${backupPath}`);
     
     return backupPath;
   } catch (error) {
@@ -164,7 +154,7 @@ const migrations: Migration[] = [
     version: '2.0',
     description: 'Add missing columns and create configurations table for existing databases',
     up: (db: Database.Database) => {
-      console.log('Running consolidated migration 2.0...');
+      console.log('Migration 2.0: Adding missing columns and configurations...');
       
       // Check if we need to add missing columns instead of recreating the entire table
       const tableInfo = db.prepare("PRAGMA table_info(backups)").all() as Array<{name: string, type: string}>;
@@ -191,12 +181,10 @@ const migrations: Migration[] = [
       
       // Add missing columns if any
       if (missingColumns.length > 0) {
-        console.log(`Adding ${missingColumns.length} missing columns to backups table...`);
         for (const columnDef of missingColumns) {
           const [columnName] = columnDef.split(' ');
           try {
             db.exec(`ALTER TABLE backups ADD COLUMN ${columnDef}`);
-            console.log(`Added column: ${columnName}`);
           } catch (error) {
             console.warn(`Column ${columnName} might already exist:`, error instanceof Error ? error.message : String(error));
           }
@@ -205,7 +193,6 @@ const migrations: Migration[] = [
       
       // Create configurations table if it doesn't exist
       if (!configTableExists) {
-        console.log('Creating configurations table...');
         db.exec(`
           CREATE TABLE configurations (
             key TEXT PRIMARY KEY NOT NULL,
@@ -215,16 +202,12 @@ const migrations: Migration[] = [
       }
       
       // Update DEFAULT values for message arrays if they are NULL
-      console.log('Updating NULL message arrays to empty arrays...');
-      
-      // Update messages_array if NULL
       const updateMessagesArray = db.prepare(`
         UPDATE backups 
         SET messages_array = '[]'
         WHERE messages_array IS NULL
       `);
-      const updatedMessages = updateMessagesArray.run();
-      console.log(`Updated ${updatedMessages.changes} rows with NULL messages_array`);
+      updateMessagesArray.run();
       
       // Update warnings_array if NULL
       const updateWarningsArray = db.prepare(`
@@ -232,8 +215,7 @@ const migrations: Migration[] = [
         SET warnings_array = '[]'
         WHERE warnings_array IS NULL
       `);
-      const updatedWarnings = updateWarningsArray.run();
-      console.log(`Updated ${updatedWarnings.changes} rows with NULL warnings_array`);
+      updateWarningsArray.run();
       
       // Update errors_array if NULL
       const updateErrorsArray = db.prepare(`
@@ -241,42 +223,33 @@ const migrations: Migration[] = [
         SET errors_array = '[]'
         WHERE errors_array IS NULL
       `);
-      const updatedErrors = updateErrorsArray.run();
-      console.log(`Updated ${updatedErrors.changes} rows with NULL errors_array`);
+      updateErrorsArray.run();
       
       // Extract available backups from messages_array for existing records
-      console.log('Extracting available backups from existing records...');
       const existingBackups = db.prepare(`SELECT id, messages_array FROM backups WHERE available_backups IS NULL OR available_backups = '[]'`).all() as Array<{id: string, messages_array: string | null}>;
       
-      let extractedCount = 0;
       for (const backup of existingBackups) {
         if (backup.messages_array) {
           const availableBackups = extractAvailableBackups(backup.messages_array);
           if (availableBackups.length > 0) {
             db.prepare(`UPDATE backups SET available_backups = ? WHERE id = ?`).run(JSON.stringify(availableBackups), backup.id);
-            extractedCount++;
           }
         }
       }
       
-      console.log(`Extracted available backups from ${extractedCount} records`);
-      
       // Populate default configurations if they don't exist
       populateDefaultConfigurations(db);
-      
-      console.log('Consolidated migration 2.0 completed successfully');
     }
   },
   {
     version: '3.0',
     description: 'Rename machines table to servers, add server_url, and update all references',
     up: (db: Database.Database) => {
-      console.log('Running migration 3.0: Renaming machines to servers and updating references...');
+      console.log('Migration 3.0: Renaming machines to servers...');
       
       // Check if the servers table already exists (migration already completed)
       const serversTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='servers'").get();
       if (serversTableExists) {
-        console.log('Servers table already exists, migration 3.0 already completed');
         // Throw a specific error to indicate the migration was already done
         throw new Error('MIGRATION_ALREADY_COMPLETED');
       }
@@ -284,7 +257,6 @@ const migrations: Migration[] = [
       // Check if the machines table exists (required for migration)
       const machinesTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='machines'").get();
       if (!machinesTableExists) {
-        console.log('Machines table does not exist, migration 3.0 not needed');
         // Throw a specific error to indicate the migration is not needed
         throw new Error('MIGRATION_NOT_NEEDED');
       }
@@ -300,11 +272,9 @@ const migrations: Migration[] = [
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
           );
         `);
-        console.log('Created servers table');
       
       // Step 2: Copy data from machines to servers
       db.exec(`INSERT INTO servers (id, name, created_at) SELECT id, name, created_at FROM machines;`);
-      console.log('Copied data from machines to servers table');
       
       // Step 3: Add server_id column to backups table
       db.exec(`ALTER TABLE backups ADD COLUMN server_id TEXT;`);
@@ -426,8 +396,6 @@ const migrations: Migration[] = [
       db.exec(`PRAGMA foreign_keys=ON;`);
       
       // Step 11: Migrate configuration data
-      console.log('Migrating configuration data...');
-      
       // Migrate backup_settings from machine_name:backup_name to server_id:backup_name
       const backupSettingsRow = db.prepare('SELECT value FROM configurations WHERE key = ?').get('backup_settings') as { value: string } | undefined;
       
@@ -437,13 +405,10 @@ const migrations: Migration[] = [
         let migratedCount = 0;
         let skippedCount = 0;
         
-        console.log(`Found ${Object.keys(oldBackupSettings).length} backup settings to migrate`);
-        
         for (const [oldKey, settings] of Object.entries(oldBackupSettings)) {
           // Validate key format: should be "machine_name:backup_name"
           const keyParts = oldKey.split(':');
           if (keyParts.length !== 2) {
-            console.warn(`Skipping invalid key format (expected "machine_name:backup_name"): ${oldKey}`);
             skippedCount++;
             continue;
           }
@@ -452,7 +417,6 @@ const migrations: Migration[] = [
           
           // Validate that both parts are non-empty strings
           if (!machineName || !backupName || machineName.trim() === '' || backupName.trim() === '') {
-            console.warn(`Skipping invalid key format (empty parts): ${oldKey}`);
             skippedCount++;
             continue;
           }
@@ -460,14 +424,7 @@ const migrations: Migration[] = [
           // Find server by name (now in servers table)
           const servers = db.prepare('SELECT id, name FROM servers WHERE name = ?').all(machineName) as Array<{ id: string; name: string }>;
           
-          if (servers.length === 0) {
-            console.warn(`Skipping backup setting - server not found: ${machineName}`);
-            skippedCount++;
-            continue;
-          }
-          
-          if (servers.length > 1) {
-            console.warn(`Skipping backup setting - multiple servers found with same name: ${machineName} (${servers.length} servers)`);
+          if (servers.length === 0 || servers.length > 1) {
             skippedCount++;
             continue;
           }
@@ -478,7 +435,6 @@ const migrations: Migration[] = [
           const backupExists = db.prepare('SELECT 1 FROM backups WHERE server_id = ? AND backup_name = ? LIMIT 1').get(server.id, backupName);
           
           if (!backupExists) {
-            console.warn(`Skipping backup setting - no backups found: ${machineName}:${backupName}`);
             skippedCount++;
             continue;
           }
@@ -502,12 +458,7 @@ const migrations: Migration[] = [
             'backup_settings',
             JSON.stringify(newBackupSettings)
           );
-          console.log(`Successfully migrated ${migratedCount} backup settings, skipped ${skippedCount}`);
-        } else {
-          console.log('No backup settings could be migrated');
         }
-      } else {
-        console.log('No existing backup_settings configuration found');
       }
       
       // Migrate overdue_backup_notifications to overdue_notifications
@@ -519,13 +470,10 @@ const migrations: Migration[] = [
         let migratedCount = 0;
         let skippedCount = 0;
         
-        console.log(`Found ${Object.keys(oldOverdueNotifications).length} overdue notifications to migrate`);
-        
         for (const [oldKey, notifications] of Object.entries(oldOverdueNotifications)) {
           // Validate key format: should be "machine_name:backup_name"
           const keyParts = oldKey.split(':');
           if (keyParts.length !== 2) {
-            console.warn(`Skipping invalid overdue notification key format (expected "machine_name:backup_name"): ${oldKey}`);
             skippedCount++;
             continue;
           }
@@ -534,7 +482,6 @@ const migrations: Migration[] = [
           
           // Validate that both parts are non-empty strings
           if (!machineName || !backupName || machineName.trim() === '' || backupName.trim() === '') {
-            console.warn(`Skipping invalid overdue notification key format (empty parts): ${oldKey}`);
             skippedCount++;
             continue;
           }
@@ -542,14 +489,7 @@ const migrations: Migration[] = [
           // Find server by machine name (now in servers table)
           const servers = db.prepare('SELECT id, name FROM servers WHERE name = ?').all(machineName) as Array<{ id: string; name: string }>;
           
-          if (servers.length === 0) {
-            console.warn(`Skipping overdue notification - server not found: ${machineName}`);
-            skippedCount++;
-            continue;
-          }
-          
-          if (servers.length > 1) {
-            console.warn(`Skipping overdue notification - multiple servers found with same name: ${machineName} (${servers.length} servers)`);
+          if (servers.length === 0 || servers.length > 1) {
             skippedCount++;
             continue;
           }
@@ -581,18 +521,11 @@ const migrations: Migration[] = [
             'overdue_notifications',
             JSON.stringify(newOverdueNotifications)
           );
-          console.log(`Successfully migrated ${migratedCount} overdue notifications, skipped ${skippedCount}`);
-        } else {
-          console.log('No overdue notifications could be migrated');
         }
         
         // Delete the old overdue_backup_notifications configuration
         db.prepare('DELETE FROM configurations WHERE key = ?').run('overdue_backup_notifications');
-      } else {
-        console.log('No existing overdue_backup_notifications configuration found');
       }
-      
-      console.log('Migration 3.0 completed successfully');
     }
   }
 ];
@@ -646,25 +579,19 @@ export class DatabaseMigrator {
   }
   
   setVersion(version: string): void {
-    console.log(`[Migration] Setting database version to: ${version}`);
-    
     // First, clear any existing versions to ensure we only have one
     this.db.prepare('DELETE FROM db_version').run();
     
     // Insert the new version
-    const result = this.db.prepare(`
+    this.db.prepare(`
       INSERT INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)
     `).run(version);
-    
-    console.log(`[Migration] Version insert result:`, result.changes, 'rows affected');
     
     // Force a checkpoint to ensure WAL changes are written
     this.db.pragma('wal_checkpoint(TRUNCATE)');
     
     // Verify the version was set correctly
     const currentVersion = this.getCurrentVersion();
-    console.log(`[Migration] Database version after update: ${currentVersion}`);
-    
     if (currentVersion !== version) {
       console.error(`[Migration] Version mismatch! Expected ${version}, got ${currentVersion}`);
     }
@@ -684,7 +611,6 @@ export class DatabaseMigrator {
   async runMigrations(): Promise<void> {
     // Prevent multiple concurrent migration runs
     if (DatabaseMigrator.isRunning) {
-      console.log('[Migration] Migration already in progress, skipping...');
       return;
     }
     
@@ -692,7 +618,6 @@ export class DatabaseMigrator {
     
     try {
       const currentVersion = this.getCurrentVersion();
-      // console.log(`[Migration] Current database version: ${currentVersion}`);
       
       // Filter migrations that need to be applied
       const pendingMigrations = migrations.filter(migration => 
@@ -700,109 +625,94 @@ export class DatabaseMigrator {
       );
       
       if (pendingMigrations.length === 0) {
-        // console.log('[Migration] Database is up to date, no migrations needed');
         return;
       }
       
-      console.log(`[Migration] Found ${pendingMigrations.length} pending migrations: ${pendingMigrations.map(m => m.version).join(', ')}`);
+      console.log(`[Migration] Running ${pendingMigrations.length} migrations: ${pendingMigrations.map(m => m.version).join(', ')}`);
       
       // Acquire migration lock to prevent concurrent migrations
       const lockAcquired = await this.migrationLock.acquireLock();
       if (!lockAcquired) {
-        console.log('[Migration] Another process is running migrations, skipping...');
         return;
       }
       
-      console.log('[Migration] Starting migration process...');
-      
       try {
-      // Create backup before running migrations
-      let backupPath: string | undefined;
-      try {
-        backupPath = createDatabaseBackup(this.dbPath);
-      } catch (error) {
-        console.error('Failed to create database backup. Aborting migrations for safety.');
-        throw error;
-      }
-    
-    // Run migrations with retry logic for database locking issues
-    for (const migration of pendingMigrations) {
-      console.log(`Applying migration ${migration.version}: ${migration.description}`);
-      
-      let retryCount = 0;
-      const maxRetries = 3;
-      
-      while (retryCount < maxRetries) {
+        // Create backup before running migrations
+        let backupPath: string | undefined;
         try {
-          // Check if migration actually needs to run by checking current state
-          const currentVersion = this.getCurrentVersion();
-          const needsThisMigration = this.needsMigration(currentVersion, migration.version);
-          
-          if (!needsThisMigration) {
-            console.log(`Migration ${migration.version} not needed, skipping`);
-            break;
-          }
-          
-          // Run migration in a transaction
-          const transaction = this.db.transaction(() => {
-            migration.up(this.db);
-          });
-          
-          transaction();
-          
-          // Update version outside transaction to ensure it's committed
-          this.setVersion(migration.version);
-          console.log(`Migration ${migration.version} completed successfully`);
-          break; // Success, exit retry loop
-          
+          backupPath = createDatabaseBackup(this.dbPath);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
+          console.error('Failed to create database backup. Aborting migrations for safety.');
+          throw error;
+        }
+      
+        // Run migrations with retry logic for database locking issues
+        for (const migration of pendingMigrations) {
+          let retryCount = 0;
+          const maxRetries = 3;
           
-          // Handle specific migration errors
-          if (errorMessage === 'MIGRATION_ALREADY_COMPLETED' || errorMessage === 'MIGRATION_NOT_NEEDED') {
-            // Migration was already done or not needed, update version anyway to prevent re-running
-            this.setVersion(migration.version);
-            console.log(`Migration ${migration.version} completed successfully`);
-            break; // Success, exit retry loop
-          }
-          
-          retryCount++;
-          
-          if (errorMessage.includes('database is locked') || errorMessage.includes('SQLITE_BUSY')) {
-            if (retryCount < maxRetries) {
-              console.warn(`Database is locked, retrying migration ${migration.version} (attempt ${retryCount}/${maxRetries})...`);
-              // Wait a bit before retrying
-              const waitTime = retryCount * 1000; // 1s, 2s, 3s
-              await new Promise(resolve => setTimeout(resolve, waitTime));
-            } else {
-              console.error(`Migration ${migration.version} failed after ${maxRetries} attempts due to database lock:`, errorMessage);
-              console.log(`Database backup is available at: ${backupPath}`);
-              throw error;
+          while (retryCount < maxRetries) {
+            try {
+              // Check if migration actually needs to run by checking current state
+              const currentVersion = this.getCurrentVersion();
+              const needsThisMigration = this.needsMigration(currentVersion, migration.version);
+              
+              if (!needsThisMigration) {
+                break;
+              }
+              
+              // Run migration in a transaction
+              const transaction = this.db.transaction(() => {
+                migration.up(this.db);
+              });
+              
+              transaction();
+              
+              // Update version outside transaction to ensure it's committed
+              this.setVersion(migration.version);
+              break; // Success, exit retry loop
+              
+            } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : String(error);
+              
+              // Handle specific migration errors
+              if (errorMessage === 'MIGRATION_ALREADY_COMPLETED' || errorMessage === 'MIGRATION_NOT_NEEDED') {
+                // Migration was already done or not needed, update version anyway to prevent re-running
+                this.setVersion(migration.version);
+                break; // Success, exit retry loop
+              }
+              
+              retryCount++;
+              
+              if (errorMessage.includes('database is locked') || errorMessage.includes('SQLITE_BUSY')) {
+                if (retryCount < maxRetries) {
+                  // Wait a bit before retrying
+                  const waitTime = retryCount * 1000; // 1s, 2s, 3s
+                  await new Promise(resolve => setTimeout(resolve, waitTime));
+                } else {
+                  console.error(`Migration ${migration.version} failed after ${maxRetries} attempts due to database lock:`, errorMessage);
+                  console.log(`Database backup is available at: ${backupPath}`);
+                  throw error;
+                }
+              } else {
+                console.error(`Migration ${migration.version} failed:`, errorMessage);
+                console.log(`Database backup is available at: ${backupPath}`);
+                throw error;
+              }
             }
-          } else {
-            console.error(`Migration ${migration.version} failed:`, errorMessage);
-            console.log(`Database backup is available at: ${backupPath}`);
-            throw error;
           }
         }
+      } catch (error) {
+        console.error('[Migration] Migration failed:', error);
+        throw error;
+      } finally {
+        // Always release the migration lock and reset running flag
+        this.migrationLock.releaseLock();
+        DatabaseMigrator.isRunning = false;
+        
+        // Small delay to ensure all database operations are committed
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
-    }
-    
-      console.log('[Migration] All migrations completed successfully');
-      if (backupPath) {
-        console.log(`[Migration] Database backup created at: ${backupPath}`);
-      }
-    } catch (error) {
-      console.error('[Migration] Migration failed:', error);
-      throw error;
-    } finally {
-      // Always release the migration lock and reset running flag
-      this.migrationLock.releaseLock();
-      DatabaseMigrator.isRunning = false;
-      
-      // Small delay to ensure all database operations are committed
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
     } catch (error) {
       console.error('[Migration] Outer migration failed:', error);
       DatabaseMigrator.isRunning = false;

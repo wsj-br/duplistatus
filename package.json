@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.7.23.dev",
+  "version": "0.7.24.dev",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.16.1",

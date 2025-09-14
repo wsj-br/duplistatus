@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils, ensureBackupSettingsComplete, getServerUrlById } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
@@ -38,18 +38,69 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate required fields from Extra
-    if (!data.Extra?.['machine-id'] || !data.Extra['machine-name'] || !data.Extra['backup-name'] || !data.Extra['backup-id']) {
+    // Validate Extra section exists
+    if (!data.Extra) {
       return NextResponse.json(
-        { error: 'Missing required server or backup information' },
+        { error: 'Missing Extra section in request data' },
         { status: 400 }
       );
     }
 
-    // Validate required fields from Data
-    if (!data.Data?.ParsedResult || !data.Data?.BeginTime || !data.Data?.Duration) {
+    // Validate required fields from Extra with specific error messages
+    const missingFields: string[] = [];
+    
+    if (!data.Extra['machine-id']) {
+      missingFields.push('machine-id');
+    }
+    if (!data.Extra['machine-name']) {
+      missingFields.push('machine-name');
+    }
+    if (!data.Extra['backup-name']) {
+      missingFields.push('backup-name');
+    }
+    if (!data.Extra['backup-id']) {
+      missingFields.push('backup-id');
+    }
+
+    if (missingFields.length > 0) {
       return NextResponse.json(
-        { error: 'Missing required backup data' },
+        { 
+          error: `Missing required fields in Extra section: ${missingFields.join(', ')}`,
+          missingFields: missingFields,
+          extraSection: data.Extra
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate Data section exists
+    if (!data.Data) {
+      return NextResponse.json(
+        { error: 'Missing Data section in request data' },
+        { status: 400 }
+      );
+    }
+
+    // Validate required fields from Data with specific error messages
+    const missingDataFields: string[] = [];
+    
+    if (!data.Data.ParsedResult) {
+      missingDataFields.push('ParsedResult');
+    }
+    if (!data.Data.BeginTime) {
+      missingDataFields.push('BeginTime');
+    }
+    if (!data.Data.Duration) {
+      missingDataFields.push('Duration');
+    }
+
+    if (missingDataFields.length > 0) {
+      return NextResponse.json(
+        { 
+          error: `Missing required fields in Data section: ${missingDataFields.join(', ')}`,
+          missingFields: missingDataFields,
+          dataSection: data.Data
+        },
         { status: 400 }
       );
     }
@@ -74,12 +125,10 @@ export async function POST(request: NextRequest) {
 
     // Start a transaction
     const transaction = db.transaction(() => {
-      // Insert server information only if it doesn't exist (preserves existing server_url)
-      dbOps.insertServerIfNotExists.run({
+      // Insert server information only if it doesn't exist
+      dbOps.insertServerIfNotExistsWithDefaults.run({
         id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
-        name: data.Extra['machine-name'], // Note: Duplicati API uses 'machine-name' field name
-        alias: '',
-        note: ''
+        name: data.Extra['machine-name'] // Note: Duplicati API uses 'machine-name' field name
       });
 
       // Map backup status
@@ -202,12 +251,13 @@ export async function POST(request: NextRequest) {
         available_backups: null,
       };
 
-      // Get server URL for notification context
-      const serverUrl = getServerUrlById(serverId);
-
       // Create notification context derived from backup object to eliminate duplication
       const notificationContext: NotificationContext = {
+        server_id: serverId,
         server_name: serverName,
+        server_alias: '', // will be populated by the notification service
+        server_note: '', // will be populated by the notification service
+        server_url: '', // will be populated by the notification service
         backup_name: backup.name,
         backup_date: backup.date,
         status: backup.status,
@@ -220,7 +270,6 @@ export async function POST(request: NextRequest) {
         uploaded_size: formatBytes(backup.uploadedSize),
         storage_size: formatBytes(backup.knownFileSize),
         available_versions: backup.backup_list_count,
-        server_url: serverUrl,
       };
 
       await sendBackupNotification(backup, serverId, serverName, notificationContext);

@@ -18,8 +18,136 @@ export const dynamic = 'force-dynamic';
 function SettingsPageContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { config, loading, refreshConfigSilently } = useConfiguration();
+  const { config, loading, refreshConfigSilently, updateConfig } = useConfiguration();
   const [activeTab, setActiveTab] = useState<string>('backups');
+  const [lastServerListHash, setLastServerListHash] = useState<string>('');
+  // Function to create a hash of the server list for change detection
+  const createServerListHash = (servers: any[]) => {
+    if (!servers || servers.length === 0) return '';
+    return servers
+      .map(server => `${server.id}-${server.name}-${server.backupName}`)
+      .sort()
+      .join('|');
+  };
+
+  // Function to refresh only server list data without affecting other configuration
+  const refreshServerListOnly = async () => {
+    try {
+      const response = await fetch('/api/configuration/unified');
+      if (!response.ok) throw new Error('Failed to fetch configuration');
+      
+      const freshConfig = await response.json();
+      
+      // Update only the server-related data in the configuration context
+      // This preserves any unsaved changes in other parts of the configuration
+      updateConfig({
+        serversWithBackups: freshConfig.serversWithBackups,
+        serverAddresses: freshConfig.serverAddresses
+      });
+      
+      return freshConfig;
+    } catch (error) {
+      console.error('Error refreshing server list:', error);
+      throw error;
+    }
+  };
+
+  // Check for server list changes and refresh config if needed
+  useEffect(() => {
+    if (!config || loading) return;
+
+    const currentServerListHash = createServerListHash(config.serversWithBackups || []);
+    
+    // If this is the first load, store the hash and don't refresh
+    if (lastServerListHash === '') {
+      setLastServerListHash(currentServerListHash);
+      return;
+    }
+
+    // If the server list has changed, refresh only the server list data
+    if (currentServerListHash !== lastServerListHash) {
+      console.log('Server list changed, refreshing server list...');
+      refreshServerListOnly().then(() => {
+        setLastServerListHash(currentServerListHash);
+        toast({
+          title: 'Server List Updated',
+          description: 'New servers detected and added to the list',
+          duration: 3000
+        });
+      }).catch((error) => {
+        console.error('Failed to refresh server list:', error);
+      });
+    }
+  }, [config, loading, lastServerListHash, refreshServerListOnly, toast]);
+
+  // Check for server list changes when user navigates back to the settings page
+  useEffect(() => {
+    if (!config || loading) return;
+
+    const handleVisibilityChange = async () => {
+      // Only check when the page becomes visible (user navigated back)
+      if (document.visibilityState === 'visible') {
+        try {
+          // Fetch fresh configuration to check for server changes
+          const response = await fetch('/api/configuration/unified');
+          if (!response.ok) return;
+          
+          const freshConfig = await response.json();
+          const freshServerListHash = createServerListHash(freshConfig.serversWithBackups || []);
+          
+          // If server list has changed, refresh only the server list data
+          if (freshServerListHash !== lastServerListHash && lastServerListHash !== '') {
+            console.log('Page visibility change detected server list changes, refreshing server list...');
+            await refreshServerListOnly();
+            setLastServerListHash(freshServerListHash);
+            toast({
+              title: 'Server List Updated',
+              description: 'New servers detected and added to the list',
+              duration: 3000
+            });
+          }
+        } catch (error) {
+          console.error('Error during visibility change server list check:', error);
+        }
+      }
+    };
+
+    // Listen for visibility changes (when user navigates back to the page)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Also listen for focus events (when user switches back to the browser tab)
+    const handleFocus = async () => {
+      try {
+        // Fetch fresh configuration to check for server changes
+        const response = await fetch('/api/configuration/unified');
+        if (!response.ok) return;
+        
+        const freshConfig = await response.json();
+        const freshServerListHash = createServerListHash(freshConfig.serversWithBackups || []);
+        
+        // If server list has changed, refresh only the server list data
+        if (freshServerListHash !== lastServerListHash && lastServerListHash !== '') {
+          console.log('Window focus detected server list changes, refreshing server list...');
+          await refreshServerListOnly();
+          setLastServerListHash(freshServerListHash);
+          toast({
+            title: 'Server List Updated',
+            description: 'New servers detected and added to the list',
+            duration: 3000
+          });
+        }
+      } catch (error) {
+        console.error('Error during focus server list check:', error);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [config, loading, lastServerListHash, refreshServerListOnly, toast]);
 
   useEffect(() => {
     // Check for tab parameter in URL first
@@ -43,6 +171,7 @@ function SettingsPageContent() {
     setActiveTab(value);
     localStorage.setItem('settings-active-tab', value);
   };
+
 
   if (loading) {
     return (

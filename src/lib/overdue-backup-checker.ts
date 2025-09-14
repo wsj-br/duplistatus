@@ -1,4 +1,4 @@
-import { dbUtils, ensureBackupSettingsComplete, getServerUrlById } from '@/lib/db-utils';
+import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
 import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, getOverdueToleranceConfig, getOverdueToleranceLabel } from '@/lib/db-utils';
 import { OverdueNotifications } from '@/lib/types';
@@ -136,15 +136,15 @@ export async function checkOverdueBackups(checkDate?: Date) {
               const expectedBackupDate = backupInfo.expectedBackupDate;
               const expectedBackupElapsed = expectedBackupDate !== 'N/A' ? formatTimeAgo(expectedBackupDate) : 'N/A';
               
-              // Get server URL for notification context
-              const serverUrl = getServerUrlById(server.id);
-
               // Get the overdue tolerance configuration and add it to the context
               const overdueTolerance = getOverdueToleranceConfig();
               
               const overdueBackupContext: OverdueBackupContext = {
                 server_name: server.name,
                 server_id: server.id,
+                server_alias: '', // will be populated by the notification service
+                server_note: '', // will be populated by the notification service
+                server_url: '', // will be populated by the notification service
                 backup_name: backupInfo.name,
                 last_backup_date: backupInfo.lastBackupDate,
                 last_elapsed: overdueTimeAgo,
@@ -153,7 +153,6 @@ export async function checkOverdueBackups(checkDate?: Date) {
                 backup_interval_type: intervalUnit,
                 backup_interval_value: intervalValue,
                 overdue_tolerance: getOverdueToleranceLabel(overdueTolerance), 
-                server_url: serverUrl,
               };
 
               await sendOverdueBackupNotification(overdueBackupContext);

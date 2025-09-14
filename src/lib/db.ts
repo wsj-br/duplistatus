@@ -274,6 +274,12 @@ function createDbOps() {
     ON CONFLICT(id) DO NOTHING
   `, 'insertServerIfNotExists'),
 
+  insertServerIfNotExistsWithDefaults: safePrepare(`
+    INSERT INTO servers (id, name)
+    VALUES (@id, @name)
+    ON CONFLICT(id) DO NOTHING
+  `, 'insertServerIfNotExistsWithDefaults'),
+
   updateServerServerUrl: safePrepare(`
     UPDATE servers 
     SET server_url = @server_url 
@@ -649,7 +655,7 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
     if (!dbOps) {
       throw new Error('Database operations not yet initialized. Migrations may still be running.');
     }
-    return (dbOps as any)[prop];
+    return (dbOps as Record<string, unknown>)[prop];
   }
 });
 
