@@ -161,11 +161,12 @@ export async function checkOverdueBackups(checkDate?: Date) {
               
               // Update the notification timestamp when notification is sent
               if (!updatedNotifications[backupKey]) {
-                updatedNotifications[backupKey] = {lastNotificationSent: currentTime.toISOString()};
+                updatedNotifications[backupKey] = {lastNotificationSent: currentTime.toISOString(), serverName :''};
               }
               else {
                 updatedNotifications[backupKey].lastNotificationSent = currentTime.toISOString();
               }
+              updatedNotifications[backupKey].serverName = server.name;
             } catch (error) {
               console.error(`Failed to send overdue backup notification for ${backupKey}:`, error instanceof Error ? error.message : String(error));
             }

@@ -426,6 +426,14 @@ sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
    else {print $2;}}' | less -R
 ```
 
+```bash
+sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
+  {print "\n" $1 ": "; 
+   if(index($2,"{")>0) {print $2 |"jq -C ."; close("jq -C .")} 
+   else {print $2;}}' | less -R
+```
+
+
 ### SQL Scripts for Debugging and Maintenance
 
 The project includes SQL scripts for database maintenance:

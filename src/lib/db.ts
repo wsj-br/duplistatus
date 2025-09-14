@@ -168,28 +168,6 @@ try {
   throw error;
 }
 
-// Run database migrations (only for existing databases that need upgrading)
-try {
-  const migrator = new DatabaseMigrator(db, dbPath);
-  migrator.runMigrations();
-} catch (error) {
-  console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));
-  throw error;
-}
-
-// Check and update CRON_PORT configuration
-try {
-  // Import the function from db-utils
-  import('./db-utils').then(({ checkAndUpdateCronPort }) => {
-    checkAndUpdateCronPort();
-  }).catch((error) => {
-    console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
-  });
-} catch (error) {
-  console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
-  // Don't throw error to avoid crashing the application startup
-}
-
 // Helper function to safely prepare statements with error handling
 function safePrepare(sql: string, name: string) {
   try {
@@ -248,8 +226,37 @@ async function populateDefaultConfigurations() {
   }
 }
 
+// Run database migrations and wait for completion before creating dbOps
+let dbOps: ReturnType<typeof createDbOps> | null = null;
+let migrationPromise: Promise<void> | null = null;
+
+// Initialize migrations
+const migrator = new DatabaseMigrator(db, dbPath);
+
+// Function to ensure migrations are complete before accessing dbOps
+async function ensureMigrationsComplete() {
+  if (!migrationPromise) {
+    migrationPromise = migrator.runMigrations().catch(error => {
+      console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));
+      throw error;
+    });
+  }
+  await migrationPromise;
+  
+  // Create dbOps if not already created
+  if (!dbOps) {
+    dbOps = createDbOps();
+  }
+}
+
+// Start migrations immediately but don't wait
+ensureMigrationsComplete().catch(error => {
+  console.error('Failed to initialize database:', error);
+});
+
 // Helper functions for database operations
-const dbOps = {
+function createDbOps() {
+  return {
   // Server operations
   upsertServer: safePrepare(`
     INSERT INTO servers (id, name, server_url, alias, note)
@@ -608,7 +615,8 @@ const dbOps = {
     GROUP BY DATE(b.date)
     ORDER BY b.date
   `, 'getServerBackupChartDataWithTimeRange')
-};
+  };
+}
 
 // Helper function to parse duration string to seconds
 export function parseDurationToSeconds(duration: string): number {
@@ -624,5 +632,26 @@ export function formatDurationFromSeconds(seconds: number): string {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
+// Check and update CRON_PORT configuration after migrations complete
+ensureMigrationsComplete().then(() => {
+  import('./db-utils').then(({ checkAndUpdateCronPort }) => {
+    checkAndUpdateCronPort();
+  }).catch((error) => {
+    console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
+  });
+}).catch(error => {
+  console.error('Failed to complete migrations before checking CRON_PORT:', error);
+});
+
+// Create a proxy for dbOps that ensures migrations are complete
+const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
+  get(target, prop) {
+    if (!dbOps) {
+      throw new Error('Database operations not yet initialized. Migrations may still be running.');
+    }
+    return (dbOps as any)[prop];
+  }
+});
+
 // Export the database instance and operations
-export { db, dbOps }; 
+export { db, dbOpsProxy as dbOps, ensureMigrationsComplete }; 

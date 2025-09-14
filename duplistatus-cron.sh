@@ -4,7 +4,7 @@
 #
 
 # wait for the server to be ready
-sleep 5
+sleep 30
 echo ""
 
 while true; do

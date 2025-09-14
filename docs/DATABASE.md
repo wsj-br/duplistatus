@@ -943,7 +943,6 @@ export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h
 
 export interface OverdueNotificationTimestamp {
   lastNotificationSent: string; // ISO timestamp
-  lastBackupDate: string; // ISO timestamp of the backup that was current when notification was sent
 }
 
 export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;
@@ -1161,8 +1160,7 @@ The configuration system provides a centralized way to manage application settin
 ```json
 {
   "server_id:backup_name": {
-    "lastNotificationSent": "ISO-timestamp",
-    "lastBackupDate": "ISO-timestamp"
+    "lastNotificationSent": "ISO-timestamp"
   }
 }
 ```
