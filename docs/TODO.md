@@ -116,8 +116,6 @@ none
   - Cards can be sorted by server name, last backup status, or date
 - Advanced Metrics Panel
   - Show all metrics at the same time
-  - Data visibility controls (all data, last week, last month, etc.)
-  - Responsive auto-sizing with improved logic
   - Interactive tooltips showing datapoint information (date, value)
 
 **UI/Navigation Improvements:**

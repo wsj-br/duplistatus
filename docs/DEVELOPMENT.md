@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.25.dev-blue)
+![](https://img.shields.io/badge/version-0.7.26-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->

@@ -3,7 +3,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.7.25.dev-blue)
+![](https://img.shields.io/badge/version-0.7.26-blue)
 
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
@@ -26,7 +26,7 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
 - [Application Toolbar](#application-toolbar)
 - [Dashboard Summary](#dashboard-summary)
 - [Cards Layout](#cards-layout)
-  - [Backup details](#backup-details)
+  - [Backup Details](#backup-details)
 - [Table Layout](#table-layout)
   - [Notifications Icons](#notifications-icons)
   - [Overdue Details](#overdue-details)
@@ -35,7 +35,7 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
 - [Server Details](#server-details)
   - [Server/Backup Statistics](#serverbackup-statistics)
   - [Backup History](#backup-history)
-- [Backup Details](#backup-details)
+- [Backup Details](#backup-details-1)
 - [Duplicati Configuration](#duplicati-configuration)
 - [Display Settings](#display-settings)
 - [Collect Backup Logs](#collect-backup-logs)
@@ -43,15 +43,17 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
   - [How the Collection Process Works](#how-the-collection-process-works)
 - [Database Maintenance](#database-maintenance)
   - [Data Cleanup Period](#data-cleanup-period)
+  - [Delete Backup Job Data](#delete-backup-job-data)
   - [Delete Server Data](#delete-server-data)
 - [Settings](#settings)
-  - [NTFY Settings](#NTFY-settings)
   - [Backup Notifications Settings](#backup-notifications-settings)
     - [Configure Per-Backup Notification Settings](#configure-per-backup-notification-settings)
     - [Global Configurations](#global-configurations)
     - [Action Buttons](#action-buttons)
   - [Overdue Check Process](#overdue-check-process)
-  - [Server Addresses](#server-addresses)
+  - [Server Settings](#server-settings)
+  - [NTFY Settings](#ntfy-settings)
+    - [About NTFY](#about-ntfy)
   - [Notification Templates](#notification-templates)
 - [Homepage Integration (Optional)](#homepage-integration-optional)
   - [Summary Widget](#summary-widget)
