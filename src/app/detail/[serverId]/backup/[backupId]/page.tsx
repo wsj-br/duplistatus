@@ -238,9 +238,10 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                   title={server.alias ? server.name : undefined}
                 >
                     {server.alias || server.name}
+                    {server.alias ? ` (${server.name})` : ''}
                     {server.note && (
                       <span className="text-muted-foreground font-normal text-lg ml-2">
-                        {server.note}
+                         -  {server.note}
                       </span>
                     )}
                 </CardTitle>

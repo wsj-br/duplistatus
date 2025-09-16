@@ -139,6 +139,6 @@ none
 
 # pending actions
 
-- check if can merge migration 4.0 with 3.0
+- ✅ migration 4.0 was merged with 3.0 - machine-to-server transition completed in migration 3.0
 - review the export interface BackupNotificationConfig in types.ts to include the ServerName in the json.
 

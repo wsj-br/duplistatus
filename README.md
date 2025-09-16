@@ -4,12 +4,12 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.7.22.dev-blue)
+![](https://img.shields.io/badge/version-0.7.25.dev-blue)
 
 <br>
 
 
-This web application monitors and visualizes backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple servers. It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple servers. It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
 <br>
 
@@ -22,8 +22,8 @@ This web application monitors and visualizes backup operations from [Duplicati](
   - [Dashboard](#dashboard)
   - [Backup History](#backup-history)
   - [Backup Details](#backup-details)
-  - [Available Backup Versions](#available-backup-versions)
   - [Overdue Backups](#overdue-backups)
+  - [Overdue notifications on your phone](#overdue-notifications-on-your-phone)
 - [Installation](#installation)
 - [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
 - [User Guide](#user-guide)
@@ -45,9 +45,9 @@ This web application monitors and visualizes backup operations from [Duplicati](
 - **Easy Installation**: Run inside a container with images available on Docker Hub and GitHub Container Registry
 - **Dashboard**: This displays the backup status for all monitored servers.
 - **Backup history**: Detailed view of backup history for each server
-- **Data Visualization**: Interactive charts showing backup metrics over time and other statistical information.
+- **Data Visualisation**: Interactive charts showing backup metrics over time and other statistical information.
 - **Log Collection**: Collect backup logs directly from Duplicati servers via HTTP/HTTPS
-- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts (NEW)
+- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts, see notifications on your phone (NEW)
 - **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups (NEW)
 - **Backup Version Display**: Show the list of backup versions available in the backend (NEW)
 - **API Access**: RESTful API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs
@@ -56,8 +56,8 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 
 >[!IMPORTANT]
-> If you are upgrading from version 0.5.0 or earlier, your database will be automatically 
-> [migrated](#migrating-to-version-061) to the new schema during the upgrade process.
+> If you are upgrading from version 0.6.x or earlier, your database will be automatically 
+> [migrated](#migrating-to-version-07x) to the new schema during the upgrade process.
 
 <br>
 
@@ -69,20 +69,20 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 ### Backup History
 
-![server-detail](docs/img/screen-machine.png)
+![server-detail](docs/img/screen-server.png)
 
 ### Backup Details
 
 ![backup-detail](docs/img/screen-backup.png)
 
-### Available Backup Versions
-
-![available versions](docs/img/screen-versions.png)
-
-
 ### Overdue Backups
 
 ![overdue backups](docs/img/screen-overdue-tooltip.png)
+
+
+### Overdue notifications on your phone
+
+![ntfy overdue message](docs/img/screen-overdue-notification.png)
 
 <br>
 
@@ -132,8 +132,8 @@ Your database will automatically update when you start the new version. This pro
 
 The system automatically performs the following steps:
 
-- **Creates a backup** of your current database. The backup file is named `duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db`.
-- **Runs the migration**, which adds new columns to the `backups` table, creates a `configurations` table for settings, and adds a table to track the database version.
+- **Creates a backup** of your current database. The backup file is named `backups-copy-YYYY-MM-DDTHH-MM-SS.db`.
+- **Runs the migration**, changes the schema to the next version and copies all existing data to the new schema.
 - **Preserves all your existing data** while improving the database structure.
 
 <br>
@@ -172,12 +172,16 @@ If you encounter issues, you can restore your database by following these steps:
 
 ## Credits
 
+- First and foremost, thanks to Kenneth Skovhede for creating Duplicati, this amazing backup tool. Thanks also to all the contributors.
+
+  💙 If you find Duplicati (https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
+
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
 - Notify SVG icon from https://dashboardicons.com/icons/ntfy
 - Github SVG icon from https://github.com/logos
 
 >[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons are used for identification purposes only and do not imply endorsement.
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 
 <br>
 

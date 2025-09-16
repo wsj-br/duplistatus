@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.7.22.dev-blue)
+![](https://img.shields.io/badge/version-0.7.25.dev-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -78,7 +78,7 @@ The database file (`backups.db`) is stored in the `data` directory of the applic
 
 ## Database Migration System
 
-The application includes an automatic database migration system that ensures your database schema stays up to date with the application version. The migration system:
+The application includes an automatic database migration system that ensures your database schema stays up-to-date with the application version. The migration system:
 
 - **Automatically detects** when migrations are needed
 - **Creates backups** before running migrations (named `backups-copy-YYYY-MM-DDTHH-MM-SS.db`)
@@ -88,8 +88,8 @@ The application includes an automatic database migration system that ensures you
 
 ### Current Migration Versions
 
-- **Version 2.0**: Added missing columns to backups table and created configurations table
-- **Version 3.0**: Renamed machines table to servers, added `server_url`, `alias`, and `note` fields, and updated all references (latest version)
+- **Version 2.0**: Added missing columns to the backups table and created the configurations table
+- **Version 3.0**: Renamed the machines table to servers, added `server_url`, `alias`, and `note` fields, and updated all references (latest version)
 
 ### Migration Process
 
@@ -335,14 +335,14 @@ CREATE TABLE db_version (
 ```
 
 #### Fields
-- `version` (TEXT, PRIMARY KEY): Database schema version (e.g., "4.0")
+- `version` (TEXT, PRIMARY KEY): Database schema version (e.g., "3.0")
 - `applied_at` (DATETIME): Timestamp when this version was applied
 
 This table is used by the migration system to track which migrations have been applied and ensure migrations are only run once.
 
 ## Indexes
 
-The following indexes are created to optimize query performance:
+The following indexes are created to optimise query performance:
 
 ```sql
 CREATE INDEX idx_backups_server_id ON backups(server_id);
@@ -719,7 +719,7 @@ Note: The actual implementation includes data validation, type conversion, and e
 
 ## Chart Metrics
 
-The application provides visualization of backup metrics over time. The following metrics are available in the charts:
+The application provides visualisation of backup metrics over time. The following metrics are available in the charts:
 
 | Metric Key        | Database Column    | Description                            | Unit    |
 |-------------------|--------------------|----------------------------------------|---------|
@@ -730,7 +730,7 @@ The application provides visualization of backup metrics over time. The followin
 | `storageSize`     | `known_file_size`  | Size of known files in storage         | Bytes   |
 | `backupVersions`  | `backup_list_count`| Number of backup versions              | Count   |
 
-These metrics are used in the chart visualization and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
+These metrics are used in the chart visualisation and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
 
 ### Chart Data Functions
 
@@ -1079,7 +1079,7 @@ export interface ChartDataPoint {
 - `GET /api/configuration/unified`: Retrieve unified configuration including cron settings, notification frequency, and servers with backups
 - `POST /api/configuration/unified`: Update unified configuration
 
-The configuration system provides a centralized way to manage application settings that persist across application restarts and can be modified through the web interface.
+The configuration system provides a centralised way to manage application settings that persist across application restarts and can be modified through the web interface.
 
 ### Configuration Data Structures
 

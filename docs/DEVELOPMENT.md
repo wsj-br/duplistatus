@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.22.dev-blue)
+![](https://img.shields.io/badge/version-0.7.25.dev-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -63,7 +63,7 @@
     - [Manual Docker Image Build](#manual-docker-image-build)
   - [Frameworks, libraries and tools used](#frameworks-libraries-and-tools-used)
   - [Development Guidelines](#development-guidelines)
-    - [Code Organization](#code-organization)
+    - [Code Organisation](#code-organisation)
     - [Testing](#testing)
     - [Debugging](#debugging)
     - [API Development](#api-development)
@@ -478,7 +478,7 @@ markdown-link-check *.md docs/*.md
 Copy and execute the scripts located at "scripts/podman_testing" in the podman test server
 
 ### Initial Setup and Management
-1. `initialize.duplistatus`: to create the pod
+1. `initialise.duplistatus`: to create the pod
 2. `copy.docker.duplistatus`: to copy the docker image created in the devel server to the podman test server.
    - Create the image using the command `docker build . -t wsj-br/duplistatus:devel`
 3. `start.duplistatus`: to start the container
@@ -493,7 +493,7 @@ Copy and execute the scripts located at "scripts/podman_testing" in the podman t
 - `restart.duplistatus`: stop the pod, remove the container, copy the image, create the container and start the pod.
 
 ### Usage Workflow
-1. First run `initialize.duplistatus` to set up the pod
+1. First run `initialise.duplistatus` to set up the pod
 2. Use `copy.docker.duplistatus` to transfer the Docker image
 3. Start the container with `start.duplistatus`
 4. Monitor with `check.duplistatus` and `logs.duplistatus`
@@ -580,7 +580,7 @@ To manually trigger the Docker image build workflow:
    - PostCSS (@tailwindcss/postcss 4.1.13 + autoprefixer 10.4.21)
    - Better-sqlite3 12.2.0 + SQLite3 (data store)
    - Recharts 3.2.0 – charting library
-   - react-day-picker 9.9.0 – date picker
+   - react-day-picker 9.10.0 – date picker
    - react-hook-form 7.62.0 – forms
    - lucide-react 0.544.0 – icon components
    - clsx 2.1.1 – utility for conditional classNames
@@ -658,7 +658,7 @@ To manually trigger the Docker image build workflow:
     - Global refresh controls with visual feedback
     - Overdue backup check button for manual testing
     - Enhanced backup collection menu
-    - Display menu component for UI customization
+    - Display menu component for UI customisation
     - Theme toggle (light/dark mode)
     - Server connection management and testing
     - Metrics charts panel with interactive visualizations
@@ -701,7 +701,7 @@ To manually trigger the Docker image build workflow:
 
 ## Development Guidelines
 
-### Code Organization
+### Code Organisation
 - **Components**: Located in `src/components/` with subdirectories for specific features
   - `ui/` - shadcn/ui components and reusable UI elements
   - `dashboard/` - Dashboard-specific components (server cards, tables, summary cards)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { BackButton } from '@/components/ui/back-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +22,7 @@ function SettingsPageContent() {
   const [activeTab, setActiveTab] = useState<string>('backups');
   const [lastServerListHash, setLastServerListHash] = useState<string>('');
   // Function to create a hash of the server list for change detection
-  const createServerListHash = (servers: any[]) => {
+  const createServerListHash = (servers: Array<{id: string; name: string; backupName: string}>) => {
     if (!servers || servers.length === 0) return '';
     return servers
       .map(server => `${server.id}-${server.name}-${server.backupName}`)
@@ -31,7 +31,7 @@ function SettingsPageContent() {
   };
 
   // Function to refresh only server list data without affecting other configuration
-  const refreshServerListOnly = async () => {
+  const refreshServerListOnly = useCallback(async () => {
     try {
       const response = await fetch('/api/configuration/unified');
       if (!response.ok) throw new Error('Failed to fetch configuration');
@@ -50,7 +50,7 @@ function SettingsPageContent() {
       console.error('Error refreshing server list:', error);
       throw error;
     }
-  };
+  }, [updateConfig]);
 
   // Check for server list changes and refresh config if needed
   useEffect(() => {

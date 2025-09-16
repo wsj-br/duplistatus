@@ -5,7 +5,7 @@
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.7.22.dev-blue)
+![](https://img.shields.io/badge/version-0.7.25.dev-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
@@ -177,7 +177,7 @@ podman-compose -f duplistatus.yml up -d
 
 ## Configuring the timezone
 
-The application date and time will displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones. 
+The application date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones. 
 
 <br>
 
@@ -198,7 +198,7 @@ or pass TZ value in the command line
 
 ### Using your Linux Configuration
 
-To obtain your Linux host's configuration, you can use execute:
+To obtain your Linux host's configuration, you can execute:
 
 ```bash
 echo TZ=\"$(</etc/timezone)\"

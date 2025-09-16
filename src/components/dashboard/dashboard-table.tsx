@@ -347,6 +347,8 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         availableBackups={server.availableBackups}
                         currentBackupDate={server.lastBackupDate}
                         serverName={server.name}
+                        serverAlias={server.alias}
+                        serverNote={server.note}
                         backupName={server.backupName || 'N/A'}
                         onIconClick={handleAvailableBackupsClick}
                         count={server.lastBackupListCount}

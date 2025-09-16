@@ -56,7 +56,7 @@ export function OpenServerConfigButton() {
         })
         .reduce((uniqueServers: ServerAddress[], server: ServerAddress) => {
           // Check if we already have a server with this URL
-          const existingServer = uniqueServers.find(s => s.server_url === server.server_url);
+          const existingServer = uniqueServers.find(s => s.id === server.id);
           if (!existingServer) {
             uniqueServers.push(server);
           }

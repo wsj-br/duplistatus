@@ -19,6 +19,13 @@ interface DashboardSummaryCardsProps {
   onViewModeChange?: (viewMode: 'analytics' | 'table' | 'overview') => void;
 }
 
+const availableViewModes = ['overview', 'table', ];
+const viewModeTooltipsTexts = {
+  overview: 'overview',
+  table: 'table view',
+  analytics: 'analytics view',
+};
+
 export function DashboardSummaryCards({ 
   summary, 
   onViewModeChange
@@ -26,16 +33,12 @@ export function DashboardSummaryCards({
   const { state: serverSelectionState, setViewMode } = useServerSelection();
   const { viewMode } = serverSelectionState;
 
-  // Handle view mode toggle
+  // Handle view mode toggle - cycle through available view modes
   const handleViewModeToggle = () => {
-    let newViewMode: 'analytics' | 'table' | 'overview';
-    if (viewMode === 'overview') {
-      newViewMode = 'table';
-    } else if (viewMode === 'table') {
-      newViewMode = 'analytics';
-    } else {
-      newViewMode = 'overview';
-    }
+    const currentIndex = availableViewModes.indexOf(viewMode);
+    const nextIndex = (currentIndex + 1) % availableViewModes.length;
+    const newViewMode = availableViewModes[nextIndex] as 'analytics' | 'table' | 'overview';
+    
     setViewMode(newViewMode);
     localStorage.setItem('dashboard-view-mode', newViewMode);
     onViewModeChange?.(newViewMode);
@@ -133,7 +136,12 @@ export function DashboardSummaryCards({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Show {viewMode === 'overview' ? 'table view' : viewMode === 'table' ? 'analytics view' : 'overview'}</p>
+                <p>Show {(() => {
+                  const currentIndex = availableViewModes.indexOf(viewMode);
+                  const nextIndex = (currentIndex + 1) % availableViewModes.length;
+                  const nextViewMode = availableViewModes[nextIndex];
+                  return viewModeTooltipsTexts[nextViewMode as keyof typeof viewModeTooltipsTexts];
+                })()}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

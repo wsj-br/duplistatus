@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.22.dev-blue)
+![](https://img.shields.io/badge/version-0.7.25.dev-blue)
 
 <br>
 
@@ -76,8 +76,8 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Delete Backup](#delete-backup)
   - [Delete Backup Job](#delete-backup-job)
   - [Test Server Connection](#test-server-connection)
-  - [Get Server Server URL](#get-server-server-url)
-  - [Update Server Server URL](#update-server-server-url)
+  - [Get Server URL](#get-server-url)
+  - [Update Server URL](#update-server-url)
 - [Error Handling](#error-handling)
 - [Data Type Notes](#data-type-notes)
   - [Message Arrays](#message-arrays)
@@ -175,10 +175,10 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `404`: Machine not found
+  - `404`: Server not found
   - `500`: Internal server error
 - **Notes**:
-  - Machine identifier can be either ID or name
+  - Server identifier can be either ID or name
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
 
@@ -187,7 +187,7 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Get Latest Backups
 - **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
-- **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific machine.
+- **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific server.
 - **Parameters**:
   - `serverId`: the server identifier (ID or name)
 
@@ -256,11 +256,11 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `404`: Machine not found
+  - `404`: Server not found
   - `500`: Internal server error
 - **Notes**:
-  - Machine identifier can be either ID or name
-  - Returns latest backup for each backup job (backup_name) that the machine has
+  - Server identifier can be either ID or name
+  - Returns latest backup for each backup job (backup_name) that the server has
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup
   - Includes cache control headers to prevent caching
 
@@ -269,7 +269,7 @@ All API responses are returned in JSON format with consistent error handling pat
 ### Get Overall Summary
 - **Endpoint**: `/api/summary`
 - **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all machines. This endpoint is maintained for external applications and backward compatibility.
+- **Description**: Retrieves a summary of all backup operations across all servers. This endpoint is maintained for external applications and backward compatibility.
 - **Response**:
   ```json
   {
@@ -853,7 +853,7 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `400`: Backup settings are required
+  - `400`: backupSettings is required
   - `500`: Server error updating backup settings
 - **Notes**:
   - Updates backup notification settings for specific servers/backups
@@ -884,7 +884,7 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `400`: Templates are required
+  - `400`: templates are required
   - `500`: Server error updating notification templates
 - **Notes**:
   - Updates notification templates for different backup statuses
@@ -908,7 +908,7 @@ All API responses are returned in JSON format with consistent error handling pat
   }
   ```
 - **Error Responses**:
-  - `400`: Overdue tolerance is required
+  - `400`: overdue_tolerance is required
   - `500`: Server error updating overdue tolerance
 - **Notes**:
   - Updates the overdue tolerance setting (accepts string format like "1h", "2h", etc.)
@@ -1097,7 +1097,7 @@ All API responses are returned in JSON format with consistent error handling pat
     "basicConnection": true,
     "tablesFound": 2,
     "tables": [
-      "machines",
+      "servers",
       "backups"
     ],
     "preparedStatements": true,
@@ -1168,7 +1168,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Ensures backup settings are complete for all servers and backups
   - Uses default port 8200 and protocol "http" if not specified
   - `serverAlias` is retrieved from the database and may be empty if no alias is set
-  - Frontend should use `serverAlias || serverName` for display purposes
+  - The frontend should use `serverAlias || serverName` for display purposes
 
 <br>
 
@@ -1187,6 +1187,14 @@ All API responses are returned in JSON format with consistent error handling pat
   ```json
   {
     "message": "Successfully deleted 15 old backups",
+    "status": 200
+  }
+  ```
+  
+  For "Delete all data" option:
+  ```json
+  {
+    "message": "Successfully deleted all 15 backups and 3 servers, and cleared configuration settings",
     "status": 200
   }
   ```
@@ -1300,7 +1308,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Server Server URL
+### Get Server URL
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
 - **Description**: Retrieves the server URL for a specific server.
@@ -1324,7 +1332,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Update Server Server URL
+### Update Server URL
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
 - **Description**: Updates the server URL for a specific server.

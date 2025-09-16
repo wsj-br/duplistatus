@@ -655,7 +655,11 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
     if (!dbOps) {
       throw new Error('Database operations not yet initialized. Migrations may still be running.');
     }
-    return (dbOps as Record<string, unknown>)[prop];
+    // Only handle string properties, ignore symbols
+    if (typeof prop === 'string') {
+      return (dbOps as Record<string, unknown>)[prop];
+    }
+    return undefined;
   }
 });
 

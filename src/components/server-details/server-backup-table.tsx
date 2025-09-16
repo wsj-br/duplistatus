@@ -42,10 +42,11 @@ interface ServerBackupTableProps {
   backups: Backup[];
   serverName: string;
   serverAlias?: string;
+  serverNote?: string;
   onBackupDeleted?: () => void;
 }
 
-export function ServerBackupTable({ backups, serverName, serverAlias, onBackupDeleted }: ServerBackupTableProps) {
+export function ServerBackupTable({ backups, serverName, serverAlias, serverNote, onBackupDeleted }: ServerBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const [isDevMode, setIsDevMode] = useState(false);
@@ -300,7 +301,9 @@ export function ServerBackupTable({ backups, serverName, serverAlias, onBackupDe
                       <AvailableBackupsIcon
                         availableBackups={backup.available_backups}
                         currentBackupDate={backup.date}
-                        serverName={serverAlias || serverName}
+                        serverName={serverName}
+                        serverAlias={serverAlias}
+                        serverNote={serverNote}
                         backupName={backup.name}
                         onIconClick={handleAvailableBackupsClick}
                         count={backup.backup_list_count}
@@ -379,7 +382,9 @@ export function ServerBackupTable({ backups, serverName, serverAlias, onBackupDe
                         <AvailableBackupsIcon
                           availableBackups={backup.available_backups}
                           currentBackupDate={backup.date}
-                          serverName={serverAlias || serverName}
+                          serverName={serverName}
+                          serverAlias={serverAlias}
+                          serverNote={serverNote}
                           backupName={backup.name}
                           onIconClick={handleAvailableBackupsClick}
                           count={backup.backup_list_count}

@@ -91,7 +91,7 @@ export function DatabaseMaintenanceMenu() {
           
           // Group backup jobs by server
           const serverBackupMap = new Map<string, Set<string>>();
-          serversWithBackups.forEach((server: any) => {
+          serversWithBackups.forEach((server: {id: string; backupName: string}) => {
             if (!serverBackupMap.has(server.id)) {
               serverBackupMap.set(server.id, new Set());
             }

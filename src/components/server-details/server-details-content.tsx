@@ -160,6 +160,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
             backups={server.backups} 
             serverName={server.name}
             serverAlias={server.alias}
+            serverNote={server.note}
             onBackupDeleted={handleBackupDeleted}
           />
         </CardContent>

@@ -402,14 +402,11 @@ const migrations: Migration[] = [
       if (backupSettingsRow && backupSettingsRow.value) {
         const oldBackupSettings = JSON.parse(backupSettingsRow.value) as Record<string, unknown>;
         const newBackupSettings: Record<string, unknown> = {};
-        let migratedCount = 0;
-        let skippedCount = 0;
         
         for (const [oldKey, settings] of Object.entries(oldBackupSettings)) {
           // Validate key format: should be "machine_name:backup_name"
           const keyParts = oldKey.split(':');
           if (keyParts.length !== 2) {
-            skippedCount++;
             continue;
           }
           
@@ -417,7 +414,6 @@ const migrations: Migration[] = [
           
           // Validate that both parts are non-empty strings
           if (!machineName || !backupName || machineName.trim() === '' || backupName.trim() === '') {
-            skippedCount++;
             continue;
           }
           
@@ -425,7 +421,6 @@ const migrations: Migration[] = [
           const servers = db.prepare('SELECT id, name FROM servers WHERE name = ?').all(machineName) as Array<{ id: string; name: string }>;
           
           if (servers.length === 0 || servers.length > 1) {
-            skippedCount++;
             continue;
           }
           
@@ -435,7 +430,6 @@ const migrations: Migration[] = [
           const backupExists = db.prepare('SELECT 1 FROM backups WHERE server_id = ? AND backup_name = ? LIMIT 1').get(server.id, backupName);
           
           if (!backupExists) {
-            skippedCount++;
             continue;
           }
           
@@ -449,7 +443,6 @@ const migrations: Migration[] = [
           };
           
           newBackupSettings[newKey] = newSettings;
-          migratedCount++;
         }
         
         // Update the configuration with migrated settings
@@ -467,14 +460,11 @@ const migrations: Migration[] = [
       if (overdueNotificationsRow && overdueNotificationsRow.value) {
         const oldOverdueNotifications = JSON.parse(overdueNotificationsRow.value) as Record<string, unknown>;
         const newOverdueNotifications: Record<string, unknown> = {};
-        let migratedCount = 0;
-        let skippedCount = 0;
         
         for (const [oldKey, notifications] of Object.entries(oldOverdueNotifications)) {
           // Validate key format: should be "machine_name:backup_name"
           const keyParts = oldKey.split(':');
           if (keyParts.length !== 2) {
-            skippedCount++;
             continue;
           }
           
@@ -482,7 +472,6 @@ const migrations: Migration[] = [
           
           // Validate that both parts are non-empty strings
           if (!machineName || !backupName || machineName.trim() === '' || backupName.trim() === '') {
-            skippedCount++;
             continue;
           }
           
@@ -490,7 +479,6 @@ const migrations: Migration[] = [
           const servers = db.prepare('SELECT id, name FROM servers WHERE name = ?').all(machineName) as Array<{ id: string; name: string }>;
           
           if (servers.length === 0 || servers.length > 1) {
-            skippedCount++;
             continue;
           }
           
@@ -512,7 +500,6 @@ const migrations: Migration[] = [
           };
           
           newOverdueNotifications[newKey] = newNotificationData;
-          migratedCount++;
         }
         
         // Update overdue_notifications configuration

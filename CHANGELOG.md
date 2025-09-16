@@ -38,7 +38,7 @@ This release contains significant breaking changes due to the migration from "Ma
 - **BREAKING**: Renamed `machines` table to `servers`
 - **BREAKING**: Renamed `machine_id` column to `server_id` in `backups` table
 - **BREAKING**: Updated all foreign key relationships to use `server_id`
-- **BREAKING**: Database migration 4.0 automatically handles the transition from existing installations
+- **BREAKING**: Database migration 3.0 handles the transition from existing installations
 
 #### API Changes
 - **BREAKING**: Renamed API endpoints from `/api/machines/` to `/api/servers/`
@@ -64,7 +64,7 @@ This release contains significant breaking changes due to the migration from "Ma
 ### Migration Guide
 
 #### For Existing Installations
-1. **Database Migration**: The application will automatically run migration 4.0 on startup, which:
+1. **Database Migration**: The application will automatically run migration 3.0 on startup, which:
    - Creates a new `servers` table
    - Copies all data from `machines` to `servers`
    - Updates `backup` table to use `server_id`
@@ -100,7 +100,7 @@ This release contains significant breaking changes due to the migration from "Ma
 - All configuration management updated
 
 ### Technical Details
-- **Database Migration**: Version 4.0 handles the complete transition
+- **Database Migration**: Version 3.0 handles the complete transition
 - **Backward Compatibility**: None - this is a breaking change release
 - **Testing**: All components, API endpoints, and database operations have been tested
 - **Documentation**: All documentation has been updated to reflect the new terminology
