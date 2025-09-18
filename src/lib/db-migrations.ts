@@ -706,4 +706,70 @@ export class DatabaseMigrator {
       throw error;
     }
   }
+  
+  runMigrationsSync(): void {
+    // Prevent multiple concurrent migration runs
+    if (DatabaseMigrator.isRunning) {
+      return;
+    }
+    
+    DatabaseMigrator.isRunning = true;
+    
+    try {
+      const currentVersion = this.getCurrentVersion();
+      
+      // Filter migrations that need to be applied
+      const pendingMigrations = migrations.filter(migration => 
+        this.needsMigration(currentVersion, migration.version)
+      );
+      
+      if (pendingMigrations.length === 0) {
+        return;
+      }
+      
+      console.log(`[Migration] Running ${pendingMigrations.length} migrations synchronously: ${pendingMigrations.map(m => m.version).join(', ')}`);
+      
+      // Run migrations synchronously without locking (since we're in single process)
+      for (const migration of pendingMigrations) {
+        try {
+          // Check if migration actually needs to run by checking current state
+          const currentVersion = this.getCurrentVersion();
+          const needsThisMigration = this.needsMigration(currentVersion, migration.version);
+          
+          if (!needsThisMigration) {
+            continue;
+          }
+          
+          // Run migration in a transaction
+          const transaction = this.db.transaction(() => {
+            migration.up(this.db);
+          });
+          
+          transaction();
+          
+          // Update version outside transaction to ensure it's committed
+          this.setVersion(migration.version);
+          
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          
+          // Handle specific migration errors
+          if (errorMessage === 'MIGRATION_ALREADY_COMPLETED' || errorMessage === 'MIGRATION_NOT_NEEDED') {
+            // Migration was already done or not needed, update version anyway to prevent re-running
+            this.setVersion(migration.version);
+            continue;
+          }
+          
+          console.error(`Migration ${migration.version} failed:`, errorMessage);
+          throw error;
+        }
+      }
+      
+    } catch (error) {
+      console.error('[Migration] Synchronous migration failed:', error);
+      throw error;
+    } finally {
+      DatabaseMigrator.isRunning = false;
+    }
+  }
 } 

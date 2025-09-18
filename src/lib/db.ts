@@ -229,12 +229,17 @@ async function populateDefaultConfigurations() {
 // Run database migrations and wait for completion before creating dbOps
 let dbOps: ReturnType<typeof createDbOps> | null = null;
 let migrationPromise: Promise<void> | null = null;
+let migrationsCompleted = false;
 
 // Initialize migrations
 const migrator = new DatabaseMigrator(db, dbPath);
 
 // Function to ensure migrations are complete before accessing dbOps
 async function ensureMigrationsComplete() {
+  if (migrationsCompleted) {
+    return;
+  }
+  
   if (!migrationPromise) {
     migrationPromise = migrator.runMigrations().catch(error => {
       console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));
@@ -247,12 +252,27 @@ async function ensureMigrationsComplete() {
   if (!dbOps) {
     dbOps = createDbOps();
   }
+  
+  migrationsCompleted = true;
 }
 
-// Start migrations immediately but don't wait
-ensureMigrationsComplete().catch(error => {
-  console.error('Failed to initialize database:', error);
-});
+// Run migrations synchronously during module initialization
+// This ensures migrations complete before any database operations are attempted
+try {
+  console.log('Running database migrations synchronously...');
+  migrator.runMigrationsSync();
+  console.log('Database migrations completed successfully');
+  
+  // Create dbOps immediately after migrations complete
+  dbOps = createDbOps();
+  migrationsCompleted = true;
+} catch (error) {
+  console.error('Failed to run database migrations synchronously:', error instanceof Error ? error.message : String(error));
+  // Fall back to async migrations
+  ensureMigrationsComplete().catch(asyncError => {
+    console.error('Failed to initialize database:', asyncError);
+  });
+}
 
 // Helper functions for database operations
 function createDbOps() {
@@ -652,14 +672,38 @@ ensureMigrationsComplete().then(() => {
 // Create a proxy for dbOps that ensures migrations are complete
 const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
   get(target, prop) {
-    if (!dbOps) {
-      throw new Error('Database operations not yet initialized. Migrations may still be running.');
-    }
     // Only handle string properties, ignore symbols
-    if (typeof prop === 'string') {
-      return (dbOps as Record<string, unknown>)[prop];
+    if (typeof prop !== 'string') {
+      return undefined;
     }
-    return undefined;
+
+    // Return a proxy that waits for migrations to complete before accessing the method
+    return new Proxy({}, {
+      get(methodTarget, methodProp) {
+        // Return a function that executes the database operation
+        return (...args: unknown[]) => {
+          // Check if migrations are complete
+          if (!dbOps) {
+            throw new Error(`Database operations not yet initialized. Migrations may still be running. Please ensure migrations complete before accessing '${prop}.${String(methodProp)}'.`);
+          }
+          
+          // Get the actual method from dbOps
+          const method = (dbOps as Record<string, unknown>)[prop];
+          if (typeof method !== 'object' || method === null) {
+            throw new Error(`Database operation '${prop}' not found or is not an object.`);
+          }
+          
+          // Get the sub-method (like .all, .get, .run)
+          const subMethod = (method as Record<string, unknown>)[methodProp as string];
+          if (typeof subMethod !== 'function') {
+            throw new Error(`Database operation '${prop}.${String(methodProp)}' not found or is not a function.`);
+          }
+          
+          // Execute the sub-method with proper this context
+          return subMethod.call(method, ...args);
+        };
+      }
+    });
   }
 });
 
