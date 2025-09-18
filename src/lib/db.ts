@@ -239,9 +239,7 @@ async function ensureDatabaseInitialized() {
 
   initializationPromise = (async () => {
     try {
-      console.log('Starting database migrations...');
       await migrator.runMigrations();
-      console.log('Database migrations completed successfully');
       
       // Create database operations after migrations complete
       if (!dbOps) {
