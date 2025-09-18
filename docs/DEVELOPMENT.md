@@ -140,12 +140,6 @@ The project includes several npm scripts for different development tasks:
 - `pnpm run-overdue-check` - Run overdue check at specific date/time
 - `pnpm test-cron-port` - Test cron service port connectivity
 
-### Release Scripts
-- `pnpm release:patch` - Create a patch release (0.0.x)
-- `pnpm release:minor` - Create a minor release (0.x.0)
-- `pnpm release:major` - Create a major release (x.0.0)
-
-
 <br>
 
 ## Development Mode Features
@@ -513,38 +507,98 @@ The project follows Semantic Versioning (SemVer) with the format `MAJOR.MINOR.PA
 - **MINOR** version (0.x.0): When you add functionality in a backward-compatible manner
 - **PATCH** version (0.0.x): When you make backward-compatible bug fixes
 
-### Release Commands
+<br>
 
-The project includes several release commands to manage versioning:
+
+### Merging `devel` to `master` using command line
+
+To release your new version, you'll need to merge the `devel` branch into the `master` branch. This process incorporates all the new code from `devel` into your stable `master` branch, making it ready for a new release.
+
+<br>
+
+#### 1. Merge the `devel` Branch into `master`
+
+First, ensure your local `master` branch is up to date with the remote repository. This prevents merge conflicts and ensures you're building on the latest released code.
 
 ```bash
-# For bug fixes and minor changes (0.0.x)
-pnpm run release:patch
+# Checkout the master branch
+git checkout master
 
-# For new features that don't break existing functionality (0.x.0)
-pnpm run release:minor
-
-# For major changes that may break compatibility (x.0.0)
-pnpm run release:major
+# Pull the latest changes from the remote repository
+git pull origin master
 ```
 
+Next, merge the `devel` branch into `master`. This will apply all the changes from `devel` to your `master` branch.
 
-These commands will:
-1. Update the version in package.json
-2. Create a git commit with the version change
-3. Create a git tag for the new version
-4. Push the changes and tag to the remote repository
+```bash
+# Merge the devel branch into master
+git merge devel
+```
+
+Git will attempt to automatically merge the branches. If there are any **merge conflicts**, you'll need to manually resolve them in the affected files. After resolving conflicts, use `git add` to stage the changes and `git commit` to finalize the merge.
+
+<br>
+
+#### 2. Tag the New Release
+
+Once the `devel` branch is successfully merged into `master`, you should tag the new version. This creates a permanent reference point in your project's history, making it easy to find and revert to specific releases. Use a **lightweight** or **annotated** tag, with annotated tags being generally preferred for releases as they include more metadata like a message, author, and date.
+
+```bash
+# Create an annotated tag for the new version
+git tag -a v0.7.26 -m "Release v0.7.26 - New Features and Bug Fixes"
+```
+
+The `-a` flag creates an annotated tag, and the `-m` flag lets you add a message describing the release.
+
+<br>
+
+
+#### 3. Push to GitHub
+
+Finally, push both the updated `master` branch and the new tag to your remote GitHub repository. This makes the changes and the new release visible to everyone.
+
+```bash
+# Push the updated master branch
+git push origin master
+
+# Push the new tag
+git push origin v0.7.26
+```
+
+You can also push all tags at once using `git push --tags`. After this, the new version will be visible on GitHub, and you can create a new release on the GitHub UI associated with your new tag.
+
+<br>
+
+
+### Merging `devel` to `master` using Github 
+
+Instead of a direct merge, you will create a **Pull Request (PR)** from `devel` to `master`. A pull request is a formal way to propose and review changes before they're merged.
+
+1.  Navigate to your repository on GitHub.
+2.  Click the **"Pull requests"** tab.
+3.  Click **"New pull request."**
+4.  Set the **base branch** to `master` and the **compare branch** to `devel`.
+5.  GitHub will show a preview of all the changes. Review them and ensure there are no conflicts.
+6.  Click **"Create pull request."**
+7.  Add a title and description, then click **"Create pull request"** again.
+
+After the pull request is created, you will see a green **"Merge pull request"** button if there are no conflicts. Clicking this button will merge all the commits from `devel` into `master`. 
+
+<br><br>
+
+
 
 ### Creating a GitHub Release
 
-After running a release command, follow these steps to create a GitHub release:
+Once the merge is complete, you can create a new release on GitHub, which automatically creates a tag for you.
 
-1. Go to the [GitHub repository](https://github.com/wsj-br/duplistatus)
-2. Click on "Releases" in the right sidebar
-3. Click "Create a new release"
-4. Select the tag that was just created (e.g., v1.2.3)
-5. Add release notes describing the changes
-6. Click "Publish release"
+1.  Open the [GitHub repository](https://github.com/wsj-br/duplistatus)
+1.  Go to the **"Releases"** section 
+2.  Click **"Draft a new release."**
+3.  In the **"Choose a tag"** field, type your new version number, like `v0.7.26`. This will create a new tag.
+4.  Select `master` as the target branch.
+5.  Add a **release title** and **description** to document the changes in this version.
+6.  Click **"Publish release."**
 
 This will automatically:
 - Create a new Docker images (AMD64 and ARM64 architectures)
