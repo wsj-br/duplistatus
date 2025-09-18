@@ -38,46 +38,47 @@ All API responses are returned in JSON format with consistent error handling pat
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [External APIs](#external-apis)
+  - [Get Overall Summary - `/api/summary`](#get-overall-summary---apisummary)
+  - [Get Latest Backup - `/api/lastbackup/:serverId`](#get-latest-backup---apilastbackupserverid)
+  - [Get Latest Backups - `/api/lastbackups/:serverId`](#get-latest-backups---apilastbackupsserverid)
+  - [Upload Backup Data - `/api/upload`](#upload-backup-data---apiupload)
 - [Core Operations](#core-operations)
-  - [Upload Backup Data](#upload-backup-data)
-  - [Get Latest Backup](#get-latest-backup)
-  - [Get Latest Backups](#get-latest-backups)
-  - [Get Overall Summary](#get-overall-summary)
-  - [Get Dashboard Data (Consolidated)](#get-dashboard-data-consolidated)
-  - [Get All Servers](#get-all-servers)
-  - [Get Server Details](#get-server-details)
-  - [Update Server](#update-server)
-  - [Delete Server](#delete-server)
-  - [Get Server Data with Overdue Info](#get-server-data-with-overdue-info)
+  - [Get Dashboard Data (Consolidated) - `/api/dashboard`](#get-dashboard-data-consolidated---apidashboard)
+  - [Get All Servers - `/api/servers`](#get-all-servers---apiservers)
+  - [Get Server Details - `/api/servers/:id`](#get-server-details---apiserversid)
+  - [Update Server - `/api/servers/:id`](#update-server---apiserversid)
+  - [Delete Server - `/api/servers/:id`](#delete-server---apiserversid)
+  - [Get Server Data with Overdue Info - `/api/detail/:serverId`](#get-server-data-with-overdue-info---apidetailserverid)
 - [Chart Data](#chart-data)
-  - [Get Aggregated Chart Data](#get-aggregated-chart-data)
-  - [Get Server Chart Data](#get-server-chart-data)
-  - [Get Server Backup Chart Data](#get-server-backup-chart-data)
+  - [Get Aggregated Chart Data - `/api/chart-data/aggregated`](#get-aggregated-chart-data---apichart-dataaggregated)
+  - [Get Server Chart Data - `/api/chart-data/server/:serverId`](#get-server-chart-data---apichart-dataserverserverid)
+  - [Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`](#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname)
 - [Configuration Management](#configuration-management)
-  - [Get Unified Configuration](#get-unified-configuration)
-  - [Get NTFY Configuration](#get-ntfy-configuration)
-  - [Update Notification Configuration](#update-notification-configuration)
-  - [Update Backup Settings](#update-backup-settings)
-  - [Update Notification Templates](#update-notification-templates)
-  - [Update Overdue Tolerance](#update-overdue-tolerance)
+  - [Get Unified Configuration - `/api/configuration/unified`](#get-unified-configuration---apiconfigurationunified)
+  - [Get NTFY Configuration - `/api/configuration/ntfy`](#get-ntfy-configuration---apiconfigurationntfy)
+  - [Update Notification Configuration - `/api/configuration/notifications`](#update-notification-configuration---apiconfigurationnotifications)
+  - [Update Backup Settings - `/api/configuration/backup-settings`](#update-backup-settings---apiconfigurationbackup-settings)
+  - [Update Notification Templates - `/api/configuration/templates`](#update-notification-templates---apiconfigurationtemplates)
+  - [Update Overdue Tolerance - `/api/configuration/overdue-tolerance`](#update-overdue-tolerance---apiconfigurationoverdue-tolerance)
 - [Notification System](#notification-system)
-  - [Test Notification](#test-notification)
-  - [Check Overdue Backups](#check-overdue-backups)
-  - [Clear Overdue Timestamps](#clear-overdue-timestamps)
+  - [Test Notification - `/api/notifications/test`](#test-notification---apinotificationstest)
+  - [Check Overdue Backups - `/api/notifications/check-overdue`](#check-overdue-backups---apinotificationscheck-overdue)
+  - [Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps`](#clear-overdue-timestamps---apinotificationsclear-overdue-timestamps)
 - [Cron Service Management](#cron-service-management)
-  - [Get Cron Configuration](#get-cron-configuration)
-  - [Update Cron Configuration](#update-cron-configuration)
-  - [Cron Service Proxy](#cron-service-proxy)
+  - [Get Cron Configuration - `/api/cron-config`](#get-cron-configuration---apicron-config)
+  - [Update Cron Configuration - `/api/cron-config`](#update-cron-configuration---apicron-config)
+  - [Cron Service Proxy - `/api/cron/*`](#cron-service-proxy---apicron)
 - [Monitoring & Health](#monitoring--health)
-  - [Health Check](#health-check)
+  - [Health Check - `/api/health`](#health-check---apihealth)
 - [Administration](#administration)
-  - [Collect Backups](#collect-backups)
-  - [Cleanup Backups](#cleanup-backups)
-  - [Delete Backup](#delete-backup)
-  - [Delete Backup Job](#delete-backup-job)
-  - [Test Server Connection](#test-server-connection)
-  - [Get Server URL](#get-server-url)
-  - [Update Server URL](#update-server-url)
+  - [Collect Backups - `/api/backups/collect`](#collect-backups---apibackupscollect)
+  - [Cleanup Backups - `/api/backups/cleanup`](#cleanup-backups---apibackupscleanup)
+  - [Delete Backup - `/api/backups/:backupId`](#delete-backup---apibackupsbackupid)
+  - [Delete Backup Job - `/api/backups/delete-job`](#delete-backup-job---apibackupsdelete-job)
+  - [Test Server Connection - `/api/servers/test-connection`](#test-server-connection---apiserverstest-connection)
+  - [Get Server URL - `/api/servers/:serverId/server-url`](#get-server-url---apiserversserveridserver-url)
+  - [Update Server URL - `/api/servers/:serverId/server-url`](#update-server-url---apiserversserveridserver-url)
 - [Error Handling](#error-handling)
 - [Data Type Notes](#data-type-notes)
   - [Message Arrays](#message-arrays)
@@ -95,41 +96,41 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-## Core Operations
+## External APIs
 
-### Upload Backup Data
-- **Endpoint**: `/api/upload`
-- **Method**: POST
-- **Description**: Uploads backup operation data for a server. Supports duplicate detection and sends notifications.
-- **Request Body**: JSON sent by Duplicati with the following options:
-
-  ```bash
-  --send-http-url=http://my.local.server:8666/api/upload
-  --send-http-result-output-format=Json
-  --send-http-log-level=Information
-  ```
-  
-- **Response**: 
-  ```json
-  {
-    "success": true
-  }
-  ```
-
-- **Error Responses**:
-  - `400`: Missing required fields or invalid operation type
-  - `409`: Duplicate backup data (ignored)
-  - `500`: Server error processing backup data
-- **Notes**:
-  - Only processes backup operations (MainOperation must be "Backup")
-  - Supports duplicate detection to prevent data redundancy
-  - Automatically sends notifications after successful backup insertion
-  - Logs request data in development mode for debugging
-  - Ensures backup settings are complete for all servers and backups
+These endpoints are designed for use by other applications and integrations, for instance [Homepage](USER-GUIDE#homepage-integration-optional).
 
 <br>
 
-### Get Latest Backup
+### Get Overall Summary - `/api/summary`
+- **Endpoint**: `/api/summary`
+- **Method**: GET
+- **Description**: Retrieves a summary of all backup operations across all servers. This endpoint is maintained for external applications and backward compatibility.
+- **Response**:
+  ```json
+  {
+    "totalServers": 3,
+    "totalBackups": 9,
+    "totalUploadedSize": 2397229507,
+    "totalStorageUsed": 43346796938,
+    "totalBackupSize": 126089687807,
+    "overdueBackupsCount": 2,
+    "secondsSinceLastBackup": 7200
+  }
+  ```
+- **Error Responses**:
+  - `500`: Server error fetching summary data
+- **Notes**:
+  - In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`
+  - In version 0.7.26, the field `totalMachines` was replaced by `totalServers`
+  - The field `overdueBackupsCount` shows the number of currently overdue backups
+  - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
+  - Returns fallback response with zeros if data fetching fails
+  - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
+
+<br>
+
+### Get Latest Backup - `/api/lastbackup/:serverId`
 - **Endpoint**: `/api/lastbackup/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for a specific server.
@@ -178,13 +179,14 @@ All API responses are returned in JSON format with consistent error handling pat
   - `404`: Server not found
   - `500`: Internal server error
 - **Notes**:
+  - In version 0.7.26, the response object key changed from `machine` to `server`
   - Server identifier can be either ID or name
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
 
 <br>
 
-### Get Latest Backups
+### Get Latest Backups - `/api/lastbackups/:serverId`
 - **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific server.
@@ -259,42 +261,45 @@ All API responses are returned in JSON format with consistent error handling pat
   - `404`: Server not found
   - `500`: Internal server error
 - **Notes**:
+  - In version 0.7.26, the response object key changed from `machine` to `server`, and the field `backup_types_count` was renamed to `backup_jobs_count`
   - Server identifier can be either ID or name
   - Returns latest backup for each backup job (backup_name) that the server has
-  - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup
+  - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)
   - Includes cache control headers to prevent caching
 
 <br>
 
-### Get Overall Summary
-- **Endpoint**: `/api/summary`
-- **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all servers. This endpoint is maintained for external applications and backward compatibility.
-- **Response**:
+### Upload Backup Data - `/api/upload`
+- **Endpoint**: `/api/upload`
+- **Method**: POST
+- **Description**: Uploads backup operation data for a server. Supports duplicate backup run detection and sends notifications.
+- **Request Body**: JSON sent by Duplicati with the following options:
+
+  ```bash
+  --send-http-url=http://my.local.server:8666/api/upload
+  --send-http-result-output-format=Json
+  --send-http-log-level=Information
+  ```
+  
+- **Response**: 
   ```json
   {
-    "totalServers": 3,
-    "totalBackups": 9,
-    "totalUploadedSize": 2397229507,
-    "totalStorageUsed": 43346796938,
-    "totalBackupSize": 126089687807,
-    "overdueBackupsCount": 2,
-    "secondsSinceLastBackup": 7200
+    "success": true
   }
   ```
-- **Error Responses**:
-  - `500`: Server error fetching summary data
-- **Notes**:
-  - In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`
-  - In version 0.8.0, the field `totalMachines` was replaced by `totalServers`
-  - The field `overdueBackupsCount` shows the number of currently overdue backups
-  - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
-  - Returns fallback response with zeros if data fetching fails
-  - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
+<br>
+
+---
 
 <br>
 
-### Get Dashboard Data (Consolidated)
+## Core Operations
+
+
+
+<br>
+
+### Get Dashboard Data (Consolidated) - `/api/dashboard`
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
 - **Description**: Retrieves all dashboard data in a single consolidated response, including server summaries, overall summary, and chart data.
@@ -357,7 +362,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get All Servers
+### Get All Servers - `/api/servers`
 - **Endpoint**: `/api/servers`
 - **Method**: GET
 - **Description**: Retrieves a list of all servers with their basic information. Optionally includes backup information.
@@ -397,7 +402,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Server Details
+### Get Server Details - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
 - **Description**: Retrieves information about a specific server. Can return basic server info or detailed information including backups and chart data.
@@ -462,7 +467,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Update Server
+### Update Server - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
 - **Description**: Updates server details including alias, note, and server URL.
@@ -494,7 +499,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - All fields are optional
   - Empty strings are allowed for all fields
 
-### Delete Server
+### Delete Server - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
 - **Description**: Deletes a server and all its associated backups.
@@ -523,7 +528,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Server Data with Overdue Info
+### Get Server Data with Overdue Info - `/api/detail/:serverId`
 - **Endpoint**: `/api/detail/:serverId`
 - **Method**: GET
 - **Description**: Retrieves detailed server information including overdue backup status.
@@ -566,7 +571,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Aggregated Chart Data
+### Get Aggregated Chart Data - `/api/chart-data/aggregated`
 - **Endpoint**: `/api/chart-data/aggregated`
 - **Method**: GET
 - **Description**: Retrieves aggregated chart data with optional time range filtering.
@@ -598,7 +603,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Server Chart Data
+### Get Server Chart Data - `/api/chart-data/server/:serverId`
 - **Endpoint**: `/api/chart-data/server/:serverId`
 - **Method**: GET
 - **Description**: Retrieves chart data for a specific server with optional time range filtering.
@@ -632,7 +637,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Server Backup Chart Data
+### Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
 - **Method**: GET
 - **Description**: Retrieves chart data for a specific server and backup with optional time range filtering.
@@ -670,7 +675,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ## Configuration Management
 
-### Get Unified Configuration
+### Get Unified Configuration - `/api/configuration/unified`
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
 - **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and servers with backups.
@@ -740,7 +745,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Includes cron settings, notification frequency, and servers with backups
   - Fetches all data in parallel for better performance
 
-### Get NTFY Configuration
+### Get NTFY Configuration - `/api/configuration/ntfy`
 - **Endpoint**: `/api/configuration/ntfy`
 - **Method**: GET
 - **Description**: Retrieves the current NTFY configuration settings.
@@ -760,7 +765,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Returns current NTFY configuration settings
   - Used for notification system management
 
-### Update Notification Configuration
+### Update Notification Configuration - `/api/configuration/notifications`
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: GET
 - **Description**: Retrieves the current notification frequency configuration.
@@ -829,7 +834,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Validates notification frequency value against allowed options
   - Affects how often overdue notifications are sent
 
-### Update Backup Settings
+### Update Backup Settings - `/api/configuration/backup-settings`
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
 - **Description**: Updates the backup notification settings for specific servers/backups.
@@ -860,7 +865,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Cleans up overdue backup notifications for disabled backups
   - Clears notifications when timeout settings change
 
-### Update Notification Templates
+### Update Notification Templates - `/api/configuration/templates`
 - **Endpoint**: `/api/configuration/templates`
 - **Method**: POST
 - **Description**: Updates the notification templates.
@@ -891,7 +896,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Preserves existing configuration settings
   - Templates support variable substitution
 
-### Update Overdue Tolerance
+### Update Overdue Tolerance - `/api/configuration/overdue-tolerance`
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST
 - **Description**: Updates the overdue tolerance setting.
@@ -919,7 +924,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ## Notification System
 
-### Test Notification
+### Test Notification - `/api/notifications/test`
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
 - **Description**: Send test notifications (simple or template-based) to verify NTFY configuration.
@@ -975,7 +980,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Validates NTFY URL and topic before sending
   - Uses `accessToken` field for authentication
 
-### Check Overdue Backups
+### Check Overdue Backups - `/api/notifications/check-overdue`
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
 - **Description**: Manually triggers the overdue backup check and sends notifications.
@@ -998,7 +1003,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Returns statistics about the check process
   - Sends notifications for overdue backups found
 
-### Clear Overdue Timestamps
+### Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps`
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST
 - **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.
@@ -1019,7 +1024,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ## Cron Service Management
 
-### Get Cron Configuration
+### Get Cron Configuration - `/api/cron-config`
 - **Endpoint**: `/api/cron-config`
 - **Method**: GET
 - **Description**: Retrieves the current cron service configuration.
@@ -1037,7 +1042,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Includes cron expression and enabled status
   - Used for cron service management
 
-### Update Cron Configuration
+### Update Cron Configuration - `/api/cron-config`
 - **Endpoint**: `/api/cron-config`
 - **Method**: POST
 - **Description**: Updates the cron service configuration.
@@ -1062,7 +1067,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Validates interval against allowed options
   - Affects overdue backup check frequency
 
-### Cron Service Proxy
+### Cron Service Proxy - `/api/cron/*`
 - **Endpoint**: `/api/cron/*`
 - **Method**: GET, POST
 - **Description**: Proxies requests to the cron service. This endpoint forwards all requests to the cron service running on a separate port.
@@ -1085,7 +1090,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ## Monitoring & Health
 
-### Health Check
+### Health Check - `/api/health`
 - **Endpoint**: `/api/health`
 - **Method**: GET
 - **Description**: Checks the health status of the application and database.
@@ -1126,7 +1131,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 ## Administration
 
-### Collect Backups
+### Collect Backups - `/api/backups/collect`
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
 - **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint connects to the Duplicati server, retrieves backup information, and processes it into the local database.
@@ -1172,7 +1177,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Cleanup Backups
+### Cleanup Backups - `/api/backups/cleanup`
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
 - **Description**: Deletes old backup data based on retention period. This endpoint helps manage database size by removing outdated backup records while preserving recent and important data.
@@ -1212,7 +1217,7 @@ All API responses are returned in JSON format with consistent error handling pat
 <br>
 
 
-### Delete Backup
+### Delete Backup - `/api/backups/:backupId`
 - **Endpoint**: `/api/backups/:backupId`
 - **Method**: DELETE
 - **Description**: Deletes a specific backup record. This endpoint is only available in development mode.
@@ -1244,7 +1249,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - Enhanced error reporting includes details and timestamp
   - Returns information about the deleted backup
 
-### Delete Backup Job
+### Delete Backup Job - `/api/backups/delete-job`
 - **Endpoint**: `/api/backups/delete-job`
 - **Method**: DELETE
 - **Description**: Deletes all backup records for a specific server-backup combination. This endpoint is only available in development mode.
@@ -1279,7 +1284,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Test Server Connection
+### Test Server Connection - `/api/servers/test-connection`
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
 - **Description**: Tests the connection to a Duplicati server to verify it's accessible.
@@ -1308,7 +1313,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Get Server URL
+### Get Server URL - `/api/servers/:serverId/server-url`
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
 - **Description**: Retrieves the server URL for a specific server.
@@ -1332,7 +1337,7 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <br>
 
-### Update Server URL
+### Update Server URL - `/api/servers/:serverId/server-url`
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
 - **Description**: Updates the server URL for a specific server.

@@ -78,3 +78,8 @@ while IFS= read -r -d '' file; do
 done < <(find . -name "*.md" -type f -not -path "*/.*" -print0)
 
 echo "✅ Table of contents updated successfully"
+
+echo "🔍 Updating README.md for Docker Hub..."
+./scripts/update-readme-for-dockerhub.sh 
+
+echo "✅ README.md updated successfully"

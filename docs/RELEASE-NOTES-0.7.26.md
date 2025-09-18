@@ -1,23 +1,27 @@
+![duplistatus](img/duplistatus_banner.png)
+
+# Release Notes: duplistatus Version 0.7.26
+
+
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents**  
 
-- [Release Notes: duplistatus Version 0.7.26](#release-notes-duplistatus-version-0726)
-  - [⚠️ Major Change: "Machine" to "Server" Terminology](#-major-change-machine-to-server-terminology)
-  - [✨ New Features](#-new-features)
-    - [Dashboard Cards Layout](#dashboard-cards-layout)
-    - [Duplicati Web Interface Integration](#duplicati-web-interface-integration)
-    - [Server Management and Customisation](#server-management-and-customisation)
-  - [🎨 User Interface Improvements](#-user-interface-improvements)
-  - [🔄 Major API Changes](#-major-api-changes)
-    - [/api/summary](#apisummary)
-    - [/api/lastbackup](#apilastbackup)
-    - [/api/lastbackups](#apilastbackups)
+- [⚠️ Major Change: "Machine" to "Server" Terminology](#-major-change-machine-to-server-terminology)
+  - [🚨 Critical API Response Changes Warning](#-critical-api-response-changes-warning)
+- [✨ New Features](#-new-features)
+  - [Dashboard Cards Layout](#dashboard-cards-layout)
+  - [Duplicati Web Interface Integration](#duplicati-web-interface-integration)
+  - [Server Management and Customisation](#server-management-and-customisation)
+- [🎨 User Interface Improvements](#-user-interface-improvements)
+- [🔄 Major API Changes](#-major-api-changes)
+  - [/api/summary](#apisummary)
+  - [/api/lastbackup](#apilastbackup)
+  - [/api/lastbackups](#apilastbackups)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-# Release Notes: duplistatus Version 0.7.26
 
 We're excited to announce the release of **duplistatus version 0.7.26**. This is a significant update that introduces a major redesign of the user interface, new features for better integration and customisation, and important terminology changes across the application.
 
@@ -31,15 +35,34 @@ One of the most significant updates in this version is the migration of terminol
 
 This is a **breaking change** that affects the database schema, API endpoints, and configuration files. Upon upgrading from a version prior to 0.7.x, the application will **automatically migrate your database schema**. However, any custom integrations or scripts interacting with the API will need to be updated.
 
+### 🚨 Critical API Response Changes Warning
+
+**IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
+
+* **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](API-ENDPOINTS.md#get-overall-summary---apisummary)
+* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
+* **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
+
+> [!Warning]
+> **Impact:** While the `server_id` to `machine_id` (or name) parameter change won't affect users directly, the 
+> **new JSON response structure will break any external applications** that parse these API responses. 
+> Please review and update your integrations accordingly.
+
 * **Database:** The `machines` table has been renamed to `servers`, and related columns like `machine_id` are now `server_id`.
 * **API:** All API endpoints previously using `/api/machines/...` now use `/api/servers/...`.
 * **Configuration Keys:** Configuration keys for backup settings have been updated from `machine_name:backup_name` to `server_id:backup_name`.
 * **Notification Templates:** Due to the terminology change, notification template variables have been updated. For example, the `{machine_name}` variable is now `{server_name}`. Your existing custom templates will not work correctly until they are updated.
-    **Action Required:** You must update your notification templates. The recommended methods are:
-    * **Reset to Default:** Navigate to `Settings → Notification Templates` and use the "Reset to Default" button to apply the new default templates.
-    * **Manual Update:** Manually edit your templates to replace `{machine_name}` with `{server_name}` and take advantage of new variables like `{server_alias}` and `{server_note}`.
+
+> [!Warning]
+> **Action Required:** You must update your notification templates. The recommended methods are:
+> * **Reset to Default:** Navigate to `Settings → Notification Templates` and use the "Reset to Default" button to apply the new default templates.
+> * **Manual Update:** Manually edit your templates to replace `{machine_name}` with `{server_name}` and take advantage of new variables like `{server_alias}`,  `{server_note}` and `{server_url}`.
+
+<br>
 
 ---
+
+<br>
 
 ## ✨ New Features
 
@@ -57,12 +80,12 @@ You can now directly access your Duplicati server's web interface from within `d
 
 * A new **Duplicati configuration** button has been added to the application toolbar.
 * Server addresses are automatically saved when you use the **Collect Backup Logs** feature.
-* You can manage all server addresses centrally in **Settings → Server Settings**.
+* You can manage all server addresses centrally in [`Settings → Server Settings`](USER-GUIDE.md#server-settings).
 
 ### Server Management and Customisation
 
-* **Server Aliases:** You can now assign a custom alias to each server for easier identification throughout the user interface. The alias can be configured in `Settings → Server Settings`.
-* **Descriptive Notes:** Add a note to each server to document its purpose, location, or any other relevant information. This note is displayed alongside the server's name or alias in the UI for quick reference.
+* **Server Aliases:** You can now assign a custom alias to each server for easier identification throughout the user interface. The alias can be configured in [`Settings → Server Settings`](USER-GUIDE.md#server-settings)`.
+* **Descriptive Notes:** Add a note to each server to document its purpose, location, or any other relevant information. For exemple, if the server name is "DB-PROD-01", you can use the alias "Production DB" and the notes "Primary database server - critical backups", making it easyer to identify the server and function.  This note is displayed alongside the server's name or alias in the UI for quick reference.
 
 ---
 

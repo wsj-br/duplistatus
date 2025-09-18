@@ -9,7 +9,9 @@
 <br>
 
 
-This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple servers. It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution,  metrics, and performance across multiple servers.
+
+It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
 <br>
 
@@ -33,6 +35,7 @@ This web application monitors and visualises backup operations from [Duplicati](
   - [The Migration Process](#the-migration-process)
   - [Monitoring the Migration](#monitoring-the-migration)
   - [Rolling Back (If Needed)](#rolling-back-if-needed)
+  - [API Response Changes](#api-response-changes)
 - [Credits](#credits)
 - [License](#license)
 
@@ -43,13 +46,15 @@ This web application monitors and visualises backup operations from [Duplicati](
 ## Features
 
 - **Easy Installation**: Run inside a container with images available on Docker Hub and GitHub Container Registry
-- **Dashboard**: This displays the backup status for all monitored servers.
-- **Backup history**: Detailed view of backup history for each server
-- **Data Visualisation**: Interactive charts showing backup metrics over time and other statistical information.
-- **Log Collection**: Collect backup logs directly from Duplicati servers via HTTP/HTTPS
-- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts, see notifications on your phone (NEW)
-- **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups (NEW)
-- **Backup Version Display**: Show the list of backup versions available in the backend (NEW)
+- **Dashboard**: Displays the backup status for all monitored servers (NEW LAYOUT)
+- **Backup History**: Detailed view of backup history for each server
+- **Data Visualisation**: Interactive charts showing backup metrics over time and other statistical information
+- **Log Collection**: Collects backup logs directly from Duplicati servers via HTTP/HTTPS
+- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts, see notifications on your phone,
+- **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups
+- **Backup Version Display**: Shows the list of backup versions available in the backend
+- **Duplicati Server**: Includes feature to open the Duplicati server web UI from **duplistatus** (NEW)
+- **Server Settings**: Users can choose an alias for the server and include a note with description (NEW)
 - **API Access**: RESTful API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs
 
 <br>
@@ -58,6 +63,15 @@ This web application monitors and visualises backup operations from [Duplicati](
 >[!IMPORTANT]
 > If you are upgrading from version 0.6.x or earlier, your database will be automatically 
 > [migrated](#migrating-to-version-07x) to the new schema during the upgrade process.
+> 
+> 🚨 **API Response Changes in version 0.7.x**
+> 
+>   If you have external integrations, scripts, or applications that consume the API endpoints `/api/summary`, `/api/lastbackup`
+>   and `/api/lastbackups`, you **MUST** update them immediately as [the JSON response structure has changed.](#api-response-changes) 
+> 
+> For more information see [RELEASE NOTES 0.7.26](docs/RELEASE-NOTES-0.7.26.md)
+
+
 
 <br>
 
@@ -96,7 +110,7 @@ See details in the [Installation Guide](docs/INSTALL.md).
 
 ## Duplicati Servers Configuration (Required)
 
-Once your **duplistatus** server is up and running, you must configure your **Duplicati** servers to 
+Once your **duplistatus** server is up and running, you need to configure your **Duplicati** servers to 
 send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](docs/INSTALL.md#duplicati-configuration-required) 
 section of the Installation Guide. Without this configuration, the dashboard will not function properly.
 
@@ -163,10 +177,29 @@ If you encounter issues, you can restore your database by following these steps:
 1. Stop the `duplistatus` container.
 2. Replace the current database file `backups.db` with the backup file.
    - The default location is `/var/lib/docker/volumes/duplistatus_data/_data/`
+   - To find the exact path, run `docker volume inspect duplistatus_data` and check the Mountpoint field
    - Verify the correct path based on your current configuration and installation.
 3. Install the previous version of `duplistatus` container image.
 4. Restart the container.
 5. Please report the issue in the [duplistatus project](https://github.com/wsj-br/duplistatus/issues) on GitHub, including the Docker logs.
+
+
+
+### API Response Changes
+
+**IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
+
+* **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](API-ENDPOINTS.md#get-overall-summary---apisummary)
+* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
+* **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
+
+> [!Warning]
+> **Impact:** While the `server_id` to `machine_id` (or name) parameter change won't affect users directly, the 
+> **new JSON response structure will break any external applications** that parse these API responses. 
+> Please review and update your integrations accordingly.
+
+
+
 
 <br>
 
