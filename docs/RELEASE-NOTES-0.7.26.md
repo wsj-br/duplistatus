@@ -109,7 +109,7 @@ The `/api/summary` endpoint, used for the overall backup statistics, has been up
 * **Previous (v0.6.1):** The response payload included the field `totalMachines`.
 * **New (v0.7.26):** The `totalMachines` field has been renamed to `totalServers`.
 
-### /api/lastbackup/{serverId}
+### /api/lastbackup
 
 The endpoint for fetching the last backup for a specific server has been renamed and its response structure updated.
 
