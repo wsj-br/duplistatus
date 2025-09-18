@@ -17,6 +17,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get package.json version
+        id: package_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Package version: $VERSION"
+
+      - name: Check if this is the latest release
+        id: is_latest
+        run: |
+          # Get the latest release tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          CURRENT_TAG="${{ github.ref_name }}"
+          
+          if [ "$LATEST_TAG" = "$CURRENT_TAG" ]; then
+            echo "is_latest=true" >> $GITHUB_OUTPUT
+            echo "This is the latest release"
+          else
+            echo "is_latest=false" >> $GITHUB_OUTPUT
+            echo "This is not the latest release"
+          fi
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -41,12 +63,24 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=${{ steps.package_version.outputs.version }},enable={{is_default_branch}}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Extract metadata for Docker (Docker Hub)
         id: meta_dockerhub
         uses: docker/metadata-action@v5
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/duplistatus
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=${{ steps.package_version.outputs.version }},enable={{is_default_branch}}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image (amd64, arm64)
         uses: docker/build-push-action@v5
@@ -55,7 +89,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/duplistatus:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/duplistatus:${{ steps.package_version.outputs.version }}
             ${{ steps.meta_ghcr.outputs.tags }}
             ${{ steps.meta_dockerhub.outputs.tags }}
           labels: |

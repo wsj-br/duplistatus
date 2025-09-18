@@ -1,0 +1,102 @@
+"use server";
+
+import { NextResponse } from 'next/server';
+import { dbUtils } from '@/lib/db-utils';
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ serverId: string }> }
+) {
+  try {
+    const { serverId } = await params;
+    const { searchParams } = new URL(request.url);
+    const includeBackups = searchParams.get('includeBackups') === 'true';
+    const includeChartData = searchParams.get('includeChartData') === 'true';
+    
+    const server = await dbUtils.getServerById(serverId);
+    
+    if (!server) {
+      return NextResponse.json({ error: 'Server not found' }, { status: 404 });
+    }
+    
+    // If no specific data is requested, return basic server info
+    if (!includeBackups && !includeChartData) {
+      return NextResponse.json({
+        id: server.id,
+        name: server.name,
+        alias: server.alias,
+        note: server.note,
+        server_url: server.server_url
+      });
+    }
+    
+    // Return full server data if any additional data is requested
+    return NextResponse.json(server);
+  } catch (error) {
+    console.error('Error fetching server:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json({ error: 'Failed to fetch server' }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ serverId: string }> }
+) {
+  try {
+    const { serverId } = await params;
+    const body = await request.json();
+    const { server_url, alias, note } = body;
+    
+    // Update server details
+    const result = dbUtils.updateServer(serverId, {
+      server_url: server_url || '',
+      alias: alias || '',
+      note: note || ''
+    });
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error || 'Server not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: 'Server updated successfully',
+      serverId,
+      server_url: server_url || '',
+      alias: alias || '',
+      note: note || ''
+    });
+  } catch (error) {
+    console.error('Error updating server:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json(
+      { error: 'Failed to update server' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ serverId: string }> }
+) {
+  try {
+    const { serverId } = await params;
+    
+    // Delete the server and its backups
+    const result = dbUtils.deleteServer(serverId);
+
+    return NextResponse.json({
+      message: `Successfully deleted server and ${result.backupChanges} backups`,
+      status: 200,
+      changes: result
+    });
+  } catch (error) {
+    console.error('Error deleting server:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json(
+      { error: 'Failed to delete server' },
+      { status: 500 }
+    );
+  }
+}

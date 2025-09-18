@@ -24,6 +24,7 @@ interface BackupInfo {
   Backup: {
     ID: string;
     Name: string;
+    TargetURL?: string;
   };
 }
 
@@ -107,7 +108,8 @@ export async function POST(request: NextRequest) {
       port = defaultAPIConfig.duplicatiPort, 
       password, 
       protocol = defaultAPIConfig.duplicatiProtocol,
-      allowSelfSigned = false
+      allowSelfSigned = false,
+      downloadJson = false
     } = await request.json();
 
     if (!hostname) {
@@ -200,25 +202,61 @@ export async function POST(request: NextRequest) {
     }
 
     const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
-    const machineId = systemInfo.Options?.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
-    const machineName = systemInfo.MachineName;
 
-    if (!machineId || !machineName) {
-      console.error('Could not get machine information');
-      throw new Error('Could not get machine information');
+    // Check if Options array exists and log its contents
+    if (!systemInfo.Options) {
+      console.error('System info Options array is missing');
+      throw new Error('System info Options array is missing - unable to find machine-id');
+    }
+   
+    const serverId = systemInfo.Options.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
+    const serverName = systemInfo.MachineName;
+
+    // Detailed error reporting
+    if (!serverId) {
+      console.error('Could not find machine-id in system options');
+      console.error('Available option names:', systemInfo.Options.map(opt => opt.Name));
+      throw new Error('Could not find machine-id in system options.');
     }
     
-    // Upsert machine information in the database
-    dbOps.upsertMachine.run({
-        id: machineId,
-        name: machineName
-      });
+    if (!serverName) {
+      console.error('MachineName is missing from system info');
+      console.error('System info structure:', Object.keys(systemInfo));
+      throw new Error('MachineName is missing from system info');
+    }
+        
+    // Check if server already exists
+    const existingServer = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     
-    // Ensure backup settings are complete for all machines and backups
-    // This will add default settings for any missing machine-backup combinations
+    if (existingServer) {
+      // Server exists - only update server_url, preserve alias and note
+      dbOps.upsertServer.run({
+        id: serverId,
+        name: serverName,
+        server_url: baseUrl,
+        alias: existingServer.alias,  // Preserve existing alias
+        note: existingServer.note     // Preserve existing note
+      });
+    } else {
+      // Server doesn't exist - create new server with empty alias and note
+      dbOps.upsertServer.run({
+        id: serverId,
+        name: serverName,
+        server_url: baseUrl,
+        alias: '',
+        note: ''
+      });
+    }
+    
+    // Get the server information including alias from database
+    const serverInfo = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    const serverAlias = serverInfo?.alias || '';
+    
+    // Ensure backup settings are complete for all servers and backups
+    // This will add default settings for any missing server-backup combinations
     const backupSettingsResult = await ensureBackupSettingsComplete();
     if (backupSettingsResult.added > 0) {
-      console.log(`[collect-backups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
+      console.log(`[collect-backups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total server-backup combinations`);
     }
   
     // Step 3: Get list of backups
@@ -253,6 +291,11 @@ export async function POST(request: NextRequest) {
     let processedCount = 0;
     let skippedCount = 0;
     let errorCount = 0;
+    const collectedJsonData: Array<{
+      backupId: string;
+      backupName: string | undefined;
+      messages: LogEntry[];
+    }> = [];
 
     for (const backupId of backupIds) {
       try {
@@ -291,6 +334,31 @@ export async function POST(request: NextRequest) {
           }
         });
 
+        // Collect JSON data for download if requested
+        if (downloadJson) {
+          // Parse Message strings into proper JSON objects
+          const parsedMessages = backupMessages.map((log) => {
+            try {
+              return {
+                ...log,
+                Message: JSON.parse(log.Message)
+              };
+            } catch (error) {
+              console.error('Error parsing message for download:', error instanceof Error ? error.message : String(error));
+              return {
+                ...log,
+                Message: log.Message // Keep as string if parsing fails
+              };
+            }
+          });
+
+          collectedJsonData.push({
+            backupId: backupId,
+            backupName: backups.find((b) => b.Backup.ID === backupId)?.Backup.Name,
+            messages: parsedMessages
+          });
+        }
+
         // Log received data in development mode
         if (process.env.NODE_ENV !== 'production') {
           const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -326,7 +394,7 @@ export async function POST(request: NextRequest) {
           if (!backupName) continue;
           
           const isDuplicate = await dbUtils.checkDuplicateBackup({
-            machine_id: machineId,
+            server_id: serverId,
             backup_name: backupName,
             date: backupDate
           });
@@ -345,7 +413,7 @@ export async function POST(request: NextRequest) {
           // Insert backup data
           dbOps.insertBackup.run({
             id: uuidv4(),
-            machine_id: machineId,
+            server_id: serverId,
             backup_name: backupName,
             backup_id: backupId,
             date: backupDate,
@@ -420,9 +488,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    const responseData: {
+      success: boolean;
+      serverName: string;
+      serverAlias: string;
+      stats: {
+        processed: number;
+        skipped: number;
+        errors: number;
+      };
+      backupSettings: {
+        added: number;
+        total: number;
+      };
+      jsonData?: string;
+    } = {
       success: true,
-      machineName: machineName,
+      serverName: serverName,
+      serverAlias: serverAlias,
       stats: {
         processed: processedCount,
         skipped: skippedCount,
@@ -432,7 +515,32 @@ export async function POST(request: NextRequest) {
         added: backupSettingsResult.added,
         total: backupSettingsResult.total
       }
-    });
+    };
+
+    // Include JSON data if download was requested
+    if (downloadJson) {
+       // remove sensitive data from the response 
+       // keep only the beginning of TargetURL until the first ":"
+       const backupsWithoutTargetURL = backups.map((backup) => {
+         return {
+           ...backup,
+           Backup: {
+             ...backup.Backup,
+             TargetURL: backup.Backup.TargetURL 
+               ? backup.Backup.TargetURL.split(':')[0] + ':***--REDACTED--***'
+               : backup.Backup.TargetURL
+           }
+         };
+       });
+      // return the response data
+      responseData.jsonData = JSON.stringify({
+        system_info: systemInfo,
+        backups: backupsWithoutTargetURL,
+        backup_logs: collectedJsonData
+      }, null, 2);
+    }
+
+    return NextResponse.json(responseData);
 
   } catch (error) {
     console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));

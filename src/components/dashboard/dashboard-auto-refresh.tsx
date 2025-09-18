@@ -1,140 +1,141 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { DashboardTable } from "@/components/dashboard/dashboard-table";
-import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
-import { DashboardMetricsChart } from "@/components/dashboard/dashboard-metrics-chart";
-import { DashboardToastHandler } from "@/components/dashboard/dashboard-toast-handler";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Info } from "lucide-react";
-import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { MachineSummary, OverallSummary } from "@/lib/types";
-
-interface ChartDataPoint {
-  date: string;
-  isoDate: string;
-  uploadedSize: number;
-  duration: number;
-  fileCount: number;
-  fileSize: number;
-  storageSize: number;
-  backupVersions: number;
-}
-
-interface DashboardData {
-  machinesSummary: MachineSummary[];
-  overallSummary: OverallSummary;
-  aggregatedChartData: ChartDataPoint[];
-}
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { DashboardLayout } from './dashboard-layout';
+import { useGlobalRefresh } from '@/contexts/global-refresh-context';
+import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 interface DashboardAutoRefreshProps {
-  initialData: DashboardData;
+  initialData: {
+    serversSummary: ServerSummary[];
+    overallSummary: OverallSummary;
+    allServersChartData: ChartDataPoint[];
+  };
 }
 
 export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps) {
-  const [data, setData] = useState<DashboardData>(initialData);
-  const [lastError, setLastError] = useState<string | null>(null);
-  
   const { state } = useGlobalRefresh();
-  const { toast } = useToast();
+  
+  // State for data
+  const [serversSummary, setServersSummary] = useState<ServerSummary[]>(initialData.serversSummary);
+  const [overallSummary, setOverallSummary] = useState<OverallSummary>(initialData.overallSummary);
+  const [allServersChartData, setAllServersChartData] = useState<ChartDataPoint[]>(initialData.allServersChartData);
+  
+  // State for selection
+  const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
+  
+  // State for loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(() => {
+    // Use a stable timestamp to prevent hydration mismatches
+    // We'll set the actual time after the component mounts
+    return new Date(0);
+  });
 
-  // Listen for refresh events from global refresh context
+  // Set the actual refresh time after component mounts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLastError(null);
-        
-        // Fetch data from API endpoints
-        const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-          fetch('/api/machines-summary'),
-          fetch('/api/summary'),
-          fetch('/api/chart-data')
-        ]);
+    setLastRefreshTime(new Date());
+  }, []);
 
-        if (!machinesResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
-          throw new Error('Failed to fetch dashboard data');
-        }
+  // Refresh function - used only for manual refresh (user clicking refresh button)
+  const refreshData = useCallback(async () => {
+    if (isLoading) return; // Prevent multiple simultaneous refreshes
+    
+    try {
+      setIsLoading(true);
+      
+      // Fetch consolidated dashboard data
+      const dashboardResponse = await fetch('/api/dashboard');
 
-        const [machinesData, summaryData, chartData] = await Promise.all([
-          machinesResponse.json(),
-          summaryResponse.json(),
-          chartResponse.json()
-        ]);
-
-        setData({
-          machinesSummary: machinesData,
-          overallSummary: summaryData,
-          aggregatedChartData: chartData
-        });
-        
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-        console.log('Error refreshing dashboard data:', error instanceof Error ? error.message : String(error));
-        setLastError(errorMessage);
-        
-        toast({
-          title: "Update Failed",
-          description: `Failed to refresh dashboard data: ${errorMessage}`,
-          variant: "destructive",
-          duration: 2000,
-        });
+      if (!dashboardResponse.ok) {
+        throw new Error('Failed to fetch dashboard data');
       }
-    };
 
-    // Only fetch data when global refresh completes and no refresh is in progress
-    // This prevents race conditions with the global refresh context
-    if (!state.isRefreshing && !state.pageSpecificLoading.dashboard && !state.refreshInProgress && state.lastRefresh) {
-      fetchData();
+      const dashboardData = await dashboardResponse.json();
+
+      // Extract individual data components for backward compatibility
+      const machinesData = dashboardData.serversSummary;
+      const summaryData = dashboardData.overallSummary;
+      const chartData = dashboardData.chartData;
+
+      // Update state with new data
+      setServersSummary(machinesData);
+      setOverallSummary(summaryData);
+      setAllServersChartData(chartData);
+      setLastRefreshTime(new Date());
+    } catch (error) {
+      console.error('Error refreshing dashboard data:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.dashboard, state.refreshInProgress, state.lastRefresh, toast]);
+  }, [isLoading]);
+
+  // Listen for global refresh events
+  useEffect(() => {
+    // When the global refresh completes for dashboard pages, use the data from the context
+    // instead of making duplicate API calls
+    if (state.lastRefresh && !state.isRefreshing && !state.pageSpecificLoading.dashboard && state.dashboardData) {
+      // Use the data from global refresh context to avoid duplicate API calls
+      const { serversSummary: newServersSummary, overallSummary: newOverallSummary, allServersChartData: newAllServersChartData } = state.dashboardData;
+      
+      // Compare data before updating to prevent unnecessary re-renders
+      const serversChanged = JSON.stringify(newServersSummary) !== JSON.stringify(serversSummary);
+      const summaryChanged = JSON.stringify(newOverallSummary) !== JSON.stringify(overallSummary);
+      const chartDataChanged = JSON.stringify(newAllServersChartData) !== JSON.stringify(allServersChartData);
+      
+      // Only update if there are actual changes
+      if (serversChanged || summaryChanged || chartDataChanged) {
+        if (serversChanged) setServersSummary(newServersSummary);
+        if (summaryChanged) setOverallSummary(newOverallSummary);
+        if (chartDataChanged) setAllServersChartData(newAllServersChartData);
+      }
+      
+      // Always update refresh time for the UI
+      setLastRefreshTime(new Date());
+    }
+  }, [state.lastRefresh, state.isRefreshing, state.pageSpecificLoading.dashboard, state.dashboardData, serversSummary, overallSummary, allServersChartData]);
+
+  // Handle server selection
+  const handleServerSelect = useCallback((serverId: string | null) => {
+    if (selectedServerId === serverId) {
+      // Toggle off if same server is clicked
+      setSelectedServerId(null);
+    } else {
+      // Select new server
+      setSelectedServerId(serverId);
+    }
+  }, [selectedServerId]);
+
+  // We no longer need to filter chart data here, as the MetricsChartsPanel component now handles this internally
+
+  // Get selected server
+  const selectedServer = useMemo(() => {
+    if (!selectedServerId) return null;
+    return serversSummary.find(server => server.id === selectedServerId) || null;
+  }, [serversSummary, selectedServerId]);
+
+  // Get all backups for the selected server
+  const serverBackups = useMemo(() => {
+    if (!selectedServer) return [];
+    // This would need to be fetched from the database
+    // For now, we'll return an empty array and handle this in the layout
+    return [];
+  }, [selectedServer]);
 
   return (
-    <div className="flex flex-col gap-8">
-      <DashboardToastHandler />
-      
-      {/* Error Alert */}
-      {lastError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Failed to update dashboard data: {lastError}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <DashboardSummaryCards summary={data.overallSummary} />
-
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl cursor-default">Overview</CardTitle>
-          <CardDescription className="cursor-default">
-            Latest backup status for all machines.
-            <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help ml-2" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Last refresh: {new Date().toLocaleString()}
-                  </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DashboardTable machines={data.machinesSummary} />
-        </CardContent>
-      </Card>
-
-      <DashboardMetricsChart aggregatedData={data.aggregatedChartData} />
-    </div>
+    <DashboardLayout
+      data={{
+        serversSummary,
+        overallSummary,
+        allServersChartData
+      }}
+      selectedServerId={selectedServerId}
+      selectedServer={selectedServer}
+      serverBackups={serverBackups}
+      isLoading={isLoading}
+      lastRefreshTime={lastRefreshTime}
+      onServerSelect={handleServerSelect}
+      onRefresh={refreshData}
+    />
   );
 }

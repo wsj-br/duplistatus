@@ -12,9 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useRouter, usePathname } from "next/navigation";
-import { defaultAPIConfig } from '@/lib/default-config';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useConfiguration } from "@/contexts/configuration-context";
+import { defaultAPIConfig } from '@/lib/default-config';
 
 export function BackupCollectMenu() {
   const [isCollecting, setIsCollecting] = useState(false);
@@ -24,11 +24,51 @@ export function BackupCollectMenu() {
   const [password, setPassword] = useState("");
   const [useHttps, setUseHttps] = useState(false);
   const [allowSelfSigned, setAllowSelfSigned] = useState(false);
+  const [downloadJson, setDownloadJson] = useState(false);
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const { toast } = useToast();
-  const router = useRouter();
-  const pathname = usePathname();
   const { refreshDashboard } = useGlobalRefresh();
+  const { refreshConfigSilently } = useConfiguration();
+
+  const downloadJsonFile = (jsonData: string, serverName: string) => {
+    try {
+      // Create a timestamp for the filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const filename = `${serverName}_collected_${timestamp}.json`;
+      
+      // Create a blob with the JSON data
+      const blob = new Blob([jsonData], { type: 'application/json' });
+      
+      // Create a temporary URL for the blob
+      const url = URL.createObjectURL(blob);
+      
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "JSON file downloaded",
+        description: `Downloaded ${filename}`,
+        variant: "default",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error downloading JSON file:', error);
+      toast({
+        title: "Download failed",
+        description: "Failed to download JSON file",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
 
   const handleCollect = async () => {
     if (!hostname) {
@@ -65,7 +105,8 @@ export function BackupCollectMenu() {
           port: parseInt(port) || defaultAPIConfig.duplicatiPort,
           password,
           protocol: useHttps ? 'https' : defaultAPIConfig.duplicatiProtocol,
-          allowSelfSigned
+          allowSelfSigned,
+          downloadJson
         }),
       });
 
@@ -76,7 +117,12 @@ export function BackupCollectMenu() {
 
       const result = await response.json();
       setStats(result.stats);
-      const machineName = result.machineName;
+      const serverName = result.serverAlias || result.serverName;
+
+      // Handle JSON download if requested and data is available
+      if (downloadJson && result.jsonData) {
+        downloadJsonFile(result.jsonData, serverName);
+      }
 
       // Clear stats and sensitive data immediately
       setStats(null);
@@ -85,27 +131,19 @@ export function BackupCollectMenu() {
       // Close the modal
       setIsOpen(false);
 
-      // Check if we're already on the dashboard page
-      if (pathname === "/") {
-        // If already on dashboard, show toast directly and refresh the dashboard data
-        toast({
-          title: `Backups collected successfully from ${machineName}`,
-          description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
-          variant: "default",
-          duration: 3000,
-        });
-        await refreshDashboard();
-      } else {
-        // If on another page, store toast data and redirect to dashboard
-        const toastData = {
-          title: `Backups collected successfully from ${machineName}`,
-          description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
-          variant: "default" as const,
-          duration: 10000, // 10 seconds on dashboard
-        };
-        localStorage.setItem("backup-collection-toast", JSON.stringify(toastData));
-        router.push("/");
-      }
+      // Show success toast
+      toast({
+        title: `Backups collected successfully from ${serverName}`,
+        description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+        variant: "default",
+        duration: 3000,
+      });
+
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
+      
+      // Also refresh configuration data to update server lists in configuration tabs
+      await refreshConfigSilently();
 
     } catch (error) {
       console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
@@ -134,10 +172,11 @@ export function BackupCollectMenu() {
           <div className="space-y-2">
             <h4 className="text-xl font-medium leading-none">Collect Backup Logs</h4>
             <p className="text-sm text-muted-foreground">
-              Download backup logs directly from the Duplicati servers.
+              Extract backup logs directly from the Duplicati servers.
             </p>
           </div>
           <div className="grid gap-4">
+
             <div className="flex flex-col space-y-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -173,12 +212,14 @@ export function BackupCollectMenu() {
                 </div>
               )}
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="hostname">Hostname</Label>
               <Input
                 id="hostname"
                 value={hostname}
                 onChange={(e) => setHostname(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 placeholder="server name or IP"
                 disabled={isCollecting}
               />
@@ -189,6 +230,7 @@ export function BackupCollectMenu() {
                 id="port"
                 value={port}
                 onChange={(e) => setPort(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 placeholder="8200"
                 disabled={isCollecting}
               />
@@ -200,10 +242,25 @@ export function BackupCollectMenu() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 placeholder="Enter Duplicati password"
                 disabled={isCollecting}
               />
               <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="downloadJson"
+                checked={downloadJson}
+                onCheckedChange={(checked) => setDownloadJson(checked as boolean)}
+                disabled={isCollecting}
+              />
+              <Label
+                htmlFor="downloadJson"
+                className="text-sm font-normal"
+              >
+                Download collected JSON data
+              </Label>
             </div>
             {isCollecting && (
               <div className="flex flex-col items-center justify-center space-y-4 py-4">

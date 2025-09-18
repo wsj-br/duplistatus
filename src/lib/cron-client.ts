@@ -1,4 +1,4 @@
-import { CronServiceStatus, TaskExecutionResult } from './types';
+// Removed unused imports: CronServiceStatus, TaskExecutionResult
 
 // Use relative path to ensure requests go through our Next.js API route
 const CRON_SERVICE_URL = '/api/cron';
@@ -26,39 +26,6 @@ export class CronServiceClient {
     return response.json();
   }
 
-  /**
-   * Get the current status of the cron service
-   */
-  async getStatus(): Promise<CronServiceStatus> {
-    return this.request<CronServiceStatus>('/health');
-  }
-
-  /**
-   * Trigger a task manually
-   */
-  async triggerTask(taskName: string): Promise<TaskExecutionResult> {
-    return this.request<TaskExecutionResult>(`/trigger/${taskName}`, {
-      method: 'POST',
-    });
-  }
-
-  /**
-   * Stop a running task
-   */
-  async stopTask(taskName: string): Promise<{ message: string }> {
-    return this.request<{ message: string }>(`/stop/${taskName}`, {
-      method: 'POST',
-    });
-  }
-
-  /**
-   * Start a stopped task
-   */
-  async startTask(taskName: string): Promise<{ message: string }> {
-    return this.request<{ message: string }>(`/start/${taskName}`, {
-      method: 'POST',
-    });
-  }
 
   /**
    * Reload the service configuration from the database

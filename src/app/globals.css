@@ -94,6 +94,21 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  
+  .server-cards-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .server-cards-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    /* Improve touch scrolling behavior */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    /* Improve smooth scrolling performance */
+    will-change: scroll-position;
+    transform: translateZ(0); /* Force hardware acceleration */
+  }
 
   /* Modern thin scrollbars */
   .custom-scrollbar {
@@ -169,4 +184,67 @@ body {
   .macos-scrollbar::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground) / 0.5);
   }
+
+  /* Preline-style custom scrollbar - comprehensive solution */
+  .preline-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(214.3 31.8% 91.4%) hsl(210 40% 96.1%);
+    overflow: auto;
+  }
+
+  .dark .preline-scrollbar {
+    scrollbar-color: hsl(215 20.2% 65.1%) hsl(217.2 32.6% 17.5%);
+  }
+
+  /* WebKit scrollbar styling */
+  .preline-scrollbar::-webkit-scrollbar {
+    width: 0.5rem; /* 8px */
+    height: 0.5rem;
+  }
+
+  .preline-scrollbar::-webkit-scrollbar-track {
+    background-color: hsl(210 40% 96.1%); /* light mode gray-100 equivalent */
+    border-radius: 9999px;
+  }
+
+  .preline-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(214.3 31.8% 91.4%); /* light mode gray-300 equivalent */
+    border-radius: 9999px;
+  }
+
+  .dark .preline-scrollbar::-webkit-scrollbar-track {
+    background-color: hsl(217.2 32.6% 17.5%); /* dark mode neutral-700 equivalent */
+  }
+
+  .dark .preline-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(215 20.2% 65.1%); /* dark mode neutral-500 equivalent */
+  }
+
+  /* Simplified Chrome scrollbar button hiding - back to basics */
+  .preline-scrollbar::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  .preline-scrollbar::-webkit-scrollbar-button:single-button {
+    display: none;
+  }
+
+  .preline-scrollbar::-webkit-scrollbar-button:double-button {
+    display: none;
+  }
+
+  /* Alternative approach: make track cover entire scrollbar area */
+  .preline-scrollbar::-webkit-scrollbar-track {
+    background-color: hsl(210 40% 96.1%) !important;
+    border-radius: 9999px !important;
+    margin: 0 !important;
+  }
+
+  .dark .preline-scrollbar::-webkit-scrollbar-track {
+    background-color: hsl(217.2 32.6% 17.5%) !important;
+  }
+}
+
+@theme {
+  --text-tiny: 0.5rem;
 }

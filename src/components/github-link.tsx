@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function GithubLink() {
   return (
-    <div className="mt-8 mb-8 text-xs text-muted-foreground hover:text-foreground transition-colors text-center">
+    <div className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center">
       <Link 
         href="https://github.com/wsj-br/duplistatus" 
         target="_blank" 

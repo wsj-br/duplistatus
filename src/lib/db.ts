@@ -49,7 +49,7 @@ try {
   const tableCount = db.prepare(`
     SELECT COUNT(*) as count 
     FROM sqlite_master 
-    WHERE type='table' AND name IN ('machines', 'backups')
+    WHERE type='table' AND name IN ('servers', 'backups')
   `).get() as { count: number };
   
   // If no tables exist, create the complete schema
@@ -57,15 +57,18 @@ try {
     console.log('Initializing new database with latest schema...');
     
     db.exec(`
-      CREATE TABLE IF NOT EXISTS machines (
+      CREATE TABLE IF NOT EXISTS servers (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
+        server_url TEXT DEFAULT '',
+        alias TEXT DEFAULT '',
+        note TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
       CREATE TABLE IF NOT EXISTS backups (
         id TEXT PRIMARY KEY,
-        machine_id TEXT NOT NULL,
+        server_id TEXT NOT NULL,
         backup_name TEXT NOT NULL,
         backup_id TEXT NOT NULL,
         date DATETIME NOT NULL,
@@ -130,10 +133,10 @@ try {
         backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
         backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
         
-        FOREIGN KEY (machine_id) REFERENCES machines(id)
+        FOREIGN KEY (server_id) REFERENCES servers(id)
       );
 
-      CREATE INDEX IF NOT EXISTS idx_backups_machine_id ON backups(machine_id);
+      CREATE INDEX IF NOT EXISTS idx_backups_server_id ON backups(server_id);
       CREATE INDEX IF NOT EXISTS idx_backups_date ON backups(date);
       CREATE INDEX IF NOT EXISTS idx_backups_begin_time ON backups(begin_time);
       CREATE INDEX IF NOT EXISTS idx_backups_end_time ON backups(end_time);
@@ -150,7 +153,7 @@ try {
       );
 
       -- Set initial database version for new databases (only if not exists)
-      INSERT OR IGNORE INTO db_version (version) VALUES ('2.0');
+      INSERT OR IGNORE INTO db_version (version) VALUES ('3.0');
     `);
     
     console.log('Database schema initialized successfully');
@@ -163,28 +166,6 @@ try {
 } catch (error) {
   console.error('Failed to initialize database schema:', error instanceof Error ? error.message : String(error));
   throw error;
-}
-
-// Run database migrations (only for existing databases that need upgrading)
-try {
-  const migrator = new DatabaseMigrator(db, dbPath);
-  migrator.runMigrations();
-} catch (error) {
-  console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));
-  throw error;
-}
-
-// Check and update CRON_PORT configuration
-try {
-  // Import the function from db-utils
-  import('./db-utils').then(({ checkAndUpdateCronPort }) => {
-    checkAndUpdateCronPort();
-  }).catch((error) => {
-    console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
-  });
-} catch (error) {
-  console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
-  // Don't throw error to avoid crashing the application startup
 }
 
 // Helper function to safely prepare statements with error handling
@@ -245,32 +226,92 @@ async function populateDefaultConfigurations() {
   }
 }
 
+// Initialize migrations and database operations
+const migrator = new DatabaseMigrator(db, dbPath);
+let dbOps: ReturnType<typeof createDbOps> | null = null;
+let initializationPromise: Promise<void> | null = null;
+
+// Function to ensure database is fully initialized
+async function ensureDatabaseInitialized() {
+  if (initializationPromise) {
+    return initializationPromise;
+  }
+
+  initializationPromise = (async () => {
+    try {
+      await migrator.runMigrations();
+      
+      // Create database operations after migrations complete
+      if (!dbOps) {
+        dbOps = createDbOps();
+        console.log('Database operations initialized');
+      }
+    } catch (error) {
+      console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
+      throw error;
+    }
+  })();
+
+  return initializationPromise;
+}
+
+// Start initialization immediately but don't block module loading
+ensureDatabaseInitialized().catch(error => {
+  console.error('Database initialization failed:', error);
+});
+
 // Helper functions for database operations
-const dbOps = {
-  // Machine operations
-  upsertMachine: safePrepare(`
-    INSERT INTO machines (id, name)
-    VALUES (@id, @name)
+function createDbOps() {
+  return {
+  // Server operations
+  upsertServer: safePrepare(`
+    INSERT INTO servers (id, name, server_url, alias, note)
+    VALUES (@id, @name, @server_url, @alias, @note)
     ON CONFLICT(id) DO UPDATE SET
-      name = @name
-  `, 'upsertMachine'),
+      name = @name,
+      server_url = @server_url,
+      alias = @alias,
+      note = @note
+  `, 'upsertServer'),
 
-  getMachine: safePrepare(`
-    SELECT * FROM machines WHERE id = ?
-  `, 'getMachine'),
+  insertServerIfNotExists: safePrepare(`
+    INSERT INTO servers (id, name, alias, note)
+    VALUES (@id, @name, @alias, @note)
+    ON CONFLICT(id) DO NOTHING
+  `, 'insertServerIfNotExists'),
 
-  getMachineByName: safePrepare(`
-    SELECT * FROM machines WHERE name = ?
-  `, 'getMachineByName'),
+  insertServerIfNotExistsWithDefaults: safePrepare(`
+    INSERT INTO servers (id, name)
+    VALUES (@id, @name)
+    ON CONFLICT(id) DO NOTHING
+  `, 'insertServerIfNotExistsWithDefaults'),
 
-  getAllMachines: safePrepare(`
-    SELECT * FROM machines ORDER BY name
-  `, 'getAllMachines'),
+  updateServerServerUrl: safePrepare(`
+    UPDATE servers 
+    SET server_url = @server_url 
+    WHERE id = @id
+  `, 'updateServerServerUrl'),
+
+  getServerById: safePrepare(`
+    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE id = ?
+  `, 'getServer'),
+
+  getServerByName: safePrepare(`
+    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE name = ?
+  `, 'getServerByName'),
+
+  getAllServersByName: safePrepare(`
+    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE name = ?
+  `, 'getAllServersByName'),
+
+  getAllServers: safePrepare(`
+    SELECT id, name, server_url, alias, note, created_at FROM servers ORDER BY name
+  `, 'getAllServers'),
 
   // Backup operations
   insertBackup: safePrepare(`
     INSERT INTO backups (
-      id, machine_id, backup_name, backup_id, date, status, duration_seconds,
+      id, server_id, backup_name, backup_id, date, status, duration_seconds,
       size, uploaded_size, examined_files, warnings, errors,
       messages_array, warnings_array, errors_array, available_backups,
       deleted_files, deleted_folders, modified_files, opened_files, added_files,
@@ -285,7 +326,7 @@ const dbOps = {
       backend_begin_time, backend_duration, backend_warnings_actual_length,
       backend_errors_actual_length
     ) VALUES (
-      @id, @machine_id, @backup_name, @backup_id, @date, @status, @duration_seconds,
+      @id, @server_id, @backup_name, @backup_id, @date, @status, @duration_seconds,
       @size, @uploaded_size, @examined_files, @warnings, @errors,
       @messages_array, @warnings_array, @errors_array, @available_backups,
       @deleted_files, @deleted_folders, @modified_files, @opened_files, @added_files,
@@ -303,27 +344,41 @@ const dbOps = {
   `, 'insertBackup'),
 
   getLatestBackup: safePrepare(`
-    SELECT b.*, m.name as machine_name
+    SELECT b.*, s.name as server_name
     FROM backups b
-    JOIN machines m ON b.machine_id = m.id
-    WHERE b.machine_id = ?
+    JOIN servers s ON b.server_id = s.id
+    WHERE b.server_id = ?
     ORDER BY b.date DESC
     LIMIT 1
   `, 'getLatestBackup'),
 
   getLatestBackupByName: safePrepare(`
-    SELECT b.*, m.name as machine_name
+    SELECT b.*, s.name as server_name
     FROM backups b
-    JOIN machines m ON b.machine_id = m.id
-    WHERE b.machine_id = ? AND b.backup_name = ?
+    JOIN servers s ON b.server_id = s.id
+    WHERE b.server_id = ? AND b.backup_name = ?
     ORDER BY b.date DESC
     LIMIT 1
   `, 'getLatestBackupByName'),
 
-  getMachineBackups: safePrepare(`
+  getServersBackupNames: safePrepare(`
+    SELECT 
+      s.id AS server_id,
+      s.name AS server_name,
+      b.backup_name,
+      s.server_url,
+      s.alias,
+      s.note
+    FROM servers s
+    JOIN backups b ON b.server_id = s.id
+    GROUP BY s.id, s.name, b.backup_name
+    ORDER BY s.name, b.backup_name
+  `, 'getServersBackupNames'),
+
+  getServerBackups: safePrepare(`
     SELECT 
       b.id,
-      b.machine_id,
+      b.server_id,
       b.backup_name,
       b.date,
       b.status,
@@ -342,80 +397,39 @@ const dbOps = {
       b.warnings_actual_length,
       b.errors_actual_length,
       b.messages_actual_length,
-      m.name as machine_name
+      s.name as server_name
     FROM backups b
-    JOIN machines m ON b.machine_id = m.id
-    WHERE b.machine_id = ?
+    JOIN servers s ON b.server_id = s.id
+    WHERE b.server_id = ?
     ORDER BY b.date DESC
-  `, 'getMachineBackups'),
+  `, 'getServerBackups'),
 
-  getMachinesSummary: safePrepare(`
-    WITH machine_backups AS (
-      SELECT DISTINCT 
-        m.id as machine_id,
-        m.name as machine_name,
-        b.backup_name
-      FROM machines m
-      JOIN backups b ON b.machine_id = m.id
-    ),
-    latest_backups AS (
-      SELECT 
-        machine_id,
-        backup_name,
-        MAX(date) as last_backup_date
-      FROM backups
-      GROUP BY machine_id, backup_name
-    ),
-    numbered_results AS (
-      SELECT 
-        ROW_NUMBER() OVER (ORDER BY mb.machine_name, mb.backup_name) as id,
-        mb.machine_id as machine_id,
-        mb.machine_name as name,
-        mb.backup_name as last_backup_name,
-        lb.last_backup_date,
-        b.id as last_backup_id,
-        b.status as last_backup_status,
-        b.duration_seconds as last_backup_duration,
-        b.warnings as total_warnings,
-        b.errors as total_errors,
-        b.backup_list_count as last_backup_list_count,
-        b.available_backups as available_backups,
-        COUNT(b2.id) as backup_count
-      FROM machine_backups mb
-      LEFT JOIN latest_backups lb ON mb.machine_id = lb.machine_id AND mb.backup_name = lb.backup_name
-      LEFT JOIN backups b ON b.machine_id = mb.machine_id AND b.date = lb.last_backup_date AND b.backup_name = mb.backup_name
-      LEFT JOIN backups b2 ON b2.machine_id = mb.machine_id AND b2.backup_name = mb.backup_name
-      GROUP BY mb.machine_id, mb.backup_name
-    )
-    SELECT * FROM numbered_results
-    ORDER BY lower(name), lower(last_backup_name)
-  `, 'getMachinesSummary'),
-
-  getOverallSummary: safePrepare(`
+   getOverallSummary: safePrepare(`
     SELECT 
-      COUNT(DISTINCT m.id) as total_machines,
-      COUNT(b.id) as total_backups,
+      COUNT(DISTINCT s.id) as total_servers,
+      COUNT(b.id) as total_backups_runs,
+      COUNT(DISTINCT s.id || ':' || b.backup_name) as total_backups,
       COALESCE(SUM(b.uploaded_size), 0) as total_uploaded_size,
       (
         SELECT COALESCE(SUM(b2.known_file_size), 0)
         FROM backups b2
         INNER JOIN (
-          SELECT machine_id, MAX(date) as max_date
+          SELECT server_id, MAX(date) as max_date
           FROM backups
-          GROUP BY machine_id
-        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+          GROUP BY server_id
+        ) latest ON b2.server_id = latest.server_id AND b2.date = latest.max_date
       ) as total_storage_used,
       (
         SELECT COALESCE(SUM(b2.size_of_examined_files), 0)
         FROM backups b2
         INNER JOIN (
-          SELECT machine_id, MAX(date) as max_date
+          SELECT server_id, MAX(date) as max_date
           FROM backups
-          GROUP BY machine_id
-        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+          GROUP BY server_id
+        ) latest ON b2.server_id = latest.server_id AND b2.date = latest.max_date
       ) as total_backuped_size
-    FROM machines m
-    LEFT JOIN backups b ON b.machine_id = m.id
+    FROM servers s
+    LEFT JOIN backups b ON b.server_id = s.id
   `, 'getOverallSummary'),
   
   getLatestBackupDate: safePrepare(`
@@ -424,67 +438,197 @@ const dbOps = {
   `, 'getLatestBackupDate'),
 
   getAggregatedChartData: safePrepare(`
-    WITH latest_backups_per_day AS (
-      SELECT 
-        DATE(date) as backup_date,
-        machine_id,
-        date,
-        COALESCE(uploaded_size, 0) as uploaded_size,
-        COALESCE(size, 0) as file_size,
-        COALESCE(examined_files, 0) as file_count,
-        COALESCE(known_file_size, 0) as storage_size,
-        COALESCE(backup_list_count, 0) as backup_versions,
-        duration_seconds,
-        ROW_NUMBER() OVER (
-          PARTITION BY machine_id, DATE(date) 
-          ORDER BY date DESC
-        ) as rn
-      FROM backups
-    ),
-    aggregated_by_date AS (
-      SELECT 
-        backup_date,
-        MAX(date) as iso_date,
-        SUM(uploaded_size) as total_uploaded_size,
-        SUM(duration_seconds) as total_duration_seconds,
-        SUM(file_count) as total_file_count,
-        SUM(file_size) as total_file_size,
-        SUM(storage_size) as total_storage_size,
-        SUM(backup_versions) as total_backup_versions
-      FROM latest_backups_per_day
-      WHERE rn = 1
-      GROUP BY backup_date
-    )
     SELECT 
-      strftime('%d/%m/%Y', backup_date) as date,
-      iso_date as isoDate,
-      total_uploaded_size as uploadedSize,
-      CAST(total_duration_seconds / 60 AS INTEGER) as duration,
-      total_file_count as fileCount,
-      total_file_size as fileSize,
-      total_storage_size as storageSize,
-      total_backup_versions as backupVersions
-    FROM aggregated_by_date
-    ORDER BY backup_date
+      strftime('%d/%m/%Y', DATE(b.date)) as date,
+      b.date as isoDate,
+      COALESCE(b.uploaded_size, 0) as uploadedSize,
+      CAST(b.duration_seconds / 60 AS INTEGER) as duration,
+      COALESCE(b.examined_files, 0) as fileCount,
+      COALESCE(b.size, 0) as fileSize,
+      COALESCE(b.known_file_size, 0) as storageSize,
+      COALESCE(b.backup_list_count, 0) as backupVersions
+    FROM backups b
+    ORDER BY b.date
   `, 'getAggregatedChartData'),
 
   checkDuplicateBackup: safePrepare(`
     SELECT COUNT(*) as count
     FROM backups
-    WHERE machine_id = @machine_id
+    WHERE server_id = @server_id
     AND backup_name = @backup_name
     AND date = @date
   `, 'checkDuplicateBackup'),
 
-  // Add new operation to delete a specific machine and its backups
-  deleteMachine: safePrepare(`
-    DELETE FROM machines WHERE id = ?
-  `, 'deleteMachine'),
+  // Add new operation to delete a specific server and its backups
+  deleteServer: safePrepare(`
+    DELETE FROM servers WHERE id = ?
+  `, 'deleteServer'),
 
-  deleteMachineBackups: safePrepare(`
-    DELETE FROM backups WHERE machine_id = ?
-  `, 'deleteMachineBackups')
-};
+  deleteServerBackups: safePrepare(`
+    DELETE FROM backups WHERE server_id = ?
+  `, 'deleteServerBackups'),
+
+  // New query for server cards - get backup status history for status bars
+   getServersSummary: safePrepare(`
+    SELECT
+      s.id AS server_id,
+      s.name AS server_name,
+      s.server_url AS server_url,
+      s.alias,
+      s.note,
+      b.backup_name,
+      lb.last_backup_date,
+      b2.id AS last_backup_id,
+      b2.status AS last_backup_status,
+      b2.duration_seconds AS last_backup_duration,
+      (
+        SELECT COUNT(*)
+        FROM backups b_count
+        WHERE b_count.server_id = s.id AND b_count.backup_name = b.backup_name
+      ) AS backup_count,
+      b2.examined_files AS file_count,
+      b2.size AS file_size,
+      b2.known_file_size AS storage_size,
+      b2.backup_list_count AS backup_versions,
+      b2.available_backups AS available_backups,
+      b2.uploaded_size AS uploaded_size,
+      b2.warnings AS warnings,
+      b2.errors AS errors,
+      (
+        SELECT GROUP_CONCAT(b_hist_status, ',')
+        FROM (
+          SELECT b_hist.status as b_hist_status
+          FROM backups b_hist
+          WHERE b_hist.server_id = s.id AND b_hist.backup_name = b.backup_name
+          ORDER BY b_hist.date
+        )
+      ) AS status_history
+    FROM servers s
+    JOIN backups b ON b.server_id = s.id
+    LEFT JOIN (
+      SELECT
+        server_id,
+        backup_name,
+        MAX(date) AS last_backup_date
+      FROM backups
+      GROUP BY server_id, backup_name
+    ) lb ON lb.server_id = s.id AND lb.backup_name = b.backup_name
+    LEFT JOIN backups b2
+      ON b2.server_id = s.id
+      AND b2.backup_name = b.backup_name
+      AND b2.date = lb.last_backup_date
+    WHERE lb.last_backup_date IS NOT NULL
+    GROUP BY s.id, s.name, b.backup_name, lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
+    ORDER BY s.name, b.backup_name  
+  `, 'getServersSummary'),
+
+  // Query to get all servers chart data grouped by date and server
+  getAllServersChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      b.server_id AS serverId,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    GROUP BY b.date, b.server_id
+    ORDER BY b.date
+  `, 'getAllServersChartData'),
+
+  // New query for aggregated chart data with time range filtering
+  getAggregatedChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getAggregatedChartDataWithTimeRange'),
+
+  // New query for server chart data (no date filtering)
+  getServerChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.server_id = ?
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getServerChartData'),
+
+  // New query for server chart data with time range filtering
+  getServerChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.server_id = @serverId
+    AND b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getServerChartDataWithTimeRange'),
+
+  // New query for server/backup chart data (no date filtering)
+  getServerBackupChartData: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.server_id = @serverId
+    AND b.backup_name = @backupName
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getServerBackupChartData'),
+
+  // New query for server/backup chart data with time range filtering
+  getServerBackupChartDataWithTimeRange: safePrepare(`
+    SELECT
+      strftime('%Y-%m-%d', DATE(b.date)) AS date,
+      b.date AS isoDate,
+      SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
+      SUM(COALESCE(b.duration_seconds, 0)) AS duration,
+      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      SUM(COALESCE(b.size, 0)) AS fileSize,
+      SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
+      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+    FROM backups b
+    WHERE b.server_id = @serverId
+      AND b.backup_name = @backupName
+      AND b.date BETWEEN @startDate AND @endDate
+    GROUP BY DATE(b.date)
+    ORDER BY b.date
+  `, 'getServerBackupChartDataWithTimeRange')
+  };
+}
 
 // Helper function to parse duration string to seconds
 export function parseDurationToSeconds(duration: string): number {
@@ -500,5 +644,62 @@ export function formatDurationFromSeconds(seconds: number): string {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
+// Check and update CRON_PORT configuration after database initialization is complete
+ensureDatabaseInitialized().then(() => {
+  import('./db-utils').then(({ checkAndUpdateCronPort }) => {
+    checkAndUpdateCronPort();
+  }).catch((error) => {
+    console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
+  });
+}).catch(error => {
+  console.error('Failed to complete database initialization before checking CRON_PORT:', error);
+});
+
+// Create a proxy that ensures database initialization is complete before operations
+const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
+  get(target, prop) {
+    // Ensure database is initialized
+    if (!dbOps) {
+      throw new Error(
+        'Database not ready. Please ensure database initialization completes before using database operations. ' +
+        'Call "await ensureDatabaseInitialized()" or wait for app startup to complete.'
+      );
+    }
+    
+    // Only handle string properties, ignore symbols
+    if (typeof prop !== 'string') {
+      return undefined;
+    }
+
+    // Return a proxy that waits for migrations to complete before accessing the method
+    return new Proxy({}, {
+      get(methodTarget, methodProp) {
+        // Return a function that executes the database operation
+        return (...args: unknown[]) => {
+          // Check if migrations are complete
+          if (!dbOps) {
+            throw new Error(`Database operations not yet initialized. Migrations may still be running. Please ensure migrations complete before accessing '${prop}.${String(methodProp)}'.`);
+          }
+          
+          // Get the actual method from dbOps
+          const method = (dbOps as Record<string, unknown>)[prop];
+          if (typeof method !== 'object' || method === null) {
+            throw new Error(`Database operation '${prop}' not found or is not an object.`);
+          }
+          
+          // Get the sub-method (like .all, .get, .run)
+          const subMethod = (method as Record<string, unknown>)[methodProp as string];
+          if (typeof subMethod !== 'function') {
+            throw new Error(`Database operation '${prop}.${String(methodProp)}' not found or is not a function.`);
+          }
+          
+          // Execute the sub-method with proper this context
+          return subMethod.call(method, ...args);
+        };
+      }
+    });
+  }
+});
+
 // Export the database instance and operations
-export { db, dbOps }; 
+export { db, dbOpsProxy as dbOps, ensureDatabaseInitialized }; 

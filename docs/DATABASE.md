@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.26-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -16,8 +16,11 @@ This document describes the SQLite database schema used by duplistatus to store 
 **Table of Contents** 
 
 - [Database Location](#database-location)
+- [Database Migration System](#database-migration-system)
+  - [Current Migration Versions](#current-migration-versions)
+  - [Migration Process](#migration-process)
 - [Tables](#tables)
-  - [Machines Table](#machines-table)
+  - [Servers Table](#servers-table)
     - [Fields](#fields)
   - [Backups Table](#backups-table)
     - [Key Fields](#key-fields)
@@ -28,14 +31,16 @@ This document describes the SQLite database schema used by duplistatus to store 
   - [Configurations Table](#configurations-table)
     - [Fields](#fields-1)
     - [Common Configuration Keys](#common-configuration-keys)
+  - [Database Version Table](#database-version-table)
+    - [Fields](#fields-2)
 - [Indexes](#indexes)
 - [Relationships](#relationships)
 - [Data Types](#data-types)
 - [Backup Status Values](#backup-status-values)
 - [Common Queries](#common-queries)
-  - [Get Latest Backup for a Machine](#get-latest-backup-for-a-machine)
-  - [Get All Backups for a Machine](#get-all-backups-for-a-machine)
-  - [Get Machine Summary](#get-machine-summary)
+  - [Get Latest Backup for a Server](#get-latest-backup-for-a-server)
+  - [Get All Backups for a Server](#get-all-backups-for-a-server)
+  - [Get Server Summary](#get-server-summary)
   - [Get Overall Summary](#get-overall-summary)
   - [Database Cleanup](#database-cleanup)
 - [JSON to Database Mapping](#json-to-database-mapping)
@@ -48,16 +53,18 @@ This document describes the SQLite database schema used by duplistatus to store 
     - [Generated Fields](#generated-fields)
   - [Example JSON to Database Insert](#example-json-to-database-insert)
 - [Chart Metrics](#chart-metrics)
+  - [Chart Data Functions](#chart-data-functions)
   - [Chart Data Generation](#chart-data-generation)
 - [Configuration Management](#configuration-management)
   - [Configuration Functions](#configuration-functions)
+  - [TypeScript Interfaces](#typescript-interfaces)
   - [Common Configuration Keys](#common-configuration-keys-1)
   - [Configuration API Endpoints](#configuration-api-endpoints)
   - [Configuration Data Structures](#configuration-data-structures)
     - [Notifications Configuration (`notifications`)](#notifications-configuration-notifications)
     - [Backup Settings Configuration (`backup_settings`)](#backup-settings-configuration-backup_settings)
     - [Cron Service Configuration (`cron_service`)](#cron-service-configuration-cron_service)
-    - [Overdue Backup Notifications (`overdue_backup_notifications`)](#overdue-backup-notifications-overdue_backup_notifications)
+    - [Overdue Backup Notifications (`overdue_notifications`)](#overdue-backup-notifications-overdue_notifications)
     - [Overdue Tolerance Configuration (`overdue_tolerance`)](#overdue-tolerance-configuration-overdue_tolerance)
 - [License](#license)
 
@@ -69,24 +76,58 @@ This document describes the SQLite database schema used by duplistatus to store 
 
 The database file (`backups.db`) is stored in the `data` directory of the application. The database is automatically created when the application starts if it doesn't exist.
 
+## Database Migration System
+
+The application includes an automatic database migration system that ensures your database schema stays up-to-date with the application version. The migration system:
+
+- **Automatically detects** when migrations are needed
+- **Creates backups** before running migrations (named `backups-copy-YYYY-MM-DDTHH-MM-SS.db`)
+- **Runs migrations safely** with retry logic for database locking issues
+- **Tracks migration history** in the `db_version` table
+- **Preserves all existing data** during migrations
+
+### Current Migration Versions
+
+- **Version 2.0**: Added missing columns to the backups table and created the configurations table
+- **Version 3.0**: Renamed the machines table to servers, added `server_url`, `alias`, and `note` fields, and updated all references (latest version)
+
+### Migration Process
+
+When the application starts, it automatically:
+
+1. Checks the current database version
+2. Identifies pending migrations
+3. Creates a backup of the current database
+4. Runs each migration in a transaction
+5. Updates the version tracking table
+6. Populates default configurations for new databases
+
+The migration system is designed to be safe and non-destructive, ensuring your data is preserved throughout the upgrade process.
+
 ## Tables
 
-### Machines Table
+### Servers Table
 
-Stores information about machines that perform backups.
+Stores information about servers that perform backups.
 
 ```sql
-CREATE TABLE machines (
+CREATE TABLE servers (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
+    server_url TEXT DEFAULT '',
+    alias TEXT DEFAULT '',
+    note TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
 #### Fields
-- `id` (TEXT, PRIMARY KEY): Unique identifier for the machine
-- `name` (TEXT, NOT NULL): Display name of the machine
-- `created_at` (DATETIME): Timestamp when the machine was first registered
+- `id` (TEXT, PRIMARY KEY): Unique identifier for the server
+- `name` (TEXT, NOT NULL): Display name of the server
+- `server_url` (TEXT, DEFAULT ''): URL of the Duplicati server for this server (optional)
+- `alias` (TEXT, DEFAULT ''): Alternative display name for the server (optional)
+- `note` (TEXT, DEFAULT ''): Additional notes or description for the server (optional)
+- `created_at` (DATETIME): Timestamp when the server was first registered
 
 ### Backups Table
 
@@ -95,7 +136,7 @@ Stores detailed information about each backup operation.
 ```sql
 CREATE TABLE backups (
     id TEXT PRIMARY KEY,
-    machine_id TEXT NOT NULL,
+    server_id TEXT NOT NULL,
     backup_name TEXT NOT NULL,
     backup_id TEXT NOT NULL,
     date DATETIME NOT NULL,
@@ -160,13 +201,13 @@ CREATE TABLE backups (
     backend_warnings_actual_length INTEGER NOT NULL DEFAULT 0,
     backend_errors_actual_length INTEGER NOT NULL DEFAULT 0,
     
-    FOREIGN KEY (machine_id) REFERENCES machines(id)
+    FOREIGN KEY (server_id) REFERENCES servers(id)
 );
 ```
 
 #### Key Fields
 - `id` (TEXT, PRIMARY KEY): Unique identifier for the backup
-- `machine_id` (TEXT, NOT NULL): Reference to the machine that performed the backup
+- `server_id` (TEXT, NOT NULL): Reference to the server that performed the backup
 - `backup_name` (TEXT, NOT NULL): Name of the backup operation
 - `backup_id` (TEXT, NOT NULL): Duplicati backup identifier
 - `date` (DATETIME, NOT NULL): When the backup was performed
@@ -249,20 +290,62 @@ CREATE TABLE configurations (
 
 #### Common Configuration Keys
 
-- `notifications`: JSON object containing notification settings
-- `backup_settings`: JSON object containing backup-specific settings 
-- `cron_service`: JSON object containing cron service configuration
-- `overdue_backup_notifications`: JSON object tracking overdue backup notification history
-- `last_overdue_check`: String containing the timestamp of the last overdue backup check
-- `notification_frequency`: String value controlling notification frequency
-- `overdue_tolerance`: String value controlling the tolerance for overdue backups (e.g., "24h", "7d")
+- `notifications`: JSON object containing notification settings including:
+  - Ntfy configuration (URL, topic, authentication)
+  - Notification templates for different event types
+  - Server addresses for Duplicati server connections
+- `backup_settings`: JSON object containing backup-specific settings including:
+  - Per-backup configuration (keyed by `server_id:backup_name`)
+  - Expected backup intervals and units (hours/days)
+  - Overdue backup check enabled/disabled flags
+  - Notification events for each backup
+  - Overdue tolerance settings
+- `cron_service`: JSON object containing cron service configuration including:
+  - Service port settings
+  - Task configurations (overdue-backup-check, etc.)
+  - Cron expressions and enabled/disabled states
+  - Service health check settings
+- `overdue_notifications`: JSON object tracking overdue backup notification history:
+  - Per-backup notification timestamps (keyed by `server_id:backup_name`)
+  - Last notification sent timestamps
+  - Last backup date when notification was sent
+  - Used to prevent duplicate notifications
+- `last_overdue_check`: String containing the timestamp of the last overdue backup check:
+  - ISO timestamp format
+  - Used to track when the cron service last ran
+  - Helps with debugging and monitoring
+- `notification_frequency`: String value controlling notification frequency:
+  - Values: `"every_day"`, `"every_week"`, `"every_month"`, `"onetime"`
+  - Controls how often overdue backup notifications are sent
+  - Defaults to `"every_day"` if not set
+- `overdue_tolerance`: String value controlling the tolerance for overdue backups:
+  - Values: `"no_tolerance"`, `"5min"`, `"15min"`, `"30min"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"12h"`, `"1d"`
+  - Controls how much time to add to expected backup intervals before considering a backup overdue
+  - Defaults to `"1h"` if not set
+
+### Database Version Table
+
+Tracks the database schema version and migration history.
+
+```sql
+CREATE TABLE db_version (
+    version TEXT PRIMARY KEY,
+    applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Fields
+- `version` (TEXT, PRIMARY KEY): Database schema version (e.g., "3.0")
+- `applied_at` (DATETIME): Timestamp when this version was applied
+
+This table is used by the migration system to track which migrations have been applied and ensure migrations are only run once.
 
 ## Indexes
 
-The following indexes are created to optimize query performance:
+The following indexes are created to optimise query performance:
 
 ```sql
-CREATE INDEX idx_backups_machine_id ON backups(machine_id);
+CREATE INDEX idx_backups_server_id ON backups(server_id);
 CREATE INDEX idx_backups_date ON backups(date);
 CREATE INDEX idx_backups_begin_time ON backups(begin_time);
 CREATE INDEX idx_backups_end_time ON backups(end_time);
@@ -271,8 +354,8 @@ CREATE INDEX idx_backups_backup_id ON backups(backup_id);
 
 ## Relationships
 
-- Each backup (`backups` table) is associated with exactly one machine (`machines` table) through the `machine_id` foreign key
-- The relationship is enforced by a foreign key constraint: `FOREIGN KEY (machine_id) REFERENCES machines(id)`
+- Each backup (`backups` table) is associated with exactly one server (`servers` table) through the `server_id` foreign key
+- The relationship is enforced by a foreign key constraint: `FOREIGN KEY (server_id) REFERENCES servers(id)`
 
 ## Data Types
 
@@ -285,88 +368,94 @@ CREATE INDEX idx_backups_backup_id ON backups(backup_id);
 
 The `status` field in the `backups` table can have the following values:
 - `Success`: Backup completed successfully
-- `Failed`: Backup failed
-- `InProgress`: Backup is currently running
+- `Unknown`: Backup status is unknown or not determined
 - `Warning`: Backup completed with warnings
+- `Error`: Backup completed with errors
+- `Fatal`: Backup failed with fatal errors
 
 ## Common Queries
 
-### Get Latest Backup for a Machine
+### Get Latest Backup for a Server
 ```sql
-SELECT b.*, m.name as machine_name
+SELECT b.*, s.name as server_name, s.alias, s.note, s.server_url
 FROM backups b
-JOIN machines m ON b.machine_id = m.id
-WHERE b.machine_id = ?
+JOIN servers s ON b.server_id = s.id
+WHERE b.server_id = ?
 ORDER BY b.date DESC
 LIMIT 1
 ```
 
-### Get All Backups for a Machine
+### Get All Backups for a Server
 ```sql
-SELECT b.*, m.name as machine_name
+SELECT b.*, s.name as server_name, s.alias, s.note, s.server_url
 FROM backups b
-JOIN machines m ON b.machine_id = m.id
-WHERE b.machine_id = ?
+JOIN servers s ON b.server_id = s.id
+WHERE b.server_id = ?
 ORDER BY b.date DESC
 ```
 
-### Get Machine Summary
+### Get Server Summary
 ```sql
 WITH latest_backups AS (
     SELECT 
-        machine_id,
+        server_id,
         MAX(date) as last_backup_date
     FROM backups
-    GROUP BY machine_id
+    GROUP BY server_id
 )
 SELECT 
-    m.*,
+    s.id,
+    s.name,
+    s.server_url,
+    s.alias,
+    s.note,
+    s.created_at,
     lb.last_backup_date,
     b.status as last_backup_status,
     b.duration_seconds as last_backup_duration,
     b.warnings as total_warnings,
     b.errors as total_errors,
     COUNT(b2.id) as backup_count
-FROM machines m
-LEFT JOIN latest_backups lb ON m.id = lb.machine_id
-LEFT JOIN backups b ON b.machine_id = m.id AND b.date = lb.last_backup_date
-LEFT JOIN backups b2 ON b2.machine_id = m.id
-GROUP BY m.id
-ORDER BY m.name
+FROM servers s
+LEFT JOIN latest_backups lb ON s.id = lb.server_id
+LEFT JOIN backups b ON b.server_id = s.id AND b.date = lb.last_backup_date
+LEFT JOIN backups b2 ON b2.server_id = s.id
+GROUP BY s.id
+ORDER BY s.name
 ```
 
 ### Get Overall Summary
 ```sql
 SELECT 
-    COUNT(DISTINCT m.id) as total_machines,
+    COUNT(DISTINCT s.id) as total_servers,
     COUNT(b.id) as total_backups,
     COALESCE(SUM(b.uploaded_size), 0) as total_uploaded_size,
     (
         SELECT COALESCE(SUM(b2.known_file_size), 0)
         FROM backups b2
         INNER JOIN (
-            SELECT machine_id, MAX(date) as max_date
+            SELECT server_id, MAX(date) as max_date
             FROM backups
-            GROUP BY machine_id
-        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+            GROUP BY server_id
+        ) latest ON b2.server_id = latest.server_id AND b2.date = latest.max_date
     ) as total_storage_used,
     (
         SELECT COALESCE(SUM(b2.size_of_examined_files), 0)
         FROM backups b2
         INNER JOIN (
-            SELECT machine_id, MAX(date) as max_date
+            SELECT server_id, MAX(date) as max_date
             FROM backups
-            GROUP BY machine_id
-        ) latest ON b2.machine_id = latest.machine_id AND b2.date = latest.max_date
+            GROUP BY server_id
+        ) latest ON b2.server_id = latest.server_id AND b2.date = latest.max_date
     ) as total_backuped_size
-FROM machines m
-LEFT JOIN backups b ON b.machine_id = m.id
+FROM servers s
+LEFT JOIN backups b ON b.server_id = s.id
 ```
 
 ### Database Cleanup
 
 The application provides a database cleanup feature that can remove old backup records based on a configurable period. The cleanup period can be set to:
-- Delete all data: Removes all backup records and machines
+- Delete all data: Removes all backup records and servers
 - 6 months: Keeps only the last 6 months of backup records
 - 1 year: Keeps only the last year of backup records
 - 2 years: Keeps only the last 2 years of backup records (default)
@@ -374,12 +463,12 @@ The application provides a database cleanup feature that can remove old backup r
 When cleanup is performed, it:
 1. For "Delete all data":
    - Deletes all backup records
-   - Deletes all machine records
+   - Deletes all server records
    - Maintains database schema and indexes
 2. For time-based cleanup:
    - Deletes backup records older than the selected period based on `end_time`
-   - Maintains referential integrity with the machines table
-   - Preserves machine records even if all their backups are deleted
+   - Maintains referential integrity with the servers table
+   - Preserves server records even if all their backups are deleted
    - Updates all related statistics and metrics
 
 The cleanup operation is performed through the `/api/backups/cleanup` endpoint and requires a POST request with the cleanup period. The cleanup period is persisted in the browser's localStorage and can be configured through the database maintenance menu in the UI.
@@ -454,8 +543,8 @@ The following tables show how the JSON data from the API maps to the database co
 #### Extra Information
 | JSON Path | Database Column | Description | Type | Default |
 |-----------|----------------|-------------|------|---------|
-| `Extra.machine-id` | `machine_id` | Unique identifier for the machine | TEXT | - |
-| `Extra.machine-name` | `machines.name` | Display name of the machine | TEXT | - |
+| `Extra.machine-id` | `server_id` | Unique identifier for the server | TEXT | - |
+| `Extra.machine-name` | `servers.name` | Display name of the server | TEXT | - |
 | `Extra.backup-name` | `backup_name` | Name of the backup operation | TEXT | - |
 | `Extra.backup-id` | `backup_id` | Duplicati backup identifier | TEXT | - |
 
@@ -529,8 +618,8 @@ The following tables show how the JSON data from the API maps to the database co
     "ErrorsActualLength": 0
   },
   "Extra": {
-    "machine-id": "unique-machine-id",
-    "machine-name": "Machine Name",
+    "machine-id": "unique-server-id",
+    "machine-name": "Server Name",
     "backup-name": "Backup Name",
     "backup-id": "unique-backup-id"
   }
@@ -539,11 +628,15 @@ The following tables show how the JSON data from the API maps to the database co
 
 This JSON would be processed in two steps:
 
-1. First, insert/update the machine:
+1. First, insert/update the server:
 ```sql
-INSERT INTO machines (id, name)
-VALUES ('unique-machine-id', 'Machine Name')
-ON CONFLICT(id) DO UPDATE SET name = 'Machine Name';
+INSERT INTO servers (id, name, server_url, alias, note)
+VALUES ('unique-server-id', 'Server Name', '', '', '')
+ON CONFLICT(id) DO UPDATE SET 
+  name = 'Server Name',
+  server_url = COALESCE(server_url, ''),
+  alias = COALESCE(alias, ''),
+  note = COALESCE(note, '');
 ```
 
 2. Then, insert the backup record with all fields:
@@ -556,7 +649,7 @@ INSERT INTO backups (
     created_at,           -- Current timestamp
     
     -- Extra information
-    machine_id,           -- 'unique-machine-id'
+    server_id,            -- 'unique-server-id'
     backup_name,          -- 'Backup Name'
     backup_id,            -- 'unique-backup-id'
     
@@ -626,7 +719,7 @@ Note: The actual implementation includes data validation, type conversion, and e
 
 ## Chart Metrics
 
-The application provides visualization of backup metrics over time. The following metrics are available in the charts:
+The application provides visualisation of backup metrics over time. The following metrics are available in the charts:
 
 | Metric Key        | Database Column    | Description                            | Unit    |
 |-------------------|--------------------|----------------------------------------|---------|
@@ -637,7 +730,34 @@ The application provides visualization of backup metrics over time. The followin
 | `storageSize`     | `known_file_size`  | Size of known files in storage         | Bytes   |
 | `backupVersions`  | `backup_list_count`| Number of backup versions              | Count   |
 
-These metrics are used in the chart visualization and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
+These metrics are used in the chart visualisation and can be configured in the application settings. The chart time range and metric selection are persisted in the browser's localStorage.
+
+### Chart Data Functions
+
+The application provides several functions for retrieving chart data:
+
+```typescript
+// Get aggregated chart data for all servers
+getAggregatedChartData(): ChartDataPoint[]
+
+// Get aggregated chart data with time range filtering
+getAggregatedChartDataWithTimeRange(startDate: Date, endDate: Date): ChartDataPoint[]
+
+// Get chart data for all servers (with server IDs)
+getAllServersChartData(): ChartDataPoint[]
+
+// Get chart data for a specific server
+getServerChartData(serverId: string): ChartDataPoint[]
+
+// Get chart data for a specific server with time range filtering
+getServerChartDataWithTimeRange(serverId: string, startDate: Date, endDate: Date): ChartDataPoint[]
+
+// Get chart data for a specific server and backup
+getServerBackupChartData(serverId: string, backupName: string): ChartDataPoint[]
+
+// Get chart data for a specific server and backup with time range filtering
+getServerBackupChartDataWithTimeRange(serverId: string, backupName: string, startDate: Date, endDate: Date): ChartDataPoint[]
+```
 
 ### Chart Data Generation
 
@@ -647,7 +767,7 @@ The chart data is generated from the backups table using the following query:
 WITH latest_backups_per_day AS (
   SELECT 
     DATE(date) as backup_date,
-    machine_id,
+    server_id,
     date,
     COALESCE(uploaded_size, 0) as uploaded_size,
     COALESCE(size, 0) as file_size,
@@ -656,7 +776,7 @@ WITH latest_backups_per_day AS (
     COALESCE(backup_list_count, 0) as backup_versions,
     duration_seconds,
     ROW_NUMBER() OVER (
-      PARTITION BY machine_id, DATE(date) 
+      PARTITION BY server_id, DATE(date) 
       ORDER BY date DESC
     ) as rn
   FROM backups
@@ -706,6 +826,213 @@ getConfiguration(key: string): string | null
 
 // Set configuration value
 setConfiguration(key: string, value: string): void
+
+// Get cron service configuration
+getCronConfig(): CronServiceConfig
+
+// Set cron service configuration
+setCronConfig(config: CronServiceConfig): void
+
+// Get notification frequency configuration
+getNotificationFrequencyConfig(): NotificationFrequencyConfig
+
+// Set notification frequency configuration
+setNotificationFrequencyConfig(value: NotificationFrequencyConfig): void
+
+// Get overdue tolerance configuration
+getOverdueToleranceConfig(): OverdueTolerance
+
+// Set overdue tolerance configuration
+setOverdueToleranceConfig(value: OverdueTolerance): void
+```
+
+### TypeScript Interfaces
+
+```typescript
+export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal";
+
+export interface Backup {
+  id: string;
+  server_id: string;
+  name: string;
+  date: string; // ISO string
+  status: BackupStatus;
+  warnings: number;
+  errors: number;
+  messages: number;
+  fileCount: number;
+  fileSize: number; // in bytes
+  uploadedSize: number; // in bytes
+  duration: string; // e.g., "30m 15s"
+  duration_seconds: number; // raw duration in seconds
+  // Numeric values for charting
+  durationInMinutes: number;
+  knownFileSize: number;
+  backup_list_count: number | null;
+  // Message arrays stored as JSON strings
+  messages_array: string | null;
+  warnings_array: string | null;
+  errors_array: string | null;
+  // Available version timestamps (ISO format)
+  available_backups: string[] | null;
+}
+
+export interface Server {
+  id: string;
+  name: string;
+  alias: string;
+  note: string;
+  backups: Backup[];
+  chartData: {
+    date: string;
+    isoDate: string; // ISO date string for accurate date filtering
+    uploadedSize: number; // in bytes
+    duration: number; // in minutes
+    fileCount: number;
+    fileSize: number; // in bytes
+    storageSize: number; // in bytes
+    backupVersions: number; // available versions
+  }[];
+}
+
+export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
+
+export interface BackupNotificationConfig {
+  notificationEvent: NotificationEvent;
+  expectedInterval: number;
+  overdueBackupCheckEnabled: boolean;
+  intervalUnit: 'hour' | 'day';
+}
+
+export type BackupKey = string; // Format: "serverName:backupName"
+
+export interface NotificationTemplate {
+  title: string;
+  priority: string;
+  tags: string;
+  message: string;
+}
+
+export interface NotificationConfig {
+  ntfy: NtfyConfig;
+  backupSettings: Record<BackupKey, BackupNotificationConfig>;
+  templates: {
+    success: NotificationTemplate;
+    warning: NotificationTemplate;
+    overdueBackup: NotificationTemplate;
+  };
+  serverAddresses: ServerAddress[];
+}
+
+export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
+
+export interface CronServiceConfig {
+  port: number;
+  tasks: {
+    [taskName: string]: {
+      cronExpression: string;
+      enabled: boolean;
+    };
+  };
+  notificationConfig?: NotificationConfig;
+}
+
+export type NotificationFrequencyConfig = "onetime" | "every_day" | "every_week" | "every_month";
+
+export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '6h' | '12h' | '1d';
+
+export interface OverdueNotificationTimestamp {
+  lastNotificationSent: string; // ISO timestamp
+}
+
+export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;
+
+export interface ChartDataPoint {
+  date: string;
+  isoDate: string;
+  uploadedSize: number;
+  duration: number;
+  fileCount: number;
+  fileSize: number;
+  storageSize: number;
+  backupVersions: number;
+  serverId?: string;
+  backupId?: string;
+}
+
+export interface ServerAddress {
+  id: string;
+  name: string;
+  server_url: string;
+  alias: string;
+  note: string;
+}
+
+export interface ServerSummary {
+  id: string;
+  name: string;
+  server_url: string;
+  alias: string;
+  note: string;
+  backupInfo: Array<{
+    name: string;
+    lastBackupDate: string;
+    lastBackupId: string;
+    lastBackupStatus: BackupStatus | 'N/A';
+    lastBackupDuration: string;
+    lastBackupListCount: number | null;
+    backupCount: number;
+    statusHistory: BackupStatus[];
+    fileCount: number;
+    fileSize: number;
+    storageSize: number;
+    uploadedSize: number;
+    warnings: number;
+    errors: number;
+    isBackupOverdue: boolean;
+    notificationEvent?: NotificationEvent;
+    expectedBackupDate: string;
+    expectedBackupElapsed: string;
+    lastNotificationSent: string;
+    availableBackups: string[];
+  }>;
+  totalBackupCount: number;
+  totalStorageSize: number;
+  totalFileCount: number;
+  totalFileSize: number;
+  totalUploadedSize: number;
+  haveOverdueBackups: boolean;
+  lastBackupDate: string;
+  lastBackupStatus: BackupStatus | 'N/A';
+  lastBackupDuration: string;
+  lastBackupListCount: number | null;
+  lastBackupName: string | null;
+  lastBackupId: string | null;
+  lastOverdueCheck: string;
+  backupNames: string[];
+}
+
+export interface OverallSummary {
+  totalServers: number;
+  totalBackups: number;
+  totalUploadedSize: number; // in bytes
+  totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
+  totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
+  overdueBackupsCount: number; // count of currently overdue backups
+}
+
+export interface ChartDataPoint {
+  date: string;
+  isoDate: string;
+  uploadedSize: number;
+  duration: number;
+  fileCount: number;
+  fileSize: number;
+  storageSize: number;
+  backupVersions: number;
+  serverId?: string;
+  backupId?: string;
+}
 ```
 
 ### Common Configuration Keys
@@ -717,7 +1044,7 @@ setConfiguration(key: string, value: string): void
   - Notification frequency settings
 
 - `backup_settings`: JSON object containing backup-specific settings including:
-  - Per-backup configuration (keyed by `machine_name:backup_name`)
+  - Per-backup configuration (keyed by `server_id:backup_name`)
   - Expected backup intervals and units (hours/days)
   - Overdue backup check enabled/disabled flags
   - Notification events for each backup
@@ -730,7 +1057,7 @@ setConfiguration(key: string, value: string): void
   - Service health check settings
 
 - `overdue_backup_notifications`: JSON object tracking overdue backup notification history:
-  - Per-backup notification timestamps (keyed by `machine_name:backup_name`)
+  - Per-backup notification timestamps (keyed by `server_id:backup_name`)
   - Last notification sent timestamps
   - Last backup date when notification was sent
   - Used to prevent duplicate notifications
@@ -749,8 +1076,10 @@ setConfiguration(key: string, value: string): void
 
 - `GET /api/configuration`: Retrieve all configuration settings
 - `POST /api/configuration`: Update configuration settings
+- `GET /api/configuration/unified`: Retrieve unified configuration including cron settings, notification frequency, and servers with backups
+- `POST /api/configuration/unified`: Update unified configuration
 
-The configuration system provides a centralized way to manage application settings that persist across application restarts and can be modified through the web interface.
+The configuration system provides a centralised way to manage application settings that persist across application restarts and can be modified through the web interface.
 
 ### Configuration Data Structures
 
@@ -758,27 +1087,58 @@ The configuration system provides a centralized way to manage application settin
 ```json
 {
   "ntfy": {
-    "enabled": boolean,
     "url": string,
     "topic": string,
-    "username": string,
-    "password": string
+    "accessToken": string
   },
-  "overdueBackupCheck": {
-    "enabled": boolean,
-    "checkInterval": string
-  }
+  "backupSettings": {
+    "server_id:backup_name": {
+      "notificationEvent": "all" | "warnings" | "errors" | "off",
+      "expectedInterval": number,
+      "overdueBackupCheckEnabled": boolean,
+      "intervalUnit": "hour" | "day"
+    }
+  },
+  "templates": {
+    "success": {
+      "title": string,
+      "priority": string,
+      "tags": string,
+      "message": string
+    },
+    "warning": {
+      "title": string,
+      "priority": string,
+      "tags": string,
+      "message": string
+    },
+    "overdueBackup": {
+      "title": string,
+      "priority": string,
+      "tags": string,
+      "message": string
+    }
+  },
+  "serverAddresses": [
+    {
+      "id": string,
+      "name": string,
+      "server_url": string,
+      "alias": string,
+      "note": string
+    }
+  ]
 }
 ```
 
 #### Backup Settings Configuration (`backup_settings`)
 ```json
 {
-  "machine_name:backup_name": {
-    "notificationEvent": "ntfy",
+  "server_id:backup_name": {
+    "notificationEvent": "all" | "warnings" | "errors" | "off",
     "expectedInterval": number,
     "overdueBackupCheckEnabled": boolean,
-    "intervalUnit": "hours" | "days"
+    "intervalUnit": "hour" | "day"
   }
 }
 ```
@@ -796,19 +1156,18 @@ The configuration system provides a centralized way to manage application settin
 }
 ```
 
-#### Overdue Backup Notifications (`overdue_backup_notifications`)
+#### Overdue Backup Notifications (`overdue_notifications`)
 ```json
 {
-  "machine_name:backup_name": {
-    "lastNotificationSent": "ISO-timestamp",
-    "lastBackupDate": "ISO-timestamp"
+  "server_id:backup_name": {
+    "lastNotificationSent": "ISO-timestamp"
   }
 }
 ```
 
 #### Overdue Tolerance Configuration (`overdue_tolerance`)
 ```json
-string // e.g., "1h"
+"no_tolerance" | "5min" | "15min" | "30min" | "1h" | "2h" | "4h" | "6h" | "12h" | "1d"
 ```
 
 

@@ -16,13 +16,13 @@ other tools:
   package manager: pnpm
 
 Network:
-  port used in production: 9666 (for instance `pnpm start`)
-  port used in development: 8666 (for instance `pnpm run dev`)
+  port used in development: 8666 
 
 Instructions:
-  - don't run the application automaticaly, use pnpm build or pnpm lint to check for errors.
-  - when creating or modifying code allways use a proper TypeScript interface instead of any.
-  - when creating the git commit message, don't include in the headline the version number change, but keep it in the change detail list.
-  - always follows the DRY (Don't Repeat Yourself) principle and makes the codebase more maintainable. 
+- Do not start the development server (`pnpm dev`) or production server (`pnpm start`).
+- Use `pnpm lint` to check for errors when modifying the code. Only if needed, use `pnpm build`.
+- When creating or modifying code, always use a proper TypeScript interface instead of `any`.
+- When creating the git commit message, do not include the version number change in the headline, but keep it in the change detail list.
+- Always follow the DRY (Don't Repeat Yourself) principle to make the codebase more maintainable.
+- Ask questions if you need clarification.
 
-  

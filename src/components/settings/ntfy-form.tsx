@@ -60,7 +60,10 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ntfyConfig: formData }),
+        body: JSON.stringify({ 
+          type: 'simple',
+          ntfyConfig: formData 
+        }),
       });
 
       if (!response.ok) {
@@ -164,10 +167,11 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
             </p>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
           <Button
               onClick={handleSave}
               disabled={isSaving}
+              className="w-full sm:w-auto"
             >
               {isSaving ? "Saving..." : "Save Settings"}
             </Button>
@@ -175,6 +179,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               onClick={handleTestMessage}
               variant="outline"
               disabled={isTesting || !formData.url || !formData.topic}
+              className="w-full sm:w-auto"
             >
               {isTesting ? "Sending..." : "Send Test Message"}
             </Button>

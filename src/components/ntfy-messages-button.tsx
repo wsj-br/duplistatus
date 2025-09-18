@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { MessagesSquare } from 'lucide-react';
+import { NotificationIcon } from '@/components/ui/notification-icon';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -19,7 +19,7 @@ export function NtfyMessagesButton() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/configuration');
+      const response = await fetch('/api/configuration/ntfy');
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }
@@ -57,9 +57,9 @@ export function NtfyMessagesButton() {
       size="icon"
       onClick={handleOpenNtfyMessages}
       disabled={isLoading}
-      title="View ntfy messages"
+      title="View NTFY messages"
     >
-      <MessagesSquare className="h-4 w-4" />
+      <NotificationIcon className="h-4 w-4" />
     </Button>
   );
 } 

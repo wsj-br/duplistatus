@@ -33,6 +33,7 @@ tmp/*
 # development files
 .specstory/**
 *.diff
+*.tmp
 
 
 # debug

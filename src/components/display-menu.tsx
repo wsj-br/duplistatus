@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useConfig } from "@/contexts/config-context";
+import type { TablePageSize } from "@/contexts/config-context";
 import { Label } from "@/components/ui/label";
 
 export function DisplayMenu() {
@@ -25,6 +26,8 @@ export function DisplayMenu() {
     setChartTimeRange,
     autoRefreshInterval,
     setAutoRefreshInterval,
+    dashboardCardsSortOrder,
+    setDashboardCardsSortOrder,
   } = useConfig();
 
   return (
@@ -47,7 +50,7 @@ export function DisplayMenu() {
               <Label htmlFor="table-page-size">Table Page Size</Label>
               <Select
                 value={tablePageSize.toString()}
-                onValueChange={(value) => setTablePageSize(parseInt(value) as 5 | 10 | 15 | 20)}
+                onValueChange={(value) => setTablePageSize(parseInt(value) as TablePageSize)}
               >
                 <SelectTrigger id="table-page-size">
                   <SelectValue placeholder="Select page size" />
@@ -57,6 +60,10 @@ export function DisplayMenu() {
                   <SelectItem value="10">10 rows</SelectItem>
                   <SelectItem value="15">15 rows</SelectItem>
                   <SelectItem value="20">20 rows</SelectItem>
+                  <SelectItem value="25">25 rows</SelectItem>
+                  <SelectItem value="30">30 rows</SelectItem>
+                  <SelectItem value="40">40 rows</SelectItem>
+                  <SelectItem value="50">50 rows</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -98,6 +105,22 @@ export function DisplayMenu() {
                   <SelectItem value="4">4 minutes</SelectItem>
                   <SelectItem value="5">5 minutes</SelectItem>
                   <SelectItem value="10">10 minutes</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="dashboard-cards-sort-order">Cards Sort Order</Label>
+              <Select
+                value={dashboardCardsSortOrder}
+                onValueChange={(value) => setDashboardCardsSortOrder(value as 'Server name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)')}
+              >
+                <SelectTrigger id="dashboard-cards-sort-order">
+                  <SelectValue placeholder="Select sort order" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Server name (a-z)">Server name (a-z)</SelectItem>
+                  <SelectItem value="Status (error>warnings>success)">Status (error &gt; warning &gt; success)</SelectItem>
+                  <SelectItem value="Last backup received (new>old)">Last backup received (new &gt; old)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

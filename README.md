@@ -4,12 +4,14 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.26-blue)
 
 <br>
 
 
-This web application monitors and visualizes backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, metrics, and performance across multiple machines. It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
+
+It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
 <br>
 
@@ -22,17 +24,19 @@ This web application monitors and visualizes backup operations from [Duplicati](
   - [Dashboard](#dashboard)
   - [Backup History](#backup-history)
   - [Backup Details](#backup-details)
-  - [Available Backup Versions](#available-backup-versions)
   - [Overdue Backups](#overdue-backups)
+  - [Overdue notifications on your phone](#overdue-notifications-on-your-phone)
 - [Installation](#installation)
 - [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
 - [User Guide](#user-guide)
 - [API Reference](#api-reference)
 - [Development](#development)
-- [Migrating to Version 0.6.1](#migrating-to-version-061)
+- [Migrating to Version 0.7.x](#migrating-to-version-07x)
   - [The Migration Process](#the-migration-process)
   - [Monitoring the Migration](#monitoring-the-migration)
   - [Rolling Back (If Needed)](#rolling-back-if-needed)
+  - [API Response Changes](#api-response-changes)
+- [Credits](#credits)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -42,21 +46,32 @@ This web application monitors and visualizes backup operations from [Duplicati](
 ## Features
 
 - **Easy Installation**: Run inside a container with images available on Docker Hub and GitHub Container Registry
-- **Dashboard**: This displays the backup status for all monitored machines.
-- **Backup history**: Detailed view of backup history for each machine
-- **Data Visualization**: Interactive charts showing backup metrics over time and other statistical information.
-- **Log Collection**: Collect backup logs directly from Duplicati servers via HTTP/HTTPS
-- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts (NEW)
-- **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups (NEW)
-- **Backup Version Display**: Show the list of backup versions available in the backend (NEW)
+- **Dashboard**: Displays the backup status for all monitored servers (NEW LAYOUT)
+- **Backup History**: Detailed view of backup history for each server
+- **Data Visualisation**: Interactive charts showing backup metrics over time and other statistical information
+- **Log Collection**: Collects backup logs directly from Duplicati servers via HTTP/HTTPS
+- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts; see notifications on your phone
+- **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups
+- **Backup Version Display**: Shows the list of backup versions available in the backend
+- **Duplicati Server**: Includes feature to open the Duplicati server web UI from **duplistatus** (NEW)
+- **Server Settings**: Users can choose an alias for the server and include a note with a description (NEW)
 - **API Access**: RESTful API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs
 
 <br>
 
 
 >[!IMPORTANT]
-> If you are upgrading from version 0.5.0 or earlier, your database will be automatically 
-> [migrated](#migrating-to-version-061) to the new schema during the upgrade process.
+> If you are upgrading from version 0.6.x or earlier, your database will be automatically 
+> [migrated](#migrating-to-version-07x) to the new schema during the upgrade process.
+> 
+> 🚨 **API Response Changes in version 0.7.x**
+> 
+>   If you have external integrations, scripts, or applications that consume the API endpoints `/api/summary`, `/api/lastbackup`
+>   and `/api/lastbackups`, you **MUST** update them immediately as [the JSON response structure has changed.](#api-response-changes) 
+> 
+> For more information see [RELEASE NOTES 0.7.26](docs/RELEASE-NOTES-0.7.26.md)
+
+
 
 <br>
 
@@ -68,20 +83,20 @@ This web application monitors and visualizes backup operations from [Duplicati](
 
 ### Backup History
 
-![machine-detail](docs/img/screen-machine.png)
+![server-detail](docs/img/screen-server.png)
 
 ### Backup Details
 
 ![backup-detail](docs/img/screen-backup.png)
 
-### Available Backup Versions
-
-![available versions](docs/img/screen-versions.png)
-
-
 ### Overdue Backups
 
 ![overdue backups](docs/img/screen-overdue-tooltip.png)
+
+
+### Overdue notifications on your phone
+
+![ntfy overdue message](docs/img/screen-overdue-notification.png)
 
 <br>
 
@@ -95,7 +110,7 @@ See details in the [Installation Guide](docs/INSTALL.md).
 
 ## Duplicati Servers Configuration (Required)
 
-Once your **duplistatus** server is up and running, you must configure your **Duplicati** servers to 
+Once your **duplistatus** server is up and running, you need to configure your **Duplicati** servers to 
 send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](docs/INSTALL.md#duplicati-configuration-required) 
 section of the Installation Guide. Without this configuration, the dashboard will not function properly.
 
@@ -121,7 +136,7 @@ This application was developed almost entirely using AI tools. The step-by-step 
 <br>
 
 
-## Migrating to Version 0.6.1
+## Migrating to Version 0.7.x
 
 Your database will automatically update when you start the new version. This process is safe and preserves all your existing data.
 
@@ -131,8 +146,8 @@ Your database will automatically update when you start the new version. This pro
 
 The system automatically performs the following steps:
 
-- **Creates a backup** of your current database. The backup file is named `duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db`.
-- **Runs the migration**, which adds new columns to the `backups` table, creates a `configurations` table for settings, and adds a table to track the database version.
+- **Creates a backup** of your current database. The backup file is named `backups-copy-YYYY-MM-DDTHH-MM-SS.db`.
+- **Runs the migration**, changes the schema to the next version, and copies all existing data to the new schema.
 - **Preserves all your existing data** while improving the database structure.
 
 <br>
@@ -147,9 +162,9 @@ docker logs <container-name>
 
 Look for these messages to confirm a successful migration:
 
-- `"Found 1 pending migrations"`
-- `"Running consolidated migration 2.0..."`
-- `"Migration 2.0 completed successfully"`
+- `"Found X pending migrations"`
+- `"Running consolidated migration X.0..."`
+- `"Migration X.0 completed successfully"`
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
@@ -162,10 +177,44 @@ If you encounter issues, you can restore your database by following these steps:
 1. Stop the `duplistatus` container.
 2. Replace the current database file `backups.db` with the backup file.
    - The default location is `/var/lib/docker/volumes/duplistatus_data/_data/`
-   - Verify the correct path based on your current configuration and installation.
-3. Install the previous version of `duplistatus` container image (`wsjbr/duplistatus:v0.5.0`)
+   - To find the exact path, run `docker volume inspect duplistatus_data` and check the Mountpoint field
+   - Verify the correct path based on your current configuration and installation
+3. Install the previous version of `duplistatus` container image.
 4. Restart the container.
 5. Please report the issue in the [duplistatus project](https://github.com/wsj-br/duplistatus/issues) on GitHub, including the Docker logs.
+
+
+
+### API Response Changes
+
+**IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
+
+* **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](API-ENDPOINTS.md#get-overall-summary---apisummary)
+* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
+* **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
+
+> [!Warning]
+> **Impact:** While the `server_id` to `machine_id` (or name) parameter change won't affect users directly, the 
+> **new JSON response structure will break any external applications** that parse these API responses. 
+> Please review and update your integrations accordingly.
+
+
+
+
+<br>
+
+## Credits
+
+- First and foremost, thanks to Kenneth Skovhede for creating Duplicati, this amazing backup tool. Thanks also to all the contributors.
+
+  💙 If you find Duplicati (https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
+
+- Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
+- Notify SVG icon from https://dashboardicons.com/icons/ntfy
+- Github SVG icon from https://github.com/logos
+
+>[!NOTE]
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 
 <br>
 

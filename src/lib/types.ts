@@ -2,7 +2,7 @@ export type BackupStatus = "Success" | "Unknown" | "Warning" | "Error" | "Fatal"
 
 export interface Backup {
   id: string;
-  machine_id: string;
+  server_id: string;
   name: string;
   date: string; // ISO string
   status: BackupStatus;
@@ -26,9 +26,11 @@ export interface Backup {
   available_backups: string[] | null;
 }
 
-export interface Machine {
+export interface Server {
   id: string;
   name: string;
+  alias: string;
+  note: string;
   backups: Backup[];
   // For chart data pre-computation
   chartData: {
@@ -43,30 +45,54 @@ export interface Machine {
   }[];
 }
 
-export interface MachineSummary {
+export interface ServerSummary {
   id: string;
   name: string;
-  backupCount: number;
+  server_url: string;
+  alias: string;
+  note: string;
+  backupInfo: Array<{
+    name: string;
+    lastBackupDate: string;
+    lastBackupId: string;
+    lastBackupStatus: BackupStatus | 'N/A';
+    lastBackupDuration: string;
+    lastBackupListCount: number | null;
+    backupCount: number;
+    statusHistory: BackupStatus[];
+    fileCount: number;
+    fileSize: number;
+    storageSize: number;
+    uploadedSize: number;
+    warnings: number;
+    errors: number;
+    isBackupOverdue: boolean;
+    notificationEvent?: NotificationEvent;
+    expectedBackupDate: string;
+    expectedBackupElapsed: string;
+    lastNotificationSent: string;
+    availableBackups: string[];
+  }>;
+  totalBackupCount: number;
+  totalStorageSize: number;
+  totalFileCount: number;
+  totalFileSize: number;
+  totalUploadedSize: number;
+  haveOverdueBackups: boolean;
+  lastBackupDate: string;
   lastBackupStatus: BackupStatus | 'N/A';
-  lastBackupDate: string; // ISO string or "N/A"
-  lastBackupDuration: string; // or "N/A"
+  lastBackupDuration: string;
   lastBackupListCount: number | null;
   lastBackupName: string | null;
   lastBackupId: string | null;
-  totalWarnings: number;
-  totalErrors: number;
-  availableBackups: string[] | null;
-  isBackupOverdue: boolean;
-  notificationEvent?: NotificationEvent;
-  expectedBackupDate: string; // ISO string or "N/A"
-  expectedBackupElapsed: string; // formatted time ago or "N/A"
-  lastOverdueCheck: string; // ISO string or "N/A" - time of last run of checkOverdueBackups()
-  lastNotificationSent: string; // ISO string or "N/A" - time of last notification sent
+  lastOverdueCheck: string;
+  backupNames: string[];
 }
 
 export interface OverallSummary {
-  totalMachines: number;
-  totalBackups: number;
+  totalServers: number;
+  totalBackupsRuns: number; // count of all backup runs (individual executions)
+  totalBackups: number; // count of all backup jobs/configurations across all machines
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
   totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
@@ -90,7 +116,7 @@ export interface BackupNotificationConfig {
 }
 
 // Helper type for backup identification
-export type BackupKey = string; // Format: "machineName:backupName"
+export type BackupKey = string; // Format: "serverId:backupName"
 
 export interface NotificationTemplate {
   title: string;
@@ -107,6 +133,7 @@ export interface NotificationConfig {
     warning: NotificationTemplate;
     overdueBackup: NotificationTemplate;
   };
+  serverAddresses: ServerAddress[];
 }
 
 export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
@@ -154,8 +181,38 @@ export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h
 // Interface for overdue backup notification timestamps
 export interface OverdueNotificationTimestamp {
   lastNotificationSent: string; // ISO timestamp
-  lastBackupDate: string; // ISO timestamp of the backup that was current when notification was sent
+  serverName: string;  // server name
 }
 
 // Type for overdue backup notifications configuration
 export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;
+
+// Chart data interface for dashboard components
+export interface ChartDataPoint {
+  date: string;
+  isoDate: string;
+  uploadedSize: number;
+  duration: number;
+  fileCount: number;
+  fileSize: number;
+  storageSize: number;
+  backupVersions: number;
+  serverId?: string;
+  backupId?: string;
+}
+
+
+// Dashboard data grouping interface
+export interface DashboardData {
+  serversSummary: ServerSummary[];
+  overallSummary: OverallSummary;
+  allServersChartData: ChartDataPoint[];
+}
+
+export interface ServerAddress {
+  id: string;
+  name: string;
+  server_url: string;
+  alias: string;
+  note: string;
+}

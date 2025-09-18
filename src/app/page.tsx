@@ -1,4 +1,4 @@
-import { getMachinesSummary, getOverallSummary, getAggregatedChartData, ensureBackupSettingsComplete } from "@/lib/db-utils";
+import { getServersSummary, getOverallSummary, getAggregatedChartData, ensureBackupSettingsComplete } from "@/lib/db-utils";
 import { DashboardAutoRefresh } from "@/components/dashboard/dashboard-auto-refresh";
 
 // Force dynamic rendering and disable caching
@@ -17,22 +17,19 @@ export async function generateMetadata() {
 
 export default async function DashboardPage() {
   // Fetch initial data server-side
-  const machinesSummary = getMachinesSummary();
+  const serversSummary = await getServersSummary();
   
-  // Ensure backup settings are complete for all machines and backups
-  // This will add default settings for any missing machine-backup combinations
-  const backupSettingsResult = await ensureBackupSettingsComplete();
-  if (backupSettingsResult.added > 0) {
-    console.log(`[dashboard] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total machine-backup combinations`);
-  }
+  // Ensure backup settings are complete for all servers and backups
+  // This will add default settings for any missing server-backup combinations
+  await ensureBackupSettingsComplete();
   
   const overallSummary = await getOverallSummary();
-  const aggregatedChartData = await getAggregatedChartData();
+  const allServersChartData = await getAggregatedChartData();
 
   const initialData = {
-    machinesSummary,
+    serversSummary,
     overallSummary,
-    aggregatedChartData
+    allServersChartData
   };
 
   return <DashboardAutoRefresh initialData={initialData} />;

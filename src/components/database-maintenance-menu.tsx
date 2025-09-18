@@ -1,6 +1,6 @@
 "use client";
 
-import { Database, Loader2, Trash2, Server } from "lucide-react";
+import { Database, Loader2, Trash2, Server, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -29,11 +29,28 @@ import { useConfig } from "@/contexts/config-context";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { usePathname, useRouter } from "next/navigation";
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useConfiguration } from "@/contexts/configuration-context";
 
-interface Machine {
+interface Server {
   id: string;
   name: string;
+  alias: string;
+  server_url?: string;
+  note?: string;
+  backups?: Array<{
+    name: string;
+  }>;
+}
+
+interface BackupJob {
+  id: string;
+  server_id: string;
+  server_name: string;
+  backup_name: string;
+  server_url: string;
+  alias: string;
+  note: string;
 }
 
 export function DatabaseMaintenanceMenu() {
@@ -43,32 +60,97 @@ export function DatabaseMaintenanceMenu() {
     cleanupDatabase,
   } = useConfig();
   const [isCleaning, setIsCleaning] = useState(false);
-  const [isDeletingMachine, setIsDeletingMachine] = useState(false);
-  const [machines, setMachines] = useState<Machine[]>([]);
-  const [selectedMachine, setSelectedMachine] = useState<string>("");
+  const [isDeletingServer, setIsDeletingServer] = useState(false);
+  const [isDeletingBackupJob, setIsDeletingBackupJob] = useState(false);
+  const [servers, setServers] = useState<Server[]>([]);
+  const [backupJobs, setBackupJobs] = useState<BackupJob[]>([]);
+  const [selectedServer, setSelectedServer] = useState<string>("");
+  const [selectedBackupJob, setSelectedBackupJob] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
-  const pathname = usePathname();
-  const router = useRouter();
+  const { refreshDashboard } = useGlobalRefresh();
+  const { refreshConfigSilently } = useConfiguration();
 
-  // Fetch machines on component mount
-  useEffect(() => {
-    const fetchMachines = async () => {
-      try {
-        const response = await fetch('/api/machines');
-        if (response.ok) {
-          const machineList = await response.json();
-          // Sort machines alphabetically by name
-          const sortedMachines = machineList.sort((a: Machine, b: Machine) => 
-            a.name.localeCompare(b.name)
-          );
-          setMachines(sortedMachines);
+  // Function to fetch servers and backup jobs
+  const fetchServers = async () => {
+    try {
+      // First get basic server information
+      const serversResponse = await fetch('/api/servers');
+      if (serversResponse.ok) {
+        const serverList = await serversResponse.json();
+        // Sort servers alphabetically by alias with fallback to name
+        const sortedServers = serverList.sort((a: Server, b: Server) => 
+          (a.alias || a.name).localeCompare(b.alias || b.name)
+        );
+        setServers(sortedServers);
+
+        // Then get servers with backup information to derive backup jobs
+        const serversWithBackupsResponse = await fetch('/api/servers?includeBackups=true');
+        if (serversWithBackupsResponse.ok) {
+          const serversWithBackups = await serversWithBackupsResponse.json();
+          
+          // Group backup jobs by server
+          const serverBackupMap = new Map<string, Set<string>>();
+          serversWithBackups.forEach((server: {id: string; backupName: string}) => {
+            if (!serverBackupMap.has(server.id)) {
+              serverBackupMap.set(server.id, new Set());
+            }
+            serverBackupMap.get(server.id)!.add(server.backupName);
+          });
+
+          // Derive backup jobs from grouped data
+          const derivedBackupJobs: BackupJob[] = [];
+          serverBackupMap.forEach((backupNames, serverId) => {
+            // Find server details from the basic server list
+            const serverDetails = sortedServers.find((server: Server) => server.id === serverId);
+            if (serverDetails) {
+              backupNames.forEach(backupName => {
+                derivedBackupJobs.push({
+                  id: `${serverId}:${backupName}`,
+                  server_id: serverId,
+                  server_name: serverDetails.name,
+                  backup_name: backupName,
+                  server_url: serverDetails.server_url || '',
+                  alias: serverDetails.alias || '',
+                  note: serverDetails.note || ''
+                });
+              });
+            }
+          });
+          
+          // Sort backup jobs alphabetically by server alias/name, then by backup name
+          const sortedBackupJobs = derivedBackupJobs.sort((a: BackupJob, b: BackupJob) => {
+            const serverA = a.alias || a.server_name;
+            const serverB = b.alias || b.server_name;
+            if (serverA !== serverB) {
+              return serverA.localeCompare(serverB);
+            }
+            return a.backup_name.localeCompare(b.backup_name);
+          });
+          setBackupJobs(sortedBackupJobs);
         }
-      } catch (error) {
-        console.error('Error fetching machines:', error instanceof Error ? error.message : String(error));
       }
+    } catch (error) {
+      console.error('Error fetching servers:', error instanceof Error ? error.message : String(error));
+    }
+  };
+
+  // Fetch servers on component mount
+  useEffect(() => {
+    fetchServers();
+  }, []);
+
+  // Listen for configuration change events to refresh data
+  useEffect(() => {
+    const handleConfigurationChange = () => {
+      fetchServers();
     };
 
-    fetchMachines();
+    window.addEventListener('configuration-saved', handleConfigurationChange);
+    
+    return () => {
+      window.removeEventListener('configuration-saved', handleConfigurationChange);
+    };
   }, []);
 
   const handleCleanup = async () => {
@@ -84,19 +166,12 @@ export function DatabaseMaintenanceMenu() {
         duration: 2000,
       });
       
-      // Navigate to dashboard and refresh its contents
-      router.push('/');
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
       
-      // Wait a short delay to ensure navigation completes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Close the menu after successful execution
+      setIsOpen(false);
       
-      // Force a complete refresh of the dashboard data
-      router.refresh();
-      
-      // Additional refresh for the dashboard page
-      if (pathname === '/') {
-        window.location.reload();
-      }
     } catch (error) {
       console.error('Error in handleCleanup:', error instanceof Error ? error.message : String(error));
       
@@ -117,80 +192,146 @@ export function DatabaseMaintenanceMenu() {
     }
   };
 
-  const handleDeleteMachine = async () => {
-    if (!selectedMachine) return;
+  const handleDeleteServer = async () => {
+    if (!selectedServer) return;
 
     try {
-      setIsDeletingMachine(true);
+      setIsDeletingServer(true);
       
-      const response = await fetch(`/api/machines/${selectedMachine}`, {
+      // Find the selected server details for the toast
+      const selectedServerDetails = servers.find(server => server.id === selectedServer);
+      const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
+      
+      const response = await fetch(`/api/servers/${selectedServer}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete machine');
+        throw new Error('Failed to delete server');
       }
 
       const result = await response.json();
       
       // Show success toast
       toast({
-        title: "Machine deleted",
-        description: result.message,
+        title: `Server "${serverDisplayName}"	 deleted`,
+        description: `${result.message}`,
         variant: "default",
-        duration: 2000,
+        duration: 3000,
       });
       
-      // Reset selected machine
-      setSelectedMachine("");
+      // Reset selected server
+      setSelectedServer("");
       
-      // Refresh machines list
-      const machinesResponse = await fetch('/api/machines');
-      if (machinesResponse.ok) {
-        const machineList = await machinesResponse.json();
-        // Sort machines alphabetically by name
-        const sortedMachines = machineList.sort((a: Machine, b: Machine) => 
-          a.name.localeCompare(b.name)
-        );
-        setMachines(sortedMachines);
-      }
+      // Refresh servers and backup jobs
+      await fetchServers();
       
-      // Navigate to dashboard and refresh its contents
-      router.push('/');
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
       
-      // Wait a short delay to ensure navigation completes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Also refresh configuration data to update server lists in configuration tabs
+      await refreshConfigSilently();
       
-      // Force a complete refresh of the dashboard data
-      router.refresh();
-      
-      // Additional refresh for the dashboard page
-      if (pathname === '/') {
-        window.location.reload();
-      }
+      // Close the menu after successful execution
+      setIsOpen(false);
       
     } catch (error) {
-      console.error('Error deleting machine:', error instanceof Error ? error.message : String(error));
+      console.error('Error deleting server:', error instanceof Error ? error.message : String(error));
+      
+      // Find the selected server details for the error toast
+      const selectedServerDetails = servers.find(server => server.id === selectedServer);
+      const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
       
       // Extract error message
       const errorMessage = error instanceof Error 
         ? error.message 
-        : 'Failed to delete machine. Please try again.';
+        : 'Failed to delete server. Please try again.';
       
       // Show detailed error toast
       toast({
-        title: "Machine Deletion Failed",
-        description: errorMessage,
+        title: `Server "${serverDisplayName}" Deletion Failed`,
+        description: `${errorMessage}`,
         variant: "destructive",
         duration: 3000,
       });
     } finally {
-      setIsDeletingMachine(false);
+      setIsDeletingServer(false);
+    }
+  };
+
+  const handleDeleteBackupJob = async () => {
+    if (!selectedBackupJob) return;
+
+    try {
+      setIsDeletingBackupJob(true);
+      
+      // Find the selected backup job details for the toast
+      const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
+      const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
+      
+      const response = await fetch('/api/backups/delete-job', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          serverId: selectedBackupJobDetails?.server_id,
+          backupName: selectedBackupJobDetails?.backup_name,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete backup job');
+      }
+
+      const result = await response.json();
+      
+      // Show success toast
+      toast({
+        title: `Backup Job "${backupJobName}" deleted`,
+        description: `${result.message}`,
+        variant: "default",
+        duration: 3000,
+      });
+      
+      // Reset selected backup job
+      setSelectedBackupJob("");
+      
+      // Refresh servers and backup jobs
+      await fetchServers();
+      
+      // Refresh dashboard data using global refresh context
+      await refreshDashboard();
+      
+      // Close the menu after successful execution
+      setIsOpen(false);
+      
+    } catch (error) {
+      console.error('Error deleting backup job:', error instanceof Error ? error.message : String(error));
+      
+      // Find the selected backup job details for the error toast
+      const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
+      const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
+      
+      // Extract error message
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Failed to delete backup job. Please try again.';
+      
+      // Show detailed error toast
+      toast({
+        title: `Backup Job "${backupJobName}" Deletion Failed`,
+        description: `${errorMessage}`,
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsDeletingBackupJob(false);
     }
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="icon" title="Database maintenance">
           <Database className="h-4 w-4" />
@@ -267,36 +408,100 @@ export function DatabaseMaintenanceMenu() {
               </p>
             </div>
             
-            {/* Machine Deletion Section */}
+            {/* Backup Job Deletion Section */}
             <div className="grid gap-2 border-t pt-4">
-              <Label htmlFor="machine-select">Delete Machine Data</Label>
+              <Label htmlFor="backup-job-select">Delete Backup Job</Label>
               <Select
-                value={selectedMachine}
-                onValueChange={setSelectedMachine}
+                value={selectedBackupJob}
+                onValueChange={setSelectedBackupJob}
               >
-                <SelectTrigger id="machine-select">
-                  <SelectValue placeholder="Select machine to delete" />
+                <SelectTrigger id="backup-job-select">
+                  <SelectValue placeholder="Select backup job to delete" />
                 </SelectTrigger>
                 <SelectContent>
-                  {machines.map((machine) => (
-                    <SelectItem key={machine.id} value={machine.id}>
-                      {machine.name}
+                  {backupJobs.map((job) => (
+                    <SelectItem key={job.id} value={job.id}>
+                      {job.alias ? `${job.alias} (${job.server_name})` : job.server_name} - {job.backup_name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                Select a machine to delete all its backup data permanently.
+                Select a backup job to delete all its backup records permanently.
               </p>
               
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 
                     variant="destructive" 
-                    disabled={isDeletingMachine || !selectedMachine}
+                    disabled={isDeletingBackupJob || !selectedBackupJob}
                     className="mt-2"
                   >
-                    {isDeletingMachine ? (
+                    {isDeletingBackupJob ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <FolderOpen className="mr-2 h-4 w-4" />
+                        Delete Backup Job
+                      </>
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Backup Job?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {(() => {
+                        const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
+                        const serverDisplayName = selectedBackupJobDetails ? (selectedBackupJobDetails.alias || selectedBackupJobDetails.server_name) : 'Unknown Server';
+                        const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
+                        return `This will permanently delete all backup records for "${backupJobName}" from server "${serverDisplayName}". This action cannot be undone.`;
+                      })()}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteBackupJob} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Delete Backup Job
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+            
+            {/* Server Deletion Section */}
+            <div className="grid gap-2 border-t pt-4">
+              <Label htmlFor="server-select">Delete Server Data</Label>
+              <Select
+                value={selectedServer}
+                onValueChange={setSelectedServer}
+              >
+                <SelectTrigger id="server-select">
+                  <SelectValue placeholder="Select server to delete" />
+                </SelectTrigger>
+                <SelectContent>
+                  {servers.map((server) => (
+                    <SelectItem key={server.id} value={server.id}>
+                      {server.alias ? `${server.alias} (${server.name})` : server.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Select a server to delete all its backup data permanently.
+              </p>
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="destructive" 
+                    disabled={isDeletingServer || !selectedServer}
+                    className="mt-2"
+                  >
+                    {isDeletingServer ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Deleting...
@@ -304,23 +509,26 @@ export function DatabaseMaintenanceMenu() {
                     ) : (
                       <>
                         <Server className="mr-2 h-4 w-4" />
-                        Delete Machine Data
+                        Delete Server Data
                       </>
                     )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Machine Data?</AlertDialogTitle>
+                    <AlertDialogTitle>Delete Server Data?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will permanently delete the selected machine and all its backup records. 
-                      This action cannot be undone.
+                      {(() => {
+                        const selectedServerDetails = servers.find(server => server.id === selectedServer);
+                        const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
+                        return `This will permanently delete server "${serverDisplayName}" and all its backup records. This action cannot be undone.`;
+                      })()}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteMachine} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                      Delete Machine
+                    <AlertDialogAction onClick={handleDeleteServer} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Delete Server
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

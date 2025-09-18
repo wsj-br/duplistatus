@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useConfig } from './config-context';
+import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 type PageType = 'dashboard' | 'detail' | 'none';
 
@@ -18,14 +19,23 @@ interface GlobalRefreshState {
     detail: boolean;
   };
   refreshInProgress: boolean;
+  // Store fetched data to avoid duplicate API calls
+  dashboardData: {
+    serversSummary: ServerSummary[];
+    overallSummary: OverallSummary;
+    allServersChartData: ChartDataPoint[];
+  } | null;
+  // Persist scroll position across data refreshes
+  visibleCardIndex: number;
 }
 
 interface GlobalRefreshContextProps {
   state: GlobalRefreshState;
   refreshDashboard: () => Promise<void>;
-  refreshDetail: (machineId: string) => Promise<void>;
+  refreshDetail: (serverId: string) => Promise<void>;
   toggleAutoRefresh: () => void;
   getCurrentPageType: () => PageType;
+  setVisibleCardIndex: (index: number) => void;
 }
 
 const GlobalRefreshContext = createContext<GlobalRefreshContextProps | undefined>(undefined);
@@ -46,7 +56,12 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       detail: false,
     },
     refreshInProgress: false,
+    dashboardData: null,
+    visibleCardIndex: 0,
   });
+
+  // Track previous pathname to detect navigation back to dashboard
+  const [previousPathname, setPreviousPathname] = useState<string | null>(null);
 
   // Update state when config changes
   useEffect(() => {
@@ -65,37 +80,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     return 'none';
   }, [pathname]);
 
-  // Update current page when pathname changes
-  useEffect(() => {
-    const pageType = getCurrentPageType();
-    setState(prev => ({
-      ...prev,
-      currentPage: pageType,
-    }));
-  }, [pathname, getCurrentPageType]);
-
-  // Auto-refresh effect
-  useEffect(() => {
-    if (!state.isEnabled || state.currentPage === 'none') return;
-
-    const intervalMs = state.interval * 60 * 1000; // interval is in minutes
-    const interval = setInterval(() => {
-      if (state.currentPage === 'dashboard') {
-        refreshDashboard();
-      } else if (state.currentPage === 'detail') {
-        // For detail pages, we need the machineId from the URL
-        // Only match main detail pages, not backup detail pages
-        const match = pathname.match(/^\/detail\/([^\/]+)$/);
-        if (match) {
-          refreshDetail(match[1]);
-        }
-      }
-    }, intervalMs);
-
-    return () => clearInterval(interval);
-  }, [state.isEnabled, state.interval, state.currentPage, pathname]);
-
-  const refreshDashboard = async () => {
+  const refreshDashboard = useCallback(async () => {
     try {
       setState(prev => ({
         ...prev,
@@ -104,28 +89,25 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: true,
       }));
 
-      // Fetch dashboard data and parse JSON responses
-      const [machinesResponse, summaryResponse, chartResponse] = await Promise.all([
-        fetch('/api/machines-summary'),
-        fetch('/api/summary'),
-        fetch('/api/chart-data')
-      ]);
+      // Fetch consolidated dashboard data
+      const dashboardResponse = await fetch('/api/dashboard');
 
-      if (!machinesResponse.ok || !summaryResponse.ok || !chartResponse.ok) {
+      if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
       }
 
-      // Parse JSON responses to ensure they are valid
-      const [machinesData, summaryData, chartData] = await Promise.all([
-        machinesResponse.json(),
-        summaryResponse.json(),
-        chartResponse.json()
-      ]);
+      // Parse JSON response to ensure it is valid
+      const dashboardData = await dashboardResponse.json();
 
       // Validate that we got valid data
-      if (!machinesData || !summaryData || !Array.isArray(chartData)) {
+      if (!dashboardData || !dashboardData.serversSummary || !dashboardData.overallSummary || !Array.isArray(dashboardData.chartData)) {
         throw new Error('Invalid data received from API');
       }
+
+      // Extract individual data components for backward compatibility
+      const serversData = dashboardData.serversSummary;
+      const summaryData = dashboardData.overallSummary;
+      const chartData = dashboardData.chartData;
 
       setState(prev => ({
         ...prev,
@@ -134,6 +116,11 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         isRefreshing: false,
         pageSpecificLoading: { ...prev.pageSpecificLoading, dashboard: false },
         refreshInProgress: false,
+        dashboardData: {
+          serversSummary: serversData,
+          overallSummary: summaryData,
+          allServersChartData: chartData,
+        },
       }));
     } catch (error) {
       console.error('Error refreshing dashboard:', error instanceof Error ? error.message : String(error));
@@ -144,9 +131,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  };
+  }, []);
 
-  const refreshDetail = async (machineId: string) => {
+  const refreshDetail = useCallback(async (serverId: string) => {
     try {
       setState(prev => ({
         ...prev,
@@ -155,24 +142,18 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: true,
       }));
 
-      // Fetch detail page data and parse JSON responses
-      const [dataResponse, chartResponse] = await Promise.all([
-        fetch(`/api/detail/${machineId}/data`),
-        fetch(`/api/detail/${machineId}/chart-data`)
-      ]);
+      // Only fetch basic detail data - chart data is handled by MetricsChartsPanel
+      const dataResponse = await fetch(`/api/detail/${serverId}`);
 
-      if (!dataResponse.ok || !chartResponse.ok) {
+      if (!dataResponse.ok) {
         throw new Error('Failed to fetch detail data');
       }
 
-      // Parse JSON responses to ensure they are valid
-      const [detailData, chartData] = await Promise.all([
-        dataResponse.json(),
-        chartResponse.json()
-      ]);
+      // Parse JSON response to ensure it is valid
+      const detailData = await dataResponse.json();
 
       // Validate that we got valid data
-      if (!detailData || !Array.isArray(chartData)) {
+      if (!detailData) {
         throw new Error('Invalid data received from API');
       }
 
@@ -193,7 +174,54 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  };
+  }, []);
+
+  // Update current page when pathname changes and detect dashboard returns
+  useEffect(() => {
+    const pageType = getCurrentPageType();
+    const isDashboardPage = pageType === 'dashboard';
+    
+    // Check if user is returning to dashboard from another page
+    const isReturningToDashboard = isDashboardPage && 
+      previousPathname && 
+      previousPathname !== '/' && 
+      previousPathname !== pathname;
+    
+    setState(prev => ({
+      ...prev,
+      currentPage: pageType,
+    }));
+    
+    // Trigger refresh when returning to dashboard
+    if (isReturningToDashboard && !state.isRefreshing && !state.refreshInProgress) {
+      console.log('User returned to dashboard, triggering refresh');
+      refreshDashboard();
+    }
+    
+    // Update previous pathname for next comparison
+    setPreviousPathname(pathname);
+  }, [pathname, getCurrentPageType, previousPathname, state.isRefreshing, state.refreshInProgress, refreshDashboard]);
+
+  // Auto-refresh effect
+  useEffect(() => {
+    if (!state.isEnabled || state.currentPage === 'none') return;
+
+    const intervalMs = state.interval * 60 * 1000; // interval is in minutes
+    const interval = setInterval(() => {
+      if (state.currentPage === 'dashboard') {
+        refreshDashboard();
+      } else if (state.currentPage === 'detail') {
+        // For detail pages, we need the serverId from the URL
+        // Only match main detail pages, not backup detail pages
+        const match = pathname.match(/^\/detail\/([^\/]+)$/);
+        if (match) {
+          refreshDetail(match[1]);
+        }
+      }
+    }, intervalMs);
+
+    return () => clearInterval(interval);
+  }, [state.isEnabled, state.interval, state.currentPage, pathname, refreshDashboard, refreshDetail]);
 
   const toggleAutoRefresh = () => {
     const newEnabled = !state.isEnabled;
@@ -204,6 +232,13 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     }));
   };
 
+  const setVisibleCardIndex = useCallback((index: number) => {
+    setState(prev => ({
+      ...prev,
+      visibleCardIndex: index,
+    }));
+  }, []);
+
   return (
     <GlobalRefreshContext.Provider
       value={{
@@ -212,6 +247,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshDetail,
         toggleAutoRefresh,
         getCurrentPageType,
+        setVisibleCardIndex,
       }}
     >
       {children}

@@ -10,17 +10,22 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
+import { useConfiguration } from '@/contexts/configuration-context';
 import { NotificationEvent, BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
 import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
+import { ServerConfigurationButton } from '../ui/server-configuration-button';
 
-interface MachineWithBackup {
+interface ServerWithBackup {
   id: string;
   name: string;
   backupName: string;
+  server_url: string;
+  alias: string;
+  note: string;
 }
 
 interface BackupNotificationsFormProps {
@@ -28,8 +33,8 @@ interface BackupNotificationsFormProps {
   onSave?: (settings: Record<BackupKey, BackupNotificationConfig>) => void;
 }
 
-// Extended machine interface for sorting
-interface MachineWithBackupAndSettings extends MachineWithBackup {
+// Extended server interface for sorting
+interface ServerWithBackupAndSettings extends ServerWithBackup {
   notificationEvent: NotificationEvent;
   overdueBackupCheckEnabled: boolean;
   expectedInterval: number;
@@ -39,16 +44,15 @@ interface MachineWithBackupAndSettings extends MachineWithBackup {
 
 export function BackupNotificationsForm({ backupSettings }: BackupNotificationsFormProps) {
   const { toast } = useToast();
-  const [machinesWithBackups, setMachinesWithBackups] = useState<MachineWithBackup[]>([]);
+  const { config, refreshConfigSilently } = useConfiguration();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
-  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [cronInterval, setCronIntervalState] = useState<CronInterval>(defaultCronInterval);
   const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>(defaultNotificationFrequencyConfig);
-  const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(true);
+  const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(false);
   const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
   const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
@@ -82,12 +86,30 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   };
 
   useEffect(() => {
-    fetchMachinesWithBackups();
-    loadCronInterval();
-    fetchNotificationFrequency();
-    fetchOverdueTolerance();
-    loadExistingBackupSettings();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (config) {
+      // Initialize settings from config
+      if (config.backupSettings && Object.keys(config.backupSettings).length > 0) {
+        setSettings(config.backupSettings);
+      }
+      
+      // Initialize other settings from config
+      if (config.overdue_tolerance) {
+        setOverdueTolerance(config.overdue_tolerance);
+      }
+      
+      if (config.notificationFrequency) {
+        setNotificationFrequency(config.notificationFrequency);
+      }
+      
+      // Initialize cron interval from config
+      if (config.cronConfig) {
+        const entry = Object.entries(cronIntervalMap).find(([, value]) => 
+          value.expression === config.cronConfig.cronExpression && value.enabled === config.cronConfig.enabled
+        );
+        setCronIntervalState(entry ? entry[0] as CronInterval : defaultCronInterval);
+      }
+    }
+  }, [config]);
 
 
 
@@ -106,38 +128,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       toast({
         title: "Overdue Backup Check Complete",
         description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
+        duration: 2000,
       });
     } catch (error) {
       console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
       toast({
         title: "Error",
         description: "Failed to run overdue backup check",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
-
-  const loadCronInterval = async () => {
-    try {
-      const response = await fetch('/api/cron-config');
-      if (!response.ok) {
-        throw new Error('Failed to load cron configuration');
-      }
-      
-      const { cronExpression, enabled } = await response.json();
-      
-      // Find matching interval from the cron expression and enabled status
-      const entry = Object.entries(cronIntervalMap).find(([, value]) => 
-        value.expression === cronExpression && value.enabled === enabled
-      );
-      
-      setCronIntervalState(entry ? entry[0] as CronInterval : defaultCronInterval);
-    } catch (error) {
-      console.error('Failed to load cron interval:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to load overdue backup check interval",
         variant: "destructive",
         duration: 3000,
       });
@@ -190,15 +187,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   };
 
-  // Initialize default settings for all machines when they are loaded
+  // Initialize default settings for all servers when they are loaded
   useEffect(() => {
-    if (machinesWithBackups.length > 0) {
+    if (config?.serversWithBackups && config.serversWithBackups.length > 0) {
       setSettings(prev => {
         const defaultSettings: Record<BackupKey, BackupNotificationConfig> = {};
         let hasChanges = false;
         
-        machinesWithBackups.forEach(machine => {
-          const backupKey = getBackupKey(machine.name, machine.backupName);
+        config.serversWithBackups.forEach((server: ServerWithBackup) => {
+          const backupKey = `${server.id}:${server.backupName}`;
           if (!prev[backupKey]) {
             defaultSettings[backupKey] = { ...defaultBackupNotificationConfig };
             hasChanges = true;
@@ -215,39 +212,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         return prev;
       });
     }
-  }, [machinesWithBackups]);
+  }, [config?.serversWithBackups]);
 
-  const fetchMachinesWithBackups = async () => {
-    try {
-      const response = await fetch('/api/machines-with-backups');
-      if (!response.ok) {
-        throw new Error('Failed to fetch machines with backups');
-      }
-      const data = await response.json();
-      // Sort machines alphabetically by name initially
-      const sortedMachines = data.sort((a: MachineWithBackup, b: MachineWithBackup) => 
-        a.name.localeCompare(b.name) || a.backupName.localeCompare(b.backupName)
-      );
-      setMachinesWithBackups(sortedMachines);
-    } catch (error) {
-      console.error('Error fetching machines with backups:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to load machines with backups list",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getBackupKey = (machineName: string, backupName: string): BackupKey => {
-    return `${machineName}:${backupName}`;
-  };
-
-  const updateBackupSetting = (machineName: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
-    const backupKey = getBackupKey(machineName, backupName);
+  const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
+    const backupKey = `${serverId}:${backupName}`;
     setSettings(prev => ({
       ...prev,
       [backupKey]: {
@@ -257,40 +225,40 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }));
   };
 
-  const getBackupSetting = (machineName: string, backupName: string): BackupNotificationConfig => {
-    const backupKey = getBackupKey(machineName, backupName);
+  const getBackupSettingById = (serverId: string, backupName: string): BackupNotificationConfig => {
+    const backupKey = `${serverId}:${backupName}`;
     return settings[backupKey] || { ...defaultBackupNotificationConfig };
   };
 
-
-
-  const handleIntervalInputChange = (machineName: string, backupName: string, value: string) => {
-    const key = `${machineName}:${backupName}`;
+  const handleIntervalInputChangeById = (serverId: string, backupName: string, value: string) => {
+    const inputKey = `${serverId}:${backupName}`;
     setInputValues(prev => ({
       ...prev,
-      [key]: value
+      [inputKey]: value
     }));
   };
 
-  const handleIntervalBlur = (machineName: string, backupName: string, value: string) => {
+  const handleIntervalBlurById = (serverId: string, backupName: string, value: string) => {
     const numValue = parseInt(value) || 1;
-    updateBackupSetting(machineName, backupName, 'expectedInterval', numValue);
+    updateBackupSettingById(serverId, backupName, 'expectedInterval', numValue);
     
     // Clear the local input value since we've saved the setting
+    const inputKey = `${serverId}:${backupName}`;
     setInputValues(prev => {
       const newValues = { ...prev };
-      delete newValues[`${machineName}:${backupName}`];
+      delete newValues[inputKey];
       return newValues;
     });
   };
 
-  const handleUnitChange = (machineName: string, backupName: string, newUnit: 'hour' | 'day') => {
-    updateBackupSetting(machineName, backupName, 'intervalUnit', newUnit);
+  const handleUnitChangeById = (serverId: string, backupName: string, newUnit: 'hour' | 'day') => {
+    updateBackupSettingById(serverId, backupName, 'intervalUnit', newUnit);
     
     // Clear any local input value since the unit has changed
+    const inputKey = `${serverId}:${backupName}`;
     setInputValues(prev => {
       const newValues = { ...prev };
-      delete newValues[`${machineName}:${backupName}`];
+      delete newValues[inputKey];
       return newValues;
     });
   };
@@ -302,21 +270,23 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }));
   };
 
-  // Create machines with settings for sorting
-  const getMachinesWithBackupAndSettings = (): MachineWithBackupAndSettings[] => {
-    return machinesWithBackups.map(machine => {
-      const backupSetting = getBackupSetting(machine.name, machine.backupName);
+  // Create servers with settings for sorting
+  const getServersWithBackupAndSettings = (): ServerWithBackupAndSettings[] => {
+    if (!config?.serversWithBackups) return [];
+    
+    return config.serversWithBackups.map((server: ServerWithBackup) => {
+      const backupSetting = getBackupSettingById(server.id, server.backupName);
       
       return {
-        ...machine,
+        ...server,
         ...backupSetting,
         displayInterval: backupSetting.expectedInterval,
       };
     });
   };
 
-  // Get sorted machines
-  const sortedMachines = createSortedArray(getMachinesWithBackupAndSettings(), sortConfig, columnConfig);
+  // Get sorted servers
+  const sortedServers = createSortedArray(getServersWithBackupAndSettings(), sortConfig, columnConfig);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -347,6 +317,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
       
       // Always run overdue backup check when saving to ensure tolerance is applied
       await runOverdueBackupCheck();
@@ -399,6 +372,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
       
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
+      
       // Run the overdue backup check
       const response = await fetch('/api/notifications/check-overdue', {
         method: 'POST',
@@ -431,7 +407,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     setNotificationFrequencyLoading(true);
     setNotificationFrequencyError(null);
     try {
-      const response = await fetch('/api/notifications/resend-frequency', {
+      const response = await fetch('/api/configuration/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value }),
@@ -461,48 +437,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     } catch (error) {
       console.error('Failed to update overdue tolerance:', error instanceof Error ? error.message : String(error));
       toast({ title: 'Error', description: 'Failed to update overdue tolerance', variant: 'destructive', duration: 3000 });
-    }
-  };
-
-  const fetchNotificationFrequency = async () => {
-    setNotificationFrequencyLoading(true);
-    setNotificationFrequencyError(null);
-    try {
-      const response = await fetch('/api/notifications/resend-frequency');
-      if (!response.ok) throw new Error('Failed to fetch notification frequency');
-      const data = await response.json();
-      setNotificationFrequency(data.value ?? defaultNotificationFrequencyConfig);
-    } catch {
-      setNotificationFrequencyError('Failed to load notification frequency');
-      setNotificationFrequency(defaultNotificationFrequencyConfig);
-    } finally {
-      setNotificationFrequencyLoading(false);
-    }
-  };
-
-  const fetchOverdueTolerance = async () => {
-    try {
-      const response = await fetch('/api/configuration');
-      if (!response.ok) throw new Error('Failed to fetch configuration');
-      const data = await response.json();
-      setOverdueTolerance(data.overdue_tolerance ?? defaultOverdueTolerance);
-    } catch (error) {
-      console.error('Failed to load overdue tolerance:', error instanceof Error ? error.message : String(error));
-      setOverdueTolerance(defaultOverdueTolerance);
-    }
-  };
-
-  const loadExistingBackupSettings = async () => {
-    try {
-      const response = await fetch('/api/configuration');
-      if (!response.ok) throw new Error('Failed to fetch configuration');
-      const data = await response.json();
-      
-      if (data.backupSettings && Object.keys(data.backupSettings).length > 0) {
-        setSettings(data.backupSettings);
-      }
-    } catch (error) {
-      console.error('Failed to load existing backup settings:', error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -540,26 +474,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-center">
-          <div className="text-lg font-medium">Loading machines with backups...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (machinesWithBackups.length === 0) {
+  if (!config?.serversWithBackups || config.serversWithBackups.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Backup Notifications</CardTitle>
-          <CardDescription>No machines with backups found in the database</CardDescription>
+          <CardTitle>Backup Alerts</CardTitle>
+          <CardDescription>No servers with backups found in the database</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            No machines with backups have been registered yet. Add some backup data first to see backup notification settings.
+            No servers with backups have been registered yet. Add some backup data first to see backup alerts settings.
           </p>
         </CardContent>
       </Card>
@@ -570,7 +494,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Backup Notification Settings</CardTitle>
+          <CardTitle>Configure Backup Alerts</CardTitle>
           <CardDescription>
              Configure notification settings for each backup received from Duplicati. 
              Enable/disable overdue backup monitoring, set the timeout period and notification frequency.
@@ -578,20 +502,21 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         </CardHeader>
         <CardContent>
           
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <Table>
             <TableHeader>
               <TableRow>
                 <SortableTableHead 
-                  className="w-[200px]" 
+                  className="w-[150px] min-w-[120px]" 
                   column="name" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Machine Name
+                  Server Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[200px]" 
+                  className="w-[150px] min-w-[120px]" 
                   column="backupName" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -599,7 +524,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[180px]" 
+                  className="w-[140px] min-w-[120px]" 
                   column="notificationEvent" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -607,7 +532,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Notification Events
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[180px]" 
+                  className="w-[140px] min-w-[120px]" 
                   column="overdueBackupCheckEnabled" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -615,7 +540,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Overdue Backup Monitoring
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[150px]" 
+                  className="w-[120px] min-w-[100px]" 
                   column="displayInterval" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -623,7 +548,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Expected Backup Interval
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[100px]" 
+                  className="w-[80px] min-w-[60px]" 
                   column="intervalUnit" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -633,21 +558,46 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedMachines.map((machine) => {
-                const backupSetting = getBackupSetting(machine.name, machine.backupName);
-                const inputKey = `${machine.name}:${machine.backupName}`;
+              {sortedServers.map((server) => {
+                const backupSetting = getBackupSettingById(server.id, server.backupName);
+                const inputKey = `${server.id}:${server.backupName}`;
                 
                 return (
-                  <TableRow key={`${machine.id}-${machine.backupName}`}>
+                  <TableRow key={`${server.id}-${server.backupName}`}>
                     <TableCell>
                       <div>
-                        <div className="font-xl">{machine.name}</div>
+                        <div className="font-medium text-sm">
+                          <div className="flex items-center gap-1">
+                            <ServerConfigurationButton
+                              serverUrl={server.server_url}
+                              serverName={server.name}
+                              serverAlias={server.alias}
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs hover:text-blue-500 transition-colors"
+                              showText={false}
+                            />
+                            <div className="flex flex-col">
+                              <span 
+                                className="truncate" 
+                                title={server.alias ? server.name : undefined}
+                              >
+                                {server.alias || server.name}
+                              </span>
+                              {server.note && (
+                                <span className="text-xs text-muted-foreground truncate">
+                                  {server.note}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </TableCell>
                     
                     <TableCell>
                       <div>
-                        <div className="font-xl">{machine.backupName}</div>
+                        <div className="font-medium text-sm truncate">{server.backupName}</div>
                       </div>
                     </TableCell>
                     
@@ -655,10 +605,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       <Select
                         value={backupSetting.notificationEvent}
                         onValueChange={(value: NotificationEvent) => 
-                          updateBackupSetting(machine.name, machine.backupName, 'notificationEvent', value)
+                          updateBackupSettingById(server.id, server.backupName, 'notificationEvent', value)
                         }
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -671,15 +621,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     </TableCell>
                     
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
                         <Switch
                           id={`overdue-backup-${inputKey}`}
                           checked={backupSetting.overdueBackupCheckEnabled}
                           onCheckedChange={(checked) => 
-                            updateBackupSetting(machine.name, machine.backupName, 'overdueBackupCheckEnabled', checked)
+                            updateBackupSettingById(server.id, server.backupName, 'overdueBackupCheckEnabled', checked)
                           }
                         />
-                        <Label htmlFor={`overdue-backup-${inputKey}`} className="text-sm">
+                        <Label htmlFor={`overdue-backup-${inputKey}`} className="text-xs">
                           {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
                         </Label>
                       </div>
@@ -691,21 +641,21 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         min="1"
                         max={backupSetting.intervalUnit === 'hour' ? "8760" : "365"}
                         value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
-                        onChange={(e) => handleIntervalInputChange(machine.name, machine.backupName, e.target.value)}
-                        onBlur={(e) => handleIntervalBlur(machine.name, machine.backupName, e.target.value)}
+                        onChange={(e) => handleIntervalInputChangeById(server.id, server.backupName, e.target.value)}
+                        onBlur={(e) => handleIntervalBlurById(server.id, server.backupName, e.target.value)}
                         placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
-                        className={!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}
+                        className={`text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}
                       />
                     </TableCell>
                     
                     <TableCell>
                       <Select
                         value={backupSetting.intervalUnit}
-                        onValueChange={(value: 'hour' | 'day') => handleUnitChange(machine.name, machine.backupName, value)}
+                        onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(server.id, server.backupName, value)}
                         disabled={!backupSetting.overdueBackupCheckEnabled}
                       >
-                        <SelectTrigger className={`w-full ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
+                        <SelectTrigger className={`w-full text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
                           <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Days' : 'Hours'} />
                         </SelectTrigger>
                         <SelectContent>
@@ -720,26 +670,139 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
             </TableBody>
           </Table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {sortedServers.map((server) => {
+              const backupSetting = getBackupSettingById(server.id, server.backupName);
+              const inputKey = `${server.id}:${server.backupName}`;
+              
+              return (
+                <Card key={`${server.id}-${server.backupName}`} className="p-4">
+                  <div className="space-y-3">
+                    {/* Header with Server and Backup Name */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ServerConfigurationButton
+                          serverUrl={server.server_url}
+                          serverName={server.name}
+                          serverAlias={server.alias}
+                          size="sm"
+                          variant="ghost"
+                          className="text-xs hover:text-blue-500 transition-colors"
+                          showText={false}
+                        />
+                        <div>
+                          <div 
+                            className="font-medium text-sm" 
+                            title={server.alias ? server.name : undefined}
+                          >
+                            {server.alias || server.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground">{server.backupName}</div>
+                          {server.note && (
+                            <div className="text-xs text-muted-foreground truncate mt-1">
+                              {server.note}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Notification Events */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Notification Events</Label>
+                      <Select
+                        value={backupSetting.notificationEvent}
+                        onValueChange={(value: NotificationEvent) => 
+                          updateBackupSettingById(server.id, server.backupName, 'notificationEvent', value)
+                        }
+                      >
+                        <SelectTrigger className="w-full text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="off">Off</SelectItem>
+                          <SelectItem value="all">All</SelectItem>
+                          <SelectItem value="warnings">Warnings</SelectItem>
+                          <SelectItem value="errors">Errors</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    {/* Overdue Backup Monitoring */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Overdue Backup Monitoring</Label>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id={`overdue-backup-mobile-${inputKey}`}
+                          checked={backupSetting.overdueBackupCheckEnabled}
+                          onCheckedChange={(checked) => 
+                            updateBackupSettingById(server.id, server.backupName, 'overdueBackupCheckEnabled', checked)
+                          }
+                        />
+                        <Label htmlFor={`overdue-backup-mobile-${inputKey}`} className="text-xs">
+                          {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
+                        </Label>
+                      </div>
+                    </div>
+                    
+                    {/* Expected Backup Interval */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Expected Backup Interval</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="number"
+                          min="1"
+                          max={backupSetting.intervalUnit === 'hour' ? "8760" : "365"}
+                          value={inputValues[inputKey] ?? backupSetting.expectedInterval.toString()}
+                          onChange={(e) => handleIntervalInputChangeById(server.id, server.backupName, e.target.value)}
+                          onBlur={(e) => handleIntervalBlurById(server.id, server.backupName, e.target.value)}
+                          placeholder={backupSetting.intervalUnit === 'hour' ? "24" : "1"}
+                          disabled={!backupSetting.overdueBackupCheckEnabled}
+                          className={`text-xs flex-1 ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}
+                        />
+                        <Select
+                          value={backupSetting.intervalUnit}
+                          onValueChange={(value: 'hour' | 'day') => handleUnitChangeById(server.id, server.backupName, value)}
+                          disabled={!backupSetting.overdueBackupCheckEnabled}
+                        >
+                          <SelectTrigger className={`w-20 text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''}`}>
+                            <SelectValue placeholder={backupSetting.intervalUnit === 'day' ? 'Days' : 'Hours'} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hour">Hour(s)</SelectItem>
+                            <SelectItem value="day">Day(s)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
           
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between pt-6 gap-4 w-full">
-            {/* Save button - always on top on mobile, left on desktop */}
+          <div className="flex flex-col gap-6 pt-6 w-full">
+            {/* Save button */}
             <div className="flex gap-3">
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Backup Settings"}
               </Button>
             </div>
 
-            {/* Other controls - wrap on smaller screens, right-aligned on desktop */}
-            <div className="flex flex-wrap gap-4 items-end lg:justify-end">
-              <div className="flex flex-col items-start">
-                <Label htmlFor="overdue-tolerance" className="mb-2 self-start">
-                  Overdue tolerance:
+            {/* Controls grid - responsive layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex flex-col">
+                <Label htmlFor="overdue-tolerance" className="mb-2 text-sm">
+                  <span className="hidden sm:inline">Overdue tolerance:</span>
+                  <span className="sm:hidden">Tolerance:</span>
                 </Label>
                 <Select
                   value={overdueTolerance}
                   onValueChange={(value: OverdueTolerance) => handleOverdueToleranceChange(value)}
                 >
-                  <SelectTrigger id="overdue-tolerance" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="overdue-tolerance" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -751,15 +814,18 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col items-start">
-                <Label htmlFor="cron-interval" className="mb-2 self-start">
-                  Overdue monitoring interval:
+              
+              <div className="flex flex-col">
+                <Label htmlFor="cron-interval" className="mb-2 text-sm">
+                  <span className="hidden lg:inline">Overdue monitoring interval:</span>
+                  <span className="lg:hidden hidden sm:inline">Monitoring interval:</span>
+                  <span className="sm:hidden">Interval:</span>
                 </Label>
                 <Select
                   value={cronInterval}
                   onValueChange={(value: CronInterval) => handleCronIntervalChange(value)}
                 >
-                  <SelectTrigger id="cron-interval" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="cron-interval" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -771,25 +837,19 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   </SelectContent>
                 </Select>
               </div>
-              <Button 
-                onClick={handleTestOverdueBackups} 
-                variant="outline" 
-                disabled={isTesting}
-                className="self-end"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                {isTesting ? "Checking..." : "Check now"}
-              </Button>
-              <div className="flex flex-col items-start">
-                <Label htmlFor="notification-frequency" className="mb-2 self-start">
-                    Notification frequency:
+              
+              <div className="flex flex-col">
+                <Label htmlFor="notification-frequency" className="mb-2 text-sm">
+                  <span className="hidden lg:inline">Notification frequency:</span>
+                  <span className="lg:hidden hidden sm:inline">Notification freq:</span>
+                  <span className="sm:hidden">Frequency:</span>
                 </Label>
                 <Select
                   value={notificationFrequency}
                   onValueChange={(value: NotificationFrequencyConfig) => handleNotificationFrequencyChange(value)}
                   disabled={notificationFrequencyLoading}
                 >
-                  <SelectTrigger id="notification-frequency" className="w-[200px] min-w-[150px] max-w-full">
+                  <SelectTrigger id="notification-frequency" className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -803,15 +863,34 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
                 {notificationFrequencyError && <span className="text-xs text-destructive mt-1">{notificationFrequencyError}</span>}
               </div>
-              <Button 
-                onClick={handleResetNotifications}
-                variant="outline"
-                disabled={isResetting}
-                className="self-end"
-              >
-                <TimerReset className="mr-2 h-4 w-4" />
-                {isResetting ? "Resetting..." : "Reset timer"}
-              </Button>
+              
+              <div className="flex flex-col gap-2">
+                <div className="flex-1"></div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleTestOverdueBackups} 
+                    variant="outline" 
+                    disabled={isTesting}
+                    size="sm"
+                    className="flex-1"
+                  >
+                    <RefreshCw className="mr-1 h-3 w-3" />
+                    <span className="hidden sm:inline">{isTesting ? "Checking..." : "Check now"}</span>
+                    <span className="sm:hidden">{isTesting ? "..." : "Check"}</span>
+                  </Button>
+                  <Button 
+                    onClick={handleResetNotifications}
+                    variant="outline"
+                    disabled={isResetting}
+                    size="sm"
+                    className="flex-1"
+                  >
+                    <TimerReset className="mr-1 h-3 w-3" />
+                    <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset timer"}</span>
+                    <span className="sm:hidden">{isResetting ? "..." : "Reset"}</span>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
 

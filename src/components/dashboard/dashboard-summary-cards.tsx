@@ -3,24 +3,63 @@
 
 import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle } from "lucide-react";
+import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, ChartLine, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useServerSelection } from "@/contexts/server-selection-context";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
+  onViewModeChange?: (viewMode: 'analytics' | 'table' | 'overview') => void;
 }
 
-export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
+const availableViewModes = ['overview', 'table', ];
+const viewModeTooltipsTexts = {
+  overview: 'overview',
+  table: 'table view',
+  analytics: 'analytics view',
+};
+
+export function DashboardSummaryCards({ 
+  summary, 
+  onViewModeChange
+}: DashboardSummaryCardsProps) {
+  const { state: serverSelectionState, setViewMode } = useServerSelection();
+  const { viewMode } = serverSelectionState;
+
+  // Handle view mode toggle - cycle through available view modes
+  const handleViewModeToggle = () => {
+    const currentIndex = availableViewModes.indexOf(viewMode);
+    const nextIndex = (currentIndex + 1) % availableViewModes.length;
+    const newViewMode = availableViewModes[nextIndex] as 'analytics' | 'table' | 'overview';
+    
+    setViewMode(newViewMode);
+    localStorage.setItem('dashboard-view-mode', newViewMode);
+    onViewModeChange?.(newViewMode);
+  };
+
   const summaryItems = [
     {
-      title: "Total Machines",
-      value: summary.totalMachines.toLocaleString(),
+      title: "Total Servers",
+      value: summary.totalServers.toLocaleString(),
       icon: <HardDrive className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "server computer",
     },
     {
-      title: "Total Backups",
+      title: "Total Backup Jobs",
       value: summary.totalBackups.toLocaleString(),
+      icon: <Archive className="h-6 w-6 text-blue-600" />,
+      "data-ai-hint": "archive box",
+    },
+    {
+      title: "Total Backup Runs",
+      value: summary.totalBackupsRuns.toLocaleString(),
       icon: <Archive className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "archive box",
     },
@@ -42,31 +81,75 @@ export function DashboardSummaryCards({ summary }: DashboardSummaryCardsProps) {
       icon: <UploadCloud className="h-6 w-6 text-blue-600" />,
       "data-ai-hint": "cloud upload",
     },
-    {
+    // Only show Overdue Backups card when not in overview mode
+    ...(viewMode !== 'overview' ? [{
       title: "Overdue Backups",
       value: summary.overdueBackupsCount.toLocaleString(),
-      icon: <AlertTriangle className={`h-6 w-6 ${summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500'}`} />,
-      "data-ai-hint": "alert warning",
-    },
+      icon: summary.overdueBackupsCount > 0 ? (
+        <AlertTriangle className="h-6 w-6 text-red-600" />
+      ) : (
+        <ThumbsUp className="h-6 w-6 text-green-600" />
+      ),
+      "data-ai-hint": "alert triangle",
+    }] : []),
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 mb-8">
-      {summaryItems.map((item) => (
-        <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {item.title}
-            </CardTitle>
-            {item.icon}
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${item.title === "Overdue Backups" ? (summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
-              {item.value}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="flex gap-3">
+      <div className={`grid gap-3 md:grid-cols-2 ${viewMode === 'overview' ? 'lg:grid-cols-6' : 'lg:grid-cols-7'} flex-1`}>
+        {summaryItems.map((item) => (
+          <Card key={item.title} className="shadow-md hover:shadow-lg transition-shadow" data-ai-hint={item['data-ai-hint']}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
+              <CardTitle className="text-sm font-medium">
+                {item.title}
+              </CardTitle>
+              {item.icon}
+            </CardHeader>
+            <CardContent className="px-3 pb-3">
+              <div className={`text-2xl font-bold ${item.title === "Overdue Backups" ? (summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
+                {item.value}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      
+      {/* Toggle View Mode Card */}
+      <Card className="shadow-md hover:shadow-lg transition-shadow w-fit flex-shrink-0 flex items-center justify-center">
+        <div className="p-3 text-center">
+          <TooltipProvider>
+            <Tooltip delayDuration={1000}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  // className="h-8 w-8 p-0 hover:bg-transparent "
+                  className="h-8 w-8 p-6  [&_svg]:!h-8 [&_svg]:!w-8 text-blue-600 hover:text-foreground bg-black-100 backdrop-blur-sm border-white-500 text-blue-600 shadow-lg hover:bg-blue-900 hover:border-blue-600 transition-all duration-200"
+                  onClick={handleViewModeToggle}
+                >
+                  {viewMode === 'analytics' ? (
+                    <ChartLine className="h-6 w-6" />
+                  ) : viewMode === 'table' ? (
+                    <Sheet className="h-8 w-8" />
+                  ) : (
+                    <LayoutDashboard className="h-6 w-6" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Show {(() => {
+                  const currentIndex = availableViewModes.indexOf(viewMode);
+                  const nextIndex = (currentIndex + 1) % availableViewModes.length;
+                  const nextViewMode = availableViewModes[nextIndex];
+                  return viewModeTooltipsTexts[nextViewMode as keyof typeof viewModeTooltipsTexts];
+                })()}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          {/* <div className="text-xs text-muted-foreground mt-2">
+            {viewMode === 'analytics' ? 'Switch to Table' : 'Switch to Analytics'}
+          </div> */}
+        </div>
+      </Card>
     </div>
   );
 }

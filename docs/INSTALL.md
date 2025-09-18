@@ -5,7 +5,7 @@
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.6.1-blue)
+![](https://img.shields.io/badge/version-0.7.26-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
@@ -25,9 +25,9 @@ This document describes how to install and configure the **duplistatus** server.
   - [Option 4: Using Docker CLI](#option-4-using-docker-cli)
   - [Option 5: Using Podman with Pod (CLI)](#option-5-using-podman-with-pod-cli)
   - [Option 6: Using Podman Compose (CLI)](#option-6-using-podman-compose-cli)
-- [Configuring the locale and timezone](#configuring-the-locale-and-timezone)
+- [Configuring the timezone](#configuring-the-timezone)
   - [Using your Linux Configuration](#using-your-linux-configuration)
-  - [List of Locales and Timezones](#list-of-locales-and-timezones)
+  - [List of Timezones](#list-of-timezones)
 - [Environment Variables](#environment-variables)
 - [Duplicati Server Configuration (Required)](#duplicati-server-configuration-required)
 - [Next Steps](#next-steps)
@@ -43,7 +43,7 @@ Ensure you have the following installed:
 - Docker Engine - [Debian installation guide](https://docs.docker.com/engine/install/debian/)
 - Docker Compose -  [Linux installation guide](https://docs.docker.com/compose/install/linux/)
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
-- Podman(optional) -  [Installation guide](http://podman.io/docs/installation#debian) 
+- Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian) 
 
 <br>
 
@@ -72,7 +72,7 @@ You can use the images from:
 
 ### Option 1: Using Docker Compose
 
-This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker-compose` file to define and run the container with all its settings.
+This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 Create a file called `duplistatus.yml` containing the following:
 
@@ -98,10 +98,10 @@ volumes:
     name: duplistatus_data 
 ```
 
-After creating the file, execute the `docker-compose` command to start the container in the background (`-d`):
+After creating the file, execute the `docker compose` command to start the container in the background (`-d`):
 
 ```bash
-docker-compose -f duplistatus.yml up -d
+docker compose -f duplistatus.yml up -d
 ```
 
 <br>
@@ -111,7 +111,7 @@ docker-compose -f duplistatus.yml up -d
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Web editor".
-4. Copy and paste content of `duplistatus.yml` on "Option 1"
+4. Copy and paste the content of `duplistatus.yml` from "Option 1"
 5. Click "Deploy the stack".
 
 <br>
@@ -122,7 +122,7 @@ docker-compose -f duplistatus.yml up -d
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
-5. In the "Compose path" field, enter: `docker-compose.yml`
+5. In the "Compose path" field, enter: `docker compose.yml`
 6. Click "Deploy the stack".
 
 <br>
@@ -175,53 +175,41 @@ podman-compose -f duplistatus.yml up -d
 
 <br><br>
 
-## Configuring the locale and timezone
+## Configuring the timezone
 
-The application's user interface will be displayed according to the browser's locale settings. However, for logging and notification purposes, the application will use the values defined in the `LANG` and `TZ` environment variables to format values and time zones. 
-
-<br>
-
->[!NOTE]
-> Changing the locale setting (`LANG`) from the default `en.GB.UTF-8` to a different value 
-> will only affect the formatting of numbers and dates. 
-> The language used by the application will remain English.
+The application date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones. 
 
 <br>
 
-For example, to change the locale/timezone to Brazilian Portuguese/São Paulo, add these lines to the `duplistatus.yml`:
+
+For example, to change the timezone to São Paulo, add these lines to the `duplistatus.yml` under `duplistatus:`:
 
 ```yaml
     environment:
-      - LANG="pt-BR.UTF-8"
       - TZ="America/Sao_Paulo"
 ```
 
-or pass these variables in the command line
+or pass the TZ value in the command line:
 
 ```bash
-  --env  LANG="pt-BR.UTF-8" --env TZ="America/Sao_Paulo" 
-``` 
+  --env TZ="America/Sao_Paulo" 
+```
 <br>
 
 ### Using your Linux Configuration
 
-To obtain your Linux host's configuration, you can use execute:
+To obtain your Linux host's configuration, you can execute:
 
 ```bash
-echo LANG=\"$LANG\"; echo TZ=\"$(</etc/timezone)\"
+echo TZ=\"$(</etc/timezone)\"
 ```
 
 <br>
 
-### List of Locales and Timezones
+### List of Timezones
 
+You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
-| Configuration |  List                                                                                      |
-| ----          | ------------------------------------------------------------------------------------------ |
-| TZ            |  [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) |
-| LANG          | execute `ls -c /usr/share/i18n/locales`                                                    |
-
-When selecting a locale, remember to append the `.UTF-8` encoding to ensure proper functionality.
 
 <br><br>
 
@@ -235,7 +223,6 @@ The application supports the following environment variables for configuration:
 | `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `9667`          |
 | `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production`    |
 | `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`             |
-| `LANG`                    | Language and locale setting for the application        | `en_GB.UTF-8`   |
 | `TZ`                      | Timezone for the application                           | `Europe/London` |
 
 <br><br>
@@ -247,7 +234,7 @@ In order for this application to work properly, the Duplicati server needs to be
 Apply this configuration to all your Duplicati servers:
 
 
-1. **Allow remote access:**  Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
+1. **Allow remote access:** Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
 
 <div style="padding-left: 60px;">
 
@@ -316,13 +303,13 @@ Apply this configuration to all your Duplicati servers:
 > After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
 
-
-<br><br>
+<br>
 
 ## Next Steps
 
 Check the [User Guide](USER-GUIDE.md) on how to use **duplistatus**.
 
+<br>
 
 ## License
 

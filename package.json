@@ -1,24 +1,24 @@
 {
   "name": "duplistatus",
-  "version": "0.6.1",
+  "version": "0.7.26",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.16.1",
   "engines": {
-    "node": ">=18.19.0",
-    "pnpm": ">=10.12.4"
+    "node": ">=20.19.0",
+    "pnpm": ">=10.15.0"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build": "next build",
+    "build": "./scripts/update-version.sh && next build",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "start": "NODE_ENV=production HOSTNAME=0.0.0.0 PORT=9666 node duplistatus-server.ts",
     "cron:start": "tsx src/cron-service/index.ts",
-    "dev": "next dev -p 8666",
+    "dev": "./scripts/update-version.sh && next dev -p 8666",
     "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts",
-    "build-local": "next build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static",
-    "start-local": "NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
+    "build-local": "./scripts/update-version.sh && next build",
+    "start-local": "./scripts/update-version.sh && NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 tsx duplistatus-server.ts",
     "cron:start-local": "NODE_ENV=production CRON_PORT=8667 tsx watch src/cron-service/index.ts",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "show-overdue-notifications": "tsx scripts/show-overdue-notifications.ts",
@@ -27,7 +27,10 @@
     "release:patch": "pnpm version patch",
     "release:minor": "pnpm version minor",
     "release:major": "pnpm version major",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "docker-up": "docker compose up --build -d",
+    "docker-down": "docker compose down",
+    "docker-clean": "./scripts/clean-docker.sh"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -55,33 +58,34 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "express": "^5.1.0",
-    "lucide-react": "^0.540.0",
-    "next": "^15.5.0",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.544.0",
+    "next": "^15.5.3",
     "node-cron": "^4.2.1",
     "react": "^19.1.1",
-    "react-day-picker": "^9.9.0",
+    "react-day-picker": "^9.10.0",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
-    "recharts": "^3.1.2",
+    "recharts": "^3.2.0",
     "server-only": "^0.0.1",
     "string-template": "^1.0.0",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.12",
+    "tailwindcss": "^4.1.13",
     "tailwindcss-animate": "^1.0.7",
-    "tsx": "^4.20.4",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2",
-    "uuid": "^11.1.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.12",
+    "@tailwindcss/postcss": "^4.1.13",
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.4.0",
     "@types/node-cron": "^3.0.11",
-    "@types/react": "19.1.11",
+    "@types/react": "19.1.13",
     "@types/string-template": "^1.0.7",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9.33.0",
-    "eslint-config-next": "15.5.0"
+    "eslint": "^9.35.0",
+    "eslint-config-next": "15.5.3"
   }
 }

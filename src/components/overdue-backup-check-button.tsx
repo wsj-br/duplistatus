@@ -1,18 +1,17 @@
 "use client";
 
 import { useState } from 'react';
-import { RefreshCcwDot, Loader2 } from 'lucide-react';
+import { CalendarCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 export function OverdueBackupCheckButton() {
   const [isChecking, setIsChecking] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
   const pathname = usePathname();
-  const { refreshDashboard } = useGlobalRefresh();
+  const { refreshDashboard, refreshDetail } = useGlobalRefresh();
 
   const handleCheckOverdueBackups = async () => {
     try {
@@ -36,25 +35,23 @@ export function OverdueBackupCheckButton() {
       
       const { checkedBackups, overdueBackupsFound, notificationsSent } = result.statistics;
       
-      // Check if we're already on the dashboard page
+      // Show success toast
+      toast({
+        title: "Overdue Backup Check Complete",
+        description: `Checked ${checkedBackups} backups, found ${overdueBackupsFound} overdue backups, sent ${notificationsSent} notifications.`,
+        duration: 3000,
+      });
+
+      // Refresh the current page data using global refresh
       if (pathname === "/") {
-        // If already on dashboard, show toast directly and refresh the dashboard data
-        toast({
-          title: "Overdue Backup Check Complete",
-          description: `Checked ${checkedBackups} backups, found ${overdueBackupsFound} overdue backups, sent ${notificationsSent} notifications.`,
-          duration: 3000,
-        });
+        // If on dashboard pages, refresh dashboard data
         await refreshDashboard();
-      } else {
-        // If on another page, store toast data and redirect to dashboard
-        const toastData = {
-          title: "Overdue Backup Check Complete",
-          description: `Checked ${checkedBackups} backups, found ${overdueBackupsFound} overdue backups, sent ${notificationsSent} notifications.`,
-          variant: "default" as const,
-          duration: 3000,
-        };
-        localStorage.setItem("overdue-backup-check-toast", JSON.stringify(toastData));
-        router.push("/");
+      } else if (pathname.startsWith('/detail/') && !pathname.includes('/backup/')) {
+        // If on detail pages, refresh detail data
+        const match = pathname.match(/^\/detail\/([^\/]+)$/);
+        if (match) {
+          await refreshDetail(match[1]);
+        }
       }
     } catch (error) {
       console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
@@ -82,7 +79,7 @@ export function OverdueBackupCheckButton() {
       {isChecking ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
-        <RefreshCcwDot className="h-4 w-4" />
+        <CalendarCheck  className="h-4 w-4" />
       )}
     </Button>
   );

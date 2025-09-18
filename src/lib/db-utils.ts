@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -35,13 +35,14 @@ function getToleranceInMinutes(tolerance: OverdueTolerance): number {
   }
 }
 
-// Helper function to get backup key
-function getBackupKey(machineName: string, backupName: string): BackupKey {
-  return `${machineName}:${backupName}`;
+// Helper function to get backup key (new format: server_id:backup_name)
+function getBackupKey(serverId: string, backupName: string): BackupKey {
+  return `${serverId}:${backupName}`;
 }
 
+
 // Helper function to check if a backup is overdue based on expected interval
-function isBackupOverdueByInterval(machineName: string, backupName: string, lastBackupDate: string | null): boolean {
+export function isBackupOverdueByInterval(serverId: string, backupName: string, lastBackupDate: string | null): boolean {
   try {
     if (!lastBackupDate || lastBackupDate === 'N/A') return false;
     
@@ -57,14 +58,14 @@ function isBackupOverdueByInterval(machineName: string, backupName: string, last
       overdueTolerance?: OverdueTolerance;
     }>;
     
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(serverId, backupName);
     const settings = backupSettings[backupKey];
     
     // If no settings found or overdue backup check is disabled, return false
     if (!settings || !settings.overdueBackupCheckEnabled) return false;
     
     // Get backup interval settings
-    const backupIntervalSettings = getBackupIntervalSettings(machineName, backupName);
+    const backupIntervalSettings = getBackupIntervalSettings(serverId, backupName);
     if (!backupIntervalSettings) return false;
     
     // Calculate expected backup date with tolerance
@@ -90,7 +91,7 @@ function isBackupOverdueByInterval(machineName: string, backupName: string, last
 }
 
 // Helper function to get notification event for a backup
-function getNotificationEvent(machineName: string, backupName: string): NotificationEvent | undefined {
+function getNotificationEvent(serverId: string, backupName: string): NotificationEvent | undefined {
   try {
     const backupSettingsJson = getConfiguration('backup_settings');
     if (!backupSettingsJson) return undefined;
@@ -102,7 +103,7 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
       intervalUnit: 'hour' | 'day';
     }>;
     
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(serverId, backupName);
     return backupSettings[backupKey]?.notificationEvent;
   } catch (error) {
     console.error('Error getting notification event:', error instanceof Error ? error.message : String(error));
@@ -110,8 +111,29 @@ function getNotificationEvent(machineName: string, backupName: string): Notifica
   }
 }
 
+// Helper function to get last notification sent timestamp for a backup
+function getLastNotificationSent(serverId: string, backupName: string): string {
+  try {
+    const lastNotificationJson = getConfiguration('overdue_notifications');
+    if (!lastNotificationJson) return 'N/A';
+    
+    const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
+    const backupKey = getBackupKey(serverId, backupName);
+    const notification = lastNotifications[backupKey];
+    
+    if (notification && notification.lastNotificationSent) {
+      return notification.lastNotificationSent;
+    }
+    
+    return 'N/A';
+  } catch (error) {
+    console.error('Error getting last notification sent:', error instanceof Error ? error.message : String(error));
+    return 'N/A';
+  }
+}
+
 // Helper function to get backup interval settings for expected backup calculations
-function getBackupIntervalSettings(machineName: string, backupName: string): {
+function getBackupIntervalSettings(serverId: string, backupName: string): {
   expectedInterval: number;
   intervalUnit: 'hour' | 'day';
   overdueTolerance?: OverdueTolerance;
@@ -128,7 +150,7 @@ function getBackupIntervalSettings(machineName: string, backupName: string): {
       overdueTolerance?: OverdueTolerance;
     }>;
     
-    const backupKey = getBackupKey(machineName, backupName);
+    const backupKey = getBackupKey(serverId, backupName);
     const settings = backupSettings[backupKey];
     
     if (!settings) return undefined;
@@ -309,7 +331,7 @@ export const runtime = 'nodejs';
 // Define the database backup record type
 interface BackupRecord {
   id: string;
-  machine_id: string;
+  server_id: string;
   backup_name: string;
   date: string;
   status: BackupStatus;
@@ -385,130 +407,36 @@ export function setConfiguration(key: string, value: string): void {
   });
 }
 
-// Enhanced data functions with better formatting (consolidated from data.ts)
-interface MachineSummaryRow {
-  machine_id: string;
+interface ServerRow {
+  id: string;
   name: string;
-  last_backup_date: string | null;
-  last_backup_id: string | null;
-  last_backup_status: BackupStatus | null;
-  last_backup_duration: number | null;
-  last_backup_list_count: number | null;
-  last_backup_name: string | null;
-  backup_count: number;
-  total_warnings: number;
-  total_errors: number;
-  available_backups: string | null;
+  server_url: string;
+  alias: string;
+  note: string;
 }
 
-export function getMachinesSummary() {
-  // Get the last overdue backup check time once for all machines
-  const lastOverdueCheck = getLastOverdueBackupCheckTime();
-  
+export function getAllServerAddresses() {
   return withDb(() => {
-    const rows = safeDbOperation(() => dbOps.getMachinesSummary.all(), 'getMachinesSummary', []) as MachineSummaryRow[];
-    return rows.map(row => {
-      // Validate and normalize the backup status
-      let normalizedStatus: BackupStatus | 'N/A';
-      if (row.last_backup_status === null) {
-        normalizedStatus = 'N/A';
-      } else {
-        // Check if the status is a valid BackupStatus value
-        const validStatuses: BackupStatus[] = ['Success', 'Unknown', 'Warning', 'Error', 'Fatal'];
-        if (validStatuses.includes(row.last_backup_status as BackupStatus)) {
-          normalizedStatus = row.last_backup_status as BackupStatus;
-        } else {
-          // If it's not a valid status, default to 'Failed'
-          normalizedStatus = 'Unknown';
-        }
-      }
-
-      // Check if backup is overdue and override status if needed
-      let isOverdue : boolean = false;
-      if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
-        isOverdue = isBackupOverdueByInterval(row.name, row.last_backup_name, row.last_backup_date);
-      }
-
-      // Get notification event for this backup
-      const notificationEvent = row.last_backup_name ? 
-        getNotificationEvent(row.name, row.last_backup_name) : 
-        undefined;
-
-      // Get last notification sent (if any)
-      let lastNotificationSent = 'N/A';
-      if (row.last_backup_name) {
-        const backupKey = `${row.name}:${row.last_backup_name}`;
-        const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-        if (lastNotificationJson) {
-          try {
-            const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
-            const notification = lastNotifications[backupKey];
-            if (notification && notification.lastNotificationSent) {
-              lastNotificationSent = notification.lastNotificationSent;
-            }
-          } catch (error) {
-            console.warn('Failed to parse overdue backup notifications:', error);
-          }
-        }
-      }
-
-      // Calculate expected backup date and elapsed time
-      let expectedBackupDate = 'N/A';
-      let expectedBackupElapsed = 'N/A';
-      
-      if (row.last_backup_name && row.last_backup_date && row.last_backup_date !== 'N/A') {
-        const backupSettings = getBackupIntervalSettings(row.name, row.last_backup_name);
-        if (backupSettings) {
-          // Get global tolerance setting
-          const globalTolerance = getOverdueToleranceConfig();
-          expectedBackupDate = calculateExpectedBackupDate(
-            row.last_backup_date, 
-            backupSettings.expectedInterval, 
-            backupSettings.intervalUnit,
-            globalTolerance
-          );
-          expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
-        }
-      }
-
-      return {
-        id: row.machine_id,
-        name: row.name,
-        lastBackupDate: row.last_backup_date || 'N/A',
-        lastBackupStatus: normalizedStatus,
-        lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
-        lastBackupListCount: row.last_backup_list_count,
-        lastBackupName: row.last_backup_name || null,
-        lastBackupId: row.last_backup_id || null,
-        backupCount: row.backup_count || 0,
-        totalWarnings: row.total_warnings || 0,
-        totalErrors: row.total_errors || 0,
-        availableBackups: row.available_backups ? JSON.parse(row.available_backups) : null,
-        isBackupOverdue: isOverdue,
-        notificationEvent,
-        expectedBackupDate,
-        expectedBackupElapsed,
-        lastOverdueCheck,
-        lastNotificationSent
-      };
-    });
+    const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as ServerRow[];
+    return servers.map(server => ({
+      id: server.id,
+      name: server.name,
+      server_url: server.server_url || '',
+      alias: server.alias || '',
+      note: server.note || ''
+    }));
   });
 }
 
-interface MachineRow {
-  id: string;
-  name: string;
-}
-
-export function getAllMachines() {
+export function getAllServers() {
   return withDb(() => {
-    const machines = safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as MachineRow[];
-    return machines.map(machine => {
-      const backups = safeDbOperation(() => dbOps.getMachineBackups.all(machine.id), 'getMachineBackups', []) as BackupRecord[];
+    const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as ServerRow[];
+    return servers.map(server => {
+      const backups = safeDbOperation(() => dbOps.getServerBackups.all(server.id), 'getServerBackups', []) as BackupRecord[];
       
       const formattedBackups = backups.map(backup => ({
         id: String(backup.id),
-        machine_id: String(backup.machine_id),
+        server_id: String(backup.server_id),
         name: String(backup.backup_name),
         date: backup.date,
         status: backup.status,
@@ -544,8 +472,10 @@ export function getAllMachines() {
       }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
 
       return {
-        id: machine.id,
-        name: machine.name,
+        id: server.id,
+        name: server.name,
+        alias: server.alias || '',
+        note: server.note || '',
         backups: formattedBackups,
         chartData
       };
@@ -554,7 +484,8 @@ export function getAllMachines() {
 }
 
 interface OverallSummaryRow {
-  total_machines: number;
+  total_servers: number;
+  total_backups_runs: number;
   total_backups: number;
   total_uploaded_size: number;
   total_storage_used: number;
@@ -585,31 +516,17 @@ function countOverdueBackups(): number {
       return 0;
     }
     
-    // Get machines summary for machine ID lookup
-    const machinesSummary = withDb(() => {
-      return safeDbOperation(() => dbOps.getAllMachines.all(), 'getAllMachines', []) as { 
-        id: string; 
-        name: string; 
-      }[];
-    });
-    
-    // Create a map for quick machine name to ID lookup
-    const machineNameToId = new Map<string, string>();
-    machinesSummary.forEach(machine => {
-      machineNameToId.set(machine.name, machine.id);
-    });
-    
     const currentTime = new Date();
     let overdueCount = 0;
     
-    // Iterate through backup settings keys (machine_name:backup_name)
+    // Iterate through backup settings keys (server_id:backup_name)
     const backupKeys = Object.keys(backupSettings);
     
     for (const backupKey of backupKeys) {
-      // Parse machine name and backup name from the key
-      const [machineName, backupName] = backupKey.split(':');
+      // Parse server ID and backup name from the key
+      const [serverId, backupName] = backupKey.split(':');
       
-      if (!machineName || !backupName) {
+      if (!serverId || !backupName) {
         continue;
       }
       
@@ -620,16 +537,10 @@ function countOverdueBackups(): number {
         continue;
       }
       
-      // Get machine ID from the machine name
-      const machineId = machineNameToId.get(machineName);
-      if (!machineId) {
-        continue;
-      }
-      
-      // Get the latest backup for this machine and backup name
-      const latestBackup = safeDbOperation(() => dbOps.getLatestBackupByName.get(machineId, backupName), 'getLatestBackupByName') as {
+      // Get the latest backup for this server and backup name
+      const latestBackup = safeDbOperation(() => dbOps.getLatestBackupByName.get(serverId, backupName), 'getLatestBackupByName') as {
         date: string;
-        machine_name: string;
+        server_name: string;
         backup_name?: string;
       } | null;
       
@@ -668,7 +579,8 @@ export function getOverallSummary() {
       
       if (!summary) {
         return {
-          totalMachines: 0,
+          totalServers: 0,
+          totalBackupsRuns: 0,
           totalBackups: 0,
           totalUploadedSize: 0,
           totalStorageUsed: 0,
@@ -686,7 +598,8 @@ export function getOverallSummary() {
       }
 
       return {
-        totalMachines: summary.total_machines,
+        totalServers: summary.total_servers,
+        totalBackupsRuns: summary.total_backups_runs,
         totalBackups: summary.total_backups,
         totalUploadedSize: summary.total_uploaded_size,
         totalStorageUsed: summary.total_storage_used,
@@ -700,7 +613,8 @@ export function getOverallSummary() {
     console.error('[getOverallSummary] Error:', error instanceof Error ? error.message : String(error));
     // Return a fallback instead of throwing
     return {
-      totalMachines: 0,
+      totalServers: 0,
+      totalBackupsRuns: 0,
       totalBackups: 0,
       totalUploadedSize: 0,
       totalStorageUsed: 0,
@@ -710,17 +624,32 @@ export function getOverallSummary() {
   }
 }
 
-export function getMachineById(machineId: string) {
+export function getServerInfoById(serverId: string) {
   return withDb(() => {
     try {
-      const machine = safeDbOperation(() => dbOps.getMachine.get(machineId), 'getMachine') as { id: string; name: string } | undefined;
-      if (!machine) return null;
+      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      if (!server) return null;
 
-      const backups = safeDbOperation(() => dbOps.getMachineBackups.all(machineId), 'getMachineBackups', []) as BackupRecord[];
+      return server;
+    } catch (error) {
+      console.error(`Failed to get server by ID ${serverId}:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
+  });
+}
+
+
+export function getServerById(serverId: string) {
+  return withDb(() => {
+    try {
+      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      if (!server) return null;
+
+      const backups = safeDbOperation(() => dbOps.getServerBackups.all(serverId), 'getServerBackups', []) as BackupRecord[];
       
       const formattedBackups = backups.map(backup => ({
         id: String(backup.id),
-        machine_id: String(backup.machine_id),
+        server_id: String(backup.server_id),
         name: String(backup.backup_name),
         date: backup.date,
         status: backup.status,
@@ -756,13 +685,16 @@ export function getMachineById(machineId: string) {
       }).sort((a, b) => new Date(a.isoDate).getTime() - new Date(b.isoDate).getTime());
 
       return {
-        id: machine.id,
-        name: machine.name,
+        id: server.id,
+        name: server.name,
+        alias: server.alias || '',
+        note: server.note || '',
+        server_url: server.server_url || '',
         backups: formattedBackups,
         chartData
       };
     } catch (error) {
-      console.error(`Failed to get machine by ID ${machineId}:`, error instanceof Error ? error.message : String(error));
+      console.error(`Failed to get server by ID ${serverId}:`, error instanceof Error ? error.message : String(error));
       return null;
     }
   });
@@ -792,26 +724,430 @@ export function getAggregatedChartData() {
   }
 }
 
+export function getAllServersChartData() {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getAllServersChartData.all(), 'getAllServersChartData', []) as {
+        date: string;
+        isoDate: string;
+        serverId: string;
+        uploadedSize: number;
+        duration: number;
+        fileCount: number;
+        fileSize: number;
+        storageSize: number;
+        backupVersions: number;
+      }[];
+      
+      // Ensure we always return an array, even if empty
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getAllServersChartData] Error:', error instanceof Error ? error.message : String(error));
+    // Return empty array as fallback
+    return [];
+  }
+}
+
+// New function to get aggregated chart data with time range filtering
+export function getAggregatedChartDataWithTimeRange(startDate: Date, endDate: Date) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getAggregatedChartDataWithTimeRange.all({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }), 'getAggregatedChartDataWithTimeRange', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getAggregatedChartDataWithTimeRange] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get server chart data (no date filtering)
+export function getServerChartData(serverId: string) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getServerChartData.all(serverId), 'getServerChartData', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getServerChartData] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get server chart data with time range filtering
+export function getServerChartDataWithTimeRange(serverId: string, startDate: Date, endDate: Date) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getServerChartDataWithTimeRange.all({
+        serverId,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }), 'getServerChartDataWithTimeRange', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getServerChartDataWithTimeRange] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get server/backup chart data (no date filtering)
+export function getServerBackupChartData(serverId: string, backupName: string) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getServerBackupChartData.all({
+        serverId,
+        backupName
+      }), 'getServerBackupChartData', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getServerBackupChartData] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get server/backup chart data with time range filtering
+export function getServerBackupChartDataWithTimeRange(serverId: string, backupName: string, startDate: Date, endDate: Date) {
+  try {
+    return withDb(() => {
+      const result = safeDbOperation(() => dbOps.getServerBackupChartDataWithTimeRange.all({
+        serverId,
+        backupName,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }), 'getServerBackupChartDataWithTimeRange', []) as ChartDataPoint[];
+      
+      return result || [];
+    });
+  } catch (error) {
+    console.error('[getServerBackupChartDataWithTimeRange] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// New function to get server summary for the new dashboard
+export function getServersSummary() {
+  try {
+    return withDb(() => {
+      const rows = safeDbOperation(() => dbOps.getServersSummary.all(), 'getServersSummary', []) as Array<{
+        server_id: string;
+        server_name: string;
+        server_url: string;
+        alias: string;
+        note: string;
+        backup_name: string;
+        last_backup_date: string | null;
+        last_backup_id: string | null;
+        last_backup_status: BackupStatus | null;
+        last_backup_duration: number | null;
+        backup_count: number;
+        file_count: number;
+        file_size: number;
+        storage_size: number;
+        backup_versions: number;
+        available_backups: string | null;
+        uploaded_size: number;
+        warnings: number;
+        errors: number;
+        status_history: string | null;
+      }>;
+      
+      // Group by server to create the structure needed for server cards/table
+      const serverMap = new Map<string, {
+        id: string;
+        name: string;
+        server_url: string;
+        alias: string;
+        note: string;
+        backupInfo: Array<{
+          name: string;
+          lastBackupDate: string;
+          lastBackupId: string;
+          lastBackupStatus: BackupStatus | 'N/A';
+          lastBackupDuration: string;
+          lastBackupListCount: number | null;
+          backupCount: number;
+          statusHistory: BackupStatus[];
+          fileCount: number;
+          fileSize: number;
+          storageSize: number;
+          uploadedSize: number;
+          availableBackups: string[];
+          warnings: number;
+          errors: number;
+          isBackupOverdue: boolean;
+          notificationEvent?: NotificationEvent;
+          expectedBackupDate: string;
+          expectedBackupElapsed: string;
+          lastNotificationSent: string;
+        }>;
+        totalBackupCount: number;
+        totalStorageSize: number;
+        totalFileCount: number;
+        totalFileSize: number;
+        totalUploadedSize: number;
+        haveOverdueBackups: boolean;
+        lastBackupDate: string;
+        lastBackupStatus: BackupStatus | 'N/A';
+        lastBackupDuration: string;
+        lastBackupListCount: number | null;
+        lastBackupName: string | null;
+        lastBackupId: string | null;
+        lastOverdueCheck: string;
+        backupNames: string[];
+      }>();
+      
+      rows.forEach(row => {
+        const serverId = row.server_id;
+        
+        if (!serverMap.has(serverId)) {
+          // Initialize server data
+          serverMap.set(serverId, {
+            id: serverId,
+            name: row.server_name,
+            server_url: row.server_url,
+            alias: row.alias || '',
+            note: row.note || '',
+            backupInfo: [],
+            totalBackupCount: 0,
+            totalStorageSize: 0,
+            totalFileCount: 0,
+            totalFileSize: 0,
+            totalUploadedSize: 0,
+            lastBackupDate: 'N/A',
+            lastBackupStatus:  'N/A',
+            lastBackupDuration: 'N/A',
+            lastBackupListCount: 0,
+            lastBackupName: 'N/A',
+            lastBackupId: 'N/A',
+            lastOverdueCheck: getLastOverdueBackupCheckTime(),
+            haveOverdueBackups: false,
+            backupNames: [],
+          });
+        }
+        
+        const server = serverMap.get(serverId)!;
+        
+        // Parse status history for status bars
+        const statusHistory: BackupStatus[] = [];
+        if (row.status_history) {
+          const statuses = row.status_history.split(',');
+          statuses.forEach(status => {
+            if (status && status !== 'null') {
+              // Validate status
+              const validStatuses: BackupStatus[] = ['Success', 'Unknown', 'Warning', 'Error', 'Fatal'];
+              if (validStatuses.includes(status as BackupStatus)) {
+                statusHistory.push(status as BackupStatus);
+              } else {
+                statusHistory.push('Unknown');
+              }
+            }
+          });
+        }
+        
+        // Add backup job data
+        const backupInfo = {
+          name: row.backup_name,
+          lastBackupDate: row.last_backup_date || 'N/A',
+          lastBackupId: row.last_backup_id || 'N/A',
+          lastBackupStatus: (row.last_backup_status || 'N/A') as BackupStatus | 'N/A',
+          lastBackupDuration: row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A',
+          lastBackupListCount: row.backup_versions || null,
+          backupCount: row.backup_count || 0,
+          statusHistory,
+          fileCount: row.file_count || 0,
+          fileSize: row.file_size || 0,
+          storageSize: row.storage_size || 0,
+          uploadedSize: row.uploaded_size || 0,
+          warnings: row.warnings || 0,
+          errors: row.errors || 0,
+          availableBackups: row.available_backups ? JSON.parse(row.available_backups) : [],
+          // Initialize backup status fields
+          isBackupOverdue: false,
+          notificationEvent: undefined,
+          expectedBackupDate: 'N/A',
+          expectedBackupElapsed: 'N/A',
+          lastNotificationSent: 'N/A'
+        };
+        
+        server.backupInfo.push(backupInfo);
+
+        // add the backup name to the backup names array
+        server.backupNames.push(row.backup_name);
+        
+        // Update server totals
+        server.totalBackupCount += row.backup_count || 0;
+        server.totalStorageSize += row.storage_size || 0;
+        server.totalFileCount += row.file_count || 0;
+        server.totalFileSize += row.file_size || 0;
+        server.totalUploadedSize += row.uploaded_size || 0;
+        
+        // Update latest backup info (use the most recent backup across all jobs)
+        if (row.last_backup_date && (server.lastBackupDate === 'N/A' || new Date(row.last_backup_date) > new Date(server.lastBackupDate))) {
+          server.lastBackupDate = row.last_backup_date;
+          server.lastBackupStatus = row.last_backup_status || 'N/A';
+          server.lastBackupDuration = row.last_backup_duration ? formatDurationFromSeconds(row.last_backup_duration) : 'N/A';
+          server.lastBackupListCount = row.backup_versions || null;
+          server.lastBackupId = row.last_backup_id || 'N/A';
+        }
+        
+      });
+      
+      // Process each server to add overdue status and other derived data per backup job
+      const result = Array.from(serverMap.values()).map(server => {
+        // Process each backup job to add overdue status and other derived data
+        server.backupInfo = server.backupInfo.map(thisBackupInfo => {
+          let isOverdue = false;
+          let expectedBackupDate = 'N/A';
+          let expectedBackupElapsed = 'N/A';
+          
+          if (thisBackupInfo.lastBackupDate !== 'N/A') {
+            isOverdue = isBackupOverdueByInterval(server.id, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
+
+            // Check if the server has overdue backups
+            if (isOverdue) {
+              server.haveOverdueBackups = true;
+            }
+
+            // Get expected backup date
+            const backupSettings = getBackupIntervalSettings(server.id, thisBackupInfo.name);
+            if (backupSettings) {
+              const globalTolerance = getOverdueToleranceConfig();
+              expectedBackupDate = calculateExpectedBackupDate(
+                thisBackupInfo.lastBackupDate,
+                backupSettings.expectedInterval,
+                backupSettings.intervalUnit,
+                globalTolerance
+              );
+              expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
+            }
+          }
+          
+          // Get notification event for this backup job
+          const notificationEvent = getNotificationEvent(server.id, thisBackupInfo.name);
+          
+          // Get last notification sent (if any)
+          const lastNotificationSent = getLastNotificationSent(server.id, thisBackupInfo.name);
+          
+          return {
+            ...thisBackupInfo,
+            isBackupOverdue: isOverdue,
+            notificationEvent,
+            expectedBackupDate,
+            expectedBackupElapsed,
+            lastNotificationSent
+          };
+        });
+        
+        // Remove duplicate available backups
+        server.backupNames = [...new Set(server.backupNames)];
+        
+        return server;
+      });
+           
+      return result;
+    });
+  } catch (error) {
+    console.error('[getServersSummary] Error:', error instanceof Error ? error.message : String(error));
+    return [];
+  }
+}
+
+// Helper function to get server URL by server ID
+export function getServerUrlById(serverId: string): string {
+  try {
+    const server = withDb(() => {
+      return safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+    });
+    return server?.server_url || '';
+  } catch (error) {
+    console.warn('Failed to get server URL:', error);
+    return '';
+  }
+}
+
+export function updateServer(serverId: string, updates: { server_url?: string; alias?: string; note?: string }): { success: boolean; error?: string } {
+  try {
+    return withDb(() => {
+      // Get the current server to verify it exists
+      const existingServer = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      
+      if (!existingServer) {
+        return { success: false, error: 'Server not found' };
+      }
+
+      // Validate URL format if provided
+      if (updates.server_url && updates.server_url.trim() !== '') {
+        try {
+          const url = new URL(updates.server_url);
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            return { success: false, error: 'URL must use HTTP or HTTPS protocol' };
+          }
+        } catch {
+          return { success: false, error: 'Invalid URL format' };
+        }
+      }
+
+      // Update server with new values
+      const result = safeDbOperation(() => dbOps.upsertServer.run({
+        id: serverId,
+        name: existingServer.name, // Keep existing name
+        server_url: updates.server_url !== undefined ? updates.server_url : existingServer.server_url,
+        alias: updates.alias !== undefined ? updates.alias : existingServer.alias,
+        note: updates.note !== undefined ? updates.note : existingServer.note
+      }), 'upsertServer');
+
+      if (result.changes === 0) {
+        return { success: false, error: 'No changes were made' };
+      }
+
+      return { success: true };
+    });
+  } catch (error) {
+    console.error('Failed to update server:', error instanceof Error ? error.message : String(error));
+    return { success: false, error: 'Database error occurred' };
+  }
+}
+
 // Wrapper functions for database operations (keeping for backward compatibility)
 export const dbUtils = {
-  getMachinesSummary: () => getMachinesSummary(),
-  getMachineById: (machineId: string) => getMachineById(machineId),
-  getMachineByName: (name: string) => withDb(() => safeDbOperation(() => dbOps.getMachineByName.get(name), 'getMachineByName')),
-  getLatestBackup: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackup.get(machineId), 'getLatestBackup')),
-  getLatestBackupByName: (machineId: string, backupName: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackupByName.get(machineId, backupName), 'getLatestBackupByName')),
-  getMachineBackups: (machineId: string) => withDb(() => safeDbOperation(() => dbOps.getMachineBackups.all(machineId), 'getMachineBackups', [])),
-  getAllMachines: () => getAllMachines(),
+  getServerById: (serverId: string) => getServerById(serverId),
+  getServerByName: (name: string) => withDb(() => safeDbOperation(() => dbOps.getServerByName.get(name), 'getServerByName')),
+  getLatestBackup: (serverId: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackup.get(serverId), 'getLatestBackup')),
+  getLatestBackupByName: (serverId: string, backupName: string) => withDb(() => safeDbOperation(() => dbOps.getLatestBackupByName.get(serverId, backupName), 'getLatestBackupByName')),
+  getServerBackups: (serverId: string) => withDb(() => safeDbOperation(() => dbOps.getServerBackups.all(serverId), 'getServerBackups', [])),
+  getAllServers: () => getAllServers(),
   getOverallSummary: () => getOverallSummary(),
   getLatestBackupDate: () => withDb(() => safeDbOperation(() => dbOps.getLatestBackupDate.get(), 'getLatestBackupDate')),
   getAggregatedChartData: () => getAggregatedChartData(),
+  getAggregatedChartDataWithTimeRange: (startDate: Date, endDate: Date) => getAggregatedChartDataWithTimeRange(startDate, endDate),
+  getAllServersChartData: () => getAllServersChartData(),
+  getServerChartData: (serverId: string) => getServerChartData(serverId),
+  getServerChartDataWithTimeRange: (serverId: string, startDate: Date, endDate: Date) => 
+    getServerChartDataWithTimeRange(serverId, startDate, endDate),
+  getServerBackupChartData: (serverId: string, backupName: string) => 
+    getServerBackupChartData(serverId, backupName),
+  getServerBackupChartDataWithTimeRange: (serverId: string, backupName: string, startDate: Date, endDate: Date) => 
+    getServerBackupChartDataWithTimeRange(serverId, backupName, startDate, endDate),
+  getServersSummary: () => getServersSummary(),
+  getServersBackupNames: () => getServersBackupNames(),
   
   insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => 
     withDb(() => safeDbOperation(() => dbOps.insertBackup.run(data), 'insertBackup')),
   
-  upsertMachine: (data: Parameters<typeof dbOps.upsertMachine.run>[0]) => 
-    withDb(() => safeDbOperation(() => dbOps.upsertMachine.run(data), 'upsertMachine')),
+  upsertServer: (data: Parameters<typeof dbOps.upsertServer.run>[0]) => 
+    withDb(() => safeDbOperation(() => dbOps.upsertServer.run(data), 'upsertServer')),
   
-  checkDuplicateBackup: (data: { machine_id: string; backup_name: string; date: string }) =>
+  checkDuplicateBackup: (data: { server_id: string; backup_name: string; date: string }) =>
     withDb(() => {
       try {
         const result = safeDbOperation(() => dbOps.checkDuplicateBackup.get(data), 'checkDuplicateBackup') as { count: number } | undefined;
@@ -822,40 +1158,43 @@ export const dbUtils = {
       }
     }),
   
-  deleteMachine: (machineId: string) => {
+  deleteServer: (serverId: string) => {
     return withDb(() => {
       try {
         const transaction = db.transaction(() => {
-          // First get the machine name before deleting
-          const machine = safeDbOperation(() => dbOps.getMachine.get(machineId), 'getMachine') as { id: string; name: string } | undefined;
-          if (!machine) {
-            throw new Error(`Machine with ID ${machineId} not found`);
+          // First get the server name before deleting
+          const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string } | undefined;
+          if (!server) {
+            throw new Error(`Server with ID ${serverId} not found`);
           }
           
-          // First delete all backups for the machine
-          const backupResult = safeDbOperation(() => dbOps.deleteMachineBackups.run(machineId), 'deleteMachineBackups');
-          // Then delete the machine itself
-          const machineResult = safeDbOperation(() => dbOps.deleteMachine.run(machineId), 'deleteMachine');
+          // First delete all backups for the server
+          const backupResult = safeDbOperation(() => dbOps.deleteServerBackups.run(serverId), 'deleteServerBackups');
+          // Then delete the server itself
+          const serverResult = safeDbOperation(() => dbOps.deleteServer.run(serverId), 'deleteServer');
           
-          // Clean up configuration data for this machine
-          cleanupMachineConfiguration(machine.name);
+          // Clean up configuration data for this server
+          cleanupServerConfiguration(server.id);
           
           return {
             backupChanges: backupResult?.changes || 0,
-            machineChanges: machineResult?.changes || 0
+            serverChanges: serverResult?.changes || 0
           };
         });
         return transaction();
       } catch (error) {
-        console.error(`Failed to delete machine ${machineId}:`, error instanceof Error ? error.message : String(error));
+        console.error(`Failed to delete server ${serverId}:`, error instanceof Error ? error.message : String(error));
         throw error;
       }
     });
-  }
+  },
+
+  updateServer: (serverId: string, updates: { server_url?: string; alias?: string; note?: string }) => 
+    updateServer(serverId, updates)
 }; 
 
-// Helper function to clean up configuration data for a machine
-function cleanupMachineConfiguration(machineName: string): void {
+// Helper function to clean up configuration data for a server
+function cleanupServerConfiguration(serverId: string): void {
   try {
     // Clean up backup_settings
     const backupSettingsJson = getConfiguration('backup_settings');
@@ -864,46 +1203,46 @@ function cleanupMachineConfiguration(machineName: string): void {
         const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, BackupNotificationConfig>;
         const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
         
-        // Keep only entries that don't match the machine name
+        // Keep only entries that don't match the server ID
         for (const [backupKey, settings] of Object.entries(backupSettings)) {
-          const [keyMachineName] = backupKey.split(':');
-          if (keyMachineName !== machineName) {
+          const [keyServerId] = backupKey.split(':');
+          if (keyServerId !== serverId) {
             updatedBackupSettings[backupKey] = settings;
           }
         }
         
         // Save the updated backup settings
         setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
-        console.log(`[cleanupMachineConfiguration] Cleaned up backup_settings for machine: ${machineName}`);
+
       } catch (error) {
         console.error('Failed to parse backup_settings during cleanup:', error instanceof Error ? error.message : String(error));
       }
     }
     
-    // Clean up overdue_backup_notifications
-    const overdueNotificationsJson = getConfiguration('overdue_backup_notifications');
+    // Clean up overdue_notifications
+    const overdueNotificationsJson = getConfiguration('overdue_notifications');
     if (overdueNotificationsJson) {
       try {
         const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
         const updatedOverdueNotifications: OverdueNotifications = {};
         
-        // Keep only entries that don't match the machine name
+        // Keep only entries that don't match the server ID
         for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
-          const [keyMachineName] = backupKey.split(':');
-          if (keyMachineName !== machineName) {
+          const [keyServerId] = backupKey.split(':');
+          if (keyServerId !== serverId) {
             updatedOverdueNotifications[backupKey] = notification;
           }
         }
         
         // Save the updated overdue notifications
-        setConfiguration('overdue_backup_notifications', JSON.stringify(updatedOverdueNotifications));
-        console.log(`[cleanupMachineConfiguration] Cleaned up overdue_backup_notifications for machine: ${machineName}`);
+        setConfiguration('overdue_notifications', JSON.stringify(updatedOverdueNotifications));
+
       } catch (error) {
-        console.error('Failed to parse overdue_backup_notifications during cleanup:', error instanceof Error ? error.message : String(error));
+        console.error('Failed to parse overdue_notifications during cleanup:', error instanceof Error ? error.message : String(error));
       }
     }
   } catch (error) {
-    console.error(`Failed to cleanup configuration for machine ${machineName}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to cleanup configuration for server ${serverId}:`, error instanceof Error ? error.message : String(error));
   }
 }
 
@@ -949,9 +1288,9 @@ export function setOverdueToleranceConfig(value: OverdueTolerance): void {
   setConfiguration("overdue_tolerance", value);
 }
 
-// Helper function to get overdue backups for a specific machine based on interval calculation
-export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
-  machineName: string;
+// Helper function to get overdue backups for a specific server based on interval calculation
+export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
+  serverName: string;
   backupName: string;
   lastBackupDate: string;
   lastNotificationSent: string;
@@ -972,7 +1311,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
     }>;
     
     const overdueBackups: Array<{
-      machineName: string;
+      serverName: string;
       backupName: string;
       lastBackupDate: string;
       lastNotificationSent: string;
@@ -983,24 +1322,24 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
     
     // Get the latest backup for each backup configuration
     for (const backupKey in backupSettings) {
-      const [machineName, backupName] = backupKey.split(':');
+      const [serverId, backupName] = backupKey.split(':');
       
-      // Check if this is for the requested machine (by name or ID)
-      if (machineName === machineIdentifier || machineName.toLowerCase() === machineIdentifier.toLowerCase()) {
+      // Check if this is for the requested server (by ID or name)
+      if (serverId === serverIdentifier) {
         const settings = backupSettings[backupKey];
         
         // Skip if overdue backup check is not enabled
         if (!settings.overdueBackupCheckEnabled) continue;
         
-        // Get machine ID for database lookup
-        const machinesSummary = getMachinesSummary();
-        const machine = machinesSummary.find(m => m.name === machineName);
-        if (!machine) continue;
+        // Get server info for database lookup
+        const serversSummary = getServersSummary();
+        const server = serversSummary.find(s => s.id === serverId);
+        if (!server) continue;
         
-        // Get the latest backup for this machine and backup name
-        const latestBackup = dbUtils.getLatestBackupByName(machine.id, backupName) as {
+        // Get the latest backup for this server and backup name
+        const latestBackup = dbUtils.getLatestBackupByName(server.id, backupName) as {
           date: string;
-          machine_name: string;
+          server_name: string;
           backup_name?: string;
         } | null;
         
@@ -1023,24 +1362,16 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
         // Check if backup is overdue
         if (currentTime > expectedTime) {
           // Get notification event for this backup
-          const notificationEvent = getNotificationEvent(machineName, backupName);
+          const notificationEvent = getNotificationEvent(serverId, backupName);
           
           // Calculate elapsed time
           const expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
           
           // Get last notification sent (if any)
-          const lastNotificationJson = getConfiguration('overdue_backup_notifications');
-          let lastNotificationSent = "";
-          if (lastNotificationJson) {
-            const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
-            const notification = lastNotifications[backupKey];
-            if (notification) {
-              lastNotificationSent = notification.lastNotificationSent;
-            }
-          }
+          const lastNotificationSent = getLastNotificationSent(serverId, backupName);
           
           overdueBackups.push({
-            machineName,
+            serverName: server.name,
             backupName,
             lastBackupDate: latestBackup.date,
             lastNotificationSent,
@@ -1054,7 +1385,7 @@ export function getOverdueBackupsForMachine(machineIdentifier: string): Array<{
     
     return overdueBackups;
   } catch (error) {
-    console.error('Error getting overdue backups for machine:', error instanceof Error ? error.message : String(error));
+    console.error('Error getting overdue backups for server:', error instanceof Error ? error.message : String(error));
     return [];
   }
 } 
@@ -1075,13 +1406,41 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
     console.error('Failed to get ntfy config from notifications:', error instanceof Error ? error.message : String(error));
   }
   
-  // Generate default topic if no configuration exists
+  // Generate default topic if no configuration exists and persist it
   const { generateDefaultNtfyTopic, defaultNtfyConfig } = await import('./default-config');
   const defaultTopic = generateDefaultNtfyTopic();
-  return { ...defaultNtfyConfig, topic: defaultTopic };
+  const generatedConfig = { ...defaultNtfyConfig, topic: defaultTopic };
+  
+  // Persist the generated configuration
+  try {
+    const configJson = getConfiguration('notifications');
+    const config = configJson ? JSON.parse(configJson) : {};
+    config.ntfy = generatedConfig;
+    setConfiguration('notifications', JSON.stringify(config));
+  } catch (error) {
+    console.error('Failed to persist generated ntfy config:', error instanceof Error ? error.message : String(error));
+  }
+  
+  return generatedConfig;
 }
 
-// Function to ensure backup settings are complete for all machines and backups
+// Function to get all server and their respective backup names
+export function getServersBackupNames() {
+  return withDb(() => safeDbOperation(() => {
+    const results = dbOps.getServersBackupNames.all() as Array<{ server_id: string; server_name: string; backup_name: string; server_url: string; alias: string; note: string }>;
+    return results.map(row => ({
+      id: getBackupKey(row.server_id, row.backup_name),
+      server_id: row.server_id,
+      server_name: row.server_name,
+      backup_name: row.backup_name,
+      server_url: row.server_url,
+      alias: row.alias || '',
+      note: row.note || ''
+    }));
+  }, 'getServersBackupNames', []));
+}
+
+// Function to ensure backup settings are complete for all servers and backups
 export async function ensureBackupSettingsComplete(): Promise<{ added: number; total: number }> {
   try {
     // Get current backup settings
@@ -1090,47 +1449,76 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
       ? JSON.parse(backupSettingsJson) 
       : {};
     
-    // Get all machines with backups
-    const machinesSummary = getMachinesSummary() as { 
-      id: string; 
-      name: string; 
-      lastBackupName: string | null;
+    // Get all servers with backups
+    const serversSummary = getServersBackupNames() as { 
+      id: string;
+      server_id: string;
+      server_name: string; 
+      backup_name: string;
     }[];
+
+
     
-    // Create a set of all machine-backup combinations
-    const machineBackupCombinations = new Set<string>();
-    machinesSummary.forEach(machine => {
-      if (machine.lastBackupName) {
-        const backupKey = getBackupKey(machine.name, machine.lastBackupName);
-        machineBackupCombinations.add(backupKey);
+    // Create a set of all server-backup combinations
+    const serverBackupCombinations = new Set<string>();
+    serversSummary.forEach(server => {
+      if (server.server_id && server.backup_name) {
+        const backupKey = getBackupKey(server.server_id, server.backup_name);
+        serverBackupCombinations.add(backupKey);
       }
     });
+
+
     
     // Check for missing backup settings and add defaults
     let addedSettings = 0;
     const updatedBackupSettings = { ...currentBackupSettings };
     
-    for (const backupKey of machineBackupCombinations) {
+    for (const backupKey of serverBackupCombinations) {
       if (!currentBackupSettings[backupKey]) {
         // Import default configuration
         const { defaultBackupNotificationConfig } = await import('./default-config');
         updatedBackupSettings[backupKey] = { ...defaultBackupNotificationConfig };
         addedSettings++;
+
       }
     }
     
     // Save updated settings if any were added
     if (addedSettings > 0) {
       setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
-      console.log(`[ensureBackupSettingsComplete] Added ${addedSettings} default backup settings`);
+  
     }
     
     return {
       added: addedSettings,
-      total: machineBackupCombinations.size
+      total: serverBackupCombinations.size
     };
   } catch (error) {
     console.error('Error ensuring backup settings complete:', error instanceof Error ? error.message : String(error));
     return { added: 0, total: 0 };
   }
 } 
+
+
+// Helper function to convert overdue tolerance value to human-readable label
+export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
+  const toleranceLabels: Record<OverdueTolerance, string> = {
+    'no_tolerance': 'No tolerance',
+    '5min': '5 min',
+    '15min': '15 min',
+    '30min': '30 min',
+    '1h': '1 hour',
+    '2h': '2 hours',
+    '4h': '4 hours',
+    '6h': '6 hours',
+    '12h': '12 hours',
+    '1d': '1 day',
+  };
+  
+  return toleranceLabels[tolerance] || tolerance;
+}
+
+
+
+

@@ -98,6 +98,28 @@ export const sortFunctions = {
 
   notificationEvent: (a: NotificationEvent, b: NotificationEvent): number => {
     return getNotificationEventSortValue(a) - getNotificationEventSortValue(b);
+  },
+
+  serverUrl: (a: string, b: string): number => {
+    const aEmpty = !a || a.trim() === '';
+    const bEmpty = !b || b.trim() === '';
+    
+    // Empty URLs come first
+    if (aEmpty && !bEmpty) return -1;
+    if (!aEmpty && bEmpty) return 1;
+    if (aEmpty && bEmpty) return 0;
+    
+    // If both are non-empty, sort alphabetically
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+  },
+
+  boolean: (a: boolean | null, b: boolean | null): number => {
+    // Handle null values - put them at the end
+    if (a === null && b === null) return 0;
+    if (a === null) return 1;
+    if (b === null) return -1;
+    // False comes before true
+    return (a ? 1 : 0) - (b ? 1 : 0);
   }
 };
 

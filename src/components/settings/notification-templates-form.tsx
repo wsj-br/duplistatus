@@ -15,7 +15,10 @@ import { defaultNotificationTemplates } from '@/lib/default-config';
 
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES = [
-  { name: 'machine_name', description: 'Name of the machine/server' },
+  { name: 'server_name', description: 'Name of the server' },
+  { name: 'server_alias', description: 'Alias of the server (server_name if not set)' },
+  { name: 'server_note', description: 'Note of the server' },
+  { name: 'server_url', description: 'URL of the Duplicati server' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'backup_date', description: 'Date/time of the backup' },
   { name: 'status', description: 'Backup status (Success, Failed, etc.)' },
@@ -32,7 +35,10 @@ const TEMPLATE_VARIABLES = [
 
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
-  { name: 'machine_name', description: 'Name of the machine' },
+  { name: 'server_name', description: 'Name of the server' },
+  { name: 'server_alias', description: 'Alias of the server (server_name if not set)' },
+  { name: 'server_note', description: 'Note of the server' },
+  { name: 'server_url', description: 'URL of the Duplicati server' },
   { name: 'backup_name', description: 'Name of the backup' },
   { name: 'last_backup_date', description: 'Date/time of the last backup' },
   { name: 'last_elapsed', description: 'Time ago since the last backup' },
@@ -93,14 +99,14 @@ const TemplateEditor = ({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4">
           <div>
             <CardTitle className="text-lg">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row justify-end-safe items-start sm:items-center gap-2">
             <Select value={selectedVariable} onValueChange={setSelectedVariable}>
-              <SelectTrigger className="w-80">
+              <SelectTrigger className="w-full sm:w-80">
                 <SelectValue placeholder="Select variable..." />
               </SelectTrigger>
               <SelectContent>
@@ -119,7 +125,7 @@ const TemplateEditor = ({
               variant="outline"
               onClick={() => insertVariable(templateType)}
               disabled={!selectedVariable}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 w-full sm:w-auto"
             >
               <ClipboardPaste className="h-4 w-4" />
               Insert
@@ -180,7 +186,7 @@ const TemplateEditor = ({
             id={`${templateType}-message`}
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
-            placeholder="Enter your message template using variables like {machine_name}, {backup_name}, {status}, etc."
+            placeholder="Enter your message template using variables like {server_name}, {backup_name}, {status}, etc."
             className="min-h-[200px]"
             onFocus={() => onFieldFocus('message')}
           />
@@ -363,10 +369,16 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="success">Success</TabsTrigger>
-          <TabsTrigger value="warning">Warning/Error</TabsTrigger>
-          <TabsTrigger value="overdue">Overdue Backup</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+          <TabsTrigger value="success" className="text-xs md:text-sm py-2 px-3">Success</TabsTrigger>
+          <TabsTrigger value="warning" className="text-xs md:text-sm py-2 px-3">
+            <span className="hidden md:inline">Warning/Error</span>
+            <span className="md:hidden">Warning</span>
+          </TabsTrigger>
+          <TabsTrigger value="overdue" className="text-xs md:text-sm py-2 px-3">
+            <span className="hidden md:inline">Overdue Backup</span>
+            <span className="md:hidden">Overdue</span>
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="success" className="mt-6">
@@ -418,8 +430,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
         </TabsContent>
       </Tabs>
 
-      <div className="pt-4 flex gap-2">
-        <Button onClick={handleSave} disabled={isSaving}>
+      <div className="pt-4 flex flex-col sm:flex-row gap-2">
+        <Button onClick={handleSave} disabled={isSaving} className="w-full sm:w-auto">
           {isSaving ? "Saving..." : "Save Template Settings"}
         </Button>
         {onSendTest && (
@@ -427,19 +439,21 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             onClick={handleSendTest} 
             disabled={isSendingTest}
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
           >
             <Send className="h-4 w-4" />
-            {isSendingTest ? "Sending..." : "Send Test Notification"}
+            <span className="hidden sm:inline">{isSendingTest ? "Sending..." : "Send Test Notification"}</span>
+            <span className="sm:hidden">{isSendingTest ? "Sending..." : "Send Test"}</span>
           </Button>
         )}
         <Button 
           onClick={handleResetToDefault} 
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 w-full sm:w-auto"
         >
           <RotateCcw className="h-4 w-4" />
-          Reset to Default
+          <span className="hidden sm:inline">Reset to Default</span>
+          <span className="sm:hidden">Reset</span>
         </Button>
       </div>
     </div>

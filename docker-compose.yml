@@ -1,12 +1,14 @@
 # duplistatus docker-compose.yml
 services:
   duplistatus:
-  
     build:
       context: .
       dockerfile: Dockerfile
-
-    image: wsj-br/duplistatus
+      args:
+        VERSION: ${VERSION}
+    image: wsj-br/duplistatus:${VERSION}
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     container_name: duplistatus
     restart: unless-stopped
     ports:
@@ -23,5 +25,4 @@ networks:
 volumes:
   duplistatus_data:
     name: duplistatus_data 
-
-    
+    external: true

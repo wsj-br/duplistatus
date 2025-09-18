@@ -10,6 +10,7 @@ import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { OverdueBackupCheckButton } from '@/components/overdue-backup-check-button';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
 import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
+import { OpenServerConfigButton } from '@/components/open-server-config-button';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
@@ -19,15 +20,14 @@ export function AppHeader() {
 
   return (
     <div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-screen-2xl items-center py-4">
+      <div className="w-[95%] mx-auto flex flex-wrap items-center py-4 min-h-16">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image
               src="/images/duplistatus_logo.png"
               alt="duplistatus Logo"
-              width={64}
-              height={64}
-              className="h-14 w-14"
+              width={40}
+              height={40}
             />
           </div>
           <span className="text-3xl text-blue-600 sm:inline-block">
@@ -45,9 +45,10 @@ export function AppHeader() {
           </Link>
         )}
         
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex flex-1 items-center justify-end flex-wrap gap-2 self-start">
           <GlobalRefreshControls />
           <NtfyMessagesButton />
+          <OpenServerConfigButton />
           <OverdueBackupCheckButton />
           <BackupCollectMenu />
           <DatabaseMaintenanceMenu />

@@ -14,17 +14,17 @@ export async function POST(request: Request) {
         // Delete all backups
         const backupResult = db.prepare(`DELETE FROM backups`).run();
         
-        // Delete all machines
-        const machineResult = db.prepare(`DELETE FROM machines`).run();
+        // Delete all servers
+        const serverResult = db.prepare(`DELETE FROM servers`).run();
   
         return { 
           backupChanges: backupResult.changes,
-          machineChanges: machineResult.changes
+          serverChanges: serverResult.changes
         };
       });
 
       // Execute the transaction
-      const { backupChanges, machineChanges } = transaction();
+      const { backupChanges, serverChanges } = transaction();
 
       // Clear configuration settings
       try {
@@ -32,16 +32,16 @@ export async function POST(request: Request) {
         setConfiguration('backup_settings', JSON.stringify({}));
         console.log('[cleanup] Cleared backup_settings configuration');
         
-        // Clear overdue_backup_notifications
-        setConfiguration('overdue_backup_notifications', JSON.stringify({}));
-        console.log('[cleanup] Cleared overdue_backup_notifications configuration');
+        // Clear overdue_notifications
+        setConfiguration('overdue_notifications', JSON.stringify({}));
+        console.log('[cleanup] Cleared overdue_notifications configuration');
       } catch (configError) {
         console.error('Failed to clear configuration settings:', configError instanceof Error ? configError.message : String(configError));
         // Don't fail the entire operation if config cleanup fails
       }
 
       return NextResponse.json({
-        message: `Successfully deleted all ${backupChanges} backups and ${machineChanges} machines, and cleared configuration settings`,
+        message: `Successfully deleted all ${backupChanges} backups and ${serverChanges} servers, and cleared configuration settings`,
         status: 200,
       });
     }

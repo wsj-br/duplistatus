@@ -23,7 +23,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = React.useState<ToastType[]>([]);
 
   const toast = React.useCallback((options: Omit<ToastType, "id">) => {
-    const id = Math.random().toString(36).substr(2, 9);
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     setToasts((prev) => [...prev, { ...options, id }]);
   }, []);
 

@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, isValid } from 'date-fns';
+import type { BackupStatus, NotificationEvent } from './types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -127,6 +128,70 @@ export function formatTimeAgo(dateString: string, currentTime?: Date): string {
     return "";
   }
 }
+
+
+export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean): string {
+  if (!dateString || dateString === "N/A") return "";
+  try {
+    const date = parseISO(dateString);
+    if (!isValid(date)) {
+      return ""; 
+    }
+
+    const plural = addPlural === undefined ? '' : addPlural ? 's' : '';
+
+    // Use a fixed reference time (server-side) to avoid hydration mismatches
+    const now = currentTime || new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 0) {
+      return "future";
+    }
+
+    if (diffInSeconds < 60) {
+      return "now";
+    }
+
+    if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} m${minutes === 1 ? '' : plural}`;
+    }
+
+    if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} h${hours === 1 ? '' : plural}`;
+    }
+
+    if (diffInSeconds < 604800) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} d${days === 1 ? '' : plural}`;
+    }
+
+    if (diffInSeconds < 2592000) {
+      const weeks = Math.floor(diffInSeconds / 604800);
+      return `${weeks} w${weeks === 1 ? '' : plural}`;
+    }
+
+    if (diffInSeconds < 31536000) {
+      const months = Math.floor(diffInSeconds / 2592000);
+      return `${months} mo${months === 1 ? '' : plural}`;
+    }
+
+    // Calculate years and remaining months for periods longer than 1 year
+    const years = Math.floor(diffInSeconds / 31536000);
+    const remainingSeconds = diffInSeconds % 31536000;
+    const months = Math.floor(remainingSeconds / 2592000);
+    
+    if (months === 0) {
+      return `${years} y`;
+    } else {
+      return `${years} y ${months} mo${months === 1 ? '' : plural}`;
+    }
+  } catch {
+    return "";
+  }
+}
+
 
 export function formatTimeElapsed(dateString: string, currentTime?: Date): string {
   if (!dateString || dateString === "N/A") return "";
@@ -370,3 +435,49 @@ export function formatDurationHuman(seconds: number): string {
     return `${secs}s`;
   }
 }
+
+/**
+ * Get status color class for backup status
+ */
+export function getStatusColor(status: BackupStatus | 'N/A'): string {
+  switch (status) {
+    case 'Success':
+      return 'text-green-500';
+    case 'Unknown':
+      return 'text-gray-500';
+    case 'Warning':
+      return 'text-yellow-500';
+    case 'Error':
+    case 'Fatal':
+      return 'text-red-500';
+    default:
+      return 'text-gray-500';
+  }
+}
+
+/**
+ * Get notification icon type for notification events
+ */
+export function getNotificationIconType(notificationEvent: NotificationEvent | undefined): 'errors' | 'warnings' | 'all' | 'off' | null {
+  if (!notificationEvent) return null;
+  
+  switch (notificationEvent) {
+    case 'errors':
+      return 'errors';
+    case 'warnings':
+      return 'warnings';
+    case 'all':
+      return 'all';
+    case 'off':
+      return 'off';
+    default:
+      return null;
+  }
+}
+export function isDevelopmentMode(): boolean {
+  // In Next.js, NODE_ENV is available at build time and runtime
+  return process.env.NODE_ENV !== 'production';
+}
+
+
+
