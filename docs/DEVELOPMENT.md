@@ -19,7 +19,6 @@
     - [Docker Scripts](#docker-scripts)
     - [Cron Service Scripts](#cron-service-scripts)
     - [Test Scripts](#test-scripts)
-    - [Release Scripts](#release-scripts)
   - [Development Mode Features](#development-mode-features)
     - [Build the application for production](#build-the-application-for-production)
     - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
@@ -43,13 +42,12 @@
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
     - [Update version information](#update-version-information)
-    - [Update documentation](#update-documentation)
     - [Viewing the configurations on the database](#viewing-the-configurations-on-the-database)
     - [SQL Scripts for Debugging and Maintenance](#sql-scripts-for-debugging-and-maintenance)
       - [Delete Backup Settings](#delete-backup-settings)
       - [Delete Last Backup](#delete-last-backup)
   - [Documentation tools](#documentation-tools)
-    - [Updating the Table of Contents on the documentation](#updating-the-table-of-contents-on-the-documentation)
+    - [Update documentation](#update-documentation)
     - [Checking for broken links](#checking-for-broken-links)
   - [Podman testing](#podman-testing)
     - [Initial Setup and Management](#initial-setup-and-management)
@@ -58,7 +56,11 @@
     - [Usage Workflow](#usage-workflow)
   - [Release Management](#release-management)
     - [Versioning (Semantic Versioning)](#versioning-semantic-versioning)
-    - [Release Commands](#release-commands)
+    - [Merging `devel` to `master` using command line](#merging-devel-to-master-using-command-line)
+      - [1. Merge the `devel` Branch into `master`](#1-merge-the-devel-branch-into-master)
+      - [2. Tag the New Release](#2-tag-the-new-release)
+      - [3. Push to GitHub](#3-push-to-github)
+    - [Merging `devel` to `master` using Github](#merging-devel-to-master-using-github)
     - [Creating a GitHub Release](#creating-a-github-release)
     - [Manual Docker Image Build](#manual-docker-image-build)
   - [Frameworks, libraries and tools used](#frameworks-libraries-and-tools-used)
@@ -73,7 +75,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
+<br>
 
 ## Prerequisites
 
@@ -84,6 +86,8 @@
 - ImageMagick (for SVG conversion scripts)
 - doctoc for markdown table of contents generation
 - markdown-link-check 
+
+<br>
 
 ## Steps
 
@@ -108,6 +112,8 @@ For the default TCP port (8666):
 ```bash
 pnpm dev
 ```
+
+<br>
 
 ## Available Scripts
 
@@ -220,7 +226,7 @@ This script performs a complete Docker cleanup, which is useful for:
 docker build . -t wsj-br/duplistatus:devel
 ```
 
-<br><br>
+<br>
 
 ## Cron Service
 
@@ -256,7 +262,7 @@ The cron service includes:
 - **RESTful API**: Complete API for service management and monitoring
 
 
-<br><br>
+<br>
 
 ## Test Scripts
 
@@ -292,6 +298,7 @@ pnpm run generate-test-data --servers=30
 > This script delete all the previous data in the database and replace it with the test data.
 > Backup your database before running this script.
 
+<br>
 
 
 ### Show the overdue notifications contents (to debug notification system)
@@ -299,11 +306,15 @@ pnpm run generate-test-data --servers=30
 pnpm show-overdue-notifications
 ```
 
+<br>
+
 ### Run overdue-check at a specific date/time (to debug notification system)
 
 ```bash
 pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 ``` 
+
+<br>
 
 ### Test cron service port connectivity
 
@@ -327,7 +338,7 @@ pnpm test-cron-port
 This script tests the connectivity to the cron service port and provides detailed information about the connection status.
 
 
-<br><br>
+<br>
 
 ## Workspace admin scripts & commands
 
@@ -344,6 +355,7 @@ Cleans the database by removing all data while preserving the database schema an
 
 
 ### Clean build artifacts and dependencies
+
 ```bash
 scripts/clean-workspace.sh
 ```
@@ -359,6 +371,7 @@ Removes all build artifacts, node_modules directory, and other generated files t
 <br>
 
 ### Clean docker compose and docker environment
+
 ```bash
 scripts/clean-docker.sh
 ```
@@ -371,6 +384,7 @@ Perform a complete Docker cleanup, which is useful for:
 <br>
 
 ### Generate the logo/favicon and banner from SVG images
+
 ```bash
 scripts/convert_svg_logo.sh
 ```
@@ -387,6 +401,8 @@ ncu --upgrade
 pnpm update
 ```
 
+<br>
+
 ### Update version information
 
 ```bash
@@ -399,17 +415,8 @@ This script automatically updates the `.env` file with the current version from 
 - Only updates if the version has changed
 - Provides feedback on the operation
 
-### Update documentation
+<br>
 
-```bash
-./scripts/update-docs.sh
-```
-
-This script updates all documentation files with the current version and regenerates table of contents:
-- Updates version badges in all `.md` files to match `package.json`
-- Runs `doctoc` to regenerate table of contents
-- Provides feedback on updated files
-- Requires `doctoc` to be installed globally
 
 ### Viewing the configurations on the database
 
@@ -427,18 +434,25 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
+<br>
 
 ### SQL Scripts for Debugging and Maintenance
 
 The project includes SQL scripts for database maintenance:
 
+<br>
+
 #### Delete Backup Settings
+
 ```bash
 sqlite3 data/backups.db < scripts/delete-backup-settings.sql
 ```
 This script removes all backup settings from the configurations table. Use with caution as this will reset all backup notification configurations.
 
+<br>
+
 #### Delete Last Backup
+
 ```bash
 sqlite3 data/backups.db < scripts/delete-last-backup.sql
 ```
@@ -449,15 +463,22 @@ This script removes the most recent backup record for each server. By default, i
 >[!CAUTION]
 > These SQL scripts directly modify the database. Always backup your database before running these scripts.
 
-<br><br>
+<br>
 
 ## Documentation tools
 
-### Updating the Table of Contents on the documentation
+### Update documentation
 
 ```bash
-doctoc *.md docs/*.md
+./scripts/update-docs.sh
 ```
+
+This script updates all documentation files with the current version and regenerates table of contents:
+- Updates version badges in all `.md` files to match `package.json`
+- Runs `doctoc` to regenerate table of contents
+- Provides feedback on updated files
+- Requires `doctoc` to be installed globally
+
 <br>
 
 ### Checking for broken links
@@ -466,6 +487,7 @@ doctoc *.md docs/*.md
 markdown-link-check *.md docs/*.md
 ```
 
+<br>
 
 ## Podman testing
 
@@ -574,7 +596,7 @@ You can also push all tags at once using `git push --tags`. After this, the new 
 
 Instead of a direct merge, you will create a **Pull Request (PR)** from `devel` to `master`. A pull request is a formal way to propose and review changes before they're merged.
 
-1.  Navigate to your repository on GitHub.
+1.  Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
 2.  Click the **"Pull requests"** tab.
 3.  Click **"New pull request."**
 4.  Set the **base branch** to `master` and the **compare branch** to `devel`.
@@ -592,7 +614,7 @@ After the pull request is created, you will see a green **"Merge pull request"**
 
 Once the merge is complete, you can create a new release on GitHub, which automatically creates a tag for you.
 
-1.  Open the [GitHub repository](https://github.com/wsj-br/duplistatus)
+1.  Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
 1.  Go to the **"Releases"** section 
 2.  Click **"Draft a new release."**
 3.  In the **"Choose a tag"** field, type your new version number, like `v0.7.26`. This will create a new tag.
@@ -611,7 +633,7 @@ This will automatically:
 
 To manually trigger the Docker image build workflow:
 
-1. Go to the GitHub repository
+1. Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
 2. Click on "Actions" tab
 3. Select the "Build and Publish Docker Image" workflow
 4. Click "Run workflow"
