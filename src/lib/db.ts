@@ -226,32 +226,40 @@ async function populateDefaultConfigurations() {
   }
 }
 
-// Run database migrations and wait for completion before creating dbOps
-let dbOps: ReturnType<typeof createDbOps> | null = null;
-let migrationPromise: Promise<void> | null = null;
-
-// Initialize migrations
+// Initialize migrations and database operations
 const migrator = new DatabaseMigrator(db, dbPath);
+let dbOps: ReturnType<typeof createDbOps> | null = null;
+let initializationPromise: Promise<void> | null = null;
 
-// Function to ensure migrations are complete before accessing dbOps
-async function ensureMigrationsComplete() {
-  if (!migrationPromise) {
-    migrationPromise = migrator.runMigrations().catch(error => {
-      console.error('Failed to run database migrations:', error instanceof Error ? error.message : String(error));
+// Function to ensure database is fully initialized
+async function ensureDatabaseInitialized() {
+  if (initializationPromise) {
+    return initializationPromise;
+  }
+
+  initializationPromise = (async () => {
+    try {
+      console.log('Starting database migrations...');
+      await migrator.runMigrations();
+      console.log('Database migrations completed successfully');
+      
+      // Create database operations after migrations complete
+      if (!dbOps) {
+        dbOps = createDbOps();
+        console.log('Database operations initialized');
+      }
+    } catch (error) {
+      console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
       throw error;
-    });
-  }
-  await migrationPromise;
-  
-  // Create dbOps if not already created
-  if (!dbOps) {
-    dbOps = createDbOps();
-  }
+    }
+  })();
+
+  return initializationPromise;
 }
 
-// Start migrations immediately but don't wait
-ensureMigrationsComplete().catch(error => {
-  console.error('Failed to initialize database:', error);
+// Start initialization immediately but don't block module loading
+ensureDatabaseInitialized().catch(error => {
+  console.error('Database initialization failed:', error);
 });
 
 // Helper functions for database operations
@@ -638,23 +646,28 @@ export function formatDurationFromSeconds(seconds: number): string {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-// Check and update CRON_PORT configuration after migrations complete
-ensureMigrationsComplete().then(() => {
+// Check and update CRON_PORT configuration after database initialization is complete
+ensureDatabaseInitialized().then(() => {
   import('./db-utils').then(({ checkAndUpdateCronPort }) => {
     checkAndUpdateCronPort();
   }).catch((error) => {
     console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
   });
 }).catch(error => {
-  console.error('Failed to complete migrations before checking CRON_PORT:', error);
+  console.error('Failed to complete database initialization before checking CRON_PORT:', error);
 });
 
-// Create a proxy for dbOps that ensures migrations are complete
+// Create a proxy that ensures database initialization is complete before operations
 const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
   get(target, prop) {
+    // Ensure database is initialized
     if (!dbOps) {
-      throw new Error('Database operations not yet initialized. Migrations may still be running.');
+      throw new Error(
+        'Database not ready. Please ensure database initialization completes before using database operations. ' +
+        'Call "await ensureDatabaseInitialized()" or wait for app startup to complete.'
+      );
     }
+    
     // Only handle string properties, ignore symbols
     if (typeof prop === 'string') {
       return (dbOps as Record<string, unknown>)[prop];
@@ -664,4 +677,4 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
 });
 
 // Export the database instance and operations
-export { db, dbOpsProxy as dbOps, ensureMigrationsComplete }; 
+export { db, dbOpsProxy as dbOps, ensureDatabaseInitialized }; 
