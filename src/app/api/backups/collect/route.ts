@@ -534,9 +534,9 @@ export async function POST(request: NextRequest) {
        });
       // return the response data
       responseData.jsonData = JSON.stringify({
-        systemInfo,
+        system_info: systemInfo,
         backups: backupsWithoutTargetURL,
-        collectedJsonData
+        backup_logs: collectedJsonData
       }, null, 2);
     }
 
