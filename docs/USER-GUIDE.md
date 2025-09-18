@@ -138,7 +138,7 @@ The toolbar provides easy access to key functions and settings.
 | [Check overdue backups](#overdue-check-process)     | Execute the check for overdue backups now                                                        |
 | [Collect  logs](#collect-backup-logs)               | Connect to a Duplicati server to collect all backup logs from its database                       |
 | [Database maintenance](#database-maintenance)       | Clean the database, remove old backup logs, or delete data for a specific server                 |
-| [Display Settings](#display-settings)               | Configure how **duplicati** will display data                                                    |
+| [Display Settings](#display-settings)               | Configure how **duplistatus** will display data                                                    |
 | [Settings](#settings)                               | Configure notifications, overdue monitoring, server details and templates                        |
 | Theme                                               | Toggle between dark (default) and light themes                                                   |
 
@@ -363,10 +363,10 @@ This section shows statistics for either all backups on the server or a single s
 
 <div style="padding-left: 60px;">
 
-  - **TOTAL BACKUPS JOBS**: Total number of backup jobs configured on this server.
-  - **TOTAL BACKUPS RUNS**: Total number of backup runs or executed (as reported by the Duplicati server).
+  - **TOTAL BACKUP JOBS**: Total number of backup jobs configured on this server.
+  - **TOTAL BACKUP RUNS**: Total number of backup runs executed (as reported by the Duplicati server).
   - **AVAILABLE VERSIONS**: Number of available versions (as reported by the Duplicati server).
-  - **AVG DURATION**: Average (mean) duration of the backups recorded in the **duplistatus** database.
+  - **AVG DURATION**: Average (mean) duration of backups recorded in the **duplistatus** database.
   - **LAST BACKUP SIZE**: Size of the source files from the last backup log received.
   - **TOTAL STORAGE USED**: Storage used on the backup destination, as reported in the last backup log.
   - **TOTAL UPLOADED**: Sum of all uploaded data recorded in the **duplistatus** database.

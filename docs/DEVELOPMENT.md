@@ -82,7 +82,7 @@
 - pnpm ^10.x (minimum: 10.15.0, recommended: 10.16.1+)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
-- doctoc for markdown TOC generation
+- doctoc for markdown table of contents generation
 - markdown-link-check 
 
 ## Steps
@@ -93,10 +93,10 @@ git clone https://github.com/wsj-br/duplistatus.git
 cd duplistatus
 ```
 
-2. Install dependencies (debian/ubuntu):
+2. Install dependencies (Debian/Ubuntu):
 ```bash
 sudo apt update
-sudo apt install nodejs npm sqlite3 imagemagick  -y
+sudo apt install nodejs npm sqlite3 imagemagick -y
 sudo npm install -g pnpm npm-check-updates doctoc markdown-link-check
 pnpm install
 ```
@@ -104,7 +104,7 @@ pnpm install
 
 3. Start the development server:
 
-For the default tcp port (8666)
+For the default TCP port (8666):
 ```bash
 pnpm dev
 ```

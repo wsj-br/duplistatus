@@ -225,14 +225,28 @@ export async function POST(request: NextRequest) {
       throw new Error('MachineName is missing from system info');
     }
         
-    // Upsert server information in the database
-    dbOps.upsertServer.run({
+    // Check if server already exists
+    const existingServer = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    
+    if (existingServer) {
+      // Server exists - only update server_url, preserve alias and note
+      dbOps.upsertServer.run({
+        id: serverId,
+        name: serverName,
+        server_url: baseUrl,
+        alias: existingServer.alias,  // Preserve existing alias
+        note: existingServer.note     // Preserve existing note
+      });
+    } else {
+      // Server doesn't exist - create new server with empty alias and note
+      dbOps.upsertServer.run({
         id: serverId,
         name: serverName,
         server_url: baseUrl,
         alias: '',
         note: ''
       });
+    }
     
     // Get the server information including alias from database
     const serverInfo = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;

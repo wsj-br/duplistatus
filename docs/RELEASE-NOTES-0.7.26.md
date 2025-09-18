@@ -44,7 +44,7 @@ This is a **breaking change** that affects the database schema, API endpoints, a
 * **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
 
 > [!Warning]
-> **Impact:** While the `server_id` to `machine_id` (or name) parameter change won't affect users directly, the 
+> **Impact:** While the parameter names in API endpoints have changed from `machine_id` to `server_id`, the 
 > **new JSON response structure will break any external applications** that parse these API responses. 
 > Please review and update your integrations accordingly.
 
@@ -84,8 +84,8 @@ You can now directly access your Duplicati server's web interface from within `d
 
 ### Server Management and Customisation
 
-* **Server Aliases:** You can now assign a custom alias to each server for easier identification throughout the user interface. The alias can be configured in [`Settings → Server Settings`](USER-GUIDE.md#server-settings)`.
-* **Descriptive Notes:** Add a note to each server to document its purpose, location, or any other relevant information. For exemple, if the server name is "DB-PROD-01", you can use the alias "Production DB" and the notes "Primary database server - critical backups", making it easyer to identify the server and function.  This note is displayed alongside the server's name or alias in the UI for quick reference.
+* **Server Aliases:** You can now assign a custom alias to each server for easier identification throughout the user interface. The alias can be configured in [`Settings → Server Settings`](USER-GUIDE.md#server-settings).
+* **Descriptive Notes:** Add a note to each server to document its purpose, location, or any other relevant information. For example, if the server name is "DB-PROD-01", you can use the alias "Production DB" and the notes "Primary database server - critical backups", making it easier to identify the server and its functions. This note is displayed alongside the server's name or alias in the UI for quick reference.
 
 ---
 
@@ -109,7 +109,7 @@ The `/api/summary` endpoint, used for the overall backup statistics, has been up
 * **Previous (v0.6.1):** The response payload included the field `totalMachines`.
 * **New (v0.7.26):** The `totalMachines` field has been renamed to `totalServers`.
 
-### /api/lastbackup
+### /api/lastbackup/{serverId}
 
 The endpoint for fetching the last backup for a specific server has been renamed and its response structure updated.
 

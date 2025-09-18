@@ -9,18 +9,18 @@
 <br>
 
 
-This document describes all available API endpoints for the DupliStatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
+This document describes all available API endpoints for the duplistatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
 
 <br>
 
 ## API Structure
 
-The API is organized into logical groups:
+The API is organised into logical groups:
 - **Core Operations**: Upload, retrieval, and management of backup data
 - **Configuration**: Notification settings, backup preferences, and system configuration
 - **Monitoring**: Health checks, status monitoring, and overdue backup tracking
 - **Administration**: Database maintenance, cleanup operations, and system management
-- **Chart Data**: Time-series data for visualization and analytics
+- **Chart Data**: Time-series data for visualisation and analytics
 
 <br>
 

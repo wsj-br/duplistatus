@@ -9,7 +9,7 @@
 <br>
 
 
-This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution,  metrics, and performance across multiple servers.
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
 
 It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
@@ -50,11 +50,11 @@ It also provides API endpoints that can be integrated with third-party tools suc
 - **Backup History**: Detailed view of backup history for each server
 - **Data Visualisation**: Interactive charts showing backup metrics over time and other statistical information
 - **Log Collection**: Collects backup logs directly from Duplicati servers via HTTP/HTTPS
-- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts, see notifications on your phone,
+- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts; see notifications on your phone
 - **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups
 - **Backup Version Display**: Shows the list of backup versions available in the backend
 - **Duplicati Server**: Includes feature to open the Duplicati server web UI from **duplistatus** (NEW)
-- **Server Settings**: Users can choose an alias for the server and include a note with description (NEW)
+- **Server Settings**: Users can choose an alias for the server and include a note with a description (NEW)
 - **API Access**: RESTful API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs
 
 <br>
@@ -147,7 +147,7 @@ Your database will automatically update when you start the new version. This pro
 The system automatically performs the following steps:
 
 - **Creates a backup** of your current database. The backup file is named `backups-copy-YYYY-MM-DDTHH-MM-SS.db`.
-- **Runs the migration**, changes the schema to the next version and copies all existing data to the new schema.
+- **Runs the migration**, changes the schema to the next version, and copies all existing data to the new schema.
 - **Preserves all your existing data** while improving the database structure.
 
 <br>
@@ -178,7 +178,7 @@ If you encounter issues, you can restore your database by following these steps:
 2. Replace the current database file `backups.db` with the backup file.
    - The default location is `/var/lib/docker/volumes/duplistatus_data/_data/`
    - To find the exact path, run `docker volume inspect duplistatus_data` and check the Mountpoint field
-   - Verify the correct path based on your current configuration and installation.
+   - Verify the correct path based on your current configuration and installation
 3. Install the previous version of `duplistatus` container image.
 4. Restart the container.
 5. Please report the issue in the [duplistatus project](https://github.com/wsj-br/duplistatus/issues) on GitHub, including the Docker logs.

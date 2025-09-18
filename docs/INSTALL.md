@@ -43,7 +43,7 @@ Ensure you have the following installed:
 - Docker Engine - [Debian installation guide](https://docs.docker.com/engine/install/debian/)
 - Docker Compose -  [Linux installation guide](https://docs.docker.com/compose/install/linux/)
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
-- Podman(optional) -  [Installation guide](http://podman.io/docs/installation#debian) 
+- Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian) 
 
 <br>
 
@@ -111,7 +111,7 @@ docker compose -f duplistatus.yml up -d
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Web editor".
-4. Copy and paste content of `duplistatus.yml` on "Option 1"
+4. Copy and paste the content of `duplistatus.yml` from "Option 1"
 5. Click "Deploy the stack".
 
 <br>
@@ -189,11 +189,11 @@ For example, to change the timezone to São Paulo, add these lines to the `dupli
       - TZ="America/Sao_Paulo"
 ```
 
-or pass TZ value in the command line
+or pass the TZ value in the command line:
 
 ```bash
-  --env --env TZ="America/Sao_Paulo" 
-``` 
+  --env TZ="America/Sao_Paulo" 
+```
 <br>
 
 ### Using your Linux Configuration
@@ -208,7 +208,7 @@ echo TZ=\"$(</etc/timezone)\"
 
 ### List of Timezones
 
-You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List) |
+You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
 
 <br><br>
@@ -234,7 +234,7 @@ In order for this application to work properly, the Duplicati server needs to be
 Apply this configuration to all your Duplicati servers:
 
 
-1. **Allow remote access:**  Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
+1. **Allow remote access:** Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
 
 <div style="padding-left: 60px;">
 
