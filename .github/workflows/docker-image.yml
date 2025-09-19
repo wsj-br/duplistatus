@@ -66,7 +66,6 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix=sha-
             type=raw,value=${{ steps.package_version.outputs.version }},enable={{is_default_branch}}
             type=raw,value=latest,enable=${{ steps.is_latest.outputs.is_latest == 'true' }}
 
@@ -78,7 +77,6 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix=sha-
             type=raw,value=${{ steps.package_version.outputs.version }},enable={{is_default_branch}}
             type=raw,value=latest,enable=${{ steps.is_latest.outputs.is_latest == 'true' }}
 
