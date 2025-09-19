@@ -2,13 +2,6 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
 export async function DELETE(request: Request) {
-  // Only allow deletion in development mode
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { error: 'Backup job deletion is only available in development mode' },
-      { status: 403 }
-    );
-  }
 
   try {
     const { serverId, backupName } = await request.json();

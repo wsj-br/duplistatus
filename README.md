@@ -4,7 +4,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.7.26-blue)
+![](https://img.shields.io/badge/version-0.7.27-blue)
 
 <br>
 
@@ -69,7 +69,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 >   If you have external integrations, scripts, or applications that consume the API endpoints `/api/summary`, `/api/lastbackup`
 >   and `/api/lastbackups`, you **MUST** update them immediately as [the JSON response structure has changed.](#api-response-changes) 
 > 
-> For more information see [RELEASE NOTES 0.7.26](docs/RELEASE-NOTES-0.7.26.md)
+> For more information see [RELEASE NOTES 0.7.27](docs/RELEASE-NOTES-0.7.27.md)
 
 
 
@@ -189,9 +189,9 @@ If you encounter issues, you can restore your database by following these steps:
 
 **IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
 
-* **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](API-ENDPOINTS.md#get-overall-summary---apisummary)
-* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
-* **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
+* **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](docs/API-ENDPOINTS.md#get-overall-summary---apisummary)
+* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](docs/API-ENDPOINTS.mdAPI-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
+* **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](docs/API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
 
 > [!Warning]
 > **Impact:** While the `server_id` to `machine_id` (or name) parameter change won't affect users directly, the 

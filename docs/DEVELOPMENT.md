@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.26-blue)
+![](https://img.shields.io/badge/version-0.7.27-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -567,7 +567,7 @@ Once the `devel` branch is successfully merged into `master`, you should tag the
 
 ```bash
 # Create an annotated tag for the new version
-git tag -a v0.7.26 -m "Release v0.7.26 - New Features and Bug Fixes"
+git tag -a v0.7.27 -m "Release v0.7.27 - New Features and Bug Fixes"
 ```
 
 The `-a` flag creates an annotated tag, and the `-m` flag lets you add a message describing the release.
@@ -584,7 +584,7 @@ Finally, push both the updated `master` branch and the new tag to your remote Gi
 git push origin master
 
 # Push the new tag
-git push origin v0.7.26
+git push origin v0.7.27
 ```
 
 You can also push all tags at once using `git push --tags`. After this, the new version will be visible on GitHub, and you can create a new release on the GitHub UI associated with your new tag.
@@ -617,7 +617,7 @@ Once the merge is complete, you can create a new release on GitHub, which automa
 1.  Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
 1.  Go to the **"Releases"** section 
 2.  Click **"Draft a new release."**
-3.  In the **"Choose a tag"** field, type your new version number, like `v0.7.26`. This will create a new tag.
+3.  In the **"Choose a tag"** field, type your new version number, like `v0.7.27`. This will create a new tag.
 4.  Select `master` as the target branch.
 5.  Add a **release title** and **description** to document the changes in this version.
 6.  Click **"Publish release."**

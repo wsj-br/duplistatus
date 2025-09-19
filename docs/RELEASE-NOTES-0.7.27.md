@@ -1,6 +1,6 @@
 ![duplistatus](img/duplistatus_banner.png)
 
-# Release Notes: duplistatus Version 0.7.26
+# Release Notes: duplistatus Version 0.7.27
 
 
 
@@ -23,7 +23,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-We're excited to announce the release of **duplistatus version 0.7.26**. This is a significant update that introduces a major redesign of the user interface, new features for better integration and customisation, and important terminology changes across the application.
+We're excited to announce the release of **duplistatus version 0.7.27**. This is a significant update that introduces a major redesign of the user interface, new features for better integration and customisation, and important terminology changes across the application.
 
 This release focuses on improving user experience, providing more intuitive navigation, and streamlining how you monitor your Duplicati backups.
 
@@ -107,18 +107,18 @@ This release introduces breaking changes to several key API endpoints to align w
 The `/api/summary` endpoint, used for the overall backup statistics, has been updated.
 
 * **Previous (v0.6.1):** The response payload included the field `totalMachines`.
-* **New (v0.7.26):** The `totalMachines` field has been renamed to `totalServers`.
+* **New (v0.7.27):** The `totalMachines` field has been renamed to `totalServers`.
 
 ### /api/lastbackup
 
 The endpoint for fetching the last backup for a specific server has been renamed and its response structure updated.
 
 * **Previous (v0.6.1):** The endpoint was `/api/lastbackup/:machineId`. The response object contained a `machine` key.
-* **New (v0.7.26):** The endpoint is now `/api/lastbackup/:serverId`. The response object now contains a `server` key.
+* **New (v0.7.27):** The endpoint is now `/api/lastbackup/:serverId`. The response object now contains a `server` key.
 
 ### /api/lastbackups
 
 Similarly, the endpoint for fetching the last backups for all jobs on a server has been updated.
 
 * **Previous (v0.6.1):** The endpoint was `/api/lastbackups/:machineId`. The response object contained a `machine` key and a `backup_types_count` field.
-* **New (v0.7.26):** The endpoint is now `/api/lastbackups/:serverId`. The response object now contains a `server` key, and the `backup_types_count` field has been renamed to `backup_jobs_count`.
+* **New (v0.7.27):** The endpoint is now `/api/lastbackups/:serverId`. The response object now contains a `server` key, and the `backup_types_count` field has been renamed to `backup_jobs_count`.
