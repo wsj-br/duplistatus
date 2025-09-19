@@ -68,7 +68,7 @@ jobs:
             type=ref,event=pr
             type=sha,prefix=sha-
             type=raw,value=${{ steps.package_version.outputs.version }},enable={{is_default_branch}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ steps.is_latest.outputs.is_latest == 'true' }}
 
       - name: Extract metadata for Docker (Docker Hub)
         id: meta_dockerhub
@@ -80,7 +80,7 @@ jobs:
             type=ref,event=pr
             type=sha,prefix=sha-
             type=raw,value=${{ steps.package_version.outputs.version }},enable={{is_default_branch}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ steps.is_latest.outputs.is_latest == 'true' }}
 
       - name: Build and push Docker image (amd64, arm64)
         uses: docker/build-push-action@v5
