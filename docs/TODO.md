@@ -7,17 +7,17 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-  - [Fix](#fix)
-  - [Changes needed](#changes-needed)
-  - [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
-    - [Nice to have](#nice-to-have)
-    - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
-    - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
-    - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
-    - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
-    - [Implemented in Version 0.7.x ✅](#implemented-in-version-07x-)
-- [Machine to Server Nomenclature Migration](#machine-to-server-nomenclature-migration)
-- [pending actions](#pending-actions)
+- [Fix](#fix)
+- [Changes needed](#changes-needed)
+- [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
+  - [Nice to have](#nice-to-have)
+- [List of changes](#list-of-changes)
+  - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
+  - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
+  - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
+  - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
+  - [Implemented in Version 0.7.x ✅](#implemented-in-version-07x-)
+  - [Implemented in Version 0.8.x 🚧](#implemented-in-version-08x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -30,18 +30,22 @@ none
 ## Changes needed
 
 
-none 
-
+- replace the documentation to use 
 
 ## New Features (planned or under analysis)
 
 - Include SMTP/EMAIL support (to send notifications)
+- Use the existing backup interval configuration retrieved when collecting backups to set the overdue backups interval automaticaly.
+- 
+
 
 ### Nice to have
 - Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
 
 
 ---
+
+## List of changes
 
 ### Implemented in Version 0.3.8 ✅
 
@@ -122,21 +126,23 @@ none
 - Application toolbar integration with Duplicati connection button
   - Dashboard view: presents list of available servers to connect to
   - Server-specific pages: direct connection to selected server's Duplicati server
+- Change the nomenclature from machines to servers.
 
 **Technical Improvements:**
 - Enhanced backup log collection with server URL persistence
 - Improved database schema to store server address information
 - Optimized UI components for better integration with Duplicati web interface
 
+**API Response Changes Warning**
+
+**IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
+
+- **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](API-ENDPOINTS.md#get-overall-summary---apisummary)
+- **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
+- **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
 
 
+### Implemented in Version 0.8.x 🚧
 
 
-
-# Machine to Server Nomenclature Migration 
-
-# pending actions
-
-- ✅ migration 4.0 was merged with 3.0 - machine-to-server transition completed in migration 3.0
-- review the export interface BackupNotificationConfig in types.ts to include the ServerName in the json.
 

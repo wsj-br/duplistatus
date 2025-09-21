@@ -5,11 +5,11 @@
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.7.27-blue)
+![](https://img.shields.io/badge/version-0.8.1-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
-<br>
+<br/>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -35,7 +35,7 @@ This document describes how to install and configure the **duplistatus** server.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<br>
+<br/>
 
 ## Prerequisites
 
@@ -45,7 +45,7 @@ Ensure you have the following installed:
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian) 
 
-<br>
+<br/>
 
 ## Container Images
 
@@ -53,13 +53,13 @@ You can use the images from:
 - **Docker Hub**: `wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-<br>
+<br/>
 
 ## Installation
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman.
 
-<br>
+<br/>
 
 ### Container Images
 
@@ -68,7 +68,7 @@ You can use the images from:
 - **Docker Hub**: `wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-<br>
+<br/>
 
 ### Option 1: Using Docker Compose
 
@@ -104,7 +104,7 @@ After creating the file, execute the `docker compose` command to start the conta
 docker compose -f duplistatus.yml up -d
 ```
 
-<br>
+<br/>
 
 ### Option 2: Using Portainer Stacks (Docker Compose)
 
@@ -114,7 +114,7 @@ docker compose -f duplistatus.yml up -d
 4. Copy and paste the content of `duplistatus.yml` from "Option 1"
 5. Click "Deploy the stack".
 
-<br>
+<br/>
 
 ### Option 3: Using Portainer Stacks (GitHub Repository)
 
@@ -125,7 +125,7 @@ docker compose -f duplistatus.yml up -d
 5. In the "Compose path" field, enter: `docker compose.yml`
 6. Click "Deploy the stack".
 
-<br>
+<br/>
 
 ### Option 4: Using Docker CLI
 
@@ -143,7 +143,7 @@ docker run -d \
 
 - The `duplistatus_data` volume is used for persistent storage.
 
-<br>
+<br/>
 
 ### Option 5: Using Podman with Pod (CLI)
 
@@ -163,7 +163,7 @@ podman create \
 podman pod start Duplistatus
 ```
 
-<br>
+<br/>
 
 ### Option 6: Using Podman Compose (CLI)
 
@@ -173,13 +173,13 @@ Create the `duplistatus.yml` file as instructed in Option 1 above, and then run:
 podman-compose -f duplistatus.yml up -d
 ```
 
-<br><br>
+<br/><br/>
 
 ## Configuring the timezone
 
 The application date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones. 
 
-<br>
+<br/>
 
 
 For example, to change the timezone to São Paulo, add these lines to the `duplistatus.yml` under `duplistatus:`:
@@ -194,7 +194,7 @@ or pass the TZ value in the command line:
 ```bash
   --env TZ="America/Sao_Paulo" 
 ```
-<br>
+<br/>
 
 ### Using your Linux Configuration
 
@@ -204,14 +204,14 @@ To obtain your Linux host's configuration, you can execute:
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-<br>
+<br/>
 
 ### List of Timezones
 
 You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
 
-<br><br>
+<br/><br/>
 
 ## Environment Variables
 
@@ -225,7 +225,7 @@ The application supports the following environment variables for configuration:
 | `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`             |
 | `TZ`                      | Timezone for the application                           | `Europe/London` |
 
-<br><br>
+<br/><br/>
 
 ## Duplicati Server Configuration (Required)
 
@@ -240,7 +240,7 @@ Apply this configuration to all your Duplicati servers:
 
 ![Duplicati settings](img/duplicati-settings.png)
 
-<br>
+<br/>
 
 </div>
 
@@ -252,7 +252,7 @@ Apply this configuration to all your Duplicati servers:
 
 
 
-<br>
+<br/>
 
 2. **Configure backup result reporting:** On the Duplicati configuration page, select `Settings` and, in the `Default Options` section, include the following options. Replace 'my.local.server' with your server name or IP address where **duplistatus** is running.
 
@@ -280,14 +280,14 @@ Apply this configuration to all your Duplicati servers:
 --send-http-max-log-lines=0
 ```
 
-<br>
+<br/>
 
 
 ![Duplicati configuration](img/duplicati-options.png)
 
 
 
-<br>
+<br/>
 
 **Important notes on messages sent by Duplicati:**
 
@@ -295,7 +295,7 @@ Apply this configuration to all your Duplicati servers:
 - The recommended configuration is `--send-http-max-log-lines=0` for unlimited messages, since the Duplicati default of 100 messages may prevent the available versions from being received in the log.
 - If you limit the number of messages, the log messages required to obtain the available backup versions may not be received. This will prevent those versions from being displayed for that backup run.
 
-<br>
+<br/>
 
 </div>
 
@@ -303,13 +303,13 @@ Apply this configuration to all your Duplicati servers:
 > After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
 
-<br>
+<br/>
 
 ## Next Steps
 
 Check the [User Guide](USER-GUIDE.md) on how to use **duplistatus**.
 
-<br>
+<br/>
 
 ## License
 

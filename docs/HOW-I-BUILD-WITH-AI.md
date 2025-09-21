@@ -29,26 +29,26 @@ I also tried connecting directly to each Duplicati server on the network, but th
 
 Since I was also experimenting with AI code tools, I decided to try using AI to build this tool. Here is the process I used...
 
-<br>
+<br/>
 
 # Tools used
 
 1. For the UI: [Google's Firebase Studio](https://firebase.studio/)
 2. For the implementation: Cursor (https://www.cursor.com/)
 
-<br>
+<br/>
 
 > [!NOTE]
 > I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
 
-<br>
+<br/>
 
 # UI
 
 I created a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI" feature:
 
 
-<br>
+<br/>
 
 > A web dashboard application using tailwind/react to consolidate in a sqllite3 database the backup result sent by the duplicati backup solution using the option --send-http-url (json format) of several machines, keep tracking of the status of the backup, size, upload sizes.
 > 
@@ -63,10 +63,11 @@ I created a new project in [Firebase Studio](https://studio.firebase.google.com/
 > The application has to have a selectable dark and light theme.
 > 
 > The database should store these fields received by the duplicati json:
-> 
-> "{ "Data": { "DeletedFiles": 0, "DeletedFolders": 0, "ModifiedFiles": 0, "ExaminedFiles": 15399, "OpenedFiles": 1861, "AddedFiles": 1861, "SizeOfModifiedFiles": 0, "SizeOfAddedFiles": 13450481, "SizeOfExaminedFiles": 11086692615, "SizeOfOpenedFiles": 13450481, "NotProcessedFiles": 0, "AddedFolders": 419, "TooLargeFiles": 0, "FilesWithError": 0, "ModifiedFolders": 0, "ModifiedSymlinks": 0, "AddedSymlinks": 0, "DeletedSymlinks": 0, "PartialBackup": false, "Dryrun": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "EndTime": "2025-04-21T23:46:38.3568274Z", "BeginTime": "2025-04-21T23:45:46.9712217Z", "Duration": "00:00:51.3856057", "WarningsActualLength": 0, "ErrorsActualLength": 0, "BackendStatistics": { "BytesUploaded": 8290314, "BytesDownloaded": 53550393, "KnownFileSize": 9920312634, "LastBackupDate": "2025-04-22T00:45:46+01:00", "BackupListCount": 6, "ReportedQuotaError": false, "ReportedQuotaWarning": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "BeginTime": "2025-04-21T23:45:46.9712252Z", "Duration": "00:00:00", "WarningsActualLength": 0, "ErrorsActualLength": 0 } }, "Extra": { "OperationName": "Backup", "machine-id": "66f5ffc7ff474a73a3c9cba4ac7bfb65", "machine-name": "WSJ-SER5", "backup-name": "WSJ-SER5 Local files", "backup-id": "DB-2" } } "
+```json
+"{ "Data": { "DeletedFiles": 0, "DeletedFolders": 0, "ModifiedFiles": 0, "ExaminedFiles": 15399, "OpenedFiles": 1861, "AddedFiles": 1861, "SizeOfModifiedFiles": 0, "SizeOfAddedFiles": 13450481, "SizeOfExaminedFiles": 11086692615, "SizeOfOpenedFiles": 13450481, "NotProcessedFiles": 0, "AddedFolders": 419, "TooLargeFiles": 0, "FilesWithError": 0, "ModifiedFolders": 0, "ModifiedSymlinks": 0, "AddedSymlinks": 0, "DeletedSymlinks": 0, "PartialBackup": false, "Dryrun": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "EndTime": "2025-04-21T23:46:38.3568274Z", "BeginTime": "2025-04-21T23:45:46.9712217Z", "Duration": "00:00:51.3856057", "WarningsActualLength": 0, "ErrorsActualLength": 0, "BackendStatistics": { "BytesUploaded": 8290314, "BytesDownloaded": 53550393, "KnownFileSize": 9920312634, "LastBackupDate": "2025-04-22T00:45:46+01:00", "BackupListCount": 6, "ReportedQuotaError": false, "ReportedQuotaWarning": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "BeginTime": "2025-04-21T23:45:46.9712252Z", "Duration": "00:00:00", "WarningsActualLength": 0, "ErrorsActualLength": 0 } }, "Extra": { "OperationName": "Backup", "machine-id": "66f5ffc7ff474a73a3c9cba4ac7bfb65", "machine-name": "WSJ-SER5", "backup-name": "WSJ-SER5 Local files", "backup-id": "DB-2" } } "
+```
 
-<br>
+<br/>
 
 
 this generated an App Blueprint, which I then modified slightly (as below) before clicking `Prototype this App`:
@@ -76,7 +77,7 @@ this generated an App Blueprint, which I then modified slightly (as below) befor
 
 I later used these prompts to adjust and refine the design and behavior:
 
-<br>
+<br/>
 
 > remove the button "view details" from the dashboard overview page and the link on the machine name, if the user click anywhere on the row, it will show the detail page.
 
@@ -100,7 +101,7 @@ I later used these prompts to adjust and refine the design and behavior:
 > in the dashboard overview put last backup date before last backup status
 
 
-<br>
+<br/>
 
 After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
 
@@ -114,11 +115,11 @@ After iterating through these prompts, Firebase generated the prototype as shown
 After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
 
 
-<br><br>
+<br/><br/>
 
 # Backend
 
-<br>
+<br/>
 
 ## Setup
 
@@ -128,7 +129,7 @@ I set up Cursor to access the code folder from my Windows machine using an SSH c
 
 I copied a sample of the JSON sent by Duplicati into a file called [`database_values.json`](database_values.json), clearing some unwanted fields.
 
-<br>
+<br/>
 
 ## Implementation
 
@@ -195,7 +196,7 @@ After the plan was generated, I typed `please, implement this plan` in the chat 
 > [!NOTE]
 > I only included the starting point since I didn't record all the prompts used. There were many of them.
 
-<br><br>
+<br/><br/>
 
 # Notes
 
@@ -208,7 +209,7 @@ For complex bugs or errors, use a prompt to analyze possible causes of the error
 - Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions for the AI agent. 
 
 
-<br><br>
+<br/><br/>
 
 # License
 

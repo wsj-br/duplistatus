@@ -107,7 +107,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
         >
           <DialogHeader className="pb-3 leading-8">
             <DialogTitle>
-            Available Backup Versions    <br /> <br />
+            Available Backup Versions    <br/> <br/>
 
               <span className="font-medium text-muted-foreground">{modalState.serverAlias || modalState.serverName}</span>
               {modalState.serverAlias && modalState.serverName !== modalState.serverAlias && (
@@ -119,7 +119,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
               <span className="text-blue-400 font-normal">{new Date(modalState.backupDate).toLocaleString()}</span>
               {modalState.serverNote && (
                 <>
-                  <br />
+                  <br/>
                   <span className="text-sm text-muted-foreground italic">{modalState.serverNote}</span>
                 </>
               )}

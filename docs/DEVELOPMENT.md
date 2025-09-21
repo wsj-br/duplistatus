@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.7.27-blue)
+![](https://img.shields.io/badge/version-0.8.1-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -75,7 +75,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<br>
+<br/>
 
 ## Prerequisites
 
@@ -87,7 +87,7 @@
 - doctoc for markdown table of contents generation
 - markdown-link-check 
 
-<br>
+<br/>
 
 ## Steps
 
@@ -113,7 +113,7 @@ For the default TCP port (8666):
 pnpm dev
 ```
 
-<br>
+<br/>
 
 ## Available Scripts
 
@@ -146,7 +146,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm run-overdue-check` - Run overdue check at specific date/time
 - `pnpm test-cron-port` - Test cron service port connectivity
 
-<br>
+<br/>
 
 ## Development Mode Features
 
@@ -167,7 +167,7 @@ When running in development mode (`pnpm dev`), the application includes addition
   - Server connection testing tools
   - Backup collection utilities
 
-<br>
+<br/>
 
 ### Build the application for production
 ```bash
@@ -226,7 +226,7 @@ This script performs a complete Docker cleanup, which is useful for:
 docker build . -t wsj-br/duplistatus:devel
 ```
 
-<br>
+<br/>
 
 ## Cron Service
 
@@ -262,7 +262,7 @@ The cron service includes:
 - **RESTful API**: Complete API for service management and monitoring
 
 
-<br>
+<br/>
 
 ## Test Scripts
 
@@ -298,7 +298,7 @@ pnpm run generate-test-data --servers=30
 > This script delete all the previous data in the database and replace it with the test data.
 > Backup your database before running this script.
 
-<br>
+<br/>
 
 
 ### Show the overdue notifications contents (to debug notification system)
@@ -306,7 +306,7 @@ pnpm run generate-test-data --servers=30
 pnpm show-overdue-notifications
 ```
 
-<br>
+<br/>
 
 ### Run overdue-check at a specific date/time (to debug notification system)
 
@@ -314,7 +314,7 @@ pnpm show-overdue-notifications
 pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 ``` 
 
-<br>
+<br/>
 
 ### Test cron service port connectivity
 
@@ -338,7 +338,7 @@ pnpm test-cron-port
 This script tests the connectivity to the cron service port and provides detailed information about the connection status.
 
 
-<br>
+<br/>
 
 ## Workspace admin scripts & commands
 
@@ -351,7 +351,7 @@ Cleans the database by removing all data while preserving the database schema an
 >[!CAUTION]
 > Use with caution as this will delete all existing data.
 
-<br>
+<br/>
 
 
 ### Clean build artifacts and dependencies
@@ -368,7 +368,7 @@ Removes all build artifacts, node_modules directory, and other generated files t
 - Unused Docker system resources (images, networks, volumes)
 - Any other build cache files
 
-<br>
+<br/>
 
 ### Clean docker compose and docker environment
 
@@ -381,7 +381,7 @@ Perform a complete Docker cleanup, which is useful for:
 - Cleaning up after development or testing sessions
 - Maintaining a clean Docker environment
 
-<br>
+<br/>
 
 ### Generate the logo/favicon and banner from SVG images
 
@@ -392,7 +392,7 @@ scripts/convert_svg_logo.sh
 
 > The svg files are located in the `docs/img` folder. This script requires ImageMagick to be installed on your system.
 
-<br>
+<br/>
 
 ### Update the packages to the last version
 
@@ -401,7 +401,7 @@ ncu --upgrade
 pnpm update
 ```
 
-<br>
+<br/>
 
 ### Update version information
 
@@ -415,7 +415,7 @@ This script automatically updates the `.env` file with the current version from 
 - Only updates if the version has changed
 - Provides feedback on the operation
 
-<br>
+<br/>
 
 
 ### Viewing the configurations on the database
@@ -434,13 +434,13 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-<br>
+<br/>
 
 ### SQL Scripts for Debugging and Maintenance
 
 The project includes SQL scripts for database maintenance:
 
-<br>
+<br/>
 
 #### Delete Backup Settings
 
@@ -449,7 +449,7 @@ sqlite3 data/backups.db < scripts/delete-backup-settings.sql
 ```
 This script removes all backup settings from the configurations table. Use with caution as this will reset all backup notification configurations.
 
-<br>
+<br/>
 
 #### Delete Last Backup
 
@@ -463,7 +463,7 @@ This script removes the most recent backup record for each server. By default, i
 >[!CAUTION]
 > These SQL scripts directly modify the database. Always backup your database before running these scripts.
 
-<br>
+<br/>
 
 ## Documentation tools
 
@@ -479,7 +479,7 @@ This script updates all documentation files with the current version and regener
 - Provides feedback on updated files
 - Requires `doctoc` to be installed globally
 
-<br>
+<br/>
 
 ### Checking for broken links
 
@@ -487,7 +487,7 @@ This script updates all documentation files with the current version and regener
 markdown-link-check *.md docs/*.md
 ```
 
-<br>
+<br/>
 
 ## Podman testing
 
@@ -517,7 +517,7 @@ Copy and execute the scripts located at "scripts/podman_testing" in the podman t
 6. Use `restart.duplistatus` for a complete restart cycle
 
 
-<br><br>
+<br/><br/>
 
 ## Release Management
 
@@ -529,14 +529,14 @@ The project follows Semantic Versioning (SemVer) with the format `MAJOR.MINOR.PA
 - **MINOR** version (0.x.0): When you add functionality in a backward-compatible manner
 - **PATCH** version (0.0.x): When you make backward-compatible bug fixes
 
-<br>
+<br/>
 
 
 ### Merging `devel` to `master` using command line
 
 To release your new version, you'll need to merge the `devel` branch into the `master` branch. This process incorporates all the new code from `devel` into your stable `master` branch, making it ready for a new release.
 
-<br>
+<br/>
 
 #### 1. Merge the `devel` Branch into `master`
 
@@ -559,7 +559,7 @@ git merge devel
 
 Git will attempt to automatically merge the branches. If there are any **merge conflicts**, you'll need to manually resolve them in the affected files. After resolving conflicts, use `git add` to stage the changes and `git commit` to finalize the merge.
 
-<br>
+<br/>
 
 #### 2. Tag the New Release
 
@@ -572,7 +572,7 @@ git tag -a v0.7.27 -m "Release v0.7.27 - New Features and Bug Fixes"
 
 The `-a` flag creates an annotated tag, and the `-m` flag lets you add a message describing the release.
 
-<br>
+<br/>
 
 
 #### 3. Push to GitHub
@@ -589,7 +589,7 @@ git push origin v0.7.27
 
 You can also push all tags at once using `git push --tags`. After this, the new version will be visible on GitHub, and you can create a new release on the GitHub UI associated with your new tag.
 
-<br>
+<br/>
 
 
 ### Merging `devel` to `master` using Github 
@@ -606,7 +606,7 @@ Instead of a direct merge, you will create a **Pull Request (PR)** from `devel` 
 
 After the pull request is created, you will see a green **"Merge pull request"** button if there are no conflicts. Clicking this button will merge all the commits from `devel` into `master`. 
 
-<br><br>
+<br/><br/>
 
 
 
@@ -627,7 +627,7 @@ This will automatically:
 - Push the images to Docker Hub 
 - Push the images to GitHub Container Registry (ghcr.io/wsj-br/duplistatus:latest)
 
-<br>
+<br/>
 
 ### Manual Docker Image Build
 
@@ -640,7 +640,7 @@ To manually trigger the Docker image build workflow:
 5. Select the branch to build from
 6. Click "Run workflow"
 
-<br><br>
+<br/><br/>
 
 ## Frameworks, libraries and tools used
 
@@ -773,7 +773,7 @@ To manually trigger the Docker image build workflow:
     - Database cleanup utilities
     - Workspace management scripts
 
-<br><br>
+<br/><br/>
 
 ## Development Guidelines
 
@@ -847,7 +847,7 @@ To manually trigger the Docker image build workflow:
 - Use the established patterns for forms and validation
 - Implement proper state management with React hooks
 
-<br>
+<br/>
 
 # License
 The project is licensed under the [Apache License 2.0](../LICENSE).   

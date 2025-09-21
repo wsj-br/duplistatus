@@ -4,16 +4,16 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.7.27-blue)
+![](https://img.shields.io/badge/version-0.8.1-blue)
 
-<br>
+<br/>
 
 
 This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
 
 It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
-<br>
+<br/>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -41,7 +41,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<br>
+<br/>
 
 ## Features
 
@@ -57,7 +57,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 - **Server Settings**: Users can choose an alias for the server and include a note with a description (NEW)
 - **API Access**: RESTful API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs
 
-<br>
+<br/>
 
 
 >[!IMPORTANT]
@@ -73,7 +73,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 
 
-<br>
+<br/>
 
 ## Screenshots
 
@@ -98,7 +98,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 ![ntfy overdue message](docs/img/screen-overdue-notification.png)
 
-<br>
+<br/>
 
 
 ## Installation
@@ -106,7 +106,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
 See details in the [Installation Guide](docs/INSTALL.md).
 
-<br>
+<br/>
 
 ## Duplicati Servers Configuration (Required)
 
@@ -114,33 +114,33 @@ Once your **duplistatus** server is up and running, you need to configure your *
 send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](docs/INSTALL.md#duplicati-configuration-required) 
 section of the Installation Guide. Without this configuration, the dashboard will not function properly.
 
-<br>
+<br/>
 
 ## User Guide
 
 See the [User Guide](docs/USER-GUIDE.md) for detailed instructions on how to configure and use **duplistatus**, including setup, features, and troubleshooting.
 
-<br>
+<br/>
 
 ## API Reference
 
 For detailed information about all available API endpoints, request/response formats, and integration examples, please refer to the [API Endpoints Documentation](docs/API-ENDPOINTS.md).
 
-<br>
+<br/>
 
 ## Development
 
 Detailed instructions on how to download the source code, make changes, debug, and run in development mode can be found in the [DEVELOPMENT.md](docs/DEVELOPMENT.md) file.
 This application was developed almost entirely using AI tools. The step-by-step process and tools used are described in [HOW-I-BUILD-WITH-AI.md](docs/HOW-I-BUILD-WITH-AI.md).
 
-<br>
+<br/>
 
 
 ## Migrating to Version 0.7.x
 
 Your database will automatically update when you start the new version. This process is safe and preserves all your existing data.
 
-<br>
+<br/>
 
 ### The Migration Process
 
@@ -150,7 +150,7 @@ The system automatically performs the following steps:
 - **Runs the migration**, changes the schema to the next version, and copies all existing data to the new schema.
 - **Preserves all your existing data** while improving the database structure.
 
-<br>
+<br/>
 
 ### Monitoring the Migration
 
@@ -168,7 +168,7 @@ Look for these messages to confirm a successful migration:
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-<br>
+<br/>
 
 ### Rolling Back (If Needed)
 
@@ -201,7 +201,7 @@ If you encounter issues, you can restore your database by following these steps:
 
 
 
-<br>
+<br/>
 
 ## Credits
 
@@ -216,7 +216,7 @@ If you encounter issues, you can restore your database by following these steps:
 >[!NOTE]
 > All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 
-<br>
+<br/>
 
 ## License
 

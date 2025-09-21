@@ -3,19 +3,17 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.7.27-blue)
+![](https://img.shields.io/badge/version-0.8.1-blue)
 
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
 
-<br>
+<br/>
 
 >[!IMPORTANT]
-> If you are upgrading from version 0.6.1 or earlier, the application will automatically 
-> [migrated](../README.md#migrating-to-version-07x) your database to the new schema 
-> during startup process.
+> If you are upgrading from version 0.6.1 or earlier, check the [Releases notes](RELEASE-NOTES-0.7.27.md) about all changes in this version.
 
-<br>
+<br/>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -65,12 +63,12 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<br><br>
+<br/><br/>
 
 ## Installation
 See [INSTALL.md](INSTALL.md) for prerequisites and installation instructions.
 
-<br><br>
+<br/><br/>
 
 ## Getting Started
 
@@ -84,27 +82,27 @@ After installation, access the **duplistatus** web interface:
 
 3.  The dashboard displays automatically.
 
-<br>
+<br/>
 
 > [!TIP]
 > On the first use, you should collect backup logs from all your Duplicati servers
 >  to populate the database. Please refer to the [Collect Backup Logs](#collect-backup-logs) 
 > section for guidance.
 
-<br><br>
+<br/><br/>
 
 ## User Interface
 
 
 **duplistatus** provides a comprehensive dashboard for monitoring Duplicati backup operations across multiple servers. 
 
-<br>
+<br/>
 
 <div style="padding-left: 60px;">
 
 ![Dashboard Overview](img/screen-dashboard.png)
 
-<br>
+<br/>
 
 The user interface consists of several elements, organised into different sections to provide a clear and intuitive experience:
 
@@ -115,11 +113,11 @@ The user interface consists of several elements, organised into different sectio
 5.  [**Available Backup Versions**](#available-backup-versions): Click the blue icon to view backup versions available on the backup destination.
 6.  [**Backup Metrics**](#backup-metrics): Charts displaying backup metrics over time.
 7.  [**Server Details**](#server-details): A list of recorded backups for a specific server, including statistics.
-8.  [**Backup Details**](#backup-details-2): Detailed information for a specific backup, including log messages (execution, warnings, and errors).
+8.  [**Backup Details**](#backup-details): Detailed information for a specific backup, including log messages (execution, warnings, and errors).
 
 </div>
 
-<br>
+<br/>
 
 ## Application Toolbar
 
@@ -144,7 +142,7 @@ The toolbar provides easy access to key functions and settings.
 
 </div>
 
-<br><br>
+<br/><br/>
 
 ##  Dashboard Summary
 
@@ -167,7 +165,7 @@ This section displays aggregated statistics for all backups.
 
 </div>
 
-<br><br>
+<br/><br/>
 
 ##  Cards Layout
 
@@ -190,7 +188,7 @@ The cards layout shows the status of the most recent backup log received for eac
 > [!NOTE]
 > You can use the [Display Settings](#display-settings) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
 
-<br>
+<br/>
 
 The user can toggle the top right button on the side panel to toggle the panel view: 
   - Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status. 
@@ -209,7 +207,9 @@ The user can toggle the top right button on the side panel to toggle the panel v
   
 </div>
 
-<br>
+</div>
+
+<br/>
 
 ### Backup Details 
 
@@ -237,7 +237,7 @@ You can also click the buttons at the bottom to open `Settings → Backup Notifi
 
 </div>
 
-<br>
+<br/>
 
 ## Table Layout
 
@@ -250,7 +250,7 @@ The table layout lists the most recent backup logs received for all servers and 
   - **Server Name**: The name of the Duplicati server (or alias)
      - Under the name the server note
   - **Backup Name**: The name of the backup in the Duplicati server.
-  - **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](INSTALL.md#duplicati-configuration-required) for details.
+  - **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](INSTALL.md#duplicati-server-configuration-required) for details.
   - **Backup Count**: The number of backups reported by the Duplicati server.
   - **Last Backup Date**: The timestamp of the last backup log received and the elapsed time since the last screen refresh.
   - **Last Backup Status**: The status of the last backup received (Success, Warning, Error, Fatal).
@@ -260,7 +260,7 @@ The table layout lists the most recent backup logs received for all servers and 
        - **Notification**: An icon showing the configured notification setting for new backup logs.
        - **Duplicati configuration**: A button to open the Duplicati server's web interface
 
-<br>
+<br/>
 
 ### Notifications Icons
   
@@ -271,14 +271,14 @@ The table layout lists the most recent backup logs received for all servers and 
   | ![warnings](img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
   | ![errors](img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
-<br>
+<br/>
 
 </div>
 
 > [!NOTE]
 > This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
 
-<br>
+<br/>
 
 ### Overdue Details
 
@@ -295,7 +295,7 @@ Hovering over the overdue warning icon displays details about the overdue backup
 
 </div>
 
-<br>
+<br/>
 
 ### Available Backup Versions
 
@@ -308,15 +308,15 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
   - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
   - **Version Details**: Shows the version number, creation date, and age.
 
-<br>
+<br/>
 
 </div>
 
 > [!NOTE]
 > If the icon is greyed out, it means that no detailed information was received in the message logs. 
-> See the [Duplicati Configuration instructions](INSTALL.md#duplicati-configuration-required) for details.
+> See the [Duplicati Configuration instructions](INSTALL.md#duplicati-server-configuration-required) for details.
 
-<br><br>
+<br/><br/>
 
 ##  Backup Metrics
 
@@ -336,14 +336,14 @@ A chart of backup metrics over time is shown on both the dashboard and the serve
  - **Storage Size**: The sum of the storage size used on the backup destination reported by the Duplicati server per day.
  - **Available Versions**: The sum of all available versions for all backups per day.
   
- <br>
+ <br/>
    
 </div>
 
 > [!NOTE]
 > You can use the [Display Settings](#display-settings) control to configure the time range for the chart.
 
-<br><br>
+<br/><br/>
 
 ## Server Details
 
@@ -355,7 +355,7 @@ Clicking on a server from the dashboard opens a page with a list of backups for 
 
 </div>
 
-<br>
+<br/>
 
 ### Server/Backup Statistics
 
@@ -372,7 +372,7 @@ This section shows statistics for either all backups on the server or a single s
   - **TOTAL UPLOADED**: Sum of all uploaded data recorded in the **duplistatus** database.
   - **Overdue Scheduled Backups**: If a backup is overdue, a message appears below the summary. Click the **Configure** button to go to `Settings → Backup Notifications`.
 
-<br>
+<br/>
 
 
 </div>
@@ -383,7 +383,7 @@ This section shows statistics for either all backups on the server or a single s
 > [!NOTE]
 > Cleaning the database via [Database Maintenance](#database-maintenance) will affect the **AVG DURATION** (average) and **TOTAL UPLOADED** values, as they are calculated from the records stored in the **duplistatus** database.
 
-<br>
+<br/>
 
 ### Backup History
 
@@ -400,19 +400,19 @@ This table lists the backup logs for the selected server.
   - **Available Versions**: The number of available backup versions on the backup destination. If the icon is greyed out, detailed information was not received.
   - **File Count, File Size, Uploaded Size, Duration, Storage Size**: Values as reported by the Duplicati server.
 
-<br>
+<br/>
 
 </div>
 
 > [!TIP]
-> • You can sort any column by clicking its header. Click again to change the sort order (ascending/descending). <br>
-> • Click anywhere on a row to view the [Backup Details](#backup-details-2).<br>
+> • You can sort any column by clicking its header. Click again to change the sort order (ascending/descending). <br/>
+> • Click anywhere on a row to view the [Backup Details](#backup-details).<br/>
 > • Click the blue icon in the "Available Versions" column to display the versions available at the time of the backup.
 
 > [!NOTE]
 > When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
 
-<br><br>
+<br/><br/>
 
 ## Backup Details
 
@@ -427,11 +427,11 @@ Clicking on a status badge in the dashboard (table view) or any row in the backu
   - **Backup Statistics**: A summary of reported counters, sizes, and duration.
   - **Log Summary**: The number of reported messages.
   - **Available Versions**: A list of available versions (only displayed if the information was received in the logs).
-  - **Messages/Warnings/Errors**: The complete execution logs. The subtitle indicates if the log was truncated by the Duplicati server. Refer to the [Duplicati Configuration instructions](INSTALL.md#duplicati-configuration-required) to learn how to configure Duplicati to send complete logs.
+  - **Messages/Warnings/Errors**: The complete execution logs. The subtitle indicates if the log was truncated by the Duplicati server. Refer to the [Duplicati Configuration instructions](INSTALL.md#duplicati-server-configuration-required) to learn how to configure Duplicati to send complete logs.
 
 </div>
 
-<br><br>
+<br/><br/>
 
 ## Duplicati Configuration
 
@@ -450,7 +450,7 @@ You can select a server from the dropdown list. If you have already selected a s
 
 </div>
 
-<br><br>
+<br/><br/>
 
 
 ## Display Settings
@@ -470,7 +470,7 @@ Configure user interface and display preferences.
 
 </div>
 
-<br><br>
+<br/><br/>
 
 ## Collect Backup Logs
 
@@ -492,7 +492,7 @@ Configure user interface and display preferences.
       - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
 3.  Click `Collect Backups`.
 
-<br>
+<br/>
 
 ### How the Collection Process Works
 
@@ -504,7 +504,7 @@ Configure user interface and display preferences.
   - If selected, will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
   - The dashboard updates to reflect the new information.
 
-<br>
+<br/>
 
 </div>
 
@@ -515,7 +515,7 @@ Configure user interface and display preferences.
 >   - Check that **duplistatus** can connect to the Duplicati server. A common problem is DNS name resolution (the system cannot find the server by its hostname).
 >   - Ensure the password you provided is correct.
 
-<br><br>
+<br/><br/>
 
 
 
@@ -527,7 +527,7 @@ Manage your backup data and optimise performance through database maintenance op
 
 ![Database maintenance](img/screen-database-maintenance.png)
 
-<br>
+<br/>
 
 ### Data Cleanup Period
 
@@ -542,7 +542,7 @@ Remove outdated backup records to free up storage space and improve system perfo
 3.  Click `Clear Old Records`.
 4.  Confirm the action in the dialogue box.
 
-<br>
+<br/>
 
 **Cleanup Effects:**
 
@@ -550,7 +550,7 @@ Remove outdated backup records to free up storage space and improve system perfo
   - Updates all related statistics and metrics.
   - The "Delete all data" option also clears all associated configuration settings.
 
-<br>
+<br/>
 
 ### Delete Backup Job Data
 
@@ -562,7 +562,7 @@ Remove a specific Backup Job (type)  data.
 3.  Click `Delete Server Data`.
 4.  Confirm the action in the dialogue box.
 
-<br>
+<br/>
 
 **Deletion Effects:**
 
@@ -570,7 +570,7 @@ Remove a specific Backup Job (type)  data.
   - Cleans up associated configuration settings.
   - Updates dashboard statistics accordingly.
 
-<br>
+<br/>
 
 ### Delete Server Data
 
@@ -581,7 +581,7 @@ Remove a specific server and all its associated backup data.
 3.  Click `Delete Server Data`.
 4.  Confirm the action in the dialogue box.
 
-<br>
+<br/>
 
 **Deletion Effects:**
 
@@ -589,16 +589,16 @@ Remove a specific server and all its associated backup data.
   - Cleans up associated configuration settings.
   - Updates dashboard statistics accordingly.
 
-<br>
+<br/>
 
 </div>
 
 > [!NOTE]
 > All statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
-> <br><br>
+> <br/><br/>
 > If you accidentally delete data, you can restore it using the [Collect Backup Logs](#collect-backup-logs) feature.
 
-<br><br>
+<br/><br/>
 
 ## Settings
 
@@ -610,7 +610,7 @@ This section explains how to configure **duplistatus**. The settings available a
 - **Notifications Templates**: Configure the content of the notifications, when backups are successful, with warnings or errors and for overdue backups.
 
 
-<br>
+<br/>
 
 ### Backup Notifications Settings
 
@@ -618,7 +618,7 @@ This section explains how to configure **duplistatus**. The settings available a
 
   ![Backup alerts](img/screen-settings-backup-alerts.png)
 
-<br>
+<br/>
 
 #### Configure Per-Backup Notification Settings
 
@@ -642,12 +642,12 @@ This section explains how to configure **duplistatus**. The settings available a
 <div style="padding-left: 60px;">
 
 > [!NOTE]
-> These options only control notifications sent when a [new backup log is received](INSTALL.md#duplicati-configuration-required). Overdue notifications will be sent regardless of these settings.
+> These options only control notifications sent when a [new backup log is received](INSTALL.md#duplicati-server-configuration-required). Overdue notifications will be sent regardless of these settings.
 
 </div>
 <div style="padding-left: 60px;">
 
-<br>
+<br/>
 
 #### Global Configurations
 
@@ -659,9 +659,9 @@ These settings apply to all backups:
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Overdue Tolerance**           | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is `1 hour`.                                                                                                                                                                                                                                          |
 | **Overdue Monitoring Interval** | How often the system checks for overdue backups. The default is `5 minutes`.                                                                                                                                                                                                                                          |
-| **Notification Frequency**      | How often to send overdue notifications: <br> - `One time`: Send one notification when the backup becomes overdue. <br> - `Every day`: Send daily notifications while overdue (default).<br> - `Every week`: Send weekly notifications while overdue. <br> - `Every month`: Send monthly notifications while overdue. |
+| **Notification Frequency**      | How often to send overdue notifications: <br/> - `One time`: Send one notification when the backup becomes overdue. <br/> - `Every day`: Send daily notifications while overdue (default).<br/> - `Every week`: Send weekly notifications while overdue. <br/> - `Every month`: Send monthly notifications while overdue. |
 
-<br>
+<br/>
 
 #### Action Buttons
 
@@ -673,7 +673,7 @@ These settings apply to all backups:
 | `Check now`            | Runs the overdue backup check immediately. This is useful after changing configurations. |
 | `Reset timer`          | Resets the last overdue notification sent for all backups.                               |
 
-<br>
+<br/>
 
 ### Overdue Check Process
 
@@ -717,13 +717,13 @@ gantt
 
 </div>
 
-<br><br>
+<br/><br/>
 
 ### Server Settings
 
 You can configure an alternative name (alias) for your servers, a note to describe its function and the web addresses of your Duplicati Servers here. 
 
-<br>
+<br/>
 
 
 <div style="padding-left: 60px;">
@@ -738,14 +738,14 @@ You can configure an alternative name (alias) for your servers, a note to descri
 - **Status**: Display the test results when you click `▷ Test` or `Test All` buttons.
 - **Actions**: You can test the connection and open the URL configured in a new browser tab.
 
-<br>
+<br/>
 
 > [!TIP]
 > After entering an address, test it using the `Test` or `Test All` button.
 </div>
 
 
-<br><br>
+<br/><br/>
 
 <div style="padding-left: 60px;">
 
@@ -759,7 +759,7 @@ NTFY is a simple notification service that can send push notifications to your p
   - **NTFY Topic**: A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own.
   - **NTFY Access Token**: An optional access token for authenticated NTFY servers. Leave this field blank if your server does not require authentication.
 
-<br>
+<br/>
 
 > [!CAUTION]
 > If you use the public `ntfy.sh` server without an access token, anyone with your topic name can view your
@@ -770,7 +770,7 @@ NTFY is a simple notification service that can send push notifications to your p
 >
 > ⚠️ **You are responsible for securing your NTFY topics. Please use this service at your own discretion.**
 
-<br>
+<br/>
 
 #### About NTFY
 
@@ -783,11 +783,11 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 
 💙 If you find ntfy.sh useful, please consider [supporting the developer](https://github.com/sponsors/binwiederhier).
 
-<br>
+<br/>
 
 </div>
 
-<br><br>
+<br/><br/>
 
 ### Notification Templates
 
@@ -801,12 +801,12 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 | **Warning/Error**  | Used when backups complete with warnings or errors. |
 | **Overdue Backup** | Used when backups are overdue.                      |
 
-<br>
+<br/>
 
 
 ![notification templates](img/screen-settings-notifications-templates.png)
 
-<br>
+<br/>
 
 All templates support variables that will be replaced with actual values. The following table shows the available variables:
 
@@ -835,20 +835,20 @@ All templates support variables that will be replaced with actual values. The fo
 | `{backup_interval_value}` | Expected interval value.                        | Overdue          |
 | `{overdue_tolerance}`     | Overdue tolerance setting.                      | Overdue          |
 
-<br> 
+<br/> 
 
 </div>
 
 > [!TIP]
 > After updating a template, use the `Send Test Notification` button to check it. The variables will be replaced with their names for the test.
 
-<br><br>
+<br/><br/>
 
 ## Homepage Integration (Optional)
 
 [Homepage](https://gethomepage.dev/) is a customisable dashboard application. To integrate **duplistatus** with Homepage, add a widget to your `services.yaml` file using the [Custom API widget type](https://gethomepage.dev/widgets/services/customapi/).
 
-<br>
+<br/>
 
 ### Summary Widget
 
@@ -895,7 +895,7 @@ This widget displays overall backup statistics on your Homepage dashboard.
 
 </div>
 
-<br>
+<br/>
 
 ### Last Backup Information Widget
 
@@ -935,7 +935,7 @@ This widget displays the latest backup information for a specific machine.
 
 </div>
 
-<br>
+<br/>
 
 ### Configuration Notes
 
@@ -944,7 +944,7 @@ This widget displays the latest backup information for a specific machine.
   - Replace spaces in machine names with `%20` in the URL (e.g., `Test Machine 1` becomes `Test%20Machine%201`).
   - The `scale` values convert bytes to more readable units (GB, MB).
 
-<br><br>
+<br/><br/>
 
 ## Troubleshooting
 
@@ -952,13 +952,13 @@ Here are solutions to some common issues.
 
 | Issue | Problem Description | Solutions |
 | :--- | :--- | :--- |
-| **New backups are not showing**<br><br>Duplicati server warnings:<br>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history. | **Check Duplicati Configuration**:<br>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br>• Verify the HTTP URL settings in Duplicati.<br><br>**Check Network Connectivity**:<br>• Ensure the Duplicati server can connect to the **duplistatus** server.<br>• Confirm the port is correct (default: `9666`).<br><br>**Review Duplicati Logs**:<br>• Check for HTTP request errors in the Duplicati logs. |
-| **Notifications Not Working** | Notifications are not being sent or received. | **Check NTFY Configuration**:<br>• Ensure the NTFY URL and topic are correct.<br>• Use the `Send Test Notification` button to test.<br><br>**Check Network Connectivity**:<br>• Verify that **duplistatus** can reach your NTFY server.<br>• Review firewall settings if applicable.<br><br>**Check Notification Settings**:<br>• Confirm that notifications are enabled for the relevant backups. |
-| **Available versions not appearing** | Backup versions are not shown on the dashboard or details page. | **Check Duplicati Configuration**:<br>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options. |
-| **Overdue Backup Alerts Not Working** | Overdue backup notifications are not being sent. | **Check Overdue Configuration**:<br>• Confirm that overdue monitoring is enabled for the backup.<br>• Verify the expected interval and tolerance settings.<br><br>**Check Notification Frequency**:<br>• If set to `One time`, alerts are only sent once per overdue event.<br><br>**Check Scheduler Service**:<br>• Ensure the internal background process that monitors for overdue backups is running correctly. Check the application logs for errors. |
-| **Collect Backup Logs not working** | The manual backup log collection fails. | **Check Duplicati Server Access**:<br>• Verify the Duplicati server hostname and port are correct.<br>• Confirm remote access is enabled in Duplicati.<br>• Ensure the authentication password and protocol (HTTP/HTTPS) are correct.<br><br>**Check Network Connectivity**:<br>• Test connectivity from **duplistatus** to the Duplicati server.<br>• Confirm the Duplicati server port is accessible (default: `8200`). |
+| **New backups are not showing**<br/><br/>Duplicati server warnings:<br/>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history. | **Check Duplicati Configuration**:<br/>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br/>• Verify the HTTP URL settings in Duplicati.<br/><br/>**Check Network Connectivity**:<br/>• Ensure the Duplicati server can connect to the **duplistatus** server.<br/>• Confirm the port is correct (default: `9666`).<br/><br/>**Review Duplicati Logs**:<br/>• Check for HTTP request errors in the Duplicati logs. |
+| **Notifications Not Working** | Notifications are not being sent or received. | **Check NTFY Configuration**:<br/>• Ensure the NTFY URL and topic are correct.<br/>• Use the `Send Test Notification` button to test.<br/><br/>**Check Network Connectivity**:<br/>• Verify that **duplistatus** can reach your NTFY server.<br/>• Review firewall settings if applicable.<br/><br/>**Check Notification Settings**:<br/>• Confirm that notifications are enabled for the relevant backups. |
+| **Available versions not appearing** | Backup versions are not shown on the dashboard or details page. | **Check Duplicati Configuration**:<br/>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options. |
+| **Overdue Backup Alerts Not Working** | Overdue backup notifications are not being sent. | **Check Overdue Configuration**:<br/>• Confirm that overdue monitoring is enabled for the backup.<br/>• Verify the expected interval and tolerance settings.<br/><br/>**Check Notification Frequency**:<br/>• If set to `One time`, alerts are only sent once per overdue event.<br/><br/>**Check Scheduler Service**:<br/>• Ensure the internal background process that monitors for overdue backups is running correctly. Check the application logs for errors. |
+| **Collect Backup Logs not working** | The manual backup log collection fails. | **Check Duplicati Server Access**:<br/>• Verify the Duplicati server hostname and port are correct.<br/>• Confirm remote access is enabled in Duplicati.<br/>• Ensure the authentication password and protocol (HTTP/HTTPS) are correct.<br/><br/>**Check Network Connectivity**:<br/>• Test connectivity from **duplistatus** to the Duplicati server.<br/>• Confirm the Duplicati server port is accessible (default: `8200`). |
 
-<br>
+<br/>
 
 If you still experience issues, try the following steps:
 
@@ -968,7 +968,7 @@ If you still experience issues, try the following steps:
 4.  **Consult Documentation**: Refer to the Installation Guide and README for more information.
 5.  **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).
 
-<br><br>
+<br/><br/>
 
 ## Additional Resources
 
@@ -979,7 +979,7 @@ If you still experience issues, try the following steps:
   - **Development Guide**: [DEVELOPMENT.md](DEVELOPMENT.md)
   - **Database Schema**: [DATABASE.md](DATABASE.md)
 
-<br><br>
+<br/><br/>
 
 ## Licence
 

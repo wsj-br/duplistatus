@@ -3,12 +3,12 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.7.27-blue)
+![](https://img.shields.io/badge/version-0.8.1-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
 
-<br>
+<br/>
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -70,7 +70,7 @@ This document describes the SQLite database schema used by duplistatus to store 
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<br>
+<br/>
 
 ## Database Location
 

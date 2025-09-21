@@ -58,11 +58,11 @@ This is a **breaking change** that affects the database schema, API endpoints, a
 > * **Reset to Default:** Navigate to `Settings → Notification Templates` and use the "Reset to Default" button to apply the new default templates.
 > * **Manual Update:** Manually edit your templates to replace `{machine_name}` with `{server_name}` and take advantage of new variables like `{server_alias}`,  `{server_note}` and `{server_url}`.
 
-<br>
+<br/>
 
 ---
 
-<br>
+<br/>
 
 ## ✨ New Features
 

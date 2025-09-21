@@ -4,14 +4,14 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.7.27-blue)
+![](https://img.shields.io/badge/version-0.8.1-blue)
 
-<br>
+<br/>
 
 
 This document describes all available API endpoints for the duplistatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
 
-<br>
+<br/>
 
 ## API Structure
 
@@ -22,18 +22,18 @@ The API is organised into logical groups:
 - **Administration**: Database maintenance, cleanup operations, and system management
 - **Chart Data**: Time-series data for visualisation and analytics
 
-<br>
+<br/>
 
 ## Response Format
 
 All API responses are returned in JSON format with consistent error handling patterns. Successful responses typically include a `status` field, while error responses include `error` and `message` fields.
 
 
-<br>
+<br/>
 
 ---
 
-<br>
+<br/>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -90,17 +90,17 @@ All API responses are returned in JSON format with consistent error handling pat
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<br>
+<br/>
 
 ---
 
-<br>
+<br/>
 
 ## External APIs
 
 These endpoints are designed for use by other applications and integrations, for instance [Homepage](USER-GUIDE#homepage-integration-optional).
 
-<br>
+<br/>
 
 ### Get Overall Summary - `/api/summary`
 - **Endpoint**: `/api/summary`
@@ -128,7 +128,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns fallback response with zeros if data fetching fails
   - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
 
-<br>
+<br/>
 
 ### Get Latest Backup - `/api/lastbackup/:serverId`
 - **Endpoint**: `/api/lastbackup/:serverId`
@@ -184,7 +184,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
 
-<br>
+<br/>
 
 ### Get Latest Backups - `/api/lastbackups/:serverId`
 - **Endpoint**: `/api/lastbackups/:serverId`
@@ -267,7 +267,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)
   - Includes cache control headers to prevent caching
 
-<br>
+<br/>
 
 ### Upload Backup Data - `/api/upload`
 - **Endpoint**: `/api/upload`
@@ -287,17 +287,17 @@ These endpoints are designed for use by other applications and integrations, for
     "success": true
   }
   ```
-<br>
+<br/>
 
 ---
 
-<br>
+<br/>
 
 ## Core Operations
 
 
 
-<br>
+<br/>
 
 ### Get Dashboard Data (Consolidated) - `/api/dashboard`
 - **Endpoint**: `/api/dashboard`
@@ -360,7 +360,7 @@ These endpoints are designed for use by other applications and integrations, for
   - All data is fetched in parallel for optimal performance
   - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
 
-<br>
+<br/>
 
 ### Get All Servers - `/api/servers`
 - **Endpoint**: `/api/servers`
@@ -400,7 +400,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Consolidates the previous `/api/servers-with-backups` functionality
   - Used for server selection, display, and configuration purposes
 
-<br>
+<br/>
 
 ### Get Server Details - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
@@ -465,7 +465,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Use query parameters to include additional data when needed
   - Optimized for different use cases (settings vs detail views)
 
-<br>
+<br/>
 
 ### Update Server - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
@@ -526,7 +526,7 @@ These endpoints are designed for use by other applications and integrations, for
   - The server record itself will also be removed
   - Returns count of deleted backups and servers
 
-<br>
+<br/>
 
 ### Get Server Data with Overdue Info - `/api/detail/:serverId`
 - **Endpoint**: `/api/detail/:serverId`
@@ -565,11 +565,11 @@ These endpoints are designed for use by other applications and integrations, for
   - Includes overdue backup details and timestamps
   - Used for overdue backup management and monitoring
 
-<br>
+<br/>
 
 ## Chart Data
 
-<br>
+<br/>
 
 ### Get Aggregated Chart Data - `/api/chart-data/aggregated`
 - **Endpoint**: `/api/chart-data/aggregated`
@@ -601,7 +601,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Validates date format before processing
   - Returns aggregated data across all servers
 
-<br>
+<br/>
 
 ### Get Server Chart Data - `/api/chart-data/server/:serverId`
 - **Endpoint**: `/api/chart-data/server/:serverId`
@@ -635,7 +635,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Validates date format before processing
   - Returns chart data for specific server
 
-<br>
+<br/>
 
 ### Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
@@ -671,7 +671,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns chart data for specific server and backup combination
   - Backup name must be URL encoded
 
-<br>
+<br/>
 
 ## Configuration Management
 
@@ -920,7 +920,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Affects when backups are considered overdue
   - Used by the overdue backup checker
 
-<br>
+<br/>
 
 ## Notification System
 
@@ -1020,7 +1020,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Allows notifications to be sent again
   - Useful for testing notification system
 
-<br>
+<br/>
 
 ## Cron Service Management
 
@@ -1086,7 +1086,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns 503 if cron service is not available
   - Supports both GET and POST methods
 
-<br>
+<br/>
 
 ## Monitoring & Health
 
@@ -1127,7 +1127,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Stack trace only included in development mode
   - Tests basic database connection and prepared statements
 
-<br>
+<br/>
 
 ## Administration
 
@@ -1175,7 +1175,7 @@ These endpoints are designed for use by other applications and integrations, for
   - `serverAlias` is retrieved from the database and may be empty if no alias is set
   - The frontend should use `serverAlias || serverName` for display purposes
 
-<br>
+<br/>
 
 ### Cleanup Backups - `/api/backups/cleanup`
 - **Endpoint**: `/api/backups/cleanup`
@@ -1214,7 +1214,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Enhanced error reporting includes details and stack trace in development mode
   - Supports both time-based retention and complete data deletion
 
-<br>
+<br/>
 
 
 ### Delete Backup - `/api/backups/:backupId`
@@ -1282,7 +1282,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns count of deleted backups and server information
   - Uses server alias for display if available, otherwise falls back to server name
 
-<br>
+<br/>
 
 ### Test Server Connection - `/api/servers/test-connection`
 - **Endpoint**: `/api/servers/test-connection`
@@ -1311,7 +1311,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Supports both HTTP and HTTPS protocols
   - Uses timeout configuration for connection testing
 
-<br>
+<br/>
 
 ### Get Server URL - `/api/servers/:serverId/server-url`
 - **Endpoint**: `/api/servers/:serverId/server-url`
@@ -1335,7 +1335,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Used for server connection management
   - Returns empty string if no server URL is set
 
-<br>
+<br/>
 
 ### Update Server URL - `/api/servers/:serverId/server-url`
 - **Endpoint**: `/api/servers/:serverId/server-url`
@@ -1368,7 +1368,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Supports both HTTP and HTTPS protocols
   - Returns updated server information
 
-<br>
+<br/>
 
 ## Error Handling
 
@@ -1387,37 +1387,37 @@ Error responses include:
 - `stack`: Error stack trace (in development mode)
 - `timestamp`: When the error occurred
 
-<br>
+<br/>
 
 ## Data Type Notes
 
 ### Message Arrays
 The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as parsed arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
 
-<br>
+<br/>
 
 ### Available Backups
 The `available_backups` field contains an array of backup version timestamps (in ISO format) that are available for restoration. This is extracted from the backup log messages.
 
-<br>
+<br/>
 
 ### Duration Fields
 - `duration`: Human-readable format (e.g., "00:38:31")
 - `duration_seconds`: Raw duration in seconds
 - `durationInMinutes`: Duration converted to minutes for charting purposes
 
-<br>
+<br/>
 
 ### File Size Fields
 All file size fields are returned in bytes as numbers, not formatted strings. The frontend is responsible for converting these to human-readable formats (KB, MB, GB, etc.).
 
-<br>
+<br/>
 
 ## Authentication & Security
 
 Currently, the API does not require authentication for local network access. It's designed for internal network use where the application is deployed. 
 
-<br>
+<br/>
 
 > [!CAUTION]
 >  Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
@@ -1427,7 +1427,7 @@ Currently, the API does not require authentication for local network access. It'
 >  internet without proper security measures could lead to unauthorized access.
 
 
-<br>
+<br/>
 
 
 ## License

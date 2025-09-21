@@ -59,13 +59,13 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
   
   switch (notificationEvent) {
     case 'errors':
-      return <>Errors Only.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
+      return <>Errors Only.<br/><br/><span className="text-xs text-muted-foreground">Click to configure.</span></>;
     case 'warnings':
-      return <>Warnings & Errors.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
+      return <>Warnings & Errors.<br/><br/><span className="text-xs text-muted-foreground">Click to configure.</span></>;
     case 'all':
-      return <>All Backups.<br /><br /><span className="text-xs text-muted-foreground">Click to configure.</span></>;
+      return <>All Backups.<br/><br/><span className="text-xs text-muted-foreground">Click to configure.</span></>;
     case 'off':
-      return <>Off.<br />Click to configure.</>;
+      return <>Off.<br/>Click to configure.</>;
     default:
       return '';
   }
