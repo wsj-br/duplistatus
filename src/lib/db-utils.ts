@@ -6,6 +6,9 @@ import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
 import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from './default-config';
 import { formatTimeElapsed } from './utils';
+import { migrateBackupSettings } from './migration-utils';
+import { getDefaultAllowedWeekDays } from './interval-utils';
+import { GetNextValidTimeWithNumberArray } from './server_intervals';
 
 // Helper function to convert overdue tolerance to minutes
 function getToleranceInMinutes(tolerance: OverdueTolerance): number {
@@ -48,15 +51,15 @@ export function isBackupOverdueByInterval(serverId: string, backupName: string, 
     
     // Get backup settings to check if overdue backup check is enabled
     const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson) return false;
+    if (!backupSettingsJson || backupSettingsJson.trim() === '') return false;
     
-    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
-      notificationEvent: NotificationEvent;
-      expectedInterval: number;
-      overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hour' | 'day';
-      overdueTolerance?: OverdueTolerance;
-    }>;
+    let backupSettings;
+    try {
+      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
+    } catch (parseError) {
+      console.error('Failed to parse backup settings in isBackupOverdueByInterval:', parseError);
+      return false;
+    }
     
     const backupKey = getBackupKey(serverId, backupName);
     const settings = backupSettings[backupKey];
@@ -72,9 +75,9 @@ export function isBackupOverdueByInterval(serverId: string, backupName: string, 
     const globalTolerance = getOverdueToleranceConfig();
     const expectedBackupDate = calculateExpectedBackupDate(
       lastBackupDate, 
-      backupIntervalSettings.expectedInterval, 
-      backupIntervalSettings.intervalUnit,
-      globalTolerance
+      backupIntervalSettings.expectedInterval,
+      globalTolerance,
+      backupIntervalSettings.allowedWeekDays
     );
     
     if (expectedBackupDate === 'N/A') return false;
@@ -94,14 +97,20 @@ export function isBackupOverdueByInterval(serverId: string, backupName: string, 
 function getNotificationEvent(serverId: string, backupName: string): NotificationEvent | undefined {
   try {
     const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson) return undefined;
+    if (!backupSettingsJson || backupSettingsJson.trim() === '') return undefined;
     
-    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
-      notificationEvent: NotificationEvent;
-      expectedInterval: number;
-      overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hour' | 'day';
-    }>;
+    let backupSettings;
+    try {
+      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson)) as Record<BackupKey, {
+        notificationEvent: NotificationEvent;
+        expectedInterval: string;
+        overdueBackupCheckEnabled: boolean;
+        allowedWeekDays?: number[];
+      }>;
+    } catch (parseError) {
+      console.error('Failed to parse backup settings in getNotificationEvent:', parseError);
+      return undefined;
+    }
     
     const backupKey = getBackupKey(serverId, backupName);
     return backupSettings[backupKey]?.notificationEvent;
@@ -115,9 +124,15 @@ function getNotificationEvent(serverId: string, backupName: string): Notificatio
 function getLastNotificationSent(serverId: string, backupName: string): string {
   try {
     const lastNotificationJson = getConfiguration('overdue_notifications');
-    if (!lastNotificationJson) return 'N/A';
+    if (!lastNotificationJson || lastNotificationJson.trim() === '') return 'N/A';
     
-    const lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
+    let lastNotifications;
+    try {
+      lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
+    } catch (parseError) {
+      console.error('Failed to parse overdue notifications in getLastNotificationSent:', parseError);
+      return 'N/A';
+    }
     const backupKey = getBackupKey(serverId, backupName);
     const notification = lastNotifications[backupKey];
     
@@ -134,21 +149,21 @@ function getLastNotificationSent(serverId: string, backupName: string): string {
 
 // Helper function to get backup interval settings for expected backup calculations
 function getBackupIntervalSettings(serverId: string, backupName: string): {
-  expectedInterval: number;
-  intervalUnit: 'hour' | 'day';
+  expectedInterval: string;
+  allowedWeekDays: number[];
   overdueTolerance?: OverdueTolerance;
 } | undefined {
   try {
     const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson) return undefined;
+    if (!backupSettingsJson || backupSettingsJson.trim() === '') return undefined;
     
-    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
-      notificationEvent: NotificationEvent;
-      expectedInterval: number;
-      overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hour' | 'day';
-      overdueTolerance?: OverdueTolerance;
-    }>;
+    let backupSettings;
+    try {
+      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
+    } catch (parseError) {
+      console.error('Failed to parse backup settings in getBackupIntervalSettings:', parseError);
+      return undefined;
+    }
     
     const backupKey = getBackupKey(serverId, backupName);
     const settings = backupSettings[backupKey];
@@ -157,8 +172,7 @@ function getBackupIntervalSettings(serverId: string, backupName: string): {
     
     return {
       expectedInterval: settings.expectedInterval,
-      intervalUnit: settings.intervalUnit,
-      overdueTolerance: settings.overdueTolerance
+      allowedWeekDays: settings.allowedWeekDays || getDefaultAllowedWeekDays()
     };
   } catch (error) {
     console.error('Error getting backup interval settings:', error instanceof Error ? error.message : String(error));
@@ -166,28 +180,24 @@ function getBackupIntervalSettings(serverId: string, backupName: string): {
   }
 }
 
-// Helper function to calculate expected backup date
-export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: number, intervalUnit: 'hour' | 'day', tolerance: OverdueTolerance = defaultOverdueTolerance): string {
+// Helper function to calculate expected backup date using the same logic as GetNextValidTime
+export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: string, tolerance: OverdueTolerance = defaultOverdueTolerance, allowedWeekDays: number[] = []): string {
   try {
     const lastBackup = new Date(lastBackupDate);
     if (isNaN(lastBackup.getTime())) {
       return 'N/A';
     }
     
-    const expectedDate = new Date(lastBackup);
-    if (intervalUnit === 'hour') {
-      expectedDate.setHours(expectedDate.getHours() + expectedInterval);
-    } else if (intervalUnit === 'day') {
-      expectedDate.setDate(expectedDate.getDate() + expectedInterval);
-    }
+    // Calculate the next valid time using the same logic as Duplicati
+    const nextValidTime = GetNextValidTimeWithNumberArray(lastBackup, expectedInterval, allowedWeekDays);
     
     // Add tolerance to the expected date
     const toleranceMinutes = getToleranceInMinutes(tolerance);
     if (toleranceMinutes > 0) {
-      expectedDate.setMinutes(expectedDate.getMinutes() + toleranceMinutes);
+      nextValidTime.setMinutes(nextValidTime.getMinutes() + toleranceMinutes);
     }
     
-    return expectedDate.toISOString();
+    return nextValidTime.toISOString();
   } catch (error) {
     console.error('Error calculating expected backup date:', error instanceof Error ? error.message : String(error));
     return 'N/A';
@@ -198,17 +208,23 @@ export function calculateExpectedBackupDate(lastBackupDate: string, expectedInte
 
 export function getCronConfig(): CronServiceConfig {
   try {
+
     const configJson = getConfiguration('cron_service');
-    if (configJson) {
-      const config = JSON.parse(configJson);
-      return {
-        ...defaultCronConfig,
-        ...config,
-        tasks: {
-          ...defaultCronConfig.tasks,
-          ...config.tasks
-        }
-      };
+    if (configJson && configJson.trim() !== '') {
+      try {
+        const config = JSON.parse(configJson);
+        return {
+          ...defaultCronConfig,
+          ...config,
+          tasks: {
+            ...defaultCronConfig.tasks,
+            ...config.tasks
+          }
+        };
+      } catch (parseError) {
+        console.error('Failed to parse cron service config:', parseError);
+        return defaultCronConfig;
+      }
     }
   } catch (error) {
     console.error('Failed to load cron service configuration:', error instanceof Error ? error.message : String(error));
@@ -503,14 +519,14 @@ function countOverdueBackups(): number {
     
     let backupSettings: Record<BackupKey, {
       notificationEvent: NotificationEvent;
-      expectedInterval: number;
+      expectedInterval: string;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hour' | 'day';
+      allowedWeekDays?: number[];
       overdueTolerance?: OverdueTolerance;
     }>;
     
     try {
-      backupSettings = JSON.parse(backupSettingsJson);
+      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
     } catch (parseError) {
       console.error('Failed to parse backup settings JSON in countOverdueBackups:', parseError);
       return 0;
@@ -549,12 +565,11 @@ function countOverdueBackups(): number {
       }
       
       // Get interval configuration
-      const intervalUnit = backupConfig.intervalUnit || 'hour';
       const expectedInterval = backupConfig.expectedInterval;
       
       // Calculate expected backup date using the helper function with tolerance
       const globalTolerance = getOverdueToleranceConfig();
-      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, intervalUnit, globalTolerance);
+      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, globalTolerance, backupConfig.allowedWeekDays || getDefaultAllowedWeekDays());
       
       // Check if backup is overdue by comparing expected date with current time
       const expectedBackupTime = new Date(expectedBackupDate);
@@ -1025,8 +1040,8 @@ export function getServersSummary() {
               expectedBackupDate = calculateExpectedBackupDate(
                 thisBackupInfo.lastBackupDate,
                 backupSettings.expectedInterval,
-                backupSettings.intervalUnit,
-                globalTolerance
+                globalTolerance,
+                backupSettings.allowedWeekDays
               );
               expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
             }
@@ -1302,11 +1317,11 @@ export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
     const backupSettingsJson = getConfiguration('backup_settings');
     if (!backupSettingsJson) return [];
     
-    const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, {
+    const backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson)) as Record<BackupKey, {
       notificationEvent: NotificationEvent;
-      expectedInterval: number;
+      expectedInterval: string;
       overdueBackupCheckEnabled: boolean;
-      intervalUnit: 'hour' | 'day';
+      allowedWeekDays?: number[];
       overdueTolerance?: OverdueTolerance;
     }>;
     
@@ -1350,8 +1365,8 @@ export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
         const expectedBackupDate = calculateExpectedBackupDate(
           latestBackup.date, 
           settings.expectedInterval, 
-          settings.intervalUnit,
-          globalTolerance
+          globalTolerance,
+          settings.allowedWeekDays || getDefaultAllowedWeekDays()
         );
         
         if (expectedBackupDate === 'N/A') continue;
@@ -1443,10 +1458,10 @@ export function getServersBackupNames() {
 // Function to ensure backup settings are complete for all servers and backups
 export async function ensureBackupSettingsComplete(): Promise<{ added: number; total: number }> {
   try {
-    // Get current backup settings
+    // Get current backup settings and migrate them
     const backupSettingsJson = getConfiguration('backup_settings');
     const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = backupSettingsJson 
-      ? JSON.parse(backupSettingsJson) 
+      ? migrateBackupSettings(JSON.parse(backupSettingsJson))
       : {};
     
     // Get all servers with backups
@@ -1501,23 +1516,6 @@ export async function ensureBackupSettingsComplete(): Promise<{ added: number; t
 } 
 
 
-// Helper function to convert overdue tolerance value to human-readable label
-export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
-  const toleranceLabels: Record<OverdueTolerance, string> = {
-    'no_tolerance': 'No tolerance',
-    '5min': '5 min',
-    '15min': '15 min',
-    '30min': '30 min',
-    '1h': '1 hour',
-    '2h': '2 hours',
-    '4h': '4 hours',
-    '6h': '6 hours',
-    '12h': '12 hours',
-    '1d': '1 day',
-  };
-  
-  return toleranceLabels[tolerance] || tolerance;
-}
 
 
 

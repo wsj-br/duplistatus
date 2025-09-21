@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getConfiguration, setConfiguration } from '@/lib/db-utils';
 import { BackupKey, BackupNotificationConfig, OverdueNotifications } from '@/lib/types';
+import { migrateBackupSettings } from '@/lib/migration-utils';
 
 export async function POST(request: Request) {
   try {
@@ -14,11 +15,14 @@ export async function POST(request: Request) {
     // Get current backup settings to compare for changes
     const currentBackupSettingsJson = getConfiguration('backup_settings');
     const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = currentBackupSettingsJson 
-      ? JSON.parse(currentBackupSettingsJson) 
+      ? migrateBackupSettings(JSON.parse(currentBackupSettingsJson))
       : {};
     
+    // Migrate incoming backup settings to ensure they're in new format
+    const migratedBackupSettings = migrateBackupSettings(backupSettings);
+    
     // Save backup settings separately
-    setConfiguration('backup_settings', JSON.stringify(backupSettings));
+    setConfiguration('backup_settings', JSON.stringify(migratedBackupSettings));
     
     // Clean up overdue backup notifications for disabled backups and changed timeout settings
     try {
@@ -29,7 +33,7 @@ export async function POST(request: Request) {
 
         const backupKeysToClear: BackupKey[] = [];
         
-        for (const [backupKey, backupConfig] of Object.entries(backupSettings)) {
+        for (const [backupKey, backupConfig] of Object.entries(migratedBackupSettings)) {
           const config = backupConfig as BackupNotificationConfig;
           const currentConfig = currentBackupSettings[backupKey];
           
@@ -42,9 +46,9 @@ export async function POST(request: Request) {
           // Clear notifications if timeout period settings have changed
           if (currentConfig) {
             const hasIntervalChanged = currentConfig.expectedInterval !== config.expectedInterval;
-            const hasUnitChanged = currentConfig.intervalUnit !== config.intervalUnit;
+            const hasAllowedDaysChanged = JSON.stringify(currentConfig.allowedWeekDays) !== JSON.stringify(config.allowedWeekDays);
             
-            if (hasIntervalChanged || hasUnitChanged) {
+            if (hasIntervalChanged || hasAllowedDaysChanged) {
               backupKeysToClear.push(backupKey);
             }
           }

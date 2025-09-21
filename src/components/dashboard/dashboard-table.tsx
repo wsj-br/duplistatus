@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { useRouter } from "next/navigation"; // Import useRouter
-import { formatTimeAgo } from "@/lib/utils"; // Import the new function
+import { formatRelativeTime } from "@/lib/utils"; // Import the new function
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
 import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
@@ -84,7 +84,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem(DASHBOARD_SORT_KEY);
-        if (stored) {
+        if (stored && stored.trim() !== '') {
           const parsed = JSON.parse(stored);
           // Validate the stored data
           if (parsed && typeof parsed.column === 'string' && 
@@ -309,10 +309,10 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="space-y-1">
-                              <div><span>Checked:</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? new Date(server.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(server.lastOverdueCheck) + ")"  	 : "N/A"}</span></div>
-                              <div><span>Last backup:</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? new Date(server.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(server.lastBackupDate) + ")" : "N/A"}</span></div>
-                              <div><span>Expected backup:</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? new Date(server.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(server.expectedBackupDate) + ")" : "N/A"}</span></div>
-                              <div><span>Last notification:</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? new Date(server.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(server.lastNotificationSent) + ")" : "N/A"}</span></div>
+                              <div><span>Checked:</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? new Date(server.lastOverdueCheck).toLocaleString() + " (" + formatRelativeTime(server.lastOverdueCheck) + ")"  	 : "N/A"}</span></div>
+                              <div><span>Last backup:</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? new Date(server.lastBackupDate).toLocaleString() + " (" + formatRelativeTime(server.lastBackupDate) + ")" : "N/A"}</span></div>
+                              <div><span>Expected backup:</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? new Date(server.expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(server.expectedBackupDate) + ")" : "N/A"}</span></div>
+                              <div><span>Last notification:</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? new Date(server.lastNotificationSent).toLocaleString() + " (" + formatRelativeTime(server.lastNotificationSent) + ")" : "N/A"}</span></div>
 
                               <div className="border-t pt-2 flex items-center gap-2">
                                 <button 
@@ -359,7 +359,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       {server.lastBackupDate !== "N/A" ? (
                         <>
                           <div>{new Date(server.lastBackupDate).toLocaleString()}</div>
-                          <div className="text-xs text-muted-foreground">{formatTimeAgo(server.lastBackupDate)}
+                          <div className="text-xs text-muted-foreground">{formatRelativeTime(server.lastBackupDate)}
                           </div>
                         </>
                       ) : (
@@ -489,7 +489,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                       {server.lastBackupDate !== "N/A" ? (
                         <>
                           <div className="text-xs">{new Date(server.lastBackupDate).toLocaleDateString()}</div>
-                          <div className="text-xs text-muted-foreground">{formatTimeAgo(server.lastBackupDate)}</div>
+                          <div className="text-xs text-muted-foreground">{formatRelativeTime(server.lastBackupDate)}</div>
                         </>
                       ) : (
                         <div className="text-xs text-muted-foreground">N/A</div>
@@ -543,10 +543,10 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   <div className="space-y-1 border-t pt-3">
                     <Label className="text-xs text-muted-foreground">Overdue Details</Label>
                     <div className="text-xs space-y-1">
-                      <div><span className="font-medium">Checked:</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? new Date(server.lastOverdueCheck).toLocaleString() + " (" + formatTimeAgo(server.lastOverdueCheck) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">Last backup:</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? new Date(server.lastBackupDate).toLocaleString() + " (" + formatTimeAgo(server.lastBackupDate) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">Expected backup:</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? new Date(server.expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(server.expectedBackupDate) + ")" : "N/A"}</span></div>
-                      <div><span className="font-medium">Last notification:</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? new Date(server.lastNotificationSent).toLocaleString() + " (" + formatTimeAgo(server.lastNotificationSent) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Checked:</span> <span className="text-muted-foreground">{server.lastOverdueCheck !== "N/A" ? new Date(server.lastOverdueCheck).toLocaleString() + " (" + formatRelativeTime(server.lastOverdueCheck) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Last backup:</span> <span className="text-muted-foreground">{server.lastBackupDate !== "N/A" ? new Date(server.lastBackupDate).toLocaleString() + " (" + formatRelativeTime(server.lastBackupDate) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Expected backup:</span> <span className="text-muted-foreground">{server.expectedBackupDate !== "N/A" ? new Date(server.expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(server.expectedBackupDate) + ")" : "N/A"}</span></div>
+                      <div><span className="font-medium">Last notification:</span> <span className="text-muted-foreground">{server.lastNotificationSent !== "N/A" ? new Date(server.lastNotificationSent).toLocaleString() + " (" + formatRelativeTime(server.lastNotificationSent) + ")" : "N/A"}</span></div>
                     </div>
                     <div className="flex gap-2 pt-2">
                       <Button 

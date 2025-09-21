@@ -7,7 +7,7 @@ import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, Settings, FolderOpen } from "lucide-react";
-import { formatBytes, formatDurationFromMinutes, formatTimeAgo } from "@/lib/utils";
+import { formatBytes, formatDurationFromMinutes, formatRelativeTime } from "@/lib/utils";
 import type { Backup } from "@/lib/types";
 
 interface OverdueBackup {
@@ -182,7 +182,7 @@ export function ServerDetailSummaryItems({
                   <span className="text-sm">
                     <span className="text-muted-foreground">Overdue scheduled backups:</span> {overdueBackups.map(ob => `'${ob.backupName} (${ob.expectedBackupElapsed} overdue)'`).join(', ')}.
                     {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                      <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastOverdueCheck)}</span>
+                      <span className="px-3 text-muted-foreground">Last checked: {formatRelativeTime(lastOverdueCheck)}</span>
                     )}
                   </span>
                 </div>
@@ -208,7 +208,7 @@ export function ServerDetailSummaryItems({
                   <span className="text-sm font-medium text-muted-foreground">
                      Scheduled backup is overdue. Expected backup date: {formattedExpectedBackupDate} ({SelectedExpectedBackupElapsed} overdue).
                      {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                       <span className="px-3 text-muted-foreground">Last checked: {formatTimeAgo(lastOverdueCheck)}</span>
+                       <span className="px-3 text-muted-foreground">Last checked: {formatRelativeTime(lastOverdueCheck)}</span>
                      )}
                   </span>
                 </div>

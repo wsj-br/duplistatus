@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { defaultUIConfig } from '@/lib/default-config';
+import { defaultUIConfig, defaultOverdueTolerance } from '@/lib/default-config';
+import type { OverdueTolerance } from '@/lib/types';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
@@ -23,6 +24,8 @@ interface ConfigContextProps {
   setAutoRefreshEnabled: (enabled: boolean) => void;
   dashboardCardsSortOrder: DashboardCardsSortOrder;
   setDashboardCardsSortOrder: (order: DashboardCardsSortOrder) => void;
+  overdueTolerance: OverdueTolerance;
+  refreshOverdueTolerance: () => Promise<void>;
   cleanupDatabase: () => Promise<void>;
   isLoading: boolean;
 }
@@ -36,6 +39,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(defaultUIConfig.autoRefreshInterval);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
+  const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
   const router = useRouter();
@@ -43,15 +47,41 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Load saved settings from localStorage
     const savedConfig = localStorage.getItem('duplistatus-config');
-    if (savedConfig) {
-      const config = JSON.parse(savedConfig);
-      if (config.databaseCleanupPeriod) setDatabaseCleanupPeriod(config.databaseCleanupPeriod);
-      if (config.tablePageSize) setTablePageSize(config.tablePageSize);
-      if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
-      if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
-      if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
-      if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
+    if (savedConfig && savedConfig.trim() !== '') {
+      try {
+        const config = JSON.parse(savedConfig);
+        if (config.databaseCleanupPeriod) setDatabaseCleanupPeriod(config.databaseCleanupPeriod);
+        if (config.tablePageSize) setTablePageSize(config.tablePageSize);
+        if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
+        if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
+        if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
+        if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
+      } catch (error) {
+        console.error('Failed to parse saved config from localStorage:', error);
+        // Clear the invalid config from localStorage
+        localStorage.removeItem('duplistatus-config');
+      }
     }
+    
+    // Load tolerance from API
+    const loadTolerance = async () => {
+      try {
+        const response = await fetch('/api/configuration/overdue-tolerance');
+        if (response.ok) {
+          const data = await response.json();
+          setOverdueTolerance(data.overdue_tolerance);
+        } else {
+          console.error('Failed to load tolerance config:', response.statusText);
+          // Keep default value
+        }
+      } catch (error) {
+        console.error('Failed to load tolerance config:', error);
+        // Keep default value
+      }
+    };
+    
+    loadTolerance();
+    
     setIsLoading(false);
   }, []);
 
@@ -107,6 +137,21 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Function to refresh overdue tolerance from API
+  const refreshOverdueTolerance = async () => {
+    try {
+      const response = await fetch('/api/configuration/overdue-tolerance');
+      if (response.ok) {
+        const data = await response.json();
+        setOverdueTolerance(data.overdue_tolerance);
+      } else {
+        console.error('Failed to refresh tolerance config:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Failed to refresh tolerance config:', error);
+    }
+  };
+
   return (
     <ConfigContext.Provider
       value={{
@@ -122,6 +167,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setAutoRefreshEnabled,
         dashboardCardsSortOrder,
         setDashboardCardsSortOrder,
+        overdueTolerance,
+        refreshOverdueTolerance,
         cleanupDatabase,
         isLoading,
       }}

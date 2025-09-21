@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
+import { OverdueMonitoringForm } from '@/components/settings/overdue-monitoring-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
 import { ServerSettingsForm } from '@/components/settings/server-settings-form';
 
@@ -19,7 +20,7 @@ function SettingsPageContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { config, loading, refreshConfigSilently, updateConfig } = useConfiguration();
-  const [activeTab, setActiveTab] = useState<string>('backups');
+  const [activeTab, setActiveTab] = useState<string>('backupNotifications');
   const [lastServerListHash, setLastServerListHash] = useState<string>('');
   // Function to create a hash of the server list for change detection
   const createServerListHash = (servers: Array<{id: string; name: string; backupName: string}>) => {
@@ -152,13 +153,13 @@ function SettingsPageContent() {
   useEffect(() => {
     // Check for tab parameter in URL first
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['backups', 'serverSettings', 'ntfy', 'templates'].includes(tabParam)) {
+    if (tabParam && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'templates'].includes(tabParam)) {
       setActiveTab(tabParam);
       localStorage.setItem('settings-active-tab', tabParam);
     } else {
       // Load the last selected tab from localStorage if no URL parameter
       const savedTab = localStorage.getItem('settings-active-tab');
-      if (savedTab && ['backups', 'serverSettings', 'ntfy', 'templates'].includes(savedTab)) {
+      if (savedTab && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'templates'].includes(savedTab)) {
         setActiveTab(savedTab);
       }
     }
@@ -208,14 +209,18 @@ function SettingsPageContent() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
-              <TabsTrigger value="backups" className="text-xs lg:text-sm py-2 px-3">
-                <span className="hidden lg:inline">Backup Alerts</span>
-                <span className="lg:hidden">Backup</span>
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 h-auto">
+              <TabsTrigger value="backupNotifications" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Backup Notifications</span>
+                <span className="lg:hidden">Notifications</span>
+              </TabsTrigger>
+              <TabsTrigger value="overdue" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Overdue Monitoring</span>
+                <span className="lg:hidden">Overdue</span>
               </TabsTrigger>
               <TabsTrigger value="serverSettings" className="text-xs lg:text-sm py-2 px-3">
                 <span className="hidden lg:inline">Server Settings</span>
-                <span className="lg:hidden">ServerSettings</span>
+                <span className="lg:hidden">Server</span>
               </TabsTrigger>
               <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3">
                 <span className="hidden lg:inline">NTFY Settings</span>
@@ -227,11 +232,21 @@ function SettingsPageContent() {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="backups" className="mt-6">
+            <TabsContent value="backupNotifications" className="mt-6">
               <BackupNotificationsForm 
                 backupSettings={config.backupSettings || {}} 
                 onSave={async () => {
                   // Already uses /api/configuration/backup-settings
+                  // No change needed here
+                }}
+              />
+            </TabsContent>
+            
+            <TabsContent value="overdue" className="mt-6">
+              <OverdueMonitoringForm 
+                backupSettings={config.backupSettings || {}} 
+                onSave={async () => {
+                  // Already uses /api/configuration/backup-settings and other endpoints
                   // No change needed here
                 }}
               />

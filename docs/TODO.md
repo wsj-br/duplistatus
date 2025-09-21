@@ -21,22 +21,26 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-
 ## Fix
 
 none
 
 ## Changes needed
 
+- need to add the firstdate from Duplicati server schedule configuration and add it to the backup_settings and the overdue monitoring form.
+- change the logic of the calculateExpectedBackupDate() to use first date instead of last backup in the calculations
+   - see the logic of GetNextValidTime() in Schedulers.cs in Duplicati source code.
+- add a flag in the BackupCollectMenu to update or not the schedule from duplicati server (default is to update)
 
-- replace the documentation to use 
+
+
+- replace the documentation to use Docusaurus
 
 ## New Features (planned or under analysis)
 
 - Include SMTP/EMAIL support (to send notifications)
-- Use the existing backup interval configuration retrieved when collecting backups to set the overdue backups interval automaticaly.
-- 
+
+
 
 
 ### Nice to have
@@ -143,6 +147,10 @@ none
 
 
 ### Implemented in Version 0.8.x 🚧
+
+- New Overdue Monitoring tab that accepts the expected interval similar to the Duplicati server.
+    - Now can configure custom intervals (for instance "1D12h")
+    - When collecting backup logs, update the overdue interval from Duplicati configuration automatically
 
 
 

@@ -1,8 +1,9 @@
 import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
-import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, getOverdueToleranceConfig, getOverdueToleranceLabel } from '@/lib/db-utils';
+import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, getOverdueToleranceConfig } from '@/lib/db-utils';
+import { getOverdueToleranceLabel } from '@/lib/utils';
 import { OverdueNotifications } from '@/lib/types';
-import { formatTimeAgo } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/utils';
 
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -115,8 +116,8 @@ export async function checkOverdueBackups(checkDate?: Date) {
           
           if (shouldSendNotification) {
             try {
-              // Calculate overdue time ago using formatTimeAgo
-              const overdueTimeAgo = formatTimeAgo(backupInfo.lastBackupDate);
+              // Calculate overdue time ago using formatRelativeTime
+              const overdueTimeAgo = formatRelativeTime(backupInfo.lastBackupDate);
               
               // Get interval information from backup config
               const intervalUnit = backupConfig.intervalUnit || 'hour';
@@ -134,7 +135,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
               
               // Use the pre-calculated expected backup date from getServersSummary
               const expectedBackupDate = backupInfo.expectedBackupDate;
-              const expectedBackupElapsed = expectedBackupDate !== 'N/A' ? formatTimeAgo(expectedBackupDate) : 'N/A';
+              const expectedBackupElapsed = expectedBackupDate !== 'N/A' ? formatRelativeTime(expectedBackupDate) : 'N/A';
               
               // Get the overdue tolerance configuration and add it to the context
               const overdueTolerance = getOverdueToleranceConfig();

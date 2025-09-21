@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import type { BackupStatus, NotificationEvent } from "@/lib/types";
-import { formatTimeAgo, formatBytes, getStatusColor } from "@/lib/utils";
+import { formatRelativeTime, formatBytes, getStatusColor, getOverdueToleranceLabel } from "@/lib/utils";
+import { useConfig } from "@/contexts/config-context";
 import { AlertTriangle, Settings, MessageSquareMore, MessageSquareOff } from "lucide-react";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
@@ -62,6 +63,7 @@ export function BackupTooltipContent({
   notificationEvent,
 }: BackupTooltipContentProps) {
   const router = useRouter();
+  const { overdueTolerance } = useConfig();
 
   return (
     <>
@@ -85,7 +87,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">Date:</div>
             <div className="font-semibold text-left">
               {lastBackupDate !== "N/A" 
-                ? new Date(lastBackupDate).toLocaleString() + " (" + formatTimeAgo(lastBackupDate) + ")"
+                ? new Date(lastBackupDate).toLocaleString() + " (" + formatRelativeTime(lastBackupDate) + ")"
                 : "N/A"}
             </div>
           </div>
@@ -152,6 +154,21 @@ export function BackupTooltipContent({
                 : "N/A"}
             </div>
           </div>
+          
+          {/* Expected backup date for non-overdue backups */}
+          {!isOverdue && expectedBackupDate !== "N/A" && (
+            <div className="col-span-2">
+              <div className="text-muted-foreground text-left mb-1">
+                Expected:
+                {overdueTolerance && overdueTolerance !== 'no_tolerance' && (
+                  <span className="text-xs ml-1">(including {getOverdueToleranceLabel(overdueTolerance)} tolerance)</span>
+                )}
+              </div>
+              <div className="font-semibold text-left">
+                {new Date(expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(expectedBackupDate) + ")"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
         
@@ -164,37 +181,45 @@ export function BackupTooltipContent({
           </div>
           
           <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
-            <div className="text-muted-foreground text-right">Expected:</div>
+            <div className="text-muted-foreground text-right">
+              Expected:
+              {overdueTolerance && overdueTolerance !== 'no_tolerance' && (
+                <div className="text-xs mt-1">(including {getOverdueToleranceLabel(overdueTolerance)} tolerance)</div>
+              )}
+            </div>
             <div className="font-semibold text-left">
               {expectedBackupDate !== "N/A" 
-                ? new Date(expectedBackupDate).toLocaleString() + " (" + formatTimeAgo(expectedBackupDate) + ")"
+                ? new Date(expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(expectedBackupDate) + ")"
                 : "N/A"}
             </div>
           </div>
-          
-          <div className="border-t pt-2 flex items-center gap-2">
-            <button 
-              className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push('/settings?tab=backups');
-              }}
-            >
-              <Settings className="h-3 w-3" />
-              <span>Overdue configuration</span>
-            </button>
-            <ServerConfigurationButton 
-              className="text-xs !p-1" 
-              variant="ghost"
-              size="sm"
-              serverUrl={serverUrl}
-              serverName={serverName}
-              serverAlias={serverAlias}
-              showText={true} 
-            />
-          </div>
         </div>
       )}
+      
+      {/* Configuration buttons - always shown */}
+      <div className="border-t pt-3">
+        <div className="flex items-center gap-2">
+          <button 
+            className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push('/settings?tab=overdue');
+            }}
+          >
+            <Settings className="h-3 w-3" />
+            <span>Overdue configuration</span>
+          </button>
+          <ServerConfigurationButton 
+            className="text-xs !p-1" 
+            variant="ghost"
+            size="sm"
+            serverUrl={serverUrl}
+            serverName={serverName}
+            serverAlias={serverAlias}
+            showText={true} 
+          />
+        </div>
+      </div>
     </>
   );
 }

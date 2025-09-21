@@ -4,7 +4,7 @@ import { useMemo, memo } from 'react';
 import type { BackupStatus, ServerSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { formatTimeAgo, formatBytes, formatShortTimeAgo } from "@/lib/utils";
+import { formatRelativeTime, formatBytes, formatShortTimeAgo } from "@/lib/utils";
 import { HardDrive, AlertTriangle, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useConfig } from "@/contexts/config-context";
@@ -191,7 +191,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-help">{formatTimeAgo(server.lastBackupDate)}</span>
+                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate)}</span>
                     </TooltipTrigger>
                     <TooltipContent>
                       {new Date(server.lastBackupDate).toLocaleString()}

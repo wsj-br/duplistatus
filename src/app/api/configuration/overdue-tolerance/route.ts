@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server';
-import { setConfiguration } from '@/lib/db-utils';
+import { setConfiguration, getOverdueToleranceConfig } from '@/lib/db-utils';
+
+export async function GET() {
+  try {
+    const tolerance = getOverdueToleranceConfig();
+    return NextResponse.json({ overdue_tolerance: tolerance });
+  } catch (error) {
+    console.error('Failed to get overdue tolerance:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json({ error: 'Failed to get overdue tolerance' }, { status: 500 });
+  }
+}
 
 export async function POST(request: Request) {
   try {

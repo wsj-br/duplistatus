@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { StatusBadge } from '@/components/status-badge';
 import { MessageSquare, AlertTriangle, XCircle, Info } from 'lucide-react';
-import { formatTimeAgo, formatBytes } from '@/lib/utils';
+import { formatRelativeTime, formatBytes } from '@/lib/utils';
 import { BackButton } from '@/components/ui/back-button';
 import {
   Table,
@@ -183,14 +183,14 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
             <TableRow className="border-b">
               <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
               <TableCell className="py-1 px-2 text-xs">{new Date(currentBackupDate).toLocaleString()}</TableCell>
-              <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(currentBackupDate)}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(currentBackupDate)}</TableCell>
             </TableRow>
             {/* Additional available versions starting from #2 */}
             {availableBackups.map((timestamp, index) => (
               <TableRow key={index} className="border-b">
                 <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
                 <TableCell className="py-1 px-2 text-xs">{new Date(timestamp).toLocaleString()}</TableCell>
-                <TableCell className="py-1 px-2 text-xs">{formatTimeAgo(timestamp)}</TableCell>
+                <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(timestamp)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -261,7 +261,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                       <span className="font-medium text-muted-foreground">Date:</span>
                       <span>{new Date(safeBackup.date).toLocaleString()}</span>
                       <span className="text-sm text-muted-foreground">
-                        ({formatTimeAgo(safeBackup.date)})
+                        ({formatRelativeTime(safeBackup.date)})
                       </span>
                     </div>
                     <div className="flex items-center gap-2">

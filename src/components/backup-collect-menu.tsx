@@ -10,13 +10,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfiguration } from "@/contexts/configuration-context";
 import { defaultAPIConfig } from '@/lib/default-config';
 
-export function BackupCollectMenu() {
+interface BackupCollectMenuProps {
+  preFilledServerUrl?: string;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'outline' | 'ghost';
+  className?: string;
+  showText?: boolean;
+}
+
+export function BackupCollectMenu({ 
+  preFilledServerUrl, 
+  size = 'md', 
+  variant = 'outline', 
+  className = '',
+  showText = false 
+}: BackupCollectMenuProps) {
   const [isCollecting, setIsCollecting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hostname, setHostname] = useState("");
@@ -29,6 +43,41 @@ export function BackupCollectMenu() {
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
+
+  // Parse server URL to extract hostname, port, and protocol
+  const parseServerUrl = (url: string) => {
+    try {
+      const parsedUrl = new URL(url);
+      return {
+        hostname: parsedUrl.hostname,
+        port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? '443' : '80'),
+        protocol: parsedUrl.protocol === 'https:' ? 'https' : 'http',
+        isValid: true
+      };
+    } catch {
+      return {
+        hostname: '',
+        port: defaultAPIConfig.duplicatiPort.toString(),
+        protocol: 'http',
+        isValid: false
+      };
+    }
+  };
+
+  // Initialize form with pre-filled server details
+  useEffect(() => {
+    if (preFilledServerUrl) {
+      const parsed = parseServerUrl(preFilledServerUrl);
+      if (parsed.isValid) {
+        setHostname(parsed.hostname);
+        setPort(parsed.port);
+        setUseHttps(parsed.protocol === 'https');
+        if (parsed.protocol === 'https') {
+          setAllowSelfSigned(false); // Reset to default for HTTPS
+        }
+      }
+    }
+  }, [preFilledServerUrl]);
 
   const downloadJsonFile = (jsonData: string, serverName: string) => {
     try {
@@ -160,11 +209,39 @@ export function BackupCollectMenu() {
     }
   };
 
+  const getButtonSize = () => {
+    switch (size) {
+      case 'sm':
+        return 'sm';
+      case 'lg':
+        return 'lg';
+      default: // md
+        return 'default';
+    }
+  };
+
+  const getIconSize = () => {
+    switch (size) {
+      case 'sm':
+        return 'h-3 w-3';
+      case 'lg':
+        return 'h-5 w-5';
+      default: // md
+        return 'h-4 w-4';
+    }
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" title="Collect backup logs">
-          <Download className="h-4 w-4" />
+        <Button 
+          variant={variant} 
+          size={getButtonSize()} 
+          className={className}
+          title="Collect backup logs"
+        >
+          <Download className={getIconSize()} />
+          {showText && "Collect"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">

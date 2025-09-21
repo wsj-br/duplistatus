@@ -88,8 +88,8 @@ export const defaultNotificationFrequencyConfig = 'every_day' as const;
 export const defaultBackupNotificationConfig: BackupNotificationConfig = {
   notificationEvent: 'warnings',
   overdueBackupCheckEnabled: true,
-  expectedInterval: 1, // Default to 1 day (24 hours)
-  intervalUnit: 'day'
+  expectedInterval: '1D', // Default to 1 day
+  allowedWeekDays: [0, 1, 2, 3, 4, 5, 6] // All days enabled (Sunday to Saturday)
 };
 
 // Default UI configuration

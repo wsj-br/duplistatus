@@ -244,7 +244,7 @@ async function ensureDatabaseInitialized() {
       // Create database operations after migrations complete
       if (!dbOps) {
         dbOps = createDbOps();
-        console.log('Database operations initialized');
+        // console.log('Database operations initialized');
       }
     } catch (error) {
       console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));

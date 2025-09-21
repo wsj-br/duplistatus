@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formatBytes, formatTimeAgo } from "@/lib/utils";
+import { formatBytes, formatRelativeTime } from "@/lib/utils";
 import { useConfig } from "@/contexts/config-context";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { useRouter } from 'next/navigation';
@@ -274,7 +274,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     <TableCell>
                       <div>{new Date(backup.date).toLocaleString()}</div>
                       <div className="text-xs text-muted-foreground">
-                        {formatTimeAgo(backup.date)}
+                        {formatRelativeTime(backup.date)}
                       </div>
                     </TableCell>
                     <TableCell>

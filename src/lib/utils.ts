@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, isValid } from 'date-fns';
-import type { BackupStatus, NotificationEvent } from './types';
+import type { BackupStatus, NotificationEvent, OverdueTolerance } from './types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -69,7 +69,7 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
   return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
 }
 
-export function formatTimeAgo(dateString: string, currentTime?: Date): string {
+export function formatRelativeTime(dateString: string, currentTime?: Date): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -81,48 +81,48 @@ export function formatTimeAgo(dateString: string, currentTime?: Date): string {
     const now = currentTime || new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (diffInSeconds < 0) {
-      return "in the future";
-    }
-
-    if (diffInSeconds < 60) {
+    // Use absolute value for "just now" case as requested
+    if (Math.abs(diffInSeconds) < 60) {
       return "just now";
     }
 
-    if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+    const isFuture = diffInSeconds < 0;
+    const absDiffInSeconds = Math.abs(diffInSeconds);
+
+    if (absDiffInSeconds < 3600) {
+      const minutes = Math.floor(absDiffInSeconds / 60);
+      return isFuture ? `in ${minutes} minute${minutes === 1 ? '' : 's'}` : `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
     }
 
-    if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+    if (absDiffInSeconds < 86400) {
+      const hours = Math.floor(absDiffInSeconds / 3600);
+      return isFuture ? `in ${hours} hour${hours === 1 ? '' : 's'}` : `${hours} hour${hours === 1 ? '' : 's'} ago`;
     }
 
-    if (diffInSeconds < 604800) {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days} day${days === 1 ? '' : 's'} ago`;
+    if (absDiffInSeconds < 604800) {
+      const days = Math.floor(absDiffInSeconds / 86400);
+      return isFuture ? `in ${days} day${days === 1 ? '' : 's'}` : `${days} day${days === 1 ? '' : 's'} ago`;
     }
 
-    if (diffInSeconds < 2592000) {
-      const weeks = Math.floor(diffInSeconds / 604800);
-      return `${weeks} week${weeks === 1 ? '' : 's'} ago`;
+    if (absDiffInSeconds < 2592000) {
+      const weeks = Math.floor(absDiffInSeconds / 604800);
+      return isFuture ? `in ${weeks} week${weeks === 1 ? '' : 's'}` : `${weeks} week${weeks === 1 ? '' : 's'} ago`;
     }
 
-    if (diffInSeconds < 31536000) {
-      const months = Math.floor(diffInSeconds / 2592000);
-      return `${months} month${months === 1 ? '' : 's'} ago`;
+    if (absDiffInSeconds < 31536000) {
+      const months = Math.floor(absDiffInSeconds / 2592000);
+      return isFuture ? `in ${months} month${months === 1 ? '' : 's'}` : `${months} month${months === 1 ? '' : 's'} ago`;
     }
 
     // Calculate years and remaining months for periods longer than 1 year
-    const years = Math.floor(diffInSeconds / 31536000);
-    const remainingSeconds = diffInSeconds % 31536000;
+    const years = Math.floor(absDiffInSeconds / 31536000);
+    const remainingSeconds = absDiffInSeconds % 31536000;
     const months = Math.floor(remainingSeconds / 2592000);
     
     if (months === 0) {
-      return `${years} year${years === 1 ? '' : 's'} ago`;
+      return isFuture ? `in ${years} year${years === 1 ? '' : 's'}` : `${years} year${years === 1 ? '' : 's'} ago`;
     } else {
-      return `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'} ago`;
+      return isFuture ? `in ${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'}` : `${years} year${years === 1 ? '' : 's'} and ${months} month${months === 1 ? '' : 's'} ago`;
     }
   } catch {
     return "";
@@ -478,6 +478,104 @@ export function isDevelopmentMode(): boolean {
   // In Next.js, NODE_ENV is available at build time and runtime
   return process.env.NODE_ENV !== 'production';
 }
+
+/**
+ * Convert overdue tolerance value to human-readable label
+ */
+export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
+  const toleranceLabels: Record<OverdueTolerance, string> = {
+    'no_tolerance': 'No tolerance',
+    '5min': '5 min',
+    '15min': '15 min',
+    '30min': '30 min',
+    '1h': '1 hour',
+    '2h': '2 hours',
+    '4h': '4 hours',
+    '6h': '6 hours',
+    '12h': '12 hours',
+    '1d': '1 day'
+  };
+  
+  return toleranceLabels[tolerance] || tolerance;
+}
+
+/**
+ * Convert server interval string to hours or days
+ * Parses strings like "1D2h30m" (1 day, 2 hours, 30 minutes) and converts to total hours or days
+ * Returns hours if total < 24 hours, otherwise returns days
+ */
+// export function ConvertServerInterval(intervalString: string): IntervalConversion {
+//   if (!intervalString || typeof intervalString !== 'string') {
+//     return { number: 0, intervalUnit: 'hour' };
+//   }
+
+//   // Clean the input string
+//   const cleanString = intervalString.trim();
+//   if (cleanString.length === 0) {
+//     return { number: 0, intervalUnit: 'hour' };
+//   }
+
+//   // Regular expression to match valueUNIT patterns
+//   const pattern = /(\d+(?:\.\d+)?)([smhDWMY])/g;
+//   let totalHours = 0;
+//   let match;
+
+//   // Parse all tokens in the string
+//   while ((match = pattern.exec(cleanString)) !== null) {
+//     const value = parseFloat(match[1]);
+//     const unit = match[2];
+
+//     if (isNaN(value) || value < 0) {
+//       continue; // Skip invalid values
+//     }
+
+//     // Convert each unit to hours
+//     switch (unit) {
+//       case 's': // seconds
+//         totalHours += value / 3600;
+//         break;
+//       case 'm': // minutes
+//         totalHours += value / 60;
+//         break;
+//       case 'h': // hours
+//         totalHours += value;
+//         break;
+//       case 'D': // days
+//         totalHours += value * 24;
+//         break;
+//       case 'W': // weeks
+//         totalHours += value * 24 * 7;
+//         break;
+//       case 'M': // months (approximate as 30 days)
+//         totalHours += value * 24 * 30;
+//         break;
+//       case 'Y': // years (approximate as 365 days)
+//         totalHours += value * 24 * 365;
+//         break;
+//       default:
+//         // Unknown unit, skip
+//         break;
+//     }
+//   }
+
+//   // If no valid tokens were found, return default
+//   if (totalHours === 0) {
+//     return { intervalValue: 0, intervalUnit: 'hour' };
+//   }
+
+//   // Return hours if less than 24 hours, otherwise return days
+//   if (totalHours < 24) {
+//     return { 
+//       intervalValue: totalHours,
+//       intervalUnit: 'hour' 
+//     };
+//   } else {
+//     return { 
+//       intervalValue: totalHours / 24,
+//       intervalUnit: 'day' 
+//     };
+//   }
+// }
 
 
 

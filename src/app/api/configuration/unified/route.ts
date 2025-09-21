@@ -3,6 +3,7 @@ import { getConfiguration, getNtfyConfig, getAllServerAddresses, getCronConfig, 
 import { dbUtils } from '@/lib/db-utils';
 import { NotificationConfig } from '@/lib/types';
 import { createDefaultNotificationConfig, defaultOverdueTolerance } from '@/lib/default-config';
+import { migrateBackupSettings } from '@/lib/migration-utils';
 
 export async function GET() {
   try {
@@ -23,11 +24,12 @@ export async function GET() {
 
     // Build the main configuration
     let config: NotificationConfig;
-    if (configJson) {
+    if (configJson && configJson.trim() !== '') {
       try {
         config = JSON.parse(configJson) as NotificationConfig;
       } catch (parseError) {
         console.error('Failed to parse notifications configuration, creating default:', parseError);
+        console.error('Notifications JSON:', configJson);
         config = createDefaultNotificationConfig(ntfyConfig);
       }
     } else {
@@ -36,12 +38,14 @@ export async function GET() {
     config.ntfy = ntfyConfig;
 
     // Load backup settings
-    if (backupSettingsJson) {
+    if (backupSettingsJson && backupSettingsJson.trim() !== '') {
       try {
         const backupSettings = JSON.parse(backupSettingsJson);
-        config.backupSettings = backupSettings;
+        // Migrate backup settings to new format if needed
+        config.backupSettings = migrateBackupSettings(backupSettings);
       } catch (error) {
         console.error('Failed to parse backup settings:', error instanceof Error ? error.message : String(error));
+        console.error('Backup settings JSON:', backupSettingsJson);
         config.backupSettings = {};
       }
     } else {

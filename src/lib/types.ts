@@ -110,9 +110,9 @@ export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
 // Interface for backup-based notifications
 export interface BackupNotificationConfig {
   notificationEvent: NotificationEvent;
-  expectedInterval: number; // raw value as entered by user
+  expectedInterval: string; // interval string like "1D2h30m" (1 day, 2 hours, 30 minutes) or "1D" (1 day) or "1W" (1 week) or "1M" (1 month)
   overdueBackupCheckEnabled: boolean;
-  intervalUnit: 'hour' | 'day';
+  allowedWeekDays?: number[]; // allowed week days (0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday)
 }
 
 // Helper type for backup identification

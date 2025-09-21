@@ -8,6 +8,9 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { defaultAPIConfig } from '@/lib/default-config';
+import { getConfiguration, setConfiguration } from '@/lib/db-utils';
+import { migrateBackupSettings } from '@/lib/migration-utils';
+import { BackupKey, BackupNotificationConfig } from '@/lib/types';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -25,6 +28,15 @@ interface BackupInfo {
     ID: string;
     Name: string;
     TargetURL?: string;
+  };
+  Schedule?: {
+    ID: number;
+    Tags: string[];
+    Time: string;
+    Repeat: string;
+    LastRun: string;
+    Rule: string; // Changed from object to string
+    AllowedDays: string[];
   };
 }
 
@@ -99,6 +111,88 @@ async function makeRequest(url: string, options: RequestOptions): Promise<Reques
     }
     req.end();
   });
+}
+
+// Helper function to extract AllowedWeekDays from Rule string
+function extractAllowedWeekDaysFromRule(ruleString: string): string {
+  if (!ruleString) {
+    return '';
+  }
+  
+  // Parse format: "AllowedWeekDays=Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+  const match = ruleString.match(/AllowedWeekDays=([^,]+(?:,[^,]+)*)/);
+  return match ? match[1] : '';
+}
+
+// Helper function to parse AllowedWeekDays string to number array
+function parseAllowedWeekDays(allowedWeekDaysString: string): number[] {
+  if (!allowedWeekDaysString) {
+    return [0, 1, 2, 3, 4, 5, 6]; // Default to all days
+  }
+  
+  // Map day names to numbers (0=Sunday, 1=Monday, etc.)
+  const dayMap: Record<string, number> = {
+    'Sunday': 0, 'sun': 0,
+    'Monday': 1, 'mon': 1,
+    'Tuesday': 2, 'tue': 2,
+    'Wednesday': 3, 'wed': 3,
+    'Thursday': 4, 'thu': 4,
+    'Friday': 5, 'fri': 5,
+    'Saturday': 6, 'sat': 6
+  };
+  
+  // Parse the string format: "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+  const days = allowedWeekDaysString.split(',').map(day => day.trim());
+  const dayNumbers = days.map(day => dayMap[day]).filter(num => num !== undefined);
+  
+  // If no valid days found, return all days
+  return dayNumbers.length > 0 ? dayNumbers : [0, 1, 2, 3, 4, 5, 6];
+}
+
+// Helper function to get backup key
+function getBackupKey(serverId: string, backupName: string): BackupKey {
+  return `${serverId}:${backupName}`;
+}
+
+// Helper function to update backup settings with schedule information
+async function updateBackupSettingsWithSchedule(
+  serverId: string, 
+  backupName: string, 
+  repeatInterval: string, 
+  allowedWeekDays: number[]
+): Promise<void> {
+  try {
+    // Get current backup settings
+    const backupSettingsJson = getConfiguration('backup_settings');
+    const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = backupSettingsJson 
+      ? migrateBackupSettings(JSON.parse(backupSettingsJson))
+      : {};
+    
+    const backupKey = getBackupKey(serverId, backupName);
+    
+    // Get or create backup settings for this backup
+    let backupSettings = currentBackupSettings[backupKey];
+    if (!backupSettings) {
+      // Import default configuration
+      const { defaultBackupNotificationConfig } = await import('@/lib/default-config');
+      backupSettings = { ...defaultBackupNotificationConfig };
+    }
+    
+    // Update with schedule information
+    backupSettings.expectedInterval = repeatInterval;
+    backupSettings.allowedWeekDays = allowedWeekDays;
+    
+    // Update the settings
+    currentBackupSettings[backupKey] = backupSettings;
+    
+    // Save to database
+    setConfiguration('backup_settings', JSON.stringify(currentBackupSettings));
+    
+    console.log(`Updated backup settings for ${backupName}: interval=${repeatInterval}, allowedDays=${allowedWeekDays.join(',')}`);
+  } catch (error) {
+    console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
+    throw error;
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -298,6 +392,29 @@ export async function POST(request: NextRequest) {
     }> = [];
 
     for (const backupId of backupIds) {
+      // Parse schedule information and update backup settings
+      const backupName = backups.find((b) => b.Backup.ID === backupId)?.Backup.Name;
+      if (backupName) {
+        try {
+          // Get schedule information from the backup data
+          const backupData = backups.find((b) => b.Backup.ID === backupId);
+          if (backupData && backupData.Schedule) {
+            const schedule = backupData.Schedule;
+            const repeatInterval = schedule.Repeat;
+            const allowedWeekDaysString = extractAllowedWeekDaysFromRule(schedule.Rule);
+
+            console.log(`Updating backup settings from json for ${backupName}: repeatInterval=${repeatInterval}, allowedWeekDaysString=${allowedWeekDaysString}`);
+            
+            // Convert AllowedWeekDays string to number array
+            const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
+            
+            // Update backup settings
+            await updateBackupSettingsWithSchedule(serverId, backupName, repeatInterval, allowedWeekDays);
+          }
+        } catch (error) {
+          console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
+        }
+      }
       try {
         const logEndpoint = `${apiLogBaseEndpoint}/${backupId}/log?pagesize=999`;
         let logResponse;
@@ -532,9 +649,28 @@ export async function POST(request: NextRequest) {
            }
          };
        });
+
+       // Filter system_info to remove unnecessary data
+       const filteredSystemInfo = {
+         ...systemInfo,
+         Options: systemInfo.Options?.filter(option => option.Name === 'machine-id') || []
+       };
+       
+       // Remove module arrays and other unnecessary fields
+       delete (filteredSystemInfo as any).CompressionModules;
+       delete (filteredSystemInfo as any).EncryptionModules;
+       delete (filteredSystemInfo as any).BackendModules;
+       delete (filteredSystemInfo as any).GenericModules;
+       delete (filteredSystemInfo as any).WebModules;
+       delete (filteredSystemInfo as any).ConnectionModules;
+       delete (filteredSystemInfo as any).SecretProviderModules;
+       delete (filteredSystemInfo as any).ServerModules;
+       delete (filteredSystemInfo as any).LogLevels;
+       delete (filteredSystemInfo as any).SupportedLocales;
+
       // return the response data
       responseData.jsonData = JSON.stringify({
-        system_info: systemInfo,
+        system_info: filteredSystemInfo,
         backups: backupsWithoutTargetURL,
         backup_logs: collectedJsonData
       }, null, 2);

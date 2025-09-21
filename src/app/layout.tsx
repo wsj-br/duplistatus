@@ -66,8 +66,22 @@ const geistMono = localFont({
   variable: '--font-geist-mono',
 });
 
+// Dynamic title based on environment
+const getTitle = () => {
+  const baseTitle = 'duplistatus';
+  const isDev = process.env.NODE_ENV === 'development';
+  
+  if (isDev) {
+    // Get version from package.json
+    const version = process.env.npm_package_version || 'v?.?.?';
+    return `${baseTitle} (dev v${version})`;
+  }
+  
+  return baseTitle;
+};
+
 export const metadata: Metadata = {
-  title: 'duplistatus',
+  title: getTitle(),
   description: 'Monitor the execution and metrics of your Duplicatibackups.',
   icons: {
     icon: '/favicon.ico',
