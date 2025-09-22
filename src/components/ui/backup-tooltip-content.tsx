@@ -2,8 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import type { BackupStatus, NotificationEvent } from "@/lib/types";
-import { formatRelativeTime, formatBytes, getStatusColor, getOverdueToleranceLabel } from "@/lib/utils";
-import { useConfig } from "@/contexts/config-context";
+import { formatRelativeTime, formatBytes, getStatusColor } from "@/lib/utils";
 import { AlertTriangle, Settings, MessageSquareMore, MessageSquareOff } from "lucide-react";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
@@ -63,7 +62,6 @@ export function BackupTooltipContent({
   notificationEvent,
 }: BackupTooltipContentProps) {
   const router = useRouter();
-  const { overdueTolerance } = useConfig();
 
   return (
     <>
@@ -158,12 +156,7 @@ export function BackupTooltipContent({
           {/* Expected backup date for non-overdue backups */}
           {!isOverdue && expectedBackupDate !== "N/A" && (
             <div className="col-span-2">
-              <div className="text-muted-foreground text-left mb-1">
-                Expected:
-                {overdueTolerance && overdueTolerance !== 'no_tolerance' && (
-                  <span className="text-xs ml-1">(including {getOverdueToleranceLabel(overdueTolerance)} tolerance)</span>
-                )}
-              </div>
+              <div className="text-muted-foreground text-left mb-1">Expected:</div>
               <div className="font-semibold text-left">
                 {new Date(expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(expectedBackupDate) + ")"}
               </div>
@@ -181,12 +174,7 @@ export function BackupTooltipContent({
           </div>
           
           <div className="grid grid-cols-[80px_1fr] gap-x-3 text-xs">
-            <div className="text-muted-foreground text-right">
-              Expected:
-              {overdueTolerance && overdueTolerance !== 'no_tolerance' && (
-                <div className="text-xs mt-1">(including {getOverdueToleranceLabel(overdueTolerance)} tolerance)</div>
-              )}
-            </div>
+            <div className="text-muted-foreground text-right">Expected:</div>
             <div className="font-semibold text-left">
               {expectedBackupDate !== "N/A" 
                 ? new Date(expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(expectedBackupDate) + ")"

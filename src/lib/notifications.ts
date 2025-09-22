@@ -1,7 +1,7 @@
 import format from 'string-template';
-import { getConfiguration, getNtfyConfig, getServerInfoById } from './db-utils';
+import { getConfigNotifications, getConfigBackupSettings, getNtfyConfig, getServerInfoById } from './db-utils';
 import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey } from './types';
-import { createDefaultNotificationConfig, defaultNotificationTemplates } from './default-config';
+import { defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -44,31 +44,18 @@ export interface OverdueBackupContext {
 
 async function getNotificationConfig(): Promise<NotificationConfig | null> {
   try {
-    const configJson = getConfiguration('notifications');
-    const backupSettingsJson = getConfiguration('backup_settings');
+    const config = getConfigNotifications();
+    const backupSettings = await getConfigBackupSettings();
     
     // Get ntfy config with default topic generation if needed
     const ntfyConfig = await getNtfyConfig();
-    
-    if (!configJson) {
-      // If no configuration exists, create a minimal one with default ntfy config
-      return createDefaultNotificationConfig(ntfyConfig);
-    }
-    
-    const config = JSON.parse(configJson) as NotificationConfig;
     
     // Ensure ntfy config is always set with the generated default if needed
     config.ntfy = ntfyConfig;
     
     // Load backup settings from separate configuration if available
-    if (backupSettingsJson) {
-      try {
-        const backupSettings = JSON.parse(backupSettingsJson);
-        config.backupSettings = backupSettings;
-      } catch (error) {
-        console.error('Failed to parse backup settings:', error instanceof Error ? error.message : String(error));
-        config.backupSettings = {};
-      }
+    if (Object.keys(backupSettings).length > 0) {
+      config.backupSettings = backupSettings;
     } else {
       config.backupSettings = {};
     }

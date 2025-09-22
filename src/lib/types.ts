@@ -113,6 +113,7 @@ export interface BackupNotificationConfig {
   expectedInterval: string; // interval string like "1D2h30m" (1 day, 2 hours, 30 minutes) or "1D" (1 day) or "1W" (1 week) or "1M" (1 month)
   overdueBackupCheckEnabled: boolean;
   allowedWeekDays?: number[]; // allowed week days (0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday)
+  time: string; // ISO timestamp of scheduled backup time from Duplicati
 }
 
 // Helper type for backup identification
@@ -215,4 +216,50 @@ export interface ServerAddress {
   server_url: string;
   alias: string;
   note: string;
+}
+
+// Interface for Duplicati system info
+export interface SystemInfo {
+  APIVersion: number;
+  PasswordPlaceholder: string;
+  ServerVersion: string;
+  ServerVersionName: string;
+  ServerVersionType: string;
+  RemoteControlRegistrationUrl: string;
+  StartedBy: string;
+  DefaultUpdateChannel: string;
+  DefaultUsageReportLevel: string;
+  ServerTime: string;
+  OSType: string;
+  OSVersion: string;
+  DirectorySeparator: string;
+  PathSeparator: string;
+  CaseSensitiveFilesystem: boolean;
+  MachineName: string;
+  PackageTypeId: string;
+  UserName: string;
+  NewLine: string;
+  CLRVersion: string;
+  Options: Array<{
+    Aliases: string | null;
+    LongDescription: string;
+    Name: string;
+    ShortDescription: string;
+    Type: string;
+    ValidValues: string | null;
+    DefaultValue: string;
+    Typename: string;
+    Deprecated: boolean;
+    DeprecationMessage: string;
+  }>;
+  CompressionModules?: unknown[];
+  EncryptionModules?: unknown[];
+  BackendModules?: unknown[];
+  GenericModules?: unknown[];
+  WebModules?: unknown[];
+  ConnectionModules?: unknown[];
+  SecretProviderModules?: unknown[];
+  ServerModules?: unknown[];
+  LogLevels?: unknown[];
+  SupportedLocales?: unknown[];
 }

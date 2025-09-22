@@ -19,10 +19,7 @@ export function isLegacyFormat(config: unknown): config is LegacyBackupNotificat
   return (
     typeof config === 'object' &&
     config !== null &&
-    typeof (config as Record<string, unknown>).expectedInterval === 'number' &&
-    typeof (config as Record<string, unknown>).intervalUnit === 'string' &&
-    ((config as Record<string, unknown>).intervalUnit === 'hour' || (config as Record<string, unknown>).intervalUnit === 'day') &&
-    !(config as Record<string, unknown>).allowedWeekDays
+    'intervalUnit' in (config as Record<string, unknown>)
   );
 }
 
@@ -36,7 +33,8 @@ export function migrateBackupNotificationConfig(legacyConfig: LegacyBackupNotifi
     notificationEvent: legacyConfig.notificationEvent,
     overdueBackupCheckEnabled: legacyConfig.overdueBackupCheckEnabled,
     expectedInterval: convertLegacyToNew(legacyConfig.expectedInterval, legacyConfig.intervalUnit),
-    allowedWeekDays: getDefaultAllowedWeekDays() // Default to all days enabled
+    allowedWeekDays: getDefaultAllowedWeekDays(), // Default to all days enabled
+    time: '' // Default to empty string, will be populated by getConfigBackupSettings
   };
 }
 
@@ -53,10 +51,12 @@ export function migrateBackupSettings(backupSettings: Record<string, unknown>): 
       // Migrate old format to new format
       migratedSettings[key] = migrateBackupNotificationConfig(config);
     } else {
-      // Already in new format, but ensure allowedWeekDays is present
+      // Already in new format, but ensure required fields are present
+      const typedConfig = config as BackupNotificationConfig;
       migratedSettings[key] = {
-        ...(config as BackupNotificationConfig),
-        allowedWeekDays: (config as BackupNotificationConfig).allowedWeekDays || getDefaultAllowedWeekDays()
+        ...typedConfig,
+        allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays(),
+        time: typedConfig.time || '' // Ensure time field is present, default to empty string
       };
     }
   }
@@ -80,6 +80,7 @@ export function ensureNewFormat(config: unknown): BackupNotificationConfig {
     notificationEvent: typedConfig.notificationEvent || 'warnings',
     overdueBackupCheckEnabled: typedConfig.overdueBackupCheckEnabled !== undefined ? typedConfig.overdueBackupCheckEnabled : true,
     expectedInterval: typedConfig.expectedInterval || '1D',
-    allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays()
+    allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays(),
+    time: typedConfig.time || '' // Ensure time field is present, default to empty string
   };
 }

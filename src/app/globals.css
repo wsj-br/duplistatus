@@ -243,6 +243,37 @@ body {
   .dark .preline-scrollbar::-webkit-scrollbar-track {
     background-color: hsl(217.2 32.6% 17.5%) !important;
   }
+
+  /* Custom modal zoom-from-center animation */
+  .modal-zoom-center {
+    animation: modal-zoom-center 0.2s ease-out;
+  }
+
+  @keyframes modal-zoom-center {
+    0% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .modal-zoom-center-out {
+    animation: modal-zoom-center-out 0.15s ease-in;
+  }
+
+  @keyframes modal-zoom-center-out {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0;
+    }
+  }
 }
 
 @theme {

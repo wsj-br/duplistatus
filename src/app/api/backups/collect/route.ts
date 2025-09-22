@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
+import { dbUtils, getConfigBackupSettings } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
@@ -8,9 +8,8 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { defaultAPIConfig } from '@/lib/default-config';
-import { getConfiguration, setConfiguration } from '@/lib/db-utils';
-import { migrateBackupSettings } from '@/lib/migration-utils';
-import { BackupKey, BackupNotificationConfig } from '@/lib/types';
+import { setConfiguration } from '@/lib/db-utils';
+import { BackupKey } from '@/lib/types';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -21,6 +20,16 @@ interface SystemInfoOption {
 interface SystemInfo {
   MachineName: string;
   Options?: SystemInfoOption[];
+  CompressionModules?: unknown[];
+  EncryptionModules?: unknown[];
+  BackendModules?: unknown[];
+  GenericModules?: unknown[];
+  WebModules?: unknown[];
+  ConnectionModules?: unknown[];
+  SecretProviderModules?: unknown[];
+  ServerModules?: unknown[];
+  LogLevels?: unknown[];
+  SupportedLocales?: unknown[];
 }
 
 interface BackupInfo {
@@ -159,14 +168,12 @@ async function updateBackupSettingsWithSchedule(
   serverId: string, 
   backupName: string, 
   repeatInterval: string, 
-  allowedWeekDays: number[]
+  allowedWeekDays: number[],
+  scheduleTime?: string
 ): Promise<void> {
   try {
     // Get current backup settings
-    const backupSettingsJson = getConfiguration('backup_settings');
-    const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = backupSettingsJson 
-      ? migrateBackupSettings(JSON.parse(backupSettingsJson))
-      : {};
+    const currentBackupSettings = await getConfigBackupSettings();
     
     const backupKey = getBackupKey(serverId, backupName);
     
@@ -182,13 +189,18 @@ async function updateBackupSettingsWithSchedule(
     backupSettings.expectedInterval = repeatInterval;
     backupSettings.allowedWeekDays = allowedWeekDays;
     
+    // Update schedule time if provided
+    if (scheduleTime) {
+      backupSettings.time = scheduleTime;
+    }
+    
     // Update the settings
     currentBackupSettings[backupKey] = backupSettings;
     
     // Save to database
     setConfiguration('backup_settings', JSON.stringify(currentBackupSettings));
     
-    console.log(`Updated backup settings for ${backupName}: interval=${repeatInterval}, allowedDays=${allowedWeekDays.join(',')}`);
+    console.log(`Updated backup settings for ${backupName}: interval=${repeatInterval}, allowedDays=${allowedWeekDays.join(',')}, time=${scheduleTime || 'not provided'}`);
   } catch (error) {
     console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
     throw error;
@@ -348,10 +360,8 @@ export async function POST(request: NextRequest) {
     
     // Ensure backup settings are complete for all servers and backups
     // This will add default settings for any missing server-backup combinations
-    const backupSettingsResult = await ensureBackupSettingsComplete();
-    if (backupSettingsResult.added > 0) {
-      console.log(`[collect-backups] Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total server-backup combinations`);
-    }
+    // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
+    await getConfigBackupSettings();
   
     // Step 3: Get list of backups
     let backupsResponse;
@@ -402,14 +412,15 @@ export async function POST(request: NextRequest) {
             const schedule = backupData.Schedule;
             const repeatInterval = schedule.Repeat;
             const allowedWeekDaysString = extractAllowedWeekDaysFromRule(schedule.Rule);
+            const scheduleTime = schedule.Time; // Extract the schedule time
 
-            console.log(`Updating backup settings from json for ${backupName}: repeatInterval=${repeatInterval}, allowedWeekDaysString=${allowedWeekDaysString}`);
+            console.log(`Updating backup settings from json for ${backupName}: repeatInterval=${repeatInterval}, allowedWeekDaysString=${allowedWeekDaysString}, time=${scheduleTime || 'not provided'}`);
             
             // Convert AllowedWeekDays string to number array
             const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
             
             // Update backup settings
-            await updateBackupSettingsWithSchedule(serverId, backupName, repeatInterval, allowedWeekDays);
+            await updateBackupSettingsWithSchedule(serverId, backupName, repeatInterval, allowedWeekDays, scheduleTime);
           }
         } catch (error) {
           console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
@@ -476,22 +487,6 @@ export async function POST(request: NextRequest) {
           });
         }
 
-        // Log received data in development mode
-        if (process.env.NODE_ENV !== 'production') {
-          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-          const filename = `backup-collect-${timestamp}-${receivedCount}.json`;
-          const dataDir = path.join(process.cwd(), 'data');
-          const filePath = path.join(dataDir, filename);
-
-          // Ensure data directory exists
-          if (!fs.existsSync(dataDir)) {
-            fs.mkdirSync(dataDir, { recursive: true });
-          }
-
-          // Write the data to file with pretty formatting
-          fs.writeFileSync(filePath, JSON.stringify(backupMessages, null, 2));
-          console.log(`Logged collected data to ${filePath}`);
-        }
 
 
         for (const log of backupMessages) {
@@ -615,8 +610,7 @@ export async function POST(request: NextRequest) {
         errors: number;
       };
       backupSettings: {
-        added: number;
-        total: number;
+        message: string;
       };
       jsonData?: string;
     } = {
@@ -629,8 +623,7 @@ export async function POST(request: NextRequest) {
         errors: errorCount
       },
       backupSettings: {
-        added: backupSettingsResult.added,
-        total: backupSettingsResult.total
+        message: 'Backup settings completion handled automatically'
       }
     };
 
@@ -657,20 +650,21 @@ export async function POST(request: NextRequest) {
        };
        
        // Remove module arrays and other unnecessary fields
-       delete (filteredSystemInfo as any).CompressionModules;
-       delete (filteredSystemInfo as any).EncryptionModules;
-       delete (filteredSystemInfo as any).BackendModules;
-       delete (filteredSystemInfo as any).GenericModules;
-       delete (filteredSystemInfo as any).WebModules;
-       delete (filteredSystemInfo as any).ConnectionModules;
-       delete (filteredSystemInfo as any).SecretProviderModules;
-       delete (filteredSystemInfo as any).ServerModules;
-       delete (filteredSystemInfo as any).LogLevels;
-       delete (filteredSystemInfo as any).SupportedLocales;
+       const filteredSystemInfoTyped = filteredSystemInfo as SystemInfo;
+       delete filteredSystemInfoTyped.CompressionModules;
+       delete filteredSystemInfoTyped.EncryptionModules;
+       delete filteredSystemInfoTyped.BackendModules;
+       delete filteredSystemInfoTyped.GenericModules;
+       delete filteredSystemInfoTyped.WebModules;
+       delete filteredSystemInfoTyped.ConnectionModules;
+       delete filteredSystemInfoTyped.SecretProviderModules;
+       delete filteredSystemInfoTyped.ServerModules;
+       delete filteredSystemInfoTyped.LogLevels;
+       delete filteredSystemInfoTyped.SupportedLocales;
 
       // return the response data
       responseData.jsonData = JSON.stringify({
-        system_info: filteredSystemInfo,
+        system_info: filteredSystemInfoTyped,
         backups: backupsWithoutTargetURL,
         backup_logs: collectedJsonData
       }, null, 2);

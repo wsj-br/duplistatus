@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, setNotificationFrequencyConfig } from '@/lib/db-utils';
-import { NotificationConfig, NotificationFrequencyConfig } from '@/lib/types';
+import { getConfigNotifications, setConfigNotifications, getNotificationFrequencyConfig, setNotificationFrequencyConfig } from '@/lib/db-utils';
+import { NotificationFrequencyConfig } from '@/lib/types';
 import { generateDefaultNtfyTopic } from '@/lib/default-config';
 
 export async function GET() {
@@ -46,11 +46,10 @@ export async function POST(request: Request) {
     };
     
     // Get current config
-    const configJson = getConfiguration('notifications');
-    const config: NotificationConfig = configJson ? JSON.parse(configJson) : {};
+    const config = getConfigNotifications();
     // Update only ntfy
     config.ntfy = updatedNtfy;
-    setConfiguration('notifications', JSON.stringify(config));
+    setConfigNotifications(config);
     return NextResponse.json({ message: 'Notification config updated successfully', ntfy: updatedNtfy });
   } catch (error) {
     console.error('Failed to update notification config:', error instanceof Error ? error.message : String(error));

@@ -7,7 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
+import { QrCode } from 'lucide-react';
+import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
+import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 
 interface NtfyFormProps {
   config: NtfyConfig;
@@ -19,9 +22,60 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   const [formData, setFormData] = useState<NtfyConfig>(config);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
+  const [topicUrl, setTopicUrl] = useState<string>('');
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const handleInputChange = (field: keyof NtfyConfig, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const generateQrCode = async () => {
+    if (!formData.url || !formData.topic) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter both NTFY URL and Topic before generating QR code",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      // Extract server URL from the NTFY URL (remove trailing slash)
+      const serverUrl = formData.url.replace(/\/$/, '');
+      const topic = formData.topic;
+      
+      // Build the NTFY URL for phone configuration
+      let ntfyUrl = `ntfy://${serverUrl.replace(/^https?:\/\//, '')}/${topic}`;
+      
+      // Add access token if configured
+      if (formData.accessToken && formData.accessToken.trim() !== '') {
+        ntfyUrl += `?auth=tk_${formData.accessToken}`;
+      }
+
+      // Generate QR code
+      const qrDataUrl = await QRCode.toDataURL(ntfyUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      
+      setQrCodeDataUrl(qrDataUrl);
+      setTopicUrl(ntfyUrl);
+      setIsQrModalOpen(true);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      toast({
+        title: "QR Code Generation Failed",
+        description: "Failed to generate QR code. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   };
 
   const handleSave = async () => {
@@ -183,10 +237,27 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
             >
               {isTesting ? "Sending..." : "Send Test Message"}
             </Button>
+            <Button
+              onClick={generateQrCode}
+              variant="outline"
+              disabled={!formData.url || !formData.topic}
+              className="w-full sm:w-auto"
+            >
+              <QrCode className="w-4 h-4 mr-2" />
+              Configure Device
+            </Button>
 
           </div>
         </CardContent>
       </Card>
+
+      {/* QR Code Modal */}
+      <NtfyQrModal 
+        isOpen={isQrModalOpen} 
+        onOpenChange={setIsQrModalOpen} 
+        qrCodeDataUrl={qrCodeDataUrl} 
+        topicUrl={topicUrl}
+      />
     </div>
   );
-} 
+}

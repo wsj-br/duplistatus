@@ -7,6 +7,11 @@ const webpack = require('webpack');
 const nextConfig: NextConfig = {
   output: "standalone",
   
+  // Optimize preloading to reduce warnings
+  experimental: {
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
+  },
+  
   // Configure webpack to handle binary files
   webpack: (config, { isServer }) => {
     // Add support for better-sqlite3
@@ -42,6 +47,32 @@ const nextConfig: NextConfig = {
         resource.request = resource.request.replace(/^node:/, '');
       })
     );
+
+    // Optimize bundle splitting to reduce preload warnings
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization?.splitChunks,
+          chunks: 'all',
+          cacheGroups: {
+            ...config.optimization?.splitChunks?.cacheGroups,
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              priority: 10,
+            },
+            ui: {
+              test: /[\\/]src[\\/]components[\\/]ui[\\/]/,
+              name: 'ui',
+              chunks: 'all',
+              priority: 20,
+            },
+          },
+        },
+      };
+    }
 
     // Return the modified config
     return config;

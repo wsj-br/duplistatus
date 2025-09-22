@@ -52,6 +52,7 @@ interface ServerWithBackupAndSettings extends ServerWithBackup {
   displayUnit: IntervalUnit;
   isCustomInterval: boolean;
   allowedWeekDays: number[];
+  nextRunDate: string;
 }
 
 export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormProps) {
@@ -99,6 +100,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     overdueBackupCheckEnabled: { type: 'text' as keyof typeof sortFunctions, path: 'overdueBackupCheckEnabled' },
     displayInterval: { type: 'number' as keyof typeof sortFunctions, path: 'displayInterval' },
     displayUnit: { type: 'text' as keyof typeof sortFunctions, path: 'displayUnit' },
+    nextRunDate: { type: 'text' as keyof typeof sortFunctions, path: 'nextRunDate' },
   };
 
   useEffect(() => {
@@ -340,6 +342,10 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       const displayUnit = selectedUnits[inputKey] || display.unit;
       const isCustomInterval = displayUnit === 'custom' || display.isCustom;
       
+      // Use the time field from the backup settings as the next run date
+      // This is calculated server-side in the unified configuration route
+      const nextRunDate = backupSetting.time || 'N/A';
+      
       return {
         ...server,
         overdueBackupCheckEnabled: backupSetting.overdueBackupCheckEnabled,
@@ -348,6 +354,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         displayUnit: displayUnit,
         isCustomInterval: isCustomInterval,
         allowedWeekDays: backupSetting.allowedWeekDays || getDefaultAllowedWeekDays(),
+        nextRunDate: nextRunDate,
       };
     });
   };
@@ -702,6 +709,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 >
                   Allowed Days
                 </SortableTableHead>
+                <SortableTableHead 
+                  className="w-[150px] min-w-[120px]" 
+                  column="nextRunDate" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                >
+                  Next Run
+                </SortableTableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -827,6 +842,18 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             {day}
                           </Button>
                         ))}
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div className="text-xs">
+                        {server.nextRunDate !== 'N/A' ? (
+                          <span title={server.nextRunDate}>
+                            {new Date(server.nextRunDate).toLocaleString()}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">N/A</span>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -956,6 +983,20 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             {day}
                           </Button>
                         ))}
+                      </div>
+                    </div>
+                    
+                    {/* Next Run */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Next Run</Label>
+                      <div className="text-xs">
+                        {server.nextRunDate !== 'N/A' ? (
+                          <span title={server.nextRunDate}>
+                            {new Date(server.nextRunDate).toLocaleString()}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">N/A</span>
+                        )}
                       </div>
                     </div>
                   </div>

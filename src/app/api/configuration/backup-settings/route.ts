@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, setConfiguration } from '@/lib/db-utils';
-import { BackupKey, BackupNotificationConfig, OverdueNotifications } from '@/lib/types';
+import { getConfigBackupSettings, setConfigBackupSettings, getConfigOverdueNotifications, setConfigOverdueNotifications } from '@/lib/db-utils';
+import { BackupKey, BackupNotificationConfig } from '@/lib/types';
 import { migrateBackupSettings } from '@/lib/migration-utils';
 
 export async function POST(request: Request) {
@@ -13,23 +13,19 @@ export async function POST(request: Request) {
     }
     
     // Get current backup settings to compare for changes
-    const currentBackupSettingsJson = getConfiguration('backup_settings');
-    const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = currentBackupSettingsJson 
-      ? migrateBackupSettings(JSON.parse(currentBackupSettingsJson))
-      : {};
+    const currentBackupSettings = await getConfigBackupSettings();
     
     // Migrate incoming backup settings to ensure they're in new format
     const migratedBackupSettings = migrateBackupSettings(backupSettings);
     
     // Save backup settings separately
-    setConfiguration('backup_settings', JSON.stringify(migratedBackupSettings));
+    setConfigBackupSettings(migratedBackupSettings);
     
     // Clean up overdue backup notifications for disabled backups and changed timeout settings
     try {
       // Get current overdue backup notifications configuration
-      const overdueNotificationsJson = getConfiguration('overdue_notifications');
-      if (overdueNotificationsJson) {
-        const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
+      const overdueNotifications = getConfigOverdueNotifications();
+      if (Object.keys(overdueNotifications).length > 0) {
 
         const backupKeysToClear: BackupKey[] = [];
         
@@ -64,7 +60,7 @@ export async function POST(request: Request) {
         }
 
         // Save the updated configuration
-        setConfiguration('overdue_notifications', JSON.stringify(updatedOverdueNotifications));
+        setConfigOverdueNotifications(updatedOverdueNotifications);
       }
     } catch (cleanupError) {
       console.error('Failed to cleanup overdue backup notifications:', cleanupError);

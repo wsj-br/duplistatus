@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, NotificationConfig } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -9,34 +9,8 @@ import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
 import { GetNextValidTimeWithNumberArray } from './server_intervals';
+import { createDefaultNotificationConfig, generateDefaultNtfyTopic, defaultBackupNotificationConfig } from './default-config';
 
-// Helper function to convert overdue tolerance to minutes
-function getToleranceInMinutes(tolerance: OverdueTolerance): number {
-  switch (tolerance) {
-    case 'no_tolerance':
-      return 0;
-    case '5min':
-      return 5;
-    case '15min':
-      return 15;
-    case '30min':
-      return 30;
-    case '1h':
-      return 60;
-    case '2h':
-      return 120;
-    case '4h':
-      return 240;
-    case '6h':
-      return 360;
-    case '12h':
-      return 720;
-    case '1d':
-      return 1440; 
-    default:
-      return 0;
-  }
-}
 
 // Helper function to get backup key (new format: server_id:backup_name)
 function getBackupKey(serverId: string, backupName: string): BackupKey {
@@ -45,21 +19,13 @@ function getBackupKey(serverId: string, backupName: string): BackupKey {
 
 
 // Helper function to check if a backup is overdue based on expected interval
-export function isBackupOverdueByInterval(serverId: string, backupName: string, lastBackupDate: string | null): boolean {
+export async function isBackupOverdueByInterval(serverId: string, backupName: string, lastBackupDate: string | null): Promise<boolean> {
   try {
     if (!lastBackupDate || lastBackupDate === 'N/A') return false;
     
     // Get backup settings to check if overdue backup check is enabled
-    const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson || backupSettingsJson.trim() === '') return false;
-    
-    let backupSettings;
-    try {
-      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
-    } catch (parseError) {
-      console.error('Failed to parse backup settings in isBackupOverdueByInterval:', parseError);
-      return false;
-    }
+    const backupSettings = await getConfigBackupSettings();
+    if (!backupSettings || Object.keys(backupSettings).length === 0) return false;
     
     const backupKey = getBackupKey(serverId, backupName);
     const settings = backupSettings[backupKey];
@@ -68,23 +34,28 @@ export function isBackupOverdueByInterval(serverId: string, backupName: string, 
     if (!settings || !settings.overdueBackupCheckEnabled) return false;
     
     // Get backup interval settings
-    const backupIntervalSettings = getBackupIntervalSettings(serverId, backupName);
+    const backupIntervalSettings = await getBackupIntervalSettings(serverId, backupName);
     if (!backupIntervalSettings) return false;
     
-    // Calculate expected backup date with tolerance
-    const globalTolerance = getOverdueToleranceConfig();
+    // Calculate expected backup date (without tolerance)
     const expectedBackupDate = calculateExpectedBackupDate(
-      lastBackupDate, 
+      backupIntervalSettings.scheduleTime,
       backupIntervalSettings.expectedInterval,
-      globalTolerance,
       backupIntervalSettings.allowedWeekDays
     );
     
     if (expectedBackupDate === 'N/A') return false;
     
-    // Check if current time is past the expected backup date
-    const currentTime = new Date();
+    // Add tolerance to the expected backup date for overdue check
+    const toleranceMinutes = getConfigOverdueTolerance();
     const expectedTime = new Date(expectedBackupDate);
+    
+    if (toleranceMinutes > 0) {
+      expectedTime.setMinutes(expectedTime.getMinutes() + toleranceMinutes);
+    }
+    
+    // Check if current time is past the expected backup date (with tolerance)
+    const currentTime = new Date();
     
     return currentTime > expectedTime;
   } catch (error) {
@@ -94,23 +65,10 @@ export function isBackupOverdueByInterval(serverId: string, backupName: string, 
 }
 
 // Helper function to get notification event for a backup
-function getNotificationEvent(serverId: string, backupName: string): NotificationEvent | undefined {
+async function getNotificationEvent(serverId: string, backupName: string): Promise<NotificationEvent | undefined> {
   try {
-    const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson || backupSettingsJson.trim() === '') return undefined;
-    
-    let backupSettings;
-    try {
-      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson)) as Record<BackupKey, {
-        notificationEvent: NotificationEvent;
-        expectedInterval: string;
-        overdueBackupCheckEnabled: boolean;
-        allowedWeekDays?: number[];
-      }>;
-    } catch (parseError) {
-      console.error('Failed to parse backup settings in getNotificationEvent:', parseError);
-      return undefined;
-    }
+    const backupSettings = await getConfigBackupSettings();
+    if (!backupSettings || Object.keys(backupSettings).length === 0) return undefined;
     
     const backupKey = getBackupKey(serverId, backupName);
     return backupSettings[backupKey]?.notificationEvent;
@@ -123,16 +81,7 @@ function getNotificationEvent(serverId: string, backupName: string): Notificatio
 // Helper function to get last notification sent timestamp for a backup
 function getLastNotificationSent(serverId: string, backupName: string): string {
   try {
-    const lastNotificationJson = getConfiguration('overdue_notifications');
-    if (!lastNotificationJson || lastNotificationJson.trim() === '') return 'N/A';
-    
-    let lastNotifications;
-    try {
-      lastNotifications = JSON.parse(lastNotificationJson) as OverdueNotifications;
-    } catch (parseError) {
-      console.error('Failed to parse overdue notifications in getLastNotificationSent:', parseError);
-      return 'N/A';
-    }
+    const lastNotifications = getConfigOverdueNotifications();
     const backupKey = getBackupKey(serverId, backupName);
     const notification = lastNotifications[backupKey];
     
@@ -148,22 +97,15 @@ function getLastNotificationSent(serverId: string, backupName: string): string {
 }
 
 // Helper function to get backup interval settings for expected backup calculations
-function getBackupIntervalSettings(serverId: string, backupName: string): {
+async function getBackupIntervalSettings(serverId: string, backupName: string): Promise<{
   expectedInterval: string;
   allowedWeekDays: number[];
+  scheduleTime: string;
   overdueTolerance?: OverdueTolerance;
-} | undefined {
+} | undefined> {
   try {
-    const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson || backupSettingsJson.trim() === '') return undefined;
-    
-    let backupSettings;
-    try {
-      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
-    } catch (parseError) {
-      console.error('Failed to parse backup settings in getBackupIntervalSettings:', parseError);
-      return undefined;
-    }
+    const backupSettings = await getConfigBackupSettings();
+    if (!backupSettings || Object.keys(backupSettings).length === 0) return undefined;
     
     const backupKey = getBackupKey(serverId, backupName);
     const settings = backupSettings[backupKey];
@@ -172,7 +114,8 @@ function getBackupIntervalSettings(serverId: string, backupName: string): {
     
     return {
       expectedInterval: settings.expectedInterval,
-      allowedWeekDays: settings.allowedWeekDays || getDefaultAllowedWeekDays()
+      allowedWeekDays: settings.allowedWeekDays || getDefaultAllowedWeekDays(),
+      scheduleTime: settings.time
     };
   } catch (error) {
     console.error('Error getting backup interval settings:', error instanceof Error ? error.message : String(error));
@@ -181,21 +124,15 @@ function getBackupIntervalSettings(serverId: string, backupName: string): {
 }
 
 // Helper function to calculate expected backup date using the same logic as GetNextValidTime
-export function calculateExpectedBackupDate(lastBackupDate: string, expectedInterval: string, tolerance: OverdueTolerance = defaultOverdueTolerance, allowedWeekDays: number[] = []): string {
+export function calculateExpectedBackupDate(scheduleTime: string, expectedInterval: string, allowedWeekDays: number[] = []): string {
   try {
-    const lastBackup = new Date(lastBackupDate);
-    if (isNaN(lastBackup.getTime())) {
+    const baseDate = new Date(scheduleTime);
+    if (isNaN(baseDate.getTime())) {
       return 'N/A';
     }
     
     // Calculate the next valid time using the same logic as Duplicati
-    const nextValidTime = GetNextValidTimeWithNumberArray(lastBackup, expectedInterval, allowedWeekDays);
-    
-    // Add tolerance to the expected date
-    const toleranceMinutes = getToleranceInMinutes(tolerance);
-    if (toleranceMinutes > 0) {
-      nextValidTime.setMinutes(nextValidTime.getMinutes() + toleranceMinutes);
-    }
+    const nextValidTime = GetNextValidTimeWithNumberArray(baseDate, expectedInterval, allowedWeekDays);
     
     return nextValidTime.toISOString();
   } catch (error) {
@@ -509,26 +446,11 @@ interface OverallSummaryRow {
 }
 
 // Helper function to count overdue backups from configuration
-function countOverdueBackups(): number {
+async function countOverdueBackups(): Promise<number> {
   try {
     // Get backup settings to check which backups have overdue check enabled
-    const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson) {
-      return 0;
-    }
-    
-    let backupSettings: Record<BackupKey, {
-      notificationEvent: NotificationEvent;
-      expectedInterval: string;
-      overdueBackupCheckEnabled: boolean;
-      allowedWeekDays?: number[];
-      overdueTolerance?: OverdueTolerance;
-    }>;
-    
-    try {
-      backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
-    } catch (parseError) {
-      console.error('Failed to parse backup settings JSON in countOverdueBackups:', parseError);
+    const backupSettings = await getConfigBackupSettings();
+    if (!backupSettings || Object.keys(backupSettings).length === 0) {
       return 0;
     }
     
@@ -567,15 +489,21 @@ function countOverdueBackups(): number {
       // Get interval configuration
       const expectedInterval = backupConfig.expectedInterval;
       
-      // Calculate expected backup date using the helper function with tolerance
-      const globalTolerance = getOverdueToleranceConfig();
-      const expectedBackupDate = calculateExpectedBackupDate(latestBackup.date, expectedInterval, globalTolerance, backupConfig.allowedWeekDays || getDefaultAllowedWeekDays());
+      // Calculate expected backup date (without tolerance)
+      const expectedBackupDate = calculateExpectedBackupDate(backupConfig.time, expectedInterval, backupConfig.allowedWeekDays || getDefaultAllowedWeekDays());
       
-      // Check if backup is overdue by comparing expected date with current time
+      if (expectedBackupDate === 'N/A') continue;
+      
+      // Add tolerance to the expected backup date for overdue check
+      const toleranceMinutes = getConfigOverdueTolerance();
       const expectedBackupTime = new Date(expectedBackupDate);
       
-      // Check if backup is overdue (expected date is in the past)
-      if (expectedBackupDate !== 'N/A' && !isNaN(expectedBackupTime.getTime()) && currentTime > expectedBackupTime) {
+      if (toleranceMinutes > 0) {
+        expectedBackupTime.setMinutes(expectedBackupTime.getMinutes() + toleranceMinutes);
+      }
+      
+      // Check if backup is overdue (current time is past expected date with tolerance)
+      if (!isNaN(expectedBackupTime.getTime()) && currentTime > expectedBackupTime) {
         overdueCount++;
       }
     }
@@ -587,9 +515,81 @@ function countOverdueBackups(): number {
   }
 }
 
-export function getOverallSummary() {
+// Optimized version that calculates all totals from serversSummary data (no database query needed)
+export async function getOverallSummaryFromServers(serversSummary: Awaited<ReturnType<typeof getServersSummary>>) {
   try {
-    const result = withDb(() => {
+    // Calculate all totals from serversSummary data
+    let totalServers = 0;
+    let totalBackupsRuns = 0;
+    let totalBackups = 0;
+    let totalUploadedSize = 0;
+    let totalStorageUsed = 0;
+    let totalBackupSize = 0;
+    let overdueBackupsCount = 0;
+
+    try {
+      const totals = serversSummary.reduce((acc, server) => {
+        acc.totalServers++;
+        acc.totalBackupsRuns += server.totalBackupCount;
+        acc.totalUploadedSize += server.totalUploadedSize;
+        acc.totalStorageUsed += server.totalStorageSize;
+        acc.totalBackupSize += server.totalFileSize;
+        acc.totalBackups += server.backupInfo.length;
+        
+        // Count overdue backups
+        acc.overdueBackupsCount += server.backupInfo.filter(backup => backup.isBackupOverdue).length;
+        
+        return acc;
+      }, {
+        totalServers: 0,
+        totalBackupsRuns: 0,
+        totalUploadedSize: 0,
+        totalStorageUsed: 0,
+        totalBackupSize: 0,
+        totalBackups: 0,
+        overdueBackupsCount: 0
+      });
+
+      totalServers = totals.totalServers;
+      totalBackupsRuns = totals.totalBackupsRuns;
+      totalUploadedSize = totals.totalUploadedSize;
+      totalStorageUsed = totals.totalStorageUsed;
+      totalBackupSize = totals.totalBackupSize;
+      totalBackups = totals.totalBackups;
+      overdueBackupsCount = totals.overdueBackupsCount;
+    } catch (calculationError) {
+      console.error('[getOverallSummaryFromServers] Error calculating totals:', calculationError instanceof Error ? calculationError.message : String(calculationError));
+      // Continue with zeros
+    }
+
+    return {
+      totalServers,
+      totalBackupsRuns,
+      totalBackups,
+      totalUploadedSize,
+      totalStorageUsed,
+      totalBackupSize,
+      overdueBackupsCount
+    };
+  } catch (error) {
+    console.error('[getOverallSummaryFromServers] Error:', error instanceof Error ? error.message : String(error));
+    // Return a fallback instead of throwing
+    return {
+      totalServers: 0,
+      totalBackupsRuns: 0,
+      totalBackups: 0,
+      totalUploadedSize: 0,
+      totalStorageUsed: 0,
+      totalBackupSize: 0,
+      overdueBackupsCount: 0
+    };
+  }
+}
+
+// Original function kept for backward compatibility
+export async function getOverallSummary() {
+  try {
+    const result = await withDb(async () => {
       const summary = safeDbOperation(() => dbOps.getOverallSummary.get(), 'getOverallSummary') as OverallSummaryRow | undefined;
       
       if (!summary) {
@@ -606,7 +606,7 @@ export function getOverallSummary() {
 
       let overdueCount = 0;
       try {
-        overdueCount = countOverdueBackups();
+        overdueCount = await countOverdueBackups();
       } catch (overdueError) {
         console.error('[getOverallSummary] Error counting overdue backups:', overdueError instanceof Error ? overdueError.message : String(overdueError));
         // Continue with overdueCount = 0
@@ -850,9 +850,9 @@ export function getServerBackupChartDataWithTimeRange(serverId: string, backupNa
 }
 
 // New function to get server summary for the new dashboard
-export function getServersSummary() {
+export async function getServersSummary() {
   try {
-    return withDb(() => {
+    return await withDb(async () => {
       const rows = safeDbOperation(() => dbOps.getServersSummary.all(), 'getServersSummary', []) as Array<{
         server_id: string;
         server_name: string;
@@ -1018,29 +1018,27 @@ export function getServersSummary() {
       });
       
       // Process each server to add overdue status and other derived data per backup job
-      const result = Array.from(serverMap.values()).map(server => {
+      const result = await Promise.all(Array.from(serverMap.values()).map(async (server) => {
         // Process each backup job to add overdue status and other derived data
-        server.backupInfo = server.backupInfo.map(thisBackupInfo => {
+        server.backupInfo = await Promise.all(server.backupInfo.map(async (thisBackupInfo) => {
           let isOverdue = false;
           let expectedBackupDate = 'N/A';
           let expectedBackupElapsed = 'N/A';
           
           if (thisBackupInfo.lastBackupDate !== 'N/A') {
-            isOverdue = isBackupOverdueByInterval(server.id, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
+            isOverdue = await isBackupOverdueByInterval(server.id, thisBackupInfo.name, thisBackupInfo.lastBackupDate);
 
             // Check if the server has overdue backups
             if (isOverdue) {
               server.haveOverdueBackups = true;
             }
 
-            // Get expected backup date
-            const backupSettings = getBackupIntervalSettings(server.id, thisBackupInfo.name);
+            // Get expected backup date (pure expected date without tolerance)
+            const backupSettings = await getBackupIntervalSettings(server.id, thisBackupInfo.name);
             if (backupSettings) {
-              const globalTolerance = getOverdueToleranceConfig();
               expectedBackupDate = calculateExpectedBackupDate(
-                thisBackupInfo.lastBackupDate,
+                backupSettings.scheduleTime,
                 backupSettings.expectedInterval,
-                globalTolerance,
                 backupSettings.allowedWeekDays
               );
               expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
@@ -1048,7 +1046,7 @@ export function getServersSummary() {
           }
           
           // Get notification event for this backup job
-          const notificationEvent = getNotificationEvent(server.id, thisBackupInfo.name);
+          const notificationEvent = await getNotificationEvent(server.id, thisBackupInfo.name);
           
           // Get last notification sent (if any)
           const lastNotificationSent = getLastNotificationSent(server.id, thisBackupInfo.name);
@@ -1061,13 +1059,13 @@ export function getServersSummary() {
             expectedBackupElapsed,
             lastNotificationSent
           };
-        });
+        }));
         
         // Remove duplicate available backups
         server.backupNames = [...new Set(server.backupNames)];
         
         return server;
-      });
+      }));
            
       return result;
     });
@@ -1212,49 +1210,37 @@ export const dbUtils = {
 function cleanupServerConfiguration(serverId: string): void {
   try {
     // Clean up backup_settings
-    const backupSettingsJson = getConfiguration('backup_settings');
-    if (backupSettingsJson) {
-      try {
-        const backupSettings = JSON.parse(backupSettingsJson) as Record<BackupKey, BackupNotificationConfig>;
-        const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
-        
-        // Keep only entries that don't match the server ID
-        for (const [backupKey, settings] of Object.entries(backupSettings)) {
-          const [keyServerId] = backupKey.split(':');
-          if (keyServerId !== serverId) {
-            updatedBackupSettings[backupKey] = settings;
-          }
+    const backupSettings = getConfigBackupSettings();
+    if (Object.keys(backupSettings).length > 0) {
+      const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
+      
+      // Keep only entries that don't match the server ID
+      for (const [backupKey, settings] of Object.entries(backupSettings)) {
+        const [keyServerId] = backupKey.split(':');
+        if (keyServerId !== serverId) {
+          updatedBackupSettings[backupKey] = settings;
         }
-        
-        // Save the updated backup settings
-        setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
-
-      } catch (error) {
-        console.error('Failed to parse backup_settings during cleanup:', error instanceof Error ? error.message : String(error));
       }
+      
+      // Save the updated backup settings
+      setConfigBackupSettings(updatedBackupSettings);
     }
     
     // Clean up overdue_notifications
-    const overdueNotificationsJson = getConfiguration('overdue_notifications');
-    if (overdueNotificationsJson) {
-      try {
-        const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
-        const updatedOverdueNotifications: OverdueNotifications = {};
-        
-        // Keep only entries that don't match the server ID
-        for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
-          const [keyServerId] = backupKey.split(':');
-          if (keyServerId !== serverId) {
-            updatedOverdueNotifications[backupKey] = notification;
-          }
+    const overdueNotifications = getConfigOverdueNotifications();
+    if (Object.keys(overdueNotifications).length > 0) {
+      const updatedOverdueNotifications: OverdueNotifications = {};
+      
+      // Keep only entries that don't match the server ID
+      for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
+        const [keyServerId] = backupKey.split(':');
+        if (keyServerId !== serverId) {
+          updatedOverdueNotifications[backupKey] = notification;
         }
-        
-        // Save the updated overdue notifications
-        setConfiguration('overdue_notifications', JSON.stringify(updatedOverdueNotifications));
-
-      } catch (error) {
-        console.error('Failed to parse overdue_notifications during cleanup:', error instanceof Error ? error.message : String(error));
       }
+      
+      // Save the updated overdue notifications
+      setConfigOverdueNotifications(updatedOverdueNotifications);
     }
   } catch (error) {
     console.error(`Failed to cleanup configuration for server ${serverId}:`, error instanceof Error ? error.message : String(error));
@@ -1277,6 +1263,109 @@ export function getNotificationFrequencyConfig(): NotificationFrequencyConfig {
 
 export function setNotificationFrequencyConfig(value: NotificationFrequencyConfig): void {
   setConfiguration("notification_frequency", value);
+}
+
+// Functions to get/set notifications configuration
+export function getConfigNotifications(): NotificationConfig {
+  try {
+    const configJson = getConfiguration('notifications');
+    if (!configJson || configJson.trim() === '') {
+      // Create default configuration with generated ntfy topic
+      const defaultTopic = generateDefaultNtfyTopic();
+      const defaultConfig = createDefaultNotificationConfig({
+        url: 'https://ntfy.sh/',
+        topic: defaultTopic,
+        accessToken: ''
+      });
+      
+      // Persist the default configuration
+      setConfigNotifications(defaultConfig);
+      return defaultConfig;
+    }
+    
+    try {
+      const config = JSON.parse(configJson) as NotificationConfig;
+      
+      // Ensure ntfy config is always set with generated default if needed
+      if (!config.ntfy || !config.ntfy.topic) {
+        const defaultTopic = generateDefaultNtfyTopic();
+        config.ntfy = {
+          url: config.ntfy?.url || 'https://ntfy.sh/',
+          topic: defaultTopic,
+          accessToken: config.ntfy?.accessToken || ''
+        };
+        
+        // Persist the updated configuration
+        setConfigNotifications(config);
+      }
+      
+      return config;
+    } catch (parseError) {
+      console.error('Failed to parse notifications configuration, creating default:', parseError);
+      const defaultTopic = generateDefaultNtfyTopic();
+      const defaultConfig = createDefaultNotificationConfig({
+        url: 'https://ntfy.sh/',
+        topic: defaultTopic,
+        accessToken: ''
+      });
+      
+      // Persist the default configuration
+      setConfigNotifications(defaultConfig);
+      return defaultConfig;
+    }
+  } catch (error) {
+    console.error('Failed to get notifications configuration:', error instanceof Error ? error.message : String(error));
+    const defaultTopic = generateDefaultNtfyTopic();
+    const defaultConfig = createDefaultNotificationConfig({
+      url: 'https://ntfy.sh/',
+      topic: defaultTopic,
+      accessToken: ''
+    });
+    
+    // Persist the default configuration
+    setConfigNotifications(defaultConfig);
+    return defaultConfig;
+  }
+}
+
+export function setConfigNotifications(config: NotificationConfig): void {
+  try {
+    setConfiguration('notifications', JSON.stringify(config));
+  } catch (error) {
+    console.error('Failed to save notifications configuration:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+// Functions to get/set overdue notifications configuration
+export function getConfigOverdueNotifications(): OverdueNotifications {
+  try {
+    const overdueNotificationsJson = getConfiguration('overdue_notifications');
+    if (!overdueNotificationsJson || overdueNotificationsJson.trim() === '') {
+      // Return empty object if no configuration exists
+      return {};
+    }
+    
+    try {
+      const overdueNotifications = JSON.parse(overdueNotificationsJson) as OverdueNotifications;
+      return overdueNotifications;
+    } catch (parseError) {
+      console.error('Failed to parse overdue notifications configuration:', parseError);
+      return {};
+    }
+  } catch (error) {
+    console.error('Failed to get overdue notifications configuration:', error instanceof Error ? error.message : String(error));
+    return {};
+  }
+}
+
+export function setConfigOverdueNotifications(overdueNotifications: OverdueNotifications): void {
+  try {
+    setConfiguration('overdue_notifications', JSON.stringify(overdueNotifications));
+  } catch (error) {
+    console.error('Failed to save overdue notifications configuration:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
 }
 
 // Functions to get/set overdue tolerance config
@@ -1303,8 +1392,195 @@ export function setOverdueToleranceConfig(value: OverdueTolerance): void {
   setConfiguration("overdue_tolerance", value);
 }
 
+// Functions to get/set overdue tolerance config (returning minutes)
+export function getConfigOverdueTolerance(): number {
+  const tolerance = getOverdueToleranceConfig();
+  switch (tolerance) {
+    case 'no_tolerance':
+      return 0;
+    case '5min':
+      return 5;
+    case '15min':
+      return 15;
+    case '30min':
+      return 30;
+    case '1h':
+      return 60;
+    case '2h':
+      return 120;
+    case '4h':
+      return 240;
+    case '6h':
+      return 360;
+    case '12h':
+      return 720;
+    case '1d':
+      return 1440; 
+    default:
+      return 0;
+  }
+}
+
+export function setConfigOverdueTolerance(toleranceMinutes: number): void {
+  // Convert minutes back to OverdueTolerance enum
+  let tolerance: OverdueTolerance;
+  
+  switch (toleranceMinutes) {
+    case 0:
+      tolerance = 'no_tolerance';
+      break;
+    case 5:
+      tolerance = '5min';
+      break;
+    case 15:
+      tolerance = '15min';
+      break;
+    case 30:
+      tolerance = '30min';
+      break;
+    case 60:
+      tolerance = '1h';
+      break;
+    case 120:
+      tolerance = '2h';
+      break;
+    case 240:
+      tolerance = '4h';
+      break;
+    case 360:
+      tolerance = '6h';
+      break;
+    case 720:
+      tolerance = '12h';
+      break;
+    case 1440:
+      tolerance = '1d';
+      break;
+    default:
+      // Default to 1 hour if invalid value
+      tolerance = '1h';
+      console.warn(`Invalid tolerance minutes: ${toleranceMinutes}, defaulting to 1h`);
+  }
+  
+  setOverdueToleranceConfig(tolerance);
+}
+
+// Functions to get/set backup settings configuration
+export async function getConfigBackupSettings(): Promise<Record<BackupKey, BackupNotificationConfig>> {
+  try {
+    const backupSettingsJson = getConfiguration('backup_settings');
+    let currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
+    
+    if (backupSettingsJson && backupSettingsJson.trim() !== '') {
+      try {
+        currentBackupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
+      } catch (parseError) {
+        console.error('Failed to parse backup settings configuration:', parseError);
+        currentBackupSettings = {};
+      }
+    }
+    
+    // Get all servers with backups
+    const serversSummary = getServersBackupNames() as { 
+      id: string;
+      server_id: string;
+      server_name: string; 
+      backup_name: string;
+    }[];
+
+    // Create a set of all server-backup combinations
+    const serverBackupCombinations = new Set<string>();
+    serversSummary.forEach(server => {
+      if (server.server_id && server.backup_name) {
+        const backupKey = getBackupKey(server.server_id, server.backup_name);
+        serverBackupCombinations.add(backupKey);
+      }
+    });
+
+    // Check for missing backup settings and add defaults
+    let addedSettings = 0;
+    let updatedSettings = 0;
+    let timeUpdatedSettings = 0;
+    const updatedBackupSettings = { ...currentBackupSettings };
+    
+    for (const backupKey of serverBackupCombinations) {
+      if (!currentBackupSettings[backupKey]) {
+        // Import default configuration
+        const [serverId, backupName] = backupKey.split(':');
+        const defaultConfig = { ...defaultBackupNotificationConfig };
+        
+        // Try to populate the time field with the latest backup date
+        const latestBackup = dbUtils.getLatestBackupByName(serverId, backupName) as {
+          date: string;
+        } | null;
+        
+        if (latestBackup) {
+          defaultConfig.time = latestBackup.date;
+        }
+        
+        updatedBackupSettings[backupKey] = defaultConfig;
+        addedSettings++;
+      } 
+
+      // Check if existing settings need time field populated or updated
+      const existingSettings = updatedBackupSettings[backupKey];
+      if (!existingSettings.time || existingSettings.time.trim() === '') {
+        // Get the last backup date for this server-backup combination
+        const [serverId, backupName] = backupKey.split(':');
+        const latestBackup = dbUtils.getLatestBackupByName(serverId, backupName) as {
+          date: string;
+        } | null;
+        
+        if (latestBackup) {
+          updatedBackupSettings[backupKey] = {
+            ...existingSettings,
+            time: latestBackup.date
+          };
+          updatedSettings++;
+        }
+      } 
+      // Calculate expected backup date and update time if it has changed
+      const [serverId, backupName] = backupKey.split(':');
+      const expectedBackupDate = calculateExpectedBackupDate(
+        existingSettings.time,
+        existingSettings.expectedInterval,
+        existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
+      );
+      
+      // Only update if the calculated date is valid and different from current time
+      if (expectedBackupDate !== 'N/A' && expectedBackupDate !== existingSettings.time) {
+        updatedBackupSettings[backupKey] = {
+          ...existingSettings,
+          time: expectedBackupDate
+        };
+        timeUpdatedSettings++;
+      }
+    }
+    
+    // Save updated settings if any were added or updated
+    if (addedSettings > 0 || updatedSettings > 0 || timeUpdatedSettings > 0) {
+      setConfigBackupSettings(updatedBackupSettings);
+    }
+    console.log('getConfigBackupSettings: added='+addedSettings, 'updated='+updatedSettings, 'timeUpdated='+timeUpdatedSettings);
+    return updatedBackupSettings;
+  } catch (error) {
+    console.error('Failed to get backup settings configuration:', error instanceof Error ? error.message : String(error));
+    return {};
+  }
+}
+
+export function setConfigBackupSettings(backupSettings: Record<BackupKey, BackupNotificationConfig>): void {
+  try {
+    setConfiguration('backup_settings', JSON.stringify(backupSettings));
+  } catch (error) {
+    console.error('Failed to save backup settings configuration:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+
 // Helper function to get overdue backups for a specific server based on interval calculation
-export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
+export async function getOverdueBackupsForServer(serverIdentifier: string): Promise<Array<{
   serverName: string;
   backupName: string;
   lastBackupDate: string;
@@ -1312,18 +1588,10 @@ export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
   notificationEvent?: NotificationEvent;
   expectedBackupDate: string;
   expectedBackupElapsed: string;
-}> {
+}>> {
   try {
-    const backupSettingsJson = getConfiguration('backup_settings');
-    if (!backupSettingsJson) return [];
-    
-    const backupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson)) as Record<BackupKey, {
-      notificationEvent: NotificationEvent;
-      expectedInterval: string;
-      overdueBackupCheckEnabled: boolean;
-      allowedWeekDays?: number[];
-      overdueTolerance?: OverdueTolerance;
-    }>;
+    const backupSettings = await getConfigBackupSettings();
+    if (!backupSettings || Object.keys(backupSettings).length === 0) return [];
     
     const overdueBackups: Array<{
       serverName: string;
@@ -1347,7 +1615,7 @@ export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
         if (!settings.overdueBackupCheckEnabled) continue;
         
         // Get server info for database lookup
-        const serversSummary = getServersSummary();
+        const serversSummary = await getServersSummary();
         const server = serversSummary.find(s => s.id === serverId);
         if (!server) continue;
         
@@ -1360,24 +1628,29 @@ export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
         
         if (!latestBackup) continue;
         
-        // Calculate expected backup date and check if overdue
-        const globalTolerance = getOverdueToleranceConfig();
+        // Calculate expected backup date (without tolerance)
         const expectedBackupDate = calculateExpectedBackupDate(
-          latestBackup.date, 
+          settings.time, 
           settings.expectedInterval, 
-          globalTolerance,
           settings.allowedWeekDays || getDefaultAllowedWeekDays()
         );
         
         if (expectedBackupDate === 'N/A') continue;
         
-        const currentTime = new Date();
+        // Add tolerance to the expected backup date for overdue check
+        const toleranceMinutes = getConfigOverdueTolerance();
         const expectedTime = new Date(expectedBackupDate);
         
-        // Check if backup is overdue
+        if (toleranceMinutes > 0) {
+          expectedTime.setMinutes(expectedTime.getMinutes() + toleranceMinutes);
+        }
+        
+        const currentTime = new Date();
+        
+        // Check if backup is overdue (current time is past expected date with tolerance)
         if (currentTime > expectedTime) {
           // Get notification event for this backup
-          const notificationEvent = getNotificationEvent(serverId, backupName);
+          const notificationEvent = await getNotificationEvent(serverId, backupName);
           
           // Calculate elapsed time
           const expectedBackupElapsed = formatTimeElapsed(expectedBackupDate);
@@ -1410,12 +1683,9 @@ export function getOverdueBackupsForServer(serverIdentifier: string): Array<{
 // Function to get ntfy configuration with default topic generation
 export async function getNtfyConfig(): Promise<{ url: string; topic: string; accessToken?: string }> {
   try {
-    const configJson = getConfiguration('notifications');
-    if (configJson) {
-      const config = JSON.parse(configJson);
-      if (config.ntfy) {
-        return config.ntfy;
-      }
+    const config = getConfigNotifications();
+    if (config.ntfy) {
+      return config.ntfy;
     }
   } catch (error) {
     console.error('Failed to get ntfy config from notifications:', error instanceof Error ? error.message : String(error));
@@ -1428,10 +1698,9 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
   
   // Persist the generated configuration
   try {
-    const configJson = getConfiguration('notifications');
-    const config = configJson ? JSON.parse(configJson) : {};
+    const config = getConfigNotifications();
     config.ntfy = generatedConfig;
-    setConfiguration('notifications', JSON.stringify(config));
+    setConfigNotifications(config);
   } catch (error) {
     console.error('Failed to persist generated ntfy config:', error instanceof Error ? error.message : String(error));
   }
@@ -1455,65 +1724,6 @@ export function getServersBackupNames() {
   }, 'getServersBackupNames', []));
 }
 
-// Function to ensure backup settings are complete for all servers and backups
-export async function ensureBackupSettingsComplete(): Promise<{ added: number; total: number }> {
-  try {
-    // Get current backup settings and migrate them
-    const backupSettingsJson = getConfiguration('backup_settings');
-    const currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = backupSettingsJson 
-      ? migrateBackupSettings(JSON.parse(backupSettingsJson))
-      : {};
-    
-    // Get all servers with backups
-    const serversSummary = getServersBackupNames() as { 
-      id: string;
-      server_id: string;
-      server_name: string; 
-      backup_name: string;
-    }[];
-
-
-    
-    // Create a set of all server-backup combinations
-    const serverBackupCombinations = new Set<string>();
-    serversSummary.forEach(server => {
-      if (server.server_id && server.backup_name) {
-        const backupKey = getBackupKey(server.server_id, server.backup_name);
-        serverBackupCombinations.add(backupKey);
-      }
-    });
-
-
-    
-    // Check for missing backup settings and add defaults
-    let addedSettings = 0;
-    const updatedBackupSettings = { ...currentBackupSettings };
-    
-    for (const backupKey of serverBackupCombinations) {
-      if (!currentBackupSettings[backupKey]) {
-        // Import default configuration
-        const { defaultBackupNotificationConfig } = await import('./default-config');
-        updatedBackupSettings[backupKey] = { ...defaultBackupNotificationConfig };
-        addedSettings++;
-
-      }
-    }
-    
-    // Save updated settings if any were added
-    if (addedSettings > 0) {
-      setConfiguration('backup_settings', JSON.stringify(updatedBackupSettings));
-  
-    }
-    
-    return {
-      added: addedSettings,
-      total: serverBackupCombinations.size
-    };
-  } catch (error) {
-    console.error('Error ensuring backup settings complete:', error instanceof Error ? error.message : String(error));
-    return { added: 0, total: 0 };
-  }
-} 
 
 
 

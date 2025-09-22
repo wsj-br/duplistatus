@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getServersSummary, getOverallSummary, getAggregatedChartData } from '@/lib/db-utils';
+import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData } from '@/lib/db-utils';
 
 export async function GET() {
   try {
-    // Fetch all dashboard data in parallel for better performance
-    const [serversSummary, overallSummary, chartData] = await Promise.all([
-      Promise.resolve(getServersSummary()),
-      Promise.resolve(getOverallSummary()),
+    // Fetch dashboard data efficiently - get serversSummary first, then use it for overallSummary
+    const serversSummary = await Promise.resolve(getServersSummary());
+    const [overallSummary, chartData] = await Promise.all([
+      Promise.resolve(getOverallSummaryFromServers(serversSummary)),
       Promise.resolve(getAggregatedChartData())
     ]);
 

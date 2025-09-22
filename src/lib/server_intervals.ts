@@ -53,49 +53,111 @@ function addInterval(date: Date, tokens: ParsedInterval[]): Date {
     return res;
 }
 
+// Get the interval in days
+function getInterval(tokens: ParsedInterval[]): number {
+    // Clone
+    let res = 0;
+
+    // Apply tokens in the order they appeared
+    for (const t of tokens) {
+        const v = t.value;
+        const unit = t.unit;
+        switch (unit) {
+            case 's': case 'S':
+                res = res + v / 86400;
+                break;
+            case 'm': // minutes
+                res = res + v / 1440;
+                break;
+            case 'h': case 'H':
+                res = res + v / 24;
+                break;
+            case 'D': case 'd':
+                res = res + v;
+                break;
+            case 'W': case 'w':
+                res = res + v * 7;
+                break;
+            case 'M':
+                // add months preserving day-of-month where possible
+                res= res + v*30;
+                break;
+            case 'Y': case 'y':
+                res= res + v*365;
+                break;
+            default:
+                throw new Error(`Unsupported unit: ${unit}`);
+        }
+    }
+
+    return res;
+}
 
 
 // Compute next valid run date with number array format for allowed weekdays.
-export function GetNextValidTimeWithNumberArray(lastRun: Date, repeat: string, allowedWeekdays: number[]): Date {
-    if (!(lastRun instanceof Date) || isNaN(lastRun.getTime()))
-        throw new Error('Invalid lastRun date');
+export function GetNextValidTimeWithNumberArray(baseTime: Date, repeat: string, allowedWeekdays: number[]): Date {
+    if (!(baseTime instanceof Date) || isNaN(baseTime.getTime()))
+        throw new Error('Invalid baseTime date');
 
-    const tokens = parseIntervalString(repeat);
+    // First, ensure candidate is in the future (current time + 1 second)
+    const future = (new Date().getTime()) + 1000; // current time + 1 second (in milliseconds)
+    
+    const MAX_ITERS = 50000;
+    let iters = 0;
+    let candidate = baseTime;
 
+    // define allowed weekdays
     const allowed = allowedWeekdays || [];
     const allDaysAllowed = allowed.length === 0;
 
-    // Initial candidate: lastRun + interval
-    let candidate = addInterval(lastRun, tokens);
-    
-    // Determine if repetition is >= 1 day by checking time difference
-    const intervalIsAtLeastDay = (candidate.getTime() - lastRun.getTime()) >= 24 * 60 * 60 * 1000;
-
     function isAllowed(dt: Date): boolean {
         if (allDaysAllowed) return true;
-        return allowed.indexOf(dt.getDay()) >= 0;
+        const dayOfWeek = dt.getDay();
+        const isAllowedDay = allowed.indexOf(dayOfWeek) >= 0;
+        return isAllowedDay;
     }
 
-    if (isAllowed(candidate))
+    // check if the baseTime is in the future, it it is, is already the next valid time
+    if (candidate.getTime() >= future && isAllowed(candidate)) {
+        return new Date(candidate);
+    }
+
+    const tokens = parseIntervalString(repeat);
+
+    // Add intervals until candidate is in the future
+    while (candidate.getTime() <= future && iters++ < MAX_ITERS) {
+        candidate = addInterval(candidate, tokens);
+    }
+    
+    if (candidate.getTime() <= future) {
+        throw new Error('Could not find future time within iteration limit');
+    }
+    
+    // Determine if repetition is >= 1 day 
+    const intervalIsAtLeastDay = getInterval(tokens) >= 1;
+
+    if (isAllowed(candidate)) {
         return candidate;
+    }
 
     if (intervalIsAtLeastDay) {
         // Advance day-by-day until allowed (up to 8 days)
         for (let i = 0; i < 8; i++) {
             candidate.setDate(candidate.getDate() + 1);
-            if (isAllowed(candidate))
+            if (isAllowed(candidate)) {
                 return candidate;
+            }
         }
         throw new Error('No allowed weekday found within 8 days');
     } else {
         // Add the repetition repeatedly until an allowed day is found
-        const MAX_ITERS = 50000;
-        let iters = 0;
+        iters = 0; // Reset counter for weekday checking
         while (!isAllowed(candidate) && iters++ < MAX_ITERS) {
             candidate = addInterval(candidate, tokens);
         }
-        if (!isAllowed(candidate))
+        if (!isAllowed(candidate)) {
             throw new Error('No allowed weekday found within iteration limit');
+        }
         return candidate;
     }
 }

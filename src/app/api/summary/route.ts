@@ -4,7 +4,7 @@ import { getOverallSummary, dbUtils } from '@/lib/db-utils';
 export async function GET() {
   try {
     // Get the overall summary from the database using the consolidated function
-    const summary = getOverallSummary();
+    const summary = await getOverallSummary();
     
     if (!summary) {
       console.error('getOverallSummary returned null or undefined');

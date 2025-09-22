@@ -89,7 +89,8 @@ export const defaultBackupNotificationConfig: BackupNotificationConfig = {
   notificationEvent: 'warnings',
   overdueBackupCheckEnabled: true,
   expectedInterval: '1D', // Default to 1 day
-  allowedWeekDays: [0, 1, 2, 3, 4, 5, 6] // All days enabled (Sunday to Saturday)
+  allowedWeekDays: [0, 1, 2, 3, 4, 5, 6], // All days enabled (Sunday to Saturday)
+  time: '' // Empty string as default
 };
 
 // Default UI configuration

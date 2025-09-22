@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
 import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
-import { dbUtils, ensureBackupSettingsComplete } from '../src/lib/db-utils';
+import { dbUtils, getConfigBackupSettings } from '../src/lib/db-utils';
 import { extractAvailableBackups } from '../src/lib/utils';
 
 // Function to clean database tables before generating test data
@@ -745,10 +745,8 @@ async function sendTestData(useUpload: boolean = false, serverCount: number) {
   // Ensure backup settings are complete for all servers and backups (only for direct DB mode)
   if (!useUpload) {
     console.log('\n  🔧 Ensuring backup settings are complete...');
-    const backupSettingsResult = await ensureBackupSettingsComplete();
-    if (backupSettingsResult.added > 0) {
-      console.log(`  ✅ Added ${backupSettingsResult.added} default backup settings for ${backupSettingsResult.total} total server-backup combinations`);
-    }
+    // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
+    await getConfigBackupSettings();
     
     // Cleanup backups for user manual demonstration
     await cleanupBackupsForUserManual();

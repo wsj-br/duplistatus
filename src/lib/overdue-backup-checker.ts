@@ -1,6 +1,5 @@
-import { dbUtils, ensureBackupSettingsComplete } from '@/lib/db-utils';
+import { dbUtils, getConfigBackupSettings, getConfigOverdueNotifications, setConfigOverdueNotifications, getNotificationFrequencyConfig, getOverdueToleranceConfig, setConfiguration } from '@/lib/db-utils';
 import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notifications';
-import { getConfiguration, setConfiguration, getNotificationFrequencyConfig, getOverdueToleranceConfig } from '@/lib/db-utils';
 import { getOverdueToleranceLabel } from '@/lib/utils';
 import { OverdueNotifications } from '@/lib/types';
 import { formatRelativeTime } from '@/lib/utils';
@@ -22,21 +21,16 @@ export async function checkOverdueBackups(checkDate?: Date) {
 
     // Ensure backup settings are complete for all machines and backups
     // This will add default settings for any missing machine-backup combinations
-    await ensureBackupSettingsComplete();
-
-    // Load backup settings from separate configuration if available
-    const backupSettingsJson = getConfiguration('backup_settings');
-    const backupSettings = backupSettingsJson ? JSON.parse(backupSettingsJson) : {};
+    const backupSettings = await getConfigBackupSettings();
 
     // Get notification frequency configuration
     const notificationFrequency = getNotificationFrequencyConfig();
 
     // Get last notification timestamps
-    const lastNotificationJson = getConfiguration('overdue_notifications');
-    const lastNotifications = lastNotificationJson ? JSON.parse(lastNotificationJson) : {};
+    const lastNotifications = getConfigOverdueNotifications();
 
     // Get servers summary with all server and backup information
-    const serversSummary = dbUtils.getServersSummary();
+    const serversSummary = await dbUtils.getServersSummary();
     
     let checkedBackups = 0;
     let overdueBackupsFound = 0;
@@ -120,7 +114,6 @@ export async function checkOverdueBackups(checkDate?: Date) {
               const overdueTimeAgo = formatRelativeTime(backupInfo.lastBackupDate);
               
               // Get interval information from backup config
-              const intervalUnit = backupConfig.intervalUnit || 'hour';
               const intervalValue = backupConfig.expectedInterval;
               
               // Validate required fields
@@ -129,7 +122,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
               }
               
               // Validate interval configuration
-              if (!intervalValue || intervalValue <= 0) {
+              if (!intervalValue || intervalValue.trim() === '') {
                 continue;
               }
               
@@ -151,8 +144,8 @@ export async function checkOverdueBackups(checkDate?: Date) {
                 last_elapsed: overdueTimeAgo,
                 expected_date: expectedBackupDate,
                 expected_elapsed: expectedBackupElapsed,
-                backup_interval_type: intervalUnit,
-                backup_interval_value: intervalValue,
+                backup_interval_type: 'hour', // Legacy field - interval is now handled as string
+                backup_interval_value: 0, // Legacy field - interval is now handled as string
                 overdue_tolerance: getOverdueToleranceLabel(overdueTolerance), 
               };
 
@@ -176,7 +169,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
     }
 
     // Save updated notification timestamps
-    setConfiguration('overdue_notifications', JSON.stringify(updatedNotifications));
+    setConfigOverdueNotifications(updatedNotifications);
     // Save the timestamp of when this check was last run
     setConfiguration('last_overdue_check', currentTime.toISOString());
 
@@ -197,6 +190,6 @@ export async function checkOverdueBackups(checkDate?: Date) {
 
 // Clears overdue backup notification timestamps configuration
 export function clearOverdueBackupNotificationTimestamps(): { message: string } {
-  setConfiguration('overdue_notifications', '{}');
+  setConfigOverdueNotifications({});
   return { message: 'Overdue backup notification timestamps cleared successfully' };
 } 

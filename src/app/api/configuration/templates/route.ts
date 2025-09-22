@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConfiguration, setConfiguration } from '@/lib/db-utils';
-import { NotificationConfig } from '@/lib/types';
+import { getConfigNotifications, setConfigNotifications } from '@/lib/db-utils';
 
 export async function POST(request: Request) {
   try {
@@ -10,11 +9,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'templates are required' }, { status: 400 });
     }
     // Get current config
-    const configJson = getConfiguration('notifications');
-    const config: NotificationConfig = configJson ? JSON.parse(configJson) : {};
+    const config = getConfigNotifications();
     // Update only templates
     config.templates = templates;
-    setConfiguration('notifications', JSON.stringify(config));
+    setConfigNotifications(config);
     return NextResponse.json({ message: 'Notification templates updated successfully' });
   } catch (error) {
     console.error('Failed to update notification templates:', error instanceof Error ? error.message : String(error));

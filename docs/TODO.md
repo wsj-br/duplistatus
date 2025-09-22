@@ -27,11 +27,8 @@ none
 
 ## Changes needed
 
-- need to add the firstdate from Duplicati server schedule configuration and add it to the backup_settings and the overdue monitoring form.
-- change the logic of the calculateExpectedBackupDate() to use first date instead of last backup in the calculations
-   - see the logic of GetNextValidTime() in Schedulers.cs in Duplicati source code.
-- add a flag in the BackupCollectMenu to update or not the schedule from duplicati server (default is to update)
-
+- in collectbackup, add a select box to show the list of server_url to pre-fill the form for repeated collection.
+- change the next run on settings > overdue monitoring to be editable
 
 
 - replace the documentation to use Docusaurus
@@ -148,9 +145,11 @@ none
 
 ### Implemented in Version 0.8.x 🚧
 
-- New Overdue Monitoring tab that accepts the expected interval similar to the Duplicati server.
-    - Now can configure custom intervals (for instance "1D12h")
-    - When collecting backup logs, update the overdue interval from Duplicati configuration automatically
-
-
+- A new `Overdue Monitoring` tab that accepts the expected interval similar to the Duplicati server.
+    - You can now configure custom intervals (for instance "1D12h")
+    - When collecting backup logs, the overdue interval is automatically updated from the Duplicati configuration
+- New function to show a QR code containing the topic for automatically configuring your device to receive notifications. Available at:
+   - Right-click on `View NTFY messages` button on the application toolbar.
+   - In the `Settings > NTFY Settings`, button "Configure Device"
+  
 
