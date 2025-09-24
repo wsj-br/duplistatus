@@ -95,12 +95,19 @@ function getInterval(tokens: ParsedInterval[]): number {
 
 
 // Compute next valid run date with number array format for allowed weekdays.
-export function GetNextValidTimeWithNumberArray(baseTime: Date, repeat: string, allowedWeekdays: number[]): Date {
+export function GetNextBackupRunDate(lastBackupStr: string, baseTimeStr: string, repeat: string, allowedWeekdays: number[]): string {
+
+    const lastBackup= new Date(lastBackupStr);
+    const baseTime= new Date(baseTimeStr);
+    
+    if (!(lastBackup instanceof Date) || isNaN(lastBackup.getTime()))
+        throw new Error('Invalid lastBackup date');
+
     if (!(baseTime instanceof Date) || isNaN(baseTime.getTime()))
         throw new Error('Invalid baseTime date');
 
-    // First, ensure candidate is in the future (current time + 1 second)
-    const future = (new Date().getTime()) + 1000; // current time + 1 second (in milliseconds)
+    // First, ensure candidate is after the last backup (last backup + 1 second)
+    const afterLastBackup = lastBackup.getTime() + 1000; // last backup + 1 second (in milliseconds)
     
     const MAX_ITERS = 50000;
     let iters = 0;
@@ -117,27 +124,27 @@ export function GetNextValidTimeWithNumberArray(baseTime: Date, repeat: string, 
         return isAllowedDay;
     }
 
-    // check if the baseTime is in the future, it it is, is already the next valid time
-    if (candidate.getTime() >= future && isAllowed(candidate)) {
-        return new Date(candidate);
+    // check if the baseTime is in the afterLastBackup, it it is, is already the next valid time
+    if (candidate.getTime() >= afterLastBackup && isAllowed(candidate)) {
+        return new Date(candidate).toISOString();
     }
 
     const tokens = parseIntervalString(repeat);
 
-    // Add intervals until candidate is in the future
-    while (candidate.getTime() <= future && iters++ < MAX_ITERS) {
+    // Add intervals until candidate is in the afterLastBackup
+    while (candidate.getTime() <= afterLastBackup && iters++ < MAX_ITERS) {
         candidate = addInterval(candidate, tokens);
     }
     
-    if (candidate.getTime() <= future) {
-        throw new Error('Could not find future time within iteration limit');
+    if (candidate.getTime() <= afterLastBackup) {
+        throw new Error('Could not find afterLastBackup time within iteration limit');
     }
     
     // Determine if repetition is >= 1 day 
     const intervalIsAtLeastDay = getInterval(tokens) >= 1;
 
     if (isAllowed(candidate)) {
-        return candidate;
+        return candidate.toISOString();
     }
 
     if (intervalIsAtLeastDay) {
@@ -145,7 +152,7 @@ export function GetNextValidTimeWithNumberArray(baseTime: Date, repeat: string, 
         for (let i = 0; i < 8; i++) {
             candidate.setDate(candidate.getDate() + 1);
             if (isAllowed(candidate)) {
-                return candidate;
+                return candidate.toISOString();
             }
         }
         throw new Error('No allowed weekday found within 8 days');
@@ -158,7 +165,7 @@ export function GetNextValidTimeWithNumberArray(baseTime: Date, repeat: string, 
         if (!isAllowed(candidate)) {
             throw new Error('No allowed weekday found within iteration limit');
         }
-        return candidate;
+        return candidate.toISOString();
     }
 }
 

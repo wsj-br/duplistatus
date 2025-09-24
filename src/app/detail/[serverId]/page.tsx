@@ -44,7 +44,7 @@ export default async function ServerDetailsPage({
     notFound();
   }
 
-      // Get overdue backups for this server
+    // Get overdue backups for this server
     const overdueBackups = await getOverdueBackupsForServer(server.id);
 
     // Get the last overdue backup check time

@@ -27,8 +27,8 @@ none
 
 ## Changes needed
 
-- in collectbackup, add a select box to show the list of server_url to pre-fill the form for repeated collection.
-- change the next run on settings > overdue monitoring to be editable
+
+
 
 
 - replace the documentation to use Docusaurus
@@ -151,5 +151,8 @@ none
 - New function to show a QR code containing the topic for automatically configuring your device to receive notifications. Available at:
    - Right-click on `View NTFY messages` button on the application toolbar.
    - In the `Settings > NTFY Settings`, button "Configure Device"
+- in collectbackup, have a select box to show the list of server_url to pre-fill the form for repeated collection.
+- added a button to collect backups directly from the Configure Overdue Monitoring table
+
   
 

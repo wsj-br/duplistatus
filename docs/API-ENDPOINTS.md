@@ -1134,15 +1134,14 @@ These endpoints are designed for use by other applications and integrations, for
 ### Collect Backups - `/api/backups/collect`
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
-- **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint connects to the Duplicati server, retrieves backup information, and processes it into the local database.
+- **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint automatically detects the best connection protocol (HTTPS with SSL validation, HTTPS with self-signed certificates, or HTTP as fallback) and connects to the Duplicati server to retrieve backup information and process it into the local database.
 - **Request Body**:
   ```json
   {
     "hostname": "duplicati-server.local",
     "port": 8200,
     "password": "your-password",
-    "protocol": "http",
-    "allowSelfSigned": false
+    "downloadJson": false
   }
   ```
 - **Response**:
@@ -1166,12 +1165,13 @@ These endpoints are designed for use by other applications and integrations, for
   - `400`: Invalid request parameters or connection failed
   - `500`: Server error during backup collection
 - **Notes**: 
-  - The endpoint supports both HTTP and HTTPS protocols
-  - Self-signed certificates can be allowed with `allowSelfSigned: true`
+  - The endpoint automatically detects the optimal connection protocol (HTTPS → HTTPS with self-signed → HTTP)
+  - Protocol detection attempts are made in order of security preference
   - Connection timeouts are configurable via environment variables
   - Logs collected data in development mode for debugging
   - Ensures backup settings are complete for all servers and backups
-  - Uses default port 8200 and protocol "http" if not specified
+  - Uses default port 8200 if not specified
+  - The detected protocol and server URL are automatically stored in the database
   - `serverAlias` is retrieved from the database and may be empty if no alias is set
   - The frontend should use `serverAlias || serverName` for display purposes
 

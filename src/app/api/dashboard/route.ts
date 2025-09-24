@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData } from '@/lib/db-utils';
+import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache } from '@/lib/db-utils';
 
 export async function GET() {
   try {
+    // Clear request cache to ensure fresh data on each request
+    clearRequestCache();
+    
     // Fetch dashboard data efficiently - get serversSummary first, then use it for overallSummary
     const serversSummary = await Promise.resolve(getServersSummary());
     const [overallSummary, chartData] = await Promise.all([
@@ -42,12 +45,25 @@ export async function GET() {
       chartData
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     console.error('Error fetching dashboard data:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch dashboard data' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      }
     );
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import Image from 'next/image';
 
 interface NtfyQrModalProps {
   isOpen: boolean;
@@ -24,9 +25,11 @@ export function NtfyQrModal({ isOpen, onOpenChange, qrCodeDataUrl, topicUrl }: N
             <>
               <p className="text-xs text-muted-foreground break-all">{topicUrl}</p>
               <div className="p-4 bg-white rounded-lg">
-              <img 
+              <Image 
                   src={qrCodeDataUrl} 
                   alt="NTFY Configuration QR Code" 
+                  width={256}
+                  height={256}
                   className="w-full h-auto"
               />
               </div>

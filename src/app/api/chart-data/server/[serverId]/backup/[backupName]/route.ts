@@ -1,5 +1,3 @@
-"use server";
-
 import { NextRequest, NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
 

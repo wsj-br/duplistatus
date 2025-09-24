@@ -484,23 +484,24 @@ Configure user interface and display preferences.
 
 1.  Click the `Collect Backup Logs` icon on the [Application Toolbar](#application-toolbar).
 2.  Enter the Duplicati server details:
-      - **Use HTTPS**: Select if your Duplicati server supports it, defaults to HTTP
-         - **Allow Self-Signed**: Enable this option if the server uses a self-signed SSL certificate (a security certificate not issued by a trusted authority). Only shown for HTTPS.
       - **Hostname**: The hostname or IP address of the Duplicati server.
       - **Port**: The port number used by the Duplicati server (default: `8200`).
       - **Password**: Enter the authentication password if required.
       - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
 3.  Click `Collect Backups`.
 
+> [!TIP]
+> **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback. You no longer need to manually specify the protocol.
+
 <br/>
 
 ### How the Collection Process Works
 
-  - **duplistatus** connects to the specified Duplicati server.
+  - **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
   - It retrieves backup history and log information.
   - Any logs already present in the **duplistatus** database are skipped.
   - New data is processed and stored in the local database.
-  - The URL used will be stored or updated in the local database.
+  - The URL used (with the detected protocol) will be stored or updated in the local database.
   - If selected, will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
   - The dashboard updates to reflect the new information.
 

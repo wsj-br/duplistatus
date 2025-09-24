@@ -5,11 +5,8 @@ import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import http from 'http';
-import fs from 'fs';
-import path from 'path';
 import { defaultAPIConfig } from '@/lib/default-config';
 import { setConfiguration } from '@/lib/db-utils';
-import { BackupKey } from '@/lib/types';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -122,6 +119,80 @@ async function makeRequest(url: string, options: RequestOptions): Promise<Reques
   });
 }
 
+// Helper function to automatically detect the best protocol and connection options
+async function detectProtocolAndConnect(
+  hostname: string,
+  port: number,
+  password: string
+): Promise<{
+  baseUrl: string;
+  requestOptions: RequestOptions;
+  protocol: string;
+}> {
+  const loginEndpoint = '/api/v1/auth/login';
+  const loginBody = JSON.stringify({
+    Password: password,
+    RememberMe: true
+  });
+
+  // Protocol attempts in order of preference
+  const attempts = [
+    {
+      protocol: 'https',
+      baseUrl: `https://${hostname}:${port}`,
+      requestOptions: {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        agent: new https.Agent({
+          rejectUnauthorized: false // Allow self-signed certificates
+        })
+      }
+    },
+    {
+      protocol: 'http',
+      baseUrl: `http://${hostname}:${port}`,
+      requestOptions: {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    }
+  ];
+
+  const errors: string[] = [];
+
+  for (const attempt of attempts) {
+    try {
+      const loginResponse = await makeRequest(`${attempt.baseUrl}${loginEndpoint}`, {
+        ...attempt.requestOptions,
+        method: 'POST',
+        body: loginBody,
+        timeout: defaultAPIConfig.requestTimeout
+      });
+
+      // If we get a response (success or authentication failure), the connection works
+      if (loginResponse.ok || loginResponse.status === 401) {
+        return {
+          baseUrl: attempt.baseUrl,
+          requestOptions: attempt.requestOptions,
+          protocol: attempt.protocol
+        };
+      }
+      
+      errors.push(`${attempt.protocol.toUpperCase()}: ${loginResponse.statusText}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      errors.push(`${attempt.protocol.toUpperCase()}: ${errorMessage}`);
+    }
+  }
+
+  // All attempts failed
+  throw new Error(`Could not establish connection with any protocol. Attempts failed:\n${errors.join('\n')}`);
+}
+
 // Helper function to extract AllowedWeekDays from Rule string
 function extractAllowedWeekDaysFromRule(ruleString: string): string {
   if (!ruleString) {
@@ -158,10 +229,6 @@ function parseAllowedWeekDays(allowedWeekDaysString: string): number[] {
   return dayNumbers.length > 0 ? dayNumbers : [0, 1, 2, 3, 4, 5, 6];
 }
 
-// Helper function to get backup key
-function getBackupKey(serverId: string, backupName: string): BackupKey {
-  return `${serverId}:${backupName}`;
-}
 
 // Helper function to update backup settings with schedule information
 async function updateBackupSettingsWithSchedule(
@@ -175,7 +242,7 @@ async function updateBackupSettingsWithSchedule(
     // Get current backup settings
     const currentBackupSettings = await getConfigBackupSettings();
     
-    const backupKey = getBackupKey(serverId, backupName);
+    const backupKey = `${serverId}:${backupName}`;
     
     // Get or create backup settings for this backup
     let backupSettings = currentBackupSettings[backupKey];
@@ -200,7 +267,6 @@ async function updateBackupSettingsWithSchedule(
     // Save to database
     setConfiguration('backup_settings', JSON.stringify(currentBackupSettings));
     
-    console.log(`Updated backup settings for ${backupName}: interval=${repeatInterval}, allowedDays=${allowedWeekDays.join(',')}, time=${scheduleTime || 'not provided'}`);
   } catch (error) {
     console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
     throw error;
@@ -213,8 +279,6 @@ export async function POST(request: NextRequest) {
       hostname, 
       port = defaultAPIConfig.duplicatiPort, 
       password, 
-      protocol = defaultAPIConfig.duplicatiProtocol,
-      allowSelfSigned = false,
       downloadJson = false
     } = await request.json();
 
@@ -232,34 +296,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate protocol
-    if (protocol !== 'http' && protocol !== 'https') {
-      return NextResponse.json(
-        { error: 'Protocol must be either "http" or "https"' },
-        { status: 400 }
-      );
-    }
-
-    const baseUrl = `${protocol}://${hostname}:${port}`;
-    const loginEndpoint = '/api/v1/auth/login';
+    // Step 1: Auto-detect protocol and establish connection
+    const { baseUrl, requestOptions } = await detectProtocolAndConnect(hostname, port, password);
+    
     const apiSysteminfoEndpoint = '/api/v1/systeminfo';
     const apiBackupsEndpoint = '/api/v1/backups';
     const apiLogBaseEndpoint = '/api/v1/backup';
 
-    // Create request options
-    const requestOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      ...(protocol === 'https' && {
-        agent: new https.Agent({
-          rejectUnauthorized: !allowSelfSigned
-        })
-      })
-    };
-
-    // Step 1: Login and get token
+    // Step 2: Get authentication token (we already validated connection in detectProtocolAndConnect)
+    const loginEndpoint = '/api/v1/auth/login';
     let loginResponse;
     try {
       loginResponse = await makeRequest(`${baseUrl}${loginEndpoint}`, {
@@ -391,7 +436,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 4: Process each backup
-    let receivedCount = 0;
     let processedCount = 0;
     let skippedCount = 0;
     let errorCount = 0;
@@ -414,8 +458,6 @@ export async function POST(request: NextRequest) {
             const allowedWeekDaysString = extractAllowedWeekDaysFromRule(schedule.Rule);
             const scheduleTime = schedule.Time; // Extract the schedule time
 
-            console.log(`Updating backup settings from json for ${backupName}: repeatInterval=${repeatInterval}, allowedWeekDaysString=${allowedWeekDaysString}, time=${scheduleTime || 'not provided'}`);
-            
             // Convert AllowedWeekDays string to number array
             const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
             
@@ -448,7 +490,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Increment the received count
-        receivedCount++;
+        // receivedCount++; // Commented out as it was unused
 
         const logs: LogEntry[] = await logResponse.json() as LogEntry[];
         const backupMessages = logs.filter((log) => {

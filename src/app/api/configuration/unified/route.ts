@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getConfigNotifications, getConfigBackupSettings, getConfigOverdueTolerance, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig } from '@/lib/db-utils';
+import { getConfigNotifications, getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, clearRequestCache } from '@/lib/db-utils';
 import { dbUtils } from '@/lib/db-utils';
 
 export async function GET() {
   try {
+    // Clear request cache to ensure fresh data on each request
+    clearRequestCache();
+    
     // Fetch all configuration data in parallel
-    const [notificationConfig, backupSettings, overdueToleranceMinutes, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames] = await Promise.all([
+    const [notificationConfig, backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames] = await Promise.all([
       Promise.resolve(getConfigNotifications()),
       getConfigBackupSettings(), // Now async and includes completion logic
-      Promise.resolve(getConfigOverdueTolerance()),
+      Promise.resolve(getOverdueToleranceConfig()),
       getNtfyConfig(),
       Promise.resolve(getCronConfig()),
       Promise.resolve(getNotificationFrequencyConfig()),
@@ -47,7 +50,7 @@ export async function GET() {
     // Return unified configuration object
     const unifiedConfig = {
       ...config,
-      overdue_tolerance: overdueToleranceMinutes,
+      overdue_tolerance: overdueToleranceEnum,
       serverAddresses: getAllServerAddresses(),
       cronConfig: {
         cronExpression: cronConfig.tasks['overdue-backup-check'].cronExpression,
@@ -57,12 +60,25 @@ export async function GET() {
       serversWithBackups
     };
 
-    return NextResponse.json(unifiedConfig);
+    return NextResponse.json(unifiedConfig, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     console.error('Error fetching unified configuration:', error);
     return NextResponse.json(
       { error: 'Failed to fetch configuration' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      }
     );
   }
 }

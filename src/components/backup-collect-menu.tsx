@@ -10,14 +10,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfiguration } from "@/contexts/configuration-context";
 import { defaultAPIConfig } from '@/lib/default-config';
+import { ServerAddress } from '@/lib/types';
 
 interface BackupCollectMenuProps {
   preFilledServerUrl?: string;
+  preFilledServerName?: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'outline' | 'ghost';
   className?: string;
@@ -26,6 +35,7 @@ interface BackupCollectMenuProps {
 
 export function BackupCollectMenu({ 
   preFilledServerUrl, 
+  preFilledServerName,
   size = 'md', 
   variant = 'outline', 
   className = '',
@@ -36,29 +46,79 @@ export function BackupCollectMenu({
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState(defaultAPIConfig.duplicatiPort.toString());
   const [password, setPassword] = useState("");
-  const [useHttps, setUseHttps] = useState(false);
-  const [allowSelfSigned, setAllowSelfSigned] = useState(false);
   const [downloadJson, setDownloadJson] = useState(false);
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
+  const [serverAddresses, setServerAddresses] = useState<ServerAddress[]>([]);
+  const [selectedServerId, setSelectedServerId] = useState<string>("");
+  const [isLoadingServers, setIsLoadingServers] = useState(false);
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
 
-  // Parse server URL to extract hostname, port, and protocol
+  // Fetch server addresses function similar to open-server-config-button.tsx
+  const fetchServerAddresses = useCallback(async () => {
+    try {
+      setIsLoadingServers(true);
+      
+      // Fetch all servers from the existing servers endpoint
+      const response = await fetch('/api/servers?includeBackups=true');
+      if (!response.ok) {
+        throw new Error('Failed to fetch server connections');
+      }
+      const data = await response.json();
+      
+      // Filter servers with valid HTTP/HTTPS server_url and remove duplicates
+      const validServers = (data || [])
+        .filter((server: ServerAddress) => {
+          if (!server.server_url || server.server_url.trim() === '') return false;
+          try {
+            const url = new URL(server.server_url);
+            return ['http:', 'https:'].includes(url.protocol);
+          } catch {
+            return false;
+          }
+        })
+        .reduce((uniqueServers: ServerAddress[], server: ServerAddress) => {
+          // Check if we already have a server with this URL
+          const existingServer = uniqueServers.find(s => s.id === server.id);
+          if (!existingServer) {
+            uniqueServers.push(server);
+          }
+          return uniqueServers;
+        }, [])
+        .sort((a: ServerAddress, b: ServerAddress) => {
+          const aDisplayName = a.alias || a.name;
+          const bDisplayName = b.alias || b.name;
+          return aDisplayName.localeCompare(bDisplayName);
+        });
+      
+      setServerAddresses(validServers);
+    } catch (error) {
+      console.error('Error fetching server connections:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Error",
+        description: "Failed to load server connections",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoadingServers(false);
+    }
+  }, [toast]);
+
+  // Parse server URL to extract hostname and port
   const parseServerUrl = (url: string) => {
     try {
       const parsedUrl = new URL(url);
       return {
         hostname: parsedUrl.hostname,
-        port: parsedUrl.port || (parsedUrl.protocol === 'https:' ? '443' : '80'),
-        protocol: parsedUrl.protocol === 'https:' ? 'https' : 'http',
+        port: parsedUrl.port ||  defaultAPIConfig.duplicatiPort.toString(),
         isValid: true
       };
     } catch {
       return {
         hostname: '',
         port: defaultAPIConfig.duplicatiPort.toString(),
-        protocol: 'http',
         isValid: false
       };
     }
@@ -71,13 +131,96 @@ export function BackupCollectMenu({
       if (parsed.isValid) {
         setHostname(parsed.hostname);
         setPort(parsed.port);
-        setUseHttps(parsed.protocol === 'https');
-        if (parsed.protocol === 'https') {
-          setAllowSelfSigned(false); // Reset to default for HTTPS
-        }
       }
     }
   }, [preFilledServerUrl]);
+
+  // Fetch server addresses when popover opens and preFilledServerUrl is not provided
+  useEffect(() => {
+    if (isOpen && !preFilledServerUrl && serverAddresses.length === 0) {
+      fetchServerAddresses();
+    }
+  }, [isOpen, preFilledServerUrl, serverAddresses.length, fetchServerAddresses]);
+
+  // Listen for configuration changes and refresh server list
+  useEffect(() => {
+    const handleConfigurationChange = () => {
+      // Clear the server addresses to force a refresh next time the popover opens
+      setServerAddresses([]);
+      setSelectedServerId("");
+    };
+
+    window.addEventListener('configuration-saved', handleConfigurationChange);
+    
+    return () => {
+      window.removeEventListener('configuration-saved', handleConfigurationChange);
+    };
+  }, []);
+
+  // Handle server selection
+  const handleServerSelect = (serverId: string) => {
+    const selectedServer = serverAddresses.find(server => server.id === serverId);
+    if (selectedServer) {
+      const parsed = parseServerUrl(selectedServer.server_url);
+      if (parsed.isValid) {
+        setHostname(parsed.hostname);
+        setPort(parsed.port);
+        setSelectedServerId(serverId);
+      }
+    }
+  };
+
+  // Parse and format connection errors for better user experience
+  const formatConnectionError = (errorMessage: string, hostname: string, port: string) => {
+    if (errorMessage.includes('Could not establish connection with any protocol')) {
+      return {
+        title: "Connection Failed",
+        description: `Unable to connect to ${hostname}:${port}. Please check: Server is running and accessible, hostname/IP address is correct, port number is correct, and network connectivity.`
+      };
+    }
+    
+    if (errorMessage.includes('EHOSTUNREACH')) {
+      return {
+        title: "Host Unreachable",
+        description: `Cannot reach ${hostname}:${port}. The server may be down or the network address is incorrect.`
+      };
+    }
+    
+    if (errorMessage.includes('ECONNREFUSED')) {
+      return {
+        title: "Connection Refused",
+        description: `${hostname}:${port} refused the connection. The Duplicati service may not be running on this port.`
+      };
+    }
+    
+    if (errorMessage.includes('ETIMEDOUT')) {
+      return {
+        title: "Connection Timeout",
+        description: `Connection to ${hostname}:${port} timed out. Check network connectivity and firewall settings.`
+      };
+    }
+    
+    if (errorMessage.includes('unauthorized') || errorMessage.includes('401')) {
+      return {
+        title: "Authentication Failed",
+        description: `Invalid password for ${hostname}:${port}. Please check your Duplicati password.`
+      };
+    }
+    
+    if (errorMessage.includes('ENOTFOUND')) {
+      return {
+        title: "Host Not Found",
+        description: `Cannot resolve hostname "${hostname}". Please check the server name or IP address.`
+      };
+    }
+    
+    // Return original error for unknown cases, but clean it up
+    const cleanedMessage = errorMessage.replace(/\\n/g, ' ').replace(/\n/g, ' ').trim();
+    return {
+      title: "Collection Failed",
+      description: cleanedMessage
+    };
+  };
 
   const downloadJsonFile = (jsonData: string, serverName: string) => {
     try {
@@ -153,8 +296,6 @@ export function BackupCollectMenu({
           hostname, 
           port: parseInt(port) || defaultAPIConfig.duplicatiPort,
           password,
-          protocol: useHttps ? 'https' : defaultAPIConfig.duplicatiProtocol,
-          allowSelfSigned,
           downloadJson
         }),
       });
@@ -173,9 +314,8 @@ export function BackupCollectMenu({
         downloadJsonFile(result.jsonData, serverName);
       }
 
-      // Clear stats and sensitive data immediately
+      // Clear stats immediately
       setStats(null);
-      setPassword("");
 
       // Close the modal
       setIsOpen(false);
@@ -195,14 +335,18 @@ export function BackupCollectMenu({
       await refreshConfigSilently();
 
     } catch (error) {
-      console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('Error collecting backups:', errorMessage);
       
-      // Show error toast
+      // Format the error for better user experience
+      const formattedError = formatConnectionError(errorMessage, hostname, port);
+      
+      // Show error toast with formatted message
       toast({
-        title: "Failed to collect backups",
-        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        title: formattedError.title,
+        description: formattedError.description,
         variant: "destructive",
-        duration: 3000,
+        duration: 10000, // Increased duration for longer error messages
       });
     } finally {
       setIsCollecting(false);
@@ -215,8 +359,8 @@ export function BackupCollectMenu({
         return 'sm';
       case 'lg':
         return 'lg';
-      default: // md
-        return 'default';
+      default: // md - use 'icon' size for toolbar consistency
+        return 'icon';
     }
   };
 
@@ -244,54 +388,56 @@ export function BackupCollectMenu({
           {showText && "Collect"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <div className="grid gap-4">
+      <PopoverContent 
+        className="w-100"
+        side={preFilledServerUrl ? "right" : "bottom"}
+        align="center"
+        sideOffset={4}
+        collisionPadding={40}
+        avoidCollisions={true}
+      >
+        <div className="grid gap-5">
           <div className="space-y-2">
             <h4 className="text-xl font-medium leading-none">Collect Backup Logs</h4>
             <p className="text-sm text-muted-foreground">
-              Extract backup logs directly from the Duplicati servers.
+              {preFilledServerName
+                ? <>Extract backup logs and schedule configuration directly from <span className="text-sm text-foreground">{preFilledServerName}</span></>
+                : "Extract backup logs and schedule configuration directly from the Duplicati server"}
             </p>
+            
           </div>
           <div className="grid gap-4">
-
-            <div className="flex flex-col space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="useHttps"
-                  checked={useHttps}
-                  onCheckedChange={(checked) => {
-                    setUseHttps(checked as boolean);
-                    if (!checked) setAllowSelfSigned(false);
-                  }}
-                  disabled={isCollecting}
-                />
-                <Label
-                  htmlFor="useHttps"
-                  className="text-sm font-normal"
-                >
-                  Use HTTPS
-                </Label>
+            {/* Show server selection dropdown only when preFilledServerUrl is empty or non-existent */}
+            {!preFilledServerUrl && (
+              <div className="grid gap-2">
+                <Label htmlFor="server-select">Select Server</Label>
+                <Select value={selectedServerId} onValueChange={handleServerSelect} disabled={isCollecting}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Choose a server or enter manually below"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {isLoadingServers ? (
+                      <SelectItem value="loading" disabled>
+                        Loading servers...
+                      </SelectItem>
+                    ) : serverAddresses.length === 0 ? (
+                      <SelectItem value="no-servers" disabled>
+                        No servers with server URLs configured
+                      </SelectItem>
+                    ) : (
+                      serverAddresses.map((server) => (
+                        <SelectItem key={server.id} value={server.id}>
+                          {server.alias ? `${server.alias} (${server.name})` : server.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
-              {useHttps && (
-                <div className="flex items-center space-x-2 ml-6">
-                  <Checkbox
-                    id="allowSelfSigned"
-                    checked={allowSelfSigned}
-                    onCheckedChange={(checked) => setAllowSelfSigned(checked as boolean)}
-                    disabled={isCollecting}
-                  />
-                  <Label
-                    htmlFor="allowSelfSigned"
-                    className="text-sm font-normal"
-                  >
-                    Allow self-signed certificates
-                  </Label>
-                </div>
-              )}
-            </div>
+            )}
 
             <div className="grid gap-2">
-              <Label htmlFor="hostname">Hostname</Label>
+              <Label htmlFor="hostname">Hostname <span className="text-xs text-muted-foreground">(HTTP/HTTPS automatically detected)</span></Label>
               <Input
                 id="hostname"
                 value={hostname}

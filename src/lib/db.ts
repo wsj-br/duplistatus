@@ -375,6 +375,22 @@ function createDbOps() {
     ORDER BY s.name, b.backup_name
   `, 'getServersBackupNames'),
 
+  getAllLatestBackups: safePrepare(`
+    SELECT 
+      b.server_id,
+      b.backup_name,
+      b.date,
+      s.name as server_name
+    FROM backups b
+    JOIN servers s ON b.server_id = s.id
+    WHERE (b.server_id, b.backup_name, b.date) IN (
+      SELECT server_id, backup_name, MAX(date) as max_date
+      FROM backups
+      GROUP BY server_id, backup_name
+    )
+    ORDER BY s.name, b.backup_name
+  `, 'getAllLatestBackups'),
+
   getServerBackups: safePrepare(`
     SELECT 
       b.id,

@@ -401,6 +401,12 @@ ncu --upgrade
 pnpm update
 ```
 
+### Check for unused packages
+
+```bash
+pnpm depcheck
+```
+
 <br/>
 
 ### Update version information

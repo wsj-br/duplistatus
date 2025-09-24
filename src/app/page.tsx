@@ -1,4 +1,4 @@
-import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, getConfigBackupSettings } from "@/lib/db-utils";
+import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache } from "@/lib/db-utils";
 import { DashboardAutoRefresh } from "@/components/dashboard/dashboard-auto-refresh";
 
 // Force dynamic rendering and disable caching
@@ -16,12 +16,11 @@ export async function generateMetadata() {
 }
 
 export default async function DashboardPage() {
-  // Ensure backup settings are complete for all servers and backups
-  // This will add default settings for any missing server-backup combinations
-  // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
-  await getConfigBackupSettings();
+  // Clear request cache at the start of each page load to ensure fresh data
+  clearRequestCache();
   
   // Get serversSummary first, then use it for overallSummary to avoid duplicate overdue checks
+  // Note: getServersSummary() already calls getConfigBackupSettings() internally, so we don't need to call it separately
   const serversSummary = await getServersSummary();
   const overallSummary = await getOverallSummaryFromServers(serversSummary);
   const allServersChartData = await getAggregatedChartData();

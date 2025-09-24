@@ -89,6 +89,20 @@ export function OpenServerConfigButton() {
     }
   }, [isPopoverOpen, serverAddresses.length, fetchServerAddresses]);
 
+  // Listen for configuration changes and refresh server list
+  useEffect(() => {
+    const handleConfigurationChange = () => {
+      // Clear the server addresses to force a refresh next time the popover opens
+      setServerAddresses([]);
+    };
+
+    window.addEventListener('configuration-saved', handleConfigurationChange);
+    
+    return () => {
+      window.removeEventListener('configuration-saved', handleConfigurationChange);
+    };
+  }, []);
+
   const handleServerClick = (serverUrl: string) => {
     try {
       window.open(serverUrl, '_blank', 'noopener,noreferrer');

@@ -11,7 +11,6 @@ import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration } from '@/contexts/configuration-context';
-import { useConfig } from '@/contexts/config-context';
 import { BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
@@ -20,6 +19,7 @@ import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, de
 import { RefreshCw, TimerReset } from "lucide-react";
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
 import { BackupCollectMenu } from '../backup-collect-menu';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   getIntervalDisplay, 
   createIntervalString, 
@@ -29,6 +29,7 @@ import {
   toggleWeekDay,
   isWeekDayAllowed
 } from '@/lib/interval-utils';
+
 
 interface ServerWithBackup {
   id: string;
@@ -57,8 +58,7 @@ interface ServerWithBackupAndSettings extends ServerWithBackup {
 
 export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormProps) {
   const { toast } = useToast();
-  const { config, refreshConfigSilently } = useConfiguration();
-  const { refreshOverdueTolerance } = useConfig();
+  const { config, refreshConfigSilently, updateConfig } = useConfiguration();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
@@ -70,8 +70,10 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const [notificationFrequency, setNotificationFrequency] = useState<NotificationFrequencyConfig>(defaultNotificationFrequencyConfig);
   const [notificationFrequencyLoading, setNotificationFrequencyLoading] = useState(false);
   const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
-  const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
+  const [overdueToleranceMs, setOverdueToleranceMs] = useState<number>(0);
   const [isResetting, setIsResetting] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [resetTargetServer, setResetTargetServer] = useState<{serverId: string, backupName: string, currentNextRun: string, lastBackup: string} | null>(null);
 
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
     { value: 'onetime', label: 'One time' },
@@ -80,18 +82,23 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     { value: 'every_month', label: 'Every month' },
   ];
 
-  const overdueToleranceOptions: { value: OverdueTolerance; label: string }[] = [
-    { value: 'no_tolerance', label: 'No tolerance' },
-    { value: '5min', label: '5 min' },
-    { value: '15min', label: '15 min' },
-    { value: '30min', label: '30 min' },
-    { value: '1h', label: '1 hour' },
-    { value: '2h', label: '2 hours' },
-    { value: '4h', label: '4 hours' },
-    { value: '6h', label: '6 hours' },
-    { value: '12h', label: '12 hours' },
-    { value: '1d', label: '1 day' },
+  const overdueToleranceOptions: { value: OverdueTolerance; label: string; milliseconds: number }[] = [
+    { value: 'no_tolerance', label: 'No tolerance', milliseconds: 0 },
+    { value: '5min', label: '5 min', milliseconds: 5 * 60 * 1000 },
+    { value: '15min', label: '15 min', milliseconds: 15 * 60 * 1000 },
+    { value: '30min', label: '30 min', milliseconds: 30 * 60 * 1000 },
+    { value: '1h', label: '1 hour', milliseconds: 60 * 60 * 1000 },
+    { value: '2h', label: '2 hours', milliseconds: 2 * 60 * 60 * 1000 },
+    { value: '4h', label: '4 hours', milliseconds: 4 * 60 * 60 * 1000 },
+    { value: '6h', label: '6 hours', milliseconds: 6 * 60 * 60 * 1000 },
+    { value: '12h', label: '12 hours', milliseconds: 12 * 60 * 60 * 1000 },
+    { value: '1d', label: '1 day', milliseconds: 24 * 60 * 60 * 1000 },
   ];
+
+  // Create lookup map from the options array
+  const toleranceByValue = Object.fromEntries(
+    overdueToleranceOptions.map(option => [option.value, option.milliseconds])
+  );
 
   // Column configuration for sorting
   const columnConfig = {
@@ -111,9 +118,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       }
       
       // Initialize other settings from config
-      if (config.overdue_tolerance) {
-        setOverdueTolerance(config.overdue_tolerance);
-      }
       
       if (config.notificationFrequency) {
         setNotificationFrequency(config.notificationFrequency);
@@ -128,6 +132,16 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       }
     }
   }, [config]);
+
+  // Calculate overdue tolerance in milliseconds when config changes
+  useEffect(() => {
+    if (config?.overdue_tolerance) {
+      const toleranceMs = toleranceByValue[config.overdue_tolerance] || 0;
+      setOverdueToleranceMs(toleranceMs);
+    } else {
+      setOverdueToleranceMs(0);
+    }
+  }, [config?.overdue_tolerance, toleranceByValue]);
 
   // Initialize default settings for all servers when they are loaded
   useEffect(() => {
@@ -153,8 +167,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         }
         return prev;
       });
+
     }
-  }, [config?.serversWithBackups]);
+  }, [config?.serversWithBackups, settings]);
 
   const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean | number[]) => {
     const backupKey = `${serverId}:${backupName}`;
@@ -322,6 +337,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     updateBackupSettingById(serverId, backupName, 'allowedWeekDays', newAllowedDays);
   };
 
+
   const handleSort = (column: string) => {
     setSortConfig(prev => ({
       column,
@@ -342,8 +358,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       const displayUnit = selectedUnits[inputKey] || display.unit;
       const isCustomInterval = displayUnit === 'custom' || display.isCustom;
       
-      // Use the time field from the backup settings as the next run date
-      // This is calculated server-side in the unified configuration route
+      // Use the backup settings time field
       const nextRunDate = backupSetting.time || 'N/A';
       
       return {
@@ -456,24 +471,18 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       const toleranceResponse = await fetch('/api/configuration/overdue-tolerance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ overdue_tolerance: overdueTolerance }),
+        body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
       });
       
       if (!toleranceResponse.ok) {
         throw new Error('Failed to save overdue tolerance');
       }
       
-      // Refresh the config context to update tooltips immediately
-      await refreshOverdueTolerance();
-      
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
       
       // Refresh the configuration cache to reflect the changes
       await refreshConfigSilently();
-      
-      // Always run overdue backup check when saving to ensure tolerance is applied
-      await runOverdueBackupCheck();
       
       toast({
         title: "Success",
@@ -513,15 +522,12 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       const toleranceResponse = await fetch('/api/configuration/overdue-tolerance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ overdue_tolerance: overdueTolerance }),
+        body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
       });
       
       if (!toleranceResponse.ok) {
         throw new Error('Failed to save overdue tolerance');
       }
-      
-      // Refresh the config context to update tooltips immediately
-      await refreshOverdueTolerance();
       
       // Dispatch custom event to notify other components about configuration change
       window.dispatchEvent(new CustomEvent('configuration-saved'));
@@ -579,20 +585,35 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
   const handleOverdueToleranceChange = async (value: OverdueTolerance) => {
     try {
-      // Create a separate API call just for overdue tolerance to avoid affecting other settings
+      // Optimistically update the UI immediately
+      updateConfig({ overdue_tolerance: value });
+      
+      // Save to the database using the dedicated API endpoint
       const response = await fetch('/api/configuration/overdue-tolerance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ overdue_tolerance: value }),
       });
-      if (!response.ok) throw new Error('Failed to update overdue tolerance');
-      setOverdueTolerance(value);
-      // Refresh the config context to update tooltips immediately
-      await refreshOverdueTolerance();
-      toast({ title: 'Success', description: 'Overdue tolerance updated.', duration: 2000 });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update overdue tolerance');
+      }
+      
+      toast({ 
+        title: 'Success', 
+        description: 'Overdue tolerance updated successfully.', 
+        duration: 2000 
+      });
     } catch (error) {
       console.error('Failed to update overdue tolerance:', error instanceof Error ? error.message : String(error));
-      toast({ title: 'Error', description: 'Failed to update overdue tolerance', variant: 'destructive', duration: 3000 });
+      // Revert the optimistic update on error by refreshing from server
+      await refreshConfigSilently();
+      toast({ 
+        title: 'Error', 
+        description: 'Failed to update overdue tolerance', 
+        variant: 'destructive', 
+        duration: 3000 
+      });
     }
   };
 
@@ -625,6 +646,101 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
     } finally {
       setIsResetting(false);
+    }
+  };
+
+  const handleNextRunRightClick = async (serverId: string, backupName: string, currentNextRun: string) => {
+    try {
+      // Get the last backup date for this server-backup combination
+      const response = await fetch(`/api/lastbackups/${encodeURIComponent(serverId)}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch backup information');
+      }
+      
+      const data = await response.json();
+      const lastBackup = data.latest_backups?.find((backup: { name: string; date: string }) => backup.name === backupName);
+      
+      if (!lastBackup) {
+        toast({
+          title: "Error",
+          description: "No backup information found for this backup",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+      
+      // Set the dialog state
+      setResetTargetServer({
+        serverId,
+        backupName,
+        currentNextRun,
+        lastBackup: lastBackup.date
+      });
+      setResetDialogOpen(true);
+      
+    } catch (error) {
+      console.error('Error fetching backup information:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Error",
+        description: "Failed to fetch backup information",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleConfirmReset = async () => {
+    if (!resetTargetServer) return;
+    
+    try {
+      // Update the backup setting with the last backup date
+      updateBackupSettingById(resetTargetServer.serverId, resetTargetServer.backupName, 'time', resetTargetServer.lastBackup);
+      
+      toast({
+        title: "Success",
+        description: "Next run date has been reset to the last backup date",
+        duration: 2000,
+      });
+      
+      setResetDialogOpen(false);
+      setResetTargetServer(null);
+      
+    } catch (error) {
+      console.error('Error resetting next run date:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Error",
+        description: "Failed to reset next run date",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+
+
+  // Helper function to determine if a date is in the future or past considering overdue tolerance
+  const getNextRunDateStyle = (nextRunDate: string, overdueBackupCheckEnabled: boolean): string => {
+    if (nextRunDate === 'N/A') {
+      return 'text-muted-foreground';
+    }
+    
+    // If overdue backup monitoring is disabled, use foreground text
+    if (!overdueBackupCheckEnabled) {
+      return 'text-muted-foreground';
+    }
+    
+    const date = new Date(nextRunDate);
+    const now = new Date();
+    
+    // Add tolerance to the current time to determine if the date is still "acceptable"
+    const dateWithTolerance =  new Date(date.getTime() + overdueToleranceMs);
+    
+    if (dateWithTolerance >= now  ) {
+      return 'text-green-600'; // Future date (within tolerance) - green
+    } else {
+      return 'text-red-600'; // Past date (beyond tolerance) - red
     }
   };
 
@@ -678,6 +794,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead 
+                  className="w-[150px] min-w-[120px]" 
+                  column="nextRunDate" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                >
+                  Next Run
+                </SortableTableHead>
+                <SortableTableHead 
                   className="w-[140px] min-w-[120px]" 
                   column="overdueBackupCheckEnabled" 
                   sortConfig={sortConfig} 
@@ -709,14 +833,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 >
                   Allowed Days
                 </SortableTableHead>
-                <SortableTableHead 
-                  className="w-[150px] min-w-[120px]" 
-                  column="nextRunDate" 
-                  sortConfig={sortConfig} 
-                  onSort={handleSort}
-                >
-                  Next Run
-                </SortableTableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -741,6 +857,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             />
                             <BackupCollectMenu
                               preFilledServerUrl={server.server_url}
+                              preFilledServerName={server.alias || server.name}
                               size="sm"
                               variant="ghost"
                               className="text-xs hover:text-blue-500 transition-colors h-6 w-6 p-0"
@@ -767,6 +884,24 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     <TableCell>
                       <div>
                         <div className="font-medium text-sm truncate">{server.backupName}</div>
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div 
+                        className={`text-xs cursor-pointer p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          if (server.nextRunDate !== 'N/A') {
+                            handleNextRunRightClick(server.id, server.backupName, server.nextRunDate);
+                          }
+                        }}
+                        title="Right-click to reset to last backup date"
+                      >
+                        {server.nextRunDate !== 'N/A' ? 
+                          new Date(server.nextRunDate).toLocaleString() : 
+                          'Not set'
+                        }
                       </div>
                     </TableCell>
                     
@@ -844,18 +979,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         ))}
                       </div>
                     </TableCell>
-                    
-                    <TableCell>
-                      <div className="text-xs">
-                        {server.nextRunDate !== 'N/A' ? (
-                          <span title={server.nextRunDate}>
-                            {new Date(server.nextRunDate).toLocaleString()}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">N/A</span>
-                        )}
-                      </div>
-                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -886,6 +1009,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         />
                         <BackupCollectMenu
                           preFilledServerUrl={server.server_url}
+                          preFilledServerName={server.alias || server.name}
                           size="sm"
                           variant="ghost"
                           className="text-xs hover:text-blue-500 transition-colors h-6 w-6 p-0"
@@ -905,6 +1029,26 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             </div>
                           )}
                         </div>
+                      </div>
+                    </div>
+                    
+                    {/* Next Run */}
+                    <div className="space-y-1">
+                      <Label className="text-xs font-medium">Next Run</Label>
+                      <div 
+                        className={`text-xs cursor-pointer hover:bg-gray-100 p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          if (server.nextRunDate !== 'N/A') {
+                            handleNextRunRightClick(server.id, server.backupName, server.nextRunDate);
+                          }
+                        }}
+                        title="Right-click to reset to last backup date"
+                      >
+                        {server.nextRunDate !== 'N/A' ? 
+                          new Date(server.nextRunDate).toLocaleString() : 
+                          'Not set'
+                        }
                       </div>
                     </div>
                     
@@ -985,20 +1129,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         ))}
                       </div>
                     </div>
-                    
-                    {/* Next Run */}
-                    <div className="space-y-1">
-                      <Label className="text-xs font-medium">Next Run</Label>
-                      <div className="text-xs">
-                        {server.nextRunDate !== 'N/A' ? (
-                          <span title={server.nextRunDate}>
-                            {new Date(server.nextRunDate).toLocaleString()}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">N/A</span>
-                        )}
-                      </div>
-                    </div>
                   </div>
                 </Card>
               );
@@ -1008,7 +1138,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
           <div className="flex flex-col gap-6 pt-6 w-full">
             {/* Save button */}
             <div className="flex gap-3">
-              <Button onClick={handleSave} disabled={isSaving}>
+              <Button onClick={() => {
+                handleSave();
+              }} disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Overdue Monitoring Settings"}
               </Button>
             </div>
@@ -1021,11 +1153,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   <span className="sm:hidden">Tolerance:</span>
                 </Label>
                 <Select
-                  value={overdueTolerance}
+                  value={config?.overdue_tolerance || defaultOverdueTolerance}
                   onValueChange={(value: OverdueTolerance) => handleOverdueToleranceChange(value)}
                 >
                   <SelectTrigger id="overdue-tolerance" className="w-full">
-                    <SelectValue />
+                    <SelectValue placeholder="Select tolerance" />
                   </SelectTrigger>
                   <SelectContent>
                     {overdueToleranceOptions.map(option => (
@@ -1118,6 +1250,51 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
         </CardContent>
       </Card>
+
+      {/* Reset Next Run Confirmation Dialog */}
+      <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Next Run Date</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to reset the next run date to the last backup date?
+            </DialogDescription>
+          </DialogHeader>
+          
+          {resetTargetServer && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Current Next Run:</div>
+                <div className="text-sm text-muted-foreground">
+                  {new Date(resetTargetServer.currentNextRun).toLocaleString()}
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Last Backup Date:</div>
+                <div className="text-sm text-muted-foreground">
+                  {new Date(resetTargetServer.lastBackup).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setResetDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleConfirmReset}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Reset to Last Backup
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

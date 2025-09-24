@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getServerById, getOverdueBackupsForServer, getLastOverdueBackupCheckTime } from '@/lib/db-utils';
+import { getServerById, getOverdueBackupsForServer, getLastOverdueBackupCheckTime, clearRequestCache } from '@/lib/db-utils';
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ serverId: string }> }
 ) {
   try {
+    // Clear request cache to ensure fresh data on each request
+    clearRequestCache();
+    
     const { serverId } = await params;
     
     // Get server data
@@ -18,7 +21,7 @@ export async function GET(
     }
 
     // Get overdue backups for this server
-    const overdueBackups = getOverdueBackupsForServer(server.id);
+    const overdueBackups = await getOverdueBackupsForServer(server.id);
 
     // Get the last overdue backup check time
     const lastOverdueCheck = getLastOverdueBackupCheckTime();
@@ -27,12 +30,25 @@ export async function GET(
       server,
       overdueBackups,
       lastOverdueCheck
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
   } catch (error) {
     console.error('Error fetching server details:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to fetch server details' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      }
     );
   }
 }

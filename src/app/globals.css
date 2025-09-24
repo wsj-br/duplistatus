@@ -276,6 +276,110 @@ body {
   }
 }
 
+/* MUI DateTimePicker Theme Overrides */
+.MuiPickersLayout-root {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiDateCalendar-root {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiPickersDay-root {
+  color: hsl(var(--popover-foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.MuiPickersDay-root:hover {
+  background-color: hsl(var(--accent)) !important;
+}
+
+.MuiPickersDay-root.Mui-selected {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.MuiTimeClock-root {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiClockPointer-root {
+  background-color: hsl(var(--primary)) !important;
+}
+
+.MuiClockPointer-thumb {
+  border-color: hsl(var(--primary)) !important;
+  background-color: hsl(var(--primary)) !important;
+}
+
+.MuiClockNumber-root {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiClockNumber-root.Mui-selected {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.MuiDigitalClock-root {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiMenuItem-root {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiMenuItem-root:hover {
+  background-color: hsl(var(--accent)) !important;
+}
+
+.MuiMenuItem-root.Mui-selected {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.MuiPickersToolbar-root {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.MuiPickersArrowSwitcher-root {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiIconButton-root {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.MuiIconButton-root:hover {
+  background-color: hsl(var(--accent)) !important;
+}
+
+/* Dark mode specific overrides */
+.dark .MuiPaper-root {
+  background-color: hsl(var(--popover)) !important;
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.dark .MuiDialog-paper {
+  background-color: hsl(var(--popover)) !important;
+}
+
+/* Ensure popover modal styling matches app theme */
+.MuiModal-root .MuiPaper-root {
+  background-color: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.dark .MuiModal-root .MuiPaper-root {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
+}
+
 @theme {
   --text-tiny: 0.5rem;
 }

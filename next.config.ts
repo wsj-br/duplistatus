@@ -12,12 +12,33 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
   
+  // Exclude data directory from file system scanning
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  
+  // Configure what Next.js should ignore during build
+  distDir: '.next',
+  
   // Configure webpack to handle binary files
   webpack: (config, { isServer }) => {
     // Add support for better-sqlite3
     if (isServer) {
       config.externals.push('better-sqlite3');
     }
+
+    // Exclude data directory from webpack file system scanning
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: [
+        '**/node_modules/**',
+        '**/data/**',
+        '**/.git/**',
+        '**/.next/**',
+      ],
+    };
+
+    // Additional configuration to prevent webpack from scanning these directories
+    config.resolve = config.resolve || {};
+    config.resolve.symlinks = false;
 
     // Configure support for *.node files
     config.module.rules.push({

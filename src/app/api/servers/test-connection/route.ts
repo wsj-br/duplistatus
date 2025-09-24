@@ -79,13 +79,27 @@ export async function POST(request: NextRequest) {
       if (fetchError instanceof Error && fetchError.name === 'AbortError') {
         return NextResponse.json({ 
           success: false, 
-          message: 'Connection timeout' 
+          message: 'Connection timeout - server may be unreachable or slow to respond' 
         });
+      }
+      
+      const errorMessage = fetchError instanceof Error ? fetchError.message : 'Connection failed';
+      
+      // Provide helpful suggestions based on the error and protocol
+      let enhancedMessage = errorMessage;
+      if (errorMessage.includes('ECONNREFUSED') || errorMessage.includes('EHOSTUNREACH')) {
+        if (url.protocol === 'https:') {
+          enhancedMessage += '. If the server doesn\'t support HTTPS, try using HTTP instead';
+        } else if (url.protocol === 'http:') {
+          enhancedMessage += '. If the server requires HTTPS, try using HTTPS instead';
+        }
+      } else if (errorMessage.includes('certificate') || errorMessage.includes('SSL') || errorMessage.includes('TLS')) {
+        enhancedMessage += '. This appears to be an SSL/TLS certificate issue with HTTPS connection';
       }
       
       return NextResponse.json({ 
         success: false, 
-        message: fetchError instanceof Error ? fetchError.message : 'Connection failed' 
+        message: enhancedMessage
       });
     }
 
