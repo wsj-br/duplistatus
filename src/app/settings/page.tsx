@@ -12,6 +12,7 @@ import { BackupNotificationsForm } from '@/components/settings/backup-notificati
 import { OverdueMonitoringForm } from '@/components/settings/overdue-monitoring-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
 import { ServerSettingsForm } from '@/components/settings/server-settings-form';
+import { EmailConfigurationForm } from '@/components/settings/email-configuration-form';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -153,13 +154,13 @@ function SettingsPageContent() {
   useEffect(() => {
     // Check for tab parameter in URL first
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'templates'].includes(tabParam)) {
+    if (tabParam && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'email', 'templates'].includes(tabParam)) {
       setActiveTab(tabParam);
       localStorage.setItem('settings-active-tab', tabParam);
     } else {
       // Load the last selected tab from localStorage if no URL parameter
       const savedTab = localStorage.getItem('settings-active-tab');
-      if (savedTab && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'templates'].includes(savedTab)) {
+      if (savedTab && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'email', 'templates'].includes(savedTab)) {
         setActiveTab(savedTab);
       }
     }
@@ -209,7 +210,7 @@ function SettingsPageContent() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 h-auto">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 h-auto">
               <TabsTrigger value="backupNotifications" className="text-xs lg:text-sm py-2 px-3">
                 <span className="hidden lg:inline">Backup Notifications</span>
                 <span className="lg:hidden">Notifications</span>
@@ -225,6 +226,10 @@ function SettingsPageContent() {
               <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3">
                 <span className="hidden lg:inline">NTFY Settings</span>
                 <span className="lg:hidden">NTFY</span>
+              </TabsTrigger>
+              <TabsTrigger value="email" className="text-xs lg:text-sm py-2 px-3">
+                <span className="hidden lg:inline">Email Configuration</span>
+                <span className="lg:hidden">Email</span>
               </TabsTrigger>
               <TabsTrigger value="templates" className="text-xs lg:text-sm py-2 px-3">
                 <span className="hidden lg:inline">Notification Templates</span>
@@ -284,6 +289,10 @@ function SettingsPageContent() {
               />
             </TabsContent>
             
+            <TabsContent value="email" className="mt-6">
+              <EmailConfigurationForm />
+            </TabsContent>
+            
             <TabsContent value="templates" className="mt-6">
               <NotificationTemplatesForm 
                 templates={config.templates || {}} 
@@ -320,6 +329,15 @@ function SettingsPageContent() {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'Failed to send test notification');
                   }
+
+                  // Show success message with channels used
+                  const result = await response.json();
+                  const channels = result.channels || ['NTFY'];
+                  toast({ 
+                    title: 'Test Sent Successfully', 
+                    description: `Template test sent via ${channels.join(' and ')}`, 
+                    duration: 3000 
+                  });
                 }}
               />
             </TabsContent>

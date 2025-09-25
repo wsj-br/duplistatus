@@ -1,7 +1,4 @@
-
-
 ![duplistatus](img/duplistatus_banner.png)
-
 
 # Installation Guide
 
@@ -13,7 +10,8 @@ This document describes how to install and configure the **duplistatus** server.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  
+
+**Table of Contents**
 
 - [Prerequisites](#prerequisites)
 - [Container Images](#container-images)
@@ -40,16 +38,18 @@ This document describes how to install and configure the **duplistatus** server.
 ## Prerequisites
 
 Ensure you have the following installed:
+
 - Docker Engine - [Debian installation guide](https://docs.docker.com/engine/install/debian/)
-- Docker Compose -  [Linux installation guide](https://docs.docker.com/compose/install/linux/)
+- Docker Compose - [Linux installation guide](https://docs.docker.com/compose/install/linux/)
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
-- Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian) 
+- Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
 
 <br/>
 
 ## Container Images
 
 You can use the images from:
+
 - **Docker Hub**: `wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
@@ -95,7 +95,7 @@ networks:
 
 volumes:
   duplistatus_data:
-    name: duplistatus_data 
+    name: duplistatus_data
 ```
 
 After creating the file, execute the `docker compose` command to start the container in the background (`-d`):
@@ -177,24 +177,39 @@ podman-compose -f duplistatus.yml up -d
 
 ## Configuring the timezone
 
-The application date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones. 
+The application date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variables to format time zones.
 
 <br/>
-
 
 For example, to change the timezone to São Paulo, add these lines to the `duplistatus.yml` under `duplistatus:`:
 
 ```yaml
-    environment:
-      - TZ="America/Sao_Paulo"
+environment:
+  - TZ="America/Sao_Paulo"
+  # Optional: Email notifications (all 6 variables required)
+  # - SMTP_HOST=smtp.gmail.com
+  # - SMTP_PORT=587
+  # - SMTP_SECURE=false
+  # - SMTP_USERNAME=your-email@gmail.com
+  # - SMTP_PASSWORD=your-app-password
+  # - SMTP_MAILTO=admin@example.com
 ```
 
-or pass the TZ value in the command line:
+or pass the environment variables in the command line:
 
 ```bash
-  --env TZ="America/Sao_Paulo" 
+  --env TZ="America/Sao_Paulo" \
+  --env SMTP_HOST="smtp.gmail.com" \
+  --env SMTP_PORT="587" \
+  --env SMTP_SECURE="false" \
+  --env SMTP_USERNAME="your-email@gmail.com" \
+  --env SMTP_PASSWORD="your-app-password" \
+  --env SMTP_MAILTO="admin@example.com"
 ```
-<br/>
+
+> [!NOTE]
+> The SMTP example above shows Gmail configuration. Replace with your actual email provider settings. All six email variables are required for email functionality - if any are missing, email notifications will be disabled. Email variables are optional and can be omitted if you only want NTFY notifications.
+> <br/>
 
 ### Using your Linux Configuration
 
@@ -210,20 +225,36 @@ echo TZ=\"$(</etc/timezone)\"
 
 You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
-
 <br/><br/>
 
 ## Environment Variables
 
 The application supports the following environment variables for configuration:
 
-| Variable                  | Description                                            | Default         |
-| ------------------------- | ------------------------------------------------------ | :------------   |
-| `PORT`                    | Port for the main web application                      | `9666`          |
-| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `9667`          |
-| `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production`    |
-| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`             |
-| `TZ`                      | Timezone for the application                           | `Europe/London` |
+| Variable                  | Description                                                      | Default         |
+| ------------------------- | ---------------------------------------------------------------- | :-------------- |
+| `PORT`                    | Port for the main web application                                | `9666`          |
+| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1`           | `9667`          |
+| `NODE_ENV`                | Node.js environment (`development` or `production`)              | `production`    |
+| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                                        | `1`             |
+| `TZ`                      | Timezone for the application                                     | `Europe/London` |
+| `SMTP_HOST`               | SMTP server hostname for email notifications (optional)          | _(not set)_     |
+| `SMTP_PORT`               | SMTP server port for email notifications (optional)              | _(not set)_     |
+| `SMTP_SECURE`             | Connection type: true for SSL/TLS, false for STARTTLS (optional) | _(not set)_     |
+| `SMTP_USERNAME`           | SMTP authentication username (optional)                          | _(not set)_     |
+| `SMTP_PASSWORD`           | SMTP authentication password (optional)                          | _(not set)_     |
+| `SMTP_MAILTO`             | Email recipient address for notifications (optional)             | _(not set)_     |
+
+<br/>
+
+> [!NOTE] > **Email Notifications Configuration:**
+>
+> - Email notifications are **optional** and disabled by default
+> - **All six** SMTP environment variables must be configured for email functionality to be enabled
+> - If any SMTP variable is missing, email notifications will be automatically disabled
+> - Email notifications work alongside or as an alternative to NTFY notifications
+> - Configure email settings in the web interface under `Settings → Email Configuration`
+> - Refer to the [User Guide](USER-GUIDE.md#email-configuration) for detailed setup instructions
 
 <br/><br/>
 
@@ -233,8 +264,7 @@ In order for this application to work properly, the Duplicati server needs to be
 
 Apply this configuration to all your Duplicati servers:
 
-
-1. **Allow remote access:** Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`). 
+1. **Allow remote access:** Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`).
 
 <div style="padding-left: 60px;">
 
@@ -244,13 +274,10 @@ Apply this configuration to all your Duplicati servers:
 
 </div>
 
->[!CAUTION]
->  Only enable remote access if your Duplicati server is protected by a secure network 
->  (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet
->  without proper security measures could lead to unauthorized access.
-
-
-
+> [!CAUTION]
+> Only enable remote access if your Duplicati server is protected by a secure network
+> (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public internet
+> without proper security measures could lead to unauthorized access.
 
 <br/>
 
@@ -258,18 +285,17 @@ Apply this configuration to all your Duplicati servers:
 
 <div style="padding-left: 60px;">
 
-   | Advanced option                  | Value                                    |
-   | -------------------------------- | ---------------------------------------- |
-   | `send-http-url`                  | `http://my.local.server:9666/api/upload` |
-   | `send-http-result-output-format` | `Json`                                   |
-   | `send-http-log-level`            | `Information`                            |
-   | `send-http-max-log-lines`        | `0`                                      |
+| Advanced option                  | Value                                    |
+| -------------------------------- | ---------------------------------------- |
+| `send-http-url`                  | `http://my.local.server:9666/api/upload` |
+| `send-http-result-output-format` | `Json`                                   |
+| `send-http-log-level`            | `Information`                            |
+| `send-http-max-log-lines`        | `0`                                      |
 
 </div>
 
-
 > [!TIP]
->  Click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
+> Click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
 
 <div style="padding-left: 60px;">
 
@@ -282,10 +308,7 @@ Apply this configuration to all your Duplicati servers:
 
 <br/>
 
-
 ![Duplicati configuration](img/duplicati-options.png)
-
-
 
 <br/>
 
@@ -302,7 +325,6 @@ Apply this configuration to all your Duplicati servers:
 > [!TIP]
 > After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](USER-GUIDE.md#collect-backup-logs).
 
-
 <br/>
 
 ## Next Steps
@@ -313,6 +335,6 @@ Check the [User Guide](USER-GUIDE.md) on how to use **duplistatus**.
 
 ## License
 
-The project is licensed under the [Apache License 2.0](../LICENSE).   
+The project is licensed under the [Apache License 2.0](../LICENSE).
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

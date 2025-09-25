@@ -1,6 +1,7 @@
 import format from 'string-template';
+import nodemailer from 'nodemailer';
 import { getConfigNotifications, getConfigBackupSettings, getNtfyConfig, getServerInfoById } from './db-utils';
-import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey } from './types';
+import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey, EmailConfig } from './types';
 import { defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -208,6 +209,112 @@ export async function sendNtfyNotification(
   }
 }
 
+// Email configuration functions
+export function getEmailConfigFromEnv(): EmailConfig | null {
+  const host = process.env.SMTP_HOST;
+  const port = process.env.SMTP_PORT;
+  const secure = process.env.SMTP_SECURE;
+  const username = process.env.SMTP_USERNAME;
+  const password = process.env.SMTP_PASSWORD;
+  const mailto = process.env.SMTP_MAILTO;
+
+  // Check if all required environment variables are present
+  if (!host || !port || !secure || !username || !password || !mailto) {
+    return null;
+  }
+
+  return {
+    host,
+    port: parseInt(port, 10),
+    secure: secure.toLowerCase() === 'true',
+    username,
+    password,
+    mailto,
+    fromName: 'duplistatus',
+    fromEmail: username, // Use username as from email by default
+    enabled: true
+  };
+}
+
+export function isEmailConfigured(): boolean {
+  const config = getEmailConfigFromEnv();
+  return config !== null;
+}
+
+export async function createEmailTransporter(): Promise<nodemailer.Transporter | null> {
+  const config = getEmailConfigFromEnv();
+  if (!config) {
+    return null;
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: config.host,
+      port: config.port,
+      secure: config.secure,
+      auth: {
+        user: config.username,
+        pass: config.password,
+      },
+      // Enforce encrypted connections only
+      requireTLS: true, // Require TLS encryption
+      tls: {
+        rejectUnauthorized: false, // Allow self-signed certificates but require encryption
+        minVersion: 'TLSv1.2' // Require at least TLS 1.2
+      }
+    });
+
+    // Verify the connection
+    await transporter.verify();
+    return transporter;
+  } catch (error) {
+    console.error('Failed to create email transporter:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+export async function sendEmailNotification(
+  subject: string,
+  htmlContent: string,
+  textContent: string,
+  toEmail?: string
+): Promise<void> {
+  const transporter = await createEmailTransporter();
+  if (!transporter) {
+    throw new Error('Email is not configured. Please check environment variables.');
+  }
+
+  const config = getEmailConfigFromEnv();
+  if (!config) {
+    throw new Error('Email configuration not found');
+  }
+
+  const mailOptions = {
+    from: `"${config.fromName}" <${config.fromEmail}>`,
+    to: toEmail || config.mailto, // Use SMTP_MAILTO as default recipient
+    subject,
+    text: textContent,
+    html: htmlContent,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully:', info.messageId);
+  } catch (error) {
+    console.error('Failed to send email:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+// Helper function to convert plain text to HTML
+export function convertTextToHtml(text: string): string {
+  return text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+}
+
 // Helper function to format date strings using toLocaleString()
 function formatDateString(dateString: string): string {
   try {
@@ -312,21 +419,58 @@ export async function sendBackupNotification(
     throw error;
   }
 
-  try {
-    await sendNtfyNotification(
-      config.ntfy.url,
-      config.ntfy.topic,
-      processedTemplate.title,
-      processedTemplate.message,
-      processedTemplate.priority,
-      processedTemplate.tags,
-      config.ntfy.accessToken
+  // Send notifications based on backup configuration
+  const notifications: Promise<void>[] = [];
+  const notificationTypes: string[] = [];
+
+  // Send NTFY notification if enabled
+  if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
+    notifications.push(
+      sendNtfyNotification(
+        config.ntfy.url,
+        config.ntfy.topic,
+        processedTemplate.title,
+        processedTemplate.message,
+        processedTemplate.priority,
+        processedTemplate.tags,
+        config.ntfy.accessToken
+      ).then(() => {
+        notificationTypes.push('NTFY');
+      }).catch((error) => {
+        console.error(`Failed to send NTFY notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+        throw new Error(`NTFY notification failed: ${error instanceof Error ? error.message : String(error)}`);
+      })
     );
-    
-    console.log(`Notification sent for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
-  } catch (error) {
-    console.error(`Failed to send NTFY notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
-    throw error;
+  }
+
+  // Send email notification if enabled and configured
+  if (backupConfig.emailEnabled === true && isEmailConfigured()) {
+    const htmlContent = convertTextToHtml(processedTemplate.message);
+    notifications.push(
+      sendEmailNotification(
+        processedTemplate.title,
+        htmlContent,
+        processedTemplate.message
+      ).then(() => {
+        notificationTypes.push('Email');
+      }).catch((error) => {
+        console.error(`Failed to send email notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+        throw new Error(`Email notification failed: ${error instanceof Error ? error.message : String(error)}`);
+      })
+    );
+  }
+
+  // Wait for all notifications to complete
+  if (notifications.length > 0) {
+    try {
+      await Promise.all(notifications);
+      console.log(`Notifications sent (${notificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
+    } catch (error) {
+      console.error(`Failed to send notifications for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+      throw error;
+    }
+  } else {
+    console.log(`No notification channels enabled for backup ${backup.name} on server ${serverName}, skipping`);
   }
 }
 
@@ -340,21 +484,67 @@ export async function sendOverdueBackupNotification(
     return;
   }
 
+  // Get backup settings for this specific backup
+  const backupConfig = await getBackupSettings(notificationConfig, context.server_id, context.backup_name);
+  if (!backupConfig) {
+    console.log(`No backup configuration found for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);
+    return;
+  }
+
   try {
     const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context);
     
-    await sendNtfyNotification(
-      notificationConfig.ntfy.url,
-      notificationConfig.ntfy.topic,
-      processedTemplate.title,
-      processedTemplate.message,
-      processedTemplate.priority,
-      processedTemplate.tags,
-      notificationConfig.ntfy.accessToken
-    );
+    // Send notifications based on backup configuration
+    const notifications: Promise<void>[] = [];
+    const notificationTypes: string[] = [];
+
+    // Send NTFY notification if enabled
+    if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
+      notifications.push(
+        sendNtfyNotification(
+          notificationConfig.ntfy.url,
+          notificationConfig.ntfy.topic,
+          processedTemplate.title,
+          processedTemplate.message,
+          processedTemplate.priority,
+          processedTemplate.tags,
+          notificationConfig.ntfy.accessToken
+        ).then(() => {
+          notificationTypes.push('NTFY');
+        }).catch((error) => {
+          console.error(`Failed to send NTFY overdue notification for ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+          throw new Error(`NTFY notification failed: ${error instanceof Error ? error.message : String(error)}`);
+        })
+      );
+    }
+
+    // Send email notification if enabled and configured
+    if (backupConfig.emailEnabled === true && isEmailConfigured()) {
+      const htmlContent = convertTextToHtml(processedTemplate.message);
+      notifications.push(
+        sendEmailNotification(
+          processedTemplate.title,
+          htmlContent,
+          processedTemplate.message
+        ).then(() => {
+          notificationTypes.push('Email');
+        }).catch((error) => {
+          console.error(`Failed to send email overdue notification for ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+          throw new Error(`Email notification failed: ${error instanceof Error ? error.message : String(error)}`);
+        })
+      );
+    }
+
+    // Wait for all notifications to complete
+    if (notifications.length > 0) {
+      await Promise.all(notifications);
+      console.log(`Overdue notifications sent (${notificationTypes.join(', ')}) for backup ${context.backup_name} on server ${context.server_name}`);
+    } else {
+      console.log(`No notification channels enabled for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);
+    }
     
   } catch (error) {
-    console.error(`Failed to send overdue backup notification for ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+    console.error(`Failed to send overdue backup notification for ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
     throw error;
   }
 }

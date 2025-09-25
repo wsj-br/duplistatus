@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { useConfig } from '@/contexts/config-context';
@@ -44,6 +45,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pendingChangesRef = useRef<Record<BackupKey, BackupNotificationConfig> | null>(null);
+  const isAutoSaveInProgressRef = useRef(false);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -88,17 +90,23 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   }, [config?.serversWithBackups]);
 
-  // Cleanup timeout on unmount
+  // Cleanup timeout on unmount and handle cursor state
   useEffect(() => {
     return () => {
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current);
+        autoSaveTimeoutRef.current = null;
       }
-      // Reset cursor if component unmounts during auto-save
-      if (isAutoSaving) {
-        document.body.style.cursor = 'default';
-      }
+      // Always reset cursor on unmount to avoid stuck state
+      document.body.style.cursor = 'default';
     };
+  }, []);
+
+  // Additional effect to handle cursor state changes
+  useEffect(() => {
+    if (!isAutoSaving) {
+      document.body.style.cursor = 'default';
+    }
   }, [isAutoSaving]);
 
   const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
@@ -132,7 +140,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     // Store pending changes
     pendingChangesRef.current = newSettings;
 
-    // Set cursor to progress if we're about to hit the limit
+    // Set cursor to progress and auto-saving state immediately
     if (!isAutoSaving) {
       setIsAutoSaving(true);
       document.body.style.cursor = 'progress';
@@ -140,6 +148,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
     // Debounce the save operation
     autoSaveTimeoutRef.current = setTimeout(async () => {
+      // Prevent concurrent auto-save operations
+      if (isAutoSaveInProgressRef.current) {
+        return;
+      }
+
+      isAutoSaveInProgressRef.current = true;
+      
       try {
         const settingsToSave = pendingChangesRef.current || newSettings;
         
@@ -152,7 +167,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         });
         
         if (!response.ok) {
-          throw new Error('Failed to auto-save backup settings');
+          const errorText = await response.text();
+          console.error('Auto-save response error:', response.status, errorText);
+          throw new Error(`Failed to auto-save backup settings: ${response.status} ${errorText}`);
         }
         
         // Refresh the configuration cache silently
@@ -168,16 +185,19 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         console.error('Error auto-saving settings:', error instanceof Error ? error.message : String(error));
         toast({
           title: "Auto-save Error",
-          description: "Failed to save backup notification settings automatically",
+          description: `Failed to save backup notification settings: ${error instanceof Error ? error.message : String(error)}`,
           variant: "destructive",
-          duration: 3000,
+          duration: 5000,
         });
       } finally {
+        // Always reset the auto-saving state and cursor, regardless of success or failure
+        isAutoSaveInProgressRef.current = false;
         setIsAutoSaving(false);
         document.body.style.cursor = 'default';
+        autoSaveTimeoutRef.current = null;
       }
     }, 500); // 500ms debounce
-  }, [isAutoSaving, refreshConfigSilently, refreshOverdueTolerance, toast]);
+  }, [refreshConfigSilently, refreshOverdueTolerance, toast]);
 
   const handleSort = (column: string) => {
     setSortConfig(prev => ({
@@ -261,6 +281,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 >
                   Notification Events
                 </SortableTableHead>
+                <th className="text-left font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
+                  NTFY
+                </th>
+                <th className="text-left font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
+                  Email
+                </th>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -323,6 +349,24 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <SelectItem value="errors">Errors</SelectItem>
                         </SelectContent>
                       </Select>
+                    </TableCell>
+                    
+                    <TableCell className="text-center">
+                      <Checkbox
+                        checked={backupSetting.ntfyEnabled !== undefined ? backupSetting.ntfyEnabled : true}
+                        onCheckedChange={(checked: boolean) => 
+                          updateBackupSettingById(server.id, server.backupName, 'ntfyEnabled', checked)
+                        }
+                      />
+                    </TableCell>
+                    
+                    <TableCell className="text-center">
+                      <Checkbox
+                        checked={backupSetting.emailEnabled !== undefined ? backupSetting.emailEnabled : true}
+                        onCheckedChange={(checked: boolean) => 
+                          updateBackupSettingById(server.id, server.backupName, 'emailEnabled', checked)
+                        }
+                      />
                     </TableCell>
                   </TableRow>
                 );
@@ -387,6 +431,31 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <SelectItem value="errors">Errors</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    
+                    {/* Notification Channels */}
+                    <div className="space-y-3">
+                      <Label className="text-xs font-medium">Notification Channels</Label>
+                      <div className="flex gap-6">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            checked={backupSetting.ntfyEnabled !== undefined ? backupSetting.ntfyEnabled : true}
+                            onCheckedChange={(checked: boolean) => 
+                              updateBackupSettingById(server.id, server.backupName, 'ntfyEnabled', checked)
+                            }
+                          />
+                          <Label className="text-xs">NTFY</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            checked={backupSetting.emailEnabled !== undefined ? backupSetting.emailEnabled : true}
+                            onCheckedChange={(checked: boolean) => 
+                              updateBackupSettingById(server.id, server.backupName, 'emailEnabled', checked)
+                            }
+                          />
+                          <Label className="text-xs">Email</Label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Card>

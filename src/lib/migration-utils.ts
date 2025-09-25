@@ -34,7 +34,9 @@ export function migrateBackupNotificationConfig(legacyConfig: LegacyBackupNotifi
     overdueBackupCheckEnabled: legacyConfig.overdueBackupCheckEnabled,
     expectedInterval: convertLegacyToNew(legacyConfig.expectedInterval, legacyConfig.intervalUnit),
     allowedWeekDays: getDefaultAllowedWeekDays(), // Default to all days enabled
-    time: '' // Default to empty string, will be populated by getConfigBackupSettings
+    time: '', // Default to empty string, will be populated by getConfigBackupSettings
+    ntfyEnabled: true, // Default to enabled for legacy configs
+    emailEnabled: true // Default to enabled for legacy configs
   };
 }
 
@@ -56,7 +58,9 @@ export function migrateBackupSettings(backupSettings: Record<string, unknown>): 
       migratedSettings[key] = {
         ...typedConfig,
         allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays(),
-        time: typedConfig.time || '' // Ensure time field is present, default to empty string
+        time: typedConfig.time || '', // Ensure time field is present, default to empty string
+        ntfyEnabled: typedConfig.ntfyEnabled !== undefined ? typedConfig.ntfyEnabled : true,
+        emailEnabled: typedConfig.emailEnabled !== undefined ? typedConfig.emailEnabled : true
       };
     }
   }
@@ -81,6 +85,8 @@ export function ensureNewFormat(config: unknown): BackupNotificationConfig {
     overdueBackupCheckEnabled: typedConfig.overdueBackupCheckEnabled !== undefined ? typedConfig.overdueBackupCheckEnabled : true,
     expectedInterval: typedConfig.expectedInterval || '1D',
     allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays(),
-    time: typedConfig.time || '' // Ensure time field is present, default to empty string
+    time: typedConfig.time || '', // Ensure time field is present, default to empty string
+    ntfyEnabled: typedConfig.ntfyEnabled !== undefined ? typedConfig.ntfyEnabled : true,
+    emailEnabled: typedConfig.emailEnabled !== undefined ? typedConfig.emailEnabled : true
   };
 }

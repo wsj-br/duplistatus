@@ -105,6 +105,18 @@ export interface NtfyConfig {
   accessToken?: string;
 }
 
+export interface EmailConfig {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string;
+  password: string;
+  mailto: string;
+  fromName?: string;
+  fromEmail?: string;
+  enabled: boolean;
+}
+
 export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
 
 // Interface for backup-based notifications
@@ -114,6 +126,8 @@ export interface BackupNotificationConfig {
   overdueBackupCheckEnabled: boolean;
   allowedWeekDays?: number[]; // allowed week days (0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday)
   time: string; // ISO timestamp of scheduled backup time from Duplicati
+  ntfyEnabled: boolean; // whether to send NTFY notifications for this backup
+  emailEnabled: boolean; // whether to send email notifications for this backup
 }
 
 // Helper type for backup identification
@@ -128,6 +142,7 @@ export interface NotificationTemplate {
 
 export interface NotificationConfig {
   ntfy: NtfyConfig;
+  email?: EmailConfig; // optional email configuration
   backupSettings: Record<BackupKey, BackupNotificationConfig>;
   templates: {
     success: NotificationTemplate;

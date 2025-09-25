@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { NotificationTemplate, NtfyConfig } from '@/lib/types';
+import { sendEmailNotification, isEmailConfigured, convertTextToHtml } from '@/lib/notifications';
 
 async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, title: string, priority: string, tags: string) {
   const { url, topic, accessToken } = config;
@@ -53,11 +54,26 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
 export async function POST(request: NextRequest) {
   try {
     const { type, ntfyConfig, template }: { 
-      type: 'simple' | 'template'; 
-      ntfyConfig: NtfyConfig; 
+      type: 'simple' | 'template' | 'email'; 
+      ntfyConfig?: NtfyConfig; 
       template?: NotificationTemplate 
     } = await request.json();
 
+    // Handle email test
+    if (type === 'email') {
+      if (!isEmailConfigured()) {
+        return NextResponse.json({ error: 'Email is not configured. Please check environment variables.' }, { status: 400 });
+      }
+
+      const testSubject = 'Test Email from duplistatus';
+      const testMessage = `This is a test email from duplistatus.\n\nTest sent at: ${new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })}`;
+      const htmlContent = convertTextToHtml(testMessage);
+
+      await sendEmailNotification(testSubject, htmlContent, testMessage);
+      return NextResponse.json({ message: 'Test email sent successfully' });
+    }
+
+    // NTFY validation for non-email tests
     if (!ntfyConfig) {
       return NextResponse.json({ error: 'NTFY configuration is required' }, { status: 400 });
     }
@@ -100,16 +116,54 @@ export async function POST(request: NextRequest) {
         return sampleData[key as keyof typeof sampleData] || match;
       }) || 'Test message';
 
-      // Send the test notification
-      await sendNtfyNotificationDirect(
-        ntfyConfig,
-        processedMessage + '\n(test sent at ' + new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }) + ')',
-        processedTitle,
-        template.priority || 'default',
-        template.tags || ''
+      const testTimestamp = new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' });
+      const finalMessage = processedMessage + '\n(test sent at ' + testTimestamp + ')';
+
+      // Send notifications to both NTFY and email (if configured)
+      const notifications: Promise<void>[] = [];
+      const notificationTypes: string[] = [];
+
+      // Send NTFY notification
+      notifications.push(
+        sendNtfyNotificationDirect(
+          ntfyConfig,
+          finalMessage,
+          processedTitle,
+          template.priority || 'default',
+          template.tags || ''
+        ).then(() => {
+          notificationTypes.push('NTFY');
+        }).catch((error) => {
+          console.error('NTFY test notification failed:', error);
+          throw new Error(`NTFY test failed: ${error instanceof Error ? error.message : String(error)}`);
+        })
       );
 
-      return NextResponse.json({ success: true });
+      // Send email notification if configured
+      if (isEmailConfigured()) {
+        const htmlContent = convertTextToHtml(finalMessage);
+        notifications.push(
+          sendEmailNotification(
+            processedTitle,
+            htmlContent,
+            finalMessage
+          ).then(() => {
+            notificationTypes.push('Email');
+          }).catch((error) => {
+            console.error('Email test notification failed:', error);
+            throw new Error(`Email test failed: ${error instanceof Error ? error.message : String(error)}`);
+          })
+        );
+      }
+
+      // Wait for all notifications to complete
+      await Promise.all(notifications);
+
+      return NextResponse.json({ 
+        success: true, 
+        message: `Test notifications sent successfully via ${notificationTypes.join(' and ')}`,
+        channels: notificationTypes 
+      });
     } else {
       // Simple test notification
       await sendNtfyNotificationDirect(

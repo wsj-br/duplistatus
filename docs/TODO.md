@@ -35,7 +35,7 @@ none
 
 ## New Features (planned or under analysis)
 
-- Include SMTP/EMAIL support (to send notifications)
+none
 
 
 
@@ -153,6 +153,40 @@ none
    - In the `Settings > NTFY Settings`, button "Configure Device"
 - in collectbackup, have a select box to show the list of server_url to pre-fill the form for repeated collection.
 - added a button to collect backups directly from the Configure Overdue Monitoring table
+
+**Email Notification System:**
+- **SMTP Email Support:**
+  - Complete email notification system as alternative or complement to NTFY
+  - Configurable through environment variables (SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USERNAME, SMTP_PASSWORD, SMTP_MAILTO)
+  - Support for both SSL/TLS (port 465) and STARTTLS (port 587) encryption
+  - Enforced encrypted connections only (TLS 1.2+), plain text SMTP rejected
+  - Template-based emails with HTML and plain text versions
+  - Email recipient separation from SMTP authentication account
+- **New Email Configuration Tab:**
+  - Dedicated "Email Configuration" settings tab
+  - Real-time configuration status display
+  - Environment variable requirements checklist
+  - Test email functionality with one-click sending
+  - Configuration table showing current SMTP settings
+- **Per-Backup Notification Channels:**
+  - Independent NTFY and Email checkboxes in "Backup Notifications" tab
+  - Granular control: enable/disable each notification channel per backup
+  - Backward compatibility with existing NTFY-only configurations
+- **Template System Enhancement:**
+  - Unified notification templates for both NTFY and Email
+  - Template titles become email subjects
+  - Template testing now sends to both channels when configured
+  - Rich HTML formatting with automatic text-to-HTML conversion
+- **Documentation and Examples:**
+  - Comprehensive setup guides for Gmail, Outlook, Yahoo Mail
+  - Docker Compose and CLI configuration examples
+  - Security best practices and App Password instructions
+  - Complete environment variable reference
+- **Server Startup Logging:**
+  - SMTP configuration status logging at server startup
+  - Missing variable detection with clear error messages
+  - Password masking for security in logs
+  - Configuration validation feedback
 
   
 
