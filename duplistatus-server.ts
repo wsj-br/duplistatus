@@ -67,12 +67,12 @@ app.prepare().then(() => {
         if (value) {
           // Mask sensitive values
           if (varName === 'SMTP_PASSWORD') {
-            console.log(`        ${varName}=***`);
+            console.log(`        ${varName}=***redacted***`);
           } else {
             console.log(`        ${varName}=${value}`);
           }
         } else {
-          console.log(`        ${varName}=*** missing ***`);
+          console.log(`        ${varName} <<<< missing <<<<`);
           missingVars.push(varName);
         }
       });
