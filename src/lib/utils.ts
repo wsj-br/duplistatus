@@ -82,7 +82,7 @@ export function formatRelativeTime(dateString: string, currentTime?: Date): stri
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     // Use absolute value for "just now" case as requested
-    if (Math.abs(diffInSeconds) < 60) {
+    if (Math.abs(diffInSeconds) < 15) {
       return "just now";
     }
 
@@ -209,7 +209,7 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date): strin
       return "in the future";
     }
 
-    if (diffInSeconds < 60) {
+    if (Math.abs(diffInSeconds) < 15) {
       return "just now";
     }
 
