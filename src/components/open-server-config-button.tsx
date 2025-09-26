@@ -11,9 +11,11 @@ import {
 
 import { useToast } from '@/components/ui/use-toast';
 import { ServerIcon } from '@/components/ui/server-icon';
-import { Settings } from 'lucide-react';
+import { Settings, Server, Loader2 } from 'lucide-react';
 import { useServerSelection } from '@/contexts/server-selection-context';
 import { ServerAddress } from '@/lib/types';
+import { GradientCardHeader } from '@/components/ui/card';
+import { ColoredIcon } from '@/components/ui/colored-icon';
 
 export function OpenServerConfigButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -214,33 +216,43 @@ export function OpenServerConfigButton() {
           <ServerIcon className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-            <PopoverContent className="w-auto max-w-100">
+            <PopoverContent className="w-auto max-w-100 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50">
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="text-xl font-medium leading-none">Open Duplicati Configuration</h4>
-            <p className="text-sm text-muted-foreground">
-               Select a server below to manage its settings and backups.
+          <GradientCardHeader>
+            <h4 className="text-lg font-semibold leading-none text-white">Open Duplicati Configuration</h4>
+          </GradientCardHeader>
+          <div className="px-1 -mt-2">
+            <p className="text-xs text-muted-foreground">
+               Select a server below to manage its settings and backups
             </p>
           </div>
           <div className="max-h-128 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
-            <div className="grid gap-2">
+            <div className="grid gap-1.5">
               {isLoading ? (
-                <div className="text-center py-4 text-muted-foreground">
-                  Loading server connections...
+                <div className="flex flex-col items-center justify-center py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+                  <Loader2 className="h-6 w-6 animate-spin text-blue-500 mb-2" />
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    Loading server connections...
+                  </p>
                 </div>
               ) : serverAddresses.length === 0 ? (
-                <div className="text-center py-4 text-muted-foreground">
-                  No servers with server URLs configured.
+                <div className="text-center py-4 px-4 bg-muted/30 rounded-lg border border-border/50">
+                  <ColoredIcon icon={Server} color="gray" size="lg" className="mb-2 mx-auto" />
+                  <p className="text-sm text-muted-foreground">
+                    No servers with server URLs configured
+                  </p>
                 </div>
               ) : (
                 serverAddresses.map((server: ServerAddress) => (
                   <button
                     key={server.id}
                     onClick={() => handleServerClick(server.server_url)}
-                    className="flex items-center gap-3 p-2 text-left hover:bg-muted rounded-md transition-colors border border-border"
+                    className="flex items-center gap-3 p-3 text-left hover:bg-muted/50 rounded-lg transition-all duration-200 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md hover:-translate-y-0.5 group"
                   >
-                    <ServerIcon className="h-4 w-4" />
-                    <span className="font-medium">
+                    <div className="p-1 rounded bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
+                      <ServerIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <span className="font-medium group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                       {server.alias ? `${server.alias} (${server.name})` : server.name}
                     </span>
                   </button>
@@ -249,13 +261,13 @@ export function OpenServerConfigButton() {
             </div>
           </div>
           <div className="space-y-3">
-            <div className="h-px bg-border"></div>
+            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
             <button
-              className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded w-full text-left"
+              className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 px-3 py-2 rounded-lg w-full text-left hover:bg-muted/30 group"
               onClick={handleSettingsClick}
             >
-              <Settings className="h-3 w-3" />
-              <span>Configure addresses</span>
+              <ColoredIcon icon={Settings} color="purple" size="sm" className="group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">Configure server addresses</span>
             </button>
           </div>
         </div>

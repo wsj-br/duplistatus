@@ -1,6 +1,6 @@
 "use client";
 
-import { MonitorCog } from "lucide-react";
+import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -17,6 +17,8 @@ import {
 import { useConfig } from "@/contexts/config-context";
 import type { TablePageSize } from "@/contexts/config-context";
 import { Label } from "@/components/ui/label";
+import { GradientCardHeader } from "@/components/ui/card";
+import { ColoredIcon } from "@/components/ui/colored-icon";
 
 export function DisplayMenu() {
   const {
@@ -37,17 +39,22 @@ export function DisplayMenu() {
           <MonitorCog className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50">
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="text-xl font-medium leading-none">Display Settings</h4>
-            <p className="text-sm text-muted-foreground">
-              How duplistatus should display the data.
+          <GradientCardHeader>
+            <h4 className="text-lg font-semibold leading-none text-white">Display Settings</h4>
+          </GradientCardHeader>
+          <div className="px-1 -mt-2">
+            <p className="text-xs text-muted-foreground">
+              Customize how duplistatus displays your data
             </p>
           </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="table-page-size">Table Page Size</Label>
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <Label htmlFor="table-page-size" className="flex items-center gap-2">
+                <ColoredIcon icon={Table} color="blue" size="sm" />
+                Table Page Size
+              </Label>
               <Select
                 value={tablePageSize.toString()}
                 onValueChange={(value) => setTablePageSize(parseInt(value) as TablePageSize)}
@@ -67,8 +74,11 @@ export function DisplayMenu() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="chart-time-range">Chart Time Range</Label>
+            <div className="grid gap-1.5">
+              <Label htmlFor="chart-time-range" className="flex items-center gap-2">
+                <ColoredIcon icon={BarChart3} color="green" size="sm" />
+                Chart Time Range
+              </Label>
               <Select
                 value={chartTimeRange}
                 onValueChange={(value) => setChartTimeRange(value as '2 weeks' | '1 month' | '3 months' | '6 months' | '1 year' | '2 years' | 'All data')}
@@ -87,8 +97,11 @@ export function DisplayMenu() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="auto-refresh-interval">Auto-refresh Interval</Label>
+            <div className="grid gap-1.5">
+              <Label htmlFor="auto-refresh-interval" className="flex items-center gap-2">
+                <ColoredIcon icon={RefreshCw} color="purple" size="sm" />
+                Auto-refresh Interval
+              </Label>
               <Select
                 value={autoRefreshInterval.toString()}
                 onValueChange={(value) => setAutoRefreshInterval(parseFloat(value) as 0.25 | 0.5 | 1 | 2 | 3 | 4 | 5 | 10)}
@@ -108,8 +121,11 @@ export function DisplayMenu() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="dashboard-cards-sort-order">Cards Sort Order</Label>
+            <div className="grid gap-1.5">
+              <Label htmlFor="dashboard-cards-sort-order" className="flex items-center gap-2">
+                <ColoredIcon icon={SortDesc} color="yellow" size="sm" />
+                Cards Sort Order
+              </Label>
               <Select
                 value={dashboardCardsSortOrder}
                 onValueChange={(value) => setDashboardCardsSortOrder(value as 'Server name (a-z)' | 'Status (error>warnings>success)' | 'Last backup received (new>old)')}

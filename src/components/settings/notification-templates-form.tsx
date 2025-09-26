@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ClipboardPaste, Send, RotateCcw } from 'lucide-react';
+import { ClipboardPaste, Send, RotateCcw, CheckCircle, AlertTriangle, Clock, Type, Star, Tag, MessageSquare } from 'lucide-react';
+import { ColoredIcon } from '@/components/ui/colored-icon';
 import { useToast } from '@/components/ui/use-toast';
 import { NotificationTemplate } from '@/lib/types';
 import { defaultNotificationTemplates } from '@/lib/default-config';
@@ -136,7 +137,10 @@ const TemplateEditor = ({
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor={`${templateType}-title`}>Title</Label>
+            <Label htmlFor={`${templateType}-title`} className="flex items-center gap-2">
+              <ColoredIcon icon={Type} color="blue" size="sm" />
+              Title
+            </Label>
             <Input
               id={`${templateType}-title`}
               value={template.title || ''}
@@ -148,7 +152,10 @@ const TemplateEditor = ({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor={`${templateType}-priority`}>Priority</Label>
+            <Label htmlFor={`${templateType}-priority`} className="flex items-center gap-2">
+              <ColoredIcon icon={Star} color="yellow" size="sm" />
+              Priority
+            </Label>
             <Select
               value={template.priority || 'default'}
               onValueChange={(value) => updateTemplate(templateType, 'priority', value)}
@@ -167,7 +174,10 @@ const TemplateEditor = ({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor={`${templateType}-tags`}>Tags (comma separated)</Label>
+            <Label htmlFor={`${templateType}-tags`} className="flex items-center gap-2">
+              <ColoredIcon icon={Tag} color="green" size="sm" />
+              Tags (comma separated)
+            </Label>
             <Input
               id={`${templateType}-tags`}
               value={template.tags || ''}
@@ -180,7 +190,10 @@ const TemplateEditor = ({
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor={`${templateType}-message`}>Message Template</Label>
+          <Label htmlFor={`${templateType}-message`} className="flex items-center gap-2">
+            <ColoredIcon icon={MessageSquare} color="purple" size="sm" />
+            Message Template
+          </Label>
           <Textarea
             ref={el => { fieldRefs.current[`${templateType}-message`] = el; }}
             id={`${templateType}-message`}
@@ -370,12 +383,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
-          <TabsTrigger value="success" className="text-xs md:text-sm py-2 px-3">Success</TabsTrigger>
-          <TabsTrigger value="warning" className="text-xs md:text-sm py-2 px-3">
+          <TabsTrigger value="success" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
+            <CheckCircle className="h-4 w-4" />
+            Success
+          </TabsTrigger>
+          <TabsTrigger value="warning" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
             <span className="hidden md:inline">Warning/Error</span>
             <span className="md:hidden">Warning</span>
           </TabsTrigger>
-          <TabsTrigger value="overdue" className="text-xs md:text-sm py-2 px-3">
+          <TabsTrigger value="overdue" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
+            <Clock className="h-4 w-4" />
             <span className="hidden md:inline">Overdue Backup</span>
             <span className="md:hidden">Overdue</span>
           </TabsTrigger>
@@ -431,7 +449,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       </Tabs>
 
       <div className="pt-4 flex flex-col sm:flex-row gap-2">
-        <Button onClick={handleSave} disabled={isSaving} className="w-full sm:w-auto">
+        <Button onClick={handleSave} disabled={isSaving} variant="gradient" className="w-full sm:w-auto">
           {isSaving ? "Saving..." : "Save Template Settings"}
         </Button>
         {onSendTest && (

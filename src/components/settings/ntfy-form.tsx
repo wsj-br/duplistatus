@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
-import { QrCode } from 'lucide-react';
+import { QrCode, MessageSquare, Key, Globe } from 'lucide-react';
+import { ColoredIcon } from '@/components/ui/colored-icon';
 import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
@@ -145,26 +146,34 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card variant="modern">
         <CardHeader>
-          <CardTitle>NTFY Configuration</CardTitle>
-          <CardDescription>
-            Configure your NTFY server settings for receiving notifications. 
-            Learn more about NTFY at{' '}
-            <a 
-              href="https://docs.ntfy.sh/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              docs.ntfy.sh 
-            </a>
-            {' '} and <a href="https://docs.ntfy.sh/subscribe/phone/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">here</a> to subscribe to your topic in your phone.
-          </CardDescription>
+          <div className="flex items-center gap-3">
+            <ColoredIcon icon={MessageSquare} color="blue" size="lg" />
+            <div>
+              <CardTitle>NTFY Configuration</CardTitle>
+              <CardDescription className="mt-1">
+                Configure your NTFY server settings for receiving notifications. 
+                Learn more about NTFY at{' '}
+                <a 
+                  href="https://docs.ntfy.sh/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  docs.ntfy.sh 
+                </a>
+                {' '} and <a href="https://docs.ntfy.sh/subscribe/phone/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">here</a> to subscribe to your topic in your phone.
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="ntfy-url">NTFY URL</Label>
+            <Label htmlFor="ntfy-url" className="flex items-center gap-2">
+              <ColoredIcon icon={Globe} color="blue" size="sm" />
+              NTFY URL
+            </Label>
             <Input
               id="ntfy-url"
               value={formData.url || ''}
@@ -178,7 +187,10 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="ntfy-topic">NTFY Topic</Label>
+            <Label htmlFor="ntfy-topic" className="flex items-center gap-2">
+              <ColoredIcon icon={MessageSquare} color="green" size="sm" />
+              NTFY Topic
+            </Label>
             <Input
               id="ntfy-topic"
               value={formData.topic || ''}
@@ -200,7 +212,10 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="ntfy-access-token">NTFY Access Token (Optional)</Label>
+            <Label htmlFor="ntfy-access-token" className="flex items-center gap-2">
+              <ColoredIcon icon={Key} color="yellow" size="sm" />
+              NTFY Access Token (Optional)
+            </Label>
             <TogglePasswordInput
               id="ntfy-access-token"
               value={formData.accessToken || ''}
@@ -225,6 +240,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <Button
               onClick={handleSave}
               disabled={isSaving}
+              variant="gradient"
               className="w-full sm:w-auto"
             >
               {isSaving ? "Saving..." : "Save Settings"}

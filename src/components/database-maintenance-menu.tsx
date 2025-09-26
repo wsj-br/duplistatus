@@ -1,12 +1,14 @@
 "use client";
 
-import { Database, Loader2, Trash2, Server, FolderOpen } from "lucide-react";
+import { Database, Loader2, Trash2, Server, FolderOpen, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { GradientCardHeader } from "@/components/ui/card";
+import { ColoredIcon } from "@/components/ui/colored-icon";
 import {
   Select,
   SelectContent,
@@ -337,17 +339,22 @@ export function DatabaseMaintenanceMenu() {
           <Database className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50">
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="text-xl font-medium leading-none">Database Maintenance</h4>
-            <p className="text-sm text-muted-foreground">
-              Reduce the size of the database by cleaning up old records.
+          <GradientCardHeader>
+            <h4 className="text-lg font-semibold leading-none text-white">Database Maintenance</h4>
+          </GradientCardHeader>
+          <div className="px-1 -mt-2">
+            <p className="text-xs text-muted-foreground">
+              Reduce database size by cleaning up old records and managing data
             </p>
           </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="database-cleanup">Database Cleanup Period</Label>
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <Label htmlFor="database-cleanup" className="flex items-center gap-2">
+                <ColoredIcon icon={Clock} color="blue" size="sm" />
+                Database Cleanup Period
+              </Label>
               <Select
                 value={databaseCleanupPeriod}
                 onValueChange={(value) => setDatabaseCleanupPeriod(value as "Delete all data" | "6 months" | "1 year" | "2 years")}
@@ -366,7 +373,7 @@ export function DatabaseMaintenanceMenu() {
                 Select how long backup records are kept in the database. 
               </p>
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-1.5">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 
@@ -409,8 +416,11 @@ export function DatabaseMaintenanceMenu() {
             </div>
             
             {/* Backup Job Deletion Section */}
-            <div className="grid gap-2 border-t pt-4">
-              <Label htmlFor="backup-job-select">Delete Backup Job</Label>
+            <div className="grid gap-1.5 border-t pt-3">
+              <Label htmlFor="backup-job-select" className="flex items-center gap-2">
+                <ColoredIcon icon={FolderOpen} color="yellow" size="sm" />
+                Delete Backup Job
+              </Label>
               <Select
                 value={selectedBackupJob}
                 onValueChange={setSelectedBackupJob}
@@ -473,8 +483,11 @@ export function DatabaseMaintenanceMenu() {
             </div>
             
             {/* Server Deletion Section */}
-            <div className="grid gap-2 border-t pt-4">
-              <Label htmlFor="server-select">Delete Server Data</Label>
+            <div className="grid gap-1.5 border-t pt-3">
+              <Label htmlFor="server-select" className="flex items-center gap-2">
+                <ColoredIcon icon={Server} color="red" size="sm" />
+                Delete Server Data
+              </Label>
               <Select
                 value={selectedServer}
                 onValueChange={setSelectedServer}

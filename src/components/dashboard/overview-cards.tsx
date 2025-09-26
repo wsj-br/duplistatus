@@ -5,7 +5,8 @@ import type { BackupStatus, ServerSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatRelativeTime, formatBytes, formatShortTimeAgo } from "@/lib/utils";
-import { HardDrive, AlertTriangle, Download } from "lucide-react";
+import { HardDrive, AlertTriangle, Download, Server, Database, Calendar } from "lucide-react";
+import { ColoredIcon } from "@/components/ui/colored-icon";
 import { useRouter } from "next/navigation";
 import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
@@ -132,10 +133,12 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
 
   return (
     <Card 
-      className={`cursor-pointer transition-all duration-200 hover:shadow-lg h-full flex flex-col ${
+      variant="modern"
+      hover={true}
+      className={`cursor-pointer h-full flex flex-col ${
         isSelected 
-          ? 'border-2 border-primary bg-primary/5 shadow-lg' 
-          : 'hover:bg-muted/50'
+          ? 'border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-lg' 
+          : ''
       }`}
       onClick={handleCardClick}
     >
@@ -166,26 +169,38 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
       <CardContent className="space-y-2 px-3 pb-3 flex-1 flex flex-col">
         {/* Summary Information - Overview */}
         <div className="grid grid-cols-4 gap-2 text-xs flex-shrink-0 text-center">
-          <section>
-            <p className="text-muted-foreground text-xs">Files</p>
+          <section className="flex flex-col items-center">
+            <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
+              <Database className="h-3 w-3" />
+              <span>Files</span>
+            </div>
             <p className="font-semibold text-sm">
               {server.totalFileCount > 0 ? server.totalFileCount.toLocaleString() : 'N/A'}
             </p>
           </section>
-          <section>
-            <p className="text-muted-foreground text-xs">Size</p>
+          <section className="flex flex-col items-center">
+            <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
+              <HardDrive className="h-3 w-3" />
+              <span>Size</span>
+            </div>
             <p className="font-semibold text-xs">
               {server.totalFileSize > 0 ? formatBytes(server.totalFileSize) : 'N/A'}
             </p>
           </section>
-          <section>
-            <p className="text-muted-foreground text-xs">Storage</p>
+          <section className="flex flex-col items-center">
+            <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
+              <Server className="h-3 w-3" />
+              <span>Storage</span>
+            </div>
             <p className="font-semibold text-sm">
               {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize) : 'N/A'}
             </p>
           </section>
-          <section>
-            <p className="text-muted-foreground text-xs">Last</p>
+          <section className="flex flex-col items-center">
+            <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
+              <Calendar className="h-3 w-3" />
+              <span>Last</span>
+            </div>
             <div className="font-semibold text-xs">
               {server.lastBackupDate !== "N/A" ? (
                 <TooltipProvider>
@@ -352,19 +367,21 @@ export const OverviewCards = memo(function OverviewCards({ servers, selectedServ
   if (uniqueServers.length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-center space-y-3">
-          <HardDrive className="h-12 w-12 text-muted-foreground mx-auto" />
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-muted-foreground">No servers found</h3>
-            <p className="text-sm text-muted-foreground">
-              Collect data for your first server by clicking on{" "}
-              <span className="inline-flex items-center">
-                <Download className="inline w-4 h-4 mx-1" aria-label="Download" />
-              </span>{" "}
-              (Collect backups logs) in the toolbar.
-            </p>
-          </div>
-        </div>
+        <Card variant="modern" className="max-w-md">
+          <CardContent className="text-center space-y-4 py-8">
+            <ColoredIcon icon={HardDrive} color="gray" size="lg" className="h-16 w-16 mx-auto" />
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-muted-foreground">No servers found</h3>
+              <p className="text-sm text-muted-foreground">
+                Collect data for your first server by clicking on{" "}
+                <span className="inline-flex items-center">
+                  <ColoredIcon icon={Download} color="blue" size="sm" className="mx-1" />
+                </span>{" "}
+                (Collect backups logs) in the toolbar.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, Server, Globe, Lock, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -10,6 +10,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { GradientCardHeader } from "@/components/ui/card";
+import { ColoredIcon, StatusIndicator } from "@/components/ui/colored-icon";
 import {
   Select,
   SelectContent,
@@ -51,6 +54,8 @@ export function BackupCollectMenu({
   const [serverAddresses, setServerAddresses] = useState<ServerAddress[]>([]);
   const [selectedServerId, setSelectedServerId] = useState<string>("");
   const [isLoadingServers, setIsLoadingServers] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [buttonState, setButtonState] = useState<'default' | 'loading' | 'success'>('default');
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
@@ -283,9 +288,22 @@ export function BackupCollectMenu({
       return;
     }
 
+    let progressInterval: NodeJS.Timeout | null = null;
+    
     try {
       setIsCollecting(true);
+      setButtonState('loading');
       setStats(null);
+      setProgress(0);
+      
+      // Simulate progress
+      progressInterval = setInterval(() => {
+        setProgress(prev => {
+          const increment = Math.random() * 15;
+          const newProgress = prev + increment;
+          return newProgress > 90 ? 90 : newProgress;
+        });
+      }, 200);
 
       const response = await fetch('/api/backups/collect', {
         method: 'POST',
@@ -306,6 +324,11 @@ export function BackupCollectMenu({
       }
 
       const result = await response.json();
+      
+      // Complete progress and clear interval
+      if (progressInterval) clearInterval(progressInterval);
+      setProgress(100);
+      
       setStats(result.stats);
       const serverName = result.serverAlias || result.serverName;
 
@@ -314,11 +337,17 @@ export function BackupCollectMenu({
         downloadJsonFile(result.jsonData, serverName);
       }
 
-      // Clear stats immediately
-      setStats(null);
-
-      // Close the modal
-      setIsOpen(false);
+      // Show success state briefly
+      setButtonState('success');
+      
+      // Clear stats after a short delay
+      setTimeout(() => {
+        setStats(null);
+        setProgress(0);
+        setButtonState('default');
+        // Close the modal
+        setIsOpen(false);
+      }, 1500);
 
       // Show success toast
       toast({
@@ -349,7 +378,10 @@ export function BackupCollectMenu({
         duration: 10000, // Increased duration for longer error messages
       });
     } finally {
+      if (progressInterval) clearInterval(progressInterval);
       setIsCollecting(false);
+      setButtonState('default');
+      setProgress(0);
     }
   };
 
@@ -389,28 +421,32 @@ export function BackupCollectMenu({
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-100"
+        className="w-100 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50"
         side={preFilledServerUrl ? "right" : "bottom"}
         align="center"
         sideOffset={4}
         collisionPadding={40}
         avoidCollisions={true}
       >
-        <div className="grid gap-5">
-          <div className="space-y-2">
-            <h4 className="text-xl font-medium leading-none">Collect Backup Logs</h4>
-            <p className="text-sm text-muted-foreground">
+        <div className="grid gap-4">
+          <GradientCardHeader>
+            <h4 className="text-lg font-semibold leading-none text-white">Collect Backup Logs</h4>
+          </GradientCardHeader>
+          <div className="px-1 -mt-2">
+            <p className="text-xs text-muted-foreground">
               {preFilledServerName
-                ? <>Extract backup logs and schedule configuration directly from <span className="text-sm text-foreground">{preFilledServerName}</span></>
-                : "Extract backup logs and schedule configuration directly from the Duplicati server"}
+                ? <>Extract backup logs and configuration from <span className="font-medium text-foreground">{preFilledServerName}</span></>
+                : "Extract backup logs and schedule configuration directly from Duplicati server"}
             </p>
-            
           </div>
-          <div className="grid gap-4">
+          <div className="grid gap-3">
             {/* Show server selection dropdown only when preFilledServerUrl is empty or non-existent */}
             {!preFilledServerUrl && (
-              <div className="grid gap-2">
-                <Label htmlFor="server-select">Select Server</Label>
+              <div className="grid gap-1.5">
+                <Label htmlFor="server-select" className="flex items-center gap-2">
+                  <ColoredIcon icon={Server} color="blue" size="sm" />
+                  Select Server
+                </Label>
                 <Select value={selectedServerId} onValueChange={handleServerSelect} disabled={isCollecting}>
                   <SelectTrigger>
                     <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Choose a server or enter manually below"} />
@@ -436,8 +472,16 @@ export function BackupCollectMenu({
               </div>
             )}
 
-            <div className="grid gap-2">
-              <Label htmlFor="hostname">Hostname <span className="text-xs text-muted-foreground">(HTTP/HTTPS automatically detected)</span></Label>
+            <div className="grid gap-1.5">
+              <Label htmlFor="hostname" className="flex items-center gap-2">
+                <ColoredIcon icon={Globe} color="blue" size="sm" />
+                Hostname
+                <StatusIndicator 
+                  status="online" 
+                  label="HTTP/HTTPS automatically detected" 
+                  animate={true}
+                />
+              </Label>
               <Input
                 id="hostname"
                 value={hostname}
@@ -447,8 +491,11 @@ export function BackupCollectMenu({
                 disabled={isCollecting}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="port">Port</Label>
+            <div className="grid gap-1.5">
+              <Label htmlFor="port" className="flex items-center gap-2">
+                <ColoredIcon icon={Server} color="purple" size="sm" />
+                Port
+              </Label>
               <Input
                 id="port"
                 value={port}
@@ -458,8 +505,11 @@ export function BackupCollectMenu({
                 disabled={isCollecting}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+            <div className="grid gap-1.5">
+              <Label htmlFor="password" className="flex items-center gap-2">
+                <ColoredIcon icon={Lock} color="red" size="sm" />
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
@@ -471,7 +521,7 @@ export function BackupCollectMenu({
               />
               <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg border border-border/50">
               <Checkbox
                 id="downloadJson"
                 checked={downloadJson}
@@ -480,17 +530,24 @@ export function BackupCollectMenu({
               />
               <Label
                 htmlFor="downloadJson"
-                className="text-sm font-normal"
+                className="text-sm font-normal flex items-center gap-2 cursor-pointer"
               >
+                <ColoredIcon icon={FileDown} color="green" size="sm" />
                 Download collected JSON data
               </Label>
             </div>
             {isCollecting && (
-              <div className="flex flex-col items-center justify-center space-y-4 py-4">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">
-                  Collecting backup logs...
-                </p>
+              <div className="flex flex-col items-center justify-center space-y-3 py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                <div className="text-center space-y-2">
+                  <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    Collecting backup logs...
+                  </p>
+                  <Progress value={progress} variant="gradient" className="w-full h-2" />
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
+                    {Math.round(progress)}% complete
+                  </p>
+                </div>
               </div>
             )}
             {stats && (
@@ -506,11 +563,24 @@ export function BackupCollectMenu({
             <Button
               onClick={handleCollect}
               disabled={isCollecting || !hostname || !password}
+              variant={buttonState === 'success' ? 'success' : 'gradient'}
+              className="w-full relative overflow-hidden"
             >
-              {isCollecting ? (
-                'Collecting...'
+              {buttonState === 'loading' ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Collecting...
+                </>
+              ) : buttonState === 'success' ? (
+                <>
+                  <ColoredIcon icon={Download} color="green" size="sm" className="mr-2 text-white" />
+                  Collection Complete!
+                </>
               ) : (
-                'Collect Backups'
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Collect Backups
+                </>
               )}
             </Button>
           </div>

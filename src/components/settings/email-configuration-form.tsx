@@ -203,6 +203,7 @@ export function EmailConfigurationForm() {
             <Button
               onClick={handleTestEmail}
               disabled={isTesting || !isConfigured}
+              variant="gradient"
               className="w-full sm:w-auto"
             >
               {isTesting ? "Sending..." : "Send Test Email"}

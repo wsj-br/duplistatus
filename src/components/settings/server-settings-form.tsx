@@ -10,7 +10,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Ellipsis, Loader2, Play } from 'lucide-react';
+import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText } from 'lucide-react';
+import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 import { useConfiguration } from '@/contexts/configuration-context';
 
@@ -451,10 +452,15 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
   if (connections.length === 0) {
     return (
-      <Card>
+      <Card variant="modern">
         <CardHeader>
-          <CardTitle>Server Addresses</CardTitle>
-          <CardDescription>No servers found</CardDescription>
+          <div className="flex items-center gap-3">
+            <ColoredIcon icon={CheckCircle} color="green" size="lg" />
+            <div>
+              <CardTitle>Server Addresses</CardTitle>
+              <CardDescription className="mt-1">No servers found</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">No servers have been registered yet.</p>
@@ -465,12 +471,17 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card variant="modern">
         <CardHeader>
-          <CardTitle>Configure Server Settings</CardTitle>
-          <CardDescription>
-            Configure an optional alias or name for each server. You can also add a descriptive note. Next, provide the web interface address for each server and test the connection to ensure it&apos;s accessible.
-          </CardDescription>
+          <div className="flex items-center gap-3">
+            <ColoredIcon icon={CheckCircle} color="green" size="lg" />
+            <div>
+              <CardTitle>Configure Server Settings</CardTitle>
+              <CardDescription className="mt-1">
+                Configure an optional alias or name for each server. You can also add a descriptive note. Next, provide the web interface address for each server and test the connection to ensure it&apos;s accessible.
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {/* Desktop Table View */}
@@ -606,7 +617,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           size="sm"
                           onClick={() => testConnection(connection.id, connection.server_url)}
                           disabled={!connection.server_url || !isValidUrl(connection.server_url)}
-                          className="px-2"
+                          className="px-2 text-blue-600 hover:text-blue-700"
                         >
                           <Play className="h-3 w-3" />
                           <span className="hidden sm:inline ml-1">Test</span>
@@ -640,7 +651,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   
                   {/* Alias */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-medium">Alias</Label>
+                    <Label className="text-xs font-medium flex items-center gap-1">
+                      <ColoredIcon icon={User} color="blue" size="xs" />
+                      Alias
+                    </Label>
                     <Input
                       type="text"
                       value={connection.alias}
@@ -652,7 +666,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   
                   {/* Note */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-medium">Note</Label>
+                    <Label className="text-xs font-medium flex items-center gap-1">
+                      <ColoredIcon icon={FileText} color="green" size="xs" />
+                      Note
+                    </Label>
                     <Input
                       type="text"
                       value={connection.note}
@@ -664,7 +681,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   
                   {/* Server URL */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-medium">Web Interface Address (URL)</Label>
+                    <Label className="text-xs font-medium flex items-center gap-1">
+                      <ColoredIcon icon={Globe} color="purple" size="xs" />
+                      Web Interface Address (URL)
+                    </Label>
                     <div className="flex flex-col space-y-1">
                       <Input
                         ref={(el) => {
@@ -720,7 +740,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                         size="sm"
                         onClick={() => testConnection(connection.id, connection.server_url)}
                         disabled={!connection.server_url || !isValidUrl(connection.server_url)}
-                        className="w-full"
+                        className="w-full text-blue-600 hover:text-blue-700"
                       >
                         <Play className="h-3 w-3 mr-1" />
                         Test
@@ -747,6 +767,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <Button
                 onClick={handleSave}
                 disabled={isSaving || hasInvalidUrls || !hasChanges}
+                variant="gradient"
               >
                 {isSaving ? (
                   <>

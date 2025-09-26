@@ -6,6 +6,7 @@ import type { ServerSummary, BackupStatus, NotificationEvent } from "@/lib/types
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CheckCheck, OctagonAlert, AlertTriangle, ThumbsUp } from "lucide-react";
+import { ColoredIcon } from "@/components/ui/colored-icon";
 import { formatShortTimeAgo } from "@/lib/utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
@@ -151,11 +152,11 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
     <TooltipProvider>
       <div className="flex flex-col gap-3 h-full p-2">
         {/* Success Card */}
-        <Card className="flex-shrink-0">
+        <Card variant="modern" hover={true} className="flex-shrink-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CheckCheck className="h-5 w-5 text-green-500" />
+                <ColoredIcon icon={CheckCheck} color="green" size="md" />
                 <span className="text-sm font-medium">Success</span>
               </div>
               <div className="text-right">
@@ -167,14 +168,14 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
         </Card>
 
         {/* Overdue Backups Card */}
-        <Card className="flex-1 min-h-0 flex flex-col" style={{ maxHeight: '40vh' }}>
+        <Card variant="modern" hover={true} className="flex-1 min-h-0 flex flex-col" style={{ maxHeight: '40vh' }}>
           <CardHeader className="pb-2 pt-3 px-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {overdueBackups.length > 0 ? (
-                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                  <ColoredIcon icon={AlertTriangle} color="red" size="md" />
                 ) : (
-                  <ThumbsUp className="h-5 w-5 text-green-600" />
+                  <ColoredIcon icon={ThumbsUp} color="green" size="md" />
                 )}
                 <CardTitle className="text-sm font-medium">Overdue Backups</CardTitle>
               </div>
@@ -269,11 +270,11 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
         </Card>
 
         {/* Warnings & Errors Card */}
-        <Card className="flex-1 min-h-0 flex flex-col" style={{ maxHeight: '40vh' }}>
+        <Card variant="modern" hover={true} className="flex-1 min-h-0 flex flex-col" style={{ maxHeight: '40vh' }}>
           <CardHeader className="pb-2 pt-3 px-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <OctagonAlert className={`h-5 w-5 ${warningErrorBackups.length > 0 ? 'text-yellow-500' : 'text-gray-500'}`} />
+                <ColoredIcon icon={OctagonAlert} color={warningErrorBackups.length > 0 ? "yellow" : "gray"} size="md" />
                 <CardTitle className="text-sm font-medium">Warnings & Errors</CardTitle>
               </div>
               <div className="text-right">

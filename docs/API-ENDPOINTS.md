@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.6-blue)
+![](https://img.shields.io/badge/version-0.8.7-blue)
 
 <br/>
 

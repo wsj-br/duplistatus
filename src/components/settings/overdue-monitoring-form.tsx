@@ -1140,7 +1140,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
             <div className="flex gap-3">
               <Button onClick={() => {
                 handleSave();
-              }} disabled={isSaving}>
+              }} disabled={isSaving} variant="gradient">
                 {isSaving ? "Saving..." : "Save Overdue Monitoring Settings"}
               </Button>
             </div>

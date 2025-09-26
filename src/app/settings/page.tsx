@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { BackButton } from '@/components/ui/back-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ColoredIcon } from '@/components/ui/colored-icon';
+import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { NtfyForm } from '@/components/settings/ntfy-form';
@@ -201,37 +203,48 @@ function SettingsPageContent() {
         <BackButton />
       </div>
 
-      <Card className="shadow-lg">
+      <Card variant="modern" className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">System settings</CardTitle>
-          <CardDescription>
-             Configure backup notifications, overdue backup monitoring, server settings, and notification settings.
-          </CardDescription>
+          <div className="flex items-center gap-3">
+            <ColoredIcon icon={Settings} color="blue" size="lg" />
+            <div>
+              <CardTitle className="text-2xl">System Settings</CardTitle>
+              <CardDescription className="mt-1">
+                Configure backup notifications, overdue backup monitoring, server settings, and notification settings.
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 h-auto">
-              <TabsTrigger value="backupNotifications" className="text-xs lg:text-sm py-2 px-3">
+              <TabsTrigger value="backupNotifications" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+                <Bell className="h-4 w-4" />
                 <span className="hidden lg:inline">Backup Notifications</span>
                 <span className="lg:hidden">Notifications</span>
               </TabsTrigger>
-              <TabsTrigger value="overdue" className="text-xs lg:text-sm py-2 px-3">
+              <TabsTrigger value="overdue" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
                 <span className="hidden lg:inline">Overdue Monitoring</span>
                 <span className="lg:hidden">Overdue</span>
               </TabsTrigger>
-              <TabsTrigger value="serverSettings" className="text-xs lg:text-sm py-2 px-3">
+              <TabsTrigger value="serverSettings" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+                <Server className="h-4 w-4" />
                 <span className="hidden lg:inline">Server Settings</span>
                 <span className="lg:hidden">Server</span>
               </TabsTrigger>
-              <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3">
+              <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
                 <span className="hidden lg:inline">NTFY Settings</span>
                 <span className="lg:hidden">NTFY</span>
               </TabsTrigger>
-              <TabsTrigger value="email" className="text-xs lg:text-sm py-2 px-3">
+              <TabsTrigger value="email" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+                <Mail className="h-4 w-4" />
                 <span className="hidden lg:inline">Email Configuration</span>
                 <span className="lg:hidden">Email</span>
               </TabsTrigger>
-              <TabsTrigger value="templates" className="text-xs lg:text-sm py-2 px-3">
+              <TabsTrigger value="templates" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+                <FileText className="h-4 w-4" />
                 <span className="hidden lg:inline">Notification Templates</span>
                 <span className="lg:hidden">Templates</span>
               </TabsTrigger>
