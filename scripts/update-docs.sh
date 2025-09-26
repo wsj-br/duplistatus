@@ -75,7 +75,7 @@ echo "🔍 Running doctoc on all .md files..."
 while IFS= read -r -d '' file; do
     echo "  📝 Processing: $file"
     doctoc "$file"
-done < <(find . -name "*.md" -type f -not -path "*/.*" -print0)
+done < <(find . ./docs/ -maxdepth 1 -name "*.md" -type f -print0)
 
 echo "✅ Table of contents updated successfully"
 

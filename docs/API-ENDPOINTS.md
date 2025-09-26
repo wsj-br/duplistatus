@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.1-blue)
+![](https://img.shields.io/badge/version-0.8.6-blue)
 
 <br/>
 
@@ -55,6 +55,7 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Server Chart Data - `/api/chart-data/server/:serverId`](#get-server-chart-data---apichart-dataserverserverid)
   - [Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`](#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname)
 - [Configuration Management](#configuration-management)
+  - [Get Email Configuration - `/api/configuration/email`](#get-email-configuration---apiconfigurationemail)
   - [Get Unified Configuration - `/api/configuration/unified`](#get-unified-configuration---apiconfigurationunified)
   - [Get NTFY Configuration - `/api/configuration/ntfy`](#get-ntfy-configuration---apiconfigurationntfy)
   - [Update Notification Configuration - `/api/configuration/notifications`](#update-notification-configuration---apiconfigurationnotifications)
@@ -110,6 +111,7 @@ These endpoints are designed for use by other applications and integrations, for
   ```json
   {
     "totalServers": 3,
+    "totalBackupsRuns": 9,
     "totalBackups": 9,
     "totalUploadedSize": 2397229507,
     "totalStorageUsed": 43346796938,
@@ -167,9 +169,9 @@ These endpoints are designed for use by other applications and integrations, for
       "durationInMinutes": 38.52669675333333,
       "knownFileSize": 27203688543,
       "backup_list_count": 10,
-      "messages_array": "[\"message1\", \"message2\"]",
-      "warnings_array": "[\"warning1\"]",
-      "errors_array": "[]",
+      "messages_array": ["message1", "message2"],
+      "warnings_array": ["warning1"],
+      "errors_array": [],
       "available_backups": ["v1", "v2", "v3"]
     },
     "status": 200
@@ -246,9 +248,9 @@ These endpoints are designed for use by other applications and integrations, for
         "durationInMinutes": 25.25205761166667,
         "knownFileSize": 12345678901,
         "backup_list_count": 5,
-        "messages_array": "[\"message1\"]",
-        "warnings_array": "[\"warning1\"]",
-        "errors_array": "[]",
+        "messages_array": ["message1"],
+        "warnings_array": ["warning1"],
+        "errors_array": [],
         "available_backups": ["v1", "v2"]
       }
     ],
@@ -675,6 +677,43 @@ These endpoints are designed for use by other applications and integrations, for
 
 ## Configuration Management
 
+
+### Get Email Configuration - `/api/configuration/email`
+- **Endpoint**: `/api/configuration/email`
+- **Method**: GET
+- **Description**: Retrieves the current email notification configuration and whether email notifications are enabled/configured.
+- **Response** (configured):
+  ```json
+  {
+    "configured": true,
+    "config": {
+      "host": "smtp.example.com",
+      "port": 465,
+      "secure": true,
+      "username": "user@example.com",
+      "mailto": "admin@example.com",
+      "enabled": true,
+      "fromName": "Backup Monitor",
+      "fromEmail": "noreply@example.com"
+    },
+    "message": "Email is configured and ready to use."
+  }
+  ```
+- **Response** (not configured):
+  ```json
+  {
+    "configured": false,
+    "config": null,
+    "message": "Email is not configured. Please set the required environment variables."
+  }
+  ```
+- **Error Responses**:
+  - `500`: Failed to get email configuration
+- **Notes**:
+  - Returns configuration without sensitive data (password)
+  - Indicates if email notifications are available for test and production use
+
+
 ### Get Unified Configuration - `/api/configuration/unified`
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
@@ -764,6 +803,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Notes**:
   - Returns current NTFY configuration settings
   - Used for notification system management
+
 
 ### Update Notification Configuration - `/api/configuration/notifications`
 - **Endpoint**: `/api/configuration/notifications`
@@ -930,33 +970,40 @@ These endpoints are designed for use by other applications and integrations, for
 - **Description**: Send test notifications (simple or template-based) to verify NTFY configuration.
 - **Request Body**:
   For simple test:
-  ```json
-  {
-    "type": "simple",
-    "ntfyConfig": {
-      "url": "https://ntfy.sh",
-      "topic": "test-topic",
-      "accessToken": "optional-access-token"
+    ```json
+    {
+      "type": "simple",
+      "ntfyConfig": {
+        "url": "https://ntfy.sh",
+        "topic": "test-topic",
+        "accessToken": "optional-access-token"
+      }
     }
-  }
-  ```
+    ```
   For template test:
-  ```json
-  {
-    "type": "template",
-    "ntfyConfig": {
-      "url": "https://ntfy.sh",
-      "topic": "test-topic",
-      "accessToken": "optional-access-token"
-    },
-    "template": {
-      "title": "Test Title",
-      "message": "Test message with {variable}",
-      "priority": "default",
-      "tags": "test"
+    ```json
+    {
+      "type": "template",
+      "ntfyConfig": {
+        "url": "https://ntfy.sh",
+        "topic": "test-topic",
+        "accessToken": "optional-access-token"
+      },
+      "template": {
+        "title": "Test Title",
+        "message": "Test message with {variable}",
+        "priority": "default",
+        "tags": "test"
+      }
     }
-  }
-  ```
+    ```
+  For email test:
+    ```json
+    {
+      "type": "email"
+    }
+    ```
+- Supports email test by sending `{ "type": "email" }` to trigger a test email if email is configured.
 - **Response**:
   For simple test:
   ```json
@@ -1392,7 +1439,7 @@ Error responses include:
 ## Data Type Notes
 
 ### Message Arrays
-The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as parsed arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
+The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
 
 <br/>
 
@@ -1415,7 +1462,7 @@ All file size fields are returned in bytes as numbers, not formatted strings. Th
 
 ## Authentication & Security
 
-Currently, the API does not require authentication for local network access. It's designed for internal network use where the application is deployed. 
+Currently, the API does not require authentication for local network access. It is designed for internal network use where the application is deployed. 
 
 <br/>
 

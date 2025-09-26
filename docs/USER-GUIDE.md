@@ -2,7 +2,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.8.1-blue)
+![](https://img.shields.io/badge/version-0.8.6-blue)
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
 
@@ -487,7 +487,10 @@ Configure user interface and display preferences.
     - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
 3.  Click `Collect Backups`.
 
-> [!TIP] > **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback. You no longer need to manually specify the protocol.
+<br/>
+
+> [!TIP] 
+> **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback. You no longer need to manually specify the protocol.
 
 <br/>
 

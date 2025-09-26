@@ -2,7 +2,7 @@
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.8.1-blue)
+![](https://img.shields.io/badge/version-0.8.6-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
@@ -10,8 +10,6 @@ This document describes how to install and configure the **duplistatus** server.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-**Table of Contents**
 
 - [Prerequisites](#prerequisites)
 - [Container Images](#container-images)

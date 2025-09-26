@@ -197,7 +197,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         autoSaveTimeoutRef.current = null;
       }
     }, 500); // 500ms debounce
-  }, [refreshConfigSilently, refreshOverdueTolerance, toast]);
+  }, [refreshConfigSilently, refreshOverdueTolerance, toast, isAutoSaving]);
 
   const handleSort = (column: string) => {
     setSortConfig(prev => ({

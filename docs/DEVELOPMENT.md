@@ -5,7 +5,7 @@
 
 # Development instructions
 
-![](https://img.shields.io/badge/version-0.8.1-blue)
+![](https://img.shields.io/badge/version-0.8.6-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -41,6 +41,7 @@
     - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
     - [Update the packages to the last version](#update-the-packages-to-the-last-version)
+    - [Check for unused packages](#check-for-unused-packages)
     - [Update version information](#update-version-information)
     - [Viewing the configurations on the database](#viewing-the-configurations-on-the-database)
     - [SQL Scripts for Debugging and Maintenance](#sql-scripts-for-debugging-and-maintenance)
