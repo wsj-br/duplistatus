@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function DELETE(
-  _request: Request,
+export const DELETE = withCSRF(async (
+  request: NextRequest,
   { params }: { params: Promise<{ backupId: string }> }
-) {
+) => {
   // Only allow deletion in development mode
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json(
@@ -14,6 +15,7 @@ export async function DELETE(
   }
 
   try {
+    
     const { backupId } = await params;
     
     // Validate backup ID
@@ -78,4 +80,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+});

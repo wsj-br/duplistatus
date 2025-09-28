@@ -1,6 +1,6 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, NotificationConfig } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, NotificationConfig, SMTPConfig, SMTPConfigEncrypted } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -10,6 +10,7 @@ import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
 import { GetNextBackupRunDate } from './server_intervals';
 import { createDefaultNotificationConfig, generateDefaultNtfyTopic, defaultBackupNotificationConfig } from './default-config';
+import { encryptData, decryptData } from './secrets';
 
 // Request-level cache to avoid redundant function calls within a single request
 const requestCache = new Map<string, unknown>();
@@ -371,13 +372,14 @@ interface ServerRow {
 
 export function getAllServerAddresses() {
   return withDb(() => {
-    const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as ServerRow[];
+    const servers = safeDbOperation(() => dbOps.getAllServers.all(), 'getAllServers', []) as Array<ServerRow & { has_password: number }>;
     return servers.map(server => ({
       id: server.id,
       name: server.name,
       server_url: server.server_url || '',
       alias: server.alias || '',
-      note: server.note || ''
+      note: server.note || '',
+      hasPassword: Boolean(server.has_password)
     }));
   });
 }
@@ -646,10 +648,13 @@ export async function getOverallSummary() {
 export function getServerInfoById(serverId: string) {
   return withDb(() => {
     try {
-      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string; has_password: number } | undefined;
       if (!server) return null;
 
-      return server;
+      return {
+        ...server,
+        hasPassword: Boolean(server.has_password)
+      };
     } catch (error) {
       console.error(`Failed to get server by ID ${serverId}:`, error instanceof Error ? error.message : String(error));
       return null;
@@ -661,7 +666,7 @@ export function getServerInfoById(serverId: string) {
 export function getServerById(serverId: string) {
   return withDb(() => {
     try {
-      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      const server = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string; has_password: number } | undefined;
       if (!server) return null;
 
       const backups = safeDbOperation(() => dbOps.getServerBackups.all(serverId), 'getServerBackups', []) as BackupRecord[];
@@ -709,6 +714,7 @@ export function getServerById(serverId: string) {
         alias: server.alias || '',
         note: server.note || '',
         server_url: server.server_url || '',
+        hasPassword: Boolean(server.has_password),
         backups: formattedBackups,
         chartData
       };
@@ -863,6 +869,7 @@ export async function getServersSummary() {
         server_url: string;
         alias: string;
         note: string;
+        has_password: number;
         backup_name: string;
         last_backup_date: string | null;
         last_backup_id: string | null;
@@ -887,6 +894,7 @@ export async function getServersSummary() {
         server_url: string;
         alias: string;
         note: string;
+        hasPassword: boolean;
         backupInfo: Array<{
           name: string;
           lastBackupDate: string;
@@ -936,6 +944,7 @@ export async function getServersSummary() {
             server_url: row.server_url,
             alias: row.alias || '',
             note: row.note || '',
+            hasPassword: Boolean(row.has_password),
             backupInfo: [],
             totalBackupCount: 0,
             totalStorageSize: 0,
@@ -1097,7 +1106,7 @@ export function updateServer(serverId: string, updates: { server_url?: string; a
   try {
     return withDb(() => {
       // Get the current server to verify it exists
-      const existingServer = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string } | undefined;
+      const existingServer = safeDbOperation(() => dbOps.getServerById.get(serverId), 'getServerById') as { id: string; name: string; server_url: string; alias: string; note: string; server_password?: string } | undefined;
       
       if (!existingServer) {
         return { success: false, error: 'Server not found' };
@@ -1115,14 +1124,19 @@ export function updateServer(serverId: string, updates: { server_url?: string; a
         }
       }
 
-      // Update server with new values
-      const result = safeDbOperation(() => dbOps.upsertServer.run({
-        id: serverId,
-        name: existingServer.name, // Keep existing name
-        server_url: updates.server_url !== undefined ? updates.server_url : existingServer.server_url,
-        alias: updates.alias !== undefined ? updates.alias : existingServer.alias,
-        note: updates.note !== undefined ? updates.note : existingServer.note
-      }), 'upsertServer');
+      // Update server with new values using a direct UPDATE to preserve password
+      const updateQuery = db.prepare(`
+        UPDATE servers 
+        SET server_url = ?, alias = ?, note = ? 
+        WHERE id = ?
+      `);
+      
+      const result = safeDbOperation(() => updateQuery.run(
+        updates.server_url !== undefined ? updates.server_url : existingServer.server_url,
+        updates.alias !== undefined ? updates.alias : existingServer.alias,
+        updates.note !== undefined ? updates.note : existingServer.note,
+        serverId
+      ), 'updateServerDetails');
 
       if (result.changes === 0) {
         return { success: false, error: 'No changes were made' };
@@ -1742,7 +1756,7 @@ export async function getNtfyConfig(): Promise<{ url: string; topic: string; acc
 // Function to get all server and their respective backup names
 export function getServersBackupNames() {
   return withDb(() => safeDbOperation(() => {
-    const results = dbOps.getServersBackupNames.all() as Array<{ server_id: string; server_name: string; backup_name: string; server_url: string; alias: string; note: string }>;
+    const results = dbOps.getServersBackupNames.all() as Array<{ server_id: string; server_name: string; backup_name: string; server_url: string; alias: string; note: string; has_password: number }>;
     return results.map(row => ({
       id: `${row.server_id}:${row.backup_name}`,
       server_id: row.server_id,
@@ -1750,7 +1764,8 @@ export function getServersBackupNames() {
       backup_name: row.backup_name,
       server_url: row.server_url,
       alias: row.alias || '',
-      note: row.note || ''
+      note: row.note || '',
+      hasPassword: Boolean(row.has_password)
     }));
   }, 'getServersBackupNames', []));
 }
@@ -1771,6 +1786,54 @@ export function getAllLatestBackups() {
       server_name: row.server_name
     }));
   }, 'getAllLatestBackups', []));
+}
+
+// SMTP Configuration functions
+export function getSMTPConfig(): SMTPConfig | null {
+  return getCachedOrCompute('smtp_config', () => {
+    const configJson = getConfiguration('smtp_config');
+    if (!configJson) {
+      return null;
+    }
+
+    try {
+      const encryptedConfig: SMTPConfigEncrypted = JSON.parse(configJson);
+      
+      // Decrypt username and password
+      const decryptedConfig: SMTPConfig = {
+        host: encryptedConfig.host,
+        port: encryptedConfig.port,
+        secure: encryptedConfig.secure,
+        username: decryptData(encryptedConfig.username),
+        password: decryptData(encryptedConfig.password),
+        mailto: encryptedConfig.mailto
+      };
+
+      return decryptedConfig;
+    } catch (error) {
+      console.error('Failed to parse or decrypt SMTP configuration:', error instanceof Error ? error.message : String(error));
+      return null;
+    }
+  }, 'getSMTPConfig');
+}
+
+export function setSMTPConfig(config: SMTPConfig): void {
+  try {
+    // Encrypt username and password
+    const encryptedConfig: SMTPConfigEncrypted = {
+      host: config.host,
+      port: config.port,
+      secure: config.secure,
+      username: encryptData(config.username),
+      password: encryptData(config.password),
+      mailto: config.mailto
+    };
+
+    setConfiguration('smtp_config', JSON.stringify(encryptedConfig));
+  } catch (error) {
+    console.error('Failed to encrypt or save SMTP configuration:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
 }
 
 

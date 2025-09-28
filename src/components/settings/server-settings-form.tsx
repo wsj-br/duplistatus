@@ -10,10 +10,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText } from 'lucide-react';
+import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
+import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { useConfiguration } from '@/contexts/configuration-context';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { getCSRFToken, authenticatedRequest } from '@/lib/client-session-csrf';
 
 interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
@@ -26,6 +29,7 @@ interface ServerConnectionWithStatus extends ServerAddress {
   originalServerUrl: string;
   originalAlias: string;
   originalNote: string;
+  hasPassword: boolean;
 }
 
 export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps) {
@@ -37,6 +41,21 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   const [isTestingAll, setIsTestingAll] = useState(false);
   const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+  const [isSavingInProgress, setIsSavingInProgress] = useState(false);
+  const lastServerAddressesRef = useRef<ServerAddress[]>([]);
+  
+  // Password dialog state
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [selectedServerId, setSelectedServerId] = useState<string>('');
+  const [selectedServerName, setSelectedServerName] = useState<string>('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [csrfToken, setCsrfToken] = useState<string>('');
+  const [isTestingPassword, setIsTestingPassword] = useState(false);
+  const [testPasswordResult, setTestPasswordResult] = useState<{ success: boolean; message: string; protocol?: string } | null>(null);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -49,15 +68,27 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
   // Initialize connections with unknown status
   useEffect(() => {
-          const initialConnections: ServerConnectionWithStatus[] = serverAddresses.map(conn => ({
-        ...conn,
-        connectionStatus: 'unknown' as ConnectionStatus,
-        originalServerUrl: conn.server_url,
-        originalAlias: conn.alias || '',
-        originalNote: conn.note || ''
-      }));
+    // Don't reinitialize if we're in the middle of saving to prevent overwriting local changes
+    if (isSavingInProgress) return;
+    
+    // Check if serverAddresses has actually changed by comparing with the last known value
+    const hasServerAddressesChanged = JSON.stringify(serverAddresses) !== JSON.stringify(lastServerAddressesRef.current);
+    
+    if (!hasServerAddressesChanged) return;
+    
+    // Update the ref with the new serverAddresses
+    lastServerAddressesRef.current = serverAddresses;
+    
+    const initialConnections: ServerConnectionWithStatus[] = serverAddresses.map(conn => ({
+      ...conn,
+      connectionStatus: 'unknown' as ConnectionStatus,
+      originalServerUrl: conn.server_url,
+      originalAlias: conn.alias || '',
+      originalNote: conn.note || '',
+      hasPassword: conn.hasPassword
+    }));
     setConnections(initialConnections);
-  }, [serverAddresses]);
+  }, [serverAddresses, isSavingInProgress]);
 
   // Check for URL validity
   const isValidUrl = (url: string): boolean => {
@@ -216,9 +247,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     }));
 
     try {
-      const response = await fetch('/api/servers/test-connection', {
+      const response = await authenticatedRequest('/api/servers/test-connection', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ server_url: serverUrl }),
       });
 
@@ -296,9 +326,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       // Helper function to test a single connection
       const testConnectionInBatch = async (connection: typeof connectionsWithUrls[0]) => {
         try {
-          const response = await fetch('/api/servers/test-connection', {
+          const response = await authenticatedRequest('/api/servers/test-connection', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ server_url: connection.server_url }),
           });
 
@@ -373,6 +402,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     }
 
     setIsSaving(true);
+    setIsSavingInProgress(true);
     try {
       // Save each server's details
       for (const connection of connections) {
@@ -382,15 +412,19 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           connection.note !== connection.originalNote;
           
         if (hasChanges) {
-          await fetch(`/api/servers/${connection.id}`, {
+          const response = await authenticatedRequest(`/api/servers/${connection.id}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
               server_url: connection.server_url,
               alias: connection.alias || '',
               note: connection.note || ''
             }),
           });
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            throw new Error(`Failed to update server ${connection.id}: ${response.status} ${response.statusText} - ${errorData.error || 'Unknown error'}`);
+          }
         }
       }
 
@@ -404,10 +438,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       setHasChanges(false);
 
       // Dispatch custom event to notify other components about configuration change
+      // The configuration context will automatically refresh when it receives this event
       window.dispatchEvent(new CustomEvent('configuration-saved'));
-      
-      // Refresh the configuration cache to reflect the changes
-      await refreshConfigSilently();
 
       toast({
         title: "Success",
@@ -424,6 +456,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       });
     } finally {
       setIsSaving(false);
+      setIsSavingInProgress(false);
     }
   };
 
@@ -444,6 +477,207 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
       default:
         return <Ellipsis className="h-5 w-5 text-gray-400" />;
+    }
+  };
+
+  // Password dialog handlers
+  const handlePasswordButtonClick = async (serverId: string, serverName: string) => {
+    setSelectedServerId(serverId);
+    setSelectedServerName(serverName);
+    setNewPassword('');
+    setConfirmPassword('');
+    setTestPasswordResult(null);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+    
+    try {
+      // Get CSRF token
+      const csrfToken = await getCSRFToken();
+      
+      setCsrfToken(csrfToken);
+      
+      setPasswordDialogOpen(true);
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to initialize password change",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handlePasswordSave = async () => {
+    if (!newPassword || !confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Please enter both password fields",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setIsSavingPassword(true);
+    try {
+      const response = await fetch(`/api/servers/${selectedServerId}/password`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify({ password: newPassword }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Password updated successfully",
+          duration: 3000,
+        });
+        setPasswordDialogOpen(false);
+        setNewPassword('');
+        setConfirmPassword('');
+        // Refresh configuration to update hasPassword status and UI buttons
+        await refreshConfigSilently();
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to update password",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update password",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handlePasswordDelete = async () => {
+    setIsSavingPassword(true);
+    try {
+      const response = await fetch(`/api/servers/${selectedServerId}/password`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify({ password: '' }), // Empty password to delete
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Password deleted successfully",
+          duration: 3000,
+        });
+        setPasswordDialogOpen(false);
+        setNewPassword('');
+        setConfirmPassword('');
+        // Refresh configuration to update hasPassword status
+        await refreshConfigSilently();
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to delete password",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete password",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handlePasswordDialogClose = () => {
+    setPasswordDialogOpen(false);
+    setNewPassword('');
+    setConfirmPassword('');
+    setCsrfToken('');
+    setTestPasswordResult(null);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+  };
+
+  const handleTestPassword = async () => {
+    if (!newPassword) {
+      toast({
+        title: "Error",
+        description: "Please enter a password to test",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setIsTestingPassword(true);
+    setTestPasswordResult(null);
+    
+    try {
+      const response = await authenticatedRequest(`/api/servers/${selectedServerId}/test-password`, {
+        method: 'POST',
+        body: JSON.stringify({ password: newPassword }),
+      });
+
+      const result = await response.json();
+      setTestPasswordResult(result);
+
+      if (result.success) {
+        toast({
+          title: "Password Test Successful",
+          description: `Connection established using ${result.protocol?.toUpperCase()}`,
+          duration: 3000,
+        });
+      } else {
+        toast({
+          title: "Password Test Failed",
+          description: result.message,
+          variant: "destructive",
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      setTestPasswordResult({
+        success: false,
+        message: errorMessage
+      });
+      toast({
+        title: "Password Test Failed",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsTestingPassword(false);
     }
   };
 
@@ -538,7 +772,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 {sortedConnections.map((connection) => (
                   <TableRow key={connection.id}>
                     <TableCell>
-                      <span className="font-medium truncate">{connection.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium truncate">{connection.name}</span>
+                        {connection.hasPassword && (
+                          <KeyRound className="h-3 w-3 text-blue-400" />
+                        )}
+                      </div>
                     </TableCell>
                     
                     <TableCell>
@@ -631,6 +870,26 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           showText={false}
                           disabled={!connection.server_url || !isValidUrl(connection.server_url)}
                         />
+                        <BackupCollectMenu
+                          preFilledServerUrl={connection.server_url}
+                          preFilledServerName={connection.alias || connection.name}
+                          preFilledServerId={connection.id}
+                          size="sm"
+                          variant="outline"
+                          showText={false}
+                          autoCollect={Boolean(connection.hasPassword && connection.server_url && connection.server_url.trim() !== '')}
+                          disabled={!connection.hasPassword}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
+                          className="px-2"
+                          title="Change Password"
+                        >
+                          <RectangleEllipsis className="h-3 w-3" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -646,13 +905,18 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 <div className="space-y-3">
                   {/* Header with Machine Name */}
                   <div className="flex items-center justify-between">
-                    <div className="font-medium text-sm">{connection.name}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">{connection.name}</span>
+                      {connection.hasPassword && (
+                        <KeyRound className="h-3 w-3 text-orange-500" />
+                      )}
+                    </div>
                   </div>
                   
                   {/* Alias */}
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
-                      <ColoredIcon icon={User} color="blue" size="xs" />
+                      <ColoredIcon icon={User} color="blue" size="sm" />
                       Alias
                     </Label>
                     <Input
@@ -667,7 +931,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   {/* Note */}
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
-                      <ColoredIcon icon={FileText} color="green" size="xs" />
+                      <ColoredIcon icon={FileText} color="green" size="sm" />
                       Note
                     </Label>
                     <Input
@@ -682,7 +946,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   {/* Server URL */}
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
-                      <ColoredIcon icon={Globe} color="purple" size="xs" />
+                      <ColoredIcon icon={Globe} color="purple" size="sm" />
                       Web Interface Address (URL)
                     </Label>
                     <div className="flex flex-col space-y-1">
@@ -745,6 +1009,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                         <Play className="h-3 w-3 mr-1" />
                         Test
                       </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
+                        className="w-full"
+                      >
+                        <RectangleEllipsis className="h-3 w-3 mr-1" />
+                        Change Password
+                      </Button>
                       <ServerConfigurationButton
                         serverUrl={connection.server_url}
                         serverName={connection.name}
@@ -754,6 +1028,17 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                         showText={true}
                         disabled={!connection.server_url || !isValidUrl(connection.server_url)}
                         className="w-full"
+                      />
+                      <BackupCollectMenu
+                        preFilledServerUrl={connection.server_url}
+                        preFilledServerName={connection.alias || connection.name}
+                        preFilledServerId={connection.id}
+                        size="sm"
+                        variant="outline"
+                        showText={true}
+                        autoCollect={Boolean(connection.hasPassword && connection.server_url && connection.server_url.trim() !== '')}
+                        className="w-full"
+                        disabled={!connection.hasPassword}
                       />
                     </div>
                   </div>
@@ -800,6 +1085,172 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           </div>
         </CardContent>
       </Card>
+
+      {/* Password Change Dialog */}
+      <Dialog open={passwordDialogOpen} onOpenChange={handlePasswordDialogClose}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="server-name" className="text-sm font-medium">
+                Server: {selectedServerName}
+              </Label>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-password" className="text-sm font-medium">
+                New Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="new-password"
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  className="w-full pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-500" />
+                  )}
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password" className="text-sm font-medium">
+                Confirm Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  className={`w-full pr-10 ${newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}`}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-500" />
+                  )}
+                </Button>
+              </div>
+              {newPassword && confirmPassword && newPassword !== confirmPassword && (
+                <p className="text-sm text-red-600 flex items-center gap-1">
+                  <XCircle className="h-4 w-4" />
+                  Passwords do not match
+                </p>
+              )}
+            </div>
+            
+            {/* Test Password Result */}
+            {testPasswordResult && (
+              <div className={`p-3 rounded-lg border ${
+                testPasswordResult.success 
+                  ? 'bg-green-50 border-green-200 text-green-800' 
+                  : 'bg-red-50 border-red-200 text-red-800'
+              }`}>
+                <div className="flex items-center gap-2">
+                  {testPasswordResult.success ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : (
+                    <XCircle className="h-4 w-4" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {testPasswordResult.success ? 'Test Successful' : 'Test Failed'}
+                  </span>
+                </div>
+                <p className="text-sm mt-1">{testPasswordResult.message}</p>
+                {testPasswordResult.protocol && (
+                  <p className="text-xs mt-1 opacity-75">
+                    Protocol: {testPasswordResult.protocol.toUpperCase()}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <div className="flex justify-between w-full">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handlePasswordDelete}
+                disabled={isSavingPassword || isTestingPassword}
+              >
+                {isSavingPassword ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete Password'
+                )}
+              </Button>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleTestPassword}
+                  disabled={isSavingPassword || isTestingPassword || !newPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
+                >
+                  {isTestingPassword ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Testing...
+                    </>
+                  ) : (
+                    <>
+                      {/* <TestTube className="mr-2 h-4 w-4" /> */}
+                      Test Password
+                    </>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePasswordDialogClose}
+                  disabled={isSavingPassword || isTestingPassword}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handlePasswordSave}
+                  disabled={isSavingPassword || isTestingPassword || !newPassword || !confirmPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
+                  variant="gradient"
+                >
+                  {isSavingPassword ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Password'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getConfigNotifications, getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, clearRequestCache } from '@/lib/db-utils';
 import { dbUtils } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET() {
+export const GET = withCSRF(async () => {
   try {
     // Clear request cache to ensure fresh data on each request
     clearRequestCache();
@@ -38,13 +39,15 @@ export async function GET() {
       server_url: string;
       alias: string;
       note: string;
+      hasPassword: boolean;
     }[]).map((server) => ({
       id: server.server_id,
       name: server.server_name,
       backupName: server.backup_name,
       server_url: server.server_url,
       alias: server.alias,
-      note: server.note
+      note: server.note,
+      hasPassword: server.hasPassword
     }));
 
     // Return unified configuration object
@@ -81,4 +84,4 @@ export async function GET() {
       }
     );
   }
-}
+});

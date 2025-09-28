@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET(
+export const GET = withCSRF(async (
   request: Request,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     const { serverId } = await params;
     const { searchParams } = new URL(request.url);
@@ -34,14 +35,16 @@ export async function GET(
     console.error('Error fetching server:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to fetch server' }, { status: 500 });
   }
-}
+});
 
-export async function PATCH(
-  request: Request,
+export const PATCH = withCSRF(async (
+  request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     const { serverId } = await params;
+    
+    
     const body = await request.json();
     const { server_url, alias, note } = body;
     
@@ -73,14 +76,15 @@ export async function PATCH(
       { status: 500 }
     );
   }
-}
+});
 
-export async function DELETE(
-  _request: Request,
+export const DELETE = withCSRF(async (
+  request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     const { serverId } = await params;
+    
     
     // Delete the server and its backups
     const result = dbUtils.deleteServer(serverId);
@@ -97,4 +101,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+});

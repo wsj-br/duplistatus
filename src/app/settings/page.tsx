@@ -15,6 +15,7 @@ import { OverdueMonitoringForm } from '@/components/settings/overdue-monitoring-
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
 import { ServerSettingsForm } from '@/components/settings/server-settings-form';
 import { EmailConfigurationForm } from '@/components/settings/email-configuration-form';
+import { authenticatedRequest } from '@/lib/client-session-csrf';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -281,9 +282,8 @@ function SettingsPageContent() {
                 config={config.ntfy} 
                 onSave={async (ntfyConfig) => {
                   try {
-                    const response = await fetch('/api/configuration/notifications', {
+                    const response = await authenticatedRequest('/api/configuration/notifications', {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ ntfy: ntfyConfig }),
                     });
                     if (!response.ok) throw new Error('Failed to save NTFY config');
@@ -311,9 +311,8 @@ function SettingsPageContent() {
                 templates={config.templates || {}} 
                 onSave={async (templates) => {
                   try {
-                    const response = await fetch('/api/configuration/templates', {
+                    const response = await authenticatedRequest('/api/configuration/templates', {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ templates }),
                     });
                     if (!response.ok) throw new Error('Failed to save notification templates');
@@ -326,11 +325,8 @@ function SettingsPageContent() {
                   }
                 }}
                 onSendTest={async (template) => {
-                  const response = await fetch('/api/notifications/test', {
+                  const response = await authenticatedRequest('/api/notifications/test', {
                     method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({ 
                       type: 'template',
                       template,

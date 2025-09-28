@@ -1,10 +1,12 @@
-import { NextResponse } from 'next/server';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { NextResponse, NextRequest } from 'next/server';
 import { subMonths } from 'date-fns';
 import { db } from '@/lib/db';
 import { setConfiguration } from '@/lib/db-utils';
 
-export async function POST(request: Request) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
+    
     const { retentionPeriod } = await request.json();
     // For "Delete all data" option, delete all backups
     if (retentionPeriod === 'Delete all data') {
@@ -103,4 +105,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+});

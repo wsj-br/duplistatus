@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET(request: NextRequest) {
+export const GET = withCSRF(async (request: NextRequest) => {
   try {
     const searchParams = request.nextUrl.searchParams;
     const startDateParam = searchParams.get('startDate');
@@ -28,4 +29,4 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching aggregated chart data:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to fetch chart data' }, { status: 500 });
   }
-}
+});

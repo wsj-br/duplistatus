@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET(request: Request) {
+export const GET = withCSRF(async (request: Request) => {
   try {
     const { searchParams } = new URL(request.url);
     const includeBackups = searchParams.get('includeBackups') === 'true';
@@ -19,13 +20,15 @@ export async function GET(request: Request) {
         server_url: string;
         alias: string;
         note: string;
+        hasPassword: boolean;
       }[]).map((server) => ({
         id: server.server_id,
         name: server.server_name,
         backupName: server.backup_name,
         server_url: server.server_url,
         alias: server.alias,
-        note: server.note
+        note: server.note,
+        hasPassword: server.hasPassword
       }));
 
       return NextResponse.json(serversWithBackups);
@@ -50,4 +53,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-} 
+}); 

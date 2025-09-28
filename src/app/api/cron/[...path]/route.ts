@@ -1,13 +1,14 @@
 import { NextRequest } from 'next/server';
 import { getCronConfig } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
 const cronConfig = getCronConfig();
 const CRON_SERVICE_URL = process.env.CRON_SERVICE_URL || `http://localhost:${cronConfig.port}`;
 
-export async function GET(
+export const GET = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
-) {
+) => {
   try {
     const resolvedParams = await params;
     const path = resolvedParams.path.join('/');
@@ -30,12 +31,12 @@ export async function GET(
       },
     });
   }
-}
+});
 
-export async function POST(
+export const POST = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
-) {
+) => {
   try {
     const resolvedParams = await params;
     const path = resolvedParams.path.join('/');
@@ -69,4 +70,4 @@ export async function POST(
       },
     });
   }
-} 
+});

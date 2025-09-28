@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 
-export async function DELETE(request: Request) {
-
+export const DELETE = withCSRF(async (request: NextRequest) => {
   try {
+    
     const { serverId, backupName } = await request.json();
     
     // Validate required fields
@@ -74,4 +75,4 @@ export async function DELETE(request: Request) {
       { status: 500 }
     );
   }
-}
+});

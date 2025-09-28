@@ -476,13 +476,26 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
 async function cleanupBackupsForUserManual(){
   console.log('\n  🧹 Cleaning up backups for user manual demonstration...');
   
-  // Select 2 random servers from the first 6 servers
-  const firstSixServers = servers.slice(0, 6);
+  // Get servers from generated backups instead of from servers array
+  const serversFromBackupsResult = db.prepare(`
+    SELECT DISTINCT s.id, s.name, s.alias, s.note
+    FROM servers s
+    JOIN backups b ON s.id = b.server_id
+    ORDER BY s.name
+  `).all() as { id: string; name: string; alias: string; note: string }[];
+  
+  if (serversFromBackupsResult.length === 0) {
+    console.log('    ⚠️  No servers found with generated backups, skipping cleanup');
+    return;
+  }
+  
+  // Select 2 random servers from the first 6 servers that have backups
+  const firstSixServers = serversFromBackupsResult.slice(0, 6);
   const shuffledServers = [...firstSixServers].sort(() => Math.random() - 0.5);
   const selectedServers = shuffledServers.slice(0, 2);
   
-  // Generate random number of backups to keep (5-8)
-  const backupsToKeep = Math.floor(Math.random() * 4) + 5; // 5 to 8
+  // Generate random number of backups to keep 
+  const backupsToKeep = Math.floor(Math.random() * 4) + 4; // 4 to 7
   
   console.log(`    🎯 Selected servers: ${selectedServers.map(s => s.name).join(', ')}`);
   console.log(`    📊 Keeping ${backupsToKeep} most recent backups for each selected server-backup combination`);
@@ -556,7 +569,7 @@ async function cleanupBackupsForUserManual(){
       return;
     }
     
-    // Shuffle and select 2 random combinations
+    // Shuffle and select 3 random combinations
     const shuffledCombinations = [...combinationsResult].sort(() => Math.random() - 0.5);
     const selectedCombinations = shuffledCombinations.slice(0, Math.min(2, shuffledCombinations.length));
     
@@ -580,7 +593,7 @@ async function cleanupBackupsForUserManual(){
           continue;
         }
         
-        // Delete the last backup
+        // Delete the  most recent backups
         const deleteResult = db.prepare(`
           DELETE FROM backups 
           WHERE id = ?
@@ -610,9 +623,22 @@ async function cleanupBackupsForUserManual(){
   try {
     console.log('\n  🌐 Updating server URLs for random servers...');
     
-    // Select 70% of random servers
-    const shuffledServers = [...servers].sort(() => Math.random() - 0.5);
-    const selectedCount = Math.ceil(servers.length * 0.7);
+    // Get servers from generated backups instead of total list
+    const serversFromBackupsResult = db.prepare(`
+      SELECT DISTINCT s.id, s.name, s.alias, s.note
+      FROM servers s
+      JOIN backups b ON s.id = b.server_id
+      ORDER BY s.name
+    `).all() as { id: string; name: string; alias: string; note: string }[];
+    
+    if (serversFromBackupsResult.length === 0) {
+      console.log('    ⚠️  No servers found with generated backups, skipping server URL update');
+      return;
+    }
+    
+    // Select 70% of random servers from generated backups
+    const shuffledServers = [...serversFromBackupsResult].sort(() => Math.random() - 0.5);
+    const selectedCount = Math.ceil(serversFromBackupsResult.length * 0.7);
     const selectedServers = shuffledServers.slice(0, selectedCount);
     
     console.log(`    🎯 Selected servers for server URL update: ${selectedServers.map(s => s.alias ? `${s.name} (${s.alias})` : s.name).join(', ')}`);
@@ -676,8 +702,10 @@ async function sendTestData(useUpload: boolean = false, serverCount: number) {
     console.log('  💾 Writing directly to database...');
   }
 
+  const suffledServers = [...servers].sort(() => Math.random() - 0.5);
+
   for (let serverIndex = 0; serverIndex < Math.min(serverCount, servers.length); serverIndex++) {
-    const server = servers[serverIndex];
+    const server = suffledServers[serverIndex];
     const isOddServer = (serverIndex + 1) % 2 === 1;
     
     // Randomly select a subset of backup jobs for this server

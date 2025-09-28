@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils, getConfigBackupSettings } from '@/lib/db-utils';
+import { dbUtils, getConfigBackupSettings, getServerInfoById } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import http from 'http';
 import { defaultAPIConfig } from '@/lib/default-config';
 import { setConfiguration } from '@/lib/db-utils';
+import { encryptData, getServerPassword } from '@/lib/secrets';
+import { withCSRF } from '@/lib/csrf-middleware';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -273,31 +275,88 @@ async function updateBackupSettingsWithSchedule(
   }
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
     const { 
       hostname, 
       port = defaultAPIConfig.duplicatiPort, 
       password, 
+      serverId: providedServerId,
       downloadJson = false
     } = await request.json();
 
-    if (!hostname) {
-      return NextResponse.json(
-        { error: 'Hostname is required' },
-        { status: 400 }
-      );
-    }
+    let finalHostname: string;
+    let finalPort: number;
+    let finalPassword: string;
 
-    if (!password) {
-      return NextResponse.json(
-        { error: 'Password is required' },
-        { status: 400 }
-      );
+    // Handle three types of calls: hostname/port, serverID only, or serverID with updates
+    if (providedServerId) {
+      // Get server information from database
+      const serverInfo = getServerInfoById(providedServerId);
+      if (!serverInfo) {
+        return NextResponse.json(
+          { error: 'Server not found' },
+          { status: 404 }
+        );
+      }
+
+      // Check if hostname and password are provided (update case)
+      if (hostname && password) {
+        // Update case: use provided hostname/port/password and update database
+        finalHostname = hostname;
+        finalPort = port;
+        finalPassword = password;
+        
+        // Update server URL and password in database
+        // Let detectProtocolAndConnect determine the correct protocol
+        await detectProtocolAndConnect(hostname, port, password);
+        // Note: We'll update the server after getting the machine-id from the connection
+      } else {
+        // ServerID only case: get password from database
+        const serverPassword = getServerPassword(providedServerId);
+        if (!serverPassword) {
+          return NextResponse.json(
+            { error: 'Server password not found' },
+            { status: 404 }
+          );
+        }
+
+        // Parse server_url to extract hostname and port
+        try {
+          const serverUrl = new URL(serverInfo.server_url);
+          finalHostname = serverUrl.hostname;
+          finalPort = parseInt(serverUrl.port) || (serverUrl.protocol === 'https:' ? 443 : 80);
+          finalPassword = serverPassword;
+        } catch {
+          return NextResponse.json(
+            { error: 'Invalid server URL format' },
+            { status: 400 }
+          );
+        }
+      }
+    } else {
+      // Use provided hostname/port/password (no serverID)
+      if (!hostname) {
+        return NextResponse.json(
+          { error: 'Hostname is required when providedServerId is not provided' },
+          { status: 400 }
+        );
+      }
+
+      if (!password) {
+        return NextResponse.json(
+          { error: 'Password is required when providedServerId is not provided' },
+          { status: 400 }
+        );
+      }
+
+      finalHostname = hostname;
+      finalPort = port;
+      finalPassword = password;
     }
 
     // Step 1: Auto-detect protocol and establish connection
-    const { baseUrl, requestOptions } = await detectProtocolAndConnect(hostname, port, password);
+    const { baseUrl, requestOptions } = await detectProtocolAndConnect(finalHostname, finalPort, finalPassword);
     
     const apiSysteminfoEndpoint = '/api/v1/systeminfo';
     const apiBackupsEndpoint = '/api/v1/backups';
@@ -311,7 +370,7 @@ export async function POST(request: NextRequest) {
         ...requestOptions,
         method: 'POST',
         body: JSON.stringify({
-          Password: password,
+          Password: finalPassword,
           RememberMe: true
         })
       });
@@ -380,11 +439,12 @@ export async function POST(request: NextRequest) {
     const existingServer = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     
     if (existingServer) {
-      // Server exists - only update server_url, preserve alias and note
+      // Server exists - update server_url and password, preserve alias and note
       dbOps.upsertServer.run({
         id: serverId,
         name: serverName,
         server_url: baseUrl,
+        server_password: encryptData(finalPassword),
         alias: existingServer.alias,  // Preserve existing alias
         note: existingServer.note     // Preserve existing note
       });
@@ -394,6 +454,7 @@ export async function POST(request: NextRequest) {
         id: serverId,
         name: serverName,
         server_url: baseUrl,
+        server_password: encryptData(finalPassword),
         alias: '',
         note: ''
       });
@@ -721,4 +782,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}); 

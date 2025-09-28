@@ -1,5 +1,8 @@
 import { createServer } from 'http';
 import next from 'next';
+import { randomBytes } from 'crypto';
+import { existsSync, writeFileSync, chmodSync, statSync } from 'fs';
+import { join } from 'path';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = '0.0.0.0'; //always listen on 0.0.0.0
@@ -8,7 +11,52 @@ const port = parseInt(process.env.PORT || '9666', 10);
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
+// Function to validate key file permissions
+const validateKeyFilePermissions = (keyFilePath: string) => {
+  if (!existsSync(keyFilePath)) {
+    return; // File doesn't exist, will be created with correct permissions
+  }
+  
+  const stats = statSync(keyFilePath);
+  const permissions = stats.mode & 0o777; // Get the last 3 octal digits
+  
+  if (permissions !== 0o400) {
+    console.error('❌ SECURITY ERROR: .duplistatus.key file has incorrect permissions!');
+    console.error(`   Expected: 0400 (r--------)`);
+    console.error(`   Actual:   0${permissions.toString(8).padStart(3, '0')} (${permissions.toString(8)})`);
+    console.error('   The key file must have permissions 0400 for security reasons.');
+    console.error('   Please fix the permissions or delete the file to regenerate it.');
+    console.error('   run chmod 0400 .duplistatus.key to fix the permissions');
+    process.exit(1);
+  }
+  
+  console.log('🔒 Key file permissions validated (0400)');
+};
+
+// Function to verify and create .duplistatus.key file
+const ensureKeyFile = () => {
+  const dataDir = join(process.cwd(), 'data');
+  const keyFilePath = join(dataDir, '.duplistatus.key');
+  
+  // First validate existing file permissions
+  validateKeyFilePermissions(keyFilePath);
+  
+  if (!existsSync(keyFilePath)) {
+    console.log('🔑 Creating new .duplistatus.key file...');
+    const key = randomBytes(32);
+    writeFileSync(keyFilePath, key);
+    chmodSync(keyFilePath, 0o400); // Set permissions to r-------- (0400)
+    console.log('   ✅ Key file created successfully with restricted permissions');
+  } else {
+    console.log('🔑 Key file already exists');
+  }
+};
+
 app.prepare().then(() => {
+  // Ensure key file exists before starting server
+  ensureKeyFile();
+  
+  
   const server = createServer(async (req, res) => {
     try {
       // Use the original req.url for Next.js handler, as handle expects (req, res, parsedUrl?)

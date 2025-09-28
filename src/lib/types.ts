@@ -112,8 +112,6 @@ export interface EmailConfig {
   username: string;
   password: string;
   mailto: string;
-  fromName?: string;
-  fromEmail?: string;
   enabled: boolean;
 }
 
@@ -231,6 +229,7 @@ export interface ServerAddress {
   server_url: string;
   alias: string;
   note: string;
+  hasPassword: boolean;
 }
 
 // Interface for Duplicati system info
@@ -277,4 +276,23 @@ export interface SystemInfo {
   ServerModules?: unknown[];
   LogLevels?: unknown[];
   SupportedLocales?: unknown[];
+}
+
+// SMTP Configuration types
+export interface SMTPConfig {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string;
+  password: string;
+  mailto: string;
+}
+
+export interface SMTPConfigEncrypted {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string; // encrypted
+  password: string; // encrypted
+  mailto: string;
 }

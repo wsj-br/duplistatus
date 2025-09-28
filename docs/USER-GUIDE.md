@@ -2,7 +2,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.8.7-blue)
+![](https://img.shields.io/badge/version-0.8.8-blue)
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
 
@@ -51,14 +51,19 @@ Welcome to the **duplistatus** user guide. This document provides comprehensive 
   - [NTFY Settings](#ntfy-settings)
     - [About NTFY](#about-ntfy)
   - [Email Configuration](#email-configuration)
-    - [Environment Variables](#environment-variables)
+    - [Web Interface Configuration](#web-interface-configuration)
     - [Common SMTP Providers](#common-smtp-providers)
   - [Notification Templates](#notification-templates)
+- [Cron Service](#cron-service)
+  - [Features](#features)
+  - [Configuration](#configuration)
+  - [Management](#management)
+  - [Troubleshooting](#troubleshooting)
 - [Homepage Integration (Optional)](#homepage-integration-optional)
   - [Summary Widget](#summary-widget)
   - [Last Backup Information Widget](#last-backup-information-widget)
   - [Configuration Notes](#configuration-notes)
-- [Troubleshooting](#troubleshooting)
+- [Troubleshooting](#troubleshooting-1)
 - [Additional Resources](#additional-resources)
 - [Licence](#licence)
 
@@ -105,7 +110,7 @@ After installation, access the **duplistatus** web interface:
 
 <br/>
 
-The user interface consists of several elements, organised into different sections to provide a clear and intuitive experience:
+The user interface consists of several elements, organized into different sections to provide a clear and intuitive experience:
 
 1.  [**Application Toolbar**](#application-toolbar): Provides easy access to main functions and configurations.
 2.  [**Dashboard Summary**](#dashboard-summary): A summary of all monitored servers.
@@ -155,12 +160,12 @@ This section displays aggregated statistics for all backups.
 ![Dashboard summary - table](img/screen-dashboard-summary-table.png)
 
 - **Total Servers**: The number of servers being monitored.
-- **Total Backups Jobs**: The total number of backup jobs (types) configured for all servers.
-- **Total Backups Runs**: The total number of backup logs from runs received or collected for all servers.
+- **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.
+- **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.
 - **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.
 - **Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs.
 - **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).
-- **Overdue Backups** (table) : The number of backups that are overdue. See [Backup Notifications Settings](#backup-notifications-settings)
+- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](#backup-notifications-settings)
 - **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.
 
 </div>
@@ -183,7 +188,7 @@ The cards layout shows the status of the most recent backup log received for eac
   - **Backup Name**: Name of the backup in the Duplicati server
   - **Status history**: Status of the last 10 backups received.
   - **Last backup received**: The elapsed time since the current time of the last log received. It will show a warning icon if the backup is overdue.
-    - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for year.
+    - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for years.
 
 > [!NOTE]
 > You can use the [Display Settings](#display-settings) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
@@ -247,7 +252,7 @@ The table layout lists the most recent backup logs received for all servers and 
 ![Dashboard Overview](img/duplistatus_dash-table.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
-  - Under the name the server note
+  - Under the name is the server note
 - **Backup Name**: The name of the backup in the Duplicati server.
 - **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](INSTALL.md#duplicati-server-configuration-required) for details.
 - **Backup Count**: The number of backups reported by the Duplicati server.
@@ -564,7 +569,7 @@ Remove a specific Backup Job (type) data.
 
 **Deletion Effects:**
 
-- Permanently deletes all associated to this Backup Job / Server.
+- Permanently deletes all data associated with this Backup Job / Server.
 - Cleans up associated configuration settings.
 - Updates dashboard statistics accordingly.
 
@@ -602,11 +607,11 @@ Remove a specific server and all its associated backup data.
 
 This section explains how to configure **duplistatus**. The settings available are:
 
-- **Backup Alerts**: Configure the notification to be sent when a backup log is received and the overdue monitoring parameters.
+- **Backup Notifications**: Configure the notifications to be sent when a backup log is received and the overdue monitoring parameters.
 - **Server Settings**: Configure the server alias, a note (usually to describe the function of the server), and the web addresses of your Duplicati servers
 - **NTFY Settings**: Configure the NTFY (notification service) server URL and topic to send push notifications to your phone or desktop
 - **Email Configuration**: Configure SMTP settings to send email notifications as an alternative or complement to NTFY
-- **Notifications Templates**: Configure the content of the notifications, when backups are successful, with warnings or errors and for overdue backups.
+- **Notification Templates**: Configure the content of the notifications, when backups are successful, with warnings or errors and for overdue backups.
 
 <br/>
 
@@ -797,7 +802,7 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 
 ### Email Configuration
 
-**duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is managed through environment variables for security.
+**duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
 
 <div style="padding-left: 60px;">
 
@@ -809,62 +814,42 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 
 <br/>
 
-#### Environment Variables
+#### Web Interface Configuration
 
-To enable email notifications, configure these environment variables in your **duplistatus** deployment:
+Email notifications are configured through the web interface under **Settings → Email Configuration**. The settings are stored securely in the database with encrypted credentials.
 
-| Variable        | Description                                                                            | Example                |
-| :-------------- | :------------------------------------------------------------------------------------- | :--------------------- |
-| `SMTP_HOST`     | SMTP server hostname                                                                   | `smtp.gmail.com`       |
-| `SMTP_PORT`     | SMTP server port                                                                       | `587`                  |
-| `SMTP_SECURE`   | Connection type: `true` for direct SSL/TLS (port 465), `false` for STARTTLS (port 587) | `false`                |
-| `SMTP_USERNAME` | SMTP authentication username                                                           | `your-email@gmail.com` |
-| `SMTP_PASSWORD` | SMTP authentication password                                                           | `your-app-password`    |
-| `SMTP_MAILTO`   | Email recipient address for notifications                                              | `admin@example.com`    |
-
-<br/>
-
-> [!IMPORTANT]
-> All six environment variables must be configured for email functionality to be enabled. If any variable is missing, email notifications will be automatically disabled.
-
-<br/>
+**Configuration Fields:**
+- **SMTP Host**: Your email provider's SMTP server (e.g., `smtp.gmail.com`)
+- **SMTP Port**: Port number (typically `587` for STARTTLS or `465` for SSL/TLS)
+- **SMTP Username**: Your email address or username
+- **SMTP Password**: Your email password or app-specific password
+- **Recipient Email**: The email address to receive notifications
+- **Secure Connection**: Toggle for SSL/TLS vs STARTTLS encryption
 
 #### Common SMTP Providers
 
 <div style="padding-left: 20px;">
 
 **Gmail:**
-
-```bash
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURE=false  # STARTTLS encryption (both options are secure)
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password  # Use App Password, not regular password
-SMTP_MAILTO=admin@example.com     # Recipient for notifications
-```
+- Host: `smtp.gmail.com`
+- Port: `587` (STARTTLS) or `465` (SSL/TLS)
+- Username: Your Gmail address
+- Password: Use an App Password (not your regular password)
+- Secure: `false` for port 587, `true` for port 465
 
 **Outlook/Hotmail:**
-
-```bash
-SMTP_HOST=smtp-mail.outlook.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USERNAME=your-email@outlook.com
-SMTP_PASSWORD=your-password
-SMTP_MAILTO=admin@example.com
-```
+- Host: `smtp-mail.outlook.com`
+- Port: `587`
+- Username: Your Outlook email address
+- Password: Your account password
+- Secure: `false` (STARTTLS)
 
 **Yahoo Mail:**
-
-```bash
-SMTP_HOST=smtp.mail.yahoo.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USERNAME=your-email@yahoo.com
-SMTP_PASSWORD=your-app-password  # Use App Password
-SMTP_MAILTO=admin@example.com
-```
+- Host: `smtp.mail.yahoo.com`
+- Port: `587`
+- Username: Your Yahoo email address
+- Password: Use an App Password
+- Secure: `false` (STARTTLS)
 
 </div>
 
@@ -876,7 +861,7 @@ SMTP_MAILTO=admin@example.com
 > - For Gmail and Yahoo, use App Passwords instead of your regular account password
 > - Consider using a dedicated email account for notifications
 > - Test your configuration using the "Send Test Email" button
-> - Restart **duplistatus** after changing environment variables
+> - Settings are encrypted and stored securely in the database
 
 <br/>
 
@@ -889,8 +874,6 @@ SMTP_MAILTO=admin@example.com
 > - Template titles become email subjects
 > - Email notifications respect the same per-backup settings as NTFY
 > - **All connections are encrypted** - only TLS 1.2+ connections are accepted, plain text SMTP is rejected
-
-</div>
 
 <br/><br/>
 
@@ -945,6 +928,42 @@ All templates support variables that will be replaced with actual values. The fo
 
 > [!TIP]
 > After updating a template, use the `Send Test Notification` button to check it. The variables will be replaced with their names for the test. For email notifications, the template title becomes the email subject line.
+
+<br/><br/>
+
+## Cron Service
+
+**duplistatus** includes a separate cron service that handles periodic background tasks independently from the main Next.js application. This service ensures better reliability and scalability of background operations.
+
+### Features
+
+- **Independent Operation**: Runs as a separate process from the main web application
+- **Automatic Overdue Checks**: Monitors for overdue backups at configurable intervals
+- **REST API**: Provides endpoints for task management and monitoring
+- **Graceful Shutdown**: Handles shutdown signals properly
+- **Manual Task Triggering**: Allows manual execution of scheduled tasks
+
+### Configuration
+
+The cron service is automatically configured through the database and runs on port `8667` by default (or `PORT + 1` if `PORT` is set). The service includes the following default tasks:
+
+- **Overdue Backup Check**: Runs every 20 minutes to check for overdue backups and send notifications
+
+### Management
+
+You can interact with the cron service through the application's toolbar buttons:
+
+- **Check Overdue Backups**: Manually trigger an overdue backup check
+- **Application Logs**: Monitor cron service status and execution logs
+
+### Troubleshooting
+
+If you experience issues with overdue notifications:
+
+1. Verify the cron service is running alongside the main application
+2. Check the cron service logs for errors
+3. Ensure the cron service port (default: `8667`) is accessible
+4. Use the manual "Check Overdue Backups" button to test functionality
 
 <br/><br/>
 
@@ -1058,10 +1077,10 @@ Here are solutions to some common issues.
 
 | Issue                                                                                                                                                                           | Problem Description                                             | Solutions                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **New backups are not showing**<br/><br/>Duplicati server warnings:<br/>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history.   | **Check Duplicati Configuration**:<br/>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br/>• Verify the HTTP URL settings in Duplicati.<br/><br/>**Check Network Connectivity**:<br/>• Ensure the Duplicati server can connect to the **duplistatus** server.<br/>• Confirm the port is correct (default: `9666`).<br/><br/>**Review Duplicati Logs**:<br/>• Check for HTTP request errors in the Duplicati logs.                |
+| **New backups are not showing**<br/><br/>Duplicati server warnings:<br/>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history.   | **Check Duplicati Configuration**:<br/>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br/>• Verify the HTTP URL settings in Duplicati.<br/><br/>**Check Network Connectivity**:<br/>• Ensure the Duplicati server can connect to the **duplistatus** server.<br/>• Confirm the port is correct (default: `666`).<br/><br/>**Review Duplicati Logs**:<br/>• Check for HTTP request errors in the Duplicati logs.                |
 | **Notifications Not Working**                                                                                                                                                   | Notifications are not being sent or received.                   | **Check NTFY Configuration**:<br/>• Ensure the NTFY URL and topic are correct.<br/>• Use the `Send Test Notification` button to test.<br/><br/>**Check Network Connectivity**:<br/>• Verify that **duplistatus** can reach your NTFY server.<br/>• Review firewall settings if applicable.<br/><br/>**Check Notification Settings**:<br/>• Confirm that notifications are enabled for the relevant backups.                                                        |
 | **Available versions not appearing**                                                                                                                                            | Backup versions are not shown on the dashboard or details page. | **Check Duplicati Configuration**:<br/>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.                                                                                                                                                                                                                                                                                                  |
-| **Overdue Backup Alerts Not Working**                                                                                                                                           | Overdue backup notifications are not being sent.                | **Check Overdue Configuration**:<br/>• Confirm that overdue monitoring is enabled for the backup.<br/>• Verify the expected interval and tolerance settings.<br/><br/>**Check Notification Frequency**:<br/>• If set to `One time`, alerts are only sent once per overdue event.<br/><br/>**Check Scheduler Service**:<br/>• Ensure the internal background process that monitors for overdue backups is running correctly. Check the application logs for errors. |
+| **Overdue Backup Alerts Not Working**                                                                                                                                           | Overdue backup notifications are not being sent.                | **Check Overdue Configuration**:<br/>• Confirm that overdue monitoring is enabled for the backup.<br/>• Verify the expected interval and tolerance settings.<br/><br/>**Check Notification Frequency**:<br/>• If set to `One time`, alerts are only sent once per overdue event.<br/><br/>**Check Cron Service**:<br/>• Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors.<br/>• Verify the cron service is accessible at the configured port (default: `8667`). |
 | **Collect Backup Logs not working**                                                                                                                                             | The manual backup log collection fails.                         | **Check Duplicati Server Access**:<br/>• Verify the Duplicati server hostname and port are correct.<br/>• Confirm remote access is enabled in Duplicati.<br/>• Ensure the authentication password and protocol (HTTP/HTTPS) are correct.<br/><br/>**Check Network Connectivity**:<br/>• Test connectivity from **duplistatus** to the Duplicati server.<br/>• Confirm the Duplicati server port is accessible (default: `8200`).                                   |
 
 <br/>
@@ -1071,8 +1090,9 @@ If you still experience issues, try the following steps:
 1.  **Inspect Application Logs**: If using Docker, run `docker logs <container-name>` to review detailed error information.
 2.  **Validate Configuration**: Double-check all configuration settings in your container management tool (Docker, Portainer, Podman, etc.) including ports, network, and permissions.
 3.  **Verify Network Connectivity**: Confirm all network connections are stable. If using Docker, you can use `docker exec -it <container-name> /bin/sh` to access the container's command line and run network tools like `ping` and `curl`.
-4.  **Consult Documentation**: Refer to the Installation Guide and README for more information.
-5.  **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).
+4.  **Check Cron Service**: Ensure the cron service is running alongside the main application. Check logs for both services.
+5.  **Consult Documentation**: Refer to the Installation Guide and README for more information.
+6.  **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).
 
 <br/><br/>
 
@@ -1080,7 +1100,7 @@ If you still experience issues, try the following steps:
 
 - **Installation Guide**: [INSTALL.md](INSTALL.md)
 - **Duplicati Documentation**: [docs.duplicati.com](https://docs.duplicati.com)
-- **API Documentation**: [API-ENDPOINTS.md](https://www.google.com/search?q=API-ENDPOINTS.md)
+- **API Documentation**: [API-ENDPOINTS.md](API-ENDPOINTS.md)
 - **GitHub Repository**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
 - **Development Guide**: [DEVELOPMENT.md](DEVELOPMENT.md)
 - **Database Schema**: [DATABASE.md](DATABASE.md)
@@ -1089,6 +1109,6 @@ If you still experience issues, try the following steps:
 
 ## Licence
 
-The project is licensed under the [Apache License 2.0](../LICENSE).
+The project is licensed under the [Apache Licence 2.0](../LICENSE).
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

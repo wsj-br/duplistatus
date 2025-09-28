@@ -243,9 +243,9 @@ const migrations: Migration[] = [
   },
   {
     version: '3.0',
-    description: 'Rename machines table to servers, add server_url, and update all references',
+    description: 'Rename machines table to servers, add server_url, and add sessions/CSRF tables for enhanced security',
     up: (db: Database.Database) => {
-      console.log('Migration 3.0: Renaming machines to servers...');
+      console.log('Migration 3.0: Renaming machines to servers and adding security tables...');
       
       // Check if the servers table already exists (migration already completed)
       const serversTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='servers'").get();
@@ -269,6 +269,7 @@ const migrations: Migration[] = [
             server_url TEXT DEFAULT '',
             alias TEXT DEFAULT '',
             note TEXT DEFAULT '',
+            server_password TEXT DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
           );
         `);
@@ -513,6 +514,35 @@ const migrations: Migration[] = [
         // Delete the old overdue_backup_notifications configuration
         db.prepare('DELETE FROM configurations WHERE key = ?').run('overdue_backup_notifications');
       }
+      
+      // Step 11: Create sessions table for CSRF protection
+      db.exec(`
+        CREATE TABLE sessions (
+          id TEXT PRIMARY KEY,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL
+        );
+      `);
+      
+      // Step 12: Create csrf_tokens table
+      db.exec(`
+        CREATE TABLE csrf_tokens (
+          session_id TEXT PRIMARY KEY,
+          token TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+        );
+      `);
+      
+      // Step 13: Create indexes for security tables
+      db.exec(`
+        CREATE INDEX idx_sessions_expires ON sessions(expires_at);
+        CREATE INDEX idx_csrf_tokens_expires ON csrf_tokens(expires_at);
+      `);
+      
+      console.log('Migration 3.0 completed successfully');
     }
   }
 ];

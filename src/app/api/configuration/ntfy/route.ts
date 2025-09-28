@@ -1,7 +1,8 @@
+import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse } from 'next/server';
 import { getNtfyConfig } from '@/lib/db-utils';
 
-export async function GET() {
+export const GET = withCSRF(async () => {
   try {
     const ntfyConfig = await getNtfyConfig();
     return NextResponse.json({ ntfy: ntfyConfig });
@@ -12,4 +13,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});

@@ -3,9 +3,9 @@
 ![duplistatus](img/duplistatus_banner.png)
 
 
-# Development instructions
+# Development Instructions
 
-![](https://img.shields.io/badge/version-0.8.7-blue)
+![](https://img.shields.io/badge/version-0.8.8-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -22,10 +22,10 @@
   - [Development Mode Features](#development-mode-features)
     - [Build the application for production](#build-the-application-for-production)
     - [Start the production server (in development environment):](#start-the-production-server-in-development-environment)
-    - [Start a docker stack (docker compose)](#start-a-docker-stack-docker-compose)
-    - [Stop a docker stack (docker compose)](#stop-a-docker-stack-docker-compose)
-    - [Clean docker environment](#clean-docker-environment)
-    - [Create a devel image (to test locally or with podman)](#create-a-devel-image-to-test-locally-or-with-podman)
+    - [Start a Docker stack (Docker Compose)](#start-a-docker-stack-docker-compose)
+    - [Stop a Docker stack (Docker Compose)](#stop-a-docker-stack-docker-compose)
+    - [Clean Docker environment](#clean-docker-environment)
+    - [Create a development image (to test locally or with Podman)](#create-a-development-image-to-test-locally-or-with-podman)
   - [Cron Service](#cron-service)
       - [Start cron service in development mode:](#start-cron-service-in-development-mode)
       - [Start cron service in production mode:](#start-cron-service-in-production-mode)
@@ -37,20 +37,20 @@
     - [Test cron service port connectivity](#test-cron-service-port-connectivity)
   - [Workspace admin scripts & commands](#workspace-admin-scripts--commands)
     - [Clean Database](#clean-database)
-    - [Clean build artifacts and dependencies](#clean-build-artifacts-and-dependencies)
-    - [Clean docker compose and docker environment](#clean-docker-compose-and-docker-environment)
+    - [Clean build artefacts and dependencies](#clean-build-artefacts-and-dependencies)
+    - [Clean Docker Compose and Docker environment](#clean-docker-compose-and-docker-environment)
     - [Generate the logo/favicon and banner from SVG images](#generate-the-logofavicon-and-banner-from-svg-images)
-    - [Update the packages to the last version](#update-the-packages-to-the-last-version)
+    - [Update the packages to the latest version](#update-the-packages-to-the-latest-version)
     - [Check for unused packages](#check-for-unused-packages)
     - [Update version information](#update-version-information)
-    - [Viewing the configurations on the database](#viewing-the-configurations-on-the-database)
+    - [Viewing the configurations in the database](#viewing-the-configurations-in-the-database)
     - [SQL Scripts for Debugging and Maintenance](#sql-scripts-for-debugging-and-maintenance)
       - [Delete Backup Settings](#delete-backup-settings)
       - [Delete Last Backup](#delete-last-backup)
   - [Documentation tools](#documentation-tools)
     - [Update documentation](#update-documentation)
     - [Checking for broken links](#checking-for-broken-links)
-  - [Podman testing](#podman-testing)
+  - [Podman Testing](#podman-testing)
     - [Initial Setup and Management](#initial-setup-and-management)
     - [Monitoring and Health Checks](#monitoring-and-health-checks)
     - [Debugging Commands](#debugging-commands)
@@ -61,7 +61,7 @@
       - [1. Merge the `devel` Branch into `master`](#1-merge-the-devel-branch-into-master)
       - [2. Tag the New Release](#2-tag-the-new-release)
       - [3. Push to GitHub](#3-push-to-github)
-    - [Merging `devel` to `master` using Github](#merging-devel-to-master-using-github)
+    - [Merging `devel` to `master` using GitHub](#merging-devel-to-master-using-github)
     - [Creating a GitHub Release](#creating-a-github-release)
     - [Manual Docker Image Build](#manual-docker-image-build)
   - [Frameworks, libraries and tools used](#frameworks-libraries-and-tools-used)
@@ -80,9 +80,9 @@
 
 ## Prerequisites
 
-- docker / docker compose
+- Docker / Docker Compose
 - Node.js ^20.x (minimum: 20.19.0, recommended: 20.x)
-- pnpm ^10.x (minimum: 10.15.0, recommended: 10.16.1+)
+- pnpm ^10.x (minimum: 10.15.0, recommended: 10.17.1+)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 - doctoc for markdown table of contents generation
@@ -182,7 +182,7 @@ pnpm start-local
 ```
 
 
-### Start a docker stack (docker compose)
+### Start a Docker stack (Docker Compose)
 
 ```bash
 pnpm docker-up
@@ -193,7 +193,7 @@ Or manually:
 docker compose up --build -d
 ```
 
-### Stop a docker stack (docker compose)
+### Stop a Docker stack (Docker Compose)
 
 ```bash
 pnpm docker-down
@@ -204,7 +204,7 @@ Or manually:
 docker compose down
 ```
 
-### Clean docker environment
+### Clean Docker environment
 
 ```bash
 pnpm docker-clean
@@ -217,11 +217,11 @@ Or manually:
 
 This script performs a complete Docker cleanup, which is useful for:
 - Freeing up disk space
-- Removing old/unused Docker artifacts
+- Removing old/unused Docker artefacts
 - Cleaning up after development or testing sessions
 - Maintaining a clean Docker environment
 
-### Create a devel image (to test locally or with podman)
+### Create a development image (to test locally or with Podman)
 
 ```bash
 docker build . -t wsj-br/duplistatus:devel
@@ -248,7 +248,7 @@ pnpm cron:start
 pnpm cron:start-local
 ```
 
-The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using `CRON_PORT` environment variable.
+The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using the `CRON_PORT` environment variable.
 
 The cron service includes:
 - **Health check endpoint**: `/health` - Returns service status and active tasks
@@ -355,30 +355,30 @@ Cleans the database by removing all data while preserving the database schema an
 <br/>
 
 
-### Clean build artifacts and dependencies
+### Clean build artefacts and dependencies
 
 ```bash
 scripts/clean-workspace.sh
 ```
-Removes all build artifacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
+Removes all build artefacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
 - `node_modules/` directory
 - `.next/` build directory
 - `dist/` directory
-- All docker build cache and perform a docker system prune
+- All Docker build cache and perform a Docker system prune
 - pnpm store cache
 - Unused Docker system resources (images, networks, volumes)
 - Any other build cache files
 
 <br/>
 
-### Clean docker compose and docker environment
+### Clean Docker Compose and Docker environment
 
 ```bash
 scripts/clean-docker.sh
 ```
 Perform a complete Docker cleanup, which is useful for:
 - Freeing up disk space
-- Removing old/unused Docker artifacts
+- Removing old/unused Docker artefacts
 - Cleaning up after development or testing sessions
 - Maintaining a clean Docker environment
 
@@ -391,11 +391,11 @@ scripts/convert_svg_logo.sh
 ```
 
 
-> The svg files are located in the `docs/img` folder. This script requires ImageMagick to be installed on your system.
+> The SVG files are located in the `docs/img` folder. This script requires ImageMagick to be installed on your system.
 
 <br/>
 
-### Update the packages to the last version
+### Update the packages to the latest version
 
 ```bash
 ncu --upgrade
@@ -425,7 +425,7 @@ This script automatically updates the `.env` file with the current version from 
 <br/>
 
 
-### Viewing the configurations on the database
+### Viewing the configurations in the database
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -496,13 +496,13 @@ markdown-link-check *.md docs/*.md
 
 <br/>
 
-## Podman testing
+## Podman Testing
 
-Copy and execute the scripts located at "scripts/podman_testing" in the podman test server
+Copy and execute the scripts located at "scripts/podman_testing" in the Podman test server
 
 ### Initial Setup and Management
 1. `initialise.duplistatus`: to create the pod
-2. `copy.docker.duplistatus`: to copy the docker image created in the devel server to the podman test server.
+2. `copy.docker.duplistatus`: to copy the Docker image created in the development server to the Podman test server.
    - Create the image using the command `docker build . -t wsj-br/duplistatus:devel`
 3. `start.duplistatus`: to start the container
 4. `stop.duplistatus`: to stop the pod and remove the container
@@ -599,7 +599,7 @@ You can also push all tags at once using `git push --tags`. After this, the new 
 <br/>
 
 
-### Merging `devel` to `master` using Github 
+### Merging `devel` to `master` using GitHub 
 
 Instead of a direct merge, you will create a **Pull Request (PR)** from `devel` to `master`. A pull request is a formal way to propose and review changes before they're merged.
 
@@ -622,15 +622,15 @@ After the pull request is created, you will see a green **"Merge pull request"**
 Once the merge is complete, you can create a new release on GitHub, which automatically creates a tag for you.
 
 1.  Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
-1.  Go to the **"Releases"** section 
-2.  Click **"Draft a new release."**
-3.  In the **"Choose a tag"** field, type your new version number, like `v0.7.27`. This will create a new tag.
-4.  Select `master` as the target branch.
-5.  Add a **release title** and **description** to document the changes in this version.
-6.  Click **"Publish release."**
+2.  Go to the **"Releases"** section 
+3.  Click **"Draft a new release."**
+4.  In the **"Choose a tag"** field, type your new version number, like `v0.7.27`. This will create a new tag.
+5.  Select `master` as the target branch.
+6.  Add a **release title** and **description** to document the changes in this version.
+7.  Click **"Publish release."**
 
 This will automatically:
-- Create a new Docker images (AMD64 and ARM64 architectures)
+- Create new Docker images (AMD64 and ARM64 architectures)
 - Push the images to Docker Hub 
 - Push the images to GitHub Container Registry (ghcr.io/wsj-br/duplistatus:latest)
 
@@ -656,15 +656,15 @@ To manually trigger the Docker image build workflow:
    - pnpm ^10.x (minimum: 10.15.0, enforced via preinstall hook)
 
 2. **Core Frameworks & Libraries**
-   - Next.js 15.5.3 – React-based SSR/SSG framework with App Router
+   - Next.js 15.5.4 – React-based SSR/SSG framework with App Router
    - React 19.1.1 & React-DOM 19.1.1
    - Radix UI (@radix-ui/react-*) – headless component primitives (latest versions)
    - Tailwind CSS 4.1.13 + tailwindcss-animate 1.0.7 plugin
    - PostCSS (@tailwindcss/postcss 4.1.13 + autoprefixer 10.4.21)
-   - Better-sqlite3 12.2.0 + SQLite3 (data store)
-   - Recharts 3.2.0 – charting library
-   - react-day-picker 9.10.0 – date picker
-   - react-hook-form 7.62.0 – forms
+   - Better-sqlite3 12.4.1 + SQLite3 (data store)
+   - Recharts 3.2.1 – charting library
+   - react-day-picker 9.11.0 – date picker
+   - react-hook-form 7.63.0 – forms
    - lucide-react 0.544.0 – icon components
    - clsx 2.1.1 – utility for conditional classNames
    - class-variance-authority 0.7.1 – variant styling helper
@@ -680,7 +680,7 @@ To manually trigger the Docker image build workflow:
 3. **Type Checking & Linting**
    - TypeScript 5.9.2 + tsc (noEmit)
    - TSX 4.20.5 – lightweight runner for TS scripts
-   - ESLint 9.35.0 (via `next lint`)
+   - ESLint 9.36.0 (via `next lint`)
 
 4. **Build & Dev Tools**
    - Web/CSS bundling via Next's built-in toolchain
@@ -691,7 +691,7 @@ To manually trigger the Docker image build workflow:
    - Docker (node:alpine base)
    - Docker Compose (`docker-compose.yml`)
    - Alpine build tooling (`apk add` curl, python3, make, g++, …) for compiling better-sqlite3
-   - cURL (healthchecks)
+   - cURL (health checks)
    - GitHub Actions workflows (docker/setup-*, buildx, metadata-action, build-push-action)
    - Docker Hub & GitHub Container Registry
    - Multi-architecture builds (AMD64, ARM64)
@@ -720,6 +720,7 @@ To manually trigger the Docker image build workflow:
 
 9. **Notification System**
    - ntfy.sh integration for push notifications
+   - Email notifications via SMTP (nodemailer)
    - Configurable notification templates with variable substitution
    - Overdue backup monitoring and alerting
    - Test notification functionality
@@ -744,7 +745,7 @@ To manually trigger the Docker image build workflow:
     - Display menu component for UI customisation
     - Theme toggle (light/dark mode)
     - Server connection management and testing
-    - Metrics charts panel with interactive visualizations
+    - Metrics charts panel with interactive visualisations
     - Server cards with comprehensive backup information
     - Auto-refresh functionality for real-time updates
     - Progress indicators and loading states
@@ -755,10 +756,10 @@ To manually trigger the Docker image build workflow:
     - RESTful API structure with consistent error handling
     - Core operations: Upload, retrieval, and management of backup data
     - Configuration management endpoints for notifications, server connections, and backup settings
-    - Notification system endpoints with NTFY integration
+    - Notification system endpoints with NTFY and email integration
     - Cron service management endpoints for task control
     - Health check and monitoring endpoints
-    - Chart data endpoints for visualization
+    - Chart data endpoints for visualisation
     - Server and backup management endpoints
     - Database maintenance and cleanup endpoints
     - Environment and system information endpoints
@@ -771,6 +772,7 @@ To manually trigger the Docker image build workflow:
     - Type-safe database operations with TypeScript interfaces
     - Backup data collection and processing
     - Server and backup relationship management
+    - CSRF protection with session management
 
 14. **Development & Debugging Tools**
     - TypeScript strict mode enabled
@@ -801,12 +803,13 @@ To manually trigger the Docker image build workflow:
 - **Configuration**: Default configs in `src/lib/default-config.ts`
 - **Cron Service**: Located in `src/cron-service/` with separate service implementation
 - **Scripts**: Utility scripts in `scripts/` directory for testing and maintenance
+- **Security**: CSRF protection and session management in `src/lib/csrf-middleware.ts`
 
 ### Testing
 - Use the provided test scripts for generating data and testing functionality
 - Test notification system with the built-in test endpoints (`/api/notifications/test`)
 - Verify cron service functionality by checking the health endpoints (`curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`)
-- Test the docker and podman images using the provided scripts
+- Test the Docker and Podman images using the provided scripts
 - Use TypeScript strict mode for compile-time error checking
 - Test database operations with the provided utilities
 - Use the test data generation script (`pnpm generate-test-data`) for comprehensive testing
@@ -831,6 +834,7 @@ To manually trigger the Docker image build workflow:
 - Implement proper validation and error handling
 - Follow the established patterns for configuration endpoints
 - Ensure proper CORS handling for cross-origin requests
+- Implement CSRF protection for state-changing operations
 
 ### Database Development
 - Use the migration system for schema changes (`src/lib/db-migrations.ts`)
@@ -841,6 +845,7 @@ To manually trigger the Docker image build workflow:
 - Follow the established schema patterns for new tables
 - Implement proper indexing for performance
 - Use prepared statements for security
+- Maintain session and CSRF token tables for security
 
 ### UI Development
 - Use shadcn/ui components for consistency
@@ -853,6 +858,7 @@ To manually trigger the Docker image build workflow:
 - Follow accessibility best practices
 - Use the established patterns for forms and validation
 - Implement proper state management with React hooks
+- Use context providers for global state management
 
 <br/>
 

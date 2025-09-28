@@ -157,7 +157,7 @@ none
 **Email Notification System:**
 - **SMTP Email Support:**
   - Complete email notification system as alternative or complement to NTFY
-  - Configurable through environment variables (SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USERNAME, SMTP_PASSWORD, SMTP_MAILTO)
+  - Configurable through web interface with database storage
   - Support for both SSL/TLS (port 465) and STARTTLS (port 587) encryption
   - Enforced encrypted connections only (TLS 1.2+), plain text SMTP rejected
   - Template-based emails with HTML and plain text versions
@@ -165,9 +165,9 @@ none
 - **New Email Configuration Tab:**
   - Dedicated "Email Configuration" settings tab
   - Real-time configuration status display
-  - Environment variable requirements checklist
   - Test email functionality with one-click sending
   - Configuration table showing current SMTP settings
+  - Encrypted credential storage in database
 - **Per-Backup Notification Channels:**
   - Independent NTFY and Email checkboxes in "Backup Notifications" tab
   - Granular control: enable/disable each notification channel per backup

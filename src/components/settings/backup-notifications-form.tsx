@@ -14,6 +14,7 @@ import { NotificationEvent, BackupNotificationConfig, BackupKey } from '@/lib/ty
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { defaultBackupNotificationConfig } from '@/lib/default-config';
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
+import { authenticatedRequest } from '@/lib/client-session-csrf';
 
 interface ServerWithBackup {
   id: string;
@@ -46,6 +47,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pendingChangesRef = useRef<Record<BackupKey, BackupNotificationConfig> | null>(null);
   const isAutoSaveInProgressRef = useRef(false);
+  const [isSavingInProgress, setIsSavingInProgress] = useState(false);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -55,16 +57,22 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   };
 
   useEffect(() => {
+    // Don't reinitialize if we're in the middle of saving to prevent overwriting local changes
+    if (isSavingInProgress) return;
+    
     if (config) {
       // Initialize settings from config
       if (config.backupSettings && Object.keys(config.backupSettings).length > 0) {
         setSettings(config.backupSettings);
       }
     }
-  }, [config]);
+  }, [config, isSavingInProgress]);
 
   // Initialize default settings for all servers when they are loaded
   useEffect(() => {
+    // Don't reinitialize if we're in the middle of saving to prevent overwriting local changes
+    if (isSavingInProgress) return;
+    
     if (config?.serversWithBackups && config.serversWithBackups.length > 0) {
       setSettings(prev => {
         const defaultSettings: Record<BackupKey, BackupNotificationConfig> = {};
@@ -88,7 +96,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         return prev;
       });
     }
-  }, [config?.serversWithBackups]);
+  }, [config?.serversWithBackups, isSavingInProgress]);
 
   // Cleanup timeout on unmount and handle cursor state
   useEffect(() => {
@@ -154,13 +162,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       }
 
       isAutoSaveInProgressRef.current = true;
+      setIsSavingInProgress(true);
       
       try {
         const settingsToSave = pendingChangesRef.current || newSettings;
         
-        const response = await fetch('/api/configuration/backup-settings', {
+        const response = await authenticatedRequest('/api/configuration/backup-settings', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             backupSettings: settingsToSave
           }),
@@ -193,6 +201,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         // Always reset the auto-saving state and cursor, regardless of success or failure
         isAutoSaveInProgressRef.current = false;
         setIsAutoSaving(false);
+        setIsSavingInProgress(false);
         document.body.style.cursor = 'default';
         autoSaveTimeoutRef.current = null;
       }

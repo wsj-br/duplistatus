@@ -119,9 +119,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CustomThemeProvider>
           <ConfigProvider>
-            <GlobalRefreshProvider>
-              <ServerSelectionProvider>
-                <ConfigurationProvider>
+            <ConfigurationProvider>
+              <GlobalRefreshProvider>
+                <ServerSelectionProvider>
                   <AvailableBackupsModalProvider>
                     <TooltipProvider delayDuration={300}>
                       <ToastProvider>
@@ -142,9 +142,9 @@ export default function RootLayout({
                     </ToastProvider>
                     </TooltipProvider>
                   </AvailableBackupsModalProvider>
-                </ConfigurationProvider>
-              </ServerSelectionProvider>
-            </GlobalRefreshProvider>
+                </ServerSelectionProvider>
+              </GlobalRefreshProvider>
+            </ConfigurationProvider>
           </ConfigProvider>
         </CustomThemeProvider>
       </body>

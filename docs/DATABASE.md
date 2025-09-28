@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.8.7-blue)
+![](https://img.shields.io/badge/version-0.8.8-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -33,6 +33,10 @@ This document describes the SQLite database schema used by duplistatus to store 
     - [Common Configuration Keys](#common-configuration-keys)
   - [Database Version Table](#database-version-table)
     - [Fields](#fields-2)
+  - [Sessions Table](#sessions-table)
+    - [Fields](#fields-3)
+  - [CSRF Tokens Table](#csrf-tokens-table)
+    - [Fields](#fields-4)
 - [Indexes](#indexes)
 - [Relationships](#relationships)
 - [Data Types](#data-types)
@@ -89,7 +93,7 @@ The application includes an automatic database migration system that ensures you
 ### Current Migration Versions
 
 - **Version 2.0**: Added missing columns to the backups table and created the configurations table
-- **Version 3.0**: Renamed the machines table to servers, added `server_url`, `alias`, and `note` fields, and updated all references (latest version)
+- **Version 3.0**: Renamed the machines table to servers, added `server_url`, `alias`, and `note` fields, and added sessions/CSRF tables for enhanced security (latest version)
 
 ### Migration Process
 
@@ -117,6 +121,7 @@ CREATE TABLE servers (
     server_url TEXT DEFAULT '',
     alias TEXT DEFAULT '',
     note TEXT DEFAULT '',
+    server_password TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
@@ -127,6 +132,7 @@ CREATE TABLE servers (
 - `server_url` (TEXT, DEFAULT ''): URL of the Duplicati server for this server (optional)
 - `alias` (TEXT, DEFAULT ''): Alternative display name for the server (optional)
 - `note` (TEXT, DEFAULT ''): Additional notes or description for the server (optional)
+- `server_password` (TEXT, DEFAULT ''): Password for the server (optional)
 - `created_at` (DATETIME): Timestamp when the server was first registered
 
 ### Backups Table
@@ -340,6 +346,45 @@ CREATE TABLE db_version (
 
 This table is used by the migration system to track which migrations have been applied and ensure migrations are only run once.
 
+### Sessions Table
+
+Stores session information for user authentication and security.
+
+```sql
+CREATE TABLE sessions (
+    id TEXT PRIMARY KEY,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME NOT NULL
+);
+```
+
+#### Fields
+- `id` (TEXT, PRIMARY KEY): Unique session identifier
+- `created_at` (DATETIME): Timestamp when the session was created
+- `last_accessed` (DATETIME): Timestamp of the last access to the session
+- `expires_at` (DATETIME, NOT NULL): Timestamp when the session expires
+
+### CSRF Tokens Table
+
+Stores CSRF tokens for security protection against cross-site request forgery attacks.
+
+```sql
+CREATE TABLE csrf_tokens (
+    session_id TEXT PRIMARY KEY,
+    token TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+);
+```
+
+#### Fields
+- `session_id` (TEXT, PRIMARY KEY): Reference to the associated session
+- `token` (TEXT, NOT NULL): The CSRF token value
+- `created_at` (DATETIME): Timestamp when the token was created
+- `expires_at` (DATETIME, NOT NULL): Timestamp when the token expires
+
 ## Indexes
 
 The following indexes are created to optimise query performance:
@@ -350,12 +395,16 @@ CREATE INDEX idx_backups_date ON backups(date);
 CREATE INDEX idx_backups_begin_time ON backups(begin_time);
 CREATE INDEX idx_backups_end_time ON backups(end_time);
 CREATE INDEX idx_backups_backup_id ON backups(backup_id);
+CREATE INDEX idx_sessions_expires ON sessions(expires_at);
+CREATE INDEX idx_csrf_tokens_expires ON csrf_tokens(expires_at);
 ```
 
 ## Relationships
 
 - Each backup (`backups` table) is associated with exactly one server (`servers` table) through the `server_id` foreign key
 - The relationship is enforced by a foreign key constraint: `FOREIGN KEY (server_id) REFERENCES servers(id)`
+- Each CSRF token (`csrf_tokens` table) is associated with exactly one session (`sessions` table) through the `session_id` foreign key
+- The relationship is enforced by a foreign key constraint: `FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE`
 
 ## Data Types
 
@@ -1056,7 +1105,7 @@ export interface ChartDataPoint {
   - Cron expressions and enabled/disabled states
   - Service health check settings
 
-- `overdue_backup_notifications`: JSON object tracking overdue backup notification history:
+- `overdue_notifications`: JSON object tracking overdue backup notification history:
   - Per-backup notification timestamps (keyed by `server_id:backup_name`)
   - Last notification sent timestamps
   - Last backup date when notification was sent

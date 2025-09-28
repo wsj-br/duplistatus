@@ -1,10 +1,12 @@
-import { NextResponse } from 'next/server';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { NextResponse, NextRequest } from 'next/server';
 import { getConfigBackupSettings, setConfigBackupSettings, getConfigOverdueNotifications, setConfigOverdueNotifications } from '@/lib/db-utils';
 import { BackupKey, BackupNotificationConfig } from '@/lib/types';
 import { migrateBackupSettings } from '@/lib/migration-utils';
 
-export async function POST(request: Request) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
+    
     const body = await request.json();
     const { backupSettings } = body;
     
@@ -72,4 +74,4 @@ export async function POST(request: Request) {
     console.error('Failed to update backup settings:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to update backup settings' }, { status: 500 });
   }
-} 
+});

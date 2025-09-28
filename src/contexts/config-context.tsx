@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { defaultUIConfig, defaultOverdueTolerance } from '@/lib/default-config';
 import type { OverdueTolerance } from '@/lib/types';
+import { authenticatedRequest } from '@/lib/client-session-csrf';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
@@ -99,11 +100,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
 
   const cleanupDatabase = async () => {
     try {
-      const response = await fetch('/api/backups/cleanup', {
+      const response = await authenticatedRequest('/api/backups/cleanup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ retentionPeriod: databaseCleanupPeriod }),
       });
 

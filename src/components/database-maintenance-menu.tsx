@@ -32,6 +32,7 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { authenticatedRequest } from "@/lib/client-session-csrf";
 import { useConfiguration } from "@/contexts/configuration-context";
 
 interface Server {
@@ -204,7 +205,7 @@ export function DatabaseMaintenanceMenu() {
       const selectedServerDetails = servers.find(server => server.id === selectedServer);
       const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
       
-      const response = await fetch(`/api/servers/${selectedServer}`, {
+      const response = await authenticatedRequest(`/api/servers/${selectedServer}`, {
         method: 'DELETE',
       });
 
@@ -271,11 +272,8 @@ export function DatabaseMaintenanceMenu() {
       const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
       const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
       
-      const response = await fetch('/api/backups/delete-job', {
+      const response = await authenticatedRequest('/api/backups/delete-job', {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           serverId: selectedBackupJobDetails?.server_id,
           backupName: selectedBackupJobDetails?.backup_name,
@@ -377,8 +375,9 @@ export function DatabaseMaintenanceMenu() {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 
-                    variant="destructive" 
+                    variant="gradient" 
                     disabled={isCleaning}
+                    className="w-full relative overflow-hidden"
                   >
                     {isCleaning ? (
                       <>
@@ -443,9 +442,9 @@ export function DatabaseMaintenanceMenu() {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 
-                    variant="destructive" 
+                    variant="outline" 
                     disabled={isDeletingBackupJob || !selectedBackupJob}
-                    className="mt-2"
+                    className="btn-amber-clear"
                   >
                     {isDeletingBackupJob ? (
                       <>

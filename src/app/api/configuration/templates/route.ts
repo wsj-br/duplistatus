@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { NextResponse, NextRequest } from 'next/server';
 import { getConfigNotifications, setConfigNotifications } from '@/lib/db-utils';
 
-export async function POST(request: Request) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
+    
     const body = await request.json();
     const { templates } = body;
     if (!templates) {
@@ -18,4 +20,4 @@ export async function POST(request: Request) {
     console.error('Failed to update notification templates:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to update notification templates' }, { status: 500 });
   }
-}
+});

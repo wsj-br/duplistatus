@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultAPIConfig } from '@/lib/default-config';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function POST(request: NextRequest) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
     const { server_url } = await request.json();
 
@@ -110,4 +111,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

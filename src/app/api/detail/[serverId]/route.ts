@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getServerById, getOverdueBackupsForServer, getLastOverdueBackupCheckTime, clearRequestCache } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET(
+export const GET = withCSRF(async (
   request: Request,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     // Clear request cache to ensure fresh data on each request
     clearRequestCache();
@@ -51,4 +52,4 @@ export async function GET(
       }
     );
   }
-}
+});

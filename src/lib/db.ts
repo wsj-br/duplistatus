@@ -63,6 +63,7 @@ try {
         server_url TEXT DEFAULT '',
         alias TEXT DEFAULT '',
         note TEXT DEFAULT '',
+        server_password TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -151,6 +152,24 @@ try {
         version TEXT PRIMARY KEY,
         applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at DATETIME NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS csrf_tokens (
+        session_id TEXT PRIMARY KEY,
+        token TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at DATETIME NOT NULL,
+        FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+      CREATE INDEX IF NOT EXISTS idx_csrf_tokens_expires ON csrf_tokens(expires_at);
 
       -- Set initial database version for new databases (only if not exists)
       INSERT OR IGNORE INTO db_version (version) VALUES ('3.0');
@@ -265,13 +284,14 @@ function createDbOps() {
   return {
   // Server operations
   upsertServer: safePrepare(`
-    INSERT INTO servers (id, name, server_url, alias, note)
-    VALUES (@id, @name, @server_url, @alias, @note)
+    INSERT INTO servers (id, name, server_url, alias, note, server_password)
+    VALUES (@id, @name, @server_url, @alias, @note, @server_password)
     ON CONFLICT(id) DO UPDATE SET
       name = @name,
       server_url = @server_url,
       alias = @alias,
-      note = @note
+      note = @note,
+      server_password = @server_password
   `, 'upsertServer'),
 
   insertServerIfNotExists: safePrepare(`
@@ -293,20 +313,36 @@ function createDbOps() {
   `, 'updateServerServerUrl'),
 
   getServerById: safePrepare(`
-    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE id = ?
+    SELECT id, name, server_url, alias, note, created_at, 
+           CASE WHEN server_password IS NOT NULL AND server_password != '' THEN 1 ELSE 0 END as has_password
+    FROM servers WHERE id = ?
   `, 'getServer'),
 
   getServerByName: safePrepare(`
-    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE name = ?
+    SELECT id, name, server_url, alias, note, created_at,
+           CASE WHEN server_password IS NOT NULL AND server_password != '' THEN 1 ELSE 0 END as has_password
+    FROM servers WHERE name = ?
   `, 'getServerByName'),
 
   getAllServersByName: safePrepare(`
-    SELECT id, name, server_url, alias, note, created_at FROM servers WHERE name = ?
+    SELECT id, name, server_url, alias, note, created_at,
+           CASE WHEN server_password IS NOT NULL AND server_password != '' THEN 1 ELSE 0 END as has_password
+    FROM servers WHERE name = ?
   `, 'getAllServersByName'),
 
   getAllServers: safePrepare(`
-    SELECT id, name, server_url, alias, note, created_at FROM servers ORDER BY name
+    SELECT id, name, server_url, alias, note, created_at,
+           CASE WHEN server_password IS NOT NULL AND server_password != '' THEN 1 ELSE 0 END as has_password
+    FROM servers ORDER BY name
   `, 'getAllServers'),
+
+  getServerPassword: safePrepare(`
+    SELECT server_password FROM servers WHERE id = ?
+  `, 'getServerPassword'),
+
+  setServerPassword: safePrepare(`
+    UPDATE servers SET server_password = ? WHERE id = ?
+  `, 'setServerPassword'),
 
   // Backup operations
   insertBackup: safePrepare(`
@@ -368,7 +404,8 @@ function createDbOps() {
       b.backup_name,
       s.server_url,
       s.alias,
-      s.note
+      s.note,
+      CASE WHEN s.server_password IS NOT NULL AND s.server_password != '' THEN 1 ELSE 0 END as has_password
     FROM servers s
     JOIN backups b ON b.server_id = s.id
     GROUP BY s.id, s.name, b.backup_name
@@ -492,6 +529,7 @@ function createDbOps() {
       s.server_url AS server_url,
       s.alias,
       s.note,
+      CASE WHEN s.server_password IS NOT NULL AND s.server_password != '' THEN 1 ELSE 0 END as has_password,
       b.backup_name,
       lb.last_backup_date,
       b2.id AS last_backup_id,
@@ -642,7 +680,53 @@ function createDbOps() {
       AND b.date BETWEEN @startDate AND @endDate
     GROUP BY DATE(b.date)
     ORDER BY b.date
-  `, 'getServerBackupChartDataWithTimeRange')
+  `, 'getServerBackupChartDataWithTimeRange'),
+
+  // Session operations
+  createSession: safePrepare(`
+    INSERT INTO sessions (id, expires_at)
+    VALUES (@id, @expires_at)
+  `, 'createSession'),
+
+  getSession: safePrepare(`
+    SELECT id, created_at, last_accessed, expires_at
+    FROM sessions
+    WHERE id = ? AND expires_at > datetime('now')
+  `, 'getSession'),
+
+  updateSessionAccess: safePrepare(`
+    UPDATE sessions
+    SET last_accessed = datetime('now')
+    WHERE id = ?
+  `, 'updateSessionAccess'),
+
+  deleteSession: safePrepare(`
+    DELETE FROM sessions WHERE id = ?
+  `, 'deleteSession'),
+
+  cleanupExpiredSessions: safePrepare(`
+    DELETE FROM sessions WHERE expires_at <= datetime('now')
+  `, 'cleanupExpiredSessions'),
+
+  // CSRF token operations
+  createCSRFToken: safePrepare(`
+    INSERT OR REPLACE INTO csrf_tokens (session_id, token, expires_at)
+    VALUES (@session_id, @token, @expires_at)
+  `, 'createCSRFToken'),
+
+  getCSRFToken: safePrepare(`
+    SELECT token, expires_at
+    FROM csrf_tokens
+    WHERE session_id = ? AND expires_at > datetime('now')
+  `, 'getCSRFToken'),
+
+  deleteCSRFToken: safePrepare(`
+    DELETE FROM csrf_tokens WHERE session_id = ?
+  `, 'deleteCSRFToken'),
+
+  cleanupExpiredCSRFTokens: safePrepare(`
+    DELETE FROM csrf_tokens WHERE expires_at <= datetime('now')
+  `, 'cleanupExpiredCSRFTokens')
   };
 }
 

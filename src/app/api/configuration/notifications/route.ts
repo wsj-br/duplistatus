@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { getConfigNotifications, setConfigNotifications, getNotificationFrequencyConfig, setNotificationFrequencyConfig } from '@/lib/db-utils';
 import { NotificationFrequencyConfig } from '@/lib/types';
 import { generateDefaultNtfyTopic } from '@/lib/default-config';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET() {
+export const GET = withCSRF(async () => {
   try {
     const value = getNotificationFrequencyConfig();
     return NextResponse.json({ value });
@@ -14,10 +15,11 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
+    
     const body = await request.json();
     
     // Handle notification frequency updates
@@ -55,4 +57,4 @@ export async function POST(request: Request) {
     console.error('Failed to update notification config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to update notification config' }, { status: 500 });
   }
-}
+});

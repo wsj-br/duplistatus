@@ -26,23 +26,34 @@ import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfiguration } from "@/contexts/configuration-context";
 import { defaultAPIConfig } from '@/lib/default-config';
 import { ServerAddress } from '@/lib/types';
+import { authenticatedRequest } from "@/lib/client-session-csrf";
 
 interface BackupCollectMenuProps {
   preFilledServerUrl?: string;
   preFilledServerName?: string;
+  preFilledServerId?: string;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'default' | 'outline' | 'ghost';
   className?: string;
   showText?: boolean;
+  autoCollect?: boolean;
+  disabled?: boolean;
+  onAutoCollectStart?: () => void;
+  onAutoCollectEnd?: () => void;
 }
 
 export function BackupCollectMenu({ 
   preFilledServerUrl, 
   preFilledServerName,
+  preFilledServerId,
   size = 'md', 
   variant = 'outline', 
   className = '',
-  showText = false 
+  showText = false,
+  autoCollect = false,
+  disabled = false,
+  onAutoCollectStart,
+  onAutoCollectEnd
 }: BackupCollectMenuProps) {
   const [isCollecting, setIsCollecting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -52,10 +63,14 @@ export function BackupCollectMenu({
   const [downloadJson, setDownloadJson] = useState(false);
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const [serverAddresses, setServerAddresses] = useState<ServerAddress[]>([]);
-  const [selectedServerId, setSelectedServerId] = useState<string>("");
+  const [selectedServerId, setSelectedServerId] = useState<string>("new-server");
   const [isLoadingServers, setIsLoadingServers] = useState(false);
   const [progress, setProgress] = useState(0);
   const [buttonState, setButtonState] = useState<'default' | 'loading' | 'success'>('default');
+  
+  // Determine the mode based on props
+  const isAutoCollectMode = autoCollect && preFilledServerId;
+  const isServerListMode = !autoCollect && !preFilledServerUrl && !preFilledServerName;
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
@@ -140,6 +155,8 @@ export function BackupCollectMenu({
     }
   }, [preFilledServerUrl]);
 
+  // Auto-collect is now triggered by button click, not on mount
+
   // Fetch server addresses when popover opens and preFilledServerUrl is not provided
   useEffect(() => {
     if (isOpen && !preFilledServerUrl && serverAddresses.length === 0) {
@@ -164,13 +181,21 @@ export function BackupCollectMenu({
 
   // Handle server selection
   const handleServerSelect = (serverId: string) => {
-    const selectedServer = serverAddresses.find(server => server.id === serverId);
-    if (selectedServer) {
-      const parsed = parseServerUrl(selectedServer.server_url);
-      if (parsed.isValid) {
-        setHostname(parsed.hostname);
-        setPort(parsed.port);
-        setSelectedServerId(serverId);
+    if (serverId === "new-server") {
+      // Clear fields for new server
+      setHostname("");
+      setPort(defaultAPIConfig.duplicatiPort.toString());
+      setPassword("");
+      setSelectedServerId("new-server");
+    } else {
+      const selectedServer = serverAddresses.find(server => server.id === serverId);
+      if (selectedServer) {
+        const parsed = parseServerUrl(selectedServer.server_url);
+        if (parsed.isValid) {
+          setHostname(parsed.hostname);
+          setPort(parsed.port);
+          setSelectedServerId(serverId);
+        }
       }
     }
   };
@@ -267,25 +292,126 @@ export function BackupCollectMenu({
     }
   };
 
-  const handleCollect = async () => {
-    if (!hostname) {
-      toast({
-        title: "Error",
-        description: "Please enter a hostname",
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
+  const handleAutoCollect = async () => {
+    if (!preFilledServerId) return;
+    
+    onAutoCollectStart?.();
+    
+    // Open popup to show progress only
+    setIsOpen(true);
+    
+    try {
+      setIsCollecting(true);
+      setProgress(0);
+      setStats(null);
+      
+      // Simulate progress
+      const progressInterval = setInterval(() => {
+        setProgress(prev => {
+          const increment = Math.random() * 15;
+          const newProgress = prev + increment;
+          return newProgress > 90 ? 90 : newProgress;
+        });
+      }, 200);
 
-    if (!password) {
+      const response = await authenticatedRequest('/api/backups/collect', {
+        method: 'POST',
+        body: JSON.stringify({
+          serverId: preFilledServerId,
+          downloadJson: false
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to collect backups');
+      }
+
+      const result = await response.json();
+      
+      // Complete progress and clear interval
+      clearInterval(progressInterval);
+      setProgress(100);
+      setStats(result.stats);
+      
+      const serverName = result.serverAlias || result.serverName;
+
+      // Show success toast
       toast({
-        title: "Error",
-        description: "Please enter a password",
-        variant: "destructive",
+        title: `Backups collected successfully from ${serverName}`,
+        description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+        variant: "default",
         duration: 3000,
       });
-      return;
+
+      // Refresh dashboard data
+      await refreshDashboard();
+      await refreshConfigSilently();
+      setServerAddresses([]);
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('Error collecting backups:', errorMessage);
+      
+      // Show error toast
+      toast({
+        title: "Collection Failed",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 10000,
+      });
+    } finally {
+      setIsCollecting(false);
+      onAutoCollectEnd?.();
+      
+      // Close popup after few seconds to show completion
+      setTimeout(() => {
+        setIsOpen(false);
+        setProgress(0);
+        setStats(null);
+      }, 3000);
+    }
+  };
+
+  const handleCollect = async () => {
+    // Determine which API case to use based on user input
+    const requestBody: Record<string, unknown> = { downloadJson };
+    
+    if (selectedServerId && selectedServerId !== "new-server") {
+      // Case 1: ServerID only (use stored credentials) - no password provided
+      if (!password) {
+        requestBody.serverId = selectedServerId;
+      }
+      // Case 2: ServerID with updates (update stored credentials) - password provided
+      else {
+        requestBody.serverId = selectedServerId;
+        requestBody.hostname = hostname;
+        requestBody.port = parseInt(port) || defaultAPIConfig.duplicatiPort;
+        requestBody.password = password;
+      }
+    } else {
+      // Case 2: Hostname/port/password only (new connection)
+      if (!hostname) {
+        toast({
+          title: "Error",
+          description: "Please enter a hostname",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+      if (!password) {
+        toast({
+          title: "Error",
+          description: "Please enter a password",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+      requestBody.hostname = hostname;
+      requestBody.port = parseInt(port) || defaultAPIConfig.duplicatiPort;
+      requestBody.password = password;
     }
 
     let progressInterval: NodeJS.Timeout | null = null;
@@ -305,17 +431,9 @@ export function BackupCollectMenu({
         });
       }, 200);
 
-      const response = await fetch('/api/backups/collect', {
+      const response = await authenticatedRequest('/api/backups/collect', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          hostname, 
-          port: parseInt(port) || defaultAPIConfig.duplicatiPort,
-          password,
-          downloadJson
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -362,6 +480,9 @@ export function BackupCollectMenu({
       
       // Also refresh configuration data to update server lists in configuration tabs
       await refreshConfigSilently();
+      
+      // Clear server addresses to force a refresh next time the popover opens
+      setServerAddresses([]);
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -415,6 +536,14 @@ export function BackupCollectMenu({
           size={getButtonSize()} 
           className={className}
           title="Collect backup logs"
+          disabled={disabled}
+          onClick={(e) => {
+            if (isAutoCollectMode) {
+              e.preventDefault();
+              e.stopPropagation();
+              handleAutoCollect();
+            }
+          }}
         >
           <Download className={getIconSize()} />
           {showText && "Collect"}
@@ -429,161 +558,230 @@ export function BackupCollectMenu({
         avoidCollisions={true}
       >
         <div className="grid gap-4">
-          <GradientCardHeader>
-            <h4 className="text-lg font-semibold leading-none text-white">Collect Backup Logs</h4>
-          </GradientCardHeader>
-          <div className="px-1 -mt-2">
-            <p className="text-xs text-muted-foreground">
-              {preFilledServerName
-                ? <>Extract backup logs and configuration from <span className="font-medium text-foreground">{preFilledServerName}</span></>
-                : "Extract backup logs and schedule configuration directly from Duplicati server"}
-            </p>
-          </div>
-          <div className="grid gap-3">
-            {/* Show server selection dropdown only when preFilledServerUrl is empty or non-existent */}
-            {!preFilledServerUrl && (
-              <div className="grid gap-1.5">
-                <Label htmlFor="server-select" className="flex items-center gap-2">
-                  <ColoredIcon icon={Server} color="blue" size="sm" />
-                  Select Server
-                </Label>
-                <Select value={selectedServerId} onValueChange={handleServerSelect} disabled={isCollecting}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Choose a server or enter manually below"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isLoadingServers ? (
-                      <SelectItem value="loading" disabled>
-                        Loading servers...
-                      </SelectItem>
-                    ) : serverAddresses.length === 0 ? (
-                      <SelectItem value="no-servers" disabled>
-                        No servers with server URLs configured
-                      </SelectItem>
-                    ) : (
-                      serverAddresses.map((server) => (
-                        <SelectItem key={server.id} value={server.id}>
-                          {server.alias ? `${server.alias} (${server.name})` : server.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <div className="grid gap-1.5">
-              <Label htmlFor="hostname" className="flex items-center gap-2">
-                <ColoredIcon icon={Globe} color="blue" size="sm" />
-                Hostname
-                <StatusIndicator 
-                  status="online" 
-                  label="HTTP/HTTPS automatically detected" 
-                  animate={true}
-                />
-              </Label>
-              <Input
-                id="hostname"
-                value={hostname}
-                onChange={(e) => setHostname(e.target.value)}
-                onFocus={(e) => e.target.select()}
-                placeholder="server name or IP"
-                disabled={isCollecting}
-              />
-            </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="port" className="flex items-center gap-2">
-                <ColoredIcon icon={Server} color="purple" size="sm" />
-                Port
-              </Label>
-              <Input
-                id="port"
-                value={port}
-                onChange={(e) => setPort(e.target.value)}
-                onFocus={(e) => e.target.select()}
-                placeholder="8200"
-                disabled={isCollecting}
-              />
-            </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="password" className="flex items-center gap-2">
-                <ColoredIcon icon={Lock} color="red" size="sm" />
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={(e) => e.target.select()}
-                placeholder="Enter Duplicati password"
-                disabled={isCollecting}
-              />
-              <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
-            </div>
-            <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg border border-border/50">
-              <Checkbox
-                id="downloadJson"
-                checked={downloadJson}
-                onCheckedChange={(checked) => setDownloadJson(checked as boolean)}
-                disabled={isCollecting}
-              />
-              <Label
-                htmlFor="downloadJson"
-                className="text-sm font-normal flex items-center gap-2 cursor-pointer"
-              >
-                <ColoredIcon icon={FileDown} color="green" size="sm" />
-                Download collected JSON data
-              </Label>
-            </div>
-            {isCollecting && (
+          {/* Auto-collect mode: Only show progress */}
+          {isAutoCollectMode ? (
+            (isCollecting || stats) && (
               <div className="flex flex-col items-center justify-center space-y-3 py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                <div className="text-center space-y-2">
-                  <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    Collecting backup logs...
-                  </p>
-                  <Progress value={progress} variant="gradient" className="w-full h-2" />
-                  <p className="text-xs text-blue-600 dark:text-blue-400">
-                    {Math.round(progress)}% complete
-                  </p>
+                {isCollecting ? (
+                  <>
+                    <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                    <div className="text-center space-y-2">
+                      <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                        Collecting backup logs...
+                      </p>
+                      <Progress value={progress} variant="gradient" className="w-full h-2" />
+                      <p className="text-xs text-blue-600 dark:text-blue-400">
+                        {Math.round(progress)}% complete
+                      </p>
+                    </div>
+                  </>
+                ) : stats ? (
+                  <div className="text-center space-y-2">
+                    <div className="h-8 w-8 mx-auto flex items-center justify-center">
+                      <div className="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center">
+                        <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                      Collection complete!
+                    </p>
+                    <div className="space-y-1 text-xs text-muted-foreground">
+                      <p>Processed: {stats.processed} backups</p>
+                      <p>Skipped: {stats.skipped} duplicates</p>
+                      <p>Errors: {stats.errors}</p>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            )
+          ) : (
+            /* Pre-filled mode or Server list mode: Show form */
+            <>
+              <GradientCardHeader>
+                <h4 className="text-lg font-semibold leading-none text-white">Collect Backup Logs</h4>
+              </GradientCardHeader>
+              <div className="px-1 -mt-2">
+                <p className="text-xs text-muted-foreground">
+                  {preFilledServerName
+                    ? <>Extract backup logs and configuration from <span className="font-medium text-foreground">{preFilledServerName}</span></>
+                    : selectedServerId && selectedServerId !== "new-server" && !hostname && !password
+                    ? <>Using stored credentials for selected server</>
+                    : selectedServerId && selectedServerId !== "new-server" && hostname && password
+                    ? <>Updating server credentials and collecting backups</>
+                    : "Extract backup logs and schedule configuration directly from Duplicati server"}
+                </p>
+              </div>
+              <div className="grid gap-3">
+                {/* Show server selection dropdown only in server list mode */}
+                {isServerListMode && (
+                  <div className="grid gap-1.5">
+                    <Label htmlFor="server-select" className="flex items-center gap-2">
+                      <ColoredIcon icon={Server} color="blue" size="sm" />
+                      Select Server
+                    </Label>
+                    <Select value={selectedServerId} onValueChange={handleServerSelect} disabled={isCollecting}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Choose a server or enter manually below"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="new-server">
+                          + New Server
+                        </SelectItem>
+                        {isLoadingServers ? (
+                          <SelectItem value="loading" disabled>
+                            Loading servers...
+                          </SelectItem>
+                        ) : serverAddresses.length === 0 ? (
+                          <SelectItem value="no-servers" disabled>
+                            No servers with server URLs configured
+                          </SelectItem>
+                        ) : (
+                          serverAddresses.map((server) => (
+                            <SelectItem key={server.id} value={server.id}>
+                              {server.alias ? `${server.alias} (${server.name})` : server.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                <div className="grid gap-1.5">
+                  <Label htmlFor="hostname" className="flex items-center gap-2">
+                    <ColoredIcon icon={Globe} color="blue" size="sm" />
+                    Hostname
+                    {selectedServerId && selectedServerId !== "new-server" && !hostname && !password && (
+                      <span className="text-xs text-muted-foreground">(optional - leave empty to use stored)</span>
+                    )}
+                    {selectedServerId && selectedServerId !== "new-server" && hostname && password && (
+                      <span className="text-xs text-orange-600">(updating stored value)</span>
+                    )}
+                    <StatusIndicator 
+                      status="online" 
+                      label="HTTP/HTTPS automatically detected" 
+                      animate={true}
+                    />
+                  </Label>
+                  <Input
+                    id="hostname"
+                    value={hostname}
+                    onChange={(e) => setHostname(e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" && !hostname && !password ? "Leave empty to use stored hostname" : "server name or IP"}
+                    disabled={isCollecting}
+                  />
                 </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="port" className="flex items-center gap-2">
+                    <ColoredIcon icon={Server} color="purple" size="sm" />
+                    Port
+                  </Label>
+                  <Input
+                    id="port"
+                    value={port}
+                    onChange={(e) => setPort(e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    placeholder="8200"
+                    disabled={isCollecting}
+                  />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label htmlFor="password" className="flex items-center gap-2">
+                    <ColoredIcon icon={Lock} color="red" size="sm" />
+                    Password
+                    {selectedServerId && selectedServerId !== "new-server" && !hostname && !password && (
+                      <span className="text-xs text-muted-foreground">(optional - leave empty to use stored)</span>
+                    )}
+                    {selectedServerId && selectedServerId !== "new-server" && hostname && password && (
+                      <span className="text-xs text-orange-600">(updating stored value)</span>
+                    )}
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onFocus={(e) => e.target.select()}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" && !hostname && !password ? "Leave empty to use stored password" : "Enter Duplicati password"}
+                    disabled={isCollecting}
+                  />
+                  <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg border border-border/50">
+                  <Checkbox
+                    id="downloadJson"
+                    checked={downloadJson}
+                    onCheckedChange={(checked) => setDownloadJson(checked as boolean)}
+                    disabled={isCollecting}
+                  />
+                  <Label
+                    htmlFor="downloadJson"
+                    className="text-sm font-normal flex items-center gap-2 cursor-pointer"
+                  >
+                    <ColoredIcon icon={FileDown} color="green" size="sm" />
+                    Download collected JSON data
+                  </Label>
+                </div>
+                
+                {/* Show progress during manual collection */}
+                {(isCollecting || stats) && (
+                  <div className="flex flex-col items-center justify-center space-y-3 py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+                    {isCollecting ? (
+                      <>
+                        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                        <div className="text-center space-y-2">
+                          <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                            Collecting backup logs...
+                          </p>
+                          <Progress value={progress} variant="gradient" className="w-full h-2" />
+                          <p className="text-xs text-blue-600 dark:text-blue-400">
+                            {Math.round(progress)}% complete
+                          </p>
+                        </div>
+                      </>
+                    ) : stats ? (
+                      <div className="space-y-2 text-sm">
+                        <p className="font-medium">Collection complete:</p>
+                        <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                          <li>Processed: {stats.processed} backups</li>
+                          <li>Skipped: {stats.skipped} duplicates</li>
+                          <li>Errors: {stats.errors}</li>
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+
+                <Button
+                  onClick={handleCollect}
+                  disabled={isCollecting || (selectedServerId === "new-server" && (!hostname || !password))}
+                  variant={buttonState === 'success' ? 'success' : 'gradient'}
+                  className="w-full relative overflow-hidden"
+                  title="Collect backup logs"
+                >
+                  {buttonState === 'loading' ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Collecting...
+                    </>
+                  ) : buttonState === 'success' ? (
+                    <>
+                      <ColoredIcon icon={Download} color="green" size="sm" className="mr-2 text-white" />
+                      Collection Complete!
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Collect Backups
+                    </>
+                  )}
+                </Button>
               </div>
-            )}
-            {stats && (
-              <div className="space-y-2 text-sm">
-                <p className="font-medium">Collection complete:</p>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>Processed: {stats.processed} backups</li>
-                  <li>Skipped: {stats.skipped} duplicates</li>
-                  <li>Errors: {stats.errors}</li>
-                </ul>
-              </div>
-            )}
-            <Button
-              onClick={handleCollect}
-              disabled={isCollecting || !hostname || !password}
-              variant={buttonState === 'success' ? 'success' : 'gradient'}
-              className="w-full relative overflow-hidden"
-            >
-              {buttonState === 'loading' ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Collecting...
-                </>
-              ) : buttonState === 'success' ? (
-                <>
-                  <ColoredIcon icon={Download} color="green" size="sm" className="mr-2 text-white" />
-                  Collection Complete!
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4 mr-2" />
-                  Collect Backups
-                </>
-              )}
-            </Button>
-          </div>
+            </>
+          )}
         </div>
       </PopoverContent>
     </Popover>

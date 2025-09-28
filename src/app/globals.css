@@ -333,7 +333,13 @@ body {
   }
 
   .card-hover-lift:hover {
-    transform: translateY(-2px);
+    /*transform: translateY(-2px);*/
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Enhanced Tooltip Glow Effects */
+  .tooltip-hover-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: var(--shadow-card-hover);
   }
 
@@ -374,6 +380,22 @@ body {
 
   .status-dot-info {
     background-color: hsl(var(--status-info));
+  }
+
+  /* Custom Button Styles */
+  .btn-amber-clear {
+    background-color: var(--color-amber-500);
+    color: white;
+    border-color: var(--color-amber-500);
+  }
+
+  .btn-amber-clear:hover {
+    background-color: var(--color-amber-600);
+  }
+
+  .btn-amber-clear:disabled {
+    background-color: var(--color-amber-300);
+    opacity: 0.5;
   }
 }
 

@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
 import { SortableTableHead } from '@/components/ui/sortable-table-head';
 import { useToast } from '@/components/ui/use-toast';
-import { useConfiguration } from '@/contexts/configuration-context';
+import { useConfiguration, type ServerWithBackup } from '@/contexts/configuration-context';
 import { BackupNotificationConfig, BackupKey, CronInterval, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
@@ -18,6 +18,7 @@ import { cronIntervalMap } from '@/lib/cron-interval-map';
 import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
+import { authenticatedRequest } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
@@ -31,14 +32,7 @@ import {
 } from '@/lib/interval-utils';
 
 
-interface ServerWithBackup {
-  id: string;
-  name: string;
-  backupName: string;
-  server_url: string;
-  alias: string;
-  note: string;
-}
+// Use the ServerWithBackup interface from the configuration context
 
 interface OverdueMonitoringFormProps {
   backupSettings: Record<BackupKey, BackupNotificationConfig>;
@@ -74,6 +68,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const [isResetting, setIsResetting] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [resetTargetServer, setResetTargetServer] = useState<{serverId: string, backupName: string, currentNextRun: string, lastBackup: string} | null>(null);
+  const [autoCollectingServers, setAutoCollectingServers] = useState<Set<string>>(new Set());
+  const [isSavingInProgress, setIsSavingInProgress] = useState(false);
 
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
     { value: 'onetime', label: 'One time' },
@@ -111,6 +107,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   };
 
   useEffect(() => {
+    // Don't reinitialize if we're in the middle of saving to prevent overwriting local changes
+    if (isSavingInProgress) return;
+    
     if (config) {
       // Initialize settings from config
       if (config.backupSettings && Object.keys(config.backupSettings).length > 0) {
@@ -131,7 +130,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         setCronIntervalState(entry ? entry[0] as CronInterval : defaultCronInterval);
       }
     }
-  }, [config]);
+  }, [config, isSavingInProgress]);
 
   // Calculate overdue tolerance in milliseconds when config changes
   useEffect(() => {
@@ -145,6 +144,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
   // Initialize default settings for all servers when they are loaded
   useEffect(() => {
+    // Don't reinitialize if we're in the middle of saving to prevent overwriting local changes
+    if (isSavingInProgress) return;
+    
     if (config?.serversWithBackups && config.serversWithBackups.length > 0) {
       setSettings(prev => {
         const defaultSettings: Record<BackupKey, BackupNotificationConfig> = {};
@@ -169,7 +171,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
 
     }
-  }, [config?.serversWithBackups, settings]);
+  }, [config?.serversWithBackups, settings, isSavingInProgress]);
 
   const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean | number[]) => {
     const backupKey = `${serverId}:${backupName}`;
@@ -380,7 +382,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   // Helper function to run overdue backup check
   const runOverdueBackupCheck = async () => {
     try {
-      const response = await fetch('/api/notifications/check-overdue', {
+      const response = await authenticatedRequest('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
@@ -408,11 +410,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const handleCronIntervalChange = async (value: CronInterval) => {
     try {
       // First save the configuration
-      const response = await fetch('/api/cron-config', {
+      const response = await authenticatedRequest('/api/cron-config', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ interval: value }),
       });
 
@@ -453,11 +452,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
   const handleSave = async () => {
     setIsSaving(true);
+    setIsSavingInProgress(true);
     try {
       // Save backup settings using the dedicated endpoint
-      const backupResponse = await fetch('/api/configuration/backup-settings', {
+      const backupResponse = await authenticatedRequest('/api/configuration/backup-settings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           backupSettings: settings
         }),
@@ -468,9 +467,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       }
       
       // Save overdue tolerance using the dedicated endpoint
-      const toleranceResponse = await fetch('/api/configuration/overdue-tolerance', {
+      const toleranceResponse = await authenticatedRequest('/api/configuration/overdue-tolerance', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
       });
       
@@ -499,6 +497,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
     } finally {
       setIsSaving(false);
+      setIsSavingInProgress(false);
     }
   };
 
@@ -506,9 +505,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     setIsTesting(true);
     try {
       // Save backup settings using the dedicated endpoint
-      const backupResponse = await fetch('/api/configuration/backup-settings', {
+      const backupResponse = await authenticatedRequest('/api/configuration/backup-settings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           backupSettings: settings
         }),
@@ -519,9 +517,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       }
       
       // Save overdue tolerance using the dedicated endpoint
-      const toleranceResponse = await fetch('/api/configuration/overdue-tolerance', {
+      const toleranceResponse = await authenticatedRequest('/api/configuration/overdue-tolerance', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
       });
       
@@ -536,7 +533,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       await refreshConfigSilently();
       
       // Run the overdue backup check
-      const response = await fetch('/api/notifications/check-overdue', {
+      const response = await authenticatedRequest('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
@@ -567,9 +564,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     setNotificationFrequencyLoading(true);
     setNotificationFrequencyError(null);
     try {
-      const response = await fetch('/api/configuration/notifications', {
+      const response = await authenticatedRequest('/api/configuration/notifications', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value }),
       });
       if (!response.ok) throw new Error('Failed to update notification frequency');
@@ -589,9 +585,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       updateConfig({ overdue_tolerance: value });
       
       // Save to the database using the dedicated API endpoint
-      const response = await fetch('/api/configuration/overdue-tolerance', {
+      const response = await authenticatedRequest('/api/configuration/overdue-tolerance', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ overdue_tolerance: value }),
       });
       
@@ -620,7 +615,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const handleResetNotifications = async () => {
     setIsResetting(true);
     try {
-      const response = await fetch('/api/notifications/clear-overdue-timestamps', {
+      const response = await authenticatedRequest('/api/notifications/clear-overdue-timestamps', {
         method: 'POST',
       });
 
@@ -716,6 +711,18 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         duration: 3000,
       });
     }
+  };
+
+  const handleAutoCollectStart = (serverId: string) => {
+    setAutoCollectingServers(prev => new Set(prev).add(serverId));
+  };
+
+  const handleAutoCollectEnd = (serverId: string) => {
+    setAutoCollectingServers(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(serverId);
+      return newSet;
+    });
   };
 
 
@@ -858,10 +865,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             <BackupCollectMenu
                               preFilledServerUrl={server.server_url}
                               preFilledServerName={server.alias || server.name}
+                              preFilledServerId={server.id}
                               size="sm"
                               variant="ghost"
-                              className="text-xs hover:text-blue-500 transition-colors h-6 w-6 p-0"
+                              className={`text-xs transition-colors h-6 w-6 p-0 ${autoCollectingServers.has(server.id) ? 'cursor-wait' : ''} ${server.hasPassword ? 'text-blue-500 hover:text-blue-600' : 'hover:text-blue-500'}`}
                               showText={false}
+                              autoCollect={Boolean(server.hasPassword && server.server_url && server.server_url.trim() !== '')}
+                              onAutoCollectStart={() => handleAutoCollectStart(server.id)}
+                              onAutoCollectEnd={() => handleAutoCollectEnd(server.id)}
                             />
                             <div className="flex flex-col ml-1">
                               <span 
@@ -1010,10 +1021,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         <BackupCollectMenu
                           preFilledServerUrl={server.server_url}
                           preFilledServerName={server.alias || server.name}
+                          preFilledServerId={server.id}
                           size="sm"
                           variant="ghost"
-                          className="text-xs hover:text-blue-500 transition-colors h-6 w-6 p-0"
+                          className={`text-xs transition-colors h-6 w-6 p-0 ${autoCollectingServers.has(server.id) ? 'cursor-wait' : ''} ${server.hasPassword ? 'text-blue-500 hover:text-blue-600' : 'hover:text-blue-500'}`}
                           showText={false}
+                          autoCollect={Boolean(server.hasPassword && server.server_url && server.server_url.trim() !== '')}
+                          onAutoCollectStart={() => handleAutoCollectStart(server.id)}
+                          onAutoCollectEnd={() => handleAutoCollectEnd(server.id)}
                         />
                         <div className="ml-1">
                           <div 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withDb } from '@/lib/db-utils';
 import { dbOps } from '@/lib/db';
+import { withCSRF } from '@/lib/csrf-middleware';
 
 interface ServerRow {
   id: string;
@@ -8,10 +9,10 @@ interface ServerRow {
   server_url: string;
 }
 
-export async function GET(
+export const GET = withCSRF(async (
   _request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     const { serverId } = await params;
 
@@ -38,14 +39,16 @@ export async function GET(
       { status: 500 }
     );
   }
-}
+});
 
-export async function PATCH(
+export const PATCH = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     const { serverId } = await params;
+    
+    
     const { server_url } = await request.json();
 
     // Validate URL format
@@ -106,4 +109,4 @@ export async function PATCH(
       { status: 500 }
     );
   }
-}
+});

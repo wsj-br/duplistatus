@@ -2,7 +2,7 @@
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.8.7-blue)
+![](https://img.shields.io/badge/version-0.8.8-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
@@ -184,29 +184,16 @@ For example, to change the timezone to São Paulo, add these lines to the `dupli
 ```yaml
 environment:
   - TZ="America/Sao_Paulo"
-  # Optional: Email notifications (all 6 variables required)
-  # - SMTP_HOST=smtp.gmail.com
-  # - SMTP_PORT=587
-  # - SMTP_SECURE=false
-  # - SMTP_USERNAME=your-email@gmail.com
-  # - SMTP_PASSWORD=your-app-password
-  # - SMTP_MAILTO=admin@example.com
 ```
 
 or pass the environment variables in the command line:
 
 ```bash
-  --env TZ="America/Sao_Paulo" \
-  --env SMTP_HOST="smtp.gmail.com" \
-  --env SMTP_PORT="587" \
-  --env SMTP_SECURE="false" \
-  --env SMTP_USERNAME="your-email@gmail.com" \
-  --env SMTP_PASSWORD="your-app-password" \
-  --env SMTP_MAILTO="admin@example.com"
+  --env TZ="America/Sao_Paulo"
 ```
 
 > [!NOTE]
-> The SMTP example above shows Gmail configuration. Replace with your actual email provider settings. All six email variables are required for email functionality - if any are missing, email notifications will be disabled. Email variables are optional and can be omitted if you only want NTFY notifications.
+> Email notifications are configured through the web interface under `Settings → Email Configuration`. No environment variables are needed for email functionality.
 > <br/>
 
 ### Using your Linux Configuration
@@ -236,22 +223,15 @@ The application supports the following environment variables for configuration:
 | `NODE_ENV`                | Node.js environment (`development` or `production`)              | `production`    |
 | `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                                        | `1`             |
 | `TZ`                      | Timezone for the application                                     | `Europe/London` |
-| `SMTP_HOST`               | SMTP server hostname for email notifications (optional)          | _(not set)_     |
-| `SMTP_PORT`               | SMTP server port for email notifications (optional)              | _(not set)_     |
-| `SMTP_SECURE`             | Connection type: true for SSL/TLS, false for STARTTLS (optional) | _(not set)_     |
-| `SMTP_USERNAME`           | SMTP authentication username (optional)                          | _(not set)_     |
-| `SMTP_PASSWORD`           | SMTP authentication password (optional)                          | _(not set)_     |
-| `SMTP_MAILTO`             | Email recipient address for notifications (optional)             | _(not set)_     |
 
 <br/>
 
 > [!NOTE] > **Email Notifications Configuration:**
 >
 > - Email notifications are **optional** and disabled by default
-> - **All six** SMTP environment variables must be configured for email functionality to be enabled
-> - If any SMTP variable is missing, email notifications will be automatically disabled
 > - Email notifications work alongside or as an alternative to NTFY notifications
 > - Configure email settings in the web interface under `Settings → Email Configuration`
+> - Settings are stored securely in the database with encrypted credentials
 > - Refer to the [User Guide](USER-GUIDE.md#email-configuration) for detailed setup instructions
 
 <br/><br/>

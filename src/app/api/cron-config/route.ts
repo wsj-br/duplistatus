@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { NextResponse, NextRequest } from 'next/server';
 import { getCronConfig, setCronInterval } from '@/lib/db-utils';
 import { CronInterval } from '@/lib/types';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
 
-export async function GET() {
+export const GET = withCSRF(async () => {
   try {
     const config = getCronConfig();
     const task = config.tasks['overdue-backup-check'];
@@ -22,10 +23,11 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
+    
     const { interval } = await request.json() as { interval: CronInterval };
     
     if (!interval) {
@@ -45,4 +47,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+});

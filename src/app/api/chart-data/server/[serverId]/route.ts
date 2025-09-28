@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET(
+export const GET = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
-) {
+) => {
   try {
     const { serverId } = await params;
     const searchParams = request.nextUrl.searchParams;
@@ -32,4 +33,4 @@ export async function GET(
     console.error('Error fetching server chart data:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to fetch chart data' }, { status: 500 });
   }
-}
+});

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useConfig } from './config-context';
+import { useConfiguration } from './configuration-context';
 import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 type PageType = 'dashboard' | 'detail' | 'none';
@@ -42,6 +43,7 @@ const GlobalRefreshContext = createContext<GlobalRefreshContextProps | undefined
 
 export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode }) => {
   const { autoRefreshEnabled, setAutoRefreshEnabled, autoRefreshInterval } = useConfig();
+  const { refreshConfigSilently } = useConfiguration();
   const pathname = usePathname();
   
   const [state, setState] = useState<GlobalRefreshState>({
@@ -89,8 +91,11 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: true,
       }));
 
-      // Fetch consolidated dashboard data
-      const dashboardResponse = await fetch('/api/dashboard');
+      // Fetch consolidated dashboard data and configuration in parallel
+      const [dashboardResponse] = await Promise.all([
+        fetch('/api/dashboard'),
+        refreshConfigSilently() // Refresh configuration silently
+      ]);
 
       if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
@@ -131,7 +136,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  }, []);
+  }, [refreshConfigSilently]);
 
   const refreshDetail = useCallback(async (serverId: string) => {
     try {
@@ -142,8 +147,11 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: true,
       }));
 
-      // Only fetch basic detail data - chart data is handled by MetricsChartsPanel
-      const dataResponse = await fetch(`/api/detail/${serverId}`);
+      // Fetch detail data and configuration in parallel
+      const [dataResponse] = await Promise.all([
+        fetch(`/api/detail/${serverId}`),
+        refreshConfigSilently() // Refresh configuration silently
+      ]);
 
       if (!dataResponse.ok) {
         throw new Error('Failed to fetch detail data');
@@ -174,7 +182,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         refreshInProgress: false,
       }));
     }
-  }, []);
+  }, [refreshConfigSilently]);
 
   // Update current page when pathname changes and detect dashboard returns
   useEffect(() => {

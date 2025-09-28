@@ -3,13 +3,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { NotificationConfig, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
 
-interface ServerWithBackup {
+export interface ServerWithBackup {
   id: string;
   name: string;
   backupName: string;
   server_url: string;
   alias: string;
   note: string;
+  hasPassword: boolean;
 }
 
 interface UnifiedConfiguration extends NotificationConfig {

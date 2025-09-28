@@ -1,34 +1,25 @@
 import { NextResponse } from 'next/server';
-import { getEmailConfigFromEnv, isEmailConfigured } from '@/lib/notifications';
+import { getEmailConfigFromEnv } from '@/lib/notifications';
+import { withCSRF } from '@/lib/csrf-middleware';
+import { getSMTPConfig, setSMTPConfig } from '@/lib/db-utils';
+import type { SMTPConfig } from '@/lib/types';
 
-export async function GET() {
+export const GET = withCSRF(async () => {
   try {
-    const isConfigured = isEmailConfigured();
-    const config = getEmailConfigFromEnv();
+    const config = getSMTPConfig();
     
-    if (!isConfigured || !config) {
+    if (!config) {
       return NextResponse.json({
         configured: false,
         config: null,
-        message: 'Email is not configured. Please set the required environment variables.'
+        message: 'Email is not configured. Please configure SMTP settings.'
       });
     }
 
-    // Return configuration without sensitive data (password)
-    const safeConfig = {
-      host: config.host,
-      port: config.port,
-      secure: config.secure,
-      username: config.username,
-      mailto: config.mailto,
-      enabled: config.enabled,
-      fromName: config.fromName,
-      fromEmail: config.fromEmail
-    };
-
+    // Return configuration with all data (including password for editing)
     return NextResponse.json({
       configured: true,
-      config: safeConfig,
+      config: config,
       message: 'Email is configured and ready to use.'
     });
   } catch (error) {
@@ -42,4 +33,53 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+});
+
+export const POST = withCSRF(async (request: Request) => {
+  try {
+    const body = await request.json();
+    
+    // Validate required fields
+    const { host, port, secure, username, password, mailto } = body;
+    
+    if (!host || !port || !username || !password || !mailto) {
+      return NextResponse.json(
+        { error: 'Missing required fields: host, port, username, password, mailto' },
+        { status: 400 }
+      );
+    }
+
+    // Validate port is a number
+    const portNumber = parseInt(port, 10);
+    if (isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
+      return NextResponse.json(
+        { error: 'Port must be a valid number between 1 and 65535' },
+        { status: 400 }
+      );
+    }
+
+    // Create SMTP config object
+    const smtpConfig: SMTPConfig = {
+      host: host.trim(),
+      port: portNumber,
+      secure: Boolean(secure),
+      username: username.trim(),
+      password: password,
+      mailto: mailto.trim()
+    };
+
+    // Save configuration
+    setSMTPConfig(smtpConfig);
+
+    return NextResponse.json({
+      success: true,
+      message: 'SMTP configuration saved successfully'
+    });
+  } catch (error) {
+    console.error('Failed to save SMTP configuration:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json(
+      { error: 'Failed to save SMTP configuration' },
+      { status: 500 }
+    );
+  }
+});

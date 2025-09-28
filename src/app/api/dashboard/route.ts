@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache } from '@/lib/db-utils';
+import { withCSRF } from '@/lib/csrf-middleware';
 
-export async function GET() {
+export const GET = withCSRF(async () => {
   try {
     // Clear request cache to ensure fresh data on each request
     clearRequestCache();
@@ -66,4 +67,4 @@ export async function GET() {
       }
     );
   }
-}
+});

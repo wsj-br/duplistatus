@@ -111,7 +111,7 @@ export function GetNextBackupRunDate(lastBackupStr: string, baseTimeStr: string,
     
     const MAX_ITERS = 50000;
     let iters = 0;
-    let candidate = baseTime;
+    let candidate = lastBackup;
 
     // define allowed weekdays
     const allowed = allowedWeekdays || [];

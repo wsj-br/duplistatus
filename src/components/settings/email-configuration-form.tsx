@@ -4,34 +4,49 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { AlertCircle, Mail, CheckCircle, XCircle } from 'lucide-react';
+import { AlertCircle, Mail, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { authenticatedRequest } from '@/lib/client-session-csrf';
 
 interface EmailConfig {
   host: string;
   port: number;
   secure: boolean;
   username: string;
+  password: string;
   mailto: string;
   enabled: boolean;
 }
 
 export function EmailConfigurationForm() {
   const { toast } = useToast();
-  const [emailConfig, setEmailConfig] = useState<EmailConfig | null>(null);
-  const [isConfigured, setIsConfigured] = useState(false);
+  const [emailConfig, setEmailConfig] = useState<EmailConfig>({
+    host: '',
+    port: 587,
+    secure: false,
+    username: '',
+    password: '',
+    mailto: '',
+    enabled: false
+  });
   const [isTesting, setIsTesting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Load email configuration from environment variables
+  // Load email configuration from database
   useEffect(() => {
     const loadEmailConfig = async () => {
       try {
         const response = await fetch('/api/configuration/email');
         if (response.ok) {
           const data = await response.json();
-          setEmailConfig(data.config);
-          setIsConfigured(data.configured);
+          if (data.configured && data.config) {
+            setEmailConfig(data.config);
+          }
         }
       } catch (error) {
         console.error('Failed to load email configuration:', error);
@@ -43,24 +58,50 @@ export function EmailConfigurationForm() {
     loadEmailConfig();
   }, []);
 
-  const handleTestEmail = async () => {
-    if (!isConfigured) {
+  const handleInputChange = (field: keyof EmailConfig, value: string | number | boolean) => {
+    setEmailConfig(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveConfig = async () => {
+    setIsSaving(true);
+    try {
+      const response = await authenticatedRequest('/api/configuration/email', {
+        method: 'POST',
+        body: JSON.stringify(emailConfig),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save configuration');
+      }
+
       toast({
-        title: "Configuration Required",
-        description: "Email is not configured. Please check environment variables.",
+        title: "Configuration Saved",
+        description: "SMTP configuration saved successfully!",
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error('Error saving configuration:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Save Failed",
+        description: error instanceof Error ? error.message : "Failed to save configuration",
         variant: "destructive",
         duration: 3000,
       });
-      return;
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const handleTestEmail = async () => {
 
     setIsTesting(true);
     try {
-      const response = await fetch('/api/notifications/test', {
+      const response = await authenticatedRequest('/api/notifications/test', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ 
           type: 'email',
         }),
@@ -108,112 +149,119 @@ export function EmailConfigurationForm() {
             Email Configuration
           </CardTitle>
           <CardDescription>
-            Configure SMTP settings for email notifications. Email configuration is managed through environment variables for security.
+            Configure SMTP settings for email notifications. Settings are stored securely in the database.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Configuration Status */}
+        <CardContent className="space-y-6">
+          {/* Configuration Form */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              {isConfigured ? (
-                <>
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span className="text-green-700 font-medium">Email is configured and ready</span>
-                </>
-              ) : (
-                <>
-                  <XCircle className="w-5 h-5 text-red-500" />
-                  <span className="text-red-700 font-medium">Email is not configured</span>
-                </>
-              )}
-            </div>
-
-            {!isConfigured && (
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  To enable email notifications, please configure the following environment variables:
-                  <ul className="mt-2 list-disc list-inside space-y-1 text-sm">
-                    <li><code className="bg-muted px-1 rounded">SMTP_HOST</code> - SMTP server hostname</li>
-                    <li><code className="bg-muted px-1 rounded">SMTP_PORT</code> - SMTP server port</li>
-                    <li><code className="bg-muted px-1 rounded">SMTP_SECURE</code> - Use secure connection (true/false)</li>
-                    <li><code className="bg-muted px-1 rounded">SMTP_USERNAME</code> - SMTP username</li>
-                    <li><code className="bg-muted px-1 rounded">SMTP_PASSWORD</code> - SMTP password</li>
-                    <li><code className="bg-muted px-1 rounded">SMTP_MAILTO</code> - Email recipient address</li>
-                  </ul>
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
-
-          {/* Configuration Display (if configured) */}
-          {isConfigured && emailConfig && (
-            <div className="space-y-4 pt-4 border-t">
-              <h4 className="font-medium text-sm text-muted-foreground">Current Configuration</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="smtp-host">SMTP Host</Label>
+                <Input
+                  id="smtp-host"
+                  type="text"
+                  value={emailConfig.host}
+                  onChange={(e) => handleInputChange('host', e.target.value)}
+                  placeholder="smtp.gmail.com"
+                />
+              </div>
               
-              <div className="rounded-md border">
-                <table className="w-full">
-                  <tbody className="divide-y divide-border">
-                    <tr className="hover:bg-muted/50">
-                      <td className="px-4 py-3 font-medium text-sm">SMTP_HOST</td>
-                      <td className="px-4 py-3 text-sm font-mono bg-muted/30">{emailConfig.host}</td>
-                    </tr>
-                    <tr className="hover:bg-muted/50">
-                      <td className="px-4 py-3 font-medium text-sm">SMTP_PORT</td>
-                      <td className="px-4 py-3 text-sm font-mono bg-muted/30">{emailConfig.port}</td>
-                    </tr>
-                    <tr className="hover:bg-muted/50">
-                      <td className="px-4 py-3 font-medium text-sm">SMTP_SECURE</td>
-                      <td className="px-4 py-3 text-sm bg-muted/30">
-                        <div className="flex items-center space-x-2">
-                          {emailConfig.secure ? (
-                            <>
-                              <span className="font-mono">true</span>
-                              <span className="text-muted-foreground">(Direct SSL/TLS, recommended for port 465)</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="font-mono">false</span>
-                              <span className="text-muted-foreground">(STARTTLS, recommended for port 587)</span>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                      <tr className="hover:bg-muted/50">
-                        <td className="px-4 py-3 font-medium text-sm">SMTP_USERNAME</td>
-                        <td className="px-4 py-3 text-sm font-mono bg-muted/30">{emailConfig.username}</td>
-                      </tr>
-                      <tr className="hover:bg-muted/50">
-                        <td className="px-4 py-3 font-medium text-sm">SMTP_MAILTO</td>
-                        <td className="px-4 py-3 text-sm font-mono bg-muted/30">{emailConfig.mailto}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-              <div className="text-xs text-muted-foreground mt-2">
-                <p>💡 Email configuration is managed through environment variables and cannot be modified here.</p>
+              <div className="space-y-2">
+                <Label htmlFor="smtp-port">SMTP Port</Label>
+                <Input
+                  id="smtp-port"
+                  type="number"
+                  value={emailConfig.port}
+                  onChange={(e) => handleInputChange('port', parseInt(e.target.value) || 587)}
+                  placeholder="587"
+                  min="1"
+                  max="65535"
+                />
               </div>
             </div>
-          )}
 
-          {/* Test Email Button */}
+            <div className="space-y-2">
+              <Label htmlFor="smtp-username">SMTP Username</Label>
+              <Input
+                id="smtp-username"
+                type="text"
+                value={emailConfig.username}
+                onChange={(e) => handleInputChange('username', e.target.value)}
+                placeholder="your-email@gmail.com"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="smtp-password">SMTP Password</Label>
+              <div className="relative">
+                <Input
+                  id="smtp-password"
+                  type={showPassword ? "text" : "password"}
+                  value={emailConfig.password}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  placeholder="Your email password or app password"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="smtp-mailto">Recipient Email</Label>
+              <Input
+                id="smtp-mailto"
+                type="email"
+                value={emailConfig.mailto}
+                onChange={(e) => handleInputChange('mailto', e.target.value)}
+                placeholder="recipient@example.com"
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="smtp-secure"
+                checked={emailConfig.secure}
+                onCheckedChange={(checked) => handleInputChange('secure', checked)}
+              />
+              <Label htmlFor="smtp-secure">
+                Use secure connection (SSL/TLS)
+                <span className="text-sm text-muted-foreground ml-2">
+                  {emailConfig.secure ? '(Direct SSL/TLS, recommended for port 465)' : '(STARTTLS, recommended for port 587)'}
+                </span>
+              </Label>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
+              onClick={handleSaveConfig}
+              disabled={isSaving}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+            >
+              {isSaving ? "Saving..." : "Save Configuration"}
+            </Button>
+            
+            <Button
               onClick={handleTestEmail}
-              disabled={isTesting || !isConfigured}
-              variant="gradient"
+              disabled={isTesting}
+              variant="outline"
               className="w-full sm:w-auto"
             >
               {isTesting ? "Sending..." : "Send Test Email"}
             </Button>
-            
-            {!isConfigured && (
-              <p className="text-sm text-muted-foreground py-2">
-                Configure environment variables and restart the application to enable email functionality.
-              </p>
-            )}
           </div>
         </CardContent>
       </Card>

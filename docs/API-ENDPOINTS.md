@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.7-blue)
+![](https://img.shields.io/badge/version-0.8.8-blue)
 
 <br/>
 
@@ -56,11 +56,13 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`](#get-server-backup-chart-data---apichart-dataserverserveridbackupbackupname)
 - [Configuration Management](#configuration-management)
   - [Get Email Configuration - `/api/configuration/email`](#get-email-configuration---apiconfigurationemail)
+  - [Update Email Configuration - `/api/configuration/email`](#update-email-configuration---apiconfigurationemail)
   - [Get Unified Configuration - `/api/configuration/unified`](#get-unified-configuration---apiconfigurationunified)
   - [Get NTFY Configuration - `/api/configuration/ntfy`](#get-ntfy-configuration---apiconfigurationntfy)
   - [Update Notification Configuration - `/api/configuration/notifications`](#update-notification-configuration---apiconfigurationnotifications)
   - [Update Backup Settings - `/api/configuration/backup-settings`](#update-backup-settings---apiconfigurationbackup-settings)
   - [Update Notification Templates - `/api/configuration/templates`](#update-notification-templates---apiconfigurationtemplates)
+  - [Get Overdue Tolerance - `/api/configuration/overdue-tolerance`](#get-overdue-tolerance---apiconfigurationoverdue-tolerance)
   - [Update Overdue Tolerance - `/api/configuration/overdue-tolerance`](#update-overdue-tolerance---apiconfigurationoverdue-tolerance)
 - [Notification System](#notification-system)
   - [Test Notification - `/api/notifications/test`](#test-notification---apinotificationstest)
@@ -80,13 +82,28 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Test Server Connection - `/api/servers/test-connection`](#test-server-connection---apiserverstest-connection)
   - [Get Server URL - `/api/servers/:serverId/server-url`](#get-server-url---apiserversserveridserver-url)
   - [Update Server URL - `/api/servers/:serverId/server-url`](#update-server-url---apiserversserveridserver-url)
+  - [Get Server Password - `/api/servers/:serverId/password`](#get-server-password---apiserversserveridpassword)
+  - [Update Server Password - `/api/servers/:serverId/password`](#update-server-password---apiserversserveridpassword)
+  - [Test Server Password - `/api/servers/:serverId/test-password`](#test-server-password---apiserversserveridtest-password)
 - [Error Handling](#error-handling)
 - [Data Type Notes](#data-type-notes)
   - [Message Arrays](#message-arrays)
   - [Available Backups](#available-backups)
   - [Duration Fields](#duration-fields)
   - [File Size Fields](#file-size-fields)
+- [Session Management](#session-management)
+  - [Create Session - `/api/session`](#create-session---apisession)
+  - [Validate Session - `/api/session`](#validate-session---apisession)
+  - [Delete Session - `/api/session`](#delete-session---apisession)
+  - [Get CSRF Token - `/api/csrf`](#get-csrf-token---apicsrf)
 - [Authentication & Security](#authentication--security)
+  - [Session-Based Authentication](#session-based-authentication)
+    - [Session Management](#session-management-1)
+    - [CSRF Protection](#csrf-protection)
+    - [Protected Endpoints](#protected-endpoints)
+    - [Unprotected Endpoints](#unprotected-endpoints)
+    - [Usage Example (Session + CSRF)](#usage-example-session--csrf)
+    - [Error Responses](#error-responses)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -473,6 +490,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
 - **Description**: Updates server details including alias, note, and server URL.
+- **Authentication**: Requires valid session and CSRF token
 - **Parameters**:
   - `id`: the server identifier
 - **Request Body**:
@@ -494,6 +512,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `404`: Server not found
   - `500`: Server error during update
 - **Notes**:
@@ -505,6 +524,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
 - **Description**: Deletes a server and all its associated backups.
+- **Authentication**: Requires valid session and CSRF token
 - **Parameters**:
   - `id`: the server identifier
 
@@ -520,6 +540,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `404`: Server not found
   - `500`: Server error during deletion
 - **Notes**: 
@@ -691,10 +712,8 @@ These endpoints are designed for use by other applications and integrations, for
       "port": 465,
       "secure": true,
       "username": "user@example.com",
-      "mailto": "admin@example.com",
-      "enabled": true,
-      "fromName": "Backup Monitor",
-      "fromEmail": "noreply@example.com"
+      "password": "password",
+      "mailto": "admin@example.com"
     },
     "message": "Email is configured and ready to use."
   }
@@ -704,14 +723,46 @@ These endpoints are designed for use by other applications and integrations, for
   {
     "configured": false,
     "config": null,
-    "message": "Email is not configured. Please set the required environment variables."
+    "message": "Email is not configured. Please configure SMTP settings."
   }
   ```
 - **Error Responses**:
   - `500`: Failed to get email configuration
 - **Notes**:
-  - Returns configuration without sensitive data (password)
+  - Returns full configuration including password for editing purposes
   - Indicates if email notifications are available for test and production use
+
+### Update Email Configuration - `/api/configuration/email`
+- **Endpoint**: `/api/configuration/email`
+- **Method**: POST
+- **Description**: Updates the SMTP email notification configuration.
+- **Authentication**: Requires valid session and CSRF token
+- **Request Body**:
+  ```json
+  {
+    "host": "smtp.example.com",
+    "port": 465,
+    "secure": true,
+    "username": "user@example.com",
+    "password": "password",
+    "mailto": "admin@example.com"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "SMTP configuration saved successfully"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Missing required fields or invalid port number
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Failed to save SMTP configuration
+- **Notes**:
+  - All fields (host, port, username, password, mailto) are required
+  - Port must be a valid number between 1 and 65535
+  - Secure field is boolean (true for SSL/TLS)
 
 
 ### Get Unified Configuration - `/api/configuration/unified`
@@ -823,6 +874,7 @@ These endpoints are designed for use by other applications and integrations, for
 
 - **Method**: POST
 - **Description**: Updates notification configuration (NTFY settings or notification frequency).
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   For NTFY configuration:
   ```json
@@ -862,6 +914,7 @@ These endpoints are designed for use by other applications and integrations, for
   ```
 - **Available Values**: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: NTFY configuration is required or invalid value
   - `500`: Server error updating notification configuration
 - **Notes**:
@@ -878,6 +931,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
 - **Description**: Updates the backup notification settings for specific servers/backups.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -898,6 +952,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: backupSettings is required
   - `500`: Server error updating backup settings
 - **Notes**:
@@ -909,6 +964,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/configuration/templates`
 - **Method**: POST
 - **Description**: Updates the notification templates.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -929,6 +985,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: templates are required
   - `500`: Server error updating notification templates
 - **Notes**:
@@ -936,10 +993,27 @@ These endpoints are designed for use by other applications and integrations, for
   - Preserves existing configuration settings
   - Templates support variable substitution
 
+### Get Overdue Tolerance - `/api/configuration/overdue-tolerance`
+- **Endpoint**: `/api/configuration/overdue-tolerance`
+- **Method**: GET
+- **Description**: Retrieves the current overdue tolerance setting.
+- **Response**:
+  ```json
+  {
+    "overdue_tolerance": "1h"
+  }
+  ```
+- **Error Responses**:
+  - `500`: Failed to get overdue tolerance
+- **Notes**:
+  - Returns the current overdue tolerance setting
+  - Used for displaying current configuration
+
 ### Update Overdue Tolerance - `/api/configuration/overdue-tolerance`
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST
 - **Description**: Updates the overdue tolerance setting.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -953,6 +1027,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: overdue_tolerance is required
   - `500`: Server error updating overdue tolerance
 - **Notes**:
@@ -968,6 +1043,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
 - **Description**: Send test notifications (simple or template-based) to verify NTFY configuration.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   For simple test:
     ```json
@@ -1018,6 +1094,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: NTFY configuration is required or invalid
   - `500`: Failed to send test notification with error details
 - **Notes**:
@@ -1031,6 +1108,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
 - **Description**: Manually triggers the overdue backup check and sends notifications.
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -1044,6 +1122,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to check for overdue backups
 - **Notes**:
   - Manually triggers overdue backup check
@@ -1054,6 +1133,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST
 - **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -1061,6 +1141,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to clear overdue backup timestamps
 - **Notes**:
   - Clears all overdue backup notification timestamps
@@ -1093,6 +1174,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/cron-config`
 - **Method**: POST
 - **Description**: Updates the cron service configuration.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -1107,6 +1189,7 @@ These endpoints are designed for use by other applications and integrations, for
   ```
 - **Available Intervals**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: Interval is required
   - `500`: Failed to update cron configuration
 - **Notes**:
@@ -1228,6 +1311,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
 - **Description**: Deletes old backup data based on retention period. This endpoint helps manage database size by removing outdated backup records while preserving recent and important data.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -1251,6 +1335,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: Invalid retention period specified
   - `500`: Server error during cleanup operation with detailed error information
 - **Notes**: 
@@ -1268,6 +1353,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/backups/:backupId`
 - **Method**: DELETE
 - **Description**: Deletes a specific backup record. This endpoint is only available in development mode.
+- **Authentication**: Requires valid session and CSRF token
 - **Parameters**:
   - `backupId`: the backup identifier
 
@@ -1285,6 +1371,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `403`: Backup deletion is only available in development mode
   - `400`: Invalid backup ID
   - `404`: Backup not found
@@ -1300,6 +1387,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/backups/delete-job`
 - **Method**: DELETE
 - **Description**: Deletes all backup records for a specific server-backup combination. This endpoint is only available in development mode.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -1318,6 +1406,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `403`: Backup job deletion is only available in development mode
   - `400`: Server ID and backup name are required
   - `404`: No backups found to delete
@@ -1388,6 +1477,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
 - **Description**: Updates the server URL for a specific server.
+- **Authentication**: Requires valid session and CSRF token
 - **Parameters**:
   - `serverId`: the server identifier
 - **Request Body**:
@@ -1406,6 +1496,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: Invalid URL format
   - `404`: Server not found
   - `500`: Server error during update
@@ -1415,6 +1506,94 @@ These endpoints are designed for use by other applications and integrations, for
   - Supports both HTTP and HTTPS protocols
   - Returns updated server information
 
+### Get Server Password - `/api/servers/:serverId/password`
+- **Endpoint**: `/api/servers/:serverId/password`
+- **Method**: GET
+- **Description**: Retrieves a CSRF token for server password operations.
+- **Authentication**: Requires valid session
+- **Parameters**:
+  - `serverId`: the server identifier
+- **Response**:
+  ```json
+  {
+    "csrfToken": "csrf-token-string",
+    "serverId": "server-id"
+  }
+  ```
+- **Error Responses**:
+  - `401`: Invalid or expired session
+  - `500`: Failed to generate CSRF token
+- **Notes**:
+  - Returns CSRF token for use with password update operations
+  - Session must be valid to generate token
+
+### Update Server Password - `/api/servers/:serverId/password`
+- **Endpoint**: `/api/servers/:serverId/password`
+- **Method**: PATCH
+- **Description**: Updates the password for a specific server.
+- **Authentication**: Requires valid session and CSRF token
+- **Parameters**:
+  - `serverId`: the server identifier
+- **Request Body**:
+  ```json
+  {
+    "password": "new-password"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Password updated successfully",
+    "serverId": "server-id"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Password must be a string
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Failed to update password
+- **Notes**:
+  - Password can be an empty string to clear the password
+  - Password is stored securely using the secrets management system
+
+### Test Server Password - `/api/servers/:serverId/test-password`
+- **Endpoint**: `/api/servers/:serverId/test-password`
+- **Method**: POST
+- **Description**: Tests the connection to a Duplicati server using the provided password.
+- **Authentication**: Requires valid session and CSRF token
+- **Parameters**:
+  - `serverId`: the server identifier
+- **Request Body**:
+  ```json
+  {
+    "password": "test-password"
+  }
+  ```
+- **Response** (success):
+  ```json
+  {
+    "success": true,
+    "message": "Password test successful",
+    "protocol": "https"
+  }
+  ```
+- **Response** (failure):
+  ```json
+  {
+    "success": false,
+    "message": "Login failed: Unauthorized",
+    "protocol": "unknown"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Password is required or invalid server URL format
+  - `404`: Server not found
+  - `500`: Internal server error
+- **Notes**:
+  - Automatically detects the best connection protocol (HTTPS → HTTP)
+  - Tests actual login to the Duplicati server
+  - Returns the protocol used for successful connection
+  - Uses server URL from database to determine connection details
+
 <br/>
 
 ## Error Handling
@@ -1422,7 +1601,8 @@ These endpoints are designed for use by other applications and integrations, for
 All endpoints follow a consistent error handling pattern:
 
 - **400 Bad Request**: Invalid request data or missing required fields
-- **403 Forbidden**: Operation not allowed (e.g., backup deletion in production)
+- **401 Unauthorized**: Invalid or missing session, expired session, or CSRF token validation failed
+- **403 Forbidden**: Operation not allowed (e.g., backup deletion in production) or CSRF token validation failed
 - **404 Not Found**: Resource not found
 - **409 Conflict**: Duplicate data (for upload endpoints)
 - **500 Internal Server Error**: Server-side errors with detailed error messages
@@ -1460,9 +1640,156 @@ All file size fields are returned in bytes as numbers, not formatted strings. Th
 
 <br/>
 
+## Session Management
+
+### Create Session - `/api/session`
+- **Endpoint**: `/api/session`
+- **Method**: POST
+- **Description**: Creates a new session for the user.
+- **Response**:
+  ```json
+  {
+    "sessionId": "session-id-string",
+    "message": "Session created successfully"
+  }
+  ```
+- **Error Responses**:
+  - `500`: Failed to create session
+- **Notes**:
+  - Creates a new session with 24-hour expiration
+  - Sets HTTP-only session cookie
+  - Required for accessing protected endpoints
+
+### Validate Session - `/api/session`
+- **Endpoint**: `/api/session`
+- **Method**: GET
+- **Description**: Validates an existing session.
+- **Response** (valid):
+  ```json
+  {
+    "valid": true,
+    "sessionId": "session-id-string"
+  }
+  ```
+- **Response** (invalid):
+  ```json
+  {
+    "valid": false,
+    "error": "No session cookie"
+  }
+  ```
+- **Error Responses**:
+  - `401`: No session cookie or session ID
+  - `500`: Failed to validate session
+- **Notes**:
+  - Checks if the session cookie exists and is valid
+  - Returns session ID if valid
+
+### Delete Session - `/api/session`
+- **Endpoint**: `/api/session`
+- **Method**: DELETE
+- **Description**: Deletes the current session (logout).
+- **Response**:
+  ```json
+  {
+    "message": "Session deleted successfully"
+  }
+  ```
+- **Error Responses**:
+  - `500`: Failed to delete session
+- **Notes**:
+  - Clears the session from server and client
+  - Removes session cookie
+
+### Get CSRF Token - `/api/csrf`
+- **Endpoint**: `/api/csrf`
+- **Method**: GET
+- **Description**: Generates a CSRF token for the current session.
+- **Response**:
+  ```json
+  {
+    "csrfToken": "csrf-token-string",
+    "message": "CSRF token generated successfully"
+  }
+  ```
+- **Error Responses**:
+  - `401`: No session found or invalid/expired session
+  - `500`: Failed to generate CSRF token
+- **Notes**:
+  - Requires a valid session
+  - CSRF token is required for all state-changing operations
+  - Token is tied to the current session
+
+<br/>
+
 ## Authentication & Security
 
-Currently, the API does not require authentication for local network access. It is designed for internal network use where the application is deployed. 
+The API uses a combination of session-based authentication and CSRF protection for all database write operations to prevent unauthorized access and potential denial-of-service attacks. External APIs (used by Duplicati) remain unauthenticated for compatibility.
+
+### Session-Based Authentication
+
+Protected endpoints require a valid session cookie and CSRF token. The session system provides secure authentication for all protected operations.
+
+#### Session Management
+1. **Create Session**: POST to `/api/session` to create a new session
+2. **Get CSRF Token**: GET `/api/csrf` to obtain a CSRF token for the session
+3. **Include in Requests**: Send session cookie and CSRF token with protected requests
+4. **Validate Session**: GET `/api/session` to check if session is still valid
+5. **Delete Session**: DELETE `/api/session` to logout and clear session
+
+#### CSRF Protection
+All state-changing operations require a valid CSRF token that matches the current session. The CSRF token must be included in the `X-CSRF-Token` header for protected endpoints.
+
+#### Protected Endpoints
+All endpoints that modify database data require session authentication and CSRF token:
+
+- **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET), `/api/servers/:id/test-password` (POST)
+- **Configuration Management**: `/api/configuration/*` (POST)
+- **Backup Management**: `/api/backups/*` (DELETE, POST)
+- **Notification System**: `/api/notifications/*` (POST)
+- **Cron Configuration**: `/api/cron-config` (POST)
+- **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
+
+#### Unprotected Endpoints
+External APIs remain unauthenticated for Duplicati integration:
+
+- `/api/upload` - Backup data uploads from Duplicati
+- `/api/backups/collect` - Backup collection from Duplicati servers
+- `/api/lastbackup/:serverId` - Latest backup status
+- `/api/lastbackups/:serverId` - Latest backups status
+- `/api/summary` - Overall summary data
+
+#### Usage Example (Session + CSRF)
+```typescript
+// 1. Create session
+const sessionResponse = await fetch('/api/session', { method: 'POST' });
+const { sessionId } = await sessionResponse.json();
+
+// 2. Get CSRF token
+const csrfResponse = await fetch('/api/csrf', {
+  headers: { 'Cookie': `session=${sessionId}` }
+});
+const { csrfToken } = await csrfResponse.json();
+
+// 3. Make protected request
+const response = await fetch('/api/servers/server-id', {
+  method: 'PATCH',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': csrfToken,
+    'Cookie': `session=${sessionId}`
+  },
+  body: JSON.stringify({
+    alias: 'Updated Server Name',
+    note: 'Updated notes'
+  })
+});
+```
+
+
+#### Error Responses
+- `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
+- `403 Forbidden`: CSRF token validation failed or operation not allowed
 
 <br/>
 

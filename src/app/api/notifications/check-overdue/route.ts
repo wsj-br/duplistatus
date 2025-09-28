@@ -1,9 +1,11 @@
+import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse } from 'next/server';
 import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
 
 // HTTP endpoint that uses the core function
-export async function POST() {
+export const POST = withCSRF(async () => {
   try {
+    
     const result = await checkOverdueBackups();
     return NextResponse.json(result);
   } catch (error) {
@@ -13,4 +15,4 @@ export async function POST() {
       { status: 500 }
     );
   }
-} 
+});

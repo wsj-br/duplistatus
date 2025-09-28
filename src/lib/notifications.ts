@@ -1,6 +1,6 @@
 import format from 'string-template';
 import nodemailer from 'nodemailer';
-import { getConfigNotifications, getConfigBackupSettings, getNtfyConfig, getServerInfoById } from './db-utils';
+import { getConfigNotifications, getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig } from './db-utils';
 import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey, EmailConfig } from './types';
 import { defaultNotificationTemplates } from './default-config';
 
@@ -230,37 +230,40 @@ export function getEmailConfigFromEnv(): EmailConfig | null {
     username,
     password,
     mailto,
-    fromName: 'duplistatus',
-    fromEmail: username, // Use username as from email by default
     enabled: true
   };
 }
 
-export function isEmailConfigured(): boolean {
-  const config = getEmailConfigFromEnv();
-  return config !== null;
-}
 
 export async function createEmailTransporter(): Promise<nodemailer.Transporter | null> {
-  const config = getEmailConfigFromEnv();
+  const config = getSMTPConfig();
   if (!config) {
     return null;
   }
 
   try {
+    // // Determine secure mode based on port
+    // const isSecurePort = config.port === 465;
+    // const useSecure = config.secure || isSecurePort;
+    
     const transporter = nodemailer.createTransport({
       host: config.host,
       port: config.port,
-      secure: config.secure,
+      secure: config.secure, // useSecure
       auth: {
         user: config.username,
         pass: config.password,
       },
-      // Enforce encrypted connections only
-      requireTLS: true, // Require TLS encryption
+      // Connection timeout settings
+      connectionTimeout: 20000, // 20 seconds connection timeout
+      greetingTimeout: 20000,   // 20 seconds greeting timeout
+      socketTimeout: 20000,     // 20 seconds socket timeout
+      // More flexible TLS configuration
+      //requireTLS: !useSecure, // Only require TLS for non-secure ports
       tls: {
-        rejectUnauthorized: false, // Allow self-signed certificates but require encryption
-        minVersion: 'TLSv1.2' // Require at least TLS 1.2
+        rejectUnauthorized: false, // Allow self-signed certificates
+        minVersion: 'TLSv1', // More permissive TLS version
+        ciphers: 'SSLv3' // Allow older cipher suites if needed
       }
     });
 
@@ -284,13 +287,13 @@ export async function sendEmailNotification(
     throw new Error('Email is not configured. Please check environment variables.');
   }
 
-  const config = getEmailConfigFromEnv();
+  const config = getSMTPConfig();
   if (!config) {
     throw new Error('Email configuration not found');
   }
 
   const mailOptions = {
-    from: `"${config.fromName}" <${config.fromEmail}>`,
+    from: `"duplistatus" <${config.username}>`,
     to: toEmail || config.mailto, // Use SMTP_MAILTO as default recipient
     subject,
     text: textContent,
@@ -444,7 +447,7 @@ export async function sendBackupNotification(
   }
 
   // Send email notification if enabled and configured
-  if (backupConfig.emailEnabled === true && isEmailConfigured()) {
+  if (backupConfig.emailEnabled === true && getSMTPConfig()) {
     const htmlContent = convertTextToHtml(processedTemplate.message);
     notifications.push(
       sendEmailNotification(
@@ -519,7 +522,7 @@ export async function sendOverdueBackupNotification(
     }
 
     // Send email notification if enabled and configured
-    if (backupConfig.emailEnabled === true && isEmailConfigured()) {
+    if (backupConfig.emailEnabled === true && getSMTPConfig()) {
       const htmlContent = convertTextToHtml(processedTemplate.message);
       notifications.push(
         sendEmailNotification(

@@ -1,6 +1,8 @@
+import { withCSRF } from '@/lib/csrf-middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { NotificationTemplate, NtfyConfig } from '@/lib/types';
-import { sendEmailNotification, isEmailConfigured, convertTextToHtml } from '@/lib/notifications';
+import { sendEmailNotification, convertTextToHtml } from '@/lib/notifications';
+import { getSMTPConfig } from '@/lib/db-utils';
 
 async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, title: string, priority: string, tags: string) {
   const { url, topic, accessToken } = config;
@@ -51,8 +53,9 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
   }
 }
 
-export async function POST(request: NextRequest) {
+export const POST = withCSRF(async (request: NextRequest) => {
   try {
+    
     const { type, ntfyConfig, template }: { 
       type: 'simple' | 'template' | 'email'; 
       ntfyConfig?: NtfyConfig; 
@@ -61,8 +64,8 @@ export async function POST(request: NextRequest) {
 
     // Handle email test
     if (type === 'email') {
-      if (!isEmailConfigured()) {
-        return NextResponse.json({ error: 'Email is not configured. Please check environment variables.' }, { status: 400 });
+      if (!getSMTPConfig()) {
+        return NextResponse.json({ error: 'Email is not configured. Please configure SMTP settings.' }, { status: 400 });
       }
 
       const testSubject = 'Test Email from duplistatus';
@@ -140,7 +143,7 @@ export async function POST(request: NextRequest) {
       );
 
       // Send email notification if configured
-      if (isEmailConfigured()) {
+      if (getSMTPConfig()) {
         const htmlContent = convertTextToHtml(finalMessage);
         notifications.push(
           sendEmailNotification(
@@ -181,4 +184,4 @@ export async function POST(request: NextRequest) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json({ error: `Failed to send test notification: ${errorMessage}` }, { status: 500 });
   }
-}
+});

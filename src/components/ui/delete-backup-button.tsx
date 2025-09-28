@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { isDevelopmentMode } from "@/lib/utils";
+import { authenticatedRequest } from '@/lib/client-session-csrf';
 
 interface DeleteBackupButtonProps {
   backupId: string;
@@ -48,7 +49,7 @@ export function DeleteBackupButton({
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/backups/${backupId}`, {
+      const response = await authenticatedRequest(`/api/backups/${backupId}`, {
         method: 'DELETE',
       });
 
