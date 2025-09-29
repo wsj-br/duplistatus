@@ -24,11 +24,16 @@ export const GET = withCSRF(async () => {
     const config = notificationConfig;
     config.ntfy = ntfyConfig;
     
-    // Add email configuration if available
+    // Add email configuration if available (without password)
     if (smtpConfig) {
       config.email = {
-        ...smtpConfig,
-        enabled: true // SMTP config exists, so email is enabled
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        secure: smtpConfig.secure,
+        username: smtpConfig.username,
+        mailto: smtpConfig.mailto,
+        enabled: true, // SMTP config exists, so email is enabled
+        hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== '')
       };
     }
 

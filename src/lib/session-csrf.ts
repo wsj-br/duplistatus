@@ -51,10 +51,22 @@ export function deleteSession(sessionId: string): void {
 
 // CSRF token management
 export function generateCSRFToken(sessionId: string): string {
-  const token = randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + CSRF_TOKEN_DURATION_MINUTES * 60 * 1000).toISOString();
-  
   try {
+    // First, check if we have a valid existing token
+    const existing = dbOps.getCSRFToken.get(sessionId) as { token: string, expires_at: string } | undefined;
+    if (existing) {
+      const expiresAt = new Date(existing.expires_at);
+      const now = new Date();
+      // If token expires in more than 5 minutes, reuse it to prevent overwrites in parallel requests
+      if (expiresAt.getTime() - now.getTime() > 5 * 60 * 1000) {
+        return existing.token;
+      }
+    }
+    
+    // Generate new token
+    const token = randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + CSRF_TOKEN_DURATION_MINUTES * 60 * 1000).toISOString();
+    
     dbOps.createCSRFToken.run({
       session_id: sessionId,
       token: token,

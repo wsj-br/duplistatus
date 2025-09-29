@@ -1,6 +1,8 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
+import { getConfigBackupSettings, setConfigBackupSettings } from '@/lib/db-utils';
+import { BackupNotificationConfig } from '@/lib/types';
 
 export const DELETE = withCSRF(async (
   request: NextRequest,
@@ -59,6 +61,32 @@ export const DELETE = withCSRF(async (
         { error: 'Backup not found' },
         { status: 404 }
       );
+    }
+
+    // Update backup_settings time field to -1 year
+    try {
+      const backupKey = `${deletedBackup.server_id}:${deletedBackup.backup_name}`;
+      const currentBackupSettings = await getConfigBackupSettings();
+      
+      if (currentBackupSettings[backupKey]) {
+        const currentTime = new Date(currentBackupSettings[backupKey].time);
+        const newTime = new Date(currentTime);
+        newTime.setFullYear(currentTime.getFullYear() - 1);
+        
+        const updatedBackupSettings = {
+          ...currentBackupSettings,
+          [backupKey]: {
+            ...currentBackupSettings[backupKey],
+            time: newTime.toISOString()
+          }
+        };
+        
+        setConfigBackupSettings(updatedBackupSettings);
+        console.log(`Updated backup_settings time for ${backupKey} from ${currentTime.toISOString()} to ${newTime.toISOString()}`);
+      }
+    } catch (error) {
+      console.error('Error updating backup_settings:', error instanceof Error ? error.message : String(error));
+      // Don't fail the deletion if backup_settings update fails
     }
 
     return NextResponse.json({

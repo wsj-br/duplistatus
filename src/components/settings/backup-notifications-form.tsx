@@ -354,9 +354,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       checked={allNtfySelected}
                       onCheckedChange={handleSelectAllNtfy}
                       title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
-                      className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                      className={!isNtfyConfigured ? "opacity-100 border-gray-700 data-[state=checked]:bg-gray-700" : ""}
                     />
-                    <span className={!isNtfyConfigured ? "text-gray-600" : ""}>NTFY</span>
+                    <span className={!isNtfyConfigured ? "text-gray-400" : ""}>NTFY</span>
                   </div>
                 </th>
                 <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
@@ -365,9 +365,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       checked={allEmailSelected}
                       onCheckedChange={handleSelectAllEmail}
                       title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
-                      className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                      className={!isEmailConfigured ? "opacity-30 border-gray-300 data-[state=checked]:bg-gray-300" : ""}
                     />
-                    <span className={!isEmailConfigured ? "text-gray-600" : ""}>Email</span>
+                    <span className={!isEmailConfigured ? "text-gray-400" : ""}>Email</span>
                   </div>
                 </th>
               </TableRow>
@@ -441,7 +441,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           updateBackupSettingById(server.id, server.backupName, 'ntfyEnabled', checked)
                         }
                         title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
-                        className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                        className={!isNtfyConfigured ? "opacity-100 border-gray-700 data-[state=checked]:bg-gray-700" : ""}
                       />
                     </TableCell>
                     
@@ -452,7 +452,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           updateBackupSettingById(server.id, server.backupName, 'emailEnabled', checked)
                         }
                         title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
-                        className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                        className={!isEmailConfigured ? "opacity-100 border-gray-700 data-[state=checked]:bg-gray-700" : ""}
                       />
                     </TableCell>
                   </TableRow>
@@ -530,18 +530,18 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               checked={allNtfySelected}
                               onCheckedChange={handleSelectAllNtfy}
                               title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
-                              className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                              className={!isNtfyConfigured ? "opacity-30 border-gray-300 data-[state=checked]:bg-gray-300" : ""}
                             />
-                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-600" : "text-muted-foreground"}`}>All NTFY</Label>
+                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All NTFY</Label>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Checkbox
                               checked={allEmailSelected}
                               onCheckedChange={handleSelectAllEmail}
                               title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
-                              className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                              className={!isEmailConfigured ? "opacity-30 border-gray-300 data-[state=checked]:bg-gray-300" : ""}
                             />
-                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-600" : "text-muted-foreground"}`}>All Email</Label>
+                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All Email</Label>
                           </div>
                         </div>
                       </div>
@@ -553,9 +553,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               updateBackupSettingById(server.id, server.backupName, 'ntfyEnabled', checked)
                             }
                             title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
-                            className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                            className={!isNtfyConfigured ? "opacity-30 border-gray-300 data-[state=checked]:bg-gray-300" : ""}
                           />
-                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-600" : ""}`}>NTFY</Label>
+                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>NTFY</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -564,9 +564,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               updateBackupSettingById(server.id, server.backupName, 'emailEnabled', checked)
                             }
                             title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
-                            className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                            className={!isEmailConfigured ? "opacity-30 border-gray-300 data-[state=checked]:bg-gray-300" : ""}
                           />
-                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-600" : ""}`}>Email</Label>
+                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>Email</Label>
                         </div>
                       </div>
                     </div>

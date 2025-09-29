@@ -110,9 +110,10 @@ export interface EmailConfig {
   port: number;
   secure: boolean;
   username: string;
-  password: string;
+  password?: string;
   mailto: string;
   enabled: boolean;
+  hasPassword?: boolean;
 }
 
 export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';

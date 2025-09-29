@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { Mail, Eye, EyeOff, Trash2, Loader2 } from 'lucide-react';
+import { Mail, Eye, EyeOff, Trash2, Loader2, KeyRound, XCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -21,15 +21,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface EmailConfig {
   host: string;
   port: number;
   secure: boolean;
   username: string;
-  password: string;
+  password?: string;
   mailto: string;
   enabled: boolean;
+  hasPassword?: boolean;
 }
 
 export function EmailConfigurationForm() {
@@ -40,14 +48,22 @@ export function EmailConfigurationForm() {
     port: 587,
     secure: false,
     username: '',
-    password: '',
     mailto: '',
-    enabled: false
+    enabled: false,
+    hasPassword: false
   });
   const [isTesting, setIsTesting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  
+  // Password dialog state
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [isDeletingPassword, setIsDeletingPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Load email configuration from unified config
   useEffect(() => {
@@ -63,21 +79,31 @@ export function EmailConfigurationForm() {
     }));
   };
 
-  // Check if all required fields are filled (excluding secure toggle)
+  // Check if all required fields are filled (excluding secure toggle and password)
   const isFormValid = () => {
     return emailConfig.host.trim() !== '' &&
            emailConfig.username.trim() !== '' &&
-           emailConfig.password.trim() !== '' &&
            emailConfig.mailto.trim() !== '' &&
-           emailConfig.port > 0;
+           emailConfig.port > 0 &&
+           emailConfig.hasPassword;
   };
 
   const handleSaveConfig = async () => {
     setIsSaving(true);
     try {
+      // Create config without password for saving
+      const configToSave = {
+        host: emailConfig.host,
+        port: emailConfig.port,
+        secure: emailConfig.secure,
+        username: emailConfig.username,
+        password: '', // Password is managed separately
+        mailto: emailConfig.mailto
+      };
+
       const response = await authenticatedRequest('/api/configuration/email', {
         method: 'POST',
-        body: JSON.stringify(emailConfig),
+        body: JSON.stringify(configToSave),
       });
 
       if (!response.ok) {
@@ -170,9 +196,9 @@ export function EmailConfigurationForm() {
         port: 587,
         secure: false,
         username: '',
-        password: '',
         mailto: '',
-        enabled: false
+        enabled: false,
+        hasPassword: false
       });
 
       toast({
@@ -194,6 +220,142 @@ export function EmailConfigurationForm() {
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handlePasswordButtonClick = () => {
+    setPasswordDialogOpen(true);
+    setNewPassword('');
+    setConfirmPassword('');
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+  };
+
+  const handlePasswordSave = async () => {
+    if (!newPassword || !confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Please enter both password fields",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setIsSavingPassword(true);
+    try {
+      const response = await authenticatedRequest('/api/configuration/email/password', {
+        method: 'PATCH',
+        body: JSON.stringify({ 
+          password: newPassword,
+          config: {
+            host: emailConfig.host,
+            port: emailConfig.port,
+            secure: emailConfig.secure,
+            username: emailConfig.username,
+            mailto: emailConfig.mailto
+          }
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Email password updated successfully",
+          duration: 3000,
+        });
+        setPasswordDialogOpen(false);
+        setNewPassword('');
+        setConfirmPassword('');
+        // Refresh configuration to update hasPassword status
+        await refreshConfigSilently();
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to update password",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update password",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handlePasswordDelete = async () => {
+    setIsDeletingPassword(true);
+    try {
+      const response = await authenticatedRequest('/api/configuration/email/password', {
+        method: 'PATCH',
+        body: JSON.stringify({ 
+          password: '',
+          config: {
+            host: emailConfig.host,
+            port: emailConfig.port,
+            secure: emailConfig.secure,
+            username: emailConfig.username,
+            mailto: emailConfig.mailto
+          }
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Email password deleted successfully",
+          duration: 3000,
+        });
+        setPasswordDialogOpen(false);
+        setNewPassword('');
+        setConfirmPassword('');
+        // Refresh configuration to update hasPassword status
+        await refreshConfigSilently();
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to delete password",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete password",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsDeletingPassword(false);
+    }
+  };
+
+  const handlePasswordDialogClose = () => {
+    setPasswordDialogOpen(false);
+    setNewPassword('');
+    setConfirmPassword('');
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
   };
 
 
@@ -252,26 +414,15 @@ export function EmailConfigurationForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="smtp-password">SMTP Server Password</Label>
-                <div className="relative">
-                  <Input
-                    id="smtp-password"
-                    type={showPassword ? "text" : "password"}
-                    value={emailConfig.password}
-                    onChange={(e) => handleInputChange('password', e.target.value)}
-                    placeholder="Your email password or app password"
-                  />
+                <div className="flex items-center gap-2">
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
+                    variant="outline"
+                    onClick={handlePasswordButtonClick}
+                    className="flex items-center gap-2"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    <KeyRound className="h-4 w-4" />
+                    {emailConfig.hasPassword ? 'Change Password' : 'Set Password'}
                   </Button>
                 </div>
               </div>
@@ -373,43 +524,123 @@ export function EmailConfigurationForm() {
         </CardContent>
       </Card>
 
-      {/* Documentation */}
-      {/* <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Email Setup Guide</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-3 text-sm">
-            <div>
-              <h4 className="font-medium mb-2">Common SMTP Settings:</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center p-2 bg-muted rounded">
-                  <span className="font-medium">Gmail:</span>
-                  <span>smtp.gmail.com:587 (TLS)</span>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-muted rounded">
-                  <span className="font-medium">Outlook:</span>
-                  <span>smtp-mail.outlook.com:587 (TLS)</span>
-                </div>
-                <div className="flex justify-between items-center p-2 bg-muted rounded">
-                  <span className="font-medium">Yahoo:</span>
-                  <span>smtp.mail.yahoo.com:587 (TLS)</span>
-                </div>
+      {/* Password Change Dialog */}
+      <Dialog open={passwordDialogOpen} onOpenChange={handlePasswordDialogClose}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Change Email Password</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-password" className="text-sm font-medium">
+                New Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="new-password"
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  className="w-full pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-500" />
+                  )}
+                </Button>
               </div>
             </div>
-            
-            <div>
-              <h4 className="font-medium mb-2">Security Notes:</h4>
-              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                <li>For Gmail, use an App Password instead of your regular password</li>
-                <li>Environment variables are not displayed for security reasons</li>
-                <li>Restart the application after changing environment variables</li>
-                <li>The system automatically detects email configuration on startup</li>
-              </ul>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password" className="text-sm font-medium">
+                Confirm Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  className={`w-full pr-10 ${newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}`}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-500" />
+                  )}
+                </Button>
+              </div>
+              {newPassword && confirmPassword && newPassword !== confirmPassword && (
+                <p className="text-sm text-red-600 flex items-center gap-1">
+                  <XCircle className="h-4 w-4" />
+                  Passwords do not match
+                </p>
+              )}
             </div>
+            
           </div>
-        </CardContent>
-      </Card> */}
+          <DialogFooter>
+            <div className="flex justify-between w-full">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handlePasswordDelete}
+                disabled={isDeletingPassword || isSavingPassword}
+              >
+                {isDeletingPassword ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete Password'
+                )}
+              </Button>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePasswordDialogClose}
+                  disabled={isSavingPassword || isDeletingPassword}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handlePasswordSave}
+                  disabled={isSavingPassword || isDeletingPassword || !newPassword || !confirmPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {isSavingPassword ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Password'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

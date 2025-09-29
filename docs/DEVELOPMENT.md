@@ -5,7 +5,7 @@
 
 # Development Instructions
 
-![](https://img.shields.io/badge/version-0.8.9-blue)
+![](https://img.shields.io/badge/version-0.8.10-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -57,11 +57,11 @@
     - [Usage Workflow](#usage-workflow)
   - [Release Management](#release-management)
     - [Versioning (Semantic Versioning)](#versioning-semantic-versioning)
-    - [Merging `devel` to `master` using command line](#merging-devel-to-master-using-command-line)
-      - [1. Merge the `devel` Branch into `master`](#1-merge-the-devel-branch-into-master)
+    - [Merging `devel-MAJOR.MINOR.PATCH` to `master` using command line](#merging-devel-majorminorpatch-to-master-using-command-line)
+      - [1. Merge the `devel-MAJOR.MINOR.PATCH` Branch into `master`](#1-merge-the-devel-majorminorpatch-branch-into-master)
       - [2. Tag the New Release](#2-tag-the-new-release)
       - [3. Push to GitHub](#3-push-to-github)
-    - [Merging `devel` to `master` using GitHub](#merging-devel-to-master-using-github)
+    - [Merging `devel-MAJOR.MINOR.PATCH` to `master` using GitHub](#merging-devel-majorminorpatch-to-master-using-github)
     - [Creating a GitHub Release](#creating-a-github-release)
     - [Manual Docker Image Build](#manual-docker-image-build)
   - [Frameworks, libraries and tools used](#frameworks-libraries-and-tools-used)
@@ -224,7 +224,7 @@ This script performs a complete Docker cleanup, which is useful for:
 ### Create a development image (to test locally or with Podman)
 
 ```bash
-docker build . -t wsj-br/duplistatus:devel
+docker build . -t wsj-br/duplistatus:devel-MAJOR.MINOR.PATCH
 ```
 
 <br/>
@@ -503,7 +503,7 @@ Copy and execute the scripts located at "scripts/podman_testing" in the Podman t
 ### Initial Setup and Management
 1. `initialise.duplistatus`: to create the pod
 2. `copy.docker.duplistatus`: to copy the Docker image created in the development server to the Podman test server.
-   - Create the image using the command `docker build . -t wsj-br/duplistatus:devel`
+   - Create the image using the command `docker build . -t wsj-br/duplistatus:devel-MAJOR.MINOR.PATCH`
 3. `start.duplistatus`: to start the container
 4. `stop.duplistatus`: to stop the pod and remove the container
 
@@ -539,13 +539,13 @@ The project follows Semantic Versioning (SemVer) with the format `MAJOR.MINOR.PA
 <br/>
 
 
-### Merging `devel` to `master` using command line
+### Merging `devel-MAJOR.MINOR.PATCH` to `master` using command line
 
-To release your new version, you'll need to merge the `devel` branch into the `master` branch. This process incorporates all the new code from `devel` into your stable `master` branch, making it ready for a new release.
+To release your new version, you'll need to merge the `devel-MAJOR.MINOR.PATCH` branch into the `master` branch. This process incorporates all the new code from `devel-MAJOR.MINOR.PATCH` into your stable `master` branch, making it ready for a new release.
 
 <br/>
 
-#### 1. Merge the `devel` Branch into `master`
+#### 1. Merge the `devel-MAJOR.MINOR.PATCH` Branch into `master`
 
 First, ensure your local `master` branch is up to date with the remote repository. This prevents merge conflicts and ensures you're building on the latest released code.
 
@@ -557,11 +557,11 @@ git checkout master
 git pull origin master
 ```
 
-Next, merge the `devel` branch into `master`. This will apply all the changes from `devel` to your `master` branch.
+Next, merge the `devel-MAJOR.MINOR.PATCH` branch into `master`. This will apply all the changes from `devel-MAJOR.MINOR.PATCH` to your `master` branch.
 
 ```bash
-# Merge the devel branch into master
-git merge devel
+# Merge the devel-MAJOR.MINOR.PATCH branch into master
+git merge devel-MAJOR.MINOR.PATCH
 ```
 
 Git will attempt to automatically merge the branches. If there are any **merge conflicts**, you'll need to manually resolve them in the affected files. After resolving conflicts, use `git add` to stage the changes and `git commit` to finalize the merge.
@@ -570,11 +570,11 @@ Git will attempt to automatically merge the branches. If there are any **merge c
 
 #### 2. Tag the New Release
 
-Once the `devel` branch is successfully merged into `master`, you should tag the new version. This creates a permanent reference point in your project's history, making it easy to find and revert to specific releases. Use a **lightweight** or **annotated** tag, with annotated tags being generally preferred for releases as they include more metadata like a message, author, and date.
+Once the `devel-MAJOR.MINOR.PATCH` branch is successfully merged into `master`, you should tag the new version. This creates a permanent reference point in your project's history, making it easy to find and revert to specific releases. Use a **lightweight** or **annotated** tag, with annotated tags being generally preferred for releases as they include more metadata like a message, author, and date.
 
 ```bash
 # Create an annotated tag for the new version
-git tag -a v0.7.27 -m "Release v0.7.27 - New Features and Bug Fixes"
+git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - New Features and Bug Fixes"
 ```
 
 The `-a` flag creates an annotated tag, and the `-m` flag lets you add a message describing the release.
@@ -591,7 +591,7 @@ Finally, push both the updated `master` branch and the new tag to your remote Gi
 git push origin master
 
 # Push the new tag
-git push origin v0.7.27
+git push origin vMAJOR.MINOR.PATCH
 ```
 
 You can also push all tags at once using `git push --tags`. After this, the new version will be visible on GitHub, and you can create a new release on the GitHub UI associated with your new tag.
@@ -599,19 +599,19 @@ You can also push all tags at once using `git push --tags`. After this, the new 
 <br/>
 
 
-### Merging `devel` to `master` using GitHub 
+### Merging `devel-MAJOR.MINOR.PATCH` to `master` using GitHub 
 
-Instead of a direct merge, you will create a **Pull Request (PR)** from `devel` to `master`. A pull request is a formal way to propose and review changes before they're merged.
+Instead of a direct merge, you will create a **Pull Request (PR)** from `devel-MAJOR.MINOR.PATCH` to `master`. A pull request is a formal way to propose and review changes before they're merged.
 
 1.  Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
 2.  Click the **"Pull requests"** tab.
 3.  Click **"New pull request."**
-4.  Set the **base branch** to `master` and the **compare branch** to `devel`.
+4.  Set the **base branch** to `master` and the **compare branch** to `devel-MAJOR.MINOR.PATCH`.
 5.  GitHub will show a preview of all the changes. Review them and ensure there are no conflicts.
 6.  Click **"Create pull request."**
 7.  Add a title and description, then click **"Create pull request"** again.
 
-After the pull request is created, you will see a green **"Merge pull request"** button if there are no conflicts. Clicking this button will merge all the commits from `devel` into `master`. 
+After the pull request is created, you will see a green **"Merge pull request"** button if there are no conflicts. Clicking this button will merge all the commits from `devel-MAJOR.MINOR.PATCH` into `master`. 
 
 <br/><br/>
 
@@ -624,7 +624,7 @@ Once the merge is complete, you can create a new release on GitHub, which automa
 1.  Navigate to [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
 2.  Go to the **"Releases"** section 
 3.  Click **"Draft a new release."**
-4.  In the **"Choose a tag"** field, type your new version number, like `v0.7.27`. This will create a new tag.
+4.  In the **"Choose a tag"** field, type your new version number in the format `vMAJOR.MINOR.PATCH`, like `v0.8.18`. This will create a new tag.
 5.  Select `master` as the target branch.
 6.  Add a **release title** and **description** to document the changes in this version.
 7.  Click **"Publish release."**
@@ -817,7 +817,7 @@ To manually trigger the Docker image build workflow:
 
 ### Debugging
 - Development mode provides verbose logging and JSON file storage
-- Use the browser's developer tools for frontend debugging
+- Use the browser's devel-MAJOR.MINOR.PATCHoper tools for frontend debugging
 - Check the console for detailed error messages and API responses
 - Cron service includes health check endpoints for monitoring (`/api/cron/health`)
 - Database utilities include debugging and maintenance functions

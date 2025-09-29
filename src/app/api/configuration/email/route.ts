@@ -15,10 +15,19 @@ export const GET = withCSRF(async () => {
       });
     }
 
-    // Return configuration with all data (including password for editing)
+    // Return configuration without password, only indicate if password is set
+    const configWithoutPassword = {
+      host: config.host,
+      port: config.port,
+      secure: config.secure,
+      username: config.username,
+      mailto: config.mailto,
+      hasPassword: config.password && config.password.trim() !== ''
+    };
+
     return NextResponse.json({
       configured: true,
-      config: config,
+      config: configWithoutPassword,
       message: 'Email is configured and ready to use.'
     });
   } catch (error) {

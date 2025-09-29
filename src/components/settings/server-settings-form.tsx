@@ -52,9 +52,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [isDeletingPassword, setIsDeletingPassword] = useState(false);
   const [csrfToken, setCsrfToken] = useState<string>('');
-  const [isTestingPassword, setIsTestingPassword] = useState(false);
-  const [testPasswordResult, setTestPasswordResult] = useState<{ success: boolean; message: string; protocol?: string } | null>(null);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -491,7 +490,6 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setSelectedServerName(serverName);
     setNewPassword('');
     setConfirmPassword('');
-    setTestPasswordResult(null);
     setShowNewPassword(false);
     setShowConfirmPassword(false);
     
@@ -578,7 +576,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   };
 
   const handlePasswordDelete = async () => {
-    setIsSavingPassword(true);
+    setIsDeletingPassword(true);
     try {
       const response = await fetch(`/api/servers/${selectedServerId}/password`, {
         method: 'PATCH',
@@ -618,7 +616,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         duration: 3000,
       });
     } finally {
-      setIsSavingPassword(false);
+      setIsDeletingPassword(false);
     }
   };
 
@@ -627,64 +625,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setNewPassword('');
     setConfirmPassword('');
     setCsrfToken('');
-    setTestPasswordResult(null);
     setShowNewPassword(false);
     setShowConfirmPassword(false);
   };
 
-  const handleTestPassword = async () => {
-    if (!newPassword) {
-      toast({
-        title: "Error",
-        description: "Please enter a password to test",
-        variant: "destructive",
-        duration: 3000,
-      });
-      return;
-    }
-
-    setIsTestingPassword(true);
-    setTestPasswordResult(null);
-    
-    try {
-      const response = await authenticatedRequest(`/api/servers/${selectedServerId}/test-password`, {
-        method: 'POST',
-        body: JSON.stringify({ password: newPassword }),
-      });
-
-      const result = await response.json();
-      setTestPasswordResult(result);
-
-      if (result.success) {
-        toast({
-          title: "Password Test Successful",
-          description: `Connection established using ${result.protocol?.toUpperCase()}`,
-          duration: 3000,
-        });
-      } else {
-        toast({
-          title: "Password Test Failed",
-          description: result.message,
-          variant: "destructive",
-          duration: 5000,
-        });
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      setTestPasswordResult({
-        success: false,
-        message: errorMessage
-      });
-      toast({
-        title: "Password Test Failed",
-        description: errorMessage,
-        variant: "destructive",
-        duration: 5000,
-      });
-    } finally {
-      setIsTestingPassword(false);
-    }
-  };
 
   // Get sorted connections
   const sortedConnections = createSortedArray(connections, sortConfig, columnConfig);
@@ -1098,6 +1042,13 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 variant="outline"
                 showText={true}
                 disabled={isSaving || isTestingAll}
+                onCollectionStart={() => {
+                  toast({
+                    title: "Starting Collection",
+                    description: "Collecting backup logs from all configured servers...",
+                    duration: 4000,
+                  });
+                }}
                 onServerStatusUpdate={(serverId, status) => {
                   setConnections(prev => prev.map(conn => {
                     if (conn.id === serverId) {
@@ -1123,7 +1074,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       <Dialog open={passwordDialogOpen} onOpenChange={handlePasswordDialogClose}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
+            <DialogTitle>Change Password to Access Duplicati Server</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
@@ -1194,31 +1145,6 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               )}
             </div>
             
-            {/* Test Password Result */}
-            {testPasswordResult && (
-              <div className={`p-3 rounded-lg border ${
-                testPasswordResult.success 
-                  ? 'bg-green-50 border-green-200 text-green-800' 
-                  : 'bg-red-50 border-red-200 text-red-800'
-              }`}>
-                <div className="flex items-center gap-2">
-                  {testPasswordResult.success ? (
-                    <CheckCircle className="h-4 w-4" />
-                  ) : (
-                    <XCircle className="h-4 w-4" />
-                  )}
-                  <span className="text-sm font-medium">
-                    {testPasswordResult.success ? 'Test Successful' : 'Test Failed'}
-                  </span>
-                </div>
-                <p className="text-sm mt-1">{testPasswordResult.message}</p>
-                {testPasswordResult.protocol && (
-                  <p className="text-xs mt-1 opacity-75">
-                    Protocol: {testPasswordResult.protocol.toUpperCase()}
-                  </p>
-                )}
-              </div>
-            )}
           </div>
           <DialogFooter>
             <div className="flex justify-between w-full">
@@ -1226,9 +1152,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 type="button"
                 variant="destructive"
                 onClick={handlePasswordDelete}
-                disabled={isSavingPassword || isTestingPassword}
+                disabled={isDeletingPassword || isSavingPassword}
               >
-                {isSavingPassword ? (
+                {isDeletingPassword ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Deleting...
@@ -1241,33 +1167,15 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={handleTestPassword}
-                  disabled={isSavingPassword || isTestingPassword || !newPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
-                >
-                  {isTestingPassword ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Testing...
-                    </>
-                  ) : (
-                    <>
-                      {/* <TestTube className="mr-2 h-4 w-4" /> */}
-                      Test Password
-                    </>
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
                   onClick={handlePasswordDialogClose}
-                  disabled={isSavingPassword || isTestingPassword}
+                  disabled={isDeletingPassword || isSavingPassword}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="button"
                   onClick={handlePasswordSave}
-                  disabled={isSavingPassword || isTestingPassword || !newPassword || !confirmPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
+                  disabled={isDeletingPassword || isSavingPassword || !newPassword || !confirmPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
                   variant="gradient"
                 >
                   {isSavingPassword ? (

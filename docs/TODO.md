@@ -174,23 +174,25 @@ none
     - SMTP server configuration in `Settings → Email Settings`
     - Per-backup job configuration for NTFY and/or email notifications
     - HTML-formatted templates using existing `Settings → Notification Templates`
-    - Ethereal.Email integration for testing configurations
 - **Per-Backup Job Notification Configuration:**
     - Individual notification preferences in `Settings → Backup Notifications`
     - Visual indicators (greyed icons) when NTFY or email is not properly configured
 
 **Security Enhancements:**
-- **CSRF Protection Implementation:**
-    - Session-based authentication system with secure session management
-    - CSRF token validation for all state-changing operations
-    - Automatic session expiration (24-hour duration) with token refresh (30-minute duration)
-    - Protection against Cross-Site Request Forgery attacks whilst maintaining external API compatibility
+- **CSRF Protection:**
+    - Session-based authentication with robust session management
+    - CSRF token validation enforced for all state-changing API requests
+    - Sessions expire automatically after 24 hours; CSRF tokens refresh every 30 minutes
+    - Ensures protection against Cross-Site Request Forgery while preserving compatibility with external APIs
+- **Plaintext Password Minimization:**
+    - Passwords can only be set via the user interface; no API endpoint exposes stored passwords
+    - Plaintext password transmission is minimized throughout the system
 - **Advanced Cryptography for Sensitive Data:**
-    - AES-256-GCM encryption for storing sensitive information (passwords, SMTP credentials)
-    - Automatic master key generation and secure file storage (`.duplistatus.key`)
-    - PBKDF2 key derivation with 100,000 iterations for enhanced security
-    - Secure memory cleanup and authentication tag verification
-    - Restrictive file permissions (0400) enforced for master key file
+    - Sensitive data (e.g., passwords, SMTP credentials) encrypted using AES-256-GCM
+    - Master key is generated automatically and stored securely in `.duplistatus.key`
+    - PBKDF2 with 100,000 iterations used for key derivation to strengthen security
+    - Authentication tags are verified and memory is securely cleared after use
+    - Master key file permissions are strictly set to 0400 for maximum protection
 
 **User Interface Improvements:**
 - Enhanced application styling with new colour scheme and iconography for improved usability

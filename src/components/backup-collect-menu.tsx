@@ -967,7 +967,14 @@ export function BackupCollectMenu({
               servers={serverAddresses}
               variant="default"
               showText={true}
-              onCollectionStart={() => setShowCollectAll(false)}
+              onCollectionStart={() => {
+                setShowCollectAll(false);
+                toast({
+                  title: "Starting Collection",
+                  description: "Collecting backup logs from all configured servers...",
+                  duration: 4000,
+                });
+              }}
               onCollectionEnd={() => {
                 // Collection completed, toast will be shown by the component
               }}

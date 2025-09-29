@@ -269,7 +269,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
               <History className="h-4 w-4 text-gray-400 opacity-30 cursor-help" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>No available versions</p>
+              <p>Version info not received</p>
             </TooltipContent>
           </Tooltip>
         )}

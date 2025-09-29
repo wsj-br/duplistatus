@@ -210,7 +210,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const handleNotificationIconClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the row click from firing
     // Navigate to settings page with backup notifications tab active
-    router.push('/settings?tab=backups');
+    router.push('/settings?tab=notifications');
   };
 
   return (
@@ -228,7 +228,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead column="isBackupOverdue" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  Overdue
+                  Overdue / <span className="text-green-500">Next run</span>
                 </SortableTableHead>
                 <SortableTableHead column="lastBackupListCount" sortConfig={sortConfig} onSort={handleSort} align="center">
                   Available Versions
@@ -301,7 +301,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     <TableCell className="text-left">
                       {server.backupName || 'N/A'}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-left">
                       {server.isBackupOverdue ? (
                         <Tooltip>
                           <TooltipTrigger>
@@ -339,7 +339,14 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                           </TooltipContent>
                         </Tooltip>
                       ) : (
-                        <span className="text-muted-foreground">-</span>
+                        server.expectedBackupDate !== "N/A" ? (
+                          <div className="text-green-400 text-xs">
+                            <div>{new Date(server.expectedBackupDate).toLocaleString()}</div>
+                            <div>{formatRelativeTime(server.expectedBackupDate)}</div>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )
                       )}
                     </TableCell>
                     <TableCell className="text-center">
@@ -454,8 +461,15 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     >
                       <StatusBadge status={server.lastBackupStatus} />
                     </div>
-                    {server.isBackupOverdue && (
+                    {server.isBackupOverdue ? (
                       <div className="text-red-400 text-xs">⚠️ {server.expectedBackupElapsed} overdue</div>
+                    ) : (
+                      server.expectedBackupDate !== "N/A" && (
+                        <div className="text-green-400 text-xs">
+                          <div>{new Date(server.expectedBackupDate).toLocaleString()}</div>
+                          <div>{formatRelativeTime(server.expectedBackupDate)}</div>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>

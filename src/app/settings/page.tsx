@@ -157,13 +157,13 @@ function SettingsPageContent() {
   useEffect(() => {
     // Check for tab parameter in URL first
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'email', 'templates'].includes(tabParam)) {
+    if (tabParam && ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates'].includes(tabParam)) {
       setActiveTab(tabParam);
       localStorage.setItem('settings-active-tab', tabParam);
     } else {
       // Load the last selected tab from localStorage if no URL parameter
       const savedTab = localStorage.getItem('settings-active-tab');
-      if (savedTab && ['backupNotifications', 'overdue', 'serverSettings', 'ntfy', 'email', 'templates'].includes(savedTab)) {
+      if (savedTab && ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates'].includes(savedTab)) {
         setActiveTab(savedTab);
       }
     }
@@ -219,7 +219,7 @@ function SettingsPageContent() {
         <CardContent>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 h-auto">
-              <TabsTrigger value="backupNotifications" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+              <TabsTrigger value="notifications" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
                 <Bell className="h-4 w-4" />
                 <span className="hidden lg:inline">Backup Notifications</span>
                 <span className="lg:hidden">Notifications</span>
@@ -229,19 +229,19 @@ function SettingsPageContent() {
                 <span className="hidden lg:inline">Overdue Monitoring</span>
                 <span className="lg:hidden">Overdue</span>
               </TabsTrigger>
-              <TabsTrigger value="serverSettings" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
+              <TabsTrigger value="server" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
                 <Server className="h-4 w-4" />
-                <span className="hidden lg:inline">Server Settings</span>
-                <span className="lg:hidden">Server</span>
+                <span className="hidden lg:inline">Servers</span>
+                <span className="lg:hidden">Servers</span>
               </TabsTrigger>
               <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />
-                <span className="hidden lg:inline">NTFY Settings</span>
+                <span className="hidden lg:inline">NTFY</span>
                 <span className="lg:hidden">NTFY</span>
               </TabsTrigger>
               <TabsTrigger value="email" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span className="hidden lg:inline">Email Settings</span>
+                <span className="hidden lg:inline">Email</span>
                 <span className="lg:hidden">Email</span>
               </TabsTrigger>
               <TabsTrigger value="templates" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
@@ -251,7 +251,7 @@ function SettingsPageContent() {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="backupNotifications" className="mt-6">
+            <TabsContent value="notifications" className="mt-6">
               <BackupNotificationsForm 
                 backupSettings={config.backupSettings || {}} 
                 onSave={async () => {
@@ -271,7 +271,7 @@ function SettingsPageContent() {
               />
             </TabsContent>
             
-            <TabsContent value="serverSettings" className="mt-6">
+            <TabsContent value="server" className="mt-6">
               <ServerSettingsForm 
                 serverAddresses={config.serverAddresses || []} 
               />

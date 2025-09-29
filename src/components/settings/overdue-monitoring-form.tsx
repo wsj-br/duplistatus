@@ -21,7 +21,7 @@ import { ServerConfigurationButton } from '../ui/server-configuration-button';
 import { authenticatedRequest } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
 import { CollectAllButton } from '../ui/collect-all-button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import Link from 'next/link';
 import { 
   getIntervalDisplay, 
   createIntervalString, 
@@ -67,8 +67,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const [notificationFrequencyError, setNotificationFrequencyError] = useState<string | null>(null);
   const [overdueToleranceMs, setOverdueToleranceMs] = useState<number>(0);
   const [isResetting, setIsResetting] = useState(false);
-  const [resetDialogOpen, setResetDialogOpen] = useState(false);
-  const [resetTargetServer, setResetTargetServer] = useState<{serverId: string, backupName: string, currentNextRun: string, lastBackup: string} | null>(null);
   const [autoCollectingServers, setAutoCollectingServers] = useState<Set<string>>(new Set());
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
 
@@ -645,74 +643,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     }
   };
 
-  const handleNextRunRightClick = async (serverId: string, backupName: string, currentNextRun: string) => {
-    try {
-      // Get the last backup date for this server-backup combination
-      const response = await fetch(`/api/lastbackups/${encodeURIComponent(serverId)}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch backup information');
-      }
-      
-      const data = await response.json();
-      const lastBackup = data.latest_backups?.find((backup: { name: string; date: string }) => backup.name === backupName);
-      
-      if (!lastBackup) {
-        toast({
-          title: "Error",
-          description: "No backup information found for this backup",
-          variant: "destructive",
-          duration: 3000,
-        });
-        return;
-      }
-      
-      // Set the dialog state
-      setResetTargetServer({
-        serverId,
-        backupName,
-        currentNextRun,
-        lastBackup: lastBackup.date
-      });
-      setResetDialogOpen(true);
-      
-    } catch (error) {
-      console.error('Error fetching backup information:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to fetch backup information",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
-
-  const handleConfirmReset = async () => {
-    if (!resetTargetServer) return;
-    
-    try {
-      // Update the backup setting with the last backup date
-      updateBackupSettingById(resetTargetServer.serverId, resetTargetServer.backupName, 'time', resetTargetServer.lastBackup);
-      
-      toast({
-        title: "Success",
-        description: "Next run date has been reset to the last backup date",
-        duration: 2000,
-      });
-      
-      setResetDialogOpen(false);
-      setResetTargetServer(null);
-      
-    } catch (error) {
-      console.error('Error resetting next run date:', error instanceof Error ? error.message : String(error));
-      toast({
-        title: "Error",
-        description: "Failed to reset next run date",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
 
   const handleAutoCollectStart = (serverId: string) => {
     setAutoCollectingServers(prev => new Set(prev).add(serverId));
@@ -895,20 +825,18 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     
                     <TableCell>
                       <div>
-                        <div className="font-medium text-sm truncate">{server.backupName}</div>
+                        <Link 
+                          href={`/detail/${server.id}?backup=${encodeURIComponent(server.backupName)}`}
+                          className="font-medium text-sm truncate  hover:underline transition-colors"
+                        >
+                          {server.backupName}
+                        </Link>
                       </div>
                     </TableCell>
                     
                     <TableCell>
                       <div 
-                        className={`text-xs cursor-pointer p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
-                        onContextMenu={(e) => {
-                          e.preventDefault();
-                          if (server.nextRunDate !== 'N/A') {
-                            handleNextRunRightClick(server.id, server.backupName, server.nextRunDate);
-                          }
-                        }}
-                        title="Right-click to reset to last backup date"
+                        className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                       >
                         {server.nextRunDate !== 'N/A' ? 
                           new Date(server.nextRunDate).toLocaleString() : 
@@ -1038,7 +966,12 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                           >
                             {server.alias || server.name}
                           </div>
-                          <div className="text-xs text-muted-foreground">{server.backupName}</div>
+                          <Link 
+                            href={`/detail/${server.id}?backup=${encodeURIComponent(server.backupName)}`}
+                            className="text-xs hover:underline transition-colors"
+                          >
+                            {server.backupName}
+                          </Link>
                           {server.note && (
                             <div className="text-xs text-muted-foreground truncate mt-1">
                               {server.note}
@@ -1052,14 +985,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     <div className="space-y-1">
                       <Label className="text-xs font-medium">Next Run</Label>
                       <div 
-                        className={`text-xs cursor-pointer hover:bg-gray-100 p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
-                        onContextMenu={(e) => {
-                          e.preventDefault();
-                          if (server.nextRunDate !== 'N/A') {
-                            handleNextRunRightClick(server.id, server.backupName, server.nextRunDate);
-                          }
-                        }}
-                        title="Right-click to reset to last backup date"
+                        className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                       >
                         {server.nextRunDate !== 'N/A' ? 
                           new Date(server.nextRunDate).toLocaleString() : 
@@ -1301,50 +1227,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         </CardContent>
       </Card>
 
-      {/* Reset Next Run Confirmation Dialog */}
-      <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reset Next Run Date</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to reset the next run date to the last backup date?
-            </DialogDescription>
-          </DialogHeader>
-          
-          {resetTargetServer && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Current Next Run:</div>
-                <div className="text-sm text-muted-foreground">
-                  {new Date(resetTargetServer.currentNextRun).toLocaleString()}
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Last Backup Date:</div>
-                <div className="text-sm text-muted-foreground">
-                  {new Date(resetTargetServer.lastBackup).toLocaleString()}
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setResetDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleConfirmReset}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              Reset to Last Backup
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

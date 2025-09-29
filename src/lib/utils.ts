@@ -89,6 +89,17 @@ export function formatRelativeTime(dateString: string, currentTime?: Date): stri
     const isFuture = diffInSeconds < 0;
     const absDiffInSeconds = Math.abs(diffInSeconds);
 
+    if (absDiffInSeconds < 60) {  
+      const seconds = Math.floor(absDiffInSeconds);
+      return isFuture ? `in ${seconds} second${seconds === 1 ? '' : 's'}` : `${seconds} second${seconds === 1 ? '' : 's'} ago`;
+    }
+
+    if (absDiffInSeconds < 3600) {
+      const minutes = Math.floor(absDiffInSeconds / 60);
+      return isFuture ? `in ${minutes} minute${minutes === 1 ? '' : 's'}` : `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+    }
+
+
     if (absDiffInSeconds < 3600) {
       const minutes = Math.floor(absDiffInSeconds / 60);
       return isFuture ? `in ${minutes} minute${minutes === 1 ? '' : 's'}` : `${minutes} minute${minutes === 1 ? '' : 's'} ago`;

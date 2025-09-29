@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.9-blue)
+![](https://img.shields.io/badge/version-0.8.10-blue)
 
 <br/>
 
@@ -58,6 +58,8 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Get Email Configuration - `/api/configuration/email`](#get-email-configuration---apiconfigurationemail)
   - [Update Email Configuration - `/api/configuration/email`](#update-email-configuration---apiconfigurationemail)
   - [Delete Email Configuration - `/api/configuration/email`](#delete-email-configuration---apiconfigurationemail)
+  - [Update Email Password - `/api/configuration/email/password`](#update-email-password---apiconfigurationemailpassword)
+  - [Get Email Password CSRF Token - `/api/configuration/email/password`](#get-email-password-csrf-token---apiconfigurationemailpassword)
   - [Get Unified Configuration - `/api/configuration/unified`](#get-unified-configuration---apiconfigurationunified)
   - [Get NTFY Configuration - `/api/configuration/ntfy`](#get-ntfy-configuration---apiconfigurationntfy)
   - [Update Notification Configuration - `/api/configuration/notifications`](#update-notification-configuration---apiconfigurationnotifications)
@@ -85,7 +87,6 @@ All API responses are returned in JSON format with consistent error handling pat
   - [Update Server URL - `/api/servers/:serverId/server-url`](#update-server-url---apiserversserveridserver-url)
   - [Get Server Password - `/api/servers/:serverId/password`](#get-server-password---apiserversserveridpassword)
   - [Update Server Password - `/api/servers/:serverId/password`](#update-server-password---apiserversserveridpassword)
-  - [Test Server Password - `/api/servers/:serverId/test-password`](#test-server-password---apiserversserveridtest-password)
 - [Error Handling](#error-handling)
 - [Data Type Notes](#data-type-notes)
   - [Message Arrays](#message-arrays)
@@ -374,8 +375,9 @@ These endpoints are designed for use by other applications and integrations, for
 - **Error Responses**:
   - `500`: Server error fetching dashboard data
 - **Notes**:
-  - This endpoint consolidates the previous `/api/servers-summary` and `/api/chart-data/aggregated` endpoints
+  - This endpoint consolidates the previous `/api/servers-summary` endpoint (which has been removed)
   - The `overallSummary` field contains the same data as `/api/summary` (which is maintained for external applications)
+  - The `chartData` field contains the same data as `/api/chart-data/aggregated` (which still exists for direct access)
   - Provides better performance by reducing multiple API calls to a single request
   - All data is fetched in parallel for optimal performance
   - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
@@ -417,7 +419,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Notes**:
   - Returns server information including alias and note fields
   - When `includeBackups=true`, returns server-backup combinations with URLs
-  - Consolidates the previous `/api/servers-with-backups` functionality
+  - Consolidates the previous `/api/servers-with-backups` endpoint (which has been removed)
   - Used for server selection, display, and configuration purposes
 
 <br/>
@@ -704,6 +706,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/configuration/email`
 - **Method**: GET
 - **Description**: Retrieves the current email notification configuration and whether email notifications are enabled/configured.
+- **Authentication**: Requires valid session and CSRF token
 - **Response** (configured):
   ```json
   {
@@ -713,8 +716,8 @@ These endpoints are designed for use by other applications and integrations, for
       "port": 465,
       "secure": true,
       "username": "user@example.com",
-      "password": "password",
-      "mailto": "admin@example.com"
+      "mailto": "admin@example.com",
+      "hasPassword": true
     },
     "message": "Email is configured and ready to use."
   }
@@ -728,9 +731,12 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `400`: Master key is invalid - All encrypted passwords and settings must be reconfigured
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to get email configuration
 - **Notes**:
-  - Returns full configuration including password for editing purposes
+  - Returns configuration without password for security
+  - Includes `hasPassword` field to indicate if password is set
   - Indicates if email notifications are available for test and production use
 
 ### Update Email Configuration - `/api/configuration/email`
@@ -764,6 +770,7 @@ These endpoints are designed for use by other applications and integrations, for
   - All fields (host, port, username, password, mailto) are required
   - Port must be a valid number between 1 and 65535
   - Secure field is boolean (true for SSL/TLS)
+  - Password is managed separately through the password endpoint
 
 ### Delete Email Configuration - `/api/configuration/email`
 - **Endpoint**: `/api/configuration/email`
@@ -785,6 +792,58 @@ These endpoints are designed for use by other applications and integrations, for
   - This operation permanently removes the SMTP configuration
   - Returns 404 if no configuration exists to delete
 
+### Update Email Password - `/api/configuration/email/password`
+- **Endpoint**: `/api/configuration/email/password`
+- **Method**: PATCH
+- **Description**: Updates the email password for SMTP authentication.
+- **Authentication**: Requires valid session and CSRF token
+- **Request Body**:
+  ```json
+  {
+    "password": "new-password",
+    "config": {
+      "host": "smtp.example.com",
+      "port": 465,
+      "secure": true,
+      "username": "user@example.com",
+      "mailto": "admin@example.com"
+    }
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Email password updated successfully"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Password must be a string or missing required config fields
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Failed to update email password
+- **Notes**:
+  - Password can be an empty string to clear the password
+  - If no SMTP config exists, creates a minimal one from provided config
+  - Config parameter is required when no existing SMTP configuration exists
+  - Password is stored securely using encryption
+
+### Get Email Password CSRF Token - `/api/configuration/email/password`
+- **Endpoint**: `/api/configuration/email/password`
+- **Method**: GET
+- **Description**: Retrieves a CSRF token for email password operations.
+- **Authentication**: Requires valid session
+- **Response**:
+  ```json
+  {
+    "csrfToken": "csrf-token-string"
+  }
+  ```
+- **Error Responses**:
+  - `401`: Invalid or expired session
+  - `500`: Failed to generate CSRF token
+- **Notes**:
+  - Returns CSRF token for use with password update operations
+  - Session must be valid to generate token
+
 
 ### Get Unified Configuration - `/api/configuration/unified`
 - **Endpoint**: `/api/configuration/unified`
@@ -797,6 +856,15 @@ These endpoints are designed for use by other applications and integrations, for
       "url": "https://ntfy.sh",
       "topic": "duplistatus-notifications",
       "accessToken": ""
+    },
+    "email": {
+      "host": "smtp.example.com",
+      "port": 465,
+      "secure": true,
+      "username": "user@example.com",
+      "mailto": "admin@example.com",
+      "enabled": true,
+      "hasPassword": true
     },
     "backupSettings": {
       "Server Name:Backup Name": {
@@ -854,6 +922,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Notes**:
   - Returns all configuration data in a single response
   - Includes cron settings, notification frequency, and servers with backups
+  - Email configuration includes `hasPassword` field but not the actual password
   - Fetches all data in parallel for better performance
 
 ### Get NTFY Configuration - `/api/configuration/ntfy`
@@ -1580,46 +1649,6 @@ These endpoints are designed for use by other applications and integrations, for
   - Password can be an empty string to clear the password
   - Password is stored securely using the secrets management system
 
-### Test Server Password - `/api/servers/:serverId/test-password`
-- **Endpoint**: `/api/servers/:serverId/test-password`
-- **Method**: POST
-- **Description**: Tests the connection to a Duplicati server using the provided password.
-- **Authentication**: Requires valid session and CSRF token
-- **Parameters**:
-  - `serverId`: the server identifier
-- **Request Body**:
-  ```json
-  {
-    "password": "test-password"
-  }
-  ```
-- **Response** (success):
-  ```json
-  {
-    "success": true,
-    "message": "Password test successful",
-    "protocol": "https"
-  }
-  ```
-- **Response** (failure):
-  ```json
-  {
-    "success": false,
-    "message": "Login failed: Unauthorized",
-    "protocol": "unknown"
-  }
-  ```
-- **Error Responses**:
-  - `400`: Password is required or invalid server URL format
-  - `404`: Server not found
-  - `500`: Internal server error
-- **Notes**:
-  - Automatically detects the best connection protocol (HTTPS → HTTP)
-  - Tests actual login to the Duplicati server
-  - Returns the protocol used for successful connection
-  - Uses server URL from database to determine connection details
-
-<br/>
 
 ## Error Handling
 
@@ -1768,7 +1797,7 @@ All state-changing operations require a valid CSRF token that matches the curren
 #### Protected Endpoints
 All endpoints that modify database data require session authentication and CSRF token:
 
-- **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET), `/api/servers/:id/test-password` (POST)
+- **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
 - **Backup Management**: `/api/backups/*` (DELETE, POST)
 - **Notification System**: `/api/notifications/*` (POST)
