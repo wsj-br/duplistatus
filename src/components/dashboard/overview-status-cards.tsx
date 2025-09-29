@@ -157,7 +157,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ColoredIcon icon={CheckCheck} color="green" size="md" />
-                <span className="text-sm font-medium">Success</span>
+                <span className="text-sm font-medium">Success</span><span className="text-xs text-muted-foreground"> (last backup run)</span>
               </div>
               <div className="text-right">
                 <span className="text-lg font-bold text-green-500">{successCount}</span>

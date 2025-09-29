@@ -21,12 +21,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState, useEffect, useCallback } from "react";
+import { usePathname } from 'next/navigation';
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useConfiguration } from "@/contexts/configuration-context";
+import { useServerSelection } from "@/contexts/server-selection-context";
 import { defaultAPIConfig } from '@/lib/default-config';
 import { ServerAddress } from '@/lib/types';
 import { authenticatedRequest } from "@/lib/client-session-csrf";
+import { CollectAllButton } from "@/components/ui/collect-all-button";
 
 interface BackupCollectMenuProps {
   preFilledServerUrl?: string;
@@ -67,13 +70,47 @@ export function BackupCollectMenu({
   const [isLoadingServers, setIsLoadingServers] = useState(false);
   const [progress, setProgress] = useState(0);
   const [buttonState, setButtonState] = useState<'default' | 'loading' | 'success'>('default');
+  const [showCollectAll, setShowCollectAll] = useState(false);
+  const [isInAutoCollectOperation, setIsInAutoCollectOperation] = useState(false);
   
-  // Determine the mode based on props
-  const isAutoCollectMode = autoCollect && preFilledServerId;
+  // Determine the mode based on props and context
+  // Auto-collect mode should only be true when explicitly set via props OR when we're in an auto-collect operation
+  const isAutoCollectMode = (autoCollect && preFilledServerId) || isInAutoCollectOperation;
   const isServerListMode = !autoCollect && !preFilledServerUrl && !preFilledServerName;
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
+  const pathname = usePathname();
+  const { state: serverSelectionState, getSelectedServer } = useServerSelection();
+  
+  // Get the current server name for display
+  const getCurrentServerName = () => {
+    // First priority: preFilledServerName prop
+    if (preFilledServerName) {
+      return preFilledServerName;
+    }
+    
+    // Second priority: selected server from serverAddresses
+    if (selectedServerId && selectedServerId !== "new-server") {
+      const selectedServer = serverAddresses.find(s => s.id === selectedServerId);
+      if (selectedServer) {
+        return selectedServer.alias || selectedServer.name;
+      }
+    }
+    
+    // Third priority: server from server selection context (for auto-collect from dashboard)
+    if (isAutoCollectMode && serverSelectionState.selectedServerId) {
+      const contextServer = getSelectedServer();
+      if (contextServer) {
+        return contextServer.alias || contextServer.name;
+      }
+    }
+    
+    // Fallback
+    return "server";
+  };
+  
+  const currentServerName = getCurrentServerName();
 
   // Fetch server addresses function similar to open-server-config-button.tsx
   const fetchServerAddresses = useCallback(async () => {
@@ -202,6 +239,14 @@ export function BackupCollectMenu({
 
   // Parse and format connection errors for better user experience
   const formatConnectionError = (errorMessage: string, hostname: string, port: string) => {
+    // Check for master key error first
+    if (errorMessage.includes('Master key is invalid') || errorMessage.includes('MASTER_KEY_INVALID')) {
+      return {
+        title: "Master Key Invalid",
+        description: "The master key is no longer valid. All encrypted passwords and settings must be reconfigured."
+      };
+    }
+    
     if (errorMessage.includes('Could not establish connection with any protocol')) {
       return {
         title: "Connection Failed",
@@ -292,10 +337,14 @@ export function BackupCollectMenu({
     }
   };
 
-  const handleAutoCollect = async () => {
-    if (!preFilledServerId) return;
+  const handleAutoCollect = async (serverId?: string) => {
+    const targetServerId = serverId || preFilledServerId;
+    if (!targetServerId) return;
     
     onAutoCollectStart?.();
+    
+    // Set auto-collect operation flag to show progress-only mode
+    setIsInAutoCollectOperation(true);
     
     // Open popup to show progress only
     setIsOpen(true);
@@ -317,7 +366,7 @@ export function BackupCollectMenu({
       const response = await authenticatedRequest('/api/backups/collect', {
         method: 'POST',
         body: JSON.stringify({
-          serverId: preFilledServerId,
+          serverId: targetServerId,
           downloadJson: false
         }),
       });
@@ -369,6 +418,10 @@ export function BackupCollectMenu({
         setIsOpen(false);
         setProgress(0);
         setStats(null);
+        // Reset auto-collect operation flag
+        setIsInAutoCollectOperation(false);
+        // Reset selectedServerId to allow fresh context detection on next click
+        setSelectedServerId("new-server");
       }, 3000);
     }
   };
@@ -438,6 +491,18 @@ export function BackupCollectMenu({
 
       if (!response.ok) {
         const error = await response.json();
+        
+        // Check for master key error
+        if (error.masterKeyInvalid) {
+          toast({
+            title: "Master Key Invalid",
+            description: "The master key is no longer valid. All encrypted passwords and settings must be reconfigured.",
+            variant: "destructive",
+            duration: 8000,
+          });
+          return;
+        }
+        
         throw new Error(error.error || 'Failed to collect backups');
       }
 
@@ -528,22 +593,119 @@ export function BackupCollectMenu({
     }
   };
 
+  const handleButtonClick = async () => {
+    // Check if we're on a server detail page (including backup detail pages)
+    if (pathname.startsWith('/detail/')) {
+      // Extract serverId from the pathname
+      const pathMatch = pathname.match(/^\/detail\/([^\/\?]+)/);
+      const currentServerId = pathMatch ? pathMatch[1] : undefined;
+      
+      if (currentServerId) {
+        try {
+          const response = await fetch(`/api/servers/${currentServerId}/server-url`);
+          
+          if (!response.ok) {
+            throw new Error(`Failed to fetch server URL: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          // The server-url endpoint returns { serverId, server_url }
+          const serverUrl = data.server_url;
+          
+          if (serverUrl && serverUrl.trim() !== '') {
+            try {
+              const url = new URL(serverUrl);
+              
+              if (['http:', 'https:'].includes(url.protocol)) {
+                // Set auto-collect mode and collect from this server
+                setSelectedServerId(currentServerId);
+                await handleAutoCollect(currentServerId);
+                return;
+              }
+            } catch {
+              // Invalid URL, fall through to show popover
+            }
+          }
+          
+          // If no valid server_url, show popover with all servers
+          setIsOpen(true);
+        } catch (error) {
+          console.error('Error fetching server data:', error);
+          // Fall back to showing popover
+          setIsOpen(true);
+        }
+        return;
+      } else {
+        // Even on detail page, if we can't get serverId, show popover
+        setIsOpen(true);
+        return;
+      }
+    }
+    
+    // Check if we have a selected server on dashboard (both analytics and overview view modes)
+    if (pathname === '/' && (serverSelectionState.viewMode === 'analytics' || serverSelectionState.viewMode === 'overview') && serverSelectionState.selectedServerId) {
+      const selectedServer = getSelectedServer();
+      if (selectedServer && selectedServer.server_url && selectedServer.server_url.trim() !== '') {
+        try {
+          const url = new URL(selectedServer.server_url);
+          if (['http:', 'https:'].includes(url.protocol)) {
+            // Set auto-collect mode and collect from selected server
+            setSelectedServerId(selectedServer.id);
+            await handleAutoCollect(selectedServer.id);
+            return;
+          }
+        } catch {
+          // Invalid URL, fall through to popover
+        }
+      }
+    }
+    
+    // Only open popover if no server is selected or no valid server URL
+    setIsOpen(true);
+  };
+
+  const handleRightClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Fetch server addresses if not already loaded
+    if (serverAddresses.length === 0) {
+      await fetchServerAddresses();
+    }
+    
+    setShowCollectAll(true);
+  };
+
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <>
+      <Popover open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      // Reset state when popover closes to allow fresh context detection
+      if (!open) {
+        setSelectedServerId("new-server");
+        setIsInAutoCollectOperation(false);
+      }
+    }}>
       <PopoverTrigger asChild>
         <Button 
           variant={variant} 
           size={getButtonSize()} 
           className={className}
-          title="Collect backup logs"
+          title="Collect backup logs (Right-click for Collect All)"
           disabled={disabled}
           onClick={(e) => {
             if (isAutoCollectMode) {
               e.preventDefault();
               e.stopPropagation();
               handleAutoCollect();
+            } else if (isServerListMode) {
+              e.preventDefault();
+              e.stopPropagation();
+              handleButtonClick();
             }
           }}
+          onContextMenu={handleRightClick}
         >
           <Download className={getIconSize()} />
           {showText && "Collect"}
@@ -567,7 +729,7 @@ export function BackupCollectMenu({
                     <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
                     <div className="text-center space-y-2">
                       <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                        Collecting backup logs...
+                        Collecting backup logs from {currentServerName}...
                       </p>
                       <Progress value={progress} variant="gradient" className="w-full h-2" />
                       <p className="text-xs text-blue-600 dark:text-blue-400">
@@ -585,7 +747,7 @@ export function BackupCollectMenu({
                       </div>
                     </div>
                     <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                      Collection complete!
+                      Collection complete from {currentServerName}!
                     </p>
                     <div className="space-y-1 text-xs text-muted-foreground">
                       <p>Processed: {stats.processed} backups</p>
@@ -734,7 +896,7 @@ export function BackupCollectMenu({
                         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
                         <div className="text-center space-y-2">
                           <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                            Collecting backup logs...
+                            Collecting backup logs from {currentServerName}...
                           </p>
                           <Progress value={progress} variant="gradient" className="w-full h-2" />
                           <p className="text-xs text-blue-600 dark:text-blue-400">
@@ -744,7 +906,7 @@ export function BackupCollectMenu({
                       </>
                     ) : stats ? (
                       <div className="space-y-2 text-sm">
-                        <p className="font-medium">Collection complete:</p>
+                        <p className="font-medium">Collection complete from {currentServerName}:</p>
                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                           <li>Processed: {stats.processed} backups</li>
                           <li>Skipped: {stats.skipped} duplicates</li>
@@ -785,5 +947,35 @@ export function BackupCollectMenu({
         </div>
       </PopoverContent>
     </Popover>
+    
+    {/* Collect All Modal */}
+    {showCollectAll && (
+      <div className="fixed inset-0 bg-black/50 z-50">
+        <div className="bg-background border rounded-lg p-6 max-w-md w-full mx-4 absolute top-1/3 left-1/2 transform -translate-x-1/2">
+          <h3 className="text-lg font-semibold mb-4">Collect All Backups</h3>
+          <p className="text-muted-foreground mb-4">
+            This will collect backup logs from all configured servers. Are you sure you want to continue?
+          </p>
+          <div className="flex gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setShowCollectAll(false)}
+            >
+              Cancel
+            </Button>
+            <CollectAllButton
+              servers={serverAddresses}
+              variant="default"
+              showText={true}
+              onCollectionStart={() => setShowCollectAll(false)}
+              onCollectionEnd={() => {
+                // Collection completed, toast will be shown by the component
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 } 

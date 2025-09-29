@@ -1811,7 +1811,14 @@ export function getSMTPConfig(): SMTPConfig | null {
 
       return decryptedConfig;
     } catch (error) {
-      console.error('Failed to parse or decrypt SMTP configuration:', error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // If this is a master key error, re-throw it to be handled by the caller
+      if (errorMessage.includes('MASTER_KEY_INVALID')) {
+        throw error;
+      }
+      
+      console.error('Failed to parse or decrypt SMTP configuration:', errorMessage);
       return null;
     }
   }, 'getSMTPConfig');
@@ -1834,6 +1841,19 @@ export function setSMTPConfig(config: SMTPConfig): void {
     console.error('Failed to encrypt or save SMTP configuration:', error instanceof Error ? error.message : String(error));
     throw error;
   }
+}
+
+export function deleteSMTPConfig(): void {
+  withDb(() => {
+    try {
+      db.prepare('DELETE FROM configurations WHERE key = ?').run('smtp_config');
+      // Clear request cache after deleting configuration to ensure fresh data is returned
+      clearRequestCache();
+    } catch (error) {
+      console.error('Failed to delete SMTP configuration:', error instanceof Error ? error.message : String(error));
+      throw error;
+    }
+  });
 }
 
 

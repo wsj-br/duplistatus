@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.8-blue)
+![](https://img.shields.io/badge/version-0.8.9-blue)
 
 <br/>
 
@@ -57,6 +57,7 @@ All API responses are returned in JSON format with consistent error handling pat
 - [Configuration Management](#configuration-management)
   - [Get Email Configuration - `/api/configuration/email`](#get-email-configuration---apiconfigurationemail)
   - [Update Email Configuration - `/api/configuration/email`](#update-email-configuration---apiconfigurationemail)
+  - [Delete Email Configuration - `/api/configuration/email`](#delete-email-configuration---apiconfigurationemail)
   - [Get Unified Configuration - `/api/configuration/unified`](#get-unified-configuration---apiconfigurationunified)
   - [Get NTFY Configuration - `/api/configuration/ntfy`](#get-ntfy-configuration---apiconfigurationntfy)
   - [Update Notification Configuration - `/api/configuration/notifications`](#update-notification-configuration---apiconfigurationnotifications)
@@ -764,6 +765,26 @@ These endpoints are designed for use by other applications and integrations, for
   - Port must be a valid number between 1 and 65535
   - Secure field is boolean (true for SSL/TLS)
 
+### Delete Email Configuration - `/api/configuration/email`
+- **Endpoint**: `/api/configuration/email`
+- **Method**: DELETE
+- **Description**: Deletes the SMTP email notification configuration.
+- **Authentication**: Requires valid session and CSRF token
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "SMTP configuration deleted successfully"
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid Session or CSRF token
+  - `404`: No SMTP configuration found to delete
+  - `500`: Failed to delete SMTP configuration
+- **Notes**:
+  - This operation permanently removes the SMTP configuration
+  - Returns 404 if no configuration exists to delete
+
 
 ### Get Unified Configuration - `/api/configuration/unified`
 - **Endpoint**: `/api/configuration/unified`
@@ -839,6 +860,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/configuration/ntfy`
 - **Method**: GET
 - **Description**: Retrieves the current NTFY configuration settings.
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -850,10 +872,12 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to fetch NTFY configuration
 - **Notes**:
   - Returns current NTFY configuration settings
   - Used for notification system management
+  - Requires authentication for accessing configuration data
 
 
 ### Update Notification Configuration - `/api/configuration/notifications`
@@ -1265,6 +1289,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
 - **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint automatically detects the best connection protocol (HTTPS with SSL validation, HTTPS with self-signed certificates, or HTTP as fallback) and connects to the Duplicati server to retrieve backup information and process it into the local database.
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {
@@ -1744,7 +1769,7 @@ All state-changing operations require a valid CSRF token that matches the curren
 All endpoints that modify database data require session authentication and CSRF token:
 
 - **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET), `/api/servers/:id/test-password` (POST)
-- **Configuration Management**: `/api/configuration/*` (POST)
+- **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
 - **Backup Management**: `/api/backups/*` (DELETE, POST)
 - **Notification System**: `/api/notifications/*` (POST)
 - **Cron Configuration**: `/api/cron-config` (POST)
@@ -1754,7 +1779,6 @@ All endpoints that modify database data require session authentication and CSRF 
 External APIs remain unauthenticated for Duplicati integration:
 
 - `/api/upload` - Backup data uploads from Duplicati
-- `/api/backups/collect` - Backup collection from Duplicati servers
 - `/api/lastbackup/:serverId` - Latest backup status
 - `/api/lastbackups/:serverId` - Latest backups status
 - `/api/summary` - Overall summary data

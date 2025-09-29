@@ -515,7 +515,23 @@ const migrations: Migration[] = [
         db.prepare('DELETE FROM configurations WHERE key = ?').run('overdue_backup_notifications');
       }
       
-      // Step 11: Create sessions table for CSRF protection
+      console.log('Migration 3.0 completed successfully');
+    }
+  },
+  {
+    version: '3.1',
+    description: 'Add sessions and CSRF token tables for enhanced security',
+    up: (db: Database.Database) => {
+      console.log('Migration 3.1: Adding sessions and CSRF security tables...');
+      
+      // Check if sessions table already exists
+      const sessionsTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='sessions'").get();
+      if (sessionsTableExists) {
+        // Migration already completed
+        return;
+      }
+      
+      // Step 1: Create sessions table for CSRF protection
       db.exec(`
         CREATE TABLE sessions (
           id TEXT PRIMARY KEY,
@@ -525,7 +541,7 @@ const migrations: Migration[] = [
         );
       `);
       
-      // Step 12: Create csrf_tokens table
+      // Step 2: Create csrf_tokens table
       db.exec(`
         CREATE TABLE csrf_tokens (
           session_id TEXT PRIMARY KEY,
@@ -536,13 +552,13 @@ const migrations: Migration[] = [
         );
       `);
       
-      // Step 13: Create indexes for security tables
+      // Step 3: Create indexes for security tables
       db.exec(`
         CREATE INDEX idx_sessions_expires ON sessions(expires_at);
         CREATE INDEX idx_csrf_tokens_expires ON csrf_tokens(expires_at);
       `);
       
-      console.log('Migration 3.0 completed successfully');
+      console.log('Migration 3.1 completed successfully');
     }
   }
 ];

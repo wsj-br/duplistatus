@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useToast } from "@/components/ui/use-toast";
+import { authenticatedRequest } from "@/lib/client-session-csrf";
 import { useParams } from 'next/navigation';
 import type { Server } from "@/lib/types";
 
@@ -47,7 +48,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         setLastError(null);
         
         // Only fetch basic server data - chart data is handled by MetricsChartsPanel
-        const dataResponse = await fetch(`/api/detail/${serverId}`);
+        const dataResponse = await authenticatedRequest(`/api/detail/${serverId}`);
 
         if (!dataResponse.ok) {
           throw new Error('Failed to fetch detail data');

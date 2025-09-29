@@ -42,6 +42,14 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'name', direction: 'asc' });
   
+  // Select-all state
+  const [allNtfySelected, setAllNtfySelected] = useState(false);
+  const [allEmailSelected, setAllEmailSelected] = useState(false);
+
+  // Configuration status checks
+  const isNtfyConfigured = config?.ntfy && config.ntfy.url && config.ntfy.topic;
+  const isEmailConfigured = config?.email && config.email.enabled;
+  
   // Auto-save debouncing state
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -133,10 +141,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     autoSave(newSettings);
   };
 
-  const getBackupSettingById = (serverId: string, backupName: string): BackupNotificationConfig => {
+  const getBackupSettingById = useCallback((serverId: string, backupName: string): BackupNotificationConfig => {
     const backupKey = `${serverId}:${backupName}`;
     return settings[backupKey] || { ...defaultBackupNotificationConfig };
-  };
+  }, [settings]);
 
   // Auto-save function with debouncing
   const autoSave = useCallback(async (newSettings: Record<BackupKey, BackupNotificationConfig>) => {
@@ -215,6 +223,39 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }));
   };
 
+  // Select-all handlers
+  const handleSelectAllNtfy = (checked: boolean) => {
+    const servers = getServersWithBackupAndSettings();
+    const newSettings = { ...settings };
+    
+    servers.forEach(server => {
+      const backupKey = `${server.id}:${server.backupName}`;
+      newSettings[backupKey] = {
+        ...(newSettings[backupKey] || { ...defaultBackupNotificationConfig }),
+        ntfyEnabled: checked,
+      };
+    });
+    
+    setSettings(newSettings);
+    autoSave(newSettings);
+  };
+
+  const handleSelectAllEmail = (checked: boolean) => {
+    const servers = getServersWithBackupAndSettings();
+    const newSettings = { ...settings };
+    
+    servers.forEach(server => {
+      const backupKey = `${server.id}:${server.backupName}`;
+      newSettings[backupKey] = {
+        ...(newSettings[backupKey] || { ...defaultBackupNotificationConfig }),
+        emailEnabled: checked,
+      };
+    });
+    
+    setSettings(newSettings);
+    autoSave(newSettings);
+  };
+
   // Create servers with settings for sorting
   const getServersWithBackupAndSettings = (): ServerWithBackupAndSettings[] => {
     if (!config?.serversWithBackups) return [];
@@ -231,6 +272,23 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
   // Get sorted servers
   const sortedServers = createSortedArray(getServersWithBackupAndSettings(), sortConfig, columnConfig);
+
+  // Update select-all state based on current settings
+  useEffect(() => {
+    if (sortedServers.length === 0) return;
+    
+    const ntfyStates = sortedServers.map(server => {
+      const setting = getBackupSettingById(server.id, server.backupName);
+      return setting.ntfyEnabled !== undefined ? setting.ntfyEnabled : true;
+    });
+    const emailStates = sortedServers.map(server => {
+      const setting = getBackupSettingById(server.id, server.backupName);
+      return setting.emailEnabled !== undefined ? setting.emailEnabled : true;
+    });
+    
+    setAllNtfySelected(ntfyStates.every(state => state));
+    setAllEmailSelected(emailStates.every(state => state));
+  }, [settings, sortedServers, getBackupSettingById]);
 
 
   if (!config?.serversWithBackups || config.serversWithBackups.length === 0) {
@@ -290,11 +348,27 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 >
                   Notification Events
                 </SortableTableHead>
-                <th className="text-left font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
-                  NTFY
+                <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
+                  <div className="flex items-center justify-center gap-2">
+                    <Checkbox
+                      checked={allNtfySelected}
+                      onCheckedChange={handleSelectAllNtfy}
+                      title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                      className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                    />
+                    <span className={!isNtfyConfigured ? "text-gray-600" : ""}>NTFY</span>
+                  </div>
                 </th>
-                <th className="text-left font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
-                  Email
+                <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
+                  <div className="flex items-center justify-center gap-2">
+                    <Checkbox
+                      checked={allEmailSelected}
+                      onCheckedChange={handleSelectAllEmail}
+                      title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
+                      className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                    />
+                    <span className={!isEmailConfigured ? "text-gray-600" : ""}>Email</span>
+                  </div>
                 </th>
               </TableRow>
             </TableHeader>
@@ -366,6 +440,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         onCheckedChange={(checked: boolean) => 
                           updateBackupSettingById(server.id, server.backupName, 'ntfyEnabled', checked)
                         }
+                        title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                        className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
                       />
                     </TableCell>
                     
@@ -375,6 +451,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         onCheckedChange={(checked: boolean) => 
                           updateBackupSettingById(server.id, server.backupName, 'emailEnabled', checked)
                         }
+                        title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                        className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
                       />
                     </TableCell>
                   </TableRow>
@@ -444,7 +522,29 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     
                     {/* Notification Channels */}
                     <div className="space-y-3">
-                      <Label className="text-xs font-medium">Notification Channels</Label>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium">Notification Channels</Label>
+                        <div className="flex gap-4">
+                          <div className="flex items-center space-x-1">
+                            <Checkbox
+                              checked={allNtfySelected}
+                              onCheckedChange={handleSelectAllNtfy}
+                              title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                              className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                            />
+                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-600" : "text-muted-foreground"}`}>All NTFY</Label>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Checkbox
+                              checked={allEmailSelected}
+                              onCheckedChange={handleSelectAllEmail}
+                              title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
+                              className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
+                            />
+                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-600" : "text-muted-foreground"}`}>All Email</Label>
+                          </div>
+                        </div>
+                      </div>
                       <div className="flex gap-6">
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -452,8 +552,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(server.id, server.backupName, 'ntfyEnabled', checked)
                             }
+                            title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                            className={!isNtfyConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
                           />
-                          <Label className="text-xs">NTFY</Label>
+                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-600" : ""}`}>NTFY</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -461,8 +563,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(server.id, server.backupName, 'emailEnabled', checked)
                             }
+                            title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                            className={!isEmailConfigured ? "opacity-50 border-gray-500 data-[state=checked]:bg-gray-500" : ""}
                           />
-                          <Label className="text-xs">Email</Label>
+                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-600" : ""}`}>Email</Label>
                         </div>
                       </div>
                     </div>
@@ -471,29 +575,6 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
               );
             })}
           </div>
-{/* Manual Save Button Section - Commented out because auto-save is now enabled
-          This section provided a manual save button for backup notification settings.
-          It has been disabled in favor of the auto-save functionality that triggers
-          automatically when users change notification settings (with 500ms debounce).
-          
-          The auto-save feature provides better UX by eliminating the need for users
-          to remember to manually save their changes, while still providing visual
-          feedback through the cursor change and auto-save status indicators.
-          
-          <div className="flex flex-col gap-6 pt-6 w-full">
-            <div className="flex gap-3 items-center">
-              <Button onClick={handleSave} disabled={isSaving || isAutoSaving}>
-                {isSaving ? "Saving..." : "Save Notification Settings"}
-              </Button>
-              {isAutoSaving && (
-                <span className="text-sm text-muted-foreground">
-                  Auto-saving...
-                </span>
-              )}
-            </div> 
-          </div>
-*/}
-
         </CardContent>
       </Card>
     </div>

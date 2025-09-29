@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getConfigNotifications, getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, clearRequestCache } from '@/lib/db-utils';
+import { getConfigNotifications, getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, getSMTPConfig, clearRequestCache } from '@/lib/db-utils';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
 
@@ -9,19 +9,28 @@ export const GET = withCSRF(async () => {
     clearRequestCache();
     
     // Fetch all configuration data in parallel
-    const [notificationConfig, backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames] = await Promise.all([
+    const [notificationConfig, backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames, smtpConfig] = await Promise.all([
       Promise.resolve(getConfigNotifications()),
       getConfigBackupSettings(), // Now async and includes completion logic
       Promise.resolve(getOverdueToleranceConfig()),
       getNtfyConfig(),
       Promise.resolve(getCronConfig()),
       Promise.resolve(getNotificationFrequencyConfig()),
-      Promise.resolve(dbUtils.getServersBackupNames())
+      Promise.resolve(dbUtils.getServersBackupNames()),
+      Promise.resolve(getSMTPConfig())
     ]);
 
     // Build the main configuration
     const config = notificationConfig;
     config.ntfy = ntfyConfig;
+    
+    // Add email configuration if available
+    if (smtpConfig) {
+      config.email = {
+        ...smtpConfig,
+        enabled: true // SMTP config exists, so email is enabled
+      };
+    }
 
     // Load backup settings
     if (Object.keys(backupSettings).length > 0) {

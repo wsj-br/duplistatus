@@ -241,7 +241,7 @@ function SettingsPageContent() {
               </TabsTrigger>
               <TabsTrigger value="email" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span className="hidden lg:inline">Email Configuration</span>
+                <span className="hidden lg:inline">Email Settings</span>
                 <span className="lg:hidden">Email</span>
               </TabsTrigger>
               <TabsTrigger value="templates" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">

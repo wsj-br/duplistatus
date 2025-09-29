@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getEmailConfigFromEnv } from '@/lib/notifications';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { getSMTPConfig, setSMTPConfig } from '@/lib/db-utils';
+import { getSMTPConfig, setSMTPConfig, deleteSMTPConfig } from '@/lib/db-utils';
 import type { SMTPConfig } from '@/lib/types';
 
 export const GET = withCSRF(async () => {
@@ -23,7 +22,22 @@ export const GET = withCSRF(async () => {
       message: 'Email is configured and ready to use.'
     });
   } catch (error) {
-    console.error('Failed to get email configuration:', error instanceof Error ? error.message : String(error));
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Failed to get email configuration:', errorMessage);
+    
+    // Check if this is a master key error
+    if (errorMessage.includes('MASTER_KEY_INVALID')) {
+      return NextResponse.json(
+        { 
+          error: 'The master key is no longer valid. All encrypted passwords and settings must be reconfigured.',
+          masterKeyInvalid: true,
+          configured: false,
+          config: null
+        },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
       { 
         error: 'Failed to get email configuration',
@@ -79,6 +93,33 @@ export const POST = withCSRF(async (request: Request) => {
     console.error('Failed to save SMTP configuration:', error instanceof Error ? error.message : String(error));
     return NextResponse.json(
       { error: 'Failed to save SMTP configuration' },
+      { status: 500 }
+    );
+  }
+});
+
+export const DELETE = withCSRF(async () => {
+  try {
+    // Check if configuration exists
+    const config = getSMTPConfig();
+    if (!config) {
+      return NextResponse.json(
+        { error: 'No SMTP configuration found to delete' },
+        { status: 404 }
+      );
+    }
+
+    // Delete configuration
+    deleteSMTPConfig();
+
+    return NextResponse.json({
+      success: true,
+      message: 'SMTP configuration deleted successfully'
+    });
+  } catch (error) {
+    console.error('Failed to delete SMTP configuration:', error instanceof Error ? error.message : String(error));
+    return NextResponse.json(
+      { error: 'Failed to delete SMTP configuration' },
       { status: 500 }
     );
   }

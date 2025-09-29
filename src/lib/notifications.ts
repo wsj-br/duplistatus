@@ -236,10 +236,25 @@ export function getEmailConfigFromEnv(): EmailConfig | null {
 
 
 export async function createEmailTransporter(): Promise<nodemailer.Transporter | null> {
-  const config = getSMTPConfig();
-  if (!config) {
-    return null;
+  try {
+    const config = getSMTPConfig();
+    if (!config) {
+      return null;
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // If this is a master key error, log it and return null
+    if (errorMessage.includes('MASTER_KEY_INVALID')) {
+      console.error('Cannot create email transporter: Master key is invalid. SMTP settings must be reconfigured.');
+      return null;
+    }
+    
+    // Re-throw other errors
+    throw error;
   }
+
+  const config = getSMTPConfig()!; // We know it's not null from the check above
 
   try {
     // // Determine secure mode based on port
@@ -287,9 +302,22 @@ export async function sendEmailNotification(
     throw new Error('Email is not configured. Please check environment variables.');
   }
 
-  const config = getSMTPConfig();
-  if (!config) {
-    throw new Error('Email configuration not found');
+  let config;
+  try {
+    config = getSMTPConfig();
+    if (!config) {
+      throw new Error('Email configuration not found');
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // If this is a master key error, provide a specific error message
+    if (errorMessage.includes('MASTER_KEY_INVALID')) {
+      throw new Error('Cannot send email: Master key is invalid. SMTP settings must be reconfigured.');
+    }
+    
+    // Re-throw other errors
+    throw error;
   }
 
   const mailOptions = {
@@ -312,10 +340,11 @@ export async function sendEmailNotification(
 // Helper function to convert plain text to HTML
 export function convertTextToHtml(text: string): string {
   return text
+    // First handle URLs before converting newlines to avoid conflicts
+    .replace(/(https?:\/\/[^\s<>]+)/g, '<a href="$1" target="_blank">$1</a>')
     .replace(/\n/g, '<br>')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
 }
 
 // Helper function to format date strings using toLocaleString()

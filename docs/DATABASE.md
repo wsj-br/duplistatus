@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.8.8-blue)
+![](https://img.shields.io/badge/version-0.8.9-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -64,12 +64,15 @@ This document describes the SQLite database schema used by duplistatus to store 
   - [TypeScript Interfaces](#typescript-interfaces)
   - [Common Configuration Keys](#common-configuration-keys-1)
   - [Configuration API Endpoints](#configuration-api-endpoints)
+  - [Server Password Management](#server-password-management)
+  - [SMTP Email Configuration](#smtp-email-configuration)
   - [Configuration Data Structures](#configuration-data-structures)
     - [Notifications Configuration (`notifications`)](#notifications-configuration-notifications)
     - [Backup Settings Configuration (`backup_settings`)](#backup-settings-configuration-backup_settings)
     - [Cron Service Configuration (`cron_service`)](#cron-service-configuration-cron_service)
     - [Overdue Backup Notifications (`overdue_notifications`)](#overdue-backup-notifications-overdue_notifications)
     - [Overdue Tolerance Configuration (`overdue_tolerance`)](#overdue-tolerance-configuration-overdue_tolerance)
+    - [SMTP Email Configuration (`smtp_config`)](#smtp-email-configuration-smtp_config)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -93,7 +96,8 @@ The application includes an automatic database migration system that ensures you
 ### Current Migration Versions
 
 - **Version 2.0**: Added missing columns to the backups table and created the configurations table
-- **Version 3.0**: Renamed the machines table to servers, added `server_url`, `alias`, and `note` fields, and added sessions/CSRF tables for enhanced security (latest version)
+- **Version 3.0**: Renamed the machines table to servers, added `server_url`, `server_password`, `alias`, and `note` fields, and migrated configuration data to use server IDs
+- **Version 3.1**: Added sessions and CSRF token tables for enhanced security (latest version)
 
 ### Migration Process
 
@@ -132,7 +136,7 @@ CREATE TABLE servers (
 - `server_url` (TEXT, DEFAULT ''): URL of the Duplicati server for this server (optional)
 - `alias` (TEXT, DEFAULT ''): Alternative display name for the server (optional)
 - `note` (TEXT, DEFAULT ''): Additional notes or description for the server (optional)
-- `server_password` (TEXT, DEFAULT ''): Password for the server (optional)
+- `server_password` (TEXT, DEFAULT ''): Encrypted password for the server (optional)
 - `created_at` (DATETIME): Timestamp when the server was first registered
 
 ### Backups Table
@@ -328,6 +332,11 @@ CREATE TABLE configurations (
   - Values: `"no_tolerance"`, `"5min"`, `"15min"`, `"30min"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"12h"`, `"1d"`
   - Controls how much time to add to expected backup intervals before considering a backup overdue
   - Defaults to `"1h"` if not set
+- `smtp_config`: JSON object containing SMTP email configuration including:
+  - SMTP server settings (host, port, secure connection)
+  - Encrypted authentication credentials (username, password)
+  - Default recipient email address
+  - Used for sending email notifications alongside NTFY notifications
 
 ### Database Version Table
 
@@ -948,9 +957,12 @@ export type NotificationEvent = 'all' | 'warnings' | 'errors' | 'off';
 
 export interface BackupNotificationConfig {
   notificationEvent: NotificationEvent;
-  expectedInterval: number;
+  expectedInterval: string; // interval string like "1D2h30m" (1 day, 2 hours, 30 minutes) or "1D" (1 day) or "1W" (1 week) or "1M" (1 month)
   overdueBackupCheckEnabled: boolean;
-  intervalUnit: 'hour' | 'day';
+  allowedWeekDays?: number[]; // allowed week days (0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday)
+  time: string; // ISO timestamp of scheduled backup time from Duplicati
+  ntfyEnabled: boolean; // whether to send NTFY notifications for this backup
+  emailEnabled: boolean; // whether to send email notifications for this backup
 }
 
 export type BackupKey = string; // Format: "serverName:backupName"
@@ -964,6 +976,7 @@ export interface NotificationTemplate {
 
 export interface NotificationConfig {
   ntfy: NtfyConfig;
+  email?: EmailConfig; // optional email configuration
   backupSettings: Record<BackupKey, BackupNotificationConfig>;
   templates: {
     success: NotificationTemplate;
@@ -992,6 +1005,7 @@ export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h
 
 export interface OverdueNotificationTimestamp {
   lastNotificationSent: string; // ISO timestamp
+  serverName: string;  // server name
 }
 
 export type OverdueNotifications = Record<BackupKey, OverdueNotificationTimestamp>;
@@ -1063,24 +1077,130 @@ export interface ServerSummary {
 
 export interface OverallSummary {
   totalServers: number;
-  totalBackups: number;
+  totalBackupsRuns: number; // count of all backup runs (individual executions)
+  totalBackups: number; // count of all backup jobs/configurations across all machines
   totalUploadedSize: number; // in bytes
   totalStorageUsed: number; // in bytes (sum of all backup.fileSize)
   totalBackupSize: number; // in bytes (sum of size_of_examined_files from latest backups)
   overdueBackupsCount: number; // count of currently overdue backups
 }
 
-export interface ChartDataPoint {
-  date: string;
-  isoDate: string;
-  uploadedSize: number;
-  duration: number;
-  fileCount: number;
-  fileSize: number;
-  storageSize: number;
-  backupVersions: number;
-  serverId?: string;
-  backupId?: string;
+export interface NtfyConfig {
+  url: string;
+  topic: string;
+  accessToken?: string;
+}
+
+export interface EmailConfig {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string;
+  password: string;
+  mailto: string;
+  enabled: boolean;
+}
+
+export interface SMTPConfig {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string;
+  password: string;
+  mailto: string;
+}
+
+export interface SMTPConfigEncrypted {
+  host: string;
+  port: number;
+  secure: boolean;
+  username: string; // encrypted
+  password: string; // encrypted
+  mailto: string;
+}
+
+export interface CronServiceStatus {
+  isRunning: boolean;
+  activeTasks: string[];
+  lastRunTimes: Record<string, string>;
+  errors: Record<string, string>;
+}
+
+export interface TaskExecutionResult {
+  taskName: string;
+  success: boolean;
+  message?: string;
+  error?: string;
+  statistics?: Record<string, unknown>;
+}
+
+export interface OverdueBackupCheckResult {
+  message: string;
+  statistics?: {
+    checkedBackups: number;
+    overdueBackupsFound: number;
+    notificationsSent: number;
+  };
+}
+
+export interface DashboardData {
+  serversSummary: ServerSummary[];
+  overallSummary: OverallSummary;
+  allServersChartData: ChartDataPoint[];
+}
+
+export interface ServerAddress {
+  id: string;
+  name: string;
+  server_url: string;
+  alias: string;
+  note: string;
+  hasPassword: boolean;
+}
+
+export interface SystemInfo {
+  APIVersion: number;
+  PasswordPlaceholder: string;
+  ServerVersion: string;
+  ServerVersionName: string;
+  ServerVersionType: string;
+  RemoteControlRegistrationUrl: string;
+  StartedBy: string;
+  DefaultUpdateChannel: string;
+  DefaultUsageReportLevel: string;
+  ServerTime: string;
+  OSType: string;
+  OSVersion: string;
+  DirectorySeparator: string;
+  PathSeparator: string;
+  CaseSensitiveFilesystem: boolean;
+  MachineName: string;
+  PackageTypeId: string;
+  UserName: string;
+  NewLine: string;
+  CLRVersion: string;
+  Options: Array<{
+    Aliases: string | null;
+    LongDescription: string;
+    Name: string;
+    ShortDescription: string;
+    Type: string;
+    ValidValues: string | null;
+    DefaultValue: string;
+    Typename: string;
+    Deprecated: boolean;
+    DeprecationMessage: string;
+  }>;
+  CompressionModules?: unknown[];
+  EncryptionModules?: unknown[];
+  BackendModules?: unknown[];
+  GenericModules?: unknown[];
+  WebModules?: unknown[];
+  ConnectionModules?: unknown[];
+  SecretProviderModules?: unknown[];
+  ServerModules?: unknown[];
+  LogLevels?: unknown[];
+  SupportedLocales?: unknown[];
 }
 ```
 
@@ -1127,8 +1247,47 @@ export interface ChartDataPoint {
 - `POST /api/configuration`: Update configuration settings
 - `GET /api/configuration/unified`: Retrieve unified configuration including cron settings, notification frequency, and servers with backups
 - `POST /api/configuration/unified`: Update unified configuration
+- `PATCH /api/servers/{serverId}/password`: Update server password (requires CSRF protection)
+- `POST /api/servers/${serverId}/test-password`: Test server password connection (requires CSRF protection)
+- `GET /api/configuration/email`: Retrieve SMTP email configuration (requires CSRF protection)
+- `POST /api/configuration/email`: Update SMTP email configuration (requires CSRF protection)
+- `POST /api/configuration/email/test`: Test SMTP email connection (requires CSRF protection)
+
+**📖 For complete API endpoint documentation including request/response details, authentication requirements, and error codes, see the [API Endpoints Documentation](./API-ENDPOINTS.md).**
 
 The configuration system provides a centralised way to manage application settings that persist across application restarts and can be modified through the web interface.
+
+### Server Password Management
+
+The application includes encrypted password storage for Duplicati server authentication:
+
+- **Password Storage**: Server passwords are encrypted using AES-256-GCM encryption before being stored in the `server_password` field
+- **Master Key**: Encryption uses a master key derived from environment variables or user input
+- **API Endpoints**: 
+  - `PATCH /api/servers/{serverId}/password`: Update server password
+  - `POST /api/servers/{serverId}/test-password`: Test connection with stored password
+- **Security**: All password-related endpoints require CSRF protection and session validation
+- **Connection Testing**: The test password endpoint supports HTTP/HTTPS auto-detection and validates credentials against Duplicati's authentication API
+
+### SMTP Email Configuration
+
+The application includes encrypted SMTP configuration for email notifications alongside NTFY notifications:
+
+- **SMTP Settings Storage**: SMTP configuration is stored encrypted in the `smtp_config` configuration key
+- **Encrypted Fields**: Both `username` and `password` fields are encrypted using AES-256-GCM encryption
+- **Configuration Fields**:
+  - `host` (string): SMTP server hostname (e.g., `smtp.gmail.com`)
+  - `port` (number): SMTP server port (e.g., `587` for STARTTLS, `465` for SSL/TLS)
+  - `secure` (boolean): Whether to use SSL/TLS encryption
+  - `username` (string, encrypted): SMTP authentication username
+  - `password` (string, encrypted): SMTP authentication password
+  - `mailto` (string): Default recipient email address
+- **API Endpoints**: 
+  - `GET /api/configuration/email`: Retrieve SMTP configuration
+  - `POST /api/configuration/email`: Update SMTP configuration
+  - `POST /api/configuration/email/test`: Test SMTP connection
+- **Security**: All SMTP configuration endpoints require CSRF protection and session validation
+- **Master Key Dependency**: SMTP configuration requires the same master key used for server password encryption
 
 ### Configuration Data Structures
 
@@ -1217,6 +1376,44 @@ The configuration system provides a centralised way to manage application settin
 #### Overdue Tolerance Configuration (`overdue_tolerance`)
 ```json
 "no_tolerance" | "5min" | "15min" | "30min" | "1h" | "2h" | "4h" | "6h" | "12h" | "1d"
+```
+
+#### SMTP Email Configuration (`smtp_config`)
+```json
+{
+  "host": string,
+  "port": number,
+  "secure": boolean,
+  "username": string, // encrypted
+  "password": string, // encrypted  
+  "mailto": string
+}
+```
+
+**SMTP Configuration Examples:**
+
+**Gmail Configuration:**
+```json
+{
+  "host": "smtp.gmail.com",
+  "port": 587,
+  "secure": false,
+  "username": "your-email@gmail.com",
+  "password": "your-app-password",
+  "mailto": "notifications@example.com"
+}
+```
+
+**Outlook Configuration:**
+```json
+{
+  "host": "smtp-mail.outlook.com", 
+  "port": 587,
+  "secure": false,
+  "username": "your-email@outlook.com",
+  "password": "your-password",
+  "mailto": "notifications@example.com"
+}
 ```
 
 

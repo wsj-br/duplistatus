@@ -95,6 +95,20 @@ export function encryptData(plaintext: string): string {
   }
 }
 
+/**
+ * Check if an error indicates that the master key is invalid
+ * @param error - The error to check
+ * @returns true if the error indicates an invalid master key
+ */
+export function isInvalidMasterKeyError(error: Error): boolean {
+  const errorMessage = error.message.toLowerCase();
+  return errorMessage.includes('unsupported state') || 
+         errorMessage.includes('unable to authenticate data') ||
+         errorMessage.includes('bad decrypt') ||
+         errorMessage.includes('wrong final block length') ||
+         errorMessage.includes('authentication tag verification failed');
+}
+
 // Decrypt data
 export function decryptData(encryptedData: string): string {
   let key: Buffer | null = null;
@@ -141,7 +155,14 @@ export function decryptData(encryptedData: string): string {
     
     return decrypted;
   } catch (error) {
-    throw new Error(`Decryption failed: ${error instanceof Error ? error.message : String(error)}`);
+    const err = error instanceof Error ? error : new Error(String(error));
+    
+    // Check if this is a master key authentication failure
+    if (isInvalidMasterKeyError(err)) {
+      throw new Error('MASTER_KEY_INVALID: The master key is no longer valid. All encrypted passwords and settings must be reconfigured.');
+    }
+    
+    throw new Error(`Decryption failed: ${err.message}`);
   } finally {
     // Clean up the key from memory
     if (key) {
@@ -154,6 +175,7 @@ export function decryptData(encryptedData: string): string {
  * Get the decrypted password for a server
  * @param serverId - The server ID
  * @returns The decrypted password, or null if not found
+ * @throws Error with MASTER_KEY_INVALID prefix if master key is invalid
  */
 export function getServerPassword(serverId: string): string | null {
   try {
@@ -172,7 +194,14 @@ export function getServerPassword(serverId: string): string | null {
     // Decrypt the password
     return decryptData(result.server_password);
   } catch (error) {
-    console.error(`Failed to get server password for ${serverId}:`, error instanceof Error ? error.message : String(error));
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // If this is a master key error, re-throw it to be handled by the caller
+    if (errorMessage.includes('MASTER_KEY_INVALID')) {
+      throw error;
+    }
+    
+    console.error(`Failed to get server password for ${serverId}:`, errorMessage);
     return null;
   }
 }

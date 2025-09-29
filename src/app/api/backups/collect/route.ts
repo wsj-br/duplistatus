@@ -232,6 +232,9 @@ function parseAllowedWeekDays(allowedWeekDaysString: string): number[] {
 }
 
 
+// Simple in-memory lock for backup settings updates to prevent race conditions
+const backupSettingsLock = new Map<string, Promise<void>>();
+
 // Helper function to update backup settings with schedule information
 async function updateBackupSettingsWithSchedule(
   serverId: string, 
@@ -240,39 +243,57 @@ async function updateBackupSettingsWithSchedule(
   allowedWeekDays: number[],
   scheduleTime?: string
 ): Promise<void> {
-  try {
-    // Get current backup settings
-    const currentBackupSettings = await getConfigBackupSettings();
-    
-    const backupKey = `${serverId}:${backupName}`;
-    
-    // Get or create backup settings for this backup
-    let backupSettings = currentBackupSettings[backupKey];
-    if (!backupSettings) {
-      // Import default configuration
-      const { defaultBackupNotificationConfig } = await import('@/lib/default-config');
-      backupSettings = { ...defaultBackupNotificationConfig };
-    }
-    
-    // Update with schedule information
-    backupSettings.expectedInterval = repeatInterval;
-    backupSettings.allowedWeekDays = allowedWeekDays;
-    
-    // Update schedule time if provided
-    if (scheduleTime) {
-      backupSettings.time = scheduleTime;
-    }
-    
-    // Update the settings
-    currentBackupSettings[backupKey] = backupSettings;
-    
-    // Save to database
-    setConfiguration('backup_settings', JSON.stringify(currentBackupSettings));
-    
-  } catch (error) {
-    console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
-    throw error;
+  const backupKey = `${serverId}:${backupName}`;
+  
+  // Check if there's already an update in progress for this backup
+  if (backupSettingsLock.has(backupKey)) {
+    // Wait for the existing update to complete
+    await backupSettingsLock.get(backupKey);
   }
+  
+  // Create a new promise for this update
+  const updatePromise = (async () => {
+    try {
+      // Get current backup settings
+      const currentBackupSettings = await getConfigBackupSettings();
+      
+      // Get or create backup settings for this backup
+      let backupSettings = currentBackupSettings[backupKey];
+      if (!backupSettings) {
+        // Import default configuration
+        const { defaultBackupNotificationConfig } = await import('@/lib/default-config');
+        backupSettings = { ...defaultBackupNotificationConfig };
+      }
+      
+      // Update with schedule information
+      backupSettings.expectedInterval = repeatInterval;
+      backupSettings.allowedWeekDays = allowedWeekDays;
+      
+      // Update schedule time if provided
+      if (scheduleTime) {
+        backupSettings.time = scheduleTime;
+      }
+      
+      // Update the settings
+      currentBackupSettings[backupKey] = backupSettings;
+      
+      // Save to database
+      setConfiguration('backup_settings', JSON.stringify(currentBackupSettings));
+      
+    } catch (error) {
+      console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
+      throw error;
+    } finally {
+      // Remove the lock when done
+      backupSettingsLock.delete(backupKey);
+    }
+  })();
+  
+  // Store the promise in the lock map
+  backupSettingsLock.set(backupKey, updatePromise);
+  
+  // Wait for the update to complete
+  await updatePromise;
 }
 
 export const POST = withCSRF(async (request: NextRequest) => {
@@ -313,11 +334,32 @@ export const POST = withCSRF(async (request: NextRequest) => {
         // Note: We'll update the server after getting the machine-id from the connection
       } else {
         // ServerID only case: get password from database
-        const serverPassword = getServerPassword(providedServerId);
-        if (!serverPassword) {
+        try {
+          const serverPassword = getServerPassword(providedServerId);
+          if (!serverPassword) {
+            return NextResponse.json(
+              { error: 'Server password not found' },
+              { status: 404 }
+            );
+          }
+          finalPassword = serverPassword;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          
+          // Check if this is a master key error
+          if (errorMessage.includes('MASTER_KEY_INVALID')) {
+            return NextResponse.json(
+              { 
+                error: 'The master key is no longer valid. All encrypted passwords and settings must be reconfigured.',
+                masterKeyInvalid: true
+              },
+              { status: 400 }
+            );
+          }
+          
           return NextResponse.json(
-            { error: 'Server password not found' },
-            { status: 404 }
+            { error: 'Failed to retrieve server password' },
+            { status: 500 }
           );
         }
 
@@ -326,7 +368,6 @@ export const POST = withCSRF(async (request: NextRequest) => {
           const serverUrl = new URL(serverInfo.server_url);
           finalHostname = serverUrl.hostname;
           finalPort = parseInt(serverUrl.port) || (serverUrl.protocol === 'https:' ? 443 : 80);
-          finalPassword = serverPassword;
         } catch {
           return NextResponse.json(
             { error: 'Invalid server URL format' },

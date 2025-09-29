@@ -41,7 +41,7 @@ none
 
 
 ### Nice to have
-- Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) 🔍
+- Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) ✅
 
 
 ---
@@ -145,48 +145,57 @@ none
 
 ### Implemented in Version 0.8.x 🚧
 
-- A new `Overdue Monitoring` tab that accepts the expected interval similar to the Duplicati server.
-    - You can now configure custom intervals (for instance "1D12h")
-    - When collecting backup logs, the overdue interval is automatically updated from the Duplicati configuration
-- New function to show a QR code containing the topic for automatically configuring your device to receive notifications. Available at:
-   - Right-click on `View NTFY messages` button on the application toolbar.
-   - In the `Settings > NTFY Settings`, button "Configure Device"
-- in collectbackup, have a select box to show the list of server_url to pre-fill the form for repeated collection.
-- added a button to collect backups directly from the Configure Overdue Monitoring table
+**Server Management Enhancements:**
+- Automatic server URL and password persistence when collecting backups for the first time
+  - Users can update URL and password using two methods:
+     - Re-collecting backups with updated values
+     - Modifying settings in `Settings → Server Settings`
 
-**Email Notification System:**
-- **SMTP Email Support:**
-  - Complete email notification system as alternative or complement to NTFY
-  - Configurable through web interface with database storage
-  - Support for both SSL/TLS (port 465) and STARTTLS (port 587) encryption
-  - Enforced encrypted connections only (TLS 1.2+), plain text SMTP rejected
-  - Template-based emails with HTML and plain text versions
-  - Email recipient separation from SMTP authentication account
-- **New Email Configuration Tab:**
-  - Dedicated "Email Configuration" settings tab
-  - Real-time configuration status display
-  - Test email functionality with one-click sending
-  - Configuration table showing current SMTP settings
-  - Encrypted credential storage in database
-- **Per-Backup Notification Channels:**
-  - Independent NTFY and Email checkboxes in "Backup Notifications" tab
-  - Granular control: enable/disable each notification channel per backup
-  - Backward compatibility with existing NTFY-only configurations
-- **Template System Enhancement:**
-  - Unified notification templates for both NTFY and Email
-  - Template titles become email subjects
-  - Template testing now sends to both channels when configured
-  - Rich HTML formatting with automatic text-to-HTML conversion
-- **Documentation and Examples:**
-  - Comprehensive setup guides for Gmail, Outlook, Yahoo Mail
-  - Docker Compose and CLI configuration examples
-  - Security best practices and App Password instructions
-  - Complete environment variable reference
-- **Server Startup Logging:**
-  - SMTP configuration status logging at server startup
-  - Missing variable detection with clear error messages
-  - Password masking for security in logs
-  - Configuration validation feedback
+**Enhanced Overdue Monitoring:**
+- New `Overdue Monitoring` configuration tab with Duplicati server-compatible interval settings
+    - Support for custom intervals (e.g., "1D12h")
+    - Automatic overdue interval updates from Duplicati configuration during backup log collection
+    - **Recommended:** Run collection after changing backup job intervals in Duplicati server to synchronise duplistatus configuration
+
+**NTFY Device Configuration:**
+- QR code generation for automatic device configuration to receive notifications
+   - Right-click on `View NTFY Messages` button in the application toolbar
+   - "Configure Device" button in `Settings → NTFY Settings`
+
+**Improved Backup Collection:**
+- Server selection dropdown in `Collect Backup Logs` interface for direct server-specific collection
+- Single-server backup collection buttons added to `Settings → Overdue Monitoring` and `Settings → Server Settings`
+- Bulk collection functionality for all servers with valid configuration
+   - Collection buttons in `Settings → Overdue Monitoring` and `Settings → Server Settings`
+   - Right-click context menu on `Collect Backup Logs` button in application toolbar
+
+**Enhanced Notification System:**
+- **SMTP Email Notification Support:**
+    - SMTP server configuration in `Settings → Email Settings`
+    - Per-backup job configuration for NTFY and/or email notifications
+    - HTML-formatted templates using existing `Settings → Notification Templates`
+    - Ethereal.Email integration for testing configurations
+- **Per-Backup Job Notification Configuration:**
+    - Individual notification preferences in `Settings → Backup Notifications`
+    - Visual indicators (greyed icons) when NTFY or email is not properly configured
+
+**Security Enhancements:**
+- **CSRF Protection Implementation:**
+    - Session-based authentication system with secure session management
+    - CSRF token validation for all state-changing operations
+    - Automatic session expiration (24-hour duration) with token refresh (30-minute duration)
+    - Protection against Cross-Site Request Forgery attacks whilst maintaining external API compatibility
+- **Advanced Cryptography for Sensitive Data:**
+    - AES-256-GCM encryption for storing sensitive information (passwords, SMTP credentials)
+    - Automatic master key generation and secure file storage (`.duplistatus.key`)
+    - PBKDF2 key derivation with 100,000 iterations for enhanced security
+    - Secure memory cleanup and authentication tag verification
+    - Restrictive file permissions (0400) enforced for master key file
+
+**User Interface Improvements:**
+- Enhanced application styling with new colour scheme and iconography for improved usability
+
+
 
   
 

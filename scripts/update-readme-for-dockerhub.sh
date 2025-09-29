@@ -33,6 +33,19 @@ sed -i 's|\[\([^]]*\)\](docs/\([^)]*\))|[\1](https://github.com/wsj-br/duplistat
 # Handle standalone docs/ references (not in markdown links)
 sed -i 's|docs/\([^/]*\.md\)|https://github.com/wsj-br/duplistatus/blob/master/docs/\1|g' README.tmp
 
+# Convert GitHub special notation to Docker Hub compatible format with emojis
+echo "Converting GitHub special notation blocks..."
+# Convert [!NOTE] blocks (case-insensitive, with optional space between > and [)
+sed -i 's|> *\[!NOTE\]|> ℹ️ **NOTE**<br/>|ig' README.tmp
+# Convert [!TIP] blocks (case-insensitive, with optional space between > and [)
+sed -i 's|> *\[!TIP\]|> 💡 **TIP**<br/>|ig' README.tmp
+# Convert [!IMPORTANT] blocks (case-insensitive, with optional space between > and [)
+sed -i 's|> *\[!IMPORTANT\]|> ⚠️ **IMPORTANT**<br/>|ig' README.tmp
+# Convert [!WARNING] blocks (case-insensitive, with optional space between > and [)
+sed -i 's|> *\[!WARNING\]|> 🚨 **WARNING**<br/>|ig' README.tmp
+# Convert [!CAUTION] blocks (case-insensitive, with optional space between > and [)
+sed -i 's|> *\[!CAUTION\]|> ⛔ **CAUTION**<br/>|ig' README.tmp
+
 # Clean up any double replacements that might have occurred
 echo "Cleaning up any double replacements..."
 sed -i 's|https://raw.githubusercontent.com/wsj-br/duplistatus/master/https://raw.githubusercontent.com/wsj-br/duplistatus/master/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/|g' README.tmp
@@ -44,5 +57,6 @@ echo ""
 echo "Summary of changes:"
 echo "- Image references: docs/img/ → https://raw.githubusercontent.com/wsj-br/duplistatus/master/docs/img/"
 echo "- Document references: docs/ → https://github.com/wsj-br/duplistatus/blob/master/docs/"
+echo "- GitHub special notation: > [!NOTE] → > ℹ️ **NOTE**, etc."
 echo ""
 echo "The README.tmp file is now ready for use on Docker Hub or other external platforms."

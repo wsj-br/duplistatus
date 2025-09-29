@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
-import { QrCode, MessageSquare, Key, Globe } from 'lucide-react';
+import { QrCode, MessageSquare, Key, Globe, SendHorizonal, Loader2 } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
@@ -243,13 +243,24 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
             >
               {isSaving ? "Saving..." : "Save Settings"}
             </Button>
+
             <Button
               onClick={handleTestMessage}
-              variant="outline"
               disabled={isTesting || !formData.url || !formData.topic}
+              variant="outline"
               className="w-full sm:w-auto"
             >
-              {isTesting ? "Sending..." : "Send Test Message"}
+              {isTesting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <SendHorizonal className="w-4 h-4" />
+                  Send Test Message
+                </>
+              )}
             </Button>
             <Button
               onClick={generateQrCode}

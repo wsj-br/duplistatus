@@ -10,10 +10,11 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
+import { CollectAllButton } from '@/components/ui/collect-all-button';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { getCSRFToken, authenticatedRequest } from '@/lib/client-session-csrf';
@@ -22,7 +23,7 @@ interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
 }
 
-type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing';
+type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing' | 'collecting' | 'collected';
 
 interface ServerConnectionWithStatus extends ServerAddress {
   connectionStatus: ConnectionStatus;
@@ -471,9 +472,13 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     switch (status) {
       case 'success':
         return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case 'collected':
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
       case 'failed':
         return <XCircle className="h-5 w-5 text-red-500" />;
       case 'testing':
+        return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+      case 'collecting':
         return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
       default:
         return <Ellipsis className="h-5 w-5 text-gray-400" />;
@@ -775,7 +780,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                       <div className="flex items-center gap-2">
                         <span className="font-medium truncate">{connection.name}</span>
                         {connection.hasPassword && (
-                          <KeyRound className="h-3 w-3 text-blue-400" />
+                          <span title="Password set">
+                            <KeyRound className="h-3 w-3 text-blue-400"/>
+                          </span>
                         )}
                       </div>
                     </TableCell>
@@ -840,8 +847,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                             const statusToDisplay = connection.connectionStatus;
                             
                             if (statusToDisplay === 'success') return 'Connected';
+                            if (statusToDisplay === 'collected') return 'Collected';
                             if (statusToDisplay === 'failed') return 'Failed';
                             if (statusToDisplay === 'testing') return 'Testing...';
+                            if (statusToDisplay === 'collecting') return 'Collecting...';
                             return '';
                           })()}
                         </span>
@@ -856,7 +865,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           size="sm"
                           onClick={() => testConnection(connection.id, connection.server_url)}
                           disabled={!connection.server_url || !isValidUrl(connection.server_url)}
-                          className="px-2 text-blue-600 hover:text-blue-700"
+                          className="px-2"
                         >
                           <Play className="h-3 w-3" />
                           <span className="hidden sm:inline ml-1">Test</span>
@@ -986,8 +995,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           const statusToDisplay = connection.connectionStatus;
                           
                           if (statusToDisplay === 'success') return 'Connected';
+                          if (statusToDisplay === 'collected') return 'Collected';
                           if (statusToDisplay === 'failed') return 'Failed';
                           if (statusToDisplay === 'testing') return 'Testing...';
+                          if (statusToDisplay === 'collecting') return 'Collecting...';
                           return 'Unknown';
                         })()}
                       </span>
@@ -1070,17 +1081,39 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               >
                 {isTestingAll ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="hidden sm:inline">Testing All...</span>
                     <span className="sm:hidden">Testing...</span>
                   </>
                 ) : (
                   <>
+                    <FastForward className="h-4 w-4" />
                     <span className="hidden sm:inline">Test All</span>
                     <span className="sm:hidden">Test All</span>
                   </>
                 )}
               </Button>
+              <CollectAllButton
+                servers={connections}
+                variant="outline"
+                showText={true}
+                disabled={isSaving || isTestingAll}
+                onServerStatusUpdate={(serverId, status) => {
+                  setConnections(prev => prev.map(conn => {
+                    if (conn.id === serverId) {
+                      // Map statuses for backup collection
+                      let mappedStatus = status;
+                      if (status === 'testing') {
+                        mappedStatus = 'collecting';
+                      } else if (status === 'success') {
+                        mappedStatus = 'collected';
+                      }
+                      return { ...conn, connectionStatus: mappedStatus };
+                    }
+                    return conn;
+                  }));
+                }}
+              />
             </div>
           </div>
         </CardContent>

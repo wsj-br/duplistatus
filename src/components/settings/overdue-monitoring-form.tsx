@@ -20,6 +20,7 @@ import { RefreshCw, TimerReset } from "lucide-react";
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
 import { authenticatedRequest } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
+import { CollectAllButton } from '../ui/collect-all-button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   getIntervalDisplay, 
@@ -1151,13 +1152,47 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
           </div>
           
           <div className="flex flex-col gap-6 pt-6 w-full">
-            {/* Save button */}
+            {/* Save button and Collect All button */}
             <div className="flex gap-3">
               <Button onClick={() => {
                 handleSave();
               }} disabled={isSaving} variant="gradient">
                 {isSaving ? "Saving..." : "Save Overdue Monitoring Settings"}
               </Button>
+              <CollectAllButton
+                servers={(() => {
+                  // Deduplicate servers by ID to avoid multiple collections for the same server
+                  const servers = config?.serversWithBackups || [];
+                  const uniqueServers = servers.reduce((acc: ServerWithBackup[], server: ServerWithBackup) => {
+                    if (!acc.find(s => s.id === server.id)) {
+                      acc.push({
+                        id: server.id,
+                        name: server.name,
+                        server_url: server.server_url,
+                        alias: server.alias,
+                        note: server.note,
+                        hasPassword: server.hasPassword,
+                        backupName: server.backupName
+                      });
+                    }
+                    return acc;
+                  }, []);
+                  return uniqueServers;
+                })()}
+                variant="outline"
+                showText={true}
+                disabled={isSaving}
+                onCollectionStart={() => {
+                  toast({
+                    title: "Starting Collection",
+                    description: "Collecting backup logs from all configured servers...",
+                    duration: 4000,
+                  });
+                }}
+                onCollectionEnd={() => {
+                  // Collection completed, toast will be shown by the component
+                }}
+              />
             </div>
 
             {/* Controls grid - responsive layout */}
@@ -1255,8 +1290,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     className="flex-1"
                   >
                     <TimerReset className="mr-1 h-3 w-3" />
-                    <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset timer"}</span>
-                    <span className="sm:hidden">{isResetting ? "..." : "Reset"}</span>
+                    <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset notifications"}</span>
+                    <span className="sm:hidden">{isResetting ? "..." : "Reset notifications"}</span>
                   </Button>
                 </div>
               </div>

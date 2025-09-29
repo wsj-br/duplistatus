@@ -2,14 +2,14 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.8.8-blue)
+![](https://img.shields.io/badge/version-0.8.9-blue)
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
 
 <br/>
 
 > [!IMPORTANT]
-> If you are upgrading from version 0.6.1 or earlier, check the [Releases notes](RELEASE-NOTES-0.7.27.md) about all changes in this version.
+> If you are upgrading from version 0.6.1 or earlier, check the [Release notes](RELEASE-NOTES-0.7.27.md) about all changes in this version.
 
 <br/>
 
@@ -110,7 +110,7 @@ After installation, access the **duplistatus** web interface:
 
 <br/>
 
-The user interface consists of several elements, organized into different sections to provide a clear and intuitive experience:
+The user interface consists of several elements, organised into different sections to provide a clear and intuitive experience:
 
 1.  [**Application Toolbar**](#application-toolbar): Provides easy access to main functions and configurations.
 2.  [**Dashboard Summary**](#dashboard-summary): A summary of all monitored servers.
@@ -446,10 +446,10 @@ You can select a server from the dropdown list. If you have already selected a s
 
 ![Duplicati configuration](img/screen-duplicati-configuration.png)
 
-- The list of server will show the `server name` or `server alias (server name)`.
+- The list of servers will show the `server name` or `server alias (server name)`.
 - Server addresses are configured in `Settings → Server Addresses`.
 - The application automatically saves a server's URL when you use the `Collect Backup Logs` feature.
-- Server will not appear in the server list if its address has not been configured, and the `Duplicati configuration` buttons for that server will be disabled.
+- Servers will not appear in the server list if their address has not been configured, and the `Duplicati configuration` buttons for those servers will be disabled.
 
 </div>
 
@@ -484,6 +484,8 @@ Configure user interface and display preferences.
 
 ### Steps to Collect Backup Logs
 
+#### Manual Collection (All Servers)
+
 1.  Click the `Collect Backup Logs` icon on the [Application Toolbar](#application-toolbar).
 2.  Enter the Duplicati server details:
     - **Hostname**: The hostname or IP address of the Duplicati server.
@@ -491,6 +493,24 @@ Configure user interface and display preferences.
     - **Password**: Enter the authentication password if required.
     - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
 3.  Click `Collect Backups`.
+
+#### Quick Collection (Version 0.8.x)
+
+**Server Selection:**
+- **Pre-configured Servers**: If you have server addresses configured in `Settings → Server Settings`, select from the dropdown list for instant collection.
+- **Individual Collection**: Buttons are available in `Settings → Overdue Monitoring` and `Settings → Server Settings` for single-server collection.
+
+**Bulk Collection:**
+- **Collect All**: Right-click the `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
+- **Bulk Action**: Collection buttons available in settings pages to process multiple servers simultaneously.
+
+#### Automatic Configuration Updates
+
+When collecting backup logs, **duplistatus** automatically:
+- Updates server URLs and passwords in the database (for first-time collection)
+- Extracts and synchronises backup schedule information from Duplicati
+- Configures overdue monitoring intervals to match your Duplicati settings
+- Preserves existing notification preferences
 
 <br/>
 
@@ -608,6 +628,7 @@ Remove a specific server and all its associated backup data.
 This section explains how to configure **duplistatus**. The settings available are:
 
 - **Backup Notifications**: Configure the notifications to be sent when a backup log is received and the overdue monitoring parameters.
+- **Overdue Monitoring**: Configure detailed overdue monitoring settings with support for custom intervals matching Duplicati server configuration.
 - **Server Settings**: Configure the server alias, a note (usually to describe the function of the server), and the web addresses of your Duplicati servers
 - **NTFY Settings**: Configure the NTFY (notification service) server URL and topic to send push notifications to your phone or desktop
 - **Email Configuration**: Configure SMTP settings to send email notifications as an alternative or complement to NTFY
@@ -643,12 +664,21 @@ This section explains how to configure **duplistatus**. The settings available a
 - `errors`: Send notifications for errors only.
 - `off`: Disable notifications for new backup logs for this backup.
 
-**Notification Channels:**
+**Notification Channels (Version 0.8.x):**
 
 - **NTFY**: Enable/disable push notifications via NTFY service. Requires [NTFY Settings](#ntfy-settings) to be configured.
-- **Email**: Enable/disable email notifications via SMTP. Requires [Email Configuration](#email-configuration) environment variables to be set.
+- **Email**: Enable/disable email notifications via SMTP. Requires [Email Configuration](#email-configuration) to be configured.
 
-You can independently enable or disable each notification channel per backup. For example, you might enable only email notifications for critical backups and both NTFY and email for important servers.
+You can independently enable or disable each notification channel per backup. Configuration indicators show which channels are properly set up (greyed icons indicate missing or invalid configuration).
+
+**Per-Backup Configuration:**
+Each backup job can be configured independently for:
+- Notification events (All, Warnings, Errors, Off)
+- NTFY notifications (enabled/disabled)
+- Email notifications (enabled/disabled)
+- Overdue monitoring (enabled/disabled)
+
+This allows you to create customised notification strategies, such as enabling only email for critical backups and both NTFY and email for important servers.
 
 </div>
 <div style="padding-left: 60px;">
@@ -684,6 +714,44 @@ These settings apply to all backups:
 | `Save Backup Settings` | Saves the settings, clears timers for any disabled backups, and runs an overdue check.   |
 | `Check now`            | Runs the overdue backup check immediately. This is useful after changing configurations. |
 | `Reset timer`          | Resets the last overdue notification sent for all backups.                               |
+
+<br/>
+
+### Enhanced Overdue Monitoring (Version 0.8.x)
+
+Version 0.8.x introduces enhanced overdue monitoring with support for custom intervals that match your Duplicati server configuration exactly.
+
+#### Enhanced Features
+
+- **Custom Interval Support**: Configure intervals using Duplicati-compatible format (e.g., "1D12h" for 1 day and 12 hours)
+- **Automatic Synchronisation**: When collecting backup logs, **duplistatus** automatically updates overdue intervals from your Duplicati configuration
+- **Duplicati-Server Compatibility**: Intervals support the same formats used by Duplicati (days, weeks, months, and custom combinations)
+- **Bulk Collection**: Collect backup logs from all configured servers with a single action
+- **Individual Notifications**: Enable NTFY and/or email notifications independently for each backup job
+
+#### Configuration Options
+
+**Per-Backup Settings:**
+- **Expected Backup Interval**: Custom interval format (e.g., "1D", "1W", "2M", "1D12h30m")
+- **Notification Channels**: Separate toggles for NTFY and email notifications
+- **Overdue Monitoring**: Enable/disable overdue checks per backup
+- **Reset Function**: Reset overdue notification timers individually
+
+**Global Settings:**
+- **Overdue Tolerance**: Grace period before marking backups as overdue (5 minutes to 1 day)
+- **Notification Frequency**: How often to send overdue notifications (one time, daily, weekly, monthly)
+- **Monitoring Interval**: How frequently to check for overdue backups (1 to 2 hours)
+
+#### Automatic Configuration
+
+When you collect backup logs from a Duplicati server, **duplistatus** automatically:
+- Extracts the backup schedule from the Duplicati configuration
+- Updates the overdue monitoring intervals to match exactly
+- Synchronises allowed weekdays and scheduled times
+- Preserves your notification preferences
+
+> [!TIP]
+> For best results, collect backup logs after changing backup job intervals in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
 
 <br/>
 
@@ -768,6 +836,16 @@ NTFY is a simple notification service that can send push notifications to your p
 - **NTFY URL**: The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).
 - **NTFY Topic**: A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own.
 - **NTFY Access Token**: An optional access token for authenticated NTFY servers. Leave this field blank if your server does not require authentication.
+
+#### Device Configuration (Version 0.8.x)
+
+**QR Code Generation**: Configure your mobile device or desktop to receive notifications automatically.
+
+- **Configure Device Button**: Generates a QR code containing your NTFY topic configuration
+- **Direct Configuration**: Right-click the "Open NTFY" button in the application toolbar for instant QR code access
+- **App Installation**: Scan the QR code with your device camera or install the NTFY app from your preferred app store
+
+The QR code contains the complete configuration needed to subscribe to your notification topic, including authentication tokens if configured.
 
 <br/>
 
@@ -875,6 +953,16 @@ Email notifications are configured through the web interface under **Settings �
 > - Email notifications respect the same per-backup settings as NTFY
 > - **All connections are encrypted** - only TLS 1.2+ connections are accepted, plain text SMTP is rejected
 
+#### Security Features (Version 0.8.x)
+
+**Enhanced Security:**
+- Email configuration now uses web interface instead of environment variables for better security
+- Sensitive data (passwords, SMTP credentials) are encrypted using AES-256-GCM encryption
+- Master key is automatically generated and stored securely (`.duplistatus.key`)
+- Session-based authentication protects all web interface operations
+- CSRF protection prevents unauthorised modifications
+- Automatic session expiry (24 hours) with token refresh (30 minutes)
+
 <br/><br/>
 
 ### Notification Templates
@@ -948,6 +1036,13 @@ All templates support variables that will be replaced with actual values. The fo
 The cron service is automatically configured through the database and runs on port `8667` by default (or `PORT + 1` if `PORT` is set). The service includes the following default tasks:
 
 - **Overdue Backup Check**: Runs every 20 minutes to check for overdue backups and send notifications
+
+#### Enhanced Features (Version 0.8.x)
+
+- **Improved Reliability**: Enhanced error handling and automatic retry mechanisms
+- **Flexible Scheduling**: Supports configurable intervals from 1 minute to 2 hours
+- **Better Integration**: Seamless integration with enhanced overdue monitoring features
+- **Secure Communication**: Uses session-based authentication for API endpoints
 
 ### Management
 

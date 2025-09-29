@@ -4,12 +4,23 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { AlertCircle, Mail, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Mail, Eye, EyeOff, Trash2, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { useConfiguration } from '@/contexts/configuration-context';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface EmailConfig {
   host: string;
@@ -23,6 +34,7 @@ interface EmailConfig {
 
 export function EmailConfigurationForm() {
   const { toast } = useToast();
+  const { config, refreshConfigSilently } = useConfiguration();
   const [emailConfig, setEmailConfig] = useState<EmailConfig>({
     host: '',
     port: 587,
@@ -34,35 +46,30 @@ export function EmailConfigurationForm() {
   });
   const [isTesting, setIsTesting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Load email configuration from database
+  // Load email configuration from unified config
   useEffect(() => {
-    const loadEmailConfig = async () => {
-      try {
-        const response = await fetch('/api/configuration/email');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.configured && data.config) {
-            setEmailConfig(data.config);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to load email configuration:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadEmailConfig();
-  }, []);
+    if (config?.email) {
+      setEmailConfig(config.email);
+    }
+  }, [config]);
 
   const handleInputChange = (field: keyof EmailConfig, value: string | number | boolean) => {
     setEmailConfig(prev => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  // Check if all required fields are filled (excluding secure toggle)
+  const isFormValid = () => {
+    return emailConfig.host.trim() !== '' &&
+           emailConfig.username.trim() !== '' &&
+           emailConfig.password.trim() !== '' &&
+           emailConfig.mailto.trim() !== '' &&
+           emailConfig.port > 0;
   };
 
   const handleSaveConfig = async () => {
@@ -79,10 +86,13 @@ export function EmailConfigurationForm() {
       }
 
       toast({
-        title: "Configuration Saved",
-        description: "SMTP configuration saved successfully!",
+        title: "Settings Saved",
+        description: "SMTP settings saved successfully!",
         duration: 2000,
       });
+      
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
     } catch (error) {
       console.error('Error saving configuration:', error instanceof Error ? error.message : String(error));
       toast({
@@ -109,6 +119,18 @@ export function EmailConfigurationForm() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Check for master key error
+        if (errorData.masterKeyInvalid || (errorData.error && errorData.error.includes('Master key is invalid'))) {
+          toast({
+            title: "Master Key Invalid",
+            description: "The master key is no longer valid. All encrypted passwords and settings must be reconfigured.",
+            variant: "destructive",
+            duration: 8000,
+          });
+          return;
+        }
+        
         throw new Error(errorData.error || 'Failed to send test email');
       }
 
@@ -130,15 +152,50 @@ export function EmailConfigurationForm() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-center">
-          <div className="text-lg font-medium">Loading email configuration...</div>
-        </div>
-      </div>
-    );
-  }
+  const handleDeleteConfig = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await authenticatedRequest('/api/configuration/email', {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete configuration');
+      }
+
+      // Reset form to default values
+      setEmailConfig({
+        host: '',
+        port: 587,
+        secure: false,
+        username: '',
+        password: '',
+        mailto: '',
+        enabled: false
+      });
+
+      toast({
+        title: "Settings Deleted",
+        description: "SMTP settings have been deleted successfully.",
+        duration: 2000,
+      });
+      
+      // Refresh the configuration cache to reflect the changes
+      await refreshConfigSilently();
+    } catch (error) {
+      console.error('Error deleting configuration:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Delete Failed",
+        description: error instanceof Error ? error.message : "Failed to delete configuration",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
 
   return (
     <div className="space-y-6">
@@ -146,7 +203,7 @@ export function EmailConfigurationForm() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5" />
-            Email Configuration
+            Email Settings
           </CardTitle>
           <CardDescription>
             Configure SMTP settings for email notifications. Settings are stored securely in the database.
@@ -157,7 +214,7 @@ export function EmailConfigurationForm() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="smtp-host">SMTP Host</Label>
+                <Label htmlFor="smtp-host">SMTP Server Hostname</Label>
                 <Input
                   id="smtp-host"
                   type="text"
@@ -168,7 +225,7 @@ export function EmailConfigurationForm() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="smtp-port">SMTP Port</Label>
+                <Label htmlFor="smtp-port">SMTP Server Port</Label>
                 <Input
                   id="smtp-port"
                   type="number"
@@ -181,67 +238,77 @@ export function EmailConfigurationForm() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="smtp-username">SMTP Username</Label>
-              <Input
-                id="smtp-username"
-                type="text"
-                value={emailConfig.username}
-                onChange={(e) => handleInputChange('username', e.target.value)}
-                placeholder="your-email@gmail.com"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="smtp-password">SMTP Password</Label>
-              <div className="relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="smtp-username">SMTP Server Username</Label>
                 <Input
-                  id="smtp-password"
-                  type={showPassword ? "text" : "password"}
-                  value={emailConfig.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  placeholder="Your email password or app password"
+                  id="smtp-username"
+                  type="text"
+                  value={emailConfig.username}
+                  onChange={(e) => handleInputChange('username', e.target.value)}
+                  placeholder="your-email@gmail.com"
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="smtp-password">SMTP Server Password</Label>
+                <div className="relative">
+                  <Input
+                    id="smtp-password"
+                    type={showPassword ? "text" : "password"}
+                    value={emailConfig.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    placeholder="Your email password or app password"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="smtp-mailto">Recipient Email</Label>
-              <Input
-                id="smtp-mailto"
-                type="email"
-                value={emailConfig.mailto}
-                onChange={(e) => handleInputChange('mailto', e.target.value)}
-                placeholder="recipient@example.com"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="smtp-mailto">Recipient Email</Label>
+                <Input
+                  id="smtp-mailto"
+                  type="email"
+                  value={emailConfig.mailto}
+                  onChange={(e) => handleInputChange('mailto', e.target.value)}
+                  placeholder="recipient@example.com"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="smtp-secure">Connection Security</Label>
+                <div className="flex items-center space-x-2 pt-2">
+                  <Switch
+                    id="smtp-secure"
+                    checked={emailConfig.secure}
+                    onCheckedChange={(checked) => handleInputChange('secure', checked)}
+                  />
+                  <Label htmlFor="smtp-secure" className="text-sm">
+                    Use secure connection (SSL/TLS)
+                  </Label>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {emailConfig.secure
+                    ? 'A secure connection will be used: Direct SSL/TLS (recommended for port 465).'
+                    : 'A secure connection will be used: STARTTLS (recommended for port 587).'}
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="smtp-secure"
-                checked={emailConfig.secure}
-                onCheckedChange={(checked) => handleInputChange('secure', checked)}
-              />
-              <Label htmlFor="smtp-secure">
-                Use secure connection (SSL/TLS)
-                <span className="text-sm text-muted-foreground ml-2">
-                  {emailConfig.secure ? '(Direct SSL/TLS, recommended for port 465)' : '(STARTTLS, recommended for port 587)'}
-                </span>
-              </Label>
-            </div>
           </div>
 
           {/* Action Buttons */}
@@ -251,17 +318,57 @@ export function EmailConfigurationForm() {
               disabled={isSaving}
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
             >
-              {isSaving ? "Saving..." : "Save Configuration"}
+              {isSaving ? "Saving..." : "Save Settings"}
             </Button>
             
             <Button
               onClick={handleTestEmail}
-              disabled={isTesting}
+              disabled={isTesting || !isFormValid()}
               variant="outline"
               className="w-full sm:w-auto"
             >
-              {isTesting ? "Sending..." : "Send Test Email"}
+              {isTesting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4" />
+                  Send Test Email
+                </>
+              )}
             </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  disabled={isDeleting}
+                  className="w-full sm:w-auto"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  {isDeleting ? "Deleting..." : "Delete SMTP Settings"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete SMTP Settings</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete the SMTP settings? This action cannot be undone and will remove all email notification settings.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteConfig}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    Delete Settings
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>

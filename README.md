@@ -4,7 +4,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.8.8-blue)
+![](https://img.shields.io/badge/version-0.8.9-blue)
 
 <br/>
 
@@ -190,8 +190,11 @@ If you encounter issues, you can restore your database by following these steps:
 **IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
 
 * **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](docs/API-ENDPOINTS.md#get-overall-summary---apisummary)
-* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](docs/API-ENDPOINTS.mdAPI-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
+* **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](docs/API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
 * **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](docs/API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
+
+
+<br/>
 
 > [!Warning]
 > **Impact:** While the `server_id` to `machine_id` (or name) parameter change won't affect users directly, the 
@@ -212,6 +215,8 @@ If you encounter issues, you can restore your database by following these steps:
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
 - Notify SVG icon from https://dashboardicons.com/icons/ntfy
 - Github SVG icon from https://github.com/logos
+
+<br/>
 
 >[!NOTE]
 > All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
