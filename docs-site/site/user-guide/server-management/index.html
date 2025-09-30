@@ -1,0 +1,2419 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Migrated docs from Docusaurus to MkDocs Material (work-in-progress)">
+      
+      
+        <meta name="author" content="Waldemar Scudeller Jr.">
+      
+      
+      
+        <link rel="prev" href="../dashboard/">
+      
+      
+        <link rel="next" href="../notifications/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>Server Management - duplistatus Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#server-management" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="duplistatus Documentation" class="md-header__button md-logo" aria-label="duplistatus Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            duplistatus Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Server Management
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="duplistatus Documentation" class="md-nav__button md-logo" aria-label="duplistatus Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    duplistatus Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    First Steps
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    User Guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Dashboard
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Server Management
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Server Management
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#server-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Server Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#server-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Information
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#display-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Display Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Display Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layout-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layout Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sort-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sort Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refresh-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Refresh Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#theme-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Theme Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Maintenance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Maintenance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-cleanup-period" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Cleanup Period
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cleanup-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cleanup Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cleanup Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#delete-backup-job-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete Backup Job Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete-server-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete Server Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintenance-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintenance Tasks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Maintenance Tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#regular-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Regular Maintenance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#duplicati-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duplicati Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicati Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-configuration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-job-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup Job Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-server-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting Server Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Server Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-server-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Server Problems
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Server Problems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-not-appearing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Not Appearing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing-backup-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Missing Backup Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Issues
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diagnostic-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diagnostic Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Diagnostic Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Diagnostics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Diagnostics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintenance-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintenance Schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Notifications
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backup-monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backup Monitoring
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/scripts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scripts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/database/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/ai-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AI Development
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Migration
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/version-0.7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Version 0.7
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/api-changes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Changes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Release Notes
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Release Notes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/0.8.10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    0.8.10
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/0.7.27/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    0.7.27
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/core-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Operations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/external-apis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    External APIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/configuration-apis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration APIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/monitoring-apis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Monitoring APIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/administration-apis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Administration APIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-reference/chart-data-apis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chart Data APIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Assets
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Assets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Intro
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../img/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Images
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#server-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Server Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#server-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Information
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#display-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Display Settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Display Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layout-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layout Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sort-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sort Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refresh-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Refresh Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#theme-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Theme Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#database-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Maintenance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Database Maintenance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-cleanup-period" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Cleanup Period
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cleanup-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cleanup Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cleanup Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#delete-backup-job-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete Backup Job Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete-server-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete Server Data
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintenance-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintenance Tasks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Maintenance Tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#regular-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Regular Maintenance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#duplicati-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duplicati Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Duplicati Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-configuration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-job-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backup Job Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Settings Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Settings Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-server-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting Server Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting Server Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-server-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Server Problems
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Server Problems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-not-appearing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Not Appearing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing-backup-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Missing Backup Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Issues
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diagnostic-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diagnostic Tools
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Diagnostic Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Diagnostics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Diagnostics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#server-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Server Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintenance-schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintenance Schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="server-management">Server Management<a class="headerlink" href="#server-management" title="Permanent link">&para;</a></h1>
+<p><img alt="duplistatus" src="../../img/duplistatus_banner.png" /></p>
+<p>This section covers server management features including server settings, display configuration, and database maintenance.</p>
+<h2 id="server-settings">Server Settings<a class="headerlink" href="#server-settings" title="Permanent link">&para;</a></h2>
+<p>Configure individual server settings to customize how each server appears and behaves in the dashboard.</p>
+<h3 id="server-configuration">Server Configuration<a class="headerlink" href="#server-configuration" title="Permanent link">&para;</a></h3>
+<p>Access server settings through <strong>Settings</strong> → <strong>Server Settings</strong>:</p>
+<ul>
+<li><strong>Server Alias</strong>: Give your server a friendly, memorable name</li>
+<li><strong>Server Notes</strong>: Add descriptions, contact information, or important notes</li>
+<li><strong>Notification Settings</strong>: Configure per-server notification preferences</li>
+<li><strong>Display Options</strong>: Customize how the server appears in the dashboard</li>
+</ul>
+<h3 id="server-information">Server Information<a class="headerlink" href="#server-information" title="Permanent link">&para;</a></h3>
+<p>Each server entry includes:</p>
+<ul>
+<li><strong>Server ID</strong>: Unique identifier for the server</li>
+<li><strong>Server Name</strong>: Original name from Duplicati</li>
+<li><strong>Alias</strong>: Custom name you've assigned</li>
+<li><strong>Notes</strong>: Additional information about the server</li>
+<li><strong>Last Seen</strong>: When the server last communicated with duplistatus</li>
+<li><strong>Backup Count</strong>: Number of backup jobs configured</li>
+<li><strong>Status</strong>: Current server status</li>
+</ul>
+<h2 id="display-settings">Display Settings<a class="headerlink" href="#display-settings" title="Permanent link">&para;</a></h2>
+<p>Configure how <strong>duplistatus</strong> displays data and information.</p>
+<h3 id="layout-options">Layout Options<a class="headerlink" href="#layout-options" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Cards Layout</strong>: Visual cards showing server information (default)</li>
+<li><strong>Table Layout</strong>: Tabular view with detailed information</li>
+<li><strong>Compact View</strong>: Show more information in less space</li>
+<li><strong>Detailed View</strong>: Show comprehensive backup information</li>
+</ul>
+<h3 id="sort-options">Sort Options<a class="headerlink" href="#sort-options" title="Permanent link">&para;</a></h3>
+<p>Configure how servers are sorted in the dashboard:</p>
+<ul>
+<li><strong>Server name (a-z)</strong>: Alphabetical by server name</li>
+<li><strong>Status (error &gt; warning &gt; success)</strong>: By status priority</li>
+<li><strong>Last backup received (new &gt; old)</strong>: By most recent backup</li>
+</ul>
+<h3 id="refresh-settings">Refresh Settings<a class="headerlink" href="#refresh-settings" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Auto-refresh</strong>: Enable automatic dashboard updates</li>
+<li><strong>Refresh Interval</strong>: Set how often the dashboard updates (30 seconds to 5 minutes)</li>
+<li><strong>Manual Refresh</strong>: Force immediate data refresh</li>
+</ul>
+<h3 id="theme-options">Theme Options<a class="headerlink" href="#theme-options" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Dark Theme</strong>: Default dark theme (recommended)</li>
+<li><strong>Light Theme</strong>: Light theme for bright environments</li>
+<li><strong>Auto Theme</strong>: Follow system theme preferences</li>
+</ul>
+<h2 id="database-maintenance">Database Maintenance<a class="headerlink" href="#database-maintenance" title="Permanent link">&para;</a></h2>
+<p>Maintain and clean your duplistatus database to ensure optimal performance.</p>
+<h3 id="data-cleanup-period">Data Cleanup Period<a class="headerlink" href="#data-cleanup-period" title="Permanent link">&para;</a></h3>
+<p>Configure how long to keep backup data:</p>
+<ul>
+<li><strong>Backup Logs</strong>: How long to keep individual backup logs</li>
+<li><strong>Server Data</strong>: How long to keep server information</li>
+<li><strong>Statistics</strong>: How long to keep performance statistics</li>
+<li><strong>Notifications</strong>: How long to keep notification history</li>
+</ul>
+<h3 id="cleanup-options">Cleanup Options<a class="headerlink" href="#cleanup-options" title="Permanent link">&para;</a></h3>
+<h4 id="delete-backup-job-data">Delete Backup Job Data<a class="headerlink" href="#delete-backup-job-data" title="Permanent link">&para;</a></h4>
+<p>Remove data for specific backup jobs:</p>
+<ol>
+<li>Go to <strong>Database Maintenance</strong></li>
+<li>Select <strong>Delete Backup Job Data</strong></li>
+<li>Choose the server and backup job</li>
+<li>Confirm deletion</li>
+</ol>
+<h4 id="delete-server-data">Delete Server Data<a class="headerlink" href="#delete-server-data" title="Permanent link">&para;</a></h4>
+<p>Remove all data for a specific server:</p>
+<ol>
+<li>Go to <strong>Database Maintenance</strong></li>
+<li>Select <strong>Delete Server Data</strong></li>
+<li>Choose the server to remove</li>
+<li>Confirm deletion</li>
+</ol>
+<h3 id="maintenance-tasks">Maintenance Tasks<a class="headerlink" href="#maintenance-tasks" title="Permanent link">&para;</a></h3>
+<h4 id="regular-maintenance">Regular Maintenance<a class="headerlink" href="#regular-maintenance" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Weekly</strong>: Review and clean old backup logs</li>
+<li><strong>Monthly</strong>: Check database size and performance</li>
+<li><strong>Quarterly</strong>: Review server configurations and settings</li>
+</ul>
+<h4 id="performance-optimization">Performance Optimization<a class="headerlink" href="#performance-optimization" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Database Indexing</strong>: Ensure proper database indexes</li>
+<li><strong>Query Optimization</strong>: Monitor and optimize database queries</li>
+<li><strong>Storage Management</strong>: Manage disk space usage</li>
+<li><strong>Backup Verification</strong>: Verify backup data integrity</li>
+</ul>
+<h2 id="duplicati-configuration">Duplicati Configuration<a class="headerlink" href="#duplicati-configuration" title="Permanent link">&para;</a></h2>
+<p>Access and manage Duplicati server configurations directly from duplistatus.</p>
+<h3 id="configuration-access">Configuration Access<a class="headerlink" href="#configuration-access" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Web Interface</strong>: Open Duplicati's web interface in a new tab</li>
+<li><strong>Server Settings</strong>: Access server-specific configuration</li>
+<li><strong>Backup Jobs</strong>: View and manage individual backup jobs</li>
+<li><strong>Schedules</strong>: Check backup schedules and timing</li>
+</ul>
+<h3 id="configuration-management">Configuration Management<a class="headerlink" href="#configuration-management" title="Permanent link">&para;</a></h3>
+<h4 id="server-configuration_1">Server Configuration<a class="headerlink" href="#server-configuration_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Remote Access</strong>: Enable/disable remote access</li>
+<li><strong>Authentication</strong>: Configure authentication settings</li>
+<li><strong>Network Settings</strong>: Set network and port configurations</li>
+<li><strong>Logging</strong>: Configure logging levels and destinations</li>
+</ul>
+<h4 id="backup-job-configuration">Backup Job Configuration<a class="headerlink" href="#backup-job-configuration" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Source Paths</strong>: Configure what to backup</li>
+<li><strong>Destination</strong>: Set backup destination</li>
+<li><strong>Schedule</strong>: Configure backup timing</li>
+<li><strong>Options</strong>: Set backup options and preferences</li>
+</ul>
+<h2 id="settings-management">Settings Management<a class="headerlink" href="#settings-management" title="Permanent link">&para;</a></h2>
+<p>Access and configure all duplistatus settings.</p>
+<p><a id="settings"></a></p>
+<h3 id="general-settings">General Settings<a class="headerlink" href="#general-settings" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Application Name</strong>: Customize the application title</li>
+<li><strong>Default Timezone</strong>: Set the default timezone</li>
+<li><strong>Language</strong>: Choose display language</li>
+<li><strong>Date Format</strong>: Configure date and time display format</li>
+</ul>
+<h3 id="security-settings">Security Settings<a class="headerlink" href="#security-settings" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Authentication</strong>: Enable user authentication</li>
+<li><strong>Access Control</strong>: Configure user permissions</li>
+<li><strong>Session Management</strong>: Set session timeout and security</li>
+<li><strong>API Security</strong>: Configure API access and security</li>
+</ul>
+<h3 id="performance-settings">Performance Settings<a class="headerlink" href="#performance-settings" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Cache Settings</strong>: Configure data caching</li>
+<li><strong>Query Limits</strong>: Set database query limits</li>
+<li><strong>Resource Limits</strong>: Configure memory and CPU limits</li>
+<li><strong>Optimization</strong>: Enable performance optimizations</li>
+</ul>
+<h2 id="troubleshooting-server-issues">Troubleshooting Server Issues<a class="headerlink" href="#troubleshooting-server-issues" title="Permanent link">&para;</a></h2>
+<h3 id="common-server-problems">Common Server Problems<a class="headerlink" href="#common-server-problems" title="Permanent link">&para;</a></h3>
+<h4 id="server-not-appearing">Server Not Appearing<a class="headerlink" href="#server-not-appearing" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Check Configuration</strong>: Verify Duplicati server configuration</li>
+<li><strong>Network Connectivity</strong>: Test network connection</li>
+<li><strong>Firewall Rules</strong>: Check firewall and port access</li>
+<li><strong>Service Status</strong>: Verify Duplicati service is running</li>
+</ul>
+<h4 id="missing-backup-data">Missing Backup Data<a class="headerlink" href="#missing-backup-data" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Backup Jobs</strong>: Check if backup jobs are configured</li>
+<li><strong>Schedule</strong>: Verify backup schedules are active</li>
+<li><strong>Logs</strong>: Review Duplicati and duplistatus logs</li>
+<li><strong>API Endpoints</strong>: Test API connectivity</li>
+</ul>
+<h4 id="performance-issues">Performance Issues<a class="headerlink" href="#performance-issues" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Database Size</strong>: Check database size and performance</li>
+<li><strong>Resource Usage</strong>: Monitor CPU and memory usage</li>
+<li><strong>Network Latency</strong>: Test network performance</li>
+<li><strong>Query Performance</strong>: Analyze database query performance</li>
+</ul>
+<h3 id="diagnostic-tools">Diagnostic Tools<a class="headerlink" href="#diagnostic-tools" title="Permanent link">&para;</a></h3>
+<h4 id="server-diagnostics">Server Diagnostics<a class="headerlink" href="#server-diagnostics" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Connection Test</strong>: Test connection to Duplicati server</li>
+<li><strong>API Test</strong>: Verify API endpoints are working</li>
+<li><strong>Log Analysis</strong>: Analyze server and application logs</li>
+<li><strong>Performance Metrics</strong>: Monitor server performance</li>
+</ul>
+<h4 id="database-diagnostics">Database Diagnostics<a class="headerlink" href="#database-diagnostics" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Database Health</strong>: Check database integrity</li>
+<li><strong>Query Performance</strong>: Analyze slow queries</li>
+<li><strong>Index Usage</strong>: Monitor database index usage</li>
+<li><strong>Storage Analysis</strong>: Analyze storage usage patterns</li>
+</ul>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="server-organization">Server Organization<a class="headerlink" href="#server-organization" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Naming Convention</strong>: Use consistent server naming</li>
+<li><strong>Documentation</strong>: Keep detailed server documentation</li>
+<li><strong>Monitoring</strong>: Set up comprehensive monitoring</li>
+<li><strong>Backup Verification</strong>: Regularly verify backup integrity</li>
+</ul>
+<h3 id="maintenance-schedule">Maintenance Schedule<a class="headerlink" href="#maintenance-schedule" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Daily</strong>: Check backup status and notifications</li>
+<li><strong>Weekly</strong>: Review server performance and logs</li>
+<li><strong>Monthly</strong>: Clean old data and optimize database</li>
+<li><strong>Quarterly</strong>: Review and update configurations</li>
+</ul>
+<h3 id="security-practices">Security Practices<a class="headerlink" href="#security-practices" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Access Control</strong>: Implement proper access controls</li>
+<li><strong>Network Security</strong>: Secure network communications</li>
+<li><strong>Data Protection</strong>: Protect sensitive backup data</li>
+<li><strong>Audit Logging</strong>: Enable comprehensive audit logging</li>
+</ul>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Notifications</strong>: Set up <a href="../notifications/">Notification System</a></li>
+<li><strong>Backup Monitoring</strong>: Monitor <a href="../backup-monitoring/">Backup Operations</a></li>
+<li><strong>API Integration</strong>: Use <a href="../../api-reference/overview/">API Reference</a></li>
+<li><strong>Troubleshooting</strong>: Common issues and <a href="../troubleshooting/">Troubleshooting Guide</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.sections", "navigation.top"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,72 @@
+site_name: duplistatus Documentation
+site_description: Migrated docs from Docusaurus to MkDocs Material (work-in-progress)
+site_author: "Waldemar Scudeller Jr."
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
+plugins:
+  - search
+  - awesome-pages
+  - git-revision-date-localized:
+      fallback_to_build_date: true
+      locale: en
+
+# For versioned docs consider using 'mike' (install with pip) and publish separately
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+    - First Steps: getting-started/first-steps.md
+  - User Guide:
+    - Overview: user-guide/overview.md
+    - Dashboard: user-guide/dashboard.md
+    - Server Management: user-guide/server-management.md
+    - Notifications: user-guide/notifications.md
+    - Backup Monitoring: user-guide/backup-monitoring.md
+    - Troubleshooting: user-guide/troubleshooting.md
+  - Development:
+    - Setup: development/setup.md
+    - Scripts: development/scripts.md
+    - Testing: development/testing.md
+    - Database: development/database.md
+    - AI Development: development/ai-development.md
+  - Migration:
+    - Overview: migration/overview.md
+    - Version 0.7: migration/version-0.7.md
+    - API Changes: migration/api-changes.md
+  - Release Notes:
+    - 0.8.10: release-notes/0.8.10.md
+    - 0.7.27: release-notes/0.7.27.md
+  - API Reference:
+    - Overview: api-reference/overview.md
+    - Core Operations: api-reference/core-operations.md
+    - External APIs: api-reference/external-apis.md
+    - Configuration APIs: api-reference/configuration-apis.md
+    - Monitoring APIs: api-reference/monitoring-apis.md
+    - Administration APIs: api-reference/administration-apis.md
+    - Chart Data APIs: api-reference/chart-data-apis.md
+  - Assets:
+    - Intro: intro.md
+    - Images: img/README.md
