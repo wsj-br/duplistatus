@@ -1,5 +1,5 @@
 
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 # duplistatus Database Schema
 
@@ -1421,6 +1421,6 @@ The application includes encrypted SMTP configuration for email notifications al
 
 ## License
 
-The project is licensed under the [Apache License 2.0](../LICENSE).   
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).   
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

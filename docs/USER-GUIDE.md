@@ -1,4 +1,4 @@
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 # duplistatus User Guide
 
@@ -114,9 +114,9 @@ After installation, access the **duplistatus** web interface:
 
 <br/>
 
-<div style="padding-left: 60px;">
+<div>
 
-![Dashboard Overview](img/screen-dashboard.png)
+![Dashboard Overview](/img/screen-dashboard.png)
 
 <br/>
 
@@ -139,9 +139,9 @@ The user interface consists of several elements, organised into different sectio
 
 The toolbar provides easy access to key functions and settings.
 
-<div style="padding-left: 60px;">
+<div>
 
-![application toolbar](img/duplistatus_toolbar.png)
+![application toolbar](/img/duplistatus_toolbar.png)
 
 | Button                                              | Description                                                                                      |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
@@ -164,10 +164,10 @@ The toolbar provides easy access to key functions and settings.
 
 This section displays aggregated statistics for all backups.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Dashboard summary - overview](img/screen-dashboard-summary.png)
-![Dashboard summary - table](img/screen-dashboard-summary-table.png)
+![Dashboard summary - overview](/img/screen-dashboard-summary.png)
+![Dashboard summary - table](/img/screen-dashboard-summary-table.png)
 
 - **Total Servers**: The number of servers being monitored.
 - **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.
@@ -186,9 +186,9 @@ This section displays aggregated statistics for all backups.
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Dashboard Overview](img/duplistatus_dash-cards.png)
+![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note
@@ -209,17 +209,17 @@ The user can toggle the top right button on the side panel to toggle the panel v
 
 - Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status.
 
-<div style="padding-left: 100px;">
+<div>
 
-![status panel](img/screen-overview-side-status.png)
+![status panel](/img/screen-overview-side-status.png)
 
 </div>
 
 - Metrics: Show charts with duration, file size and storage size over time for the aggregated or selected server.
 
-<div style="padding-left: 100px;">
+<div>
 
-![charts panel](img/screen-overview-side-charts.png)
+![charts panel](/img/screen-overview-side-charts.png)
 
 </div>
 
@@ -231,9 +231,9 @@ The user can toggle the top right button on the side panel to toggle the panel v
 
 Hovering over a backup in the list displays details of the last backup log received and any overdue information.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Overdue details](img/screen-backup-tooltip.png)
+![Overdue details](/img/screen-backup-tooltip.png)
 
 - **Server Name : Backup**: The name or alias of the Duplicati server and backup, will also show the server name and note.
   - The alias and note can be configured at `Settings â†’ Server Settings`.
@@ -257,9 +257,9 @@ You can also click the buttons at the bottom to open `Settings â†’ Backup Notifi
 
 The table layout lists the most recent backup logs received for all servers and backups.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Dashboard Overview](img/duplistatus_dash-table.png)
+![Dashboard Overview](/img/duplistatus_dash-table.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
@@ -280,10 +280,10 @@ The table layout lists the most recent backup logs received for all servers and 
 
 | Icon                                    | Notification Option | Description                                                                                         |
 | --------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| ![off](img/screen-nt-off.png)           | Off                 | No notifications will be sent when a new backup log is received                                     |
-| ![all](img/screen-nt-all.png)           | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
-| ![warnings](img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
-| ![errors](img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
+| ![off](/img/screen-nt-off.png)           | Off                 | No notifications will be sent when a new backup log is received                                     |
+| ![all](/img/screen-nt-all.png)           | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
+| ![warnings](/img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
+| ![errors](/img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
 <br/>
 
@@ -298,9 +298,9 @@ The table layout lists the most recent backup logs received for all servers and 
 
 Hovering over the overdue warning icon displays details about the overdue backup.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Overdue details](img/screen-overdue-tooltip.png)
+![Overdue details](/img/screen-overdue-tooltip.png)
 
 - **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](#backup-notifications-settings).
 - **Last Backup**: When the last backup log was received.
@@ -315,9 +315,9 @@ Hovering over the overdue warning icon displays details about the overdue backup
 
 Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Available versions](img/screen-versions.png)
+![Available versions](/img/screen-versions.png)
 
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.
@@ -339,9 +339,9 @@ A chart of backup metrics over time is shown on both the dashboard and the serve
 - **Dashboard**, the chart shows the total number of backups recorded in the **duplistatus** database. If you use the Cards layout, you can select a server to see its consolidated metrics (when side panel is showing metrics).
 - **Server Details** page, the chart shows metrics for the selected server (for all its backups) or for a single, specific backup.
 
-<div style="padding-left: 60px;">
+<div>
 
-![docs/screen-versions.png](img/screen-metrics.png)
+![docs/screen-versions.png](/img/screen-metrics.png)
 
 - **Uploaded Size**: Total amount of data uploaded/transmitted during backups from Duplicati server to the destination (local storage, FTP, cloud provider, ...) per day.
 - **Duration**: The total duration of all backups received per day in HH:MM.
@@ -363,9 +363,9 @@ A chart of backup metrics over time is shown on both the dashboard and the serve
 
 Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Server Details](img/screen-server.png)
+![Server Details](/img/screen-server.png)
 
 </div>
 
@@ -375,7 +375,7 @@ Clicking on a server from the dashboard opens a page with a list of backups for 
 
 This section shows statistics for either all backups on the server or a single selected backup.
 
-<div style="padding-left: 60px;">
+<div>
 
 - **TOTAL BACKUP JOBS**: Total number of backup jobs configured on this server.
 - **TOTAL BACKUP RUNS**: Total number of backup runs executed (as reported by the Duplicati server).
@@ -402,9 +402,9 @@ This section shows statistics for either all backups on the server or a single s
 
 This table lists the backup logs for the selected server.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Backup History](img/screen-backup-history.png)
+![Backup History](/img/screen-backup-history.png)
 
 - **Backup Name**: The name of the backup in the Duplicati server.
 - **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
@@ -431,9 +431,9 @@ This table lists the backup logs for the selected server.
 
 Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Backup Details](img/screen-backup.png)
+![Backup Details](/img/screen-backup.png)
 
 - **Server details**: server name, alias and note.
 - **Backup Information**: The timestamp of the backup and its ID.
@@ -452,9 +452,9 @@ The `Duplicati configuration` button on the [Application Toolbar](#application-t
 
 You can select a server from the dropdown list. If you have already selected a server (by clicking its card) or are viewing its details, the button will open that specific server's Duplicati configuration directly.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Duplicati configuration](img/screen-duplicati-configuration.png)
+![Duplicati configuration](/img/screen-duplicati-configuration.png)
 
 - The list of servers will show the `server name` or `server alias (server name)`.
 - Server addresses are configured in `Settings â†’ Server Addresses`.
@@ -469,9 +469,9 @@ You can select a server from the dropdown list. If you have already selected a s
 
 Configure user interface and display preferences.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Display Settings](img/screen-display-settings.png)
+![Display Settings](/img/screen-display-settings.png)
 
 | Setting                   | Description                                         | Default Value       |
 | :------------------------ | :-------------------------------------------------- | :------------------ |
@@ -488,9 +488,9 @@ Configure user interface and display preferences.
 
 **duplistatus** can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Collect Backup Logs](img/screen-collect-backup-logs.png)
+![Collect Backup Logs](/img/screen-collect-backup-logs.png)
 
 ### Steps to Collect Backup Logs
 
@@ -556,9 +556,9 @@ When collecting backup logs, **duplistatus** automatically:
 
 Manage your backup data and optimise performance through database maintenance operations.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Database maintenance](img/screen-database-maintenance.png)
+![Database maintenance](/img/screen-database-maintenance.png)
 
 <br/>
 
@@ -648,15 +648,15 @@ This section explains how to configure **duplistatus**. The settings available a
 
 ### Backup Notifications Settings
 
-<div style="padding-left: 60px;">
+<div>
 
-![Backup alerts](img/screen-settings-backup-alerts.png)
+![Backup alerts](/img/screen-settings-backup-alerts.png)
 
 <br/>
 
 #### Configure Per-Backup Notification Settings
 
-![overdue backup config](img/screen-settings-overdue-bkp.png)
+![overdue backup config](/img/screen-settings-overdue-bkp.png)
 
 | Setting                       | Description                                               | Default Value |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -690,14 +690,8 @@ Each backup job can be configured independently for:
 
 This allows you to create customised notification strategies, such as enabling only email for critical backups and both NTFY and email for important servers.
 
-</div>
-<div style="padding-left: 60px;">
-
 > [!NOTE]
 > These options only control notifications sent when a [new backup log is received](INSTALL.md#duplicati-server-configuration-required). Overdue notifications will be sent regardless of these settings.
-
-</div>
-<div style="padding-left: 60px;">
 
 <br/>
 
@@ -705,7 +699,7 @@ This allows you to create customised notification strategies, such as enabling o
 
 These settings apply to all backups:
 
-![overdue global config](img/screen-settings-overdue-conf.png)
+![overdue global config](/img/screen-settings-overdue-conf.png)
 
 | Setting                         | Description                                                                                                                                                                                                                                                                                                               |
 | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -717,7 +711,7 @@ These settings apply to all backups:
 
 #### Action Buttons
 
-![Backup Notifications Buttons](img/screen-settings-overdue-btn.png)
+![Backup Notifications Buttons](/img/screen-settings-overdue-btn.png)
 
 | Button                 | Description                                                                              |
 | :--------------------- | :--------------------------------------------------------------------------------------- |
@@ -815,9 +809,9 @@ You can configure an alternative name (alias) for your servers, a note to descri
 
 <br/>
 
-<div style="padding-left: 60px;">
+<div>
 
-![server settings](img/screen-settings-server-settings.png)
+![server settings](/img/screen-settings-server-settings.png)
 
 - **Server Name**: Server name configured in the Duplicati server
 - **Alias**: A nickname or human-readable name of your server. When hovering over an alias it will show its name; in some cases to make it clear it will display the alias and the name between brackets.
@@ -835,13 +829,13 @@ You can configure an alternative name (alias) for your servers, a note to descri
 
 <br/><br/>
 
-<div style="padding-left: 60px;">
+<div>
 
 ### NTFY Settings
 
 NTFY is a simple notification service that can send push notifications to your phone or desktop. This section allows you to set up your notification server connection and authentication.
 
-![Ntfy settings](img/screen-settings-ntfy.png)
+![Ntfy settings](/img/screen-settings-ntfy.png)
 
 - **NTFY URL**: The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).
 - **NTFY Topic**: A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own.
@@ -892,9 +886,9 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 
 **duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
 
-<div style="padding-left: 60px;">
+<div>
 
-![Email Configuration](img/screen-settings-email.png)
+![Email Configuration](/img/screen-settings-email.png)
 
 - **Configuration Status**: Shows whether email is properly configured and ready to use.
 - **Current Configuration**: Displays SMTP settings (host, port, secure connection, username) without exposing passwords.
@@ -916,7 +910,7 @@ Email notifications are configured through the web interface under **Settings â†
 
 #### Common SMTP Providers
 
-<div style="padding-left: 20px;">
+<div>
 
 **Gmail:**
 - Host: `smtp.gmail.com`
@@ -938,6 +932,8 @@ Email notifications are configured through the web interface under **Settings â†
 - Username: Your Yahoo email address
 - Password: Use an App Password
 - Secure: `false` (STARTTLS)
+
+</div>
 
 </div>
 
@@ -979,7 +975,7 @@ Email notifications are configured through the web interface under **Settings â†
 
 **duplistatus** uses three templates for notification messages. These templates are used for both NTFY and email notifications:
 
-<div style="padding-left: 60px;">
+<div>
 
 | Template           | Description                                         |
 | :----------------- | :-------------------------------------------------- |
@@ -989,7 +985,7 @@ Email notifications are configured through the web interface under **Settings â†
 
 <br/>
 
-![notification templates](img/screen-settings-notifications-templates.png)
+![notification templates](/img/screen-settings-notifications-templates.png)
 
 <br/>
 
@@ -1118,7 +1114,7 @@ This widget displays overall backup statistics on your Homepage dashboard.
 
 **Widget Display:**
 
-<div style="padding-left: 60px;">
+<div>
 
 ![Homepage Summary Widget](img/homepage-summary.png)
 
@@ -1159,7 +1155,7 @@ This widget displays the latest backup information for a specific machine.
 
 **Widget Display:**
 
-<div style="padding-left: 60px;">
+<div>
 
 ![Homepage Last Backup Widget](img/homepage-lastbackup.png)
 
@@ -1214,6 +1210,6 @@ If you still experience issues, try the following steps:
 
 ## Licence
 
-The project is licensed under the [Apache Licence 2.0](../LICENSE).
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).
 
 **Copyright Â© 2025 Waldemar Scudeller Jr.**

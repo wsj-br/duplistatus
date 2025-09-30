@@ -1,5 +1,5 @@
 
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 
 # API Endpoints
@@ -1859,6 +1859,6 @@ const response = await fetch('/api/servers/server-id', {
 
 ## License
 
-The project is licensed under the [Apache License 2.0](../LICENSE).   
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).   
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

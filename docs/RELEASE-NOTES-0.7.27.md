@@ -1,4 +1,4 @@
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 # Release Notes: duplistatus Version 0.7.27
 

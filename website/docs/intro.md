@@ -2,46 +2,95 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Welcome to duplistatus
 
-Let's discover **Docusaurus in less than 5 minutes**.
+![duplistatus](///img/duplistatus_banner.png)
 
-## Getting Started
+**duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-Get started by **creating a new site**.
+![](https://img.shields.io/badge/version-0.8.10-blue)
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
 
-### What you'll need
+It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## Features
 
-## Generate a new site
+- **Easy Installation**: Run inside a container with images available on Docker Hub and GitHub Container Registry
+- **Dashboard**: Displays the backup status for all monitored servers (NEW LAYOUT)
+- **Backup History**: Detailed view of backup history for each server
+- **Data Visualisation**: Interactive charts showing backup metrics over time and other statistical information
+- **Log Collection**: Collects backup logs directly from Duplicati servers via HTTP/HTTPS
+- **Notification System**: [ntfy](https://github.com/binwiederhier/ntfy) integration for backup notifications and overdue backup alerts; see notifications on your phone
+- **Overdue Backup Monitoring**: Automated checking and alerting for overdue scheduled backups
+- **Backup Version Display**: Shows the list of backup versions available in the backend
+- **Duplicati Server**: Includes feature to open the Duplicati server web UI from **duplistatus** (NEW)
+- **Server Settings**: Users can choose an alias for the server and include a note with a description (NEW)
+- **API Access**: RESTful API endpoints to expose backup status to [Homepage](https://gethomepage.dev/) or any other tool that supports RESTful APIs
 
-Generate a new Docusaurus site using the **classic template**.
+## Screenshots
 
-The classic template will automatically be added to your project after you run the command:
+### Dashboard
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+![dashboard](//img/screen-dashboard.png)
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+### Backup History
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+![server-detail](//img/screen-server.png)
 
-## Start your site
+### Backup Details
 
-Run the development server:
+![backup-detail](//img/screen-backup.png)
 
-```bash
-cd my-website
-npm run start
-```
+### Overdue Backups
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+![overdue backups](//img/screen-overdue-tooltip.png)
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+### Overdue notifications on your phone
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+![ntfy overdue message](//img/screen-overdue-notification.png)
+
+## Quick Start
+
+1. **Install duplistatus** - See our [Installation Guide](getting-started/installation.md)
+2. **Configure Duplicati servers** - Follow the [Configuration Guide](getting-started/configuration.md)
+3. **Start monitoring** - Check out the [User Guide](user-guide/overview.md)
+
+## What's New in Version 0.8.10
+
+> [!IMPORTANT]
+> If you are upgrading from version 0.6.x or earlier, your database will be automatically 
+> [migrated](migration/overview.md) to the new schema during the upgrade process.
+> 
+> 🚨 **API Response Changes in version 0.7.x**
+> 
+>   If you have external integrations, scripts, or applications that consume the API endpoints `/api/summary`, `/api/lastbackup`
+>   and `/api/lastbackups`, you **MUST** update them immediately as [the JSON response structure has changed.](migration/api-changes.md) 
+> 
+> For more information see [Release Notes 0.7.27](release-notes/0.7.27.md)
+
+## Need Help?
+
+- 📖 **User Guide**: Learn how to use all features in our [User Guide](user-guide/overview.md)
+- 🔧 **API Reference**: Integrate with third-party tools using our [API Reference](api-reference/overview.md)
+- 🛠️ **Development**: Want to contribute? Check our [Development Guide](development/setup.md)
+- 🐛 **Issues**: Found a bug? [Report it on GitHub](https://github.com/wsj-br/duplistatus/issues)
+
+## Credits
+
+- First and foremost, thanks to Kenneth Skovhede for creating Duplicati, this amazing backup tool. Thanks also to all the contributors.
+
+  💙 If you find Duplicati (https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
+
+- Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
+- Notify SVG icon from https://dashboardicons.com/icons/ntfy
+- Github SVG icon from https://github.com/logos
+
+> [!NOTE]
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+
+## License
+
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).   
+
+**Copyright © 2025 Waldemar Scudeller Jr.**

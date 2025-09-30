@@ -1,5 +1,5 @@
 
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 # TODO List
 

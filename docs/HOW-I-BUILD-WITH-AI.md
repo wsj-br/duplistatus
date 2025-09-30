@@ -1,6 +1,6 @@
 
 
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 # How I Build this Application using AI tools
 
@@ -105,9 +105,9 @@ I later used these prompts to adjust and refine the design and behavior:
 
 After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
 
-![prototype](img/screen-prototype.png)
+![prototype](/img/screen-prototype.png)
 
-![prototype-detail](img/screen-prototype-detail.png)
+![prototype-detail](/img/screen-prototype-detail.png)
 
 > [!NOTE]
 > One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
@@ -213,6 +213,6 @@ For complex bugs or errors, use a prompt to analyze possible causes of the error
 
 # License
 
-The project is licensed under the [Apache License 2.0](../LICENSE).   
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).   
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

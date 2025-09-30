@@ -1,4 +1,4 @@
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](//img/duplistatus_banner.png)
 
 # Installation Guide
 
@@ -372,9 +372,9 @@ Apply this configuration to all your Duplicati servers:
 
 1. **Allow remote access:** Log in to [Duplicati's UI](https://docs.duplicati.com/getting-started/set-up-a-backup-in-the-ui), select `Settings`, and allow remote access, including a list of hostnames (or use `*`).
 
-<div style="padding-left: 60px;">
+<div>
 
-![Duplicati settings](img/duplicati-settings.png)
+![Duplicati settings](/img/duplicati-settings.png)
 
 <br/>
 
@@ -389,7 +389,7 @@ Apply this configuration to all your Duplicati servers:
 
 2. **Configure backup result reporting:** On the Duplicati configuration page, select `Settings` and, in the `Default Options` section, include the following options. Replace 'my.local.server' with your server name or IP address where **duplistatus** is running.
 
-<div style="padding-left: 60px;">
+<div>
 
 | Advanced option                  | Value                                    |
 | -------------------------------- | ---------------------------------------- |
@@ -403,7 +403,7 @@ Apply this configuration to all your Duplicati servers:
 > [!TIP]
 > Click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
 
-<div style="padding-left: 60px;">
+<div>
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
@@ -414,7 +414,7 @@ Apply this configuration to all your Duplicati servers:
 
 <br/>
 
-![Duplicati configuration](img/duplicati-options.png)
+![Duplicati configuration](/img/duplicati-options.png)
 
 <br/>
 
@@ -441,6 +441,6 @@ Check the [User Guide](USER-GUIDE.md) on how to use **duplistatus**.
 
 ## License
 
-The project is licensed under the [Apache License 2.0](../LICENSE).
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

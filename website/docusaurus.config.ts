@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import remarkGithubAlerts from 'remark-github-alerts';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -17,7 +18,7 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://wsj-br.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served|
-  baseUrl: '/duplistatus/',
+  baseUrl: process.env.NODE_ENV === 'production' ? '/duplistatus/' : '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -25,7 +26,12 @@ const config: Config = {
   projectName: 'duplistatus', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownImages: 'warn',
+    },
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -42,29 +48,25 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           // Point to your existing docs folder
-          path: '../docs',
+          path: './docs',
           // Make docs the default route
           routeBasePath: '/',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   'https://github.com/wsj-br/duplistatus/tree/master/website',
+          // Enable versioning
+          versions: {
+            current: {
+              label: '0.8.10',
+              path: '0.8.10',
+            },
+          },
+          // Disable edit links - remove editUrl property
+          // Enable table of contents
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
+          // Add GitHub alerts plugin
+          remarkPlugins: [remarkGithubAlerts],
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   feedOptions: {
-        //     type: ['rss', 'atom'],
-        //     xslt: true,
-        //   },
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl:
-        //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        //   // Useful options to enforce blogging best practices
-        //   onInlineTags: 'warn',
-        //   onInlineAuthors: 'warn',
-        //   onUntruncatedBlogPosts: 'warn',
-        // },
+        // Disable blog for now
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -75,6 +77,16 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+    // Enable local search
+    search: {
+      provider: 'local',
+    },
+    // Enable dark mode
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: false,
+      respectPrefersColorScheme: false,
+    },
     navbar: {
       title: 'duplistatus Documentation',
       logo: {
@@ -84,11 +96,14 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'mainSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Documentation',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {
+          type: 'docsVersionDropdown',
+          position: 'right',
+        },
         {
           href: 'https://github.com/wsj-br/duplistatus',
           label: 'GitHub',
@@ -96,51 +111,52 @@ const config: Config = {
         },
       ],
     },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Tutorial',
-              to: '/docs/intro',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-    },
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: 'Documentation',
+            items: [
+              {
+                label: 'Getting Started',
+                to: '/0.8.10/getting-started/installation',
+              },
+              {
+                label: 'User Guide',
+                to: '/0.8.10/user-guide/overview',
+              },
+              // API Reference removed - files not found
+            ],
+          },
+          {
+            title: 'Development',
+            items: [
+              {
+                label: 'Development Setup',
+                to: '/0.8.10/development/setup',
+              },
+              {
+                label: 'Contributing',
+                href: 'https://github.com/wsj-br/duplistatus',
+              },
+            ],
+          },
+          {
+            title: 'More',
+            items: [
+              {
+                label: 'GitHub',
+                href: 'https://github.com/wsj-br/duplistatus',
+              },
+              {
+                label: 'Docker Hub',
+                href: 'https://hub.docker.com/r/wsjbr/duplistatus',
+              },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} Waldemar Scudeller Jr. Built with Docusaurus.`,
+      },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
