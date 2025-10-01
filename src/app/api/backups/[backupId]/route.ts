@@ -2,7 +2,6 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { getConfigBackupSettings, setConfigBackupSettings } from '@/lib/db-utils';
-import { BackupNotificationConfig } from '@/lib/types';
 
 export const DELETE = withCSRF(async (
   request: NextRequest,

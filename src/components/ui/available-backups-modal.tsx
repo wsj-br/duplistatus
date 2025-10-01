@@ -102,7 +102,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
       `}</style>
       <Dialog open={modalState.isOpen} onOpenChange={closeModal}>
         <DialogContent 
-          className="max-w-2xl"
+          className="max-w-2xl tooltip-hover-glow"
           style={getAnimationStyles}
         >
           <DialogHeader className="pb-3 leading-8">

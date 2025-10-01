@@ -695,13 +695,12 @@ export function BackupCollectMenu({
           title="Collect backup logs (Right-click for Collect All)"
           disabled={disabled}
           onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
             if (isAutoCollectMode) {
-              e.preventDefault();
-              e.stopPropagation();
               handleAutoCollect();
             } else if (isServerListMode) {
-              e.preventDefault();
-              e.stopPropagation();
               handleButtonClick();
             }
           }}

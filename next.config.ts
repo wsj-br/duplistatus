@@ -5,7 +5,7 @@ import { version } from './package.json';
 const webpack = require('webpack');
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // output: "standalone",  // not needed as we are using the custom server duplistatus-server.ts
   
   // Optimize preloading to reduce warnings
   experimental: {

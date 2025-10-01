@@ -29,8 +29,7 @@ const validateKeyFilePermissions = (keyFilePath: string) => {
     console.error('   run chmod 0400 .duplistatus.key to fix the permissions');
     process.exit(1);
   }
-  
-  console.log('🔒 Key file permissions validated (0400)');
+  // all ok, continue
 };
 
 // Function to verify and create .duplistatus.key file
@@ -47,8 +46,6 @@ const ensureKeyFile = () => {
     writeFileSync(keyFilePath, key);
     chmodSync(keyFilePath, 0o400); // Set permissions to r-------- (0400)
     console.log('   ✅ Key file created successfully with restricted permissions');
-  } else {
-    console.log('🔑 Key file already exists');
   }
 };
 
@@ -100,36 +97,7 @@ app.prepare().then(() => {
     console.log('      NEXT_TELEMETRY_DISABLED=' + process.env.NEXT_TELEMETRY_DISABLED);
     console.log('      TZ=' + process.env.TZ);
     
-    // SMTP Configuration Status
-    const smtpVars = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_SECURE', 'SMTP_USERNAME', 'SMTP_PASSWORD', 'SMTP_MAILTO'];
-    const hasAnySmtpVar = smtpVars.some(varName => process.env[varName]);
-    
-    if (!hasAnySmtpVar) {
-      console.log('      SMTP: (no SMTP configuration)');
-    } else {
-      console.log('      SMTP Configuration:');
-      const missingVars: string[] = [];
-      
-      smtpVars.forEach(varName => {
-        const value = process.env[varName];
-        if (value) {
-          // Mask sensitive values
-          if (varName === 'SMTP_PASSWORD') {
-            console.log(`        ${varName}=***redacted***`);
-          } else {
-            console.log(`        ${varName}=${value}`);
-          }
-        } else {
-          console.log(`        ${varName} <<<< missing <<<<`);
-          missingVars.push(varName);
-        }
-      });
-      
-      if (missingVars.length > 0) {
-        console.log('        SMTP will be disabled, missing variables');
-      }
-    }
-
+ 
     // show the time of the start
     console.log('\nstarted at:', new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }));
   });

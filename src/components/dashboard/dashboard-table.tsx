@@ -28,6 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
+import { BackupCollectMenu } from "@/components/backup-collect-menu";
 
 interface DashboardTableProps {
   servers: ServerSummary[];
@@ -252,7 +253,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                   Errors
                 </SortableTableHead>
                 <SortableTableHead column="notification" sortConfig={sortConfig} onSort={handleSort} align="center">
-                  Settings
+                  Settings/Actions
                 </SortableTableHead>
               </TableRow>
             </TableHeader>
@@ -385,26 +386,40 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                     <TableCell className="text-center">{server.warnings}</TableCell>
                     <TableCell className="text-center">{server.errors}</TableCell>
                     <TableCell className="text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        {server.notificationEvent && (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <div 
-                                onClick={handleNotificationIconClick}
-                                className="cursor-pointer inline-block"
-                              >
-                                {getNotificationIcon(server.notificationEvent)}
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>{getNotificationTooltip(server.notificationEvent)}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
+                      <div className="flex items-center justify-center gap-0">
+                        <div className="h-9 px-3 flex items-center justify-center mr-1">
+                          {server.notificationEvent && (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <div 
+                                  onClick={handleNotificationIconClick}
+                                  className="cursor-pointer inline-block"
+                                >
+                                  {getNotificationIcon(server.notificationEvent)}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{getNotificationTooltip(server.notificationEvent)}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
                         <ServerConfigurationButton 
                           serverName={server.name}
                           serverAlias={server.alias}
                           serverUrl={server.server_url}
+                          showText={false}
+                          disabled={server.server_url === ''}
+                          variant="ghost"
+                          size="sm"
+                        />
+                        <BackupCollectMenu
+                          preFilledServerId={server.serverId}
+                          preFilledServerName={server.name}
+                          preFilledServerUrl={server.server_url}
+                          autoCollect={true}
+                          size="sm"
+                          variant="ghost"
                           showText={false}
                           disabled={server.server_url === ''}
                         />
@@ -531,17 +546,29 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                 {/* Settings Row */}
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Settings</Label>
-                  <div className="flex items-center gap-2">
-                    {server.notificationEvent ? (
-                      <div 
-                        onClick={handleNotificationIconClick}
-                        className="cursor-pointer"
-                      >
-                        {getNotificationIcon(server.notificationEvent)}
-                      </div>
-                    ) : (
-                      <div className="text-xs text-muted-foreground">Off</div>
-                    )}
+                  <div className="flex items-center gap-1">
+                    <div className="h-9 px-3 flex items-center justify-center mr-1">
+                      {server.notificationEvent ? (
+                        <div 
+                          onClick={handleNotificationIconClick}
+                          className="cursor-pointer"
+                        >
+                          {getNotificationIcon(server.notificationEvent)}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground">Off</div>
+                      )}
+                    </div>
+                    <BackupCollectMenu
+                      preFilledServerId={server.serverId}
+                      preFilledServerName={server.name}
+                      preFilledServerUrl={server.server_url}
+                      autoCollect={true}
+                      size="sm"
+                      variant="ghost"
+                      showText={false}
+                      disabled={server.server_url === ''}
+                    />
                     <ServerConfigurationButton 
                       serverName={server.name}
                       serverAlias={server.alias}
