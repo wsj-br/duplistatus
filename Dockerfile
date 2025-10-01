@@ -66,10 +66,8 @@ RUN pnpm install --frozen-lockfile --prod
 
 COPY --chown=node:node --from=builder /app/public ./public
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --chown=node:node --from=builder /app/.next/standalone ./
-COPY --chown=node:node --from=builder /app/.next/static ./.next/static
+# Copy the complete Next.js build output
+COPY --chown=node:node --from=builder /app/.next ./.next
 
 # Copy source code needed for cron service
 COPY --chown=node:node --from=builder /app/src/cron-service ./src/cron-service

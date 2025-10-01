@@ -12,6 +12,10 @@ ITEMS_TO_REMOVE=(
     ".turbo"
     "pnpm-lock.yaml"
     "data/*.json"
+    "websites/.docusaurus"
+    "websites/build"   
+    "websites/node_modules"
+    "websites/pnpm-lock.yaml"
 )
 
 echo "🧹 Cleaning build artifacts and dependencies..."
@@ -54,5 +58,5 @@ echo ""
 echo ""
 echo "💡"
 echo "     remember to run 'pnpm install' to update the dependencies before building the application"
-echo "     or before running 'docker-compose up --build -d'"
+echo "     or before running 'pnpm docker-up'"
 echo ""

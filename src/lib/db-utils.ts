@@ -1573,21 +1573,58 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
           updatedSettings++;
         }
       } 
-        // Calculate expected backup date and update time if it has changed
-        const latestBackupDate = latestBackupMap.get(backupKey);
-        const expectedBackupDate = GetNextBackupRunDate(
-          latestBackupDate || existingSettings.time,
-          existingSettings.time,
-          existingSettings.expectedInterval,
-          existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
-        );
-      // Only update if the calculated date is valid and different from current time
-      if (expectedBackupDate !== 'N/A' && expectedBackupDate !== existingSettings.time) {
-        updatedBackupSettings[backupKey] = {
-          ...existingSettings,
-          time: expectedBackupDate
-        };
-        timeUpdatedSettings++;
+      
+      // Calculate expected backup date and update time if it has changed
+      const latestBackupDate = latestBackupMap.get(backupKey);
+      const baseTime = existingSettings.time;
+      
+      // Determine the effective baseTime: use last backup date if baseTime is invalid/empty
+      let effectiveBaseTime = baseTime;
+      if (!baseTime || baseTime.trim() === '') {
+        if (latestBackupDate) {
+          effectiveBaseTime = latestBackupDate;
+          console.log(`Using last backup date as baseTime for ${backupKey}: ${latestBackupDate}`);
+        } else {
+          // No backup data available, skip time calculation
+          console.warn(`No valid baseTime or backup date for ${backupKey}, skipping time calculation`);
+          continue;
+        }
+      } else {
+        // Validate that baseTime is a valid date
+        const baseTimeDate = new Date(baseTime);
+        if (isNaN(baseTimeDate.getTime())) {
+          if (latestBackupDate) {
+            effectiveBaseTime = latestBackupDate;
+            console.log(`Invalid baseTime date for ${backupKey}: ${baseTime}, using last backup date: ${latestBackupDate}`);
+          } else {
+            console.warn(`Invalid baseTime date for ${backupKey}: ${baseTime}, and no backup date available, skipping time calculation`);
+            continue;
+          }
+        }
+      }
+      
+      // Proceed with time calculation using effective baseTime
+      if (effectiveBaseTime && (latestBackupDate || effectiveBaseTime)) {
+        try {
+          const expectedBackupDate = GetNextBackupRunDate(
+            latestBackupDate || effectiveBaseTime,
+            effectiveBaseTime,
+            existingSettings.expectedInterval,
+            existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
+          );
+          
+          // Only update if the calculated date is valid and different from current time
+          if (expectedBackupDate !== 'N/A' && expectedBackupDate !== existingSettings.time) {
+            updatedBackupSettings[backupKey] = {
+              ...existingSettings,
+              time: expectedBackupDate
+            };
+            timeUpdatedSettings++;
+          }
+        } catch (error) {
+          console.warn(`Failed to calculate expected backup date for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+          // Continue execution without updating the time field
+        }
       }
     }
     
@@ -1813,9 +1850,10 @@ export function getSMTPConfig(): SMTPConfig | null {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       
-      // If this is a master key error, re-throw it to be handled by the caller
+      // If this is a master key error, return null gracefully instead of throwing
       if (errorMessage.includes('MASTER_KEY_INVALID')) {
-        throw error;
+        console.warn('SMTP configuration has invalid master key, returning null to continue execution');
+        return null;
       }
       
       console.error('Failed to parse or decrypt SMTP configuration:', errorMessage);

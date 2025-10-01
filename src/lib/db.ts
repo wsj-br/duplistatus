@@ -17,30 +17,59 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-let db: Database.Database;
 const dbPath = path.join(dataDir, 'backups.db');
 
-try {
-  // log(`Initializing database at: ${dbPath}`);
-  
-  db = new Database(dbPath, {
-    // Add verbose logging in development
-    // verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
-    // Add timeout and other options for better reliability
-    timeout: 5000,
-    readonly: false
-  });
-  
-  // Test the connection immediately
-  db.pragma('journal_mode = WAL');
-  db.pragma('synchronous = NORMAL');
-  db.pragma('cache_size = 1000000');
-  db.pragma('temp_store = memory');
-  
-  // log('Database initialized successfully');
-} catch (error) {
-  console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
-  throw error;
+// Use a global singleton to prevent multiple database connections during hot reload
+// This is critical in development mode where Next.js may re-import modules
+declare global {
+  // eslint-disable-next-line no-var
+  var __dbInstance: Database.Database | undefined;
+}
+
+let db: Database.Database;
+
+// Reuse existing database connection if available (hot reload in dev)
+if (global.__dbInstance) {
+  db = global.__dbInstance;
+  console.log('[Database] Reusing existing database connection');
+} else {
+  try {
+    console.log('[Database] Creating new database connection');
+    
+    db = new Database(dbPath, {
+      // Add verbose logging in development
+      // verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
+      // Add timeout and other options for better reliability
+      timeout: 10000, // Increased timeout for better reliability
+      readonly: false,
+      // Disable file locking to avoid I/O errors in development
+      fileMustExist: false
+    });
+    
+    // Configure SQLite for better concurrency and performance
+    // Only set pragmas that are safe to change on existing databases
+    try {
+      db.pragma('journal_mode = WAL'); // Write-Ahead Logging for better concurrency
+    } catch (error) {
+      console.warn('Could not set WAL mode:', error);
+    }
+    
+    db.pragma('synchronous = NORMAL'); // Balanced safety and performance
+    db.pragma('cache_size = -10000'); // 10MB cache (negative means KB)
+    db.pragma('temp_store = memory'); // Store temp tables in memory
+    db.pragma('mmap_size = 0'); // Disable memory-mapped I/O to avoid I/O errors
+    // Note: page_size and auto_vacuum can only be set during database creation
+    db.pragma('wal_autocheckpoint = 1000'); // Checkpoint every 1000 pages
+    db.pragma('busy_timeout = 30000'); // 30 second busy timeout
+    
+    // Store in global for hot reload persistence
+    global.__dbInstance = db;
+    
+    console.log('[Database] Database connection created successfully');
+  } catch (error) {
+    console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
 }
 
 // Check if database is empty and initialize schema if needed
@@ -153,26 +182,9 @@ try {
         applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
-      CREATE TABLE IF NOT EXISTS sessions (
-        id TEXT PRIMARY KEY,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
-        expires_at DATETIME NOT NULL
-      );
-
-      CREATE TABLE IF NOT EXISTS csrf_tokens (
-        session_id TEXT PRIMARY KEY,
-        token TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        expires_at DATETIME NOT NULL,
-        FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
-      CREATE INDEX IF NOT EXISTS idx_csrf_tokens_expires ON csrf_tokens(expires_at);
 
       -- Set initial database version for new databases (only if not exists)
-      INSERT OR IGNORE INTO db_version (version) VALUES ('3.0');
+      INSERT OR IGNORE INTO db_version (version) VALUES ('3.1');
     `);
     
     console.log('Database schema initialized successfully');
@@ -210,7 +222,8 @@ async function populateDefaultConfigurations() {
       generateDefaultNtfyTopic,
       createDefaultNotificationConfig,
       defaultNtfyConfig,
-      defaultOverdueTolerance
+      defaultOverdueTolerance,
+      defaultNotificationFrequencyConfig
     } = await import('./default-config');
     
     // Generate default ntfy topic
@@ -238,6 +251,12 @@ async function populateDefaultConfigurations() {
       JSON.stringify(defaultNotificationConfig)
     );
     
+    // Set notification_frequency configuration
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'notification_frequency', 
+      defaultNotificationFrequencyConfig
+    );
+    
     console.log('Default configurations populated successfully');
   } catch (error) {
     console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
@@ -250,28 +269,124 @@ const migrator = new DatabaseMigrator(db, dbPath);
 let dbOps: ReturnType<typeof createDbOps> | null = null;
 let initializationPromise: Promise<void> | null = null;
 
+// Database initialization status tracking
+export enum DatabaseStatus {
+  NOT_STARTED = 'not_started',
+  INITIALIZING = 'initializing',
+  READY = 'ready',
+  ERROR = 'error'
+}
+
+let databaseStatus: DatabaseStatus = DatabaseStatus.NOT_STARTED;
+let initializationError: Error | null = null;
+
 // Function to ensure database is fully initialized
 async function ensureDatabaseInitialized() {
+  // If already ready, return immediately
+  if (databaseStatus === DatabaseStatus.READY) {
+    return;
+  }
+
+  // If there's an error, throw it
+  if (databaseStatus === DatabaseStatus.ERROR && initializationError) {
+    throw initializationError;
+  }
+
+  // If already initializing, wait for the existing promise
   if (initializationPromise) {
     return initializationPromise;
   }
 
+  // Start initialization
+  databaseStatus = DatabaseStatus.INITIALIZING;
+  initializationError = null;
+
   initializationPromise = (async () => {
     try {
+      console.log('[Database] Starting initialization...');
       await migrator.runMigrations();
       
       // Create database operations after migrations complete
       if (!dbOps) {
         dbOps = createDbOps();
-        // console.log('Database operations initialized');
+        console.log('[Database] Operations initialized successfully');
       }
+      
+      databaseStatus = DatabaseStatus.READY;
+      console.log('[Database] Initialization completed successfully');
     } catch (error) {
-      console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
-      throw error;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('[Database] Initialization failed:', errorMessage);
+      databaseStatus = DatabaseStatus.ERROR;
+      initializationError = error instanceof Error ? error : new Error(errorMessage);
+      throw initializationError;
     }
   })();
 
   return initializationPromise;
+}
+
+// Function to get current database status
+function getDatabaseStatus(): { status: DatabaseStatus; error?: Error } {
+  return {
+    status: databaseStatus,
+    error: initializationError || undefined
+  };
+}
+
+// Function to check database connection health
+function checkDatabaseHealth(): { healthy: boolean; error?: string; details?: Record<string, unknown> } {
+  try {
+    // Test basic connection
+    const testResult = db.prepare('SELECT 1 as test').get() as { test: number };
+    
+    if (!testResult || testResult.test !== 1) {
+      return { healthy: false, error: 'Database connection test failed' };
+    }
+    
+    // Check WAL mode
+    const walMode = db.pragma('journal_mode') as { journal_mode: string };
+    
+    // Check if database is locked
+    const busyTimeout = db.pragma('busy_timeout') as { busy_timeout: number };
+    
+    return {
+      healthy: true,
+      details: {
+        walMode: walMode.journal_mode,
+        busyTimeout: busyTimeout.busy_timeout,
+        status: databaseStatus
+      }
+    };
+  } catch (error) {
+    return {
+      healthy: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
+// Function to perform database maintenance
+function performDatabaseMaintenance(): { success: boolean; error?: string } {
+  try {
+    // Checkpoint WAL file
+    const checkpointResult = db.pragma('wal_checkpoint(TRUNCATE)') as { 
+      busy: number; 
+      log: number; 
+      checkpointed: number 
+    };
+    
+    // Incremental vacuum
+    db.pragma('incremental_vacuum');
+    
+    console.log('[Database] Maintenance completed:', checkpointResult);
+    
+    return { success: true };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Database] Maintenance failed:', errorMessage);
+    return { success: false, error: errorMessage };
+  }
 }
 
 // Start initialization immediately but don't block module loading
@@ -682,51 +797,6 @@ function createDbOps() {
     ORDER BY b.date
   `, 'getServerBackupChartDataWithTimeRange'),
 
-  // Session operations
-  createSession: safePrepare(`
-    INSERT INTO sessions (id, expires_at)
-    VALUES (@id, @expires_at)
-  `, 'createSession'),
-
-  getSession: safePrepare(`
-    SELECT id, created_at, last_accessed, expires_at
-    FROM sessions
-    WHERE id = ? AND expires_at > datetime('now')
-  `, 'getSession'),
-
-  updateSessionAccess: safePrepare(`
-    UPDATE sessions
-    SET last_accessed = datetime('now')
-    WHERE id = ?
-  `, 'updateSessionAccess'),
-
-  deleteSession: safePrepare(`
-    DELETE FROM sessions WHERE id = ?
-  `, 'deleteSession'),
-
-  cleanupExpiredSessions: safePrepare(`
-    DELETE FROM sessions WHERE expires_at <= datetime('now')
-  `, 'cleanupExpiredSessions'),
-
-  // CSRF token operations
-  createCSRFToken: safePrepare(`
-    INSERT OR REPLACE INTO csrf_tokens (session_id, token, expires_at)
-    VALUES (@session_id, @token, @expires_at)
-  `, 'createCSRFToken'),
-
-  getCSRFToken: safePrepare(`
-    SELECT token, expires_at
-    FROM csrf_tokens
-    WHERE session_id = ? AND expires_at > datetime('now')
-  `, 'getCSRFToken'),
-
-  deleteCSRFToken: safePrepare(`
-    DELETE FROM csrf_tokens WHERE session_id = ?
-  `, 'deleteCSRFToken'),
-
-  cleanupExpiredCSRFTokens: safePrepare(`
-    DELETE FROM csrf_tokens WHERE expires_at <= datetime('now')
-  `, 'cleanupExpiredCSRFTokens')
   };
 }
 
@@ -802,4 +872,4 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
 });
 
 // Export the database instance and operations
-export { db, dbOpsProxy as dbOps, ensureDatabaseInitialized }; 
+export { db, dbOpsProxy as dbOps, ensureDatabaseInitialized, getDatabaseStatus, checkDatabaseHealth, performDatabaseMaintenance }; 

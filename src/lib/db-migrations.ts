@@ -9,7 +9,8 @@ import {
   generateDefaultNtfyTopic,
   createDefaultNotificationConfig,
   defaultNtfyConfig,
-  defaultOverdueTolerance
+  defaultOverdueTolerance,
+  defaultNotificationFrequencyConfig
 } from './default-config';
 
 // Migration locking mechanism
@@ -114,6 +115,12 @@ function populateDefaultConfigurations(db: Database.Database) {
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
       'notifications', 
       JSON.stringify(defaultNotificationConfig)
+    );
+    
+    // Set notification_frequency configuration
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'notification_frequency', 
+      defaultNotificationFrequencyConfig
     );
   } catch (error) {
     console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
@@ -269,7 +276,6 @@ const migrations: Migration[] = [
             server_url TEXT DEFAULT '',
             alias TEXT DEFAULT '',
             note TEXT DEFAULT '',
-            server_password TEXT DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
           );
         `);
@@ -515,50 +521,44 @@ const migrations: Migration[] = [
         db.prepare('DELETE FROM configurations WHERE key = ?').run('overdue_backup_notifications');
       }
       
+      // Step 12: Populate default configurations if they don't exist
+      populateDefaultConfigurations(db);
+      
       console.log('Migration 3.0 completed successfully');
     }
   },
   {
     version: '3.1',
-    description: 'Add sessions and CSRF token tables for enhanced security',
+    description: 'Add server_password column to servers table and remove sessions/CSRF tables - now using in-memory storage',
     up: (db: Database.Database) => {
-      console.log('Migration 3.1: Adding sessions and CSRF security tables...');
+      console.log('Migration 3.1: Adding server_password column and removing security tables...');
       
-      // Check if sessions table already exists
-      const sessionsTableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='sessions'").get();
-      if (sessionsTableExists) {
-        // Migration already completed
-        return;
+      try {
+        // Step 1: Add server_password column to servers table (this is the critical part)
+        const serversTableInfo = db.prepare("PRAGMA table_info(servers)").all() as Array<{name: string, type: string}>;
+        const serverColumnNames = serversTableInfo.map(col => col.name);
+        
+        if (!serverColumnNames.includes('server_password')) {
+          console.log('Adding server_password column to servers table...');
+          db.exec(`ALTER TABLE servers ADD COLUMN server_password TEXT DEFAULT '';`);
+        } else {
+          console.log('server_password column already exists in servers table');
+        }
+        
+        // Step 2: Populate default configurations if they don't exist
+        populateDefaultConfigurations(db);
+        
+        console.log('Migration 3.1 completed successfully');
+      } catch (error) {
+        // If the column already exists or any other error, log and continue
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        if (errorMsg.includes('duplicate column') || errorMsg.includes('already exists')) {
+          console.log('Migration 3.1: server_password column already exists, skipping');
+        } else {
+          console.error('Migration 3.1 error:', errorMsg);
+          throw error;
+        }
       }
-      
-      // Step 1: Create sessions table for CSRF protection
-      db.exec(`
-        CREATE TABLE sessions (
-          id TEXT PRIMARY KEY,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
-          expires_at DATETIME NOT NULL
-        );
-      `);
-      
-      // Step 2: Create csrf_tokens table
-      db.exec(`
-        CREATE TABLE csrf_tokens (
-          session_id TEXT PRIMARY KEY,
-          token TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          expires_at DATETIME NOT NULL,
-          FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
-        );
-      `);
-      
-      // Step 3: Create indexes for security tables
-      db.exec(`
-        CREATE INDEX idx_sessions_expires ON sessions(expires_at);
-        CREATE INDEX idx_csrf_tokens_expires ON csrf_tokens(expires_at);
-      `);
-      
-      console.log('Migration 3.1 completed successfully');
     }
   }
 ];
@@ -620,8 +620,13 @@ export class DatabaseMigrator {
       INSERT INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)
     `).run(version);
     
-    // Force a checkpoint to ensure WAL changes are written
-    this.db.pragma('wal_checkpoint(TRUNCATE)');
+    // Use passive checkpoint to avoid I/O errors (doesn't block or truncate)
+    try {
+      this.db.pragma('wal_checkpoint(PASSIVE)');
+    } catch (error) {
+      console.warn('[Migration] Could not checkpoint WAL:', error);
+      // Continue anyway, checkpoint is not critical
+    }
     
     // Verify the version was set correctly
     const currentVersion = this.getCurrentVersion();

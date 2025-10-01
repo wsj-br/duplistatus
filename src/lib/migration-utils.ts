@@ -49,19 +49,37 @@ export function migrateBackupSettings(backupSettings: Record<string, unknown>): 
   const migratedSettings: Record<string, BackupNotificationConfig> = {};
   
   for (const [key, config] of Object.entries(backupSettings)) {
-    if (isLegacyFormat(config)) {
-      // Migrate old format to new format
-      migratedSettings[key] = migrateBackupNotificationConfig(config);
-    } else {
-      // Already in new format, but ensure required fields are present
-      const typedConfig = config as BackupNotificationConfig;
-      migratedSettings[key] = {
-        ...typedConfig,
-        allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays(),
-        time: typedConfig.time || '', // Ensure time field is present, default to empty string
-        ntfyEnabled: typedConfig.ntfyEnabled !== undefined ? typedConfig.ntfyEnabled : true,
-        emailEnabled: typedConfig.emailEnabled !== undefined ? typedConfig.emailEnabled : true
-      };
+    try {
+      if (isLegacyFormat(config)) {
+        // Migrate old format to new format
+        migratedSettings[key] = migrateBackupNotificationConfig(config);
+      } else {
+        // Already in new format, but ensure required fields are present
+        const typedConfig = config as BackupNotificationConfig;
+        
+        // Validate and sanitize the time field
+        let sanitizedTime = typedConfig.time || '';
+        if (sanitizedTime && sanitizedTime.trim() !== '') {
+          // Validate that the time is a valid date
+          const timeDate = new Date(sanitizedTime);
+          if (isNaN(timeDate.getTime())) {
+            console.warn(`Invalid time field for backup ${key}: ${sanitizedTime}, setting to empty string (will be populated with last backup date later)`);
+            sanitizedTime = '';
+          }
+        }
+        
+        migratedSettings[key] = {
+          ...typedConfig,
+          allowedWeekDays: typedConfig.allowedWeekDays || getDefaultAllowedWeekDays(),
+          time: sanitizedTime, // Use sanitized time field
+          ntfyEnabled: typedConfig.ntfyEnabled !== undefined ? typedConfig.ntfyEnabled : true,
+          emailEnabled: typedConfig.emailEnabled !== undefined ? typedConfig.emailEnabled : true
+        };
+      }
+    } catch (error) {
+      console.warn(`Failed to migrate backup settings for ${key}:`, error instanceof Error ? error.message : String(error));
+      // Skip this entry and continue with others
+      continue;
     }
   }
   

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db, dbOps } from '@/lib/db';
+import { db, dbOps, ensureDatabaseInitialized, checkDatabaseHealth } from '@/lib/db';
 
 interface HealthData {
   status: string;
@@ -8,8 +8,14 @@ interface HealthData {
   tablesFound: number;
   tables: string[];
   preparedStatements: boolean;
+  initializationStatus: string;
+  initializationComplete: boolean;
+  connectionHealth: boolean;
   timestamp: string;
   preparedStatementsError?: string;
+  initializationError?: string;
+  connectionHealthError?: string;
+  connectionDetails?: Record<string, unknown>;
 }
 
 interface TableResult {
@@ -24,6 +30,36 @@ export async function GET() {
     // Test table existence
     const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all() as TableResult[];
     
+    // Test database initialization status
+    let initializationComplete = false;
+    let initializationStatus = 'unknown';
+    let initializationError = null;
+    
+    try {
+      await ensureDatabaseInitialized();
+      initializationComplete = true;
+      initializationStatus = 'complete';
+    } catch (error) {
+      initializationStatus = 'failed';
+      initializationError = error instanceof Error ? error.message : 'Unknown error';
+    }
+    
+    // Test database connection health
+    let connectionHealth = false;
+    let connectionHealthError = null;
+    let connectionDetails = null;
+    
+    try {
+      const healthResult = checkDatabaseHealth();
+      connectionHealth = healthResult.healthy;
+      connectionDetails = healthResult.details;
+      if (!healthResult.healthy) {
+        connectionHealthError = healthResult.error;
+      }
+    } catch (error) {
+      connectionHealthError = error instanceof Error ? error.message : 'Unknown error';
+    }
+    
     // Test prepared statements
     let preparedStatementsOk = true;
     let preparedStatementsError = null;
@@ -37,13 +73,20 @@ export async function GET() {
       preparedStatementsError = error instanceof Error ? error.message : 'Unknown error';
     }
     
+    // Determine overall health status
+    const isHealthy = !!basicTest && preparedStatementsOk && initializationComplete && connectionHealth;
+    const overallStatus = isHealthy ? 'healthy' : 'degraded';
+    
     const healthData: HealthData = {
-      status: 'healthy',
+      status: overallStatus,
       database: 'connected',
       basicConnection: !!basicTest,
       tablesFound: tables.length,
       tables: tables.map((t: TableResult) => t.name),
       preparedStatements: preparedStatementsOk,
+      initializationStatus,
+      initializationComplete,
+      connectionHealth,
       timestamp: new Date().toISOString()
     };
     
@@ -51,10 +94,22 @@ export async function GET() {
       healthData.preparedStatementsError = preparedStatementsError ?? undefined;
     }
     
+    if (!initializationComplete) {
+      healthData.initializationError = initializationError ?? undefined;
+    }
+    
+    if (!connectionHealth) {
+      healthData.connectionHealthError = connectionHealthError ?? undefined;
+    }
+    
+    if (connectionDetails) {
+      healthData.connectionDetails = connectionDetails;
+    }
+    
     return NextResponse.json(
       healthData,
       { 
-        status: preparedStatementsOk ? 200 : 503,
+        status: isHealthy ? 200 : 503,
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-store, no-cache, must-revalidate',

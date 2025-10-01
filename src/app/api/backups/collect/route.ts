@@ -338,7 +338,10 @@ export const POST = withCSRF(async (request: NextRequest) => {
           const serverPassword = getServerPassword(providedServerId);
           if (!serverPassword) {
             return NextResponse.json(
-              { error: 'Server password not found' },
+              { 
+                error: `No password stored for this server. Please provide hostname and password to update server credentials, or set the password in Settings.`,
+                serverInfo: serverInfo
+              },
               { status: 404 }
             );
           }
