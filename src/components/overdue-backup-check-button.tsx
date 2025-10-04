@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { usePathname } from 'next/navigation';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 export function OverdueBackupCheckButton() {
   const [isChecking, setIsChecking] = useState(false);
@@ -19,7 +19,7 @@ export function OverdueBackupCheckButton() {
       setIsChecking(true);
 
       // Run the overdue backup check
-      const response = await authenticatedRequest('/api/notifications/check-overdue', {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/check-overdue', {
         method: 'POST',
       });
 

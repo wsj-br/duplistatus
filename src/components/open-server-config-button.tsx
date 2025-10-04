@@ -16,6 +16,7 @@ import { useServerSelection } from '@/contexts/server-selection-context';
 import { ServerAddress } from '@/lib/types';
 import { GradientCardHeader } from '@/components/ui/card';
 import { ColoredIcon } from '@/components/ui/colored-icon';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 export function OpenServerConfigButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +40,7 @@ export function OpenServerConfigButton() {
       }
       
       // Fetch all servers from the existing servers endpoint
-      const response = await fetch('/api/servers?includeBackups=true');
+      const response = await authenticatedRequestWithRecovery('/api/servers?includeBackups=true');
       if (!response.ok) {
         throw new Error('Failed to fetch server connections');
       }
@@ -134,7 +135,7 @@ export function OpenServerConfigButton() {
       
       if (currentServerId) {
         try {
-          const response = await fetch(`/api/servers/${currentServerId}/server-url`);
+          const response = await authenticatedRequestWithRecovery(`/api/servers/${currentServerId}/server-url`);
           
           if (!response.ok) {
             throw new Error(`Failed to fetch server URL: ${response.status}`);

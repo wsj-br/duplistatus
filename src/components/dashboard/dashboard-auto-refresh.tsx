@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DashboardLayout } from './dashboard-layout';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 interface DashboardAutoRefreshProps {
@@ -46,7 +46,7 @@ export function DashboardAutoRefresh({ initialData }: DashboardAutoRefreshProps)
       setIsLoading(true);
       
       // Fetch consolidated dashboard data
-      const dashboardResponse = await authenticatedRequest('/api/dashboard');
+      const dashboardResponse = await authenticatedRequestWithRecovery('/api/dashboard');
 
       if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');

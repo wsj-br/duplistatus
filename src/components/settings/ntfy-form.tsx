@@ -12,7 +12,7 @@ import { ColoredIcon } from '@/components/ui/colored-icon';
 import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 interface NtfyFormProps {
   config: NtfyConfig;
@@ -111,7 +111,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
 
     setIsTesting(true);
     try {
-      const response = await authenticatedRequest('/api/notifications/test', {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
         method: 'POST',
         body: JSON.stringify({ 
           type: 'simple',

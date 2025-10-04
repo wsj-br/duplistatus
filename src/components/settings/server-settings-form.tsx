@@ -17,7 +17,7 @@ import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { CollectAllButton } from '@/components/ui/collect-all-button';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { getCSRFToken, authenticatedRequest } from '@/lib/client-session-csrf';
+import { getCSRFToken, authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
@@ -247,7 +247,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     }));
 
     try {
-      const response = await authenticatedRequest('/api/servers/test-connection', {
+      const response = await authenticatedRequestWithRecovery('/api/servers/test-connection', {
         method: 'POST',
         body: JSON.stringify({ server_url: serverUrl }),
       });
@@ -326,7 +326,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       // Helper function to test a single connection
       const testConnectionInBatch = async (connection: typeof connectionsWithUrls[0]) => {
         try {
-          const response = await authenticatedRequest('/api/servers/test-connection', {
+          const response = await authenticatedRequestWithRecovery('/api/servers/test-connection', {
             method: 'POST',
             body: JSON.stringify({ server_url: connection.server_url }),
           });
@@ -412,7 +412,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           connection.note !== connection.originalNote;
           
         if (hasChanges) {
-          const response = await authenticatedRequest(`/api/servers/${connection.id}`, {
+          const response = await authenticatedRequestWithRecovery(`/api/servers/${connection.id}`, {
             method: 'PATCH',
             body: JSON.stringify({ 
               server_url: connection.server_url,
@@ -533,7 +533,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
     setIsSavingPassword(true);
     try {
-      const response = await fetch(`/api/servers/${selectedServerId}/password`, {
+      const response = await authenticatedRequestWithRecovery(`/api/servers/${selectedServerId}/password`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
@@ -578,7 +578,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const handlePasswordDelete = async () => {
     setIsDeletingPassword(true);
     try {
-      const response = await fetch(`/api/servers/${selectedServerId}/password`, {
+      const response = await authenticatedRequestWithRecovery(`/api/servers/${selectedServerId}/password`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',

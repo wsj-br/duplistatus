@@ -2,6 +2,7 @@
 // This file handles session and CSRF token management for frontend requests
 
 let cachedSessionId: string | null = null;
+let isRecoveringSession = false; // Prevent multiple simultaneous recovery attempts
 
 // Function to get or create a session
 export const getSession = async (): Promise<string> => {
@@ -102,6 +103,86 @@ export const clearSession = async (): Promise<void> => {
     console.error('Error clearing session:', error);
   } finally {
     cachedSessionId = null;
+    isRecoveringSession = false;
+  }
+};
+
+// Function to force session recreation (clears cache and creates new session)
+export const recreateSession = async (): Promise<string> => {
+  console.log('Recreating session due to authentication failure...');
+  cachedSessionId = null;
+  isRecoveringSession = true;
+  
+  try {
+    const sessionId = await getSession();
+    isRecoveringSession = false;
+    return sessionId;
+  } catch (error) {
+    isRecoveringSession = false;
+    throw error;
+  }
+};
+
+// Check if a response indicates session/CSRF authentication failure
+export const isAuthenticationError = (response: Response): boolean => {
+  return response.status === 401 || response.status === 403;
+};
+
+// Enhanced authenticated request with automatic session recovery
+export const authenticatedRequestWithRecovery = async (
+  url: string, 
+  options: RequestInit = {},
+  retryCount = 0
+): Promise<Response> => {
+  const maxRetries = 1; // Only retry once to avoid infinite loops
+  
+  try {
+    // Always get a fresh CSRF token for each request to avoid race conditions
+    const csrfToken = await getCSRFToken();
+    
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken,
+      ...options.headers,
+    };
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      credentials: 'include', // Include cookies
+    });
+
+    // Check for authentication errors and attempt recovery
+    if (isAuthenticationError(response) && retryCount < maxRetries && !isRecoveringSession) {
+      console.log(`Authentication error detected (${response.status}), attempting session recovery...`);
+      
+      try {
+        // Recreate session and retry the request
+        await recreateSession();
+        return await authenticatedRequestWithRecovery(url, options, retryCount + 1);
+      } catch (recoveryError) {
+        console.error('Session recovery failed:', recoveryError);
+        // Return the original response if recovery fails
+        return response;
+      }
+    }
+
+    return response;
+  } catch (error) {
+    // If it's a network error and we haven't retried yet, try session recovery
+    if (retryCount < maxRetries && !isRecoveringSession) {
+      console.log('Network error detected, attempting session recovery...');
+      
+      try {
+        await recreateSession();
+        return await authenticatedRequestWithRecovery(url, options, retryCount + 1);
+      } catch (recoveryError) {
+        console.error('Session recovery failed:', recoveryError);
+        throw error;
+      }
+    }
+    
+    throw error;
   }
 };
 
@@ -111,22 +192,10 @@ export const refreshCSRFToken = async (): Promise<string> => {
 };
 
 // Helper function to make authenticated requests with CSRF protection
+// This is now a wrapper around the enhanced version with automatic recovery
 export const authenticatedRequest = async (
   url: string, 
   options: RequestInit = {}
 ): Promise<Response> => {
-  // Always get a fresh CSRF token for each request to avoid race conditions
-  const csrfToken = await getCSRFToken();
-  
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-CSRF-Token': csrfToken,
-    ...options.headers,
-  };
-
-  return fetch(url, {
-    ...options,
-    headers,
-    credentials: 'include', // Include cookies
-  });
+  return await authenticatedRequestWithRecovery(url, options);
 };

@@ -34,7 +34,7 @@ export const defaultNotificationTemplates: {
               "🔍 Note: {server_note}\n" + 
               "🚨 Last backup was {last_backup_date} ({last_elapsed})\n" + 
               "⏰ Expected backup was {expected_date} ({expected_elapsed})\n\n" + 
-              "Expected interval:  {backup_interval_value} {backup_interval_type} / Tolerance:  {overdue_tolerance}\n\n" + 
+              "Expected interval: {backup_interval} / Tolerance: {overdue_tolerance}\n\n" + 
              "🔍 Please check the duplicati server {server_url}\n",
     priority: "default",
     tags: "duplicati, duplistatus, overdue"

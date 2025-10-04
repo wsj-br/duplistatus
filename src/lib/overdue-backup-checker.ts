@@ -3,6 +3,7 @@ import { sendOverdueBackupNotification, OverdueBackupContext } from '@/lib/notif
 import { getOverdueToleranceLabel } from '@/lib/utils';
 import { OverdueNotifications } from '@/lib/types';
 import { formatRelativeTime } from '@/lib/utils';
+import { validateIntervalString } from '@/lib/interval-utils';
 
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -123,6 +124,14 @@ export async function checkOverdueBackups(checkDate?: Date) {
               
               // Validate interval configuration
               if (!intervalValue || intervalValue.trim() === '') {
+                console.warn(`Skipping backup ${backupKey}: no interval configured`);
+                continue;
+              }
+              
+              // Validate interval format
+              const intervalValidation = validateIntervalString(intervalValue);
+              if (!intervalValidation.isValid) {
+                console.warn(`Skipping backup ${backupKey}: invalid interval format '${intervalValue}': ${intervalValidation.error}`);
                 continue;
               }
               
@@ -144,8 +153,7 @@ export async function checkOverdueBackups(checkDate?: Date) {
                 last_elapsed: overdueTimeAgo,
                 expected_date: expectedBackupDate,
                 expected_elapsed: expectedBackupElapsed,
-                backup_interval_type: 'hour', // Legacy field - interval is now handled as string
-                backup_interval_value: 0, // Legacy field - interval is now handled as string
+                backup_interval: intervalValue, // Use interval string directly
                 overdue_tolerance: getOverdueToleranceLabel(overdueTolerance), 
               };
 

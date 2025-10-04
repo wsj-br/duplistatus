@@ -14,6 +14,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { GithubLink } from '@/components/github-link';
 import AppVersion from '@/components/app-version';
 import { SessionInitializer } from '@/components/session-initializer';
+import { GlobalSessionErrorHandler } from '@/components/global-session-error-handler';
 
 const geistSans = localFont({
   src: [
@@ -127,6 +128,7 @@ export default function RootLayout({
                     <TooltipProvider delayDuration={300}>
                       <ToastProvider>
                       <SessionInitializer />
+                      <GlobalSessionErrorHandler />
                       <div className="relative flex min-h-screen flex-col">
                         <AppHeader />
                         <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>

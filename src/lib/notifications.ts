@@ -38,8 +38,7 @@ export interface OverdueBackupContext {
   last_elapsed: string;
   expected_date: string;
   expected_elapsed: string;
-  backup_interval_type: string;
-  backup_interval_value: number;
+  backup_interval: string;
   overdue_tolerance: string; // Human-readable tolerance label
 }
 
@@ -369,7 +368,7 @@ function processTemplate(template: NotificationTemplate, context: NotificationCo
   tags: string;
 } {
    // Create a copy of the context with formatted dates
-  const formattedContext = { ...context };
+  const formattedContext = { ...context } as Record<string, unknown>;
 
   // Add additional server variables to context 
   const serverInfo = getServerInfoById(context.server_id);
@@ -377,16 +376,19 @@ function processTemplate(template: NotificationTemplate, context: NotificationCo
   formattedContext.server_alias = serverInfo?.alias || context.server_name;
   formattedContext.server_note = serverInfo?.note || '';
 
+  // backward compatibility
+  formattedContext.backup_interval_value = 'backup_interval' in context ? context.backup_interval : '';
+  formattedContext.backup_interval_type = ""; 
 
   // Format date fields if they exist in the context
   if ('backup_date' in formattedContext) {
-    formattedContext.backup_date = formatDateString(formattedContext.backup_date);
+    formattedContext.backup_date = formatDateString(formattedContext.backup_date as string);
   }
   if ('last_backup_date' in formattedContext) {
-    formattedContext.last_backup_date = formatDateString(formattedContext.last_backup_date);
+    formattedContext.last_backup_date = formatDateString(formattedContext.last_backup_date as string);
   }
   if ('expected_date' in formattedContext) {
-    formattedContext.expected_date = formatDateString(formattedContext.expected_date);
+    formattedContext.expected_date = formatDateString(formattedContext.expected_date as string);
   }
 
   return {

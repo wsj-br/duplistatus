@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { GradientCardHeader } from "@/components/ui/card";
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import {
   Select,
@@ -32,7 +33,6 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
-import { authenticatedRequest } from "@/lib/client-session-csrf";
 import { useConfiguration } from "@/contexts/configuration-context";
 
 interface Server {
@@ -78,7 +78,7 @@ export function DatabaseMaintenanceMenu() {
   const fetchServers = async () => {
     try {
       // First get basic server information
-      const serversResponse = await fetch('/api/servers');
+      const serversResponse = await authenticatedRequestWithRecovery('/api/servers');
       if (serversResponse.ok) {
         const serverList = await serversResponse.json();
         // Sort servers alphabetically by alias with fallback to name
@@ -88,7 +88,7 @@ export function DatabaseMaintenanceMenu() {
         setServers(sortedServers);
 
         // Then get servers with backup information to derive backup jobs
-        const serversWithBackupsResponse = await fetch('/api/servers?includeBackups=true');
+        const serversWithBackupsResponse = await authenticatedRequestWithRecovery('/api/servers?includeBackups=true');
         if (serversWithBackupsResponse.ok) {
           const serversWithBackups = await serversWithBackupsResponse.json();
           
@@ -205,7 +205,7 @@ export function DatabaseMaintenanceMenu() {
       const selectedServerDetails = servers.find(server => server.id === selectedServer);
       const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
       
-      const response = await authenticatedRequest(`/api/servers/${selectedServer}`, {
+      const response = await authenticatedRequestWithRecovery(`/api/servers/${selectedServer}`, {
         method: 'DELETE',
       });
 
@@ -272,7 +272,7 @@ export function DatabaseMaintenanceMenu() {
       const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
       const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
       
-      const response = await authenticatedRequest('/api/backups/delete-job', {
+      const response = await authenticatedRequestWithRecovery('/api/backups/delete-job', {
         method: 'DELETE',
         body: JSON.stringify({
           serverId: selectedBackupJobDetails?.server_id,

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { NotificationConfig, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 export interface ServerWithBackup {
   id: string;
@@ -45,9 +46,7 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/configuration/unified', {
-        credentials: 'include', // Include session cookies
-      });
+      const response = await authenticatedRequestWithRecovery('/api/configuration/unified');
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }
@@ -75,9 +74,7 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
       
-      const response = await fetch('/api/configuration/unified', {
-        credentials: 'include', // Include session cookies
-      });
+      const response = await authenticatedRequestWithRecovery('/api/configuration/unified');
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }

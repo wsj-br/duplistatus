@@ -18,6 +18,7 @@ import { useConfig } from "@/contexts/config-context";
 import { subWeeks, subMonths, subQuarters, subYears } from "date-fns";
 import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 // Interface for interpolated chart data points
@@ -387,28 +388,28 @@ function OverviewChartsPanelCore({
       if (!serverId) {
         // Aggregated data (all servers)
         if (startDate && endDate) {
-          const response = await fetch(`/api/chart-data/aggregated?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          const response = await authenticatedRequestWithRecovery(`/api/chart-data/aggregated?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
           if (!response.ok) throw new Error('Failed to fetch aggregated chart data with time range');
           data = await response.json();
         } else {
-          const response = await fetch('/api/chart-data/aggregated');
+          const response = await authenticatedRequestWithRecovery('/api/chart-data/aggregated');
           if (!response.ok) throw new Error('Failed to fetch aggregated chart data');
           data = await response.json();
         }
       } else if (serverId && !backupName) {
         // Server-specific data (all backups)
         if (startDate && endDate) {
-          const response = await fetch(`/api/chart-data/server/${serverId}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          const response = await authenticatedRequestWithRecovery(`/api/chart-data/server/${serverId}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
           if (!response.ok) throw new Error('Failed to fetch server chart data with time range');
           data = await response.json();
         } else {
-          const response = await fetch(`/api/chart-data/server/${serverId}`);
+          const response = await authenticatedRequestWithRecovery(`/api/chart-data/server/${serverId}`);
           if (!response.ok) throw new Error('Failed to fetch server chart data');
           data = await response.json();
         }
         
         // Get server name for display
-        const serverResponse = await fetch(`/api/servers/${serverId}`);
+        const serverResponse = await authenticatedRequestWithRecovery(`/api/servers/${serverId}`);
         if (serverResponse.ok) {
           const serverData = await serverResponse.json();
           setSelectedServerName(serverData.alias || serverData.name);
@@ -416,17 +417,17 @@ function OverviewChartsPanelCore({
       } else if (serverId && backupName) {
         // Server and backup specific data
         if (startDate && endDate) {
-          const response = await fetch(`/api/chart-data/server/${serverId}/backup/${encodeURIComponent(backupName)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+          const response = await authenticatedRequestWithRecovery(`/api/chart-data/server/${serverId}/backup/${encodeURIComponent(backupName)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
           if (!response.ok) throw new Error('Failed to fetch server backup chart data with time range');
           data = await response.json();
         } else {
-          const response = await fetch(`/api/chart-data/server/${serverId}/backup/${encodeURIComponent(backupName)}`);
+          const response = await authenticatedRequestWithRecovery(`/api/chart-data/server/${serverId}/backup/${encodeURIComponent(backupName)}`);
           if (!response.ok) throw new Error('Failed to fetch server backup chart data');
           data = await response.json();
         }
         
         // Get server name for display
-        const serverResponse = await fetch(`/api/servers/${serverId}`);
+        const serverResponse = await authenticatedRequestWithRecovery(`/api/servers/${serverId}`);
         if (serverResponse.ok) {
           const serverData = await serverResponse.json();
           setSelectedServerName(serverData.alias || serverData.name);

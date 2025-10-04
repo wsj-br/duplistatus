@@ -1,5 +1,5 @@
 import { ServerAddress } from '@/lib/types';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 /**
  * Result of a single server collection
@@ -122,7 +122,7 @@ async function collectFromServer(
       downloadJson
     };
 
-    const response = await authenticatedRequest('/api/backups/collect', {
+    const response = await authenticatedRequestWithRecovery('/api/backups/collect', {
       method: 'POST',
       body: JSON.stringify(requestBody),
     });

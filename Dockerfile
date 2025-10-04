@@ -10,7 +10,7 @@ FROM node:alpine AS base
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 
-RUN apk add --no-cache libc6-compat tzdata
+RUN apk add --no-cache libc6-compat tzdata icu-libs icu-data-full
 
 WORKDIR /app
 
@@ -46,11 +46,20 @@ RUN mkdir -p /app/data && pnpm run build
 FROM base AS runner
 
 # install curl for healthcheck
-RUN apk add --no-cache curl tzdata
+RUN apk add --no-cache curl tzdata icu-libs icu-data-full
 
 # set environment variables
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+
+
+# Set the application default environment variables
+
+ENV VERSION=0.8.14 \
+    PORT=9666 \
+    CRON_PORT=9667 \
+    TZ=Europe/London \
+    LANG=en_GB 
 
 # Install pnpm globally
 RUN npm install -g pnpm@latest-10
@@ -84,11 +93,6 @@ COPY --chown=node:node --chmod=755 duplistatus-cron.sh /app/duplistatus-cron.sh
 
 # Create data directory & adjust permissions
 RUN mkdir -p /app/data && chown -R node:node /app/data
-
-# Set the application default environment variables
-ENV PORT=9666 \
-    CRON_PORT=9667 \
-    TZ=Europe/London
 
 # Labels
 LABEL org.opencontainers.image.source=https://github.com/wsj-br/duplistatus

@@ -18,7 +18,7 @@ import { cronIntervalMap } from '@/lib/cron-interval-map';
 import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
 import { RefreshCw, TimerReset } from "lucide-react";
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
 import { CollectAllButton } from '../ui/collect-all-button';
 import Link from 'next/link';
@@ -381,7 +381,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   // Helper function to run overdue backup check
   const runOverdueBackupCheck = async () => {
     try {
-      const response = await authenticatedRequest('/api/notifications/check-overdue', {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
@@ -409,7 +409,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const handleCronIntervalChange = async (value: CronInterval) => {
     try {
       // First save the configuration
-      const response = await authenticatedRequest('/api/cron-config', {
+      const response = await authenticatedRequestWithRecovery('/api/cron-config', {
         method: 'POST',
         body: JSON.stringify({ interval: value }),
       });
@@ -454,7 +454,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     setIsSavingInProgress(true);
     try {
       // Save backup settings using the dedicated endpoint
-      const backupResponse = await authenticatedRequest('/api/configuration/backup-settings', {
+      const backupResponse = await authenticatedRequestWithRecovery('/api/configuration/backup-settings', {
         method: 'POST',
         body: JSON.stringify({
           backupSettings: settings
@@ -466,7 +466,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       }
       
       // Save overdue tolerance using the dedicated endpoint
-      const toleranceResponse = await authenticatedRequest('/api/configuration/overdue-tolerance', {
+      const toleranceResponse = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance', {
         method: 'POST',
         body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
       });
@@ -504,7 +504,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     setIsTesting(true);
     try {
       // Save backup settings using the dedicated endpoint
-      const backupResponse = await authenticatedRequest('/api/configuration/backup-settings', {
+      const backupResponse = await authenticatedRequestWithRecovery('/api/configuration/backup-settings', {
         method: 'POST',
         body: JSON.stringify({
           backupSettings: settings
@@ -516,7 +516,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       }
       
       // Save overdue tolerance using the dedicated endpoint
-      const toleranceResponse = await authenticatedRequest('/api/configuration/overdue-tolerance', {
+      const toleranceResponse = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance', {
         method: 'POST',
         body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
       });
@@ -532,7 +532,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       await refreshConfigSilently();
       
       // Run the overdue backup check
-      const response = await authenticatedRequest('/api/notifications/check-overdue', {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/check-overdue', {
         method: 'POST',
       });
 
@@ -563,7 +563,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     setNotificationFrequencyLoading(true);
     setNotificationFrequencyError(null);
     try {
-      const response = await authenticatedRequest('/api/configuration/notifications', {
+      const response = await authenticatedRequestWithRecovery('/api/configuration/notifications', {
         method: 'POST',
         body: JSON.stringify({ value }),
       });
@@ -584,7 +584,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       updateConfig({ overdue_tolerance: value });
       
       // Save to the database using the dedicated API endpoint
-      const response = await authenticatedRequest('/api/configuration/overdue-tolerance', {
+      const response = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance', {
         method: 'POST',
         body: JSON.stringify({ overdue_tolerance: value }),
       });
@@ -614,7 +614,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const handleResetNotifications = async () => {
     setIsResetting(true);
     try {
-      const response = await authenticatedRequest('/api/notifications/clear-overdue-timestamps', {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/clear-overdue-timestamps', {
         method: 'POST',
       });
 

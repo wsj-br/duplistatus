@@ -36,7 +36,7 @@ import { useConfiguration } from "@/contexts/configuration-context";
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { defaultAPIConfig } from '@/lib/default-config';
 import { ServerAddress } from '@/lib/types';
-import { authenticatedRequest } from "@/lib/client-session-csrf";
+import { authenticatedRequestWithRecovery } from "@/lib/client-session-csrf";
 import { CollectAllButton } from "@/components/ui/collect-all-button";
 import { collectFromMultipleServers, type CollectionResult } from "@/lib/bulk-collection";
 
@@ -177,7 +177,7 @@ export function BackupCollectMenu({
       setIsLoadingServers(true);
       
       // Fetch all servers from the existing servers endpoint
-      const response = await fetch('/api/servers?includeBackups=true');
+      const response = await authenticatedRequestWithRecovery('/api/servers?includeBackups=true');
       if (!response.ok) {
         throw new Error('Failed to fetch server connections');
       }
@@ -422,7 +422,7 @@ export function BackupCollectMenu({
         });
       }, 200);
 
-      const response = await authenticatedRequest('/api/backups/collect', {
+      const response = await authenticatedRequestWithRecovery('/api/backups/collect', {
         method: 'POST',
         body: JSON.stringify({
           serverId: targetServerId,
@@ -672,7 +672,7 @@ export function BackupCollectMenu({
         });
       }, 200);
 
-      const response = await authenticatedRequest('/api/backups/collect', {
+      const response = await authenticatedRequestWithRecovery('/api/backups/collect', {
         method: 'POST',
         body: JSON.stringify(requestBody),
       });
@@ -829,7 +829,7 @@ export function BackupCollectMenu({
       
       if (currentServerId) {
         try {
-          const response = await fetch(`/api/servers/${currentServerId}/server-url`);
+          const response = await authenticatedRequestWithRecovery(`/api/servers/${currentServerId}/server-url`);
           
           if (!response.ok) {
             throw new Error(`Failed to fetch server URL: ${response.status}`);

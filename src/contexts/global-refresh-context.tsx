@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { usePathname } from 'next/navigation';
 import { useConfig } from './config-context';
 import { useConfiguration } from './configuration-context';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import type { ServerSummary, OverallSummary, ChartDataPoint } from '@/lib/types';
 
 type PageType = 'dashboard' | 'detail' | 'none';
@@ -93,9 +94,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
       // Fetch consolidated dashboard data and configuration in parallel
       const [dashboardResponse] = await Promise.all([
-        fetch('/api/dashboard', {
-          credentials: 'include', // Include session cookies
-        }),
+        authenticatedRequestWithRecovery('/api/dashboard'),
         refreshConfigSilently() // Refresh configuration silently
       ]);
 
@@ -151,7 +150,7 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
       // Fetch detail data and configuration in parallel
       const [dataResponse] = await Promise.all([
-        fetch(`/api/detail/${serverId}`),
+        authenticatedRequestWithRecovery(`/api/detail/${serverId}`),
         refreshConfigSilently() // Refresh configuration silently
       ]);
 

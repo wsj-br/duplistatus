@@ -278,8 +278,8 @@ The table layout lists the most recent backup logs received for all servers and 
 
 ### Notifications Icons
 
-| Icon                                    | Notification Option | Description                                                                                         |
-| --------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| Icon                                     | Notification Option | Description                                                                                         |
+| ---------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
 | ![off](/img/screen-nt-off.png)           | Off                 | No notifications will be sent when a new backup log is received                                     |
 | ![all](/img/screen-nt-all.png)           | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
 | ![warnings](/img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
@@ -507,16 +507,19 @@ Configure user interface and display preferences.
 #### Quick Collection (Version 0.8.x)
 
 **Server Selection:**
+
 - **Pre-configured Servers**: If you have server addresses configured in `Settings → Server Settings`, select from the dropdown list for instant collection.
 - **Individual Collection**: Buttons are available in `Settings → Overdue Monitoring` and `Settings → Server Settings` for single-server collection.
 
 **Bulk Collection:**
+
 - **Collect All**: Right-click the `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
 - **Bulk Action**: Collection buttons available in settings pages to process multiple servers simultaneously.
 
 #### Automatic Configuration Updates
 
 When collecting backup logs, **duplistatus** automatically:
+
 - Updates server URLs and passwords in the database (for first-time collection)
 - Extracts and synchronises backup schedule information from Duplicati
 - Configures overdue monitoring intervals to match your Duplicati settings
@@ -524,7 +527,7 @@ When collecting backup logs, **duplistatus** automatically:
 
 <br/>
 
-> [!TIP] 
+> [!TIP]
 > **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback. You no longer need to manually specify the protocol.
 
 <br/>
@@ -683,6 +686,7 @@ You can independently enable or disable each notification channel per backup. Co
 
 **Per-Backup Configuration:**
 Each backup job can be configured independently for:
+
 - Notification events (All, Warnings, Errors, Off)
 - NTFY notifications (enabled/disabled)
 - Email notifications (enabled/disabled)
@@ -736,12 +740,14 @@ Version 0.8.x introduces enhanced overdue monitoring with support for custom int
 #### Configuration Options
 
 **Per-Backup Settings:**
+
 - **Expected Backup Interval**: Custom interval format (e.g., "1D", "1W", "2M", "1D12h30m")
 - **Notification Channels**: Separate toggles for NTFY and email notifications
 - **Overdue Monitoring**: Enable/disable overdue checks per backup
 - **Reset Function**: Reset overdue notification timers individually
 
 **Global Settings:**
+
 - **Overdue Tolerance**: Grace period before marking backups as overdue (5 minutes to 1 day)
 - **Notification Frequency**: How often to send overdue notifications (one time, daily, weekly, monthly)
 - **Monitoring Interval**: How frequently to check for overdue backups (1 to 2 hours)
@@ -749,6 +755,7 @@ Version 0.8.x introduces enhanced overdue monitoring with support for custom int
 #### Automatic Configuration
 
 When you collect backup logs from a Duplicati server, **duplistatus** automatically:
+
 - Extracts the backup schedule from the Duplicati configuration
 - Updates the overdue monitoring intervals to match exactly
 - Synchronises allowed weekdays and scheduled times
@@ -901,6 +908,7 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 Email notifications are configured through the web interface under **Settings → Email Configuration**. The settings are stored securely in the database with encrypted credentials.
 
 **Configuration Fields:**
+
 - **SMTP Host**: Your email provider's SMTP server (e.g., `smtp.gmail.com`)
 - **SMTP Port**: Port number (typically `587` for STARTTLS or `465` for SSL/TLS)
 - **SMTP Username**: Your email address or username
@@ -913,6 +921,7 @@ Email notifications are configured through the web interface under **Settings �
 <div>
 
 **Gmail:**
+
 - Host: `smtp.gmail.com`
 - Port: `587` (STARTTLS) or `465` (SSL/TLS)
 - Username: Your Gmail address
@@ -920,6 +929,7 @@ Email notifications are configured through the web interface under **Settings �
 - Secure: `false` for port 587, `true` for port 465
 
 **Outlook/Hotmail:**
+
 - Host: `smtp-mail.outlook.com`
 - Port: `587`
 - Username: Your Outlook email address
@@ -927,6 +937,7 @@ Email notifications are configured through the web interface under **Settings �
 - Secure: `false` (STARTTLS)
 
 **Yahoo Mail:**
+
 - Host: `smtp.mail.yahoo.com`
 - Port: `587`
 - Username: Your Yahoo email address
@@ -939,7 +950,7 @@ Email notifications are configured through the web interface under **Settings �
 
 <br/>
 
-> [!TIP] 
+> [!TIP]
 > **Security Best Practices:**
 >
 > - For Gmail and Yahoo, use App Passwords instead of your regular account password
@@ -949,8 +960,7 @@ Email notifications are configured through the web interface under **Settings �
 
 <br/>
 
-> [!NOTE]
-> **Email Features:**
+> [!NOTE] > **Email Features:**
 >
 > - Emails are sent with "duplistatus" as the sender name
 > - Both HTML and plain text versions are included for better compatibility
@@ -962,6 +972,7 @@ Email notifications are configured through the web interface under **Settings �
 #### Security Features (Version 0.8.x)
 
 **Enhanced Security:**
+
 - Email configuration now uses web interface instead of environment variables for better security
 - Sensitive data (passwords, SMTP credentials) are encrypted using AES-256-GCM encryption
 - Master key is automatically generated and stored securely (`.duplistatus.key`)
@@ -1012,8 +1023,7 @@ All templates support variables that will be replaced with actual values. The fo
 | `{last_elapsed}`          | Time elapsed since the last backup.             | Overdue          |
 | `{expected_date}`         | Expected backup date.                           | Overdue          |
 | `{expected_elapsed}`      | Time elapsed since the expected date.           | Overdue          |
-| `{backup_interval_type}`  | Interval unit (hours/days).                     | Overdue          |
-| `{backup_interval_value}` | Expected interval value.                        | Overdue          |
+| `{backup_interval}`       | Interval string (e.g., "1D", "2W", "1M").       | Overdue          |
 | `{overdue_tolerance}`     | Overdue tolerance setting.                      | Overdue          |
 
 <br/>
@@ -1176,13 +1186,13 @@ This widget displays the latest backup information for a specific machine.
 
 Here are solutions to some common issues.
 
-| Issue                                                                                                                                                                           | Problem Description                                             | Solutions                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **New backups are not showing**<br/><br/>Duplicati server warnings:<br/>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history.   | **Check Duplicati Configuration**:<br/>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br/>• Verify the HTTP URL settings in Duplicati.<br/><br/>**Check Network Connectivity**:<br/>• Ensure the Duplicati server can connect to the **duplistatus** server.<br/>• Confirm the port is correct (default: `666`).<br/><br/>**Review Duplicati Logs**:<br/>• Check for HTTP request errors in the Duplicati logs.                |
-| **Notifications Not Working**                                                                                                                                                   | Notifications are not being sent or received.                   | **Check NTFY Configuration**:<br/>• Ensure the NTFY URL and topic are correct.<br/>• Use the `Send Test Notification` button to test.<br/><br/>**Check Network Connectivity**:<br/>• Verify that **duplistatus** can reach your NTFY server.<br/>• Review firewall settings if applicable.<br/><br/>**Check Notification Settings**:<br/>• Confirm that notifications are enabled for the relevant backups.                                                        |
-| **Available versions not appearing**                                                                                                                                            | Backup versions are not shown on the dashboard or details page. | **Check Duplicati Configuration**:<br/>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.                                                                                                                                                                                                                                                                                                  |
+| Issue                                                                                                                                                                           | Problem Description                                             | Solutions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **New backups are not showing**<br/><br/>Duplicati server warnings:<br/>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history.   | **Check Duplicati Configuration**:<br/>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br/>• Verify the HTTP URL settings in Duplicati.<br/><br/>**Check Network Connectivity**:<br/>• Ensure the Duplicati server can connect to the **duplistatus** server.<br/>• Confirm the port is correct (default: `666`).<br/><br/>**Review Duplicati Logs**:<br/>• Check for HTTP request errors in the Duplicati logs.                                                                                   |
+| **Notifications Not Working**                                                                                                                                                   | Notifications are not being sent or received.                   | **Check NTFY Configuration**:<br/>• Ensure the NTFY URL and topic are correct.<br/>• Use the `Send Test Notification` button to test.<br/><br/>**Check Network Connectivity**:<br/>• Verify that **duplistatus** can reach your NTFY server.<br/>• Review firewall settings if applicable.<br/><br/>**Check Notification Settings**:<br/>• Confirm that notifications are enabled for the relevant backups.                                                                                                                          |
+| **Available versions not appearing**                                                                                                                                            | Backup versions are not shown on the dashboard or details page. | **Check Duplicati Configuration**:<br/>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.                                                                                                                                                                                                                                                                                                                                                                    |
 | **Overdue Backup Alerts Not Working**                                                                                                                                           | Overdue backup notifications are not being sent.                | **Check Overdue Configuration**:<br/>• Confirm that overdue monitoring is enabled for the backup.<br/>• Verify the expected interval and tolerance settings.<br/><br/>**Check Notification Frequency**:<br/>• If set to `One time`, alerts are only sent once per overdue event.<br/><br/>**Check Cron Service**:<br/>• Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors.<br/>• Verify the cron service is accessible at the configured port (default: `8667`). |
-| **Collect Backup Logs not working**                                                                                                                                             | The manual backup log collection fails.                         | **Check Duplicati Server Access**:<br/>• Verify the Duplicati server hostname and port are correct.<br/>• Confirm remote access is enabled in Duplicati.<br/>• Ensure the authentication password and protocol (HTTP/HTTPS) are correct.<br/><br/>**Check Network Connectivity**:<br/>• Test connectivity from **duplistatus** to the Duplicati server.<br/>• Confirm the Duplicati server port is accessible (default: `8200`).                                   |
+| **Collect Backup Logs not working**                                                                                                                                             | The manual backup log collection fails.                         | **Check Duplicati Server Access**:<br/>• Verify the Duplicati server hostname and port are correct.<br/>• Confirm remote access is enabled in Duplicati.<br/>• Ensure the authentication password and protocol (HTTP/HTTPS) are correct.<br/><br/>**Check Network Connectivity**:<br/>• Test connectivity from **duplistatus** to the Duplicati server.<br/>• Confirm the Duplicati server port is accessible (default: `8200`).                                                                                                     |
 
 <br/>
 

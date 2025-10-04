@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import QRCode from 'qrcode';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 interface NtfyConfig {
   url: string;
@@ -62,7 +63,7 @@ export function NtfyMessagesButton() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/configuration/ntfy');
+      const response = await authenticatedRequestWithRecovery('/api/configuration/ntfy');
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }
@@ -99,7 +100,7 @@ export function NtfyMessagesButton() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/configuration/ntfy');
+      const response = await authenticatedRequestWithRecovery('/api/configuration/ntfy');
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }

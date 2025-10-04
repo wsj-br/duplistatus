@@ -8,7 +8,7 @@ import { Mail, Eye, EyeOff, Trash2, Loader2, KeyRound, XCircle } from 'lucide-re
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
 import {
   AlertDialog,
@@ -101,7 +101,7 @@ export function EmailConfigurationForm() {
         mailto: emailConfig.mailto
       };
 
-      const response = await authenticatedRequest('/api/configuration/email', {
+      const response = await authenticatedRequestWithRecovery('/api/configuration/email', {
         method: 'POST',
         body: JSON.stringify(configToSave),
       });
@@ -136,7 +136,7 @@ export function EmailConfigurationForm() {
 
     setIsTesting(true);
     try {
-      const response = await authenticatedRequest('/api/notifications/test', {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
         method: 'POST',
         body: JSON.stringify({ 
           type: 'email',
@@ -181,7 +181,7 @@ export function EmailConfigurationForm() {
   const handleDeleteConfig = async () => {
     setIsDeleting(true);
     try {
-      const response = await authenticatedRequest('/api/configuration/email', {
+      const response = await authenticatedRequestWithRecovery('/api/configuration/email', {
         method: 'DELETE',
       });
 
@@ -253,7 +253,7 @@ export function EmailConfigurationForm() {
 
     setIsSavingPassword(true);
     try {
-      const response = await authenticatedRequest('/api/configuration/email/password', {
+      const response = await authenticatedRequestWithRecovery('/api/configuration/email/password', {
         method: 'PATCH',
         body: JSON.stringify({ 
           password: newPassword,
@@ -303,7 +303,7 @@ export function EmailConfigurationForm() {
   const handlePasswordDelete = async () => {
     setIsDeletingPassword(true);
     try {
-      const response = await authenticatedRequest('/api/configuration/email/password', {
+      const response = await authenticatedRequestWithRecovery('/api/configuration/email/password', {
         method: 'PATCH',
         body: JSON.stringify({ 
           password: '',

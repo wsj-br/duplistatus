@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
@@ -15,7 +16,6 @@ import { OverdueMonitoringForm } from '@/components/settings/overdue-monitoring-
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
 import { ServerSettingsForm } from '@/components/settings/server-settings-form';
 import { EmailConfigurationForm } from '@/components/settings/email-configuration-form';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -38,9 +38,7 @@ function SettingsPageContent() {
   // Function to refresh only server list data without affecting other configuration
   const refreshServerListOnly = useCallback(async () => {
     try {
-      const response = await fetch('/api/configuration/unified', {
-        credentials: 'include', // Include session cookies
-      });
+      const response = await authenticatedRequestWithRecovery('/api/configuration/unified');
       if (!response.ok) throw new Error('Failed to fetch configuration');
       
       const freshConfig = await response.json();
@@ -96,7 +94,7 @@ function SettingsPageContent() {
       if (document.visibilityState === 'visible') {
         try {
           // Fetch fresh configuration to check for server changes
-          const response = await fetch('/api/configuration/unified');
+          const response = await authenticatedRequestWithRecovery('/api/configuration/unified');
           if (!response.ok) return;
           
           const freshConfig = await response.json();
@@ -126,7 +124,7 @@ function SettingsPageContent() {
     const handleFocus = async () => {
       try {
         // Fetch fresh configuration to check for server changes
-        const response = await fetch('/api/configuration/unified');
+        const response = await authenticatedRequestWithRecovery('/api/configuration/unified');
         if (!response.ok) return;
         
         const freshConfig = await response.json();
@@ -284,7 +282,7 @@ function SettingsPageContent() {
                 config={config.ntfy} 
                 onSave={async (ntfyConfig) => {
                   try {
-                    const response = await authenticatedRequest('/api/configuration/notifications', {
+                    const response = await authenticatedRequestWithRecovery('/api/configuration/notifications', {
                       method: 'POST',
                       body: JSON.stringify({ ntfy: ntfyConfig }),
                     });
@@ -313,7 +311,7 @@ function SettingsPageContent() {
                 templates={config.templates || {}} 
                 onSave={async (templates) => {
                   try {
-                    const response = await authenticatedRequest('/api/configuration/templates', {
+                    const response = await authenticatedRequestWithRecovery('/api/configuration/templates', {
                       method: 'POST',
                       body: JSON.stringify({ templates }),
                     });
@@ -327,7 +325,7 @@ function SettingsPageContent() {
                   }
                 }}
                 onSendTest={async (template) => {
-                  const response = await authenticatedRequest('/api/notifications/test', {
+                  const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
                     method: 'POST',
                     body: JSON.stringify({ 
                       type: 'template',

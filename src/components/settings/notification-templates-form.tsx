@@ -45,8 +45,7 @@ const TEMPLATE_VARIABLES_OVERDUE_BACKUP = [
   { name: 'last_elapsed', description: 'Time ago since the last backup' },
   { name: 'expected_date', description: 'Date/time when the backup was expected' },
   { name: 'expected_elapsed', description: 'Time elapsed since the expected backup date' },
-  { name: 'backup_interval_type', description: 'Backup interval type (days, hours)' },
-  { name: 'backup_interval_value', description: 'Backup interval value (1, 2, 3, etc.)' },
+  { name: 'backup_interval', description: 'Backup interval string (e.g., "1D", "2W", "1M")' },
   { name: 'overdue_tolerance', description: 'Configured overdue tolerance (1 hour, 1 day, etc.)' },
 ];
 
