@@ -1021,7 +1021,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <Button
                 onClick={handleTestAllConnections}
                 variant="outline"
-                disabled={isTestingAll || connections.filter(conn => conn.server_url && conn.server_url.trim() !== '').length === 0}
+                disabled={isTestingAll || hasChanges || connections.filter(conn => conn.server_url && conn.server_url.trim() !== '').length === 0}
               >
                 {isTestingAll ? (
                   <>
@@ -1041,13 +1041,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 servers={connections}
                 variant="outline"
                 showText={true}
-                disabled={isSaving || isTestingAll}
-                onCollectionStart={() => {
-                  toast({
-                    title: "Starting Collection",
-                    description: "Collecting backup logs from all configured servers...",
-                    duration: 4000,
-                  });
+                showInstructionToast={false}
+                disabled={isSaving || isTestingAll || hasChanges}
+                onCollectionStart={(showInstructionToast) => {
+                  if (showInstructionToast) {
+                    toast({
+                      title: "Starting Collection",
+                      description: "Collecting backup logs from all configured servers...",
+                      duration: 4000,
+                    });
+                  }
                 }}
                 onServerStatusUpdate={(serverId, status) => {
                   setConnections(prev => prev.map(conn => {

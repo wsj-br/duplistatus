@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Loader2, Server, Globe, Lock, FileDown } from "lucide-react";
+import { Download, Loader2, Server, Globe, Lock, FileDown, CheckCircle, XCircle, Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -20,6 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHeader, TableRow, TableHead } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useState, useEffect, useCallback } from "react";
 import { usePathname } from 'next/navigation';
 import { useToast } from "@/components/ui/use-toast";
@@ -30,6 +38,8 @@ import { defaultAPIConfig } from '@/lib/default-config';
 import { ServerAddress } from '@/lib/types';
 import { authenticatedRequest } from "@/lib/client-session-csrf";
 import { CollectAllButton } from "@/components/ui/collect-all-button";
+import { collectFromMultipleServers, type CollectionResult } from "@/lib/bulk-collection";
+
 
 interface BackupCollectMenuProps {
   preFilledServerUrl?: string;
@@ -72,6 +82,55 @@ export function BackupCollectMenu({
   const [buttonState, setButtonState] = useState<'default' | 'loading' | 'success'>('default');
   const [showCollectAll, setShowCollectAll] = useState(false);
   const [isInAutoCollectOperation, setIsInAutoCollectOperation] = useState(false);
+  
+  // Multi-server collection modal state
+  const [showMultiServerModal, setShowMultiServerModal] = useState(false);
+  const [multiServerStatuses, setMultiServerStatuses] = useState<Record<string, {
+    status: 'waiting' | 'collecting' | 'collected' | 'failed';
+    error?: string;
+    stats?: { processed: number; skipped: number; errors: number };
+  }>>({});
+  const [isMultiServerCollecting, setIsMultiServerCollecting] = useState(false);
+  const [multiServerAddresses, setMultiServerAddresses] = useState<string[]>([]);
+  
+  // Helper function to parse comma-separated hostnames
+  const parseHostnames = (hostnameString: string): string[] => {
+    if (!hostnameString || hostnameString.trim() === '') return [];
+    
+    return hostnameString
+      .split(',')
+      .map(h => h.trim())
+      .filter(h => h.length > 0);
+  };
+
+  // Helper function to validate hostname format
+  const isValidHostname = (hostname: string): boolean => {
+    if (!hostname || hostname.trim() === '') return false;
+    
+    // Basic validation for hostname/IP address
+    const hostnameRegex = /^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/;
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    
+    return hostnameRegex.test(hostname) || ipRegex.test(hostname);
+  };
+
+  // Helper function to create ServerAddress array from hostnames
+  const createServerAddressesFromHostnames = (hostnames: string[], port: string, password: string): ServerAddress[] => {
+    return hostnames.map((hostname, index) => ({
+      id: `temp-${hostname}-${index}`, // Temporary ID for dynamic servers
+      name: hostname,
+      server_url: `http://${hostname}:${port}`, // Default to HTTP, will be validated by CollectAllButton
+      alias: hostname,
+      note: `Dynamic server from hostname input`,
+      hasPassword: password.trim() !== ''
+    }));
+  };
+
+  // Get parsed hostnames and validation state
+  const parsedHostnames = parseHostnames(hostname);
+  const hasMultipleHostnames = parsedHostnames.length > 1;
+  const invalidHostnames = parsedHostnames.filter(h => !isValidHostname(h));
+  const validHostnames = parsedHostnames.filter(h => isValidHostname(h));
   
   // Determine the mode based on props and context
   // Auto-collect mode should only be true when explicitly set via props OR when we're in an auto-collect operation
@@ -427,6 +486,135 @@ export function BackupCollectMenu({
   };
 
   const handleCollect = async () => {
+    // Check if we have multiple hostnames and should use modal-based collection
+    if (hasMultipleHostnames && validHostnames.length > 0) {
+      // Validate that we have password for multiple servers
+      if (!password) {
+        toast({
+          title: "Error",
+          description: "Please enter a password for multiple servers",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
+      // Show validation errors for invalid hostnames
+      if (invalidHostnames.length > 0) {
+        toast({
+          title: "Invalid Hostnames",
+          description: `Invalid hostnames detected: ${invalidHostnames.join(', ')}`,
+          variant: "destructive",
+          duration: 5000,
+        });
+        return;
+      }
+
+      // Initialize modal with server addresses and waiting status
+      setMultiServerAddresses(validHostnames.map(h => `${h}:${port}`));
+      const initialStatuses: Record<string, {
+        status: 'waiting' | 'collecting' | 'collected' | 'failed';
+        error?: string;
+        stats?: { processed: number; skipped: number; errors: number };
+      }> = {};
+      
+      validHostnames.forEach(h => {
+        initialStatuses[`${h}:${port}`] = { status: 'waiting' };
+      });
+      
+      setMultiServerStatuses(initialStatuses);
+      setShowMultiServerModal(true);
+      setIsMultiServerCollecting(true);
+
+      // Create ServerAddress array for collection
+      const dynamicServers = createServerAddressesFromHostnames(validHostnames, port, password);
+
+      try {
+        // Use the bulk-collection library directly
+        const summary = await collectFromMultipleServers({
+          servers: dynamicServers,
+          dynamicMode: true,
+          dynamicPort: port,
+          dynamicPassword: password,
+          downloadJson: downloadJson,
+          onServerStatusUpdate: (serverId, status) => {
+            // Find the corresponding hostname for this serverId
+            const server = dynamicServers.find(s => s.id === serverId);
+            if (server) {
+              const address = `${server.name}:${port}`;
+              
+              setMultiServerStatuses(prev => ({
+                ...prev,
+                [address]: {
+                  ...prev[address],
+                  status: status === 'testing' ? 'collecting' : 
+                         status === 'success' ? 'collected' : 
+                         status === 'failed' ? 'failed' : 
+                         prev[address].status
+                }
+              }));
+            }
+          },
+          onCollectionStart: () => {
+            // Update all to collecting status
+            setMultiServerStatuses(prev => {
+              const updated = { ...prev };
+              Object.keys(updated).forEach(key => {
+                updated[key] = { ...updated[key], status: 'collecting' };
+              });
+              return updated;
+            });
+          }
+        });
+
+        // Update statuses with detailed results and download JSON files if requested
+        summary.results.forEach((result: CollectionResult) => {
+          const server = dynamicServers.find(s => s.id === result.serverId);
+          if (server) {
+            const address = `${server.name}:${port}`;
+            
+            setMultiServerStatuses(prev => ({
+              ...prev,
+              [address]: {
+                status: result.success ? 'collected' : 'failed',
+                error: result.error,
+                stats: result.stats
+              }
+            }));
+
+            // Download JSON file if requested and available
+            if (result.success && result.jsonData && downloadJson) {
+              downloadJsonFile(result.jsonData, result.serverName);
+            }
+          }
+        });
+
+        // Refresh dashboard and close popover
+        await refreshDashboard();
+        await refreshConfigSilently();
+        setServerAddresses([]);
+        
+        // Close the popover after a short delay
+        setTimeout(() => setIsOpen(false), 1000);
+
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error('Error during multi-server collection:', errorMessage);
+        
+        toast({
+          title: "Collection Error",
+          description: errorMessage,
+          variant: "destructive",
+          duration: 5000,
+        });
+      } finally {
+        setIsMultiServerCollecting(false);
+      }
+      
+      return; // Exit early for multiple hostnames case
+    }
+
+    // Original single server logic
     // Determine which API case to use based on user input
     const requestBody: Record<string, unknown> = { downloadJson };
     
@@ -590,6 +778,45 @@ export function BackupCollectMenu({
         return 'h-5 w-5';
       default: // md
         return 'h-4 w-4';
+    }
+  };
+
+  // Helper function to get status icon for multi-server modal
+  const getMultiServerStatusIcon = (status: 'waiting' | 'collecting' | 'collected' | 'failed') => {
+    switch (status) {
+      case 'collected':
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case 'failed':
+        return <XCircle className="h-5 w-5 text-red-500" />;
+      case 'collecting':
+        return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+      case 'waiting':
+      default:
+        return <Ellipsis className="h-5 w-5 text-gray-400" />;
+    }
+  };
+
+  // Helper function to format status text for multi-server modal
+  const getMultiServerStatusText = (serverStatus: {
+    status: 'waiting' | 'collecting' | 'collected' | 'failed';
+    error?: string;
+    stats?: { processed: number; skipped: number; errors: number };
+  }) => {
+    const { status, error, stats } = serverStatus;
+    
+    switch (status) {
+      case 'collected':
+        if (stats) {
+          return `Success (Processed: ${stats.processed}, Skipped: ${stats.skipped}, Errors: ${stats.errors})`;
+        }
+        return 'Success';
+      case 'failed':
+        return error || 'Failed';
+      case 'collecting':
+        return 'Collecting...';
+      case 'waiting':
+      default:
+        return 'Waiting...';
     }
   };
 
@@ -771,6 +998,8 @@ export function BackupCollectMenu({
                     ? <>Using stored credentials for selected server</>
                     : selectedServerId && selectedServerId !== "new-server" && hostname && password
                     ? <>Updating server credentials and collecting backups</>
+                    : hasMultipleHostnames
+                    ? <>Extract backup logs from <span className="font-medium text-blue-600">{validHostnames.length} servers</span> using the same port and password</>
                     : "Extract backup logs and schedule configuration directly from Duplicati server"}
                 </p>
               </div>
@@ -814,6 +1043,9 @@ export function BackupCollectMenu({
                   <Label htmlFor="hostname" className="flex items-center gap-2">
                     <ColoredIcon icon={Globe} color="blue" size="sm" />
                     Hostname
+                    {hasMultipleHostnames && (
+                      <span className="text-xs text-blue-600 font-medium">({validHostnames.length} servers)</span>
+                    )}
                     {selectedServerId && selectedServerId !== "new-server" && !hostname && !password && (
                       <span className="text-xs text-muted-foreground">(optional - leave empty to use stored)</span>
                     )}
@@ -822,7 +1054,7 @@ export function BackupCollectMenu({
                     )}
                     <StatusIndicator 
                       status="online" 
-                      label="HTTP/HTTPS automatically detected" 
+                      label={hasMultipleHostnames ? "Multiple servers detected" : "HTTP/HTTPS automatically detected"} 
                       animate={true}
                     />
                   </Label>
@@ -831,9 +1063,26 @@ export function BackupCollectMenu({
                     value={hostname}
                     onChange={(e) => setHostname(e.target.value)}
                     onFocus={(e) => e.target.select()}
-                    placeholder={selectedServerId && selectedServerId !== "new-server" && !hostname && !password ? "Leave empty to use stored hostname" : "server name or IP"}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" && !hostname && !password ? "Leave empty to use stored hostname" : "server name or IP (comma-separated for multiple)"}
                     disabled={isCollecting}
+                    className={hasMultipleHostnames ? "border-blue-300 dark:border-blue-700" : ""}
                   />
+                  {hasMultipleHostnames && (
+                    <div className="text-xs text-muted-foreground">
+                      <p className="font-medium text-blue-600 dark:text-blue-400">Multiple servers detected:</p>
+                      <ul className="list-disc list-inside ml-2 space-y-0.5">
+                        {validHostnames.map((h, index) => (
+                          <li key={index} className="text-green-600 dark:text-green-400">✓ {h}</li>
+                        ))}
+                        {invalidHostnames.map((h, index) => (
+                          <li key={index} className="text-red-600 dark:text-red-400">✗ {h}</li>
+                        ))}
+                      </ul>
+                      {invalidHostnames.length > 0 && (
+                        <p className="text-red-600 dark:text-red-400 mt-1">Please fix invalid hostnames before collecting.</p>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="grid gap-1.5">
                   <Label htmlFor="port" className="flex items-center gap-2">
@@ -918,15 +1167,15 @@ export function BackupCollectMenu({
 
                 <Button
                   onClick={handleCollect}
-                  disabled={isCollecting || (selectedServerId === "new-server" && (!hostname || !password))}
+                  disabled={isCollecting || (selectedServerId === "new-server" && (!hostname || !password)) || (hasMultipleHostnames && invalidHostnames.length > 0)}
                   variant={buttonState === 'success' ? 'success' : 'gradient'}
                   className="w-full relative overflow-hidden"
-                  title="Collect backup logs"
+                  title={hasMultipleHostnames ? `Collect backup logs from ${validHostnames.length} servers` : "Collect backup logs"}
                 >
                   {buttonState === 'loading' ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Collecting...
+                      {hasMultipleHostnames ? `Collecting from ${validHostnames.length} servers...` : "Collecting..."}
                     </>
                   ) : buttonState === 'success' ? (
                     <>
@@ -936,7 +1185,7 @@ export function BackupCollectMenu({
                   ) : (
                     <>
                       <Download className="h-4 w-4 mr-2" />
-                      Collect Backups
+                      {hasMultipleHostnames ? `Collect from ${validHostnames.length} Servers` : "Collect Backups"}
                     </>
                   )}
                 </Button>
@@ -947,7 +1196,7 @@ export function BackupCollectMenu({
       </PopoverContent>
     </Popover>
     
-    {/* Collect All Modal */}
+    {/* Collect All Modal - Only for right-click on existing servers */}
     {showCollectAll && (
       <div className="fixed inset-0 bg-black/50 z-50">
         <div className="bg-background border rounded-lg p-6 max-w-md w-full mx-4 absolute top-1/3 left-1/2 transform -translate-x-1/2">
@@ -966,13 +1215,15 @@ export function BackupCollectMenu({
               servers={serverAddresses}
               variant="default"
               showText={true}
-              onCollectionStart={() => {
+              onCollectionStart={(showInstructionToast) => {
                 setShowCollectAll(false);
-                toast({
-                  title: "Starting Collection",
-                  description: "Collecting backup logs from all configured servers...",
-                  duration: 4000,
-                });
+                if (showInstructionToast) {
+                  toast({
+                    title: "Starting Collection",
+                    description: "Collecting backup logs from all configured servers...",
+                    duration: 4000,
+                  });
+                }
               }}
               onCollectionEnd={() => {
                 // Collection completed, toast will be shown by the component
@@ -982,6 +1233,94 @@ export function BackupCollectMenu({
         </div>
       </div>
     )}
+
+    {/* Multi-Server Collection Modal */}
+    <Dialog 
+      open={showMultiServerModal} 
+      onOpenChange={(open) => {
+        // Only allow closing when collection is complete
+        if (!isMultiServerCollecting) {
+          setShowMultiServerModal(open);
+        }
+      }}
+    >
+      <DialogContent className="max-w-full max-h-screen h-full sm:max-w-3xl sm:max-h-[85vh] sm:h-auto overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Multi-Server Collection Progress</DialogTitle>
+        </DialogHeader>
+        
+        <div className="py-4">
+          <TooltipProvider>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[40%]">Server Address</TableHead>
+                    <TableHead className="w-[60%]">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {multiServerAddresses.map((address) => {
+                    const serverStatus = multiServerStatuses[address] || { status: 'waiting' as const };
+                    const statusText = getMultiServerStatusText(serverStatus);
+                    const isTruncated = serverStatus.status === 'failed' && statusText.length > 50;
+                    
+                    return (
+                      <TableRow key={address}>
+                        <TableCell className="font-medium">
+                          {address}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            {getMultiServerStatusIcon(serverStatus.status)}
+                            {isTruncated ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className={`text-sm cursor-help ${
+                                    serverStatus.status === 'collected' ? 'text-green-600' :
+                                    serverStatus.status === 'failed' ? 'text-red-600' :
+                                    serverStatus.status === 'collecting' ? 'text-blue-600' :
+                                    'text-gray-500'
+                                  }`}>
+                                    {statusText.substring(0, 50)}...
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-md">
+                                  <p className="break-words">{statusText}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            ) : (
+                              <span className={`text-sm ${
+                                serverStatus.status === 'collected' ? 'text-green-600' :
+                                serverStatus.status === 'failed' ? 'text-red-600' :
+                                serverStatus.status === 'collecting' ? 'text-blue-600' :
+                                'text-gray-500'
+                              }`}>
+                                {statusText}
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </TooltipProvider>
+        </div>
+
+        <DialogFooter>
+          <Button
+            onClick={() => setShowMultiServerModal(false)}
+            disabled={isMultiServerCollecting}
+            variant="gradient"
+          >
+            {isMultiServerCollecting ? 'Collection in Progress...' : 'Close'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
     </>
   );
 } 

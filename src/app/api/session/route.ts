@@ -12,10 +12,11 @@ export async function POST() {
     });
     
     // Set session cookie
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookies.set('session', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      secure: false, // Always false since application runs over HTTP
+      sameSite: isProduction ? 'strict' : 'lax',
       maxAge: 24 * 60 * 60 // 24 hours
     });
     
@@ -93,10 +94,11 @@ export async function DELETE(request: NextRequest) {
     });
     
     // Clear session cookie
+    const isProduction = process.env.NODE_ENV === 'production';
     response.cookies.set('session', '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      secure: false, // Always false since application runs over HTTP
+      sameSite: isProduction ? 'strict' : 'lax',
       maxAge: 0
     });
     

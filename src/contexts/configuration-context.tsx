@@ -45,7 +45,9 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('/api/configuration/unified');
+      const response = await fetch('/api/configuration/unified', {
+        credentials: 'include', // Include session cookies
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }
@@ -73,7 +75,9 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
       
-      const response = await fetch('/api/configuration/unified');
+      const response = await fetch('/api/configuration/unified', {
+        credentials: 'include', // Include session cookies
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch configuration');
       }

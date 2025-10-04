@@ -39,7 +39,7 @@ export function NtfyQrModal({ isOpen, onOpenChange, qrCodeDataUrl, topicUrl }: N
             Open your device camera or a QR code scanner app to scan this code.
           </p>
           <p className="text-sm text-muted-foreground text-center">
-            Install <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">NTFY app from the Play Store, App Store or F-Droid</a>.
+            <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">Before scanning install the NTFY app from the Play Store, App Store or F-Droid</a>.
           </p>
         </div>
       </DialogContent>

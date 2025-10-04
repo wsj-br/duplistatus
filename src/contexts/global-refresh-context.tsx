@@ -93,7 +93,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
       // Fetch consolidated dashboard data and configuration in parallel
       const [dashboardResponse] = await Promise.all([
-        fetch('/api/dashboard'),
+        fetch('/api/dashboard', {
+          credentials: 'include', // Include session cookies
+        }),
         refreshConfigSilently() // Refresh configuration silently
       ]);
 

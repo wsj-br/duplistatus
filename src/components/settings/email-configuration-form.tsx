@@ -382,7 +382,7 @@ export function EmailConfigurationForm() {
                   type="text"
                   value={emailConfig.host}
                   onChange={(e) => handleInputChange('host', e.target.value)}
-                  placeholder="smtp.gmail.com"
+                  placeholder="smtp.your-domain.com"
                 />
               </div>
               
@@ -408,7 +408,7 @@ export function EmailConfigurationForm() {
                   type="text"
                   value={emailConfig.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
-                  placeholder="your-email@gmail.com"
+                  placeholder="your-email@your-domain.com"
                 />
               </div>
 
@@ -419,6 +419,12 @@ export function EmailConfigurationForm() {
                     type="button"
                     variant="outline"
                     onClick={handlePasswordButtonClick}
+                    disabled={
+                      emailConfig.host.trim() === '' ||
+                      emailConfig.username.trim() === '' ||
+                      emailConfig.mailto.trim() === '' ||
+                      emailConfig.port <= 0
+                    }
                     className="flex items-center gap-2"
                   >
                     <KeyRound className="h-4 w-4" />
@@ -449,7 +455,7 @@ export function EmailConfigurationForm() {
                     onCheckedChange={(checked) => handleInputChange('secure', checked)}
                   />
                   <Label htmlFor="smtp-secure" className="text-sm">
-                    Use secure connection (SSL/TLS)
+                    Use direct SSL/TLS connection
                   </Label>
                 </div>
                 <p className="text-xs text-muted-foreground">

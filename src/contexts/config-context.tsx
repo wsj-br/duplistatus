@@ -67,7 +67,9 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     // Load tolerance from API
     const loadTolerance = async () => {
       try {
-        const response = await fetch('/api/configuration/overdue-tolerance');
+        const response = await fetch('/api/configuration/overdue-tolerance', {
+          credentials: 'include', // Include session cookies
+        });
         if (response.ok) {
           const data = await response.json();
           setOverdueTolerance(data.overdue_tolerance);
@@ -138,7 +140,9 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   // Function to refresh overdue tolerance from API
   const refreshOverdueTolerance = async () => {
     try {
-      const response = await fetch('/api/configuration/overdue-tolerance');
+      const response = await fetch('/api/configuration/overdue-tolerance', {
+        credentials: 'include', // Include session cookies
+      });
       if (response.ok) {
         const data = await response.json();
         setOverdueTolerance(data.overdue_tolerance);

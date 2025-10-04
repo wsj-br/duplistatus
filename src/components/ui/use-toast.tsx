@@ -12,7 +12,7 @@ export type ToastType = {
 };
 
 type ToastContextType = {
-  toast: (options: Omit<ToastType, "id">) => void;
+  toast: (options: Omit<ToastType, "id">) => { id: string };
   toasts: ToastType[];
   removeToast: (id: string) => void;
 };
@@ -25,6 +25,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const toast = React.useCallback((options: Omit<ToastType, "id">) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     setToasts((prev) => [...prev, { ...options, id }]);
+    return { id };
   }, []);
 
   const removeToast = React.useCallback((id: string) => {

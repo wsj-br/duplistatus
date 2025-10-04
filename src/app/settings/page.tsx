@@ -38,7 +38,9 @@ function SettingsPageContent() {
   // Function to refresh only server list data without affecting other configuration
   const refreshServerListOnly = useCallback(async () => {
     try {
-      const response = await fetch('/api/configuration/unified');
+      const response = await fetch('/api/configuration/unified', {
+        credentials: 'include', // Include session cookies
+      });
       if (!response.ok) throw new Error('Failed to fetch configuration');
       
       const freshConfig = await response.json();

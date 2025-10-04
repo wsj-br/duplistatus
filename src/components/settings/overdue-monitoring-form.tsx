@@ -1108,12 +1108,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 variant="outline"
                 showText={true}
                 disabled={isSaving}
-                onCollectionStart={() => {
-                  toast({
-                    title: "Starting Collection",
-                    description: "Collecting backup logs from all configured servers...",
-                    duration: 4000,
-                  });
+                onCollectionStart={(showInstructionToast) => {
+                  if (showInstructionToast) {
+                    toast({
+                      title: "Starting Collection",
+                      description: "Collecting backup logs from all configured servers...",
+                      duration: 4000,
+                    });
+                  }
                 }}
                 onCollectionEnd={() => {
                   // Collection completed, toast will be shown by the component

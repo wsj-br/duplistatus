@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { ServerAddress } from '@/lib/types';
-import { authenticatedRequest } from '@/lib/client-session-csrf';
 import { Loader2, Import } from 'lucide-react';
+import { 
+  collectFromMultipleServers, 
+  getEligibleServers, 
+  formatCollectionSummary 
+} from '@/lib/bulk-collection';
 
 interface CollectAllButtonProps {
   servers: ServerAddress[];
@@ -16,21 +20,16 @@ interface CollectAllButtonProps {
   className?: string;
   showText?: boolean;
   disabled?: boolean;
-  onCollectionStart?: () => void;
+  showInstructionToast?: boolean;
+  onCollectionStart?: (showInstructionToast: boolean) => void;
   onCollectionEnd?: () => void;
   onServerStatusUpdate?: (serverId: string, status: 'testing' | 'success' | 'failed' | 'collecting' | 'collected') => void;
-}
-
-interface CollectionResult {
-  serverId: string;
-  serverName: string;
-  success: boolean;
-  stats?: {
-    processed: number;
-    skipped: number;
-    errors: number;
-  };
-  error?: string;
+  // Dynamic mode props for hostname/password based servers
+  dynamicMode?: boolean;
+  dynamicPort?: string;
+  dynamicPassword?: string;
+  // Auto-trigger collection without button click
+  autoTrigger?: boolean;
 }
 
 export function CollectAllButton({
@@ -40,35 +39,24 @@ export function CollectAllButton({
   className = '',
   showText = false,
   disabled = false,
+  showInstructionToast = true,
   onCollectionStart,
   onCollectionEnd,
-  onServerStatusUpdate
+  onServerStatusUpdate,
+  dynamicMode = false,
+  dynamicPort,
+  dynamicPassword,
+  autoTrigger = false
 }: CollectAllButtonProps) {
   const [isCollecting, setIsCollecting] = useState(false);
   const [collectionProgress, setCollectionProgress] = useState(0);
-  const [, setCollectionResults] = useState<CollectionResult[]>([]);
-  const { toast } = useToast();
+  const [hasAutoTriggered, setHasAutoTriggered] = useState(false);
+  const { toast, removeToast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
 
-  // Check for URL validity
-  const isValidUrl = (url: string): boolean => {
-    if (!url || url.trim() === '') return false;
-    try {
-      const urlObj = new URL(url);
-      return ['http:', 'https:'].includes(urlObj.protocol);
-    } catch {
-      return false;
-    }
-  };
-
-  // Filter servers that have passwords and valid URLs
-  const eligibleServers = servers.filter(server => 
-    server.hasPassword && 
-    server.server_url && 
-    server.server_url.trim() !== '' &&
-    isValidUrl(server.server_url)
-  );
+  // Get eligible servers using library function
+  const eligibleServers = getEligibleServers(servers, dynamicMode);
 
   const getButtonSize = () => {
     switch (size) {
@@ -92,124 +80,68 @@ export function CollectAllButton({
     }
   };
 
-  const handleCollectAll = async () => {
+  const handleCollectAll = useCallback(async () => {
     if (eligibleServers.length === 0) {
-      toast({
-        title: "No Eligible Servers",
-        description: "No servers with passwords and valid URLs found to collect from",
-        variant: "destructive",
-        duration: 3000,
-      });
+      if (showInstructionToast) {
+        toast({
+          title: "No Eligible Servers",
+          description: "No servers with passwords and valid URLs found to collect from",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
       return;
     }
 
-    onCollectionStart?.();
     setIsCollecting(true);
     setCollectionProgress(0);
-    setCollectionResults([]);
-
-    // Set all eligible servers to testing status
-    eligibleServers.forEach(server => {
-      onServerStatusUpdate?.(server.id, 'testing');
-    });
-
-    const results: CollectionResult[] = [];
-    let completedCount = 0;
 
     try {
-      // Collect from all eligible servers in parallel
-      const collectionPromises = eligibleServers.map(async (server) => {
-        try {
-          const response = await authenticatedRequest('/api/backups/collect', {
-            method: 'POST',
-            body: JSON.stringify({
-              serverId: server.id,
-              downloadJson: false
-            }),
-          });
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            throw new Error(result.error || 'Failed to collect backups');
-          }
-
-          // Update status to success
-          onServerStatusUpdate?.(server.id, 'success');
-
-          return {
-            serverId: server.id,
-            serverName: server.alias || server.name,
-            success: true,
-            stats: result.stats
-          };
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
-          
-          // Update status to failed
-          onServerStatusUpdate?.(server.id, 'failed');
-          
-          return {
-            serverId: server.id,
-            serverName: server.alias || server.name,
-            success: false,
-            error: errorMessage
-          };
-        }
+      // Use the library function for bulk collection
+      const summary = await collectFromMultipleServers({
+        servers,
+        dynamicMode,
+        dynamicPort,
+        dynamicPassword,
+        onCollectionStart: () => onCollectionStart?.(showInstructionToast),
+        onCollectionEnd: () => onCollectionEnd?.(),
+        onServerStatusUpdate,
+        onProgressUpdate: (progress) => setCollectionProgress(progress)
       });
-
-      // Process results as they complete
-      const settledResults = await Promise.allSettled(collectionPromises);
-      
-      settledResults.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          results.push(result.value);
-        } else {
-          const server = eligibleServers[index];
-          // Update status to failed for rejected promises
-          onServerStatusUpdate?.(server.id, 'failed');
-          results.push({
-            serverId: server.id,
-            serverName: server.alias || server.name,
-            success: false,
-            error: result.reason instanceof Error ? result.reason.message : String(result.reason)
-          });
-        }
-        
-        completedCount++;
-        setCollectionProgress((completedCount / eligibleServers.length) * 100);
-      });
-
-      setCollectionResults(results);
-
-      // Calculate summary statistics
-      const successfulCollections = results.filter(r => r.success);
-      const failedCollections = results.filter(r => !r.success);
-      const totalProcessed = successfulCollections.reduce((sum, r) => sum + (r.stats?.processed || 0), 0);
-      const totalSkipped = successfulCollections.reduce((sum, r) => sum + (r.stats?.skipped || 0), 0);
-      const totalErrors = successfulCollections.reduce((sum, r) => sum + (r.stats?.errors || 0), 0);
 
       // Show summary toast
-      if (successfulCollections.length === eligibleServers.length) {
+      const { title, description, variant } = formatCollectionSummary(summary);
+      
+      if (showInstructionToast) {
         toast({
-          title: "All Collections Successful",
-          description: `Collected from ${successfulCollections.length} servers. Processed: ${totalProcessed}, Skipped: ${totalSkipped}, Errors: ${totalErrors}`,
-          variant: "default",
+          title,
+          description,
+          variant,
           duration: 4000,
         });
-      } else if (successfulCollections.length > 0) {
-        toast({
-          title: "Partial Collection Success",
-          description: `Successfully collected from ${successfulCollections.length}/${eligibleServers.length} servers. Processed: ${totalProcessed}, Skipped: ${totalSkipped}, Errors: ${totalErrors}. ${failedCollections.length} servers failed.`,
-          variant: "default",
-          duration: 4000,
-        });
-      } else {
-        toast({
-          title: "Collection Failed",
-          description: `Failed to collect from all ${eligibleServers.length} servers. Check individual server configurations.`,
+      }
+
+      // Show additional toast with instructions for partial or complete failures
+      if (summary.failedCollections > 0 && showInstructionToast) {
+        const instructionToast = toast({
+          title: "Server Errors Detected",
+          description: "Check server(s) settings and password and if the server is up and running, then try again. Click \"Collect All\" to show which server is with error" + 
+            (summary.successfulCollections > 0 ? " (column Status)" : ""),
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                removeToast(instructionToast.id);
+                window.location.href = '/settings?tab=server';
+              }}
+              className="underline hover:no-underline"
+            >
+              Servers settings
+            </Button>
+          ),
           variant: "destructive",
-          duration: 4000,
+          duration: 9000,
         });
       }
 
@@ -221,23 +153,50 @@ export function CollectAllButton({
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.error('Error during bulk collection:', errorMessage);
       
-      toast({
-        title: "Collection Error",
-        description: `An unexpected error occurred during collection: ${errorMessage}`,
-        variant: "destructive",
-        duration: 4000,
-      });
+      if (showInstructionToast) {
+        toast({
+          title: "Collection Error",
+          description: `An unexpected error occurred during collection: ${errorMessage}`,
+          variant: "destructive",
+          duration: 4000,
+        });
+      }
     } finally {
       setIsCollecting(false);
-      onCollectionEnd?.();
       
-      // Clear results after a delay to show completion
+      // Clear progress after a delay to show completion
       setTimeout(() => {
-        setCollectionResults([]);
         setCollectionProgress(0);
       }, 3000);
     }
-  };
+  }, [
+    eligibleServers.length, 
+    servers, 
+    showInstructionToast, 
+    onCollectionStart, 
+    onServerStatusUpdate, 
+    onCollectionEnd, 
+    toast, 
+    removeToast, 
+    refreshDashboard, 
+    refreshConfigSilently, 
+    dynamicMode, 
+    dynamicPort, 
+    dynamicPassword
+  ]);
+
+  // Auto-trigger collection when autoTrigger is true and servers are available
+  useEffect(() => {
+    if (autoTrigger && !hasAutoTriggered && eligibleServers.length > 0 && !isCollecting) {
+      setHasAutoTriggered(true);
+      handleCollectAll();
+    }
+    
+    // Reset hasAutoTriggered when autoTrigger becomes false
+    if (!autoTrigger && hasAutoTriggered) {
+      setHasAutoTriggered(false);
+    }
+  }, [autoTrigger, hasAutoTriggered, eligibleServers.length, isCollecting, handleCollectAll]);
 
   const isDisabled = disabled || isCollecting || eligibleServers.length === 0;
 
@@ -253,7 +212,7 @@ export function CollectAllButton({
       {isCollecting ? (
         <>
           <Loader2 className={`${getIconSize()} animate-spin`} />
-          {showText && `Collecting... (${Math.round(collectionProgress)}%)`}
+          {showText && `Collecting... ${Math.round(collectionProgress)}%`}
         </>
       ) : (
         <>

@@ -31,11 +31,8 @@ let db: Database.Database;
 // Reuse existing database connection if available (hot reload in dev)
 if (global.__dbInstance) {
   db = global.__dbInstance;
-  console.log('[Database] Reusing existing database connection');
 } else {
   try {
-    console.log('[Database] Creating new database connection');
-    
     db = new Database(dbPath, {
       // Add verbose logging in development
       // verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
@@ -64,8 +61,6 @@ if (global.__dbInstance) {
     
     // Store in global for hot reload persistence
     global.__dbInstance = db;
-    
-    console.log('[Database] Database connection created successfully');
   } catch (error) {
     console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
     throw error;
@@ -214,7 +209,6 @@ function safePrepare(sql: string, name: string) {
 // Function to populate default configurations
 async function populateDefaultConfigurations() {
   try {
-    console.log('Populating default configurations...');
     
     // Import default configurations
     const { 
@@ -303,17 +297,14 @@ async function ensureDatabaseInitialized() {
 
   initializationPromise = (async () => {
     try {
-      console.log('[Database] Starting initialization...');
       await migrator.runMigrations();
       
       // Create database operations after migrations complete
       if (!dbOps) {
         dbOps = createDbOps();
-        console.log('[Database] Operations initialized successfully');
       }
       
       databaseStatus = DatabaseStatus.READY;
-      console.log('[Database] Initialization completed successfully');
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       console.error('[Database] Initialization failed:', errorMessage);
