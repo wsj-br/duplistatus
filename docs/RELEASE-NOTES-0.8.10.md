@@ -18,6 +18,12 @@
   - [Advanced Cryptography for Sensitive Data](#advanced-cryptography-for-sensitive-data)
 - [🎨 User Interface Improvements](#-user-interface-improvements)
 - [📚 Documentation Updates](#-documentation-updates)
+- [🔧 Technical Improvements](#-technical-improvements)
+- [🚀 Migration Notes](#-migration-notes)
+  - [From Version 0.7.x](#from-version-07x)
+  - [Security Considerations](#security-considerations)
+- [🐛 Bug Fixes](#-bug-fixes)
+- [📦 Dependencies](#-dependencies)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

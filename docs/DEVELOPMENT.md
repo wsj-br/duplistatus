@@ -5,7 +5,7 @@
 
 # Development Instructions
 
-![](https://img.shields.io/badge/version-0.8.10-blue)
+![](https://img.shields.io/badge/version-0.8.14-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -82,7 +82,7 @@
 
 - Docker / Docker Compose
 - Node.js ^20.x (minimum: 20.19.0, recommended: 20.x)
-- pnpm ^10.x (minimum: 10.15.0, recommended: 10.17.1+)
+- pnpm ^10.x (minimum: 10.18.0, recommended: 10.18.0+)
 - SQLite3
 - ImageMagick (for SVG conversion scripts)
 - doctoc for markdown table of contents generation
@@ -121,15 +121,15 @@ pnpm dev
 The project includes several npm scripts for different development tasks:
 
 ### Development Scripts
-- `pnpm dev` - Start development server on port 8666
-- `pnpm build` - Build the application for production
+- `pnpm dev` - Start development server on port 8666 (includes pre-checks)
+- `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
 
 ### Production Scripts
 - `pnpm start` - Start production server (port 9666)
-- `pnpm start-local` - Start production server locally (port 8666)
-- `pnpm build-local` - Build and prepare for local production
+- `pnpm start-local` - Start production server locally (port 8666, includes pre-checks)
+- `pnpm build-local` - Build and prepare for local production (includes pre-checks)
 
 ### Docker Scripts
 - `pnpm docker-up` - Start Docker Compose stack
@@ -138,11 +138,11 @@ The project includes several npm scripts for different development tasks:
 
 ### Cron Service Scripts
 - `pnpm cron:start` - Start cron service in production mode
-- `pnpm cron:dev` - Start cron service in development mode with file watching
-- `pnpm cron:start-local` - Start cron service locally for testing
+- `pnpm cron:dev` - Start cron service in development mode with file watching (port 8667)
+- `pnpm cron:start-local` - Start cron service locally for testing (port 8667)
 
 ### Test Scripts
-- `pnpm generate-test-data` - Generate test backup data
+- `pnpm generate-test-data` - Generate test backup data (requires --servers=N parameter)
 - `pnpm show-overdue-notifications` - Show overdue notification contents
 - `pnpm run-overdue-check` - Run overdue check at specific date/time
 - `pnpm test-cron-port` - Test cron service port connectivity
@@ -271,7 +271,7 @@ The project includes several test scripts to help with development and testing:
 
 ### Generate Test Data
 ```bash
-pnpm run generate-test-data --servers=N
+pnpm generate-test-data --servers=N
 ```
 This script generates test backup data for multiple servers and backups. 
 
@@ -280,19 +280,19 @@ The `--servers=N` parameter is **mandatory** and specifies the number of servers
 Use the option `--upload` to send the generated data to the `/api/upload`
 
 ```bash
-pnpm run generate-test-data --servers=N --upload
+pnpm generate-test-data --servers=N --upload
 ```
 
 **Examples:**
 ```bash
 # Generate data for 5 servers
-pnpm run generate-test-data --servers=5
+pnpm generate-test-data --servers=5
 
 # Generate data for 1 server with upload mode
-pnpm run generate-test-data --upload --servers=1
+pnpm generate-test-data --upload --servers=1
 
 # Generate data for all 30 servers
-pnpm run generate-test-data --servers=30
+pnpm generate-test-data --servers=30
 ```
 
 >[!CAUTION]
@@ -653,34 +653,34 @@ To manually trigger the Docker image build workflow:
 
 1. **Runtime & Package Management**
    - Node.js ^20.x (minimum: 20.19.0, recommended: 20.x)
-   - pnpm ^10.x (minimum: 10.15.0, enforced via preinstall hook)
+   - pnpm ^10.x (minimum: 10.18.0, enforced via preinstall hook)
 
 2. **Core Frameworks & Libraries**
    - Next.js 15.5.4 – React-based SSR/SSG framework with App Router
-   - React 19.1.1 & React-DOM 19.1.1
+   - React 19.2.0 & React-DOM 19.2.0
    - Radix UI (@radix-ui/react-*) – headless component primitives (latest versions)
-   - Tailwind CSS 4.1.13 + tailwindcss-animate 1.0.7 plugin
-   - PostCSS (@tailwindcss/postcss 4.1.13 + autoprefixer 10.4.21)
+   - Tailwind CSS 4.1.14 + tailwindcss-animate 1.0.7 plugin
+   - PostCSS (@tailwindcss/postcss 4.1.14 + autoprefixer 10.4.21)
    - Better-sqlite3 12.4.1 + SQLite3 (data store)
    - Recharts 3.2.1 – charting library
    - react-day-picker 9.11.0 – date picker
-   - react-hook-form 7.63.0 – forms
+   - react-hook-form 7.64.0 – forms
    - lucide-react 0.544.0 – icon components
    - clsx 2.1.1 – utility for conditional classNames
    - class-variance-authority 0.7.1 – variant styling helper
    - date-fns 4.1.0 – date utilities
    - uuid 13.0.0 – unique IDs
-   - server-only 0.0.1 – Next helper for server-only modules
    - express 5.1.0 – web framework for cron service
    - node-cron 4.2.1 – cron job scheduling
    - string-template 1.0.0 – string templating
    - tailwind-merge 3.3.1 – Tailwind class merging utility
-   - framer-motion 12.23.12 – animation library
+   - nodemailer 7.0.6 – email notifications
+   - qrcode 1.5.4 – QR code generation
 
 3. **Type Checking & Linting**
-   - TypeScript 5.9.2 + tsc (noEmit)
-   - TSX 4.20.5 – lightweight runner for TS scripts
-   - ESLint 9.36.0 (via `next lint`)
+   - TypeScript 5.9.3 + tsc (noEmit)
+   - TSX 4.20.6 – lightweight runner for TS scripts
+   - ESLint 9.37.0 (via `next lint`)
 
 4. **Build & Dev Tools**
    - Web/CSS bundling via Next's built-in toolchain
@@ -753,16 +753,19 @@ To manually trigger the Docker image build workflow:
 
 12. **API Documentation**
     - Comprehensive API endpoints documented in `API-ENDPOINTS.md`
-    - RESTful API structure with consistent error handling
+    - RESTful API structure with consistent error handling and CSRF protection
     - Core operations: Upload, retrieval, and management of backup data
     - Configuration management endpoints for notifications, server connections, and backup settings
     - Notification system endpoints with NTFY and email integration
     - Cron service management endpoints for task control
     - Health check and monitoring endpoints
-    - Chart data endpoints for visualisation
-    - Server and backup management endpoints
+    - Chart data endpoints for visualisation (aggregated and server-specific)
+    - Server and backup management endpoints with alias and note support
     - Database maintenance and cleanup endpoints
     - Environment and system information endpoints
+    - Session management and CSRF token endpoints
+    - Dashboard data aggregation endpoints
+    - Server detail endpoints with overdue backup information
 
 13. **Database & Data Management**
     - Database schema and key queries documented in `DATABASE.md`
@@ -793,17 +796,19 @@ To manually trigger the Docker image build workflow:
   - `settings/` - Settings page components (forms, configuration panels)
   - `server-details/` - Server detail page components (backup tables, charts, summaries)
 - **API Routes**: Located in `src/app/api/` with RESTful endpoint structure
-  - Core operations: upload, servers, backups, summary
-  - Configuration: notifications, server connections, backup settings
+  - Core operations: upload, servers, backups, summary, dashboard
+  - Configuration: notifications, server connections, backup settings, unified config
   - Chart data: server-specific and aggregated data
   - Cron service: task management and monitoring
   - Health and environment endpoints
+  - Session management and CSRF protection
 - **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`
 - **Types**: TypeScript interfaces in `src/lib/types.ts`
 - **Configuration**: Default configs in `src/lib/default-config.ts`
 - **Cron Service**: Located in `src/cron-service/` with separate service implementation
 - **Scripts**: Utility scripts in `scripts/` directory for testing and maintenance
 - **Security**: CSRF protection and session management in `src/lib/csrf-middleware.ts`
+- **Pre-checks**: Automated pre-checks via `scripts/pre-checks.sh` for key file and version management
 
 ### Testing
 - Use the provided test scripts for generating data and testing functionality
@@ -812,18 +817,22 @@ To manually trigger the Docker image build workflow:
 - Test the Docker and Podman images using the provided scripts
 - Use TypeScript strict mode for compile-time error checking
 - Test database operations with the provided utilities
-- Use the test data generation script (`pnpm generate-test-data`) for comprehensive testing
+- Use the test data generation script (`pnpm generate-test-data --servers=N`) for comprehensive testing
 - Test overdue backup functionality with manual triggers (`pnpm run-overdue-check`)
+- Test server connection management and configuration updates
+- Verify CSRF protection and session management
 
 ### Debugging
 - Development mode provides verbose logging and JSON file storage
-- Use the browser's devel-MAJOR.MINOR.PATCHoper tools for frontend debugging
+- Use the browser's developer tools for frontend debugging
 - Check the console for detailed error messages and API responses
 - Cron service includes health check endpoints for monitoring (`/api/cron/health`)
 - Database utilities include debugging and maintenance functions
 - Use the database maintenance menu for cleanup and debugging operations
 - Test server connections with the built-in connection testing tools
 - Monitor notification system with the NTFY messages button
+- Use pre-checks script output for troubleshooting startup issues
+- Check CSRF token validation and session management
 
 ### API Development
 - All API endpoints are documented in `API-ENDPOINTS.md`
@@ -835,6 +844,8 @@ To manually trigger the Docker image build workflow:
 - Follow the established patterns for configuration endpoints
 - Ensure proper CORS handling for cross-origin requests
 - Implement CSRF protection for state-changing operations
+- Use the `withCSRF` middleware for protected endpoints
+- Maintain consistent cache control headers for dynamic data
 
 ### Database Development
 - Use the migration system for schema changes (`src/lib/db-migrations.ts`)
@@ -846,6 +857,8 @@ To manually trigger the Docker image build workflow:
 - Implement proper indexing for performance
 - Use prepared statements for security
 - Maintain session and CSRF token tables for security
+- Implement proper request caching for performance optimization
+- Use transaction management for data consistency
 
 ### UI Development
 - Use shadcn/ui components for consistency
@@ -859,6 +872,8 @@ To manually trigger the Docker image build workflow:
 - Use the established patterns for forms and validation
 - Implement proper state management with React hooks
 - Use context providers for global state management
+- Implement proper CSRF token handling in forms
+- Use consistent loading indicators and progress states
 
 <br/>
 

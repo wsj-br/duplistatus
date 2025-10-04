@@ -8,7 +8,7 @@ sidebar_position: 1
 
 **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.8.10-blue)
+![](https://img.shields.io/badge/version-0.8.14-blue)
 
 This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
 

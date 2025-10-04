@@ -1,8 +1,8 @@
-![duplistatus](//img/duplistatus_banner.png)
+![duplistatus](img/duplistatus_banner.png)
 
 # Installation Guide
 
-![](https://img.shields.io/badge/version-0.8.10-blue)
+![](https://img.shields.io/badge/version-0.8.14-blue)
 
 This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
 
@@ -21,9 +21,12 @@ This document describes how to install and configure the **duplistatus** server.
   - [Option 4: Using Docker CLI](#option-4-using-docker-cli)
   - [Option 5: Using Podman with Pod (CLI)](#option-5-using-podman-with-pod-cli)
   - [Option 6: Using Podman Compose (CLI)](#option-6-using-podman-compose-cli)
-- [Configuring the timezone](#configuring-the-timezone)
+- [Configuring the timezone (for notifications and logs)](#configuring-the-timezone-for-notifications-and-logs)
   - [Using your Linux Configuration](#using-your-linux-configuration)
   - [List of Timezones](#list-of-timezones)
+- [Configuring the Locale (for notifications and logs)](#configuring-the-locale-for-notifications-and-logs)
+  - [Using your Linux Configuration](#using-your-linux-configuration-1)
+  - [List of Locales](#list-of-locales)
 - [HTTPS Setup (Optional)](#https-setup-optional)
   - [Option 1: Nginx with Certbot (Let's Encrypt)](#option-1-nginx-with-certbot-lets-encrypt)
   - [Option 2: Caddy](#option-2-caddy)
@@ -127,7 +130,7 @@ docker compose -f duplistatus.yml up -d
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
-5. In the "Compose path" field, enter: `docker compose.yml`
+5. In the "Compose path" field, enter: `docker-compose.yml`
 6. Click "Deploy the stack".
 
 <br/>
@@ -178,11 +181,9 @@ Create the `duplistatus.yml` file as instructed in Option 1 above, and then run:
 podman-compose -f duplistatus.yml up -d
 ```
 
-<br/><br/>
-
 ## Configuring the timezone (for notifications and logs)
 
-The application user interface date e and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variable to format time zones.
+The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variable to format time zones.
 
 The default value is `TZ=Europe/London` if this environment variable is not set.
 
@@ -200,8 +201,8 @@ or pass the environment variable in the command line:
 ```bash
   --env TZ=America/Sao_Paulo
 ```
-<br/>
 
+<br/>
 
 ### Using your Linux Configuration
 
@@ -219,7 +220,7 @@ You can find a list of timezones here: [Wikipedia: List of tz database time zone
 
 <br/>
 
-## configuring the Locale (for notifications and logs)
+## Configuring the Locale (for notifications and logs)
 
 The application user interface dates and numbers will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `LANG` environment variable to format dates and numbers.
 
@@ -238,8 +239,8 @@ or pass the environment variable in the command line:
 ```bash
   --env LANG=pt_BR
 ```
-<br/>
 
+<br/>
 
 ### Using your Linux Configuration
 
@@ -257,12 +258,10 @@ You can find a list of locales here: [LocalePlanet: International Components for
 
 <br/>
 
->[!IMPORTANT]
+> [!IMPORTANT]
 > Don't include `.UTF8` or similar in the configuration, just the `language_country`, for instance `en_US`.
 
 <br/>
-
-<br/><br/>
 
 ## HTTPS Setup (Optional)
 
@@ -275,6 +274,7 @@ For production deployments, it's recommended to serve **duplistatus** over HTTPS
 [Nginx](https://nginx.org/) is a popular web server that can act as a reverse proxy, and [Certbot](https://certbot.eff.org/) provides free SSL certificates from Let's Encrypt.
 
 **Prerequisites:**
+
 - Domain name pointing to your server
 - Nginx installed on your system
 - Certbot installed for your operating system
@@ -282,6 +282,7 @@ For production deployments, it's recommended to serve **duplistatus** over HTTPS
 **Step 1: Install Nginx and Certbot**
 
 For Ubuntu/Debian:
+
 ```bash
 sudo apt update
 sudo apt install nginx certbot python3-certbot-nginx
@@ -295,7 +296,7 @@ Create `/etc/nginx/sites-available/duplistatus`:
 server {
     listen 80;
     server_name your-domain.com;
-    
+
     location / {
         proxy_pass http://localhost:9666;
         proxy_set_header Host $host;
@@ -321,6 +322,7 @@ sudo certbot --nginx -d your-domain.com
 Certbot will automatically update your Nginx configuration to include SSL settings and redirect HTTP to HTTPS.
 
 **Documentation:**
+
 - [Nginx Documentation](https://nginx.org/en/docs/)
 - [Certbot Documentation](https://certbot.eff.org/instructions)
 - [Let's Encrypt Documentation](https://letsencrypt.org/docs/)
@@ -332,6 +334,7 @@ Certbot will automatically update your Nginx configuration to include SSL settin
 [Caddy](https://caddyserver.com/) is a modern web server with automatic HTTPS that simplifies SSL certificate management.
 
 **Prerequisites:**
+
 - Domain name pointing to your server
 - Caddy installed on your system
 
@@ -364,6 +367,7 @@ sudo caddy start --config Caddyfile
 Caddy will automatically obtain and manage SSL certificates from Let's Encrypt.
 
 **Documentation:**
+
 - [Caddy Documentation](https://caddyserver.com/docs/)
 - [Caddy Reverse Proxy Guide](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
@@ -373,11 +377,13 @@ Caddy will automatically obtain and manage SSL certificates from Let's Encrypt.
 
 > [!IMPORTANT]
 > After setting up HTTPS, remember to update your Duplicati server configuration to use the HTTPS URL:
+>
 > ```bash
 > --send-http-url=https://your-domain.com/api/upload
 > ```
 
 > [!TIP]
+>
 > - Replace `your-domain.com` with your actual domain name
 > - Ensure your domain's DNS A record points to your server's IP address
 > - Both solutions will automatically renew SSL certificates
@@ -389,25 +395,23 @@ Caddy will automatically obtain and manage SSL certificates from Let's Encrypt.
 
 The application supports the following environment variables for configuration:
 
-| Variable                  | Description                                                      | Default         |
-| ------------------------- | ---------------------------------------------------------------- | :-------------- |
-| `PORT`                    | Port for the main web application                                | `9666`          |
-| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1`           | `9667`          |
-| `NODE_ENV`                | Node.js environment (`development` or `production`)              | `production`    |
-| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                                        | `1`             |
-| `TZ`                      | Timezone for the application                                     | `Europe/London` |
+| Variable                  | Description                                            | Default         |
+| ------------------------- | ------------------------------------------------------ | :-------------- |
+| `PORT`                    | Port for the main web application                      | `9666`          |
+| `CRON_PORT`               | Port for the cron service. If not set, uses `PORT + 1` | `8667`          |
+| `NODE_ENV`                | Node.js environment (`development` or `production`)    | `production`    |
+| `NEXT_TELEMETRY_DISABLED` | Disable Next.js telemetry                              | `1`             |
+| `TZ`                      | Timezone for the application                           | `Europe/London` |
+| `LANG`                    | Locale for the application (e.g., `en_US`, `pt_BR`)    | `en_GB`         |
 
 <br/>
 
-> [!NOTE]
-> **Email Notifications Configuration:**
+> [!NOTE] > **Email Notifications Configuration:**
 >
 > - Email notifications are enabled by default, but will only work if they are properly configured.
 > - Email notifications can be used alongside, or as an alternative to, NTFY notifications.
 > - Settings are configured in the web interface under `Settings → Email Configuration`.
 > - Refer to the [User Guide](USER-GUIDE.md#email-configuration) for detailed setup instructions.
-
-<br/><br/>
 
 ## Duplicati Server Configuration (Required)
 
@@ -419,7 +423,7 @@ Apply this configuration to all your Duplicati servers:
 
 <div>
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati settings](img/duplicati-settings.png)
 
 <br/>
 
@@ -459,7 +463,7 @@ Apply this configuration to all your Duplicati servers:
 
 <br/>
 
-![Duplicati configuration](/img/duplicati-options.png)
+![Duplicati configuration](img/duplicati-options.png)
 
 <br/>
 

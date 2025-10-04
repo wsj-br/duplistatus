@@ -4,7 +4,7 @@
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.10-blue)
+![](https://img.shields.io/badge/version-0.8.14-blue)
 
 <br/>
 
@@ -308,6 +308,18 @@ These endpoints are designed for use by other applications and integrations, for
     "success": true
   }
   ```
+- **Error Responses**:
+  - `400`: Missing required fields in Extra or Data sections, or invalid MainOperation
+  - `409`: Duplicate backup data (ignored)
+  - `500`: Server error processing backup data
+- **Notes**:
+  - Only processes backup operations (MainOperation must be "Backup")
+  - Validates required fields in Extra section: machine-id, machine-name, backup-name, backup-id
+  - Validates required fields in Data section: ParsedResult, BeginTime, Duration
+  - Automatically detects duplicate backup runs and returns 409 status
+  - Sends notifications after successful backup insertion
+  - Logs request data in development mode for debugging
+  - Uses transaction for data consistency
 <br/>
 
 ---
@@ -388,6 +400,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/servers`
 - **Method**: GET
 - **Description**: Retrieves a list of all servers with their basic information. Optionally includes backup information.
+- **Authentication**: Requires valid session and CSRF token
 - **Query Parameters**:
   - `includeBackups` (optional): Set to `true` to include backup information for each server
 - **Response** (without parameters):
@@ -410,17 +423,20 @@ These endpoints are designed for use by other applications and integrations, for
       "backupName": "Backup Name",
       "server_url": "http://localhost:8200",
       "alias": "Server Alias",
-      "note": "Additional notes about the server"
+      "note": "Additional notes about the server",
+      "hasPassword": true
     }
   ]
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Server error fetching servers
 - **Notes**:
   - Returns server information including alias and note fields
-  - When `includeBackups=true`, returns server-backup combinations with URLs
+  - When `includeBackups=true`, returns server-backup combinations with URLs and password status
   - Consolidates the previous `/api/servers-with-backups` endpoint (which has been removed)
   - Used for server selection, display, and configuration purposes
+  - Includes `hasPassword` field to indicate if server has stored password
 
 <br/>
 
@@ -428,6 +444,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
 - **Description**: Retrieves information about a specific server. Can return basic server info or detailed information including backups and chart data.
+- **Authentication**: Requires valid session and CSRF token
 - **Parameters**:
   - `id`: the server identifier
 - **Query Parameters**:
@@ -480,6 +497,7 @@ These endpoints are designed for use by other applications and integrations, for
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `404`: Server not found
   - `500`: Server error fetching server details
 - **Notes**:
@@ -738,6 +756,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns configuration without password for security
   - Includes `hasPassword` field to indicate if password is set
   - Indicates if email notifications are available for test and production use
+  - Handles master key validation errors gracefully
 
 ### Update Email Configuration - `/api/configuration/email`
 - **Endpoint**: `/api/configuration/email`
@@ -1135,7 +1154,7 @@ These endpoints are designed for use by other applications and integrations, for
 ### Test Notification - `/api/notifications/test`
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
-- **Description**: Send test notifications (simple or template-based) to verify NTFY configuration.
+- **Description**: Send test notifications (simple, template-based, or email) to verify notification configuration.
 - **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   For simple test:
@@ -1172,7 +1191,6 @@ These endpoints are designed for use by other applications and integrations, for
       "type": "email"
     }
     ```
-- Supports email test by sending `{ "type": "email" }` to trigger a test email if email is configured.
 - **Response**:
   For simple test:
   ```json
@@ -1183,19 +1201,29 @@ These endpoints are designed for use by other applications and integrations, for
   For template test:
   ```json
   {
-    "success": true
+    "success": true,
+    "message": "Test notifications sent successfully via NTFY and Email",
+    "channels": ["NTFY", "Email"]
+  }
+  ```
+  For email test:
+  ```json
+  {
+    "message": "Test email sent successfully"
   }
   ```
 - **Error Responses**:
   - `401`: Unauthorized - Invalid session or CSRF token
-  - `400`: NTFY configuration is required or invalid
+  - `400`: NTFY configuration is required, invalid configuration, or email not configured
   - `500`: Failed to send test notification with error details
 - **Notes**:
-  - Supports both simple test messages and template-based notifications
+  - Supports simple test messages, template-based notifications, and email tests
   - Template testing uses sample data to replace template variables
   - Includes timestamp in the test message
   - Validates NTFY URL and topic before sending
   - Uses `accessToken` field for authentication
+  - For template tests, sends notifications to both NTFY and email (if configured)
+  - Email tests require SMTP configuration to be set up
 
 ### Check Overdue Backups - `/api/notifications/check-overdue`
 - **Endpoint**: `/api/notifications/check-overdue`
@@ -1317,7 +1345,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Endpoint**: `/api/health`
 - **Method**: GET
 - **Description**: Checks the health status of the application and database.
-- **Response**:
+- **Response** (healthy):
   ```json
   {
     "status": "healthy",
@@ -1329,6 +1357,33 @@ These endpoints are designed for use by other applications and integrations, for
       "backups"
     ],
     "preparedStatements": true,
+    "initializationStatus": "complete",
+    "initializationComplete": true,
+    "connectionHealth": true,
+    "timestamp": "2024-03-20T10:00:00Z"
+  }
+  ```
+
+- **Response** (degraded):
+  ```json
+  {
+    "status": "degraded",
+    "database": "connected",
+    "basicConnection": true,
+    "tablesFound": 2,
+    "tables": [
+      "servers",
+      "backups"
+    ],
+    "preparedStatements": false,
+    "preparedStatementsError": "Prepared statement error details",
+    "initializationStatus": "complete",
+    "initializationComplete": true,
+    "connectionHealth": false,
+    "connectionHealthError": "Connection health check failed",
+    "connectionDetails": {
+      "additional": "diagnostic information"
+    },
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
@@ -1347,8 +1402,11 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns 200 status for healthy systems
   - Returns 503 status for unhealthy systems or prepared statement failures
   - Includes `preparedStatementsError` field when prepared statements fail
+  - Includes `initializationError` field when database initialization fails
+  - Includes `connectionHealthError` and `connectionDetails` when connection health checks fail
   - Stack trace only included in development mode
-  - Tests basic database connection and prepared statements
+  - Tests basic database connection, prepared statements, initialization status, and connection health
+  - Provides comprehensive health diagnostics for troubleshooting
 
 <br/>
 
@@ -1387,6 +1445,7 @@ These endpoints are designed for use by other applications and integrations, for
   ```
 - **Error Responses**:
   - `400`: Invalid request parameters or connection failed
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Server error during backup collection
 - **Notes**: 
   - The endpoint automatically detects the optimal connection protocol (HTTPS → HTTPS with self-signed → HTTP)
@@ -1398,6 +1457,7 @@ These endpoints are designed for use by other applications and integrations, for
   - The detected protocol and server URL are automatically stored in the database
   - `serverAlias` is retrieved from the database and may be empty if no alias is set
   - The frontend should use `serverAlias || serverName` for display purposes
+  - Supports both JSON download and direct API collection methods
 
 <br/>
 
@@ -1803,6 +1863,9 @@ All endpoints that modify database data require session authentication and CSRF 
 - **Notification System**: `/api/notifications/*` (POST)
 - **Cron Configuration**: `/api/cron-config` (POST)
 - **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
+- **Chart Data**: `/api/chart-data/*` (GET)
+- **Dashboard**: `/api/dashboard` (GET)
+- **Server Details**: `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
 
 #### Unprotected Endpoints
 External APIs remain unauthenticated for Duplicati integration:
@@ -1811,6 +1874,7 @@ External APIs remain unauthenticated for Duplicati integration:
 - `/api/lastbackup/:serverId` - Latest backup status
 - `/api/lastbackups/:serverId` - Latest backups status
 - `/api/summary` - Overall summary data
+- `/api/health` - Health check endpoint
 
 #### Usage Example (Session + CSRF)
 ```typescript

@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.8.10-blue)
+![](https://img.shields.io/badge/version-0.8.14-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -33,10 +33,9 @@ This document describes the SQLite database schema used by duplistatus to store 
     - [Common Configuration Keys](#common-configuration-keys)
   - [Database Version Table](#database-version-table)
     - [Fields](#fields-2)
-  - [Sessions Table](#sessions-table)
-    - [Fields](#fields-3)
-  - [CSRF Tokens Table](#csrf-tokens-table)
-    - [Fields](#fields-4)
+- [Session Management](#session-management)
+  - [In-Memory Session Storage](#in-memory-session-storage)
+  - [Session API Endpoints](#session-api-endpoints)
 - [Indexes](#indexes)
 - [Relationships](#relationships)
 - [Data Types](#data-types)
@@ -97,7 +96,7 @@ The application includes an automatic database migration system that ensures you
 
 - **Version 2.0**: Added missing columns to the backups table and created the configurations table
 - **Version 3.0**: Renamed the machines table to servers, added `server_url`, `server_password`, `alias`, and `note` fields, and migrated configuration data to use server IDs
-- **Version 3.1**: Added sessions and CSRF token tables for enhanced security (latest version)
+- **Version 3.1**: Added server_password column to servers table and removed sessions/CSRF tables (now using in-memory storage) (latest version)
 
 ### Migration Process
 
@@ -355,44 +354,22 @@ CREATE TABLE db_version (
 
 This table is used by the migration system to track which migrations have been applied and ensure migrations are only run once.
 
-### Sessions Table
+## Session Management
 
-Stores session information for user authentication and security.
+**Note**: As of version 3.1, session and CSRF token management has been moved from database storage to in-memory storage for improved performance and simplified deployment. Sessions and CSRF tokens are now stored in application memory and are automatically cleaned up when they expire.
 
-```sql
-CREATE TABLE sessions (
-    id TEXT PRIMARY KEY,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
-    expires_at DATETIME NOT NULL
-);
-```
+### In-Memory Session Storage
 
-#### Fields
-- `id` (TEXT, PRIMARY KEY): Unique session identifier
-- `created_at` (DATETIME): Timestamp when the session was created
-- `last_accessed` (DATETIME): Timestamp of the last access to the session
-- `expires_at` (DATETIME, NOT NULL): Timestamp when the session expires
+- **Sessions**: Stored in a `Map<string, SessionData>` with automatic expiration cleanup
+- **CSRF Tokens**: Stored in a `Map<string, CSRFTokenData>` linked to sessions
+- **Expiration**: Sessions expire after 24 hours, CSRF tokens expire after 1 hour
+- **Cleanup**: Expired sessions and tokens are automatically removed during validation
 
-### CSRF Tokens Table
+### Session API Endpoints
 
-Stores CSRF tokens for security protection against cross-site request forgery attacks.
-
-```sql
-CREATE TABLE csrf_tokens (
-    session_id TEXT PRIMARY KEY,
-    token TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    expires_at DATETIME NOT NULL,
-    FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
-);
-```
-
-#### Fields
-- `session_id` (TEXT, PRIMARY KEY): Reference to the associated session
-- `token` (TEXT, NOT NULL): The CSRF token value
-- `created_at` (DATETIME): Timestamp when the token was created
-- `expires_at` (DATETIME, NOT NULL): Timestamp when the token expires
+- `POST /api/session`: Create a new session
+- `GET /api/session`: Validate an existing session
+- `GET /api/csrf`: Get CSRF token for current session
 
 ## Indexes
 
@@ -404,16 +381,12 @@ CREATE INDEX idx_backups_date ON backups(date);
 CREATE INDEX idx_backups_begin_time ON backups(begin_time);
 CREATE INDEX idx_backups_end_time ON backups(end_time);
 CREATE INDEX idx_backups_backup_id ON backups(backup_id);
-CREATE INDEX idx_sessions_expires ON sessions(expires_at);
-CREATE INDEX idx_csrf_tokens_expires ON csrf_tokens(expires_at);
 ```
 
 ## Relationships
 
 - Each backup (`backups` table) is associated with exactly one server (`servers` table) through the `server_id` foreign key
 - The relationship is enforced by a foreign key constraint: `FOREIGN KEY (server_id) REFERENCES servers(id)`
-- Each CSRF token (`csrf_tokens` table) is associated with exactly one session (`sessions` table) through the `session_id` foreign key
-- The relationship is enforced by a foreign key constraint: `FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE`
 
 ## Data Types
 
