@@ -6,13 +6,13 @@ sidebar_position: 2
 
 ![duplistatus](//img/duplistatus_banner.png)
 
-Detailed guide for migrating from version 0.6.x to 0.7.x.
+Detailed guide for migrating from version 0.6.x to 0.7.27.
 
 ## Overview
 
-Version 0.7.x introduced significant changes to the database schema and API structure. This migration guide will help you understand and navigate these changes.
+Version 0.7.27 introduced significant changes to the database schema and API structure. This migration guide will help you understand and navigate these changes.
 
-## What Changed in Version 0.7.x
+## What Changed in Version 0.7.27
 
 ### Database Schema Changes
 
@@ -49,7 +49,7 @@ Version 0.7.x introduced significant changes to the database schema and API stru
 ## Migration Process
 
 ### Automatic Migration
-The migration happens automatically when you start version 0.7.x:
+The migration happens automatically when you start version 0.7.27:
 
 1. **Backup Creation**: Database backup is created
 2. **Schema Update**: Tables are renamed and updated
@@ -118,7 +118,7 @@ curl http://localhost:9666/api/servers
 }
 ```
 
-**After (0.7.x)**:
+**After (0.7.27)**:
 ```json
 {
   "status": "success",
@@ -142,7 +142,7 @@ curl http://localhost:9666/api/servers
 }
 ```
 
-**After (0.7.x)**:
+**After (0.7.27)**:
 ```json
 {
   "totalServers": 5,
@@ -316,7 +316,7 @@ If you encounter issues:
 
 ### Migration Checklist
 - [ ] Backup current database
-- [ ] Update container to 0.7.x
+- [ ] Update container to 0.7.27
 - [ ] Monitor migration logs
 - [ ] Verify application starts
 - [ ] Check all servers visible

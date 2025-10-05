@@ -1,6 +1,6 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
-import { getConfigNotifications, setConfigNotifications } from '@/lib/db-utils';
+import { getNotificationTemplates, setNotificationTemplates } from '@/lib/db-utils';
 
 export const POST = withCSRF(async (request: NextRequest) => {
   try {
@@ -10,11 +10,14 @@ export const POST = withCSRF(async (request: NextRequest) => {
     if (!templates) {
       return NextResponse.json({ error: 'templates are required' }, { status: 400 });
     }
-    // Get current config
-    const config = getConfigNotifications();
-    // Update only templates
-    config.templates = templates;
-    setConfigNotifications(config);
+    // Validate current templates shape (optional)
+    const current = getNotificationTemplates();
+    const updated = {
+      success: templates.success || current.success,
+      warning: templates.warning || current.warning,
+      overdueBackup: templates.overdueBackup || current.overdueBackup
+    };
+    setNotificationTemplates(updated);
     return NextResponse.json({ message: 'Notification templates updated successfully' });
   } catch (error) {
     console.error('Failed to update notification templates:', error instanceof Error ? error.message : String(error));

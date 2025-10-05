@@ -2,7 +2,7 @@
 
 # duplistatus User Guide
 
-![](https://img.shields.io/badge/version-0.8.14-blue)
+![](https://img.shields.io/badge/version-0.8.15-blue)
 
 Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
 

@@ -1,15 +1,15 @@
 import { db, dbOps } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, NotificationConfig, SMTPConfig, SMTPConfigEncrypted } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from './default-config';
+import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic } from './default-config';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
 import { GetNextBackupRunDate } from './server_intervals';
-import { createDefaultNotificationConfig, generateDefaultNtfyTopic, defaultBackupNotificationConfig } from './default-config';
+import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 
 // Request-level cache to avoid redundant function calls within a single request
@@ -1285,74 +1285,73 @@ export function setNotificationFrequencyConfig(value: NotificationFrequencyConfi
   setConfiguration("notification_frequency", value);
 }
 
-// Functions to get/set notifications configuration
-export function getConfigNotifications(): NotificationConfig {
-  try {
-    const configJson = getConfiguration('notifications');
-    if (!configJson || configJson.trim() === '') {
-      // Create default configuration with generated ntfy topic
-      const defaultTopic = generateDefaultNtfyTopic();
-      const defaultConfig = createDefaultNotificationConfig({
-        url: 'https://ntfy.sh/',
-        topic: defaultTopic,
-        accessToken: ''
-      });
-      
-      // Persist the default configuration
-      setConfigNotifications(defaultConfig);
-      return defaultConfig;
-    }
-    
+// New: Functions to get/set NTFY configuration stored under 'ntfy_config'
+// NTFY configuration stored under 'ntfy_config'
+export function getNtfyConfig(): NtfyConfig {
+  return getCachedOrCompute('ntfy_config', () => {
     try {
-      const config = JSON.parse(configJson) as NotificationConfig;
-      
-      // Ensure ntfy config is always set with generated default if needed
-      if (!config.ntfy || !config.ntfy.topic) {
-        const defaultTopic = generateDefaultNtfyTopic();
-        config.ntfy = {
-          url: config.ntfy?.url || 'https://ntfy.sh/',
-          topic: defaultTopic,
-          accessToken: config.ntfy?.accessToken || ''
-        };
-        
-        // Persist the updated configuration
-        setConfigNotifications(config);
+      const ntfyJson = getConfiguration('ntfy_config');
+      if (!ntfyJson || ntfyJson.trim() === '') {
+        const topic = generateDefaultNtfyTopic();
+        const cfg: NtfyConfig = { ...defaultNtfyConfig, topic };
+        setNtfyConfig(cfg);
+        return cfg;
       }
-      
-      return config;
-    } catch (parseError) {
-      console.error('Failed to parse notifications configuration, creating default:', parseError);
-      const defaultTopic = generateDefaultNtfyTopic();
-      const defaultConfig = createDefaultNotificationConfig({
-        url: 'https://ntfy.sh/',
-        topic: defaultTopic,
-        accessToken: ''
-      });
-      
-      // Persist the default configuration
-      setConfigNotifications(defaultConfig);
-      return defaultConfig;
+      const parsed = JSON.parse(ntfyJson) as NtfyConfig;
+      if (!parsed.topic || parsed.topic.trim() === '') {
+        const topic = generateDefaultNtfyTopic();
+        const fixed = { ...parsed, topic };
+        setNtfyConfig(fixed);
+        return fixed;
+      }
+      return parsed;
+    } catch (error) {
+      console.error('Failed to get ntfy configuration:', error instanceof Error ? error.message : String(error));
+      const topic = generateDefaultNtfyTopic();
+      const cfg: NtfyConfig = { ...defaultNtfyConfig, topic };
+      setNtfyConfig(cfg);
+      return cfg;
     }
+  }, 'getNtfyConfig');
+}
+
+export function setNtfyConfig(config: NtfyConfig): void {
+  try {
+    setConfiguration('ntfy_config', JSON.stringify(config));
   } catch (error) {
-    console.error('Failed to get notifications configuration:', error instanceof Error ? error.message : String(error));
-    const defaultTopic = generateDefaultNtfyTopic();
-    const defaultConfig = createDefaultNotificationConfig({
-      url: 'https://ntfy.sh/',
-      topic: defaultTopic,
-      accessToken: ''
-    });
-    
-    // Persist the default configuration
-    setConfigNotifications(defaultConfig);
-    return defaultConfig;
+    console.error('Failed to save ntfy configuration:', error instanceof Error ? error.message : String(error));
+    throw error;
   }
 }
 
-export function setConfigNotifications(config: NotificationConfig): void {
+// New: Functions to get/set Notification Templates under 'notification_templates'
+export function getNotificationTemplates(): { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate } {
+  return getCachedOrCompute('notification_templates', () => {
+    try {
+      const templatesJson = getConfiguration('notification_templates');
+      if (!templatesJson || templatesJson.trim() === '') {
+        setNotificationTemplates(defaultNotificationTemplates);
+        return defaultNotificationTemplates;
+      }
+      const parsed = JSON.parse(templatesJson) as { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+      return {
+        success: parsed.success || defaultNotificationTemplates.success,
+        warning: parsed.warning || defaultNotificationTemplates.warning,
+        overdueBackup: parsed.overdueBackup || defaultNotificationTemplates.overdueBackup
+      };
+    } catch (error) {
+      console.error('Failed to get notification templates:', error instanceof Error ? error.message : String(error));
+      setNotificationTemplates(defaultNotificationTemplates);
+      return defaultNotificationTemplates;
+    }
+  }, 'getNotificationTemplates');
+}
+
+export function setNotificationTemplates(templates: { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate }): void {
   try {
-    setConfiguration('notifications', JSON.stringify(config));
+    setConfiguration('notification_templates', JSON.stringify(templates));
   } catch (error) {
-    console.error('Failed to save notifications configuration:', error instanceof Error ? error.message : String(error));
+    console.error('Failed to save notification templates:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -1763,32 +1762,7 @@ export async function getOverdueBackupsForServer(serverIdentifier: string): Prom
 
 
 // Function to get ntfy configuration with default topic generation
-export async function getNtfyConfig(): Promise<{ url: string; topic: string; accessToken?: string }> {
-  try {
-    const config = getConfigNotifications();
-    if (config.ntfy) {
-      return config.ntfy;
-    }
-  } catch (error) {
-    console.error('Failed to get ntfy config from notifications:', error instanceof Error ? error.message : String(error));
-  }
-  
-  // Generate default topic if no configuration exists and persist it
-  const { generateDefaultNtfyTopic, defaultNtfyConfig } = await import('./default-config');
-  const defaultTopic = generateDefaultNtfyTopic();
-  const generatedConfig = { ...defaultNtfyConfig, topic: defaultTopic };
-  
-  // Persist the generated configuration
-  try {
-    const config = getConfigNotifications();
-    config.ntfy = generatedConfig;
-    setConfigNotifications(config);
-  } catch (error) {
-    console.error('Failed to persist generated ntfy config:', error instanceof Error ? error.message : String(error));
-  }
-  
-  return generatedConfig;
-}
+// Removed async alias; use getNtfyConfig() directly
 
 // Function to get all server and their respective backup names
 export function getServersBackupNames() {

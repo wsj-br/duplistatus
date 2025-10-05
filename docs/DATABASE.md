@@ -3,7 +3,7 @@
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.8.14-blue)
+![](https://img.shields.io/badge/version-0.8.15-blue)
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
@@ -66,7 +66,7 @@ This document describes the SQLite database schema used by duplistatus to store 
   - [Server Password Management](#server-password-management)
   - [SMTP Email Configuration](#smtp-email-configuration)
   - [Configuration Data Structures](#configuration-data-structures)
-    - [Notifications Configuration (`notifications`)](#notifications-configuration-notifications)
+    - [Notifications Split Configuration (`ntfy_config` and `notification_templates`)](#notifications-split-configuration-ntfy_config-and-notification_templates)
     - [Backup Settings Configuration (`backup_settings`)](#backup-settings-configuration-backup_settings)
     - [Cron Service Configuration (`cron_service`)](#cron-service-configuration-cron_service)
     - [Overdue Backup Notifications (`overdue_notifications`)](#overdue-backup-notifications-overdue_notifications)
@@ -299,10 +299,8 @@ CREATE TABLE configurations (
 
 #### Common Configuration Keys
 
-- `notifications`: JSON object containing notification settings including:
-  - Ntfy configuration (URL, topic, authentication)
-  - Notification templates for different event types
-  - Server addresses for Duplicati server connections
+- `ntfy_config`: JSON object containing NTFY configuration settings (URL, topic, accessToken)
+- `notification_templates`: JSON object containing notification templates for different event types
 - `backup_settings`: JSON object containing backup-specific settings including:
   - Per-backup configuration (keyed by `server_id:backup_name`)
   - Expected backup intervals and units (hours/days)
@@ -1264,51 +1262,19 @@ The application includes encrypted SMTP configuration for email notifications al
 
 ### Configuration Data Structures
 
-#### Notifications Configuration (`notifications`)
+#### Notifications Split Configuration (`ntfy_config` and `notification_templates`)
 ```json
 {
-  "ntfy": {
+  "ntfy_config": {
     "url": string,
     "topic": string,
     "accessToken": string
   },
-  "backupSettings": {
-    "server_id:backup_name": {
-      "notificationEvent": "all" | "warnings" | "errors" | "off",
-      "expectedInterval": number,
-      "overdueBackupCheckEnabled": boolean,
-      "intervalUnit": "hour" | "day"
-    }
-  },
-  "templates": {
-    "success": {
-      "title": string,
-      "priority": string,
-      "tags": string,
-      "message": string
-    },
-    "warning": {
-      "title": string,
-      "priority": string,
-      "tags": string,
-      "message": string
-    },
-    "overdueBackup": {
-      "title": string,
-      "priority": string,
-      "tags": string,
-      "message": string
-    }
-  },
-  "serverAddresses": [
-    {
-      "id": string,
-      "name": string,
-      "server_url": string,
-      "alias": string,
-      "note": string
-    }
-  ]
+  "notification_templates": {
+    "success": { "title": string, "priority": string, "tags": string, "message": string },
+    "warning": { "title": string, "priority": string, "tags": string, "message": string },
+    "overdueBackup": { "title": string, "priority": string, "tags": string, "message": string }
+  }
 }
 ```
 

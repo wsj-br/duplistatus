@@ -31,6 +31,7 @@ import {
   toggleWeekDay,
   isWeekDayAllowed
 } from '@/lib/interval-utils';
+import { formatRelativeTime } from '@/lib/utils';
 
 
 // Use the ServerWithBackup interface from the configuration context
@@ -780,6 +781,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 
                 return (
                   <TableRow key={`${server.id}-${server.backupName}`}>
+                    {/* Server name - Table */}
                     <TableCell>
                       <div>
                         <div className="font-medium text-sm">
@@ -822,7 +824,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         </div>
                       </div>
                     </TableCell>
-                    
+                    {/* Backup Name - Table */}
                     <TableCell>
                       <div>
                         <Link 
@@ -833,18 +835,23 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         </Link>
                       </div>
                     </TableCell>
-                    
+                    {/* Next Run - Table */}
                     <TableCell>
                       <div 
                         className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                       >
                         {server.nextRunDate !== 'N/A' ? 
-                          new Date(server.nextRunDate).toLocaleString() : 
+                          <>
+                            {new Date(server.nextRunDate).toLocaleString()}
+                            <br />
+                            {formatRelativeTime(server.nextRunDate)}
+                          </>
+                         : 
                           'Not set'
                         }
                       </div>
                     </TableCell>
-                    
+                    {/* Overdue Backup Monitoring - Table */}
                     <TableCell>
                       <div className="flex items-center space-x-1">
                         <Switch
@@ -860,7 +867,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         </Label>
                       </div>
                     </TableCell>
-                    
+                    {/* Expected Backup Interval - Table */}
                     <TableCell>
                       <div className="space-y-1">
                         <Input
@@ -877,7 +884,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         )}
                       </div>
                     </TableCell>
-                    
+                    {/* Unit - Table */}
                     <TableCell>
                       <Select
                         value={server.displayUnit}
@@ -898,7 +905,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    
+                    {/* Allowed Days - Table */}
                     <TableCell>
                       <div className="flex gap-1">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
@@ -935,7 +942,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
               return (
                 <Card key={`${server.id}-${server.backupName}`} className="p-4">
                   <div className="space-y-3">
-                    {/* Header with Server and Backup Name */}
+                    {/* Header with Server and Backup Name - Card */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-0">
                         <ServerConfigurationButton
@@ -981,14 +988,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                       </div>
                     </div>
                     
-                    {/* Next Run */}
+                    {/* Next Run - Card */}
                     <div className="space-y-1">
                       <Label className="text-xs font-medium">Next Run</Label>
                       <div 
                         className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                       >
                         {server.nextRunDate !== 'N/A' ? 
-                          new Date(server.nextRunDate).toLocaleString() : 
+                           new Date(server.nextRunDate).toLocaleString()+` (${formatRelativeTime(server.nextRunDate)})` : 
                           'Not set'
                         }
                       </div>
@@ -1012,7 +1019,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                       </div>
                     </div>
                     
-                    {/* Expected Backup Interval */}
+                    {/* Expected Backup Interval - Card */}
                     <div className="space-y-1">
                       <Label className="text-xs font-medium">Expected Backup Interval</Label>
                       <div className="flex gap-2">
@@ -1049,7 +1056,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                       )}
                     </div>
                     
-                    {/* Allowed Days */}
+                    {/* Allowed Days - Card */}
                     <div className="space-y-1">
                       <Label className="text-xs font-medium">Allowed Days</Label>
                       <div className="flex gap-1 flex-wrap">

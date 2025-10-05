@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getConfigNotifications, getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, getSMTPConfig, clearRequestCache } from '@/lib/db-utils';
+import { getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, getSMTPConfig, clearRequestCache, getNotificationTemplates } from '@/lib/db-utils';
+import type { NtfyConfig, EmailConfig, NotificationTemplate } from '@/lib/types';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
 
@@ -9,24 +10,30 @@ export const GET = withCSRF(async () => {
     clearRequestCache();
     
     // Fetch all configuration data in parallel
-    const [notificationConfig, backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames, smtpConfig] = await Promise.all([
-      Promise.resolve(getConfigNotifications()),
-      getConfigBackupSettings(), // Now async and includes completion logic
+    const [backupSettings, overdueToleranceEnum, ntfyConfig, cronConfig, notificationFrequency, serversBackupNames, smtpConfig, templates] = await Promise.all([
+      getConfigBackupSettings(),
       Promise.resolve(getOverdueToleranceConfig()),
       getNtfyConfig(),
       Promise.resolve(getCronConfig()),
       Promise.resolve(getNotificationFrequencyConfig()),
       Promise.resolve(dbUtils.getServersBackupNames()),
-      Promise.resolve(getSMTPConfig())
+      Promise.resolve(getSMTPConfig()),
+      Promise.resolve(getNotificationTemplates())
     ]);
 
-    // Build the main configuration
-    const config = notificationConfig;
-    config.ntfy = ntfyConfig;
-    
+    // Build base response fields
+    const base: {
+      ntfy: NtfyConfig;
+      templates: { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+      email?: EmailConfig;
+    } = {
+      ntfy: ntfyConfig,
+      templates
+    };
+
     // Add email configuration if available (without password)
     if (smtpConfig) {
-      config.email = {
+      base.email = {
         host: smtpConfig.host,
         port: smtpConfig.port,
         secure: smtpConfig.secure,
@@ -35,13 +42,6 @@ export const GET = withCSRF(async () => {
         enabled: true, // SMTP config exists, so email is enabled
         hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== '')
       };
-    }
-
-    // Load backup settings
-    if (Object.keys(backupSettings).length > 0) {
-      config.backupSettings = backupSettings;
-    } else {
-      config.backupSettings = {};
     }
 
     // Transform servers data
@@ -66,8 +66,10 @@ export const GET = withCSRF(async () => {
 
     // Return unified configuration object
     const unifiedConfig = {
-      ...config,
+      ...base,
       overdue_tolerance: overdueToleranceEnum,
+      // keep these independent of notification config shape
+      backup_settings: backupSettings,
       serverAddresses: getAllServerAddresses(),
       cronConfig: {
         cronExpression: cronConfig.tasks['overdue-backup-check'].cronExpression,

@@ -64,7 +64,6 @@ interface CronServiceConfig {
       enabled: boolean;
     };
   };
-  notificationConfig?: NotificationConfig;
 }
 ```
 

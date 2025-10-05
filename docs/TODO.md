@@ -16,7 +16,7 @@
   - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
   - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
   - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
-  - [Implemented in Version 0.7.x ✅](#implemented-in-version-07x-)
+  - [Implemented in Version 0.7.27 ✅](#implemented-in-version-0727-)
   - [Implemented in Version 0.8.x 🚧](#implemented-in-version-08x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -109,7 +109,7 @@ none
     - Notification frequency (one time/daily/weekly/monthly)
 
 
-### Implemented in Version 0.7.x ✅
+### Implemented in Version 0.7.27 ✅
 
 **New Features:**
 - Duplicati Server Web Interface Integration

@@ -39,8 +39,8 @@ graph TD
 
 ## Version History
 
-### Version 0.7.x Migration
-Major schema changes introduced in version 0.7.x:
+### Version 0.7.27 Migration
+Major schema changes introduced in version 0.7.27:
 
 - **Server Table**: Renamed `machines` to `servers`
 - **API Changes**: Updated response formats

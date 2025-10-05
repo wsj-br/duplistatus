@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { NotificationConfig, NotificationFrequencyConfig, OverdueTolerance } from '@/lib/types';
+import { NotificationFrequencyConfig, OverdueTolerance, NtfyConfig, EmailConfig, NotificationTemplate, BackupNotificationConfig, BackupKey, ServerAddress } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 export interface ServerWithBackup {
@@ -14,7 +14,19 @@ export interface ServerWithBackup {
   hasPassword: boolean;
 }
 
-interface UnifiedConfiguration extends NotificationConfig {
+interface UnifiedConfiguration {
+  ntfy: NtfyConfig;
+  templates: {
+    success: NotificationTemplate;
+    warning: NotificationTemplate;
+    overdueBackup: NotificationTemplate;
+  };
+  email?: EmailConfig;
+  // New canonical field from API
+  backup_settings: Record<BackupKey, BackupNotificationConfig>;
+  // Back-compat alias for existing UI usage
+  backupSettings?: Record<BackupKey, BackupNotificationConfig>;
+  serverAddresses: ServerAddress[];
   cronConfig: {
     cronExpression: string;
     enabled: boolean;
@@ -52,6 +64,8 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
       }
       
       const data = await response.json();
+      // Provide back-compat alias for existing components
+      data.backupSettings = data.backup_settings || {};
       setConfig(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch configuration';
@@ -80,6 +94,7 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
       }
       
       const data = await response.json();
+      data.backupSettings = data.backup_settings || {};
       setConfig(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch configuration';

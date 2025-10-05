@@ -8,7 +8,7 @@ sidebar_position: 1
 
 **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.8.14-blue)
+![](https://img.shields.io/badge/version-0.8.15-blue)
 
 This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
 
@@ -62,7 +62,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 > If you are upgrading from version 0.6.x or earlier, your database will be automatically 
 > [migrated](migration/overview.md) to the new schema during the upgrade process.
 > 
-> 🚨 **API Response Changes in version 0.7.x**
+> 🚨 **API Response Changes in version 0.7.27**
 > 
 >   If you have external integrations, scripts, or applications that consume the API endpoints `/api/summary`, `/api/lastbackup`
 >   and `/api/lastbackups`, you **MUST** update them immediately as [the JSON response structure has changed.](migration/api-changes.md) 

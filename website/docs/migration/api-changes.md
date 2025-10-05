@@ -12,7 +12,7 @@ Detailed documentation of API breaking changes between versions.
 
 This document outlines the breaking changes in the duplistatus API that require updates to external integrations, scripts, and applications.
 
-## Version 0.7.x Breaking Changes
+## Version 0.7.27 Breaking Changes
 
 ### Summary Endpoint Changes
 
@@ -32,7 +32,7 @@ This document outlines the breaking changes in the duplistatus API that require 
 }
 ```
 
-**After (0.7.x)**:
+**After (0.7.27)**:
 ```json
 {
   "status": "success",
@@ -71,7 +71,7 @@ This document outlines the breaking changes in the duplistatus API that require 
 }
 ```
 
-**After (0.7.x)**:
+**After (0.7.27)**:
 ```json
 {
   "status": "success",
@@ -118,7 +118,7 @@ This document outlines the breaking changes in the duplistatus API that require 
 }
 ```
 
-**After (0.7.x)**:
+**After (0.7.27)**:
 ```json
 {
   "status": "success",
@@ -179,7 +179,7 @@ These changes are backward compatible:
     # Parses totalMachines field
 ```
 
-#### After (0.7.x)
+#### After (0.7.27)
 ```yaml
 - duplistatus:
     title: Backup Status
@@ -202,7 +202,7 @@ const data = await response.json();
 const totalMachines = data.data.totalMachines;
 ```
 
-#### After (0.7.x)
+#### After (0.7.27)
 ```javascript
 // Parse summary response
 const response = await fetch('/api/summary');
@@ -225,7 +225,7 @@ data = response.json()
 machine_name = data['data']['machine']['name']
 ```
 
-#### After (0.7.x)
+#### After (0.7.27)
 ```python
 # Parse last backup response
 response = requests.get('/api/lastbackup/1')
@@ -357,11 +357,11 @@ If you need help updating your integration:
 
 ### Support Timeline
 - **0.6.x**: Deprecated, no longer supported
-- **0.7.x**: Current supported version
+- **0.7.27**: Current supported version
 - **0.8.x**: Future version with new features
 
 ## Conclusion
 
-The API changes in version 0.7.x are necessary for improving consistency and adding new features. While they require updates to external integrations, the changes are well-documented and the migration path is clear.
+The API changes in version 0.7.27 are necessary for improving consistency and adding new features. While they require updates to external integrations, the changes are well-documented and the migration path is clear.
 
-Take the time to update your integrations properly, test thoroughly, and take advantage of the new features and improvements in version 0.7.x.
+Take the time to update your integrations properly, test thoroughly, and take advantage of the new features and improvements in version 0.7.27.

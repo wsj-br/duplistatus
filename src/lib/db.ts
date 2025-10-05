@@ -214,19 +214,15 @@ async function populateDefaultConfigurations() {
     const { 
       defaultCronConfig, 
       generateDefaultNtfyTopic,
-      createDefaultNotificationConfig,
       defaultNtfyConfig,
       defaultOverdueTolerance,
-      defaultNotificationFrequencyConfig
+      defaultNotificationFrequencyConfig,
+      defaultNotificationTemplates
     } = await import('./default-config');
     
     // Generate default ntfy topic
     const defaultTopic = generateDefaultNtfyTopic();
     const ntfyConfig = { ...defaultNtfyConfig, topic: defaultTopic };
-    
-    // Create default notification configuration with templates
-    const defaultNotificationConfig = createDefaultNotificationConfig(ntfyConfig);
-    
     // Set cron_service configuration
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
       'cron_service', 
@@ -239,10 +235,14 @@ async function populateDefaultConfigurations() {
       defaultOverdueTolerance
     );
     
-    // Set notifications configuration with templates
+    // Set ntfy_config and notification_templates configuration
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
-      'notifications', 
-      JSON.stringify(defaultNotificationConfig)
+      'ntfy_config', 
+      JSON.stringify(ntfyConfig)
+    );
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'notification_templates', 
+      JSON.stringify(defaultNotificationTemplates)
     );
     
     // Set notification_frequency configuration

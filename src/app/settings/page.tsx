@@ -177,6 +177,25 @@ function SettingsPageContent() {
     localStorage.setItem('settings-active-tab', value);
   };
 
+  // Check if email configuration is valid (mirrors logic from EmailConfigurationForm)
+  const isEmailConfigValid = () => {
+    if (!config?.email) return false;
+    
+    return config.email.host?.trim() !== '' &&
+           config.email.username?.trim() !== '' &&
+           config.email.mailto?.trim() !== '' &&
+           config.email.port > 0 &&
+           config.email.hasPassword;
+  };
+
+  // Check if NTFY configuration is valid (mirrors logic from NtfyForm)
+  const isNtfyConfigValid = () => {
+    if (!config?.ntfy) return false;
+    
+    return config.ntfy.url?.trim() !== '' &&
+           config.ntfy.topic?.trim() !== '';
+  };
+
 
   if (loading) {
     return (
@@ -235,12 +254,12 @@ function SettingsPageContent() {
                 <span className="lg:hidden">Servers</span>
               </TabsTrigger>
               <TabsTrigger value="ntfy" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" />
+                <MessageSquare className={`h-4 w-4 ${isNtfyConfigValid() ? 'text-green-600' : 'text-yellow-500'}`} />
                 <span className="hidden lg:inline">NTFY</span>
                 <span className="lg:hidden">NTFY</span>
               </TabsTrigger>
               <TabsTrigger value="email" className="text-xs lg:text-sm py-2 px-3 flex items-center gap-2">
-                <Mail className="h-4 w-4" />
+                <Mail className={`h-4 w-4 ${isEmailConfigValid() ? 'text-green-600' : 'text-yellow-500'}`} />
                 <span className="hidden lg:inline">Email</span>
                 <span className="lg:hidden">Email</span>
               </TabsTrigger>

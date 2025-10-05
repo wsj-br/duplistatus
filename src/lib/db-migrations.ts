@@ -7,11 +7,12 @@ import * as path from 'path';
 import { 
   defaultCronConfig, 
   generateDefaultNtfyTopic,
-  createDefaultNotificationConfig,
   defaultNtfyConfig,
   defaultOverdueTolerance,
-  defaultNotificationFrequencyConfig
+  defaultNotificationFrequencyConfig,
+  defaultNotificationTemplates
 } from './default-config';
+import { previousTemplatesMessages } from './previous-defaults';
 
 // Migration locking mechanism
 class MigrationLock {
@@ -96,9 +97,6 @@ function populateDefaultConfigurations(db: Database.Database) {
     const defaultTopic = generateDefaultNtfyTopic();
     const ntfyConfig = { ...defaultNtfyConfig, topic: defaultTopic };
     
-    // Create default notification configuration with templates
-    const defaultNotificationConfig = createDefaultNotificationConfig(ntfyConfig);
-    
     // Set cron_service configuration
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
       'cron_service', 
@@ -111,10 +109,16 @@ function populateDefaultConfigurations(db: Database.Database) {
       defaultOverdueTolerance
     );
     
-    // Set notifications configuration with templates
+    // Set ntfy_config configuration
     db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
-      'notifications', 
-      JSON.stringify(defaultNotificationConfig)
+      'ntfy_config', 
+      JSON.stringify(ntfyConfig)
+    );
+    
+    // Set notification_templates configuration
+    db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)').run(
+      'notification_templates', 
+      JSON.stringify(defaultNotificationTemplates)
     );
     
     // Set notification_frequency configuration
@@ -529,9 +533,30 @@ const migrations: Migration[] = [
   },
   {
     version: '3.1',
-    description: 'Add server_password column to servers table and remove sessions/CSRF tables - now using in-memory storage',
+    description: 'Add server_password column to servers table and remove sessions/CSRF tables - now using in-memory storage. Split notifications config into ntfy_config and notification_templates.',
     up: (db: Database.Database) => {
       console.log('Migration 3.1: Adding server_password column and removing security tables...');
+      
+      // Function to check if a specific template message matches any previous default template
+      const isOldDefaultMessage = (message: string | undefined, previousMessages: string[]): boolean => {
+        if (!message) return false;
+        return previousMessages.includes(message);
+      };
+
+      // Function to get all previous messages for a specific template type
+      const getPreviousMessages = (templateType: 'success' | 'warning' | 'overdueBackup'): string[] => {
+        const messages: string[] = [];
+        for (const previousTemplate of previousTemplatesMessages) {
+          if (templateType === 'success' && previousTemplate.sucess) {
+            messages.push(previousTemplate.sucess);
+          } else if (templateType === 'warning' && previousTemplate.warning) {
+            messages.push(previousTemplate.warning);
+          } else if (templateType === 'overdueBackup' && previousTemplate.overdueBackup) {
+            messages.push(previousTemplate.overdueBackup);
+          }
+        }
+        return messages;
+      };
       
       try {
         // Step 1: Add server_password column to servers table (this is the critical part)
@@ -545,7 +570,64 @@ const migrations: Migration[] = [
           console.log('server_password column already exists in servers table');
         }
         
-        // Step 2: Populate default configurations if they don't exist
+        // Step 2: Migrate old notifications key into new keys if present
+        try {
+          const row = db.prepare('SELECT value FROM configurations WHERE key = ?').get('notifications') as { value: string } | undefined;
+          if (row && row.value) {
+            try {
+              const legacy = JSON.parse(row.value);
+              const ntfy = legacy?.ntfy;
+              const templates = legacy?.templates;
+              if (ntfy) {
+                db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)')
+                  .run('ntfy_config', JSON.stringify(ntfy));
+              } else {
+                const topic = generateDefaultNtfyTopic();
+                db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)')
+                  .run('ntfy_config', JSON.stringify({ ...defaultNtfyConfig, topic }));
+              }
+              if (templates) {
+                // Check if notification templates are any old default templates using previous-defaults.ts. If so, use the new default templates.
+                const updatedTemplates = { ...templates };
+
+                // Check and replace success template if it matches old defaults
+                if (templates.success && isOldDefaultMessage(templates.success.message, getPreviousMessages('success'))) {
+                  console.log('Migration 3.1: Detected old success template, replacing with new default');
+                  updatedTemplates.success = defaultNotificationTemplates.success;
+                }
+
+                // Check and replace warning template if it matches old defaults
+                if (templates.warning && isOldDefaultMessage(templates.warning.message, getPreviousMessages('warning'))) {
+                  console.log('Migration 3.1: Detected old warning template, replacing with new default');
+                  updatedTemplates.warning = defaultNotificationTemplates.warning;
+                }
+
+                // Check and replace overdueBackup template if it matches old defaults
+                if (templates.overdueBackup && isOldDefaultMessage(templates.overdueBackup.message, getPreviousMessages('overdueBackup'))) {
+                  console.log('Migration 3.1: Detected old overdueBackup template, replacing with new default');
+                  updatedTemplates.overdueBackup = defaultNotificationTemplates.overdueBackup;
+                }
+
+                db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)')
+                  .run('notification_templates', JSON.stringify(updatedTemplates));
+              }
+              // Remove legacy key
+              db.prepare('DELETE FROM configurations WHERE key = ?').run('notifications');
+            } catch (e) {
+              console.warn('Migration 3.1: Failed to parse legacy notifications config, writing defaults. Error:', e instanceof Error ? e.message : String(e));
+              const topic = generateDefaultNtfyTopic();
+              db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)')
+                .run('ntfy_config', JSON.stringify({ ...defaultNtfyConfig, topic }));
+              db.prepare('INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)')
+                .run('notification_templates', JSON.stringify(defaultNotificationTemplates));
+              db.prepare('DELETE FROM configurations WHERE key = ?').run('notifications');
+            }
+          }
+        } catch (e) {
+          console.warn('Migration 3.1: Error migrating notifications config:', e instanceof Error ? e.message : String(e));
+        }
+        
+        // Step 3: Populate default configurations if they don't exist
         populateDefaultConfigurations(db);
         
         console.log('Migration 3.1 completed successfully');

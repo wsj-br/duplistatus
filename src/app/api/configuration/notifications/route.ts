@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { getConfigNotifications, setConfigNotifications, getNotificationFrequencyConfig, setNotificationFrequencyConfig } from '@/lib/db-utils';
+import { getNotificationFrequencyConfig, setNotificationFrequencyConfig, setNtfyConfig } from '@/lib/db-utils';
 import { NotificationFrequencyConfig } from '@/lib/types';
 import { generateDefaultNtfyTopic } from '@/lib/default-config';
 import { withCSRF } from '@/lib/csrf-middleware';
@@ -47,12 +47,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
       topic: (!ntfy.topic || ntfy.topic.trim() === '') ? generateDefaultNtfyTopic() : ntfy.topic
     };
     
-    // Get current config
-    const config = getConfigNotifications();
-    // Update only ntfy
-    config.ntfy = updatedNtfy;
-    setConfigNotifications(config);
-    return NextResponse.json({ message: 'Notification config updated successfully', ntfy: updatedNtfy });
+    // Save ntfy directly under new key
+    setNtfyConfig(updatedNtfy);
+    return NextResponse.json({ message: 'NTFY config updated successfully', ntfy: updatedNtfy });
   } catch (error) {
     console.error('Failed to update notification config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to update notification config' }, { status: 500 });

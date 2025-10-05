@@ -139,17 +139,7 @@ export interface NotificationTemplate {
   message: string;
 }
 
-export interface NotificationConfig {
-  ntfy: NtfyConfig;
-  email?: EmailConfig; // optional email configuration
-  backupSettings: Record<BackupKey, BackupNotificationConfig>;
-  templates: {
-    success: NotificationTemplate;
-    warning: NotificationTemplate;
-    overdueBackup: NotificationTemplate;
-  };
-  serverAddresses: ServerAddress[];
-}
+// Deprecated: NotificationConfig has been replaced by separate keys and unified response shape
 
 export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
 
@@ -161,7 +151,6 @@ export interface CronServiceConfig {
       enabled: boolean;
     };
   };
-  notificationConfig?: NotificationConfig;
 }
 
 export interface CronServiceStatus {

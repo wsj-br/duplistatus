@@ -5,7 +5,7 @@
 
 # Development Instructions
 
-![](https://img.shields.io/badge/version-0.8.14-blue)
+![](https://img.shields.io/badge/version-0.8.15-blue)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -674,7 +674,7 @@ To manually trigger the Docker image build workflow:
    - node-cron 4.2.1 – cron job scheduling
    - string-template 1.0.0 – string templating
    - tailwind-merge 3.3.1 – Tailwind class merging utility
-   - nodemailer 7.0.6 – email notifications
+   - nodemailer 7.0.7 – email notifications
    - qrcode 1.5.4 – QR code generation
 
 3. **Type Checking & Linting**

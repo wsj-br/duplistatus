@@ -4,7 +4,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![](https://img.shields.io/badge/version-0.8.14-blue)
+![](https://img.shields.io/badge/version-0.8.15-blue)
 
 <br/>
 
@@ -31,7 +31,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 - [User Guide](#user-guide)
 - [API Reference](#api-reference)
 - [Development](#development)
-- [Migrating to Version 0.7.x](#migrating-to-version-07x)
+- [Migrating to Version 0.7.27](#migrating-to-version-0727)
   - [The Migration Process](#the-migration-process)
   - [Monitoring the Migration](#monitoring-the-migration)
   - [Rolling Back (If Needed)](#rolling-back-if-needed)
@@ -64,7 +64,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 > If you are upgrading from version 0.6.x or earlier, your database will be automatically 
 > [migrated](#migrating-to-version-07x) to the new schema during the upgrade process.
 > 
-> 🚨 **API Response Changes in version 0.7.x**
+> 🚨 **API Response Changes in version 0.7.27**
 > 
 >   If you have external integrations, scripts, or applications that consume the API endpoints `/api/summary`, `/api/lastbackup`
 >   and `/api/lastbackups`, you **MUST** update them immediately as [the JSON response structure has changed.](#api-response-changes) 
@@ -136,7 +136,7 @@ This application was developed almost entirely using AI tools. The step-by-step 
 <br/>
 
 
-## Migrating to Version 0.7.x
+## Migrating to Version 0.7.27
 
 Your database will automatically update when you start the new version. This process is safe and preserves all your existing data.
 

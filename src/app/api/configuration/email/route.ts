@@ -62,12 +62,16 @@ export const POST = withCSRF(async (request: Request) => {
   try {
     const body = await request.json();
     
-    // Validate required fields
-    const { host, port, secure, username, password, mailto } = body;
+    // Get existing config to preserve password
+    const existingConfig = getSMTPConfig();
     
-    if (!host || !port || !username || !password || !mailto) {
+    // Extract fields from request body
+    const { host, port, secure, username, mailto } = body;
+    
+    // Validate required fields (excluding password)
+    if (host === undefined || port === undefined || username === undefined || mailto === undefined) {
       return NextResponse.json(
-        { error: 'Missing required fields: host, port, username, password, mailto' },
+        { error: 'Missing required fields: host, port, username, mailto' },
         { status: 400 }
       );
     }
@@ -81,13 +85,13 @@ export const POST = withCSRF(async (request: Request) => {
       );
     }
 
-    // Create SMTP config object
+    // Create SMTP config object, preserving existing password
     const smtpConfig: SMTPConfig = {
       host: host.trim(),
       port: portNumber,
       secure: Boolean(secure),
       username: username.trim(),
-      password: password,
+      password: existingConfig?.password || '', // Preserve existing password or use empty string
       mailto: mailto.trim()
     };
 

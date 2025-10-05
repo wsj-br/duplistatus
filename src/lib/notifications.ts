@@ -1,7 +1,7 @@
 import format from 'string-template';
 import nodemailer from 'nodemailer';
-import { getConfigNotifications, getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig } from './db-utils';
-import { NotificationConfig, NotificationTemplate, Backup, BackupStatus, BackupKey, EmailConfig } from './types';
+import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates } from './db-utils';
+import { NotificationTemplate, Backup, BackupStatus, BackupKey, EmailConfig } from './types';
 import { defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -42,25 +42,23 @@ export interface OverdueBackupContext {
   overdue_tolerance: string; // Human-readable tolerance label
 }
 
-async function getNotificationConfig(): Promise<NotificationConfig | null> {
+async function getNotificationConfig(): Promise<{
+  ntfy: { url: string; topic: string; accessToken?: string };
+  templates: { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+  backupSettings: Record<BackupKey, import('./types').BackupNotificationConfig>;
+} | null> {
   try {
-    const config = getConfigNotifications();
     const backupSettings = await getConfigBackupSettings();
     
     // Get ntfy config with default topic generation if needed
     const ntfyConfig = await getNtfyConfig();
+    const templates = getNotificationTemplates();
     
-    // Ensure ntfy config is always set with the generated default if needed
-    config.ntfy = ntfyConfig;
-    
-    // Load backup settings from separate configuration if available
-    if (Object.keys(backupSettings).length > 0) {
-      config.backupSettings = backupSettings;
-    } else {
-      config.backupSettings = {};
-    }
-    
-    return config;
+    return {
+      ntfy: ntfyConfig,
+      templates,
+      backupSettings: Object.keys(backupSettings).length > 0 ? backupSettings : {}
+    };
   } catch (error) {
     console.error('Failed to get notification config:', error instanceof Error ? error.message : String(error));
     return null;
@@ -69,7 +67,7 @@ async function getNotificationConfig(): Promise<NotificationConfig | null> {
 
 
 // Helper function to get backup settings with fallback to server settings
-async function getBackupSettings(config: NotificationConfig, serverId: string, backupName: string) {
+async function getBackupSettings(config: { backupSettings: Record<BackupKey, import('./types').BackupNotificationConfig> }, serverId: string, backupName: string) {
   const backupKey: BackupKey = `${serverId}:${backupName}`;
   const backupConfig = config.backupSettings?.[backupKey];
   
