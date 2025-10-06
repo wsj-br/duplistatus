@@ -1,0 +1,72 @@
+# Install  new doc structure
+
+This file is used to create the new doc structure for docusaurus based on the old docs/INSTALL.md file.
+
+The new files will be created in the ./website/docs/getting-started directory.
+
+Below, each section will be a file in the ./website/docs/getting-started directory, and the content will be the content of the section in the old docs/INSTALL.md file, listed in the section contents.
+
+## first-steps.md:
+
+- [First Steps](#first-steps)
+  - [Quick Start Checklist](#quick-start-checklist)
+  - [Accessing the Dashboard](#accessing-the-dashboard)
+  - [Initial Setup](#initial-setup)
+    - [1. Verify Installation](#1-verify-installation)
+    - [2. Configure Your First Duplicati Server](#2-configure-your-first-duplicati-server)
+    - [3. Basic Configuration](#3-basic-configuration)
+      - [Server Settings](#server-settings)
+      - [Display Settings](#display-settings)
+  - [Understanding the Dashboard](#understanding-the-dashboard)
+    - [Dashboard Overview](#dashboard-overview)
+    - [Key Features](#key-features)
+  - [Common Tasks](#common-tasks)
+    - [Adding a New Server](#adding-a-new-server)
+    - [Setting Up Notifications](#setting-up-notifications)
+    - [Monitoring Backups](#monitoring-backups)
+  - [Troubleshooting](#troubleshooting)
+    - [Dashboard Not Loading](#dashboard-not-loading)
+    - [No Backup Data](#no-backup-data)
+    - [Notifications Not Working](#notifications-not-working)
+  - [Getting Help](#getting-help)
+    - [Documentation](#documentation)
+    - [Support](#support)
+  - [Next Steps](#next-steps)
+  - [Tips for Success](#tips-for-success)
+
+## installation-guide.md:
+- [Installation Guide](#installation-guide)
+  - [Prerequisites](#prerequisites)
+  - [Container Images](#container-images)
+  - [Installation](#installation)
+    - [Container Images](#container-images-1)
+    - [Option 1: Using Docker Compose](#option-1-using-docker-compose)
+    - [Option 2: Using Portainer Stacks (Docker Compose)](#option-2-using-portainer-stacks-docker-compose)
+    - [Option 3: Using Portainer Stacks (GitHub Repository)](#option-3-using-portainer-stacks-github-repository)
+    - [Option 4: Using Docker CLI](#option-4-using-docker-cli)
+    - [Option 5: Using Podman with Pod (CLI)](#option-5-using-podman-with-pod-cli)
+    - [Option 6: Using Podman Compose (CLI)](#option-6-using-podman-compose-cli)
+## configure-tz-lang.md:
+
+  - [Configuring the timezone (for notifications and logs)](#configuring-the-timezone-for-notifications-and-logs)
+    - [Using your Linux Configuration](#using-your-linux-configuration)
+    - [List of Timezones](#list-of-timezones)
+  - [Configuring the Locale (for notifications and logs)](#configuring-the-locale-for-notifications-and-logs)
+    - [Using your Linux Configuration](#using-your-linux-configuration-1)
+    - [List of Locales](#list-of-locales)
+
+## environment-variables.md:
+
+  - [Environment Variables](#environment-variables)
+
+## duplicati-server-configuration.md:
+  - [Duplicati Server Configuration (Required)](#duplicati-server-configuration-required)
+
+
+## https-setup.md:
+
+  - [HTTPS Setup (Optional)](#https-setup-optional)
+    - [Option 1: Nginx with Certbot (Let's Encrypt)](#option-1-nginx-with-certbot-lets-encrypt)
+    - [Option 2: Caddy](#option-2-caddy)
+    - [Important Notes](#important-notes)
+  

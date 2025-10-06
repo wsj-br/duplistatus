@@ -18,19 +18,21 @@ if [ ! -f "$DB_PATH" ]; then
 fi
 
 echo "🧹 Clearing database data (preserving schema)..."
+echo "📋 Current database schema version: 3.1"
 
 # Clear all data from tables while preserving schema
 # We'll use a transaction to ensure atomicity
 sqlite3 "$DB_PATH" << 'EOF'
 BEGIN TRANSACTION;
 
--- Clear all data from main tables
+-- Clear all data from main tables (in dependency order)
+-- Delete backups first due to foreign key constraint
 DELETE FROM backups;
 DELETE FROM servers;
 DELETE FROM configurations;
 
--- Reset auto-increment sequences if any (though we use TEXT primary keys)
 -- Keep db_version table intact to preserve schema version info
+-- This table tracks migration history and should not be cleared
 
 COMMIT;
 
@@ -47,6 +49,7 @@ EOF
 if [ $? -eq 0 ]; then
     echo "✅ Database data cleared successfully"
     echo "📊 Schema and structure preserved"
+    echo "🔒 Foreign key constraints respected"
 else
     echo "❌ Error clearing database data"
     exit 1

@@ -1,9 +1,9 @@
 
-![duplistatus](//img/duplistatus_banner.png)
+![duplistatus](img/duplistatus_banner.png)
 
 # duplistatus Database Schema
 
-![](https://img.shields.io/badge/version-0.8.15-blue)
+
 
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.

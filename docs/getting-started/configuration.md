@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Duplicati Server Configuration
 
-![duplistatus](//img/duplistatus_banner.png)
+![duplistatus](img/duplistatus_banner.png)
 
 This document describes the required configuration for your **Duplicati** servers to work with **duplistatus**.
 
@@ -21,7 +21,7 @@ In order for **duplistatus** to work properly, each Duplicati server needs to be
 2. Select `Settings`
 3. Allow remote access, including a list of hostnames (or use `*`)
 
-![Duplicati settings](/img/duplicati-settings.png)
+![Duplicati settings](img/duplicati-settings.png)
 
 > [!CAUTION]
 > Only enable remote access if your Duplicati server is protected by a secure network

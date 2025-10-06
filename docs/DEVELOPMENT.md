@@ -1,11 +1,11 @@
 
 
-![duplistatus](//img/duplistatus_banner.png)
+![duplistatus](img/duplistatus_banner.png)
 
 
 # Development Instructions
 
-![](https://img.shields.io/badge/version-0.8.15-blue)
+
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -101,7 +101,7 @@ cd duplistatus
 2. Install dependencies (Debian/Ubuntu):
 ```bash
 sudo apt update
-sudo apt install nodejs npm sqlite3 imagemagick -y
+sudo apt install nodejs npm sqlite3 imagemagick git -y
 sudo npm install -g pnpm npm-check-updates doctoc markdown-link-check
 pnpm install
 ```

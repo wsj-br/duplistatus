@@ -1,20 +1,18 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 ---
 
 # First Steps
-
-![duplistatus](//img/duplistatus_banner.png)
 
 Welcome to **duplistatus**! This guide will help you get started with monitoring your Duplicati backups.
 
 ## Quick Start Checklist
 
 - [ ] **Install duplistatus** - [Installation Guide](installation.md)
-- [ ] **Configure Duplicati servers** - [Configuration Guide](configuration.md)
+- [ ] **Configure Duplicati servers** - [Configuration Guide](duplicati-server-configuration.md)
 - [ ] **Access the dashboard** - Open `http://your-server:9666`
-- [ ] **Set up notifications** - [Notifications Guide](../user-guide/notifications.md)
-- [ ] **Configure server settings** - [Server Management Guide](../user-guide/server-management.md)
+- [ ] **Set up notifications** - [Notifications Guide](../user-guide/backup-notifications-settings.md)
+- [ ] **Configure server settings** - [Server Management Guide](../user-guide/server-settings.md)
 
 ## Accessing the Dashboard
 
@@ -37,7 +35,7 @@ After installation, you should see:
 
 ### 2. Configure Your First Duplicati Server
 
-1. **Configure Duplicati** - Follow the [Configuration Guide](configuration.md)
+1. **Configure Duplicati** - Follow the [Configuration Guide](duplicati-server-configuration.md)
 2. **Run a backup** - Execute a backup job on your Duplicati server
 3. **Check the dashboard** - The server should appear in the duplistatus dashboard
 

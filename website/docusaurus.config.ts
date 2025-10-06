@@ -18,7 +18,7 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://wsj-br.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served|
-  baseUrl: process.env.NODE_ENV === 'production' ? '/duplistatus/' : '/',
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -54,8 +54,8 @@ const config: Config = {
           // Enable versioning
           versions: {
             current: {
-              label: '0.8.10',
-              path: '0.8.10',
+              label: '0.8',
+              path: '0.8',
             },
           },
           // Disable edit links - remove editUrl property
@@ -74,9 +74,10 @@ const config: Config = {
     ],
   ],
 
+
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/duplistatus_banner.png',
     // Enable local search
     search: {
       provider: 'local',
@@ -119,13 +120,12 @@ const config: Config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/0.8.10/getting-started/installation',
+                to: '/0.8/getting-started/installation',
               },
               {
                 label: 'User Guide',
-                to: '/0.8.10/user-guide/overview',
+                to: '/0.8/user-guide/overview',
               },
-              // API Reference removed - files not found
             ],
           },
           {
@@ -133,11 +133,11 @@ const config: Config = {
             items: [
               {
                 label: 'Development Setup',
-                to: '/0.8.10/development/setup',
+                to: '/0.8/development/setup',
               },
               {
-                label: 'Contributing',
-                href: 'https://github.com/wsj-br/duplistatus',
+                label: 'API Reference',
+                to: '/0.8/api-reference/overview',
               },
             ],
           },
@@ -155,7 +155,7 @@ const config: Config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Waldemar Scudeller Jr. Built with Docusaurus.`,
+        copyright: `Copyright © Waldemar Scudeller Jr. Built with Docusaurus.`,
       },
     prism: {
       theme: prismThemes.github,

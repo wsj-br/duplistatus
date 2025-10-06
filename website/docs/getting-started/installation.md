@@ -1,12 +1,16 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-# Installation
+# Installation Guide
 
-![duplistatus](//img/duplistatus_banner.png)
 
-This document describes how to install and configure the **duplistatus** server.
+
+This document describes how to install and configure the **duplistatus** server. It also describes an important configuration that needs to be performed on **Duplicati** servers.
+
+<br/>
+
+<br/>
 
 ## Prerequisites
 
@@ -17,6 +21,8 @@ Ensure you have the following installed:
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
 
+<br/>
+
 ## Container Images
 
 You can use the images from:
@@ -24,9 +30,22 @@ You can use the images from:
 - **Docker Hub**: `wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-## Installation Options
+<br/>
+
+## Installation
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman.
+
+<br/>
+
+### Container Images
+
+You can use the images from:
+
+- **Docker Hub**: `wsjbr/duplistatus:latest`
+- **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
+
+<br/>
 
 ### Option 1: Using Docker Compose
 
@@ -55,170 +74,93 @@ networks:
 
 volumes:
   duplistatus_data:
+    name: duplistatus_data
+    external: true
 ```
 
-Then run:
+After creating the file, execute the `docker compose` command to start the container in the background (`-d`):
 
 ```bash
 docker compose -f duplistatus.yml up -d
 ```
 
+<br/>
+
 ### Option 2: Using Portainer Stacks (Docker Compose)
 
-1. In Portainer, go to **Stacks** → **Add stack**
-2. Name your stack (e.g., `duplistatus`)
-3. Paste the Docker Compose configuration above
-4. Click **Deploy the stack**
+1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
+2. Name your stack (e.g., "duplistatus").
+3. Choose "Build method" as "Web editor".
+4. Copy and paste the content of `duplistatus.yml` from "Option 1"
+5. Click "Deploy the stack".
+
+<br/>
 
 ### Option 3: Using Portainer Stacks (GitHub Repository)
 
-1. In Portainer, go to **Stacks** → **Add stack**
-2. Name your stack (e.g., `duplistatus`)
-3. Select **Repository** as the build method
-4. Enter the repository URL: `https://github.com/wsj-br/duplistatus`
-5. Enter the path to the compose file: `docker-compose.yml`
-6. Click **Deploy the stack**
+1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
+2. Name your stack (e.g., "duplistatus").
+3. Choose "Build method" as "Repository".
+4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
+5. In the "Compose path" field, enter: `docker-compose.yml`
+6. Click "Deploy the stack".
+
+<br/>
 
 ### Option 4: Using Docker CLI
 
 ```bash
+# Create the volume
+docker volume create duplistatus_data
+
+# Start the container
 docker run -d \
   --name duplistatus \
-  --restart unless-stopped \
   -p 9666:9666 \
   -v duplistatus_data:/app/data \
   wsjbr/duplistatus:latest
 ```
 
+- The `duplistatus_data` volume is used for persistent storage.
+
+<br/>
+
 ### Option 5: Using Podman with Pod (CLI)
 
 ```bash
-# Create a pod
-podman pod create --name duplistatus-pod -p 9666:9666
+# Create a pod for the container
+podman pod create --name Duplistatus --publish 9666:9666/tcp
 
-# Run the container in the pod
-podman run -d \
+# Create and start the container
+podman create \
   --name duplistatus \
-  --pod duplistatus-pod \
-  --restart unless-stopped \
-  -v duplistatus_data:/app/data \
-  wsjbr/duplistatus:latest
+  --pod Duplistatus \
+  --user root \
+  -v /root/duplistatus_home/data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest
+
+# Start the pod (which starts the container)
+podman pod start Duplistatus
 ```
+
+<br/>
 
 ### Option 6: Using Podman Compose (CLI)
 
-Create a `docker-compose.yml` file and run:
+Create the `duplistatus.yml` file as instructed in Option 1 above, and then run:
 
 ```bash
-podman-compose up -d
-```
-
-## Configuring the Timezone
-
-### Using your Linux Configuration
-
-To use your Linux system's timezone configuration, add the following to your Docker Compose file:
-
-```yaml
-services:
-  duplistatus:
-    # ... other configuration
-    volumes:
-      - duplistatus_data:/app/data
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-```
-
-### List of Timezones
-
-You can also set a specific timezone using environment variables:
-
-```yaml
-services:
-  duplistatus:
-    # ... other configuration
-    environment:
-      - TZ=America/New_York
-```
-
-Common timezones:
-- `UTC`
-- `America/New_York`
-- `America/Chicago`
-- `America/Denver`
-- `America/Los_Angeles`
-- `Europe/London`
-- `Europe/Paris`
-- `Asia/Tokyo`
-
-## HTTPS Setup (Optional)
-
-### Option 1: Nginx with Certbot (Let's Encrypt)
-
-1. Install Nginx and Certbot
-2. Configure Nginx as a reverse proxy
-3. Obtain SSL certificates with Certbot
-4. Update your Docker Compose to use the reverse proxy
-
-### Option 2: Caddy
-
-Caddy automatically handles HTTPS certificates:
-
-```yaml
-services:
-  caddy:
-    image: caddy:2
-    container_name: caddy
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - duplistatus_network
-
-  duplistatus:
-    # ... existing configuration
-    networks:
-      - duplistatus_network
-```
-
-## Environment Variables
-
-You can customize the application using environment variables:
-
-```yaml
-services:
-  duplistatus:
-    # ... other configuration
-    environment:
-      - TZ=UTC
-      - PORT=9666
-      - NODE_ENV=production
+podman-compose -f duplistatus.yml up -d
 ```
 
 ## Next Steps
 
-1. **Configure Duplicati servers** - See [Configuration Guide](configuration.md)
-2. **Set up notifications** - See [User Guide - Notifications](../user-guide/notifications.md)
-3. **Explore the dashboard** - See [User Guide - Overview](../user-guide/overview.md)
+Check the [User Guide](../user-guide/overview.md) on how to use **duplistatus**.
 
-## Troubleshooting
+<br/>
 
-### Container won't start
-- Check Docker logs: `docker logs duplistatus`
-- Verify port 9666 is not in use: `netstat -tulpn | grep 9666`
-- Ensure Docker is running: `systemctl status docker`
+## License
 
-### Can't access the web interface
-- Verify the container is running: `docker ps`
-- Check if the port is exposed: `docker port duplistatus`
-- Try accessing `http://localhost:9666`
+The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).
 
-### Data persistence issues
-- Check volume mount: `docker volume inspect duplistatus_data`
-- Verify permissions on the host directory
-- Check container logs for database errors
+**Copyright © 2025 Waldemar Scudeller Jr.**

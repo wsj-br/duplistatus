@@ -1,10 +1,10 @@
 
-![duplistatus](//img/duplistatus_banner.png)
+![duplistatus](img/duplistatus_banner.png)
 
 
 # API Endpoints
 
-![](https://img.shields.io/badge/version-0.8.15-blue)
+
 
 <br/>
 
@@ -16,12 +16,16 @@ This document describes all available API endpoints for the duplistatus applicat
 ## API Structure
 
 The API is organised into logical groups:
-- **Core Operations**: Upload, retrieval, and management of backup data
-- **Configuration**: Notification settings, backup preferences, and system configuration
-- **Monitoring**: Health checks, status monitoring, and overdue backup tracking
+- **External APIs**: Summary data, latest backup status, and backup data uploads from Duplicati
+- **Core Operations**: Dashboard data, server management, and detailed backup information
+- **Chart Data**: Aggregated and server-specific time-series data for visualization and analytics
+- **Configuration Management**: Email, notification, backup settings, and system configuration
+- **Notification System**: Notification testing, overdue backup checks, and notification management
+- **Cron services**: Cron service management
+- **Monitoring & Health**: Health checks and status monitoring
 - **Administration**: Database maintenance, cleanup operations, and system management
-- **Chart Data**: Time-series data for visualisation and analytics
-
+- **Session Management**: Session management and session creation
+- **Authentication & Security**: Authentication and security
 <br/>
 
 ## Response Format
