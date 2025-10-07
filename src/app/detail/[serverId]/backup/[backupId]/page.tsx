@@ -30,6 +30,40 @@ const cleanLogMessage = (message: string): string => {
   return message.replace(/\[.*?\]:/g, '');
 };
 
+const wrapTextAtLength = (text: string, maxLength: number = 150): string[] => {
+  if (text.length <= maxLength) {
+    return [text];
+  }
+  
+  const lines: string[] = [];
+  let currentLine = '';
+  
+  // Split by words to avoid breaking words
+  const words = text.split(' ');
+  
+  for (const word of words) {
+    // If adding this word would exceed the limit, start a new line
+    if (currentLine.length + word.length + 1 > maxLength) {
+      if (currentLine.length > 0) {
+        lines.push(currentLine.trim());
+        currentLine = word;
+      } else {
+        // If a single word is longer than maxLength, break it
+        lines.push(word.substring(0, maxLength));
+        currentLine = word.substring(maxLength);
+      }
+    } else {
+      currentLine += (currentLine.length > 0 ? ' ' : '') + word;
+    }
+  }
+  
+  if (currentLine.length > 0) {
+    lines.push(currentLine.trim());
+  }
+  
+  return lines;
+};
+
 const getLogSectionBorderClass = (variant: "messages" | "errors" | "warning") => {
   switch (variant) {
     case "errors": return "border-red-500";
@@ -96,19 +130,24 @@ const LogSection = ({ title, items, variant = "messages", expectedLines }: {
           style={{
             maxHeight: '400px',
             overflowY: 'auto',
-            overflowX: 'auto',
+            overflowX: 'hidden',
             width: '100%'
           }}
         >
-          {items.map((item, index) => (
-            <div 
-              key={index} 
-              className="text-foreground leading-tight"
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              {cleanLogMessage(item)}
-            </div>
-          ))}
+          {items.map((item, index) => {
+            const cleanedMessage = cleanLogMessage(item);
+            const wrappedLines = wrapTextAtLength(cleanedMessage, 150);
+            
+            return (
+              <div key={index} className="text-foreground leading-tight">
+                {wrappedLines.map((line, lineIndex) => (
+                  <div key={lineIndex}>
+                    {line}
+                  </div>
+                ))}
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

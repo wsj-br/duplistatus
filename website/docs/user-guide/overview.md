@@ -4,47 +4,53 @@ sidebar_position: 1
 
 # Overview
 
-
-
-Welcome to the **duplistatus** user guide. This document provides comprehensive instructions for using **duplistatus** to monitor and manage your Duplicati backup operations.
+Welcome to the **duplistatus** user guide. This comprehensive document provides detailed instructions for using **duplistatus** to monitor and manage your Duplicati backup operations across multiple servers.
 
 <br/>
 
 > [!IMPORTANT]
-> If you are upgrading from version 0.6.1 or earlier, check the [Release notes](../release-notes/0.7.27.md) about all changes in this version.
+> If you are upgrading from version 0.6.1 or earlier, please check the [Release notes](../release-notes/0.7.27.md) for information about all changes in this version.
+
+<br/>
+
+## What is duplistatus?
+
+**duplistatus** is a powerful monitoring dashboard designed specifically for Duplicati backup systems. It provides:
+
+- **Centralised monitoring** of multiple Duplicati servers from a single interface
+- **Real-time status tracking** of all backup operations
+- **Automated overdue backup detection** with configurable alerts
+- **Comprehensive metrics and visualisation** of backup performance
+- **Flexible notification system** via NTFY and email
 
 <br/>
 
 ## Installation
 
-See [Installation Guide](../getting-started/installation.md) for prerequisites and installation instructions.
+For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../getting-started/installation.md).
 
 <br/><br/>
 
 ## Getting Started
 
-After installation, access the **duplistatus** web interface:
+After successful installation, access the **duplistatus** web interface by following these steps:
 
-1.  Open your web browser.
-
-2.  Navigate to `http://your-server-ip:9666`.
-
-    - Replace `your-server-ip` with the actual IP address or hostname of the server where **duplistatus** is installed. The default port is `9666`.
-
-3.  The dashboard displays automatically.
+1.  Open your preferred web browser
+2.  Navigate to `http://your-server-ip:9666`
+    - Replace `your-server-ip` with the actual IP address or hostname of your **duplistatus** server
+    - The default port is `9666`
+3.  The main dashboard will display automatically
 
 <br/>
 
 > [!TIP]
-> On the first use, you should collect backup logs from all your Duplicati servers
-> to populate the database. Please refer to the [Collect Backup Logs](collect-backup-logs.md)
-> section for guidance.
+> On first use, we recommend collecting backup logs from all your Duplicati servers to populate the database. Please refer to the [Collect Backup Logs](collect-backup-logs.md) section for detailed guidance.
 
 <br/><br/>
 
-## User Interface
+## User Interface Overview
 
-**duplistatus** provides a comprehensive dashboard for monitoring Duplicati backup operations across multiple servers.
+**duplistatus** provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
 
 <br/>
 
@@ -54,16 +60,16 @@ After installation, access the **duplistatus** web interface:
 
 <br/>
 
-The user interface consists of several elements, organised into different sections to provide a clear and intuitive experience:
+The user interface is organised into several key sections to provide a clear and comprehensive monitoring experience:
 
-1.  [**Application Toolbar**](#application-toolbar): Provides easy access to main functions and configurations.
-2.  [**Dashboard Summary**](dashboard.md#dashboard-summary): A summary of all monitored servers.
-3.  **Servers Overview**: [Cards](dashboard.md#cards-layout) or a [table](dashboard.md#table-layout) showing the latest status of all backups from monitored Duplicati servers.
-4.  [**Overdue Details**](dashboard.md#overdue-details): A visual warning for overdue backups with details on hover.
-5.  [**Available Backup Versions**](dashboard.md#available-backup-versions): Click the blue icon to view backup versions available on the backup destination.
-6.  [**Backup Metrics**](backup-metrics.md): Charts displaying backup metrics over time.
-7.  [**Server Details**](server-details.md): A list of recorded backups for a specific server, including statistics.
-8.  [**Backup Details**](server-details.md#backup-details): Detailed information for a specific backup, including log messages (execution, warnings, and errors).
+1.  [**Application Toolbar**](#application-toolbar): Quick access to essential functions and configurations
+2.  [**Dashboard Summary**](dashboard.md#dashboard-summary): Overview statistics for all monitored servers
+3.  **Servers Overview**: [Cards layout](dashboard.md#cards-layout) or [table layout](dashboard.md#table-layout) showing the latest status of all backups
+4.  [**Overdue Details**](dashboard.md#overdue-details): Visual warnings for overdue backups with detailed information on hover
+5.  [**Available Backup Versions**](dashboard.md#available-backup-versions): Click the blue icon to view backup versions available at the destination
+6.  [**Backup Metrics**](backup-metrics.md): Interactive charts displaying backup performance over time
+7.  [**Server Details**](server-details.md): Comprehensive list of recorded backups for specific servers, including detailed statistics
+8.  [**Backup Details**](server-details.md#backup-details): In-depth information for individual backups, including execution logs, warnings, and errors
 
 </div>
 
@@ -71,25 +77,76 @@ The user interface consists of several elements, organised into different sectio
 
 ## Application Toolbar
 
-The toolbar provides easy access to key functions and settings.
+The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
 <div>
 
 ![application toolbar](../img/duplistatus_toolbar.png)
 
-| Button                                              | Description                                                                                      |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Refresh screen                                      | Execute a refresh immediately                                                                    |
-| Auto-refresh                                        | Enable/disable auto-refresh. Configure the interval in [`Display Settings`](display-settings.md)   |
-| Open NTFY                                           | Open the ntfy.sh website on the topic configured in [`Settings → NTFY Settings`](ntfy-settings.md) |
-| [Duplicati configuration](duplicati-configuration.md) | Open the Duplicati server configuration (web interface)                                          |
-| [Check overdue backups](overdue-monitoring.md#overdue-check-process)     | Execute the check for overdue backups now                                                        |
-| [Collect logs](collect-backup-logs.md)                | Connect to a Duplicati server to collect all backup logs from its database                       |
-| [Database maintenance](database-maintenance.md)       | Clean the database, remove old backup logs, or delete data for a specific server                 |
-| [Display Settings](display-settings.md)               | Configure how **duplistatus** will display data                                                  |
-| [Settings](settings.md)                               | Configure notifications, overdue monitoring, server details and templates                        |
-| Theme                                               | Toggle between dark (default) and light themes                                                   |
+| Button | Description |
+|--------|-------------|
+| **Refresh screen** | Execute an immediate manual refresh of all data |
+| **Auto-refresh** | Enable or disable automatic refresh functionality |
+| **Open NTFY** | Access the ntfy.sh website for your configured notification topic |
+| [**Duplicati configuration**](duplicati-configuration.md) | Open the selected Duplicati server's web interface |
+| [**Check overdue backups**](overdue-monitoring.md#overdue-check-process) | Execute immediate overdue backup verification |
+| [**Collect logs**](collect-backup-logs.md) | Connect to Duplicati servers and retrieve backup logs |
+| [**Database maintenance**](database-maintenance.md) | Perform database cleanup and maintenance operations |
+| [**Display Settings**](display-settings.md) | Configure data display preferences and interface behaviour |
+| [**Settings**](settings.md) | Configure notifications, monitoring, and server templates |
+| **Theme** | Toggle between dark (default) and light interface themes |
 
 </div>
+
+<br/>
+
+### Auto-refresh Configuration
+
+The auto-refresh interval can be customised in the [Display Settings](display-settings.md) to match your monitoring requirements.
+
+### NTFY Integration
+
+The NTFY button opens the configured notification topic, which is set up in [Settings → NTFY Settings](ntfy-settings.md).
+
+<br/><br/>
+
+## Key Features
+
+### Enhanced Overdue Monitoring (Version 0.8.x+)
+
+Version 0.8.x introduces advanced overdue monitoring capabilities:
+
+- **Custom interval support** using Duplicati-compatible formats (e.g., "1D12h" for 1 day and 12 hours)
+- **Automatic synchronisation** of backup schedules from Duplicati configuration
+- **Flexible notification channels** with independent NTFY and email settings per backup job
+- **Bulk collection** from all configured servers with single actions
+
+### Comprehensive Backup Visualisation
+
+- **Interactive metrics charts** showing duration, file size, and storage usage trends
+- **Detailed backup history** with complete execution logs and error tracking
+- **Version management** displaying available backup versions at destination storage
+- **Real-time status updates** with configurable refresh intervals
+
+### Flexible Notification System
+
+- **Multiple notification channels**: NTFY push notifications and email alerts
+- **Customisable templates** for different backup scenarios
+- **Granular control** over notification triggers and frequencies
+- **Device configuration** with QR code generation for easy mobile setup
+
+<br/>
+
+## Next Steps
+
+After familiarising yourself with the interface, we recommend:
+
+1.  **Configure your Duplicati servers** to send backup logs to **duplistatus**
+2.  **Collect initial backup logs** using the [Collect Backup Logs](collect-backup-logs.md) feature
+3.  **Set up notifications** in [Settings](settings.md) to receive alerts for important events
+4.  **Configure overdue monitoring** to ensure timely backup completion alerts
+5.  **Explore server details** to understand backup performance and history
+
+For detailed configuration instructions, please refer to the specific sections in this user guide.
 
 <br/><br/>
