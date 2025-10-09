@@ -2,6 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+  - [sidebar_position: 3](#sidebar_position-3)
 - [First Steps](#first-steps)
   - [Quick Start Checklist](#quick-start-checklist)
   - [Accessing the Dashboard](#accessing-the-dashboard)

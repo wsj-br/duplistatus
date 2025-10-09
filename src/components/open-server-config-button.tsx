@@ -122,7 +122,7 @@ export function OpenServerConfigButton() {
   };
 
   const handleSettingsClick = () => {
-    router.push('/settings?tab=addresses');
+    router.push('/settings?tab=server');
     setIsPopoverOpen(false);
   };
 

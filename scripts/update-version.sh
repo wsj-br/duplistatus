@@ -36,16 +36,18 @@ fi
 
 
 # If Dockerfile  exists, check if VERSION variable exists and compare versions
-if grep -q "VERSION=" Dockerfile; then
-    # Get current version from .env file
-    CURRENT_VERSION=$(awk -F'[= ]' '/VERSION/ {for(i=1;i<=NF;i++) if($i=="VERSION") break; print $(i+1);}' Dockerfile)
+if [ -f Dockerfile ]; then
+    if grep -q "VERSION=" Dockerfile; then
+        # Get current version from .env file
+        CURRENT_VERSION=$(awk -F'[= ]' '/VERSION/ {for(i=1;i<=NF;i++) if($i=="VERSION") break; print $(i+1);}' Dockerfile)
 
-    # Compare versions
-    if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+        # Compare versions
+        if [ "$CURRENT_VERSION" != "$VERSION" ]; then
 
-        # Update VERSION variable
-        sed "s/VERSION=[.0-9*]*/VERSION=$VERSION/" Dockerfile > Dockerfile.tmp && mv Dockerfile.tmp Dockerfile
-        echo "✅ Updated VERSION=$VERSION in existing Dockerfile file"
-        echo ""
+            # Update VERSION variable
+            sed "s/VERSION=[.0-9*]*/VERSION=$VERSION/" Dockerfile > Dockerfile.tmp && mv Dockerfile.tmp Dockerfile
+            echo "✅ Updated VERSION=$VERSION in existing Dockerfile file"
+            echo ""
+        fi
     fi
 fi

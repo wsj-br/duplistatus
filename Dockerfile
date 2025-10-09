@@ -55,7 +55,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Set the application default environment variables
 
-ENV VERSION=0.8.15 \
+ENV VERSION=0.8.16 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \

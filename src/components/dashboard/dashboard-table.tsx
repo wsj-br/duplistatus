@@ -320,7 +320,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                                   className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    router.push('/settings?tab=backups');
+                                    router.push('/settings?tab=overdue');
                                   }}
                                 >
                                   <Settings className="h-3 w-3" />
@@ -595,7 +595,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         variant="outline"
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push('/settings?tab=backups');
+                          router.push('/settings?tab=overdue');
                         }}
                         className="flex-1"
                       >

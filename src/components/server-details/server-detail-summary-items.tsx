@@ -145,7 +145,7 @@ export function ServerDetailSummaryItems({
   const summaryItems = getSummaryItems();
 
   const handleSettingsClick = () => {
-    router.push('/settings?tab=backups');
+    router.push('/settings?tab=overdue');
   };
 
   return (
