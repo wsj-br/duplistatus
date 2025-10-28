@@ -7,6 +7,9 @@ const webpack = require('webpack');
 const nextConfig: NextConfig = {
   // output: "standalone",  // not needed as we are using the custom server duplistatus-server.ts
   
+  // Disable Turbopack to use webpack configuration
+  turbopack: {},
+  
   // Optimize preloading to reduce warnings
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
@@ -102,9 +105,6 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.1.20', 'g5-server'],
   typescript: {
     ignoreBuildErrors: false,
-  },
-  eslint: {
-    ignoreDuringBuilds: false,
   },
   env: {
     NEXT_PUBLIC_APP_VERSION: version,

@@ -10,7 +10,7 @@ FROM node:alpine AS base
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 
-RUN apk add --no-cache libc6-compat tzdata icu-libs icu-data-full
+RUN apk add --no-cache libc6-compat tzdata icu-libs icu-data-full python3 make g++
 
 WORKDIR /app
 
@@ -45,8 +45,8 @@ RUN mkdir -p /app/data && pnpm run build
 # ------------------------------------------------------------
 FROM base AS runner
 
-# install curl for healthcheck
-RUN apk add --no-cache curl tzdata icu-libs icu-data-full
+# install curl for healthcheck and build dependencies for native modules
+RUN apk add --no-cache curl tzdata icu-libs icu-data-full 
 
 # set environment variables
 ENV NODE_ENV=production
@@ -55,7 +55,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Set the application default environment variables
 
-ENV VERSION=0.8.16 \
+ENV VERSION=0.8.17 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \
@@ -70,9 +70,10 @@ WORKDIR /app
 # Copy package files for production dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Install only production dependencies
-RUN pnpm install --frozen-lockfile --prod
+# Copy node_modules from builder stage
+COPY --chown=node:node --from=builder /app/node_modules ./node_modules
 
+# Copy public files
 COPY --chown=node:node --from=builder /app/public ./public
 
 # Copy the complete Next.js build output

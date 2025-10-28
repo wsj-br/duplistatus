@@ -25,4 +25,3 @@ networks:
 volumes:
   duplistatus_data:
     name: duplistatus_data 
-    external: true
