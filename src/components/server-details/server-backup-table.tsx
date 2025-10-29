@@ -49,7 +49,7 @@ interface ServerBackupTableProps {
 export function ServerBackupTable({ backups, serverName, serverAlias, serverNote, onBackupDeleted }: ServerBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
-  const [isDevMode, setIsDevMode] = useState(false);
+  const [isDevMode] = useState(() => isDevelopmentMode());
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
@@ -122,36 +122,35 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
 
   // Reset to first page when filter changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [selectedBackup]);
 
   // Reset to first page when sort changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [sortConfig]);
 
   // Reset to first page when table page size changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [tablePageSize]);
 
   // Reset to first page when backups data changes (e.g. after deletion)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [backups.length]);
   
   // Ensure current page is valid when totalPages changes
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
-
-  // Check development mode on component mount
-  useEffect(() => {
-    const devMode = isDevelopmentMode();
-    setIsDevMode(devMode);
-  }, []);
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));

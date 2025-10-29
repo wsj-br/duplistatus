@@ -30,10 +30,10 @@ export function DashboardLayout({
   selectedServerId,
   selectedServer,
   serverBackups,
-  isLoading: _isLoading, // eslint-disable-line @typescript-eslint/no-unused-vars
-  lastRefreshTime: _lastRefreshTime, // eslint-disable-line @typescript-eslint/no-unused-vars
+  isLoading: _isLoading,
+  lastRefreshTime: _lastRefreshTime,
   onServerSelect,
-  onRefresh: _onRefresh // eslint-disable-line @typescript-eslint/no-unused-vars
+  onRefresh: _onRefresh
 }: DashboardLayoutProps) {
   const { state: serverSelectionState, setSelectedServerId, setViewMode, setServers } = useServerSelection();
   const { viewMode, isInitialized, overviewSidePanel } = serverSelectionState;

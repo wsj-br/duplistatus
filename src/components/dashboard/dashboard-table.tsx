@@ -76,12 +76,8 @@ export function DashboardTable({ servers }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
   
-  // Initialize with default state to match server rendering
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Load persisted sort config after component mounts (client-side only)
-  useEffect(() => {
+  // Initialize with persisted sort config from localStorage (lazy initialization)
+  const [sortConfig, setSortConfig] = useState<SortConfig>(() => {
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem(DASHBOARD_SORT_KEY);
@@ -90,15 +86,16 @@ export function DashboardTable({ servers }: DashboardTableProps) {
           // Validate the stored data
           if (parsed && typeof parsed.column === 'string' && 
               (parsed.direction === 'asc' || parsed.direction === 'desc')) {
-            setSortConfig(parsed);
+            return parsed;
           }
         }
       } catch (error) {
         console.warn('Failed to load dashboard sort config:', error);
       }
-      setIsLoaded(true);
     }
-  }, []);
+    return { column: '', direction: 'asc' };
+  });
+  const [isLoaded, setIsLoaded] = useState(true);
 
   // Convert ServerSummary to table-compatible format
   const tableData = useMemo(() => {

@@ -22,7 +22,6 @@ const dbPath = path.join(dataDir, 'backups.db');
 // Use a global singleton to prevent multiple database connections during hot reload
 // This is critical in development mode where Next.js may re-import modules
 declare global {
-  // eslint-disable-next-line no-var
   var __dbInstance: Database.Database | undefined;
 }
 

@@ -419,6 +419,7 @@ export const ServerCards = memo(function ServerCards({ servers, selectedServerId
   // Calculate cards to show after component mounts and when dependencies change
   useEffect(() => {
     const newCardsToShow = calculateCardsToShow();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCalculatedCardsToShow(newCardsToShow);
   }, [calculateCardsToShow]);
   
@@ -443,6 +444,7 @@ export const ServerCards = memo(function ServerCards({ servers, selectedServerId
   // Calculate card width after component mounts and when dependencies change
   useEffect(() => {
     const newCardWidth = calculateCardWidth();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCardWidth(newCardWidth);
   }, [calculateCardWidth]);
 

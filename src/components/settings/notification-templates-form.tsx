@@ -76,6 +76,7 @@ const TemplateEditor = ({
   fieldRefs,
   onFieldFocus,
   activeTab,
+  createRefCallback,
 }: { 
   templateType: 'success' | 'warning' | 'overdueBackup';
   template: NotificationTemplate;
@@ -92,6 +93,7 @@ const TemplateEditor = ({
   fieldRefs: React.MutableRefObject<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>;
   onFieldFocus: (field: keyof NotificationTemplate) => void;
   activeTab: 'success' | 'warning' | 'overdue';
+  createRefCallback: (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => void;
 }) => {
   // Determine which variable list to use based on active tab
   const variablesList = activeTab === 'overdue' ? TEMPLATE_VARIABLES_OVERDUE_BACKUP : TEMPLATE_VARIABLES;
@@ -145,7 +147,7 @@ const TemplateEditor = ({
               value={template.title || ''}
               onChange={(e) => updateTemplate(templateType, 'title', e.target.value)}
               placeholder="Enter notification title"
-              ref={el => { fieldRefs.current[`${templateType}-title`] = el; }}
+              ref={createRefCallback(`${templateType}-title`)}
               onFocus={() => onFieldFocus('title')}
             />
           </div>
@@ -182,7 +184,7 @@ const TemplateEditor = ({
               value={template.tags || ''}
               onChange={(e) => updateTemplate(templateType, 'tags', e.target.value)}
               placeholder=""
-              ref={el => { fieldRefs.current[`${templateType}-tags`] = el; }}
+              ref={createRefCallback(`${templateType}-tags`)}
               onFocus={() => onFieldFocus('tags')}
             />
           </div>
@@ -194,7 +196,7 @@ const TemplateEditor = ({
             Message Template
           </Label>
           <Textarea
-            ref={el => { fieldRefs.current[`${templateType}-message`] = el; }}
+            ref={createRefCallback(`${templateType}-message`)}
             id={`${templateType}-message`}
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
@@ -242,8 +244,17 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [focusedField, setFocusedField] = useState<Record<string, keyof NotificationTemplate | null>>({
     success: null,
     warning: null,
-          overdueBackup: null,
+    overdueBackup: null,
   });
+
+  // Create stable ref callback functions to avoid immutability errors
+  const createRefCallback = useCallback((key: string) => {
+    return (el: HTMLInputElement | HTMLTextAreaElement | null) => {
+      if (el) {
+        fieldRefs.current[key] = el;
+      }
+    };
+  }, []);
 
   // Update localStorage when activeTab changes
   const handleTabChange = (value: string) => {
@@ -411,6 +422,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             fieldRefs={fieldRefs}
             onFieldFocus={handleFieldFocus}
             activeTab={activeTab}
+            createRefCallback={createRefCallback}
           />
         </TabsContent>
         
@@ -427,6 +439,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             fieldRefs={fieldRefs}
             onFieldFocus={handleFieldFocus}
             activeTab={activeTab}
+            createRefCallback={createRefCallback}
           />
         </TabsContent>
         
@@ -443,6 +456,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
             fieldRefs={fieldRefs}
             onFieldFocus={handleFieldFocus}
             activeTab={activeTab}
+            createRefCallback={createRefCallback}
           />
         </TabsContent>
       </Tabs>

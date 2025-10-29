@@ -24,7 +24,9 @@ dist
 *.md
 !README.md
 docs
-website
+# Exclude website node_modules and build but keep the source
+website/node_modules
+website/build
 backups.db
 *.db
 *.sqlite

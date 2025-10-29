@@ -167,7 +167,7 @@ function SettingsPageContent() {
         setActiveTab(savedTab);
       }
     }
-  }, [searchParams]);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // Remove saveConfiguration and saveBackupSettings
 

@@ -1,11 +1,14 @@
 import {useEffect} from 'react';
 import {Redirect} from '@docusaurus/router';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function Home() {
+  const introUrl = useBaseUrl('intro');
+  
   useEffect(() => {
     // Redirect to the intro page immediately
-    window.location.href = '/0.8/intro';
-  }, []);
+    window.location.href = introUrl;
+  }, [introUrl]);
 
-  return <Redirect to="/0.8/intro" />;
+  return <Redirect to={introUrl} />;
 }

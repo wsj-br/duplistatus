@@ -25,7 +25,7 @@ interface ServerDetailsContentProps {
   lastRefreshTime: Date;
 }
 
-export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck, lastRefreshTime: _lastRefreshTime }: ServerDetailsContentProps) { // eslint-disable-line @typescript-eslint/no-unused-vars
+export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck, lastRefreshTime: _lastRefreshTime }: ServerDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   const { refreshDetail } = useGlobalRefresh();
   

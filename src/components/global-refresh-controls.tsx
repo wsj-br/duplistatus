@@ -61,6 +61,7 @@ export function GlobalRefreshControls() {
   // Calculate progress based on time remaining
   useEffect(() => {
     if (!state.isEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProgress(0);
       return;
     }
@@ -73,6 +74,7 @@ export function GlobalRefreshControls() {
   // Reset timer when pathname changes (page navigation)
   useEffect(() => {
     if (state.isEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeRemaining(state.interval * 60);
       setProgress(0);
     }
@@ -100,6 +102,7 @@ export function GlobalRefreshControls() {
   // Reset timer when refresh happens
   useEffect(() => {
     if (state.lastRefresh) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeRemaining(state.interval * 60);
     }
   }, [state.lastRefresh, state.interval]);

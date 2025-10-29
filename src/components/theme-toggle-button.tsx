@@ -3,15 +3,14 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/contexts/theme-context";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export function ThemeToggleButton() {
   const { theme, toggleTheme } = useTheme();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const [isClient] = useState(() => {
+    // Client-side detection with lazy initialization
+    return typeof window !== 'undefined';
+  });
 
   return (
     <Button variant="outline" size="icon" onClick={toggleTheme} title="Toggle theme" aria-label="Toggle theme">

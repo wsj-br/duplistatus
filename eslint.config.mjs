@@ -10,6 +10,8 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    // Ignore Docusaurus website directory (auto-generated files)
+    'website/**',
   ]),
 ])
  

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import type { ServerSummary } from '@/lib/types';
 
 interface ServerSelectionState {
@@ -27,16 +27,8 @@ interface ServerSelectionProviderProps {
 }
 
 export function ServerSelectionProvider({ children }: ServerSelectionProviderProps) {
-  const [state, setState] = useState<ServerSelectionState>({
-    selectedServerId: null,
-    viewMode: 'overview', // Default fallback
-    servers: [],
-    isInitialized: false,
-    overviewSidePanel: 'status',
-  });
-
-  // Initialize view mode and overview side panel from localStorage on mount
-  useEffect(() => {
+  // Initialize view mode and overview side panel from localStorage (lazy initialization)
+  const [state, setState] = useState<ServerSelectionState>(() => {
     try {
       const savedViewMode = localStorage.getItem('dashboard-view-mode');
       const savedOverviewSidePanel = localStorage.getItem('overview-side-panel');
@@ -49,17 +41,24 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
         ? savedOverviewSidePanel
         : 'status';
       
-      setState(prev => ({ 
-        ...prev, 
+      return {
+        selectedServerId: null,
         viewMode,
+        servers: [],
+        isInitialized: true,
         overviewSidePanel,
-        isInitialized: true 
-      }));
+      };
     } catch (error) {
       console.error('Error loading settings from localStorage:', error);
-      setState(prev => ({ ...prev, viewMode: 'overview', overviewSidePanel: 'status', isInitialized: true }));
+      return {
+        selectedServerId: null,
+        viewMode: 'overview',
+        servers: [],
+        isInitialized: true,
+        overviewSidePanel: 'status',
+      };
     }
-  }, []);
+  });
 
   const setSelectedServerId = useCallback((serverId: string | null) => {
     setState(prev => ({ ...prev, selectedServerId: serverId }));

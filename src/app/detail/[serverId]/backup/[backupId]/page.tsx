@@ -154,6 +154,53 @@ const LogSection = ({ title, items, variant = "messages", expectedLines }: {
   );
 };
 
+const parseJsonArray = (jsonString: string | null): string[] => {
+  if (!jsonString) return [];
+  try {
+    const parsed = JSON.parse(jsonString);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error('Error parsing JSON:', e);
+    return [];
+  }
+};
+
+const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availableBackups: string[] | null; currentBackupDate: string }) => {
+  if (!availableBackups || availableBackups.length === 0) {
+    return <span className="text-sm text-muted-foreground"> </span>;
+  }
+
+  return (
+    <div className="mt-2 w-fit ml-4">
+      <Table className="w-auto text-xs">
+        <TableHeader>
+          <TableRow className="border-b">
+            <TableCell className="font-medium text-blue-400 font-bold w-8 py-1 px-2 text-xs">#</TableCell>
+            <TableCell className="font-medium text-blue-400 font-bold py-1 px-2 text-xs">Backup Date</TableCell>
+            <TableCell className="font-medium text-blue-400 font-bold py-1 px-2 text-xs">When</TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {/* First row: Current backup date */}
+          <TableRow className="border-b">
+            <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
+            <TableCell className="py-1 px-2 text-xs">{new Date(currentBackupDate).toLocaleString()}</TableCell>
+            <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(currentBackupDate)}</TableCell>
+          </TableRow>
+          {/* Additional available versions starting from #2 */}
+          {availableBackups.map((timestamp, index) => (
+            <TableRow key={index} className="border-b">
+              <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{new Date(timestamp).toLocaleString()}</TableCell>
+              <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(timestamp)}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
 export default async function BackupLogPage({ params }: BackupLogPageProps) {
   const { serverId, backupId } = await params;
   
@@ -190,53 +237,6 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   if (!backup) {
     notFound();
   }
-
-  const parseJsonArray = (jsonString: string | null): string[] => {
-    if (!jsonString) return [];
-    try {
-      const parsed = JSON.parse(jsonString);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      console.error('Error parsing JSON:', e);
-      return [];
-    }
-  };
-
-  const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availableBackups: string[] | null; currentBackupDate: string }) => {
-    if (!availableBackups || availableBackups.length === 0) {
-      return <span className="text-sm text-muted-foreground"> </span>;
-    }
-
-    return (
-      <div className="mt-2 w-fit ml-4">
-        <Table className="w-auto text-xs">
-          <TableHeader>
-            <TableRow className="border-b">
-              <TableCell className="font-medium text-blue-400 font-bold w-8 py-1 px-2 text-xs">#</TableCell>
-              <TableCell className="font-medium text-blue-400 font-bold py-1 px-2 text-xs">Backup Date</TableCell>
-              <TableCell className="font-medium text-blue-400 font-bold py-1 px-2 text-xs">When</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {/* First row: Current backup date */}
-            <TableRow className="border-b">
-              <TableCell className="w-8 py-1 px-2 text-xs">1</TableCell>
-              <TableCell className="py-1 px-2 text-xs">{new Date(currentBackupDate).toLocaleString()}</TableCell>
-              <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(currentBackupDate)}</TableCell>
-            </TableRow>
-            {/* Additional available versions starting from #2 */}
-            {availableBackups.map((timestamp, index) => (
-              <TableRow key={index} className="border-b">
-                <TableCell className="w-8 py-1 px-2 text-xs">{index + 2}</TableCell>
-                <TableCell className="py-1 px-2 text-xs">{new Date(timestamp).toLocaleString()}</TableCell>
-                <TableCell className="py-1 px-2 text-xs">{formatRelativeTime(timestamp)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    );
-  };
 
   const messages = parseJsonArray(backup.messages_array || null);
   const warnings = parseJsonArray(backup.warnings_array || null);

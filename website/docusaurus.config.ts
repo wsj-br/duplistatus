@@ -18,7 +18,7 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://wsj-br.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served|
-  baseUrl: '/',
+  baseUrl: '/docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -51,13 +51,6 @@ const config: Config = {
           path: './docs',
           // Make docs the default route
           routeBasePath: '/',
-          // Enable versioning
-          versions: {
-            current: {
-              label: '0.8',
-              path: '0.8',
-            },
-          },
           // Disable edit links - remove editUrl property
           // Enable table of contents
           showLastUpdateTime: true,
@@ -102,10 +95,6 @@ const config: Config = {
           label: 'Documentation',
         },
         {
-          type: 'docsVersionDropdown',
-          position: 'right',
-        },
-        {
           href: 'https://github.com/wsj-br/duplistatus',
           label: 'GitHub',
           position: 'right',
@@ -120,11 +109,11 @@ const config: Config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/0.8/getting-started/installation',
+                to: '/getting-started/installation',
               },
               {
                 label: 'User Guide',
-                to: '/0.8/user-guide/overview',
+                to: '/user-guide/overview',
               },
             ],
           },
@@ -133,11 +122,11 @@ const config: Config = {
             items: [
               {
                 label: 'Development Setup',
-                to: '/0.8/development/setup',
+                to: '/development/setup',
               },
               {
                 label: 'API Reference',
-                to: '/0.8/api-reference/overview',
+                to: '/api-reference/overview',
               },
             ],
           },
