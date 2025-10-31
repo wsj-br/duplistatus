@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.20.0",
   "engines": {
     "node": ">=20.19.0",
-    "pnpm": ">=10.18.1"
+    "pnpm": ">=10.20.0"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",

@@ -35,6 +35,10 @@ tmp/*
 *.diff
 *.tmp
 
+# website
+website/node_modules
+website/build
+public/docs
 
 # debug
 npm-debug.log*
