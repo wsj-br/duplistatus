@@ -1,6 +1,4 @@
----
-sidebar_position: 14
----
+
 
 # Email Configuration
 
@@ -8,7 +6,7 @@ sidebar_position: 14
 
 <div>
 
-![Email Configuration](../img/screen-settings-email.png)
+![Email Configuration](/img/screen-settings-email.png)
 
 - **Configuration Status**: Shows whether email is properly configured and ready to use.
 - **Current Configuration**: Displays SMTP settings (host, port, secure connection, username) without exposing passwords.

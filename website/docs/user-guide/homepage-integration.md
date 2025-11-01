@@ -1,6 +1,4 @@
----
-sidebar_position: 17
----
+
 
 # Homepage Integration (Optional)
 
@@ -50,7 +48,7 @@ This widget displays overall backup statistics on your Homepage dashboard.
 
 <div>
 
-![Homepage Summary Widget](../img/homepage-summary.png)
+![Homepage Summary Widget](/img/homepage-summary.png)
 
 </div>
 
@@ -91,7 +89,7 @@ This widget displays the latest backup information for a specific machine.
 
 <div>
 
-![Homepage Last Backup Widget](../img/homepage-lastbackup.png)
+![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
 
 </div>
 

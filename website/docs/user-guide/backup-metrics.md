@@ -1,6 +1,4 @@
----
-sidebar_position: 3
----
+
 
 # Backup Metrics
 
@@ -11,7 +9,7 @@ A chart of backup metrics over time is shown on both the dashboard and the serve
 
 <div>
 
-![Backup Metrics](../img/screen-metrics.png)
+![Backup Metrics](/img/screen-metrics.png)
 
 - **Uploaded Size**: Total amount of data uploaded/transmitted during backups from Duplicati server to the destination (local storage, FTP, cloud provider, ...) per day.
 - **Duration**: The total duration of all backups received per day in HH:MM.

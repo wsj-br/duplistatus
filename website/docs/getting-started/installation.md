@@ -1,6 +1,4 @@
----
-sidebar_position: 2
----
+
 
 # Installation Guide
 
@@ -161,6 +159,6 @@ Check the [User Guide](../user-guide/overview.md) on how to use **duplistatus**.
 
 ## License
 
-The project is licensed under the [Apache License 2.0](https://github.com/wsj-br/duplistatus/blob/main/LICENSE).
+The project is licensed under the [Apache License 2.0](../LICENSE.md).
 
 **Copyright © 2025 Waldemar Scudeller Jr.**

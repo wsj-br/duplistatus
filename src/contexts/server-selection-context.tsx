@@ -29,6 +29,17 @@ interface ServerSelectionProviderProps {
 export function ServerSelectionProvider({ children }: ServerSelectionProviderProps) {
   // Initialize view mode and overview side panel from localStorage (lazy initialization)
   const [state, setState] = useState<ServerSelectionState>(() => {
+    // Check if we're in a browser environment (not SSR)
+    if (typeof window === 'undefined') {
+      return {
+        selectedServerId: null,
+        viewMode: 'overview',
+        servers: [],
+        isInitialized: true,
+        overviewSidePanel: 'status',
+      };
+    }
+
     try {
       const savedViewMode = localStorage.getItem('dashboard-view-mode');
       const savedOverviewSidePanel = localStorage.getItem('overview-side-panel');
@@ -66,11 +77,13 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
 
   const setViewMode = useCallback((viewMode: 'analytics' | 'table' | 'overview') => {
     setState(prev => ({ ...prev, viewMode }));
-    // Save to localStorage
-    try {
-      localStorage.setItem('dashboard-view-mode', viewMode);
-    } catch (error) {
-      console.error('Error saving view mode to localStorage:', error);
+    // Save to localStorage (only in browser environment)
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('dashboard-view-mode', viewMode);
+      } catch (error) {
+        console.error('Error saving view mode to localStorage:', error);
+      }
     }
   }, []);
 
@@ -80,11 +93,13 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
 
   const setOverviewSidePanel = useCallback((panel: 'status' | 'chart') => {
     setState(prev => ({ ...prev, overviewSidePanel: panel }));
-    // Save to localStorage
-    try {
-      localStorage.setItem('overview-side-panel', panel);
-    } catch (error) {
-      console.error('Error saving overview side panel to localStorage:', error);
+    // Save to localStorage (only in browser environment)
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('overview-side-panel', panel);
+      } catch (error) {
+        console.error('Error saving overview side panel to localStorage:', error);
+      }
     }
   }, []);
 

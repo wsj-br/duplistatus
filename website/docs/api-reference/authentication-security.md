@@ -1,6 +1,4 @@
----
-sidebar_position: 11
----
+
 
 # Authentication & Security
 

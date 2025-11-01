@@ -1,6 +1,4 @@
----
-sidebar_position: 9
----
+
 
 # Database Schema
 
@@ -19,7 +17,7 @@ duplistatus uses an automated migration system to handle database schema changes
 
 ### Current Migration Versions
 
-- **Version 0.7.27**: Major schema changes (machines → servers)
+- **Version 0.7.x**: Major schema changes (machines → servers)
 - **Version 0.8.x**: Enhanced features and performance improvements
 
 ### Migration Process

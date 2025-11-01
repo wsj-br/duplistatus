@@ -1,12 +1,10 @@
----
-sidebar_position: 13
----
+
 
 # NTFY Settings
 
 NTFY is a simple notification service that can send push notifications to your phone or desktop. This section allows you to set up your notification server connection and authentication.
 
-![Ntfy settings](../img/screen-settings-ntfy.png)
+![Ntfy settings](/img/screen-settings-ntfy.png)
 
 - **NTFY URL**: The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).
 - **NTFY Topic**: A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own.

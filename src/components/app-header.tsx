@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Settings } from 'lucide-react';
+import { LayoutDashboard, Settings, BookOpenText } from 'lucide-react';
 import { ThemeToggleButton } from '@/components/theme-toggle-button';
 import { DisplayMenu } from '@/components/display-menu';
 import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu';
@@ -58,6 +58,15 @@ export function AppHeader() {
               <Settings className="h-4 w-4" />
             </Button>
           </Link>
+          <Button 
+            variant="outline" 
+            size="icon" 
+            title="Help"
+            className="ml-4"
+            onClick={() => window.open('/docs/user-guide/overview', '_blank', 'noopener,noreferrer')}
+          >
+            <BookOpenText className="h-4 w-4" />
+          </Button>
           <ThemeToggleButton />
         </div>
       </div>

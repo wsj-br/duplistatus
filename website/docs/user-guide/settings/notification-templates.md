@@ -1,6 +1,4 @@
----
-sidebar_position: 15
----
+
 
 # Notification Templates
 
@@ -16,7 +14,7 @@ sidebar_position: 15
 
 <br/>
 
-![notification templates](../img/screen-settings-notifications-templates.png)
+![notification templates](/img/screen-settings-notifications-templates.png)
 
 <br/>
 

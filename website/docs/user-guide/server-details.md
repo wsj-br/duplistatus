@@ -1,6 +1,4 @@
----
-sidebar_position: 4
----
+
 
 # Server Details
 
@@ -8,7 +6,7 @@ Clicking on a server from the dashboard opens a page with a list of backups for 
 
 <div>
 
-![Server Details](../img/screen-server.png)
+![Server Details](/img/screen-server.png)
 
 </div>
 
@@ -47,7 +45,7 @@ This table lists the backup logs for the selected server.
 
 <div>
 
-![Backup History](../img/screen-backup-history.png)
+![Backup History](/img/screen-backup-history.png)
 
 - **Backup Name**: The name of the backup in the Duplicati server.
 - **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
@@ -76,7 +74,7 @@ Clicking on a status badge in the dashboard (table view) or any row in the backu
 
 <div>
 
-![Backup Details](../img/screen-backup.png)
+![Backup Details](/img/screen-backup.png)
 
 - **Server details**: server name, alias and note.
 - **Backup Information**: The timestamp of the backup and its ID.

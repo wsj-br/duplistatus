@@ -27,6 +27,7 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: 'warn',
       onBrokenMarkdownImages: 'warn',
@@ -41,6 +42,11 @@ const config: Config = {
     locales: ['en'],
   },
 
+  plugins: [
+    '@docusaurus/theme-mermaid',
+    'docusaurus-plugin-image-zoom',
+  ],
+
   presets: [
     [
       'classic',
@@ -53,8 +59,8 @@ const config: Config = {
           routeBasePath: '/',
           // Disable edit links - remove editUrl property
           // Enable table of contents
-          showLastUpdateTime: true,
-          showLastUpdateAuthor: true,
+          showLastUpdateTime: false,
+          showLastUpdateAuthor: false,
           // Add GitHub alerts plugin
           remarkPlugins: [remarkGithubAlerts],
         },
@@ -71,10 +77,6 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/duplistatus_banner.png',
-    // Enable local search
-    search: {
-      provider: 'local',
-    },
     // Enable dark mode
     colorMode: {
       defaultMode: 'dark',
@@ -82,7 +84,7 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     navbar: {
-      title: 'duplistatus Documentation',
+      title: 'duplistatus',
       logo: {
         alt: 'duplistatus Logo',
         src: 'img/duplistatus_logo.svg',
@@ -115,6 +117,10 @@ const config: Config = {
                 label: 'User Guide',
                 to: '/user-guide/overview',
               },
+              {
+                label: 'Migration',
+                to: '/migration/version_upgrade',
+              }
             ],
           },
           {
@@ -144,11 +150,21 @@ const config: Config = {
             ],
           },
         ],
-        copyright: `Copyright © Waldemar Scudeller Jr. Built with Docusaurus.`,
+        copyright: `Copyright © Waldemar Scudeller Jr.`,
       },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+    },
+    zoom: {
+      selector: '.markdown img',
+      background: {
+        light: 'rgb(255, 255, 255)',
+        dark: 'rgb(50, 50, 50)',
+      },
+      config: {
+        // Additional options from medium-zoom can be specified here
+      },
     },
   } satisfies Preset.ThemeConfig,
 };

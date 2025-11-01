@@ -1,8 +1,14 @@
----
-sidebar_position: 3
----
 
-# Configuring the timezone (for notifications and logs)
+
+# Configuring the Timezone and Locale
+
+The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` and `LANG` environment variables to use the correct time zones and to format number, date and time values.
+
+The default values are `TZ=Europe/London` and `LANG=en_GB` if these environment variables are not set.
+
+<br/>
+
+## Configuring the Timezone
 
 The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variable to format time zones.
 
@@ -41,7 +47,7 @@ You can find a list of timezones here: [Wikipedia: List of tz database time zone
 
 <br/>
 
-# Configuring the Locale (for notifications and logs)
+## Configuring the Locale
 
 The application user interface dates and numbers will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `LANG` environment variable to format dates and numbers.
 

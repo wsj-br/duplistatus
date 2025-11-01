@@ -31,9 +31,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
----
-sidebar_position: 3
----
+
 
 # First Steps
 

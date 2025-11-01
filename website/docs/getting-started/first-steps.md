@@ -1,6 +1,4 @@
----
-sidebar_position: 1
----
+
 
 # First Steps
 
@@ -11,8 +9,8 @@ Welcome to **duplistatus**! This guide will help you get started with monitoring
 - [ ] **Install duplistatus** - [Installation Guide](installation.md)
 - [ ] **Configure Duplicati servers** - [Configuration Guide](duplicati-server-configuration.md)
 - [ ] **Access the dashboard** - Open `http://your-server:9666`
-- [ ] **Set up notifications** - [Notifications Guide](../user-guide/backup-notifications-settings.md)
-- [ ] **Configure server settings** - [Server Management Guide](../user-guide/server-settings.md)
+- [ ] **Set up notifications** - [Notifications Guide](../user-guide/settings/backup-notifications-settings.md)
+- [ ] **Configure server settings** - [Server Management Guide](../user-guide/settings/server-settings.md)
 
 ## Accessing the Dashboard
 

@@ -1,6 +1,4 @@
----
-sidebar_position: 2
----
+
 
 # Dashboard
 
@@ -10,8 +8,8 @@ This section displays aggregated statistics for all backups.
 
 <div>
 
-![Dashboard summary - overview](../img/screen-dashboard-summary.png)
-![Dashboard summary - table](../img/screen-dashboard-summary-table.png)
+![Dashboard summary - overview](/img/screen-dashboard-summary.png)
+![Dashboard summary - table](/img/screen-dashboard-summary-table.png)
 
 - **Total Servers**: The number of servers being monitored.
 - **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.
@@ -19,7 +17,7 @@ This section displays aggregated statistics for all backups.
 - **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.
 - **Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs.
 - **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).
-- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](backup-notifications-settings.md)
+- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)
 - **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.
 
 </div>
@@ -32,7 +30,7 @@ The cards layout shows the status of the most recent backup log received for eac
 
 <div>
 
-![Dashboard Overview](../img/duplistatus_dash-cards.png)
+![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note
@@ -55,7 +53,7 @@ The user can toggle the top right button on the side panel to toggle the panel v
 
 <div>
 
-![status panel](../img/screen-overview-side-status.png)
+![status panel](/img/screen-overview-side-status.png)
 
 </div>
 
@@ -63,7 +61,7 @@ The user can toggle the top right button on the side panel to toggle the panel v
 
 <div>
 
-![charts panel](../img/screen-overview-side-charts.png)
+![charts panel](/img/screen-overview-side-charts.png)
 
 </div>
 
@@ -77,7 +75,7 @@ Hovering over a backup in the list displays details of the last backup log recei
 
 <div>
 
-![Overdue details](../img/screen-backup-tooltip.png)
+![Overdue details](/img/screen-backup-tooltip.png)
 
 - **Server Name : Backup**: The name or alias of the Duplicati server and backup, will also show the server name and note.
   - The alias and note can be configured at `Settings → Server Settings`.
@@ -103,7 +101,7 @@ The table layout lists the most recent backup logs received for all servers and 
 
 <div>
 
-![Dashboard Overview](../img/duplistatus_dash-table.png)
+![Dashboard Overview](/img/duplistatus_dash-table.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
@@ -124,10 +122,10 @@ The table layout lists the most recent backup logs received for all servers and 
 
 | Icon                                     | Notification Option | Description                                                                                         |
 | ---------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| ![off](../img/screen-nt-off.png)           | Off                 | No notifications will be sent when a new backup log is received                                     |
-| ![all](../img/screen-nt-all.png)           | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
-| ![warnings](../img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
-| ![errors](../img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
+| ![off](/img/screen-nt-off.png)           | Off                 | No notifications will be sent when a new backup log is received                                     |
+| ![all](/img/screen-nt-all.png)           | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
+| ![warnings](/img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
+| ![errors](/img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
 <br/>
 
@@ -144,9 +142,9 @@ Hovering over the overdue warning icon displays details about the overdue backup
 
 <div>
 
-![Overdue details](../img/screen-overdue-tooltip.png)
+![Overdue details](/img/screen-overdue-tooltip.png)
 
-- **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](backup-notifications-settings.md).
+- **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](settings/backup-notifications-settings.md).
 - **Last Backup**: When the last backup log was received.
 - **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
 - **Last Notification**: When the last overdue notification was sent.
@@ -161,7 +159,7 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
 
 <div>
 
-![Available versions](../img/screen-versions.png)
+![Available versions](/img/screen-versions.png)
 
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.

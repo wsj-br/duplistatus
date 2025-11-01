@@ -1,6 +1,4 @@
----
-sidebar_position: 7
----
+
 
 # Collect Backup Logs
 
@@ -8,7 +6,7 @@ sidebar_position: 7
 
 <div>
 
-![Collect Backup Logs](../img/screen-collect-backup-logs.png)
+![Collect Backup Logs](/img/screen-collect-backup-logs.png)
 
 ## Steps to Collect Backup Logs
 

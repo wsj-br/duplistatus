@@ -1,18 +1,16 @@
----
-sidebar_position: 10
----
+
 
 # Backup Notifications Settings
 
 <div>
 
-![Backup alerts](../img/screen-settings-backup-alerts.png)
+![Backup alerts](/img/screen-settings-backup-alerts.png)
 
 <br/>
 
 ## Configure Per-Backup Notification Settings
 
-![overdue backup config](../img/screen-settings-overdue-bkp.png)
+![overdue backup config](/img/screen-settings-overdue-bkp.png)
 
 | Setting                       | Description                                               | Default Value |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -48,7 +46,7 @@ Each backup job can be configured independently for:
 This allows you to create customised notification strategies, such as enabling only email for critical backups and both NTFY and email for important servers.
 
 > [!NOTE]
-> These options only control notifications sent when a [new backup log is received](../getting-started/duplicati-server-configuration.md). Overdue notifications will be sent regardless of these settings.
+> These options only control notifications sent when a [new backup log is received](../../getting-started/duplicati-server-configuration.md). Overdue notifications will be sent regardless of these settings.
 
 <br/>
 
@@ -56,7 +54,7 @@ This allows you to create customised notification strategies, such as enabling o
 
 These settings apply to all backups:
 
-![overdue global config](../img/screen-settings-overdue-conf.png)
+![overdue global config](/img/screen-settings-overdue-conf.png)
 
 | Setting                         | Description                                                                                                                                                                                                                                                                                                               |
 | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -68,7 +66,7 @@ These settings apply to all backups:
 
 ## Action Buttons
 
-![Backup Notifications Buttons](../img/screen-settings-overdue-btn.png)
+![Backup Notifications Buttons](/img/screen-settings-overdue-btn.png)
 
 | Button                 | Description                                                                              |
 | :--------------------- | :--------------------------------------------------------------------------------------- |

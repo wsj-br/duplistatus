@@ -1,6 +1,4 @@
----
-sidebar_position: 5
----
+
 
 # Duplicati Configuration
 
@@ -10,7 +8,7 @@ You can select a server from the dropdown list. If you have already selected a s
 
 <div>
 
-![Duplicati configuration](../img/screen-duplicati-configuration.png)
+![Duplicati configuration](/img/screen-duplicati-configuration.png)
 
 - The list of servers will show the `server name` or `server alias (server name)`.
 - Server addresses are configured in `Settings → Server Addresses`.

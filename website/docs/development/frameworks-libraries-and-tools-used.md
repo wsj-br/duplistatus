@@ -1,6 +1,4 @@
----
-sidebar_position: 10
----
+
 
 # Frameworks, Libraries and Tools Used
 

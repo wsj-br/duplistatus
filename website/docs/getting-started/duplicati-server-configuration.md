@@ -1,6 +1,4 @@
----
-sidebar_position: 5
----
+
 
 # Duplicati Server Configuration (Required)
 
@@ -12,7 +10,7 @@ Apply this configuration to all your Duplicati servers:
 
 <div>
 
-![Duplicati settings](../img/duplicati-settings.png)
+![Duplicati settings](/img/duplicati-settings.png)
 
 <br/>
 
@@ -52,7 +50,7 @@ Apply this configuration to all your Duplicati servers:
 
 <br/>
 
-![Duplicati configuration](../img/duplicati-options.png)
+![Duplicati configuration](/img/duplicati-options.png)
 
 <br/>
 

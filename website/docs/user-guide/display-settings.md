@@ -1,6 +1,4 @@
----
-sidebar_position: 6
----
+
 
 # Display Settings
 
@@ -8,7 +6,7 @@ Configure user interface and display preferences.
 
 <div>
 
-![Display Settings](../img/screen-display-settings.png)
+![Display Settings](/img/screen-display-settings.png)
 
 | Setting                   | Description                                         | Default Value       |
 | :------------------------ | :-------------------------------------------------- | :------------------ |

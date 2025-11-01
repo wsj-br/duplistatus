@@ -1,6 +1,4 @@
----
-sidebar_position: 2
----
+
 
 # External APIs
 
@@ -28,8 +26,8 @@ These endpoints are designed for use by other applications and integrations, for
 - **Error Responses**:
   - `500`: Server error fetching summary data
 - **Notes**:
-  - In version 0.5.0, the field `totalBackupedSize` was replaced by `totalBackupSize`
-  - In version 0.7.27, the field `totalMachines` was replaced by `totalServers`
+  - In version 0.5.x, the field `totalBackupedSize` was replaced by `totalBackupSize`
+  - In version 0.7.x, the field `totalMachines` was replaced by `totalServers`
   - The field `overdueBackupsCount` shows the number of currently overdue backups
   - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
   - Returns fallback response with zeros if data fetching fails
@@ -86,7 +84,7 @@ These endpoints are designed for use by other applications and integrations, for
   - `404`: Server not found
   - `500`: Internal server error
 - **Notes**:
-  - In version 0.7.27, the response object key changed from `machine` to `server`
+  - In version 0.7.x, the response object key changed from `machine` to `server`
   - Server identifier can be either ID or name
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
@@ -168,7 +166,7 @@ These endpoints are designed for use by other applications and integrations, for
   - `404`: Server not found
   - `500`: Internal server error
 - **Notes**:
-  - In version 0.7.27, the response object key changed from `machine` to `server`, and the field `backup_types_count` was renamed to `backup_jobs_count`
+  - In version 0.7.x, the response object key changed from `machine` to `server`, and the field `backup_types_count` was renamed to `backup_jobs_count`
   - Server identifier can be either ID or name
   - Returns latest backup for each backup job (backup_name) that the server has
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)

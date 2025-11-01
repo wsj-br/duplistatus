@@ -1,6 +1,4 @@
----
-sidebar_position: 19
----
+
 
 # Additional Resources
 

@@ -1,6 +1,4 @@
----
-sidebar_position: 12
----
+
 
 # Server Settings
 
@@ -10,7 +8,7 @@ You can configure an alternative name (alias) for your servers, a note to descri
 
 <div>
 
-![server settings](../img/screen-settings-server-settings.png)
+![server settings](/img/screen-settings-server-settings.png)
 
 - **Server Name**: Server name configured in the Duplicati server
 - **Alias**: A nickname or human-readable name of your server. When hovering over an alias it will show its name; in some cases to make it clear it will display the alias and the name between brackets.

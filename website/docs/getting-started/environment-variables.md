@@ -1,6 +1,4 @@
----
-sidebar_position: 4
----
+
 
 # Environment Variables
 
@@ -16,10 +14,3 @@ The application supports the following environment variables for configuration:
 | `LANG`                    | Locale for the application (e.g., `en_US`, `pt_BR`)    | `en_GB`         |
 
 <br/>
-
-> [!NOTE] > **Email Notifications Configuration:**
->
-> - Email notifications are enabled by default, but will only work if they are properly configured.
-> - Email notifications can be used alongside, or as an alternative to, NTFY notifications.
-> - Settings are configured in the web interface under `Settings → Email Configuration`.
-> - Refer to the [User Guide](../user-guide/email-configuration.md) for detailed setup instructions.

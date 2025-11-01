@@ -1,7 +1,5 @@
 
----
-sidebar_position: 6
----
+
 
 ![duplistatus](/img/duplistatus_banner.png)
 

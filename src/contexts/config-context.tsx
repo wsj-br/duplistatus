@@ -46,7 +46,12 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Load saved settings from localStorage
+    // Load saved settings from localStorage (only in browser environment)
+    if (typeof window === 'undefined') {
+      setIsLoading(false);
+      return;
+    }
+
     const savedConfig = localStorage.getItem('duplistatus-config');
     if (savedConfig && savedConfig.trim() !== '') {
       try {
@@ -87,15 +92,17 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    // Save settings to localStorage whenever they change
-    localStorage.setItem('duplistatus-config', JSON.stringify({
-      databaseCleanupPeriod,
-      tablePageSize,
-      chartTimeRange,
-      autoRefreshInterval,
-      autoRefreshEnabled,
-      dashboardCardsSortOrder,
-    }));
+    // Save settings to localStorage whenever they change (only in browser environment)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('duplistatus-config', JSON.stringify({
+        databaseCleanupPeriod,
+        tablePageSize,
+        chartTimeRange,
+        autoRefreshInterval,
+        autoRefreshEnabled,
+        dashboardCardsSortOrder,
+      }));
+    }
   }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder]);
 
   const cleanupDatabase = async () => {

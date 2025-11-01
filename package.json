@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "0.8.18",
+  "version": "0.8.19",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.20.0",
@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "start": "NODE_ENV=production HOSTNAME=0.0.0.0 PORT=9666 node duplistatus-server.ts",
     "cron:start": "tsx src/cron-service/index.ts",
-    "dev": "./scripts/pre-checks.sh && next dev -p 8666",
+    "dev": "./scripts/pre-checks.sh && PORT=8666 NEXT_TELEMETRY_DISABLED=1 tsx duplistatus-server.ts",
     "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts",
     "build-local": "./scripts/pre-checks.sh && next build",
     "start-local": "./scripts/pre-checks.sh && NODE_ENV=production PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 tsx duplistatus-server.ts",
