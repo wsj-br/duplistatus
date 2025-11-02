@@ -4,17 +4,13 @@
 
 Manage your backup data and optimise performance through database maintenance operations.
 
-<div>
-
 ![Database maintenance](/img/screen-database-maintenance.png)
-
-<br/>
 
 ## Data Cleanup Period
 
 Remove outdated backup records to free up storage space and improve system performance.
 
-1.  Click the `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Click the <IconButton icon="lucide:database" /> `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
 2.  Choose a retention period:
     - **6 months**: Retain records from the last 6 months.
     - **1 year**: Retain records from the last year.
@@ -22,8 +18,6 @@ Remove outdated backup records to free up storage space and improve system perfo
     - **Delete all data**: Remove all backup records and servers.
 3.  Click `Clear Old Records`.
 4.  Confirm the action in the dialogue box.
-
-<br/>
 
 **Cleanup Effects:**
 
@@ -37,13 +31,11 @@ Remove outdated backup records to free up storage space and improve system perfo
 
 Remove a specific Backup Job (type) data.
 
-1.  Click the `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Click the <IconButton icon="lucide:database" /> `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
 2.  Select a Backup Job from the dropdown list.
     - the backups will be ordered by server alias or name then the backup name.
-3.  Click `Delete Server Data`.
+3.  Click `Delete Backup Job`.
 4.  Confirm the action in the dialogue box.
-
-<br/>
 
 **Deletion Effects:**
 
@@ -57,12 +49,10 @@ Remove a specific Backup Job (type) data.
 
 Remove a specific server and all its associated backup data.
 
-1.  Click the `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Click the <IconButton icon="lucide:database" /> `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
 2.  Select a server from the dropdown list.
 3.  Click `Delete Server Data`.
 4.  Confirm the action in the dialogue box.
-
-<br/>
 
 **Deletion Effects:**
 
@@ -70,13 +60,8 @@ Remove a specific server and all its associated backup data.
 - Cleans up associated configuration settings.
 - Updates dashboard statistics accordingly.
 
-<br/>
-
-</div>
-
 > [!NOTE]
 > All statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
-> <br/><br/>
+> 
 > If you accidentally delete data, you can restore it using the [Collect Backup Logs](collect-backup-logs) feature.
 
-<br/><br/>

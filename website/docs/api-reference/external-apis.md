@@ -4,12 +4,10 @@
 
 These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md).
 
-<br/>
-
 ## Get Overall Summary - `/api/summary`
 - **Endpoint**: `/api/summary`
 - **Method**: GET
-- **Description**: Retrieves a summary of all backup operations across all servers. This endpoint is maintained for external applications and backward compatibility.
+- **Description**: Retrieves a summary of all backup operations across all servers.
 - **Response**:
   ```json
   {
@@ -32,8 +30,6 @@ These endpoints are designed for use by other applications and integrations, for
   - The field `secondsSinceLastBackup` shows the time in seconds since the last backup across all servers
   - Returns fallback response with zeros if data fetching fails
   - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
-
-<br/>
 
 ## Get Latest Backup - `/api/lastbackup/:serverId`
 - **Endpoint**: `/api/lastbackup/:serverId`
@@ -88,8 +84,6 @@ These endpoints are designed for use by other applications and integrations, for
   - Server identifier can be either ID or name
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
-
-<br/>
 
 ## Get Latest Backups - `/api/lastbackups/:serverId`
 - **Endpoint**: `/api/lastbackups/:serverId`
@@ -172,8 +166,6 @@ These endpoints are designed for use by other applications and integrations, for
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)
   - Includes cache control headers to prevent caching
 
-<br/>
-
 ## Upload Backup Data - `/api/upload`
 - **Endpoint**: `/api/upload`
 - **Method**: POST
@@ -181,7 +173,7 @@ These endpoints are designed for use by other applications and integrations, for
 - **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
-  --send-http-url=http://my.local.server:8666/api/upload
+  --send-http-url=http://my.local.server:9666/api/upload
   --send-http-result-output-format=Json
   --send-http-log-level=Information
   ```
@@ -201,6 +193,6 @@ These endpoints are designed for use by other applications and integrations, for
   - Validates required fields in Extra section: machine-id, machine-name, backup-name, backup-id
   - Validates required fields in Data section: ParsedResult, BeginTime, Duration
   - Automatically detects duplicate backup runs and returns 409 status
-  - Sends notifications after successful backup insertion
-  - Logs request data in development mode for debugging
+  - Sends notifications after successful backup insertion (if configured)
+  - Logs request data to a file in the `data` directory in the root of the project in development mode for debugging
   - Uses transaction for data consistency

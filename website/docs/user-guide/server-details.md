@@ -4,19 +4,11 @@
 
 Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
 
-<div>
-
 ![Server Details](/img/screen-server.png)
-
-</div>
-
-<br/>
 
 ## Server/Backup Statistics
 
 This section shows statistics for either all backups on the server or a single selected backup.
-
-<div>
 
 - **TOTAL BACKUP JOBS**: Total number of backup jobs configured on this server.
 - **TOTAL BACKUP RUNS**: Total number of backup runs executed (as reported by the Duplicati server).
@@ -25,25 +17,19 @@ This section shows statistics for either all backups on the server or a single s
 - **LAST BACKUP SIZE**: Size of the source files from the last backup log received.
 - **TOTAL STORAGE USED**: Storage used on the backup destination, as reported in the last backup log.
 - **TOTAL UPLOADED**: Sum of all uploaded data recorded in the **duplistatus** database.
-- **Overdue Scheduled Backups**: If a backup is overdue, a message appears below the summary. Click the **Configure** button to go to `Settings → Backup Notifications`.
 
-<br/>
 
-</div>
+If this backup or any of the backups on the server (when `All Backups` is selected) is overdue, a message appears below the summary. 
 
-> [!TIP]
-> Use the dropdown menu in the **Backup History** section to select all backups or a specific backup for this server.
+![Server Details - Overdue Scheduled Backups](/img/screen-server-overdue-message.png)
 
-> [!NOTE]
-> Cleaning the database via [Database Maintenance](database-maintenance.md) will affect the **AVG DURATION** (average) and **TOTAL UPLOADED** values, as they are calculated from the records stored in the **duplistatus** database.
+Click the <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configure"/> to go to [`Settings → Overdue Monitoring`](settings/overdue-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
 
 <br/>
 
 ## Backup History
 
 This table lists the backup logs for the selected server.
-
-<div>
 
 ![Backup History](/img/screen-backup-history.png)
 
@@ -54,25 +40,22 @@ This table lists the backup logs for the selected server.
 - **Available Versions**: The number of available backup versions on the backup destination. If the icon is greyed out, detailed information was not received.
 - **File Count, File Size, Uploaded Size, Duration, Storage Size**: Values as reported by the Duplicati server.
 
-<br/>
-
-</div>
-
-> [!TIP]
-> • You can sort any column by clicking its header. Click again to change the sort order (ascending/descending). <br/>
-> • Click anywhere on a row to view the [Backup Details](#backup-details).<br/>
-> • Click the blue icon in the "Available Versions" column to display the versions available at the time of the backup.
+> [!TIP] Tips
+> • Use the dropdown menu in the **Backup History** section to select `All Backups` or a specific backup for this server.
+>
+> • You can sort any column by clicking its header, click again to reverse the sort order.
+> 
+> • Click anywhere on a row to view the [Backup Details](#backup-details).
+> 
 
 > [!NOTE]
 > When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
 
-<br/><br/>
+<br/>
 
 ## Backup Details
 
 Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
-
-<div>
 
 ![Backup Details](/img/screen-backup.png)
 
@@ -81,8 +64,9 @@ Clicking on a status badge in the dashboard (table view) or any row in the backu
 - **Backup Statistics**: A summary of reported counters, sizes, and duration.
 - **Log Summary**: The number of reported messages.
 - **Available Versions**: A list of available versions (only displayed if the information was received in the logs).
-- **Messages/Warnings/Errors**: The complete execution logs. The subtitle indicates if the log was truncated by the Duplicati server. Refer to the [Duplicati Configuration instructions](../getting-started/duplicati-server-configuration.md) to learn how to configure Duplicati to send complete logs.
+- **Messages/Warnings/Errors**: The complete execution logs. The subtitle indicates if the log was truncated by the Duplicati server. 
 
-</div>
+<br/>
 
-<br/><br/>
+> [!NOTE]
+> Refer to the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) to learn how to configure Duplicati server to send complete execution logs and avoid truncation.

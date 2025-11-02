@@ -2,8 +2,6 @@
 
 # Configuration Management
 
-<br/>
-
 ## Get Email Configuration - `/api/configuration/email`
 - **Endpoint**: `/api/configuration/email`
 - **Method**: GET
@@ -147,8 +145,6 @@
   - Returns CSRF token for use with password update operations
   - Session must be valid to generate token
 
-<br/>
-
 ## Get Unified Configuration - `/api/configuration/unified`
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
@@ -251,8 +247,6 @@
   - Returns current NTFY configuration settings
   - Used for notification system management
   - Requires authentication for accessing configuration data
-
-<br/>
 
 ## Update Notification Configuration - `/api/configuration/notifications`
 - **Endpoint**: `/api/configuration/notifications`

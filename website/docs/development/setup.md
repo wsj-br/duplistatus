@@ -2,10 +2,6 @@
 
 # Development Setup
 
-![duplistatus](/img/duplistatus_banner.png)
-
-
-
 ## Prerequisites
 
 - Docker / Docker Compose

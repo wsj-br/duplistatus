@@ -6,29 +6,21 @@
 
 This section displays aggregated statistics for all backups.
 
-<div>
-
 ![Dashboard summary - overview](/img/screen-dashboard-summary.png)
 ![Dashboard summary - table](/img/screen-dashboard-summary-table.png)
 
-- **Total Servers**: The number of servers being monitored.
-- **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.
-- **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.
-- **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.
-- **Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs.
-- **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).
-- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)
-- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.
-
-</div>
-
-<br/><br/>
+- **Total Servers**: The number of servers being monitored.                                                                                                             |
+- **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                |
+- **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.                                                                   |
+- **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.                                                                    |
+- **Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs. |
+- **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).                         |
+- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                             |
+- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                  |
 
 ## Cards Layout
 
 The cards layout shows the status of the most recent backup log received for each backup.
-
-<div>
 
 ![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
@@ -45,35 +37,19 @@ The cards layout shows the status of the most recent backup log received for eac
 > [!NOTE]
 > You can use the [Display Settings](display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
 
-<br/>
-
-The user can toggle the top right button on the side panel to toggle the panel view:
+You can toggle the top right button on the side panel to change the panel view:
 
 - Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status.
 
-<div>
-
 ![status panel](/img/screen-overview-side-status.png)
-
-</div>
 
 - Metrics: Show charts with duration, file size and storage size over time for the aggregated or selected server.
 
-<div>
-
 ![charts panel](/img/screen-overview-side-charts.png)
-
-</div>
-
-</div>
-
-<br/>
 
 ### Backup Details
 
 Hovering over a backup in the list displays details of the last backup log received and any overdue information.
-
-<div>
 
 ![Overdue details](/img/screen-backup-tooltip.png)
 
@@ -91,22 +67,16 @@ If this backup is overdue, the tooltip also shows:
 
 You can also click the buttons at the bottom to open `Settings → Backup Notifications` to configure overdue settings or open the Duplicati server's web interface.
 
-</div>
-
-<br/>
-
 ## Table Layout
 
 The table layout lists the most recent backup logs received for all servers and backups.
-
-<div>
 
 ![Dashboard Overview](/img/duplistatus_dash-table.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
 - **Backup Name**: The name of the backup in the Duplicati server.
-- **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](../getting-started/duplicati-server-configuration.md) for details.
+- **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
 - **Backup Count**: The number of backups reported by the Duplicati server.
 - **Last Backup Date**: The timestamp of the last backup log received and the elapsed time since the last screen refresh.
 - **Last Backup Status**: The status of the last backup received (Success, Warning, Error, Fatal).
@@ -115,8 +85,6 @@ The table layout lists the most recent backup logs received for all servers and 
 - **Settings**:
   - **Notification**: An icon showing the configured notification setting for new backup logs.
   - **Duplicati configuration**: A button to open the Duplicati server's web interface
-
-<br/>
 
 ### Notifications Icons
 
@@ -127,20 +95,12 @@ The table layout lists the most recent backup logs received for all servers and 
 | ![warnings](/img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
 | ![errors](/img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
-<br/>
-
-</div>
-
 > [!NOTE]
 > This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
-
-<br/>
 
 ### Overdue Details
 
 Hovering over the overdue warning icon displays details about the overdue backup.
-
-<div>
 
 ![Overdue details](/img/screen-overdue-tooltip.png)
 
@@ -149,27 +109,16 @@ Hovering over the overdue warning icon displays details about the overdue backup
 - **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
 - **Last Notification**: When the last overdue notification was sent.
 
-</div>
-
-<br/>
-
 ### Available Backup Versions
 
 Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
-
-<div>
 
 ![Available versions](/img/screen-versions.png)
 
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.
 
-<br/>
-
-</div>
-
 > [!NOTE]
 > If the icon is greyed out, it means that no detailed information was received in the message logs.
-> See the [Duplicati Configuration instructions](../getting-started/duplicati-server-configuration.md) for details.
+> See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
 
-<br/><br/>

@@ -39,8 +39,10 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress,
         onClick={onToggle}
         title={isEnabled ? "Disable auto-refresh" : "Enable auto-refresh"}
       >
-        {isLoading ? (
-          'Auto-refresh'
+        {!isEnabled ? (
+          'Auto-refresh (disabled)'
+        ) : isLoading ? (
+          'Auto-refresh (loading)'
         ) : (
           `Auto-refresh (${interval < 1 ? `${interval * 60} sec` : `${interval} min`})`
         )}

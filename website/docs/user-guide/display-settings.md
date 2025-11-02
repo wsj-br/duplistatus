@@ -4,8 +4,6 @@
 
 Configure user interface and display preferences.
 
-<div>
-
 ![Display Settings](/img/screen-display-settings.png)
 
 | Setting                   | Description                                         | Default Value       |
@@ -15,6 +13,3 @@ Configure user interface and display preferences.
 | **Auto-refresh Interval** | How often pages refresh automatically.              | 1 minute            |
 | **Cards Sort Order**      | How cards are sorted on the dashboard.              | `Server name (a-z)` |
 
-</div>
-
-<br/><br/>

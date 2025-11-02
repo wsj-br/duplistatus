@@ -1,0 +1,35 @@
+.iconButton {
+    /* Button appearance */
+    display: inline-flex;
+    align-items: center;
+    gap: 4px; /* Space between icon and label */
+  
+    /* Padding/Border/Radius */
+    padding: 6px 10px; 
+    border: 1px solid var(--ifm-color-primary); 
+    border-radius: 6px; 
+  
+    /* Text/Color */
+    text-decoration: none; /* Remove underline */
+    color: var(--ifm-color-content-primary); 
+    background-color: transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .iconButton:hover {
+    background-color: var(--ifm-color-primary-lighter);
+    border-color: var(--ifm-color-primary-dark);
+    text-decoration: none;
+  }
+  
+  .label {
+    font-size: var(--ifm-font-size-base);
+    line-height: 1; /* Match icon height visually */
+  }
+
+  .svgIcon {
+    /* No need for fill: currentColor on an <img> tag, but you 
+       might need vertical-align for centering */
+    vertical-align: middle; 
+  }

@@ -2,8 +2,6 @@
 
 # Core Operations
 
-<br/>
-
 ## Get Dashboard Data (Consolidated) - `/api/dashboard`
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
@@ -66,8 +64,6 @@
   - All data is fetched in parallel for optimal performance
   - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
 
-<br/>
-
 ## Get All Servers - `/api/servers`
 - **Endpoint**: `/api/servers`
 - **Method**: GET
@@ -109,8 +105,6 @@
   - Consolidates the previous `/api/servers-with-backups` endpoint (which has been removed)
   - Used for server selection, display, and configuration purposes
   - Includes `hasPassword` field to indicate if server has stored password
-
-<br/>
 
 ## Get Server Details - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
@@ -177,8 +171,6 @@
   - Use query parameters to include additional data when needed
   - Optimized for different use cases (settings vs detail views)
 
-<br/>
-
 ## Update Server - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
@@ -241,8 +233,6 @@
   - All backup data associated with the server will be permanently deleted
   - The server record itself will also be removed
   - Returns count of deleted backups and servers
-
-<br/>
 
 ## Get Server Data with Overdue Info - `/api/detail/:serverId`
 - **Endpoint**: `/api/detail/:serverId`

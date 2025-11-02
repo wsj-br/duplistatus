@@ -1,8 +1,12 @@
 
 
-# Development Mode Features
+# Most used commands
 
-When running in development mode (`pnpm dev`), the application includes additional features to help with debugging and development:
+## Run in dev mode
+
+```bash
+pnpm dev
+```
 
 - **JSON File Storage**: All received backup data is stored as JSON files in the `data` directory. These files are named using the timestamp of when they were received, in the format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC time). This feature is only active in development mode and helps with debugging by preserving the raw data received from Duplicati.
 
@@ -12,18 +16,6 @@ When running in development mode (`pnpm dev`), the application includes addition
 
 - **Backup Deletion**: On the server detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
 
-- **Enhanced Debugging Tools**: Development mode includes additional debugging features such as:
-  - Database maintenance menu with cleanup options
-  - Test notification functionality
-  - Overdue backup check button for manual testing
-  - Server connection testing tools
-  - Backup collection utilities
-
-## Build the application for production
-
-```bash
-pnpm build
-```
 
 ## Start the production server (in development environment)
 
@@ -73,5 +65,5 @@ This script performs a complete Docker cleanup, which is useful for:
 ## Create a development image (to test locally or with Podman)
 
 ```bash
-docker build . -t wsj-br/duplistatus:devel-MAJOR.MINOR.PATCH
+export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION
 ```

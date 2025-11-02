@@ -71,8 +71,6 @@ const response = await fetch('/api/servers/server-id', {
 - `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
 - `403 Forbidden`: CSRF token validation failed or operation not allowed
 
-<br/>
-
 > [!CAUTION]
 >  Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
 > (e.g., local LAN protected by a firewall).

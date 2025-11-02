@@ -192,7 +192,6 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
   - Old field names will not work
   - Old endpoint paths will not work
 
-
 ### Future Support
 
 - Old field names from pre-0.7.x versions are not supported

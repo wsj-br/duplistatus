@@ -4,8 +4,6 @@
 
 [Homepage](https://gethomepage.dev/) is a customisable dashboard application. To integrate **duplistatus** with Homepage, add a widget to your `services.yaml` file using the [Custom API widget type](https://gethomepage.dev/widgets/services/customapi/).
 
-<br/>
-
 ## Summary Widget
 
 This widget displays overall backup statistics on your Homepage dashboard.
@@ -46,13 +44,7 @@ This widget displays overall backup statistics on your Homepage dashboard.
 
 **Widget Display:**
 
-<div>
-
 ![Homepage Summary Widget](/img/homepage-summary.png)
-
-</div>
-
-<br/>
 
 ## Last Backup Information Widget
 
@@ -87,13 +79,7 @@ This widget displays the latest backup information for a specific machine.
 
 **Widget Display:**
 
-<div>
-
 ![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
-
-</div>
-
-<br/>
 
 ## Configuration Notes
 
@@ -102,4 +88,3 @@ This widget displays the latest backup information for a specific machine.
 - Replace spaces in machine names with `%20` in the URL (e.g., `Test Machine 1` becomes `Test%20Machine%201`).
 - The `scale` values convert bytes to more readable units (GB, MB).
 
-<br/><br/>

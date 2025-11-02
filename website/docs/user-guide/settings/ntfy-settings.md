@@ -6,19 +6,29 @@ NTFY is a simple notification service that can send push notifications to your p
 
 ![Ntfy settings](/img/screen-settings-ntfy.png)
 
-- **NTFY URL**: The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).
-- **NTFY Topic**: A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own.
-- **NTFY Access Token**: An optional access token for authenticated NTFY servers. Leave this field blank if your server does not require authentication.
+| Setting               | Description                                                                                                                                   |
+|:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
+| **NTFY URL**          | The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).                                                                      |
+| **NTFY Topic**        | A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own. |
+| **NTFY Access Token** | An optional access token for authenticated NTFY servers. Leave this field blank if your server does not require authentication.               |
 
-## Device Configuration (Version 0.8.x)
+<br/>
 
-**QR Code Generation**: Configure your mobile device or desktop to receive notifications automatically.
+## Available Actions
 
-- **Configure Device Button**: Generates a QR code containing your NTFY topic configuration
-- **Direct Configuration**: Right-click the "Open NTFY" button in the application toolbar for instant QR code access
-- **App Installation**: Scan the QR code with your device camera or install the NTFY app from your preferred app store
+| Button                                                                  | Description                                                                     |
+|:------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
+| `Save Settings`                                                         | Save the changes made to the NTFY settings.                                     |
+| <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Sends a test message to your NTFY server.                                       |
+| <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Configures your mobile device or desktop to receive notifications automatically |
+    
 
-The QR code contains the complete configuration needed to subscribe to your notification topic, including authentication tokens if configured.
+<br/>
+
+> [!NOTE]
+> A <IIcon2 icon="lucide:message-square" color="green"/> green icon next to `NTFY` in the tab bar means your settings are valid. If the icon is <IIcon2 icon="lucide:message-square" color="yellow"/> yellow, your settings are not valid.
+> 
+> When the configuration is not valid, the NTFY checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out.
 
 <br/>
 
@@ -30,8 +40,6 @@ The QR code contains the complete configuration needed to subscribe to your noti
 > For improved security, consider using [access token authentication](https://docs.ntfy.sh/config/#access-tokens) and [access control lists](https://docs.ntfy.sh/config/#access-control-list-acl) to protect your topics, or [self-host NTFY](https://docs.ntfy.sh/install/#docker) for total control.
 >
 > ⚠️ **You are responsible for securing your NTFY topics. Please use this service at your own discretion.**
-
-<br/>
 
 ## About NTFY
 
@@ -45,7 +53,3 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification ser
 
 💙 If you find ntfy.sh useful, please consider [supporting the developer](https://github.com/sponsors/binwiederhier).
 
-<br/>
-
-
-<br/><br/>

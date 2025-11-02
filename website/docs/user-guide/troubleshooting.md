@@ -2,17 +2,59 @@
 
 # Troubleshooting
 
-Here are solutions to some common issues.
+### Dashboard Not Loading
+- Check if the container is running: `docker ps`
+- Verify port 9666 is accessible
+- Check container logs: `docker logs duplistatus`
 
-| Issue                                                                                                                                                                           | Problem Description                                             | Solutions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **New backups are not showing**<br/><br/>Duplicati server warnings:<br/>`HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:` | New backups do not appear in the dashboard or backup history.   | **Check Duplicati Configuration**:<br/>• Confirm that Duplicati is configured correctly to send data to **duplistatus**.<br/>• Verify the HTTP URL settings in Duplicati.<br/><br/>**Check Network Connectivity**:<br/>• Ensure the Duplicati server can connect to the **duplistatus** server.<br/>• Confirm the port is correct (default: `666`).<br/><br/>**Review Duplicati Logs**:<br/>• Check for HTTP request errors in the Duplicati logs.                                                                                   |
-| **Notifications Not Working**                                                                                                                                                   | Notifications are not being sent or received.                   | **Check NTFY Configuration**:<br/>• Ensure the NTFY URL and topic are correct.<br/>• Use the `Send Test Notification` button to test.<br/><br/>**Check Network Connectivity**:<br/>• Verify that **duplistatus** can reach your NTFY server.<br/>• Review firewall settings if applicable.<br/><br/>**Check Notification Settings**:<br/>• Confirm that notifications are enabled for the relevant backups.                                                                                                                          |
-| **Available versions not appearing**                                                                                                                                            | Backup versions are not shown on the dashboard or details page. | **Check Duplicati Configuration**:<br/>• Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.                                                                                                                                                                                                                                                                                                                                                                    |
-| **Overdue Backup Alerts Not Working**                                                                                                                                           | Overdue backup notifications are not being sent.                | **Check Overdue Configuration**:<br/>• Confirm that overdue monitoring is enabled for the backup.<br/>• Verify the expected interval and tolerance settings.<br/><br/>**Check Notification Frequency**:<br/>• If set to `One time`, alerts are only sent once per overdue event.<br/><br/>**Check Cron Service**:<br/>• Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors.<br/>• Verify the cron service is accessible at the configured port (default: `8667`). |
-| **Collect Backup Logs not working**                                                                                                                                             | The manual backup log collection fails.                         | **Check Duplicati Server Access**:<br/>• Verify the Duplicati server hostname and port are correct.<br/>• Confirm remote access is enabled in Duplicati.<br/>• Ensure the authentication password and protocol (HTTP/HTTPS) are correct.<br/><br/>**Check Network Connectivity**:<br/>• Test connectivity from **duplistatus** to the Duplicati server.<br/>• Confirm the Duplicati server port is accessible (default: `8200`).                                                                                                     |
+### No Backup Data
+- Verify Duplicati server configuration
+- Check network connectivity between servers
+- Review duplistatus logs for errors
+- Ensure backup jobs are running
 
-<br/>
+### Notifications Not Working
+- Check notification configuration
+- Verify NTFY server connectivity (if using NTFY)
+- Test notification settings
+- Check notification logs
+
+### New Backups Not Showing
+
+If you see Duplicati server warnings like `HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:`, and new backups do not appear in the dashboard or backup history:
+
+- **Check Duplicati Configuration**: Confirm that Duplicati is configured correctly to send data to **duplistatus**. Verify the HTTP URL settings in Duplicati.
+- **Check Network Connectivity**: Ensure the Duplicati server can connect to the **duplistatus** server. Confirm the port is correct (default: `9666`).
+- **Review Duplicati Logs**: Check for HTTP request errors in the Duplicati logs.
+
+### Notifications Not Working (Detailed)
+
+If notifications are not being sent or received:
+
+- **Check NTFY Configuration**: Ensure the NTFY URL and topic are correct. Use the `Send Test Notification` button to test.
+- **Check Network Connectivity**: Verify that **duplistatus** can reach your NTFY server. Review firewall settings if applicable.
+- **Check Notification Settings**: Confirm that notifications are enabled for the relevant backups.
+
+### Available Versions Not Appearing
+
+If backup versions are not shown on the dashboard or details page:
+
+- **Check Duplicati Configuration**: Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.
+
+### Overdue Backup Alerts Not Working
+
+If overdue backup notifications are not being sent:
+
+- **Check Overdue Configuration**: Confirm that overdue monitoring is enabled for the backup. Verify the expected interval and tolerance settings.
+- **Check Notification Frequency**: If set to `One time`, alerts are only sent once per overdue event.
+- **Check Cron Service**: Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors. Verify the cron service is accessible at the configured port (default: `8667`).
+
+### Collect Backup Logs Not Working
+
+If the manual backup log collection fails:
+
+- **Check Duplicati Server Access**: Verify the Duplicati server hostname and port are correct. Confirm remote access is enabled in Duplicati. Ensure the authentication password and protocol (HTTP/HTTPS) are correct.
+- **Check Network Connectivity**: Test connectivity from **duplistatus** to the Duplicati server. Confirm the Duplicati server port is accessible (default: `8200`).
 
 If you still experience issues, try the following steps:
 
@@ -23,4 +65,16 @@ If you still experience issues, try the following steps:
 5.  **Consult Documentation**: Refer to the Installation Guide and README for more information.
 6.  **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).
 
-<br/><br/>
+<br/>
+
+# Additional Resources
+
+- **Installation Guide**: [Installation Guide](../installation/installation.md)
+- **Duplicati Documentation**: [docs.duplicati.com](https://docs.duplicati.com)
+- **API Documentation**: [API Reference](../api-reference/overview.md)
+- **GitHub Repository**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
+- **Development Guide**: [Development Guide](../development/setup.md)
+- **Database Schema**: [Database Documentation](../development/database)
+
+### Support
+- **GitHub Issues**: [Report bugs or request features](https://github.com/wsj-br/duplistatus/issues)

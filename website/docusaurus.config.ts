@@ -18,12 +18,18 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://wsj-br.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served|
-  baseUrl: '/docs/',
+  baseUrl: '/duplistatus/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Waldemar Scudeller Jr.', // Usually your GitHub org/user name.
+  organizationName: 'wsj-br', // Usually your GitHub org/user name.
   projectName: 'duplistatus', // Usually your repo name.
+
+  // The branch that Docusaurus will push the build output to.
+  deploymentBranch: 'gh-pages', 
+  
+  // It's recommended to set a trailingSlash for consistent links on GH Pages
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
   markdown: {
@@ -111,7 +117,7 @@ const config: Config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/getting-started/installation',
+                to: '/installation/',
               },
               {
                 label: 'User Guide',
@@ -128,11 +134,11 @@ const config: Config = {
             items: [
               {
                 label: 'Development Setup',
-                to: '/development/setup',
+                to: 'development/setup',
               },
               {
                 label: 'API Reference',
-                to: '/api-reference/overview',
+                to: 'api-reference/overview',
               },
             ],
           },
@@ -154,10 +160,11 @@ const config: Config = {
       },
     prism: {
       theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      darkTheme: prismThemes.nightOwl,
+      additionalLanguages: ['bash', 'yaml', 'docker', 'json', 'python', 'sql'],
     },
     zoom: {
-      selector: '.markdown img',
+      selector: '.markdown img:not(.no-zoom)',
       background: {
         light: 'rgb(255, 255, 255)',
         dark: 'rgb(50, 50, 50)',

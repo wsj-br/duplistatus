@@ -1,95 +1,71 @@
-
-
-# Development Guidelines
+# Development Reference
 
 ## Code Organisation
 
-- **Components**: Located in `src/components/` with subdirectories for specific features
+- **Components**: `src/components/` with subdirectories:
   - `ui/` - shadcn/ui components and reusable UI elements
-  - `dashboard/` - Dashboard-specific components (server cards, tables, summary cards)
-  - `settings/` - Settings page components (forms, configuration panels)
-  - `server-details/` - Server detail page components (backup tables, charts, summaries)
-- **API Routes**: Located in `src/app/api/` with RESTful endpoint structure
-  - Core operations: upload, servers, backups, summary, dashboard
-  - Configuration: notifications, server connections, backup settings, unified config
-  - Chart data: server-specific and aggregated data
-  - Cron service: task management and monitoring
-  - Health and environment endpoints
-  - Session management and CSRF protection
-- **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`
+  - `dashboard/` - Dashboard-specific components
+  - `settings/` - Settings page components
+  - `server-details/` - Server detail page components
+- **API Routes**: `src/app/api/` with RESTful endpoint structure (see `API-ENDPOINTS.md`)
+- **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`, migrations in `src/lib/db-migrations.ts`
 - **Types**: TypeScript interfaces in `src/lib/types.ts`
 - **Configuration**: Default configs in `src/lib/default-config.ts`
-- **Cron Service**: Located in `src/cron-service/` with separate service implementation
-- **Scripts**: Utility scripts in `scripts/` directory for testing and maintenance
-- **Security**: CSRF protection and session management in `src/lib/csrf-middleware.ts`
-- **Pre-checks**: Automated pre-checks via `scripts/pre-checks.sh` for key file and version management
+- **Cron Service**: `src/cron-service/` (runs on port 8667 dev, 9667 prod)
+- **Scripts**: Utility scripts in `scripts/` directory
+- **Security**: CSRF protection in `src/lib/csrf-middleware.ts`, use `withCSRF` middleware for protected endpoints
 
-## Testing
+## Testing & Debugging
 
-- Use the provided test scripts for generating data and testing functionality
-- Test notification system with the built-in test endpoints (`/api/notifications/test`)
-- Verify cron service functionality by checking the health endpoints (`curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`)
-- Test the Docker and Podman images using the provided scripts
-- Use TypeScript strict mode for compile-time error checking
-- Test database operations with the provided utilities
-- Use the test data generation script (`pnpm generate-test-data --servers=N`) for comprehensive testing
-- Test overdue backup functionality with manual triggers (`pnpm run-overdue-check`)
-- Test server connection management and configuration updates
-- Verify CSRF protection and session management
+- Test data generation: `pnpm generate-test-data --servers=N`
+- Notification testing: `/api/notifications/test` endpoint
+- Cron health checks: `curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`
+- Overdue backup testing: `pnpm run-overdue-check`
+- Development mode: verbose logging and JSON file storage
+- Database maintenance: use maintenance menu for cleanup operations
+- Pre-checks: `scripts/pre-checks.sh` for troubleshooting startup issues
 
-## Debugging
+## Development References
 
-- Development mode provides verbose logging and JSON file storage
-- Use the browser's developer tools for frontend debugging
-- Check the console for detailed error messages and API responses
-- Cron service includes health check endpoints for monitoring (`/api/cron/health`)
-- Database utilities include debugging and maintenance functions
-- Use the database maintenance menu for cleanup and debugging operations
-- Test server connections with the built-in connection testing tools
-- Monitor notification system with the NTFY messages button
-- Use pre-checks script output for troubleshooting startup issues
-- Check CSRF token validation and session management
+- API endpoints: See `API-ENDPOINTS.md`
+- Database schema: See `DATABASE.md`
+- Follow patterns in `src/lib/db-utils.ts` for database operations
 
-## API Development
+## Frameworks & Libraries
 
-- All API endpoints are documented in `API-ENDPOINTS.md`
-- Follow the established RESTful patterns for new endpoints
-- Maintain consistent error handling and response formats
-- Test new endpoints with the provided test scripts
-- Use TypeScript interfaces for type safety
-- Implement proper validation and error handling
-- Follow the established patterns for configuration endpoints
-- Ensure proper CORS handling for cross-origin requests
-- Implement CSRF protection for state-changing operations
-- Use the `withCSRF` middleware for protected endpoints
-- Maintain consistent cache control headers for dynamic data
+### Runtime & Package Management
+- Node.js ^20.x (minimum: 20.19.0)
+- pnpm ^10.x (minimum: 10.18.0, enforced via preinstall hook)
 
-## Database Development
+### Core Frameworks & Libraries
+- Next.js 15.5.4 (App Router)
+- React 19.2.0 & React-DOM 19.2.0
+- Radix UI (@radix-ui/react-*) - latest versions
+- Tailwind CSS 4.1.14 + tailwindcss-animate 1.0.7
+- Better-sqlite3 12.4.1
+- Recharts 3.2.1, react-day-picker 9.11.0, react-hook-form 7.64.0
+- lucide-react 0.544.0, clsx 2.1.1, class-variance-authority 0.7.1
+- date-fns 4.1.0, uuid 13.0.0
+- express 5.1.0 (cron service), node-cron 4.2.1
+- nodemailer 7.0.7, qrcode 1.5.4
 
-- Use the migration system for schema changes (`src/lib/db-migrations.ts`)
-- Follow the established patterns in `src/lib/db-utils.ts`
-- Maintain type safety with TypeScript interfaces
-- Test database operations with the provided utilities
-- Use the database maintenance tools for cleanup and debugging
-- Follow the established schema patterns for new tables
-- Implement proper indexing for performance
-- Use prepared statements for security
-- Maintain session and CSRF token tables for security
-- Implement proper request caching for performance optimization
-- Use transaction management for data consistency
+### Type Checking & Linting
+- TypeScript 5.9.3
+- TSX 4.20.6
+- ESLint 9.37.0 (via `next lint`)
 
-## UI Development
+### Build & Deployment
+- Custom server: `duplistatus-server.ts`
+- Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
+- GitHub Actions workflows for CI/CD
+- Semantic-versioning scripts: `release:patch`, `release:minor`, `release:major`
 
-- Use shadcn/ui components for consistency
-- Follow the established patterns in existing components
-- Use Tailwind CSS for styling
-- Maintain responsive design principles
-- Test components in both light and dark themes
-- Use TypeScript interfaces for component props
-- Implement proper error boundaries and loading states
-- Follow accessibility best practices
-- Use the established patterns for forms and validation
-- Implement proper state management with React hooks
-- Use context providers for global state management
-- Implement proper CSRF token handling in forms
-- Use consistent loading indicators and progress states
+### Project Configuration
+- `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
+- `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
+
+## System Features
+
+- **Cron Service**: Separate service for scheduled tasks, auto-restart via `duplistatus-cron.sh`
+- **Notifications**: ntfy.sh integration and SMTP email (nodemailer), configurable templates
+- **Auto-refresh**: Configurable automatic refresh for dashboard and detail pages

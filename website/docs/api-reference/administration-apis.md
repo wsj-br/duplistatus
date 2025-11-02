@@ -49,8 +49,6 @@
   - The frontend should use `serverAlias || serverName` for display purposes
   - Supports both JSON download and direct API collection methods
 
-<br/>
-
 ## Cleanup Backups - `/api/backups/cleanup`
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
@@ -89,8 +87,6 @@
   - When "Delete all data" is selected, all machines and backups are removed and configuration is cleared
   - Enhanced error reporting includes details and stack trace in development mode
   - Supports both time-based retention and complete data deletion
-
-<br/>
 
 ## Delete Backup - `/api/backups/:backupId`
 - **Endpoint**: `/api/backups/:backupId`
@@ -161,8 +157,6 @@
   - Returns count of deleted backups and server information
   - Uses server alias for display if available, otherwise falls back to server name
 
-<br/>
-
 ## Test Server Connection - `/api/servers/test-connection`
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
@@ -190,8 +184,6 @@
   - Supports both HTTP and HTTPS protocols
   - Uses timeout configuration for connection testing
 
-<br/>
-
 ## Get Server URL - `/api/servers/:serverId/server-url`
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
@@ -213,8 +205,6 @@
   - Returns server URL for specific server
   - Used for server connection management
   - Returns empty string if no server URL is set
-
-<br/>
 
 ## Update Server URL - `/api/servers/:serverId/server-url`
 - **Endpoint**: `/api/servers/:serverId/server-url`

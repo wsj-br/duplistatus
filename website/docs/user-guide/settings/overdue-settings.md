@@ -2,30 +2,48 @@
 
 # Overdue Settings
 
+![Backup alerts](/img/screen-settings-overdue-monitoring.png)
 
-**Per-Backup Settings:**
+## Configure Per-Backup Overdue Settings
 
-- **Expected Backup Interval**: Custom interval format (e.g., "1D", "1W", "2M", "1D12h30m")
-- **Notification Channels**: Separate toggles for NTFY and email notifications
-- **Overdue Monitoring**: Enable/disable overdue checks per backup
-- **Reset Function**: Reset overdue notification timers individually
+![notification detail](/img/screen-settings-overdue-bkp.png)
 
-**Global Settings:**
+-  **Server Name**: The name of the server to monitor for overdue backups. 
+   - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
+   - Click <IIcon2 icon="lucide:download" height="18"/> to collect backup logs from this server.
+- **Backup Name**: The name of the backup to monitor for overdue backups.
+- **Next Run**: The next scheduled backup time in green if in the future.  Red if overdue.
+- **Overdue BackupMonitoring**: Enable or disable overdue monitoring for this backup.
+- **Expected Backup Interval**: The expected backup interval.
+- **Unit**: The unit of the expected interval.
+- **Allowed Days**: The allowed weekdays for the backup.
 
-- **Overdue Tolerance**: Grace period before marking backups as overdue (5 minutes to 1 day)
-- **Notification Frequency**: How often to send overdue notifications (one time, daily, weekly, monthly)
-- **Monitoring Interval**: How frequently to check for overdue backups (1 to 2 hours)
+If the icons on the side of the server name are greyed out, the server is not configured in the [`Settings → Server Settings`](server-settings.md).
 
-## Automatic Configuration
-
-When you collect backup logs from a Duplicati server, **duplistatus** automatically:
-
-- Extracts the backup schedule from the Duplicati configuration
-- Updates the overdue monitoring intervals to match exactly
-- Synchronises allowed weekdays and scheduled times
-- Preserves your notification preferences
+> [!NOTE]
+> When you collect backup logs from a Duplicati server, **duplistatus** automatically updates the overdue monitoring intervals and configurations.
 
 > [!TIP]
-> For best results, collect backup logs after changing backup job intervals in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+> For best results, collect backup logs after changing backup job intervals configuration in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
 
-<br/>
+## Global Configurations
+
+These settings apply to all backups:
+
+![overdue global config](/img/screen-settings-overdue-conf.png)
+
+| Setting                         | Description                                                                                                                                                                                                                                                                                           |
+|:--------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Overdue Tolerance**           | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is `1 hour`.                                                                                                                                                                           |
+| **Overdue Monitoring Interval** | How often the system checks for overdue backups. The default is `5 minutes`.                                                                                                                                                                                                                          |
+| **Notification Frequency**      | How often to send overdue notifications: <br/> `One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month`: Send **monthly** notifications while overdue. |
+
+## Available Actions
+
+| Button                                                              | Description                                                                                         |
+|:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
+| `Save Overdue Monitoring Settings`                                  | Saves the settings, clears timers for any disabled backups, and runs an overdue check.              |
+| <IconButton icon="lucide:importer" label="Collect All"/>            | Collect backup logs from all configured servers, in brackets the number of servers to collect from. |
+| <IconButton icon="lucide:refresh-cw" label="Check now"/>            | Runs the overdue backup check immediately. This is useful after changing configurations.            |
+| <IconButton icon="lucide:timer-reset" label="Reset notifications"/> | Resets the last overdue notification sent for all backups.                                          |
+

@@ -30,6 +30,22 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+table thead {
+  background-color: darkslategray;
+}
+
+table thead th {
+  color: lightgray;
+  font-weight: bold;
+}
+
+/* Mermaid Gantt Chart Zoom */
+.gantt-scaled {
+  transform: scale(1.8) !important;
+  transform-origin: top left;
+  margin-bottom: 300px;
+}
+
 /* GitHub Alerts Styling */
 .markdown-alert {
   padding: 0.5rem 1rem;

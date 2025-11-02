@@ -2,12 +2,10 @@
 
 # Backup Metrics
 
-A chart of backup metrics over time is shown on both the dashboard and the server details page.
+A chart of backup metrics over time is shown on both the dashboard (table view) and the server details page.
 
 - **Dashboard**, the chart shows the total number of backups recorded in the **duplistatus** database. If you use the Cards layout, you can select a server to see its consolidated metrics (when side panel is showing metrics).
 - **Server Details** page, the chart shows metrics for the selected server (for all its backups) or for a single, specific backup.
-
-<div>
 
 ![Backup Metrics](/img/screen-metrics.png)
 
@@ -18,11 +16,9 @@ A chart of backup metrics over time is shown on both the dashboard and the serve
 - **Storage Size**: The sum of the storage size used on the backup destination reported by the Duplicati server per day.
 - **Available Versions**: The sum of all available versions for all backups per day.
 
- <br/>
+ 
    
-</div>
 
 > [!NOTE]
 > You can use the [Display Settings](display-settings) control to configure the time range for the chart.
 
-<br/><br/>

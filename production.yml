@@ -1,0 +1,20 @@
+# duplistatus production compose.yml
+services:
+  duplistatus:
+    image: wsjbr/duplistatus:latest
+    container_name: duplistatus
+    restart: unless-stopped
+    ports:
+      - "9666:9666"
+    volumes:
+      - duplistatus_data:/app/data
+    networks:
+      - duplistatus_network
+
+networks:
+  duplistatus_network:
+    driver: bridge
+
+volumes:
+  duplistatus_data:
+    name: duplistatus_data

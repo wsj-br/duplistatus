@@ -2,8 +2,6 @@
 
 # Chart Data
 
-<br/>
-
 ## Get Aggregated Chart Data - `/api/chart-data/aggregated`
 - **Endpoint**: `/api/chart-data/aggregated`
 - **Method**: GET
@@ -33,8 +31,6 @@
   - Supports time range filtering with startDate and endDate parameters
   - Validates date format before processing
   - Returns aggregated data across all servers
-
-<br/>
 
 ## Get Server Chart Data - `/api/chart-data/server/:serverId`
 - **Endpoint**: `/api/chart-data/server/:serverId`
@@ -67,8 +63,6 @@
   - Supports time range filtering with startDate and endDate parameters
   - Validates date format before processing
   - Returns chart data for specific server
-
-<br/>
 
 ## Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
