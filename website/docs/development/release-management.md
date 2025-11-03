@@ -33,7 +33,7 @@ Next, merge the `devel-MAJOR.MINOR.PATCH` branch into `master`. This will apply 
 git merge devel-MAJOR.MINOR.PATCH
 ```
 
-Git will attempt to automatically merge the branches. If there are any **merge conflicts**, you'll need to manually resolve them in the affected files. After resolving conflicts, use `git add` to stage the changes and `git commit` to finalize the merge.
+Git will attempt to automatically merge the branches. If there are any **merge conflicts**, you'll need to manually resolve them in the affected files. After resolving conflicts, use `git add` to stage the changes and `git commit` to finalise the merge.
 
 ### 2. Tag the New Release
 

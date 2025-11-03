@@ -22,7 +22,7 @@ You can use the images from:
 
 ### Option 1: Using Docker Compose
 
-This is the recommended method for local deployments or when you want to customize the configuration. It uses a `docker compose` file to define and run the container with all its settings.
+This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 ```bash	
 # create a folder for the compose file

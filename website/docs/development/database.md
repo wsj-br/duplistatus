@@ -269,16 +269,16 @@ When Duplicati sends backup data via HTTP POST, the JSON structure is mapped to 
 ### Regular Maintenance Tasks
 
 1. **Vacuum Database**: Reclaim unused space
-2. **Analyze Statistics**: Update query optimizer statistics
+2. **Analyse Statistics**: Update query optimiser statistics
 3. **Check Integrity**: Verify database integrity
 4. **Backup Database**: Create regular backups
 
-### Performance Optimization
+### Performance Optimisation
 
-- **Index Maintenance**: Monitor and optimize indexes
-- **Query Optimization**: Analyze slow queries
+- **Index Maintenance**: Monitor and optimise indexes
+- **Query Optimisation**: Analyse slow queries
 - **Data Cleanup**: Remove old backup data
-- **Connection Pooling**: Optimize database connections
+- **Connection Pooling**: Optimise database connections
 
 ## Troubleshooting
 
@@ -287,7 +287,7 @@ When Duplicati sends backup data via HTTP POST, the JSON structure is mapped to 
 1. **Database Locked**: Check for long-running transactions
 2. **Disk Space**: Monitor database file size
 3. **Corruption**: Use integrity checks
-4. **Performance**: Analyze query performance
+4. **Performance**: Analyse query performance
 
 ### Recovery Procedures
 

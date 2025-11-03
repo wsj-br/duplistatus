@@ -169,7 +169,7 @@
 - **Notes**:
   - Returns basic server information by default for better performance
   - Use query parameters to include additional data when needed
-  - Optimized for different use cases (settings vs detail views)
+  - Optimised for different use cases (settings vs detail views)
 
 ## Update Server - `/api/servers/:id`
 - **Endpoint**: `/api/servers/:id`

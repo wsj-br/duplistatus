@@ -68,7 +68,7 @@ This serves the built site from the `website/build` directory.
 
 ## Generating README.md
 
-The project's `README.md` file is automatically generated from `website/docs/intro.md` to keep the GitHub repository README synchronized with the Docusaurus documentation.
+The project's `README.md` file is automatically generated from `website/docs/intro.md` to keep the GitHub repository README synchronised with the Docusaurus documentation.
 
 To generate or update the README.md file:
 

@@ -9,13 +9,18 @@ ITEMS_TO_REMOVE=(
     ".next"
     "node_modules"
     "dist"
+    "out"
     ".turbo"
     "pnpm-lock.yaml"
     "data/*.json"
-    "websites/.docusaurus"
-    "websites/build"   
-    "websites/node_modules"
-    "websites/pnpm-lock.yaml"
+    "public/docs"
+    "website/.docusaurus"
+    "website/.cache-loader"
+    "website/.cache"
+    "website/build"   
+    "website/node_modules"
+    "website/pnpm-lock.yaml"
+    ".genkit"
 )
 
 echo "🧹 Cleaning build artifacts and dependencies..."
@@ -28,6 +33,19 @@ for item in "${ITEMS_TO_REMOVE[@]}"; do
         echo "❌ Error removing $item"
     fi
 done
+
+# Handle glob patterns separately
+echo "🧹 Cleaning glob patterns..."
+
+# Remove website/.cache-* directories
+if find "$ROOT_DIR/website" -maxdepth 1 -type d -name ".cache-*" -exec rm -rf {} + 2>/dev/null; then
+    echo "✅ Removed website/.cache-* directories"
+fi
+
+# Remove *.tsbuildinfo files
+if find "$ROOT_DIR" -maxdepth 3 -type f -name "*.tsbuildinfo" -exec rm -f {} + 2>/dev/null; then
+    echo "✅ Removed *.tsbuildinfo files"
+fi
 
 
 # Clear pnpm store cache
@@ -49,8 +67,9 @@ fi
 echo "🧹 Clearing docker system images/networks/volumes not used..."
 if docker system prune --all --force; then
     echo "✅ Docker system images/networks/volumes not used cleared"
+else
+    echo "❌ Error clearing docker system images/networks/volumes"
 fi
-echo "✅ Docker compose cache cleared"
 
 echo "✨ Clean completed!" 
 

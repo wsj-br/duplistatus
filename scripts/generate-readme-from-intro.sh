@@ -39,7 +39,7 @@ trap "rm -f $TEMP_FILE" EXIT
 # Start building README.md with header
 cat > "$TEMP_FILE" <<EOF
 
-![duplistatus](docs/img/duplistatus_banner.png)
+![duplistatus](website/static/img/duplistatus_banner.png)
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
@@ -68,10 +68,15 @@ EOF
 sed '1,5d' "$INTRO_FILE" | \
 sed '/^>\[!IMPORTANT\]/,/^$/d' | \
 # Convert relative markdown links to absolute GitHub docs URLs
-sed 's|(\([^)]*\.md\))|(https://wsj-br.github.io/duplistatus/\1)|g' | \
-sed 's|\.md)|)|g' | \
-# Convert image paths from /img/ to docs/img/
-sed 's|(/img/|(docs/img/|g' | \
+# Special case: Docusaurus routes files with same name as parent directory to just the directory
+# e.g., installation/installation.md -> /installation (not /installation/installation)
+sed 's|(\./\([^/]*\)/\1\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
+sed 's|(\([^/]*\)/\1\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
+# Handle paths with or without ./ prefix, normalize them, convert to absolute URL, and remove .md extension
+sed 's|(\./\([^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
+sed 's|(\([^/][^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
+# Convert image paths from /img/ to website/static/img/
+sed 's|(/img/|(website/static/img/|g' | \
 # Fix specific development links that don't have .md extension
 sed 's|(development/setup)|(https://wsj-br.github.io/duplistatus/development/setup)|g' | \
 sed 's|(development/how-i-build-with-ai)|(https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai)|g' >> "$TEMP_FILE"

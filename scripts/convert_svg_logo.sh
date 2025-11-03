@@ -4,7 +4,7 @@
 #
 #
 BASEDIR=$(dirname "$0") 
-DOCS_IMG=$BASEDIR/../docs/img
+DOCS_IMG=$BASEDIR/../website/static/img
 IMAGES=$BASEDIR/../public/images
 APP=$BASEDIR/../src/app
 

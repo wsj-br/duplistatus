@@ -116,7 +116,7 @@ const config: Config = {
             title: 'Documentation',
             items: [
               {
-                label: 'Getting Started',
+                label: 'Installation',
                 to: '/installation/',
               },
               {

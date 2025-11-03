@@ -29,6 +29,7 @@ tmp/*
 # misc
 .DS_Store
 *.pem
+README_dockerhub.md
 
 # development files
 .specstory/**

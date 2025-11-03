@@ -1,5 +1,5 @@
 
-![duplistatus](docs/img/duplistatus_banner.png)
+![duplistatus](website/static/img/duplistatus_banner.png)
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
@@ -49,7 +49,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 ## Installation
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
-See details in the [Installation Guide](https://wsj-br.github.io/duplistatus/installation/installation).
+See details in the [Installation Guide](https://wsj-br.github.io/duplistatus/installation).
 
 ## Duplicati Servers Configuration (Required)
 
@@ -65,23 +65,23 @@ See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) f
 
 ### Dashboard
 
-![dashboard](docs/img/screen-dashboard.png)
+![dashboard](website/static/img/screen-dashboard.png)
 
 ### Backup History
 
-![server-detail](docs/img/screen-server.png)
+![server-detail](website/static/img/screen-server.png)
 
 ### Backup Details
 
-![backup-detail](docs/img/screen-backup.png)
+![backup-detail](website/static/img/screen-backup.png)
 
 ### Overdue Backups
 
-![overdue backups](docs/img/screen-overdue-tooltip.png)
+![overdue backups](website/static/img/screen-overdue-tooltip.png)
 
 ### Overdue notifications on your phone
 
-![ntfy overdue message](docs/img/screen-overdue-notification.png)
+![ntfy overdue message](website/static/img/screen-overdue-notification.png)
 
 ## API Reference
 
@@ -120,7 +120,7 @@ For detailed migration information, including migration steps, monitoring, and r
 
 ## License
 
-The project is licensed under the [Apache License 2.0](LICENSE).   
+The project is licensed under the [Apache License 2.0](https://wsj-br.github.io/duplistatus/LICENSE).   
 
 **Copyright © 2025 Waldemar Scudeller Jr.**
 

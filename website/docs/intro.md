@@ -79,7 +79,7 @@ This project was mainly built with AI help. To learn how, see [HOW-I-BUILD-WITH-
 
 ## License
 
-The project is licensed under the [Apache License 2.0](LICENSE).   
+The project is licensed under the [Apache License 2.0](LICENSE.md).   
 
 **Copyright © 2025 Waldemar Scudeller Jr.**
 

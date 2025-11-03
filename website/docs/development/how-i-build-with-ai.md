@@ -41,17 +41,17 @@ this generated an App Blueprint, which I then modified slightly (as below) befor
 
 ![appblueprint](/img/app-blueprint.png)
 
-I later used these prompts to adjust and refine the design and behavior:
+I later used these prompts to adjust and refine the design and behaviour:
 
 > remove the button "view details" from the dashboard overview page and the link on the machine name, if the user click anywhere on the row, it will show the detail page.
 
 > when presenting sizes in bytes, use a automatic scale (KB, MB, GB, TB).
 
-> in the detail page, move the chart after the table. Change the color of the barchart to some other color compatible with light and dark themes.
+> in the detail page, move the chart after the table. Change the colour of the barchart to some other colour compatible with light and dark themes.
 
 > in the detail page, reduce the number of rows to present 5 backups per page.
 
-> in the dashboard overview, put a summary on top with the number of machines in the database, total number of backups of all machines, the total uploaded size of all backups and total storage used by all machines. Include icons to facilitate the visualization.
+> in the dashboard overview, put a summary on top with the number of machines in the database, total number of backups of all machines, the total uploaded size of all backups and total storage used by all machines. Include icons to facilitate the visualisation.
 
 > please persist the theme select by the user. also, add some lateral margins and make the UI use 90% of the available width.
 
@@ -94,7 +94,7 @@ I created a detailed prompt using Cursor Chat (`Manual` mode, `Auto` model):
 
 > improve this text as a prompt to cursor ai tool to generate the implementation of an applicaiton prototype:
 > 
-> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyze the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilize SQLite3. Generate the database and populate it using the structure and content found in the @database_values.json file, ensuring every field from the JSON is fully integrated and persisted.
+> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyse the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilise SQLite3. Generate the database and populate it using the structure and content found in the @database_values.json file, ensuring every field from the JSON is fully integrated and persisted.
 
 The AI generated the following prompt:
 
@@ -109,7 +109,7 @@ The AI generated the following prompt:
 >   - Client components for interactive elements
 >
 >2. Database Design:
->   - Analyze database_values.json to create an optimal SQLite schema
+>   - Analyse database_values.json to create an optimal SQLite schema
 >   - Design tables to efficiently store all backup data
 >   - Include indexes for common queries
 >   - Implement data validation and type safety
@@ -124,7 +124,7 @@ The AI generated the following prompt:
 >4. Core Features:
 >   - Dashboard overview with machine status table
 >   - Detailed machine view with backup history
->   - Data visualization using charts
+>   - Data visualisation using charts
 >   - Real-time backup status updates
 >   - Proper error handling and loading states
 >
@@ -150,7 +150,7 @@ After the plan was generated, I typed `please, implement this plan` in the chat 
 # Notes
 
 - Some models can get stuck when fixing bugs. "claude-3.5" and "claude-4" are usually better, but sometimes you have to try another model (GPT, Gemini, etc.).
-For complex bugs or errors, use a prompt to analyze possible causes of the error instead of simply asking to fix it.
+For complex bugs or errors, use a prompt to analyse possible causes of the error instead of simply asking to fix it.
 - When making complex modifications, use a prompt to create a plan and then ask the AI agent to implement it. This always works better.
 - Be specific when changing the source code. If possible, select the relevant part of the code in the editor and press Ctrl+L to include it in the chat as context.
 - Also include a reference to the file you are mentioning in the chat to help the AI agent focus on the relevant part of the code and avoid making changes in other parts of the code.

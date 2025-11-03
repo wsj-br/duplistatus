@@ -11,7 +11,7 @@ For a quick reference of all endpoints, see the [API Endpoint List](api-endpoint
 The API is organised into logical groups:
 - **[External APIs](external-apis)**: Summary data, latest backup status, and backup data uploads from Duplicati
 - **[Core Operations](core-operations)**: Dashboard data, server management, and detailed backup information
-- **[Chart Data](chart-data-apis)**: Aggregated and server-specific time-series data for visualization and analytics
+- **[Chart Data](chart-data-apis)**: Aggregated and server-specific time-series data for visualisation and analytics
 - **[Configuration Management](configuration-apis)**: Email, notification, backup settings, and system configuration
 - **[Notification System](notification-apis)**: Notification testing, overdue backup checks, and notification management
 - **[Cron services](cron-service-apis)**: Cron service management

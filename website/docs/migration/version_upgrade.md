@@ -75,7 +75,7 @@ When upgrading to version 0.8.x from 0.7.x or earlier:
 
 #### Manual Actions Required
 
-1. **Notification Templates**: The variables `{backup_interval_value}` and `{backup_interval_type}` were replaced by `{backup_interval}`. Default templates will be adjusted automatically, but customized templates will not be migrated. Please review and update your custom templates.
+1. **Notification Templates**: The variables `{backup_interval_value}` and `{backup_interval_type}` were replaced by `{backup_interval}`. Default templates will be adjusted automatically, but customised templates will not be migrated. Please review and update your custom templates.
 
 #### Security Considerations
 
@@ -129,7 +129,7 @@ When upgrading to version 0.7.x from 0.6.x or earlier:
 
 ## Database Changes Summary
 
-The following table summarizes major database schema changes across versions:
+The following table summarises major database schema changes across versions:
 
 | Version | Change Type | Details |
 |---------|-------------|---------|
