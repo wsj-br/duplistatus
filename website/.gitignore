@@ -1,20 +1,77 @@
 # Dependencies
 /node_modules
+/.pnp
+.pnp.*
 
-# Production
+# Production / Build outputs
 /build
+/.next
+/out
+*.tsbuildinfo
+.next-env.d.ts
 
-# Generated files
-.docusaurus
-.cache-loader
+# Docusaurus generated files and cache
+/.docusaurus
+/.cache-loader
+.cache
+.cache-*
 
-# Misc
-.DS_Store
+# Testing / Coverage
+/coverage
+.nyc_output
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.log
+
+# Package manager cache
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
