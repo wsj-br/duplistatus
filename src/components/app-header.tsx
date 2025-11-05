@@ -61,7 +61,7 @@ export function AppHeader() {
           <Button 
             variant="outline" 
             size="icon" 
-            title="Help"
+            title="User Guide"
             className="ml-4"
             onClick={() => window.open('/docs/user-guide/overview', '_blank', 'noopener,noreferrer')}
           >

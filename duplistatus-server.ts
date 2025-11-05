@@ -136,20 +136,27 @@ const serveDocsFile = (reqUrl: string | undefined, res: ServerResponse): boolean
     
     // Resolve to public/docs directory
     const docsDir = join(process.cwd(), 'public', 'docs');
-    const resolvedPath = resolve(docsDir, normalize(filePath).replace(/^\//, ''));
+    const resolvedDocsDir = resolve(docsDir);
+    let resolvedPath = resolve(docsDir, normalize(filePath).replace(/^\//, ''));
     
     // Security check: ensure the resolved path is within docsDir
-    if (!resolvedPath.startsWith(resolve(docsDir))) {
+    if (!resolvedPath.startsWith(resolvedDocsDir)) {
       res.statusCode = 403;
       res.end('Forbidden');
       return true;
     }
 
-    // Check if file exists
+    // Check if file exists - if not, try with .html extension (for Docusaurus clean URLs)
     if (!existsSync(resolvedPath)) {
-      res.statusCode = 404;
-      res.end('Not Found');
-      return true;
+      const htmlPath = resolvedPath + '.html';
+      // Security check for .html path too
+      if (htmlPath.startsWith(resolvedDocsDir) && existsSync(htmlPath)) {
+        resolvedPath = htmlPath;
+      } else {
+        res.statusCode = 404;
+        res.end('Not Found');
+        return true;
+      }
     }
 
     // Check if it's a directory - try index.html
@@ -170,7 +177,7 @@ const serveDocsFile = (reqUrl: string | undefined, res: ServerResponse): boolean
       }
     }
 
-    // Read and serve the file
+    // Not a directory - read and serve as file
     const content = readFileSync(resolvedPath);
     res.setHeader('Content-Type', getMimeType(resolvedPath));
     res.setHeader('Content-Length', content.length);

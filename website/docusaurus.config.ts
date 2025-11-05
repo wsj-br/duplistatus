@@ -5,6 +5,10 @@ import remarkGithubAlerts from 'remark-github-alerts';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// Get the BASE_URL from the environment variables, 
+// defaulting to '/duplistatus/' for GitHub Pages deployment.
+const baseUrl = process.env.BASE_URL || '/duplistatus/';
+
 const config: Config = {
   title: 'duplistatus',
   tagline: 'A dashboard to monitor your Duplicati backups',
@@ -18,7 +22,7 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://wsj-br.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served|
-  baseUrl: '/duplistatus/',
+  baseUrl: baseUrl,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.

@@ -20,6 +20,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Copy full website directory structure for proper workspace installation
 COPY website ./website
 
+
+# Set the BASE_URL to /docs/ to be included in the container and served by duplistatus-server.ts
+ENV BASE_URL="/docs/"
+
 # Install all workspace dependencies (including website)
 RUN pnpm install --frozen-lockfile
 
@@ -58,7 +62,7 @@ RUN apk add --no-cache curl tzdata icu-libs icu-data-full
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=0.8.19 \
+ENV VERSION=0.8.20 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \
