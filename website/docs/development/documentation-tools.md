@@ -90,6 +90,16 @@ This script:
 npm install -g doctoc
 ```
 
+## Deploying the Documentation
+
+To deploy the documentation to GitHub Pages, run the following command:
+
+```bash
+pnpm run deploy
+```
+
+This will build the documentation and push it to the `gh-pages` branch of the repository.
+
 ## Working with Documentation
 
 - Documentation files are written in Markdown (`.md`) and located in `website/docs/`
