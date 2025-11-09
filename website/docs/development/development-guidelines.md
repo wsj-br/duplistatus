@@ -35,30 +35,33 @@
 
 ### Runtime & Package Management
 - Node.js ^20.x (minimum: 20.19.0)
-- pnpm ^10.x (minimum: 10.18.0, enforced via preinstall hook)
+- pnpm ^10.x (minimum: 10.20.0, enforced via preinstall hook)
 
 ### Core Frameworks & Libraries
-- Next.js 15.5.4 (App Router)
+- Next.js 16.0.1 (App Router)
 - React 19.2.0 & React-DOM 19.2.0
 - Radix UI (@radix-ui/react-*) - latest versions
-- Tailwind CSS 4.1.14 + tailwindcss-animate 1.0.7
+- Tailwind CSS 4.1.17 + tailwindcss-animate 1.0.7
 - Better-sqlite3 12.4.1
-- Recharts 3.2.1, react-day-picker 9.11.0, react-hook-form 7.64.0
-- lucide-react 0.544.0, clsx 2.1.1, class-variance-authority 0.7.1
+- Recharts 3.3.0, react-day-picker 9.11.1, react-hook-form 7.66.0
+- lucide-react 0.553.0, clsx 2.1.1, class-variance-authority 0.7.1
 - date-fns 4.1.0, uuid 13.0.0
 - express 5.1.0 (cron service), node-cron 4.2.1
-- nodemailer 7.0.7, qrcode 1.5.4
+- nodemailer 7.0.10, qrcode 1.5.4
 
 ### Type Checking & Linting
 - TypeScript 5.9.3
 - TSX 4.20.6
-- ESLint 9.37.0 (via `next lint`)
+- ESLint 9.39.1 (via `next lint`)
 
 ### Build & Deployment
 - Custom server: `duplistatus-server.ts`
 - Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
 - GitHub Actions workflows for CI/CD
-- Semantic-versioning scripts: `release:patch`, `release:minor`, `release:major`
+- Inkscape for logos and pictures
+- Docusaurus for documentation
+- Greenfish Icon Editor for icons
+
 
 ### Project Configuration
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`

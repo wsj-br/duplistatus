@@ -34,6 +34,8 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose up -d
 ```
 
+Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+
 ### Option 2: Using Portainer Stacks (Docker Compose)
 
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
@@ -63,7 +65,8 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Click "Deploy the stack".
+5. Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+6. Click "Deploy the stack".
 
 ### Option 3: Using Portainer Stacks (GitHub Repository)
 
@@ -72,6 +75,7 @@ volumes:
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
 5. In the "Compose path" field, enter: `production.yml`
+6. (optional) Set the `TZ` and `LANG` environment variables in the "Environment variables" section. Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
 6. Click "Deploy the stack".
 
 ### Option 4: Using Docker CLI
@@ -108,6 +112,8 @@ podman create \
 podman pod start Duplistatus
 ```
 
+Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+
 ### Option 6: Using Podman Compose (CLI)
 
 ```bash
@@ -120,3 +126,4 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 podman-compose up -d
 ```
 
+Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.

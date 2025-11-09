@@ -55,12 +55,19 @@ If the manual backup log collection fails:
 
 - **Check Duplicati Server Access**: Verify the Duplicati server hostname and port are correct. Confirm remote access is enabled in Duplicati. Ensure the authentication password and protocol (HTTP/HTTPS) are correct.
 - **Check Network Connectivity**: Test connectivity from **duplistatus** to the Duplicati server. Confirm the Duplicati server port is accessible (default: `8200`).
+  For example, if you are using Docker, you can use `docker exec -it <container-name> /bin/sh` to access the container's command line and run network tools like `ping` and `curl`.
+
+    ```bash
+    docker exec -it duplistatus /bin/sh
+    ping duplicati-server.local
+    curl -I http://duplicati-server.local:8200
+    ```
 
 If you still experience issues, try the following steps:
 
 1.  **Inspect Application Logs**: If using Docker, run `docker logs <container-name>` to review detailed error information.
 2.  **Validate Configuration**: Double-check all configuration settings in your container management tool (Docker, Portainer, Podman, etc.) including ports, network, and permissions.
-3.  **Verify Network Connectivity**: Confirm all network connections are stable. If using Docker, you can use `docker exec -it <container-name> /bin/sh` to access the container's command line and run network tools like `ping` and `curl`.
+3.  **Verify Network Connectivity**: Confirm all network connections are stable. 
 4.  **Check Cron Service**: Ensure the cron service is running alongside the main application. Check logs for both services.
 5.  **Consult Documentation**: Refer to the Installation Guide and README for more information.
 6.  **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).

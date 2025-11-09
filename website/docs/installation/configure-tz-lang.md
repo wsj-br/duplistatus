@@ -12,7 +12,7 @@ The application user interface date and time will be displayed according to the 
 
 The default value is `TZ=Europe/London` if this environment variable is not set.
 
-For example, to change the timezone to São Paulo, add these lines to the `duplistatus.yml` under `duplistatus:`:
+For example, to change the timezone to São Paulo, add these lines to the `compose.yml` in directory `duplistatus`:
 
 ```yaml
 environment:
@@ -43,7 +43,7 @@ The application user interface dates and numbers will be displayed according to 
 
 The default value is `LANG=en_GB` if this environment variable is not set.
 
-For example, to change the locale to Brazilian Portuguese, add these lines to the `duplistatus.yml` under `duplistatus:`:
+For example, to change the locale to Brazilian Portuguese, add these lines to the `compose.yml` in directory `duplistatus`:
 
 ```yaml
 environment:

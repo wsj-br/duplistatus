@@ -14,6 +14,9 @@ import { OpenServerConfigButton } from '@/components/open-server-config-button';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
+//import the logo image
+import DupliLogo from '../../public/images/duplistatus_logo.png';
+
 export function AppHeader() {
   const pathname = usePathname();
   const isDashboardPage = pathname === '/';
@@ -24,7 +27,7 @@ export function AppHeader() {
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image
-              src="/images/duplistatus_logo.png"
+              src={DupliLogo}
               alt="duplistatus Logo"
               width={40}
               height={40}

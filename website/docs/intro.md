@@ -10,16 +10,19 @@
 - **Unified Dashboard**: View backup status, history and details for all servers in one place.
 - **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
-- **Notifications & Alerts**: Integrated [ntfy](https://github.com/binwiederhier/ntfy) and email support for backup alerts, including overdue backup notifications.
+- **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
 
 >[!IMPORTANT]
-> If you are upgrading from an earlier version, your database will be automatically 
+> - If you are upgrading from an earlier version, your database will be automatically 
 > [migrated](migration/version_upgrade.md) to the new schema during the upgrade process.
 > 
+> - Adjust the timezone and language to receive notifications in right time zone and number/date/time format. See detail in the [Timezone and Locale](installation/configure-tz-lang.md) section.
+>
+
 
 ## Installation
 
-The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
+The application can be deployed using Docker, Portainer Stacks, or Podman. 
 See details in the [Installation Guide](installation/installation.md).
 
 ## Duplicati Servers Configuration (Required)
