@@ -92,13 +92,21 @@ npm install -g doctoc
 
 ## Deploying the Documentation
 
-To deploy the documentation to GitHub Pages, run the following command:
+
+To deploy the documentation to Github pages, we will need to generate a GitHub Personal Access Token, go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
+
+When you have the token, run the following command to store the token in the Git credential store:
+```bash
+./setup-git-credentials.sh
+```
+
+Then, to deploy the documentation to GitHub Pages, run the following command:
 
 ```bash
 pnpm run deploy
 ```
 
-This will build the documentation and push it to the `gh-pages` branch of the repository.
+This will build the documentation and push it to the `gh-pages` branch of the repository, and the documentation will be available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
 
 ## Working with Documentation
 
