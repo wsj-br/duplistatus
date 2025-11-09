@@ -1,5 +1,4 @@
-
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](../website/static/img/duplistatus_banner.png)
 
 # TODO List
 
@@ -9,42 +8,65 @@
 
 - [Fix](#fix)
 - [Changes needed](#changes-needed)
-- [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
-  - [Nice to have](#nice-to-have)
+- [Nice to have](#nice-to-have)
 - [List of changes](#list-of-changes)
   - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
   - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
   - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
   - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
   - [Implemented in Version 0.7.27 ✅](#implemented-in-version-0727-)
-  - [Implemented in Version 0.8.x 🚧](#implemented-in-version-08x-)
+  - [Implemented in Version 0.8.x ✅](#implemented-in-version-08x-)
+  - [Implemented in Version 0.9.x 🚧](#implemented-in-version-09x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+<br/><br/>
 
 ## Fix
 
 none
 
+<br/>
+
+
 ## Changes needed
 
 
+- When collecting backups, if the server is not available, the application should include the server name in the error message.
 
+  Current error message:
+  ```
+  2025-11-09T02:15:13.897668838Z Error collecting backups: Could not establish connection with any protocol. Attempts failed:
+  2025-11-09T02:15:13.897727778Z HTTPS: Connection timed out after 15000ms
+  2025-11-09T02:15:13.897741138Z HTTP: Idle timeout after 15000ms
+  ````
 
-
-- replace the documentation to use Docusaurus
-
+  Expected error message:
+  ```
+  2025-11-09T02:15:13.897668838Z Error collecting backups server "server-name": Could not establish connection with any protocol. Attempts failed:
+  2025-11-09T02:15:13.897727778Z HTTPS: Connection timed out after 15000ms (https://server-name:8200)
+  2025-11-09T02:15:13.897741138Z HTTP: Idle timeout after 15000ms (http://server-name:8200)
+  ```
+<br/>
 ## New Features (planned or under analysis)
+
+
+- Include a user authentication system to protect the application from unauthorized access.
+
+
+<br/>
+
+## Nice to have
 
 none
 
 
 
-
-### Nice to have
-- Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) ✅
-
+<br/><br/>
 
 ---
+
+<br/><br/>
 
 ## List of changes
 
@@ -143,7 +165,7 @@ none
 - **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
 
 
-### Implemented in Version 0.8.x 🚧
+### Implemented in Version 0.8.x ✅
 
 **Server Management Enhancements:**
 - Automatic server URL and password persistence when collecting backups for the first time
@@ -199,5 +221,12 @@ none
 
 
 
-  
+### Implemented in Version 0.9.x 🚧
+
+(to be implemented).
+
+
+
+
+
 
