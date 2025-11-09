@@ -44,11 +44,12 @@ It also provides API endpoints that can be integrated with third-party tools suc
 - **Unified Dashboard**: View backup status, history and details for all servers in one place.
 - **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
-- **Notifications & Alerts**: Integrated [ntfy](https://github.com/binwiederhier/ntfy) and email support for backup alerts, including overdue backup notifications.
+- **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
+
 
 ## Installation
 
-The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. 
+The application can be deployed using Docker, Portainer Stacks, or Podman. 
 See details in the [Installation Guide](https://wsj-br.github.io/duplistatus/installation).
 
 ## Duplicati Servers Configuration (Required)
