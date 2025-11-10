@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { requireServerAuth } from "@/lib/auth-server";
 
 interface BackupLogPageProps {
   params: Promise<{
@@ -202,6 +203,9 @@ const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availa
 };
 
 export default async function BackupLogPage({ params }: BackupLogPageProps) {
+  // Require authentication - redirects to login if not authenticated
+  await requireServerAuth();
+  
   const { serverId, backupId } = await params;
   
   // Add error handling for database operations

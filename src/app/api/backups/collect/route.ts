@@ -9,6 +9,9 @@ import { defaultAPIConfig } from '@/lib/default-config';
 import { setConfiguration } from '@/lib/db-utils';
 import { encryptData, getServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { optionalAuth } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -296,24 +299,31 @@ async function updateBackupSettingsWithSchedule(
   await updatePromise;
 }
 
-export const POST = withCSRF(async (request: NextRequest) => {
+export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+  // Store server info for error logging
+  let providedServerId: string | undefined;
+  let serverNameForError: string | undefined;
+  
   try {
+    const requestBody = await request.json();
     const { 
       hostname, 
       port = defaultAPIConfig.duplicatiPort, 
       password, 
-      serverId: providedServerId,
+      serverId,
       downloadJson = false
-    } = await request.json();
+    } = requestBody;
+    
+    providedServerId = serverId;
 
     let finalHostname: string;
     let finalPort: number;
     let finalPassword: string;
 
     // Handle three types of calls: hostname/port, serverID only, or serverID with updates
-    if (providedServerId) {
+    if (serverId) {
       // Get server information from database
-      const serverInfo = getServerInfoById(providedServerId);
+      const serverInfo = getServerInfoById(serverId);
       if (!serverInfo) {
         return NextResponse.json(
           { error: 'Server not found' },
@@ -335,7 +345,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       } else {
         // ServerID only case: get password from database
         try {
-          const serverPassword = getServerPassword(providedServerId);
+          const serverPassword = getServerPassword(serverId);
           if (!serverPassword) {
             return NextResponse.json(
               { 
@@ -463,30 +473,33 @@ export const POST = withCSRF(async (request: NextRequest) => {
       throw new Error('System info Options array is missing - unable to find machine-id');
     }
    
-    const serverId = systemInfo.Options.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
-    const serverName = systemInfo.MachineName;
+    const detectedServerId = systemInfo.Options.find((opt) => opt.Name === 'machine-id')?.DefaultValue;
+    const detectedServerName = systemInfo.MachineName;
+    
+    // Store server name for error logging
+    serverNameForError = detectedServerName;
 
     // Detailed error reporting
-    if (!serverId) {
+    if (!detectedServerId) {
       console.error('Could not find machine-id in system options');
       console.error('Available option names:', systemInfo.Options.map(opt => opt.Name));
       throw new Error('Could not find machine-id in system options.');
     }
     
-    if (!serverName) {
+    if (!detectedServerName) {
       console.error('MachineName is missing from system info');
       console.error('System info structure:', Object.keys(systemInfo));
       throw new Error('MachineName is missing from system info');
     }
         
     // Check if server already exists
-    const existingServer = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    const existingServer = dbOps.getServerById.get(detectedServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     
     if (existingServer) {
       // Server exists - update server_url and password, preserve alias and note
       dbOps.upsertServer.run({
-        id: serverId,
-        name: serverName,
+        id: detectedServerId,
+        name: detectedServerName,
         server_url: baseUrl,
         server_password: encryptData(finalPassword),
         alias: existingServer.alias,  // Preserve existing alias
@@ -495,17 +508,33 @@ export const POST = withCSRF(async (request: NextRequest) => {
     } else {
       // Server doesn't exist - create new server with empty alias and note
       dbOps.upsertServer.run({
-        id: serverId,
-        name: serverName,
+        id: detectedServerId,
+        name: detectedServerName,
         server_url: baseUrl,
         server_password: encryptData(finalPassword),
         alias: '',
         note: ''
       });
+      
+      // Log audit event for server creation
+      if (authContext) {
+        const ipAddress = getClientIpAddress(request);
+        await AuditLogger.logServerOperation(
+          'server_added',
+          authContext.userId,
+          authContext.username,
+          detectedServerId,
+          {
+            serverName: detectedServerName,
+            serverUrl: baseUrl,
+          },
+          ipAddress
+        );
+      }
     }
     
     // Get the server information including alias from database
-    const serverInfo = dbOps.getServerById.get(serverId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
+    const serverInfo = dbOps.getServerById.get(detectedServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     const serverAlias = serverInfo?.alias || '';
     
     // Ensure backup settings are complete for all servers and backups
@@ -653,7 +682,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
           if (!backupName) continue;
           
           const isDuplicate = await dbUtils.checkDuplicateBackup({
-            server_id: serverId,
+            server_id: detectedServerId,
             backup_name: backupName,
             date: backupDate
           });
@@ -672,7 +701,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
           // Insert backup data
           dbOps.insertBackup.run({
             id: uuidv4(),
-            server_id: serverId,
+            server_id: detectedServerId,
             backup_name: backupName,
             backup_id: backupId,
             date: backupDate,
@@ -747,7 +776,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       }
     }
 
-    const responseData: {
+      const responseData: {
       success: boolean;
       serverName: string;
       serverAlias: string;
@@ -762,7 +791,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       jsonData?: string;
     } = {
       success: true,
-      serverName: serverName,
+      serverName: detectedServerName,
       serverAlias: serverAlias,
       stats: {
         processed: processedCount,
@@ -817,13 +846,65 @@ export const POST = withCSRF(async (request: NextRequest) => {
       }, null, 2);
     }
 
+    // Log audit event - determine status based on results
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      const finalServerId = providedServerId || detectedServerId || detectedServerName;
+      const hasErrors = errorCount > 0;
+      const status = hasErrors ? 'error' : 'success';
+      
+      await AuditLogger.log({
+        userId: authContext.userId,
+        username: authContext.username,
+        action: 'backup_collected',
+        category: 'backup',
+        targetType: 'backup',
+        targetId: finalServerId,
+        details: {
+          serverName: detectedServerName,
+          serverAlias,
+          processed: processedCount,
+          skipped: skippedCount,
+          errors: errorCount,
+        },
+        ipAddress,
+        status,
+        errorMessage: hasErrors ? `Collection completed with ${errorCount} error(s)` : undefined,
+      });
+    }
+
     return NextResponse.json(responseData);
 
   } catch (error) {
     console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
+    
+    // Log audit event for collection failure
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to collect backups';
+      const finalServerId = providedServerId || 'unknown';
+      const finalServerName = serverNameForError || 'unknown';
+      
+      await AuditLogger.log({
+        userId: authContext.userId,
+        username: authContext.username,
+        action: 'backup_collected',
+        category: 'backup',
+        targetType: 'backup',
+        targetId: finalServerId,
+        details: {
+          serverName: finalServerName,
+          error: errorMessage,
+        },
+        ipAddress,
+        status: 'error',
+        errorMessage,
+      });
+    }
+    
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to collect backups' },
       { status: 500 }
     );
   }
-}); 
+})); 

@@ -1,9 +1,11 @@
-import { createServer, type ServerResponse } from 'http';
+import { createServer, type ServerResponse, type IncomingMessage } from 'http';
 import next from 'next';
 import { randomBytes } from 'crypto';
 import { existsSync, writeFileSync, chmodSync, statSync, readFileSync, lstatSync } from 'fs';
 import { join, extname, resolve, normalize } from 'path';
 import { error } from 'console';
+import { parse } from 'url';
+import { requestUrlStorage } from './src/lib/request-url-storage';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = '0.0.0.0'; //always listen on 0.0.0.0
@@ -204,8 +206,30 @@ app.prepare().then(() => {
         return; // File was served, don't continue to Next.js handler
       }
       
-      // Use the original req.url for Next.js handler, as handle expects (req, res, parsedUrl?)
-      await handle(req, res);
+      // Parse URL and store it in AsyncLocalStorage for server components
+      // This is the only reliable way to pass URL info from custom server to server components
+      let pathname = '/';
+      let searchParams = '';
+      
+      if (req.url) {
+        try {
+          // Parse the URL using Node's url.parse
+          const parsedUrl = parse(req.url, true);
+          pathname = parsedUrl.pathname || '/';
+          searchParams = parsedUrl.search ? parsedUrl.search.substring(1) : ''; // Remove leading '?'
+        } catch (err) {
+          // If URL parsing fails, use default values
+          console.error('[Server] Error parsing URL for redirect:', err);
+          pathname = '/';
+          searchParams = '';
+        }
+      }
+      
+      // Store URL info in AsyncLocalStorage so server components can access it
+      // This runs the Next.js handler within the AsyncLocalStorage context
+      await requestUrlStorage.run({ pathname, searchParams }, async () => {
+        await handle(req, res);
+      });
     } catch (err) {
       console.error('Error occurred handling', req.url, err);
       res.statusCode = 500;

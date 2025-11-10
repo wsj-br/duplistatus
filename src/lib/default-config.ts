@@ -61,7 +61,11 @@ export const defaultCronConfig: CronServiceConfig = {
   })(),
   tasks: {
     'overdue-backup-check': {
-      cronExpression: '*/20 * * * *', // Every 20 minutes
+      cronExpression: '*/5 * * * *', // Every 5 minutes
+      enabled: true
+    },
+    'audit-log-cleanup': {
+      cronExpression: '0 2 * * *', // Daily at 2 AM UTC
       enabled: true
     }
   }
@@ -78,7 +82,7 @@ export const defaultNtfyConfig = {
 export const defaultOverdueTolerance = '1h' as const;
 
 // Global cron interval configuration
-export const defaultCronInterval = '20min' as CronInterval;
+export const defaultCronInterval = '5min' as CronInterval;
 
 // Default notification frequency configuration
 export const defaultNotificationFrequencyConfig = 'every_day' as const;

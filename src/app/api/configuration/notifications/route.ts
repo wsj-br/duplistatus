@@ -3,6 +3,9 @@ import { getNotificationFrequencyConfig, setNotificationFrequencyConfig, setNtfy
 import { NotificationFrequencyConfig } from '@/lib/types';
 import { generateDefaultNtfyTopic } from '@/lib/default-config';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { optionalAuth } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 export const GET = withCSRF(async () => {
   try {
@@ -17,7 +20,7 @@ export const GET = withCSRF(async () => {
   }
 });
 
-export const POST = withCSRF(async (request: NextRequest) => {
+export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
   try {
     
     const body = await request.json();
@@ -32,6 +35,20 @@ export const POST = withCSRF(async (request: NextRequest) => {
         );
       }
       setNotificationFrequencyConfig(value);
+      
+      // Log audit event
+      if (authContext) {
+        const ipAddress = getClientIpAddress(request);
+        await AuditLogger.logConfigChange(
+          'notification_frequency_updated',
+          authContext.userId,
+          authContext.username,
+          'notification_frequency',
+          { value },
+          ipAddress
+        );
+      }
+      
       return NextResponse.json({ value });
     }
     
@@ -49,9 +66,27 @@ export const POST = withCSRF(async (request: NextRequest) => {
     
     // Save ntfy directly under new key
     setNtfyConfig(updatedNtfy);
+    
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      await AuditLogger.logConfigChange(
+        'ntfy_config_updated',
+        authContext.userId,
+        authContext.username,
+        'ntfy_config',
+        {
+          url: updatedNtfy.url,
+          topic: updatedNtfy.topic,
+          hasAccessToken: Boolean(updatedNtfy.accessToken && updatedNtfy.accessToken.trim() !== ''),
+        },
+        ipAddress
+      );
+    }
+    
     return NextResponse.json({ message: 'NTFY config updated successfully', ntfy: updatedNtfy });
   } catch (error) {
     console.error('Failed to update notification config:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to update notification config' }, { status: 500 });
   }
-});
+}));

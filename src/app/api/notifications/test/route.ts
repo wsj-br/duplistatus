@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { NotificationTemplate, NtfyConfig } from '@/lib/types';
 import { sendEmailNotification, convertTextToHtml } from '@/lib/notifications';
 import { getSMTPConfig } from '@/lib/db-utils';
+import { optionalAuth } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, title: string, priority: string, tags: string) {
   const { url, topic, accessToken } = config;
@@ -53,7 +56,9 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
   }
 }
 
-export const POST = withCSRF(async (request: NextRequest) => {
+export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+  let testType: 'simple' | 'template' | 'email' | 'unknown' = 'unknown';
+  
   try {
     
     const { type, ntfyConfig, template }: { 
@@ -61,6 +66,8 @@ export const POST = withCSRF(async (request: NextRequest) => {
       ntfyConfig?: NtfyConfig; 
       template?: NotificationTemplate 
     } = await request.json();
+    
+    testType = type;
 
     // Handle email test
     if (type === 'email') {
@@ -73,6 +80,24 @@ export const POST = withCSRF(async (request: NextRequest) => {
       const htmlContent = convertTextToHtml(testMessage);
 
       await sendEmailNotification(testSubject, htmlContent, testMessage);
+      
+      // Log audit event
+      if (authContext) {
+        const ipAddress = getClientIpAddress(request);
+        await AuditLogger.log({
+          userId: authContext.userId,
+          username: authContext.username,
+          action: 'test_notification_sent',
+          category: 'system',
+          details: {
+            type: 'email',
+            channel: 'Email',
+          },
+          ipAddress,
+          status: 'success',
+        });
+      }
+      
       return NextResponse.json({ message: 'Test email sent successfully' });
     }
 
@@ -162,6 +187,24 @@ export const POST = withCSRF(async (request: NextRequest) => {
       // Wait for all notifications to complete
       await Promise.all(notifications);
 
+      // Log audit event
+      if (authContext) {
+        const ipAddress = getClientIpAddress(request);
+        await AuditLogger.log({
+          userId: authContext.userId,
+          username: authContext.username,
+          action: 'test_notification_sent',
+          category: 'system',
+          details: {
+            type: 'template',
+            channels: notificationTypes,
+            templateType: template ? 'custom' : 'default',
+          },
+          ipAddress,
+          status: 'success',
+        });
+      }
+
       return NextResponse.json({ 
         success: true, 
         message: `Test notifications sent successfully via ${notificationTypes.join(' and ')}`,
@@ -177,11 +220,49 @@ export const POST = withCSRF(async (request: NextRequest) => {
         'test'
       );
       
+      // Log audit event
+      if (authContext) {
+        const ipAddress = getClientIpAddress(request);
+        await AuditLogger.log({
+          userId: authContext.userId,
+          username: authContext.username,
+          action: 'test_notification_sent',
+          category: 'system',
+          details: {
+            type: 'simple',
+            channel: 'NTFY',
+            url: ntfyConfig.url,
+            topic: ntfyConfig.topic,
+          },
+          ipAddress,
+          status: 'success',
+        });
+      }
+      
       return NextResponse.json({ message: 'Test notification sent successfully' });
     }
   } catch (error) {
     console.error('Failed to send test notification:', error instanceof Error ? error.message : String(error));
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    
+    // Log audit event for error
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      await AuditLogger.log({
+        userId: authContext.userId,
+        username: authContext.username,
+        action: 'test_notification_sent',
+        category: 'system',
+        details: {
+          type: testType,
+          error: errorMessage,
+        },
+        ipAddress,
+        status: 'error',
+        errorMessage,
+      });
+    }
+    
     return NextResponse.json({ error: `Failed to send test notification: ${errorMessage}` }, { status: 500 });
   }
-});
+}));

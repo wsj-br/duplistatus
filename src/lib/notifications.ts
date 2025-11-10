@@ -497,8 +497,41 @@ export async function sendBackupNotification(
     try {
       await Promise.all(notifications);
       console.log(`Notifications sent (${notificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
+      
+      // Log audit event for successful notification
+      const { AuditLogger } = await import('@/lib/audit-logger');
+      await AuditLogger.logSystem(
+        'notification_sent',
+        {
+          type: 'backup',
+          serverId,
+          serverName,
+          backupName: backup.name,
+          backupStatus: status,
+          channels: notificationTypes,
+        },
+        'success'
+      );
     } catch (error) {
       console.error(`Failed to send notifications for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+      
+      // Log audit event for failed notification
+      const { AuditLogger } = await import('@/lib/audit-logger');
+      await AuditLogger.logSystem(
+        'notification_failed',
+        {
+          type: 'backup',
+          serverId,
+          serverName,
+          backupName: backup.name,
+          backupStatus: status,
+          channels: notificationTypes,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'error',
+        error instanceof Error ? error.message : String(error)
+      );
+      
       throw error;
     }
   } else {
@@ -569,8 +602,44 @@ export async function sendOverdueBackupNotification(
 
     // Wait for all notifications to complete
     if (notifications.length > 0) {
-      await Promise.all(notifications);
-      console.log(`Overdue notifications sent (${notificationTypes.join(', ')}) for backup ${context.backup_name} on server ${context.server_name}`);
+      try {
+        await Promise.all(notifications);
+        console.log(`Overdue notifications sent (${notificationTypes.join(', ')}) for backup ${context.backup_name} on server ${context.server_name}`);
+        
+        // Log audit event for successful overdue notification
+        const { AuditLogger } = await import('@/lib/audit-logger');
+        await AuditLogger.logSystem(
+          'notification_sent',
+          {
+            type: 'overdue',
+            serverId: context.server_id,
+            serverName: context.server_name,
+            backupName: context.backup_name,
+            channels: notificationTypes,
+          },
+          'success'
+        );
+      } catch (error) {
+        console.error(`Failed to send overdue notifications for backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+        
+        // Log audit event for failed overdue notification
+        const { AuditLogger } = await import('@/lib/audit-logger');
+        await AuditLogger.logSystem(
+          'notification_failed',
+          {
+            type: 'overdue',
+            serverId: context.server_id,
+            serverName: context.server_name,
+            backupName: context.backup_name,
+            channels: notificationTypes,
+            error: error instanceof Error ? error.message : String(error),
+          },
+          'error',
+          error instanceof Error ? error.message : String(error)
+        );
+        
+        throw error;
+      }
     } else {
       console.log(`No notification channels enabled for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);
     }

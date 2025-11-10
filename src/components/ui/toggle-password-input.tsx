@@ -26,11 +26,20 @@ export function TogglePasswordInput({
 
   return (
     <div className="relative">
+      <Input
+        id={id}
+        type={showPassword ? 'text' : 'password'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`${className} pr-10`}
+        disabled={disabled}
+      />
       <Button
         type="button"
         variant="ghost"
         size="sm"
-        className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent z-10"
+        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent z-10"
         onClick={() => setShowPassword(!showPassword)}
         disabled={disabled}
       >
@@ -40,15 +49,6 @@ export function TogglePasswordInput({
           <Eye className="h-4 w-4 text-muted-foreground" />
         )}
       </Button>
-      <Input
-        id={id}
-        type={showPassword ? 'text' : 'password'}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={`${className} pl-10`}
-        disabled={disabled}
-      />
     </div>
   );
 }

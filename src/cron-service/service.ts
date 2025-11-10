@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import * as cron from 'node-cron';
 import { checkOverdueBackups } from '@/lib/overdue-backup-checker';
+import { AuditLogger } from '@/lib/audit-logger';
+import { getConfiguration } from '@/lib/db-utils';
 import { CronServiceStatus, TaskExecutionResult, CronServiceConfig, OverdueBackupCheckResult } from '@/lib/types';
 import { getCronConfig } from '@/lib/db-utils';
 
@@ -133,12 +135,41 @@ class CronService {
   private async executeTask(taskName: string): Promise<TaskExecutionResult> {
     // console.log(`[CronService] ${timestamp()}: Executing task: ${taskName}`);
     try {
-      let result: OverdueBackupCheckResult;
+      let result: OverdueBackupCheckResult | { deletedCount: number; message: string };
       
       switch (taskName) {
         case 'overdue-backup-check':
           result = await checkOverdueBackups();
+          // Log audit event for overdue check
+          if (result.statistics) {
+            await AuditLogger.logSystem(
+              'overdue_check_triggered',
+              {
+                checkedBackups: result.statistics.checkedBackups,
+                overdueBackupsFound: result.statistics.overdueBackupsFound,
+                notificationsSent: result.statistics.notificationsSent,
+              },
+              'success'
+            );
+          }
           break;
+        case 'audit-log-cleanup':
+          // Get retention days from configuration
+          const retentionConfig = getConfiguration('audit_retention_days');
+          const retentionDays = retentionConfig ? parseInt(retentionConfig, 10) : 90;
+          const deletedCount = await AuditLogger.cleanup(isNaN(retentionDays) ? 90 : retentionDays);
+          result = {
+            deletedCount,
+            message: `Cleaned up ${deletedCount} audit log entries older than ${retentionDays} days`
+          };
+          console.log(`[CronService] ${timestamp()}: Task ${taskName} executed successfully: ${result.message}`);
+          this.lastRunTimes[taskName] = new Date().toISOString();
+          delete this.errors[taskName];
+          return {
+            taskName,
+            success: true,
+            message: result.message,
+          };
         default:
           throw new Error(`Unknown task: ${taskName}`);
       }

@@ -3,8 +3,11 @@ import { NextResponse, NextRequest } from 'next/server';
 import { subMonths } from 'date-fns';
 import { db } from '@/lib/db';
 import { setConfiguration } from '@/lib/db-utils';
+import { optionalAuth } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
-export const POST = withCSRF(async (request: NextRequest) => {
+export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
   try {
     
     const { retentionPeriod } = await request.json();
@@ -40,6 +43,24 @@ export const POST = withCSRF(async (request: NextRequest) => {
       } catch (configError) {
         console.error('Failed to clear configuration settings:', configError instanceof Error ? configError.message : String(configError));
         // Don't fail the entire operation if config cleanup fails
+      }
+
+      // Log audit event
+      if (authContext) {
+        const ipAddress = getClientIpAddress(request);
+        await AuditLogger.log({
+          userId: authContext.userId,
+          username: authContext.username,
+          action: 'cleanup_executed',
+          category: 'system',
+          details: {
+            retentionPeriod: 'Delete all data',
+            backupChanges,
+            serverChanges,
+          },
+          ipAddress,
+          status: 'success',
+        });
       }
 
       return NextResponse.json({
@@ -84,6 +105,23 @@ export const POST = withCSRF(async (request: NextRequest) => {
     // Execute the transaction
     const { changes } = transaction();
 
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      await AuditLogger.log({
+        userId: authContext.userId,
+        username: authContext.username,
+        action: 'cleanup_executed',
+        category: 'system',
+        details: {
+          retentionPeriod,
+          deletedCount: changes,
+        },
+        ipAddress,
+        status: 'success',
+      });
+    }
+
     return NextResponse.json({
       message: `Successfully deleted ${changes} old backups`,
       status: 200,
@@ -105,4 +143,4 @@ export const POST = withCSRF(async (request: NextRequest) => {
       { status: 500 }
     );
   }
-});
+}));

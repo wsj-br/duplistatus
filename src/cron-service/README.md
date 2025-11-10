@@ -70,7 +70,7 @@ interface CronServiceConfig {
 Default configuration:
 - Port: `CRON_PORT` or `PORT+1` or defaults to 9667 (see Environment Variables below)
 - Tasks:
-  - overdue-backup-check: Runs every 20 minutes (`*/20 * * * * *`)
+  - overdue-backup-check: Runs every 5 minutes (`*/5 * * * *`)
 
 ## API Endpoints
 

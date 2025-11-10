@@ -2,6 +2,8 @@ import Database from 'better-sqlite3';
 import { extractAvailableBackups } from './utils';
 import * as fs from 'fs';
 import * as path from 'path';
+import bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 
 // Import default configurations
 import { 
@@ -641,6 +643,159 @@ const migrations: Migration[] = [
           throw error;
         }
       }
+    }
+  },
+  {
+    version: '4.0',
+    description: 'Add user access control system with users, database-backed sessions, and audit logging',
+    up: (db: Database.Database) => {
+      console.log('Migration 4.0: Adding user access control system...');
+      
+      // Step 1: Check if users table already exists (migration already completed)
+      const usersTableExists = db.prepare(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
+      ).get();
+      
+      if (usersTableExists) {
+        throw new Error('MIGRATION_ALREADY_COMPLETED');
+      }
+      
+      // Step 2: Create users table
+      db.exec(`
+        CREATE TABLE users (
+          id TEXT PRIMARY KEY,
+          username TEXT UNIQUE NOT NULL,
+          password_hash TEXT NOT NULL,
+          is_admin BOOLEAN NOT NULL DEFAULT 0,
+          must_change_password BOOLEAN DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_login_at DATETIME,
+          last_login_ip TEXT,
+          failed_login_attempts INTEGER DEFAULT 0,
+          locked_until DATETIME
+        );
+      `);
+      
+      // Step 3: Create indexes for users table
+      db.exec(`
+        CREATE INDEX idx_users_username ON users(username);
+        CREATE INDEX idx_users_last_login ON users(last_login_at);
+      `);
+      
+      // Step 4: Create sessions table (database-backed, replaces in-memory)
+      // Note: user_id is nullable to support unauthenticated sessions (before login)
+      db.exec(`
+        CREATE TABLE sessions (
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          ip_address TEXT,
+          user_agent TEXT,
+          csrf_token TEXT,
+          csrf_expires_at DATETIME,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+      `);
+      
+      // Step 5: Create indexes for sessions table
+      db.exec(`
+        CREATE INDEX idx_sessions_user_id ON sessions(user_id);
+        CREATE INDEX idx_sessions_expires_at ON sessions(expires_at);
+        CREATE INDEX idx_sessions_last_accessed ON sessions(last_accessed);
+      `);
+      
+      // Step 6: Create audit_log table
+      db.exec(`
+        CREATE TABLE audit_log (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+          user_id TEXT,
+          username TEXT,
+          action TEXT NOT NULL,
+          category TEXT NOT NULL,
+          target_type TEXT,
+          target_id TEXT,
+          details TEXT,
+          ip_address TEXT,
+          user_agent TEXT,
+          status TEXT NOT NULL,
+          error_message TEXT,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+        );
+      `);
+      
+      // Step 7: Create indexes for audit_log table
+      db.exec(`
+        CREATE INDEX idx_audit_timestamp ON audit_log(timestamp);
+        CREATE INDEX idx_audit_user_id ON audit_log(user_id);
+        CREATE INDEX idx_audit_action ON audit_log(action);
+        CREATE INDEX idx_audit_category ON audit_log(category);
+        CREATE INDEX idx_audit_status ON audit_log(status);
+      `);
+      
+      // Step 8: Seed default admin user
+      // Generate admin user ID
+      const adminId = 'admin-' + randomBytes(16).toString('hex');
+      
+      // Hash default password: 'Duplistatus09'
+      // Using bcrypt.hashSync for synchronous execution within migration
+      const adminPasswordHash = bcrypt.hashSync('Duplistatus09', 12);
+      
+      // Insert admin user
+      db.prepare(`
+        INSERT INTO users (
+          id, 
+          username, 
+          password_hash, 
+          is_admin, 
+          must_change_password
+        ) VALUES (?, ?, ?, ?, ?)
+      `).run(
+        adminId,
+        'admin',
+        adminPasswordHash,
+        1,  // is_admin = true
+        1   // must_change_password = true
+      );
+      
+      // Step 9: Set default audit retention configuration (90 days)
+      db.prepare(
+        'INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)'
+      ).run(
+        'audit_retention_days',
+        '90'
+      );
+      
+      // Step 10: Log the migration in audit log
+      db.prepare(`
+        INSERT INTO audit_log (
+          action, 
+          category, 
+          status, 
+          username,
+          details
+        ) VALUES (?, ?, ?, ?, ?)
+      `).run(
+        'database_migration',
+        'system',
+        'success',
+        'system',
+        JSON.stringify({ 
+          migration: '4.0', 
+          description: 'User Access Control System',
+          tables_created: ['users', 'sessions', 'audit_log'],
+          admin_user_created: true,
+          default_password: 'Duplistatus09 (must change on first login)'
+        })
+      );
+      
+      console.log('Migration 4.0: User access control system created successfully');
+      console.log('Migration 4.0: Admin user created with username "admin"');
+      console.log('Migration 4.0: Default password is "Duplistatus09" (must be changed on first login)');
+      console.log('Migration 4.0: Sessions table created with nullable user_id to support unauthenticated sessions');
     }
   }
 ];

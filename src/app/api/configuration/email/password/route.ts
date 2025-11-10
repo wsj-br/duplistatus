@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getSMTPConfig, setSMTPConfig } from '@/lib/db-utils';
 import { getSessionIdFromRequest, validateSession, generateCSRFToken } from '@/lib/session-csrf';
+import { optionalAuth } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
-export const PATCH = withCSRF(async (request: NextRequest) => {
+export const PATCH = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
   try {
     const { password, config } = await request.json();
 
@@ -47,6 +50,21 @@ export const PATCH = withCSRF(async (request: NextRequest) => {
     // Save the updated configuration
     setSMTPConfig(updatedConfig);
 
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      await AuditLogger.logConfigChange(
+        'email_password_updated',
+        authContext.userId,
+        authContext.username,
+        'smtp_password',
+        {
+          hasPassword: Boolean(password && password.trim() !== ''),
+        },
+        ipAddress
+      );
+    }
+
     return NextResponse.json({
       message: 'Email password updated successfully'
     });
@@ -57,7 +75,7 @@ export const PATCH = withCSRF(async (request: NextRequest) => {
       { status: 500 }
     );
   }
-});
+}));
 
 // GET endpoint to retrieve CSRF token
 export const GET = withCSRF(async (request: NextRequest) => {

@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { setServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getSessionIdFromRequest, validateSession, generateCSRFToken } from '@/lib/session-csrf';
+import { getAuthContext } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
+import { dbUtils } from '@/lib/db-utils';
 
 export const PATCH = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ serverId: string }> }
 ) => {
+  const authContext = await getAuthContext(request);
   try {
     const { serverId } = await params;
     
@@ -21,6 +26,15 @@ export const PATCH = withCSRF(async (
       );
     }
 
+    // Get server info before update for audit log
+    const serverBefore = await dbUtils.getServerById(serverId);
+    if (!serverBefore) {
+      return NextResponse.json(
+        { error: 'Server not found' },
+        { status: 404 }
+      );
+    }
+
     // Set the server password
     const success = setServerPassword(serverId, password);
 
@@ -28,6 +42,22 @@ export const PATCH = withCSRF(async (
       return NextResponse.json(
         { error: 'Failed to update password' },
         { status: 500 }
+      );
+    }
+
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      await AuditLogger.logServerOperation(
+        'server_password_updated',
+        authContext.userId,
+        authContext.username,
+        serverId,
+        {
+          serverName: serverBefore.name,
+          passwordChanged: password.trim() !== '',
+        },
+        ipAddress
       );
     }
 

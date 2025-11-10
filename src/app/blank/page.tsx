@@ -1,4 +1,9 @@
-export default function BlankPage() {
+import { requireServerAuth } from "@/lib/auth-server";
+
+export default async function BlankPage() {
+  // Require authentication - redirects to login if not authenticated
+  await requireServerAuth();
+  
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="text-center text-muted-foreground">

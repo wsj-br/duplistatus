@@ -454,7 +454,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     setIsSaving(true);
     setIsSavingInProgress(true);
     try {
-      // Save backup settings using the dedicated endpoint
+      // Only save backup settings (server-level overdue monitoring enabled/disabled)
+      // Overdue tolerance, monitoring interval, and notification frequency are auto-saved
       const backupResponse = await authenticatedRequestWithRecovery('/api/configuration/backup-settings', {
         method: 'POST',
         body: JSON.stringify({
@@ -464,16 +465,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       
       if (!backupResponse.ok) {
         throw new Error('Failed to save backup settings');
-      }
-      
-      // Save overdue tolerance using the dedicated endpoint
-      const toleranceResponse = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance', {
-        method: 'POST',
-        body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
-      });
-      
-      if (!toleranceResponse.ok) {
-        throw new Error('Failed to save overdue tolerance');
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -504,7 +495,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const handleTestOverdueBackups = async () => {
     setIsTesting(true);
     try {
-      // Save backup settings using the dedicated endpoint
+      // Only save backup settings (server-level overdue monitoring enabled/disabled)
+      // Overdue tolerance, monitoring interval, and notification frequency are auto-saved
       const backupResponse = await authenticatedRequestWithRecovery('/api/configuration/backup-settings', {
         method: 'POST',
         body: JSON.stringify({
@@ -514,16 +506,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       
       if (!backupResponse.ok) {
         throw new Error('Failed to save backup settings');
-      }
-      
-      // Save overdue tolerance using the dedicated endpoint
-      const toleranceResponse = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance', {
-        method: 'POST',
-        body: JSON.stringify({ overdue_tolerance: config?.overdue_tolerance || defaultOverdueTolerance }),
-      });
-      
-      if (!toleranceResponse.ok) {
-        throw new Error('Failed to save overdue tolerance');
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -717,7 +699,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
             <TableHeader>
               <TableRow>
                 <SortableTableHead 
-                  className="w-[150px] min-w-[120px]" 
+                  className="w-[120px] min-w-[100px]" 
                   column="name" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -725,7 +707,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   Server Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[150px] min-w-[120px]" 
+                  className="w-[120px] min-w-[90px]" 
                   column="backupName" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -733,7 +715,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[150px] min-w-[120px]" 
+                  className="w-[120px] min-w-[100px]" 
                   column="nextRunDate" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -741,7 +723,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   Next Run
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[140px] min-w-[120px]" 
+                  className="w-[130px] min-w-[110px]" 
                   column="overdueBackupCheckEnabled" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}

@@ -75,11 +75,16 @@ try {
     WHERE type='table' AND name IN ('servers', 'backups')
   `).get() as { count: number };
   
-  // If no tables exist, create the complete schema
+  // If no tables exist, create the complete schema with latest version (4.0)
   if (tableCount.count === 0) {
-    console.log('Initializing new database with latest schema...');
+    console.log('Initializing new database with latest schema (v4.0)...');
+    
+    // Import dependencies for initial setup
+    const bcrypt = require('bcrypt');
+    const { randomBytes } = require('crypto');
     
     db.exec(`
+      -- Core application tables (from v3.1)
       CREATE TABLE IF NOT EXISTS servers (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -176,10 +181,119 @@ try {
         applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
 
+      -- User Access Control tables (from v4.0)
+      CREATE TABLE users (
+        id TEXT PRIMARY KEY,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        is_admin BOOLEAN NOT NULL DEFAULT 0,
+        must_change_password BOOLEAN DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_login_at DATETIME,
+        last_login_ip TEXT,
+        failed_login_attempts INTEGER DEFAULT 0,
+        locked_until DATETIME
+      );
 
-      -- Set initial database version for new databases (only if not exists)
-      INSERT OR IGNORE INTO db_version (version) VALUES ('3.1');
+      CREATE INDEX idx_users_username ON users(username);
+      CREATE INDEX idx_users_last_login ON users(last_login_at);
+
+      CREATE TABLE sessions (
+        id TEXT PRIMARY KEY,
+        user_id TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at DATETIME NOT NULL,
+        ip_address TEXT,
+        user_agent TEXT,
+        csrf_token TEXT,
+        csrf_expires_at DATETIME,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX idx_sessions_user_id ON sessions(user_id);
+      CREATE INDEX idx_sessions_expires_at ON sessions(expires_at);
+      CREATE INDEX idx_sessions_last_accessed ON sessions(last_accessed);
+
+      CREATE TABLE audit_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        user_id TEXT,
+        username TEXT,
+        action TEXT NOT NULL,
+        category TEXT NOT NULL,
+        target_type TEXT,
+        target_id TEXT,
+        details TEXT,
+        ip_address TEXT,
+        user_agent TEXT,
+        status TEXT NOT NULL,
+        error_message TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+      );
+
+      CREATE INDEX idx_audit_timestamp ON audit_log(timestamp);
+      CREATE INDEX idx_audit_user_id ON audit_log(user_id);
+      CREATE INDEX idx_audit_action ON audit_log(action);
+      CREATE INDEX idx_audit_category ON audit_log(category);
+      CREATE INDEX idx_audit_status ON audit_log(status);
     `);
+    
+    // Create admin user with bcrypt hash
+    const adminId = 'admin-' + randomBytes(16).toString('hex');
+    const adminPasswordHash = bcrypt.hashSync('Duplistatus09', 12);
+    
+    db.prepare(`
+      INSERT INTO users (
+        id, 
+        username, 
+        password_hash, 
+        is_admin, 
+        must_change_password
+      ) VALUES (?, ?, ?, ?, ?)
+    `).run(
+      adminId,
+      'admin',
+      adminPasswordHash,
+      1,
+      1
+    );
+    
+    // Set audit retention configuration
+    db.prepare(
+      'INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)'
+    ).run('audit_retention_days', '90');
+    
+    // Log initial database creation
+    db.prepare(`
+      INSERT INTO audit_log (
+        action, 
+        category, 
+        status, 
+        username,
+        details
+      ) VALUES (?, ?, ?, ?, ?)
+    `).run(
+      'database_initialization',
+      'system',
+      'success',
+      'system',
+      JSON.stringify({ 
+        schema_version: '4.0',
+        description: 'New database initialized with full schema',
+        tables_created: ['servers', 'backups', 'configurations', 'users', 'sessions', 'audit_log'],
+        admin_user_created: true,
+        default_password: 'Duplistatus09 (must change on first login)',
+        sessions_note: 'user_id is nullable to support unauthenticated sessions'
+      })
+    );
+    
+    // Set database version to 4.0 (latest)
+    db.prepare('INSERT INTO db_version (version) VALUES (?)').run('4.0');
+    
+    console.log('Database initialized with schema v4.0');
+    console.log('Admin user created: username="admin", password="Duplistatus09" (must change on first login)');
     
     console.log('Database schema initialized successfully');
     
@@ -200,7 +314,21 @@ function safePrepare(sql: string, name: string) {
     // log(`Prepared statement '${name}' successfully`);
     return stmt;
   } catch (error) {
-    console.error(`Failed to prepare statement '${name}':`, error instanceof Error ? error.message : String(error));
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // If table doesn't exist (e.g., pre-migration), create a dummy statement
+    // This allows the app to start even if new tables aren't created yet
+    if (errorMessage.includes('no such table')) {
+      console.warn(`[Database] Table doesn't exist yet for statement '${name}', creating placeholder`);
+      // Return a dummy statement that will throw a helpful error if called
+      return {
+        run: () => { throw new Error(`Table for '${name}' doesn't exist yet. Run migration 4.0.`); },
+        get: () => { throw new Error(`Table for '${name}' doesn't exist yet. Run migration 4.0.`); },
+        all: () => { throw new Error(`Table for '${name}' doesn't exist yet. Run migration 4.0.`); },
+      } as any;
+    }
+    
+    console.error(`Failed to prepare statement '${name}':`, errorMessage);
     throw error;
   }
 }
@@ -298,10 +426,11 @@ async function ensureDatabaseInitialized() {
     try {
       await migrator.runMigrations();
       
-      // Create database operations after migrations complete
-      if (!dbOps) {
+      // Create/recreate database operations after migrations complete
+      // This ensures all new tables are available for prepared statements
+      console.log('[Database] Creating database operations...');
         dbOps = createDbOps();
-      }
+      console.log('[Database] Database operations ready');
       
       databaseStatus = DatabaseStatus.READY;
     } catch (error) {
@@ -379,10 +508,28 @@ function performDatabaseMaintenance(): { success: boolean; error?: string } {
   }
 }
 
-// Start initialization immediately but don't block module loading
-ensureDatabaseInitialized().catch(error => {
-  console.error('Database initialization failed:', error);
-});
+// Start initialization immediately and block until complete
+// This ensures database is ready before any routes/pages try to access it
+let startupInitialization: Promise<void> | null = null;
+let initializationComplete = false;
+
+startupInitialization = ensureDatabaseInitialized()
+  .then(() => {
+    initializationComplete = true;
+    console.log('[Database] Startup initialization complete');
+  })
+  .catch(error => {
+    console.error('[Database] Startup initialization failed:', error);
+    throw error; // Propagate error to prevent app startup with broken database
+  });
+
+// Export helper to wait for startup initialization
+export async function waitForDatabaseReady(): Promise<void> {
+  if (startupInitialization) {
+    await startupInitialization;
+  }
+  await ensureDatabaseInitialized();
+}
 
 // Helper functions for database operations
 function createDbOps() {
@@ -787,6 +934,187 @@ function createDbOps() {
     ORDER BY b.date
   `, 'getServerBackupChartDataWithTimeRange'),
 
+  // User operations
+  getUserById: safePrepare(`
+    SELECT id, username, is_admin, must_change_password, created_at, updated_at, 
+           last_login_at, last_login_ip, failed_login_attempts, locked_until
+    FROM users WHERE id = ?
+  `, 'getUserById'),
+
+  getUserByIdWithPassword: safePrepare(`
+    SELECT id, username, password_hash, is_admin, must_change_password, created_at, updated_at, 
+           last_login_at, last_login_ip, failed_login_attempts, locked_until
+    FROM users WHERE id = ?
+  `, 'getUserByIdWithPassword'),
+
+  getUserByUsername: safePrepare(`
+    SELECT id, username, password_hash, is_admin, must_change_password, created_at, 
+           updated_at, last_login_at, last_login_ip, failed_login_attempts, locked_until
+    FROM users WHERE username = ?
+  `, 'getUserByUsername'),
+
+  getAllUsers: safePrepare(`
+    SELECT id, username, is_admin, must_change_password, created_at, updated_at, 
+           last_login_at, last_login_ip, failed_login_attempts, locked_until
+    FROM users ORDER BY username
+  `, 'getAllUsers'),
+
+  createUser: safePrepare(`
+    INSERT INTO users (
+      id, username, password_hash, is_admin, must_change_password
+    ) VALUES (?, ?, ?, ?, ?)
+  `, 'createUser'),
+
+  updateUser: safePrepare(`
+    UPDATE users 
+    SET username = ?, is_admin = ?, must_change_password = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, 'updateUser'),
+
+  updateUserPassword: safePrepare(`
+    UPDATE users 
+    SET password_hash = ?, must_change_password = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, 'updateUserPassword'),
+
+  updateUserLoginInfo: safePrepare(`
+    UPDATE users 
+    SET last_login_at = CURRENT_TIMESTAMP, last_login_ip = ?, 
+        failed_login_attempts = 0, locked_until = NULL
+    WHERE id = ?
+  `, 'updateUserLoginInfo'),
+
+  incrementFailedLoginAttempts: safePrepare(`
+    UPDATE users 
+    SET failed_login_attempts = failed_login_attempts + 1,
+        locked_until = CASE 
+          WHEN failed_login_attempts + 1 >= 5 
+          THEN datetime('now', '+15 minutes')
+          ELSE locked_until
+        END
+    WHERE id = ?
+  `, 'incrementFailedLoginAttempts'),
+
+  unlockUser: safePrepare(`
+    UPDATE users 
+    SET failed_login_attempts = 0, locked_until = NULL
+    WHERE id = ?
+  `, 'unlockUser'),
+
+  deleteUser: safePrepare(`
+    DELETE FROM users WHERE id = ?
+  `, 'deleteUser'),
+
+  countAdminUsers: safePrepare(`
+    SELECT COUNT(*) as count FROM users WHERE is_admin = 1
+  `, 'countAdminUsers'),
+
+  // Session operations
+  createSession: safePrepare(`
+    INSERT INTO sessions (
+      id, user_id, expires_at, ip_address, user_agent, csrf_token, csrf_expires_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `, 'createSession'),
+
+  getSessionById: safePrepare(`
+    SELECT id, user_id, created_at, last_accessed, expires_at, 
+           ip_address, user_agent, csrf_token, csrf_expires_at
+    FROM sessions WHERE id = ?
+  `, 'getSessionById'),
+
+  updateSessionAccess: safePrepare(`
+    UPDATE sessions 
+    SET last_accessed = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `, 'updateSessionAccess'),
+
+  updateSessionUser: safePrepare(`
+    UPDATE sessions 
+    SET user_id = ?, last_accessed = CURRENT_TIMESTAMP, ip_address = ?, user_agent = ?
+    WHERE id = ?
+  `, 'updateSessionUser'),
+
+  updateSessionCsrfToken: safePrepare(`
+    UPDATE sessions 
+    SET csrf_token = ?, csrf_expires_at = ?
+    WHERE id = ?
+  `, 'updateSessionCsrfToken'),
+
+  deleteSession: safePrepare(`
+    DELETE FROM sessions WHERE id = ?
+  `, 'deleteSession'),
+
+  deleteUserSessions: safePrepare(`
+    DELETE FROM sessions WHERE user_id = ?
+  `, 'deleteUserSessions'),
+
+  deleteExpiredSessions: safePrepare(`
+    DELETE FROM sessions WHERE expires_at < datetime('now')
+  `, 'deleteExpiredSessions'),
+
+  // Audit log operations
+  insertAuditLog: safePrepare(`
+    INSERT INTO audit_log (
+      user_id, username, action, category, target_type, target_id, 
+      details, ip_address, user_agent, status, error_message
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, 'insertAuditLog'),
+
+  getAuditLogs: safePrepare(`
+    SELECT id, timestamp, user_id as userId, username, action, category, target_type as targetType, 
+           target_id as targetId, details, ip_address as ipAddress, user_agent as userAgent, status, error_message as errorMessage
+    FROM audit_log
+    ORDER BY timestamp DESC
+    LIMIT ? OFFSET ?
+  `, 'getAuditLogs'),
+
+  getAuditLogsFiltered: safePrepare(`
+    SELECT id, timestamp, user_id as userId, username, action, category, target_type as targetType, 
+           target_id as targetId, details, ip_address as ipAddress, user_agent as userAgent, status, error_message as errorMessage
+    FROM audit_log
+    WHERE 1=1
+      AND (@startDate IS NULL OR timestamp >= @startDate)
+      AND (@endDate IS NULL OR timestamp < datetime(@endDate, '+1 day'))
+      AND (@userId IS NULL OR user_id = @userId)
+      AND (@username IS NULL OR username = @username)
+      AND (@action IS NULL OR action = @action)
+      AND (@category IS NULL OR category = @category)
+      AND (@status IS NULL OR status = @status)
+    ORDER BY timestamp DESC
+    LIMIT @limit OFFSET @offset
+  `, 'getAuditLogsFiltered'),
+
+  countAuditLogs: safePrepare(`
+    SELECT COUNT(*) as count FROM audit_log
+  `, 'countAuditLogs'),
+
+  countAuditLogsFiltered: safePrepare(`
+    SELECT COUNT(*) as count FROM audit_log
+    WHERE 1=1
+      AND (@startDate IS NULL OR timestamp >= @startDate)
+      AND (@endDate IS NULL OR timestamp < datetime(@endDate, '+1 day'))
+      AND (@userId IS NULL OR user_id = @userId)
+      AND (@username IS NULL OR username = @username)
+      AND (@action IS NULL OR action = @action)
+      AND (@category IS NULL OR category = @category)
+      AND (@status IS NULL OR status = @status)
+  `, 'countAuditLogsFiltered'),
+
+  deleteOldAuditLogs: safePrepare(`
+    DELETE FROM audit_log 
+    WHERE timestamp < datetime('now', '-' || ? || ' days')
+  `, 'deleteOldAuditLogs'),
+
+  getAuditLogStats: safePrepare(`
+    SELECT 
+      COUNT(*) as totalEvents,
+      SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END) as successCount,
+      SUM(CASE WHEN status = 'failure' THEN 1 ELSE 0 END) as failureCount,
+      SUM(CASE WHEN status = 'error' THEN 1 ELSE 0 END) as errorCount
+    FROM audit_log
+    WHERE timestamp >= datetime('now', '-' || ? || ' days')
+  `, 'getAuditLogStats'),
+
   };
 }
 
@@ -816,29 +1144,24 @@ ensureDatabaseInitialized().then(() => {
 });
 
 // Create a proxy that ensures database initialization is complete before operations
+// Note: Database operations are SYNCHRONOUS (better-sqlite3), so we must ensure
+// initialization completes before any operations are attempted
 const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
   get(target, prop) {
-    // Ensure database is initialized
-    if (!dbOps) {
-      throw new Error(
-        'Database not ready. Please ensure database initialization completes before using database operations. ' +
-        'Call "await ensureDatabaseInitialized()" or wait for app startup to complete.'
-      );
-    }
-    
     // Only handle string properties, ignore symbols
     if (typeof prop !== 'string') {
       return undefined;
     }
 
-    // Return a proxy that waits for migrations to complete before accessing the method
-    return new Proxy({}, {
-      get(methodTarget, methodProp) {
-        // Return a function that executes the database operation
-        return (...args: unknown[]) => {
-          // Check if migrations are complete
+    // If database is not ready, throw a clear error
+    // We cannot wait asynchronously because better-sqlite3 operations are synchronous
           if (!dbOps) {
-            throw new Error(`Database operations not yet initialized. Migrations may still be running. Please ensure migrations complete before accessing '${prop}.${String(methodProp)}'.`);
+      throw new Error(
+        `[Database] Operation '${prop}' attempted before database initialization completed. ` +
+        `This is likely a timing issue during startup. Database operations are synchronous and ` +
+        `cannot wait for async initialization. Ensure 'await ensureDatabaseInitialized()' ` +
+        `completes before accessing database operations.`
+      );
           }
           
           // Get the actual method from dbOps
@@ -847,19 +1170,17 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
             throw new Error(`Database operation '${prop}' not found or is not an object.`);
           }
           
-          // Get the sub-method (like .all, .get, .run)
-          const subMethod = (method as Record<string, unknown>)[methodProp as string];
-          if (typeof subMethod !== 'function') {
-            throw new Error(`Database operation '${prop}.${String(methodProp)}' not found or is not a function.`);
-          }
-          
-          // Execute the sub-method with proper this context
-          return subMethod.call(method, ...args);
-        };
-      }
-    });
+    // Return the method directly (it's a prepared statement object with .all, .get, .run)
+    return method;
   }
 });
 
 // Export the database instance and operations
-export { db, dbOpsProxy as dbOps, ensureDatabaseInitialized, getDatabaseStatus, checkDatabaseHealth, performDatabaseMaintenance }; 
+export { 
+  db, 
+  dbOpsProxy as dbOps, 
+  ensureDatabaseInitialized, 
+  getDatabaseStatus, 
+  checkDatabaseHealth, 
+  performDatabaseMaintenance 
+}; 

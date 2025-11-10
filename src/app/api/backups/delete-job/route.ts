@@ -1,8 +1,11 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
+import { optionalAuth } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
-export const DELETE = withCSRF(async (request: NextRequest) => {
+export const DELETE = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
   try {
     
     const { serverId, backupName } = await request.json();
@@ -55,6 +58,24 @@ export const DELETE = withCSRF(async (request: NextRequest) => {
 
     const serverDisplayName = serverAlias || serverName;
 
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      await AuditLogger.logBackupOperation(
+        'backup_job_deleted',
+        authContext.userId,
+        authContext.username,
+        `${serverId}:${backupName}`,
+        {
+          serverId,
+          serverName: serverDisplayName,
+          backupName: deletedBackupName,
+          deletedCount: changes,
+        },
+        ipAddress
+      );
+    }
+
     return NextResponse.json({
       message: `Successfully deleted ${changes} backup record(s) for "${deletedBackupName}" from server "${serverDisplayName}"`,
       status: 200,
@@ -75,4 +96,4 @@ export const DELETE = withCSRF(async (request: NextRequest) => {
       { status: 500 }
     );
   }
-});
+}));
