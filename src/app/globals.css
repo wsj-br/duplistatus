@@ -113,6 +113,10 @@ body {
   * {
     @apply border-border;
   }
+  html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -136,6 +140,11 @@ body {
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Prevent layout shift when scrollbar appears */
+  .scrollbar-gutter-stable {
+    scrollbar-gutter: stable;
   }
   
   .server-cards-scrollbar::-webkit-scrollbar {
@@ -261,6 +270,16 @@ body {
 
   .dark .preline-scrollbar::-webkit-scrollbar-thumb {
     background-color: hsl(215 20.2% 65.1%); /* dark mode neutral-500 equivalent */
+  }
+
+  /* Horizontal table scrollbar - matches main page style */
+  .table-horizontal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(209, 213, 219) rgb(243, 244, 246); /* gray-300 gray-100 */
+  }
+
+  .dark .table-horizontal-scrollbar {
+    scrollbar-color: rgb(115, 115, 115) rgb(38, 38, 38); /* neutral-500 neutral-700 */
   }
 
   /* Simplified Chrome scrollbar button hiding - back to basics */

@@ -11,10 +11,23 @@ export const GET = withCSRF(requireAuth(async (request: NextRequest) => {
 
     const { searchParams } = new URL(request.url);
     
-    // Parse query parameters
-    const page = parseInt(searchParams.get('page') || '1', 10);
+    // Parse query parameters - support both page-based and offset-based pagination
+    const pageParam = searchParams.get('page');
+    const offsetParam = searchParams.get('offset');
     const limit = parseInt(searchParams.get('limit') || '50', 10);
-    const offset = (page - 1) * limit;
+    
+    let offset: number;
+    let page: number;
+    
+    if (offsetParam !== null) {
+      // Offset-based pagination (for endless scroll)
+      offset = parseInt(offsetParam, 10);
+      page = Math.floor(offset / limit) + 1;
+    } else {
+      // Page-based pagination (backward compatibility)
+      page = parseInt(pageParam || '1', 10);
+      offset = (page - 1) * limit;
+    }
 
     // Build filter object
     const categoryParam = searchParams.get('category');

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock } from 'lucide-react';
+import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
@@ -31,6 +31,15 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   const { config, loading, refreshConfigSilently, updateConfig } = useConfiguration();
   const [activeSection, setActiveSection] = useState<string>('notifications');
   const [lastServerListHash, setLastServerListHash] = useState<string>('');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('settings-sidebar-collapsed');
+      return saved === 'true';
+    }
+    return false;
+  });
+  const [shouldCenterItems, setShouldCenterItems] = useState<boolean>(false);
+  const mainContentRef = useRef<HTMLElement>(null);
 
   // Function to create a hash of the server list for change detection
   const createServerListHash = (servers: Array<{id: string; name: string; backupName: string}>) => {
@@ -189,10 +198,45 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   }, [searchParams]);
 
   const handleSectionChange = (value: string) => {
+    // Save current scroll position before changing section
+    const currentScrollY = window.scrollY;
+    
     setActiveSection(value);
     localStorage.setItem('settings-active-section', value);
     router.replace(`/settings?tab=${value}`, { scroll: false });
+    
+    // Restore scroll position after a brief delay to prevent layout shift
+    requestAnimationFrame(() => {
+      if (Math.abs(window.scrollY - currentScrollY) > 1) {
+        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+      }
+      // Also reset main content scroll if it exists
+      if (mainContentRef.current) {
+        mainContentRef.current.scrollTop = 0;
+      }
+    });
   };
+
+  const toggleSidebar = () => {
+    const newState = !isSidebarCollapsed;
+    setIsSidebarCollapsed(newState);
+    localStorage.setItem('settings-sidebar-collapsed', String(newState));
+    
+    if (newState) {
+      // Delay centering until labels finish collapsing (300ms)
+      setTimeout(() => {
+        setShouldCenterItems(true);
+      }, 300);
+    } else {
+      // Immediately un-center when expanding
+      setShouldCenterItems(false);
+    }
+  };
+
+  // Sync shouldCenterItems with isSidebarCollapsed on mount
+  useEffect(() => {
+    setShouldCenterItems(isSidebarCollapsed);
+  }, []);
 
   // Check if email configuration is valid (mirrors logic from EmailConfigurationForm)
   const isEmailConfigValid = () => {
@@ -238,135 +282,164 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
       {/* Main Content Area with Sidebar */}
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 border-r border-border bg-background flex-shrink-0 sticky top-[88px] h-[calc(100vh-88px)] overflow-auto">
+        <aside className={`${isSidebarCollapsed ? 'w-28' : 'w-64'} border-r border-border bg-background flex-shrink-0 fixed left-0 top-[88px] h-[calc(100vh-88px)] overflow-auto transition-all duration-300 z-40`}>
           {/* Sidebar Header */}
-          <div className="px-4 py-4 border-b border-border sticky top-0 bg-background z-10">
-            <div className="flex items-center gap-3">
-              <ColoredIcon icon={Settings} color="blue" size="md" />
-              <h2 className="text-lg font-semibold">System Settings</h2>
+          <div className={`${isSidebarCollapsed ? 'px-2' : 'px-4'} py-4 border-b border-border sticky top-0 bg-background z-10 relative h-[73px] flex items-center`}>
+            <div className={`flex items-center w-full ${isSidebarCollapsed ? 'justify-center' : 'gap-3 justify-between'}`}>
+              <div className="flex items-center gap-3 min-w-0">
+                <ColoredIcon icon={Settings} color="blue" size="md" />
+                <h2 className={`text-lg font-semibold truncate whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>System Settings</h2>
+              </div>
+              {!isSidebarCollapsed && (
+                <button
+                  onClick={toggleSidebar}
+                  className="p-1.5 rounded-md hover:bg-accent transition-colors flex-shrink-0"
+                  aria-label="Collapse sidebar"
+                >
+                  <PanelLeftClose className="h-4 w-4" />
+                </button>
+              )}
             </div>
+            {isSidebarCollapsed && (
+              <button
+                onClick={toggleSidebar}
+                className="absolute top-1/2 right-1 -translate-y-1/2 p-1.5 rounded-md hover:bg-accent transition-colors"
+                aria-label="Expand sidebar"
+              >
+                <PanelLeftOpen className="h-4 w-4" />
+              </button>
+            )}
           </div>
           
-          <div className="p-4 space-y-4">
+          <div className={`p-4 space-y-4 ${isSidebarCollapsed ? 'px-2' : 'px-4'}`}>
               {/* Notifications Group */}
               <div>
-                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Notifications</div>
+                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>Notifications</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('notifications')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'notifications'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'Backup Notifications' : undefined}
                   >
                     <Bell className="h-4 w-4 flex-shrink-0" />
-                    <span>Backup Notifications</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'notifications' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Backup Notifications</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('overdue')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'overdue'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'Overdue Monitoring' : undefined}
                   >
                     <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                    <span>Overdue Monitoring</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'overdue' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Overdue Monitoring</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('templates')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'templates'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'Templates' : undefined}
                   >
                     <FileText className="h-4 w-4 flex-shrink-0" />
-                    <span>Templates</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'templates' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Templates</span>
                   </button>
                 </div>
               </div>
 
               {/* Integrations Group */}
               <div>
-                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Integrations</div>
+                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>Integrations</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('ntfy')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'ntfy'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'NTFY' : undefined}
                   >
                     <MessageSquare className={`h-4 w-4 flex-shrink-0 ${isNtfyConfigValid() ? 'text-green-600' : 'text-yellow-500'}`} />
-                    <span>NTFY</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'ntfy' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>NTFY</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('email')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'email'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'Email' : undefined}
                   >
                     <Mail className={`h-4 w-4 flex-shrink-0 ${isEmailConfigValid() ? 'text-green-600' : 'text-yellow-500'}`} />
-                    <span>Email</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'email' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Email</span>
                   </button>
                 </div>
               </div>
 
               {/* System Group */}
               <div>
-                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">System</div>
+                <div className={`px-2 py-1.5 text-xs font-semibold text-muted-foreground whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'text-center max-w-full' : ''}`}>System</div>
                 <div className="space-y-1">
                   <button
                     onClick={() => handleSectionChange('server')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'server'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'Servers' : undefined}
                   >
                     <Server className="h-4 w-4 flex-shrink-0" />
-                    <span>Servers</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'server' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Servers</span>
                   </button>
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('users')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'users'
-                          ? 'bg-accent text-accent-foreground font-medium'
+                          ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
                       }`}
+                      title={isSidebarCollapsed ? 'Users' : undefined}
                     >
                       <Users className="h-4 w-4 flex-shrink-0" />
-                      <span>Users</span>
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'users' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Users</span>
                     </button>
                   )}
                   <button
                     onClick={() => handleSectionChange('audit')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                       activeSection === 'audit'
-                        ? 'bg-accent text-accent-foreground font-medium'
+                        ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
+                    title={isSidebarCollapsed ? 'Audit Log' : undefined}
                   >
                     <ScrollText className="h-4 w-4 flex-shrink-0" />
-                    <span>Audit Log</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Audit Log</span>
                   </button>
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('audit-retention')}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
                         activeSection === 'audit-retention'
-                          ? 'bg-accent text-accent-foreground font-medium'
+                          ? 'bg-accent text-accent-foreground'
                           : 'hover:bg-accent/50'
                       }`}
+                      title={isSidebarCollapsed ? 'Audit Log Retention' : undefined}
                     >
                       <Clock className="h-4 w-4 flex-shrink-0" />
-                      <span>Audit Log Retention</span>
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit-retention' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Audit Log Retention</span>
                     </button>
                   )}
                 </div>
@@ -375,7 +448,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto">
+        <main ref={mainContentRef} className={`flex-1 overflow-auto ${isSidebarCollapsed ? 'ml-28' : 'ml-64'} transition-all duration-300`}>
             <div className="w-full px-6 py-4 space-y-6">
               {/* Notifications Section */}
               {activeSection === 'notifications' && (

@@ -56,6 +56,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const pendingChangesRef = useRef<Record<BackupKey, BackupNotificationConfig> | null>(null);
   const isAutoSaveInProgressRef = useRef(false);
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
+  const tableScrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -320,12 +321,17 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         <CardContent>
           
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <Table>
-            <TableHeader>
-              <TableRow>
+          <div className="hidden md:block border rounded-md">
+            <div 
+              ref={tableScrollContainerRef}
+              className="max-h-[calc(100vh-280px)] overflow-y-auto overflow-x-auto table-horizontal-scrollbar [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+            >
+              <div className="[&>div]:overflow-visible">
+                <Table>
+              <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
+              <TableRow className="bg-muted">
                 <SortableTableHead 
-                  className="w-[150px] min-w-[120px]" 
+                  className="w-[150px] min-w-[120px] bg-muted" 
                   column="name" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -333,7 +339,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Server Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[150px] min-w-[120px]" 
+                  className="w-[150px] min-w-[120px] bg-muted" 
                   column="backupName" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -341,14 +347,14 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[140px] min-w-[120px]" 
+                  className="w-[140px] min-w-[120px] bg-muted" 
                   column="notificationEvent" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
                   Notification Events
                 </SortableTableHead>
-                <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
+                <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px] bg-muted">
                   <div className="flex items-center justify-center gap-2">
                     <Checkbox
                       checked={allNtfySelected}
@@ -361,7 +367,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     </span>
                   </div>
                 </th>
-                <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px]">
+                <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px] bg-muted">
                   <div className="flex items-center justify-center gap-2">
                     <Checkbox
                       checked={allEmailSelected}
@@ -463,7 +469,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 );
               })}
             </TableBody>
-          </Table>
+              </Table>
+              </div>
+            </div>
           </div>
 
           {/* Mobile Card View */}

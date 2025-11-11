@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,10 +28,14 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { Search, Download, ChevronLeft, ChevronRight, Eye, Calendar as CalendarIcon } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Eye, Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { DatePicker } from '@/components/ui/date-picker';
+
+// Configuration constants
+const INITIAL_ROW_COUNT = 20; // Initial number of rows to load
+const LOAD_BATCH_SIZE = 40;   // Batch size to load more logs
 
 interface AuditLog {
   id: number;
@@ -58,18 +62,24 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const { toast } = useToast();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('audit-log-page-size');
-      return saved ? Number.parseInt(saved, 10) : 5;
-    }
-    return 5;
-  });
-  const [totalPages, setTotalPages] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [loadedCount, setLoadedCount] = useState(0);
   const [total, setTotal] = useState(0);
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const sentinelRef = useRef<HTMLTableRowElement>(null);
+  const loadedCountRef = useRef(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Calculate sizes
+  const initialLoadSize = INITIAL_ROW_COUNT;
+  const batchSize = LOAD_BATCH_SIZE;
+  const hasMore = logs.length < total;
+
+  // Sync ref with state - use logs.length for accurate tracking
+  useEffect(() => {
+    loadedCountRef.current = logs.length;
+  }, [logs.length]);
 
   // Filters
   const [startDate, setStartDate] = useState('');
@@ -80,12 +90,23 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const [status, setStatus] = useState('all');
 
   // Load audit logs
-  const loadLogs = async () => {
+  const loadLogs = useCallback(async (isInitial = false) => {
     try {
-      setLoading(true);
+      if (isInitial) {
+        setLoading(true);
+        setLoadedCount(0);
+        setLogs([]);
+      } else {
+        setIsLoadingMore(true);
+      }
+
+      // Get current offset - use 0 for initial, or current loadedCount for more
+      const currentOffset = isInitial ? 0 : loadedCount;
+      const limit = isInitial ? initialLoadSize : batchSize;
+
       const params = new URLSearchParams({
-        page: page.toString(),
-        limit: pageSize.toString(),
+        offset: currentOffset.toString(),
+        limit: limit.toString(),
       });
 
       if (startDate) params.append('startDate', startDate);
@@ -99,8 +120,22 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       if (!response.ok) throw new Error('Failed to load audit logs');
       
       const data = await response.json();
-      setLogs(data.logs || []);
-      setTotalPages(data.pagination?.totalPages || 1);
+      const newLogs = data.logs || [];
+      
+      if (isInitial) {
+        setLogs(newLogs);
+        setLoadedCount(newLogs.length);
+      } else {
+        // Deduplicate logs by ID to prevent duplicate keys
+        setLogs(prev => {
+          const existingIds = new Set(prev.map((log: AuditLog) => log.id));
+          const uniqueNewLogs = newLogs.filter((log: AuditLog) => !existingIds.has(log.id));
+          // Update loadedCount based on the unique logs we're actually adding
+          setLoadedCount(currentCount => currentCount + uniqueNewLogs.length);
+          return [...prev, ...uniqueNewLogs];
+        });
+      }
+      
       setTotal(data.pagination?.total || 0);
     } catch (error) {
       console.error('Error loading audit logs:', error);
@@ -111,12 +146,86 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       });
     } finally {
       setLoading(false);
+      setIsLoadingMore(false);
     }
-  };
+  }, [startDate, endDate, username, action, category, status, loadedCount, initialLoadSize, batchSize, toast]);
 
+  // Load more logs when scrolling
+  const loadMoreLogs = useCallback(async () => {
+    if (logs.length >= total || isLoadingMore || loading) return;
+    
+    try {
+      setIsLoadingMore(true);
+      const limit = batchSize;
+      const offset = logs.length; // Use actual loaded count, not loadedCount state
+
+      const params = new URLSearchParams({
+        offset: offset.toString(),
+        limit: limit.toString(),
+      });
+
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      if (username) params.append('username', username);
+      if (action && action !== 'all') params.append('action', action);
+      if (category && category !== 'all') params.append('category', category);
+      if (status && status !== 'all') params.append('status', status);
+
+      const response = await authenticatedRequestWithRecovery(`/api/audit-log?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to load audit logs');
+      
+      const data = await response.json();
+      const newLogs = data.logs || [];
+      
+      // Deduplicate logs by ID to prevent duplicate keys
+      setLogs(prev => {
+        const existingIds = new Set(prev.map((log: AuditLog) => log.id));
+        const uniqueNewLogs = newLogs.filter((log: AuditLog) => !existingIds.has(log.id));
+        // Update loadedCount based on the unique logs we're actually adding
+        setLoadedCount(currentCount => currentCount + uniqueNewLogs.length);
+        return [...prev, ...uniqueNewLogs];
+      });
+      setTotal(data.pagination?.total || 0);
+    } catch (error) {
+      console.error('Error loading more audit logs:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load more audit logs',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [hasMore, isLoadingMore, loading, batchSize, startDate, endDate, username, action, category, status, toast]);
+
+  // Initial load and filter changes
   useEffect(() => {
-    loadLogs();
-  }, [page, pageSize, startDate, endDate, username, action, category, status]);
+    loadLogs(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDate, endDate, username, action, category, status]);
+
+  // IntersectionObserver for scroll detection
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && logs.length < total && !isLoadingMore && !loading) {
+          loadMoreLogs();
+        }
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
+
+    const sentinel = sentinelRef.current;
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    return () => {
+      if (sentinel) {
+        observer.disconnect();
+      }
+    };
+  }, [logs.length, total, isLoadingMore, loading, loadMoreLogs]);
 
   // Get unique values for filters
   const uniqueActions = useMemo(() => {
@@ -180,7 +289,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     setAction('all');
     setCategory('all');
     setStatus('all');
-    setPage(1);
   };
 
   // Get status badge color
@@ -220,32 +328,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             Filters
           </h3>
           <div className="flex gap-2 items-center">
-            <div className="flex items-center gap-2 mr-10">
-              <Label htmlFor="page-size" className="text-xs text-muted-foreground whitespace-nowrap">
-                Entries per page:
-              </Label>
-              <Select
-                value={pageSize.toString()}
-                onValueChange={(value) => {
-                  const newPageSize = Number.parseInt(value, 10);
-                  setPageSize(newPageSize);
-                  setPage(1);
-                  if (typeof window !== 'undefined') {
-                    localStorage.setItem('audit-log-page-size', value);
-                  }
-                }}
-              >
-                <SelectTrigger id="page-size" className="w-[100px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="5">5 entries</SelectItem>
-                  <SelectItem value="10">10 entries</SelectItem>
-                  <SelectItem value="20">20 entries</SelectItem>
-                  <SelectItem value="50">50 entries</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
             <Button variant="outline" size="sm" onClick={resetFilters}>
               Reset
             </Button>
@@ -267,7 +349,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               value={startDate}
               onChange={(value) => {
                 setStartDate(value);
-                setPage(1);
               }}
             />
           </div>
@@ -278,7 +359,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               value={endDate}
               onChange={(value) => {
                 setEndDate(value);
-                setPage(1);
               }}
             />
           </div>
@@ -289,7 +369,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value);
-                setPage(1);
               }}
               placeholder="Filter by username"
             />
@@ -298,7 +377,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             <Label htmlFor="action">Action</Label>
             <Select value={action} onValueChange={(value) => {
               setAction(value);
-              setPage(1);
             }}>
               <SelectTrigger id="action">
                 <SelectValue placeholder="All actions" />
@@ -315,7 +393,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             <Label htmlFor="category">Category</Label>
             <Select value={category} onValueChange={(value) => {
               setCategory(value);
-              setPage(1);
             }}>
               <SelectTrigger id="category">
                 <SelectValue placeholder="All categories" />
@@ -332,7 +409,6 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
             <Label htmlFor="status">Status</Label>
             <Select value={status} onValueChange={(value) => {
               setStatus(value);
-              setPage(1);
             }}>
               <SelectTrigger id="status">
                 <SelectValue placeholder="All statuses" />
@@ -354,91 +430,122 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       ) : logs.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">No audit logs found</div>
       ) : (
-        <>
+        <div className="space-y-4">
           <div className="border rounded-md">
-            <Table>
-              <TableHeader className="sticky top-0 z-10 bg-background border-b">
-                <TableRow className="bg-muted/50">
-                  <TableHead>Timestamp</TableHead>
-                  <TableHead>User</TableHead>
-                  <TableHead>Action</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Target</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {logs.map((log) => (
-                  <TableRow key={log.id}>
-                    <TableCell>
-                      <div>{new Date(log.timestamp).toLocaleString()}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {formatRelativeTime(log.timestamp)}
-                      </div>
-                    </TableCell>
-                    <TableCell>{log.username || 'System'}</TableCell>
-                    <TableCell className="font-mono text-sm">{log.action}</TableCell>
-                    <TableCell>{getCategoryBadge(log.category)}</TableCell>
-                    <TableCell>{getStatusBadge(log.status)}</TableCell>
-                    <TableCell>
-                      {log.targetType && log.targetId ? (
-                        <span className="text-sm text-muted-foreground">
-                          {log.targetType}: {log.targetId.substring(0, 8)}...
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setSelectedLog(log);
-                          setDetailsDialogOpen(true);
-                        }}
-                        title="View details"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+            <div 
+              ref={scrollContainerRef}
+              className="max-h-[calc(100vh-417px)] overflow-y-auto custom-scrollbar pb-4"
+            >
+              <div className="[&>div]:overflow-visible">
+                <Table>
+                <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
+                  <TableRow className="bg-muted">
+                    <TableHead className="bg-muted w-12 text-center">#</TableHead>
+                    <TableHead className="bg-muted">Timestamp</TableHead>
+                    <TableHead className="bg-muted">User</TableHead>
+                    <TableHead className="bg-muted">Action</TableHead>
+                    <TableHead className="bg-muted">Category</TableHead>
+                    <TableHead className="bg-muted">Status</TableHead>
+                    <TableHead className="bg-muted">Target</TableHead>
+                    <TableHead className="text-right bg-muted">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {logs.map((log, index) => (
+                    <TableRow key={log.id}>
+                      <TableCell className="text-xs text-center text-muted-foreground w-12">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell>
+                        <div>{new Date(log.timestamp).toLocaleString()}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatRelativeTime(log.timestamp)}
+                        </div>
+                      </TableCell>
+                      <TableCell>{log.username || 'System'}</TableCell>
+                      <TableCell className="font-mono text-sm">{log.action}</TableCell>
+                      <TableCell>{getCategoryBadge(log.category)}</TableCell>
+                      <TableCell>{getStatusBadge(log.status)}</TableCell>
+                      <TableCell>
+                        {log.targetType && log.targetId ? (
+                          <span className="text-sm text-muted-foreground">
+                            {log.targetType}: {log.targetId.substring(0, 8)}...
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedLog(log);
+                            setDetailsDialogOpen(true);
+                          }}
+                          title="View details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  
+                  {/* Loading sentinel for IntersectionObserver */}
+                  {logs.length < total && (
+                    <TableRow ref={sentinelRef}>
+                      <TableCell colSpan={8} className="text-center py-4">
+                        {isLoadingMore && (
+                          <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span className="text-sm text-muted-foreground">Loading more...</span>
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  
+                  {/* End of data indicator */}
+                  {logs.length >= total && logs.length > 0 && (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center py-4 text-sm text-muted-foreground">
+                        No more logs to load
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+              </div>
+            </div>
           </div>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
-              Showing {((page - 1) * pageSize) + 1} to {Math.min(page * pageSize, total)} of {total} logs
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Previous
-              </Button>
-              <div className="text-sm">
-                Page {page} of {totalPages}
+          {/* Pagination - Alternative navigation */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                {total > 0 ? (
+                  <>Loaded {Math.min(logs.length, total)} of {total} total ({Math.min(100, Math.round((Math.min(logs.length, total) / total) * 100))}% loaded)</>
+                ) : (
+                  <>No logs available</>
+                )}
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-              >
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    // Scroll to top only - don't reload data
+                    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={loading || logs.length === 0}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Reset to Top
+                </Button>
+              </div>
             </div>
           </div>
-        </>
+        </div>
       )}
 
       {/* Details Dialog */}

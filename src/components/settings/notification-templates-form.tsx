@@ -201,7 +201,7 @@ const TemplateEditor = ({
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
             placeholder="Enter your message template using variables like {server_name}, {backup_name}, {status}, etc."
-            className="min-h-[200px]"
+            className="min-h-[262px]"
             onFocus={() => onFieldFocus('message')}
           />
           <p className="text-sm text-muted-foreground">

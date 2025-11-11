@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -70,6 +70,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const [isResetting, setIsResetting] = useState(false);
   const [autoCollectingServers, setAutoCollectingServers] = useState<Set<string>>(new Set());
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
+  const tableScrollContainerRef = useRef<HTMLDivElement>(null);
 
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
     { value: 'onetime', label: 'One time' },
@@ -172,6 +173,38 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
     }
   }, [config?.serversWithBackups, settings, isSavingInProgress]);
+
+  // Override Table component's wrapper div overflow to allow parent scrolling
+  useEffect(() => {
+    const updateTableOverflow = () => {
+      if (tableScrollContainerRef.current) {
+        const tableWrapper = tableScrollContainerRef.current.querySelector('div.relative');
+        if (tableWrapper instanceof HTMLElement) {
+          tableWrapper.style.overflow = 'visible';
+        }
+      }
+    };
+    
+    // Run immediately
+    updateTableOverflow();
+    
+    // Also run after a short delay to catch any delayed renders
+    const timeoutId = setTimeout(updateTableOverflow, 100);
+    
+    // Use MutationObserver to catch when table is added/updated
+    const observer = new MutationObserver(updateTableOverflow);
+    if (tableScrollContainerRef.current) {
+      observer.observe(tableScrollContainerRef.current, {
+        childList: true,
+        subtree: true,
+      });
+    }
+    
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, [config?.serversWithBackups, sortConfig]);
 
   const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean | number[]) => {
     const backupKey = `${serverId}:${backupName}`;
@@ -694,10 +727,15 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         <CardContent>
           
           {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <Table>
-            <TableHeader>
-              <TableRow>
+          <div className="hidden md:block border rounded-md">
+            <div 
+              ref={tableScrollContainerRef}
+              className="max-h-[calc(100vh-400px)] overflow-y-auto overflow-x-auto table-horizontal-scrollbar [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+            >
+              <div className="[&>div]:overflow-visible">
+                <Table>
+              <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
+              <TableRow className="bg-muted">
                 <SortableTableHead 
                   className="w-[120px] min-w-[100px]" 
                   column="name" 
@@ -715,7 +753,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   Backup Name
                 </SortableTableHead>
                 <SortableTableHead 
-                  className="w-[120px] min-w-[100px]" 
+                  className="w-[140px] min-w-[120px]" 
                   column="nextRunDate" 
                   sortConfig={sortConfig} 
                   onSort={handleSort}
@@ -820,7 +858,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     {/* Next Run - Table */}
                     <TableCell>
                       <div 
-                        className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
+                        className={`text-xs p-1 ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                       >
                         {server.nextRunDate !== 'N/A' ? 
                           <>
@@ -912,7 +950,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 );
               })}
             </TableBody>
-          </Table>
+              </Table>
+              </div>
+            </div>
           </div>
 
           {/* Mobile Card View */}
@@ -1066,54 +1106,78 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
             })}
           </div>
           
-          <div className="flex flex-col gap-6 pt-6 w-full">
-            {/* Save button and Collect All button */}
-            <div className="flex gap-3">
-              <Button onClick={() => {
-                handleSave();
-              }} disabled={isSaving} variant="gradient">
-                {isSaving ? "Saving..." : "Save Overdue Monitoring Settings"}
-              </Button>
-              <CollectAllButton
-                servers={(() => {
-                  // Deduplicate servers by ID to avoid multiple collections for the same server
-                  const servers = config?.serversWithBackups || [];
-                  const uniqueServers = servers.reduce((acc: ServerWithBackup[], server: ServerWithBackup) => {
-                    if (!acc.find(s => s.id === server.id)) {
-                      acc.push({
-                        id: server.id,
-                        name: server.name,
-                        server_url: server.server_url,
-                        alias: server.alias,
-                        note: server.note,
-                        hasPassword: server.hasPassword,
-                        backupName: server.backupName
+          <div className="flex flex-col gap-6 pt-6 w-full flex-shrink-0">
+            {/* Save button, Collect All button, Check now, and Reset Notifications */}
+            <div className="flex gap-3 justify-between items-center flex-wrap">
+              <div className="flex gap-3">
+                <Button onClick={() => {
+                  handleSave();
+                }} disabled={isSaving} variant="gradient">
+                  {isSaving ? "Saving..." : "Save Overdue Monitoring Settings"}
+                </Button>
+                <CollectAllButton
+                  servers={(() => {
+                    // Deduplicate servers by ID to avoid multiple collections for the same server
+                    const servers = config?.serversWithBackups || [];
+                    const uniqueServers = servers.reduce((acc: ServerWithBackup[], server: ServerWithBackup) => {
+                      if (!acc.find(s => s.id === server.id)) {
+                        acc.push({
+                          id: server.id,
+                          name: server.name,
+                          server_url: server.server_url,
+                          alias: server.alias,
+                          note: server.note,
+                          hasPassword: server.hasPassword,
+                          backupName: server.backupName
+                        });
+                      }
+                      return acc;
+                    }, []);
+                    return uniqueServers;
+                  })()}
+                  variant="outline"
+                  showText={true}
+                  disabled={isSaving}
+                  onCollectionStart={(showInstructionToast) => {
+                    if (showInstructionToast) {
+                      toast({
+                        title: "Starting Collection",
+                        description: "Collecting backup logs from all configured servers...",
+                        duration: 4000,
                       });
                     }
-                    return acc;
-                  }, []);
-                  return uniqueServers;
-                })()}
-                variant="outline"
-                showText={true}
-                disabled={isSaving}
-                onCollectionStart={(showInstructionToast) => {
-                  if (showInstructionToast) {
-                    toast({
-                      title: "Starting Collection",
-                      description: "Collecting backup logs from all configured servers...",
-                      duration: 4000,
-                    });
-                  }
-                }}
-                onCollectionEnd={() => {
-                  // Collection completed, toast will be shown by the component
-                }}
-              />
+                  }}
+                  onCollectionEnd={() => {
+                    // Collection completed, toast will be shown by the component
+                  }}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleTestOverdueBackups} 
+                  variant="outline" 
+                  disabled={isTesting}
+                  size="sm"
+                >
+                  <RefreshCw className="mr-1 h-3 w-3" />
+                  <span className="hidden sm:inline">{isTesting ? "Checking..." : "Check now"}</span>
+                  <span className="sm:hidden">{isTesting ? "..." : "Check"}</span>
+                </Button>
+                <Button 
+                  onClick={handleResetNotifications}
+                  variant="outline"
+                  disabled={isResetting}
+                  size="sm"
+                >
+                  <TimerReset className="mr-1 h-3 w-3" />
+                  <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset notifications"}</span>
+                  <span className="sm:hidden">{isResetting ? "..." : "Reset notifications"}</span>
+                </Button>
+              </div>
             </div>
 
             {/* Controls grid - responsive layout */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <Label htmlFor="overdue-tolerance" className="mb-2 text-sm">
                   <span className="hidden sm:inline">Overdue tolerance:</span>
@@ -1183,34 +1247,6 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 </Select>
                 {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
                 {notificationFrequencyError && <span className="text-xs text-destructive mt-1">{notificationFrequencyError}</span>}
-              </div>
-              
-              <div className="flex flex-col gap-2">
-                <div className="flex-1"></div>
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={handleTestOverdueBackups} 
-                    variant="outline" 
-                    disabled={isTesting}
-                    size="sm"
-                    className="flex-1"
-                  >
-                    <RefreshCw className="mr-1 h-3 w-3" />
-                    <span className="hidden sm:inline">{isTesting ? "Checking..." : "Check now"}</span>
-                    <span className="sm:hidden">{isTesting ? "..." : "Check"}</span>
-                  </Button>
-                  <Button 
-                    onClick={handleResetNotifications}
-                    variant="outline"
-                    disabled={isResetting}
-                    size="sm"
-                    className="flex-1"
-                  >
-                    <TimerReset className="mr-1 h-3 w-3" />
-                    <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset notifications"}</span>
-                    <span className="sm:hidden">{isResetting ? "..." : "Reset notifications"}</span>
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
