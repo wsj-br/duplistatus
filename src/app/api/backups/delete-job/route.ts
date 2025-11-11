@@ -1,11 +1,11 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
-export const DELETE = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     
     const { serverId, backupName } = await request.json();

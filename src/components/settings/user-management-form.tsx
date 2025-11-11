@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -75,8 +75,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const [formAutoGeneratePassword, setFormAutoGeneratePassword] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
 
-  // Load users
-  const loadUsers = async () => {
+  // Load users - wrapped in useCallback to avoid recreating on each render
+  const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
       const response = await authenticatedRequestWithRecovery('/api/users');
@@ -93,11 +93,11 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     loadUsers();
-  }, []);
+  }, [loadUsers]);
 
   // Filter users by search term
   const filteredUsers = users.filter(user =>
@@ -132,14 +132,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     );
   }, [passwordRequirements, formAutoGeneratePassword]);
 
-  // Check if form is valid for submission
-  const isCreateFormValid = useMemo(() => {
-    if (!formUsername.trim()) return false;
-    if (!formAutoGeneratePassword && !isPasswordValid) return false;
-    return true;
-  }, [formUsername, formAutoGeneratePassword, isPasswordValid]);
-
-  const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
+  // Requirement item component (defined inside to avoid recreation warnings)
+  const RequirementItem = useCallback(({ met, label }: { met: boolean; label: string }) => (
     <div className="flex items-center gap-2 text-sm">
       {met ? (
         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
@@ -150,7 +144,14 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
         {label}
       </span>
     </div>
-  );
+  ), []);
+
+  // Check if form is valid for submission
+  const isCreateFormValid = useMemo(() => {
+    if (!formUsername.trim()) return false;
+    if (!formAutoGeneratePassword && !isPasswordValid) return false;
+    return true;
+  }, [formUsername, formAutoGeneratePassword, isPasswordValid]);
 
   // Handle create user
   const handleCreate = async () => {

@@ -56,7 +56,11 @@ interface BackupJob {
   note: string;
 }
 
-export function DatabaseMaintenanceMenu() {
+interface DatabaseMaintenanceMenuProps {
+  isAdmin: boolean;
+}
+
+export function DatabaseMaintenanceMenu({ isAdmin }: DatabaseMaintenanceMenuProps) {
   const {
     databaseCleanupPeriod,
     setDatabaseCleanupPeriod,
@@ -342,6 +346,15 @@ export function DatabaseMaintenanceMenu() {
           <GradientCardHeader>
             <h4 className="text-lg font-semibold leading-none text-white">Database Maintenance</h4>
           </GradientCardHeader>
+          {!isAdmin && (
+            <div className="px-1 -mt-2">
+              <div className="rounded-md bg-blue-50 dark:bg-blue-950 p-3 border border-blue-200 dark:border-blue-800">
+                <p className="text-xs text-blue-800 dark:text-blue-200">
+                  You are viewing this in read-only mode. Only administrators can perform maintenance operations.
+                </p>
+              </div>
+            </div>
+          )}
           <div className="px-1 -mt-2">
             <p className="text-xs text-muted-foreground">
               Reduce database size by cleaning up old records and managing data
@@ -356,8 +369,9 @@ export function DatabaseMaintenanceMenu() {
               <Select
                 value={databaseCleanupPeriod}
                 onValueChange={(value) => setDatabaseCleanupPeriod(value as "Delete all data" | "6 months" | "1 year" | "2 years")}
+                disabled={!isAdmin}
               >
-                <SelectTrigger id="database-cleanup">
+                <SelectTrigger id="database-cleanup" disabled={!isAdmin}>
                   <SelectValue placeholder="Select cleanup period" />
                 </SelectTrigger>
                 <SelectContent>
@@ -376,7 +390,7 @@ export function DatabaseMaintenanceMenu() {
                 <AlertDialogTrigger asChild>
                   <Button 
                     variant="gradient" 
-                    disabled={isCleaning}
+                    disabled={!isAdmin || isCleaning}
                     className="w-full relative overflow-hidden"
                   >
                     {isCleaning ? (
@@ -423,8 +437,9 @@ export function DatabaseMaintenanceMenu() {
               <Select
                 value={selectedBackupJob}
                 onValueChange={setSelectedBackupJob}
+                disabled={!isAdmin}
               >
-                <SelectTrigger id="backup-job-select">
+                <SelectTrigger id="backup-job-select" disabled={!isAdmin}>
                   <SelectValue placeholder="Select backup job to delete" />
                 </SelectTrigger>
                 <SelectContent>
@@ -443,7 +458,7 @@ export function DatabaseMaintenanceMenu() {
                 <AlertDialogTrigger asChild>
                   <Button 
                     variant="outline" 
-                    disabled={isDeletingBackupJob || !selectedBackupJob}
+                    disabled={!isAdmin || isDeletingBackupJob || !selectedBackupJob}
                     className="btn-amber-clear"
                   >
                     {isDeletingBackupJob ? (
@@ -490,8 +505,9 @@ export function DatabaseMaintenanceMenu() {
               <Select
                 value={selectedServer}
                 onValueChange={setSelectedServer}
+                disabled={!isAdmin}
               >
-                <SelectTrigger id="server-select">
+                <SelectTrigger id="server-select" disabled={!isAdmin}>
                   <SelectValue placeholder="Select server to delete" />
                 </SelectTrigger>
                 <SelectContent>
@@ -510,7 +526,7 @@ export function DatabaseMaintenanceMenu() {
                 <AlertDialogTrigger asChild>
                   <Button 
                     variant="destructive" 
-                    disabled={isDeletingServer || !selectedServer}
+                    disabled={!isAdmin || isDeletingServer || !selectedServer}
                     className="mt-2"
                   >
                     {isDeletingServer ? (

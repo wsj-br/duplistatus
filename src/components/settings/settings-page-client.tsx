@@ -198,24 +198,28 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   }, [searchParams]);
 
   const handleSectionChange = (value: string) => {
-    // Save current scroll position before changing section
-    const currentScrollY = window.scrollY;
-    
     setActiveSection(value);
     localStorage.setItem('settings-active-section', value);
     router.replace(`/settings?tab=${value}`, { scroll: false });
-    
-    // Restore scroll position after a brief delay to prevent layout shift
-    requestAnimationFrame(() => {
-      if (Math.abs(window.scrollY - currentScrollY) > 1) {
-        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
-      }
-      // Also reset main content scroll if it exists
+  };
+
+  // Scroll to top when section changes
+  useEffect(() => {
+    // Use a timeout to ensure the DOM has updated with the new content
+    const timeoutId = setTimeout(() => {
+      // Scroll window/document to top (in case page itself is scrollable)
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      
+      // Reset main content scroll (this is the main scrollable container with overflow-auto)
       if (mainContentRef.current) {
         mainContentRef.current.scrollTop = 0;
       }
-    });
-  };
+    }, 10);
+
+    return () => clearTimeout(timeoutId);
+  }, [activeSection]);
 
   const toggleSidebar = () => {
     const newState = !isSidebarCollapsed;
@@ -236,7 +240,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   // Sync shouldCenterItems with isSidebarCollapsed on mount
   useEffect(() => {
     setShouldCenterItems(isSidebarCollapsed);
-  }, []);
+  }, [isSidebarCollapsed]);
 
   // Check if email configuration is valid (mirrors logic from EmailConfigurationForm)
   const isEmailConfigValid = () => {
@@ -300,16 +304,18 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                 </button>
               )}
             </div>
-            {isSidebarCollapsed && (
-              <button
-                onClick={toggleSidebar}
-                className="absolute top-1/2 right-1 -translate-y-1/2 p-1.5 rounded-md hover:bg-accent transition-colors"
-                aria-label="Expand sidebar"
-              >
-                <PanelLeftOpen className="h-4 w-4" />
-              </button>
-            )}
           </div>
+
+
+          {isSidebarCollapsed && (
+            <button
+              onClick={toggleSidebar}
+              className="absolute top-1/2 right-1 -translate-y-1/2 p-1.5 rounded-md hover:bg-accent transition-colors"
+              aria-label="Expand sidebar"
+            >
+              <PanelLeftOpen className="h-4 w-4" />
+            </button>
+          )}
           
           <div className={`p-4 space-y-4 ${isSidebarCollapsed ? 'px-2' : 'px-4'}`}>
               {/* Notifications Group */}
@@ -444,6 +450,17 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                   )}
                 </div>
               </div>
+
+              {/* Non-Admin User Notice - After all navigation items */}
+              {!currentUser?.isAdmin && !isSidebarCollapsed && (
+                <div className="mt-16 px-3">
+                  <div className="rounded-md bg-muted/50 px-3 py-2 border border-border/50">
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium">Note:</span> Settings are read-only. Some features like test notifications remain available.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
         </aside>
 
@@ -453,27 +470,21 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
               {/* Notifications Section */}
               {activeSection === 'notifications' && (
                 <BackupNotificationsForm 
-                  backupSettings={config.backupSettings || {}} 
-                  onSave={async () => {
-                    // Already uses /api/configuration/backup-settings
-                  }}
+                  backupSettings={config.backupSettings || {}}
                 />
               )}
 
               {/* Overdue Monitoring Section */}
               {activeSection === 'overdue' && (
                 <OverdueMonitoringForm 
-                  backupSettings={config.backupSettings || {}} 
-                  onSave={async () => {
-                    // Already uses /api/configuration/backup-settings and other endpoints
-                  }}
+                  backupSettings={config.backupSettings || {}}
                 />
               )}
 
               {/* Server Settings Section */}
               {activeSection === 'server' && (
                 <ServerSettingsForm 
-                  serverAddresses={config.serverAddresses || []} 
+                  serverAddresses={config.serverAddresses || []}
                 />
               )}
 
@@ -487,7 +498,13 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                         method: 'POST',
                         body: JSON.stringify({ ntfy: ntfyConfig }),
                       });
-                      if (!response.ok) throw new Error('Failed to save NTFY config');
+                      if (!response.ok) {
+                        if (response.status === 403) {
+                          throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+                        }
+                        const errorData = await response.json().catch(() => ({ error: 'Failed to save NTFY config' }));
+                        throw new Error(errorData.error || 'Failed to save NTFY config');
+                      }
                       const result = await response.json();
                       toast({ title: 'Success', description: 'NTFY config saved successfully', duration: 2000 });
                       
@@ -511,21 +528,22 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
               {/* Templates Section */}
               {activeSection === 'templates' && (
                 <NotificationTemplatesForm 
-                  templates={config.templates || {}} 
+                  templates={config.templates || {}}
                   onSave={async (templates) => {
-                    try {
-                      const response = await authenticatedRequestWithRecovery('/api/configuration/templates', {
-                        method: 'POST',
-                        body: JSON.stringify({ templates }),
-                      });
-                      if (!response.ok) throw new Error('Failed to save notification templates');
-                      toast({ title: 'Success', description: 'Notification templates saved successfully', duration: 2000 });
-                      
-                      // Refresh the configuration cache to reflect the changes
-                      await refreshConfigSilently();
-                    } catch (error) {
-                      toast({ title: 'Error', description: error instanceof Error ? error.message : 'Failed to save notification templates', variant: 'destructive', duration: 3000 });
+                    const response = await authenticatedRequestWithRecovery('/api/configuration/templates', {
+                      method: 'POST',
+                      body: JSON.stringify({ templates }),
+                    });
+                    if (!response.ok) {
+                      if (response.status === 403) {
+                        throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+                      }
+                      const errorData = await response.json().catch(() => ({ error: 'Failed to save notification templates' }));
+                      throw new Error(errorData.error || 'Failed to save notification templates');
                     }
+                    
+                    // Refresh the configuration cache to reflect the changes
+                    await refreshConfigSilently();
                   }}
                   onSendTest={async (template) => {
                     const response = await authenticatedRequestWithRecovery('/api/notifications/test', {

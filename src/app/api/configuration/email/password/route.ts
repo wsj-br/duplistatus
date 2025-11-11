@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getSMTPConfig, setSMTPConfig } from '@/lib/db-utils';
 import { getSessionIdFromRequest, validateSession, generateCSRFToken } from '@/lib/session-csrf';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
-export const PATCH = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     const { password, config } = await request.json();
 

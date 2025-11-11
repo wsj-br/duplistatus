@@ -2,6 +2,9 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 import { DatabaseMigrator } from './db-migrations';
+import bcrypt from 'bcrypt';
+import { BackupNotificationConfig } from '@/lib/types';
+import { defaultAuthConfig } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -242,7 +245,7 @@ try {
     
     // Create admin user with bcrypt hash
     const adminId = 'admin-' + randomBytes(16).toString('hex');
-    const adminPasswordHash = bcrypt.hashSync('Duplistatus09', 12);
+    const adminPasswordHash = bcrypt.hashSync(defaultAuthConfig.defaultPassword, 12);
     
     db.prepare(`
       INSERT INTO users (
@@ -284,7 +287,7 @@ try {
         description: 'New database initialized with full schema',
         tables_created: ['servers', 'backups', 'configurations', 'users', 'sessions', 'audit_log'],
         admin_user_created: true,
-        default_password: 'Duplistatus09 (must change on first login)',
+        default_password: `${defaultAuthConfig.defaultPassword} (must change on first login)`,
         sessions_note: 'user_id is nullable to support unauthenticated sessions'
       })
     );
@@ -293,7 +296,7 @@ try {
     db.prepare('INSERT INTO db_version (version) VALUES (?)').run('4.0');
     
     console.log('Database initialized with schema v4.0');
-    console.log('Admin user created: username="admin", password="Duplistatus09" (must change on first login)');
+    console.log(`Admin user created: username="admin", password="${defaultAuthConfig.defaultPassword}" (must change on first login)`);
     
     console.log('Database schema initialized successfully');
     

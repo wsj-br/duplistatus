@@ -214,9 +214,13 @@ export const POST = withCSRF(async (request: NextRequest) => {
     });
 
     // Set session cookie
+    // Note: Secure cookies are disabled by default to support HTTP connections
+    // Set SECURE_COOKIES=true in .env if you're using HTTPS
+    const useSecureCookies = process.env.SECURE_COOKIES === 'true';
+    
     response.cookies.set('sessionId', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: useSecureCookies,
       sameSite: 'lax',
       maxAge: 24 * 60 * 60, // 24 hours
       path: '/',

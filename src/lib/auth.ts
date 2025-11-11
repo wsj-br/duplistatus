@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { defaultAuthConfig } from './default-config';
 
 // Password configuration
 const BCRYPT_ROUNDS = 12;
@@ -34,6 +35,11 @@ export interface PasswordValidationResult {
  */
 export function validatePassword(password: string): PasswordValidationResult {
   const errors: string[] = [];
+
+  // Prevent using the default password
+  if (password === defaultAuthConfig.defaultPassword) {
+    errors.push('Cannot use the default password. Please choose a different password');
+  }
 
   if (!password || password.length < passwordPolicy.minLength) {
     errors.push(`Password must be at least ${passwordPolicy.minLength} characters long`);

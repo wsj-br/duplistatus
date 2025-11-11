@@ -3,7 +3,7 @@ import { getNotificationFrequencyConfig, setNotificationFrequencyConfig, setNtfy
 import { NotificationFrequencyConfig } from '@/lib/types';
 import { generateDefaultNtfyTopic } from '@/lib/default-config';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
@@ -20,7 +20,7 @@ export const GET = withCSRF(async () => {
   }
 });
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     
     const body = await request.json();

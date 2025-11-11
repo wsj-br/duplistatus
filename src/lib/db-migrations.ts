@@ -12,7 +12,8 @@ import {
   defaultNtfyConfig,
   defaultOverdueTolerance,
   defaultNotificationFrequencyConfig,
-  defaultNotificationTemplates
+  defaultNotificationTemplates,
+  defaultAuthConfig
 } from './default-config';
 import { previousTemplatesMessages } from './previous-defaults';
 
@@ -740,9 +741,9 @@ const migrations: Migration[] = [
       // Generate admin user ID
       const adminId = 'admin-' + randomBytes(16).toString('hex');
       
-      // Hash default password: 'Duplistatus09'
+      // Hash default password
       // Using bcrypt.hashSync for synchronous execution within migration
-      const adminPasswordHash = bcrypt.hashSync('Duplistatus09', 12);
+      const adminPasswordHash = bcrypt.hashSync(defaultAuthConfig.defaultPassword, 12);
       
       // Insert admin user
       db.prepare(`
@@ -788,13 +789,13 @@ const migrations: Migration[] = [
           description: 'User Access Control System',
           tables_created: ['users', 'sessions', 'audit_log'],
           admin_user_created: true,
-          default_password: 'Duplistatus09 (must change on first login)'
+          default_password: `${defaultAuthConfig.defaultPassword} (must change on first login)`
         })
       );
       
       console.log('Migration 4.0: User access control system created successfully');
       console.log('Migration 4.0: Admin user created with username "admin"');
-      console.log('Migration 4.0: Default password is "Duplistatus09" (must be changed on first login)');
+      console.log(`Migration 4.0: Default password is "${defaultAuthConfig.defaultPassword}" (must be changed on first login)`);
       console.log('Migration 4.0: Sessions table created with nullable user_id to support unauthenticated sessions');
     }
   }

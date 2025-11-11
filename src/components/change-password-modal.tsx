@@ -29,6 +29,20 @@ interface PasswordRequirements {
   passwordsMatch: boolean;
 }
 
+// Requirement item component (defined outside to avoid recreation on each render)
+const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
+  <div className="flex items-center gap-2 text-sm">
+    {met ? (
+      <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+    ) : (
+      <X className="h-4 w-4 text-muted-foreground" />
+    )}
+    <span className={met ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+      {label}
+    </span>
+  </div>
+);
+
 export function ChangePasswordModal({ open, onOpenChange, required = false }: ChangePasswordModalProps) {
   const router = useRouter();
   const [newPassword, setNewPassword] = useState('');
@@ -37,15 +51,17 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // Reset form when modal opens/closes
-  useEffect(() => {
-    if (!open) {
+  // Reset form when modal closes
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      // Reset form when closing
       setNewPassword('');
       setConfirmPassword('');
       setError('');
       setSuccess(false);
     }
-  }, [open]);
+    onOpenChange(newOpen);
+  };
 
   // Real-time password validation
   const requirements = useMemo<PasswordRequirements>(() => {
@@ -127,21 +143,8 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
     }
   };
 
-  const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
-    <div className="flex items-center gap-2 text-sm">
-      {met ? (
-        <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
-      ) : (
-        <X className="h-4 w-4 text-muted-foreground" />
-      )}
-      <span className={met ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
-        {label}
-      </span>
-    </div>
-  );
-
   return (
-    <Dialog open={open} onOpenChange={required ? () => {} : onOpenChange}>
+    <Dialog open={open} onOpenChange={required ? () => {} : handleOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>

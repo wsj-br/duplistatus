@@ -1,11 +1,11 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { getNotificationTemplates, setNotificationTemplates } from '@/lib/db-utils';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     
     const body = await request.json();

@@ -422,6 +422,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           });
           
           if (!response.ok) {
+            if (response.status === 403) {
+              throw new Error('You do not have permission to modify server settings. Only administrators can change configurations.');
+            }
             const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
             throw new Error(`Failed to update server ${connection.id}: ${response.status} ${response.statusText} - ${errorData.error || 'Unknown error'}`);
           }

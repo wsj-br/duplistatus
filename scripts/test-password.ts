@@ -1,4 +1,5 @@
 import { validatePassword, hashPassword, verifyPassword, generateSecurePassword } from '../src/lib/auth';
+import { defaultAuthConfig } from '../src/lib/default-config';
 
 async function testPasswords() {
   console.log('Testing password utilities...\n');
@@ -10,7 +11,8 @@ async function testPasswords() {
     { password: 'lowercase1', valid: false, reason: 'No uppercase' },
     { password: 'UPPERCASE1', valid: false, reason: 'No lowercase' },
     { password: 'NoNumbers', valid: false, reason: 'No numbers' },
-    { password: 'Duplistatus09', valid: true, reason: 'Valid' },
+    { password: defaultAuthConfig.defaultPassword, valid: false, reason: 'Default password (not allowed)' },
+    { password: 'ValidPass123', valid: true, reason: 'Valid' },
     { password: 'StrongP@ss1', valid: true, reason: 'Valid with special chars' },
   ];
   
@@ -25,7 +27,7 @@ async function testPasswords() {
   
   // Test 2: Password hashing
   console.log('\n2. Testing password hashing:');
-  const password = 'Duplistatus09';
+  const password = 'ValidPass123';
   const hash1 = await hashPassword(password);
   const hash2 = await hashPassword(password);
   console.log(`  ✅ Hash 1: ${hash1.substring(0, 20)}...`);

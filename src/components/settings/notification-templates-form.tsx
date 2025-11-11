@@ -328,10 +328,11 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       });
     } catch (error) {
       console.error('Error saving templates:', error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save template settings';
       toast({
         duration: 3000,
         title: "Error",
-        description: "Failed to save template settings",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -362,10 +363,11 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send test notification';
       toast({
         duration: 3000,
         title: "Error",
-        description: "Failed to send test notification",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

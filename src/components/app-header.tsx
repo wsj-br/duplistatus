@@ -132,7 +132,7 @@ export function AppHeader() {
           <NtfyMessagesButton />
           <OpenServerConfigButton />
           <BackupCollectMenu />
-          <DatabaseMaintenanceMenu />
+          <DatabaseMaintenanceMenu isAdmin={user?.isAdmin || false} />
           <DisplayMenu />
           <Link href="/settings">
             <Button variant="outline" size="icon" title="Settings">

@@ -420,7 +420,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
 
       if (!response.ok) {
-        throw new Error('Failed to run overdue backup check');
+        if (response.status === 403) {
+          throw new Error('You do not have permission to run overdue backup checks. Only administrators can perform this action.');
+        }
+        const errorData = await response.json().catch(() => ({ error: 'Failed to run overdue backup check' }));
+        throw new Error(errorData.error || 'Failed to run overdue backup check');
       }
 
       const result = await response.json();
@@ -497,7 +501,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
       
       if (!backupResponse.ok) {
-        throw new Error('Failed to save backup settings');
+        if (backupResponse.status === 403) {
+          throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+        }
+        const errorData = await backupResponse.json().catch(() => ({ error: 'Failed to save backup settings' }));
+        throw new Error(errorData.error || 'Failed to save backup settings');
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -553,7 +561,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
 
       if (!response.ok) {
-        throw new Error('Failed to run overdue backup check');
+        if (response.status === 403) {
+          throw new Error('You do not have permission to run overdue backup checks. Only administrators can perform this action.');
+        }
+        const errorData = await response.json().catch(() => ({ error: 'Failed to run overdue backup check' }));
+        throw new Error(errorData.error || 'Failed to run overdue backup check');
       }
 
       const result = await response.json();

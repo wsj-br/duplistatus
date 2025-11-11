@@ -115,6 +115,11 @@ export const defaultAPIConfig = {
   duplicatiProtocol: 'http' as const
 };
 
+// Default authentication configuration
+export const defaultAuthConfig = {
+  defaultPassword: 'Duplistatus09' as const
+};
+
 
 // Note: Legacy createDefaultNotificationConfig was removed in favor of split keys
 

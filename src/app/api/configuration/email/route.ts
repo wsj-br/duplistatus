@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getSMTPConfig, setSMTPConfig, deleteSMTPConfig } from '@/lib/db-utils';
 import type { SMTPConfig } from '@/lib/types';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
@@ -61,7 +61,7 @@ export const GET = withCSRF(async () => {
   }
 });
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     const body = await request.json();
     
@@ -134,7 +134,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
   }
 }));
 
-export const DELETE = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     // Check if configuration exists
     const config = getSMTPConfig();

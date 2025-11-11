@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withDb } from '@/lib/db-utils';
 import { dbOps } from '@/lib/db';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 
 interface ServerRow {
   id: string;
@@ -10,11 +11,16 @@ interface ServerRow {
 }
 
 export const GET = withCSRF(async (
-  _request: NextRequest,
-  { params }: { params: Promise<{ serverId: string }> }
+  request: NextRequest
 ) => {
   try {
-    const { serverId } = await params;
+    // Extract serverId from URL pathname
+    const pathname = request.nextUrl.pathname;
+    const serverId = pathname.split('/')[3]; // /api/servers/[serverId]/server-url
+    
+    if (!serverId) {
+      return NextResponse.json({ error: 'Server ID is required' }, { status: 400 });
+    }
 
     // Get server data
     const server = withDb(() => {
@@ -41,12 +47,21 @@ export const GET = withCSRF(async (
   }
 });
 
-export const PATCH = withCSRF(async (
+export const PATCH = withCSRF(requireAdmin(async (
   request: NextRequest,
-  { params }: { params: Promise<{ serverId: string }> }
+  authContext
 ) => {
   try {
-    const { serverId } = await params;
+    // Extract serverId from URL pathname
+    const pathname = request.nextUrl.pathname;
+    const serverId = pathname.split('/')[3]; // /api/servers/[serverId]/server-url
+    
+    if (!serverId) {
+      return NextResponse.json(
+        { error: 'Server ID is required' },
+        { status: 400 }
+      );
+    }
     
     
     const { server_url } = await request.json();
@@ -109,4 +124,4 @@ export const PATCH = withCSRF(async (
       { status: 500 }
     );
   }
-});
+}));

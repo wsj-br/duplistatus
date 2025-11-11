@@ -196,7 +196,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     } finally {
       setIsLoadingMore(false);
     }
-  }, [hasMore, isLoadingMore, loading, batchSize, startDate, endDate, username, action, category, status, toast]);
+  }, [logs.length, total, isLoadingMore, loading, batchSize, startDate, endDate, username, action, category, status, toast]);
 
   // Initial load and filter changes
   useEffect(() => {

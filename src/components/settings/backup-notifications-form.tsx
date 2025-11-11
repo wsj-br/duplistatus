@@ -184,6 +184,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         });
         
         if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+          }
           const errorText = await response.text();
           console.error('Auto-save response error:', response.status, errorText);
           throw new Error(`Failed to auto-save backup settings: ${response.status} ${errorText}`);

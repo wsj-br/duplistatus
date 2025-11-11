@@ -3,11 +3,11 @@ import { NextResponse, NextRequest } from 'next/server';
 import { subMonths } from 'date-fns';
 import { db } from '@/lib/db';
 import { setConfiguration } from '@/lib/db-utils';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     
     const { retentionPeriod } = await request.json();

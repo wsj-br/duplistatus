@@ -16,24 +16,26 @@ const REMEMBER_ME_ENABLED_KEY = 'duplistatus_remember_me_enabled';
 
 function LoginForm() {
   const searchParams = useSearchParams();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  // Load saved username and remember me preference from localStorage
-  useEffect(() => {
+  // Initialize state from localStorage on first render
+  const [username, setUsername] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true';
       const savedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
-      
-      if (savedRememberMe && savedUsername) {
-        setRememberMe(true);
-        setUsername(savedUsername);
-      }
+      return savedRememberMe && savedUsername ? savedUsername : '';
     }
-  }, []);
+    return '';
+  });
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true';
+      const savedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
+      return savedRememberMe && Boolean(savedUsername);
+    }
+    return false;
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Validate redirect URL to prevent open redirect vulnerabilities
   const validateRedirectUrl = (url: string | null): string => {
