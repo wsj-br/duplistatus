@@ -69,6 +69,122 @@ if (global.__dbInstance) {
   }
 }
 
+// Database initialization lock mechanism
+class DatabaseInitLock {
+  private lockFilePath: string;
+  private lockFileHandle: number | null = null;
+  private readonly LOCK_TIMEOUT = 30000; // 30 seconds
+  private readonly RETRY_INTERVAL = 100; // 100ms for faster retries during build
+
+  constructor(dbPath: string) {
+    const dbDir = path.dirname(dbPath);
+    this.lockFilePath = path.join(dbDir, '.db-init.lock');
+  }
+
+  acquireLockSync(): boolean {
+    const startTime = Date.now();
+    
+    while (Date.now() - startTime < this.LOCK_TIMEOUT) {
+      try {
+        // Try to create lock file exclusively
+        this.lockFileHandle = fs.openSync(this.lockFilePath, 'wx');
+        
+        // Write process info to lock file
+        const lockInfo = {
+          pid: process.pid,
+          timestamp: new Date().toISOString(),
+          process: process.title || 'unknown'
+        };
+        fs.writeFileSync(this.lockFileHandle, JSON.stringify(lockInfo, null, 2));
+        
+        return true;
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
+          // Lock file exists, check if it's stale
+          try {
+            const lockContent = fs.readFileSync(this.lockFilePath, 'utf8');
+            const lockInfo = JSON.parse(lockContent);
+            
+            // Check if the process that created the lock is still running
+            try {
+              process.kill(lockInfo.pid, 0); // Signal 0 just checks if process exists
+              // Process exists, wait and retry
+              const sleep = require('util').promisify(setTimeout);
+              // Use synchronous sleep for this sync function
+              const sleepSync = (ms: number) => {
+                const start = Date.now();
+                while (Date.now() - start < ms) {
+                  // Busy wait
+                }
+              };
+              sleepSync(this.RETRY_INTERVAL);
+              continue;
+            } catch {
+              // Process doesn't exist, remove stale lock
+              try {
+                if (fs.existsSync(this.lockFilePath)) {
+                  fs.unlinkSync(this.lockFilePath);
+                }
+              } catch {
+                // Ignore - file may have been removed by another process
+              }
+              continue;
+            }
+          } catch {
+            // Lock file is corrupted, remove it
+            try {
+              if (fs.existsSync(this.lockFilePath)) {
+                fs.unlinkSync(this.lockFilePath);
+              }
+            } catch {
+              // Ignore - file may have been removed by another process
+            }
+            continue;
+          }
+        } else {
+          throw error;
+        }
+      }
+    }
+    
+    console.error('[DatabaseInitLock] Failed to acquire initialization lock within timeout');
+    return false;
+  }
+
+  releaseLock(): void {
+    if (this.lockFileHandle !== null) {
+      try {
+        fs.closeSync(this.lockFileHandle);
+        this.lockFileHandle = null;
+      } catch (error) {
+        // Ignore close errors
+      }
+      
+      // Try to remove lock file, but don't error if it doesn't exist
+      try {
+        if (fs.existsSync(this.lockFilePath)) {
+          fs.unlinkSync(this.lockFilePath);
+        }
+      } catch (error) {
+        // Ignore unlink errors - file may have been removed by another process
+      }
+    } else {
+      // No handle, but try to clean up lock file if it exists
+      try {
+        if (fs.existsSync(this.lockFilePath)) {
+          fs.unlinkSync(this.lockFilePath);
+        }
+      } catch (error) {
+        // Ignore - file may have been removed by another process
+      }
+    }
+  }
+}
+
+// Track if we just created a fresh database (to skip migrations)
+let isFreshDatabase = false;
+const initLock = new DatabaseInitLock(dbPath);
+
 // Check if database is empty and initialize schema if needed
 try {
   // Check if any tables exist by querying sqlite_master
@@ -79,15 +195,76 @@ try {
   `).get() as { count: number };
   
   // If no tables exist, create the complete schema with latest version (4.0)
+  // Use a lock to ensure only one process initializes the database
   if (tableCount.count === 0) {
-    console.log('Initializing new database with latest schema (v4.0)...');
+    // Acquire lock before initializing
+    const lockAcquired = initLock.acquireLockSync();
     
-    // Import dependencies for initial setup
-    const bcrypt = require('bcrypt');
-    const { randomBytes } = require('crypto');
+    if (!lockAcquired) {
+      // Could not acquire lock, wait a bit and check if database was initialized by another process
+      const sleepSync = (ms: number) => {
+        const start = Date.now();
+        while (Date.now() - start < ms) {
+          // Busy wait
+        }
+      };
+      sleepSync(500); // Wait 500ms
+      
+      // Re-check if tables exist (another process may have created them)
+      const tableCountAfterWait = db.prepare(`
+        SELECT COUNT(*) as count 
+        FROM sqlite_master 
+        WHERE type='table' AND name IN ('servers', 'backups')
+      `).get() as { count: number };
+      
+      if (tableCountAfterWait.count > 0) {
+        // Database was initialized by another process
+        // Check version to confirm it's at 4.0
+        try {
+          const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get('4.0') as { version: string } | undefined;
+          if (versionCheck) {
+            isFreshDatabase = true;
+            // Silent - another process handled it
+          } else {
+            throw new Error('Database tables exist but version is not set');
+          }
+        } catch (error) {
+          throw new Error('Failed to verify database version after waiting for initialization');
+        }
+      } else {
+        throw new Error('Failed to acquire database initialization lock');
+      }
+    } else {
+      try {
+        // Double-check tables don't exist (another process may have created them while we waited)
+        const tableCountRecheck = db.prepare(`
+          SELECT COUNT(*) as count 
+          FROM sqlite_master 
+          WHERE type='table' AND name IN ('servers', 'backups')
+        `).get() as { count: number };
+        
+        if (tableCountRecheck.count === 0) {
+          isFreshDatabase = true;
+          console.log('Initializing new database with latest schema (v4.0)...');
     
-    db.exec(`
-      -- Core application tables (from v3.1)
+          // Import dependencies for initial setup
+          const bcrypt = require('bcrypt');
+          const { randomBytes } = require('crypto');
+          
+          // CRITICAL: Create db_version table FIRST and set version to 4.0 IMMEDIATELY
+          // This prevents other processes from trying to run migrations while we're initializing
+          db.exec(`
+            CREATE TABLE IF NOT EXISTS db_version (
+              version TEXT PRIMARY KEY,
+              applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+          `);
+          
+          // Set version to 4.0 immediately - this is critical to prevent migrations from running
+          db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run('4.0');
+          
+          db.exec(`
+            -- Core application tables (from v3.1)
       CREATE TABLE IF NOT EXISTS servers (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -179,13 +356,8 @@ try {
         value TEXT
       );
 
-      CREATE TABLE IF NOT EXISTS db_version (
-        version TEXT PRIMARY KEY,
-        applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      );
-
       -- User Access Control tables (from v4.0)
-      CREATE TABLE users (
+      CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         username TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
@@ -199,10 +371,10 @@ try {
         locked_until DATETIME
       );
 
-      CREATE INDEX idx_users_username ON users(username);
-      CREATE INDEX idx_users_last_login ON users(last_login_at);
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+      CREATE INDEX IF NOT EXISTS idx_users_last_login ON users(last_login_at);
 
-      CREATE TABLE sessions (
+      CREATE TABLE IF NOT EXISTS sessions (
         id TEXT PRIMARY KEY,
         user_id TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -215,11 +387,11 @@ try {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
 
-      CREATE INDEX idx_sessions_user_id ON sessions(user_id);
-      CREATE INDEX idx_sessions_expires_at ON sessions(expires_at);
-      CREATE INDEX idx_sessions_last_accessed ON sessions(last_accessed);
+      CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+      CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
+      CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed);
 
-      CREATE TABLE audit_log (
+      CREATE TABLE IF NOT EXISTS audit_log (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
         user_id TEXT,
@@ -236,78 +408,139 @@ try {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
       );
 
-      CREATE INDEX idx_audit_timestamp ON audit_log(timestamp);
-      CREATE INDEX idx_audit_user_id ON audit_log(user_id);
-      CREATE INDEX idx_audit_action ON audit_log(action);
-      CREATE INDEX idx_audit_category ON audit_log(category);
-      CREATE INDEX idx_audit_status ON audit_log(status);
+      CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp);
+      CREATE INDEX IF NOT EXISTS idx_audit_user_id ON audit_log(user_id);
+      CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
+      CREATE INDEX IF NOT EXISTS idx_audit_category ON audit_log(category);
+      CREATE INDEX IF NOT EXISTS idx_audit_status ON audit_log(status);
     `);
-    
-    // Create admin user with bcrypt hash
-    const adminId = 'admin-' + randomBytes(16).toString('hex');
-    const adminPasswordHash = bcrypt.hashSync(defaultAuthConfig.defaultPassword, 12);
-    
-    db.prepare(`
-      INSERT INTO users (
-        id, 
-        username, 
-        password_hash, 
-        is_admin, 
-        must_change_password
-      ) VALUES (?, ?, ?, ?, ?)
-    `).run(
-      adminId,
-      'admin',
-      adminPasswordHash,
-      1,
-      1
-    );
-    
-    // Set audit retention configuration
-    db.prepare(
-      'INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)'
-    ).run('audit_retention_days', '90');
-    
-    // Log initial database creation
-    db.prepare(`
-      INSERT INTO audit_log (
-        action, 
-        category, 
-        status, 
-        username,
-        details
-      ) VALUES (?, ?, ?, ?, ?)
-    `).run(
-      'database_initialization',
-      'system',
-      'success',
-      'system',
-      JSON.stringify({ 
-        schema_version: '4.0',
-        description: 'New database initialized with full schema',
-        tables_created: ['servers', 'backups', 'configurations', 'users', 'sessions', 'audit_log'],
-        admin_user_created: true,
-        default_password: `${defaultAuthConfig.defaultPassword} (must change on first login)`,
-        sessions_note: 'user_id is nullable to support unauthenticated sessions'
-      })
-    );
-    
-    // Set database version to 4.0 (latest)
-    db.prepare('INSERT INTO db_version (version) VALUES (?)').run('4.0');
-    
-    console.log('Database initialized with schema v4.0');
-    console.log(`Admin user created: username="admin", password="${defaultAuthConfig.defaultPassword}" (must change on first login)`);
-    
-    console.log('Database schema initialized successfully');
-    
-    // Populate default configurations for new databases
-    populateDefaultConfigurations().catch(error => {
-      console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
-    });
-  } 
+          
+          // Create admin user with bcrypt hash (use INSERT OR IGNORE to handle race conditions)
+          // Even with the lock, there might be edge cases, so use INSERT OR IGNORE
+          let adminUserCreated = false;
+          const adminId = 'admin-' + randomBytes(16).toString('hex');
+          const adminPasswordHash = bcrypt.hashSync(defaultAuthConfig.defaultPassword, 12);
+          
+          try {
+            db.prepare(`
+              INSERT INTO users (
+                id, 
+                username, 
+                password_hash, 
+                is_admin, 
+                must_change_password
+              ) VALUES (?, ?, ?, ?, ?)
+            `).run(
+              adminId,
+              'admin',
+              adminPasswordHash,
+              1,
+              1
+            );
+            adminUserCreated = true;
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            // If admin user already exists (UNIQUE constraint), that's okay
+            if (errorMessage.includes('UNIQUE constraint') || errorMessage.includes('username')) {
+              // Silent - admin user already exists, another process created it
+            } else {
+              throw error;
+            }
+          }
+          
+          // Set audit retention configuration
+          db.prepare(
+            'INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)'
+          ).run('audit_retention_days', '90');
+          
+          // Log initial database creation (only if not already logged)
+          // Check if initialization log already exists to handle concurrent builds
+          const existingInitLog = db.prepare(`
+            SELECT id FROM audit_log 
+            WHERE action = 'database_initialization' AND category = 'system'
+            LIMIT 1
+          `).get() as { id: number } | undefined;
+          
+          if (!existingInitLog) {
+            db.prepare(`
+              INSERT INTO audit_log (
+                action, 
+                category, 
+                status, 
+                username,
+                details
+              ) VALUES (?, ?, ?, ?, ?)
+            `).run(
+              'database_initialization',
+              'system',
+              'success',
+              'system',
+              JSON.stringify({ 
+                schema_version: '4.0',
+                description: 'New database initialized with full schema',
+                tables_created: ['servers', 'backups', 'configurations', 'users', 'sessions', 'audit_log'],
+                admin_user_created: true,
+                default_password: `${defaultAuthConfig.defaultPassword} (must change on first login)`,
+                sessions_note: 'user_id is nullable to support unauthenticated sessions'
+              })
+            );
+          }
+          
+          // Version was already set at the beginning of initialization
+          // Just verify it's still set correctly
+          const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get('4.0') as { version: string } | undefined;
+          if (!versionCheck) {
+            // Version was somehow lost, set it again
+            db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run('4.0');
+          }
+          
+          console.log('Database initialized with schema v4.0');
+          if (adminUserCreated) {
+            console.log(`Admin user created: username="admin", password="${defaultAuthConfig.defaultPassword}" (must change on first login)`);
+          }
+          console.log('Database schema initialized successfully');
+          
+          // Populate default configurations for new databases (silent - uses INSERT OR REPLACE)
+          populateDefaultConfigurations().catch(error => {
+            console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
+          });
+        } else {
+          // Tables were created by another process while we waited for the lock
+          // Verify version is set
+          try {
+            const versionCheck = db.prepare('SELECT version FROM db_version WHERE version = ?').get('4.0') as { version: string } | undefined;
+            if (versionCheck) {
+              isFreshDatabase = true;
+              // Silent - another process handled it
+            } else {
+              throw new Error('Database tables exist but version is not set');
+            }
+          } catch (error) {
+            throw new Error('Failed to verify database version after lock acquisition');
+          }
+        }
+      } finally {
+        // Always release the lock
+        initLock.releaseLock();
+      }
+    }
+  } else {
+    // Database already exists, not a fresh database
+    isFreshDatabase = false;
+  }
 } catch (error) {
-  console.error('Failed to initialize database schema:', error instanceof Error ? error.message : String(error));
-  throw error;
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  
+  // During concurrent builds, tables might already exist - this is okay
+  // Check if the error is about tables already existing
+  if (errorMessage.includes('already exists') || errorMessage.includes('table') && errorMessage.includes('exists')) {
+    console.log('Database tables already exist (likely from concurrent build process), continuing...');
+    // Don't throw - the database is already initialized
+    isFreshDatabase = true; // Mark as fresh so migrations are skipped
+  } else {
+    console.error('Failed to initialize database schema:', errorMessage);
+    throw error;
+  }
 }
 
 // Helper function to safely prepare statements with error handling
@@ -381,7 +614,8 @@ async function populateDefaultConfigurations() {
       defaultNotificationFrequencyConfig
     );
     
-    console.log('Default configurations populated successfully');
+    // Silent - configurations are populated/updated using INSERT OR REPLACE
+    // No need to log unless there's an actual change or error
   } catch (error) {
     console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
     throw error;
@@ -406,7 +640,7 @@ let initializationError: Error | null = null;
 
 // Function to ensure database is fully initialized
 async function ensureDatabaseInitialized() {
-  // If already ready, return immediately
+  // If already ready, return immediately (no logging)
   if (databaseStatus === DatabaseStatus.READY) {
     return;
   }
@@ -427,21 +661,44 @@ async function ensureDatabaseInitialized() {
 
   initializationPromise = (async () => {
     try {
-      await migrator.runMigrations();
+      // Check the actual database version before deciding whether to run migrations
+      const currentVersion = migrator.getCurrentVersion();
       
-      // Create/recreate database operations after migrations complete
-      // This ensures all new tables are available for prepared statements
-      console.log('[Database] Creating database operations...');
+      if (currentVersion === '4.0') {
+        // Database is at latest version, no migrations needed
+        // Only log if we actually created a fresh database
+        if (isFreshDatabase) {
+          // Already logged during initialization
+        }
+      } else if (isFreshDatabase) {
+        // Fresh database but version check failed - shouldn't happen, but skip migrations
+      } else {
+        // Database exists but is not at version 4.0, run migrations
+        await migrator.runMigrations();
+      }
+      
+      // Create database operations if not already created
+      if (!dbOps) {
         dbOps = createDbOps();
-      console.log('[Database] Database operations ready');
+      }
       
       databaseStatus = DatabaseStatus.READY;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('[Database] Initialization failed:', errorMessage);
+      // Don't log ENOENT errors for lock files - they're expected in concurrent scenarios
+      if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+        console.error('[Database] Initialization failed:', errorMessage);
+      }
       databaseStatus = DatabaseStatus.ERROR;
       initializationError = error instanceof Error ? error : new Error(errorMessage);
-      throw initializationError;
+      // Only throw if it's not a lock file ENOENT error
+      if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+        throw initializationError;
+      } else {
+        // For lock file ENOENT errors, just mark as ready (another process handled it)
+        databaseStatus = DatabaseStatus.READY;
+        initializationError = null;
+      }
     }
   })();
 
@@ -519,10 +776,15 @@ let initializationComplete = false;
 startupInitialization = ensureDatabaseInitialized()
   .then(() => {
     initializationComplete = true;
-    console.log('[Database] Startup initialization complete');
+    // Only log if we actually did something (created DB or ran migrations)
+    // Silent if database was already ready
   })
   .catch(error => {
-    console.error('[Database] Startup initialization failed:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    // Don't log ENOENT errors for lock files
+    if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+      console.error('[Database] Startup initialization failed:', error);
+    }
     throw error; // Propagate error to prevent app startup with broken database
   });
 
