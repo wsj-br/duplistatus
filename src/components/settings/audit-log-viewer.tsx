@@ -157,7 +157,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     try {
       setIsLoadingMore(true);
       const limit = batchSize;
-      const offset = logs.length; // Use actual loaded count, not loadedCount state
+      const offset = loadedCount; // Use loadedCount state for consistent offset tracking
 
       const params = new URLSearchParams({
         offset: offset.toString(),
@@ -176,16 +176,44 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       
       const data = await response.json();
       const newLogs = data.logs || [];
+      const apiTotal = data.pagination?.total || 0;
+      
+      // If API returned 0 logs, we've reached the end
+      if (newLogs.length === 0) {
+        setLogs(prev => {
+          setTotal(prev.length);
+          return prev;
+        });
+        return;
+      }
       
       // Deduplicate logs by ID to prevent duplicate keys
       setLogs(prev => {
         const existingIds = new Set(prev.map((log: AuditLog) => log.id));
         const uniqueNewLogs = newLogs.filter((log: AuditLog) => !existingIds.has(log.id));
+        
+        // If we got 0 new unique logs but API returned logs, we've reached the end
+        // This happens when all returned logs are duplicates (we've already loaded everything)
+        if (uniqueNewLogs.length === 0) {
+          // Update total to current length to stop infinite loading
+          setTotal(prev.length);
+          return prev;
+        }
+        
+        const updatedLogs = [...prev, ...uniqueNewLogs];
+        
+        // If we received fewer logs than requested, we've reached the end
+        // Update total to reflect the actual number of logs we have
+        if (newLogs.length < limit) {
+          setTotal(updatedLogs.length);
+        } else {
+          setTotal(apiTotal);
+        }
+        
         // Update loadedCount based on the unique logs we're actually adding
         setLoadedCount(currentCount => currentCount + uniqueNewLogs.length);
-        return [...prev, ...uniqueNewLogs];
+        return updatedLogs;
       });
-      setTotal(data.pagination?.total || 0);
     } catch (error) {
       console.error('Error loading more audit logs:', error);
       toast({
@@ -196,7 +224,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     } finally {
       setIsLoadingMore(false);
     }
-  }, [logs.length, total, isLoadingMore, loading, batchSize, startDate, endDate, username, action, category, status, toast]);
+  }, [logs.length, total, isLoadingMore, loading, loadedCount, batchSize, startDate, endDate, username, action, category, status, toast]);
 
   // Initial load and filter changes
   useEffect(() => {

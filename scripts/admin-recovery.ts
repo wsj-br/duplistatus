@@ -14,6 +14,7 @@
 import Database from 'better-sqlite3';
 import bcrypt from 'bcrypt';
 import path from 'path';
+import fs from 'fs';
 import { validatePassword } from '../src/lib/auth';
 
 const dbPath = path.join(process.cwd(), 'data', 'backups.db');
@@ -51,7 +52,7 @@ async function resetAdminPassword(username: string, newPassword: string) {
   }
 
   // Check if database exists
-  if (!require('fs').existsSync(dbPath)) {
+  if (!fs.existsSync(dbPath)) {
     console.error(`❌ Error: Database not found at ${dbPath}`);
     console.error('Make sure the application has been initialized.');
     process.exit(1);

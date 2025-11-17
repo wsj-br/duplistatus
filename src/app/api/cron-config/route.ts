@@ -50,6 +50,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       const newIntervalLabel = cronIntervalMap[interval]?.label || interval;
       await AuditLogger.logConfigChange(
         'overdue_monitoring_interval_updated',
@@ -60,7 +61,8 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           oldInterval: oldIntervalLabel,
           newInterval: newIntervalLabel,
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
     

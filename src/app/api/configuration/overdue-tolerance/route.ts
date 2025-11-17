@@ -34,6 +34,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'overdue_tolerance_updated',
         authContext.userId,
@@ -43,7 +44,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           oldValue,
           newValue: overdue_tolerance,
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
     

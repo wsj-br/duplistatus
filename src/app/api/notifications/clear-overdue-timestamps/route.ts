@@ -14,6 +14,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
@@ -23,6 +24,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           message: result.message,
         },
         ipAddress,
+        userAgent,
         status: 'success',
       });
     }
@@ -34,6 +36,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     // Log audit event for error
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       const errorMessage = error instanceof Error ? error.message : 'Failed to clear overdue backup timestamps';
       await AuditLogger.log({
         userId: authContext.userId,
@@ -44,6 +47,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           error: errorMessage,
         },
         ipAddress,
+        userAgent,
         status: 'error',
         errorMessage,
       });

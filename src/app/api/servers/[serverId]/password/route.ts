@@ -55,6 +55,7 @@ export const PATCH = withCSRF(requireAdmin(async (
 
     // Log audit event
     const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
     await AuditLogger.logServerOperation(
       'server_password_updated',
       authContext.userId,
@@ -64,7 +65,8 @@ export const PATCH = withCSRF(requireAdmin(async (
         serverName: serverBefore.name,
         passwordChanged: password.trim() !== '',
       },
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     return NextResponse.json({

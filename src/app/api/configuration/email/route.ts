@@ -104,6 +104,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'email_config_updated',
         authContext.userId,
@@ -117,7 +118,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           mailto: smtpConfig.mailto,
           hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== ''),
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
 
@@ -151,13 +153,15 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'email_config_deleted',
         authContext.userId,
         authContext.username,
         'smtp_config',
         {},
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
 

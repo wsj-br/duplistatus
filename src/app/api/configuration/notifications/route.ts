@@ -39,13 +39,15 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       // Log audit event
       if (authContext) {
         const ipAddress = getClientIpAddress(request);
+        const userAgent = request.headers.get('user-agent') || 'unknown';
         await AuditLogger.logConfigChange(
           'notification_frequency_updated',
           authContext.userId,
           authContext.username,
           'notification_frequency',
           { value },
-          ipAddress
+          ipAddress,
+          userAgent
         );
       }
       
@@ -70,6 +72,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'ntfy_config_updated',
         authContext.userId,
@@ -80,7 +83,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           topic: updatedNtfy.topic,
           hasAccessToken: Boolean(updatedNtfy.accessToken && updatedNtfy.accessToken.trim() !== ''),
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
     

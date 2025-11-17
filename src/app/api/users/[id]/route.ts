@@ -104,7 +104,8 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
           reset_by: authContext.username,
           temp_password: true,
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
 
       // Get updated user
@@ -153,7 +154,8 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
       userId,
       existingUser.username,
       changes,
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     // Get updated user
@@ -244,7 +246,8 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
         was_admin: userToDelete.is_admin === 1,
         deleted_by: authContext.username,
       },
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     // Delete user (cascade will delete sessions)

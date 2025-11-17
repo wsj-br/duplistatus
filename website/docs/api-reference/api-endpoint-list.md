@@ -5,6 +5,16 @@ This document provides a quick reference table of all available API endpoints (i
 
 | Endpoint                                                                                                                                          | Method | Description                           | Group                    |
 |---------------------------------------------------------------------------------------------------------------------------------------------------|--------|---------------------------------------|--------------------------|
+| [/api/audit-log](administration-apis#list-audit-logs---apiaudit-log)                                                                             | GET    | List Audit Logs                       | Administration           |
+| [/api/audit-log/cleanup](administration-apis#cleanup-audit-logs---apiaudit-logcleanup)                                                          | POST   | Cleanup Audit Logs                    | Administration           |
+| [/api/audit-log/download](administration-apis#download-audit-logs---apiaudit-logdownload)                                                          | GET    | Download Audit Logs                   | Administration           |
+| [/api/audit-log/retention](administration-apis#get-audit-log-retention---apiaudit-logretention)                                                  | GET    | Get Audit Log Retention               | Administration           |
+| [/api/audit-log/retention](administration-apis#update-audit-log-retention---apiaudit-logretention)                                                 | PATCH  | Update Audit Log Retention            | Administration           |
+| [/api/audit-log/stats](administration-apis#get-audit-log-statistics---apiaudit-logstats)                                                          | GET    | Get Audit Log Statistics              | Administration           |
+| [/api/auth/change-password](authentication-security#change-password---apiauthchange-password)                                                     | POST   | Change Password                       | Authentication & Security|
+| [/api/auth/login](authentication-security#login---apiauthlogin)                                                                                   | POST   | Login                                 | Authentication & Security|
+| [/api/auth/logout](authentication-security#logout---apiauthlogout)                                                                                 | POST   | Logout                                | Authentication & Security|
+| [/api/auth/me](authentication-security#get-current-user---apiauthme)                                                                             | GET    | Get Current User                      | Authentication & Security|
 | [/api/backups/:backupId](administration-apis#delete-backup---apibackupsbackupid)                                                                  | DELETE | Delete Backup                         | Administration           |
 | [/api/backups/cleanup](administration-apis#cleanup-backups---apibackupscleanup)                                                                   | POST   | Cleanup Backups                       | Administration           |
 | [/api/backups/collect](administration-apis#collect-backups---apibackupscollect)                                                                   | POST   | Collect Backups                       | Administration           |
@@ -52,4 +62,8 @@ This document provides a quick reference table of all available API endpoints (i
 | [/api/session](session-management-apis#validate-session---apisession)                                                                             | GET    | Validate Session                      | Session Management       |
 | [/api/summary](external-apis#get-overall-summary---apisummary)                                                                                    | GET    | Get Overall Summary                   | External APIs            |
 | [/api/upload](external-apis#upload-backup-data---apiupload)                                                                                       | POST   | Upload Backup Data                    | External APIs            |
+| [/api/users](administration-apis#list-users---apiusers)                                                                                          | GET    | List Users                            | Administration           |
+| [/api/users](administration-apis#create-user---apiusers)                                                                                          | POST   | Create User                           | Administration           |
+| [/api/users/:id](administration-apis#update-user---apiusersid)                                                                                     | PATCH  | Update User                           | Administration           |
+| [/api/users/:id](administration-apis#delete-user---apiusersid)                                                                                    | DELETE | Delete User                           | Administration           |
 

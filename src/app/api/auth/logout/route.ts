@@ -38,8 +38,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
         authContext.userId,
         authContext.username,
         true,
-        { userAgent },
-        ipAddress
+        {},
+        ipAddress,
+        userAgent
       );
     }
 
@@ -56,6 +57,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
 
   } catch (error) {
     console.error('[Auth] Logout error:', error);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
     
     await AuditLogger.logAuth(
       'logout',
@@ -67,6 +69,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
         error: error instanceof Error ? error.message : String(error)
       },
       'unknown',
+      userAgent,
       error instanceof Error ? error.message : String(error)
     );
 

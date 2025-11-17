@@ -12,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { SortableTableHead } from '@/components/ui/sortable-table-head';
+import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import {
   Dialog,
   DialogContent,
@@ -36,6 +38,7 @@ import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface User {
   id: string;
@@ -43,6 +46,7 @@ interface User {
   isAdmin: boolean;
   mustChangePassword: boolean;
   createdAt: string;
+  updatedAt: string;
   lastLoginAt: string | null;
   lastLoginIp: string | null;
   failedLoginAttempts: number;
@@ -59,6 +63,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ column: 'username', direction: 'asc' });
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -99,10 +104,50 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     loadUsers();
   }, [loadUsers]);
 
+  // Column configuration for sorting
+  const columnConfig = {
+    username: { type: 'text' as keyof typeof sortFunctions, path: 'username' },
+    isAdmin: { type: 'boolean' as keyof typeof sortFunctions, path: 'isAdmin' },
+    isLocked: { type: 'boolean' as keyof typeof sortFunctions, path: 'isLocked' },
+    mustChangePassword: { type: 'boolean' as keyof typeof sortFunctions, path: 'mustChangePassword' },
+    lastLoginAt: { type: 'date' as keyof typeof sortFunctions, path: 'lastLoginAt' },
+    createdAt: { type: 'date' as keyof typeof sortFunctions, path: 'createdAt' },
+    updatedAt: { type: 'date' as keyof typeof sortFunctions, path: 'updatedAt' },
+  };
+
   // Filter users by search term
   const filteredUsers = users.filter(user =>
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Sort filtered users
+  const sortedUsers = useMemo(() => {
+    return createSortedArray(filteredUsers, sortConfig, columnConfig);
+  }, [filteredUsers, sortConfig]);
+
+  // Check if a specific user is the last admin
+  const isUserLastAdmin = useCallback((userId: string) => {
+    const adminUsers = users.filter(u => u.isAdmin);
+    return adminUsers.length === 1 && adminUsers[0].id === userId;
+  }, [users]);
+
+  // Handle sort
+  const handleSort = (column: string) => {
+    setSortConfig(prev => {
+      if (prev.column === column) {
+        return {
+          column,
+          direction: prev.direction === 'asc' ? 'desc' : 'asc',
+        };
+      }
+      // For date columns, default to descending (newer first)
+      const dateColumns = ['lastLoginAt', 'createdAt', 'updatedAt'];
+      return {
+        column,
+        direction: dateColumns.includes(column) ? 'desc' : 'asc',
+      };
+    });
+  };
 
   // Real-time password validation for create form
   const passwordRequirements = useMemo(() => {
@@ -379,25 +424,70 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
 
       {loading ? (
         <div className="text-center py-8 text-muted-foreground">Loading users...</div>
-      ) : filteredUsers.length === 0 ? (
+      ) : sortedUsers.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           {searchTerm ? 'No users found matching your search' : 'No users found'}
         </div>
       ) : (
-        <div className="border rounded-md">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Username</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last Login</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block border rounded-md">
+            <Table>
+            <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
+              <TableRow className="bg-muted">
+                <SortableTableHead 
+                  column="username" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                  className="bg-muted"
+                >
+                  Username
+                </SortableTableHead>
+                <SortableTableHead 
+                  column="isAdmin" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                  className="bg-muted"
+                >
+                  Role
+                </SortableTableHead>
+                <SortableTableHead 
+                  column="lastLoginAt" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                  className="bg-muted"
+                >
+                  Last Login
+                </SortableTableHead>
+                <SortableTableHead 
+                  column="updatedAt" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                  className="bg-muted"
+                >
+                  Last Update
+                </SortableTableHead>
+                <SortableTableHead 
+                  column="createdAt" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                  className="bg-muted"
+                >
+                  Created
+                </SortableTableHead>
+                <SortableTableHead 
+                  column="isLocked" 
+                  sortConfig={sortConfig} 
+                  onSort={handleSort}
+                  className="bg-muted"
+                >
+                  Status
+                </SortableTableHead>
+                <TableHead className="text-right bg-muted">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => (
+              {sortedUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.username}</TableCell>
                   <TableCell>
@@ -409,15 +499,6 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <span className="px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground">
                         User
                       </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {user.isLocked ? (
-                      <span className="text-red-600 dark:text-red-400">Locked</span>
-                    ) : user.mustChangePassword ? (
-                      <span className="text-yellow-600 dark:text-yellow-400">Must Change Password</span>
-                    ) : (
-                      <span className="text-green-600 dark:text-green-400">Active</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -433,10 +514,25 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     )}
                   </TableCell>
                   <TableCell>
+                    <div>{new Date(user.updatedAt).toLocaleString()}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {formatRelativeTime(user.updatedAt)}
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <div>{new Date(user.createdAt).toLocaleString()}</div>
                     <div className="text-xs text-muted-foreground">
                       {formatRelativeTime(user.createdAt)}
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    {user.isLocked ? (
+                      <span className="text-red-600 dark:text-red-400">Locked</span>
+                    ) : user.mustChangePassword ? (
+                      <span className="text-yellow-600 dark:text-yellow-400">Must Change Password</span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -464,8 +560,21 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => openDeleteDialog(user)}
-                          title="Delete user"
-                          className="text-destructive hover:text-destructive"
+                          title={
+                            isUserLastAdmin(user.id) 
+                              ? "Cannot delete the last admin account" 
+                              : user.isAdmin 
+                              ? "Delete admin user (warning: this is an admin account)" 
+                              : "Delete user"
+                          }
+                          className={
+                            isUserLastAdmin(user.id)
+                              ? "text-muted-foreground hover:text-muted-foreground cursor-not-allowed opacity-50"
+                              : user.isAdmin
+                              ? "text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300"
+                              : "text-destructive hover:text-destructive"
+                          }
+                          disabled={isUserLastAdmin(user.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -476,7 +585,136 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
               ))}
             </TableBody>
           </Table>
-        </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {sortedUsers.map((user) => (
+              <Card key={user.id} className="p-4">
+                <CardContent className="p-0 space-y-3">
+                  {/* Header with Username and Role */}
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <div className="flex-1">
+                      <div className="font-medium text-base">{user.username}</div>
+                      <div className="mt-1">
+                        {user.isAdmin ? (
+                          <span className="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                            Admin
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 rounded-full text-xs bg-muted text-muted-foreground">
+                            User
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => openEditDialog(user)}
+                        title="Edit user"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedUser(user);
+                          handlePasswordReset();
+                        }}
+                        title="Reset password"
+                      >
+                        <KeyRound className="h-4 w-4" />
+                      </Button>
+                      {user.id !== currentUserId && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openDeleteDialog(user)}
+                          title={
+                            isUserLastAdmin(user.id) 
+                              ? "Cannot delete the last admin account" 
+                              : user.isAdmin 
+                              ? "Delete admin user (warning: this is an admin account)" 
+                              : "Delete user"
+                          }
+                          className={
+                            isUserLastAdmin(user.id)
+                              ? "text-muted-foreground hover:text-muted-foreground cursor-not-allowed opacity-50"
+                              : user.isAdmin
+                              ? "text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300"
+                              : "text-destructive hover:text-destructive"
+                          }
+                          disabled={isUserLastAdmin(user.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* User Information Grid */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Last Login */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Last Login</Label>
+                      <div className="text-sm">
+                        {user.lastLoginAt ? (
+                          <>
+                            <div>{new Date(user.lastLoginAt).toLocaleString()}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {formatRelativeTime(user.lastLoginAt)}
+                            </div>
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground">Never</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Last Update */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Last Update</Label>
+                      <div className="text-sm">
+                        <div>{new Date(user.updatedAt).toLocaleString()}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatRelativeTime(user.updatedAt)}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Created */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Created</Label>
+                      <div className="text-sm">
+                        <div>{new Date(user.createdAt).toLocaleString()}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatRelativeTime(user.createdAt)}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Status */}
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Status</Label>
+                      <div className="text-sm">
+                        {user.isLocked ? (
+                          <span className="text-red-600 dark:text-red-400">Locked</span>
+                        ) : user.mustChangePassword ? (
+                          <span className="text-yellow-600 dark:text-yellow-400">Must Change Password</span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Create User Dialog */}

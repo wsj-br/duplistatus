@@ -86,6 +86,7 @@ export const PATCH = withCSRF(requireAdmin(async (
     // Log audit event
     if (serverBefore) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logServerOperation(
         'server_updated',
         authContext.userId,
@@ -99,7 +100,8 @@ export const PATCH = withCSRF(requireAdmin(async (
             note: note || serverBefore.note,
           },
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
 
@@ -144,6 +146,7 @@ export const DELETE = withCSRF(requireAdmin(async (
     // Log audit event
     if (serverBefore) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logServerOperation(
         'server_deleted',
         authContext.userId,
@@ -153,7 +156,8 @@ export const DELETE = withCSRF(requireAdmin(async (
           serverName: serverBefore.name,
           backupChanges: result.backupChanges,
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
 

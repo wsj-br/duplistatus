@@ -32,8 +32,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
         null,
         username || 'unknown',
         false,
-        { reason: 'Missing credentials', userAgent },
-        ipAddress
+        { reason: 'Missing credentials' },
+        ipAddress,
+        userAgent
       );
 
       return NextResponse.json(
@@ -60,8 +61,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
         null,
         username,
         false,
-        { reason: 'Invalid credentials', userAgent },
-        ipAddress
+        { reason: 'Invalid credentials' },
+        ipAddress,
+        userAgent
       );
 
       return NextResponse.json(
@@ -81,8 +83,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
           user.id,
           user.username,
           false,
-          { reason: 'Account locked', minutes_remaining: minutesRemaining, userAgent },
-          ipAddress
+          { reason: 'Account locked', minutes_remaining: minutesRemaining },
+          ipAddress,
+          userAgent
         );
 
         return NextResponse.json(
@@ -129,10 +132,10 @@ export const POST = withCSRF(async (request: NextRequest) => {
           { 
             reason: 'Too many failed attempts',
             failed_attempts: newFailedAttempts,
-            locked_until: lockUntil.toISOString(),
-            userAgent
+            locked_until: lockUntil.toISOString()
           },
-          ipAddress
+          ipAddress,
+          userAgent
         );
 
         return NextResponse.json(
@@ -152,10 +155,10 @@ export const POST = withCSRF(async (request: NextRequest) => {
         false,
         { 
           reason: 'Invalid password',
-          failed_attempts: newFailedAttempts,
-          userAgent
+          failed_attempts: newFailedAttempts
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
 
       return NextResponse.json(
@@ -196,10 +199,10 @@ export const POST = withCSRF(async (request: NextRequest) => {
       true,
       { 
         is_admin: user.is_admin === 1,
-        must_change_password: user.must_change_password === 1,
-        userAgent
+        must_change_password: user.must_change_password === 1
       },
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     // Prepare response
@@ -231,6 +234,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
   } catch (error) {
     console.error('[Auth] Login error:', error);
     
+    const userAgent = request.headers.get('user-agent') || 'unknown';
     await AuditLogger.logAuth(
       'login',
       null,
@@ -241,6 +245,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
         error: error instanceof Error ? error.message : String(error)
       },
       'unknown',
+      userAgent,
       error instanceof Error ? error.message : String(error)
     );
 

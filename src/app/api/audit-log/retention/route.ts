@@ -57,6 +57,7 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
 
     // Log the configuration change
     const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
     
     await AuditLogger.logConfigChange(
       'audit_retention_updated',
@@ -67,7 +68,8 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
         oldValue,
         newValue: String(retentionDays),
       },
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     return NextResponse.json({

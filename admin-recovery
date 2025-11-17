@@ -1,0 +1,34 @@
+#!/bin/sh
+# Admin Recovery Wrapper Script
+# 
+# This is a convenience wrapper for the admin-recovery.ts script.
+# It works both locally and in Docker containers.
+#
+# Usage:
+#   admin-recovery <username> <new-password>
+#
+# Example:
+#   admin-recovery admin NewPassword123
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Determine the path to the TypeScript script
+# If we're in Docker (/app), use the Docker path, otherwise use relative path
+if [ "$SCRIPT_DIR" = "/app" ] && [ -f "/app/scripts/admin-recovery.ts" ]; then
+  # Running in Docker container
+  SCRIPT_PATH="/app/scripts/admin-recovery.ts"
+else
+  # Running locally - use relative path from script location
+  SCRIPT_PATH="$SCRIPT_DIR/scripts/admin-recovery.ts"
+fi
+
+# Check if the script exists
+if [ ! -f "$SCRIPT_PATH" ]; then
+  echo "Error: Cannot find admin-recovery.ts at $SCRIPT_PATH" >&2
+  exit 1
+fi
+
+# Execute the script
+exec pnpm exec tsx "$SCRIPT_PATH" "$@"
+

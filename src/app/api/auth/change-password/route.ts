@@ -31,8 +31,9 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         authContext.userId,
         authContext.username,
         false,
-        { reason: 'Missing new password', userAgent },
-        ipAddress
+        { reason: 'Missing new password' },
+        ipAddress,
+        userAgent
       );
 
       return NextResponse.json(
@@ -51,10 +52,10 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         false,
         { 
           reason: 'Password policy violation',
-          errors: validation.errors,
-          userAgent
+          errors: validation.errors
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
 
       return NextResponse.json(
@@ -81,8 +82,9 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         authContext.userId,
         authContext.username,
         false,
-        { reason: 'User not found', userAgent },
-        ipAddress
+        { reason: 'User not found' },
+        ipAddress,
+        userAgent
       );
 
       return NextResponse.json(
@@ -102,8 +104,9 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
           authContext.userId,
           authContext.username,
           false,
-          { reason: 'Invalid current password', userAgent },
-          ipAddress
+          { reason: 'Invalid current password' },
+          ipAddress,
+          userAgent
         );
 
         return NextResponse.json(
@@ -120,8 +123,9 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
           authContext.userId,
           authContext.username,
           false,
-          { reason: 'New password same as current', userAgent },
-          ipAddress
+          { reason: 'New password same as current' },
+          ipAddress,
+          userAgent
         );
 
         return NextResponse.json(
@@ -148,10 +152,10 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       authContext.username,
       true,
       { 
-        was_forced: user.must_change_password === 1,
-        userAgent
+        was_forced: user.must_change_password === 1
       },
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     return NextResponse.json({
@@ -161,6 +165,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
 
   } catch (error) {
     console.error('[Auth] Change password error:', error);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
     
     await AuditLogger.logAuth(
       'change_password',
@@ -172,6 +177,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         error: error instanceof Error ? error.message : String(error)
       },
       'unknown',
+      userAgent,
       error instanceof Error ? error.message : String(error)
     );
 

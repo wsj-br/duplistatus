@@ -289,8 +289,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
         <aside className={`${isSidebarCollapsed ? 'w-28' : 'w-64'} border-r border-border bg-background flex-shrink-0 fixed left-0 top-[88px] h-[calc(100vh-88px)] overflow-auto transition-all duration-300 z-40`}>
           {/* Sidebar Header */}
           <div className={`${isSidebarCollapsed ? 'px-2' : 'px-4'} py-4 border-b border-border sticky top-0 bg-background z-10 relative h-[73px] flex items-center`}>
-            <div className={`flex items-center w-full ${isSidebarCollapsed ? 'justify-center' : 'gap-3 justify-between'}`}>
-              <div className="flex items-center gap-3 min-w-0">
+            <div className={`flex items-center w-full gap-3 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+              <div className={`flex items-center gap-3 min-w-0 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
                 <ColoredIcon icon={Settings} color="blue" size="md" />
                 <h2 className={`text-lg font-semibold truncate whitespace-nowrap overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>System Settings</h2>
               </div>
@@ -304,18 +304,16 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                 </button>
               )}
             </div>
+            {isSidebarCollapsed && (
+              <button
+                onClick={toggleSidebar}
+                className="absolute top-1/2 -translate-y-1/2 right-2 p-1.5 rounded-md hover:bg-accent transition-colors flex-shrink-0"
+                aria-label="Expand sidebar"
+              >
+                <PanelLeftOpen className="h-4 w-4" />
+              </button>
+            )}
           </div>
-
-
-          {isSidebarCollapsed && (
-            <button
-              onClick={toggleSidebar}
-              className="absolute top-1/2 right-1 -translate-y-1/2 p-1.5 rounded-md hover:bg-accent transition-colors"
-              aria-label="Expand sidebar"
-            >
-              <PanelLeftOpen className="h-4 w-4" />
-            </button>
-          )}
           
           <div className={`p-4 space-y-4 ${isSidebarCollapsed ? 'px-2' : 'px-4'}`}>
               {/* Notifications Group */}

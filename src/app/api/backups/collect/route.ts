@@ -519,6 +519,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       // Log audit event for server creation
       if (authContext) {
         const ipAddress = getClientIpAddress(request);
+        const userAgent = request.headers.get('user-agent') || 'unknown';
         await AuditLogger.logServerOperation(
           'server_added',
           authContext.userId,
@@ -528,7 +529,8 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
             serverName: detectedServerName,
             serverUrl: baseUrl,
           },
-          ipAddress
+          ipAddress,
+          userAgent
         );
       }
     }
@@ -849,6 +851,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     // Log audit event - determine status based on results
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       const finalServerId = providedServerId || detectedServerId || detectedServerName;
       const hasErrors = errorCount > 0;
       const status = hasErrors ? 'error' : 'success';
@@ -868,6 +871,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           errors: errorCount,
         },
         ipAddress,
+        userAgent,
         status,
         errorMessage: hasErrors ? `Collection completed with ${errorCount} error(s)` : undefined,
       });
@@ -881,6 +885,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     // Log audit event for collection failure
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       const errorMessage = error instanceof Error ? error.message : 'Failed to collect backups';
       const finalServerId = providedServerId || 'unknown';
       const finalServerName = serverNameForError || 'unknown';
@@ -897,6 +902,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           error: errorMessage,
         },
         ipAddress,
+        userAgent,
         status: 'error',
         errorMessage,
       });

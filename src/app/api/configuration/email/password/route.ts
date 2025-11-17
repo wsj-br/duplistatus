@@ -53,6 +53,7 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'email_password_updated',
         authContext.userId,
@@ -61,7 +62,8 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
         {
           hasPassword: Boolean(password && password.trim() !== ''),
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
 

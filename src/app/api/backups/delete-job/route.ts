@@ -61,6 +61,7 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logBackupOperation(
         'backup_job_deleted',
         authContext.userId,
@@ -72,7 +73,8 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
           backupName: deletedBackupName,
           deletedCount: changes,
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
 

@@ -70,6 +70,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'notification_template_updated',
         authContext.userId,
@@ -79,7 +80,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           templatesUpdated: Object.keys(changesSummary),
           changes: changesSummary,
         },
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
     

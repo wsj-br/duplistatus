@@ -77,13 +77,7 @@ export class AuditLogger {
 
       // Insert audit log entry
       const ipToStore = entry.ipAddress || null;
-      console.log('[AuditLogger] Inserting audit log:', {
-        action: entry.action,
-        category: entry.category,
-        ipAddress: ipToStore,
-        userId: entry.userId,
-        username: entry.username,
-      });
+      console.log(`[AuditLogger] Inserting audit log: ${entry.action} (${entry.category}) - ${entry.username || 'system'}`);
       
       dbOps.insertAuditLog.run(
         entry.userId || null,
@@ -114,6 +108,7 @@ export class AuditLogger {
     success: boolean,
     details?: Record<string, unknown>,
     ipAddress?: string,
+    userAgent?: string,
     errorMessage?: string
   ): Promise<void> {
     await this.log({
@@ -123,6 +118,7 @@ export class AuditLogger {
       category: 'auth',
       details,
       ipAddress,
+      userAgent,
       status: success ? 'success' : 'failure',
       errorMessage,
     });
@@ -138,7 +134,8 @@ export class AuditLogger {
     targetId: string,
     targetUsername: string,
     details?: Record<string, unknown>,
-    ipAddress?: string
+    ipAddress?: string,
+    userAgent?: string
   ): Promise<void> {
     await this.log({
       userId: actorId,
@@ -149,6 +146,7 @@ export class AuditLogger {
       targetId,
       details: { ...details, targetUsername },
       ipAddress,
+      userAgent,
       status: 'success',
     });
   }
@@ -162,7 +160,8 @@ export class AuditLogger {
     username: string | null,
     configKey: string,
     details?: Record<string, unknown>,
-    ipAddress?: string
+    ipAddress?: string,
+    userAgent?: string
   ): Promise<void> {
     await this.log({
       userId,
@@ -173,6 +172,7 @@ export class AuditLogger {
       targetId: configKey,
       details,
       ipAddress,
+      userAgent,
       status: 'success',
     });
   }
@@ -186,7 +186,8 @@ export class AuditLogger {
     username: string | null,
     backupId: string,
     details?: Record<string, unknown>,
-    ipAddress?: string
+    ipAddress?: string,
+    userAgent?: string
   ): Promise<void> {
     await this.log({
       userId,
@@ -197,6 +198,7 @@ export class AuditLogger {
       targetId: backupId,
       details,
       ipAddress,
+      userAgent,
       status: 'success',
     });
   }
@@ -210,7 +212,8 @@ export class AuditLogger {
     username: string | null,
     serverId: string,
     details?: Record<string, unknown>,
-    ipAddress?: string
+    ipAddress?: string,
+    userAgent?: string
   ): Promise<void> {
     await this.log({
       userId,
@@ -221,6 +224,7 @@ export class AuditLogger {
       targetId: serverId,
       details,
       ipAddress,
+      userAgent,
       status: 'success',
     });
   }
@@ -232,7 +236,8 @@ export class AuditLogger {
     action: string,
     details?: Record<string, unknown>,
     status: AuditStatus = 'success',
-    errorMessage?: string
+    errorMessage?: string,
+    userAgent?: string
   ): Promise<void> {
     await this.log({
       username: 'system',
@@ -241,6 +246,7 @@ export class AuditLogger {
       details,
       status,
       errorMessage,
+      userAgent,
     });
   }
 
@@ -310,13 +316,15 @@ export class AuditLogger {
    * @param userId - Optional user ID who initiated the cleanup
    * @param username - Optional username who initiated the cleanup
    * @param ipAddress - Optional IP address of the user
+   * @param userAgent - Optional user agent of the user
    * @returns Number of deleted entries
    */
   static async cleanup(
     retentionDays: number = 90,
     userId?: string | null,
     username?: string | null,
-    ipAddress?: string | null
+    ipAddress?: string | null,
+    userAgent?: string | null
   ): Promise<number> {
     try {
       await ensureDatabaseInitialized();
@@ -341,13 +349,14 @@ export class AuditLogger {
             deletedCount,
           },
           ipAddress: ipAddress || null,
+          userAgent: userAgent || null,
           status: 'success',
         });
       } else {
         await this.logSystem('audit_cleanup', {
           retentionDays,
           deletedCount,
-        });
+        }, 'success', undefined, userAgent || undefined);
       }
 
       console.log(`[AuditLogger] Cleanup completed: ${deletedCount} entries deleted`);
@@ -367,6 +376,7 @@ export class AuditLogger {
             error: error instanceof Error ? error.message : String(error),
           },
           ipAddress: ipAddress || null,
+          userAgent: userAgent || null,
           status: 'error',
           errorMessage: error instanceof Error ? error.message : String(error),
         });
@@ -374,7 +384,7 @@ export class AuditLogger {
         await this.logSystem('audit_cleanup', {
           retentionDays,
           error: error instanceof Error ? error.message : String(error),
-        }, 'error', error instanceof Error ? error.message : String(error));
+        }, 'error', error instanceof Error ? error.message : String(error), userAgent || undefined);
       }
       return 0;
     }

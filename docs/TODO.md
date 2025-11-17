@@ -227,9 +227,119 @@ none
 
 
 
-### Implemented in Version 0.9.x 🚧
+### Implemented in Version 0.9.x ✅
 
-(to be implemented).
+**User Access Control & Security System:**
+
+- **Authentication System:**
+  - User login/logout functionality with secure session management
+  - Password-based authentication with bcrypt hashing (cost factor 12)
+  - Account lockout mechanism (5 failed attempts, 15-minute lockout)
+  - Forced password change on first login
+  - Password policy enforcement (minimum 8 characters, uppercase, lowercase, number required)
+  - Session-based authentication with database-backed sessions (replaces in-memory)
+  - CSRF protection integrated with authentication
+  - HTTP-only cookies for session security
+  - IP address and user agent tracking for security monitoring
+
+- **User Management (Admin Only):**
+  - User creation with automatic temporary password generation
+  - User list with search, pagination, and filtering
+  - User editing (username, admin status, password change requirement)
+  - Password reset functionality with temporary password display
+  - User deletion with safeguards (prevents deletion of last admin)
+  - Role-based access control (Admin/User roles)
+  - Status indicators (Active, Locked, Must Change Password)
+  - Last login tracking and display
+
+- **Audit Logging System:**
+  - Comprehensive audit trail for all system changes and user actions
+  - Audit log viewer with advanced filtering (date range, user, action, category, status)
+  - Export functionality (CSV and JSON formats)
+  - Audit log statistics and analytics
+  - Configurable retention period (30-365 days, default: 90 days)
+  - Automatic cleanup cron job (runs daily at 2 AM UTC)
+  - Manual cleanup API with dry-run support
+  - Audit logging for:
+    - Authentication events (login, logout, password changes, account lockouts)
+    - User management operations (create, update, delete, password resets)
+    - Configuration changes (email, NTFY, templates, overdue tolerance, backup settings)
+    - Backup operations (collection, deletion, cleanup)
+    - Server management (add, update, delete)
+    - System operations (migrations, cleanup, overdue checks, notifications)
+
+- **Database Schema v4.0:**
+  - New tables: `users`, `sessions`, `audit_log`
+  - Automatic migration from v3.1 to v4.0 for existing installations
+  - New installations start directly with schema v4.0 (no migration needed)
+  - Default admin user seeded (username: `admin`, password: `Duplistatus09` - must change on first login)
+  - Database-backed session storage (sessions persist across server restarts)
+  - Comprehensive indexes for optimal performance
+
+- **Settings Page Redesign:**
+  - Modern sidebar navigation with collapsible sidebar
+  - Grouped settings sections:
+    - **Notifications**: Backup Notifications, Overdue Monitoring, Templates
+    - **Integrations**: NTFY, Email
+    - **System**: Servers, Users (admin only), Audit Log
+  - Sticky sidebar that remains visible while scrolling
+  - Responsive design with optimized spacing
+  - Settings icon and "System Settings" title in sidebar header
+  - Back button integrated into app header
+
+- **User Interface Enhancements:**
+  - Standalone login page with modern design
+  - Show/hide password buttons on login and password change forms
+  - Change password modal with real-time validation checklist
+  - User indicator and logout button in app header
+  - Role-based UI visibility (admin-only features hidden from regular users)
+  - Status badges and indicators throughout the UI
+
+- **Security Features:**
+  - Password hashing with bcrypt (industry-standard)
+  - Sensitive data sanitization in audit logs (passwords, tokens, secrets never logged)
+  - Rate limiting for login attempts
+  - Session expiration (24 hours)
+  - CSRF token validation for all state-changing operations
+  - Admin recovery CLI tool for password reset if locked out
+
+- **API Endpoints:**
+  - `POST /api/auth/login` - User authentication
+  - `POST /api/auth/logout` - Session termination
+  - `GET /api/auth/me` - Current user information
+  - `POST /api/auth/change-password` - Password change
+  - `GET /api/users` - List users (admin only)
+  - `POST /api/users` - Create user (admin only)
+  - `PATCH /api/users/{id}` - Update user (admin only)
+  - `DELETE /api/users/{id}` - Delete user (admin only)
+  - `GET /api/audit-log` - Query audit logs
+  - `GET /api/audit-log/download` - Export audit logs
+  - `GET /api/audit-log/stats` - Audit statistics
+  - `POST /api/audit-log/cleanup` - Manual cleanup (admin only)
+  - `GET /api/audit-log/retention` - Get retention setting
+  - `PATCH /api/audit-log/retention` - Update retention (admin only)
+
+- **Developer Tools:**
+  - Admin recovery CLI script (`scripts/admin-recovery.ts`)
+  - Shell wrapper script (`admin-recovery`) for easy execution in Docker containers
+  - Works both locally and in Docker with automatic path detection
+  - Comprehensive TypeScript interfaces (no `any` types)
+  - Authentication middleware for route protection
+  - Audit logger utility class with convenience methods
+
+**Technical Improvements:**
+- Database operations use prepared statements for performance and security
+- Graceful error handling throughout authentication flow
+- Backward compatibility maintained during migration
+- Automatic database backup before migration
+- Session cleanup on database initialization
+- All new code follows DRY principles and project conventions
+- Docker integration for admin recovery tool:
+  - Scripts directory copied to Docker container (`/app/scripts`)
+  - Shell wrapper script available at `/app/admin-recovery` in containers
+  - Uses `pnpm exec tsx` for consistent package manager usage
+  - Fixed ES module compatibility (replaced CommonJS `require` with ES `import`)
+  - Documentation updated with Docker usage instructions
 
 
 

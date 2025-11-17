@@ -14,6 +14,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     // Log audit event
     if (authContext && result.statistics) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
@@ -25,6 +26,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           notificationsSent: result.statistics.notificationsSent,
         },
         ipAddress,
+        userAgent,
         status: 'success',
       });
     }
@@ -37,6 +39,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     const authContext = await getAuthContext(request);
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       const errorMessage = error instanceof Error ? error.message : 'Failed to check for overdue backups';
       await AuditLogger.log({
         userId: authContext.userId,
@@ -47,6 +50,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           error: errorMessage,
         },
         ipAddress,
+        userAgent,
         status: 'error',
         errorMessage,
       });

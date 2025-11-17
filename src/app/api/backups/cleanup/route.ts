@@ -48,6 +48,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       // Log audit event
       if (authContext) {
         const ipAddress = getClientIpAddress(request);
+        const userAgent = request.headers.get('user-agent') || 'unknown';
         await AuditLogger.log({
           userId: authContext.userId,
           username: authContext.username,
@@ -59,6 +60,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
             serverChanges,
           },
           ipAddress,
+          userAgent,
           status: 'success',
         });
       }
@@ -108,6 +110,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
@@ -118,6 +121,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           deletedCount: changes,
         },
         ipAddress,
+        userAgent,
         status: 'success',
       });
     }

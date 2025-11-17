@@ -161,13 +161,15 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
             message: 'No changes',
           };
 
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
         'backup_notification_updated',
         authContext.userId,
         authContext.username,
         'backup_settings',
         auditDetails,
-        ipAddress
+        ipAddress,
+        userAgent
       );
     }
     

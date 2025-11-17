@@ -24,6 +24,7 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
       is_admin: number;
       must_change_password: number;
       created_at: string;
+      updated_at: string;
       last_login_at: string | null;
       last_login_ip: string | null;
       failed_login_attempts: number;
@@ -52,6 +53,7 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
       isAdmin: user.is_admin === 1,
       mustChangePassword: user.must_change_password === 1,
       createdAt: user.created_at,
+      updatedAt: user.updated_at,
       lastLoginAt: user.last_login_at,
       lastLoginIp: user.last_login_ip,
       failedLoginAttempts: user.failed_login_attempts,
@@ -180,7 +182,8 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         temp_password: isTemporaryPassword,
         created_by: authContext.username,
       },
-      ipAddress
+      ipAddress,
+      userAgent
     );
 
     // Return user (without password hash) and temporary password if generated
