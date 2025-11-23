@@ -118,10 +118,10 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
 
       const response = await authenticatedRequestWithRecovery(`/api/audit-log?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to load audit logs');
-      
+
       const data = await response.json();
       const newLogs = data.logs || [];
-      
+
       if (isInitial) {
         setLogs(newLogs);
         setLoadedCount(newLogs.length);
@@ -135,7 +135,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
           return [...prev, ...uniqueNewLogs];
         });
       }
-      
+
       setTotal(data.pagination?.total || 0);
     } catch (error) {
       console.error('Error loading audit logs:', error);
@@ -153,7 +153,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   // Load more logs when scrolling
   const loadMoreLogs = useCallback(async () => {
     if (logs.length >= total || isLoadingMore || loading) return;
-    
+
     try {
       setIsLoadingMore(true);
       const limit = batchSize;
@@ -173,11 +173,11 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
 
       const response = await authenticatedRequestWithRecovery(`/api/audit-log?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to load audit logs');
-      
+
       const data = await response.json();
       const newLogs = data.logs || [];
       const apiTotal = data.pagination?.total || 0;
-      
+
       // If API returned 0 logs, we've reached the end
       if (newLogs.length === 0) {
         setLogs(prev => {
@@ -186,12 +186,12 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
         });
         return;
       }
-      
+
       // Deduplicate logs by ID to prevent duplicate keys
       setLogs(prev => {
         const existingIds = new Set(prev.map((log: AuditLog) => log.id));
         const uniqueNewLogs = newLogs.filter((log: AuditLog) => !existingIds.has(log.id));
-        
+
         // If we got 0 new unique logs but API returned logs, we've reached the end
         // This happens when all returned logs are duplicates (we've already loaded everything)
         if (uniqueNewLogs.length === 0) {
@@ -199,9 +199,9 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
           setTotal(prev.length);
           return prev;
         }
-        
+
         const updatedLogs = [...prev, ...uniqueNewLogs];
-        
+
         // If we received fewer logs than requested, we've reached the end
         // Update total to reflect the actual number of logs we have
         if (newLogs.length < limit) {
@@ -209,7 +209,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
         } else {
           setTotal(apiTotal);
         }
-        
+
         // Update loadedCount based on the unique logs we're actually adding
         setLoadedCount(currentCount => currentCount + uniqueNewLogs.length);
         return updatedLogs;
@@ -349,7 +349,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="border rounded-md p-4 space-y-4 bg-muted/30">
+      <div className="border rounded-md p-4 space-y-4 bg-muted/30 relative z-30">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <CalendarIcon className="h-4 w-4" />
@@ -460,89 +460,89 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
       ) : (
         <div className="space-y-4">
           <div className="border rounded-md">
-            <div 
+            <div
               ref={scrollContainerRef}
               className="max-h-[calc(100vh-417px)] overflow-y-auto custom-scrollbar pb-4"
             >
               <div className="[&>div]:overflow-visible">
                 <Table>
-                <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
-                  <TableRow className="bg-muted">
-                    <TableHead className="bg-muted w-12 text-center">#</TableHead>
-                    <TableHead className="bg-muted">Timestamp</TableHead>
-                    <TableHead className="bg-muted">User</TableHead>
-                    <TableHead className="bg-muted">Action</TableHead>
-                    <TableHead className="bg-muted">Category</TableHead>
-                    <TableHead className="bg-muted">Status</TableHead>
-                    <TableHead className="bg-muted">Target</TableHead>
-                    <TableHead className="text-right bg-muted">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {logs.map((log, index) => (
-                    <TableRow key={log.id}>
-                      <TableCell className="text-xs text-center text-muted-foreground w-12">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell>
-                        <div>{new Date(log.timestamp).toLocaleString()}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {formatRelativeTime(log.timestamp)}
-                        </div>
-                      </TableCell>
-                      <TableCell>{log.username || 'System'}</TableCell>
-                      <TableCell className="font-mono text-sm">{log.action}</TableCell>
-                      <TableCell>{getCategoryBadge(log.category)}</TableCell>
-                      <TableCell>{getStatusBadge(log.status)}</TableCell>
-                      <TableCell>
-                        {log.targetType && log.targetId ? (
-                          <span className="text-sm text-muted-foreground">
-                            {log.targetType}: {log.targetId.substring(0, 8)}...
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            setSelectedLog(log);
-                            setDetailsDialogOpen(true);
-                          }}
-                          title="View details"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
+                  <TableHeader className="sticky top-0 z-20 bg-muted border-b-2 border-border shadow-sm">
+                    <TableRow className="bg-muted">
+                      <TableHead className="bg-muted w-12 text-center">#</TableHead>
+                      <TableHead className="bg-muted">Timestamp</TableHead>
+                      <TableHead className="bg-muted">User</TableHead>
+                      <TableHead className="bg-muted">Action</TableHead>
+                      <TableHead className="bg-muted">Category</TableHead>
+                      <TableHead className="bg-muted">Status</TableHead>
+                      <TableHead className="bg-muted">Target</TableHead>
+                      <TableHead className="text-right bg-muted">Actions</TableHead>
                     </TableRow>
-                  ))}
-                  
-                  {/* Loading sentinel for IntersectionObserver */}
-                  {logs.length < total && (
-                    <TableRow ref={sentinelRef}>
-                      <TableCell colSpan={8} className="text-center py-4">
-                        {isLoadingMore && (
-                          <div className="flex items-center justify-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="text-sm text-muted-foreground">Loading more...</span>
+                  </TableHeader>
+                  <TableBody>
+                    {logs.map((log, index) => (
+                      <TableRow key={log.id}>
+                        <TableCell className="text-xs text-center text-muted-foreground w-12">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>
+                          <div>{new Date(log.timestamp).toLocaleString()}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {formatRelativeTime(log.timestamp)}
                           </div>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                  
-                  {/* End of data indicator */}
-                  {logs.length >= total && logs.length > 0 && (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-4 text-sm text-muted-foreground">
-                        No more logs to load
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                        </TableCell>
+                        <TableCell>{log.username || 'System'}</TableCell>
+                        <TableCell className="font-mono text-sm">{log.action}</TableCell>
+                        <TableCell>{getCategoryBadge(log.category)}</TableCell>
+                        <TableCell>{getStatusBadge(log.status)}</TableCell>
+                        <TableCell>
+                          {log.targetType && log.targetId ? (
+                            <span className="text-sm text-muted-foreground">
+                              {log.targetType}: {log.targetId.substring(0, 8)}...
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setSelectedLog(log);
+                              setDetailsDialogOpen(true);
+                            }}
+                            title="View details"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+
+                    {/* Loading sentinel for IntersectionObserver */}
+                    {logs.length < total && (
+                      <TableRow ref={sentinelRef}>
+                        <TableCell colSpan={8} className="text-center py-4">
+                          {isLoadingMore && (
+                            <div className="flex items-center justify-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span className="text-sm text-muted-foreground">Loading more...</span>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    )}
+
+                    {/* End of data indicator */}
+                    {logs.length >= total && logs.length > 0 && (
+                      <TableRow>
+                        <TableCell colSpan={8} className="text-center py-4 text-sm text-muted-foreground">
+                          No more logs to load
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
               </div>
             </div>
           </div>
