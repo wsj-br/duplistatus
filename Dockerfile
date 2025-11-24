@@ -62,7 +62,7 @@ RUN apk add --no-cache curl tzdata icu-libs icu-data-full
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=0.9.5 \
+ENV VERSION=0.9.6 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \

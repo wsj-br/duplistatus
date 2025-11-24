@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto';
 import { existsSync, writeFileSync, chmodSync, statSync, readFileSync, lstatSync } from 'fs';
 import { join, extname, resolve, normalize } from 'path';
 import { error } from 'console';
-import { parse } from 'url';
+
 import { requestUrlStorage } from './src/lib/request-url-storage';
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -21,7 +21,7 @@ function isLangSupported(lang: string): boolean {
     // Remove encoding suffixes (e.g., .UTF-8, .utf8) from locale string
     // Locale format can be like "en_GB.UTF-8" or "en_GB.utf8", we only need "en_GB"
     const langWithoutEncoding = lang.split('.')[0];
-    
+
     // The locale string is case-insensitive, but it's good practice to normalize it.
     // Replace hyphens with underscores, if necessary, to match the format of env variables.
     const normalizedLang = langWithoutEncoding.replace(/_/g, '-');
@@ -44,10 +44,10 @@ const validateKeyFilePermissions = (keyFilePath: string) => {
   if (!existsSync(keyFilePath)) {
     return; // File doesn't exist, will be created with correct permissions
   }
-  
+
   const stats = statSync(keyFilePath);
   const permissions = stats.mode & 0o777; // Get the last 3 octal digits
-  
+
   if (permissions !== 0o400) {
     console.error('❌ SECURITY ERROR: .duplistatus.key file has incorrect permissions!');
     console.error(`   Expected: 0400 (r--------)`);
@@ -64,10 +64,10 @@ const validateKeyFilePermissions = (keyFilePath: string) => {
 const ensureKeyFile = () => {
   const dataDir = join(process.cwd(), 'data');
   const keyFilePath = join(dataDir, '.duplistatus.key');
-  
+
   // First validate existing file permissions
   validateKeyFilePermissions(keyFilePath);
-  
+
   if (!existsSync(keyFilePath)) {
     console.log('🔑 Creating new .duplistatus.key file...');
     const key = randomBytes(32);
@@ -122,7 +122,7 @@ const serveDocsFile = (reqUrl: string | undefined, res: ServerResponse): boolean
       // If that fails, assume it's already a path
       urlPath = reqUrl.split('?')[0]; // Remove query string if present
     }
-    
+
     // Check if request is for /docs
     if (!urlPath.startsWith('/docs')) {
       return false;
@@ -130,17 +130,17 @@ const serveDocsFile = (reqUrl: string | undefined, res: ServerResponse): boolean
 
     // Remove /docs prefix and normalize path
     let filePath = urlPath.replace(/^\/docs/, '');
-    
+
     // Handle root /docs request
     if (filePath === '' || filePath === '/') {
       filePath = '/index.html';
     }
-    
+
     // Resolve to public/docs directory
     const docsDir = join(process.cwd(), 'public', 'docs');
     const resolvedDocsDir = resolve(docsDir);
     let resolvedPath = resolve(docsDir, normalize(filePath).replace(/^\//, ''));
-    
+
     // Security check: ensure the resolved path is within docsDir
     if (!resolvedPath.startsWith(resolvedDocsDir)) {
       res.statusCode = 403;
@@ -197,26 +197,26 @@ const serveDocsFile = (reqUrl: string | undefined, res: ServerResponse): boolean
 app.prepare().then(() => {
   // Ensure key file exists before starting server
   ensureKeyFile();
-  
-  
+
+
   const server = createServer(async (req, res) => {
     try {
       // Check if this is a /docs request and serve static files
       if (serveDocsFile(req.url, res)) {
         return; // File was served, don't continue to Next.js handler
       }
-      
+
       // Parse URL and store it in AsyncLocalStorage for server components
       // This is the only reliable way to pass URL info from custom server to server components
       let pathname = '/';
       let searchParams = '';
-      
+
       if (req.url) {
         try {
-          // Parse the URL using Node's url.parse
-          const parsedUrl = parse(req.url, true);
-          pathname = parsedUrl.pathname || '/';
-          searchParams = parsedUrl.search ? parsedUrl.search.substring(1) : ''; // Remove leading '?'
+          // Parse the URL using WHATWG URL API
+          const url = new URL(req.url, 'http://localhost');
+          pathname = url.pathname;
+          searchParams = url.searchParams.toString();
         } catch (err) {
           // If URL parsing fails, use default values
           console.error('[Server] Error parsing URL for redirect:', err);
@@ -224,7 +224,7 @@ app.prepare().then(() => {
           searchParams = '';
         }
       }
-      
+
       // Store URL info in AsyncLocalStorage so server components can access it
       // This runs the Next.js handler within the AsyncLocalStorage context
       await requestUrlStorage.run({ pathname, searchParams }, async () => {
@@ -246,24 +246,24 @@ app.prepare().then(() => {
       process.exit(1);
       return;
     }
-    
+
     isShuttingDown = true;
     console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
     console.log(`   Server terminated at: ${new Date().toLocaleString()}`);
-    
+
     // Set a timeout to force exit if shutdown takes too long
     const shutdownTimeout = setTimeout(() => {
       console.log('   ⚠️  Shutdown timeout reached, forcing exit...');
       process.exit(0);
     }, 5000); // 5 second timeout
-    
+
     // Close the server
     server.close(() => {
       clearTimeout(shutdownTimeout);
       console.log('   ✅ Server closed successfully');
       process.exit(0);
     });
-    
+
     // Also close all existing connections immediately
     server.closeAllConnections();
   };
@@ -276,7 +276,7 @@ app.prepare().then(() => {
   server.listen(port, hostname, () => {
     console.log('\n🌐 duplistatus (v' + process.env.VERSION + ')');
     console.log(`  🛜 Ready on http://${hostname}:${port}`);
-    if(dev) {
+    if (dev) {
       console.log(`  🔧 dev mode`);
     }
     else {
@@ -290,13 +290,13 @@ app.prepare().then(() => {
     console.log('      NEXT_TELEMETRY_DISABLED=' + process.env.NEXT_TELEMETRY_DISABLED);
     console.log('      TZ=' + process.env.TZ);
     console.log('      LANG=' + process.env.LANG);
-    if(!isLangSupported(process.env.LANG || 'en_GB')) {
+    if (!isLangSupported(process.env.LANG || 'en_GB')) {
       console.error('❌ ERROR: LANG environment variable is not supported!');
       console.error('   The locale must be supported by the system.');
       console.error('   Please fix your docker configuration or remove the LANG environment variable,');
       console.error('   it will default to LANG=en_GB');
     }
- 
+
     // show the time of the start
     console.log('\nstarted at:', new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }));
   });
