@@ -411,8 +411,19 @@ export class AuditLogger {
       'api_key',
     ];
 
+    // List of keys that contain sensitive words but are safe to log
+    const safeKeys = [
+      'must_change_password',
+      'mustChangePassword'
+    ];
+
     // Remove or redact sensitive keys
     for (const key of Object.keys(sanitized)) {
+      // Skip if explicitly safe
+      if (safeKeys.includes(key)) {
+        continue;
+      }
+
       const lowerKey = key.toLowerCase();
       if (sensitiveKeys.some(sensitive => lowerKey.includes(sensitive))) {
         sanitized[key] = '[REDACTED]';
