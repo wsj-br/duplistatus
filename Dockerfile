@@ -116,4 +116,4 @@ EXPOSE 9666 9667
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
   CMD curl -f -s http://localhost:9666/api/health || exit 1
 
-CMD ["sh", "-c", "node duplistatus-server.ts & /app/duplistatus-cron.sh"]
+CMD ["sh", "-c", "pnpm exec tsx duplistatus-server.ts & /app/duplistatus-cron.sh"]
