@@ -66,19 +66,19 @@ See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) f
 
 ### Dashboard
 
-![dashboard](website/static/img/screen-dashboard.png)
+![dashboard](website/static/img/screen-main-dashboard-card-mode.png)
 
 ### Backup History
 
-![server-detail](website/static/img/screen-server.png)
+![server-detail](website/static/img/screen-server-backup-list.png)
 
 ### Backup Details
 
-![backup-detail](website/static/img/screen-backup.png)
+![backup-detail](website/static/img/screen-backup-detail.png)
 
 ### Overdue Backups
 
-![overdue backups](website/static/img/screen-overdue-tooltip.png)
+![overdue backups](website/static/img/screen-overdue-backup-hover-card.png)
 
 ### Overdue notifications on your phone
 

@@ -16,26 +16,30 @@ const REMEMBER_ME_ENABLED_KEY = 'duplistatus_remember_me_enabled';
 
 function LoginForm() {
   const searchParams = useSearchParams();
-  // Initialize state from localStorage on first render
-  const [username, setUsername] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true';
-      const savedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
-      return savedRememberMe && savedUsername ? savedUsername : '';
-    }
-    return '';
-  });
+  // Initialize state - always start with defaults to avoid hydration mismatch
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true';
-      const savedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
-      return savedRememberMe && Boolean(savedUsername);
-    }
-    return false;
-  });
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Load saved values from localStorage after mount to avoid hydration mismatch
+  // This is necessary to prevent hydration errors when localStorage values differ from SSR
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+    if (typeof window !== 'undefined') {
+      const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true';
+      const savedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
+      if (savedRememberMe && savedUsername) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setUsername(savedUsername);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setRememberMe(true);
+      }
+    }
+  }, []);
 
   // Validate redirect URL to prevent open redirect vulnerabilities
   const validateRedirectUrl = (url: string | null): string => {
@@ -224,7 +228,7 @@ function LoginForm() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="remember-me"
-                    checked={rememberMe}
+                    checked={mounted ? rememberMe : false}
                     onCheckedChange={(checked) => handleRememberMeChange(checked === true)}
                     disabled={loading}
                   />

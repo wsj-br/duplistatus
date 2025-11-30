@@ -1,6 +1,6 @@
 
 
-# Email Settings
+# Email 
 
 **duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
 
@@ -29,7 +29,7 @@
 
 | Button                                                           | Description                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
-| `Save Settings`                                                  | Save the changes made to the NTFY settings.              |
+| <IconButton label="Save Settings" />                             | Save the changes made to the NTFY settings.              |
 | <IconButton icon="lucide:mail" label="Send Test Email"/>         | Sends a test email message using the SMTP configuration. |
 | <IconButton icon="lucide:trash-2" label="Delete SMTP Settings"/> | Delete / Clear the SMTP configuration.                   |
     

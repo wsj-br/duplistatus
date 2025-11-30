@@ -402,7 +402,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-screenshot-target="settings-content-card">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 flex-1 max-w-sm">
           <Search className="h-4 w-4 text-muted-foreground" />

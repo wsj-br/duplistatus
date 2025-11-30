@@ -727,7 +727,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card>
         <CardHeader>
           <CardTitle>Configure Overdue Monitoring</CardTitle>

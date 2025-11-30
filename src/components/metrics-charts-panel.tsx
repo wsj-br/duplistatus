@@ -270,8 +270,9 @@ function SmallMetricChart({
       <CardHeader className="pb-0 pt-1 px-2 flex-shrink-0">
         <CardTitle className="text-xs font-medium">{label}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 p-1 min-h-0">
-        <ChartContainer config={chartConfig} className="!aspect-auto w-full h-full">
+      <CardContent className="flex-1 p-1 min-h-[100px] flex flex-col">
+        <div className="flex-1 min-h-[100px] w-full">
+          <ChartContainer config={chartConfig} className="!aspect-auto w-full h-full">
           <ComposedChart data={resampledData} margin={{ top: 2, right: 5, bottom: 2, left: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#666" />
               <XAxis
@@ -331,6 +332,7 @@ function SmallMetricChart({
               <Tooltip content={<CustomTooltip metricKey={metricKey} />} />
           </ComposedChart>
         </ChartContainer>
+        </div>
       </CardContent>
     </Card>
   );

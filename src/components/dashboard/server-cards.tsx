@@ -276,6 +276,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                       avoidCollisions={true}
                       collisionPadding={24}
                       className="cursor-default space-y-3 min-w-[300px] max-w-[400px] z-[9999]"
+                      data-screenshot-target="overdue-backup-tooltip"
                       onClick={(e) => {
                         e.stopPropagation();
                         // Close the tooltip by clicking outside

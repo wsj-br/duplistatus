@@ -101,7 +101,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
       <div>
         <h2 className="text-2xl font-semibold mb-2">Audit Log Retention</h2>
         <p className="text-sm text-muted-foreground">

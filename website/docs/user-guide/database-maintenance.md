@@ -4,7 +4,7 @@
 
 Manage your backup data and optimise performance through database maintenance operations.
 
-![Database maintenance](/img/screen-database-maintenance.png)
+![Database maintenance](/img/screen-settings-database-maintenance.png)
 
 ## Data Cleanup Period
 

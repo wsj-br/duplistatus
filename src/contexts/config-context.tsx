@@ -1,10 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { defaultUIConfig, defaultOverdueTolerance } from '@/lib/default-config';
 import type { OverdueTolerance } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { getUserLocalStorageItem, setUserLocalStorageItem, removeUserLocalStorageItem } from '@/lib/user-local-storage';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 type DatabaseCleanupPeriod = 'Delete all data' | '6 months' | '1 year' | '2 years';
 export type TablePageSize = 5 | 10 | 15 | 20 | 25 | 30 | 40 | 50;
@@ -44,6 +46,9 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
   const router = useRouter();
+  const currentUser = useCurrentUser();
+
+  const hasLoadedUserConfigRef = useRef(false);
 
   useEffect(() => {
     // Load saved settings from localStorage (only in browser environment)
@@ -52,20 +57,32 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const savedConfig = localStorage.getItem('duplistatus-config');
+    // Wait for user to be loaded before loading settings
+    if (currentUser === null || hasLoadedUserConfigRef.current) {
+      return;
+    }
+
+    hasLoadedUserConfigRef.current = true;
+    const savedConfig = getUserLocalStorageItem('duplistatus-config', currentUser.id);
     if (savedConfig && savedConfig.trim() !== '') {
       try {
         const config = JSON.parse(savedConfig);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.databaseCleanupPeriod) setDatabaseCleanupPeriod(config.databaseCleanupPeriod);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.tablePageSize) setTablePageSize(config.tablePageSize);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
       } catch (error) {
         console.error('Failed to parse saved config from localStorage:', error);
         // Clear the invalid config from localStorage
-        localStorage.removeItem('duplistatus-config');
+        removeUserLocalStorageItem('duplistatus-config', currentUser.id);
       }
     }
     
@@ -75,6 +92,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         const response = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance');
         if (response.ok) {
           const data = await response.json();
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setOverdueTolerance(data.overdue_tolerance);
         } else {
           console.error('Failed to load tolerance config:', response.statusText);
@@ -88,13 +106,15 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     
     loadTolerance();
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(false);
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     // Save settings to localStorage whenever they change (only in browser environment)
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('duplistatus-config', JSON.stringify({
+    // Only save if user is loaded (not null)
+    if (typeof window !== 'undefined' && currentUser !== null) {
+      setUserLocalStorageItem('duplistatus-config', currentUser.id, JSON.stringify({
         databaseCleanupPeriod,
         tablePageSize,
         chartTimeRange,
@@ -103,7 +123,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         dashboardCardsSortOrder,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, currentUser?.id]);
 
   const cleanupDatabase = async () => {
     try {

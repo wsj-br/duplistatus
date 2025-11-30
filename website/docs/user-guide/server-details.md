@@ -4,7 +4,7 @@
 
 Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
 
-![Server Details](/img/screen-server.png)
+![Server Details](/img/screen-server-backup-list.png)
 
 ## Server/Backup Statistics
 
@@ -57,7 +57,7 @@ This table lists the backup logs for the selected server.
 
 Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
 
-![Backup Details](/img/screen-backup.png)
+![Backup Details](/img/screen-backup-detail.png)
 
 - **Server details**: server name, alias and note.
 - **Backup Information**: The timestamp of the backup and its ID.

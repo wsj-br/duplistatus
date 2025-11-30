@@ -18,19 +18,16 @@ if [ -f .env ]; then
             # Update VERSION variable
             sed "s|^VERSION=[.0-9]*|VERSION=$VERSION|" .env > .env.tmp && mv .env.tmp .env
             echo "✅ Updated VERSION=$VERSION in existing .env file"
-            echo ""
         fi
     else
         # VERSION variable doesn't exist, append it
         echo "VERSION=$VERSION" >> .env
         echo "➕ Added VERSION=$VERSION to existing .env file"
-        echo ""
     fi
 else
     # If .env doesn't exist, create it with just VERSION
     echo "VERSION=$VERSION" > .env
     echo "📄 Created new .env file with VERSION=$VERSION"
-    echo ""
 fi
 
 
@@ -46,7 +43,21 @@ if [ -f Dockerfile ]; then
             # Update VERSION variable
             sed "s|VERSION=[.0-9]*|VERSION=$VERSION|" Dockerfile > Dockerfile.tmp && mv Dockerfile.tmp Dockerfile
             echo "✅ Updated VERSION=$VERSION in existing Dockerfile file"
-            echo ""
+        fi
+    fi
+fi
+
+# If website/package.json exists, check if version exists and compare versions
+if [ -f website/package.json ]; then
+    if grep -q '"version"' website/package.json; then
+        # Get current version from website/package.json
+        CURRENT_VERSION=$(grep '"version"' website/package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/' | head -1)
+
+        # Compare versions
+        if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+            # Update version in website/package.json
+            sed "s|\"version\": *\"[^\"]*\"|\"version\": \"$VERSION\"|" website/package.json > website/package.json.tmp && mv website/package.json.tmp website/package.json
+            echo "✅ Updated version=$VERSION in website/package.json"
         fi
     fi
 fi

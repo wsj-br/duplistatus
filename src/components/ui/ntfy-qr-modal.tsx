@@ -13,7 +13,7 @@ interface NtfyQrModalProps {
 export function NtfyQrModal({ isOpen, onOpenChange, qrCodeDataUrl, topicUrl }: NtfyQrModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md data-[state=open]:modal-zoom-center data-[state=closed]:modal-zoom-center-out">
+      <DialogContent className="sm:max-w-md data-[state=open]:modal-zoom-center data-[state=closed]:modal-zoom-center-out" data-screenshot-target="ntfy-configure-device-popup">
         <DialogHeader>
           <DialogTitle>Configure your device</DialogTitle>
           <DialogDescription>

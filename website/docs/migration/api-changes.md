@@ -13,6 +13,19 @@ This document covers breaking changes to external API endpoints that affect inte
 
 ## Version-Specific Changes
 
+### Version 0.9.x
+
+**No Breaking Changes to External API Endpoints**
+
+Version 0.9.x introduces authentication and requires all users to log in. When upgrading from version 0.8.x:
+
+1. **Authentication Required**: All pages and API endpoints now require authentication
+2. **Default Admin Account**: A default admin account is created automatically:
+   - Username: `admin`
+   - Password: `Duplistatus09` (must be changed on first login)
+3. **Session Invalidation**: All existing sessions are invalidated
+4. **API Authentication**: External integrations must include authentication
+
 ### Version 0.8.x
 
 **No Breaking Changes to External API Endpoints**

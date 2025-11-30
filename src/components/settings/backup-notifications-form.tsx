@@ -312,7 +312,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card>
         <CardHeader>
           <CardTitle>Configure Backup Notifications</CardTitle>

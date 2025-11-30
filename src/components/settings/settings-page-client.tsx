@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
@@ -16,6 +16,9 @@ import { EmailConfigurationForm } from '@/components/settings/email-configuratio
 import { UserManagementForm } from '@/components/settings/user-management-form';
 import { AuditLogViewer } from '@/components/settings/audit-log-viewer';
 import { AuditLogRetentionForm } from '@/components/settings/audit-log-retention-form';
+import { DisplaySettingsForm } from '@/components/settings/display-settings-form';
+import { DatabaseMaintenanceForm } from '@/components/settings/database-maintenance-form';
+import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 
 interface SettingsPageClientProps {
   currentUser: {
@@ -32,8 +35,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   const [activeSection, setActiveSection] = useState<string>('notifications');
   const [lastServerListHash, setLastServerListHash] = useState<string>('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('settings-sidebar-collapsed');
+    if (typeof window !== 'undefined' && currentUser) {
+      const saved = getUserLocalStorageItem('settings-sidebar-collapsed', currentUser.id);
       return saved === 'true';
     }
     return false;
@@ -172,14 +175,27 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   useEffect(() => {
     // Check for section parameter in URL first
     const sectionParam = searchParams.get('tab') || searchParams.get('section');
-    const validSections = ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention'];
+    const validSections = ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'database-maintenance'];
+    const adminOnlySections = ['users', 'database-maintenance', 'audit-retention'];
+    
+    // Redirect non-admin users away from admin-only sections
+    if (sectionParam && adminOnlySections.includes(sectionParam) && !currentUser?.isAdmin) {
+      router.replace('/settings?tab=notifications', { scroll: false });
+      setActiveSection('notifications');
+      if (currentUser) {
+        setUserLocalStorageItem('settings-active-section', currentUser.id, 'notifications');
+      }
+      return;
+    }
     
     if (sectionParam && validSections.includes(sectionParam)) {
       setActiveSection(sectionParam);
-      localStorage.setItem('settings-active-section', sectionParam);
+      if (currentUser) {
+        setUserLocalStorageItem('settings-active-section', currentUser.id, sectionParam);
+      }
     } else {
       // Load the last selected section from localStorage if no URL parameter
-      const savedSection = localStorage.getItem('settings-active-section');
+      const savedSection = currentUser ? getUserLocalStorageItem('settings-active-section', currentUser.id) : null;
       if (savedSection && validSections.includes(savedSection)) {
         setActiveSection(savedSection);
         // Only update URL if it's different from what's in the URL
@@ -199,7 +215,9 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
 
   const handleSectionChange = (value: string) => {
     setActiveSection(value);
-    localStorage.setItem('settings-active-section', value);
+    if (currentUser) {
+      setUserLocalStorageItem('settings-active-section', currentUser.id, value);
+    }
     router.replace(`/settings?tab=${value}`, { scroll: false });
   };
 
@@ -224,7 +242,9 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   const toggleSidebar = () => {
     const newState = !isSidebarCollapsed;
     setIsSidebarCollapsed(newState);
-    localStorage.setItem('settings-sidebar-collapsed', String(newState));
+    if (currentUser) {
+      setUserLocalStorageItem('settings-sidebar-collapsed', currentUser.id, String(newState));
+    }
     
     if (newState) {
       // Delay centering until labels finish collapsing (300ms)
@@ -286,7 +306,7 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
       {/* Main Content Area with Sidebar */}
       <div className="flex">
         {/* Sidebar */}
-        <aside className={`${isSidebarCollapsed ? 'w-28' : 'w-64'} border-r border-border bg-background flex-shrink-0 fixed left-0 top-[88px] h-[calc(100vh-88px)] overflow-auto transition-all duration-300 z-40`}>
+        <aside className={`${isSidebarCollapsed ? 'w-28' : 'w-64'} border-r border-border bg-background flex-shrink-0 fixed left-0 top-[88px] h-[calc(100vh-88px)] overflow-auto transition-all duration-300 z-40`} data-screenshot-target="settings-left-panel">
           {/* Sidebar Header */}
           <div className={`${isSidebarCollapsed ? 'px-2' : 'px-4'} py-4 border-b border-border sticky top-0 bg-background z-10 relative h-[73px] flex items-center`}>
             <div className={`flex items-center w-full gap-3 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
@@ -406,6 +426,32 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                     <Server className="h-4 w-4 flex-shrink-0" />
                     <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'server' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Servers</span>
                   </button>
+                  <button
+                    onClick={() => handleSectionChange('display')}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                      activeSection === 'display'
+                        ? 'bg-accent text-accent-foreground'
+                        : 'hover:bg-accent/50'
+                    }`}
+                    title={isSidebarCollapsed ? 'Display' : undefined}
+                  >
+                    <MonitorCog className="h-4 w-4 flex-shrink-0" />
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'display' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Display</span>
+                  </button>
+                  {currentUser?.isAdmin && (
+                    <button
+                      onClick={() => handleSectionChange('database-maintenance')}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                        activeSection === 'database-maintenance'
+                          ? 'bg-accent text-accent-foreground'
+                          : 'hover:bg-accent/50'
+                      }`}
+                      title={isSidebarCollapsed ? 'Database Maintenance' : undefined}
+                    >
+                      <Database className="h-4 w-4 flex-shrink-0" />
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'database-maintenance' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Database Maintenance</span>
+                    </button>
+                  )}
                   {currentUser?.isAdmin && (
                     <button
                       onClick={() => handleSectionChange('users')}
@@ -583,6 +629,16 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
               {/* Audit Log Retention Section (Admin only) */}
               {activeSection === 'audit-retention' && (
                 <AuditLogRetentionForm isAdmin={currentUser?.isAdmin || false} />
+              )}
+
+              {/* Display Section */}
+              {activeSection === 'display' && (
+                <DisplaySettingsForm />
+              )}
+
+              {/* Database Maintenance Section (Admin only) */}
+              {activeSection === 'database-maintenance' && currentUser?.isAdmin && (
+                <DatabaseMaintenanceForm isAdmin={currentUser?.isAdmin || false} />
               )}
             </div>
         </main>

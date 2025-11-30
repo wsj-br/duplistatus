@@ -14,6 +14,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useServerSelection } from "@/contexts/server-selection-context";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { setUserLocalStorageItem } from "@/lib/user-local-storage";
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
@@ -33,6 +35,7 @@ export function DashboardSummaryCards({
 }: DashboardSummaryCardsProps) {
   const { state: serverSelectionState, setViewMode } = useServerSelection();
   const { viewMode } = serverSelectionState;
+  const currentUser = useCurrentUser();
 
   // Handle view mode toggle - cycle through available view modes
   const handleViewModeToggle = () => {
@@ -41,7 +44,10 @@ export function DashboardSummaryCards({
     const newViewMode = availableViewModes[nextIndex] as 'analytics' | 'table' | 'overview';
     
     setViewMode(newViewMode);
-    localStorage.setItem('dashboard-view-mode', newViewMode);
+    // Note: setViewMode already saves to user-specific localStorage, but we keep this for compatibility
+    if (currentUser) {
+      setUserLocalStorageItem('dashboard-view-mode', currentUser.id, newViewMode);
+    }
     onViewModeChange?.(newViewMode);
   };
 

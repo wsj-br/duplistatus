@@ -63,6 +63,13 @@ If the manual backup log collection fails:
     curl -I http://duplicati-server.local:8200
     ```
 
+### Lost Admin Password or Locked Out
+
+If you've lost your administrator password or been locked out of your account:
+
+- **Use Admin Recovery Script**: See the [Admin Account Recovery](admin-recovery.md) guide for instructions on recovering administrator access in Docker environments.
+- **Verify Container Access**: Ensure you have Docker exec access to the container to run the recovery script.
+
 If you still experience issues, try the following steps:
 
 1.  **Inspect Application Logs**: If using Docker, run `docker logs <container-name>` to review detailed error information.

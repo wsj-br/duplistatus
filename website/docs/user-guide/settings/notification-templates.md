@@ -1,6 +1,6 @@
 
 
-# Notification Templates
+# Templates
 
 **duplistatus** uses three templates for notification messages. These templates are used for both NTFY and email notifications:
 
@@ -10,7 +10,7 @@
 | **Warning/Error**  | Used when backups complete with warnings or errors. |
 | **Overdue Backup** | Used when backups are overdue.                      |
 
-![notification templates](/img/screen-settings-notifications-templates.png)
+![notification templates](/img/screen-settings-templates.png)
 
 All templates support variables that will be replaced with actual values. The following table shows the available variables:
 

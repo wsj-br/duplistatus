@@ -89,6 +89,18 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const [category, setCategory] = useState('all');
   const [status, setStatus] = useState('all');
 
+  // Filter values from database
+  const [filterValues, setFilterValues] = useState<{
+    actions: string[];
+    categories: string[];
+    statuses: string[];
+  }>({
+    actions: [],
+    categories: [],
+    statuses: [],
+  });
+  const [loadingFilters, setLoadingFilters] = useState(true);
+
   // Load audit logs
   const loadLogs = useCallback(async (isInitial = false) => {
     try {
@@ -255,18 +267,32 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
     };
   }, [logs.length, total, isLoadingMore, loading, loadMoreLogs]);
 
-  // Get unique values for filters
-  const uniqueActions = useMemo(() => {
-    const actions = new Set<string>();
-    logs.forEach(log => actions.add(log.action));
-    return Array.from(actions).sort();
-  }, [logs]);
-
-  const uniqueCategories = useMemo(() => {
-    const categories = new Set<string>();
-    logs.forEach(log => categories.add(log.category));
-    return Array.from(categories).sort();
-  }, [logs]);
+  // Load filter values from database on mount
+  useEffect(() => {
+    const loadFilterValues = async () => {
+      try {
+        setLoadingFilters(true);
+        const response = await authenticatedRequestWithRecovery('/api/audit-log/filters');
+        if (!response.ok) throw new Error('Failed to load filter values');
+        const data = await response.json();
+        setFilterValues({
+          actions: data.actions || [],
+          categories: data.categories || [],
+          statuses: data.statuses || [],
+        });
+      } catch (error) {
+        console.error('Error loading filter values:', error);
+        toast({
+          title: 'Warning',
+          description: 'Failed to load filter values. Using loaded records only.',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoadingFilters(false);
+      }
+    };
+    loadFilterValues();
+  }, [toast]);
 
   // Handle download
   const handleDownload = async (format: 'csv' | 'json') => {
@@ -347,7 +373,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-screenshot-target="settings-content-card">
       {/* Filters */}
       <div className="border rounded-md p-4 space-y-4 bg-muted/30 relative z-30">
         <div className="flex items-center justify-between">
@@ -411,7 +437,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All actions</SelectItem>
-                {uniqueActions.map(act => (
+                {filterValues.actions.map(act => (
                   <SelectItem key={act} value={act}>{act}</SelectItem>
                 ))}
               </SelectContent>
@@ -427,7 +453,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All categories</SelectItem>
-                {uniqueCategories.map(cat => (
+                {filterValues.categories.map(cat => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
               </SelectContent>
@@ -443,9 +469,9 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All statuses</SelectItem>
-                <SelectItem value="success">Success</SelectItem>
-                <SelectItem value="failure">Failure</SelectItem>
-                <SelectItem value="error">Error</SelectItem>
+                {filterValues.statuses.map(st => (
+                  <SelectItem key={st} value={st}>{st}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

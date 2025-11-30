@@ -3,9 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { LayoutDashboard, Settings, BookOpenText, LogOut, User, KeyRound, Users, ChevronDown, ArrowLeft, ScrollText } from 'lucide-react';
-import { ThemeToggleButton } from '@/components/theme-toggle-button';
-import { DisplayMenu } from '@/components/display-menu';
-import { DatabaseMaintenanceMenu } from '@/components/database-maintenance-menu';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
 import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
@@ -45,7 +42,9 @@ export function AppHeader() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const response = await fetch('/api/auth/me');
+        const response = await fetch('/api/auth/me', {
+          cache: 'no-store', // Always fetch fresh data, but don't cache
+        });
         const data = await response.json();
         if (data.authenticated) {
           setUser(data.user);
@@ -53,15 +52,18 @@ export function AppHeader() {
           if (data.user.mustChangePassword) {
             setChangePasswordOpen(true);
           }
+        } else {
+          setUser(null);
         }
       } catch (error) {
         console.error('Error checking auth:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     }
     checkAuth();
-  }, [pathname]); // Re-check when pathname changes
+  }, []); // Only check once on mount
 
   const handleLogout = async () => {
     try {
@@ -132,26 +134,26 @@ export function AppHeader() {
           <NtfyMessagesButton />
           <OpenServerConfigButton />
           <BackupCollectMenu />
-          <DatabaseMaintenanceMenu isAdmin={user?.isAdmin || false} />
-          <DisplayMenu />
-          <Link href="/settings">
+          <Link href="/settings" className="ml-4">
             <Button variant="outline" size="icon" title="Settings">
               <Settings className="h-4 w-4" />
             </Button>
           </Link>
-          <Button 
-            variant="outline" 
-            size="icon" 
-            title="User Guide"
-            className="ml-4"
-            onClick={() => window.open('/docs/user-guide/overview', '_blank', 'noopener,noreferrer')}
-          >
-            <BookOpenText className="h-4 w-4" />
-          </Button>
-          <ThemeToggleButton />
           
           {/* User Authentication Section */}
-          {!loading && user && (
+          {loading ? (
+            // Placeholder to prevent layout shift while loading
+            <Button
+              variant="outline"
+              className="ml-4 flex items-center gap-2 px-3 py-2 h-auto"
+              disabled
+              aria-hidden="true"
+            >
+              <User className="h-4 w-4 text-muted-foreground opacity-50" />
+              <span className="text-sm font-medium opacity-0 min-w-[60px]">Loading</span>
+              <ChevronDown className="h-4 w-4 text-muted-foreground opacity-50" />
+            </Button>
+          ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -194,7 +196,16 @@ export function AppHeader() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
+          ) : null}
+          <Button 
+            variant="outline" 
+            size="icon" 
+            title="User Guide"
+            className="ml-4"
+            onClick={() => window.open('/docs/user-guide/overview', '_blank', 'noopener,noreferrer')}
+          >
+            <BookOpenText className="h-4 w-4" />
+          </Button>
         </div>
       </div>
       <ChangePasswordModal 

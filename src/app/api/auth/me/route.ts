@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ensureDatabaseInitialized } from '@/lib/db';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getAuthContext } from '@/lib/auth-middleware';
 
 export const GET = withCSRF(async (request: NextRequest) => {
   try {
-    // Ensure database is ready
-    await ensureDatabaseInitialized();
-
-    // Get auth context
+    // Get auth context (it will ensure database is ready)
     const authContext = await getAuthContext(request);
 
     if (!authContext) {

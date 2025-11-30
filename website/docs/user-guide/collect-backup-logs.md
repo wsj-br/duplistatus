@@ -20,6 +20,9 @@ If you have server addresses configured in `Settings → Server Settings`, selec
 ### Manual Collection
 
 1.  Click the <IconButton icon="lucide:download" /> `Collect Backup Logs` icon on the [Application Toolbar](overview#application-toolbar).
+
+![Collect Backup Logs Popup](/img/screen-collect-button-popup.png)
+
 2.  Enter the Duplicati server details:
     - **Hostname**: The hostname or IP address of the Duplicati server. You can enter multiple hostnames separated by commas.
     - **Port**: The port number used by the Duplicati server (default: `8200`).
@@ -39,7 +42,10 @@ If you have server addresses configured in `Settings → Server Settings`, selec
 
  _Right-click_ the  <IconButton icon="lucide:download" /> `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
 
-![Collection All](/img/screen-collect-all.png)
+![Collect All Right-Click Menu](/img/screen-collect-button-right-click-popup.png)
+
+> [!TIP]
+> You can also use the `Collect All` button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
 
 > [!TIP]
 > You can also use the `Collect All` button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.

@@ -27,6 +27,9 @@ interface BackupLogPageProps {
   }>;
 }
 
+// Force dynamic rendering - this page uses dynamic APIs (cookies, headers) via requireServerAuth
+export const dynamic = 'force-dynamic';
+
 const cleanLogMessage = (message: string): string => {
   return message.replace(/\[.*?\]:/g, '');
 };
@@ -379,10 +382,4 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
       </div>
     </div>
   );
-}
-
-export async function generateStaticParams() {
-  // This is a placeholder function - Next.js expects it to return params
-  // You would need to implement actual data fetching here if needed
-  return [];
 } 

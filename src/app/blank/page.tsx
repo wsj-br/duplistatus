@@ -1,5 +1,8 @@
 import { requireServerAuth } from "@/lib/auth-server";
 
+// Force dynamic rendering - this page uses dynamic APIs (cookies, headers) via requireServerAuth
+export const dynamic = 'force-dynamic';
+
 export default async function BlankPage() {
   // Require authentication - redirects to login if not authenticated
   await requireServerAuth();

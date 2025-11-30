@@ -8,6 +8,7 @@
 
 - [Fix](#fix)
 - [Changes needed](#changes-needed)
+- [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
 - [Nice to have](#nice-to-have)
 - [List of changes](#list-of-changes)
   - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
@@ -16,7 +17,7 @@
   - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
   - [Implemented in Version 0.7.27 ✅](#implemented-in-version-0727-)
   - [Implemented in Version 0.8.x ✅](#implemented-in-version-08x-)
-  - [Implemented in Version 0.9.x 🚧](#implemented-in-version-09x-)
+  - [Implemented in Version 0.9.x ✅](#implemented-in-version-09x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -236,7 +237,8 @@ none
   - Password-based authentication with bcrypt hashing (cost factor 12)
   - Account lockout mechanism (5 failed attempts, 15-minute lockout)
   - Forced password change on first login
-  - Password policy enforcement (minimum 8 characters, uppercase, lowercase, number required)
+  - Password policy enforcement (minimum 8 characters, uppercase, lowercase, number required; special characters optional)
+  - "Remember me" functionality with username persistence in localStorage
   - Session-based authentication with database-backed sessions (replaces in-memory)
   - CSRF protection integrated with authentication
   - HTTP-only cookies for session security
@@ -278,6 +280,7 @@ none
 
 - **Settings Page Redesign:**
   - Modern sidebar navigation with collapsible sidebar
+  - User-specific sidebar state persistence (collapsed/expanded preference saved per user)
   - Grouped settings sections:
     - **Notifications**: Backup Notifications, Overdue Monitoring, Templates
     - **Integrations**: NTFY, Email
@@ -289,11 +292,13 @@ none
 
 - **User Interface Enhancements:**
   - Standalone login page with modern design
+  - "Remember me" checkbox on login form for username persistence
   - Show/hide password buttons on login and password change forms
   - Change password modal with real-time validation checklist
   - User indicator and logout button in app header
   - Role-based UI visibility (admin-only features hidden from regular users)
   - Status badges and indicators throughout the UI
+  - User-specific preferences stored in localStorage (e.g., sidebar collapsed state)
 
 - **Security Features:**
   - Password hashing with bcrypt (industry-standard)

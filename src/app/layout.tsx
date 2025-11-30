@@ -101,12 +101,18 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
+                  // Initial theme load before React hydration
+                  // Note: User-specific themes are handled by React after mount
+                  // This script provides a fallback for initial page load
+                  // Default to dark theme for headless browsers and SSR
                   var theme = localStorage.getItem('theme');
                   var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (theme === 'dark' || (!theme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
+                  if (theme === 'light') {
                     document.documentElement.classList.remove('dark');
+                  } else {
+                    // Default to dark: if theme is 'dark', or no theme preference exists
+                    // (including headless browsers where system preference may not be available)
+                    document.documentElement.classList.add('dark');
                   }
                 } catch (e) {
                   console.error('Error applying initial theme:', e);

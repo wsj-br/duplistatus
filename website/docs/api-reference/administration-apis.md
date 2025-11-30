@@ -514,6 +514,44 @@
   - `details` field contains parsed JSON with additional context
   - All audit log queries are logged
 
+### Get Audit Log Filter Values - `/api/audit-log/filters`
+- **Endpoint**: `/api/audit-log/filters`
+- **Method**: GET
+- **Description**: Retrieves unique filter values available for filtering audit logs. Returns all distinct actions, categories, and statuses that exist in the audit log database. Useful for populating filter dropdowns in the UI.
+- **Authentication**: Requires valid session and CSRF token (logged-in user required)
+- **Response**:
+  ```json
+  {
+    "actions": [
+      "login",
+      "logout",
+      "user_created",
+      "user_updated",
+      "config_updated"
+    ],
+    "categories": [
+      "auth",
+      "user_management",
+      "config",
+      "backup",
+      "server"
+    ],
+    "statuses": [
+      "success",
+      "failure",
+      "error"
+    ]
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Internal server error
+- **Notes**:
+  - Returns arrays of unique values from the audit log database
+  - Values are sorted alphabetically
+  - Empty arrays are returned if no data exists or on error
+  - Used by the audit log viewer to populate filter dropdowns dynamically
+
 ### Get Audit Log Statistics - `/api/audit-log/stats`
 - **Endpoint**: `/api/audit-log/stats`
 - **Method**: GET

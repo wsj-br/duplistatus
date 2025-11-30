@@ -71,7 +71,7 @@ You can also click the buttons at the bottom to open `Settings → Backup Notifi
 
 The table layout lists the most recent backup logs received for all servers and backups.
 
-![Dashboard Overview](/img/duplistatus_dash-table.png)
+![Dashboard Table Mode](/img/screen-main-dashboard-table-mode.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
@@ -102,7 +102,7 @@ The table layout lists the most recent backup logs received for all servers and 
 
 Hovering over the overdue warning icon displays details about the overdue backup.
 
-![Overdue details](/img/screen-overdue-tooltip.png)
+![Overdue details](/img/screen-overdue-backup-hover-card.png)
 
 - **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](settings/backup-notifications-settings.md).
 - **Last Backup**: When the last backup log was received.

@@ -311,6 +311,36 @@ export class AuditLogger {
   }
 
   /**
+   * Get unique filter values for actions, categories, and statuses
+   */
+  static async getFilterValues(): Promise<{
+    actions: string[];
+    categories: string[];
+    statuses: string[];
+  }> {
+    try {
+      await ensureDatabaseInitialized();
+
+      const actions = dbOps.getUniqueAuditActions.all() as Array<{ action: string }>;
+      const categories = dbOps.getUniqueAuditCategories.all() as Array<{ category: string }>;
+      const statuses = dbOps.getUniqueAuditStatuses.all() as Array<{ status: string }>;
+
+      return {
+        actions: actions.map(row => row.action),
+        categories: categories.map(row => row.category),
+        statuses: statuses.map(row => row.status),
+      };
+    } catch (error) {
+      console.error('[AuditLogger] Failed to get filter values:', error);
+      return {
+        actions: [],
+        categories: [],
+        statuses: [],
+      };
+    }
+  }
+
+  /**
    * Clean up old audit logs based on retention policy
    * @param retentionDays - Number of days to retain logs (default: 90)
    * @param userId - Optional user ID who initiated the cleanup

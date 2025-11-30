@@ -1,6 +1,6 @@
 
 
-# NTFY Settings
+# NTFY 
 
 NTFY is a simple notification service that can send push notifications to your phone or desktop. This section allows you to set up your notification server connection and authentication.
 
@@ -16,9 +16,9 @@ NTFY is a simple notification service that can send push notifications to your p
 
 ## Available Actions
 
-| Button                                                                  | Description                                                                     |
-|:------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
-| `Save Settings`                                                         | Save the changes made to the NTFY settings.                                     |
+| Button                                                                | Description                                                                     |
+|:----------------------------------------------------------------------|:--------------------------------------------------------------------------------|
+| <IconButton label="Save Settings" />                                  | Save the changes made to the NTFY settings.                                     |
 | <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Sends a test message to your NTFY server.                                       |
 | <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Configures your mobile device or desktop to receive notifications automatically |
     
@@ -44,12 +44,4 @@ NTFY is a simple notification service that can send push notifications to your p
 ## About NTFY
 
 NTFY is an [open-source](https://github.com/binwiederhier/ntfy) notification service that **duplistatus** uses to send push notifications about backup events to your phone or desktop.
-
-**Options:**
-
-- Use the free public server at [ntfy.sh](https://ntfy.sh)
-- [Self-host](https://docs.ntfy.sh/install/#docker) for complete privacy
-- Subscribe to a paid plan for additional features
-
-💙 If you find ntfy.sh useful, please consider [supporting the developer](https://github.com/sponsors/binwiederhier).
 

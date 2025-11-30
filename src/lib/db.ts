@@ -1380,6 +1380,27 @@ function createDbOps() {
     WHERE timestamp >= datetime('now', '-' || ? || ' days')
   `, 'getAuditLogStats'),
 
+  getUniqueAuditActions: safePrepare(`
+    SELECT DISTINCT action
+    FROM audit_log
+    WHERE action IS NOT NULL AND action != ''
+    ORDER BY action
+  `, 'getUniqueAuditActions'),
+
+  getUniqueAuditCategories: safePrepare(`
+    SELECT DISTINCT category
+    FROM audit_log
+    WHERE category IS NOT NULL AND category != ''
+    ORDER BY category
+  `, 'getUniqueAuditCategories'),
+
+  getUniqueAuditStatuses: safePrepare(`
+    SELECT DISTINCT status
+    FROM audit_log
+    WHERE status IS NOT NULL AND status != ''
+    ORDER BY status
+  `, 'getUniqueAuditStatuses'),
+
   };
 }
 

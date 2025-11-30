@@ -61,6 +61,83 @@ Update any custom documentation or notes:
 
 ## Version-Specific Changes
 
+### Version 0.9.x
+
+When upgrading to version 0.9.x from 0.8.x or earlier:
+
+#### Breaking Changes
+
+> [!WARNING]
+> **Version 0.9.x introduces authentication requirements. All users must log in after upgrade.**
+
+1. **Authentication Required**: All pages and API endpoints now require authentication
+2. **Default Admin Account**: A default admin account is created automatically:
+   - Username: `admin`
+   - Password: `Duplistatus09` (must be changed on first login)
+3. **Session Invalidation**: All existing sessions are invalidated
+4. **API Authentication**: External API integrations must include authentication
+
+#### Automatic Changes
+
+1. **Database Migration**: The application will automatically migrate your database schema from v3.1 to v4.0
+2. **Database Backup**: An automatic backup is created before migration
+3. **New Tables**: Three new tables are created:
+   - `users`: User account information
+   - `sessions`: Session management
+   - `audit_log`: Audit trail of all actions
+4. **Default Admin User**: A default admin user is created with credentials above
+5. **Session Storage**: Sessions are now stored in the database (persist across restarts)
+
+#### Manual Actions Required
+
+1. **First Login**: Log in with default admin credentials (`admin` / `Duplistatus09`)
+2. **Change Password**: Change the default admin password when prompted (forced on first login)
+3. **Create User Accounts**: Create individual user accounts for each person who needs access (Settings → Users)
+4. **Update External Integrations**: Update any external tools or scripts using the API to include authentication:
+   - API requests must include session cookies
+   - Or use authenticated requests with proper credentials
+   - See [API Reference](../api-reference/authentication-security.md) for details
+5. **Configure Audit Log Retention**: Set appropriate audit log retention period if needed (Settings → Audit Log)
+
+#### Security Considerations
+
+- **Change Default Password**: Change the default admin password immediately after first login
+- **Create User Accounts**: Create individual accounts for each user (don't share admin credentials)
+- **Review Audit Logs**: Check audit logs regularly for security monitoring
+- **Configure Retention**: Set appropriate audit log retention period based on compliance requirements
+- **Master Key File**: If upgrading from 0.8.x, ensure the `.duplistatus.key` file is backed up (still used for encrypted data)
+
+#### New Features
+
+- **User Access Control**: Complete authentication and authorization system
+- **User Management**: Create, edit, and manage user accounts with role-based access
+- **Audit Logging**: Comprehensive audit trail of all system changes and user actions
+- **Settings Redesign**: Modern settings page with collapsible sidebar
+- **Admin Recovery Tool**: CLI tool for recovering locked admin accounts
+- **Password Policy**: Enforced password requirements for security
+- **Account Lockout**: Protection against brute-force attacks
+
+#### Migration Process
+
+The migration from v3.1 to v4.0 happens automatically:
+
+1. **Backup Creation**: Database backup is created automatically
+2. **Schema Update**: New tables (`users`, `sessions`, `audit_log`) are created
+3. **Default User**: Admin user is seeded with default credentials
+4. **Session Migration**: Existing sessions are invalidated (users must log in)
+5. **Data Preservation**: All existing backup data, servers, and configuration are preserved
+
+#### Post-Migration Steps
+
+After migration completes:
+
+1. Log in with default admin credentials
+2. Change admin password when prompted
+3. Create user accounts for other users
+4. Review audit logs to verify system is working
+5. Update external API integrations to include authentication
+6. Configure audit log retention if needed
+
 ### Version 0.8.x
 
 When upgrading to version 0.8.x from 0.7.x or earlier:
@@ -133,6 +210,9 @@ The following table summarises major database schema changes across versions:
 
 | Version | Change Type | Details |
 |---------|-------------|---------|
+| 0.9.x | Schema | Added `users`, `sessions`, `audit_log` tables (v4.0) |
+| 0.9.x | Security | Complete authentication and authorization system |
+| 0.9.x | Breaking | All pages and APIs now require authentication |
 | 0.8.x | Security | Added encryption support for sensitive data, master key system |
 | 0.8.x | Schema | Enhanced session management and CSRF token storage |
 | 0.7.x | Table Rename | `machines` → `servers`, `machine_id` → `server_id` |
@@ -177,6 +257,13 @@ Internal API endpoints used by the web interface are automatically handled durin
    - Ensure `.duplistatus.key` file is accessible
    - Verify file permissions are set correctly (0400)
    - Check container logs for key generation errors
+
+6. **Authentication Issues** (0.9.x+):
+   - Verify default admin account was created (check logs)
+   - Try logging in with default credentials (`admin` / `Duplistatus09`)
+   - If locked out, use admin recovery tool: `docker exec -it duplistatus /app/admin-recovery admin NewPassword123`
+   - Check that database migration completed successfully
+   - Verify `users` table exists in database
 
 ### Recovery Steps
 
@@ -230,6 +317,12 @@ After completing migration, verify the following:
 - [ ] Check database size and performance
 - [ ] Review and update notification templates (0.8.x+)
 - [ ] Verify master key file exists and is secured (0.8.x+)
+- [ ] Log in with default admin credentials (0.9.x+)
+- [ ] Change default admin password (0.9.x+)
+- [ ] Create user accounts for other users (0.9.x+)
+- [ ] Update external API integrations with authentication (0.9.x+)
+- [ ] Configure audit log retention (0.9.x+)
+- [ ] Review audit logs to verify system operation (0.9.x+)
 
 ## Rollback Procedure
 

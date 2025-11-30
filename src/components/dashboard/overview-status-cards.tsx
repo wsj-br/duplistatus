@@ -195,6 +195,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                           <div
                             className="grid grid-cols-[35%_35%_30%] items-center p-2 hover:bg-muted/50 rounded cursor-pointer transition-colors"
                             onClick={() => handleBackupClick(backup.serverId, backup.backupName)}
+                            data-screenshot-target="overdue-backup-item"
                           >
                             <div className="text-xs text-muted-foreground truncate">
                               {backup.serverAlias || backup.serverName}
@@ -226,6 +227,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                         avoidCollisions={true}
                         collisionPadding={24}
                         className="cursor-default space-y-3 min-w-[300px] max-w-[400px] z-[9999]"
+                        data-screenshot-target="overdue-backup-tooltip"
                         onClick={(e) => {
                           e.stopPropagation();
                           // Close the tooltip by clicking outside

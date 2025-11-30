@@ -37,14 +37,6 @@ Perform a complete Docker cleanup, which is useful for:
 - Cleaning up after development or testing sessions
 - Maintaining a clean Docker environment
 
-## Generate the logo/favicon and banner from SVG images
-
-```bash
-scripts/convert_svg_logo.sh
-```
-
-> The SVG files are located in the `docs/img` folder. This script requires ImageMagick to be installed on your system.
-
 ## Update the packages to the latest version
 
 ```bash
@@ -69,6 +61,89 @@ This script automatically updates the `.env` file with the current version from 
 - Creates or updates the `.env` file with the `VERSION` variable
 - Only updates if the version has changed
 - Provides feedback on the operation
+
+## Pre-checks script
+
+```bash
+./scripts/pre-checks.sh
+```
+
+This script runs pre-checks before starting the development server, building, or starting the production server. It:
+- Ensures the `.duplistatus.key` file exists (via `ensure-key-file.sh`)
+- Updates the version information (via `update-version.sh`)
+
+This script is automatically called by `pnpm dev`, `pnpm build`, and `pnpm start-local`.
+
+## Ensure key file exists
+
+```bash
+./scripts/ensure-key-file.sh
+```
+
+This script ensures the `.duplistatus.key` file exists in the `data` directory. It:
+- Creates the `data` directory if it doesn't exist
+- Generates a new 32-byte random key file if missing
+- Sets file permissions to 0400 (read-only for owner)
+- Fixes permissions if they are incorrect
+
+The key file is used for cryptographic operations in the application.
+
+## Admin account recovery
+
+```bash
+tsx scripts/admin-recovery.ts <username> <new-password>
+```
+
+This script allows recovery of admin accounts if locked out or password forgotten. It:
+- Resets the password for the specified user
+- Unlocks the account if it was locked
+- Resets failed login attempts counter
+- Clears the "must change password" flag
+- Validates password meets security requirements
+- Logs the action to the audit log
+
+**Example:**
+```bash
+tsx scripts/admin-recovery.ts admin NewPassword123
+```
+
+>[!CAUTION]
+> This script directly modifies the database. Use only when necessary for account recovery.
+
+## Docker build script
+
+```bash
+./scripts/docker-build.sh
+```
+
+Builds a Docker image with the version from `.env` or `package.json`. The script:
+- Extracts the version from `.env` file (or falls back to `package.json`)
+- Builds the Docker image with the version as a build argument
+- Tags the image as `duplistatus:$VERSION`
+
+## Docker Compose with version
+
+```bash
+./scripts/docker-compose-with-version.sh [docker-compose-args]
+```
+
+Runs docker-compose with the version automatically set from `.env` or `package.json`. This script:
+- Exports the version as an environment variable
+- Passes all arguments to docker-compose
+- Ensures version consistency across Docker operations
+
+## Copy images
+
+```bash
+./scripts/copy-images.sh
+```
+
+Copies image files from `website/static/img` to their appropriate locations in the application:
+- Copies `favicon.ico` to `src/app/`
+- Copies `duplistatus_logo.png` to `public/images/`
+- Copies `duplistatus_banner.png` to `public/images/`
+
+Useful for keeping application images synchronized with documentation images.
 
 ## Viewing the configurations in the database
 

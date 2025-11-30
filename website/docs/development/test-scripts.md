@@ -67,3 +67,33 @@ pnpm test-cron-port
 ```
 
 This script tests the connectivity to the cron service port and provides detailed information about the connection status.
+
+## Test password utilities
+
+```bash
+tsx scripts/test-password.ts
+```
+
+This script tests the password utility functions used by the authentication system. It verifies:
+- Password validation (length, complexity requirements)
+- Password hashing (bcrypt with salt)
+- Password verification
+- Secure password generation
+
+Useful for debugging password-related authentication issues.
+
+## Temporarily block NTFY server (for testing)
+
+```bash
+sudo ./scripts/temporary_ntfy.sh_block.sh
+```
+
+This script temporarily blocks outgoing network access to the NTFY server (`ntfy.sh`) to test the notification retry mechanism. It:
+- Resolves the IP address of the NTFY server
+- Adds an iptables rule to block outgoing traffic
+- Blocks for 10 seconds (configurable)
+- Automatically removes the block rule on exit
+- Requires root privileges (sudo)
+
+>[!CAUTION]
+> This script modifies iptables rules and requires root privileges. Use only for testing notification retry mechanisms.
