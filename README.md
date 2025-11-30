@@ -3,7 +3,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![version](https://img.shields.io/badge/version-0.8.21-blue)
+![version](https://img.shields.io/badge/version-0.9.8-blue)
 
 <br/>
 
@@ -45,6 +45,8 @@ It also provides API endpoints that can be integrated with third-party tools suc
 - **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
+- **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), password policies, account lockout protection, and comprehensive user management.
+- **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 
 
 ## Installation
