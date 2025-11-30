@@ -1,7 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getSMTPConfig, setSMTPConfig, deleteSMTPConfig } from '@/lib/db-utils';
 import type { SMTPConfig } from '@/lib/types';
+import { requireAdmin } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 export const GET = withCSRF(async () => {
   try {
@@ -58,7 +61,7 @@ export const GET = withCSRF(async () => {
   }
 });
 
-export const POST = withCSRF(async (request: Request) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     const body = await request.json();
     
@@ -98,6 +101,28 @@ export const POST = withCSRF(async (request: Request) => {
     // Save configuration
     setSMTPConfig(smtpConfig);
 
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logConfigChange(
+        'email_config_updated',
+        authContext.userId,
+        authContext.username,
+        'smtp_config',
+        {
+          host: smtpConfig.host,
+          port: smtpConfig.port,
+          secure: smtpConfig.secure,
+          username: smtpConfig.username,
+          mailto: smtpConfig.mailto,
+          hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== ''),
+        },
+        ipAddress,
+        userAgent
+      );
+    }
+
     return NextResponse.json({
       success: true,
       message: 'SMTP configuration saved successfully'
@@ -109,9 +134,9 @@ export const POST = withCSRF(async (request: Request) => {
       { status: 500 }
     );
   }
-});
+}));
 
-export const DELETE = withCSRF(async () => {
+export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     // Check if configuration exists
     const config = getSMTPConfig();
@@ -125,6 +150,21 @@ export const DELETE = withCSRF(async () => {
     // Delete configuration
     deleteSMTPConfig();
 
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logConfigChange(
+        'email_config_deleted',
+        authContext.userId,
+        authContext.username,
+        'smtp_config',
+        {},
+        ipAddress,
+        userAgent
+      );
+    }
+
     return NextResponse.json({
       success: true,
       message: 'SMTP configuration deleted successfully'
@@ -136,4 +176,4 @@ export const DELETE = withCSRF(async () => {
       { status: 500 }
     );
   }
-});
+}));

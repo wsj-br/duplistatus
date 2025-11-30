@@ -62,7 +62,7 @@ RUN apk add --no-cache curl tzdata icu-libs icu-data-full
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=0.8.21 \
+ENV VERSION=0.9.8 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \
@@ -72,6 +72,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
+# Copy node_modules from builder (includes all dependencies including tsx for utility scripts)
 COPY --chown=node:node --from=builder /app/node_modules ./node_modules
 
 # Copy public files (now includes /docs from Docusaurus)
@@ -84,6 +85,9 @@ COPY --chown=node:node --from=builder /app/.next ./.next
 COPY --chown=node:node --from=builder /app/src/cron-service ./src/cron-service
 COPY --chown=node:node --from=builder /app/src/lib ./src/lib
 
+# Copy scripts directory (for admin recovery and other utility scripts)
+COPY --chown=node:node --from=builder /app/scripts ./scripts
+
 # Copy TypeScript configuration files
 COPY --chown=node:node --from=builder /app/tsconfig.json ./tsconfig.json
 
@@ -92,6 +96,9 @@ COPY --chown=node:node --from=builder /app/duplistatus-server.ts ./duplistatus-s
 
 # Copy duplistatus-server.sh and duplistatus-cron script
 COPY --chown=node:node --chmod=755 duplistatus-cron.sh /app/duplistatus-cron.sh
+
+# Copy admin recovery wrapper script
+COPY --chown=node:node --chmod=755 admin-recovery /app/admin-recovery
 
 # Create data directory & adjust permissions
 RUN mkdir -p /app/data && chown -R node:node /app/data
@@ -109,4 +116,4 @@ EXPOSE 9666 9667
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
   CMD curl -f -s http://localhost:9666/api/health || exit 1
 
-CMD ["sh", "-c", "node duplistatus-server.ts & /app/duplistatus-cron.sh"]
+CMD ["sh", "-c", "pnpm exec tsx duplistatus-server.ts & /app/duplistatus-cron.sh"]

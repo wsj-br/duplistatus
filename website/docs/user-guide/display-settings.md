@@ -4,7 +4,7 @@
 
 Configure user interface and display preferences.
 
-![Display Settings](/img/screen-display-settings.png)
+![Display Settings](/img/screen-settings-display.png)
 
 | Setting                   | Description                                         | Default Value       |
 | :------------------------ | :-------------------------------------------------- | :------------------ |

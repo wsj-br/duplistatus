@@ -6,7 +6,7 @@
 
 - Docker / Docker Compose
 - Node.js ^20.x (minimum: 20.19.0, recommended: 20.x)
-- pnpm ^10.x (minimum: 10.18.0, recommended: 10.18.0+)
+- pnpm ^10.x (minimum: 10.20.0, recommended: 10.20.0+)
 - SQLite3
 
 

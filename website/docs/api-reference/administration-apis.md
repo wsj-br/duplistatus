@@ -287,3 +287,424 @@
 - **Notes**:
   - Password can be an empty string to clear the password
   - Password is stored securely using the secrets management system
+
+## User Management
+
+### List Users - `/api/users`
+- **Endpoint**: `/api/users`
+- **Method**: GET
+- **Description**: Lists all users with pagination and optional search filtering. Returns user information including login history and account status.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Query Parameters**:
+  - `page` (optional): Page number (default: 1)
+  - `limit` (optional): Items per page (default: 50)
+  - `search` (optional): Search term to filter by username
+- **Response**:
+  ```json
+  {
+    "users": [
+      {
+        "id": "user-id",
+        "username": "admin",
+        "isAdmin": true,
+        "mustChangePassword": false,
+        "createdAt": "2024-01-01T00:00:00Z",
+        "lastLoginAt": "2024-01-15T10:30:00Z",
+        "lastLoginIp": "192.168.1.100",
+        "failedLoginAttempts": 0,
+        "lockedUntil": null,
+        "isLocked": false
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 50,
+      "total": 5,
+      "totalPages": 1
+    }
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+- **Notes**:
+  - Only accessible to admin users
+  - Supports pagination and search filtering
+  - Returns user account status including lock status
+
+### Create User - `/api/users`
+- **Endpoint**: `/api/users`
+- **Method**: POST
+- **Description**: Creates a new user account. Can generate a temporary password or use a provided password.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Request Body**:
+  ```json
+  {
+    "username": "newuser",
+    "password": "optional-password",
+    "isAdmin": false,
+    "requirePasswordChange": true
+  }
+  ```
+  - `username`: Required, must be 3-50 characters, unique
+  - `password`: Optional, if not provided a secure temporary password is generated
+  - `isAdmin`: Optional, default false
+  - `requirePasswordChange`: Optional, default true
+- **Response**:
+  ```json
+  {
+    "user": {
+      "id": "user-id",
+      "username": "newuser",
+      "isAdmin": false,
+      "mustChangePassword": true
+    },
+    "temporaryPassword": "generated-password-123"
+  }
+  ```
+  - `temporaryPassword` is only included if a password was auto-generated
+- **Error Responses**:
+  - `400`: Invalid username format, password policy violation, or validation errors
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `409`: Username already exists
+  - `500`: Internal server error
+- **Notes**:
+  - Only accessible to admin users
+  - Username is case-insensitive and stored in lowercase
+  - If password is not provided, a secure 12-character password is generated
+  - Generated temporary passwords are only returned once in the response
+  - User creation is logged to audit log
+
+### Update User - `/api/users/:id`
+- **Endpoint**: `/api/users/:id`
+- **Method**: PATCH
+- **Description**: Updates user information including username, admin status, password change requirement, and password reset.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Parameters**:
+  - `id`: User ID to update
+- **Request Body**:
+  ```json
+  {
+    "username": "updated-username",
+    "isAdmin": true,
+    "requirePasswordChange": false,
+    "resetPassword": true
+  }
+  ```
+  - All fields are optional
+  - `resetPassword`: If true, generates a new temporary password and sets `requirePasswordChange` to true
+- **Response** (with password reset):
+  ```json
+  {
+    "user": {
+      "id": "user-id",
+      "username": "updated-username",
+      "isAdmin": true,
+      "mustChangePassword": true
+    },
+    "temporaryPassword": "new-temp-password-456"
+  }
+  ```
+- **Response** (without password reset):
+  ```json
+  {
+    "user": {
+      "id": "user-id",
+      "username": "updated-username",
+      "isAdmin": true,
+      "mustChangePassword": false
+    }
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid input or validation errors
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `404`: User not found
+  - `409`: Username already exists (if changing username)
+  - `500`: Internal server error
+- **Notes**:
+  - Only accessible to admin users
+  - Username changes are validated for uniqueness
+  - Password reset generates a secure 12-character temporary password
+  - All changes are logged to audit log
+
+### Delete User - `/api/users/:id`
+- **Endpoint**: `/api/users/:id`
+- **Method**: DELETE
+- **Description**: Deletes a user account. Prevents deleting yourself or the last admin account.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Parameters**:
+  - `id`: User ID to delete
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "User deleted successfully"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Cannot delete your own account or the last admin account
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `404`: User not found
+  - `500`: Internal server error
+- **Notes**:
+  - Only accessible to admin users
+  - Cannot delete your own account
+  - Cannot delete the last admin account (at least one admin must remain)
+  - User deletion is logged to audit log
+  - Associated sessions are automatically deleted (cascade)
+
+## Audit Log Management
+
+### List Audit Logs - `/api/audit-log`
+- **Endpoint**: `/api/audit-log`
+- **Method**: GET
+- **Description**: Retrieves audit log entries with filtering, pagination, and search capabilities. Supports both page-based and offset-based pagination.
+- **Authentication**: Requires valid session and CSRF token (logged-in user required)
+- **Query Parameters**:
+  - `page` (optional): Page number for page-based pagination
+  - `offset` (optional): Offset for offset-based pagination (takes precedence over page)
+  - `limit` (optional): Items per page (default: 50)
+  - `startDate` (optional): Filter logs from this date (ISO format)
+  - `endDate` (optional): Filter logs to this date (ISO format)
+  - `userId` (optional): Filter by user ID
+  - `username` (optional): Filter by username
+  - `action` (optional): Filter by action name
+  - `category` (optional): Filter by category (`auth`, `user_management`, `config`, `backup`, `server`)
+  - `status` (optional): Filter by status (`success`, `failure`, `error`)
+- **Response**:
+  ```json
+  {
+    "logs": [
+      {
+        "id": 1,
+        "timestamp": "2024-01-15T10:30:00Z",
+        "userId": "user-id",
+        "username": "admin",
+        "action": "login",
+        "category": "auth",
+        "targetType": "user",
+        "targetId": "user-id",
+        "status": "success",
+        "ipAddress": "192.168.1.100",
+        "userAgent": "Mozilla/5.0...",
+        "details": {
+          "is_admin": true
+        },
+        "errorMessage": null
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 50,
+      "total": 150,
+      "totalPages": 3
+    }
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Internal server error
+- **Notes**:
+  - Supports both page-based (`page`) and offset-based (`offset`) pagination
+  - `details` field contains parsed JSON with additional context
+  - All audit log queries are logged
+
+### Get Audit Log Filter Values - `/api/audit-log/filters`
+- **Endpoint**: `/api/audit-log/filters`
+- **Method**: GET
+- **Description**: Retrieves unique filter values available for filtering audit logs. Returns all distinct actions, categories, and statuses that exist in the audit log database. Useful for populating filter dropdowns in the UI.
+- **Authentication**: Requires valid session and CSRF token (logged-in user required)
+- **Response**:
+  ```json
+  {
+    "actions": [
+      "login",
+      "logout",
+      "user_created",
+      "user_updated",
+      "config_updated"
+    ],
+    "categories": [
+      "auth",
+      "user_management",
+      "config",
+      "backup",
+      "server"
+    ],
+    "statuses": [
+      "success",
+      "failure",
+      "error"
+    ]
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Internal server error
+- **Notes**:
+  - Returns arrays of unique values from the audit log database
+  - Values are sorted alphabetically
+  - Empty arrays are returned if no data exists or on error
+  - Used by the audit log viewer to populate filter dropdowns dynamically
+
+### Get Audit Log Statistics - `/api/audit-log/stats`
+- **Endpoint**: `/api/audit-log/stats`
+- **Method**: GET
+- **Description**: Returns statistics about audit logs for a specified time period.
+- **Authentication**: Requires valid session and CSRF token (logged-in user required)
+- **Query Parameters**:
+  - `days` (optional): Number of days to analyze (default: 7)
+- **Response**:
+  ```json
+  {
+    "totalLogs": 150,
+    "successCount": 120,
+    "failureCount": 25,
+    "errorCount": 5,
+    "byCategory": {
+      "auth": 50,
+      "user_management": 30,
+      "config": 20,
+      "backup": 40,
+      "server": 10
+    },
+    "byStatus": {
+      "success": 120,
+      "failure": 25,
+      "error": 5
+    }
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Internal server error
+- **Notes**:
+  - Statistics are calculated for the specified number of days
+  - Provides breakdown by category and status
+
+### Download Audit Logs - `/api/audit-log/download`
+- **Endpoint**: `/api/audit-log/download`
+- **Method**: GET
+- **Description**: Downloads audit logs in CSV or JSON format with optional filtering. Useful for external analysis and reporting.
+- **Authentication**: Requires valid session and CSRF token (logged-in user required)
+- **Query Parameters**:
+  - `format` (optional): Export format - `csv` or `json` (default: `csv`)
+  - `startDate` (optional): Filter logs from this date (ISO format)
+  - `endDate` (optional): Filter logs to this date (ISO format)
+  - `userId` (optional): Filter by user ID
+  - `username` (optional): Filter by username
+  - `action` (optional): Filter by action name
+  - `category` (optional): Filter by category
+  - `status` (optional): Filter by status
+- **Response** (CSV):
+  - Content-Type: `text/csv`
+  - Content-Disposition: `attachment; filename="audit-log-YYYY-MM-DD.csv"`
+  - CSV file with headers: ID, Timestamp, User ID, Username, Action, Category, Target Type, Target ID, Status, IP Address, User Agent, Details, Error Message
+- **Response** (JSON):
+  - Content-Type: `application/json`
+  - Content-Disposition: `attachment; filename="audit-log-YYYY-MM-DD.json"`
+  - JSON array of audit log entries
+- **Error Responses**:
+  - `400`: No logs to export
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Internal server error
+- **Notes**:
+  - Export limit is 10,000 records
+  - CSV format escapes special characters properly
+  - Details field in CSV is JSON-stringified
+  - File name includes the current date
+
+### Cleanup Audit Logs - `/api/audit-log/cleanup`
+- **Endpoint**: `/api/audit-log/cleanup`
+- **Method**: POST
+- **Description**: Manually triggers cleanup of old audit logs based on retention period. Supports dry-run mode to preview what would be deleted.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Request Body**:
+  ```json
+  {
+    "retentionDays": 90,
+    "dryRun": false
+  }
+  ```
+  - `retentionDays` (optional): Override retention days (30-365), otherwise uses configured value
+  - `dryRun` (optional): If true, only returns what would be deleted without actually deleting
+- **Response** (dry run):
+  ```json
+  {
+    "dryRun": true,
+    "wouldDeleteCount": 50,
+    "oldestRemaining": "2024-01-01T00:00:00Z",
+    "retentionDays": 90,
+    "cutoffDate": "2024-01-01"
+  }
+  ```
+- **Response** (actual cleanup):
+  ```json
+  {
+    "success": true,
+    "deletedCount": 50,
+    "oldestRemaining": "2024-01-01T00:00:00Z",
+    "retentionDays": 90
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid retention days (must be 30-365)
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+- **Notes**:
+  - Only accessible to admin users
+  - Default retention is 90 days if not configured
+  - Cleanup operation is logged to audit log
+  - Dry-run mode is useful for previewing cleanup impact
+
+### Get Audit Log Retention - `/api/audit-log/retention`
+- **Endpoint**: `/api/audit-log/retention`
+- **Method**: GET
+- **Description**: Retrieves the current audit log retention configuration in days.
+- **Authentication**: Requires valid session and CSRF token (no logged-in user required)
+- **Response**:
+  ```json
+  {
+    "retentionDays": 90
+  }
+  ```
+- **Error Responses**:
+  - `500`: Internal server error
+- **Notes**:
+  - Default retention is 90 days if not configured
+  - Can be accessed without authentication (read-only)
+
+### Update Audit Log Retention - `/api/audit-log/retention`
+- **Endpoint**: `/api/audit-log/retention`
+- **Method**: PATCH
+- **Description**: Updates the audit log retention period in days. This setting determines how long audit logs are kept before automatic cleanup.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Request Body**:
+  ```json
+  {
+    "retentionDays": 120
+  }
+  ```
+  - `retentionDays`: Required, must be between 30 and 365 days
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "retentionDays": 120
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid retention days (must be 30-365)
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Internal server error
+- **Notes**:
+  - Only accessible to admin users
+  - Configuration change is logged to audit log
+  - Retention period affects automatic and manual cleanup operations

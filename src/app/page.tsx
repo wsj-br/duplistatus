@@ -1,5 +1,6 @@
 import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache } from "@/lib/db-utils";
 import { DashboardAutoRefresh } from "@/components/dashboard/dashboard-auto-refresh";
+import { requireServerAuth } from "@/lib/auth-server";
 
 // Force dynamic rendering and disable caching
 export const dynamic = 'force-dynamic';
@@ -16,6 +17,9 @@ export async function generateMetadata() {
 }
 
 export default async function DashboardPage() {
+  // Require authentication - redirects to login if not authenticated
+  await requireServerAuth();
+  
   // Clear request cache at the start of each page load to ensure fresh data
   clearRequestCache();
   

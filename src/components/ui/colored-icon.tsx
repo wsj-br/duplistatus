@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface ColoredIconProps {
   icon: LucideIcon;
-  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray';
+  color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray' | 'orange';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -18,6 +18,7 @@ const colorClasses = {
   red: 'text-red-500',
   purple: 'text-purple-500',
   gray: 'text-gray-500',
+  orange: 'text-orange-500',
 };
 
 const sizeClasses = {

@@ -1,5 +1,4 @@
-
-![duplistatus](img/duplistatus_banner.png)
+![duplistatus](../website/static/img/duplistatus_banner.png)
 
 # TODO List
 
@@ -10,41 +9,71 @@
 - [Fix](#fix)
 - [Changes needed](#changes-needed)
 - [New Features (planned or under analysis)](#new-features-planned-or-under-analysis)
-  - [Nice to have](#nice-to-have)
+- [Nice to have](#nice-to-have)
 - [List of changes](#list-of-changes)
   - [Implemented in Version 0.3.8 ✅](#implemented-in-version-038-)
   - [Implemented in Version 0.4.0 ✅](#implemented-in-version-040-)
   - [Implemented in Version 0.5.0 ✅](#implemented-in-version-050-)
   - [Implemented in Version 0.6.1 ✅](#implemented-in-version-061-)
   - [Implemented in Version 0.7.27 ✅](#implemented-in-version-0727-)
-  - [Implemented in Version 0.8.x 🚧](#implemented-in-version-08x-)
+  - [Implemented in Version 0.8.x ✅](#implemented-in-version-08x-)
+  - [Implemented in Version 0.9.x ✅](#implemented-in-version-09x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+<br/><br/>
 
 ## Fix
 
 none
 
+<br/>
+
+
 ## Changes needed
 
 
+- When collecting backups, if the server is not available, the application should include the server name in the error message.
+
+  Current error message:
+  ```
+  2025-11-09T02:15:13.897668838Z Error collecting backups: Could not establish connection with any protocol. Attempts failed:
+  2025-11-09T02:15:13.897727778Z HTTPS: Connection timed out after 15000ms
+  2025-11-09T02:15:13.897741138Z HTTP: Idle timeout after 15000ms
+  ````
+
+  Expected error message:
+  ```
+  2025-11-09T02:15:13.897668838Z Error collecting backups server "server-name": Could not establish connection with any protocol. Attempts failed:
+  2025-11-09T02:15:13.897727778Z HTTPS: Connection timed out after 15000ms (https://server-name:8200)
+  2025-11-09T02:15:13.897741138Z HTTP: Idle timeout after 15000ms (http://server-name:8200)
+  ```
+
+- make the sidebar on the settings page collapsible, showing only the icons when collapsed.
+
+- adjust the tab collumns width on the overdue monitoring page to avoid horizontal scrolling.
 
 
 
-- replace the documentation to use Docusaurus
+<br/>
 
 ## New Features (planned or under analysis)
+
+- make the documentation button be aware of the current page and open the correct documentation page.
+
+<br/>
+
+## Nice to have
 
 none
 
 
 
-
-### Nice to have
-- Include in the documentation how to serve using HTTPS (nginx/certbot or Caddy) ✅
-
+<br/><br/>
 
 ---
+
+<br/><br/>
 
 ## List of changes
 
@@ -138,12 +167,12 @@ none
 
 **IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
 
-- **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](API-ENDPOINTS.md#get-overall-summary---apisummary)
-- **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](API-ENDPOINTS.md#get-latest-backup---apilastbackupserverid))
-- **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](API-ENDPOINTS.md#get-latest-backups---apilastbackupsserverid))
+- **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](../website/docs/api-reference/external-apis.md#get-overall-summary---apisummary))
+- **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](../website/docs/api-reference/external-apis.md#get-latest-backup---apilastbackupserverid))
+- **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](../website/docs/api-reference/external-apis.md#get-latest-backups---apilastbackupsserverid))
 
 
-### Implemented in Version 0.8.x 🚧
+### Implemented in Version 0.8.x ✅
 
 **Server Management Enhancements:**
 - Automatic server URL and password persistence when collecting backups for the first time
@@ -199,5 +228,126 @@ none
 
 
 
-  
+### Implemented in Version 0.9.x ✅
+
+**User Access Control & Security System:**
+
+- **Authentication System:**
+  - User login/logout functionality with secure session management
+  - Password-based authentication with bcrypt hashing (cost factor 12)
+  - Account lockout mechanism (5 failed attempts, 15-minute lockout)
+  - Forced password change on first login
+  - Password policy enforcement (minimum 8 characters, uppercase, lowercase, number required; special characters optional)
+  - "Remember me" functionality with username persistence in localStorage
+  - Session-based authentication with database-backed sessions (replaces in-memory)
+  - CSRF protection integrated with authentication
+  - HTTP-only cookies for session security
+  - IP address and user agent tracking for security monitoring
+
+- **User Management (Admin Only):**
+  - User creation with automatic temporary password generation
+  - User list with search, pagination, and filtering
+  - User editing (username, admin status, password change requirement)
+  - Password reset functionality with temporary password display
+  - User deletion with safeguards (prevents deletion of last admin)
+  - Role-based access control (Admin/User roles)
+  - Status indicators (Active, Locked, Must Change Password)
+  - Last login tracking and display
+
+- **Audit Logging System:**
+  - Comprehensive audit trail for all system changes and user actions
+  - Audit log viewer with advanced filtering (date range, user, action, category, status)
+  - Export functionality (CSV and JSON formats)
+  - Audit log statistics and analytics
+  - Configurable retention period (30-365 days, default: 90 days)
+  - Automatic cleanup cron job (runs daily at 2 AM UTC)
+  - Manual cleanup API with dry-run support
+  - Audit logging for:
+    - Authentication events (login, logout, password changes, account lockouts)
+    - User management operations (create, update, delete, password resets)
+    - Configuration changes (email, NTFY, templates, overdue tolerance, backup settings)
+    - Backup operations (collection, deletion, cleanup)
+    - Server management (add, update, delete)
+    - System operations (migrations, cleanup, overdue checks, notifications)
+
+- **Database Schema v4.0:**
+  - New tables: `users`, `sessions`, `audit_log`
+  - Automatic migration from v3.1 to v4.0 for existing installations
+  - New installations start directly with schema v4.0 (no migration needed)
+  - Default admin user seeded (username: `admin`, password: `Duplistatus09` - must change on first login)
+  - Database-backed session storage (sessions persist across server restarts)
+  - Comprehensive indexes for optimal performance
+
+- **Settings Page Redesign:**
+  - Modern sidebar navigation with collapsible sidebar
+  - User-specific sidebar state persistence (collapsed/expanded preference saved per user)
+  - Grouped settings sections:
+    - **Notifications**: Backup Notifications, Overdue Monitoring, Templates
+    - **Integrations**: NTFY, Email
+    - **System**: Servers, Users (admin only), Audit Log
+  - Sticky sidebar that remains visible while scrolling
+  - Responsive design with optimized spacing
+  - Settings icon and "System Settings" title in sidebar header
+  - Back button integrated into app header
+
+- **User Interface Enhancements:**
+  - Standalone login page with modern design
+  - "Remember me" checkbox on login form for username persistence
+  - Show/hide password buttons on login and password change forms
+  - Change password modal with real-time validation checklist
+  - User indicator and logout button in app header
+  - Role-based UI visibility (admin-only features hidden from regular users)
+  - Status badges and indicators throughout the UI
+  - User-specific preferences stored in localStorage (e.g., sidebar collapsed state)
+
+- **Security Features:**
+  - Password hashing with bcrypt (industry-standard)
+  - Sensitive data sanitization in audit logs (passwords, tokens, secrets never logged)
+  - Rate limiting for login attempts
+  - Session expiration (24 hours)
+  - CSRF token validation for all state-changing operations
+  - Admin recovery CLI tool for password reset if locked out
+
+- **API Endpoints:**
+  - `POST /api/auth/login` - User authentication
+  - `POST /api/auth/logout` - Session termination
+  - `GET /api/auth/me` - Current user information
+  - `POST /api/auth/change-password` - Password change
+  - `GET /api/users` - List users (admin only)
+  - `POST /api/users` - Create user (admin only)
+  - `PATCH /api/users/{id}` - Update user (admin only)
+  - `DELETE /api/users/{id}` - Delete user (admin only)
+  - `GET /api/audit-log` - Query audit logs
+  - `GET /api/audit-log/download` - Export audit logs
+  - `GET /api/audit-log/stats` - Audit statistics
+  - `POST /api/audit-log/cleanup` - Manual cleanup (admin only)
+  - `GET /api/audit-log/retention` - Get retention setting
+  - `PATCH /api/audit-log/retention` - Update retention (admin only)
+
+- **Developer Tools:**
+  - Admin recovery CLI script (`scripts/admin-recovery.ts`)
+  - Shell wrapper script (`admin-recovery`) for easy execution in Docker containers
+  - Works both locally and in Docker with automatic path detection
+  - Comprehensive TypeScript interfaces (no `any` types)
+  - Authentication middleware for route protection
+  - Audit logger utility class with convenience methods
+
+**Technical Improvements:**
+- Database operations use prepared statements for performance and security
+- Graceful error handling throughout authentication flow
+- Backward compatibility maintained during migration
+- Automatic database backup before migration
+- Session cleanup on database initialization
+- All new code follows DRY principles and project conventions
+- Docker integration for admin recovery tool:
+  - Scripts directory copied to Docker container (`/app/scripts`)
+  - Shell wrapper script available at `/app/admin-recovery` in containers
+  - Uses `pnpm exec tsx` for consistent package manager usage
+  - Fixed ES module compatibility (replaced CommonJS `require` with ES `import`)
+  - Documentation updated with Docker usage instructions
+
+
+
+
+
 

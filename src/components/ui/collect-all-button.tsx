@@ -10,7 +10,8 @@ import { Loader2, Import } from 'lucide-react';
 import { 
   collectFromMultipleServers, 
   getEligibleServers, 
-  formatCollectionSummary 
+  formatCollectionSummary,
+  isValidUrl
 } from '@/lib/bulk-collection';
 
 interface CollectAllButtonProps {
@@ -23,7 +24,7 @@ interface CollectAllButtonProps {
   showInstructionToast?: boolean;
   onCollectionStart?: (showInstructionToast: boolean) => void;
   onCollectionEnd?: () => void;
-  onServerStatusUpdate?: (serverId: string, status: 'testing' | 'success' | 'failed' | 'collecting' | 'collected') => void;
+  onServerStatusUpdate?: (serverId: string, status: 'testing' | 'success' | 'failed' | 'collecting' | 'collected' | 'need_url' | 'need_password' | 'need_url_and_password') => void;
   // Dynamic mode props for hostname/password based servers
   dynamicMode?: boolean;
   dynamicPort?: string;
@@ -81,6 +82,22 @@ export function CollectAllButton({
   };
 
   const handleCollectAll = useCallback(async () => {
+    // Identify and update status for ineligible servers
+    if (!dynamicMode) {
+      servers.forEach(server => {
+        const hasUrl = server.server_url && server.server_url.trim() !== '' && isValidUrl(server.server_url);
+        const hasPassword = server.hasPassword;
+        
+        if (!hasUrl && !hasPassword) {
+          onServerStatusUpdate?.(server.id, 'need_url_and_password');
+        } else if (!hasUrl) {
+          onServerStatusUpdate?.(server.id, 'need_url');
+        } else if (!hasPassword) {
+          onServerStatusUpdate?.(server.id, 'need_password');
+        }
+      });
+    }
+
     if (eligibleServers.length === 0) {
       if (showInstructionToast) {
         toast({

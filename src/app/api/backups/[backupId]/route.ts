@@ -2,11 +2,15 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { getConfigBackupSettings, setConfigBackupSettings } from '@/lib/db-utils';
+import { getAuthContext } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 export const DELETE = withCSRF(async (
   request: NextRequest,
   { params }: { params: Promise<{ backupId: string }> }
 ) => {
+  const authContext = await getAuthContext(request);
   // Only allow deletion in development mode
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json(
@@ -86,6 +90,25 @@ export const DELETE = withCSRF(async (
     } catch (error) {
       console.error('Error updating backup_settings:', error instanceof Error ? error.message : String(error));
       // Don't fail the deletion if backup_settings update fails
+    }
+
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logBackupOperation(
+        'backup_deleted',
+        authContext.userId,
+        authContext.username,
+        backupId,
+        {
+          serverId: deletedBackup.server_id,
+          backupName: deletedBackup.backup_name,
+          backupDate: deletedBackup.date,
+        },
+        ipAddress,
+        userAgent
+      );
     }
 
     return NextResponse.json({

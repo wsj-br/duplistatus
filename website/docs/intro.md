@@ -11,8 +11,12 @@
 - **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
+- **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), password policies, account lockout protection, and comprehensive user management.
+- **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 
 >[!IMPORTANT]
+> - **Authentication Required**: All pages now require user authentication. A default admin account is created automatically (username: `admin`, password: `Duplistatus09` - must be changed on first login).
+> 
 > - If you are upgrading from an earlier version, your database will be automatically 
 > [migrated](migration/version_upgrade.md) to the new schema during the upgrade process.
 > 
@@ -39,19 +43,19 @@ See the [User Guide](user-guide/overview.md) for detailed instructions on how to
 
 ### Dashboard
 
-![dashboard](/img/screen-dashboard.png)
+![dashboard](/img/screen-main-dashboard-card-mode.png)
 
 ### Backup History
 
-![server-detail](/img/screen-server.png)
+![server-detail](/img/screen-server-backup-list.png)
 
 ### Backup Details
 
-![backup-detail](/img/screen-backup.png)
+![backup-detail](/img/screen-backup-detail.png)
 
 ### Overdue Backups
 
-![overdue backups](/img/screen-overdue-tooltip.png)
+![overdue backups](/img/screen-overdue-backup-hover-card.png)
 
 ### Overdue notifications on your phone
 

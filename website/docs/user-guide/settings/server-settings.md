@@ -1,10 +1,10 @@
 
 
-# Server Settings
+# Server 
 
 You can configure an alternative name (alias) for your servers, a note to describe its function and the web addresses of your Duplicati Servers here.
 
-![server settings](/img/screen-settings-server-settings.png)
+![server settings](/img/screen-settings-server.png)
 
 | Setting                         | Description                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -40,11 +40,11 @@ You can configure an alternative name (alias) for your servers, a note to descri
 
 ## Available Actions for all servers
 
-| Button                                                    | Description                                     |
-|:----------------------------------------------------------|:------------------------------------------------|
-| `Save Changes`                                            | Save the changes made to the server settings.   |
-| <IconButton icon="lucide:fast-forward" label="Test All"/> | Test the connection to all Duplicati servers.   |
-| <IconButton icon="lucide:import" label="Collect All"/>    | Collect backup logs from all Duplicati servers. |
+| Button                                                     | Description                                     |
+|:-----------------------------------------------------------|:------------------------------------------------|
+| <IconButton label="Save Changes" />                        | Save the changes made to the server settings.   |
+| <IconButton icon="lucide:fast-forward" label="Test All"/>  | Test the connection to all Duplicati servers.   |
+| <IconButton icon="lucide:import" label="Collect All (#)"/> | Collect backup logs from all Duplicati servers. |
 
 <br/>
 

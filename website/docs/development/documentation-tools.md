@@ -90,6 +90,46 @@ This script:
 npm install -g doctoc
 ```
 
+## Update README for Docker Hub
+
+```bash
+./scripts/update-readme-for-dockerhub.sh
+```
+
+This script creates a Docker Hub-compatible version of the README (`README_dockerhub.md`). It:
+- Copies `README.md` to `README_dockerhub.md`
+- Converts relative image paths to absolute GitHub raw URLs
+- Converts relative document links to absolute GitHub blob URLs
+- Ensures all images and links work correctly on Docker Hub
+
+This script is automatically called by `generate-readme-from-intro.sh`.
+
+## Take screenshots for documentation
+
+```bash
+tsx scripts/take-screenshots.ts
+```
+
+This script automatically takes screenshots of the application for documentation purposes. It:
+- Launches a headless browser (Puppeteer)
+- Logs in as admin and regular user
+- Navigates through various pages (dashboard, server details, settings, etc.)
+- Takes screenshots at different viewport sizes
+- Saves screenshots to `website/static/img/`
+
+**Requirements:**
+- The development server must be running on `http://localhost:8666`
+- Environment variables must be set:
+  - `ADMIN_PASSWORD`: Password for admin account
+  - `USER_PASSWORD`: Password for regular user account
+
+**Example:**
+```bash
+export ADMIN_PASSWORD="your-admin-password"
+export USER_PASSWORD="your-user-password"
+tsx scripts/take-screenshots.ts
+```
+
 ## Deploying the Documentation
 
 

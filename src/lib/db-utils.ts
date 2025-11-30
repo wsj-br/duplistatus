@@ -1,4 +1,4 @@
-import { db, dbOps } from './db';
+import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
 import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
@@ -725,7 +725,10 @@ export function getServerById(serverId: string) {
   });
 }
 
-export function getAggregatedChartData() {
+export async function getAggregatedChartData() {
+  // Wait for database initialization before accessing operations
+  await waitForDatabaseReady();
+  
   try {
     return withDb(() => {
       const result = safeDbOperation(() => dbOps.getAggregatedChartData.all(), 'getAggregatedChartData', []) as {
@@ -861,6 +864,9 @@ export function getServerBackupChartDataWithTimeRange(serverId: string, backupNa
 
 // New function to get server summary for the new dashboard
 export async function getServersSummary() {
+  // Wait for database initialization before accessing operations
+  await waitForDatabaseReady();
+  
   try {
     return await withDb(async () => {
       const rows = safeDbOperation(() => dbOps.getServersSummary.all(), 'getServersSummary', []) as Array<{

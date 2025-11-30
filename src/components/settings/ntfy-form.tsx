@@ -143,7 +143,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card variant="modern">
         <CardHeader>
           <div className="flex items-center gap-3">

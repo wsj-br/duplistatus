@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { requireServerAuth } from "@/lib/auth-server";
 
 interface BackupLogPageProps {
   params: Promise<{
@@ -25,6 +26,9 @@ interface BackupLogPageProps {
     backupId: string;
   }>;
 }
+
+// Force dynamic rendering - this page uses dynamic APIs (cookies, headers) via requireServerAuth
+export const dynamic = 'force-dynamic';
 
 const cleanLogMessage = (message: string): string => {
   return message.replace(/\[.*?\]:/g, '');
@@ -202,6 +206,9 @@ const AvailableBackupsTable = ({ availableBackups, currentBackupDate }: { availa
 };
 
 export default async function BackupLogPage({ params }: BackupLogPageProps) {
+  // Require authentication - redirects to login if not authenticated
+  await requireServerAuth();
+  
   const { serverId, backupId } = await params;
   
   // Add error handling for database operations
@@ -375,10 +382,4 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
       </div>
     </div>
   );
-}
-
-export async function generateStaticParams() {
-  // This is a placeholder function - Next.js expects it to return params
-  // You would need to implement actual data fetching here if needed
-  return [];
 } 

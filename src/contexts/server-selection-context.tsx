@@ -1,7 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect, useRef } from 'react';
 import type { ServerSummary } from '@/lib/types';
+import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 interface ServerSelectionState {
   selectedServerId: string | null;
@@ -27,6 +29,8 @@ interface ServerSelectionProviderProps {
 }
 
 export function ServerSelectionProvider({ children }: ServerSelectionProviderProps) {
+  const currentUser = useCurrentUser();
+  
   // Initialize view mode and overview side panel from localStorage (lazy initialization)
   const [state, setState] = useState<ServerSelectionState>(() => {
     // Check if we're in a browser environment (not SSR)
@@ -40,9 +44,28 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
       };
     }
 
+    // Default values - will be updated when user loads
+    return {
+      selectedServerId: null,
+      viewMode: 'overview',
+      servers: [],
+      isInitialized: true,
+      overviewSidePanel: 'status',
+    };
+  });
+
+  const hasLoadedUserConfigRef = useRef(false);
+
+  // Load user-specific settings when user is available
+  useEffect(() => {
+    if (typeof window === 'undefined' || currentUser === null || hasLoadedUserConfigRef.current) {
+      return;
+    }
+
+    hasLoadedUserConfigRef.current = true;
     try {
-      const savedViewMode = localStorage.getItem('dashboard-view-mode');
-      const savedOverviewSidePanel = localStorage.getItem('overview-side-panel');
+      const savedViewMode = getUserLocalStorageItem('dashboard-view-mode', currentUser.id);
+      const savedOverviewSidePanel = getUserLocalStorageItem('overview-side-panel', currentUser.id);
       
       const viewMode = (savedViewMode === 'analytics' || savedViewMode === 'table' || savedViewMode === 'overview') 
         ? savedViewMode 
@@ -52,24 +75,16 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
         ? savedOverviewSidePanel
         : 'status';
       
-      return {
-        selectedServerId: null,
-        viewMode,
-        servers: [],
-        isInitialized: true,
-        overviewSidePanel,
-      };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setState(prev => ({
+        ...prev,
+        viewMode: viewMode as 'analytics' | 'table' | 'overview',
+        overviewSidePanel: overviewSidePanel as 'status' | 'chart',
+      }));
     } catch (error) {
       console.error('Error loading settings from localStorage:', error);
-      return {
-        selectedServerId: null,
-        viewMode: 'overview',
-        servers: [],
-        isInitialized: true,
-        overviewSidePanel: 'status',
-      };
     }
-  });
+  }, [currentUser]);
 
   const setSelectedServerId = useCallback((serverId: string | null) => {
     setState(prev => ({ ...prev, selectedServerId: serverId }));
@@ -77,15 +92,15 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
 
   const setViewMode = useCallback((viewMode: 'analytics' | 'table' | 'overview') => {
     setState(prev => ({ ...prev, viewMode }));
-    // Save to localStorage (only in browser environment)
-    if (typeof window !== 'undefined') {
+    // Save to localStorage (only in browser environment and if user is loaded)
+    if (typeof window !== 'undefined' && currentUser) {
       try {
-        localStorage.setItem('dashboard-view-mode', viewMode);
+        setUserLocalStorageItem('dashboard-view-mode', currentUser.id, viewMode);
       } catch (error) {
         console.error('Error saving view mode to localStorage:', error);
       }
     }
-  }, []);
+  }, [currentUser]);
 
   const setServers = useCallback((servers: ServerSummary[]) => {
     setState(prev => ({ ...prev, servers }));
@@ -93,15 +108,15 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
 
   const setOverviewSidePanel = useCallback((panel: 'status' | 'chart') => {
     setState(prev => ({ ...prev, overviewSidePanel: panel }));
-    // Save to localStorage (only in browser environment)
-    if (typeof window !== 'undefined') {
+    // Save to localStorage (only in browser environment and if user is loaded)
+    if (typeof window !== 'undefined' && currentUser) {
       try {
-        localStorage.setItem('overview-side-panel', panel);
+        setUserLocalStorageItem('overview-side-panel', currentUser.id, panel);
       } catch (error) {
         console.error('Error saving overview side panel to localStorage:', error);
       }
     }
-  }, []);
+  }, [currentUser]);
 
   const getSelectedServer = useCallback(() => {
     if (!state.selectedServerId) return null;

@@ -82,7 +82,7 @@ export const getCSRFToken = async (): Promise<string> => {
     }
 
     const data = await response.json();
-    return data.csrfToken || '';
+    return data.token || data.csrfToken || '';
   } catch (error) {
     console.error('Error retrieving CSRF token:', error);
     throw new Error('Unable to retrieve CSRF token');

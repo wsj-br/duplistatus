@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward } from 'lucide-react';
+import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward, SquareX } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
@@ -23,7 +23,7 @@ interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
 }
 
-type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing' | 'collecting' | 'collected';
+type ConnectionStatus = 'unknown' | 'success' | 'failed' | 'testing' | 'collecting' | 'collected' | 'need_url' | 'need_password' | 'need_url_and_password';
 
 interface ServerConnectionWithStatus extends ServerAddress {
   connectionStatus: ConnectionStatus;
@@ -312,12 +312,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         return;
       }
 
-      // Set status to testing for all servers with server_url
+      // Set status to testing for all servers with server_url, and unknown for others
       setConnections(prev => prev.map(conn => {
         if (conn.server_url && conn.server_url.trim() !== '') {
           return { ...conn, connectionStatus: 'testing' as ConnectionStatus };
         }
-        return conn;
+        return { ...conn, connectionStatus: 'unknown' as ConnectionStatus };
       }));
 
       let successCount = 0;
@@ -422,6 +422,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           });
           
           if (!response.ok) {
+            if (response.status === 403) {
+              throw new Error('You do not have permission to modify server settings. Only administrators can change configurations.');
+            }
             const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
             throw new Error(`Failed to update server ${connection.id}: ${response.status} ${response.statusText} - ${errorData.error || 'Unknown error'}`);
           }
@@ -479,6 +482,10 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
       case 'collecting':
         return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
+      case 'need_url':
+      case 'need_password':
+      case 'need_url_and_password':
+        return <SquareX className="h-5 w-5 text-yellow-400" />;
       default:
         return <Ellipsis className="h-5 w-5 text-gray-400" />;
     }
@@ -653,7 +660,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card variant="modern">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -705,7 +712,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     Web Interface Address (URL)
                   </SortableTableHead>
                   <SortableTableHead 
-                    className="w-[100px] min-w-[80px]" 
+                    className="w-[150px] min-w-[120px]" 
                     column="connectionStatus" 
                     sortConfig={sortConfig} 
                     onSort={handleSort}
@@ -795,6 +802,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                             if (statusToDisplay === 'failed') return 'Failed';
                             if (statusToDisplay === 'testing') return 'Testing...';
                             if (statusToDisplay === 'collecting') return 'Collecting...';
+                            if (statusToDisplay === 'need_url') return 'Missing URL';
+                            if (statusToDisplay === 'need_password') return 'Missing Password';
+                            if (statusToDisplay === 'need_url_and_password') return 'Missing URL & Password';
                             return '';
                           })()}
                         </span>
@@ -943,6 +953,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           if (statusToDisplay === 'failed') return 'Failed';
                           if (statusToDisplay === 'testing') return 'Testing...';
                           if (statusToDisplay === 'collecting') return 'Collecting...';
+                          if (statusToDisplay === 'need_url') return 'Missing URL';
+                          if (statusToDisplay === 'need_password') return 'Missing Password';
+                          if (statusToDisplay === 'need_url_and_password') return 'Missing URL & Password';
                           return 'Unknown';
                         })()}
                       </span>
@@ -1056,7 +1069,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   setConnections(prev => prev.map(conn => {
                     if (conn.id === serverId) {
                       // Map statuses for backup collection
-                      let mappedStatus = status;
+                      let mappedStatus = status as ConnectionStatus;
                       if (status === 'testing') {
                         mappedStatus = 'collecting';
                       } else if (status === 'success') {

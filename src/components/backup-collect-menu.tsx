@@ -944,6 +944,7 @@ export function BackupCollectMenu({
         sideOffset={4}
         collisionPadding={40}
         avoidCollisions={true}
+        data-screenshot-target="collect-button-popup"
       >
         <div className="grid gap-4">
           {/* Auto-collect mode: Only show progress */}
@@ -1199,7 +1200,7 @@ export function BackupCollectMenu({
     {/* Collect All Modal - Only for right-click on existing servers */}
     {showCollectAll && (
       <div className="fixed inset-0 bg-black/50 z-50">
-        <div className="bg-background border rounded-lg p-6 max-w-md w-full mx-4 absolute top-1/3 left-1/2 transform -translate-x-1/2">
+        <div className="bg-background border rounded-lg p-6 max-w-md w-full mx-4 absolute top-1/3 left-1/2 transform -translate-x-1/2" data-screenshot-target="collect-button-right-click-popup">
           <h3 className="text-lg font-semibold mb-4">Collect All Backups</h3>
           <p className="text-muted-foreground mb-4">
             This will collect backup logs from all configured servers. Are you sure you want to continue?

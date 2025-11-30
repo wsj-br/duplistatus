@@ -6,7 +6,7 @@ Copy and execute the scripts located at "scripts/podman_testing" in the Podman t
 
 ## Initial Setup and Management
 
-1. `initialise.duplistatus`: to create the pod
+1. `initialize.duplistatus`: to create the pod
 2. `copy.docker.duplistatus`: to copy the Docker image created in the development server to the Podman test server.
    - Create the image using the command `docker build . -t wsj-br/duplistatus:devel-MAJOR.MINOR.PATCH`
 3. `start.duplistatus`: to start the container
@@ -24,7 +24,7 @@ Copy and execute the scripts located at "scripts/podman_testing" in the Podman t
 
 ## Usage Workflow
 
-1. First run `initialise.duplistatus` to set up the pod
+1. First run `initialize.duplistatus` to set up the pod
 2. Use `copy.docker.duplistatus` to transfer the Docker image
 3. Start the container with `start.duplistatus`
 4. Monitor with `check.duplistatus` and `logs.duplistatus`

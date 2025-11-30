@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
 import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
-import { dbUtils, getConfigBackupSettings } from '../src/lib/db-utils';
+import { dbUtils, getConfigBackupSettings, clearRequestCache } from '../src/lib/db-utils';
 import { extractAvailableBackups } from '../src/lib/utils';
 
 // Function to clean database tables before generating test data
@@ -19,7 +19,11 @@ async function cleanDatabaseTables() {
       const serversResult = db.prepare('DELETE FROM servers').run();
       console.log(`  🗑️  Deleted ${serversResult.changes} server records`);
       
-      // Delete all configurations
+      // Delete backup_settings configuration specifically (so it can be recalculated)
+      const backupSettingsResult = db.prepare("DELETE FROM configurations WHERE key = 'backup_settings'").run();
+      console.log(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`);
+      
+      // Delete all remaining configurations
       const configsResult = db.prepare('DELETE FROM configurations').run();
       console.log(`  🗑️  Deleted ${configsResult.changes} configuration records`);
     });
@@ -34,6 +38,32 @@ async function cleanDatabaseTables() {
     return false;
   }
 } 
+
+// Function to clean database tables before generating test data
+async function cleanBackupSettings() {
+  console.log('🧹 Cleaning backup_settings configuration...');
+  
+  try {
+    // Start a transaction for atomic cleanup
+    const transaction = db.transaction(() => {
+
+      // Delete backup_settings configuration specifically (so it can be recalculated)
+      const backupSettingsResult = db.prepare("DELETE FROM configurations WHERE key = 'backup_settings'").run();
+      console.log(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`);
+      
+    });
+    
+    // Execute the transaction
+    transaction();
+    
+    console.log('✅ backup_settings cleanup completed successfully!');
+    return true;
+  } catch (error) {
+    console.error('🚨 Error during backup_settings cleanup:', error instanceof Error ? error.message : String(error));
+    return false;
+  }
+} 
+
 
 // Server configurations
 const servers = [
@@ -472,6 +502,141 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
   }
 }
 
+// Function to delete backups from randomly chosen configurations to create overdue samples (>48 hours old)
+async function deleteRandomBackups() {
+  console.log('\n  🎲 Deleting recent backups from randomly chosen configurations to create overdue samples (>48 hours)...');
+  
+  try {
+    // Get all unique backup configurations (server_id + backup_name combinations)
+    const configurationsResult = db.prepare(`
+      SELECT DISTINCT b.server_id, b.backup_name, s.name as server_name, s.alias
+      FROM backups b
+      JOIN servers s ON b.server_id = s.id
+      ORDER BY s.name, b.backup_name
+    `).all() as { server_id: string; backup_name: string; server_name: string; alias: string }[];
+    
+    if (configurationsResult.length === 0) {
+      console.log('    ⚠️  No backup configurations found, skipping random deletion');
+      return;
+    }
+    
+    if (configurationsResult.length < 2) {
+      console.log(`    ⚠️  Only ${configurationsResult.length} backup configuration(s) found, cannot delete 2`);
+      return;
+    }
+    
+    // Randomly select 2 backup configurations
+    const shuffledConfigurations = [...configurationsResult].sort(() => Math.random() - 0.5);
+    const selectedConfigurations = shuffledConfigurations.slice(0, 2);
+    
+    console.log(`    🎯 Selected ${selectedConfigurations.length} random backup configuration(s):`);
+    selectedConfigurations.forEach((config, index) => {
+      const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
+      console.log(`      ${index + 1}. Server: ${serverDisplayName}, Backup: ${config.backup_name}`);
+    });
+    
+    const now = new Date();
+    const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000)); // 48 hours ago
+    
+    for (const config of selectedConfigurations) {
+      try {
+        const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
+        const configDisplayName = `${serverDisplayName} - ${config.backup_name}`;
+        
+        // Get all backups for this configuration, ordered by date DESC
+        const allBackupsResult = db.prepare(`
+          SELECT b.id, b.date
+          FROM backups b
+          WHERE b.server_id = ? AND b.backup_name = ?
+          ORDER BY b.date DESC
+        `).all(config.server_id, config.backup_name) as { id: string; date: string }[];
+        
+        if (allBackupsResult.length === 0) {
+          console.log(`      ⚠️  ${configDisplayName}: No backups found`);
+          continue;
+        }
+        
+        console.log(`      📊 ${configDisplayName}: Found ${allBackupsResult.length} total backup(s)`);
+        
+        // Find backups that are newer than 48 hours ago (need to be deleted)
+        const backupsToDelete: { id: string; date: string }[] = [];
+        for (const backup of allBackupsResult) {
+          const backupDate = new Date(backup.date);
+          if (backupDate > fortyEightHoursAgo) {
+            backupsToDelete.push(backup);
+          } else {
+            // Found the first backup that is >48 hours old, stop here
+            break;
+          }
+        }
+        
+        if (backupsToDelete.length === 0) {
+          const mostRecentDate = new Date(allBackupsResult[0].date);
+          const hoursSinceLastBackup = Math.floor((now.getTime() - mostRecentDate.getTime()) / (60 * 60 * 1000));
+          console.log(`      ✅ ${configDisplayName}: Already overdue (last backup ${hoursSinceLastBackup}h ago)`);
+          continue;
+        }
+        
+        console.log(`      🎯 ${configDisplayName}: Will delete ${backupsToDelete.length} backup(s) newer than 48 hours`);
+        backupsToDelete.forEach((backup, idx) => {
+          const backupDate = new Date(backup.date);
+          const hoursAgo = Math.floor((now.getTime() - backupDate.getTime()) / (60 * 60 * 1000));
+          console.log(`         ${idx + 1}. Backup ID: ${backup.id.substring(0, 8)}..., Date: ${backupDate.toLocaleString()} (${hoursAgo}h ago)`);
+        });
+        
+        // Delete all backups that are newer than 48 hours using a transaction
+        const deleteTransaction = db.transaction(() => {
+          let deletedCount = 0;
+          for (const backup of backupsToDelete) {
+            // Verify backup exists before deletion
+            const verifyResult = db.prepare(`
+              SELECT id FROM backups WHERE id = ? AND server_id = ? AND backup_name = ?
+            `).get(backup.id, config.server_id, config.backup_name);
+            
+            if (verifyResult) {
+              const deleteResult = db.prepare(`
+                DELETE FROM backups 
+                WHERE id = ? AND server_id = ? AND backup_name = ?
+              `).run(backup.id, config.server_id, config.backup_name);
+              
+              if (deleteResult.changes > 0) {
+                deletedCount++;
+              }
+            }
+          }
+          return deletedCount;
+        });
+        
+        const deletedCount = deleteTransaction();
+        
+        if (deletedCount > 0) {
+          const remainingMostRecent = allBackupsResult[backupsToDelete.length];
+          if (remainingMostRecent) {
+            const remainingDate = new Date(remainingMostRecent.date);
+            const hoursSinceLastBackup = Math.floor((now.getTime() - remainingDate.getTime()) / (60 * 60 * 1000));
+            console.log(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), now overdue (last backup ${hoursSinceLastBackup}h ago)`);
+          } else {
+            console.log(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), no backups remaining`);
+          }
+        } else {
+          console.log(`      ⚠️  ${configDisplayName}: Failed to delete backups (no rows affected)`);
+        }
+      } catch (error) {
+        const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
+        const configDisplayName = `${serverDisplayName} - ${config.backup_name}`;
+        console.error(`      🚨 Error deleting backups for ${configDisplayName}:`, 
+          error instanceof Error ? error.message : String(error));
+      }
+    }
+    
+    console.log('  ✅ Random backup deletion completed!');
+    
+  } catch (error) {
+    console.error('  🚨 Error during random backup deletion:', 
+      error instanceof Error ? error.message : String(error));
+  }
+}
+
 // Function to cleanup backups - keep only 5-8 random backups for 1 random backup job from 2 random servers
 async function cleanupBackupsForUserManual(){
   console.log('\n  🧹 Cleaning up backups for user manual demonstration...');
@@ -762,7 +927,9 @@ async function sendTestData(useUpload: boolean = false, serverCount: number) {
             success = await writeBackupToDatabase(payload);
           }
 
-          console.log(`          📄 ${backupJob} Backup ${backupNumber}/${backupDates.length} for ${server.name} (${backupDate}): ${success ? 'Success' : 'Failed'}`);
+          if (!success) {
+            console.log(`          📄 ${backupJob} Backup ${backupNumber}/${backupDates.length} for ${server.name} (${backupDate}): Failed`);
+          }
         } catch (error) {
           console.error(`🚨 Error processing backup ${backupNumber} for ${server.name}:`, error instanceof Error ? error.message : String(error));
         }
@@ -772,12 +939,14 @@ async function sendTestData(useUpload: boolean = false, serverCount: number) {
 
   // Ensure backup settings are complete for all servers and backups (only for direct DB mode)
   if (!useUpload) {
-    console.log('\n  🔧 Ensuring backup settings are complete...');
-    // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
-    await getConfigBackupSettings();
+    console.log('\n  🔧 Processing backups after generation...');
     
-    // Cleanup backups for user manual demonstration
-    await cleanupBackupsForUserManual();
+    // Delete 2 randomly chosen backup runs to create overdue samples
+    await deleteRandomBackups();
+    
+    // Delete backup settings after deletions so it can be recalculated based on new most recent backups
+    console.log('\n  🔄 Deleting backup_settings configuration after deletions...');
+    await cleanBackupSettings();
   }
 }
 

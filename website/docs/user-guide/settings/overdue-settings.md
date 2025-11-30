@@ -1,12 +1,10 @@
 
 
-# Overdue Settings
+# Overdue Notifications
 
-![Backup alerts](/img/screen-settings-overdue-monitoring.png)
+![Backup alerts](/img/screen-settings-overdue.png)
 
 ## Configure Per-Backup Overdue Settings
-
-![notification detail](/img/screen-settings-overdue-bkp.png)
 
 -  **Server Name**: The name of the server to monitor for overdue backups. 
    - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
@@ -30,8 +28,6 @@ If the icons on the side of the server name are greyed out, the server is not co
 
 These settings apply to all backups:
 
-![overdue global config](/img/screen-settings-overdue-conf.png)
-
 | Setting                         | Description                                                                                                                                                                                                                                                                                           |
 |:--------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Overdue Tolerance**           | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is `1 hour`.                                                                                                                                                                           |
@@ -42,8 +38,8 @@ These settings apply to all backups:
 
 | Button                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| `Save Overdue Monitoring Settings`                                  | Saves the settings, clears timers for any disabled backups, and runs an overdue check.              |
-| <IconButton icon="lucide:importer" label="Collect All"/>            | Collect backup logs from all configured servers, in brackets the number of servers to collect from. |
+| <IconButton label="Save Overdue Monitoring Settings" />             | Saves the settings, clears timers for any disabled backups, and runs an overdue check.              |
+| <IconButton icon="lucide:import" label="Collect All (#)"/>          | Collect backup logs from all configured servers, in brackets the number of servers to collect from. |
 | <IconButton icon="lucide:refresh-cw" label="Check now"/>            | Runs the overdue backup check immediately. This is useful after changing configurations.            |
 | <IconButton icon="lucide:timer-reset" label="Reset notifications"/> | Resets the last overdue notification sent for all backups.                                          |
 

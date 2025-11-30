@@ -1,7 +1,9 @@
 "use client";
 
 import type { ReactNode } from 'react';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 type Theme = "light" | "dark";
 
@@ -12,7 +14,7 @@ interface ThemeContextProps {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-// Improved helper function to get initial theme
+// Improved helper function to get initial theme (fallback for SSR/initial load)
 const getInitialTheme = (): Theme => {
   if (typeof window !== 'undefined') {
     // First check if the dark class is already applied to the document
@@ -21,21 +23,31 @@ const getInitialTheme = (): Theme => {
       return 'dark';
     }
     
-    // Then check localStorage
-    const storedTheme = localStorage.getItem("theme") as Theme | null;
-    if (storedTheme) {
-      return storedTheme;
-    }
-    
-    // Fallback to system preference
+    // Fallback to system preference if no user-specific theme found
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
-  return "light"; // Default for SSR or environments without window
+  return "dark"; // Default for SSR or environments without window (headless browsers)
 };
 
 export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
+  const currentUser = useCurrentUser();
   // Initialize theme based on existing class or preference
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const hasLoadedUserThemeRef = useRef(false);
+
+  // Load user-specific theme when user is available
+  useEffect(() => {
+    if (typeof window === 'undefined' || currentUser === null || hasLoadedUserThemeRef.current) {
+      return;
+    }
+
+    hasLoadedUserThemeRef.current = true;
+    const storedTheme = getUserLocalStorageItem("theme", currentUser.id) as Theme | null;
+    if (storedTheme === 'dark' || storedTheme === 'light') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTheme(storedTheme);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     // This effect handles theme changes triggered by toggleTheme
@@ -45,8 +57,12 @@ export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
     } else {
       document.documentElement.classList.remove("dark");
     }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    
+    // Save to user-specific localStorage if user is loaded
+    if (currentUser) {
+      setUserLocalStorageItem("theme", currentUser.id, theme);
+    }
+  }, [theme, currentUser]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));

@@ -24,6 +24,7 @@ cp README.md README_dockerhub.md
 # Update image references from relative paths to GitHub raw URLs
 echo "Updating image references..."
 sed -i 's|docs/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/docs/img/|g' README_dockerhub.md
+sed -i 's|website/static/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/website/static/img/|g' README_dockerhub.md
 
 # Update document references from relative paths to GitHub blob URLs
 # Only replace docs/ that are NOT already part of a full URL
@@ -49,6 +50,7 @@ sed -i 's|> *\[!CAUTION\]|> ⛔ **CAUTION**<br/>|ig' README_dockerhub.md
 # Clean up any double replacements that might have occurred
 echo "Cleaning up any double replacements..."
 sed -i 's|https://raw.githubusercontent.com/wsj-br/duplistatus/master/https://raw.githubusercontent.com/wsj-br/duplistatus/master/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/|g' README_dockerhub.md
+sed -i 's|https://raw.githubusercontent.com/wsj-br/duplistatus/master/website/static/img/https://raw.githubusercontent.com/wsj-br/duplistatus/master/website/static/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/website/static/img/|g' README_dockerhub.md
 sed -i 's|https://github.com/wsj-br/duplistatus/blob/master/https://github.com/wsj-br/duplistatus/blob/master/|https://github.com/wsj-br/duplistatus/blob/master/|g' README_dockerhub.md
 
 echo "Conversion completed successfully!"
@@ -56,6 +58,7 @@ echo "Updated file: README_dockerhub.md"
 echo ""
 echo "Summary of changes:"
 echo "- Image references: docs/img/ → https://raw.githubusercontent.com/wsj-br/duplistatus/master/docs/img/"
+echo "- Image references: website/static/img/ → https://raw.githubusercontent.com/wsj-br/duplistatus/master/website/static/img/"
 echo "- Document references: docs/ → https://github.com/wsj-br/duplistatus/blob/master/docs/"
 echo "- GitHub special notation: > [!NOTE] → > ℹ️ **NOTE**, etc."
 echo ""

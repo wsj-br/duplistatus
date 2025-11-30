@@ -29,6 +29,9 @@ import {
 } from "@/components/ui/tooltip";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupCollectMenu } from "@/components/backup-collect-menu";
+import { getUserLocalStorageItem, setUserLocalStorageItem } from "@/lib/user-local-storage";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useRef } from "react";
 
 interface DashboardTableProps {
   servers: ServerSummary[];
@@ -75,27 +78,54 @@ function getNotificationTooltip(notificationEvent: NotificationEvent | undefined
 export function DashboardTable({ servers }: DashboardTableProps) {
   const router = useRouter(); // Initialize router
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
+  const currentUser = useCurrentUser();
   
-  // Initialize with persisted sort config from localStorage (lazy initialization)
-  const [sortConfig, setSortConfig] = useState<SortConfig>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(DASHBOARD_SORT_KEY);
-        if (stored && stored.trim() !== '') {
-          const parsed = JSON.parse(stored);
-          // Validate the stored data
-          if (parsed && typeof parsed.column === 'string' && 
-              (parsed.direction === 'asc' || parsed.direction === 'desc')) {
-            return parsed;
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to load dashboard sort config:', error);
-      }
+  // Initialize with persisted sort config from localStorage
+  // We'll load user-specific config after user is available
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
+  const [isLoaded, setIsLoaded] = useState(false);
+  const hasLoadedUserConfigRef = useRef(false);
+
+  // Load user-specific sort config when user is available
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsLoaded(true);
+      return;
     }
-    return { column: '', direction: 'asc' };
-  });
-  const [isLoaded, setIsLoaded] = useState(true);
+
+    if (currentUser === null || hasLoadedUserConfigRef.current) {
+      // User not loaded yet, or already loaded config
+      if (currentUser === null) {
+        return;
+      }
+      // Already loaded, mark as loaded
+      if (!isLoaded) {
+        setIsLoaded(true);
+      }
+      return;
+    }
+
+    // User is available and we haven't loaded config yet
+    hasLoadedUserConfigRef.current = true;
+    try {
+      const stored = getUserLocalStorageItem(DASHBOARD_SORT_KEY, currentUser.id);
+      if (stored && stored.trim() !== '') {
+        const parsed = JSON.parse(stored);
+        // Validate the stored data
+        if (parsed && typeof parsed.column === 'string' && 
+            (parsed.direction === 'asc' || parsed.direction === 'desc')) {
+          // Load user-specific config - this is necessary for per-user settings
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setSortConfig(parsed);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load dashboard sort config:', error);
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLoaded(true);
+  }, [currentUser, isLoaded]);
 
   // Convert ServerSummary to table-compatible format
   const tableData = useMemo(() => {
@@ -152,14 +182,14 @@ export function DashboardTable({ servers }: DashboardTableProps) {
 
   // Persist sort configuration to localStorage whenever it changes (only after initial load)
   useEffect(() => {
-    if (isLoaded && typeof window !== 'undefined' && sortConfig.column) {
+    if (isLoaded && typeof window !== 'undefined' && sortConfig.column && currentUser) {
       try {
-        localStorage.setItem(DASHBOARD_SORT_KEY, JSON.stringify(sortConfig));
+        setUserLocalStorageItem(DASHBOARD_SORT_KEY, currentUser.id, JSON.stringify(sortConfig));
       } catch (error) {
         console.warn('Failed to save dashboard sort config:', error);
       }
     }
-  }, [sortConfig, isLoaded]);
+  }, [sortConfig, isLoaded, currentUser]);
 
   // Sort servers based on current sort configuration
   const sortedServers = useMemo(() => {

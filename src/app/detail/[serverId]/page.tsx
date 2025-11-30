@@ -3,6 +3,7 @@ import { DetailAutoRefresh } from "@/components/server-details/detail-auto-refre
 import { notFound } from 'next/navigation';
 import type { Server } from "@/lib/types";
 import { BackupSelectionProvider } from "@/contexts/backup-selection-context";
+import { requireServerAuth } from "@/lib/auth-server";
 
 // Add cache control headers to the response
 export async function generateMetadata() {
@@ -36,6 +37,9 @@ export default async function ServerDetailsPage({
   params,
   searchParams,
 }: PageProps) {
+  // Require authentication - redirects to login if not authenticated
+  await requireServerAuth();
+  
   const { serverId } = await params;
   const resolvedSearchParams = await searchParams;
   const server = await getServerById(serverId);

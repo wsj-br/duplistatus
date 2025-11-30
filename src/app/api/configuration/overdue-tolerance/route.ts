@@ -1,6 +1,9 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { setConfiguration, getOverdueToleranceConfig } from '@/lib/db-utils';
+import { requireAdmin } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 export const GET = withCSRF(async () => {
   try {
@@ -12,7 +15,7 @@ export const GET = withCSRF(async () => {
   }
 });
 
-export const POST = withCSRF(async (request: NextRequest) => {
+export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
     
     const body = await request.json();
@@ -22,12 +25,33 @@ export const POST = withCSRF(async (request: NextRequest) => {
       return NextResponse.json({ error: 'overdue_tolerance is required' }, { status: 400 });
     }
     
+    // Get old value for audit log
+    const oldValue = getOverdueToleranceConfig();
+    
     // Only update the overdue tolerance setting
     setConfiguration('overdue_tolerance', overdue_tolerance);
+    
+    // Log audit event
+    if (authContext) {
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logConfigChange(
+        'overdue_tolerance_updated',
+        authContext.userId,
+        authContext.username,
+        'overdue_tolerance',
+        {
+          oldValue,
+          newValue: overdue_tolerance,
+        },
+        ipAddress,
+        userAgent
+      );
+    }
     
     return NextResponse.json({ message: 'Overdue tolerance updated successfully' });
   } catch (error) {
     console.error('Failed to update overdue tolerance:', error instanceof Error ? error.message : String(error));
     return NextResponse.json({ error: 'Failed to update overdue tolerance' }, { status: 500 });
   }
-});
+}));

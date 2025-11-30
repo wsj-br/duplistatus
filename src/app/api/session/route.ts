@@ -47,7 +47,8 @@ export async function GET(request: NextRequest) {
       return acc;
     }, {} as Record<string, string>);
     
-    const sessionId = cookies['session'];
+    // Try sessionId first (current standard), then fallback to session (legacy)
+    const sessionId = cookies['sessionId'] || cookies['session'];
     if (!sessionId) {
       return NextResponse.json(
         { valid: false, error: 'No session ID' },
@@ -84,7 +85,8 @@ export async function DELETE(request: NextRequest) {
       return acc;
     }, {} as Record<string, string>);
     
-    const sessionId = cookies['session'];
+    // Try sessionId first (current standard), then fallback to session (legacy)
+    const sessionId = cookies['sessionId'] || cookies['session'];
     if (sessionId) {
       deleteSession(sessionId);
     }

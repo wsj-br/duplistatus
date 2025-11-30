@@ -2,6 +2,8 @@ import Database from 'better-sqlite3';
 import { extractAvailableBackups } from './utils';
 import * as fs from 'fs';
 import * as path from 'path';
+import bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 
 // Import default configurations
 import { 
@@ -10,7 +12,8 @@ import {
   defaultNtfyConfig,
   defaultOverdueTolerance,
   defaultNotificationFrequencyConfig,
-  defaultNotificationTemplates
+  defaultNotificationTemplates,
+  defaultAuthConfig
 } from './default-config';
 import { previousTemplatesMessages } from './previous-defaults';
 
@@ -58,12 +61,24 @@ class MigrationLock {
               continue;
             } catch {
               // Process doesn't exist, remove stale lock
-              fs.unlinkSync(this.lockFilePath);
+              try {
+                if (fs.existsSync(this.lockFilePath)) {
+                  fs.unlinkSync(this.lockFilePath);
+                }
+              } catch {
+                // Ignore - file may have been removed by another process
+              }
               continue;
             }
           } catch {
             // Lock file is corrupted, remove it
-            fs.unlinkSync(this.lockFilePath);
+            try {
+              if (fs.existsSync(this.lockFilePath)) {
+                fs.unlinkSync(this.lockFilePath);
+              }
+            } catch {
+              // Ignore - file may have been removed by another process
+            }
             continue;
           }
         } else {
@@ -80,11 +95,27 @@ class MigrationLock {
     if (this.lockFileHandle !== null) {
       try {
         fs.closeSync(this.lockFileHandle);
-        fs.unlinkSync(this.lockFilePath);
-      } catch (error) {
-        console.warn('[MigrationLock] Error releasing migration lock:', error);
-      } finally {
         this.lockFileHandle = null;
+      } catch (error) {
+        // Ignore close errors
+      }
+      
+      // Try to remove lock file, but don't error if it doesn't exist
+      try {
+        if (fs.existsSync(this.lockFilePath)) {
+          fs.unlinkSync(this.lockFilePath);
+        }
+      } catch (error) {
+        // Ignore unlink errors - file may have been removed by another process
+      }
+    } else {
+      // No handle, but try to clean up lock file if it exists
+      try {
+        if (fs.existsSync(this.lockFilePath)) {
+          fs.unlinkSync(this.lockFilePath);
+        }
+      } catch (error) {
+        // Ignore - file may have been removed by another process
       }
     }
   }
@@ -642,6 +673,168 @@ const migrations: Migration[] = [
         }
       }
     }
+  },
+  {
+    version: '4.0',
+    description: 'Add user access control system with users, database-backed sessions, and audit logging',
+    up: (db: Database.Database) => {
+      console.log('Migration 4.0: Adding user access control system...');
+      
+      // Step 1: Check if users table already exists (migration already completed)
+      const usersTableExists = db.prepare(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
+      ).get();
+      
+      if (usersTableExists) {
+        throw new Error('MIGRATION_ALREADY_COMPLETED');
+      }
+      
+      // Step 2: Create users table (use IF NOT EXISTS for safety during concurrent builds)
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS users (
+          id TEXT PRIMARY KEY,
+          username TEXT UNIQUE NOT NULL,
+          password_hash TEXT NOT NULL,
+          is_admin BOOLEAN NOT NULL DEFAULT 0,
+          must_change_password BOOLEAN DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_login_at DATETIME,
+          last_login_ip TEXT,
+          failed_login_attempts INTEGER DEFAULT 0,
+          locked_until DATETIME
+        );
+      `);
+      
+      // Step 3: Create indexes for users table (use IF NOT EXISTS for safety)
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+        CREATE INDEX IF NOT EXISTS idx_users_last_login ON users(last_login_at);
+      `);
+      
+      // Step 4: Create sessions table (database-backed, replaces in-memory)
+      // Note: user_id is nullable to support unauthenticated sessions (before login)
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS sessions (
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          last_accessed DATETIME DEFAULT CURRENT_TIMESTAMP,
+          expires_at DATETIME NOT NULL,
+          ip_address TEXT,
+          user_agent TEXT,
+          csrf_token TEXT,
+          csrf_expires_at DATETIME,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+      `);
+      
+      // Step 5: Create indexes for sessions table (use IF NOT EXISTS for safety)
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+        CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
+        CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed);
+      `);
+      
+      // Step 6: Create audit_log table (use IF NOT EXISTS for safety)
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS audit_log (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+          user_id TEXT,
+          username TEXT,
+          action TEXT NOT NULL,
+          category TEXT NOT NULL,
+          target_type TEXT,
+          target_id TEXT,
+          details TEXT,
+          ip_address TEXT,
+          user_agent TEXT,
+          status TEXT NOT NULL,
+          error_message TEXT,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+        );
+      `);
+      
+      // Step 7: Create indexes for audit_log table (use IF NOT EXISTS for safety)
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp);
+        CREATE INDEX IF NOT EXISTS idx_audit_user_id ON audit_log(user_id);
+        CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
+        CREATE INDEX IF NOT EXISTS idx_audit_category ON audit_log(category);
+        CREATE INDEX IF NOT EXISTS idx_audit_status ON audit_log(status);
+      `);
+      
+      // Step 8: Seed default admin user (only if it doesn't exist)
+      // Check if admin user already exists to handle concurrent builds
+      const existingAdmin = db.prepare('SELECT id FROM users WHERE username = ?').get('admin') as { id: string } | undefined;
+      let adminUserCreated = false;
+      
+      if (!existingAdmin) {
+        // Generate admin user ID
+        const adminId = 'admin-' + randomBytes(16).toString('hex');
+        
+        // Hash default password
+        // Using bcrypt.hashSync for synchronous execution within migration
+        const adminPasswordHash = bcrypt.hashSync(defaultAuthConfig.defaultPassword, 12);
+        
+        // Insert admin user
+        db.prepare(`
+          INSERT INTO users (
+            id, 
+            username, 
+            password_hash, 
+            is_admin, 
+            must_change_password
+          ) VALUES (?, ?, ?, ?, ?)
+        `).run(
+          adminId,
+          'admin',
+          adminPasswordHash,
+          1,  // is_admin = true
+          1   // must_change_password = true
+        );
+        adminUserCreated = true;
+      }
+      
+      // Step 9: Set default audit retention configuration (90 days)
+      db.prepare(
+        'INSERT OR REPLACE INTO configurations (key, value) VALUES (?, ?)'
+      ).run(
+        'audit_retention_days',
+        '90'
+      );
+      
+      // Step 10: Log the migration in audit log
+      db.prepare(`
+        INSERT INTO audit_log (
+          action, 
+          category, 
+          status, 
+          username,
+          details
+        ) VALUES (?, ?, ?, ?, ?)
+      `).run(
+        'database_migration',
+        'system',
+        'success',
+        'system',
+        JSON.stringify({ 
+          migration: '4.0', 
+          description: 'User Access Control System',
+          tables_created: ['users', 'sessions', 'audit_log'],
+          admin_user_created: adminUserCreated,
+          default_password: adminUserCreated ? `${defaultAuthConfig.defaultPassword} (must change on first login)` : 'N/A (admin user already exists)'
+        })
+      );
+      
+      console.log('Migration 4.0: User access control system created successfully');
+      if (adminUserCreated) {
+        console.log('Migration 4.0: Admin user created with username "admin"');
+        console.log(`Migration 4.0: Default password is "${defaultAuthConfig.defaultPassword}" (must be changed on first login)`);
+      }
+      console.log('Migration 4.0: Sessions table created with nullable user_id to support unauthenticated sessions');
+    }
   }
 ];
 
@@ -697,9 +890,9 @@ export class DatabaseMigrator {
     // First, clear any existing versions to ensure we only have one
     this.db.prepare('DELETE FROM db_version').run();
     
-    // Insert the new version
+    // Insert the new version (use INSERT OR REPLACE as a safety measure)
     this.db.prepare(`
-      INSERT INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)
+      INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)
     `).run(version);
     
     // Use passive checkpoint to avoid I/O errors (doesn't block or truncate)
@@ -738,6 +931,13 @@ export class DatabaseMigrator {
     
     try {
       const currentVersion = this.getCurrentVersion();
+      
+      // If database is already at the latest version (4.0), skip all migrations
+      // This handles the case where a fresh database was created with version 4.0
+      if (currentVersion === '4.0') {
+        // Silent - no migrations needed
+        return;
+      }
       
       // Filter migrations that need to be applied
       const pendingMigrations = migrations.filter(migration => 
@@ -823,8 +1023,16 @@ export class DatabaseMigrator {
           }
         }
       } catch (error) {
-        console.error('[Migration] Migration failed:', error);
-        throw error;
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        // Don't log ENOENT errors for lock files - they're expected in concurrent scenarios
+        if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+          console.error('[Migration] Migration failed:', error);
+        }
+        // Only throw if it's not a lock file ENOENT error
+        if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+          throw error;
+        }
+        // For lock file ENOENT errors, just return silently (another process handled it)
       } finally {
         // Always release the migration lock and reset running flag
         this.migrationLock.releaseLock();
@@ -834,9 +1042,17 @@ export class DatabaseMigrator {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
     } catch (error) {
-      console.error('[Migration] Outer migration failed:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      // Don't log ENOENT errors for lock files - they're expected in concurrent scenarios
+      if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+        console.error('[Migration] Outer migration failed:', error);
+      }
       DatabaseMigrator.isRunning = false;
-      throw error;
+      // Only throw if it's not a lock file ENOENT error
+      if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+        throw error;
+      }
+      // For lock file ENOENT errors, just return silently (another process handled it)
     }
   }
   
@@ -850,6 +1066,13 @@ export class DatabaseMigrator {
     
     try {
       const currentVersion = this.getCurrentVersion();
+      
+      // If database is already at the latest version (4.0), skip all migrations
+      // This handles the case where a fresh database was created with version 4.0
+      if (currentVersion === '4.0') {
+        // Silent - no migrations needed
+        return;
+      }
       
       // Filter migrations that need to be applied
       const pendingMigrations = migrations.filter(migration => 

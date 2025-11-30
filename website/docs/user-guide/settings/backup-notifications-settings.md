@@ -1,8 +1,8 @@
 
 
-# Notifications Settings
+# Backup Notifications 
 
-![Backup alerts](/img/screen-settings-backup-notifications.png)
+![Backup alerts](/img/screen-settings-notifications.png)
 
 You can click on the <SvgButton svgFilename="duplicati_logo.svg" /> button to open the Duplicati server's web interface (if configured).
 

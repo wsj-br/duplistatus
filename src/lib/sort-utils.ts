@@ -81,7 +81,11 @@ export const sortFunctions = {
     return a - b;
   },
 
-  date: (a: string, b: string): number => {
+  date: (a: string | null, b: string | null): number => {
+    // Handle null values - put them at the end
+    if (a === null && b === null) return 0;
+    if (a === null) return 1;
+    if (b === null) return -1;
     if (a === "N/A" && b === "N/A") return 0;
     if (a === "N/A") return 1;
     if (b === "N/A") return -1;

@@ -1,31 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionIdFromRequest, validateSession, generateCSRFToken } from '@/lib/session-csrf';
+import { getSessionIdFromRequest, validateSession, generateCSRFToken, createSession } from '@/lib/session-csrf';
+import { getClientIpAddress } from '@/lib/ip-utils';
 
-// Get CSRF token for the current session
+// Get CSRF token for the current session (creates session if needed)
 export async function GET(request: NextRequest) {
   try {
-    const sessionId = getSessionIdFromRequest(request);
+    let sessionId = getSessionIdFromRequest(request);
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
     
-    if (!sessionId) {
-      return NextResponse.json(
-        { error: 'No session found' },
-        { status: 401 }
-      );
-    }
-    
-    if (!validateSession(sessionId)) {
-      return NextResponse.json(
-        { error: 'Invalid or expired session' },
-        { status: 401 }
-      );
+    // Create session if none exists or if invalid
+    if (!sessionId || !validateSession(sessionId)) {
+      sessionId = createSession(null, ipAddress, userAgent); // null userId for unauthenticated session
     }
     
     const csrfToken = generateCSRFToken(sessionId);
     
-    return NextResponse.json({ 
-      csrfToken,
+    const response = NextResponse.json({ 
+      token: csrfToken,
       message: 'CSRF token generated successfully' 
     });
+    
+    // Set session cookie if it wasn't already set
+    response.cookies.set('sessionId', sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+    });
+    
+    return response;
   } catch (error) {
     console.error('Error generating CSRF token:', error);
     return NextResponse.json(

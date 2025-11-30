@@ -67,6 +67,126 @@ const response = await fetch('/api/servers/server-id', {
 });
 ```
 
+## Authentication Endpoints
+
+### Login - `/api/auth/login`
+- **Endpoint**: `/api/auth/login`
+- **Method**: POST
+- **Description**: Authenticates a user and creates a session. Supports account locking after failed attempts and password change requirements.
+- **Authentication**: Requires valid session and CSRF token (but no logged-in user)
+- **Request Body**:
+  ```json
+  {
+    "username": "admin",
+    "password": "password123"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "user": {
+      "id": "user-id",
+      "username": "admin",
+      "isAdmin": true,
+      "mustChangePassword": false
+    }
+  }
+  ```
+- **Error Responses**:
+  - `400`: Missing username or password
+  - `401`: Invalid username or password
+  - `403`: Account locked due to too many failed login attempts (includes `lockedUntil` and `minutesRemaining`)
+- **Notes**:
+  - Account is locked after 5 failed login attempts for 15 minutes
+  - Failed login attempts are tracked and logged
+  - Session cookie is automatically set in the response
+  - If user has `mustChangePassword` flag set, they should be redirected to change password page
+  - All login attempts (successful and failed) are logged to audit log
+
+### Logout - `/api/auth/logout`
+- **Endpoint**: `/api/auth/logout`
+- **Method**: POST
+- **Description**: Logs out the current user and destroys their session.
+- **Authentication**: Requires valid session and CSRF token
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Logged out successfully"
+  }
+  ```
+- **Error Responses**:
+  - `400`: No active session
+  - `500`: Internal server error
+- **Notes**:
+  - Session cookie is cleared in the response
+  - Logout is logged to audit log
+  - Session is immediately invalidated
+
+### Get Current User - `/api/auth/me`
+- **Endpoint**: `/api/auth/me`
+- **Method**: GET
+- **Description**: Returns the current authenticated user information, or indicates if no user is logged in.
+- **Authentication**: Requires valid session (but no logged-in user required)
+- **Response** (authenticated):
+  ```json
+  {
+    "authenticated": true,
+    "user": {
+      "id": "user-id",
+      "username": "admin",
+      "isAdmin": true,
+      "mustChangePassword": false
+    }
+  }
+  ```
+- **Response** (not authenticated):
+  ```json
+  {
+    "authenticated": false,
+    "user": null
+  }
+  ```
+- **Error Responses**:
+  - `500`: Internal server error
+- **Notes**:
+  - Can be called without a logged-in user (returns `authenticated: false`)
+  - Useful for checking authentication status on page load
+
+### Change Password - `/api/auth/change-password`
+- **Endpoint**: `/api/auth/change-password`
+- **Method**: POST
+- **Description**: Changes the password for the current authenticated user. If `mustChangePassword` is set, current password verification is skipped.
+- **Authentication**: Requires valid session and CSRF token (logged-in user required)
+- **Request Body**:
+  ```json
+  {
+    "currentPassword": "old-password",
+    "newPassword": "new-secure-password"
+  }
+  ```
+  - `currentPassword`: Optional if `mustChangePassword` is true, required otherwise
+  - `newPassword`: Required, must meet password policy requirements
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Password changed successfully"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Missing new password, password policy violation, or new password same as current
+  - `401`: Current password is incorrect (when required)
+  - `404`: User not found
+  - `500`: Internal server error
+- **Notes**:
+  - New password must meet password policy requirements (length, complexity, etc.)
+  - If `mustChangePassword` flag is set, current password verification is skipped
+  - After successful password change, `mustChangePassword` flag is cleared
+  - Password changes are logged to audit log
+  - New password must be different from current password
+
 ### Error Responses
 - `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
 - `403 Forbidden`: CSRF token validation failed or operation not allowed

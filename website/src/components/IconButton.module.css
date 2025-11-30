@@ -3,6 +3,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px; /* Space between icon and label */
+    white-space: nowrap; /* Prevent text wrapping */
   
     /* Padding/Border/Radius */
     padding: 6px 10px; 
@@ -26,6 +27,7 @@
   .label {
     font-size: var(--ifm-font-size-base);
     line-height: 1; /* Match icon height visually */
+    white-space: nowrap; /* Prevent text wrapping */
   }
 
   .svgIcon {

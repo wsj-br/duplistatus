@@ -1,13 +1,22 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+import { requireAdmin } from '@/lib/auth-middleware';
+import { getClientIpAddress } from '@/lib/ip-utils';
+import { AuditLogger } from '@/lib/audit-logger';
 
 export const GET = withCSRF(async (
-  request: Request,
-  { params }: { params: Promise<{ serverId: string }> }
+  request: Request
 ) => {
   try {
-    const { serverId } = await params;
+    // Extract serverId from URL pathname
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+    const serverId = pathname.split('/')[3]; // /api/servers/[serverId]
+    
+    if (!serverId) {
+      return NextResponse.json({ error: 'Server ID is required' }, { status: 400 });
+    }
     const { searchParams } = new URL(request.url);
     const includeBackups = searchParams.get('includeBackups') === 'true';
     const includeChartData = searchParams.get('includeChartData') === 'true';
@@ -37,16 +46,28 @@ export const GET = withCSRF(async (
   }
 });
 
-export const PATCH = withCSRF(async (
+export const PATCH = withCSRF(requireAdmin(async (
   request: NextRequest,
-  { params }: { params: Promise<{ serverId: string }> }
+  authContext
 ) => {
   try {
-    const { serverId } = await params;
+    // Extract serverId from URL pathname
+    const pathname = request.nextUrl.pathname;
+    const serverId = pathname.split('/')[3]; // /api/servers/[serverId]
+    
+    if (!serverId) {
+      return NextResponse.json(
+        { error: 'Server ID is required' },
+        { status: 400 }
+      );
+    }
     
     
     const body = await request.json();
     const { server_url, alias, note } = body;
+    
+    // Get server info before update for audit log
+    const serverBefore = await dbUtils.getServerById(serverId);
     
     // Update server details
     const result = dbUtils.updateServer(serverId, {
@@ -59,6 +80,28 @@ export const PATCH = withCSRF(async (
       return NextResponse.json(
         { error: result.error || 'Server not found' },
         { status: 404 }
+      );
+    }
+
+    // Log audit event
+    if (serverBefore) {
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logServerOperation(
+        'server_updated',
+        authContext.userId,
+        authContext.username,
+        serverId,
+        {
+          serverName: serverBefore.name,
+          changes: {
+            server_url: server_url || serverBefore.server_url,
+            alias: alias || serverBefore.alias,
+            note: note || serverBefore.note,
+          },
+        },
+        ipAddress,
+        userAgent
       );
     }
 
@@ -76,18 +119,47 @@ export const PATCH = withCSRF(async (
       { status: 500 }
     );
   }
-});
+}));
 
-export const DELETE = withCSRF(async (
+export const DELETE = withCSRF(requireAdmin(async (
   request: NextRequest,
-  { params }: { params: Promise<{ serverId: string }> }
+  authContext
 ) => {
   try {
-    const { serverId } = await params;
+    // Extract serverId from URL pathname
+    const pathname = request.nextUrl.pathname;
+    const serverId = pathname.split('/')[3]; // /api/servers/[serverId]
     
+    if (!serverId) {
+      return NextResponse.json(
+        { error: 'Server ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // Get server info before deletion for audit log
+    const serverBefore = await dbUtils.getServerById(serverId);
     
     // Delete the server and its backups
     const result = dbUtils.deleteServer(serverId);
+
+    // Log audit event
+    if (serverBefore) {
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logServerOperation(
+        'server_deleted',
+        authContext.userId,
+        authContext.username,
+        serverId,
+        {
+          serverName: serverBefore.name,
+          backupChanges: result.backupChanges,
+        },
+        ipAddress,
+        userAgent
+      );
+    }
 
     return NextResponse.json({
       message: `Successfully deleted server and ${result.backupChanges} backups`,
@@ -101,4 +173,4 @@ export const DELETE = withCSRF(async (
       { status: 500 }
     );
   }
-});
+}));

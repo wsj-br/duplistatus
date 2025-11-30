@@ -7,14 +7,12 @@ import { GlobalRefreshProvider } from '@/contexts/global-refresh-context';
 import { ServerSelectionProvider } from '@/contexts/server-selection-context';
 import { ConfigurationProvider } from '@/contexts/configuration-context';
 import { AvailableBackupsModalProvider } from '@/components/ui/available-backups-modal';
-import { AppHeader } from '@/components/app-header';
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/use-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { GithubLink } from '@/components/github-link';
-import AppVersion from '@/components/app-version';
 import { SessionInitializer } from '@/components/session-initializer';
 import { GlobalSessionErrorHandler } from '@/components/global-session-error-handler';
+import { ConditionalLayout } from '@/components/conditional-layout';
 
 const geistSans = localFont({
   src: [
@@ -103,12 +101,18 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
+                  // Initial theme load before React hydration
+                  // Note: User-specific themes are handled by React after mount
+                  // This script provides a fallback for initial page load
+                  // Default to dark theme for headless browsers and SSR
                   var theme = localStorage.getItem('theme');
                   var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (theme === 'dark' || (!theme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
+                  if (theme === 'light') {
                     document.documentElement.classList.remove('dark');
+                  } else {
+                    // Default to dark: if theme is 'dark', or no theme preference exists
+                    // (including headless browsers where system preference may not be available)
+                    document.documentElement.classList.add('dark');
                   }
                 } catch (e) {
                   console.error('Error applying initial theme:', e);
@@ -129,19 +133,7 @@ export default function RootLayout({
                       <ToastProvider>
                       <SessionInitializer />
                       <GlobalSessionErrorHandler />
-                      <div className="relative flex min-h-screen flex-col">
-                        <AppHeader />
-                        <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
-                        <div className="flex flex-col items-center gap-0.5">
-                          <div className="flex items-center gap-6">
-                            <AppVersion />
-                            <GithubLink />
-                          </div>
-                          <span className="text-tiny text-muted-foreground text-center mb-4">
-                             Product names and icons belong to their respective owners and are used for identification purposes only.
-                          </span>
-                        </div>
-                      </div>
+                      <ConditionalLayout>{children}</ConditionalLayout>
                       <Toaster />
                     </ToastProvider>
                     </TooltipProvider>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,8 @@ import { ColoredIcon } from '@/components/ui/colored-icon';
 import { useToast } from '@/components/ui/use-toast';
 import { NotificationTemplate } from '@/lib/types';
 import { defaultNotificationTemplates } from '@/lib/default-config';
+import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 // Available placeholder variables for templates
 const TEMPLATE_VARIABLES = [
@@ -201,7 +203,7 @@ const TemplateEditor = ({
             value={template.message || ''}
             onChange={(e) => updateTemplate(templateType, 'message', e.target.value)}
             placeholder="Enter your message template using variables like {server_name}, {backup_name}, {status}, etc."
-            className="min-h-[200px]"
+            className="min-h-[262px]"
             onFocus={() => onFieldFocus('message')}
           />
           <p className="text-sm text-muted-foreground">
@@ -215,6 +217,7 @@ const TemplateEditor = ({
 
 export function NotificationTemplatesForm({ templates, onSave, onSendTest }: NotificationTemplatesFormProps) {
   const { toast } = useToast();
+  const currentUser = useCurrentUser();
   const [formData, setFormData] = useState(() => {
     // Ensure we have default templates if the provided templates are incomplete
     return {
@@ -226,17 +229,24 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   const [isSaving, setIsSaving] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [selectedVariable, setSelectedVariable] = useState<string>('');
+  const hasLoadedUserTabRef = useRef(false);
   
   // Initialize activeTab from localStorage or default to 'success'
   const [activeTab, setActiveTab] = useState<'success' | 'warning' | 'overdue'>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTab = localStorage.getItem('notification-templates-active-tab');
-      if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue') {
-        return savedTab;
-      }
-    }
     return 'success';
   });
+
+  // Load user-specific active tab when user is available
+  useEffect(() => {
+    if (typeof window !== 'undefined' && currentUser && !hasLoadedUserTabRef.current) {
+      hasLoadedUserTabRef.current = true;
+      const savedTab = getUserLocalStorageItem('notification-templates-active-tab', currentUser.id);
+      if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue') {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setActiveTab(savedTab);
+      }
+    }
+  }, [currentUser]);
   
   // Store refs for all fields (title, tags, message) for each template type
   const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({});
@@ -263,8 +273,8 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
     setSelectedVariable(''); // Reset selection when changing tabs
     
     // Persist to localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('notification-templates-active-tab', newTab);
+    if (typeof window !== 'undefined' && currentUser) {
+      setUserLocalStorageItem('notification-templates-active-tab', currentUser.id, newTab);
     }
   };
 
@@ -328,10 +338,11 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       });
     } catch (error) {
       console.error('Error saving templates:', error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save template settings';
       toast({
         duration: 3000,
         title: "Error",
-        description: "Failed to save template settings",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -362,10 +373,11 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send test notification';
       toast({
         duration: 3000,
         title: "Error",
-        description: "Failed to send test notification",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -390,7 +402,7 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
           <TabsTrigger value="success" className="text-xs md:text-sm py-2 px-3 flex items-center gap-2">
