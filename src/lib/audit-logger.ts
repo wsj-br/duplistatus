@@ -1,5 +1,7 @@
 import { dbOps, ensureDatabaseInitialized } from './db';
 
+const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
+
 // Audit log categories
 export type AuditCategory = 'auth' | 'user' | 'config' | 'backup' | 'server' | 'system';
 
@@ -77,7 +79,7 @@ export class AuditLogger {
 
       // Insert audit log entry
       const ipToStore = entry.ipAddress || null;
-      console.log(`[AuditLogger] Inserting audit log: ${entry.action} (${entry.category}) - ${entry.username || 'system'}`);
+      console.log(`[AuditLogger] ${timestamp()}: Inserting audit log: ${entry.action} (${entry.category}) - ${entry.username || 'system'}`);
       
       dbOps.insertAuditLog.run(
         entry.userId || null,
@@ -94,7 +96,7 @@ export class AuditLogger {
       );
     } catch (error) {
       // Log error but don't throw - audit logging should not break app functionality
-      console.error('[AuditLogger] Failed to write audit log:', error);
+      console.error(`[AuditLogger] ${timestamp()}: Failed to write audit log:`, error);
     }
   }
 
@@ -285,7 +287,7 @@ export class AuditLogger {
 
       return { logs, total };
     } catch (error) {
-      console.error('[AuditLogger] Failed to query audit logs:', error);
+      console.error(`[AuditLogger] ${timestamp()}: Failed to query audit logs:`, error);
       return { logs: [], total: 0 };
     }
   }
@@ -300,7 +302,7 @@ export class AuditLogger {
       const stats = dbOps.getAuditLogStats.get(days) as AuditLogStats;
       return stats;
     } catch (error) {
-      console.error('[AuditLogger] Failed to get audit log stats:', error);
+      console.error(`[AuditLogger] ${timestamp()}: Failed to get audit log stats:`, error);
       return {
         totalEvents: 0,
         successCount: 0,
@@ -331,7 +333,7 @@ export class AuditLogger {
         statuses: statuses.map(row => row.status),
       };
     } catch (error) {
-      console.error('[AuditLogger] Failed to get filter values:', error);
+      console.error(`[AuditLogger] ${timestamp()}: Failed to get filter values:`, error);
       return {
         actions: [],
         categories: [],
@@ -389,10 +391,10 @@ export class AuditLogger {
         }, 'success', undefined, userAgent || undefined);
       }
 
-      console.log(`[AuditLogger] Cleanup completed: ${deletedCount} entries deleted`);
+      console.log(`[AuditLogger] ${timestamp()}: Cleanup completed: ${deletedCount} entries deleted`);
       return deletedCount;
     } catch (error) {
-      console.error('[AuditLogger] Failed to cleanup audit logs:', error);
+      console.error(`[AuditLogger] ${timestamp()}: Failed to cleanup audit logs:`, error);
       
       // Log error - use user context if provided, otherwise log as system
       if (userId && username) {

@@ -3,10 +3,10 @@ alwaysApply: true
 ---
 tools:
   Node.js: ^20.x
-  TypeScript: ^5.x
+  TypeScript: ~5.9.3
   Next.js (App Router): 15.3.5
   pnpm: ^10.x
-  React & React-DOM: ^19.x
+  React & React-DOM: ^19.2.0
   @radix-ui/react-* modules: latest
   Tailwind CSS: ^3.4.17
   ESLint: (bundled with Next.js)
