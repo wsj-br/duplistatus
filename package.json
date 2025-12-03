@@ -61,7 +61,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "lucide-react": "^0.555.0",
     "next": "^16.0.6",
     "node-cron": "^4.2.1",
@@ -82,7 +82,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
-    "@types/express": "^5.0.5",
+    "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
     "@types/node-cron": "^3.0.11",
     "@types/react": "19.2.7",
@@ -90,7 +90,7 @@
     "baseline-browser-mapping": "latest",
     "eslint": "^9.39.1",
     "eslint-config-next": "16.0.6",
-    "puppeteer": "^24.31.0",
+    "puppeteer": "^24.32.0",
     "tsx": "^4.21.0",
     "webpack": "^5.103.0"
   }
