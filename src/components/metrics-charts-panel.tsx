@@ -225,8 +225,12 @@ function SmallMetricChart({
         const lowerValue = lowerPoint[metricKey];
         const upperValue = upperPoint[metricKey];
         
+        // Check if this is a count metric that should be rounded to integer
+        const isCountMetric = metricKey === 'fileCount' || metricKey === 'backupVersions';
+        
         if (typeof lowerValue === 'number' && typeof upperValue === 'number') {
-          (interpolatedPoint as Record<string, string | number>)[metricKey] = lowerValue + (upperValue - lowerValue) * fraction;
+          const interpolatedValue = lowerValue + (upperValue - lowerValue) * fraction;
+          (interpolatedPoint as Record<string, string | number>)[metricKey] = isCountMetric ? Math.round(interpolatedValue) : interpolatedValue;
         } else if (typeof lowerValue === 'number') {
           (interpolatedPoint as Record<string, string | number>)[metricKey] = lowerValue; // Fallback to lower value
         } else {

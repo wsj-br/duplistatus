@@ -38,21 +38,21 @@
 - pnpm ^10.x (minimum: 10.20.0, enforced via preinstall hook)
 
 ### Core Frameworks & Libraries
-- Next.js ^16.0.5 (App Router)
+- Next.js ^16.0.6 (App Router)
 - React ^19.2.0 & React-DOM ^19.2.0
-- Radix UI (@radix-ui/react-*) - latest versions
+- Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion, alert-dialog, avatar, checkbox, dialog, dropdown-menu, label, menubar, popover, progress, radio-group, scroll-area, select, separator, slider, slot, switch, tabs, toast, tooltip)
 - Tailwind CSS ^4.1.17 + tailwindcss-animate ^1.0.7
 - Better-sqlite3 ^12.5.0
 - Recharts ^3.5.1, react-day-picker ^9.11.3, react-hook-form ^7.67.0, react-datepicker ^8.10.0
 - lucide-react ^0.555.0, clsx ^2.1.1, class-variance-authority ^0.7.1
 - date-fns ^4.1.0, uuid ^13.0.0
-- express ^5.1.0 (cron service), node-cron ^4.2.1
+- express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^7.0.11, qrcode ^1.5.4
 
 ### Type Checking & Linting
-- TypeScript 5.9.3
-- TSX 4.20.6
-- ESLint 9.39.1 (via `next lint`)
+- TypeScript ^5.9.3
+- TSX ^4.21.0
+- ESLint ^9.39.1 (via `next lint`)
 
 ### Build & Deployment
 - Custom server: `duplistatus-server.ts`

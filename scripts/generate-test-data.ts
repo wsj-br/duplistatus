@@ -333,8 +333,8 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
     },
     Extra: {
       OperationName: backupJob,
-      'server-id': server.id,
-      'server-name': server.name,
+      'machine-id': server.id,
+      'machine-name': server.name,
       'backup-name': backupJob,
       'backup-id': `DB-${backupNumber}`
     }
@@ -342,7 +342,7 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
 }
 
 // Parse command line arguments
-function parseArgs(): { useUpload: boolean; serverCount: number } {
+function parseArgs(): { useUpload: boolean; serverCount: number; port: number } {
   const args = process.argv.slice(2);
   const useUpload = args.includes('--upload');
   
@@ -352,16 +352,17 @@ function parseArgs(): { useUpload: boolean; serverCount: number } {
     console.error('🚨 Error: --servers parameter is required!');
     console.log('');
     console.log('Usage:');
-    console.log('  pnpm run generate-test-data --servers=N [--upload]');
+    console.log('  pnpm run generate-test-data --servers=N [--upload] [--port=N]');
     console.log('');
     console.log('Parameters:');
     console.log('  --servers=N    Number of servers to generate (1-30, mandatory)');
     console.log('  --upload       Optional: Send data via API instead of direct DB write');
+    console.log('  --port=N       Optional: Port number for API endpoints (default: 8666)');
     console.log('');
     console.log('Examples:');
     console.log('  pnpm run generate-test-data --servers=5');
     console.log('  pnpm run generate-test-data --servers=1 --upload');
-    console.log('  pnpm run generate-test-data --servers=30');
+    console.log('  pnpm run generate-test-data --servers=3 --port=3000');
     console.log('');
     process.exit(1);
   }
@@ -369,19 +370,22 @@ function parseArgs(): { useUpload: boolean; serverCount: number } {
   const count = parseInt(serverCountArg.split('=')[1], 10);
   if (isNaN(count) || count < 1 || count > 30) {
     console.error('🚨 Error: Invalid server count. Must be between 1 and 30.');
-    console.log('');
-    console.log('Usage:');
-    console.log('  pnpm run generate-test-data --servers=N [--upload]');
-    console.log('');
-    console.log('Examples:');
-    console.log('  pnpm run generate-test-data --servers=5');
-    console.log('  pnpm run generate-test-data --servers=1 --upload');
-    console.log('  pnpm run generate-test-data --servers=30');
-    console.log('');
     process.exit(1);
   }
   
-  return { useUpload, serverCount: count };
+  // Parse port parameter (optional, default: 8666)
+  const portArg = args.find(arg => arg.startsWith('--port='));
+  let port = 8666; // default port
+  if (portArg) {
+    const parsedPort = parseInt(portArg.split('=')[1], 10);
+    if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+      console.error('🚨 Error: Invalid port number. Must be between 1 and 65535.');
+      process.exit(1);
+    }
+    port = parsedPort;
+  }
+  
+  return { useUpload, serverCount: count, port };
 }
 
 // Function to write backup data directly to database
@@ -389,8 +393,11 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
   try {
     // Check for duplicate backup
     const backupDate = new Date(payload.Data.BeginTime).toISOString();
+    // Support both machine-id (Duplicati API format) and server-id (legacy format)
+    const serverId = payload.Extra['machine-id'] || payload.Extra['server-id'];
+    const serverName = payload.Extra['machine-name'] || payload.Extra['server-name'];
     const isDuplicate = await dbUtils.checkDuplicateBackup({
-      server_id: payload.Extra['server-id'],
+      server_id: serverId,
       backup_name: payload.Extra['backup-name'],
       date: backupDate
     });
@@ -403,12 +410,12 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
     // Start a transaction
     const transaction = db.transaction(() => {
       // Find the server configuration to get alias and note
-      const serverConfig = servers.find(s => s.id === payload.Extra['server-id']);
+      const serverConfig = servers.find(s => s.id === serverId);
       
       // Insert server information only if it doesn't exist (preserves existing server_url)
       dbOps.insertServerIfNotExists.run({
-        id: payload.Extra['server-id'],
-        name: payload.Extra['server-name'],
+        id: serverId,
+        name: serverName,
         alias: serverConfig?.alias || '',
         note: serverConfig?.note || ''
       });
@@ -423,7 +430,7 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
       dbOps.insertBackup.run({
         // Primary fields
         id: uuidv4(),
-        server_id: payload.Extra['server-id'],
+        server_id: serverId,
         backup_name: payload.Extra['backup-name'],
         backup_id: payload.Extra['backup-id'],
         date: new Date(payload.Data.BeginTime).toISOString(),
@@ -841,18 +848,20 @@ async function cleanupBackupsForUserManual(){
 }
 
 // Main function to send test data
-async function sendTestData(useUpload: boolean = false, serverCount: number) {
-  const API_URL = 'http://localhost:8666/api/upload';
-  const HEALTH_CHECK_URL = 'http://localhost:8666/api/health'; // Adjust this URL based on your actual health endpoint
+async function sendTestData(useUpload: boolean = false, serverCount: number, port: number = 8666) {
+  const API_URL = `http://localhost:${port}/api/upload`;
+  const HEALTH_CHECK_URL = `http://localhost:${port}/api/health`; // Adjust this URL based on your actual health endpoint
   const BACKUP_JOBS = ['Files', 'Databases', 'System', 'Users'];
 
-  // Clean database tables before generating test data 
-  const cleanupSuccess = await cleanDatabaseTables();
-  if (!cleanupSuccess) {
-    console.error('🚨 Database cleanup failed. Aborting test data generation.');
-    process.exit(1);
+  // Clean database tables before generating test data (only for direct DB mode)
+  if (!useUpload) {
+    const cleanupSuccess = await cleanDatabaseTables();
+    if (!cleanupSuccess) {
+      console.error('🚨 Database cleanup failed. Aborting test data generation.');
+      process.exit(1);
+    }
+    console.log(''); // Add spacing after cleanup
   }
-  console.log(''); // Add spacing after cleanup
 
   // Check server health before proceeding (only when using upload mode)
   if (useUpload) {
@@ -951,16 +960,17 @@ async function sendTestData(useUpload: boolean = false, serverCount: number) {
 }
 
 // Run the script
-const { useUpload, serverCount } = parseArgs();
+const { useUpload, serverCount, port } = parseArgs();
 
 console.log('🛫 Starting test data generation...\n');
 if (useUpload) {
   console.log('  📤 Mode: Upload via API endpoint');
+  console.log(`  🔌 Port: ${port}`);
 } else {
   console.log('  💾 Mode: Direct database write');
+  console.log('  🧹 Database cleanup: Will clear servers, backups, and configurations tables before generation');
 }
 console.log(`  🖥️  Generating data for ${serverCount} server(s) (out of ${servers.length} available)`);
-console.log('  🧹 Database cleanup: Will clear servers, backups, and configurations tables before generation');
 console.log('  ℹ️ Generating backups with specific date patterns:');
 console.log('     • Odd servers: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
 console.log('     • Even servers: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
@@ -969,7 +979,7 @@ console.log('     • Servers include alias and note fields for testing');
 console.log('     • After generation: Random cleanup some servers/backup jobs and last backups for the user manual screenshots\n');
 
 
-sendTestData(useUpload, serverCount).then(() => {
+sendTestData(useUpload, serverCount, port).then(() => {
   console.log('\n🎉 Test data generation completed!');
 }).catch(error => {
   console.error('🚨 Error generating test data:', error instanceof Error ? error.message : String(error));

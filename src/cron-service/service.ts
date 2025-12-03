@@ -140,18 +140,6 @@ class CronService {
       switch (taskName) {
         case 'overdue-backup-check':
           result = await checkOverdueBackups();
-          // Log audit event for overdue check
-          if (result.statistics) {
-            await AuditLogger.logSystem(
-              'overdue_check_triggered',
-              {
-                checkedBackups: result.statistics.checkedBackups,
-                overdueBackupsFound: result.statistics.overdueBackupsFound,
-                notificationsSent: result.statistics.notificationsSent,
-              },
-              'success'
-            );
-          }
           break;
         case 'audit-log-cleanup':
           // Get retention days from configuration

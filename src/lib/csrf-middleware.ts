@@ -31,7 +31,45 @@ export function withCSRF<T extends unknown[]>(
     const sessionId = getSessionIdFromRequest(request);
     const csrfToken = getCSRFTokenFromRequest(request);
     
-    // Validate session with retry logic
+    // Special handling for login endpoint: allow it to proceed if CSRF token is present,
+    // even if session validation fails. This is necessary because:
+    // 1. After migration to v4.0, sessions table might not be ready yet
+    // 2. Login endpoint creates the authenticated session, so it needs to work without one
+    // 3. CSRF token provides protection against CSRF attacks
+    const isLoginEndpoint = pathname === '/api/auth/login';
+    
+    if (isLoginEndpoint && request.method === 'POST') {
+      // For login, only validate CSRF token if session exists
+      // If session doesn't exist or is invalid, still allow login to proceed
+      // The login handler will create a new session
+      if (sessionId && csrfToken) {
+        // If we have both session and CSRF token, validate them
+        // But don't fail if session is invalid - login will create a new one
+        const isValidSession = await validateSessionAsync(sessionId);
+        if (isValidSession) {
+          const isValidCSRF = await validateCSRFTokenAsync(sessionId, csrfToken);
+          if (!isValidCSRF) {
+            return NextResponse.json(
+              { error: 'Invalid CSRF token' },
+              { status: 403 }
+            );
+          }
+          updateSessionAccess(sessionId);
+        }
+        // If session is invalid but CSRF token exists, allow login to proceed
+        // This handles the case where session expired or was lost after migration
+      } else if (!csrfToken) {
+        // Require CSRF token for login to prevent CSRF attacks
+        return NextResponse.json(
+          { error: 'CSRF token required' },
+          { status: 403 }
+        );
+      }
+      // Allow login to proceed with CSRF token even if session is invalid
+      return handler(request, ...args);
+    }
+    
+    // For all other endpoints, validate session
     if (!sessionId || !(await validateSessionAsync(sessionId))) {
       return NextResponse.json(
         { error: 'Invalid or expired session' },
@@ -67,6 +105,44 @@ export async function validateCSRFRequest(request: NextRequest): Promise<{ valid
   
   // Skip CSRF validation for external APIs
   if (isExternalAPI(pathname)) {
+    return { valid: true };
+  }
+  
+  // Special handling for login endpoint: allow it to proceed if CSRF token is present,
+  // even if session validation fails (same logic as withCSRF middleware)
+  const isLoginEndpoint = pathname === '/api/auth/login';
+  
+  if (isLoginEndpoint && request.method === 'POST') {
+    const sessionId = getSessionIdFromRequest(request);
+    const csrfToken = getCSRFTokenFromRequest(request);
+    
+    // Require CSRF token for login
+    if (!csrfToken) {
+      return { 
+        valid: false, 
+        error: 'CSRF token required', 
+        status: 403 
+      };
+    }
+    
+    // If session exists and is valid, validate CSRF token
+    // But don't fail if session is invalid - login will create a new one
+    if (sessionId) {
+      const isValidSession = await validateSessionAsync(sessionId);
+      if (isValidSession) {
+        const isValidCSRF = await validateCSRFTokenAsync(sessionId, csrfToken);
+        if (!isValidCSRF) {
+          return { 
+            valid: false, 
+            error: 'Invalid CSRF token', 
+            status: 403 
+          };
+        }
+        updateSessionAccess(sessionId);
+      }
+      // If session is invalid but CSRF token exists, allow login to proceed
+    }
+    
     return { valid: true };
   }
   

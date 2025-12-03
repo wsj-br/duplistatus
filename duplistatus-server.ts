@@ -3,9 +3,39 @@ import next from 'next';
 import { randomBytes } from 'crypto';
 import { existsSync, writeFileSync, chmodSync, statSync, readFileSync, lstatSync } from 'fs';
 import { join, extname, resolve, normalize } from 'path';
-import { error } from 'console';
 
 import { requestUrlStorage } from './src/lib/request-url-storage';
+
+const formatTimestamp = (): string =>
+  new Date().toLocaleString(undefined, { hour12: false });
+
+const createServerLogger = (baseLogger: (...args: unknown[]) => void) => {
+  return (...args: unknown[]) => {
+    if (!args.length) {
+      baseLogger();
+      return;
+    }
+
+    const [first, ...rest] = args;
+    if (typeof first === 'string' && first.startsWith('[Server]')) {
+      const closing = first.indexOf(']');
+      if (closing !== -1) {
+        const label = first.slice(0, closing + 1);
+        const remainder = first.slice(closing + 1);
+        baseLogger(`${label} ${formatTimestamp()}${remainder}`, ...rest);
+        return;
+      }
+    }
+
+    baseLogger(...args);
+  };
+};
+
+const serverLog = createServerLogger(console.log);
+const serverWarn = createServerLogger(console.warn);
+const serverError = createServerLogger(console.error);
+
+import { waitForDatabaseReady, performDatabaseCleanup } from './src/lib/db';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = '0.0.0.0'; //always listen on 0.0.0.0
@@ -13,6 +43,53 @@ const port = parseInt(process.env.PORT || '9666', 10);
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
+
+// Register signal handlers EARLY, before app.prepare() completes
+// This ensures handlers are registered even if SIGTERM arrives during startup
+let serverInstance: ReturnType<typeof createServer> | null = null;
+let isShuttingDown = false;
+
+const gracefulShutdown = (signal: string) => {
+  serverLog(`\n[Server] 🔔 Received ${signal} signal`);
+  
+  // Prevent multiple shutdown attempts
+  if (isShuttingDown) {
+    process.exit(1);
+    return;
+  }
+
+  isShuttingDown = true;
+
+  if (!serverInstance) {
+    performDatabaseCleanup();
+    serverLog('[Server] ✅ Shutdown complete');
+    process.exit(0);
+    return;
+  }
+
+  // Set a timeout to force exit if shutdown takes too long
+  const shutdownTimeout = setTimeout(() => {
+    performDatabaseCleanup();
+    serverLog('[Server] ✅ Shutdown complete');
+    process.exit(0);
+  }, 10000);
+
+  // Close the server
+  serverInstance.close(() => {
+    clearTimeout(shutdownTimeout);
+    performDatabaseCleanup('server-shutdown');
+    serverLog('[Server] ✅ Shutdown complete');
+    process.exit(0);
+  });
+
+  // Close existing connections immediately
+  serverInstance.closeAllConnections();
+};
+
+// Register signal handlers immediately
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
 
 
 // Function to check if a language is supported
@@ -34,7 +111,7 @@ function isLangSupported(lang: string): boolean {
     return supported.includes(normalizedLang);
   } catch (error) {
     // This can catch issues like invalid locale string formats.
-    console.error(`An error occurred while checking locale ${lang}:`, error);
+    serverError(`An error occurred while checking locale ${lang}:`, error);
     return false;
   }
 }
@@ -49,12 +126,12 @@ const validateKeyFilePermissions = (keyFilePath: string) => {
   const permissions = stats.mode & 0o777; // Get the last 3 octal digits
 
   if (permissions !== 0o400) {
-    console.error('❌ SECURITY ERROR: .duplistatus.key file has incorrect permissions!');
-    console.error(`   Expected: 0400 (r--------)`);
-    console.error(`   Actual:   0${permissions.toString(8).padStart(3, '0')} (${permissions.toString(8)})`);
-    console.error('   The key file must have permissions 0400 for security reasons.');
-    console.error('   Please fix the permissions or delete the file to regenerate it.');
-    console.error('   run chmod 0400 .duplistatus.key to fix the permissions');
+    serverError('❌ SECURITY ERROR: .duplistatus.key file has incorrect permissions!');
+    serverError(`   Expected: 0400 (r--------)`);
+    serverError(`   Actual:   0${permissions.toString(8).padStart(3, '0')} (${permissions.toString(8)})`);
+    serverError('   The key file must have permissions 0400 for security reasons.');
+    serverError('   Please fix the permissions or delete the file to regenerate it.');
+    serverError('   run chmod 0400 .duplistatus.key to fix the permissions');
     process.exit(1);
   }
   // all ok, continue
@@ -69,11 +146,11 @@ const ensureKeyFile = () => {
   validateKeyFilePermissions(keyFilePath);
 
   if (!existsSync(keyFilePath)) {
-    console.log('🔑 Creating new .duplistatus.key file...');
+    serverLog('🔑 Creating new .duplistatus.key file...');
     const key = randomBytes(32);
     writeFileSync(keyFilePath, key);
     chmodSync(keyFilePath, 0o400); // Set permissions to r-------- (0400)
-    console.log('   ✅ Key file created successfully with restricted permissions');
+    serverLog('   ✅ Key file created successfully with restricted permissions');
   }
 };
 
@@ -187,16 +264,24 @@ const serveDocsFile = (reqUrl: string | undefined, res: ServerResponse): boolean
     res.end(content);
     return true;
   } catch (err) {
-    console.error('Error serving docs file:', err);
+    serverError('Error serving docs file:', err);
     res.statusCode = 500;
     res.end('Internal Server Error');
     return true;
   }
 };
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
   // Ensure key file exists before starting server
   ensureKeyFile();
+  
+  // Ensure database is initialized so cleanup handlers are ready
+  try {
+    await waitForDatabaseReady();
+  } catch (error) {
+    serverError('[Server] ❌ Failed to initialize database:', error);
+    // Continue anyway - database will be initialized on first use
+  }
 
 
   const server = createServer(async (req, res) => {
@@ -219,7 +304,7 @@ app.prepare().then(() => {
           searchParams = url.searchParams.toString();
         } catch (err) {
           // If URL parsing fails, use default values
-          console.error('[Server] Error parsing URL for redirect:', err);
+          serverError('[Server] Error parsing URL for redirect:', err);
           pathname = '/';
           searchParams = '';
         }
@@ -231,74 +316,41 @@ app.prepare().then(() => {
         await handle(req, res);
       });
     } catch (err) {
-      console.error('Error occurred handling', req.url, err);
+      serverError('Error occurred handling', req.url, err);
       res.statusCode = 500;
       res.end('internal server error');
     }
   });
 
-  // Graceful shutdown handlers
-  let isShuttingDown = false;
-  const gracefulShutdown = (signal: string) => {
-    // Prevent multiple shutdown attempts
-    if (isShuttingDown) {
-      console.log(`\n⚠️  Already shutting down, forcing exit...`);
-      process.exit(1);
-      return;
-    }
-
-    isShuttingDown = true;
-    console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
-    console.log(`   Server terminated at: ${new Date().toLocaleString()}`);
-
-    // Set a timeout to force exit if shutdown takes too long
-    const shutdownTimeout = setTimeout(() => {
-      console.log('   ⚠️  Shutdown timeout reached, forcing exit...');
-      process.exit(0);
-    }, 5000); // 5 second timeout
-
-    // Close the server
-    server.close(() => {
-      clearTimeout(shutdownTimeout);
-      console.log('   ✅ Server closed successfully');
-      process.exit(0);
-    });
-
-    // Also close all existing connections immediately
-    server.closeAllConnections();
-  };
-
-  // Listen for termination signals
-  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-  process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
+  // Store server instance for graceful shutdown
+  serverInstance = server;
 
   server.listen(port, hostname, () => {
-    console.log('\n🌐 duplistatus (v' + process.env.VERSION + ')');
-    console.log(`  🛜 Ready on http://${hostname}:${port}`);
+    serverLog('\n🌐 duplistatus (v' + process.env.VERSION + ')');
+    serverLog(`  🛜 Ready on http://${hostname}:${port}`);
     if (dev) {
-      console.log(`  🔧 dev mode`);
+      serverLog(`  🔧 dev mode`);
     }
     else {
-      console.log(`  🚀 production mode\n`);
+      serverLog(`  🚀 production mode\n`);
     }
-    console.log('    Environment variables:');
-    console.log('      VERSION=' + process.env.VERSION);
-    console.log('      PORT=' + process.env.PORT);
-    console.log('      CRON_PORT=' + process.env.CRON_PORT);
-    console.log('      NODE_ENV=' + process.env.NODE_ENV);
-    console.log('      NEXT_TELEMETRY_DISABLED=' + process.env.NEXT_TELEMETRY_DISABLED);
-    console.log('      TZ=' + process.env.TZ);
-    console.log('      LANG=' + process.env.LANG);
+    serverLog('    Environment variables:');
+    serverLog('      VERSION=' + process.env.VERSION);
+    serverLog('      PORT=' + process.env.PORT);
+    serverLog('      CRON_PORT=' + process.env.CRON_PORT);
+    serverLog('      NODE_ENV=' + process.env.NODE_ENV);
+    serverLog('      NEXT_TELEMETRY_DISABLED=' + process.env.NEXT_TELEMETRY_DISABLED);
+    serverLog('      TZ=' + process.env.TZ);
+    serverLog('      LANG=' + process.env.LANG);
     if (!isLangSupported(process.env.LANG || 'en_GB')) {
-      console.error('❌ ERROR: LANG environment variable is not supported!');
-      console.error('   The locale must be supported by the system.');
-      console.error('   Please fix your docker configuration or remove the LANG environment variable,');
-      console.error('   it will default to LANG=en_GB');
+      serverError('❌ ERROR: LANG environment variable is not supported!');
+      serverError('   The locale must be supported by the system.');
+      serverError('   Please fix your docker configuration or remove the LANG environment variable,');
+      serverError('   it will default to LANG=en_GB');
     }
 
     // show the time of the start
-    console.log('\nstarted at:', new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }));
+    serverLog('\nstarted at:', new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }));
   });
 });
 

@@ -57,12 +57,12 @@ RUN mkdir -p /app/data && pnpm run build
 # ------------------------------------------------------------
 FROM base AS runner
 
-RUN apk add --no-cache curl tzdata icu-libs icu-data-full
+RUN apk add --no-cache curl tzdata icu-libs icu-data-full tini sqlite
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=0.9.8 \
+ENV VERSION=0.9.9 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \
@@ -97,6 +97,9 @@ COPY --chown=node:node --from=builder /app/duplistatus-server.ts ./duplistatus-s
 # Copy duplistatus-server.sh and duplistatus-cron script
 COPY --chown=node:node --chmod=755 duplistatus-cron.sh /app/duplistatus-cron.sh
 
+# Copy docker entrypoint script
+COPY --chown=node:node --chmod=755 docker-entrypoint.sh /app/docker-entrypoint.sh
+
 # Copy admin recovery wrapper script
 COPY --chown=node:node --chmod=755 admin-recovery /app/admin-recovery
 
@@ -116,4 +119,6 @@ EXPOSE 9666 9667
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
   CMD curl -f -s http://localhost:9666/api/health || exit 1
 
-CMD ["sh", "-c", "pnpm exec tsx duplistatus-server.ts & /app/duplistatus-cron.sh"]
+# Use tini as entrypoint to properly forward signals to child processes
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["/app/docker-entrypoint.sh"]

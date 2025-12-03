@@ -6,6 +6,8 @@ import { AuditLogger } from '@/lib/audit-logger';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 
+const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
+
 interface LoginRequest {
   username: string;
   password: string;
@@ -23,10 +25,11 @@ export const POST = withCSRF(async (request: NextRequest) => {
     // Get client info for logging
     const ipAddress = getClientIpAddress(request);
     const userAgent = request.headers.get('user-agent') || 'unknown';
-    console.log('[Login] Extracted IP address:', ipAddress, 'User agent:', userAgent);
+    console.log(`[Login] ${timestamp()}: Login attempt for username: ${username || 'unknown'} from IP: ${ipAddress}`);
 
     // Validate input
     if (!username || !password) {
+      console.error(`[Login] ${timestamp()}: Login failed - Missing credentials for username: ${username || 'unknown'} from IP: ${ipAddress}`);
       await AuditLogger.logAuth(
         'login',
         null,
@@ -56,6 +59,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
 
     if (!user) {
       // User not found - use generic error message to prevent username enumeration
+      console.error(`[Login] ${timestamp()}: Login failed - User not found: ${username} from IP: ${ipAddress}`);
       await AuditLogger.logAuth(
         'login',
         null,
@@ -78,6 +82,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       if (lockExpiry > new Date()) {
         const minutesRemaining = Math.ceil((lockExpiry.getTime() - Date.now()) / 60000);
         
+        console.error(`[Login] ${timestamp()}: Login failed - Account locked for user: ${user.username} (${minutesRemaining} minutes remaining) from IP: ${ipAddress}`);
         await AuditLogger.logAuth(
           'login',
           user.id,
@@ -111,19 +116,11 @@ export const POST = withCSRF(async (request: NextRequest) => {
       dbOps.incrementFailedLoginAttempts.run(user.id);
 
       // Lock account after 5 failed attempts (15 minutes)
+      // Note: incrementFailedLoginAttempts already handles locking when attempts >= 5
       if (newFailedAttempts >= 5) {
         const lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
-        dbOps.updateUser.run(
-          user.username,
-          user.is_admin,
-          user.must_change_password,
-          null,
-          null,
-          newFailedAttempts,
-          lockUntil.toISOString(),
-          user.id
-        );
 
+        console.error(`[Login] ${timestamp()}: Login failed - Account locked due to too many failed attempts for user: ${user.username} (attempt ${newFailedAttempts}) from IP: ${ipAddress}`);
         await AuditLogger.logAuth(
           'login',
           user.id,
@@ -148,6 +145,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
         );
       }
 
+      console.error(`[Login] ${timestamp()}: Login failed - Invalid password for user: ${user.username} (attempt ${newFailedAttempts}/5) from IP: ${ipAddress}`);
       await AuditLogger.logAuth(
         'login',
         user.id,

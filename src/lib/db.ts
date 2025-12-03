@@ -6,6 +6,62 @@ import bcrypt from 'bcrypt';
 import { BackupNotificationConfig } from '@/lib/types';
 import { defaultAuthConfig } from './default-config';
 
+const databaseTimestamp = (): string =>
+  new Date().toLocaleString(undefined, { hour12: false });
+
+const formatDatabaseMessage = (message: string): string => {
+  if (message.startsWith('[')) {
+    const closing = message.indexOf(']');
+    if (closing !== -1) {
+      const label = message.slice(0, closing + 1);
+      const remainder = message.slice(closing + 1);
+      return `${label} ${databaseTimestamp()}${remainder}`;
+    }
+  }
+  return `[Database] ${databaseTimestamp()} ${message}`;
+};
+
+const shouldLogDatabaseInfo = (message: string): boolean =>
+  message.includes('Received') || message.includes('✅ Database connection closed successfully');
+
+function logWithTimestamp(...args: unknown[]): void {
+  if (!args.length) {
+    return;
+  }
+  const [first, ...rest] = args;
+  if (typeof first !== 'string' || !first.startsWith('[Database]')) {
+    return;
+  }
+  if (!shouldLogDatabaseInfo(first)) {
+    return;
+  }
+  console.log(formatDatabaseMessage(first), ...rest);
+}
+
+function warnWithTimestamp(...args: unknown[]): void {
+  if (!args.length) {
+    return;
+  }
+  const [first, ...rest] = args;
+  if (typeof first === 'string' && first.startsWith('[Database]')) {
+    console.warn(formatDatabaseMessage(first), ...rest);
+  } else {
+    console.warn(...args);
+  }
+}
+
+function errorWithTimestamp(...args: unknown[]): void {
+  if (!args.length) {
+    return;
+  }
+  const [first, ...rest] = args;
+  if (typeof first === 'string' && first.startsWith('[Database]')) {
+    console.error(formatDatabaseMessage(first), ...rest);
+  } else {
+    console.error(...args);
+  }
+}
+
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
 
@@ -26,6 +82,7 @@ const dbPath = path.join(dataDir, 'backups.db');
 // This is critical in development mode where Next.js may re-import modules
 declare global {
   var __dbInstance: Database.Database | undefined;
+  var __dbCleanupRegistered: boolean | undefined;
 }
 
 let db: Database.Database;
@@ -50,7 +107,7 @@ if (global.__dbInstance) {
     try {
       db.pragma('journal_mode = WAL'); // Write-Ahead Logging for better concurrency
     } catch (error) {
-      console.warn('Could not set WAL mode:', error);
+      warnWithTimestamp('Could not set WAL mode:', error);
     }
     
     db.pragma('synchronous = NORMAL'); // Balanced safety and performance
@@ -63,8 +120,59 @@ if (global.__dbInstance) {
     
     // Store in global for hot reload persistence
     global.__dbInstance = db;
+    
+    // Register cleanup handler for graceful shutdown (only once per process)
+    // This ensures WAL checkpoint is performed on program exit or docker stop
+    if (!global.__dbCleanupRegistered) {
+      logWithTimestamp('[Database] Registering cleanup handlers for graceful shutdown');
+      let cleanupPerformed = false;
+
+      const cleanupDatabase = (reason?: string) => {
+        if (cleanupPerformed) {
+          return;
+        }
+
+        try {
+          const dbInstance = global.__dbInstance;
+          if (!dbInstance || !dbInstance.open) {
+            cleanupPerformed = true;
+            return;
+          }
+
+          if (reason && reason.startsWith('SIG')) {
+            logWithTimestamp(`[Database] 🔔 ${reason} received, closing database...`);
+          }
+
+          cleanupPerformed = true;
+          dbInstance.close();
+          logWithTimestamp('[Database] ✅ Database connection closed successfully');
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          errorWithTimestamp('[Database] ❌ Error while closing database:', errorMessage);
+        }
+      };
+
+      process.on('exit', (code) => {
+        cleanupDatabase(`process-exit (${code})`);
+      });
+
+      process.on('SIGTERM', () => {
+        cleanupDatabase('SIGTERM');
+      });
+
+      process.on('SIGINT', () => {
+        cleanupDatabase('SIGINT');
+      });
+
+      global.__dbCleanupRegistered = true;
+      logWithTimestamp('[Database] ✅ Cleanup handlers registered successfully');
+
+      (global as typeof globalThis & { __dbCleanupFunction?: (reason?: string) => void }).__dbCleanupFunction = cleanupDatabase;
+    } else {
+      logWithTimestamp('[Database] Cleanup handlers already registered, skipping...');
+    }
   } catch (error) {
-    console.error('Failed to initialize database:', error instanceof Error ? error.message : String(error));
+    errorWithTimestamp('Failed to initialize database:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -147,7 +255,7 @@ class DatabaseInitLock {
       }
     }
     
-    console.error('[DatabaseInitLock] Failed to acquire initialization lock within timeout');
+    errorWithTimestamp('[DatabaseInitLock] Failed to acquire initialization lock within timeout');
     return false;
   }
 
@@ -245,7 +353,7 @@ try {
         
         if (tableCountRecheck.count === 0) {
           isFreshDatabase = true;
-          console.log('Initializing new database with latest schema (v4.0)...');
+          logWithTimestamp('Initializing new database with latest schema (v4.0)...');
     
           // Import dependencies for initial setup
           const bcrypt = require('bcrypt');
@@ -494,15 +602,15 @@ try {
             db.prepare('INSERT OR REPLACE INTO db_version (version, applied_at) VALUES (?, CURRENT_TIMESTAMP)').run('4.0');
           }
           
-          console.log('Database initialized with schema v4.0');
+          logWithTimestamp('Database initialized with schema v4.0');
           if (adminUserCreated) {
-            console.log(`Admin user created: username="admin", password="${defaultAuthConfig.defaultPassword}" (must change on first login)`);
+            logWithTimestamp(`Admin user created: username="admin", password="${defaultAuthConfig.defaultPassword}" (must change on first login)`);
           }
-          console.log('Database schema initialized successfully');
+          logWithTimestamp('Database schema initialized successfully');
           
           // Populate default configurations for new databases (silent - uses INSERT OR REPLACE)
           populateDefaultConfigurations().catch(error => {
-            console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
+            errorWithTimestamp('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
           });
         } else {
           // Tables were created by another process while we waited for the lock
@@ -534,11 +642,11 @@ try {
   // During concurrent builds, tables might already exist - this is okay
   // Check if the error is about tables already existing
   if (errorMessage.includes('already exists') || errorMessage.includes('table') && errorMessage.includes('exists')) {
-    console.log('Database tables already exist (likely from concurrent build process), continuing...');
+    logWithTimestamp('Database tables already exist (likely from concurrent build process), continuing...');
     // Don't throw - the database is already initialized
     isFreshDatabase = true; // Mark as fresh so migrations are skipped
   } else {
-    console.error('Failed to initialize database schema:', errorMessage);
+    errorWithTimestamp('Failed to initialize database schema:', errorMessage);
     throw error;
   }
 }
@@ -555,7 +663,7 @@ function safePrepare(sql: string, name: string) {
     // If table doesn't exist (e.g., pre-migration), create a dummy statement
     // This allows the app to start even if new tables aren't created yet
     if (errorMessage.includes('no such table')) {
-      console.warn(`[Database] Table doesn't exist yet for statement '${name}', creating placeholder`);
+      warnWithTimestamp(`[Database] Table doesn't exist yet for statement '${name}', creating placeholder`);
       // Return a dummy statement that will throw a helpful error if called
       return {
         run: () => { throw new Error(`Table for '${name}' doesn't exist yet. Run migration 4.0.`); },
@@ -564,7 +672,7 @@ function safePrepare(sql: string, name: string) {
       } as any;
     }
     
-    console.error(`Failed to prepare statement '${name}':`, errorMessage);
+    errorWithTimestamp(`Failed to prepare statement '${name}':`, errorMessage);
     throw error;
   }
 }
@@ -617,7 +725,7 @@ async function populateDefaultConfigurations() {
     // Silent - configurations are populated/updated using INSERT OR REPLACE
     // No need to log unless there's an actual change or error
   } catch (error) {
-    console.error('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
+    errorWithTimestamp('Failed to populate default configurations:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
@@ -687,7 +795,7 @@ async function ensureDatabaseInitialized() {
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Don't log ENOENT errors for lock files - they're expected in concurrent scenarios
       if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
-        console.error('[Database] Initialization failed:', errorMessage);
+        errorWithTimestamp('[Database] Initialization failed:', errorMessage);
       }
       databaseStatus = DatabaseStatus.ERROR;
       initializationError = error instanceof Error ? error : new Error(errorMessage);
@@ -758,12 +866,12 @@ function performDatabaseMaintenance(): { success: boolean; error?: string } {
     // Incremental vacuum
     db.pragma('incremental_vacuum');
     
-    console.log('[Database] Maintenance completed:', checkpointResult);
+    logWithTimestamp('[Database] Maintenance completed:', checkpointResult);
     
     return { success: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Database] Maintenance failed:', errorMessage);
+    errorWithTimestamp('[Database] Maintenance failed:', errorMessage);
     return { success: false, error: errorMessage };
   }
 }
@@ -783,7 +891,7 @@ startupInitialization = ensureDatabaseInitialized()
     const errorMessage = error instanceof Error ? error.message : String(error);
     // Don't log ENOENT errors for lock files
     if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
-      console.error('[Database] Startup initialization failed:', error);
+      errorWithTimestamp('[Database] Startup initialization failed:', error);
     }
     throw error; // Propagate error to prevent app startup with broken database
   });
@@ -1101,10 +1209,10 @@ function createDbOps() {
       b.server_id AS serverId,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      CAST(ROUND(SUM(COALESCE(b.examined_files, 0))) AS INTEGER) AS fileCount,
       SUM(COALESCE(b.size, 0)) AS fileSize,
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+      CAST(ROUND(SUM(COALESCE(b.backup_list_count, 0))) AS INTEGER) AS backupVersions
     FROM backups b
     GROUP BY b.date, b.server_id
     ORDER BY b.date
@@ -1117,10 +1225,10 @@ function createDbOps() {
       b.date AS isoDate,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      CAST(ROUND(SUM(COALESCE(b.examined_files, 0))) AS INTEGER) AS fileCount,
       SUM(COALESCE(b.size, 0)) AS fileSize,
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+      CAST(ROUND(SUM(COALESCE(b.backup_list_count, 0))) AS INTEGER) AS backupVersions
     FROM backups b
     WHERE b.date BETWEEN @startDate AND @endDate
     GROUP BY DATE(b.date)
@@ -1134,10 +1242,10 @@ function createDbOps() {
       b.date AS isoDate,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      CAST(ROUND(SUM(COALESCE(b.examined_files, 0))) AS INTEGER) AS fileCount,
       SUM(COALESCE(b.size, 0)) AS fileSize,
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+      CAST(ROUND(SUM(COALESCE(b.backup_list_count, 0))) AS INTEGER) AS backupVersions
     FROM backups b
     WHERE b.server_id = ?
     GROUP BY DATE(b.date)
@@ -1151,10 +1259,10 @@ function createDbOps() {
       b.date AS isoDate,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      CAST(ROUND(SUM(COALESCE(b.examined_files, 0))) AS INTEGER) AS fileCount,
       SUM(COALESCE(b.size, 0)) AS fileSize,
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+      CAST(ROUND(SUM(COALESCE(b.backup_list_count, 0))) AS INTEGER) AS backupVersions
     FROM backups b
     WHERE b.server_id = @serverId
     AND b.date BETWEEN @startDate AND @endDate
@@ -1169,10 +1277,10 @@ function createDbOps() {
       b.date AS isoDate,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      CAST(ROUND(SUM(COALESCE(b.examined_files, 0))) AS INTEGER) AS fileCount,
       SUM(COALESCE(b.size, 0)) AS fileSize,
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+      CAST(ROUND(SUM(COALESCE(b.backup_list_count, 0))) AS INTEGER) AS backupVersions
     FROM backups b
     WHERE b.server_id = @serverId
     AND b.backup_name = @backupName
@@ -1187,10 +1295,10 @@ function createDbOps() {
       b.date AS isoDate,
       SUM(COALESCE(b.uploaded_size, 0)) AS uploadedSize,
       SUM(COALESCE(b.duration_seconds, 0)) AS duration,
-      SUM(COALESCE(b.examined_files, 0)) AS fileCount,
+      CAST(ROUND(SUM(COALESCE(b.examined_files, 0))) AS INTEGER) AS fileCount,
       SUM(COALESCE(b.size, 0)) AS fileSize,
       SUM(COALESCE(b.known_file_size, 0)) AS storageSize,
-      SUM(COALESCE(b.backup_list_count, 0)) AS backupVersions
+      CAST(ROUND(SUM(COALESCE(b.backup_list_count, 0))) AS INTEGER) AS backupVersions
     FROM backups b
     WHERE b.server_id = @serverId
       AND b.backup_name = @backupName
@@ -1423,10 +1531,10 @@ ensureDatabaseInitialized().then(() => {
   import('./db-utils').then(({ checkAndUpdateCronPort }) => {
     checkAndUpdateCronPort();
   }).catch((error) => {
-    console.error('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
+    errorWithTimestamp('Failed to check and update CRON_PORT configuration:', error instanceof Error ? error.message : String(error));
   });
 }).catch(error => {
-  console.error('Failed to complete database initialization before checking CRON_PORT:', error);
+  errorWithTimestamp('Failed to complete database initialization before checking CRON_PORT:', error);
 });
 
 // Create a proxy that ensures database initialization is complete before operations
@@ -1460,6 +1568,14 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
     return method;
   }
 });
+
+// Export cleanup function for explicit calls
+export function performDatabaseCleanup(reason?: string): void {
+  const cleanupFn = (global as typeof globalThis & { __dbCleanupFunction?: (reason?: string) => void }).__dbCleanupFunction;
+  if (cleanupFn) {
+    cleanupFn(reason);
+  }
+}
 
 // Export the database instance and operations
 export { 

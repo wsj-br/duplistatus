@@ -678,7 +678,17 @@ const migrations: Migration[] = [
     version: '4.0',
     description: 'Add user access control system with users, database-backed sessions, and audit logging',
     up: (db: Database.Database) => {
-      console.log('Migration 4.0: Adding user access control system...');
+      const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
+      const logMigration = (level: 'log' | 'warn', message: string) => {
+        const formatted = `[Migration 4.0] ${timestamp()}: ${message}`;
+        if (level === 'warn') {
+          console.warn(formatted);
+        } else {
+          console.log(formatted);
+        }
+      };
+
+      logMigration('log', 'Adding user access control system...');
       
       // Step 1: Check if users table already exists (migration already completed)
       const usersTableExists = db.prepare(
@@ -766,11 +776,29 @@ const migrations: Migration[] = [
       `);
       
       // Step 8: Seed default admin user (only if it doesn't exist)
+      // IMPORTANT: Admin user MUST be created during migration to version 4.0 because
+      // user authentication was introduced in this version. Without an admin user,
+      // users would be locked out of their data after migration.
+      // The default password is temporary and MUST be changed on first login.
       // Check if admin user already exists to handle concurrent builds
       const existingAdmin = db.prepare('SELECT id FROM users WHERE username = ?').get('admin') as { id: string } | undefined;
       let adminUserCreated = false;
       
+      // Check if database has existing data (servers or backups) to determine if this is a migration
+      let hasExistingData = false;
+      try {
+        const backupCount = db.prepare('SELECT COUNT(*) as count FROM backups').get() as { count: number } | undefined;
+        const serverCount = db.prepare('SELECT COUNT(*) as count FROM servers').get() as { count: number } | undefined;
+        hasExistingData = (backupCount?.count ?? 0) > 0 || (serverCount?.count ?? 0) > 0;
+      } catch (error) {
+        // If tables don't exist yet, assume it's a new database
+        hasExistingData = false;
+      }
+      
       if (!existingAdmin) {
+        // Create admin user with default password (required for both new and migrating databases)
+        // SECURITY NOTE: The default password is publicly known and MUST be changed immediately
+        // after first login. The must_change_password flag enforces this requirement.
         // Generate admin user ID
         const adminId = 'admin-' + randomBytes(16).toString('hex');
         
@@ -792,7 +820,7 @@ const migrations: Migration[] = [
           'admin',
           adminPasswordHash,
           1,  // is_admin = true
-          1   // must_change_password = true
+          1   // must_change_password = true (enforces password change on first login)
         );
         adminUserCreated = true;
       }
@@ -806,6 +834,17 @@ const migrations: Migration[] = [
       );
       
       // Step 10: Log the migration in audit log
+      let adminUserMessage: string;
+      if (adminUserCreated) {
+        if (hasExistingData) {
+          adminUserMessage = `${defaultAuthConfig.defaultPassword} (TEMPORARY - MUST CHANGE IMMEDIATELY - database migrated from previous version)`;
+        } else {
+          adminUserMessage = `${defaultAuthConfig.defaultPassword} (must change on first login)`;
+        }
+      } else {
+        adminUserMessage = 'N/A (admin user already exists)';
+      }
+      
       db.prepare(`
         INSERT INTO audit_log (
           action, 
@@ -824,16 +863,28 @@ const migrations: Migration[] = [
           description: 'User Access Control System',
           tables_created: ['users', 'sessions', 'audit_log'],
           admin_user_created: adminUserCreated,
-          default_password: adminUserCreated ? `${defaultAuthConfig.defaultPassword} (must change on first login)` : 'N/A (admin user already exists)'
+          default_password: adminUserMessage,
+          has_existing_data: hasExistingData,
+          security_note: adminUserCreated && hasExistingData 
+            ? '⚠️ Admin user created with default password during migration - password MUST be changed immediately'
+            : adminUserCreated 
+              ? '⚠️ Admin user created with default password - password must be changed on first login'
+              : 'N/A'
         })
       );
       
-      console.log('Migration 4.0: User access control system created successfully');
+      logMigration('log', 'User access control system created successfully');
       if (adminUserCreated) {
-        console.log('Migration 4.0: Admin user created with username "admin"');
-        console.log(`Migration 4.0: Default password is "${defaultAuthConfig.defaultPassword}" (must be changed on first login)`);
+        const adminPasswordSummary =
+          `⚠️ Admin user created (username "admin") with temporary password "${defaultAuthConfig.defaultPassword}". ` +
+          'Password change is enforced on first login.';
+        if (hasExistingData) {
+          logMigration('warn', `${adminPasswordSummary} Existing data detected; change the password immediately after login.`);
+        } else {
+          logMigration('log', adminPasswordSummary);
+        }
       }
-      console.log('Migration 4.0: Sessions table created with nullable user_id to support unauthenticated sessions');
+      logMigration('log', 'Sessions table created with nullable user_id to support unauthenticated sessions');
     }
   }
 ];

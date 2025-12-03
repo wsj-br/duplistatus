@@ -1,19 +1,60 @@
 import { CronService } from './service';
 import { getCronConfig, setCronConfig } from '@/lib/db-utils';
+import { performDatabaseCleanup } from '@/lib/db';
+
+const formatTimestamp = (): string =>
+  new Date().toLocaleString(undefined, { hour12: false });
+
+const createCronLogger = (baseLogger: (...args: unknown[]) => void) => {
+  return (...args: unknown[]) => {
+    if (!args.length) {
+      baseLogger();
+      return;
+    }
+
+    const [first, ...rest] = args;
+    if (typeof first === 'string' && first.startsWith('[')) {
+      const closing = first.indexOf(']');
+      if (closing !== -1) {
+        const label = first.slice(0, closing + 1);
+        const remainder = first.slice(closing + 1);
+        baseLogger(`${label} ${formatTimestamp()}${remainder}`, ...rest);
+        return;
+      }
+    }
+
+    baseLogger(...args);
+  };
+};
+
+const cronLog = createCronLogger(console.log);
+const cronError = createCronLogger(console.error);
 
 // Handle process signals
 function setupProcessHandlers(service: CronService) {
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM received. Stopping cron service...');
-    service.stop();
-    process.exit(0);
-  });
+  let isShuttingDown = false;
 
-  process.on('SIGINT', () => {
-    console.log('SIGINT received. Stopping cron service...');
-    service.stop();
-    process.exit(0);
-  });
+  const shutdown = (signal: string) => {
+    if (isShuttingDown) {
+      cronLog(`${signal} received but shutdown already in progress. Ignoring duplicate signal.`);
+      return;
+    }
+
+    isShuttingDown = true;
+    cronLog(`${signal} received. Stopping cron service...`);
+
+    try {
+      service.stop();
+    } catch (error) {
+      cronError('Error while stopping cron service:', error instanceof Error ? error.message : String(error));
+    } finally {
+      performDatabaseCleanup('cron-shutdown');
+      process.exit(0);
+    }
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
 // Start the service

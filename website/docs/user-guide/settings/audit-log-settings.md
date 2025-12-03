@@ -91,6 +91,6 @@ The audit log tracks the following types of events:
 | **Configuration Changes**      | Email (SMTP) settings<br/>NTFY settings<br/>Notification templates<br/>Overdue tolerance settings<br/>Backup notification settings<br/>Audit log retention settings |
 | **Backup Operations**          | Backup log collection<br/>Backup data deletion<br/>Database cleanup operations                                                                                      |
 | **Server Management**          | Server addition, updates, and deletion<br/>Server password changes<br/>Server URL configuration                                                                     |
-| **System Operations**          | Database migrations<br/>Overdue backup checks<br/>Notification sending<br/>System cleanup operations                                                                |
+| **System Operations**          | Database migrations<br/>Notification sending<br/>System cleanup operations                                                                |
 
 <br/>
