@@ -27,8 +27,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { Database, Loader2, Trash2, Server, FolderOpen, Clock } from 'lucide-react';
+import { Database, Loader2, Trash2, Server, FolderOpen, Clock, GitMerge } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Server {
   id: string;
@@ -51,6 +52,17 @@ interface BackupJob {
   note: string;
 }
 
+interface DuplicateServer {
+  name: string;
+  servers: Array<{
+    id: string;
+    created_at: string;
+    alias: string;
+    note: string;
+    server_url: string;
+  }>;
+}
+
 interface DatabaseMaintenanceFormProps {
   isAdmin: boolean;
 }
@@ -64,13 +76,31 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
   const [isCleaning, setIsCleaning] = useState(false);
   const [isDeletingServer, setIsDeletingServer] = useState(false);
   const [isDeletingBackupJob, setIsDeletingBackupJob] = useState(false);
+  const [isMerging, setIsMerging] = useState(false);
   const [servers, setServers] = useState<Server[]>([]);
   const [backupJobs, setBackupJobs] = useState<BackupJob[]>([]);
+  const [duplicateServers, setDuplicateServers] = useState<DuplicateServer[]>([]);
   const [selectedServer, setSelectedServer] = useState<string>("");
   const [selectedBackupJob, setSelectedBackupJob] = useState<string>("");
+  const [selectedDuplicateNames, setSelectedDuplicateNames] = useState<Set<string>>(new Set());
   const { toast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
+
+  // Function to fetch duplicate servers
+  const fetchDuplicateServers = async () => {
+    if (!isAdmin) return;
+    
+    try {
+      const response = await authenticatedRequestWithRecovery('/api/servers/duplicates');
+      if (response.ok) {
+        const duplicates = await response.json();
+        setDuplicateServers(duplicates);
+      }
+    } catch (error) {
+      console.error('Error fetching duplicate servers:', error instanceof Error ? error.message : String(error));
+    }
+  };
 
   // Function to fetch servers and backup jobs
   const fetchServers = async () => {
@@ -136,15 +166,17 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
     }
   };
 
-  // Fetch servers on component mount
+  // Fetch servers and duplicates on component mount
   useEffect(() => {
     fetchServers();
+    fetchDuplicateServers();
   }, []);
 
   // Listen for configuration change events to refresh data
   useEffect(() => {
     const handleConfigurationChange = () => {
       fetchServers();
+      fetchDuplicateServers();
     };
 
     window.addEventListener('configuration-saved', handleConfigurationChange);
@@ -230,6 +262,9 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       // Also refresh configuration data to update server lists in configuration tabs
       await refreshConfigSilently();
       
+      // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
     } catch (error) {
       console.error('Error deleting server:', error instanceof Error ? error.message : String(error));
       
@@ -295,6 +330,12 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       // Refresh dashboard data using global refresh context
       await refreshDashboard();
       
+      // Also refresh configuration data to update server lists in configuration tabs
+      await refreshConfigSilently();
+      
+      // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
     } catch (error) {
       console.error('Error deleting backup job:', error instanceof Error ? error.message : String(error));
       
@@ -319,6 +360,105 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
     }
   };
 
+  const handleToggleDuplicate = (serverName: string) => {
+    const newSelected = new Set(selectedDuplicateNames);
+    if (newSelected.has(serverName)) {
+      newSelected.delete(serverName);
+    } else {
+      newSelected.add(serverName);
+    }
+    setSelectedDuplicateNames(newSelected);
+  };
+
+  const handleMergeSelectedServers = async () => {
+    if (selectedDuplicateNames.size === 0) {
+      toast({
+        title: "No servers selected",
+        description: "Please select at least one server group to merge.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    // Process each selected server group
+    const mergePromises = Array.from(selectedDuplicateNames).map(async (serverName) => {
+      const duplicateGroup = duplicateServers.find(d => d.name === serverName);
+      if (!duplicateGroup || duplicateGroup.servers.length < 2) return;
+
+      // Find the target server (newest by created_at)
+      const sortedServers = [...duplicateGroup.servers].sort((a, b) => {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+        // Handle invalid dates - put them last
+        if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+        if (isNaN(dateA.getTime())) return 1;
+        if (isNaN(dateB.getTime())) return -1;
+        return dateB.getTime() - dateA.getTime();
+      });
+      const targetServer = sortedServers[0];
+      
+      // Get old server IDs (all except the target)
+      const oldServerIds = sortedServers.slice(1).map(s => s.id).filter(id => id && id !== targetServer.id);
+      
+      if (oldServerIds.length === 0) return;
+
+      const response = await authenticatedRequestWithRecovery('/api/servers/merge', {
+        method: 'POST',
+        body: JSON.stringify({
+          oldServerIds,
+          targetServerId: targetServer.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to merge ${serverName}: ${errorData.error || 'Unknown error'}`);
+      }
+
+      return { serverName, count: oldServerIds.length };
+    });
+
+    try {
+      setIsMerging(true);
+      
+      const results = await Promise.all(mergePromises);
+      const successfulMerges = results.filter(r => r !== undefined);
+      const totalMerged = successfulMerges.reduce((sum, r) => sum + (r?.count || 0), 0);
+      
+      toast({
+        title: "Servers merged successfully",
+        description: `Successfully merged ${totalMerged} server(s) across ${successfulMerges.length} server group(s).`,
+        variant: "default",
+        duration: 3000,
+      });
+      
+      // Clear selections
+      setSelectedDuplicateNames(new Set());
+      
+      // Refresh data
+      await fetchServers();
+      await fetchDuplicateServers();
+      await refreshDashboard();
+      await refreshConfigSilently();
+      
+      // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+      window.dispatchEvent(new CustomEvent('configuration-saved'));
+      
+    } catch (error) {
+      console.error('Error merging servers:', error instanceof Error ? error.message : String(error));
+      
+      toast({
+        title: "Merge Failed",
+        description: error instanceof Error ? error.message : 'Failed to merge servers. Please try again.',
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsMerging(false);
+    }
+  };
+
   return (
     <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card>
@@ -340,14 +480,22 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
             </div>
           )}
 
-          {/* Database Cleanup Period Section */}
-          <div className="grid gap-3">
-            <div className="grid gap-2">
-              <Label htmlFor="database-cleanup" className="flex items-center gap-2">
-                <ColoredIcon icon={Clock} color="blue" size="sm" />
-                Database Cleanup Period
-              </Label>
-              <Select
+          {/* 2-Column Layout for Database Cleanup and Delete Backup Job */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Database Cleanup Period Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <ColoredIcon icon={Clock} color="blue" size="sm" />
+                  Database Cleanup Period
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+              <div className="grid gap-2">
+                <Label htmlFor="database-cleanup">
+                  Select cleanup period
+                </Label>
+                <Select
                 value={databaseCleanupPeriod}
                 onValueChange={(value) => setDatabaseCleanupPeriod(value as "Delete all data" | "6 months" | "1 year" | "2 years")}
                 disabled={!isAdmin}
@@ -409,16 +557,23 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               This will remove all backup records older than the selected cleanup period.
               <span className="font-medium"> Manual action required</span> - you must click the button to perform the cleanup.
             </p>
-          </div>
+              </CardContent>
+            </Card>
 
-          {/* Delete Backup Job Section */}
-          <div className="grid gap-3 border-t pt-6">
-            <div className="grid gap-2">
-              <Label htmlFor="backup-job-select" className="flex items-center gap-2">
-                <ColoredIcon icon={FolderOpen} color="yellow" size="sm" />
-                Delete Backup Job
-              </Label>
-              <Select
+            {/* Delete Backup Job Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <ColoredIcon icon={FolderOpen} color="yellow" size="sm" />
+                  Delete Backup Job
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+              <div className="grid gap-2">
+                <Label htmlFor="backup-job-select">
+                  Select backup job
+                </Label>
+                <Select
                 value={selectedBackupJob}
                 onValueChange={setSelectedBackupJob}
                 disabled={!isAdmin}
@@ -481,16 +636,26 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 </AlertDialogContent>
               </AlertDialog>
             </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Delete Server Data Section */}
-          <div className="grid gap-3 border-t pt-6">
-            <div className="grid gap-2">
-              <Label htmlFor="server-select" className="flex items-center gap-2">
-                <ColoredIcon icon={Server} color="red" size="sm" />
-                Delete Server Data
-              </Label>
-              <Select
+          {/* 2-Column Layout for Delete Server Data and Duplicate Servers */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Delete Server Data Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <ColoredIcon icon={Server} color="red" size="sm" />
+                  Delete Server Data
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3 min-w-0">
+              <div className="grid gap-2">
+                <Label htmlFor="server-select">
+                  Select server
+                </Label>
+                <Select
                 value={selectedServer}
                 onValueChange={setSelectedServer}
                 disabled={!isAdmin}
@@ -552,6 +717,174 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 </AlertDialogContent>
               </AlertDialog>
             </div>
+              </CardContent>
+            </Card>
+
+            {/* Duplicate Servers Section */}
+            {isAdmin && duplicateServers.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <ColoredIcon icon={GitMerge} color="purple" size="sm" />
+                    Duplicate Servers
+                  </CardTitle>
+                  <CardDescription>
+                    Select server groups to merge. The newest server (by creation date) will be kept as the target.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 min-w-0">
+
+              <div className="space-y-4">
+                {duplicateServers.map((duplicate) => {
+                  const isSelected = selectedDuplicateNames.has(duplicate.name);
+                  // Sort servers by created_at (newest first) to identify target
+                  const sortedServers = [...duplicate.servers].sort((a, b) => {
+                    const dateA = new Date(a.created_at);
+                    const dateB = new Date(b.created_at);
+                    // Handle invalid dates - put them last
+                    if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+                    if (isNaN(dateA.getTime())) return 1;
+                    if (isNaN(dateB.getTime())) return -1;
+                    return dateB.getTime() - dateA.getTime();
+                  });
+                  const targetServer = sortedServers[0];
+                  const oldServers = sortedServers.slice(1);
+                  
+                  return (
+                    <div key={duplicate.name} className="border rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={() => handleToggleDuplicate(duplicate.name)}
+                          disabled={isMerging}
+                          className="mt-1"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm mb-3">
+                            Server Name: <span className="font-semibold">{duplicate.name}</span>
+                          </div>
+                          <div className="overflow-x-auto min-w-0">
+                            <table className="w-full text-sm border-collapse min-w-0">
+                              <thead>
+                                <tr className="border-b">
+                                  <th className="text-left p-2 font-medium">
+                                    <span className="inline-block px-2 py-1 rounded-md bg-blue-700 dark:bg-blue-800 text-blue-100 dark:text-blue-200 shadow-inner border border-blue-600 dark:border-blue-700">
+                                      Target Server (newest)
+                                    </span>
+                                  </th>
+                                  <th className="text-left p-2 font-medium">
+                                    <span className="inline-block px-2 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600">
+                                      Old Server ID
+                                    </span>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td className="p-2 align-top break-words">
+                                    <div className="space-y-1">
+                                      <div className="font-medium break-all">{targetServer.id || 'N/A'}</div>
+                                      <div className="text-xs text-muted-foreground">
+                                        Created: {targetServer.created_at && !isNaN(new Date(targetServer.created_at).getTime()) 
+                                          ? new Date(targetServer.created_at).toLocaleString() 
+                                          : 'Invalid Date'}
+                                      </div>
+                                      {targetServer.alias && (
+                                        <div className="text-xs text-muted-foreground">Alias: {targetServer.alias}</div>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td className="p-2 align-top break-words">
+                                    <div className="space-y-2">
+                                      {oldServers.length > 0 ? (
+                                        oldServers.map((server, idx) => (
+                                          <div key={server.id || idx} className="space-y-1">
+                                            <div className="font-medium break-all">{server.id || 'N/A'}</div>
+                                            <div className="text-xs text-muted-foreground">
+                                              Created: {server.created_at && !isNaN(new Date(server.created_at).getTime()) 
+                                                ? new Date(server.created_at).toLocaleString() 
+                                                : 'Invalid Date'}
+                                            </div>
+                                            {server.alias && (
+                                              <div className="text-xs text-muted-foreground">Alias: {server.alias}</div>
+                                            )}
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <span className="text-muted-foreground">None</span>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {selectedDuplicateNames.size > 0 && (
+                <div className="flex justify-end pt-4">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="gradient"
+                        disabled={isMerging}
+                        className="relative overflow-hidden"
+                      >
+                        {isMerging ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Merging...
+                          </>
+                        ) : (
+                          <>
+                            <GitMerge className="mr-2 h-4 w-4" />
+                            Merge Selected Servers ({selectedDuplicateNames.size})
+                          </>
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Merge Duplicate Servers?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will merge {selectedDuplicateNames.size} server group(s). For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleMergeSelectedServers}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Merge Servers
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              )}
+                </CardContent>
+              </Card>
+            )}
+
+            {isAdmin && duplicateServers.length === 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <ColoredIcon icon={GitMerge} color="purple" size="sm" />
+                    Duplicate Servers
+                  </CardTitle>
+                  <CardDescription>
+                    No duplicate servers found. All servers have unique names.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            )}
           </div>
         </CardContent>
       </Card>

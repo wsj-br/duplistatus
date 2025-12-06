@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils, getConfigBackupSettings, getServerInfoById, clearRequestCache } from '@/lib/db-utils';
-import { extractAvailableBackups } from '@/lib/utils';
-import { v4 as uuidv4 } from 'uuid';
-import https from 'https';
-import http from 'http';
+import { getConfigBackupSettings, getServerInfoById, setConfiguration } from '@/lib/db-utils';
 import { defaultAPIConfig } from '@/lib/default-config';
-import { setConfiguration } from '@/lib/db-utils';
-import { encryptData, getServerPassword } from '@/lib/secrets';
+import { getServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { optionalAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
+import https from 'https';
+import http from 'http';
 
 // Type definitions for API responses
 interface SystemInfoOption {
@@ -46,13 +42,9 @@ interface BackupInfo {
     Time: string;
     Repeat: string;
     LastRun: string;
-    Rule: string; // Changed from object to string
+    Rule: string;
     AllowedDays: string[];
   };
-}
-
-interface LogEntry {
-  Message: string;
 }
 
 interface RequestOptions {
@@ -69,8 +61,6 @@ interface RequestResponse {
   statusText: string;
   json: () => Promise<unknown>;
 }
-
-
 
 // Helper function to make HTTP/HTTPS requests
 async function makeRequest(url: string, options: RequestOptions): Promise<RequestResponse> {
@@ -234,7 +224,6 @@ function parseAllowedWeekDays(allowedWeekDaysString: string): number[] {
   return dayNumbers.length > 0 ? dayNumbers : [0, 1, 2, 3, 4, 5, 6];
 }
 
-
 // Simple in-memory lock for backup settings updates to prevent race conditions
 const backupSettingsLock = new Map<string, Promise<void>>();
 
@@ -310,8 +299,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       hostname, 
       port = defaultAPIConfig.duplicatiPort, 
       password, 
-      serverId,
-      downloadJson = false
+      serverId
     } = requestBody;
     
     providedServerId = serverId;
@@ -338,10 +326,8 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
         finalPort = port;
         finalPassword = password;
         
-        // Update server URL and password in database
         // Let detectProtocolAndConnect determine the correct protocol
         await detectProtocolAndConnect(hostname, port, password);
-        // Note: We'll update the server after getting the machine-id from the connection
       } else {
         // ServerID only case: get password from database
         try {
@@ -392,14 +378,14 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       // Use provided hostname/port/password (no serverID)
       if (!hostname) {
         return NextResponse.json(
-          { error: 'Hostname is required when providedServerId is not provided' },
+          { error: 'Hostname is required when serverId is not provided' },
           { status: 400 }
         );
       }
 
       if (!password) {
         return NextResponse.json(
-          { error: 'Password is required when providedServerId is not provided' },
+          { error: 'Password is required when serverId is not provided' },
           { status: 400 }
         );
       }
@@ -414,7 +400,6 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     
     const apiSysteminfoEndpoint = '/api/v1/systeminfo';
     const apiBackupsEndpoint = '/api/v1/backups';
-    const apiLogBaseEndpoint = '/api/v1/backup';
 
     // Step 2: Get authentication token (we already validated connection in detectProtocolAndConnect)
     const loginEndpoint = '/api/v1/auth/login';
@@ -446,7 +431,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       throw new Error('No authentication token received');
     }
 
-    // Step 2: Get system info
+    // Step 3: Get system info to detect server ID
     let systemInfoResponse;
     try {
       systemInfoResponse = await makeRequest(`${baseUrl}${apiSysteminfoEndpoint}`, {
@@ -467,7 +452,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
 
     const systemInfo: SystemInfo = await systemInfoResponse.json() as SystemInfo;
 
-    // Check if Options array exists and log its contents
+    // Check if Options array exists
     if (!systemInfo.Options) {
       console.error('System info Options array is missing');
       throw new Error('System info Options array is missing - unable to find machine-id');
@@ -491,60 +476,14 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       console.error('System info structure:', Object.keys(systemInfo));
       throw new Error('MachineName is missing from system info');
     }
-        
-    // Check if server already exists
-    const existingServer = dbOps.getServerById.get(detectedServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
     
-    if (existingServer) {
-      // Server exists - update server_url and password, preserve alias and note
-      dbOps.upsertServer.run({
-        id: detectedServerId,
-        name: detectedServerName,
-        server_url: baseUrl,
-        server_password: encryptData(finalPassword),
-        alias: existingServer.alias,  // Preserve existing alias
-        note: existingServer.note     // Preserve existing note
-      });
-    } else {
-      // Server doesn't exist - create new server with empty alias and note
-      dbOps.upsertServer.run({
-        id: detectedServerId,
-        name: detectedServerName,
-        server_url: baseUrl,
-        server_password: encryptData(finalPassword),
-        alias: '',
-        note: ''
-      });
-      
-      // Log audit event for server creation
-      if (authContext) {
-        const ipAddress = getClientIpAddress(request);
-        const userAgent = request.headers.get('user-agent') || 'unknown';
-        await AuditLogger.logServerOperation(
-          'server_added',
-          authContext.userId,
-          authContext.username,
-          detectedServerId,
-          {
-            serverName: detectedServerName,
-            serverUrl: baseUrl,
-          },
-          ipAddress,
-          userAgent
-        );
-      }
-    }
-    
-    // Get the server information including alias from database
-    const serverInfo = dbOps.getServerById.get(detectedServerId) as { id: string; name: string; server_url: string; alias: string; note: string; created_at: string } | undefined;
-    const serverAlias = serverInfo?.alias || '';
+    // Use detectedServerId for schedule updates
+    const serverIdForSchedule = providedServerId || detectedServerId;
     
     // Ensure backup settings are complete for all servers and backups
-    // This will add default settings for any missing server-backup combinations
-    // Ensure backup settings are complete (now handled automatically by getConfigBackupSettings)
     await getConfigBackupSettings();
-  
-    // Step 3: Get list of backups
+
+    // Step 4: Get list of backups
     let backupsResponse;
     try {
       backupsResponse = await makeRequest(`${baseUrl}${apiBackupsEndpoint}`, {
@@ -565,300 +504,87 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     }
 
     const backups: BackupInfo[] = await backupsResponse.json() as BackupInfo[];
-    const backupIds = backups.map((b) => b.Backup.ID);
 
-    if (!backupIds.length) {
-      return NextResponse.json({ message: 'No backups found' });
+    if (!backups.length) {
+      return NextResponse.json({ 
+        success: true,
+        message: 'No backups found',
+        serverName: detectedServerName,
+        stats: {
+          processed: 0,
+          errors: 0
+        }
+      });
     }
 
-    // Step 4: Process each backup
+    // Step 5: Process each backup to sync schedule information
     let processedCount = 0;
-    let skippedCount = 0;
     let errorCount = 0;
-    const collectedJsonData: Array<{
-      backupId: string;
-      backupName: string | undefined;
-      messages: LogEntry[];
-    }> = [];
+    const errors: string[] = [];
 
-    for (const backupId of backupIds) {
-      // Parse schedule information and update backup settings
-      const backupName = backups.find((b) => b.Backup.ID === backupId)?.Backup.Name;
-      if (backupName) {
-        try {
-          // Get schedule information from the backup data
-          const backupData = backups.find((b) => b.Backup.ID === backupId);
-          if (backupData && backupData.Schedule) {
-            const schedule = backupData.Schedule;
-            const repeatInterval = schedule.Repeat;
-            const allowedWeekDaysString = extractAllowedWeekDaysFromRule(schedule.Rule);
-            const scheduleTime = schedule.Time; // Extract the schedule time
-
-            // Convert AllowedWeekDays string to number array
-            const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
-            
-            // Update backup settings
-            await updateBackupSettingsWithSchedule(detectedServerId, backupName, repeatInterval, allowedWeekDays, scheduleTime);
-          }
-        } catch (error) {
-          console.error(`Error updating backup settings for ${backupName}:`, error instanceof Error ? error.message : String(error));
-        }
+    for (const backup of backups) {
+      const backupId = backup.Backup.ID;
+      const backupName = backup.Backup.Name;
+      
+      if (!backupName) {
+        console.warn(`Backup ${backupId} has no name, skipping`);
+        continue;
       }
+
       try {
-        const logEndpoint = `${apiLogBaseEndpoint}/${backupId}/log?pagesize=999`;
-        let logResponse;
-        try {
-          logResponse = await makeRequest(`${baseUrl}${logEndpoint}`, {
-            ...requestOptions,
-            headers: {
-              ...requestOptions.headers,
-              'Authorization': `Bearer ${authToken}`
-            }
-          });
-        } catch (error) {
-          console.error(`Error during log request for backup ${backupId}:`, error instanceof Error ? error.message : String(error));
-          throw new Error(`Log request for backup ${backupId} failed: ${String(error)}`);
-        }
+        // Get schedule information from the backup data
+        if (backup.Schedule) {
+          const schedule = backup.Schedule;
+          const repeatInterval = schedule.Repeat;
+          const allowedWeekDaysString = extractAllowedWeekDaysFromRule(schedule.Rule);
+          const scheduleTime = schedule.Time; // Extract the schedule time
 
-        if (!logResponse.ok) {
-          console.error(`Failed to get log for backup ${backupId}:`, logResponse.statusText);
-          throw new Error(`Failed to get log for backup ${backupId}: ${logResponse.statusText}`);
-        }
-
-        // Increment the received count
-        // receivedCount++; // Commented out as it was unused
-
-        const logs: LogEntry[] = await logResponse.json() as LogEntry[];
-        const backupMessages = logs.filter((log) => {
-          try {
-            // Parse the Message string into JSON
-            const messageObj = JSON.parse(log.Message);
-            return messageObj?.MainOperation === 'Backup';
-          } catch (error) {
-            console.error('Error parsing log message:', error instanceof Error ? error.message : String(error));
-            return false;
-          }
-        });
-
-        // Collect JSON data for download if requested
-        if (downloadJson) {
-          // Parse Message strings into proper JSON objects
-          const parsedMessages = backupMessages.map((log) => {
-            try {
-              return {
-                ...log,
-                Message: JSON.parse(log.Message)
-              };
-            } catch (error) {
-              console.error('Error parsing message for download:', error instanceof Error ? error.message : String(error));
-              return {
-                ...log,
-                Message: log.Message // Keep as string if parsing fails
-              };
-            }
-          });
-
-          collectedJsonData.push({
-            backupId: backupId,
-            backupName: backups.find((b) => b.Backup.ID === backupId)?.Backup.Name,
-            messages: parsedMessages
-          });
-        }
-
-
-
-        for (const log of backupMessages) {
-          // Parse the message string into JSON for each log entry, with error handling
-          let message;
-          try {
-            message = JSON.parse(log.Message);
-          } catch (parseError) {
-            console.error(`Error parsing log.Message for backup ${backupId}:`, log.Message, parseError);
-            errorCount++;
-            continue;
-          }
-          const backupDate = new Date(message.BeginTime).toISOString();
-
-          // Check for duplicate
-          const backupName = backups.find((b) => b.Backup.ID === backupId)?.Backup.Name;
-          if (!backupName) continue;
+          // Convert AllowedWeekDays string to number array
+          const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
           
-          const isDuplicate = await dbUtils.checkDuplicateBackup({
-            server_id: detectedServerId,
-            backup_name: backupName,
-            date: backupDate
-          });
-
-          if (isDuplicate) {
-            skippedCount++;
-            continue;
-          }
-
-          // Map backup status
-          let status = message.ParsedResult;
-          if (status === "Success" && message.WarningsActualLength > 0) {
-            status = "Warning";
-          }
-
-          // Insert backup data
-          dbOps.insertBackup.run({
-            id: uuidv4(),
-            server_id: detectedServerId,
-            backup_name: backupName,
-            backup_id: backupId,
-            date: backupDate,
-            status: status,
-            duration_seconds: parseDurationToSeconds(message.Duration),
-            size: message.SizeOfExaminedFiles || 0,
-            uploaded_size: message.BackendStatistics?.BytesUploaded || 0,
-            examined_files: message.ExaminedFiles || 0,
-            warnings: message.WarningsActualLength || 0,
-            errors: message.ErrorsActualLength || 0,
-
-            // Message arrays stored as JSON blobs
-            messages_array: message.Messages ? JSON.stringify(message.Messages) : null,
-            warnings_array: message.Warnings ? JSON.stringify(message.Warnings) : null,
-            errors_array: message.Errors ? JSON.stringify(message.Errors) : null,
-            available_backups: JSON.stringify(extractAvailableBackups(
-              message.Messages ? JSON.stringify(message.Messages) : null
-            )),
-
-            // Data fields
-            deleted_files: message.DeletedFiles || 0,
-            deleted_folders: message.DeletedFolders || 0,
-            modified_files: message.ModifiedFiles || 0,
-            opened_files: message.OpenedFiles || 0,
-            added_files: message.AddedFiles || 0,
-            size_of_modified_files: message.SizeOfModifiedFiles || 0,
-            size_of_added_files: message.SizeOfAddedFiles || 0,
-            size_of_examined_files: message.SizeOfExaminedFiles || 0,
-            size_of_opened_files: message.SizeOfOpenedFiles || 0,
-            not_processed_files: message.NotProcessedFiles || 0,
-            added_folders: message.AddedFolders || 0,
-            too_large_files: message.TooLargeFiles || 0,
-            files_with_error: message.FilesWithError || 0,
-            modified_folders: message.ModifiedFolders || 0,
-            modified_symlinks: message.ModifiedSymlinks || 0,
-            added_symlinks: message.AddedSymlinks || 0,
-            deleted_symlinks: message.DeletedSymlinks || 0,
-            partial_backup: message.PartialBackup ? 1 : 0,
-            dryrun: message.Dryrun ? 1 : 0,
-            main_operation: message.MainOperation,
-            parsed_result: message.ParsedResult,
-            interrupted: message.Interrupted ? 1 : 0,
-            version: message.Version,
-            begin_time: new Date(message.BeginTime).toISOString(),
-            end_time: new Date(message.EndTime).toISOString(),
-            warnings_actual_length: message.WarningsActualLength || 0,
-            errors_actual_length: message.ErrorsActualLength || 0,
-            messages_actual_length: message.MessagesActualLength || 0,
-
-            // BackendStatistics fields
-            bytes_downloaded: message.BackendStatistics?.BytesDownloaded || 0,
-            known_file_size: message.BackendStatistics?.KnownFileSize || 0,
-            last_backup_date: message.BackendStatistics?.LastBackupDate ? new Date(message.BackendStatistics.LastBackupDate).toISOString() : null,
-            backup_list_count: message.BackendStatistics?.BackupListCount || 0,
-            reported_quota_error: message.BackendStatistics?.ReportedQuotaError ? 1 : 0,
-            reported_quota_warning: message.BackendStatistics?.ReportedQuotaWarning ? 1 : 0,
-            backend_main_operation: message.BackendStatistics?.MainOperation,
-            backend_parsed_result: message.BackendStatistics?.ParsedResult,
-            backend_interrupted: message.BackendStatistics?.Interrupted ? 1 : 0,
-            backend_version: message.BackendStatistics?.Version,
-            backend_begin_time: message.BackendStatistics?.BeginTime ? new Date(message.BackendStatistics.BeginTime).toISOString() : null,
-            backend_duration: message.BackendStatistics?.Duration,
-            backend_warnings_actual_length: message.BackendStatistics?.WarningsActualLength || 0,
-            backend_errors_actual_length: message.BackendStatistics?.ErrorsActualLength || 0
-          });
-
+          // Update backup settings
+          await updateBackupSettingsWithSchedule(
+            serverIdForSchedule, 
+            backupName, 
+            repeatInterval, 
+            allowedWeekDays, 
+            scheduleTime
+          );
+          
           processedCount++;
+        } else {
+          console.warn(`Backup ${backupName} has no schedule information`);
         }
       } catch (error) {
-        console.error(`Error processing backup ${backupId}:`, error instanceof Error ? error.message : String(error));
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`Error updating backup settings for ${backupName}:`, errorMessage);
         errorCount++;
+        errors.push(`${backupName}: ${errorMessage}`);
       }
     }
 
-    // Recalculate next backup run dates after collecting new backups
-    // Clear the cache to ensure fresh data is used for recalculation
-    clearRequestCache();
-    try {
-      await getConfigBackupSettings();
-    } catch (error) {
-      console.error('Error recalculating next backup run dates:', error instanceof Error ? error.message : String(error));
-      // Continue even if recalculation fails
-    }
-
-      const responseData: {
+    const responseData: {
       success: boolean;
       serverName: string;
-      serverAlias: string;
       stats: {
         processed: number;
-        skipped: number;
         errors: number;
       };
-      backupSettings: {
-        message: string;
-      };
-      jsonData?: string;
+      errors?: string[];
     } = {
       success: true,
       serverName: detectedServerName,
-      serverAlias: serverAlias,
       stats: {
         processed: processedCount,
-        skipped: skippedCount,
         errors: errorCount
-      },
-      backupSettings: {
-        message: 'Backup settings completion handled automatically'
       }
     };
 
-    // Include JSON data if download was requested
-    if (downloadJson) {
-       // remove sensitive data from the response 
-       // keep only the beginning of TargetURL until the first ":"
-       const backupsWithoutTargetURL = backups.map((backup) => {
-         return {
-           ...backup,
-           Backup: {
-             ...backup.Backup,
-             TargetURL: backup.Backup.TargetURL 
-               ? backup.Backup.TargetURL.split(':')[0] + ':***--REDACTED--***'
-               : backup.Backup.TargetURL
-           }
-         };
-       });
-
-       // Filter system_info to remove unnecessary data
-       const filteredSystemInfo = {
-         ...systemInfo,
-         Options: systemInfo.Options?.filter(option => option.Name === 'machine-id') || []
-       };
-       
-       // Remove module arrays and other unnecessary fields
-       const filteredSystemInfoTyped = filteredSystemInfo as SystemInfo;
-       delete filteredSystemInfoTyped.CompressionModules;
-       delete filteredSystemInfoTyped.EncryptionModules;
-       delete filteredSystemInfoTyped.BackendModules;
-       delete filteredSystemInfoTyped.GenericModules;
-       delete filteredSystemInfoTyped.WebModules;
-       delete filteredSystemInfoTyped.ConnectionModules;
-       delete filteredSystemInfoTyped.SecretProviderModules;
-       delete filteredSystemInfoTyped.ServerModules;
-       delete filteredSystemInfoTyped.LogLevels;
-       delete filteredSystemInfoTyped.SupportedLocales;
-
-      // return the response data
-      responseData.jsonData = JSON.stringify({
-        system_info: filteredSystemInfoTyped,
-        backups: backupsWithoutTargetURL,
-        backup_logs: collectedJsonData
-      }, null, 2);
+    if (errors.length > 0) {
+      responseData.errors = errors;
     }
 
-    // Log audit event - determine status based on results
+    // Log audit event
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
       const userAgent = request.headers.get('user-agent') || 'unknown';
@@ -869,41 +595,39 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
-        action: 'backup_collected',
+        action: 'backup_schedule_synced',
         category: 'backup',
         targetType: 'backup',
         targetId: finalServerId,
         details: {
           serverName: detectedServerName,
-          serverAlias,
           processed: processedCount,
-          skipped: skippedCount,
           errors: errorCount,
         },
         ipAddress,
         userAgent,
         status,
-        errorMessage: hasErrors ? `Collection completed with ${errorCount} error(s)` : undefined,
+        errorMessage: hasErrors ? `Schedule sync completed with ${errorCount} error(s)` : undefined,
       });
     }
 
     return NextResponse.json(responseData);
 
   } catch (error) {
-    console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
+    console.error('Error syncing backup schedules:', error instanceof Error ? error.message : String(error));
     
-    // Log audit event for collection failure
+    // Log audit event for sync failure
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
       const userAgent = request.headers.get('user-agent') || 'unknown';
-      const errorMessage = error instanceof Error ? error.message : 'Failed to collect backups';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to sync backup schedules';
       const finalServerId = providedServerId || 'unknown';
       const finalServerName = serverNameForError || 'unknown';
       
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
-        action: 'backup_collected',
+        action: 'backup_schedule_synced',
         category: 'backup',
         targetType: 'backup',
         targetId: finalServerId,
@@ -919,8 +643,8 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     }
     
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to collect backups' },
+      { error: error instanceof Error ? error.message : 'Failed to sync backup schedules' },
       { status: 500 }
     );
   }
-})); 
+}));

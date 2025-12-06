@@ -262,15 +262,32 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
     setShouldCenterItems(isSidebarCollapsed);
   }, [isSidebarCollapsed]);
 
+  // Helper function to validate email format (must contain '@')
+  const isValidEmail = (email: string | undefined): boolean => {
+    return email !== undefined && email.trim() !== '' && email.includes('@');
+  };
+
   // Check if email configuration is valid (mirrors logic from EmailConfigurationForm)
   const isEmailConfigValid = () => {
     if (!config?.email) return false;
     
-    return config.email.host?.trim() !== '' &&
-           config.email.username?.trim() !== '' &&
-           config.email.mailto?.trim() !== '' &&
-           config.email.port > 0 &&
-           config.email.hasPassword;
+    const email = config.email;
+    
+    // Base requirements: host, mailto (valid email), port > 0
+    const baseValid = email.host?.trim() !== '' &&
+                      isValidEmail(email.mailto) &&
+                      email.port > 0;
+    
+    if (!baseValid) return false;
+    
+    // If authentication is required, username and password are required
+    if (email.requireAuth !== false) {
+      return email.username?.trim() !== '' &&
+             email.hasPassword === true;
+    }
+    
+    // If authentication is not required, fromAddress is required
+    return isValidEmail(email.fromAddress);
   };
 
   // Check if NTFY configuration is valid (mirrors logic from NtfyForm)

@@ -145,7 +145,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
         </CardContent>
       </Card>
       
-      <Card className="shadow-lg">
+      <Card className="shadow-lg" data-screenshot-target="backup-history-table">
         <CardHeader>
           <CardTitle>Backup History</CardTitle>
           <CardDescription>

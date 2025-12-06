@@ -9,11 +9,14 @@
 | Setting                 | Description                                                      |
 |:------------------------|:-----------------------------------------------------------------|
 | **SMTP Server Host**    | Your email provider's SMTP server (e.g., `smtp.gmail.com`).      |
-| **SMTP Server Port**    | Port number (typically `587` for STARTTLS or `465` for SSL/TLS). |
-| **SMTP ServerUsername** | Your email address or username.                                  |
-| **SMTP ServerPassword** | Your email password or app-specific password.                    |
+| **SMTP Server Port**    | Port number (typically `25` for Plain SMTP, `587` for STARTTLS, or `465` for Direct SSL/TLS). |
+| **Connection Type**     | Select between Plain SMTP, STARTTLS, or Direct SSL/TLS. Defaults to Direct SSL/TLS for new configurations. |
+| **SMTP Authentication** | Toggle to enable or disable SMTP authentication. When disabled, username and password fields are not required. |
+| **SMTP Username**       | Your email address or username (required when authentication is enabled). |
+| **SMTP Password**       | Your email password or app-specific password (required when authentication is enabled). |
+| **Sender Name**         | Display name shown as the sender in email notifications (optional, defaults to "duplistatus"). |
+| **From Address**        | Email address shown as the sender. Required for Plain SMTP connections or when authentication is disabled. Defaults to SMTP username when authentication is enabled. |
 | **Recipient Email**     | The email address to receive notifications.                      |
-| **Connection Security** | Toggle for SSL/TLS vs STARTTLS encryption.                       |
 
 <br/>
 
@@ -30,7 +33,7 @@
 | Button                                                           | Description                                              |
 |:-----------------------------------------------------------------|:---------------------------------------------------------|
 | <IconButton label="Save Settings" />                             | Save the changes made to the NTFY settings.              |
-| <IconButton icon="lucide:mail" label="Send Test Email"/>         | Sends a test email message using the SMTP configuration. |
+| <IconButton icon="lucide:mail" label="Send Test Email"/>         | Sends a test email message using the SMTP configuration. The test email displays SMTP server hostname, port, connection type, authentication status, username (if applicable), recipient email, from address, sender name, and test timestamp. |
 | <IconButton icon="lucide:trash-2" label="Delete SMTP Settings"/> | Delete / Clear the SMTP configuration.                   |
     
 
@@ -39,7 +42,9 @@
 > [!NOTE]
 > A <IIcon2 icon="lucide:mail" color="green"/> green icon next to `Email` in the tab bar means your settings are valid. If the icon is <IIcon2 icon="lucide:mail" color="yellow"/> yellow, your settings are not valid or not configured.
 > 
-> When the configuration is not fully configured, the Email checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out.
+> The icon shows green when all required fields are set: SMTP Server Host, SMTP Server Port, Recipient Email, and either (SMTP Username + Password when authentication is required) or (From Address when authentication is not required).
+> 
+> When the configuration is not fully configured, a yellow alert box is displayed informing you that no emails will be sent until the email settings are filled correctly. The Email checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out and show "(disabled)" labels.
 
 > [!IMPORTANT]
 >   You must use the <IconButton icon="lucide:mail" label="Send Test Email"/> button to make sure your email setup works before relying on it for notifications.
@@ -55,26 +60,29 @@
 **Gmail:**
 
 - Host: `smtp.gmail.com`
-- Port: `587` (STARTTLS) or `465` (SSL/TLS)
+- Port: `587` (STARTTLS) or `465` (Direct SSL/TLS)
+- Connection Type: STARTTLS for port 587, Direct SSL/TLS for port 465
 - Username: Your Gmail address
-- Password: Use an App Password (not your regular password)
-- Secure: `false` for port 587, `true` for port 465
+- Password: Use an App Password (not your regular password). Generate one at https://myaccount.google.com/apppasswords
+- Authentication: Required
 
 **Outlook/Hotmail:**
 
 - Host: `smtp-mail.outlook.com`
 - Port: `587`
+- Connection Type: STARTTLS
 - Username: Your Outlook email address
 - Password: Your account password
-- Secure: `false` (STARTTLS)
+- Authentication: Required
 
 **Yahoo Mail:**
 
 - Host: `smtp.mail.yahoo.com`
 - Port: `587`
+- Connection Type: STARTTLS
 - Username: Your Yahoo email address
 - Password: Use an App Password
-- Secure: `false` (STARTTLS)
+- Authentication: Required
 
 <br/>
 
@@ -85,5 +93,7 @@
 > - Consider using a dedicated email account for notifications
 > - Test your configuration using the "Send Test Email" button
 > - Settings are encrypted and stored securely in the database
-> - **All connections are encrypted** - only TLS 1.2+ connections are accepted, no plain text SMTP is allowed.
+> - **Use encrypted connections** - STARTTLS and Direct SSL/TLS are recommended for production use
+> - Plain SMTP connections (port 25) are available for trusted local networks but are not recommended for production use over untrusted networks
+> - When using Plain SMTP or when authentication is disabled, the From Address field is required to ensure proper email sender identification and RFC 5322 compliance
 

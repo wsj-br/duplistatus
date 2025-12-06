@@ -217,7 +217,7 @@ export function OpenServerConfigButton() {
           <ServerIcon className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
-            <PopoverContent className="w-auto max-w-100 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50">
+            <PopoverContent className="w-auto max-w-100 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50" data-screenshot-target="duplicati-configuration">
         <div className="grid gap-4">
           <GradientCardHeader>
             <h4 className="text-lg font-semibold leading-none text-white">Open Duplicati Configuration</h4>

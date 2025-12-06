@@ -130,6 +130,46 @@ export USER_PASSWORD="your-user-password"
 tsx scripts/take-screenshots.ts
 ```
 
+**Generated Screenshots:**
+
+The script generates the following screenshots (saved to `website/static/img/`):
+
+**Dashboard Screenshots:**
+- `screen-main-dashboard-card-mode.png` - Dashboard in card/overview mode
+- `screen-main-dashboard-table-mode.png` - Dashboard in table mode
+- `screen-overdue-backup-hover-card.png` - Overdue backup hover card/tooltip
+- `screen-backup-tooltip.png` - Regular backup tooltip (hover over backup in cards view)
+
+**Server Details Screenshots:**
+- `screen-server-backup-list.png` - Server backup list page
+- `screen-backup-history.png` - Backup history table section
+- `screen-backup-detail.png` - Individual backup detail page
+- `screen-metrics.png` - Metrics chart showing backup metrics over time
+
+**Collect/Configuration Screenshots:**
+- `screen-collect-button-popup.png` - Collect backup logs popup
+- `screen-collect-button-right-click-popup.png` - Collect all right-click menu
+- `screen-collect-backup-logs.png` - Collect backup logs interface
+- `screen-duplicati-configuration.png` - Duplicati configuration dropdown
+
+**Settings Screenshots:**
+- `screen-settings-left-panel-admin.png` - Settings sidebar (admin view)
+- `screen-settings-left-panel-non-admin.png` - Settings sidebar (non-admin view)
+- `screen-settings-{tab}.png` - Individual settings pages for each tab:
+  - `screen-settings-notifications.png`
+  - `screen-settings-overdue.png`
+  - `screen-settings-server.png`
+  - `screen-settings-ntfy.png`
+  - `screen-settings-email.png`
+  - `screen-settings-templates.png`
+  - `screen-settings-users.png`
+  - `screen-settings-audit.png`
+  - `screen-settings-audit-retention.png`
+  - `screen-settings-display.png`
+  - `screen-settings-database-maintenance.png`
+- `screen-settings-ntfy-configure-device-popup.png` - NTFY configure device popup
+- `screen-settings-backup-notifications-detail.png` - Backup notifications detail page
+
 ## Deploying the Documentation
 
 

@@ -19,6 +19,9 @@ const colors = {
   reset: '\x1b[0m',
   red: '\x1b[31m',
   blue: '\x1b[34m',
+  green: '\x1b[32m',
+  cyan: '\x1b[36m',
+  yellow: '\x1b[33m',
 };
 
 function logError(message: string): void {
@@ -79,11 +82,12 @@ async function checkHealth(): Promise<boolean> {
 async function generateTestData() {
   console.log('Generating test data...');
   try {
-    execSync('pnpm generate-test-data --servers=12', { 
+    execSync('pnpm generate-test-data --servers=12 --quiet', { 
       stdio: 'inherit',
       cwd: process.cwd()
     });
     console.log('Test data generated successfully');
+    console.log('-------------------------------------------------------');
   } catch (error) {
     logError('Failed to generate test data: ' + (error instanceof Error ? error.message : String(error)));
     throw error;
@@ -187,7 +191,7 @@ async function logout(page: Page) {
     await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle0' });
     console.log('Logged out');
   } catch (error) {
-    console.log('Error during logout:', error);
+    logError('Error during logout: ' + (error instanceof Error ? error.message : String(error)));
     // Try navigating to login page anyway
     await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle0' });
   }
@@ -203,7 +207,7 @@ async function getServers(page: Page): Promise<Server[]> {
 }
 
 async function deleteServer(page: Page, serverId: string) {
-  console.log(`Deleting server ${serverId}...`);
+  console.log(`  Deleting server ${serverId}...`);
   
   // Get CSRF token
   const csrfToken = await getCSRFToken(page);
@@ -225,7 +229,7 @@ async function deleteServer(page: Page, serverId: string) {
     throw new Error(`Failed to delete server ${serverId}: ${response.json.error || 'Unknown error'}`);
   }
   
-  console.log(`Successfully deleted server ${serverId}`);
+  console.log(`  Successfully deleted server ${serverId}`);
 }
 
 async function updateServerUrl(serverId: string, serverUrl: string) {
@@ -287,14 +291,14 @@ async function takeScreenshot(page: Page, filename: string, options?: {
   isSettingsSidebar?: boolean;
   cropBottom?: number;
   clip?: { x: number; y: number; width: number; height: number };
-}) {
+}): Promise<boolean> {
   const waitTime = options?.waitTime ?? 2000;
   const isSettingsPage = options?.isSettingsPage ?? false;
   const isSettingsSidebar = options?.isSettingsSidebar ?? false;
   const cropBottom = options?.cropBottom ?? 0;
   const clip = options?.clip;
   
-  console.log(`Taking screenshot: ${filename}...`);
+  console.log(colors.cyan, `Taking screenshot: ${filename}...`, colors.reset);
   await delay(waitTime);
   
   const filepath = join(SCREENSHOT_DIR, filename);
@@ -488,7 +492,8 @@ async function takeScreenshot(page: Page, filename: string, options?: {
     }
   }
   
-  logSuccess(`Screenshot saved: ${filepath}`);
+  logSuccess(` Screenshot saved: ${filepath}`);
+  return true;
 }
 
 async function waitForDashboardLoad(page: Page) {
@@ -496,30 +501,66 @@ async function waitForDashboardLoad(page: Page) {
   try {
     await page.waitForSelector('[data-testid="dashboard"], .dashboard, main', { timeout: 10000 });
   } catch (error) {
-    console.log('Dashboard selector not found, continuing anyway...');
+    console.log(colors.yellow, 'Dashboard selector not found, continuing anyway...', colors.reset);
   }
   await delay(2000); // Additional wait for animations
 }
 
 async function switchToTableView(page: Page) {
+  console.log('-------------------------------------------------------');
   console.log('Switching to table view...');
   try {
     // Wait for the dashboard to load
     await delay(2000);
     
-    // Check current view mode
-    const currentViewMode = await page.evaluate(() => {
-      // Check localStorage for view mode
-      const keys = Object.keys(localStorage);
-      for (const key of keys) {
-        if (key.includes('dashboard-view-mode') || key.includes('view-mode')) {
-          return localStorage.getItem(key);
+    // Get user ID first to construct the proper localStorage key
+    const userId = await page.evaluate(async () => {
+      // Try to get user ID from API
+      try {
+        const response = await fetch('/api/auth/me');
+        const data = await response.json();
+        if (data.authenticated && data.user && data.user.id) {
+          return data.user.id;
+        }
+      } catch (e) {
+        // Fallback: try to find user ID in localStorage
+        const keys = Object.keys(localStorage);
+        for (const key of keys) {
+          if (key.includes('user') && key.includes('id') && !key.includes('dashboard')) {
+            const value = localStorage.getItem(key);
+            if (value && value.length > 10) { // UUIDs are longer
+              return value;
+            }
+          }
         }
       }
       return null;
     });
     
-    console.log(`Current view mode: ${currentViewMode}`);
+    // Check current view mode using the proper user-specific key
+    const currentViewMode = await page.evaluate((uid) => {
+      if (uid) {
+        // Try user-specific key first: dashboard-view-mode:user-{userId}
+        const userKey = `dashboard-view-mode:user-${uid}`;
+        const value = localStorage.getItem(userKey);
+        if (value) {
+          return value;
+        }
+      }
+      
+      // Fallback: search all keys that contain dashboard-view-mode
+      const keys = Object.keys(localStorage);
+      for (const key of keys) {
+        if (key.includes('dashboard-view-mode')) {
+          return localStorage.getItem(key);
+        }
+      }
+      
+      // If not found, return null (will default to clicking to switch)
+      return null;
+    }, userId);
+    
+    console.log(`Current view mode: ${currentViewMode || 'null (will switch to table)'}`);
     
     // If we're in overview mode, click once to get to table mode
     // If we're already in table mode, we don't need to click
@@ -545,15 +586,25 @@ async function switchToTableView(page: Page) {
           await delay(2000);
           
           // Verify we're in table view now
-          const newViewMode = await page.evaluate(() => {
+          const newViewMode = await page.evaluate((uid) => {
+            if (uid) {
+              // Try user-specific key first
+              const userKey = `dashboard-view-mode:user-${uid}`;
+              const value = localStorage.getItem(userKey);
+              if (value) {
+                return value;
+              }
+            }
+            
+            // Fallback: search all keys
             const keys = Object.keys(localStorage);
             for (const key of keys) {
-              if (key.includes('dashboard-view-mode') || key.includes('view-mode')) {
+              if (key.includes('dashboard-view-mode')) {
                 return localStorage.getItem(key);
               }
             }
             return null;
-          });
+          }, userId);
           
           if (newViewMode !== 'table') {
             // Click again if we're still not in table view
@@ -576,19 +627,19 @@ async function switchToTableView(page: Page) {
           throw new Error('Button not found in evaluate method');
         }
       } catch (error) {
-        console.log('Could not click view mode button using evaluate method, trying CSS selector...');
+        console.log(colors.yellow, 'Could not click view mode button using evaluate method, trying CSS selector...', colors.reset);
         // Fallback: try CSS selector approach
         try {
           await page.waitForSelector('button:has(svg[class*="LayoutDashboard"]), button:has(svg[class*="Sheet"])', { timeout: 5000 });
           await page.click('button:has(svg[class*="LayoutDashboard"]), button:has(svg[class*="Sheet"])');
           await delay(2000);
         } catch (selectorError) {
-          console.log('Could not click view mode button using CSS selector either');
+          console.log(colors.red, 'Could not click view mode button using CSS selector either', colors.reset);
         }
       }
     }
   } catch (error) {
-    console.log('Error switching to table view:', error);
+    logError('Error switching to table view: ' + (error instanceof Error ? error.message : String(error)));
   }
 }
 
@@ -601,7 +652,7 @@ async function getNtfyConfig(page: Page): Promise<{ url?: string; topic?: string
     });
     return response?.ntfy || null;
   } catch (error) {
-    console.log('Error getting NTFY config:', error);
+    logError('Error getting NTFY config: ' + (error instanceof Error ? error.message : String(error)));
     return null;
   }
 }
@@ -612,7 +663,7 @@ async function updateNtfyTopic(page: Page, newTopic: string): Promise<string | n
     // Get current config
     const currentConfig = await getNtfyConfig(page);
     if (!currentConfig) {
-      console.log('Could not get current NTFY config');
+      logError('Could not get current NTFY config');
       return null;
     }
     
@@ -637,11 +688,11 @@ async function updateNtfyTopic(page: Page, newTopic: string): Promise<string | n
       console.log(`NTFY topic updated from "${oldTopic}" to "${newTopic}"`);
       return oldTopic;
     } else {
-      console.log('Failed to update NTFY topic');
+      logError('Failed to update NTFY topic');
       return null;
     }
   } catch (error) {
-    console.log('Error updating NTFY topic:', error);
+    logError('Error updating NTFY topic: ' + (error instanceof Error ? error.message : String(error)));
     return null;
   }
 }
@@ -714,12 +765,13 @@ async function deleteServerDeletionAuditLogs(): Promise<number> {
     console.log(`Deleted ${result.changes} server_deletion audit log entries`);
     return result.changes;
   } catch (error) {
-    console.log('Error deleting server_deletion audit logs:', error);
+    logError('Error deleting server_deletion audit logs: ' + (error instanceof Error ? error.message : String(error)));
     return 0;
   }
 }
 
-async function captureCollectButtonPopup(page: Page) {
+async function captureCollectButtonPopup(page: Page): Promise<{ popup: boolean; rightClick: boolean }> {
+  console.log('-------------------------------------------------------');
   console.log('Capturing collect button popup...');
   try {
     // Navigate to blank page first to reduce background noise
@@ -787,13 +839,14 @@ async function captureCollectButtonPopup(page: Page) {
         return null;
       });
       
+      let popupSuccess = false;
       if (popupBounds) {
-        await takeScreenshot(page, 'screen-collect-button-popup.png', {
+        popupSuccess = await takeScreenshot(page, 'screen-collect-button-popup.png', {
           clip: popupBounds
         });
         console.log('Captured collect button popup');
       } else {
-        console.log('Could not find collect button popup bounds');
+        logError('Could not find collect button popup bounds');
       }
       
       // Close popup by clicking outside or pressing Escape
@@ -821,6 +874,7 @@ async function captureCollectButtonPopup(page: Page) {
         return false;
       });
       
+      let rightClickPopupSuccess = false;
       if (rightClickSuccess) {
         await delay(1500); // Wait for right-click menu to appear
         
@@ -872,27 +926,33 @@ async function captureCollectButtonPopup(page: Page) {
         });
         
         if (menuBounds) {
-          await takeScreenshot(page, 'screen-collect-button-right-click-popup.png', {
+          rightClickPopupSuccess = await takeScreenshot(page, 'screen-collect-button-right-click-popup.png', {
             clip: menuBounds
           });
           console.log('Captured collect button right-click popup');
         } else {
-          console.log('Could not find collect button right-click popup bounds');
+          logError('Could not find collect button right-click popup bounds');
         }
         
         // Close menu
         await page.keyboard.press('Escape');
         await delay(500);
       }
+      
+      return { popup: popupSuccess, rightClick: rightClickPopupSuccess };
     } else {
-      console.log('Could not find collect button');
+      logError('Could not find collect button');
+      return { popup: false, rightClick: false };
     }
   } catch (error) {
-    console.log('Error capturing collect button popup:', error);
+    logError('Error capturing collect button popup: ' + (error instanceof Error ? error.message : String(error)));
+    return { popup: false, rightClick: false };
   }
 }
 
-async function captureNtfyConfigureDevicePopup(page: Page) {
+async function captureNtfyConfigureDevicePopup(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+
   console.log('Capturing NTFY Configure Device popup...');
   try {
     // Navigate to NTFY settings
@@ -947,21 +1007,31 @@ async function captureNtfyConfigureDevicePopup(page: Page) {
       });
       
       if (dialogBounds) {
-        await takeScreenshot(page, 'screen-settings-ntfy-configure-device-popup.png', {
+        const success = await takeScreenshot(page, 'screen-settings-ntfy-configure-device-popup.png', {
           clip: dialogBounds
         });
+        
+        // Close dialog
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return success;
+      } else {
+        // Close dialog anyway
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return false;
       }
-      
-      // Close dialog
-      await page.keyboard.press('Escape');
-      await delay(500);
+    } else {
+      return false;
     }
   } catch (error) {
-    console.log('Error capturing NTFY Configure Device popup:', error);
+    logError('Error capturing NTFY Configure Device popup: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
   }
 }
 
-async function captureOverdueBackupHoverCard(page: Page) {
+async function captureOverdueBackupHoverCard(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
   console.log('Capturing overdue backup hover card...');
   try {
     // Find an overdue backup item using the data attribute
@@ -1000,23 +1070,442 @@ async function captureOverdueBackupHoverCard(page: Page) {
       });
       
       if (tooltipBounds) {
-        await takeScreenshot(page, 'screen-overdue-backup-hover-card.png', {
+        const success = await takeScreenshot(page, 'screen-overdue-backup-hover-card.png', {
           clip: tooltipBounds
         });
         console.log('Captured overdue backup hover card');
+        return success;
       } else {
-        console.log('Could not find overdue backup tooltip bounds');
+        logError('Could not find overdue backup tooltip bounds');
+        return false;
       }
     } else {
-      console.log('Could not find overdue backup item to hover');
+      logError('Could not find overdue backup item to hover');
+      return false;
     }
   } catch (error) {
-    console.log('Error capturing overdue backup hover card:', error);
+    logError('Error capturing overdue backup hover card: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureBackupTooltip(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing backup tooltip...');
+  try {
+    // Navigate to dashboard in card mode
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+    await waitForDashboardLoad(page);
+    await delay(2000);
+    
+    // Find all backup items and identify one that's not overdue
+    const backupItems = await page.$$('[data-screenshot-trigger="backup-item"]');
+    
+    let backupItemHandle: any = null;
+    
+    // Find the first backup item that is NOT overdue
+    for (const item of backupItems) {
+      const isOverdue = await item.evaluate((el) => {
+        // Check if it has overdue warning icon
+        const hasOverdueIcon = el.querySelector('svg[class*="AlertTriangle"], .text-red-500');
+        // Check if it's inside a card and under "Backups:" section
+        const card = el.closest('[class*="Card"], [class*="card"]');
+        const backupsSection = el.closest('section');
+        const hasBackupsHeading = backupsSection?.querySelector('h3')?.textContent?.includes('Backups:');
+        return hasOverdueIcon || !card || !hasBackupsHeading;
+      });
+      
+      if (!isOverdue) {
+        backupItemHandle = item;
+        break;
+      }
+    }
+    
+    if (backupItemHandle) {
+      // Hover over the backup item using Puppeteer's hover
+      await backupItemHandle.hover();
+      await delay(2000); // Wait for tooltip to appear (delayDuration is 1000ms)
+      
+      // Wait for tooltip to appear
+      try {
+        await page.waitForSelector('[data-screenshot-target="backup-tooltip"]', { timeout: 3000 });
+      } catch (e) {
+        logError('Tooltip did not appear after hovering');
+        return false;
+      }
+      await delay(500);
+      
+      // Capture the tooltip using data-screenshot-target
+      const tooltipBounds = await page.evaluate(() => {
+        const tooltip = document.querySelector('[data-screenshot-target="backup-tooltip"]');
+        if (tooltip) {
+          const rect = tooltip.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        return null;
+      });
+      
+      if (tooltipBounds) {
+        const success = await takeScreenshot(page, 'screen-backup-tooltip.png', {
+          clip: tooltipBounds
+        });
+        console.log('Captured backup tooltip');
+        return success;
+      } else {
+        logError('Could not find backup tooltip bounds');
+        return false;
+      }
+    } else {
+      logError('Could not find backup item to hover');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing backup tooltip: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureDuplicatiConfiguration(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing Duplicati configuration dropdown...');
+  try {
+    // Navigate to dashboard
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+    await waitForDashboardLoad(page);
+    await delay(2000);
+    
+    // Find and click the Duplicati button (button with title "Duplicati configuration")
+    const button = await page.$('button[title="Duplicati configuration"]');
+    
+    if (button) {
+      await button.click();
+      await delay(1000); // Wait for popover to appear
+      
+      // Capture the dropdown using data-screenshot-target
+      const dropdownBounds = await page.evaluate(() => {
+        const dropdown = document.querySelector('[data-screenshot-target="duplicati-configuration"]');
+        if (dropdown) {
+          const rect = dropdown.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        return null;
+      });
+      
+      if (dropdownBounds) {
+        const success = await takeScreenshot(page, 'screen-duplicati-configuration.png', {
+          clip: dropdownBounds
+        });
+        console.log('Captured Duplicati configuration dropdown');
+        
+        // Close dropdown
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return success;
+      } else {
+        logError('Could not find Duplicati dropdown bounds');
+        // Close dropdown anyway
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return false;
+      }
+    } else {
+      logError('Could not find Duplicati button');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing Duplicati configuration: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureBackupHistoryTable(page: Page, serverId: string): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing backup history table...');
+  try {
+    // Navigate to server details page
+    await page.goto(`${BASE_URL}/detail/${serverId}`, { waitUntil: 'networkidle0' });
+    await delay(3000);
+    
+    // Find the backup history table section using data-screenshot-target
+    const tableBounds = await page.evaluate(() => {
+      const card = document.querySelector('[data-screenshot-target="backup-history-table"]');
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (tableBounds) {
+      const success = await takeScreenshot(page, 'screen-backup-history.png', {
+        clip: tableBounds
+      });
+      console.log('Captured backup history table');
+      return success;
+    } else {
+      logError('Could not find backup history table bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing backup history table: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureMetricsChart(page: Page, serverId: string): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing metrics chart...');
+  try {
+    // Navigate to server details page
+    await page.goto(`${BASE_URL}/detail/${serverId}`, { waitUntil: 'networkidle0' });
+    await delay(3000);
+    
+    // Find the metrics chart section
+    const chartBounds = await page.evaluate(() => {
+      // Look for the metrics chart card
+      const cards = Array.from(document.querySelectorAll('[class*="Card"], [class*="card"]'));
+      for (const card of cards) {
+        const header = card.querySelector('h2, h3, [class*="CardTitle"]');
+        const hasChart = card.querySelector('[class*="chart"], canvas, svg[class*="chart"]');
+        if (hasChart || (header && (header.textContent || '').includes('Metrics'))) {
+          const rect = card.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+      }
+      // Fallback: look for any chart element
+      const chart = document.querySelector('[class*="chart"], canvas, svg[class*="chart"]');
+      if (chart) {
+        const rect = chart.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (chartBounds) {
+      const success = await takeScreenshot(page, 'screen-metrics.png', {
+        clip: chartBounds
+      });
+      console.log('Captured metrics chart');
+      return success;
+    } else {
+      logError('Could not find metrics chart bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing metrics chart: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureCollectBackupLogs(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing collect backup logs interface...');
+  try {
+    // The collect backup logs popup is already captured as screen-collect-button-popup.png
+    // But we need screen-collect-backup-logs.png which might be the same or a different view
+    // For now, we'll use the same popup screenshot
+    // Navigate to blank page first
+    await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
+    await delay(1000);
+    
+    // Find and click the collect button
+    const collectButtonFound = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      for (const btn of buttons) {
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          const title = btn.getAttribute('title') || '';
+          if (title.includes('Collect')) {
+            (btn as HTMLButtonElement).click();
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+    
+    if (collectButtonFound) {
+      await delay(1500); // Wait for popover to appear
+      
+      // Capture the popup (same as collect-button-popup but save with different name)
+      const popupBounds = await page.evaluate(() => {
+        const popover = document.querySelector('[data-screenshot-target="collect-button-popup"]');
+        if (popover) {
+          const rect = popover.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        const fallbackPopover = document.querySelector('[data-radix-popover-content], [role="dialog"]');
+        if (fallbackPopover) {
+          const rect = fallbackPopover.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        return null;
+      });
+      
+      if (popupBounds) {
+        const success = await takeScreenshot(page, 'screen-collect-backup-logs.png', {
+          clip: popupBounds
+        });
+        console.log('Captured collect backup logs interface');
+        
+        // Close popup
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return success;
+      } else {
+        // Close popup anyway
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing collect backup logs: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureBackupNotificationsDetail(page: Page) {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing backup notifications detail page...');
+  try {
+    // Navigate to notifications settings
+    await page.goto(`${BASE_URL}/settings?tab=notifications`, { waitUntil: 'networkidle0' });
+    await delay(2000);
+    
+    // Find and click on a backup to view its detail
+    const backupClicked = await page.evaluate(() => {
+      // Look for backup rows or items in the notifications table
+      const rows = Array.from(document.querySelectorAll('tr, [class*="row"], [class*="Row"]'));
+      for (const row of rows) {
+        // Check if this is a clickable backup row
+        if (row.getAttribute('onclick') || row.classList.contains('cursor-pointer')) {
+          (row as HTMLElement).click();
+          return true;
+        }
+      }
+      // Fallback: look for any clickable element in the notifications table
+      const clickable = document.querySelector('[class*="cursor-pointer"], button, a');
+      if (clickable) {
+        (clickable as HTMLElement).click();
+        return true;
+      }
+      return false;
+    });
+    
+    if (backupClicked) {
+      await delay(2000); // Wait for detail page/modal to appear
+      
+      // Capture the detail view
+      const detailBounds = await page.evaluate(() => {
+        // Look for modal or detail card
+        const modal = document.querySelector('[role="dialog"], [data-radix-dialog-content]');
+        if (modal) {
+          const rect = modal.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        // Fallback: look for detail card
+        const card = document.querySelector('[class*="Card"], [class*="card"]');
+        if (card) {
+          const rect = card.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        return null;
+      });
+      
+      if (detailBounds) {
+        const success = await takeScreenshot(page, 'screen-settings-backup-notifications-detail.png', {
+          clip: detailBounds,
+          isSettingsPage: true
+        });
+        console.log('Captured backup notifications detail');
+        
+        // Close modal if open
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return success;
+      } else {
+        // Fallback: take full page screenshot
+        const success = await takeScreenshot(page, 'screen-settings-backup-notifications-detail.png', {
+          isSettingsPage: true
+        });
+        
+        // Close modal if open
+        await page.keyboard.press('Escape');
+        await delay(500);
+        return success;
+      }
+    } else {
+      // If no backup to click, just take a screenshot of the notifications page
+      // which might show the detail view already
+      const success = await takeScreenshot(page, 'screen-settings-backup-notifications-detail.png', {
+        isSettingsPage: true
+      });
+      return success;
+    }
+  } catch (error) {
+    logError('Error capturing backup notifications detail: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
   }
 }
 
 async function main() {
-  console.log('Starting screenshot automation...');
+  console.log(colors.green, '\n');
+  console.log('-------------------------------------------------------' );
+  console.log('Starting screenshot automation\n');
+  console.log('-------------------------------------------------------',colors.reset);
+  
+  
+  // Arrays to track screenshot results
+  const successful: string[] = [];
+  const failed: string[] = [];
   
   // Reset users and clear audit log at the beginning
   await resetUsers();
@@ -1061,19 +1550,46 @@ async function main() {
     await waitForDashboardLoad(page);
     
     // Take screenshot of dashboard in card mode (overview mode)
-    await takeScreenshot(page, 'screen-main-dashboard-card-mode.png', { cropBottom: 80 });
+    console.log('-------------------------------------------------------');
+    console.log('Taking screenshot of dashboard in card mode (overview mode)...');
+    const dashboardCardMode = await takeScreenshot(page, 'screen-main-dashboard-card-mode.png', { cropBottom: 80 });
+    if (dashboardCardMode) successful.push('screen-main-dashboard-card-mode.png');
+    else failed.push('screen-main-dashboard-card-mode.png');
     
     // Capture overdue backup hover card
-    await captureOverdueBackupHoverCard(page);
+    const overdueHoverCard = await captureOverdueBackupHoverCard(page);
+    if (overdueHoverCard) successful.push('screen-overdue-backup-hover-card.png');
+    else failed.push('screen-overdue-backup-hover-card.png');
+    
+    // Capture regular backup tooltip
+    const backupTooltip = await captureBackupTooltip(page);
+    if (backupTooltip) successful.push('screen-backup-tooltip.png');
+    else failed.push('screen-backup-tooltip.png');
     
     // Capture collect button popups
-    await captureCollectButtonPopup(page);
+    const collectPopups = await captureCollectButtonPopup(page);
+    if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
+    else failed.push('screen-collect-button-popup.png');
+    if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
+    else failed.push('screen-collect-button-right-click-popup.png');
+    
+    // Capture collect backup logs interface
+    const collectBackupLogs = await captureCollectBackupLogs(page);
+    if (collectBackupLogs) successful.push('screen-collect-backup-logs.png');
+    else failed.push('screen-collect-backup-logs.png');
+    
+    // Capture Duplicati configuration dropdown
+    const duplicatiConfig = await captureDuplicatiConfiguration(page);
+    if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
+    else failed.push('screen-duplicati-configuration.png');
     
     // Get list of servers
     const servers = await getServers(page);
     console.log(`Found ${servers.length} servers`);
     
     // Keep only 3 servers, delete the rest
+    console.log('-------------------------------------------------------');
+    console.log('Keeping only 3 servers, deleting the rest...');
     if (servers.length > 3) {
       const serversToDelete = servers.slice(3);
       console.log(`Deleting ${serversToDelete.length} servers, keeping 3...`);
@@ -1138,7 +1654,10 @@ async function main() {
     await delay(2000);
     
     // Take screenshot of dashboard in table mode
-    await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', { cropBottom: 80 });
+    console.log('Taking screenshot of dashboard in table mode...');
+    const dashboardTableMode = await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', { cropBottom: 80 });
+    if (dashboardTableMode) successful.push('screen-main-dashboard-table-mode.png');
+    else failed.push('screen-main-dashboard-table-mode.png');
     
     // Get the remaining servers
     const remainingServers = await getServers(page);
@@ -1147,11 +1666,25 @@ async function main() {
     }
     
     // Navigate to first server's backup list page
+    console.log('-------------------------------------------------------');
+    console.log('Navigating to first server\'s backup list page...');
     const firstServer = remainingServers[0];
     console.log(`Navigating to server backup list: ${firstServer.name} (${firstServer.id})`);
     await page.goto(`${BASE_URL}/detail/${firstServer.id}`, { waitUntil: 'networkidle0' });
     await delay(3000); // Wait for backup list to load
-    await takeScreenshot(page, 'screen-server-backup-list.png', { cropBottom: 80 });
+    const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', { cropBottom: 80 });
+    if (serverBackupList) successful.push('screen-server-backup-list.png');
+    else failed.push('screen-server-backup-list.png');
+    
+    // Capture backup history table
+    const backupHistory = await captureBackupHistoryTable(page, firstServer.id);
+    if (backupHistory) successful.push('screen-backup-history.png');
+    else failed.push('screen-backup-history.png');
+    
+    // Capture metrics chart
+    const metricsChart = await captureMetricsChart(page, firstServer.id);
+    if (metricsChart) successful.push('screen-metrics.png');
+    else failed.push('screen-metrics.png');
     
     // Get backup details for this server
     const backupDetails = await page.evaluate(async (serverId) => {
@@ -1160,17 +1693,22 @@ async function main() {
     }, firstServer.id);
     
     // Navigate to a backup detail page if backups exist
+    console.log('-------------------------------------------------------');
+    console.log('Navigating to backup detail page...');
+    let backupDetail = false;
     if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
       const firstBackup = backupDetails.server.backups[0];
       console.log(`Navigating to backup detail: ${firstBackup.id}`);
       await page.goto(`${BASE_URL}/detail/${firstServer.id}/backup/${firstBackup.id}`, { waitUntil: 'networkidle0' });
       await delay(2000);
-      await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
+      backupDetail = await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
     } else {
       console.log('No backups found for screenshot');
       // Take screenshot anyway of the empty state
-      await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
+      backupDetail = await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
     }
+    if (backupDetail) successful.push('screen-backup-detail.png');
+    else failed.push('screen-backup-detail.png');
     
     // Navigate to settings page
     console.log('Navigating to settings page...');
@@ -1178,7 +1716,11 @@ async function main() {
     await delay(2000);
     
     // Take screenshot of settings page left panel (as admin)
-    await takeScreenshot(page, 'screen-settings-left-panel-admin.png', { isSettingsSidebar: true });
+    console.log('-------------------------------------------------------');
+    console.log('Taking screenshot of settings page left panel (as admin)...');
+    const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', { isSettingsSidebar: true });
+    if (settingsLeftPanelAdmin) successful.push('screen-settings-left-panel-admin.png');
+    else failed.push('screen-settings-left-panel-admin.png');
     
     // Take screenshots of all available settings options as admin
     const adminSettingsTabs = [
@@ -1198,6 +1740,7 @@ async function main() {
     let oldNtfyTopic: string | null = null;
     
     for (const tab of adminSettingsTabs) {
+      console.log('-------------------------------------------------------');
       console.log(`Taking screenshot of settings tab: ${tab}`);
       
       // Special handling for NTFY tab - update topic before screenshot
@@ -1217,11 +1760,15 @@ async function main() {
       
       // Sanitize tab name for filename
       const filename = `screen-settings-${tab}.png`;
-      await takeScreenshot(page, filename, { isSettingsPage: true });
+      const settingsTabResult = await takeScreenshot(page, filename, { isSettingsPage: true });
+      if (settingsTabResult) successful.push(filename);
+      else failed.push(filename);
       
       // Capture NTFY Configure Device popup after NTFY settings screenshot
       if (tab === 'ntfy') {
-        await captureNtfyConfigureDevicePopup(page);
+        const ntfyPopup = await captureNtfyConfigureDevicePopup(page);
+        if (ntfyPopup) successful.push('screen-settings-ntfy-configure-device-popup.png');
+        else failed.push('screen-settings-ntfy-configure-device-popup.png');
         
         // Restore old NTFY topic after capturing popup
         if (oldNtfyTopic) {
@@ -1229,9 +1776,18 @@ async function main() {
           await delay(1000);
         }
       }
+      
+      // Capture backup notifications detail after notifications settings screenshot
+      if (tab === 'notifications') {
+        const notificationsDetail = await captureBackupNotificationsDetail(page);
+        if (notificationsDetail) successful.push('screen-settings-backup-notifications-detail.png');
+        else failed.push('screen-settings-backup-notifications-detail.png');
+      }
     }
     
     // Logout and login as non-admin user
+    console.log('-------------------------------------------------------');
+    console.log('Logging out and logging in as non-admin user...');
     await logout(page);
     await login(page, USER_USERNAME, USER_PASSWORD!);
     
@@ -1240,9 +1796,40 @@ async function main() {
     await delay(2000);
     
     // Take screenshot of settings page left panel (as non-admin)
-    await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', { isSettingsSidebar: true });
+    console.log('-------------------------------------------------------');
+    console.log('Taking screenshot of settings page left panel (as non-admin)...');
+    const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', { isSettingsSidebar: true });
+    if (settingsLeftPanelNonAdmin) successful.push('screen-settings-left-panel-non-admin.png');
+    else failed.push('screen-settings-left-panel-non-admin.png');
     
-    console.log('All screenshots completed successfully!');
+    // Display summary
+    console.log('\n\n' + '='.repeat(60));
+    console.log('📸 SCREENSHOT GENERATION SUMMARY');
+    console.log('='.repeat(60));
+    
+    if (successful.length > 0) {
+      console.log(`\n✅ Successful (${successful.length}):`);
+      successful.forEach(filename => {
+        console.log(`   ✅ ${filename}`);
+      });
+    }
+    
+    if (failed.length > 0) {
+      console.log(`\n❌ Failed (${failed.length}):`);
+      failed.forEach(filename => {
+        logError(`   ❌ ${filename}`);
+      });
+    }
+    
+    console.log('\n' + '='.repeat(60));
+    console.log(`Total: ${successful.length + failed.length} | ✅ ${successful.length} | ❌ ${failed.length}`);
+    console.log('='.repeat(60) + '\n');
+    
+    if (failed.length > 0) {
+      logError(`⚠️  Warning: ${failed.length} screenshot(s) failed to generate.`);
+    } else {
+      console.log('🎉 All screenshots generated successfully!');
+    }
     
   } catch (error) {
     logError('Error during screenshot automation: ' + (error instanceof Error ? error.message : String(error)));

@@ -17,6 +17,7 @@
 data/*
 backups.db
 tmp/*
+smtp-test-results.json
 
 
 # next.js

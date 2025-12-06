@@ -1,7 +1,7 @@
 import format from 'string-template';
 import nodemailer from 'nodemailer';
 import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates } from './db-utils';
-import { NotificationTemplate, Backup, BackupStatus, BackupKey, EmailConfig } from './types';
+import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType } from './types';
 import { defaultNotificationTemplates } from './default-config';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
@@ -207,31 +207,6 @@ export async function sendNtfyNotification(
 }
 
 // Email configuration functions
-export function getEmailConfigFromEnv(): EmailConfig | null {
-  const host = process.env.SMTP_HOST;
-  const port = process.env.SMTP_PORT;
-  const secure = process.env.SMTP_SECURE;
-  const username = process.env.SMTP_USERNAME;
-  const password = process.env.SMTP_PASSWORD;
-  const mailto = process.env.SMTP_MAILTO;
-
-  // Check if all required environment variables are present
-  if (!host || !port || !secure || !username || !password || !mailto) {
-    return null;
-  }
-
-  return {
-    host,
-    port: parseInt(port, 10),
-    secure: secure.toLowerCase() === 'true',
-    username,
-    password,
-    mailto,
-    enabled: true
-  };
-}
-
-
 export async function createEmailTransporter(): Promise<nodemailer.Transporter | null> {
   try {
     const config = getSMTPConfig();
@@ -254,33 +229,95 @@ export async function createEmailTransporter(): Promise<nodemailer.Transporter |
   const config = getSMTPConfig()!; // We know it's not null from the check above
 
   try {
-    // // Determine secure mode based on port
-    // const isSecurePort = config.port === 465;
-    // const useSecure = config.secure || isSecurePort;
+    // Determine connection type (default to STARTTLS if not set)
+    const connectionType: SMTPConnectionType = config.connectionType || 'starttls';
     
-    const transporter = nodemailer.createTransport({
+    // Log the SMTP configuration being used
+    console.log('[SMTP Config] Creating transporter with:', {
       host: config.host,
       port: config.port,
-      secure: config.secure, // useSecure
-      auth: {
-        user: config.username,
-        pass: config.password,
-      },
+      connectionType: connectionType,
+      requireAuth: config.requireAuth !== false,
+      username: config.username ? '***' : '(not set)',
+      hasPassword: !!config.password
+    });
+    
+    // Set secure based on connection type (true for ssl, false otherwise)
+    const useSecure = connectionType === 'ssl';
+    
+    const transporterConfig: Record<string, unknown> = {
+      host: config.host,
+      port: config.port,
+      secure: useSecure,
       // Connection timeout settings
       connectionTimeout: 20000, // 20 seconds connection timeout
       greetingTimeout: 20000,   // 20 seconds greeting timeout
       socketTimeout: 20000,     // 20 seconds socket timeout
-      // More flexible TLS configuration
-      //requireTLS: !useSecure, // Only require TLS for non-secure ports
-      tls: {
-        rejectUnauthorized: false, // Allow self-signed certificates
-        minVersion: 'TLSv1', // More permissive TLS version
-        ciphers: 'SSLv3' // Allow older cipher suites if needed
-      }
-    });
+    };
+    
+    switch (connectionType) {
+      case 'plain':
+        // Never attempt TLS for plain SMTP connections
+        transporterConfig.ignoreTLS = true;
+        // Do not add any TLS configuration for plain connections
+        break;
+        
+      case 'starttls':
+        // Force STARTTLS upgrade and fail if server doesn't support it
+        transporterConfig.requireTLS = true;
+        // Add TLS configuration for STARTTLS
+        transporterConfig.tls = {
+          rejectUnauthorized: false, // Allow self-signed certificates
+          minVersion: 'TLSv1.2', // Use modern TLS version
+        };
+        break;
+        
+      case 'ssl':
+      default:
+        // Add TLS configuration for direct SSL/TLS connections
+        transporterConfig.tls = {
+          rejectUnauthorized: false, // Allow self-signed certificates
+          minVersion: 'TLSv1.2', // Use modern TLS version
+        };
+        break;
+    }
+
+    // Only include auth if authentication is required (defaults to true for backward compatibility)
+    if (config.requireAuth !== false) {
+      transporterConfig.auth = {
+        user: config.username,
+        pass: config.password,
+      };
+    }
+    
+    const transporter = nodemailer.createTransport(transporterConfig as nodemailer.TransportOptions);
 
     // Verify the connection
-    await transporter.verify();
+    try {
+      await transporter.verify();
+    } catch (verifyError) {
+      const errorMessage = verifyError instanceof Error ? verifyError.message : String(verifyError);
+      
+      // Provide user-friendly error messages based on connection type
+      let userMessage = '';
+      
+      if (connectionType === 'plain') {
+        userMessage = `Failed to connect to SMTP server at ${config.host}:${config.port} using Plain SMTP. ` +
+          `Please verify the server address and port are correct.`;
+      } else if (connectionType === 'starttls') {
+        userMessage = `The SMTP server at ${config.host}:${config.port} does not support STARTTLS. ` +
+          `Please change the connection type to "Plain SMTP" or use "Direct SSL/TLS" if your server supports it.`;
+      } else if (connectionType === 'ssl') {
+        userMessage = `Cannot establish SSL/TLS connection to ${config.host}:${config.port}. ` +
+          `The server may not support direct SSL/TLS on this port. Try using "STARTTLS" or "Plain SMTP" instead, or use port 465 for SSL/TLS.`;
+      } else {
+        userMessage = `Failed to connect to SMTP server at ${config.host}:${config.port}.`;
+      }
+      
+      // Append the original error message for debugging
+      throw new Error(`${userMessage}\n\nOriginal error: ${errorMessage}`);
+    }
+    
     return transporter;
   } catch (error) {
     console.error('Failed to create email transporter:', error instanceof Error ? error.message : String(error));
@@ -317,8 +354,48 @@ export async function sendEmailNotification(
     throw error;
   }
 
+  // Log the SMTP configuration being used for sending email
+  console.log('[SMTP Config] Sending email with config:', {
+    host: config.host,
+    port: config.port,
+    connectionType: config.connectionType || 'starttls',
+    requireAuth: config.requireAuth !== false,
+    username: config.username ? '***' : '(not set)',
+    hasPassword: !!config.password,
+    mailto: config.mailto,
+    senderName: config.senderName,
+    fromAddress: config.fromAddress || '(not set)'
+  });
+
+  // Use configured sender name and from address, with fallback to current behavior
+  const senderName = config.senderName || 'duplistatus';
+  
+  // Determine from address with proper fallback chain to ensure RFC 5322 compliance
+  // Priority: fromAddress > username (mailto is no longer used as fallback)
+  let fromAddress = config.fromAddress || config.username;
+  
+  // For plain connections, fromAddress is required (UI enforces this, but we validate here too)
+  if (config.connectionType === 'plain') {
+    if (!config.fromAddress || !config.fromAddress.trim() || !config.fromAddress.includes('@')) {
+      throw new Error(
+        'Invalid email configuration for Plain SMTP connection: From Address is required. ' +
+        'Please configure a From Address in the email settings. Plain SMTP connections require ' +
+        'a valid From Address to comply with RFC 5322 email standards.'
+      );
+    }
+    fromAddress = config.fromAddress;
+  }
+  
+  // Validate that fromAddress is not empty and contains '@' (basic email validation)
+  if (!fromAddress || !fromAddress.trim() || !fromAddress.includes('@')) {
+    throw new Error(
+      'Invalid email configuration: From address is missing or invalid. ' +
+      'Please configure either a From Address or SMTP Username in the email settings.'
+    );
+  }
+  
   const mailOptions = {
-    from: `"duplistatus" <${config.username}>`,
+    from: `"${senderName}" <${fromAddress}>`,
     to: toEmail || config.mailto, // Use SMTP_MAILTO as default recipient
     subject,
     text: textContent,

@@ -366,7 +366,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
                     <span className={isNtfyConfigured ? "" : "text-gray-500"} title={isNtfyConfigured ? undefined : "not configured"}>
-                      NTFY Notifications
+                      NTFY Notifications{!isNtfyConfigured ? " (disabled)" : ""}
                     </span>
                   </div>
                 </th>
@@ -379,7 +379,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
                     <span className={isEmailConfigured ? "" : "text-gray-500"} title={isEmailConfigured ? undefined : "not configured"}>
-                      Email Notifications
+                      Email Notifications{!isEmailConfigured ? " (disabled)" : ""}
                     </span>
                   </div>
                 </th>
@@ -547,7 +547,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
                               className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All NTFY</Label>
+                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All NTFY{!isNtfyConfigured ? " (disabled)" : ""}</Label>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Checkbox
@@ -556,7 +556,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
                               className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All Email</Label>
+                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All Email{!isEmailConfigured ? " (disabled)" : ""}</Label>
                           </div>
                         </div>
                       </div>
@@ -570,7 +570,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
                             className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
-                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>NTFY</Label>
+                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>NTFY{!isNtfyConfigured ? " (disabled)" : ""}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -581,7 +581,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
                             className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
-                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>Email</Label>
+                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>Email{!isEmailConfigured ? " (disabled)" : ""}</Label>
                         </div>
                       </div>
                     </div>

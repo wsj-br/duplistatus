@@ -36,9 +36,10 @@ import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X } from 'lucide-react';
+import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X, UserCog } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ColoredIcon } from '@/components/ui/colored-icon';
 
 interface User {
   id: string;
@@ -402,25 +403,36 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   };
 
   return (
-    <div className="space-y-4" data-screenshot-target="settings-content-card">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 flex-1 max-w-sm">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search users..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
-          />
-        </div>
-        <Button onClick={() => {
-          resetForm();
-          setCreateDialogOpen(true);
-        }}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add User
-        </Button>
-      </div>
+    <div className="space-y-6" data-screenshot-target="settings-content-card">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ColoredIcon icon={UserCog} color="blue" size="md" />
+            User Management
+          </CardTitle>
+          <CardDescription>
+            Manage user accounts, roles, and permissions. Create, edit, or delete users and reset passwords.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 flex-1 max-w-sm">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-sm"
+              />
+            </div>
+            <Button variant="gradient"  onClick={() => {
+              resetForm();
+              setCreateDialogOpen(true);
+            }}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
+          </div>
 
       {loading ? (
         <div className="text-center py-8 text-muted-foreground">Loading users...</div>
@@ -716,6 +728,8 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
           </div>
         </>
       )}
+        </CardContent>
+      </Card>
 
       {/* Create User Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>

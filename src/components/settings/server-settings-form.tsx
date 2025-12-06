@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward, SquareX } from 'lucide-react';
+import { Server, XCircle, Ellipsis, Loader2, Play, Globe, CheckCircle, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward, SquareX } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
@@ -562,6 +562,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         setConfirmPassword('');
         // Refresh configuration to update hasPassword status and UI buttons
         await refreshConfigSilently();
+        
+        // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+        window.dispatchEvent(new CustomEvent('configuration-saved'));
       } else {
         toast({
           title: "Error",
@@ -607,6 +610,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         setConfirmPassword('');
         // Refresh configuration to update hasPassword status
         await refreshConfigSilently();
+        
+        // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+        window.dispatchEvent(new CustomEvent('configuration-saved'));
       } else {
         toast({
           title: "Error",
@@ -645,7 +651,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       <Card variant="modern">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <ColoredIcon icon={CheckCircle} color="green" size="lg" />
+            <ColoredIcon icon={Server} color="green" size="lg" />
             <div>
               <CardTitle>Server Addresses</CardTitle>
               <CardDescription className="mt-1">No servers found</CardDescription>
@@ -664,7 +670,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       <Card variant="modern">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <ColoredIcon icon={CheckCircle} color="green" size="lg" />
+            <ColoredIcon icon={Server} color="green" size="lg" />
             <div>
               <CardTitle>Configure Server Settings</CardTitle>
               <CardDescription className="mt-1">
@@ -731,9 +737,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                       <div className="flex items-center gap-2">
                         <span className="font-medium truncate">{connection.name}</span>
                         {connection.hasPassword && (
-                          <span title="Password set">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto p-0 hover:bg-transparent"
+                            onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
+                            title="Click to change password"
+                          >
                             <KeyRound className="h-3 w-3 text-blue-400"/>
-                          </span>
+                          </Button>
                         )}
                       </div>
                     </TableCell>
@@ -871,7 +884,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm">{connection.name}</span>
                       {connection.hasPassword && (
-                        <KeyRound className="h-3 w-3 text-orange-500" />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-0 hover:bg-transparent"
+                          onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
+                          title="Click to change password"
+                        >
+                          <KeyRound className="h-3 w-3 text-orange-500" />
+                        </Button>
                       )}
                     </div>
                   </div>

@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { Clock } from 'lucide-react';
+import { ColoredIcon } from '@/components/ui/colored-icon';
 
 interface AuditLogRetentionFormProps {
   isAdmin: boolean;
@@ -102,18 +104,14 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
 
   return (
     <div className="space-y-6" data-screenshot-target="settings-content-card">
-      <div>
-        <h2 className="text-2xl font-semibold mb-2">Audit Log Retention</h2>
-        <p className="text-sm text-muted-foreground">
-          Configure how long audit logs are retained before automatic cleanup
-        </p>
-      </div>
-
       <Card>
         <CardHeader>
-          <CardTitle>Retention Configuration</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <ColoredIcon icon={Clock} color="blue" size="md" />
+            Audit Log Retention
+          </CardTitle>
           <CardDescription>
-            Set the number of days audit logs should be retained. Logs older than this period will be automatically deleted during daily cleanup.
+            Configure how long audit logs are retained before automatic cleanup. Set the number of days audit logs should be retained. Logs older than this period will be automatically deleted during daily cleanup.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -133,6 +131,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
             </div>
             <Button
               onClick={saveRetention}
+              variant="gradient" 
               disabled={retentionLoading || retentionSaving || retentionDays < 30 || retentionDays > 365}
               size="sm"
             >

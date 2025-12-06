@@ -379,7 +379,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <CalendarIcon className="h-4 w-4" />
-            Filters
+            Audit Log Viewer - Filters
           </h3>
           <div className="flex gap-2 items-center">
             <Button variant="outline" size="sm" onClick={resetFilters}>
