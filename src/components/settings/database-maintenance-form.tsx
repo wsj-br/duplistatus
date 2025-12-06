@@ -27,7 +27,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { Database, Loader2, Trash2, Server, FolderOpen, Clock, GitMerge } from 'lucide-react';
+import { Database, Loader2, Trash2, Server, FolderOpen, Clock, Info, GitMerge } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -726,10 +726,21 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-base">
                     <ColoredIcon icon={GitMerge} color="purple" size="sm" />
-                    Duplicate Servers
+                    Merge Duplicate Servers
                   </CardTitle>
                   <CardDescription>
-                    Select server groups to merge. The newest server (by creation date) will be kept as the target.
+                    Select server groups to merge. These servers have the same name but different IDs.
+                    <span className="inline ml-1">
+                      <span className="relative group">
+                        <Info className="inline w-4 h-4 align-text-bottom text-blue-500 cursor-pointer" />
+                        <span className="absolute z-10 right-0 bottom-full mb-2 w-max max-w-md bg-popover text-popover-foreground text-xs p-2 rounded shadow-lg border border-gray-200 dark:border-gray-800 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity pointer-events-none">
+                          Duplicati's machine-id can be changed after an upgrade or reinstall.
+                          <br />
+                          All backup logs and configurations will be transferred to the target servers.
+                        </span>
+                      </span>
+                    </span>
+                    <br />
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-3 min-w-0">
