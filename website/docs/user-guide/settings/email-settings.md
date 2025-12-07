@@ -21,9 +21,12 @@
 <br/>
 
 > [!IMPORTANT]
-> For security reasons, the current password is not displayed in the user interface. 
 >
-> You can only set a new password or re-enter the existing one if desired.
+> To protect your security, you can only perform the following actions:
+> - Set a password for the email configuration
+> - Remove (delete) the password entirely
+> 
+> The password is stored encrypted in the database and is never displayed in the user interface.
 
 
 <br/>
