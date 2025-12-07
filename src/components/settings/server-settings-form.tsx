@@ -54,8 +54,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingPassword, setIsDeletingPassword] = useState(false);
   const [csrfToken, setCsrfToken] = useState<string>('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -497,15 +496,14 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setSelectedServerName(serverName);
     setNewPassword('');
     setConfirmPassword('');
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
-    
+    setShowPasswords(false);
+
     try {
       // Get CSRF token
       const csrfToken = await getCSRFToken();
-      
+
       setCsrfToken(csrfToken);
-      
+
       setPasswordDialogOpen(true);
     } catch {
       toast({
@@ -638,8 +636,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setNewPassword('');
     setConfirmPassword('');
     setCsrfToken('');
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
+    setShowPasswords(false);
   };
 
 
@@ -1127,7 +1124,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <div className="relative">
                 <Input
                   id="new-password"
-                  type={showNewPassword ? "text" : "password"}
+                  type={showPasswords ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
@@ -1138,9 +1135,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  onClick={() => setShowPasswords(!showPasswords)}
                 >
-                  {showNewPassword ? (
+                  {showPasswords ? (
                     <EyeOff className="h-4 w-4 text-gray-500" />
                   ) : (
                     <Eye className="h-4 w-4 text-gray-500" />
@@ -1155,7 +1152,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <div className="relative">
                 <Input
                   id="confirm-password"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPasswords ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
@@ -1166,9 +1163,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onClick={() => setShowPasswords(!showPasswords)}
                 >
-                  {showConfirmPassword ? (
+                  {showPasswords ? (
                     <EyeOff className="h-4 w-4 text-gray-500" />
                   ) : (
                     <Eye className="h-4 w-4 text-gray-500" />

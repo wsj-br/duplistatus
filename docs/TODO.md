@@ -351,42 +351,41 @@ none
 
 ### Implemented in Version 1.0.x ✅
 
+**New Features:**
+- Added a new function in the Database maintenance form to detect duplicate servers and merge them into a single server.
+- User can change the server password clicking on the key icon in the server detail page.
+- Added audit log entry when a new backup log is uploaded via the `/api/upload` endpoint. The audit log includes details about the backup (server ID, server name, backup name, status, date, duration, file counts, sizes, warnings, and errors) along with the client IP address and user agent for tracking purposes.
+
+**Documentation enhancements:**
+- Completed the take screenshots script to capture all the screenshots for the documentation.
+
+
 **Email Configuration Enhancements:**
-- Added configuration incomplete notice in email settings form. When email configuration is incomplete, a yellow alert box is displayed informing users that no emails will be sent until the email settings are filled correctly. The notice includes a reminder to always test email settings before relying on them for notifications.
-- Added "(disabled)" labels to Email and NTFY notification checkboxes in backup notifications settings when their respective services are not configured. This makes it clearer to users when notification channels are disabled due to incomplete configuration.
-- Added configurable sender name and from address fields in email configuration. Users can now customize the display name and email address shown as the sender in email notifications. If not configured, defaults to "duplistatus" as sender name and SMTP username as from address for backward compatibility.
-- Added SMTP authentication requirement toggle in email configuration form. Users can now configure SMTP servers that don't require authentication. When authentication is disabled, the username and password fields are automatically disabled.
-- Added email format validation for recipient email and from address fields. Both fields now require the '@' symbol to be considered valid.
-- Enhanced test email content to display:
-  - SMTP server hostname and port
-  - Connection type (Plain SMTP, STARTTLS, or Direct SSL/TLS)
-  - SMTP authentication requirement status
-  - SMTP username (only shown when authentication is required)
-  - Recipient email address
-  - From address and sender name used for the email
-  - Test timestamp
+- Configuration incomplete notice displayed when email settings are not properly configured
+- "(disabled)" labels shown on notification checkboxes when services are not configured
+- Customizable sender name and from address fields in email configuration
+- SMTP authentication requirement toggle (supports servers without authentication)
+- Email format validation for recipient and from address fields
+- Enhanced test email content showing connection details and configuration
 
 **SMTP Connection Type Support:**
-- Added support for plain SMTP connections (no encryption) on port 25. The email configuration form now includes a button group to select between three connection types: "Plain SMTP", "STARTTLS", and "Direct SSL/TLS". Plain SMTP connections are useful for trusted local networks but are not recommended for production use over untrusted networks.
-- Changed default email connection type from STARTTLS to Direct SSL/TLS. New email configurations will default to Direct SSL/TLS (recommended for port 465) instead of STARTTLS. Existing configurations are unaffected.
-- Simplified SMTP configuration storage by removing the legacy `secure` flag. The UI/API now rely solely on `connectionType` (Plain SMTP, STARTTLS, Direct SSL/TLS), and transporter creation derives the correct Nodemailer options from that single value.
-- Changed From Address field to be required for Plain SMTP connections. When Plain SMTP connection type is selected, the From Address field becomes mandatory to ensure proper email sender identification and RFC 5322 compliance. The From Address is also required when SMTP authentication is disabled for other connection types.
-
-**Developer Tools:**
-- Added `set-smtp-test-config.ts` script to set SMTP test configuration from environment variables. The script accepts a connectionType parameter (plain, starttls, ssl) and reads corresponding environment variables with prefixes (PLAIN_, STARTTLS_, SSL_) to update the SMTP configuration in the database. For plain connections, the script reads `PLAIN_SMTP_FROM` environment variable to set the required From Address. This facilitates testing different SMTP connection types without manual database updates.
-- Added `test-smtp-connections.ts` script to test SMTP connection type cross-compatibility. This script performs a comprehensive 3x3 matrix test that validates whether configurations meant for one connection type work correctly with different connection types. For each base configuration type (plain, starttls, ssl), the script reads environment variables with corresponding prefixes (PLAIN_*, STARTTLS_*, SSL_*), then tests all three connection types by modifying only the `connectionType` field. The script sends test emails via the API, records results in a matrix format, displays a summary table, and saves detailed results to `smtp-test-results.json`. Usage: `pnpm test-smtp-connections`. The script requires the application to be running and validates the configuration being used through detailed logging. Expected behavior: configurations should only work with their intended connection type (e.g., plain config works with plain connectionType but fails with starttls/ssl).
-
-**UI/UX Improvements:**
-- Updated email icon color validation logic in settings page left panel to match the form validation logic. The icon now correctly shows green (valid) when all required fields are set: SMTP Server Host, SMTP Server Port, Recipient Email, and either (SMTP Username + Password when authentication is required) or (From Address when authentication is not required).
+- Added `Sender Name` and `From Address` fields to email configuration
+   - Note that some email providers will override the `From Address` with the `SMTP Server Username`.
+- Added support for plain SMTP connections (no encryption) on port 25
+- Connection type selection: `Plain SMTP`, `STARTTLS`, or `Direct SSL/TLS`
+- Default connection type changed to `Direct SSL/TLS` for new configurations
+- `From Address` field required for `Plain SMTP` connections
 
 **Bug Fixes:**
-- Fixed missing 'From' header in email messages that caused RFC 5322 compliance errors (e.g., Gmail rejecting emails). The `sendEmailNotification()` function now ensures the From address is always set by using a fallback chain: configured From Address → SMTP Username (with validation). For Plain SMTP connections, From Address is strictly required and the function throws a specific error if it's missing. The recipient email (mailto) is no longer used as a fallback to ensure proper email sender identification.
-- Fixed `log_ts` function in `docker-entrypoint.sh` that was silently dropping most log messages. The function now logs all messages instead of only those containing "🔔", "WAL checkpoint completed successfully", or "✅". This restores visibility into critical operational messages including startup notifications, shutdown status messages, exit codes, and error conditions.
-- Fixed email encryption for STARTTLS connections (port 587). The implementation now properly requires TLS encryption for STARTTLS connections by setting `requireTLS: true` when `secure: false`. This ensures that connections to SMTP servers on port 587 are always encrypted, even when authentication is not required. Port 465 connections with direct SSL/TLS (`secure: true`) were already properly encrypted.
-- Fixed SMTP transporter configuration to correctly honor Plain SMTP, STARTTLS, and Direct SSL/TLS selections. Connection handling now sets `secure`, `requireTLS`, and `ignoreTLS` consistently and provides clearer error messages that include the original transport error for easier troubleshooting.
-- Fixed Plain SMTP connections failing with TLS negotiation errors. The `createEmailTransporter()` function was incorrectly applying TLS configuration to all connection types, causing Plain SMTP connections to attempt TLS negotiation even when `ignoreTLS: true` was set. Now TLS configuration is only applied to STARTTLS and SSL connection types, and Plain SMTP connections work correctly without any TLS configuration.
-- Fixed unsaved email configuration fields being cleared when clicking "Change Password" button. The form now automatically saves the current configuration before opening the password dialog, preserving any unsaved changes. Additionally, the form state is protected from being overwritten during password operations to prevent data loss.
-- Fixed stale SMTP configuration being used in test email API endpoint. The `/api/notifications/test` endpoint now clears the request cache before reading SMTP configuration, ensuring that external scripts (like `test-smtp-connections.ts`) can update the configuration and have it immediately reflected in test emails. This prevents the API from using cached configuration values when the database has been updated.
+- Fixed missing `From` header in email messages causing RFC 5322 compliance errors
+- Fixed Docker entrypoint script dropping log messages
+- Fixed email encryption for `STARTTLS` connections (port 587)
+- Fixed `Plain SMTP` connections failing with TLS negotiation errors
+- Fixed unsaved email configuration being cleared when changing password
+- Fixed stale SMTP configuration in test email endpoint
+- Added a recalculation of the `Next Run` date after collecting backups logs. This ensures that the `Next Run` date is updated correctly after collecting backups logs.
+- Fixed the behaviour of the view password in the password change form, now clicking on the eye icon will show the password of both password fields.
+
 
 
 

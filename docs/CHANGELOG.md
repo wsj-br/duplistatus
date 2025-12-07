@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Added audit log entry when a new backup log is uploaded via the `/api/upload` endpoint. The audit log includes details about the backup (server ID, server name, backup name, status, date, duration, file counts, sizes, warnings, and errors) along with the client IP address and user agent for tracking purposes.
 - Added duplicate server detection and merge feature in database maintenance settings. Administrators can now view servers with duplicate names and merge them into a single server. The merge operation transfers all backup records and configurations to the target server (newest by creation date) and deletes the old server entries. The feature includes a checkbox interface for selecting which duplicate servers to merge, with a confirmation dialog showing merge details before execution.
 - Added GET `/api/servers/duplicates` endpoint to detect duplicate servers (servers with the same name but different IDs). Returns an array of duplicate groups with server details including ID, creation date, alias, note, and server URL.
 - Added POST `/api/servers/merge` endpoint to merge duplicate servers. Accepts an array of old server IDs and a target server ID, updates all backup records, cleans up configuration entries (backup_settings and overdue_notifications), merges server metadata (password, alias, note, server_url), and deletes old server entries. All operations are performed within a database transaction for atomicity.
@@ -45,4 +46,8 @@
 - Fixed Plain SMTP connections failing with TLS negotiation errors. The `createEmailTransporter()` function was incorrectly applying TLS configuration to all connection types, causing Plain SMTP connections to attempt TLS negotiation even when `ignoreTLS: true` was set. Now TLS configuration is only applied to STARTTLS and SSL connection types, and Plain SMTP connections work correctly without any TLS configuration.
 - Fixed unsaved email configuration fields being cleared when clicking "Change Password" button. The form now automatically saves the current configuration before opening the password dialog, preserving any unsaved changes. Additionally, the form state is protected from being overwritten during password operations to prevent data loss.
 - Fixed stale SMTP configuration being used in test email API endpoint. The `/api/notifications/test` endpoint now clears the request cache before reading SMTP configuration, ensuring that external scripts (like `test-smtp-connections.ts`) can update the configuration and have it immediately reflected in test emails. This prevents the API from using cached configuration values when the database has been updated.
+- Fixed password visibility toggle behavior in server settings. Both password input fields (new password and confirm password) now toggle visibility together when either eye icon is clicked, providing a more consistent user experience when changing server passwords.
+
+### Security
+- Upgraded to Next.js 16.0.7 and React 19.2.1 to fix CVE-2025-55182 (React Server Components vulnerability) and CVE-2025-66478 (Next.js vulnerability).
 

@@ -149,7 +149,7 @@ export function ServerDetailSummaryItems({
   };
 
   return (
-    <div className="pt-4">
+    <div className="pt-4" data-screenshot-target="server-detail-summary">
       <div>
         <h3 className="text-base font-semibold mb-2 text-foreground">
           {selectedBackup ? `${selectedBackup.name} Statistics` : 'Machine Statistics'}
@@ -175,7 +175,7 @@ export function ServerDetailSummaryItems({
         <>
           {/* Show overdue backups list when "all backups" is selected */}
           {!selectedBackup && overdueBackups.length > 0 && (
-            <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+            <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md" data-screenshot-target="server-overdue-message">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />

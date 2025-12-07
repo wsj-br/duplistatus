@@ -1,5 +1,4 @@
 
-
 # Database Maintenance
 
 Manage your backup data and optimise performance through database maintenance operations.
@@ -10,7 +9,7 @@ Manage your backup data and optimise performance through database maintenance op
 
 Remove outdated backup records to free up storage space and improve system performance.
 
-1.  Click the <IconButton icon="lucide:database" /> `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Navigate to `Settings → Database Maintenance`.
 2.  Choose a retention period:
     - **6 months**: Retain records from the last 6 months.
     - **1 year**: Retain records from the last year.
@@ -31,7 +30,7 @@ Remove outdated backup records to free up storage space and improve system perfo
 
 Remove a specific Backup Job (type) data.
 
-1.  Click the <IconButton icon="lucide:database" /> `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Navigate to `Settings → Database Maintenance`.
 2.  Select a Backup Job from the dropdown list.
     - the backups will be ordered by server alias or name then the backup name.
 3.  Click `Delete Backup Job`.
@@ -49,7 +48,7 @@ Remove a specific Backup Job (type) data.
 
 Remove a specific server and all its associated backup data.
 
-1.  Click the <IconButton icon="lucide:database" /> `Database maintenance` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Navigate to `Settings → Database Maintenance`.
 2.  Select a server from the dropdown list.
 3.  Click `Delete Server Data`.
 4.  Confirm the action in the dialogue box.
@@ -60,8 +59,41 @@ Remove a specific server and all its associated backup data.
 - Cleans up associated configuration settings.
 - Updates dashboard statistics accordingly.
 
+<br/>
+
+## Merge Duplicate Servers
+
+Detect and merge duplicate servers that have the same name but different IDs. This can occur when Duplicati's machine-id changes after an upgrade or reinstall.
+
+1.  Navigate to `Settings → Database Maintenance`.
+2.  If duplicate servers are detected, a **Merge Duplicate Servers** section will appear.
+3.  Review the list of duplicate server groups:
+    - Each group shows servers with the same name but different IDs
+    - The **Target Server** (newest by creation date) is highlighted
+    - **Old Server IDs** that will be merged are listed separately
+4.  Select the server groups you want to merge by checking the checkbox next to each group.
+5.  Click `Merge Selected Servers`.
+6.  Confirm the action in the dialogue box.
+
+**Merge Process:**
+
+- All old server IDs are merged into the target server (newest by creation date)
+- All backup records and configurations are transferred to the target server
+- The old server entries are deleted
+- Dashboard statistics are updated automatically
+
+> [!IMPORTANT]
+> This action cannot be undone. Make sure you want to merge the selected server groups before confirming.
+
+> [!NOTE]
+> Duplicate servers are only shown when they exist. If no duplicates are detected, the section will display a message indicating that all servers have unique names.
+
+> [!TIP]
+> Duplicati's machine-id can change after an upgrade, reinstall or using the ``--machine-id`` command line option. If the `machine-id` is changed, it can create duplicate server entries. Use this feature to consolidate them into a single server entry.  
+
+<br/>
+
 > [!NOTE]
 > All statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
 > 
-> If you accidentally delete data, you can restore it using the [Collect Backup Logs](collect-backup-logs) feature.
-
+> If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.

@@ -8,6 +8,8 @@ import path from 'path';
 import { sendBackupNotification, NotificationContext } from '@/lib/notifications';
 import { formatBytes, formatDurationHuman } from '@/lib/utils';
 import { BackupStatus } from '@/lib/types';
+import { AuditLogger } from '@/lib/audit-logger';
+import { getClientIpAddress } from '@/lib/ip-utils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -123,6 +125,13 @@ export async function POST(request: NextRequest) {
     // Declare status in the outer scope so it can be used in the notification block
     let status: string = data.Data.ParsedResult;
 
+    // Generate backup ID before transaction
+    const backupId = uuidv4();
+
+    // Get client info for audit logging
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+
     // Start a transaction
     const transaction = db.transaction(() => {
       // Insert server information only if it doesn't exist
@@ -140,7 +149,7 @@ export async function POST(request: NextRequest) {
       // Insert backup data with all fields
       dbOps.insertBackup.run({
         // Primary fields
-        id: uuidv4(),
+        id: backupId,
         server_id: data.Extra['machine-id'], // Note: Duplicati API uses 'machine-id' field name
         backup_name: data.Extra['backup-name'],
         backup_id: data.Extra['backup-id'],
@@ -213,6 +222,35 @@ export async function POST(request: NextRequest) {
 
     // Execute the transaction
     transaction();
+
+    // Log audit entry for backup upload
+    try {
+      await AuditLogger.logBackupOperation(
+        'backup_upload',
+        null, // userId - null for external API
+        null, // username - null for external API
+        backupId,
+        {
+          server_id: data.Extra['machine-id'],
+          server_name: data.Extra['machine-name'],
+          backup_name: data.Extra['backup-name'],
+          backup_id: data.Extra['backup-id'],
+          status: status,
+          date: new Date(data.Data.BeginTime).toISOString(),
+          duration_seconds: parseDurationToSeconds(data.Data.Duration),
+          size: data.Data.SizeOfExaminedFiles || 0,
+          uploaded_size: data.Data.BackendStatistics?.BytesUploaded || 0,
+          examined_files: data.Data.ExaminedFiles || 0,
+          warnings: data.Data.WarningsActualLength || 0,
+          errors: data.Data.ErrorsActualLength || 0,
+        },
+        ipAddress,
+        userAgent
+      );
+    } catch (auditError) {
+      // Log audit error but don't fail the request
+      console.error('Failed to create audit log entry:', auditError instanceof Error ? auditError.message : String(auditError));
+    }
 
     // Ensure backup settings are complete for all servers and backups
     // This will add default settings for any missing server-backup combinations

@@ -1228,6 +1228,292 @@ async function captureDuplicatiConfiguration(page: Page): Promise<boolean> {
   }
 }
 
+async function captureDashboardSummary(page: Page, filename: string): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log(`Capturing dashboard summary card (${filename})...`);
+  try {
+    // Navigate to dashboard
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+    await waitForDashboardLoad(page);
+    await delay(2000);
+    
+    // Wait for the summary card to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="dashboard-summary"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Dashboard summary card did not appear on the page');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the summary card
+    const summaryBounds = await page.evaluate(() => {
+      const summaryDiv = document.querySelector('[data-screenshot-target="dashboard-summary"]');
+      if (summaryDiv) {
+        const rect = summaryDiv.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (summaryBounds) {
+      const success = await takeScreenshot(page, filename, {
+        clip: summaryBounds
+      });
+      console.log(`Captured dashboard summary card: ${filename}`);
+      return success;
+    } else {
+      logError('Could not find dashboard summary card bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing dashboard summary card: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureOverviewSidePanel(page: Page): Promise<{ status: boolean; charts: boolean }> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing overview side panel...');
+  try {
+    // Navigate to dashboard
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+    await waitForDashboardLoad(page);
+    await delay(2000);
+    
+    // Ensure we're in overview mode (the side panel only appears in overview mode)
+    // Check current view mode and switch if needed
+    const currentViewMode = await page.evaluate(() => {
+      const userId = localStorage.getItem('user-id') || '';
+      const keys = Object.keys(localStorage);
+      for (const key of keys) {
+        if (key.includes('dashboard-view-mode') && key.includes(userId)) {
+          return localStorage.getItem(key);
+        }
+      }
+      // Fallback: search all keys
+      for (const key of keys) {
+        if (key.includes('dashboard-view-mode')) {
+          return localStorage.getItem(key);
+        }
+      }
+      return null;
+    });
+    
+    if (currentViewMode !== 'overview') {
+      console.log('Switching to overview mode...');
+      // Switch to overview mode by clicking the view mode toggle
+      await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll('button'));
+        for (const btn of buttons) {
+          const svg = btn.querySelector('svg');
+          if (svg) {
+            const svgClasses = svg.className.baseVal || svg.className;
+            // Look for LayoutDashboard icon (overview mode) or Sheet icon (table mode)
+            if (svgClasses.includes('LayoutDashboard') || svgClasses.includes('Sheet')) {
+              // Click until we're in overview mode
+              let currentMode = null;
+              const keys = Object.keys(localStorage);
+              for (const key of keys) {
+                if (key.includes('dashboard-view-mode')) {
+                  currentMode = localStorage.getItem(key);
+                  break;
+                }
+              }
+              // If we're in table mode, click once to get to overview
+              if (currentMode === 'table') {
+                (btn as HTMLButtonElement).click();
+              }
+              // If we're not in overview, click again
+              setTimeout(() => {
+                const keys2 = Object.keys(localStorage);
+                for (const key of keys2) {
+                  if (key.includes('dashboard-view-mode')) {
+                    const mode = localStorage.getItem(key);
+                    if (mode !== 'overview') {
+                      (btn as HTMLButtonElement).click();
+                    }
+                  }
+                }
+              }, 100);
+              return;
+            }
+          }
+        }
+      });
+      await delay(2000);
+    }
+    
+    // Wait for the side panel to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="overview-side-panel"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Overview side panel did not appear on the page');
+      return { status: false, charts: false };
+    }
+    await delay(500);
+    
+    // Check current state by looking at the toggle button title
+    const currentState = await page.evaluate(() => {
+      const panel = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+      if (!panel) return null;
+      
+      // Find the toggle button inside the panel
+      const toggleButton = panel.querySelector('button[title*="Switch"], button[aria-label*="Switch"]');
+      if (toggleButton) {
+        const title = toggleButton.getAttribute('title') || toggleButton.getAttribute('aria-label') || '';
+        // If title says "Switch to chart view", we're in status mode
+        // If title says "Switch to status view", we're in chart mode
+        if (title.includes('chart')) return 'status';
+        if (title.includes('status')) return 'chart';
+      }
+      return null;
+    });
+    
+    if (!currentState) {
+      logError('Could not determine current overview side panel state');
+      return { status: false, charts: false };
+    }
+    
+    console.log(`Current overview side panel state: ${currentState}`);
+    
+    let statusSuccess = false;
+    let chartsSuccess = false;
+    
+    // Capture the first state (status)
+    if (currentState === 'status') {
+      const statusBounds = await page.evaluate(() => {
+        const panelDiv = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+        if (panelDiv) {
+          const rect = panelDiv.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: 200 + 20 // Crop to top 200 pixels
+          };
+        }
+        return null;
+      });
+      
+      if (statusBounds) {
+        statusSuccess = await takeScreenshot(page, 'screen-overview-side-status.png', {
+          clip: statusBounds
+        });
+        console.log('Captured overview side panel (status state)');
+      } else {
+        logError('Could not find overview side panel bounds (status)');
+      }
+      
+      // Click the toggle button to switch to chart mode
+      await page.evaluate(() => {
+        const panel = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+        if (panel) {
+          const toggleButton = panel.querySelector('button[title*="Switch"], button[aria-label*="Switch"]');
+          if (toggleButton) {
+            (toggleButton as HTMLButtonElement).click();
+          }
+        }
+      });
+      await delay(1500); // Wait for the state to change
+      
+      // Capture the second state (charts)
+      const chartsBounds = await page.evaluate(() => {
+        const panelDiv = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+        if (panelDiv) {
+          const rect = panelDiv.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: 200 + 20 // Crop to top 200 pixels
+          };
+        }
+        return null;
+      });
+      
+      if (chartsBounds) {
+        chartsSuccess = await takeScreenshot(page, 'screen-overview-side-charts.png', {
+          clip: chartsBounds
+        });
+        console.log('Captured overview side panel (charts state)');
+      } else {
+        logError('Could not find overview side panel bounds (charts)');
+      }
+    } else {
+      // We're in chart mode, capture charts first, then switch to status
+      const chartsBounds = await page.evaluate(() => {
+        const panelDiv = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+        if (panelDiv) {
+          const rect = panelDiv.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: 200 + 20 // Crop to top 200 pixels
+          };
+        }
+        return null;
+      });
+      
+      if (chartsBounds) {
+        chartsSuccess = await takeScreenshot(page, 'screen-overview-side-charts.png', {
+          clip: chartsBounds
+        });
+        console.log('Captured overview side panel (charts state)');
+      } else {
+        logError('Could not find overview side panel bounds (charts)');
+      }
+      
+      // Click the toggle button to switch to status mode
+      await page.evaluate(() => {
+        const panel = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+        if (panel) {
+          const toggleButton = panel.querySelector('button[title*="Switch"], button[aria-label*="Switch"]');
+          if (toggleButton) {
+            (toggleButton as HTMLButtonElement).click();
+          }
+        }
+      });
+      await delay(1500); // Wait for the state to change
+      
+      // Capture the second state (status)
+      const statusBounds = await page.evaluate(() => {
+        const panelDiv = document.querySelector('[data-screenshot-target="overview-side-panel"]');
+        if (panelDiv) {
+          const rect = panelDiv.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: 200 + 20 // Crop to top 200 pixels
+          };
+        }
+        return null;
+      });
+      
+      if (statusBounds) {
+        statusSuccess = await takeScreenshot(page, 'screen-overview-side-status.png', {
+          clip: statusBounds
+        });
+        console.log('Captured overview side panel (status state)');
+      } else {
+        logError('Could not find overview side panel bounds (status)');
+      }
+    }
+    
+    return { status: statusSuccess, charts: chartsSuccess };
+  } catch (error) {
+    logError('Error capturing overview side panel: ' + (error instanceof Error ? error.message : String(error)));
+    return { status: false, charts: false };
+  }
+}
+
 async function captureBackupHistoryTable(page: Page, serverId: string): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing backup history table...');
@@ -1322,6 +1608,266 @@ async function captureMetricsChart(page: Page, serverId: string): Promise<boolea
   }
 }
 
+async function captureAvailableBackupsModal(page: Page, serverId: string): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing AvailableBackupsIcon modal...');
+  try {
+    // Navigate to server details page (should already be there, but ensure we're on the right page)
+    await page.goto(`${BASE_URL}/detail/${serverId}`, { waitUntil: 'networkidle0' });
+    await delay(3000);
+    
+    // Find and click the AvailableBackupsIcon button (button with History icon)
+    const buttonFound = await page.evaluate(() => {
+      // Find all buttons with History icon (lucide-react History icon)
+      const buttons = Array.from(document.querySelectorAll('button'));
+      for (const btn of buttons) {
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          // Check if button has the blue color class (text-blue-600) which indicates it's clickable
+          const hasBlueClass = btn.classList.contains('text-blue-600') || 
+                              btn.className.includes('text-blue-600');
+          
+          // Check if the button is inside a div that contains "Available Versions" label
+          // Look in parent elements up to 5 levels
+          let current: HTMLElement | null = btn.parentElement;
+          let hasAvailableVersionsLabel = false;
+          let levels = 0;
+          while (current && levels < 5) {
+            if (current.textContent?.includes('Available Versions')) {
+              hasAvailableVersionsLabel = true;
+              break;
+            }
+            current = current.parentElement;
+            levels++;
+          }
+          
+          if (hasBlueClass && hasAvailableVersionsLabel) {
+            (btn as HTMLButtonElement).click();
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+    
+    if (!buttonFound) {
+      logError('Could not find AvailableBackupsIcon button');
+      return false;
+    }
+    
+    await delay(1500); // Wait for modal to appear
+    
+    // Wait for dialog to appear
+    try {
+      await page.waitForSelector('[role="dialog"]', { timeout: 3000 });
+    } catch (e) {
+      logError('Dialog did not appear after clicking AvailableBackupsIcon');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the dialog/modal
+    const dialogBounds = await page.evaluate(() => {
+      // Find the DialogContent (the actual modal content)
+      const dialog = document.querySelector('[role="dialog"]');
+      if (dialog) {
+        // Find the DialogContent inside the dialog
+        const dialogContent = dialog.querySelector('[class*="DialogContent"], [class*="dialog-content"]');
+        if (dialogContent) {
+          const rect = dialogContent.getBoundingClientRect();
+          return {
+            x: Math.max(0, rect.x - 10),
+            y: Math.max(0, rect.y - 10),
+            width: rect.width + 20,
+            height: rect.height + 20
+          };
+        }
+        // Fallback: use the dialog itself
+        const rect = dialog.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (dialogBounds) {
+      const success = await takeScreenshot(page, 'screen-available-backups-modal.png', {
+        clip: dialogBounds
+      });
+      console.log('Captured AvailableBackupsIcon modal');
+      
+      // Close dialog
+      await page.keyboard.press('Escape');
+      await delay(500);
+      return success;
+    } else {
+      logError('Could not find AvailableBackupsIcon modal bounds');
+      // Close dialog anyway
+      await page.keyboard.press('Escape');
+      await delay(500);
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing AvailableBackupsIcon modal: ' + (error instanceof Error ? error.message : String(error)));
+    // Try to close dialog if it's open
+    try {
+      await page.keyboard.press('Escape');
+      await delay(500);
+    } catch (e) {
+      // Ignore
+    }
+    return false;
+  }
+}
+
+async function captureServerOverdueMessage(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing server overdue message...');
+  try {
+    // Get all servers
+    const servers = await getServers(page);
+    
+    // Find a server with overdue backups
+    let serverWithOverdue: Server | null = null;
+    for (const server of servers) {
+      const serverDetails = await page.evaluate(async (serverId) => {
+        const res = await fetch(`/api/detail/${serverId}`);
+        return res.json();
+      }, server.id);
+      
+      if (serverDetails.overdueBackups && serverDetails.overdueBackups.length > 0) {
+        serverWithOverdue = server;
+        break;
+      }
+    }
+    
+    if (!serverWithOverdue) {
+      logError('Could not find a server with overdue backups');
+      return false;
+    }
+    
+    console.log(`Found server with overdue backups: ${serverWithOverdue.name} (${serverWithOverdue.id})`);
+    
+    // Navigate to the server detail page
+    await page.goto(`${BASE_URL}/detail/${serverWithOverdue.id}`, { waitUntil: 'networkidle0' });
+    await delay(3000);
+    
+    // Wait for the overdue message to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="server-overdue-message"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Overdue message did not appear on the page');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the overdue message div
+    const messageBounds = await page.evaluate(() => {
+      const messageDiv = document.querySelector('[data-screenshot-target="server-overdue-message"]');
+      if (messageDiv) {
+        const rect = messageDiv.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (messageBounds) {
+      const success = await takeScreenshot(page, 'screen-server-overdue-message.png', {
+        clip: messageBounds
+      });
+      console.log('Captured server overdue message');
+      return success;
+    } else {
+      logError('Could not find server overdue message bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing server overdue message: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureServerDetailSummary(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing server detail summary...');
+  try {
+    // Get all servers
+    const servers = await getServers(page);
+    
+    // Find a server without overdue backups
+    let serverWithoutOverdue: Server | null = null;
+    for (const server of servers) {
+      const serverDetails = await page.evaluate(async (serverId) => {
+        const res = await fetch(`/api/detail/${serverId}`);
+        return res.json();
+      }, server.id);
+      
+      if (!serverDetails.overdueBackups || serverDetails.overdueBackups.length === 0) {
+        serverWithoutOverdue = server;
+        break;
+      }
+    }
+    
+    if (!serverWithoutOverdue) {
+      logError('Could not find a server without overdue backups');
+      return false;
+    }
+    
+    console.log(`Found server without overdue backups: ${serverWithoutOverdue.name} (${serverWithoutOverdue.id})`);
+    
+    // Navigate to the server detail page
+    await page.goto(`${BASE_URL}/detail/${serverWithoutOverdue.id}`, { waitUntil: 'networkidle0' });
+    await delay(3000);
+    
+    // Wait for the summary div to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="server-detail-summary"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Server detail summary did not appear on the page');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the summary div
+    const summaryBounds = await page.evaluate(() => {
+      const summaryDiv = document.querySelector('[data-screenshot-target="server-detail-summary"]');
+      if (summaryDiv) {
+        const rect = summaryDiv.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (summaryBounds) {
+      const success = await takeScreenshot(page, 'screen-detail-summary.png', {
+        clip: summaryBounds
+      });
+      console.log('Captured server detail summary');
+      return success;
+    } else {
+      logError('Could not find server detail summary bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing server detail summary: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
 async function captureCollectBackupLogs(page: Page): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing collect backup logs interface...');
@@ -1398,6 +1944,115 @@ async function captureCollectBackupLogs(page: Page): Promise<boolean> {
     }
   } catch (error) {
     logError('Error capturing collect backup logs: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureOverdueMonitoringTableRows(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing overdue monitoring table rows...');
+  try {
+    // Wait for the table to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="settings-overdue-monitoring-table"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Overdue monitoring table did not appear on the page');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the first 2 rows of the table
+    const tableRowsBounds = await page.evaluate(() => {
+      const tableBody = document.querySelector('[data-screenshot-target="settings-overdue-monitoring-table"]');
+      if (!tableBody) return null;
+      
+      // Get all table rows (excluding header)
+      const rows = Array.from(tableBody.querySelectorAll('tr'));
+      if (rows.length === 0) return null;
+      
+      // Get the first row bounds
+      const firstRow = rows[0] as HTMLElement;
+      const firstRowRect = firstRow.getBoundingClientRect();
+      
+      // Get the second row bounds if it exists
+      let lastRowRect = firstRowRect;
+      if (rows.length >= 2) {
+        const secondRow = rows[1] as HTMLElement;
+        lastRowRect = secondRow.getBoundingClientRect();
+      }
+      
+      // Calculate bounds for first 2 rows
+      const x = Math.max(0, firstRowRect.x - 10);
+      const y = Math.max(0, firstRowRect.y - 10);
+      const width = firstRowRect.width + 20;
+      const height = (lastRowRect.bottom - firstRowRect.top) + 20;
+      
+      return { x, y, width, height };
+    });
+    
+    if (tableRowsBounds) {
+      const success = await takeScreenshot(page, 'screen-settings-overdue-bkp.png', {
+        clip: tableRowsBounds
+      });
+      console.log('Captured overdue monitoring table rows (first 2 rows)');
+      return success;
+    } else {
+      logError('Could not find overdue monitoring table rows bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing overdue monitoring table rows: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureOverdueMonitoringConfig(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing overdue monitoring configuration card...');
+  try {
+    // Wait for the "Overdue tolerance:" label to appear
+    try {
+      await page.waitForSelector('label[for="overdue-tolerance"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Overdue tolerance label did not appear on the page');
+      return false;
+    }
+    await delay(500);
+    
+    // Find the card containing the "Overdue tolerance:" label and capture from that label to the end
+    const configBounds = await page.evaluate(() => {
+      // Find the label
+      const label = document.querySelector('label[for="overdue-tolerance"]');
+      if (!label) return null;
+      
+      // Find the card containing this label (closest Card ancestor)
+      const card = label.closest('[class*="Card"], [class*="card"]');
+      if (!card) return null;
+      
+      const cardRect = card.getBoundingClientRect();
+      const labelRect = label.getBoundingClientRect();
+      
+      // Calculate bounds from the label's top to the card's bottom
+      const x = Math.max(0, cardRect.x - 10);
+      const y = Math.max(0, labelRect.y - 10);
+      const width = cardRect.width + 20;
+      const height = (cardRect.bottom - labelRect.y) + 20;
+      
+      return { x, y, width, height };
+    });
+    
+    if (configBounds) {
+      const success = await takeScreenshot(page, 'screen-settings-overdue-conf.png', {
+        clip: configBounds
+      });
+      console.log('Captured overdue monitoring configuration card');
+      return success;
+    } else {
+      logError('Could not find overdue monitoring configuration card bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing overdue monitoring configuration card: ' + (error instanceof Error ? error.message : String(error)));
     return false;
   }
 }
@@ -1583,6 +2238,18 @@ async function main() {
     if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
     else failed.push('screen-duplicati-configuration.png');
     
+    // Capture dashboard summary card
+    const dashboardSummary = await captureDashboardSummary(page, 'screen-dashboard-summary.png');
+    if (dashboardSummary) successful.push('screen-dashboard-summary.png');
+    else failed.push('screen-dashboard-summary.png');
+    
+    // Capture overview side panel (both states)
+    const overviewSidePanel = await captureOverviewSidePanel(page);
+    if (overviewSidePanel.status) successful.push('screen-overview-side-status.png');
+    else failed.push('screen-overview-side-status.png');
+    if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
+    else failed.push('screen-overview-side-charts.png');
+    
     // Get list of servers
     const servers = await getServers(page);
     console.log(`Found ${servers.length} servers`);
@@ -1659,6 +2326,11 @@ async function main() {
     if (dashboardTableMode) successful.push('screen-main-dashboard-table-mode.png');
     else failed.push('screen-main-dashboard-table-mode.png');
     
+    // Capture dashboard summary card in table mode
+    const dashboardSummaryTable = await captureDashboardSummary(page, 'screen-dashboard-summary-table.png');
+    if (dashboardSummaryTable) successful.push('screen-dashboard-summary-table.png');
+    else failed.push('screen-dashboard-summary-table.png');
+    
     // Get the remaining servers
     const remainingServers = await getServers(page);
     if (remainingServers.length === 0) {
@@ -1686,6 +2358,11 @@ async function main() {
     if (metricsChart) successful.push('screen-metrics.png');
     else failed.push('screen-metrics.png');
     
+    // Capture AvailableBackupsIcon modal
+    const availableBackupsModal = await captureAvailableBackupsModal(page, firstServer.id);
+    if (availableBackupsModal) successful.push('screen-available-backups-modal.png');
+    else failed.push('screen-available-backups-modal.png');
+    
     // Get backup details for this server
     const backupDetails = await page.evaluate(async (serverId) => {
       const res = await fetch(`/api/detail/${serverId}`);
@@ -1709,6 +2386,16 @@ async function main() {
     }
     if (backupDetail) successful.push('screen-backup-detail.png');
     else failed.push('screen-backup-detail.png');
+    
+    // Capture server overdue message
+    const serverOverdueMessage = await captureServerOverdueMessage(page);
+    if (serverOverdueMessage) successful.push('screen-server-overdue-message.png');
+    else failed.push('screen-server-overdue-message.png');
+    
+    // Capture server detail summary (server without overdue backups)
+    const serverDetailSummary = await captureServerDetailSummary(page);
+    if (serverDetailSummary) successful.push('screen-detail-summary.png');
+    else failed.push('screen-detail-summary.png');
     
     // Navigate to settings page
     console.log('Navigating to settings page...');
@@ -1782,6 +2469,17 @@ async function main() {
         const notificationsDetail = await captureBackupNotificationsDetail(page);
         if (notificationsDetail) successful.push('screen-settings-backup-notifications-detail.png');
         else failed.push('screen-settings-backup-notifications-detail.png');
+      }
+      
+      // Capture overdue monitoring table rows and configuration card
+      if (tab === 'overdue') {
+        const overdueTableRows = await captureOverdueMonitoringTableRows(page);
+        if (overdueTableRows) successful.push('screen-settings-overdue-bkp.png');
+        else failed.push('screen-settings-overdue-bkp.png');
+        
+        const overdueConfig = await captureOverdueMonitoringConfig(page);
+        if (overdueConfig) successful.push('screen-settings-overdue-conf.png');
+        else failed.push('screen-settings-overdue-conf.png');
       }
     }
     

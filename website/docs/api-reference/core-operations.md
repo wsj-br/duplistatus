@@ -270,3 +270,77 @@
   - Returns server data with overdue backup information
   - Includes overdue backup details and timestamps
   - Used for overdue backup management and monitoring
+
+## Get Duplicate Servers - `/api/servers/duplicates`
+- **Endpoint**: `/api/servers/duplicates`
+- **Method**: GET
+- **Description**: Retrieves a list of duplicate servers based on machine ID. Duplicate servers are servers that share the same machine ID but are stored as separate records in the database.
+- **Authentication**: Requires valid session, CSRF token, and administrator access
+- **Response**:
+  ```json
+  [
+    {
+      "machineId": "machine-id-123",
+      "servers": [
+        {
+          "id": "server-id-1",
+          "name": "Server Name 1",
+          "alias": "Server Alias 1",
+          "server_url": "http://localhost:8200",
+          "backupCount": 5
+        },
+        {
+          "id": "server-id-2",
+          "name": "Server Name 2",
+          "alias": "Server Alias 2",
+          "server_url": "http://localhost:8200",
+          "backupCount": 3
+        }
+      ]
+    }
+  ]
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Administrator access required
+  - `500`: Server error fetching duplicate servers
+- **Notes**:
+  - Only administrators can access this endpoint
+  - Returns groups of servers that share the same machine ID
+  - Each group contains all servers with the same machine ID
+  - Used for identifying and merging duplicate server records
+  - Includes server details and backup counts for each duplicate
+
+## Merge Servers - `/api/servers/merge`
+- **Endpoint**: `/api/servers/merge`
+- **Method**: POST
+- **Description**: Merges multiple servers into a target server. All backups from the source servers are transferred to the target server, and the source servers are deleted.
+- **Authentication**: Requires valid session, CSRF token, and administrator access
+- **Request Body**:
+  ```json
+  {
+    "oldServerIds": ["server-id-1", "server-id-2"],
+    "targetServerId": "server-id-3"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Successfully merged 2 server(s) into target server"
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid request body, missing required fields, or target server is in the list of servers to merge
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Administrator access required
+  - `500`: Server error during merge operation
+- **Notes**:
+  - Only administrators can perform merge operations
+  - The target server must not be in the list of servers to merge
+  - All backups from source servers are transferred to the target server
+  - Source servers are deleted after successful merge
+  - This operation is irreversible
+  - Used for consolidating duplicate server records
+  - Validates that oldServerIds is a non-empty array
+  - Validates that targetServerId is provided and is a string

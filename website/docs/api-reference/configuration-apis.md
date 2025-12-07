@@ -248,10 +248,11 @@
   - Used for notification system management
   - Requires authentication for accessing configuration data
 
-## Update Notification Configuration - `/api/configuration/notifications`
+## Get Notification Configuration - `/api/configuration/notifications`
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: GET
 - **Description**: Retrieves the current notification frequency configuration.
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -259,11 +260,15 @@
   }
   ```
 - **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to fetch config
 - **Notes**:
   - Retrieves current notification frequency configuration
   - Used for overdue backup notification management
+  - Returns one of: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
+## Update Notification Configuration - `/api/configuration/notifications`
+- **Endpoint**: `/api/configuration/notifications`
 - **Method**: POST
 - **Description**: Updates notification configuration (NTFY settings or notification frequency).
 - **Authentication**: Requires valid session and CSRF token

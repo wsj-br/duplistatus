@@ -15,8 +15,8 @@
 | **SMTP Username**       | Your email address or username (required when authentication is enabled). |
 | **SMTP Password**       | Your email password or app-specific password (required when authentication is enabled). |
 | **Sender Name**         | Display name shown as the sender in email notifications (optional, defaults to "duplistatus"). |
-| **From Address**        | Email address shown as the sender. Required for Plain SMTP connections or when authentication is disabled. Defaults to SMTP username when authentication is enabled. |
-| **Recipient Email**     | The email address to receive notifications.                      |
+| **From Address**        | Email address shown as the sender. Required for Plain SMTP connections or when authentication is disabled. Defaults to SMTP username when authentication is enabled. Note that some email providers will override the `From Address` with the `SMTP Server Username`. |
+| **Recipient Email**     | The email address to receive notifications. Must be a valid email address format. |
 
 <br/>
 
@@ -96,4 +96,61 @@
 > - **Use encrypted connections** - STARTTLS and Direct SSL/TLS are recommended for production use
 > - Plain SMTP connections (port 25) are available for trusted local networks but are not recommended for production use over untrusted networks
 > - When using Plain SMTP or when authentication is disabled, the From Address field is required to ensure proper email sender identification and RFC 5322 compliance
+> - Email format validation is performed on recipient and from address fields to ensure proper email addresses are entered
+
+<br/>
+
+## Running Your Own SMTP Relay Server
+
+If you prefer to run your own SMTP relay server locally, you can use a Docker container to set up a simple SMTP server. This is useful for testing or when you want to handle email delivery yourself.
+
+### Using Docker Command
+
+Run the following command to start an SMTP relay server:
+
+```bash
+docker run -d \
+  --name smtp-relay \
+  -p 25:25 \
+  --restart unless-stopped \
+  bytemark/smtp:latest
+```
+
+### Using Docker Compose
+
+Alternatively, create a `docker-compose.yml` file with the following content:
+
+```yaml
+version: '3.8'
+
+services:
+  smtp-server:
+    image: bytemark/smtp:latest
+    container_name: smtp-relay
+    ports:
+      - "25:25" 
+    restart: unless-stopped
+```
+
+Then run:
+
+```bash
+docker-compose up -d
+```
+
+### Configuring duplistatus to Use the Local SMTP Relay
+
+Once your SMTP relay server is running, configure **duplistatus** with the following settings:
+
+- **SMTP Server Host**: `localhost` (or the IP address of the Docker host)
+- **SMTP Server Port**: `25`
+- **Connection Type**: `Plain SMTP`
+- **SMTP Authentication**: Disabled (unless your relay server requires authentication)
+- **From Address**: Enter a valid email address (required for Plain SMTP)
+- **Recipient Email**: Enter the email address where you want to receive notifications
+
+> [!NOTE]
+> - The SMTP relay server will accept emails and attempt to deliver them. Make sure your server has proper network access and DNS configuration to deliver emails to external recipients, or configure it to relay through another SMTP server.
+> - See more information in [Bytemark Hosting SMTP Relay Server](https://github.com/BytemarkHosting/docker-smtp) repository.
+
 

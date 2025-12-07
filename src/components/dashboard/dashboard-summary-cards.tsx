@@ -102,7 +102,7 @@ export function DashboardSummaryCards({
   ];
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3" data-screenshot-target="dashboard-summary">
       <div className={`grid gap-3 md:grid-cols-2 ${viewMode === 'overview' ? 'lg:grid-cols-6' : 'lg:grid-cols-7'} flex-1`}>
         {summaryItems.map((item) => (
           <Card key={item.title} variant="modern" hover={true} data-ai-hint={item['data-ai-hint']}>
