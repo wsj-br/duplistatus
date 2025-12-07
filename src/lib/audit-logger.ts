@@ -79,7 +79,11 @@ export class AuditLogger {
 
       // Insert audit log entry
       const ipToStore = entry.ipAddress || null;
-      console.log(`[AuditLogger] ${timestamp()}: Inserting audit log: ${entry.action} (${entry.category}) - ${entry.username || 'system'}`);
+      
+      // Only log failed login attempts to console
+      if (entry.category === 'auth' && entry.action === 'login' && entry.status === 'failure') {
+        console.log(`[AuditLogger] ${timestamp()}: Failed login attempt: ${entry.username || 'unknown'} from IP: ${entry.ipAddress || 'unknown'}`);
+      }
       
       dbOps.insertAuditLog.run(
         entry.userId || null,
