@@ -22,9 +22,12 @@ export const GET = withCSRF(async () => {
     const configWithoutPassword = {
       host: config.host,
       port: config.port,
-      secure: config.secure,
+      connectionType: config.connectionType,
       username: config.username,
       mailto: config.mailto,
+      senderName: config.senderName,
+      fromAddress: config.fromAddress,
+      requireAuth: config.requireAuth !== false, // Default to true for backward compatibility
       hasPassword: config.password && config.password.trim() !== ''
     };
 
@@ -69,12 +72,21 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     const existingConfig = getSMTPConfig();
     
     // Extract fields from request body
-    const { host, port, secure, username, mailto } = body;
+    const { host, port, connectionType, secure, username, mailto, senderName, fromAddress, requireAuth } = body;
     
     // Validate required fields (excluding password)
-    if (host === undefined || port === undefined || username === undefined || mailto === undefined) {
+    // If requireAuth is false, username is not required
+    const needsAuth = requireAuth !== false; // Default to true for backward compatibility
+    if (host === undefined || port === undefined || mailto === undefined) {
       return NextResponse.json(
-        { error: 'Missing required fields: host, port, username, mailto' },
+        { error: 'Missing required fields: host, port, mailto' },
+        { status: 400 }
+      );
+    }
+    
+    if (needsAuth && username === undefined) {
+      return NextResponse.json(
+        { error: 'Missing required field: username (required when authentication is enabled)' },
         { status: 400 }
       );
     }
@@ -88,14 +100,46 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       );
     }
 
+    // Validate email formats (must contain '@')
+    if (typeof mailto === 'string' && (!mailto.includes('@') || mailto.trim() === '')) {
+      return NextResponse.json(
+        { error: 'Recipient email must contain "@" symbol' },
+        { status: 400 }
+      );
+    }
+
+    if (fromAddress !== undefined && typeof fromAddress === 'string' && fromAddress.trim() !== '') {
+      if (!fromAddress.includes('@')) {
+        return NextResponse.json(
+          { error: 'From address must contain "@" symbol' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Determine connection type (fall back to legacy secure flag for backward compatibility)
+    let finalConnectionType: 'plain' | 'starttls' | 'ssl';
+    if (connectionType && ['plain', 'starttls', 'ssl'].includes(connectionType)) {
+      finalConnectionType = connectionType as 'plain' | 'starttls' | 'ssl';
+    } else if (typeof secure === 'boolean') {
+      finalConnectionType = secure ? 'ssl' : 'starttls';
+    } else if (typeof secure === 'string') {
+      finalConnectionType = secure.toLowerCase() === 'true' ? 'ssl' : 'starttls';
+    } else {
+      finalConnectionType = 'starttls';
+    }
+
     // Create SMTP config object, preserving existing password
     const smtpConfig: SMTPConfig = {
       host: host.trim(),
       port: portNumber,
-      secure: Boolean(secure),
-      username: username.trim(),
+      connectionType: finalConnectionType,
+      username: needsAuth ? username.trim() : (username?.trim() || ''), // Use provided username or empty string
       password: existingConfig?.password || '', // Preserve existing password or use empty string
-      mailto: mailto.trim()
+      mailto: mailto.trim(),
+      senderName: senderName !== undefined ? (senderName.trim() || undefined) : undefined,
+      fromAddress: fromAddress !== undefined ? (fromAddress.trim() || undefined) : undefined,
+      requireAuth: needsAuth
     };
 
     // Save configuration
@@ -113,9 +157,12 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         {
           host: smtpConfig.host,
           port: smtpConfig.port,
-          secure: smtpConfig.secure,
+          connectionType: smtpConfig.connectionType,
           username: smtpConfig.username,
           mailto: smtpConfig.mailto,
+          senderName: smtpConfig.senderName,
+          fromAddress: smtpConfig.fromAddress,
+          requireAuth: smtpConfig.requireAuth,
           hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== ''),
         },
         ipAddress,

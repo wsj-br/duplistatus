@@ -157,6 +157,79 @@
   - Returns count of deleted backups and server information
   - Uses server alias for display if available, otherwise falls back to server name
 
+## Sync Backup Schedules - `/api/backups/sync-schedule`
+- **Endpoint**: `/api/backups/sync-schedule`
+- **Method**: POST
+- **Description**: Synchronizes backup schedule information from a Duplicati server. This endpoint connects to the server, retrieves schedule information for all backups, and updates the local backup settings with schedule details including repeat intervals, allowed week days, and schedule times.
+- **Authentication**: Requires valid session and CSRF token (optional authentication)
+- **Request Body**:
+  ```json
+  {
+    "hostname": "duplicati-server.local",
+    "port": 8200,
+    "password": "your-password",
+    "serverId": "optional-server-id"
+  }
+  ```
+  Or with serverId only (uses stored password):
+  ```json
+  {
+    "serverId": "server-id"
+  }
+  ```
+  Or with serverId and updated credentials:
+  ```json
+  {
+    "serverId": "server-id",
+    "hostname": "new-hostname.local",
+    "port": 8200,
+    "password": "new-password"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "serverName": "Server Name",
+    "stats": {
+      "processed": 5,
+      "errors": 0
+    }
+  }
+  ```
+  With errors:
+  ```json
+  {
+    "success": true,
+    "serverName": "Server Name",
+    "stats": {
+      "processed": 3,
+      "errors": 2
+    },
+    "errors": [
+      "Backup Name 1: Error message",
+      "Backup Name 2: Error message"
+    ]
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid request parameters, missing hostname/password when serverId not provided, or connection failed
+  - `404`: Server not found (when serverId provided) or no password stored for server
+  - `500`: Server error during schedule synchronization
+- **Notes**: 
+  - The endpoint automatically detects the optimal connection protocol (HTTPS → HTTPS with self-signed → HTTP)
+  - Can be called with just serverId to use stored server credentials
+  - Can be called with serverId and new credentials to update server connection details
+  - Can be called with hostname/port/password without serverId for new servers
+  - Updates backup settings with schedule information including:
+    - `expectedInterval`: The repeat interval (e.g., "Daily", "Weekly", "Monthly")
+    - `allowedWeekDays`: Array of allowed week days (0=Sunday, 1=Monday, etc.)
+    - `time`: The scheduled time for the backup
+  - Processes all backups found on the server
+  - Returns statistics on processed backups and any errors encountered
+  - Logs audit events for successful and failed sync operations
+  - Uses default port 8200 if not specified
+
 ## Test Server Connection - `/api/servers/test-connection`
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST

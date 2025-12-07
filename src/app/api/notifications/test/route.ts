@@ -2,7 +2,7 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { NotificationTemplate, NtfyConfig } from '@/lib/types';
 import { sendEmailNotification, convertTextToHtml } from '@/lib/notifications';
-import { getSMTPConfig } from '@/lib/db-utils';
+import { getSMTPConfig, clearRequestCache } from '@/lib/db-utils';
 import { optionalAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -71,14 +71,66 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
 
     // Handle email test
     if (type === 'email') {
-      if (!getSMTPConfig()) {
+      // Clear request cache to ensure we get the latest SMTP configuration
+      // This is important when the config is updated by external scripts
+      clearRequestCache();
+      console.log('[API Test Email] Cache cleared, reading fresh SMTP config from database');
+      
+      const smtpConfig = getSMTPConfig();
+      if (!smtpConfig) {
         return NextResponse.json({ error: 'Email is not configured. Please configure SMTP settings.' }, { status: 400 });
       }
+      
+      console.log('[API Test Email] Read SMTP config:', {
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        connectionType: smtpConfig.connectionType || 'starttls',
+        requireAuth: smtpConfig.requireAuth !== false
+      });
 
+      const senderName = smtpConfig.senderName || 'duplistatus';
+      const fromAddress = smtpConfig.fromAddress || smtpConfig.username;
+      const recipientEmail = smtpConfig.mailto;
+      const requiresAuth = smtpConfig.requireAuth !== false; // Default to true for backward compatibility
+      
       const testSubject = 'Test Email from duplistatus';
-      const testMessage = `This is a test email from duplistatus.\n\nTest sent at: ${new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })}`;
-      const htmlContent = convertTextToHtml(testMessage);
+      // Determine connection type (default to STARTTLS for backward compatibility)
+      const connectionType = smtpConfig.connectionType || 'starttls';
+      const connectionSecurity = 
+        connectionType === 'plain' ? 'Plain SMTP (no encryption)'
+        : connectionType === 'ssl' ? 'Direct SSL/TLS connection'
+        : 'STARTTLS';
+      
+      // Calculate connection settings (used for both test email and audit log)
+      const useSecure = connectionType === 'ssl';
+      const requireTLS = connectionType === 'starttls';
+      const ignoreTLS = connectionType === 'plain';
+      
+      let testMessage = `This is a test email from duplistatus.
 
+Email Configuration Details:
+  SMTP Server: ${smtpConfig.host}
+  SMTP Port: ${smtpConfig.port}
+  Connection Type: ${connectionSecurity}
+  Secure (Direct SSL/TLS): ${useSecure ? 'Yes' : 'No'}
+  Require TLS (STARTTLS): ${requireTLS ? 'Yes' : 'No'}
+  Ignore TLS (Plain SMTP): ${ignoreTLS ? 'Yes' : 'No'}
+  SMTP Authentication Required: ${requiresAuth ? 'Yes' : 'No'}`;
+
+      // Only show username if authentication is required
+      if (requiresAuth) {
+        testMessage += `\n  SMTP Username: ${smtpConfig.username}`;
+      }
+
+      testMessage += `
+  Recipient Email (To:): ${recipientEmail}
+  From Address: ${fromAddress}
+  Sender Name: ${senderName}
+  
+  Test sent at: ${new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })}
+  `;
+      const htmlContent = convertTextToHtml(testMessage);
+      
       await sendEmailNotification(testSubject, htmlContent, testMessage);
       
       // Log audit event
@@ -93,6 +145,13 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           details: {
             type: 'email',
             channel: 'Email',
+            host: smtpConfig.host,
+            port: smtpConfig.port,
+            connectionType: connectionType,
+            secure: useSecure,
+            requireTLS: requireTLS,
+            ignoreTLS: ignoreTLS,
+            requireAuth: requiresAuth,
           },
           ipAddress,
           userAgent,
@@ -255,15 +314,37 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     if (authContext) {
       const ipAddress = getClientIpAddress(request);
       const userAgent = request.headers.get('user-agent') || 'unknown';
+      
+      // If it's an email test, include connection details
+      const auditDetails: Record<string, unknown> = {
+        type: testType,
+        error: errorMessage,
+      };
+      
+      if (testType === 'email') {
+        const smtpConfig = getSMTPConfig();
+        if (smtpConfig) {
+          const connectionType = smtpConfig.connectionType || 'starttls';
+          const useSecure = connectionType === 'ssl';
+          const requireTLS = connectionType === 'starttls';
+          const ignoreTLS = connectionType === 'plain';
+          
+          auditDetails.host = smtpConfig.host;
+          auditDetails.port = smtpConfig.port;
+          auditDetails.connectionType = connectionType;
+          auditDetails.secure = useSecure;
+          auditDetails.requireTLS = requireTLS;
+          auditDetails.ignoreTLS = ignoreTLS;
+          auditDetails.requireAuth = smtpConfig.requireAuth !== false;
+        }
+      }
+      
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
         action: 'test_notification_sent',
         category: 'system',
-        details: {
-          type: testType,
-          error: errorMessage,
-        },
+        details: auditDetails,
         ipAddress,
         userAgent,
         status: 'error',

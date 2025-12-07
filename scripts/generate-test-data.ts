@@ -5,33 +5,33 @@ import { dbUtils, getConfigBackupSettings, clearRequestCache } from '../src/lib/
 import { extractAvailableBackups } from '../src/lib/utils';
 
 // Function to clean database tables before generating test data
-async function cleanDatabaseTables() {
-  console.log('🧹 Cleaning database tables before generating test data...');
+async function cleanDatabaseTables(quiet: boolean = false) {
+  logConsole('🧹 Cleaning database tables before generating test data...', quiet);
   
   try {
     // Start a transaction for atomic cleanup
     const transaction = db.transaction(() => {
       // Delete all backups first (due to foreign key constraint)
       const backupsResult = db.prepare('DELETE FROM backups').run();
-      console.log(`  🗑️  Deleted ${backupsResult.changes} backup records`);
+      logConsole(`  🗑️  Deleted ${backupsResult.changes} backup records`, quiet);
       
       // Delete all servers
       const serversResult = db.prepare('DELETE FROM servers').run();
-      console.log(`  🗑️  Deleted ${serversResult.changes} server records`);
+      logConsole(`  🗑️  Deleted ${serversResult.changes} server records`, quiet);
       
       // Delete backup_settings configuration specifically (so it can be recalculated)
       const backupSettingsResult = db.prepare("DELETE FROM configurations WHERE key = 'backup_settings'").run();
-      console.log(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`);
+      logConsole(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`, quiet);
       
       // Delete all remaining configurations
       const configsResult = db.prepare('DELETE FROM configurations').run();
-      console.log(`  🗑️  Deleted ${configsResult.changes} configuration records`);
+      logConsole(`  🗑️  Deleted ${configsResult.changes} configuration records`, quiet);
     });
     
     // Execute the transaction
     transaction();
     
-    console.log('✅ Database cleanup completed successfully!');
+    logConsole('✅ Database cleanup completed successfully!', quiet);
     return true;
   } catch (error) {
     console.error('🚨 Error during database cleanup:', error instanceof Error ? error.message : String(error));
@@ -40,8 +40,8 @@ async function cleanDatabaseTables() {
 } 
 
 // Function to clean database tables before generating test data
-async function cleanBackupSettings() {
-  console.log('🧹 Cleaning backup_settings configuration...');
+async function cleanBackupSettings(quiet: boolean = false) {
+  logConsole('🧹 Cleaning backup_settings configuration...', quiet);
   
   try {
     // Start a transaction for atomic cleanup
@@ -49,14 +49,14 @@ async function cleanBackupSettings() {
 
       // Delete backup_settings configuration specifically (so it can be recalculated)
       const backupSettingsResult = db.prepare("DELETE FROM configurations WHERE key = 'backup_settings'").run();
-      console.log(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`);
+      logConsole(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`, quiet);
       
     });
     
     // Execute the transaction
     transaction();
     
-    console.log('✅ backup_settings cleanup completed successfully!');
+    logConsole('✅ backup_settings cleanup completed successfully!', quiet);
     return true;
   } catch (error) {
     console.error('🚨 Error during backup_settings cleanup:', error instanceof Error ? error.message : String(error));
@@ -341,10 +341,18 @@ function generateBackupPayload(server: typeof servers[0], backupNumber: number, 
   };
 }
 
+// Helper function for conditional logging
+function logConsole(message: string, quiet: boolean): void {
+  if (!quiet) {
+    console.log(message);
+  }
+}
+
 // Parse command line arguments
-function parseArgs(): { useUpload: boolean; serverCount: number; port: number } {
+function parseArgs(): { useUpload: boolean; serverCount: number; port: number; quiet: boolean } {
   const args = process.argv.slice(2);
   const useUpload = args.includes('--upload');
+  const quiet = args.includes('--quiet') || args.includes('-q');
   
   // Parse server count parameter (mandatory)
   const serverCountArg = args.find(arg => arg.startsWith('--servers='));
@@ -352,17 +360,19 @@ function parseArgs(): { useUpload: boolean; serverCount: number; port: number } 
     console.error('🚨 Error: --servers parameter is required!');
     console.log('');
     console.log('Usage:');
-    console.log('  pnpm run generate-test-data --servers=N [--upload] [--port=N]');
+    console.log('  pnpm run generate-test-data --servers=N [--upload] [--port=N] [--quiet|-q]');
     console.log('');
     console.log('Parameters:');
     console.log('  --servers=N    Number of servers to generate (1-30, mandatory)');
     console.log('  --upload       Optional: Send data via API instead of direct DB write');
     console.log('  --port=N       Optional: Port number for API endpoints (default: 8666)');
+    console.log('  --quiet, -q    Optional: Suppress output (quiet mode)');
     console.log('');
     console.log('Examples:');
     console.log('  pnpm run generate-test-data --servers=5');
     console.log('  pnpm run generate-test-data --servers=1 --upload');
     console.log('  pnpm run generate-test-data --servers=3 --port=3000');
+    console.log('  pnpm run generate-test-data --servers=5 --quiet');
     console.log('');
     process.exit(1);
   }
@@ -385,11 +395,11 @@ function parseArgs(): { useUpload: boolean; serverCount: number; port: number } 
     port = parsedPort;
   }
   
-  return { useUpload, serverCount: count, port };
+  return { useUpload, serverCount: count, port, quiet };
 }
 
 // Function to write backup data directly to database
-async function writeBackupToDatabase(payload: any): Promise<boolean> {
+async function writeBackupToDatabase(payload: any, quiet: boolean = false): Promise<boolean> {
   try {
     // Check for duplicate backup
     const backupDate = new Date(payload.Data.BeginTime).toISOString();
@@ -403,7 +413,7 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
     });
 
     if (isDuplicate) {
-      console.log('          ⚠️  Duplicate backup detected, skipping...');
+      logConsole('          ⚠️  Duplicate backup detected, skipping...', quiet);
       return false;
     }
 
@@ -510,8 +520,8 @@ async function writeBackupToDatabase(payload: any): Promise<boolean> {
 }
 
 // Function to delete backups from randomly chosen configurations to create overdue samples (>48 hours old)
-async function deleteRandomBackups() {
-  console.log('\n  🎲 Deleting recent backups from randomly chosen configurations to create overdue samples (>48 hours)...');
+async function deleteRandomBackups(quiet: boolean = false) {
+  logConsole('\n  🎲 Deleting recent backups from randomly chosen configurations to create overdue samples (>48 hours)...', quiet);
   
   try {
     // Get all unique backup configurations (server_id + backup_name combinations)
@@ -523,12 +533,12 @@ async function deleteRandomBackups() {
     `).all() as { server_id: string; backup_name: string; server_name: string; alias: string }[];
     
     if (configurationsResult.length === 0) {
-      console.log('    ⚠️  No backup configurations found, skipping random deletion');
+      logConsole('    ⚠️  No backup configurations found, skipping random deletion', quiet);
       return;
     }
     
     if (configurationsResult.length < 2) {
-      console.log(`    ⚠️  Only ${configurationsResult.length} backup configuration(s) found, cannot delete 2`);
+      logConsole(`    ⚠️  Only ${configurationsResult.length} backup configuration(s) found, cannot delete 2`, quiet);
       return;
     }
     
@@ -536,10 +546,10 @@ async function deleteRandomBackups() {
     const shuffledConfigurations = [...configurationsResult].sort(() => Math.random() - 0.5);
     const selectedConfigurations = shuffledConfigurations.slice(0, 2);
     
-    console.log(`    🎯 Selected ${selectedConfigurations.length} random backup configuration(s):`);
+    logConsole(`    🎯 Selected ${selectedConfigurations.length} random backup configuration(s):`, quiet);
     selectedConfigurations.forEach((config, index) => {
       const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
-      console.log(`      ${index + 1}. Server: ${serverDisplayName}, Backup: ${config.backup_name}`);
+      logConsole(`      ${index + 1}. Server: ${serverDisplayName}, Backup: ${config.backup_name}`, quiet);
     });
     
     const now = new Date();
@@ -559,11 +569,11 @@ async function deleteRandomBackups() {
         `).all(config.server_id, config.backup_name) as { id: string; date: string }[];
         
         if (allBackupsResult.length === 0) {
-          console.log(`      ⚠️  ${configDisplayName}: No backups found`);
+          logConsole(`      ⚠️  ${configDisplayName}: No backups found`, quiet);
           continue;
         }
         
-        console.log(`      📊 ${configDisplayName}: Found ${allBackupsResult.length} total backup(s)`);
+        logConsole(`      📊 ${configDisplayName}: Found ${allBackupsResult.length} total backup(s)`, quiet);
         
         // Find backups that are newer than 48 hours ago (need to be deleted)
         const backupsToDelete: { id: string; date: string }[] = [];
@@ -580,15 +590,15 @@ async function deleteRandomBackups() {
         if (backupsToDelete.length === 0) {
           const mostRecentDate = new Date(allBackupsResult[0].date);
           const hoursSinceLastBackup = Math.floor((now.getTime() - mostRecentDate.getTime()) / (60 * 60 * 1000));
-          console.log(`      ✅ ${configDisplayName}: Already overdue (last backup ${hoursSinceLastBackup}h ago)`);
+          logConsole(`      ✅ ${configDisplayName}: Already overdue (last backup ${hoursSinceLastBackup}h ago)`, quiet);
           continue;
         }
         
-        console.log(`      🎯 ${configDisplayName}: Will delete ${backupsToDelete.length} backup(s) newer than 48 hours`);
+        logConsole(`      🎯 ${configDisplayName}: Will delete ${backupsToDelete.length} backup(s) newer than 48 hours`, quiet);
         backupsToDelete.forEach((backup, idx) => {
           const backupDate = new Date(backup.date);
           const hoursAgo = Math.floor((now.getTime() - backupDate.getTime()) / (60 * 60 * 1000));
-          console.log(`         ${idx + 1}. Backup ID: ${backup.id.substring(0, 8)}..., Date: ${backupDate.toLocaleString()} (${hoursAgo}h ago)`);
+          logConsole(`         ${idx + 1}. Backup ID: ${backup.id.substring(0, 8)}..., Date: ${backupDate.toLocaleString()} (${hoursAgo}h ago)`, quiet);
         });
         
         // Delete all backups that are newer than 48 hours using a transaction
@@ -621,12 +631,12 @@ async function deleteRandomBackups() {
           if (remainingMostRecent) {
             const remainingDate = new Date(remainingMostRecent.date);
             const hoursSinceLastBackup = Math.floor((now.getTime() - remainingDate.getTime()) / (60 * 60 * 1000));
-            console.log(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), now overdue (last backup ${hoursSinceLastBackup}h ago)`);
+            logConsole(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), now overdue (last backup ${hoursSinceLastBackup}h ago)`, quiet);
           } else {
-            console.log(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), no backups remaining`);
+            logConsole(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), no backups remaining`, quiet);
           }
         } else {
-          console.log(`      ⚠️  ${configDisplayName}: Failed to delete backups (no rows affected)`);
+          logConsole(`      ⚠️  ${configDisplayName}: Failed to delete backups (no rows affected)`, quiet);
         }
       } catch (error) {
         const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
@@ -636,7 +646,7 @@ async function deleteRandomBackups() {
       }
     }
     
-    console.log('  ✅ Random backup deletion completed!');
+    logConsole('  ✅ Random backup deletion completed!', quiet);
     
   } catch (error) {
     console.error('  🚨 Error during random backup deletion:', 
@@ -645,8 +655,8 @@ async function deleteRandomBackups() {
 }
 
 // Function to cleanup backups - keep only 5-8 random backups for 1 random backup job from 2 random servers
-async function cleanupBackupsForUserManual(){
-  console.log('\n  🧹 Cleaning up backups for user manual demonstration...');
+async function cleanupBackupsForUserManual(quiet: boolean = false){
+  logConsole('\n  🧹 Cleaning up backups for user manual demonstration...', quiet);
   
   // Get servers from generated backups instead of from servers array
   const serversFromBackupsResult = db.prepare(`
@@ -657,7 +667,7 @@ async function cleanupBackupsForUserManual(){
   `).all() as { id: string; name: string; alias: string; note: string }[];
   
   if (serversFromBackupsResult.length === 0) {
-    console.log('    ⚠️  No servers found with generated backups, skipping cleanup');
+    logConsole('    ⚠️  No servers found with generated backups, skipping cleanup', quiet);
     return;
   }
   
@@ -669,8 +679,8 @@ async function cleanupBackupsForUserManual(){
   // Generate random number of backups to keep 
   const backupsToKeep = Math.floor(Math.random() * 4) + 4; // 4 to 7
   
-  console.log(`    🎯 Selected servers: ${selectedServers.map(s => s.name).join(', ')}`);
-  console.log(`    📊 Keeping ${backupsToKeep} most recent backups for each selected server-backup combination`);
+  logConsole(`    🎯 Selected servers: ${selectedServers.map(s => s.name).join(', ')}`, quiet);
+  logConsole(`    📊 Keeping ${backupsToKeep} most recent backups for each selected server-backup combination`, quiet);
   
   for (const server of selectedServers) {
     try {
@@ -684,14 +694,14 @@ async function cleanupBackupsForUserManual(){
       const availableBackupJobs = backupJobsResult.map(row => row.backup_name);
       
       if (availableBackupJobs.length === 0) {
-        console.log(`      ⚠️  ${server.name}: No backups found, skipping...`);
+        logConsole(`      ⚠️  ${server.name}: No backups found, skipping...`, quiet);
         continue;
       }
       
       // Select 1 random backup job from the available ones for this server
       const selectedBackupJob = availableBackupJobs[Math.floor(Math.random() * availableBackupJobs.length)];
       
-      console.log(`      📁 ${server.name} - Selected backup job: ${selectedBackupJob} (from available: ${availableBackupJobs.join(', ')})`);
+      logConsole(`      📁 ${server.name} - Selected backup job: ${selectedBackupJob} (from available: ${availableBackupJobs.join(', ')})`, quiet);
       
       // Count total backups for this server-backup combination
       const countResult = db.prepare(`
@@ -702,7 +712,7 @@ async function cleanupBackupsForUserManual(){
       const totalBackups = countResult.total;
       
       if (totalBackups <= backupsToKeep) {
-        console.log(`      ✅ ${server.name} - ${selectedBackupJob}: Only ${totalBackups} backups exist, no cleanup needed`);
+        logConsole(`      ✅ ${server.name} - ${selectedBackupJob}: Only ${totalBackups} backups exist, no cleanup needed`, quiet);
         continue;
       }
       
@@ -719,7 +729,7 @@ async function cleanupBackupsForUserManual(){
         )
       `).run(server.id, selectedBackupJob, backupsToKeep);
       
-      console.log(`      🗑️  ${server.name} - ${selectedBackupJob}: Deleted ${deleteResult.changes} backups, kept ${backupsToKeep} most recent`);
+      logConsole(`      🗑️  ${server.name} - ${selectedBackupJob}: Deleted ${deleteResult.changes} backups, kept ${backupsToKeep} most recent`, quiet);
       
     } catch (error) {
       console.error(`      🚨 Error cleaning up backups for ${server.name}:`, 
@@ -737,7 +747,7 @@ async function cleanupBackupsForUserManual(){
     `).all() as { server_id: number; backup_name: string; server_name: string }[];
     
     if (combinationsResult.length === 0) {
-      console.log('    ⚠️  No server-backup combinations found for additional cleanup');
+      logConsole('    ⚠️  No server-backup combinations found for additional cleanup', quiet);
       return;
     }
     
@@ -745,9 +755,9 @@ async function cleanupBackupsForUserManual(){
     const shuffledCombinations = [...combinationsResult].sort(() => Math.random() - 0.5);
     const selectedCombinations = shuffledCombinations.slice(0, Math.min(2, shuffledCombinations.length));
     
-    console.log(`    🎯 Selected ${selectedCombinations.length} combinations for last backup deletion:`);
+    logConsole(`    🎯 Selected ${selectedCombinations.length} combinations for last backup deletion:`, quiet);
     selectedCombinations.forEach(combo => {
-      console.log(`      - ${combo.server_name} (${combo.backup_name})`);
+      logConsole(`      - ${combo.server_name} (${combo.backup_name})`, quiet);
     });
     
     for (const combination of selectedCombinations) {
@@ -761,7 +771,7 @@ async function cleanupBackupsForUserManual(){
         `).get(combination.server_id, combination.backup_name) as { id: number; date: string } | undefined;
         
         if (!lastBackupResult) {
-          console.log(`      ⚠️  ${combination.server_name} (${combination.backup_name}): No backups found`);
+          logConsole(`      ⚠️  ${combination.server_name} (${combination.backup_name}): No backups found`, quiet);
           continue;
         }
         
@@ -773,9 +783,9 @@ async function cleanupBackupsForUserManual(){
         
         if (deleteResult.changes > 0) {
           const backupDate = new Date(lastBackupResult.date).toLocaleDateString();
-          console.log(`      🗑️  ${combination.server_name} (${combination.backup_name}): Deleted last backup from ${backupDate}`);
+          logConsole(`      🗑️  ${combination.server_name} (${combination.backup_name}): Deleted last backup from ${backupDate}`, quiet);
         } else {
-          console.log(`      ⚠️  ${combination.server_name} (${combination.backup_name}): Failed to delete backup`);
+          logConsole(`      ⚠️  ${combination.server_name} (${combination.backup_name}): Failed to delete backup`, quiet);
         }
         
       } catch (error) {
@@ -784,7 +794,7 @@ async function cleanupBackupsForUserManual(){
       }
     }
     
-  console.log('  ✅ Backup cleanup completed!');
+  logConsole('  ✅ Backup cleanup completed!', quiet);
     
   } catch (error) {
     console.error('  🚨 Error during additional cleanup:', 
@@ -793,7 +803,7 @@ async function cleanupBackupsForUserManual(){
 
   // Update server_url for 70% of random servers
   try {
-    console.log('\n  🌐 Updating server URLs for random servers...');
+    logConsole('\n  🌐 Updating server URLs for random servers...', quiet);
     
     // Get servers from generated backups instead of total list
     const serversFromBackupsResult = db.prepare(`
@@ -804,7 +814,7 @@ async function cleanupBackupsForUserManual(){
     `).all() as { id: string; name: string; alias: string; note: string }[];
     
     if (serversFromBackupsResult.length === 0) {
-      console.log('    ⚠️  No servers found with generated backups, skipping server URL update');
+      logConsole('    ⚠️  No servers found with generated backups, skipping server URL update', quiet);
       return;
     }
     
@@ -813,7 +823,7 @@ async function cleanupBackupsForUserManual(){
     const selectedCount = Math.ceil(serversFromBackupsResult.length * 0.7);
     const selectedServers = shuffledServers.slice(0, selectedCount);
     
-    console.log(`    🎯 Selected servers for server URL update: ${selectedServers.map(s => s.alias ? `${s.name} (${s.alias})` : s.name).join(', ')}`);
+    logConsole(`    🎯 Selected servers for server URL update: ${selectedServers.map(s => s.alias ? `${s.name} (${s.alias})` : s.name).join(', ')}`, quiet);
     
     const serverUrl = "http://192.168.1.55:8200";
     let updatedCount = 0;
@@ -828,10 +838,10 @@ async function cleanupBackupsForUserManual(){
         
         const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
         if (updateResult.changes > 0) {
-          console.log(`      🔗 ${serverDisplayName}: Server URL updated to ${serverUrl}`);
+          logConsole(`      🔗 ${serverDisplayName}: Server URL updated to ${serverUrl}`, quiet);
           updatedCount++;
         } else {
-          console.log(`      ⚠️  ${serverDisplayName}: No update performed (server may not exist in DB)`);
+          logConsole(`      ⚠️  ${serverDisplayName}: No update performed (server may not exist in DB)`, quiet);
         }
       } catch (error) {
         console.error(`      🚨 Error updating server URL for ${server.name}:`, 
@@ -839,7 +849,7 @@ async function cleanupBackupsForUserManual(){
       }
     }
     
-    console.log(`  ✅ Server URL update completed! Updated ${updatedCount} out of ${selectedServers.length} servers`);
+    logConsole(`  ✅ Server URL update completed! Updated ${updatedCount} out of ${selectedServers.length} servers`, quiet);
     
   } catch (error) {
     console.error('  🚨 Error during server URL update:', 
@@ -848,32 +858,32 @@ async function cleanupBackupsForUserManual(){
 }
 
 // Main function to send test data
-async function sendTestData(useUpload: boolean = false, serverCount: number, port: number = 8666) {
+async function sendTestData(useUpload: boolean = false, serverCount: number, port: number = 8666, quiet: boolean = false) {
   const API_URL = `http://localhost:${port}/api/upload`;
   const HEALTH_CHECK_URL = `http://localhost:${port}/api/health`; // Adjust this URL based on your actual health endpoint
   const BACKUP_JOBS = ['Files', 'Databases', 'System', 'Users'];
 
   // Clean database tables before generating test data (only for direct DB mode)
   if (!useUpload) {
-    const cleanupSuccess = await cleanDatabaseTables();
+    const cleanupSuccess = await cleanDatabaseTables(quiet);
     if (!cleanupSuccess) {
       console.error('🚨 Database cleanup failed. Aborting test data generation.');
       process.exit(1);
     }
-    console.log(''); // Add spacing after cleanup
+    logConsole('', quiet); // Add spacing after cleanup
   }
 
   // Check server health before proceeding (only when using upload mode)
   if (useUpload) {
-    console.log('  🩺 Checking server health...');
+    logConsole('  🩺 Checking server health...', quiet);
     const isServerHealthy = await checkServerHealth(HEALTH_CHECK_URL);
     if (!isServerHealthy) {
       console.error('🚨 Server is not reachable. Please ensure the server is running and try again.');
       process.exit(1);
     }
-    console.log('  👍 Server is healthy, proceeding with data generation...');
+    logConsole('  👍 Server is healthy, proceeding with data generation...', quiet);
   } else {
-    console.log('  💾 Writing directly to database...');
+    logConsole('  💾 Writing directly to database...', quiet);
   }
 
   const suffledServers = [...servers].sort(() => Math.random() - 0.5);
@@ -891,17 +901,17 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
     const selectedBackupJobs = shuffledBackupJobs.slice(0, randomBackupCount);
     
     const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
-    console.log(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddServer ? 'Odd' : 'Even'} server pattern)...`);
+    logConsole(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddServer ? 'Odd' : 'Even'} server pattern)...`, quiet);
     if (server.note) {
-      console.log(`      📝 Note: ${server.note}`);
+      logConsole(`      📝 Note: ${server.note}`, quiet);
     }
-    console.log(`      📅 Pattern: ${isOddServer ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`);
-    console.log(`      🎯 Selected backup jobs (${selectedBackupJobs.length}/${BACKUP_JOBS.length}): ${selectedBackupJobs.join(', ')}`);
+    logConsole(`      📅 Pattern: ${isOddServer ? 'Daily for 1 week, then weekly for 2 months, then monthly for 2 years' : 'Daily for 1 week, then weekly for 6 months, then monthly for 2 years'}`, quiet);
+    logConsole(`      🎯 Selected backup jobs (${selectedBackupJobs.length}/${BACKUP_JOBS.length}): ${selectedBackupJobs.join(', ')}`, quiet);
     
     for (const backupJob of selectedBackupJobs) {
       // Generate backup dates for this specific backup job
       const backupDates = generateBackupDates(serverIndex, backupJob);
-      console.log(`        📁 Generating ${backupDates.length} ${backupJob} backups...`);
+      logConsole(`        📁 Generating ${backupDates.length} ${backupJob} backups...`, quiet);
       
       for (let i = 0; i < backupDates.length; i++) {
         const backupNumber = i + 1;
@@ -933,11 +943,11 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
             await new Promise(resolve => setTimeout(resolve, 100));
           } else {
             // Write directly to database
-            success = await writeBackupToDatabase(payload);
+            success = await writeBackupToDatabase(payload, quiet);
           }
 
           if (!success) {
-            console.log(`          📄 ${backupJob} Backup ${backupNumber}/${backupDates.length} for ${server.name} (${backupDate}): Failed`);
+            logConsole(`          📄 ${backupJob} Backup ${backupNumber}/${backupDates.length} for ${server.name} (${backupDate}): Failed`, quiet);
           }
         } catch (error) {
           console.error(`🚨 Error processing backup ${backupNumber} for ${server.name}:`, error instanceof Error ? error.message : String(error));
@@ -948,39 +958,43 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
 
   // Ensure backup settings are complete for all servers and backups (only for direct DB mode)
   if (!useUpload) {
-    console.log('\n  🔧 Processing backups after generation...');
+    logConsole('\n  🔧 Processing backups after generation...', quiet);
     
     // Delete 2 randomly chosen backup runs to create overdue samples
-    await deleteRandomBackups();
+    await deleteRandomBackups(quiet);
     
     // Delete backup settings after deletions so it can be recalculated based on new most recent backups
-    console.log('\n  🔄 Deleting backup_settings configuration after deletions...');
-    await cleanBackupSettings();
+    logConsole('\n  🔄 Deleting backup_settings configuration after deletions...', quiet);
+    await cleanBackupSettings(quiet);
   }
 }
 
 // Run the script
-const { useUpload, serverCount, port } = parseArgs();
+const { useUpload, serverCount, port, quiet } = parseArgs();
 
-console.log('🛫 Starting test data generation...\n');
+logConsole('🛫 Starting test data generation...\n', quiet);
 if (useUpload) {
-  console.log('  📤 Mode: Upload via API endpoint');
-  console.log(`  🔌 Port: ${port}`);
+  logConsole('  📤 Mode: Upload via API endpoint', quiet);
+  logConsole(`  🔌 Port: ${port}`, quiet);
 } else {
-  console.log('  💾 Mode: Direct database write');
-  console.log('  🧹 Database cleanup: Will clear servers, backups, and configurations tables before generation');
+  logConsole('  💾 Mode: Direct database write', quiet);
+  logConsole('  🧹 Database cleanup: Will clear servers, backups, and configurations tables before generation', quiet);
 }
-console.log(`  🖥️  Generating data for ${serverCount} server(s) (out of ${servers.length} available)`);
-console.log('  ℹ️ Generating backups with specific date patterns:');
-console.log('     • Odd servers: Daily for 1 week, then weekly for 2 months, then monthly for 2 years');
-console.log('     • Even servers: Daily for 1 week, then weekly for 6 months, then monthly for 2 years');
-console.log('     • Random backup jobs per server (1-3 jobs from: Files, Databases, System)');
-console.log('     • Servers include alias and note fields for testing');
-console.log('     • After generation: Random cleanup some servers/backup jobs and last backups for the user manual screenshots\n');
+logConsole(`  🖥️  Generating data for ${serverCount} server(s) (out of ${servers.length} available)`, quiet);
+logConsole('  ℹ️ Generating backups with specific date patterns:', quiet);
+logConsole('     • Odd servers: Daily for 1 week, then weekly for 2 months, then monthly for 2 years', quiet);
+logConsole('     • Even servers: Daily for 1 week, then weekly for 6 months, then monthly for 2 years', quiet);
+logConsole('     • Random backup jobs per server (1-3 jobs from: Files, Databases, System)', quiet);
+logConsole('     • Servers include alias and note fields for testing', quiet);
+logConsole('     • After generation: Random cleanup some servers/backup jobs and last backups for the user manual screenshots\n', quiet);
 
 
-sendTestData(useUpload, serverCount, port).then(() => {
-  console.log('\n🎉 Test data generation completed!');
+sendTestData(useUpload, serverCount, port, quiet).then(() => {
+  if (quiet) {
+    console.log('✅ Test data generation completed successfully!');
+  } else {
+    console.log('\n🎉 Test data generation completed!');
+  }
 }).catch(error => {
   console.error('🚨 Error generating test data:', error instanceof Error ? error.message : String(error));
   process.exit(1);

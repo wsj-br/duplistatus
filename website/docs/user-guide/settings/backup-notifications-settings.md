@@ -32,5 +32,5 @@ You can click on the <SvgButton svgFilename="duplicati_logo.svg" /> button to op
 > • These options only control notifications sent when a [new backup log is received](/installation/duplicati-server-configuration.md).
 >   **Overdue notifications will be sent regardless of these settings.**
 >
-> • If the configuration options are greyed out, it means that the notification channel (NTFY or Email) is not properly configured.
+> • If the configuration options are greyed out, it means that the notification channel (NTFY or Email) is not properly configured. Checkboxes will show "(disabled)" labels when their respective services are not configured.
 

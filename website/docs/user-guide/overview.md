@@ -54,13 +54,13 @@ The application toolbar provides convenient access to key functions and settings
 | Button | Description |
 |-----------|-------------|
 | <IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen | Execute an immediate manual refresh of all data |
-| <IconButton label="Auto-refresh" />| Enable or disable automatic refresh functionality. Configure in [Display Settings](display-settings.md) |
+| <IconButton label="Auto-refresh" />| Enable or disable automatic refresh functionality. Configure in [Display Settings](settings/display-settings.md) |
 |  <SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY | Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus. |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md) | Open the selected Duplicati server's web interface |
 | <IconButton icon="lucide:calendar-check" href="overdue-monitoring" /> &nbsp; [Check overdue backups](overdue-monitoring.md) | Execute immediate overdue backup verification |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md) | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers |
-| <IconButton icon="lucide:database" href="database-maintenance" /> &nbsp;  [Database maintenance](database-maintenance.md) | Perform database cleanup and maintenance operations |
-| <IconButton icon="lucide:monitor-cog" href="display-settings" /> &nbsp; [Display Settings](display-settings.md) | Configure data display preferences and interface behaviour |
+| <IconButton icon="lucide:database" href="settings/database-maintenance" /> &nbsp;  [Database maintenance](settings/database-maintenance.md) | Perform database cleanup and maintenance operations |
+| <IconButton icon="lucide:monitor-cog" href="settings/display-settings" /> &nbsp; [Display Settings](settings/display-settings.md) | Configure data display preferences and interface behaviour |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server and notification templates |
 | <IconButton icon="lucide:book-open" href="overview" /> &nbsp; User Guide | Open a new browser tab with this User Guide |
 | <IconButton icon="lucide:sun" /> &nbsp; Theme | Toggle between dark (default) and light interface themes |
@@ -100,8 +100,8 @@ The settings page features a collapsible sidebar that organizes settings into lo
 | [Users](settings/user-management-settings.md) | Manage user accounts (admin only) | No |
 | [Audit Log](settings/audit-log-settings.md) | View system audit logs | Read-only |
 | [Audit Log Retention](settings/audit-log-settings.md#retention-configuration) | Configure audit log retention (admin only) | No |
-| [Display](display-settings.md) | Configure display preferences | Yes |
-| [Database Maintenance](database-maintenance.md) | Perform database cleanup (admin only) | No |
+| [Display](settings/display-settings.md) | Configure display preferences | Yes |
+| [Database Maintenance](settings/database-maintenance.md) | Perform database cleanup (admin only) | No |
 
 
 <br/>

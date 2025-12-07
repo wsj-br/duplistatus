@@ -63,6 +63,14 @@
     "message": "Test email sent successfully"
   }
   ```
+  The test email content displays:
+  - SMTP server hostname and port
+  - Connection type (Plain SMTP, STARTTLS, or Direct SSL/TLS)
+  - SMTP authentication requirement status
+  - SMTP username (only shown when authentication is required)
+  - Recipient email address
+  - From address and sender name used for the email
+  - Test timestamp
 - **Error Responses**:
   - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: NTFY configuration is required, invalid configuration, or email not configured
@@ -75,6 +83,7 @@
   - Uses `accessToken` field for authentication
   - For template tests, sends notifications to both NTFY and email (if configured)
   - Email tests require SMTP configuration to be set up
+  - The test email endpoint clears the request cache before reading SMTP configuration, ensuring that external scripts can update the configuration and have it immediately reflected in test emails
 
 ## Check Overdue Backups - `/api/notifications/check-overdue`
 - **Endpoint**: `/api/notifications/check-overdue`

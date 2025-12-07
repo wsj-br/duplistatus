@@ -24,17 +24,20 @@ You can configure an alternative name (alias) for your servers, a note to descri
 
 ## Available Actions for each server
 
-| Button                                          | Description                                                                      |
-|:------------------------------------------------|:---------------------------------------------------------------------------------|
-| <IconButton icon="lucide:play" label="Test"/>   | Test the connection to the Duplicati server.                                     |
-| <SvgButton svgFilename="duplicati_logo.svg" />  | Open the Duplicati server's web interface in a new browser tab.                  |
-| <IconButton icon="lucide:download" />           | Collect backup logs from the Duplicati server.                                   |
-| <IconButton icon="lucide:rectangle-ellipsis" /> | Change or set a password for the Duplicati server (auto-collected backups only). |
+| Button                                                                                                      | Description                                                             |
+|:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
+| <IconButton icon="lucide:play" label="Test"/>                                                               | Test the connection to the Duplicati server.                            |
+| <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Open the Duplicati server's web interface in a new browser tab.         |
+| <IconButton icon="lucide:download" />                                                                       | Collect backup logs from the Duplicati server.                          |
+| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; or <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Change or set a password for the Duplicati server to collected backups. |
 
 > [!IMPORTANT]
-> For security reasons, the current password is not displayed in the user interface. 
 >
-> You can only set a new password or re-enter the existing one if desired.
+> To protect your security, you can only perform the following actions:
+> - Set a password for the server
+> - Remove (delete) the password entirely
+> 
+> The password is stored encrypted in the database and is never displayed in the user interface.
 
 <br/>
 

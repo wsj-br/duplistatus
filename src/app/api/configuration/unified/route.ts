@@ -36,9 +36,12 @@ export const GET = withCSRF(async () => {
       base.email = {
         host: smtpConfig.host,
         port: smtpConfig.port,
-        secure: smtpConfig.secure,
+        connectionType: smtpConfig.connectionType,
         username: smtpConfig.username,
         mailto: smtpConfig.mailto,
+        senderName: smtpConfig.senderName,
+        fromAddress: smtpConfig.fromAddress,
+        requireAuth: smtpConfig.requireAuth !== false, // Default to true for backward compatibility
         enabled: true, // SMTP config exists, so email is enabled
         hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== '')
       };

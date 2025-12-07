@@ -806,7 +806,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 </SortableTableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody data-screenshot-target="settings-overdue-monitoring-table">
               {sortedServers.map((server) => {
                 const backupSetting = getBackupSettingById(server.id, server.backupName);
                 const inputKey = `${server.id}:${server.backupName}`;

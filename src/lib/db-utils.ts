@@ -1,6 +1,6 @@
 import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
@@ -1230,7 +1230,221 @@ export const dbUtils = {
 
   updateServer: (serverId: string, updates: { server_url?: string; alias?: string; note?: string }) => 
     updateServer(serverId, updates)
-}; 
+};
+
+// Interface for duplicate server information
+export interface DuplicateServer {
+  name: string;
+  servers: Array<{
+    id: string;
+    created_at: string;
+    alias: string;
+    note: string;
+    server_url: string;
+  }>;
+}
+
+// Function to get duplicate servers (servers with same name but different IDs)
+export function getDuplicateServers(): DuplicateServer[] {
+  return withDb(() => {
+    try {
+      const results = safeDbOperation(() => dbOps.getDuplicateServers.all(), 'getDuplicateServers', []) as Array<{
+        name: string;
+        id: string;
+        created_at: string;
+        alias: string;
+        note: string;
+        server_url: string;
+        server_password: string;
+      }>;
+      
+      // Group results by server name
+      const duplicatesMap = new Map<string, DuplicateServer>();
+      
+      for (const row of results) {
+        if (!duplicatesMap.has(row.name)) {
+          duplicatesMap.set(row.name, {
+            name: row.name,
+            servers: []
+          });
+        }
+        
+        const duplicate = duplicatesMap.get(row.name)!;
+        duplicate.servers.push({
+          id: row.id,
+          created_at: row.created_at || '',
+          alias: row.alias || '',
+          note: row.note || '',
+          server_url: row.server_url || ''
+        });
+      }
+      
+      // Convert map to array
+      return Array.from(duplicatesMap.values());
+    } catch (error) {
+      console.error('Error getting duplicate servers:', error instanceof Error ? error.message : String(error));
+      return [];
+    }
+  });
+}
+
+// Helper function to update configuration keys with old server ID to new server ID
+function updateConfigurationServerId(oldServerId: string, newServerId: string): void {
+  try {
+    // Update backup_settings
+    const backupSettings = getConfigBackupSettings();
+    if (Object.keys(backupSettings).length > 0) {
+      const updatedBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
+      
+      for (const [backupKey, settings] of Object.entries(backupSettings)) {
+        const [keyServerId, backupName] = backupKey.split(':');
+        if (keyServerId === oldServerId) {
+          // Update the key to use the new server ID
+          const newBackupKey = `${newServerId}:${backupName}` as BackupKey;
+          updatedBackupSettings[newBackupKey] = settings;
+        } else {
+          updatedBackupSettings[backupKey] = settings;
+        }
+      }
+      
+      setConfigBackupSettings(updatedBackupSettings);
+    }
+    
+    // Update overdue_notifications
+    const overdueNotifications = getConfigOverdueNotifications();
+    if (Object.keys(overdueNotifications).length > 0) {
+      const updatedOverdueNotifications: OverdueNotifications = {};
+      
+      for (const [backupKey, notification] of Object.entries(overdueNotifications)) {
+        const [keyServerId, backupName] = backupKey.split(':');
+        if (keyServerId === oldServerId) {
+          // Update the key to use the new server ID
+          const newBackupKey = `${newServerId}:${backupName}`;
+          updatedOverdueNotifications[newBackupKey] = notification;
+        } else {
+          updatedOverdueNotifications[backupKey] = notification;
+        }
+      }
+      
+      setConfigOverdueNotifications(updatedOverdueNotifications);
+    }
+  } catch (error) {
+    console.error(`Failed to update configuration for server merge ${oldServerId} -> ${newServerId}:`, error instanceof Error ? error.message : String(error));
+  }
+}
+
+// Function to merge servers (move all data from old servers to target server)
+export async function mergeServers(oldServerIds: string[], targetServerId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    return await withDb(async () => {
+      // Get target server details first
+      const targetServer = safeDbOperation(() => dbOps.getServerById.get(targetServerId), 'getServerById') as {
+        id: string;
+        name: string;
+        server_url: string;
+        alias: string;
+        note: string;
+        has_password: number;
+      } | undefined;
+      
+      if (!targetServer) {
+        throw new Error(`Target server ${targetServerId} not found`);
+      }
+      
+      // Get target server password
+      const targetServerPassword = safeDbOperation(() => dbOps.getServerPassword.get(targetServerId), 'getServerPassword') as {
+        server_password: string;
+      } | undefined;
+      const targetHasPassword = targetServerPassword && targetServerPassword.server_password && targetServerPassword.server_password.trim() !== '';
+      
+      // Process each old server
+      for (const oldServerId of oldServerIds) {
+        if (oldServerId === targetServerId) {
+          continue; // Skip if it's the target server itself
+        }
+        
+        // Get old server details
+        const oldServer = safeDbOperation(() => dbOps.getServerById.get(oldServerId), 'getServerById') as {
+          id: string;
+          name: string;
+          server_url: string;
+          alias: string;
+          note: string;
+          has_password: number;
+        } | undefined;
+        
+        if (!oldServer) {
+          console.warn(`Old server ${oldServerId} not found, skipping`);
+          continue;
+        }
+        
+        // Get old server password
+        const oldServerPassword = safeDbOperation(() => dbOps.getServerPassword.get(oldServerId), 'getServerPassword') as {
+          server_password: string;
+        } | undefined;
+        const oldHasPassword = oldServerPassword && oldServerPassword.server_password && oldServerPassword.server_password.trim() !== '';
+        
+        // Use transaction for database operations
+        const transaction = db.transaction(() => {
+          // Update all backups to point to target server
+          safeDbOperation(() => dbOps.updateBackupServerId.run(targetServerId, oldServerId), 'updateBackupServerId');
+          
+          // Merge server metadata:
+          // - Password: use non-empty field, if both exist, prefer newest (target)
+          //   Copy the encrypted password directly without decrypting/re-encrypting
+          const targetPassword = targetServerPassword?.server_password || '';
+          const oldPassword = oldServerPassword?.server_password || '';
+          const mergedPassword = (targetPassword && targetPassword.trim() !== '') ? targetPassword : oldPassword;
+          
+          // - Alias/Note/Server URL: use non-empty field, if both are non-empty, prefer newest (target)
+          const targetAlias = (targetServer.alias || '').trim();
+          const oldAlias = (oldServer.alias || '').trim();
+          const mergedAlias = targetAlias || oldAlias || '';
+          
+          const targetNote = (targetServer.note || '').trim();
+          const oldNote = (oldServer.note || '').trim();
+          const mergedNote = targetNote || oldNote || '';
+          
+          const targetServerUrl = (targetServer.server_url || '').trim();
+          const oldServerUrl = (oldServer.server_url || '').trim();
+          const mergedServerUrl = targetServerUrl || oldServerUrl || '';
+          
+          // Update target server with merged values including password (direct SQL update to preserve encryption)
+          const updateQuery = db.prepare(`
+            UPDATE servers 
+            SET server_url = ?, alias = ?, note = ?, server_password = ?
+            WHERE id = ?
+          `);
+          
+          safeDbOperation(() => updateQuery.run(
+            mergedServerUrl,
+            mergedAlias,
+            mergedNote,
+            mergedPassword,
+            targetServerId
+          ), 'updateServerWithPassword');
+          
+          // Delete old server entry
+          safeDbOperation(() => dbOps.deleteServer.run(oldServerId), 'deleteServer');
+        });
+        
+        transaction();
+        
+        // Update configuration entries (backup_settings and overdue_notifications) outside transaction
+        // since these are async operations on configuration data
+        await updateConfigurationServerId(oldServerId, targetServerId);
+      }
+      
+      return { success: true };
+    });
+  } catch (error) {
+    console.error('Error merging servers:', error instanceof Error ? error.message : String(error));
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to merge servers'
+    };
+  }
+}
 
 // Helper function to clean up configuration data for a server
 function cleanupServerConfiguration(serverId: string): void {
@@ -1816,14 +2030,24 @@ export function getSMTPConfig(): SMTPConfig | null {
     try {
       const encryptedConfig: SMTPConfigEncrypted = JSON.parse(configJson);
       
+      // Determine connection type (fallback to legacy secure flag if needed)
+      const connectionType: SMTPConnectionType =
+        encryptedConfig.connectionType ||
+        (typeof encryptedConfig.secure === 'boolean'
+          ? (encryptedConfig.secure ? 'ssl' : 'starttls')
+          : 'starttls');
+      
       // Decrypt username and password
       const decryptedConfig: SMTPConfig = {
         host: encryptedConfig.host,
         port: encryptedConfig.port,
-        secure: encryptedConfig.secure,
+        connectionType,
         username: decryptData(encryptedConfig.username),
         password: decryptData(encryptedConfig.password),
-        mailto: encryptedConfig.mailto
+        mailto: encryptedConfig.mailto,
+        senderName: encryptedConfig.senderName,
+        fromAddress: encryptedConfig.fromAddress,
+        requireAuth: encryptedConfig.requireAuth !== false // Default to true for backward compatibility
       };
 
       return decryptedConfig;
@@ -1848,10 +2072,13 @@ export function setSMTPConfig(config: SMTPConfig): void {
     const encryptedConfig: SMTPConfigEncrypted = {
       host: config.host,
       port: config.port,
-      secure: config.secure,
+      connectionType: config.connectionType,
       username: encryptData(config.username),
       password: encryptData(config.password),
-      mailto: config.mailto
+      mailto: config.mailto,
+      senderName: config.senderName,
+      fromAddress: config.fromAddress,
+      requireAuth: config.requireAuth !== false // Default to true for backward compatibility
     };
 
     setConfiguration('smtp_config', JSON.stringify(encryptedConfig));

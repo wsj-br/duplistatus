@@ -18,6 +18,7 @@
   - [Implemented in Version 0.7.27 ✅](#implemented-in-version-0727-)
   - [Implemented in Version 0.8.x ✅](#implemented-in-version-08x-)
   - [Implemented in Version 0.9.x ✅](#implemented-in-version-09x-)
+  - [Implemented in Version 1.0.x ✅](#implemented-in-version-10x-)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -345,6 +346,46 @@ none
   - Uses `pnpm exec tsx` for consistent package manager usage
   - Fixed ES module compatibility (replaced CommonJS `require` with ES `import`)
   - Documentation updated with Docker usage instructions
+
+
+
+### Implemented in Version 1.0.x ✅
+
+**New Features:**
+- Added a new function in the Database maintenance form to detect duplicate servers and merge them into a single server.
+- User can change the server password clicking on the key icon in the server detail page.
+- Added audit log entry when a new backup log is uploaded via the `/api/upload` endpoint. The audit log includes details about the backup (server ID, server name, backup name, status, date, duration, file counts, sizes, warnings, and errors) along with the client IP address and user agent for tracking purposes.
+
+**Documentation enhancements:**
+- Completed the take screenshots script to capture all the screenshots for the documentation.
+
+
+**Email Configuration Enhancements:**
+- Configuration incomplete notice displayed when email settings are not properly configured
+- "(disabled)" labels shown on notification checkboxes when services are not configured
+- Customizable sender name and from address fields in email configuration
+- SMTP authentication requirement toggle (supports servers without authentication)
+- Email format validation for recipient and from address fields
+- Enhanced test email content showing connection details and configuration
+
+**SMTP Connection Type Support:**
+- Added `Sender Name` and `From Address` fields to email configuration
+   - Note that some email providers will override the `From Address` with the `SMTP Server Username`.
+- Added support for plain SMTP connections (no encryption) on port 25
+- Connection type selection: `Plain SMTP`, `STARTTLS`, or `Direct SSL/TLS`
+- Default connection type changed to `Direct SSL/TLS` for new configurations
+- `From Address` field required for `Plain SMTP` connections
+
+**Bug Fixes:**
+- Fixed missing `From` header in email messages causing RFC 5322 compliance errors
+- Fixed Docker entrypoint script dropping log messages
+- Fixed email encryption for `STARTTLS` connections (port 587)
+- Fixed `Plain SMTP` connections failing with TLS negotiation errors
+- Fixed unsaved email configuration being cleared when changing password
+- Fixed stale SMTP configuration in test email endpoint
+- Added a recalculation of the `Next Run` date after collecting backups logs. This ensures that the `Next Run` date is updated correctly after collecting backups logs.
+- Fixed the behaviour of the view password in the password change form, now clicking on the eye icon will show the password of both password fields.
+
 
 
 

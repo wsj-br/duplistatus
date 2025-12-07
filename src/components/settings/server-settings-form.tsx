@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { CheckCircle, XCircle, Ellipsis, Loader2, Play, Globe, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward, SquareX } from 'lucide-react';
+import { Server, XCircle, Ellipsis, Loader2, Play, Globe, CheckCircle, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward, SquareX } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
@@ -54,8 +54,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingPassword, setIsDeletingPassword] = useState(false);
   const [csrfToken, setCsrfToken] = useState<string>('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -497,15 +496,14 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setSelectedServerName(serverName);
     setNewPassword('');
     setConfirmPassword('');
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
-    
+    setShowPasswords(false);
+
     try {
       // Get CSRF token
       const csrfToken = await getCSRFToken();
-      
+
       setCsrfToken(csrfToken);
-      
+
       setPasswordDialogOpen(true);
     } catch {
       toast({
@@ -562,6 +560,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         setConfirmPassword('');
         // Refresh configuration to update hasPassword status and UI buttons
         await refreshConfigSilently();
+        
+        // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+        window.dispatchEvent(new CustomEvent('configuration-saved'));
       } else {
         toast({
           title: "Error",
@@ -607,6 +608,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
         setConfirmPassword('');
         // Refresh configuration to update hasPassword status
         await refreshConfigSilently();
+        
+        // Dispatch configuration-saved event to update toolbar components (Duplicati config and collect buttons)
+        window.dispatchEvent(new CustomEvent('configuration-saved'));
       } else {
         toast({
           title: "Error",
@@ -632,8 +636,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setNewPassword('');
     setConfirmPassword('');
     setCsrfToken('');
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
+    setShowPasswords(false);
   };
 
 
@@ -645,7 +648,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       <Card variant="modern">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <ColoredIcon icon={CheckCircle} color="green" size="lg" />
+            <ColoredIcon icon={Server} color="green" size="lg" />
             <div>
               <CardTitle>Server Addresses</CardTitle>
               <CardDescription className="mt-1">No servers found</CardDescription>
@@ -664,7 +667,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       <Card variant="modern">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <ColoredIcon icon={CheckCircle} color="green" size="lg" />
+            <ColoredIcon icon={Server} color="green" size="lg" />
             <div>
               <CardTitle>Configure Server Settings</CardTitle>
               <CardDescription className="mt-1">
@@ -731,9 +734,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                       <div className="flex items-center gap-2">
                         <span className="font-medium truncate">{connection.name}</span>
                         {connection.hasPassword && (
-                          <span title="Password set">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto p-0 hover:bg-transparent"
+                            onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
+                            title="Click to change password"
+                          >
                             <KeyRound className="h-3 w-3 text-blue-400"/>
-                          </span>
+                          </Button>
                         )}
                       </div>
                     </TableCell>
@@ -871,7 +881,16 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm">{connection.name}</span>
                       {connection.hasPassword && (
-                        <KeyRound className="h-3 w-3 text-orange-500" />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-0 hover:bg-transparent"
+                          onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
+                          title="Click to change password"
+                        >
+                          <KeyRound className="h-3 w-3 text-orange-500" />
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -1105,7 +1124,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <div className="relative">
                 <Input
                   id="new-password"
-                  type={showNewPassword ? "text" : "password"}
+                  type={showPasswords ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
@@ -1116,9 +1135,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  onClick={() => setShowPasswords(!showPasswords)}
                 >
-                  {showNewPassword ? (
+                  {showPasswords ? (
                     <EyeOff className="h-4 w-4 text-gray-500" />
                   ) : (
                     <Eye className="h-4 w-4 text-gray-500" />
@@ -1133,7 +1152,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <div className="relative">
                 <Input
                   id="confirm-password"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPasswords ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
@@ -1144,9 +1163,9 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onClick={() => setShowPasswords(!showPasswords)}
                 >
-                  {showConfirmPassword ? (
+                  {showPasswords ? (
                     <EyeOff className="h-4 w-4 text-gray-500" />
                   ) : (
                     <Eye className="h-4 w-4 text-gray-500" />

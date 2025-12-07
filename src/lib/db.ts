@@ -1146,6 +1146,42 @@ function createDbOps() {
     DELETE FROM backups WHERE server_id = ?
   `, 'deleteServerBackups'),
 
+  // Duplicate server detection and merge operations
+  // Filter out invalid server IDs (URLs, empty strings, etc.) - only include valid UUIDs or non-URL IDs
+  // Returns multiple rows per server name (one row per duplicate server)
+  getDuplicateServers: safePrepare(`
+    SELECT 
+      name,
+      id,
+      created_at,
+      alias,
+      note,
+      server_url,
+      server_password
+    FROM servers
+    WHERE id IS NOT NULL 
+      AND id != ''
+      AND id NOT LIKE 'http://%'
+      AND id NOT LIKE 'https://%'
+      AND name IN (
+        SELECT name
+        FROM servers
+        WHERE id IS NOT NULL 
+          AND id != ''
+          AND id NOT LIKE 'http://%'
+          AND id NOT LIKE 'https://%'
+        GROUP BY name
+        HAVING COUNT(*) > 1
+      )
+    ORDER BY name, created_at DESC
+  `, 'getDuplicateServers'),
+
+  updateBackupServerId: safePrepare(`
+    UPDATE backups 
+    SET server_id = ? 
+    WHERE server_id = ?
+  `, 'updateBackupServerId'),
+
   // New query for server cards - get backup status history for status bars
    getServersSummary: safePrepare(`
     SELECT

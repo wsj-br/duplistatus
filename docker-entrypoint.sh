@@ -11,14 +11,6 @@ timestamp() {
 
 log_ts() {
   local msg="$*"
-  case "$msg" in
-    *"🔔"*|*"WAL checkpoint completed successfully"*|*"✅"*)
-      ;;
-    *)
-      return
-      ;;
-  esac
-
   if [ "${msg#\[}" != "$msg" ]; then
     local label="${msg%%]*}]"
     local remainder="${msg#"$label"}"

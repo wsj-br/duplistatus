@@ -108,10 +108,13 @@ export interface NtfyConfig {
 export interface EmailConfig {
   host: string;
   port: number;
-  secure: boolean;
+  connectionType: SMTPConnectionType;
   username: string;
   password?: string;
   mailto: string;
+  senderName?: string;
+  fromAddress?: string;
+  requireAuth?: boolean;
   enabled: boolean;
   hasPassword?: boolean;
 }
@@ -269,20 +272,29 @@ export interface SystemInfo {
 }
 
 // SMTP Configuration types
+export type SMTPConnectionType = 'plain' | 'starttls' | 'ssl';
+
 export interface SMTPConfig {
   host: string;
   port: number;
-  secure: boolean;
+  connectionType: SMTPConnectionType;
   username: string;
   password: string;
   mailto: string;
+  senderName?: string; // Optional sender display name (defaults to "duplistatus")
+  fromAddress?: string; // Optional from email address (defaults to username)
+  requireAuth?: boolean; // Whether SMTP server requires authentication (defaults to true)
 }
 
 export interface SMTPConfigEncrypted {
   host: string;
   port: number;
-  secure: boolean;
+  connectionType?: SMTPConnectionType; // 'plain' | 'starttls' | 'ssl'
+  secure?: boolean; // Deprecated: stored only for backward compatibility
   username: string; // encrypted
   password: string; // encrypted
   mailto: string;
+  senderName?: string; // Optional sender display name (defaults to "duplistatus")
+  fromAddress?: string; // Optional from email address (defaults to username)
+  requireAuth?: boolean; // Whether SMTP server requires authentication (defaults to true)
 }

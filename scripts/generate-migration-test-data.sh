@@ -14,8 +14,9 @@ SERVERS=3
 echo "Migration test data directory: $MIGRATION_TEST_DATA_DIR"
 echo "Data directory: $DATA_DIR"
 
-# versions to test
+# versions to generate test data for
 VERSIONS="v0.4.0 v0.5.0 v0.6.1 0.7.27 0.8.21"
+VERSIONS="v0.9.9"
 
 if [ -z $GOOGLE_CHROME ]; then
   echo "Error: Google Chrome not found, check if puppeteer is installed and you already use the 'pnpm take-screenshots' script"

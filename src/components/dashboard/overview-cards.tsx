@@ -230,6 +230,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                   <TooltipTrigger asChild>
                     <div 
                       className="grid grid-cols-[45%_25%_30%] cursor-pointer hover:bg-muted/30 transition-colors duration-200 rounded px-1 -mx-1"
+                      data-screenshot-trigger="backup-item"
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
@@ -269,7 +270,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                     avoidCollisions={true}
                     collisionPadding={24}
                     className="cursor-default space-y-3 min-w-[300px] max-w-[400px] z-[9999]"
-                    data-screenshot-target="overdue-backup-tooltip"
+                    data-screenshot-target={backupJob.isBackupOverdue ? "overdue-backup-tooltip" : "backup-tooltip"}
                     onClick={(e) => {
                       e.stopPropagation();
                       // Close the tooltip by clicking outside

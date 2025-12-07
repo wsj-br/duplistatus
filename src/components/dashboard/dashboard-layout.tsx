@@ -187,7 +187,7 @@ export function DashboardLayout({
           {/* Right Panel: Overview Charts - 20% width */}
           <div className={`${useContentBasedHeight ? 'w-full md:w-[20%]' : 'w-[20%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
-          }`}>
+          }`} data-screenshot-target="overview-side-panel">
             <Card className="shadow-lg border-2 border-border h-full relative">
               <OverviewSidePanelToggle />
               <CardContent className="p-0 h-full">

@@ -31,13 +31,25 @@ export const PATCH = withCSRF(requireAdmin(async (request: NextRequest, authCont
       }
       
       // Create minimal config with provided values
+      const connectionType = config.connectionType || 'starttls';
       existingConfig = {
         host: config.host,
         port: config.port,
-        secure: config.secure || false,
-        username: config.username,
+        connectionType,
+        username: config.username || '',
         password: '', // Will be set below
-        mailto: config.mailto
+        mailto: config.mailto,
+        senderName: config.senderName,
+        fromAddress: config.fromAddress,
+        requireAuth: config.requireAuth !== false // Default to true for backward compatibility
+      };
+    } else if (config) {
+      // If existing config exists but config is provided, update senderName, fromAddress, and requireAuth if provided
+      existingConfig = {
+        ...existingConfig,
+        senderName: config.senderName !== undefined ? config.senderName : existingConfig.senderName,
+        fromAddress: config.fromAddress !== undefined ? config.fromAddress : existingConfig.fromAddress,
+        requireAuth: config.requireAuth !== undefined ? (config.requireAuth !== false) : existingConfig.requireAuth
       };
     }
 

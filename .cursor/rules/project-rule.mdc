@@ -26,3 +26,7 @@ Instructions:
 - Always follow the DRY (Don't Repeat Yourself) principle to make the codebase more maintainable.
 - Ask questions if you need clarification.
 
+
+Important:
+  - keep a list of the changes made to the codebase in the docs/CHANGELOG.md file.
+

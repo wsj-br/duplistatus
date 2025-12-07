@@ -35,7 +35,7 @@ The cards layout shows the status of the most recent backup log received for eac
     - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for years.
 
 > [!NOTE]
-> You can use the [Display Settings](display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
+> You can use the [Display Settings](settings/display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
 
 You can toggle the top right button on the side panel to change the panel view:
 
@@ -113,7 +113,7 @@ Hovering over the overdue warning icon displays details about the overdue backup
 
 Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
 
-![Available versions](/img/screen-versions.png)
+![Available versions](/img/screen-available-backups-modal.png)
 
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.

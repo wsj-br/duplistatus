@@ -23,8 +23,8 @@ The settings page features a collapsible sidebar that organizes settings into lo
 
 - **System**
   - [Servers](server-settings.md): Manage Duplicati server configurations
-  - [Display](../display-settings.md): Configure display preferences
-  - [Database Maintenance](../database-maintenance.md): Perform database cleanup (admin only)
+  - [Display](display-settings.md): Configure display preferences
+  - [Database Maintenance](database-maintenance.md): Perform database cleanup (admin only)
   - [Users](user-management-settings.md): Manage user accounts (admin only)
   - [Audit Log](audit-log-settings.md): View system audit logs
   - [Audit Log Retention](audit-log-settings.md#retention-configuration): Configure audit log retention (admin only)
@@ -44,7 +44,7 @@ The settings page features a collapsible sidebar that organizes settings into lo
 
 - **System**
   - [Servers](server-settings.md): View server configurations (read-only)
-  - [Display](../display-settings.md): Configure display preferences
+  - [Display](display-settings.md): Configure display preferences
   - [Audit Log](audit-log-settings.md): View system audit logs (read-only)
 
 > [!NOTE]

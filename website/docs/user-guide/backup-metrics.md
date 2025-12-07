@@ -20,5 +20,5 @@ A chart of backup metrics over time is shown on both the dashboard (table view) 
    
 
 > [!NOTE]
-> You can use the [Display Settings](display-settings) control to configure the time range for the chart.
+> You can use the [Display Settings](settings/display-settings.md) control to configure the time range for the chart.
 

@@ -37,8 +37,6 @@ const sidebars: SidebarsConfig = {
         'user-guide/collect-backup-logs',
         'user-guide/overdue-monitoring',
         'user-guide/duplicati-configuration',
-        'user-guide/database-maintenance',
-        'user-guide/display-settings',
         {
           type: 'category',
           label: 'Settings',
@@ -50,6 +48,8 @@ const sidebars: SidebarsConfig = {
             'user-guide/settings/ntfy-settings',
             'user-guide/settings/email-settings',
             'user-guide/settings/server-settings',
+            'user-guide/settings/display-settings',
+            'user-guide/settings/database-maintenance',
             'user-guide/settings/user-management-settings',
             'user-guide/settings/audit-log-settings',
           ],
@@ -106,6 +106,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Release Notes',
       items: [
+        'release-notes/1.0.x',
         'release-notes/0.9.x',
         'release-notes/0.8.x',
         'release-notes/0.7.x',

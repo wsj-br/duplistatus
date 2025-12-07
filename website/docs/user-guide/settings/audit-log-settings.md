@@ -88,9 +88,12 @@ The audit log tracks the following types of events:
 |:-------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Authentication Events**      | User login and logout<br/>Password changes<br/>Account lockouts<br/>Failed login attempts                                                                           |
 | **User Management Operations** | User creation, updates, and deletion<br/>Password resets<br/>Admin status changes<br/>Password change requirement settings                                          |
-| **Configuration Changes**      | Email (SMTP) settings<br/>NTFY settings<br/>Notification templates<br/>Overdue tolerance settings<br/>Backup notification settings<br/>Audit log retention settings |
-| **Backup Operations**          | Backup log collection<br/>Backup data deletion<br/>Database cleanup operations                                                                                      |
-| **Server Management**          | Server addition, updates, and deletion<br/>Server password changes<br/>Server URL configuration                                                                     |
-| **System Operations**          | Database migrations<br/>Notification sending<br/>System cleanup operations                                                                |
+| **Configuration Changes**      | Email (SMTP) settings<br/>NTFY settings<br/>Notification templates<br/>Overdue tolerance settings<br/>Backup notification settings<br/>Audit log retention settings<br/>Notification frequency settings |
+| **Backup Operations**          | Backup log collection<br/>Backup log upload via API (`/api/upload`)<br/>Backup job deletion<br/>Database cleanup operations                                                                                      |
+| **Server Management**          | Server addition (during backup collection)<br/>Server updates (URL, alias, note)<br/>Server deletion<br/>Server password changes                                                                     |
+| **System Operations**          | Database migrations<br/>Notification sending<br/>System cleanup operations<br/>Audit log cleanup                                                                |
+
+> [!NOTE]
+> **Server merge operations** (merging duplicate servers) are not currently logged in the audit log. This feature may be added in a future release.
 
 <br/>
