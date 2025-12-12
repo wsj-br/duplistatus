@@ -65,7 +65,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "lucide-react": "^0.556.0",
-    "next": "^16.0.7",
+    "next": "^16.0.9",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.11",
     "qrcode": "^1.5.4",
