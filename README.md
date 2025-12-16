@@ -3,7 +3,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![version](https://img.shields.io/badge/version-1.0.1-blue)
+![version](https://img.shields.io/badge/version-1.0.2-blue)
 
 <br/>
 
@@ -41,7 +41,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 ## Features
 
 - **Quick Setup**: Simple deployment in a container, with images on Docker Hub and GitHub.
-- **Unified Dashboard**: View backup status, history and details for all servers in one place.
+- **Unified Dashboard**: View backup status, history, and details for all servers in one place.
 - **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
@@ -58,11 +58,11 @@ See details in the [Installation Guide](https://wsj-br.github.io/duplistatus/ins
 
 Once your **duplistatus** server is up and running, you need to configure your **Duplicati** servers to 
 send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](https://wsj-br.github.io/duplistatus/installation/duplicati-server-configuration) 
-section of the Installation Guide. Without this configuration, the dashboard will not function properly.
+section of the Installation Guide. Without this configuration, the dashboard will not receive backup data from your Duplicati servers.
 
 ## User Guide
 
-See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) for detailed instructions on how to configure and use **duplistatus**, including setup, features, and troubleshooting.
+See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) for detailed instructions on how to configure and use **duplistatus**, including initial setup, feature configuration, and troubleshooting.
 
 ## Screenshots
 
@@ -92,15 +92,15 @@ See the [API Endpoints Documentation](https://wsj-br.github.io/duplistatus/api-r
 
 ## Development
 
-For instructions on downloading, changing, or running the code, see [DEVELOPMENT.md](https://wsj-br.github.io/duplistatus/development/setup).
+For instructions on downloading, changing, or running the code, see [Development Setup](https://wsj-br.github.io/duplistatus/development/setup).
 
-This project was mainly built with AI help. To learn how, see [HOW-I-BUILD-WITH-AI.md](https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai).
+This project was mainly built with AI help. To learn how, see [How I Built this Application using AI tools](https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai).
 
 ## Credits
 
 - First and foremost, thanks to Kenneth Skovhede for creating Duplicati, this amazing backup tool. Thanks also to all the contributors.
 
-  💙 If you find Duplicati (https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
+  💙 If you find [Duplicati](https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
 
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
 - Notify SVG icon from https://dashboardicons.com/icons/ntfy
