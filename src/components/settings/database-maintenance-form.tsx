@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -88,7 +88,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
   const { refreshConfigSilently } = useConfiguration();
 
   // Function to fetch duplicate servers
-  const fetchDuplicateServers = async () => {
+  const fetchDuplicateServers = useCallback(async () => {
     if (!isAdmin) return;
     
     try {
@@ -100,10 +100,10 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
     } catch (error) {
       console.error('Error fetching duplicate servers:', error instanceof Error ? error.message : String(error));
     }
-  };
+  }, [isAdmin]);
 
   // Function to fetch servers and backup jobs
-  const fetchServers = async () => {
+  const fetchServers = useCallback(async () => {
     try {
       // First get basic server information
       const serversResponse = await authenticatedRequestWithRecovery('/api/servers');
@@ -164,13 +164,13 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
     } catch (error) {
       console.error('Error fetching servers:', error instanceof Error ? error.message : String(error));
     }
-  };
+  }, []);
 
   // Fetch servers and duplicates on component mount
   useEffect(() => {
     fetchServers();
     fetchDuplicateServers();
-  }, []);
+  }, [fetchServers, fetchDuplicateServers]);
 
   // Listen for configuration change events to refresh data
   useEffect(() => {
@@ -184,7 +184,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
     return () => {
       window.removeEventListener('configuration-saved', handleConfigurationChange);
     };
-  }, []);
+  }, [fetchServers, fetchDuplicateServers]);
 
   const handleCleanup = async () => {
     try {
@@ -734,7 +734,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                       <span className="relative group">
                         <Info className="inline w-4 h-4 align-text-bottom text-blue-500 cursor-pointer" />
                         <span className="absolute z-10 right-0 bottom-full mb-2 w-max max-w-md bg-popover text-popover-foreground text-xs p-2 rounded shadow-lg border border-gray-200 dark:border-gray-800 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity pointer-events-none">
-                          Duplicati's machine-id can be changed after an upgrade or reinstall.
+                          Duplicati&apos;s machine-id can be changed after an upgrade or reinstall.
                           <br />
                           All backup logs and configurations will be transferred to the target servers.
                         </span>

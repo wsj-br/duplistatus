@@ -116,14 +116,12 @@ export function DashboardTable({ servers }: DashboardTableProps) {
         if (parsed && typeof parsed.column === 'string' && 
             (parsed.direction === 'asc' || parsed.direction === 'desc')) {
           // Load user-specific config - this is necessary for per-user settings
-          // eslint-disable-next-line react-hooks/set-state-in-effect
           setSortConfig(parsed);
         }
       }
     } catch (error) {
       console.warn('Failed to load dashboard sort config:', error);
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoaded(true);
   }, [currentUser, isLoaded]);
 

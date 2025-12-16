@@ -67,17 +67,11 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     if (savedConfig && savedConfig.trim() !== '') {
       try {
         const config = JSON.parse(savedConfig);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.databaseCleanupPeriod) setDatabaseCleanupPeriod(config.databaseCleanupPeriod);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.tablePageSize) setTablePageSize(config.tablePageSize);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.chartTimeRange) setChartTimeRange(config.chartTimeRange);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
       } catch (error) {
         console.error('Failed to parse saved config from localStorage:', error);
@@ -92,7 +86,6 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         const response = await authenticatedRequestWithRecovery('/api/configuration/overdue-tolerance');
         if (response.ok) {
           const data = await response.json();
-          // eslint-disable-next-line react-hooks/set-state-in-effect
           setOverdueTolerance(data.overdue_tolerance);
         } else {
           console.error('Failed to load tolerance config:', response.statusText);
@@ -106,7 +99,6 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     
     loadTolerance();
     
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(false);
   }, [currentUser]);
 
@@ -123,7 +115,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         dashboardCardsSortOrder,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, currentUser?.id]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, currentUser]);
 
   const cleanupDatabase = async () => {
     try {

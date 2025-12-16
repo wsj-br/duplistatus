@@ -1,58 +1,83 @@
-# GitHub Copilot / AI Agent Instructions for duplistatus
+---
+alwaysApply: true
+---
 
-Quick, focused guidance to make AI coding agents immediately productive in this repository.
+# duplistatus Project Rules (v1.0.2)
 
-1. Big picture
-   - duplistatus is a Next.js 15 app with a small custom Node server (`duplistatus-server.ts`) and a separate cron service under `src/cron-service/`.
-   - Web app (Next) handles UI and REST API under `/api/*`. Cron service runs scheduled background tasks (overdue checks, notifications) and exposes its own REST API on a separate port (default CRON_PORT=9667).
-   - Persistent data lives in a local SQLite DB located under `data/backups.db`. In development the app also writes JSON request dumps into `data/` for debugging.
+## Stack & Versions
 
-2. Start / build / dev workflow (use these exact commands)
-   - Install: pnpm install (pnpm v10+ required)
-   - Dev UI: pnpm dev (starts Next on port 8666)
-   - Dev cron (watch mode): pnpm cron:dev (starts cron on 8667)
-   - Build: pnpm build
-   - Start (production): pnpm start (server on 9666; uses `duplistatus-server.ts` entry)
-   - Docker: pnpm docker-up / pnpm docker-down
+- **Node.js**: >=24.12.0
+- **TypeScript**: ~5.9.3
+- **Next.js (App Router)**: ^16.0.10
+- **pnpm**: >=10.24.0 (packageManager: pnpm@10.26.0)
+- **React & React-DOM**: ^19.2.3
+- **Tailwind CSS**: ^4.1.18
+- **@radix-ui/react-*** modules: latest versions
+- **ESLint**: bundled with Next.js
+- **Prettier**: not used
 
-3. Key files to inspect for behavior and patterns
-   - `duplistatus-server.ts` — custom Node server that ensures `.duplistatus.key` permissions, exposes env var checks and starts Next.js. Important for startup, health checks and graceful shutdown.
-   - `src/cron-service/` — cron service code and README with API and task lifecycle (watch for `CRON_PORT` logic).
-   - `src/lib/` — shared library utilities (DB, cron-client, types). Reuse functions here rather than duplicating logic.
-   - `scripts/` — helpful admin scripts (clean-db.sh, generate-test-data.ts, duplistatus-cron.sh). Tests and debugging helpers live here.
-   - `Dockerfile` & `docker-compose.yml` — container lifecycle: build stage copies `.next/standalone` and includes cron service runtime files.
+## Project Architecture
 
-4. Project-specific conventions
-   - Use `pnpm` (not `npm`/`yarn`) — enforced by `preinstall` script and `packageManager` in package.json.
-   - Node >=20 is required (see `engines` in package.json).
-   - The app expects `PORT` and `CRON_PORT` env vars. Cron defaults to PORT+1 if not set; tests and scripts assume ports 8666/8667 in dev and 9666/9667 in prod.
-   - Key file: `data/.duplistatus.key` must be 0400 permissions. The server will refuse to start if invalid.
-   - DB migrations/backups: migrations create `backups-copy-*.db` in `data/bkp/` during startup; be careful when editing migration code.
+- **Main app**: Next.js 15+ with custom Node server (`duplistatus-server.ts`)
+- **Cron service**: Separate background service under `src/cron-service/` with its own REST API
+- **Database**: SQLite at `data/backups.db`
+- **Security**: `data/.duplistatus.key` must have 0400 permissions
 
-5. Patterns and examples (copyable snippets)
-   - Calling cron endpoints from the UI client: see `src/lib/cron-client.ts` for usage patterns (triggering tasks, health checks).
-   - Uploading Duplicati reports: UI POSTs to `/api/upload`; incoming JSON is written to `data/` in dev and inserted into SQLite in prod.
-   - Starting cron in production inside container: the Docker CMD runs `node duplistatus-server.ts & /app/duplistatus-cron.sh`.
+## Ports
 
-6. Tests, debugging and safety
-   - There are no automated unit tests in the repo; use the provided scripts to generate data and exercise flows:
-     - `pnpm run generate-test-data --servers=5` (destructive: replaces DB)
-     - `pnpm show-overdue-notifications`
-     - `pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"`
-   - To inspect DB: open `data/backups.db` with `sqlite3` or use the SQL scripts in `scripts/`.
-   - Use `pnpm lint` and `pnpm typecheck` before publishing changes.
+- **Development**: 8666 (Next), 8667 (cron)
+- **Production**: 9666 (Next), 9667 (cron)
 
-7. Integration points and external deps
-   - Duplicati servers POST backup reports to `/api/upload` (JSON). See `docs/INSTALL.md` for exact Duplicati options: `--send-http-url=http://HOST:PORT/api/upload`.
-   - Notification delivery via ntfy and optional SMTP; SMTP env vars are read at server startup and masked in logs.
-   - Docker images published to Docker Hub / GHCR (`wsjbr/duplistatus` / `ghcr.io/wsj-br/duplistatus`).
+## Commands (DO NOT run these automatically)
 
-8. When making changes
-   - Preserve the `.duplistatus.key` permission logic in `duplistatus-server.ts` unless you intentionally change secure behavior.
-   - Update `docs/DEVELOPMENT.md` and `docs/INSTALL.md` for any change that affects setup, ports, or environment variables.
-   - For DB schema changes, add migration logic and ensure the backup flow still creates `backups-copy-*.db` files.
+```bash
+pnpm install          # Install dependencies
+pnpm dev              # Start Next.js dev server on 8666
+pnpm cron:dev         # Start cron service in watch mode on 8667
+pnpm build            # Production build
+pnpm start            # Production server on 9666
+pnpm lint             # Check for errors (use this before suggesting changes)
+pnpm typecheck        # Run TypeScript checks
+```
 
-9. Where to look for more AI guidance in repo
-   - `docs/HOW-I-BUILD-WITH-AI.md` and `website/docs/development/ai-development.md` contain examples of previous AI-assisted work and tools recommended.
+## Code Quality Rules
 
-If something above is unclear or you want a different focus (e.g., write starter tests, implement a new API endpoint, or add TypeScript types), say which area and I will expand this guidance and open a small PR with examples.
+1. **Never use `any`** - Always define proper TypeScript interfaces
+2. **Follow DRY** - Reuse functions from `src/lib/` instead of duplicating logic
+3. **Preserve security** - Do not modify `.duplistatus.key` permission checks
+4. **Run linter** - Use `pnpm lint` before suggesting code changes
+5. **Update docs** - When changing ports, env vars, or setup, update:
+   - `docs/DEVELOPMENT.md`
+   - `docs/INSTALL.md`
+
+## Git Commit Messages
+
+- Do NOT include version number changes in commit headline
+- Include version changes in the detailed change list
+
+## Important Files
+
+- `duplistatus-server.ts` - Custom server entry point
+- `src/cron-service/` - Background task service
+- `src/lib/` - Shared utilities (DB, cron-client, types)
+- `data/backups.db` - SQLite database
+- `data/.duplistatus.key` - Security key file (must be 0400)
+
+## Change Tracking
+
+**REQUIRED**: Update `dev/CHANGELOG.md` with all changes made to the codebase.
+
+## Integration Points
+
+- Duplicati servers POST to `/api/upload` (JSON backup reports)
+- Notifications via ntfy and optional SMTP
+- Docker images: `wsjbr/duplistatus` and `ghcr.io/wsj-br/duplistatus`
+
+## Testing & Debugging
+
+No automated tests. 
+
+## Key Patterns
+
+- DB access: use functions in `src/lib/db.ts`
+

@@ -242,7 +242,6 @@ export function NotificationTemplatesForm({ templates, onSave, onSendTest }: Not
       hasLoadedUserTabRef.current = true;
       const savedTab = getUserLocalStorageItem('notification-templates-active-tab', currentUser.id);
       if (savedTab === 'success' || savedTab === 'warning' || savedTab === 'overdue') {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActiveTab(savedTab);
       }
     }

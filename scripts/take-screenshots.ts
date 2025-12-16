@@ -10,7 +10,7 @@ dotenv.config();
 const BASE_URL = 'http://localhost:8666';
 const ADMIN_USERNAME = 'admin';
 const USER_USERNAME = 'user';
-const SCREENSHOT_DIR = 'website/static/img';
+const SCREENSHOT_DIR = 'docs/static/img';
 const VIEWPORT_WIDTH = 1920;
 const VIEWPORT_HEIGHT = 1080;
 
@@ -298,7 +298,7 @@ async function takeScreenshot(page: Page, filename: string, options?: {
   const cropBottom = options?.cropBottom ?? 0;
   const clip = options?.clip;
   
-  console.log(colors.cyan, `Taking screenshot: ${filename}...`, colors.reset);
+  console.log(colors.cyan, ` 📸 Taking screenshot: ${filename}...`, colors.reset);
   await delay(waitTime);
   
   const filepath = join(SCREENSHOT_DIR, filename);
@@ -492,7 +492,7 @@ async function takeScreenshot(page: Page, filename: string, options?: {
     }
   }
   
-  logSuccess(` Screenshot saved: ${filepath}`);
+  logSuccess(`  💾 Screenshot saved: ${filepath}`);
   return true;
 }
 
@@ -767,6 +767,93 @@ async function deleteServerDeletionAuditLogs(): Promise<number> {
   } catch (error) {
     logError('Error deleting server_deletion audit logs: ' + (error instanceof Error ? error.message : String(error)));
     return 0;
+  }
+}
+
+async function findServersWithBackups(): Promise<string[]> {
+  try {
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const db = dbModule.db;
+    
+    // Find all servers that have at least one backup
+    const serversWithBackups = db.prepare(`
+      SELECT DISTINCT server_id
+      FROM backups
+      ORDER BY server_id
+    `).all() as { server_id: string }[];
+    
+    return serversWithBackups.map(row => row.server_id);
+  } catch (error) {
+    logError(`Error finding servers with backups: ${error instanceof Error ? error.message : String(error)}`);
+    return [];
+  }
+}
+
+async function deleteRecentBackupsToCreateOverdue(serverId: string, count: number = 1): Promise<boolean> {
+  console.log(`Deleting ${count} recent backup(s) from server ${serverId} to create overdue backup...`);
+  try {
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const db = dbModule.db;
+    
+    // Get all unique backup configurations (backup_name) for this server
+    const backupConfigs = db.prepare(`
+      SELECT DISTINCT backup_name
+      FROM backups
+      WHERE server_id = ?
+      ORDER BY backup_name
+    `).all(serverId) as { backup_name: string }[];
+    
+    if (backupConfigs.length === 0) {
+      logError(`No backup configurations found for server ${serverId}`);
+      return false;
+    }
+    
+    // Use the first backup configuration
+    const backupName = backupConfigs[0].backup_name;
+    console.log(`  Using backup type: ${backupName}`);
+    
+    // Get the most recent backups for this server/backup_name combination
+    const recentBackups = db.prepare(`
+      SELECT id, date
+      FROM backups
+      WHERE server_id = ? AND backup_name = ?
+      ORDER BY date DESC
+      LIMIT ?
+    `).all(serverId, backupName, count) as { id: string; date: string }[];
+    
+    if (recentBackups.length === 0) {
+      logError(`No backups found for server ${serverId} with backup name ${backupName}`);
+      return false;
+    }
+    
+    console.log(`  Found ${recentBackups.length} backup(s) to delete`);
+    
+    // Delete the backups
+    const deleteTransaction = db.transaction(() => {
+      let deletedCount = 0;
+      for (const backup of recentBackups) {
+        const result = db.prepare('DELETE FROM backups WHERE id = ?').run(backup.id);
+        if (result.changes > 0) {
+          deletedCount++;
+        }
+      }
+      return deletedCount;
+    });
+    
+    const deletedCount = deleteTransaction();
+    
+    if (deletedCount > 0) {
+      console.log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, backup type ${backupName}`);
+      return true;
+    } else {
+      logError(`Failed to delete backups (no rows affected)`);
+      return false;
+    }
+  } catch (error) {
+    logError(`Error deleting recent backups: ${error instanceof Error ? error.message : String(error)}`);
+    return false;
   }
 }
 
@@ -1098,48 +1185,114 @@ async function captureBackupTooltip(page: Page): Promise<boolean> {
     await waitForDashboardLoad(page);
     await delay(2000);
     
-    // Find all backup items and identify one that's not overdue
+    // Find all backup items
     const backupItems = await page.$$('[data-screenshot-trigger="backup-item"]');
+    console.log(`Found ${backupItems.length} backup item(s)`);
+    
+    if (backupItems.length === 0) {
+      logError('No backup items found on the page');
+      return false;
+    }
     
     let backupItemHandle: any = null;
     
     // Find the first backup item that is NOT overdue
+    // Simplified check: just look for the AlertTriangle icon (overdue indicator)
     for (const item of backupItems) {
       const isOverdue = await item.evaluate((el) => {
-        // Check if it has overdue warning icon
-        const hasOverdueIcon = el.querySelector('svg[class*="AlertTriangle"], .text-red-500');
-        // Check if it's inside a card and under "Backups:" section
-        const card = el.closest('[class*="Card"], [class*="card"]');
-        const backupsSection = el.closest('section');
-        const hasBackupsHeading = backupsSection?.querySelector('h3')?.textContent?.includes('Backups:');
-        return hasOverdueIcon || !card || !hasBackupsHeading;
+        // Check if it has overdue warning icon (AlertTriangle)
+        const hasOverdueIcon = el.querySelector('svg[class*="AlertTriangle"]') !== null;
+        return hasOverdueIcon;
       });
       
       if (!isOverdue) {
         backupItemHandle = item;
+        console.log('Found non-overdue backup item');
         break;
       }
     }
     
+    // If all items are overdue, use the first one anyway (we'll still get a tooltip)
+    if (!backupItemHandle && backupItems.length > 0) {
+      backupItemHandle = backupItems[0];
+      console.log('All backup items are overdue, using first item anyway');
+    }
+    
     if (backupItemHandle) {
-      // Hover over the backup item using Puppeteer's hover
-      await backupItemHandle.hover();
-      await delay(2000); // Wait for tooltip to appear (delayDuration is 1000ms)
+      // Get the element's position to trigger mouse events properly
+      const elementInfo = await backupItemHandle.evaluate((el: HTMLElement) => {
+        const rect = el.getBoundingClientRect();
+        return {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+      });
       
-      // Wait for tooltip to appear
+      // Move mouse to the element and hover
+      await page.mouse.move(elementInfo.x, elementInfo.y);
+      await delay(500);
+      
+      // Trigger mouseenter event to ensure tooltip appears
+      await backupItemHandle.evaluate((el: HTMLElement) => {
+        const event = new MouseEvent('mouseenter', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+        el.dispatchEvent(event);
+      });
+      
+      // Wait for tooltip to appear (delayDuration is 1000ms, so wait at least 1500ms)
+      await delay(1500);
+      
+      // Wait for tooltip to appear - check for both non-overdue and overdue tooltips
       try {
-        await page.waitForSelector('[data-screenshot-target="backup-tooltip"]', { timeout: 3000 });
+        await page.waitForSelector('[data-screenshot-target="backup-tooltip"], [data-screenshot-target="overdue-backup-tooltip"]', { timeout: 3000 });
       } catch (e) {
-        logError('Tooltip did not appear after hovering');
-        return false;
+        // Try alternative selectors
+        try {
+          await page.waitForSelector('[data-radix-tooltip-content]', { timeout: 2000 });
+        } catch (e2) {
+          logError('Tooltip did not appear after hovering');
+          // Debug: check what's on the page
+          const debugInfo = await page.evaluate(() => {
+            const items = document.querySelectorAll('[data-screenshot-trigger="backup-item"]');
+            const tooltips = document.querySelectorAll('[data-screenshot-target="backup-tooltip"], [data-screenshot-target="overdue-backup-tooltip"]');
+            return {
+              backupItems: items.length,
+              tooltips: tooltips.length,
+              tooltipVisible: Array.from(tooltips).some((t: Element) => {
+                const style = window.getComputedStyle(t);
+                return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+              })
+            };
+          });
+          console.log(`Debug info: ${JSON.stringify(debugInfo)}`);
+          return false;
+        }
       }
       await delay(500);
       
-      // Capture the tooltip using data-screenshot-target
+      // Capture the tooltip using data-screenshot-target (prefer non-overdue, but accept overdue too)
       const tooltipBounds = await page.evaluate(() => {
-        const tooltip = document.querySelector('[data-screenshot-target="backup-tooltip"]');
+        // First try non-overdue tooltip
+        let tooltip = document.querySelector('[data-screenshot-target="backup-tooltip"]');
+        // If not found, try overdue tooltip
+        if (!tooltip) {
+          tooltip = document.querySelector('[data-screenshot-target="overdue-backup-tooltip"]');
+        }
+        // Fallback to any Radix tooltip
+        if (!tooltip) {
+          tooltip = document.querySelector('[data-radix-tooltip-content]');
+        }
+        
         if (tooltip) {
           const rect = tooltip.getBoundingClientRect();
+          // Check if tooltip is actually visible
+          const style = window.getComputedStyle(tooltip);
+          if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+            return null;
+          }
           return {
             x: Math.max(0, rect.x - 10),
             y: Math.max(0, rect.y - 10),
@@ -1155,6 +1308,11 @@ async function captureBackupTooltip(page: Page): Promise<boolean> {
           clip: tooltipBounds
         });
         console.log('Captured backup tooltip');
+        
+        // Move mouse away to close tooltip
+        await page.mouse.move(0, 0);
+        await delay(500);
+        
         return success;
       } else {
         logError('Could not find backup tooltip bounds');
@@ -2154,8 +2312,8 @@ async function captureBackupNotificationsDetail(page: Page) {
 async function main() {
   console.log(colors.green, '\n');
   console.log('-------------------------------------------------------' );
-  console.log('Starting screenshot automation\n');
-  console.log('-------------------------------------------------------',colors.reset);
+  console.log('Starting screenshot automation');
+  console.log('-------------------------------------------------------\n',colors.reset);
   
   
   // Arrays to track screenshot results
@@ -2254,14 +2412,65 @@ async function main() {
     const servers = await getServers(page);
     console.log(`Found ${servers.length} servers`);
     
-    // Keep only 3 servers, delete the rest
+    // Find servers that have backups - we need to keep at least one of these
+    const serversWithBackups = await findServersWithBackups();
+    console.log(`Found ${serversWithBackups.length} server(s) with backups`);
+    
+    // Identify which server to protect (keep) - prefer the first server with backups
+    let protectedServerId: string | null = null;
+    if (serversWithBackups.length > 0) {
+      // Find the first server in our list that has backups
+      for (const server of servers) {
+        if (serversWithBackups.includes(server.id)) {
+          protectedServerId = server.id;
+          console.log(`Protecting server ${server.name} (${server.id}) - it has backups and will be used for overdue screenshot`);
+          break;
+        }
+      }
+    }
+    
+    // Keep only 3 servers, delete the rest (but never delete the protected server)
     console.log('-------------------------------------------------------');
     console.log('Keeping only 3 servers, deleting the rest...');
     if (servers.length > 3) {
-      const serversToDelete = servers.slice(3);
-      console.log(`Deleting ${serversToDelete.length} servers, keeping 3...`);
+      // Sort servers: protected server first, then others
+      const sortedServers = [...servers].sort((a, b) => {
+        if (a.id === protectedServerId) return -1;
+        if (b.id === protectedServerId) return 1;
+        return 0;
+      });
+      
+      // Keep first 3 (which includes protected server if it exists)
+      const serversToKeep = sortedServers.slice(0, 3);
+      const serversToDelete = sortedServers.slice(3);
+      
+      // Double-check: if protected server is not in keep list, add it and remove last one
+      if (protectedServerId && !serversToKeep.some(s => s.id === protectedServerId)) {
+        // Remove the last server from keep list and add protected server
+        serversToKeep.pop();
+        const protectedServer = servers.find(s => s.id === protectedServerId);
+        if (protectedServer) {
+          serversToKeep.push(protectedServer);
+          // Remove protected server from delete list if it's there
+          const deleteIndex = serversToDelete.findIndex(s => s.id === protectedServerId);
+          if (deleteIndex >= 0) {
+            serversToDelete.splice(deleteIndex, 1);
+          }
+        }
+      }
+      
+      console.log(`Deleting ${serversToDelete.length} server(s), keeping 3...`);
+      if (protectedServerId) {
+        console.log(`  Protected server (has backups): ${servers.find(s => s.id === protectedServerId)?.name || protectedServerId}`);
+      }
       
       for (const server of serversToDelete) {
+        // Never delete the protected server
+        if (server.id === protectedServerId) {
+          console.log(`  Skipping protected server ${server.name} (${server.id})`);
+          continue;
+        }
+        
         try {
           await deleteServer(page, server.id);
           await delay(1000); // Wait between deletions
@@ -2281,10 +2490,18 @@ async function main() {
       console.log(`Warning: Only ${remainingServersAfterDeletion.length} server(s) remaining, need at least 2 to configure`);
     } else {
       // Configure 2 servers with URLs and passwords
-      const serversToConfigure = remainingServersAfterDeletion.slice(0, 2);
+      // Make sure we don't configure the protected server if we only have 2 servers
+      const serversToConfigure = remainingServersAfterDeletion
+        .filter(s => protectedServerId ? s.id !== protectedServerId : true)
+        .slice(0, 2);
+      
+      // If we filtered out protected server and don't have 2 servers, use remaining servers
+      const actualServersToConfigure = serversToConfigure.length >= 2 
+        ? serversToConfigure 
+        : remainingServersAfterDeletion.slice(0, 2);
       
       // Configure first server: http://{servername}.local:8200
-      const firstServer = serversToConfigure[0];
+      const firstServer = actualServersToConfigure[0];
       const firstServerUrl = `http://${firstServer.name}.local:8200`;
       console.log(`Configuring server 1: ${firstServer.name} with URL: ${firstServerUrl}`);
       try {
@@ -2297,23 +2514,67 @@ async function main() {
       }
       
       // Configure second server: http://192.168.x.y:8200 where x and y are random 40-250
-      const secondServer = serversToConfigure[1];
-      const x = Math.floor(Math.random() * (250 - 40 + 1)) + 40;
-      const y = Math.floor(Math.random() * (250 - 40 + 1)) + 40;
-      const secondServerUrl = `http://192.168.${x}.${y}:8200`;
-      console.log(`Configuring server 2: ${secondServer.name} with URL: ${secondServerUrl}`);
-      try {
-        await updateServerUrl(secondServer.id, secondServerUrl);
-        await delay(500);
-        await updateServerPassword(secondServer.id, 'no-password');
-        await delay(500);
-      } catch (error) {
-        logError(`Error configuring server ${secondServer.name}: ${error instanceof Error ? error.message : String(error)}`);
+      if (actualServersToConfigure.length >= 2) {
+        const secondServer = actualServersToConfigure[1];
+        const x = Math.floor(Math.random() * (250 - 40 + 1)) + 40;
+        const y = Math.floor(Math.random() * (250 - 40 + 1)) + 40;
+        const secondServerUrl = `http://192.168.${x}.${y}:8200`;
+        console.log(`Configuring server 2: ${secondServer.name} with URL: ${secondServerUrl}`);
+        try {
+          await updateServerUrl(secondServer.id, secondServerUrl);
+          await delay(500);
+          await updateServerPassword(secondServer.id, 'no-password');
+          await delay(500);
+        } catch (error) {
+          logError(`Error configuring server ${secondServer.name}: ${error instanceof Error ? error.message : String(error)}`);
+        }
       }
       
       // Refresh the page to see updated server configurations
       await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
+    }
+    
+    // Delete recent backup(s) from the protected server (or first server with backups) to create overdue backup
+    console.log('-------------------------------------------------------');
+    console.log('Deleting recent backup(s) to create overdue backup...');
+    const finalServers = await getServers(page);
+    
+    // Find the server to make overdue - prefer protected server, otherwise find first server with backups
+    let serverToMakeOverdue: Server | null = null;
+    
+    if (protectedServerId) {
+      serverToMakeOverdue = finalServers.find(s => s.id === protectedServerId) || null;
+      if (serverToMakeOverdue) {
+        console.log(`Using protected server for overdue backup: ${serverToMakeOverdue.name}`);
+      }
+    }
+    
+    // If protected server not found, find first server with backups
+    if (!serverToMakeOverdue) {
+      const currentServersWithBackups = await findServersWithBackups();
+      for (const server of finalServers) {
+        if (currentServersWithBackups.includes(server.id)) {
+          serverToMakeOverdue = server;
+          console.log(`Using server with backups for overdue backup: ${server.name}`);
+          break;
+        }
+      }
+    }
+    
+    // Fallback to first server if no server with backups found
+    if (!serverToMakeOverdue && finalServers.length > 0) {
+      serverToMakeOverdue = finalServers[0];
+      console.log(`Warning: No server with backups found, using first server: ${serverToMakeOverdue.name}`);
+    }
+    
+    if (serverToMakeOverdue) {
+      // Delete 1-2 recent backups to ensure we have an overdue backup
+      const backupsToDelete = Math.min(2, Math.floor(Math.random() * 2) + 1);
+      await deleteRecentBackupsToCreateOverdue(serverToMakeOverdue.id, backupsToDelete);
+      await delay(1000);
+    } else {
+      logError('Could not find any server to make overdue');
     }
     
     // Switch to table view

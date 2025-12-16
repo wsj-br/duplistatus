@@ -1,6 +1,6 @@
 # duplistatus Dockerfile with integrated Docusaurus documentation
 
-FROM node:alpine AS base
+FROM node:lts-alpine AS base
 
 # Install pnpm globally at base
 RUN npm install -g pnpm@latest-10
@@ -17,20 +17,20 @@ WORKDIR /app
 # Copy workspace configuration files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy full website directory structure for proper workspace installation
-COPY website ./website
+# Copy full docs directory structure for proper workspace installation
+COPY docs ./docs
 
 
 # Set the BASE_URL to /docs/ to be included in the container and served by duplistatus-server.ts
 ENV BASE_URL="/docs/"
 
-# Install all workspace dependencies (including website)
+# Install all workspace dependencies (including docs)
 RUN pnpm install --frozen-lockfile
 
 # Build Docusaurus documentation right after install (workspace is ready)
-RUN pnpm --filter website run build
+RUN pnpm --filter docs run build
 
-# Output will be in /app/website/build
+# Output will be in /app/docs/build
 
 # ------------------------------------------------------------
 # Rebuild the source code only when needed
@@ -47,7 +47,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy built Docusaurus files into Next.js public directory before build
 # This makes them available at /docs route
-COPY --from=deps /app/website/build ./public/docs
+COPY --from=deps /app/docs/build ./public/docs
 
 # Build the application
 RUN mkdir -p /app/data && pnpm run build
@@ -62,7 +62,7 @@ RUN apk add --no-cache curl tzdata icu-libs icu-data-full tini sqlite
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=1.0.1 \
+ENV VERSION=1.0.2 \
     PORT=9666 \
     CRON_PORT=9667 \
     TZ=Europe/London \

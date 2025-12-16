@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { DatabaseMigrator } from './db-migrations';
 import bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 import { BackupNotificationConfig } from '@/lib/types';
 import { defaultAuthConfig } from './default-config';
 
@@ -216,9 +217,7 @@ class DatabaseInitLock {
             // Check if the process that created the lock is still running
             try {
               process.kill(lockInfo.pid, 0); // Signal 0 just checks if process exists
-              // Process exists, wait and retry
-              const sleep = require('util').promisify(setTimeout);
-              // Use synchronous sleep for this sync function
+              // Process exists, wait and retry - use synchronous busy wait
               const sleepSync = (ms: number) => {
                 const start = Date.now();
                 while (Date.now() - start < ms) {
@@ -355,9 +354,7 @@ try {
           isFreshDatabase = true;
           logWithTimestamp('Initializing new database with latest schema (v4.0)...');
     
-          // Import dependencies for initial setup
-          const bcrypt = require('bcrypt');
-          const { randomBytes } = require('crypto');
+          // Note: bcrypt and randomBytes are already imported at the top of this file
           
           // CRITICAL: Create db_version table FIRST and set version to 4.0 IMMEDIATELY
           // This prevents other processes from trying to run migrations while we're initializing

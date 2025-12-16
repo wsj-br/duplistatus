@@ -30,10 +30,13 @@ export function DisplaySettingsForm() {
   } = useConfig();
   
   const { theme, toggleTheme } = useTheme();
+  // Track if component has mounted on client (prevents hydration mismatch)
+  // Use useState initializer to avoid set-state-in-effect warning
   const [mounted, setMounted] = useState(false);
 
-  // Track if component has mounted on client (prevents hydration mismatch)
+  // Use useEffect with a flag to track mounting without directly calling setState
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

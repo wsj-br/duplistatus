@@ -23,10 +23,9 @@ dist
 *.log
 *.md
 !README.md
-docs
-# Exclude website node_modules and build but keep the source
-website/node_modules
-website/build
+# Exclude docs node_modules and build but keep the source
+docs/node_modules
+docs/build
 backups.db
 *.db
 *.sqlite

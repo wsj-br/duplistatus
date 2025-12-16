@@ -105,17 +105,6 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
     loadUsers();
   }, [loadUsers]);
 
-  // Column configuration for sorting
-  const columnConfig = {
-    username: { type: 'text' as keyof typeof sortFunctions, path: 'username' },
-    isAdmin: { type: 'boolean' as keyof typeof sortFunctions, path: 'isAdmin' },
-    isLocked: { type: 'boolean' as keyof typeof sortFunctions, path: 'isLocked' },
-    mustChangePassword: { type: 'boolean' as keyof typeof sortFunctions, path: 'mustChangePassword' },
-    lastLoginAt: { type: 'date' as keyof typeof sortFunctions, path: 'lastLoginAt' },
-    createdAt: { type: 'date' as keyof typeof sortFunctions, path: 'createdAt' },
-    updatedAt: { type: 'date' as keyof typeof sortFunctions, path: 'updatedAt' },
-  };
-
   // Filter users by search term
   const filteredUsers = users.filter(user =>
     user.username.toLowerCase().includes(searchTerm.toLowerCase())
@@ -123,6 +112,16 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
 
   // Sort filtered users
   const sortedUsers = useMemo(() => {
+    // Column configuration for sorting
+    const columnConfig = {
+      username: { type: 'text' as keyof typeof sortFunctions, path: 'username' },
+      isAdmin: { type: 'boolean' as keyof typeof sortFunctions, path: 'isAdmin' },
+      isLocked: { type: 'boolean' as keyof typeof sortFunctions, path: 'isLocked' },
+      mustChangePassword: { type: 'boolean' as keyof typeof sortFunctions, path: 'mustChangePassword' },
+      lastLoginAt: { type: 'date' as keyof typeof sortFunctions, path: 'lastLoginAt' },
+      createdAt: { type: 'date' as keyof typeof sortFunctions, path: 'createdAt' },
+      updatedAt: { type: 'date' as keyof typeof sortFunctions, path: 'updatedAt' },
+    };
     return createSortedArray(filteredUsers, sortConfig, columnConfig);
   }, [filteredUsers, sortConfig]);
 

@@ -37,9 +37,9 @@ README_dockerhub.md
 *.diff
 *.tmp
 
-# website
-website/node_modules
-website/build
+# docs
+docs/node_modules
+docs/build
 public/docs
 
 # debug

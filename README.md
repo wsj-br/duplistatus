@@ -1,5 +1,5 @@
 
-![duplistatus](website/static/img/duplistatus_banner.png)
+![duplistatus](docs/static/img/duplistatus_banner.png)
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
@@ -68,23 +68,23 @@ See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) f
 
 ### Dashboard
 
-![dashboard](website/static/img/screen-main-dashboard-card-mode.png)
+![dashboard](docs/static/img/screen-main-dashboard-card-mode.png)
 
 ### Backup History
 
-![server-detail](website/static/img/screen-server-backup-list.png)
+![server-detail](docs/static/img/screen-server-backup-list.png)
 
 ### Backup Details
 
-![backup-detail](website/static/img/screen-backup-detail.png)
+![backup-detail](docs/static/img/screen-backup-detail.png)
 
 ### Overdue Backups
 
-![overdue backups](website/static/img/screen-overdue-backup-hover-card.png)
+![overdue backups](docs/static/img/screen-overdue-backup-hover-card.png)
 
 ### Overdue notifications on your phone
 
-![ntfy overdue message](website/static/img/screen-overdue-notification.png)
+![ntfy overdue message](docs/static/img/screen-overdue-notification.png)
 
 ## API Reference
 

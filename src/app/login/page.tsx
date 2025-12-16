@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Checkbox } from '@/components/ui/checkbox';
+import AppVersion from '@/components/app-version';
+import { GithubLink } from '@/components/github-link';
 import DupliLogo from '../../../public/images/duplistatus_logo.png';
 
 const REMEMBERED_USERNAME_KEY = 'duplistatus_remembered_username';
@@ -16,30 +18,26 @@ const REMEMBER_ME_ENABLED_KEY = 'duplistatus_remember_me_enabled';
 
 function LoginForm() {
   const searchParams = useSearchParams();
-  // Initialize state - always start with defaults to avoid hydration mismatch
-  const [username, setUsername] = useState('');
+  // Initialize state with lazy initializers to read from localStorage
+  // This avoids hydration mismatches and setState in effects
+  const [username, setUsername] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
+    }
+    return '';
+  });
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true' && 
+             localStorage.getItem(REMEMBERED_USERNAME_KEY) !== '';
+    }
+    return false;
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Load saved values from localStorage after mount to avoid hydration mismatch
-  // This is necessary to prevent hydration errors when localStorage values differ from SSR
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-    if (typeof window !== 'undefined') {
-      const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true';
-      const savedUsername = localStorage.getItem(REMEMBERED_USERNAME_KEY) || '';
-      if (savedRememberMe && savedUsername) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setUsername(savedUsername);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setRememberMe(true);
-      }
-    }
-  }, []);
+  // Use lazy initializer to check if we're in the browser
+  const [mounted, setMounted] = useState(() => typeof window !== 'undefined');
 
   // Validate redirect URL to prevent open redirect vulnerabilities
   const validateRedirectUrl = (url: string | null): string => {
@@ -164,90 +162,101 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="flex flex-col items-center">
-          <div className="flex items-center space-x-2 mb-6">
-            <div className="p-1">
-              <Image
-                src={DupliLogo}
-                alt="duplistatus Logo"
-                width={40}
-                height={40}
-              />
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="flex flex-col items-center">
+            <div className="flex items-center space-x-2 mb-6">
+              <div className="p-1">
+                <Image
+                  src={DupliLogo}
+                  alt="duplistatus Logo"
+                  width={40}
+                  height={40}
+                />
+              </div>
+              <span className="text-3xl text-blue-600 sm:inline-block">
+                duplistatus
+              </span>
             </div>
-            <span className="text-3xl text-blue-600 sm:inline-block">
-              duplistatus
-            </span>
+            <p className="text-sm text-muted-foreground">
+              Sign in to your account
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Sign in to your account
-          </p>
-        </div>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Log in</CardTitle>
-            <CardDescription>Enter your credentials to access your account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              {error && (
-                <div className="rounded-md bg-destructive/10 p-4">
-                  <div className="text-sm text-destructive">
-                    {error}
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Log in</CardTitle>
+              <CardDescription>Enter your credentials to access your account</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {error && (
+                  <div className="rounded-md bg-destructive/10 p-4">
+                    <div className="text-sm text-destructive">
+                      {error}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="username">Username</Label>
+                    <Input
+                      id="username"
+                      name="username"
+                      type="text"
+                      autoComplete="username"
+                      required
+                      placeholder="Username"
+                      value={username}
+                      onChange={handleUsernameChange}
+                      disabled={loading}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <TogglePasswordInput
+                      id="password"
+                      value={password}
+                      onChange={setPassword}
+                      placeholder="Password"
+                      disabled={loading}
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="remember-me"
+                      checked={mounted ? rememberMe : false}
+                      onCheckedChange={(checked) => handleRememberMeChange(checked === true)}
+                      disabled={loading}
+                    />
+                    <Label htmlFor="remember-me" className="cursor-pointer text-sm font-normal">
+                      Remember me
+                    </Label>
                   </div>
                 </div>
-              )}
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
-                    required
-                    placeholder="Username"
-                    value={username}
-                    onChange={handleUsernameChange}
-                    disabled={loading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <TogglePasswordInput
-                    id="password"
-                    value={password}
-                    onChange={setPassword}
-                    placeholder="Password"
-                    disabled={loading}
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="remember-me"
-                    checked={mounted ? rememberMe : false}
-                    onCheckedChange={(checked) => handleRememberMeChange(checked === true)}
-                    disabled={loading}
-                  />
-                  <Label htmlFor="remember-me" className="cursor-pointer text-sm font-normal">
-                    Remember me
-                  </Label>
-                </div>
-              </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? 'Logging in...' : 'Log in'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading ? 'Logging in...' : 'Log in'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-0.5">
+        <div className="flex items-center gap-6">
+          <AppVersion />
+          <GithubLink />
+        </div>
+        <span className="text-tiny text-muted-foreground text-center mb-4">
+          Product names and icons belong to their respective owners and are used for identification purposes only.
+        </span>
       </div>
     </div>
   );

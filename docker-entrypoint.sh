@@ -2,13 +2,11 @@
 #
 # docker-entrypoint.sh: Start both duplistatus-server and cron-service
 # with proper signal handling for graceful shutdown
-#
 
 # Timestamp helpers
 timestamp() {
   date "+%d/%m/%Y %H:%M:%S %Z"
 }
-
 log_ts() {
   local msg="$*"
   if [ "${msg#\[}" != "$msg" ]; then
@@ -19,6 +17,17 @@ log_ts() {
     printf "%s\n" "$msg"
   fi
 }
+
+## Show the version of the the alpine, node and pnpm 
+log_ts "[Entrypoint] ----------------------------------------"
+log_ts "[Entrypoint] Alpine version: $(cat /etc/alpine-release)"
+log_ts "[Entrypoint] SQLite version: $(sqlite3 --version)"
+log_ts "[Entrypoint] Node version: $(node -v)"
+log_ts "[Entrypoint] npm version: $(npm -v)"
+log_ts "[Entrypoint] pnpm version: $(pnpm -v)"
+log_ts "[Entrypoint] Duplistatus Version: $VERSION"
+log_ts "[Entrypoint] Build Date: $(date -r "$0" '+%Y-%m-%d %H:%M:%S %Z')"
+log_ts "[Entrypoint] ----------------------------------------"
 
 # Track child process PIDs
 SERVER_PID=""
@@ -70,6 +79,9 @@ cleanup() {
 
 # Trap signals for graceful shutdown
 trap cleanup SIGTERM SIGINT SIGQUIT
+
+
+
 
 # Start the server in the background using node with the tsx loader
 log_ts "[Entrypoint] Starting duplistatus-server (node --import tsx)..."

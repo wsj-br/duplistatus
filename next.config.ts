@@ -1,8 +1,6 @@
 import type {NextConfig} from 'next';
-
+import webpack from 'webpack';
 import { version } from './package.json';
-// Use require for webpack to avoid missing type declarations
-const webpack = require('webpack');
 
 const nextConfig: NextConfig = {
   // output: "standalone",  // not needed as we are using the custom server duplistatus-server.ts
