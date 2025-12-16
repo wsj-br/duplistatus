@@ -1,5 +1,4 @@
 import type {NextConfig} from 'next';
-import webpack from 'webpack';
 import { version } from './package.json';
 
 const nextConfig: NextConfig = {
@@ -20,7 +19,7 @@ const nextConfig: NextConfig = {
   distDir: '.next',
   
   // Configure webpack to handle binary files
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
     // Add support for better-sqlite3
     if (isServer) {
       config.externals.push('better-sqlite3');
@@ -65,7 +64,7 @@ const nextConfig: NextConfig = {
     // Replace 'node:' scheme to load core modules properly
     config.plugins = config.plugins || [];
     config.plugins.push(
-      new webpack.NormalModuleReplacementPlugin(/^node:(.+)$/, (resource: any) => {
+      new webpack.NormalModuleReplacementPlugin(/^node:(.+)$/, (resource: { request: string }) => {
         resource.request = resource.request.replace(/^node:/, '');
       })
     );

@@ -91,7 +91,7 @@ The key file is used for cryptographic operations in the application.
 ## Admin account recovery
 
 ```bash
-tsx scripts/admin-recovery.ts <username> <new-password>
+./admin-recovery <username> <new-password>
 ```
 
 This script allows recovery of admin accounts if locked out or password forgotten. It:
@@ -104,7 +104,7 @@ This script allows recovery of admin accounts if locked out or password forgotte
 
 **Example:**
 ```bash
-tsx scripts/admin-recovery.ts admin NewPassword123
+./admin-recovery admin NewPassword123
 ```
 
 >[!CAUTION]

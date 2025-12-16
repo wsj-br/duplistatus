@@ -18,7 +18,7 @@ alwaysApply: true
 
 ## Project Architecture
 
-- **Main app**: Next.js 15+ with custom Node server (`duplistatus-server.ts`)
+- **Main app**: Next.js App Router using `output: 'standalone'` (run the generated `server.js` in production)
 - **Cron service**: Separate background service under `src/cron-service/` with its own REST API
 - **Database**: SQLite at `data/backups.db`
 - **Security**: `data/.duplistatus.key` must have 0400 permissions
@@ -57,7 +57,7 @@ pnpm typecheck        # Run TypeScript checks
 
 ## Important Files
 
-- `duplistatus-server.ts` - Custom server entry point
+- `src/middleware.ts` - Middleware for request headers and /docs rewrites
 - `src/cron-service/` - Background task service
 - `src/lib/` - Shared utilities (DB, cron-client, types)
 - `data/backups.db` - SQLite database

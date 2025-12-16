@@ -55,7 +55,7 @@
 - ESLint ^9.39.1 (via `next lint`)
 
 ### Build & Deployment
-- Custom server: `duplistatus-server.ts`
+- Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
 - Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
 - GitHub Actions workflows for CI/CD
 - Inkscape for logos and pictures

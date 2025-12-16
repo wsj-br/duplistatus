@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# docker-entrypoint.sh: Start both duplistatus-server and cron-service
+# docker-entrypoint.sh: Start Next.js standalone + cron service
 # with proper signal handling for graceful shutdown
 
 # Timestamp helpers
@@ -20,13 +20,12 @@ log_ts() {
   fi
 }
 
-## Show the version of the the alpine, node and pnpm 
+## Show the version of the the alpine and node
 log_ts "[Entrypoint] ----------------------------------------"
 log_ts "[Entrypoint] Alpine version: $(cat /etc/alpine-release)"
 log_ts "[Entrypoint] SQLite version: $(sqlite3 --version|cut -d ' ' -f 1-3)"
 log_ts "[Entrypoint] Node version: $(node -v)"
 log_ts "[Entrypoint] npm version: $(npm -v)"
-log_ts "[Entrypoint] pnpm version: $(pnpm -v)"
 log_ts "[Entrypoint] Duplistatus Version: $VERSION"
 log_ts "[Entrypoint] Build Date: $(date -r "$0" '+%Y-%m-%d %H:%M:%S %Z')"
 log_ts "[Entrypoint] ----------------------------------------"
@@ -83,9 +82,31 @@ cleanup() {
 trap cleanup SIGTERM SIGINT SIGQUIT
 
 
-# Start the server in the background using tsx
-log_ts "[Entrypoint] Starting duplistatus-server (tsx)..."
-tsx duplistatus-server.ts &
+# Ensure /app/data exists
+mkdir -p /app/data
+
+# Ensure key file exists and is locked down (0400)
+KEY_FILE="/app/data/.duplistatus.key"
+if [ ! -f "$KEY_FILE" ]; then
+  log_ts "[Entrypoint] 🔑 Creating new .duplistatus.key file..."
+  # 32 random bytes
+  head -c 32 /dev/urandom > "$KEY_FILE"
+  chmod 0400 "$KEY_FILE"
+  log_ts "[Entrypoint] ✅ Key file created successfully with restricted permissions (0400)"
+else
+  # Validate permissions match 0400 (security requirement)
+  current_perms="$(stat -c "%a" "$KEY_FILE" 2>/dev/null || echo "")"
+  if [ "$current_perms" != "400" ]; then
+    log_ts "[Entrypoint] ❌ SECURITY ERROR: .duplistatus.key has incorrect permissions ($current_perms), expected 400"
+    log_ts "[Entrypoint]    Fix with: chmod 0400 /app/data/.duplistatus.key"
+    exit 1
+  fi
+fi
+
+# Start the Next.js standalone server in the background
+# Best practice for `output: 'standalone'` is to run the generated server.js
+log_ts "[Entrypoint] Starting duplistatus (Next standalone)..."
+node server.js &
 SERVER_PID=$!
 
 # Validate server process started successfully
@@ -118,7 +139,7 @@ fi
 
 # Start the cron service in the background
 log_ts "[Entrypoint] Starting cron service..."
-tsx src/cron-service/index.ts &
+node dist/cron-service.cjs &
 CRON_PID=$!
 
 # Validate cron service process started successfully

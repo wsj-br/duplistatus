@@ -21,7 +21,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # Copy full docs directory structure for proper workspace installation
 COPY docs ./docs
 
-# Set the BASE_URL to /docs/ to be included in the container and served by duplistatus-server.ts
+# Set the BASE_URL to /docs/ for docs build
 ENV BASE_URL="/docs/"
 
 # Install all workspace dependencies (including docs)
@@ -61,27 +61,9 @@ COPY --from=deps /app/docs/build ./public/docs
 # Build the application (standalone output will be in .next/standalone)
 RUN mkdir -p /app/data && pnpm run build
 
-# ------------------------------------------------------------
-# Create production-only dependencies with pnpm
-# ------------------------------------------------------------
-FROM base AS prod-deps
-
-# Install pnpm
-RUN npm install -g pnpm@latest-10
-
-WORKDIR /app
-
-# Copy workspace configuration files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Copy docs workspace package.json (needed for pnpm workspace to work)
-# We don't install docs dependencies, but pnpm needs to know about the workspace structure
-COPY docs/package.json ./docs/package.json
-
-# Install only production dependencies
-# This creates node_modules with proper pnpm structure (.pnpm folder + symlinks)
-# excluding all devDependencies
-RUN pnpm install --prod --frozen-lockfile --filter=!docs
+# Bundle cron service into a single JS file for production runtime
+# This avoids needing a separate full node_modules in the runner image.
+RUN npm install -g esbuild@0.25.1 && NODE_PATH=/usr/local/lib/node_modules node scripts/bundle-cron-service.cjs
 
 # ------------------------------------------------------------
 # Production image - minimal runtime environment
@@ -96,6 +78,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV VERSION=1.0.2 \
     PORT=9666 \
+    HOSTNAME=0.0.0.0 \
     CRON_PORT=9667 \
     TZ=Europe/London \
     LANG=en_GB 
@@ -110,40 +93,18 @@ WORKDIR /app
 # Standalone output automatically includes only production dependencies that are actually used
 COPY --chown=node:node --from=builder /app/.next/standalone ./
 
-# Copy production-only node_modules from prod-deps stage
-# This includes the complete pnpm structure (.pnpm folder + symlinks) for all production dependencies
-# Our custom server (duplistatus-server.ts) and cron service use packages not detected by Next.js standalone
-# The prod-deps stage installed with pnpm --prod, so we get proper pnpm structure without devDependencies
-COPY --chown=node:node --from=prod-deps /app/node_modules ./node_modules
-
 # Copy static files (standalone doesn't include .next/static)
 COPY --chown=node:node --from=builder /app/.next/static ./.next/static
 
 # Copy public files (includes /docs from Docusaurus)
 COPY --chown=node:node --from=builder /app/public ./public
 
-# Copy source code needed for runtime (custom server and cron service use TypeScript)
-# Note: tsx is needed at runtime for TypeScript execution
-COPY --chown=node:node --from=builder /app/duplistatus-server.ts ./duplistatus-server.ts
-COPY --chown=node:node --from=builder /app/src/cron-service ./src/cron-service
-COPY --chown=node:node --from=builder /app/src/lib ./src/lib
-
-# Copy scripts directory (for admin recovery and other utility scripts)
-COPY --chown=node:node --from=builder /app/scripts ./scripts
-
-# Copy TypeScript configuration (needed for tsx to compile TypeScript files)
-COPY --chown=node:node --from=builder /app/tsconfig.json ./tsconfig.json
+# Copy bundled cron service
+COPY --chown=node:node --from=builder /app/dist ./dist
 
 # Copy shell scripts with execute permissions
 COPY --chown=node:node --chmod=755 docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY --chown=node:node --chmod=755 admin-recovery /app/admin-recovery
-
-# Install tsx globally for TypeScript execution at runtime
-# tsx is a devDependency but needed at runtime because we run TypeScript files directly
-# (duplistatus-server.ts, cron-service). It won't be in standalone output since Next.js
-# doesn't import it. Installing globally is simpler than copying tsx + all its dependencies
-# from builder's node_modules. This is acceptable since tsx is relatively small (~5MB).
-RUN npm install -g tsx@4.21.0
 
 # Create data directory & adjust permissions
 # Use node:node to match existing volume ownership (UID 1000)

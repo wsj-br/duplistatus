@@ -1,8 +1,9 @@
 #!/bin/sh
-# Admin Recovery Wrapper Script
-# 
-# This is a convenience wrapper for the admin-recovery.ts script.
-# It works both locally and in Docker containers.
+#
+# Admin Recovery Script (shell)
+#
+# Resets a user's password directly in the SQLite database.
+# Uses Node.js + bcrypt (already required by the app) to generate the password hash.
 #
 # Usage:
 #   admin-recovery <username> <new-password>
@@ -10,25 +11,98 @@
 # Example:
 #   admin-recovery admin NewPassword123
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+set -eu
 
-# Determine the path to the TypeScript script
-# If we're in Docker (/app), use the Docker path, otherwise use relative path
-if [ "$SCRIPT_DIR" = "/app" ] && [ -f "/app/scripts/admin-recovery.ts" ]; then
-  # Running in Docker container
-  SCRIPT_PATH="/app/scripts/admin-recovery.ts"
-else
-  # Running locally - use relative path from script location
-  SCRIPT_PATH="$SCRIPT_DIR/scripts/admin-recovery.ts"
-fi
+usage() {
+  echo "Usage: admin-recovery <username> <new-password>" >&2
+  echo "Example: admin-recovery admin NewPassword123" >&2
+}
 
-# Check if the script exists
-if [ ! -f "$SCRIPT_PATH" ]; then
-  echo "Error: Cannot find admin-recovery.ts at $SCRIPT_PATH" >&2
+if [ "${1-}" = "" ] || [ "${2-}" = "" ]; then
+  echo "❌ Error: Missing required arguments" >&2
+  usage
   exit 1
 fi
 
-# Execute the script
-exec pnpm exec tsx "$SCRIPT_PATH" "$@"
+USERNAME="$1"
+NEW_PASSWORD="$2"
+
+# Determine project root (works both locally and in Docker)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
+if [ ! -f "$PROJECT_ROOT/package.json" ] && [ -f "$PROJECT_ROOT/../package.json" ]; then
+  PROJECT_ROOT="$(cd "$PROJECT_ROOT/.." && pwd)"
+fi
+
+cd "$PROJECT_ROOT"
+
+DATA_DIR="$PROJECT_ROOT/data"
+DB_PATH="$DATA_DIR/backups.db"
+
+if [ ! -f "$DB_PATH" ]; then
+  echo "❌ Error: Database not found at $DB_PATH" >&2
+  echo "Make sure the application has been initialized." >&2
+  exit 1
+fi
+
+# Password policy (keep in sync with src/lib/auth.ts)
+DEFAULT_PASSWORD="Duplistatus09"
+MIN_LEN=8
+
+if [ "$NEW_PASSWORD" = "$DEFAULT_PASSWORD" ]; then
+  echo "❌ Error: Cannot use the default password. Please choose a different password" >&2
+  exit 1
+fi
+
+pass_len="${#NEW_PASSWORD}"
+if [ "$pass_len" -lt "$MIN_LEN" ]; then
+  echo "❌ Error: Password must be at least ${MIN_LEN} characters long" >&2
+  exit 1
+fi
+
+echo "$NEW_PASSWORD" | grep -q '[A-Z]' || { echo "❌ Error: Password must contain at least one uppercase letter (A-Z)" >&2; exit 1; }
+echo "$NEW_PASSWORD" | grep -q '[a-z]' || { echo "❌ Error: Password must contain at least one lowercase letter (a-z)" >&2; exit 1; }
+echo "$NEW_PASSWORD" | grep -q '[0-9]' || { echo "❌ Error: Password must contain at least one number (0-9)" >&2; exit 1; }
+
+# Verify required tables exist
+users_table="$(sqlite3 "$DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='users';")"
+if [ "$users_table" != "users" ]; then
+  echo "❌ Error: Users table not found" >&2
+  echo "The database may not have been migrated to a version with authentication yet." >&2
+  exit 1
+fi
+
+# Escape single quotes for SQLite string literals
+ESC_USERNAME="$(printf "%s" "$USERNAME" | sed "s/'/''/g")"
+
+user_row="$(sqlite3 "$DB_PATH" "SELECT id, username, is_admin, locked_until FROM users WHERE username = '$ESC_USERNAME' LIMIT 1;")"
+if [ -z "$user_row" ]; then
+  echo "❌ Error: User '$USERNAME' not found" >&2
+  exit 1
+fi
+
+echo "🔐 Hashing new password..."
+HASH="$(node -e "const bcrypt=require('bcrypt'); bcrypt.hash(process.argv[1], 12).then(h=>process.stdout.write(h)).catch(e=>{console.error(e?.message||String(e)); process.exit(1);});" "$NEW_PASSWORD")"
+
+if [ -z "$HASH" ]; then
+  echo "❌ Error: Failed to hash password (empty hash)" >&2
+  exit 1
+fi
+
+ESC_HASH="$(printf "%s" "$HASH" | sed "s/'/''/g")"
+
+echo "📝 Resetting password for user '$USERNAME'..."
+sqlite3 "$DB_PATH" "UPDATE users SET password_hash = '$ESC_HASH', must_change_password = 0, failed_login_attempts = 0, locked_until = NULL, updated_at = CURRENT_TIMESTAMP WHERE username = '$ESC_USERNAME';"
+
+# Optional audit logging if audit_log table exists
+audit_table="$(sqlite3 "$DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='audit_log';")"
+if [ "$audit_table" = "audit_log" ]; then
+  # Build a minimal JSON details payload (escape single quotes for SQLite)
+  details="$(printf "%s" "{\"targetUser\":\"$USERNAME\",\"method\":\"cli\"}" | sed "s/'/''/g")"
+  sqlite3 "$DB_PATH" "INSERT INTO audit_log (action, category, status, username, details, timestamp) VALUES ('admin_password_reset_cli','system','success','system','$details',CURRENT_TIMESTAMP);"
+fi
+
+echo ""
+echo "✅ Password reset successfully!"
+echo "   User: $USERNAME"
 
