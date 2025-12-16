@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import { version } from './package.json';
 
 const nextConfig: NextConfig = {
-  // output: "standalone",  // not needed as we are using the custom server duplistatus-server.ts
+  output: "standalone",  // Enable standalone output to reduce Docker image size
   
   // Disable Turbopack to use webpack configuration
   turbopack: {},
