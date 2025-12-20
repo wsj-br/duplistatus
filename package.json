@@ -17,16 +17,16 @@
     "cron:start": "tsx src/cron-service/index.ts",
     "dev": "./scripts/pre-checks.sh && PORT=8666 NEXT_TELEMETRY_DISABLED=1 next dev",
     "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts",
-    "build-local": "./scripts/pre-checks.sh && next build",
+    "build-local": "./scripts/pre-checks.sh && BASE_URL=/docs/ pnpm --filter docs run build && rm -rf public/docs && cp -r docs/build public/docs && next build && mkdir -p .next/standalone/.next && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public",
     "start-local": "./scripts/pre-checks.sh && NODE_ENV=production HOSTNAME=0.0.0.0 PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
     "cron:start-local": "NODE_ENV=production CRON_PORT=8667 tsx watch src/cron-service/index.ts",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
     "show-overdue-notifications": "tsx scripts/show-overdue-notifications.ts",
     "run-overdue-check": "tsx scripts/run-overdue-check.ts",
     "test-cron-port": "tsx scripts/test-cron-port.ts",
-    "take-screenshots": "tsx scripts/take-screenshots.ts",
-    "set-smtp-test-config": "tsx scripts/set-smtp-test-config.ts",
-    "test-smtp-connections": "tsx scripts/test-smtp-connections.ts",
+    "take-screenshots": "tsx --env-file=.env scripts/take-screenshots.ts",
+    "set-smtp-test-config": "tsx --env-file=.env scripts/set-smtp-test-config.ts",
+    "test-smtp-connections": "tsx --env-file=.env scripts/test-smtp-connections.ts",
     "docker-up": "./scripts/pre-checks.sh && docker compose up --build -d",
     "docker-down": "docker compose down",
     "docker-clean": "./scripts/clean-docker.sh"
@@ -62,7 +62,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "lucide-react": "^0.561.0",
     "next": "^16.0.10",
@@ -85,7 +84,7 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.2",
+    "@types/node": "^25.0.3",
     "@types/node-cron": "^3.0.11",
     "@types/react": "19.2.7",
     "@types/string-template": "^1.0.7",
@@ -94,6 +93,6 @@
     "eslint-config-next": "16.0.10",
     "puppeteer": "^24.33.0",
     "tsx": "^4.21.0",
-    "webpack": "^5.103.0"
+    "webpack": "^5.104.0"
   }
 }

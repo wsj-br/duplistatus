@@ -4,9 +4,6 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
-import dotenv from 'dotenv';
-dotenv.config();
-
 const BASE_URL = 'http://localhost:8666';
 const ADMIN_USERNAME = 'admin';
 const USER_USERNAME = 'user';

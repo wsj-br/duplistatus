@@ -55,9 +55,9 @@ The project includes several npm scripts for different development tasks:
 
 
 ### Production Scripts
+- `pnpm build-local` - Build and prepare for local production (includes pre-checks, copies static files to standalone directory)
+- `pnpm start-local` - Start production server locally (port 8666, includes pre-checks). **Note:** Run `pnpm build-local` first.
 - `pnpm start` - Start production server (port 9666)
-- `pnpm start-local` - Start production server locally (port 8666, includes pre-checks)
-- `pnpm build-local` - Build and prepare for local production (includes pre-checks)
 
 ### Docker Scripts
 - `pnpm docker-up` - Start Docker Compose stack

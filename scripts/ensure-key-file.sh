@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 # Script to ensure .duplistatus.key file exists in the data directory
-# If the file doesn't exist, creates it with random bytes using openssl
+# If the file doesn't exist, creates it with random bytes
 # Sets permissions to 0400 (r--------) - only user can read, no write/execute
 
 # Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Get the project root (parent of scripts directory)
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 DATA_DIR="$PROJECT_ROOT/data"
@@ -21,8 +21,9 @@ fi
 if [ ! -f "$KEY_FILE" ]; then
     echo "🔑 Creating new .duplistatus.key file..."
     
-    # Generate 16 random bytes using openssl and write to file
-    openssl rand -out "$KEY_FILE" 32
+    # Generate 32 random bytes and write to file
+    # (Avoids requiring openssl or bash in minimal environments like Alpine)
+    head -c 32 /dev/urandom > "$KEY_FILE"
     
     # Set permissions to 0400 (r--------) - only user can read
     chmod 0400 "$KEY_FILE"

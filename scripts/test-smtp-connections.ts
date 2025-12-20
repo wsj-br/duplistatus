@@ -1,13 +1,9 @@
 #!/usr/bin/env tsx
 
-import dotenv from 'dotenv';
 import { setSMTPConfig, getSMTPConfig } from '../src/lib/db-utils';
 import type { SMTPConfig, SMTPConnectionType } from '../src/lib/types';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-
-// Load environment variables from .env file if it exists
-dotenv.config();
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8666';
 
@@ -32,7 +28,12 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:8666';
  * - SSL config with ssl connectionType: ✅ should work
  * - SSL config with plain/starttls connectionType: ❌ should fail
  * 
- * Usage: pnpm test-smtp-matrix
+ * Usage: pnpm test-smtp-connections
+ * 
+ * The script uses Node's built-in --env-file flag to load environment variables.
+ * Environment variables can be provided via:
+ * - A .env file (loaded automatically via --env-file flag in package.json)
+ * - Directly in the shell environment
  * 
  * Environment variables (prefix based on connectionType):
  * - {PREFIX}_SMTP_HOST: SMTP server host

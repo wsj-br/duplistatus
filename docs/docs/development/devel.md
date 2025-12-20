@@ -19,6 +19,14 @@ pnpm dev
 
 ## Start the production server (in development environment)
 
+First, build the application for local production:
+
+```bash
+pnpm build-local
+```
+
+Then start the production server:
+
 ```bash
 pnpm start-local
 ```

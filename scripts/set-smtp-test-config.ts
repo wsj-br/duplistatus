@@ -1,11 +1,7 @@
 #!/usr/bin/env tsx
 
-import dotenv from 'dotenv';
 import { setSMTPConfig } from '../src/lib/db-utils';
 import type { SMTPConfig, SMTPConnectionType } from '../src/lib/types';
-
-// Load environment variables from .env file if it exists
-dotenv.config();
 
 /**
  * Script to set SMTP test configuration from environment variables
@@ -14,8 +10,10 @@ dotenv.config();
  * 
  * connectionType: 'plain' | 'starttls' | 'ssl'
  * 
- * The script automatically loads environment variables from a .env file if it exists
- * in the project root. Environment variables can also be set directly in the shell.
+ * The script uses Node's built-in --env-file flag to load environment variables.
+ * Environment variables can be provided via:
+ * - A .env file (loaded automatically via --env-file flag in package.json)
+ * - Directly in the shell environment
  * 
  * Environment variables (prefix based on connectionType):
  * - {PREFIX}_SMTP_HOST: SMTP server host

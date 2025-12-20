@@ -88,7 +88,6 @@ function main() {
   service.start();
 }
 
-// Only start if this file is being run directly (ES module equivalent)
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
-} 
+// This file is the cron service entrypoint. When bundled for production we execute it directly,
+// so run main() unconditionally.
+main();

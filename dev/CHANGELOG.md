@@ -17,8 +17,10 @@
   - Removed 13 unused eslint-disable directives across multiple files
   - Fixed missing dependencies in useEffect hooks for `database-maintenance-form.tsx` and `user-management-form.tsx`
 
-- Added Next middleware to provide `x-pathname` / `x-search-params` headers for server components and to rewrite Docusaurus clean URLs under `/docs` to `index.html`.
- - Removed the custom Node server (`duplistatus-server.ts`) in favor of Next.js standalone output + middleware.
+- Updated Next proxy file (`src/proxy.ts`) to provide `x-pathname` / `x-search-params` headers for server components and to rewrite Docusaurus clean URLs under `/docs` to `index.html`.
+ - Removed the custom Node server (`duplistatus-server.ts`) in favor of Next.js standalone output + proxy.
+- Fixed `pnpm start-local` script to properly serve static files when running the production server locally. Updated `build-local` to copy static files and public directory to standalone build directory (as per Next.js standalone mode best practices), and added safety check in `start-local` to ensure files exist before starting the server. This resolves 404 errors for JavaScript chunks.
+- Fixed `pnpm build-local` to build Docusaurus documentation and copy it to `public/docs` before building Next.js, ensuring docs are available when running `pnpm start-local` in standalone mode.
 
 ### Changed
 - Reduced console logging from AuditLogger: Only failed login attempts are now logged to console with `[AuditLogger]` prefix. All other audit log entries are still written to the database but no longer logged to console.
