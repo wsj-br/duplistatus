@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import AppVersion from '@/components/app-version';
 import { GithubLink } from '@/components/github-link';
 import DupliLogo from '../../../public/images/duplistatus_logo.png';
+import { Info } from 'lucide-react';
 
 const REMEMBERED_USERNAME_KEY = 'duplistatus_remembered_username';
 const REMEMBER_ME_ENABLED_KEY = 'duplistatus_remember_me_enabled';
@@ -36,8 +37,9 @@ function LoginForm() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  // Use lazy initializer to check if we're in the browser
-  const [mounted, setMounted] = useState(() => typeof window !== 'undefined');
+  const [showAdminTip, setShowAdminTip] = useState(false);
+  // Track if component is mounted to avoid hydration mismatches
+  const [mounted, setMounted] = useState(false);
 
   // Validate redirect URL to prevent open redirect vulnerabilities
   const validateRedirectUrl = (url: string | null): string => {
@@ -57,6 +59,11 @@ function LoginForm() {
     return '/';
   };
 
+  // Set mounted state after component mounts to avoid hydration mismatches
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Check if already authenticated
   useEffect(() => {
     async function checkAuth() {
@@ -75,6 +82,23 @@ function LoginForm() {
     }
     checkAuth();
   }, [searchParams]);
+
+  // Check if admin must change password to show tip
+  useEffect(() => {
+    async function checkAdminMustChangePassword() {
+      try {
+        const response = await fetch('/api/auth/admin-must-change-password');
+        const data = await response.json();
+        if (data.mustChangePassword) {
+          setShowAdminTip(true);
+        }
+      } catch (error) {
+        console.error('Error checking admin must change password:', error);
+        // Silently fail - don't show tip if there's an error
+      }
+    }
+    checkAdminMustChangePassword();
+  }, []);
 
   // Handle remember me checkbox change
   const handleRememberMeChange = (checked: boolean) => {
@@ -247,16 +271,25 @@ function LoginForm() {
               </form>
             </CardContent>
           </Card>
+
+          {showAdminTip && (
+            <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 dark:border-blue-800">
+              <CardContent className="pt-6">
+                <div className="text-sm text-blue-900 dark:text-blue-100">
+                  <span className="flex items-center gap-1 text-lg font-bold text-blue-600 dark:text-blue-400 mb-1">
+                    <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mb-1" />
+                    Note:
+                  </span>
+                  <p>
+                    Default login credentials are 
+                    <code className="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">admin</code> / 
+                    <code className="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Duplistatus09</code> 
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
-      </div>
-      <div className="flex flex-col items-center gap-0.5">
-        <div className="flex items-center gap-6">
-          <AppVersion />
-          <GithubLink />
-        </div>
-        <span className="text-tiny text-muted-foreground text-center mb-4">
-          Product names and icons belong to their respective owners and are used for identification purposes only.
-        </span>
       </div>
     </div>
   );

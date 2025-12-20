@@ -10,9 +10,19 @@ const EXTERNAL_APIS = [
   '/api/health'
 ];
 
+// List of public auth endpoints that don't require authentication
+const PUBLIC_AUTH_APIS = [
+  '/api/auth/admin-must-change-password'
+];
+
 // Check if the request path is an external API
 function isExternalAPI(pathname: string): boolean {
   return EXTERNAL_APIS.some(api => pathname.startsWith(api));
+}
+
+// Check if the request path is a public auth API
+function isPublicAuthAPI(pathname: string): boolean {
+  return PUBLIC_AUTH_APIS.some(api => pathname.startsWith(api));
 }
 
 // CSRF validation middleware
@@ -24,6 +34,11 @@ export function withCSRF<T extends unknown[]>(
     
     // Skip CSRF validation for external APIs
     if (isExternalAPI(pathname)) {
+      return handler(request, ...args);
+    }
+    
+    // Skip authentication for public auth APIs (read-only public endpoints)
+    if (isPublicAuthAPI(pathname)) {
       return handler(request, ...args);
     }
     
@@ -105,6 +120,11 @@ export async function validateCSRFRequest(request: NextRequest): Promise<{ valid
   
   // Skip CSRF validation for external APIs
   if (isExternalAPI(pathname)) {
+    return { valid: true };
+  }
+  
+  // Skip authentication for public auth APIs (read-only public endpoints)
+  if (isPublicAuthAPI(pathname)) {
     return { valid: true };
   }
   

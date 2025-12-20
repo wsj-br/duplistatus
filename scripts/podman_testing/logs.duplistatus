@@ -1,4 +1,4 @@
 #!/bin/bash
 
-podman pod logs Duplistatus
+podman logs duplistatus
 

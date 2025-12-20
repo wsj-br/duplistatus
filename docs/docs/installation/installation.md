@@ -13,6 +13,16 @@ Ensure you have the following installed:
 - Portainer (optional) - [Docker installation guide](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
 
+
+## Authentication
+
+**duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
+    - username: `admin`
+    - password: `Duplistatus09` 
+
+You can create additional users accounts in [Settings > Users](user-guide/settings/user-management-settings.md) after the first login.
+
+
 ### Container Images
 
 You can use the images from:
@@ -94,23 +104,25 @@ docker run -d \
 
 - The `duplistatus_data` volume is used for persistent storage.
 
-### Option 5: Using Podman with Pod (CLI)
+### Option 5: Using Podman (CLI)
 
 ```bash
-# Create a pod for the container
-podman pod create --name Duplistatus --publish 9666:9666/tcp
-
-# Create and start the container
-podman create \
+# create the folder to store the database
+mkdir -p /root/duplistatus_home/data
+# adjust the ownership 
+chown -R 1000:1000 /root/duplistatus_home/data
+# Start the container (standalone)
+podman run -d \
   --name duplistatus \
-  --pod Duplistatus \
-  --user root \
+  -p 9666:9666 \
   -v /root/duplistatus_home/data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
-
-# Start the pod (which starts the container)
-podman pod start Duplistatus
 ```
+
+>[!IMPORTANT]
+> Start the `duplistatus` container as a standalone container. If it is installed in a Pod, it will not listen on port 9666.
+> This is due to a Podman (Pod) security restriction.
+
 
 Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
 

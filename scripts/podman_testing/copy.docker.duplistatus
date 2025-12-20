@@ -21,13 +21,14 @@ else
     exit 1
 fi
 
-
+# stop the container duplistatus
+./stop.duplistatus
 
 # Get image size
 SIZE=$(ssh $REMOTE_USER@$REMOTE_HOST "docker image inspect $IMAGE --format='{{.Size}}'")
 
-# add a overhead of +5%
-SIZE=$((SIZE + SIZE * 5 / 100))
+# add a overhead of +0%
+SIZE=$((SIZE + SIZE * 0 / 100))
 
 echo "Transferring $IMAGE ($(numfmt --to=iec $SIZE))..."
 
@@ -40,4 +41,8 @@ else
     echo "Transfer failed!"
     exit 1
 fi
+
+echo ""
+echo "run the container duplistatus" 
+./start.duplistatus
 

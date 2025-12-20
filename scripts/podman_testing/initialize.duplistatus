@@ -1,4 +1,0 @@
-#!/bin/bash
-
-podman pod create --name Duplistatus --publish 9666:9666/tcp
-

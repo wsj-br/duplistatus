@@ -6,7 +6,7 @@ export GREP_COLORS='ms=01;32' # bold green
 
 echo "📄 container logs"
 echo ""
-podman pod logs Duplistatus | egrep --color=always "(http://0.0.0.0\:9666|Cron service listening on port 9667|^)" | pr -to 6
+podman pod logs duplistatus | egrep --color=always "(http://0.0.0.0\:9666|Cron service listening on port 9667|^)" | pr -to 6
 echo ""
 echo ""
 echo "📡 listening address/ports (inside container)"

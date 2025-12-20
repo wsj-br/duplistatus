@@ -55,8 +55,8 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'user-guide/homepage-integration',
-        'user-guide/admin-recovery',
         'user-guide/troubleshooting',
+        'user-guide/admin-recovery',
       ],
     },
     {

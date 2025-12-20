@@ -45,6 +45,39 @@ if [ ! -f "$DB_PATH" ]; then
   exit 1
 fi
 
+# Audit logging function
+# Usage: log_audit <status> <error_message>
+# status: 'success' or 'failure'
+# error_message: optional error message (only for failures)
+
+log_audit() {
+  
+  status="$1"
+  error_msg="${2:-}"
+  
+  # Check if audit_log table exists
+  audit_table="$(sqlite3 "$DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='audit_log';" 2>/dev/null || true)"
+  if [ "$audit_table" != "audit_log" ]; then
+    echo "❌ Warning: Audit log table not found" >&2
+    return 0
+  fi
+  
+  # Build details JSON payload
+  # Escape JSON special characters in error message: backslash, double quote
+  if [ -n "$error_msg" ]; then
+    escaped_error="$(printf "%s" "$error_msg" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+    details_json="{\"targetUser\":\"$USERNAME\",\"method\":\"cli\",\"error\":\"$escaped_error\"}"
+  else
+    details_json="{\"targetUser\":\"$USERNAME\",\"method\":\"cli\"}"
+  fi
+  
+  # Escape single quotes for SQLite
+  details="$(printf "%s" "$details_json" | sed "s/'/''/g")"
+  
+  # write the audit logging on the database
+  sqlite3 "$DB_PATH" "INSERT INTO audit_log (action, category, status, username, details, timestamp) VALUES ('admin_password_reset_cli','system','$status','system','$details',CURRENT_TIMESTAMP);" 2>/dev/null || true
+}
+
 # Password policy (keep in sync with src/lib/auth.ts)
 DEFAULT_PASSWORD="Duplistatus09"
 MIN_LEN=8
@@ -78,6 +111,7 @@ ESC_USERNAME="$(printf "%s" "$USERNAME" | sed "s/'/''/g")"
 user_row="$(sqlite3 "$DB_PATH" "SELECT id, username, is_admin, locked_until FROM users WHERE username = '$ESC_USERNAME' LIMIT 1;")"
 if [ -z "$user_row" ]; then
   echo "❌ Error: User '$USERNAME' not found" >&2
+  log_audit "failure" "User not found"
   exit 1
 fi
 
@@ -86,23 +120,32 @@ HASH="$(node -e "const bcrypt=require('bcrypt'); bcrypt.hash(process.argv[1], 12
 
 if [ -z "$HASH" ]; then
   echo "❌ Error: Failed to hash password (empty hash)" >&2
+  log_audit "failure" "Failed to hash password (empty hash)"
   exit 1
 fi
 
 ESC_HASH="$(printf "%s" "$HASH" | sed "s/'/''/g")"
 
-echo "📝 Resetting password for user '$USERNAME'..."
-sqlite3 "$DB_PATH" "UPDATE users SET password_hash = '$ESC_HASH', must_change_password = 0, failed_login_attempts = 0, locked_until = NULL, updated_at = CURRENT_TIMESTAMP WHERE username = '$ESC_USERNAME';"
-
-# Optional audit logging if audit_log table exists
-audit_table="$(sqlite3 "$DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='audit_log';")"
-if [ "$audit_table" = "audit_log" ]; then
-  # Build a minimal JSON details payload (escape single quotes for SQLite)
-  details="$(printf "%s" "{\"targetUser\":\"$USERNAME\",\"method\":\"cli\"}" | sed "s/'/''/g")"
-  sqlite3 "$DB_PATH" "INSERT INTO audit_log (action, category, status, username, details, timestamp) VALUES ('admin_password_reset_cli','system','success','system','$details',CURRENT_TIMESTAMP);"
+# Verify user still exists before attempting update
+user_check="$(sqlite3 "$DB_PATH" "SELECT id FROM users WHERE username = '$ESC_USERNAME' LIMIT 1;")"
+if [ -z "$user_check" ]; then
+  echo "❌ Error: User '$USERNAME' does not exist" >&2
+  log_audit "failure" "User does not exist"
+  exit 1
 fi
 
-echo ""
-echo "✅ Password reset successfully!"
-echo "   User: $USERNAME"
+echo "📝 Resetting password for user '$USERNAME'..."
+# Check if UPDATE was successful and affected at least one row
+rows_affected="$(sqlite3 "$DB_PATH" "UPDATE users SET password_hash = '$ESC_HASH', must_change_password = 0, failed_login_attempts = 0, locked_until = NULL, updated_at = CURRENT_TIMESTAMP WHERE username = '$ESC_USERNAME'; SELECT changes();")"
+if [ -z "$rows_affected" ] || [ "$rows_affected" = "0" ]; then
+  echo "❌ Error: Failed to update password. No rows were affected." >&2
+  log_audit "failure" "Failed to update password. No rows were affected."
+  exit 1
+fi
+
+# Log successful password reset
+log_audit "success"
+
+echo "✅ Password reset successfully for user '$USERNAME'"
+
 

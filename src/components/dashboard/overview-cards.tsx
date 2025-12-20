@@ -183,7 +183,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               <HardDrive className="h-3 w-3" />
               <span>Size</span>
             </div>
-            <p className="font-semibold text-xs">
+            <p className="font-semibold text-sm">
               {server.totalFileSize > 0 ? formatBytes(server.totalFileSize) : 'N/A'}
             </p>
           </section>

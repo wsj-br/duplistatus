@@ -1,9 +1,12 @@
 # duplistatus production compose.yml
 services:
   duplistatus:
-    image: wsjbr/duplistatus:latest
+    image: docker.io/wsjbr/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - LANG=en_GB
     ports:
       - "9666:9666"
     volumes:

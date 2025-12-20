@@ -26,7 +26,10 @@ After successful installation, access the duplistatus web interface by following
 2. Navigate to `http://your-server-ip:9666`
    - Replace `your-server-ip` with the actual IP address or hostname of your duplistatus server
    - The default port is `9666`
-3. The main dashboard will display automatically (with no data on first usage)
+3. You will presented with a login page, use these for the first usage (or after an upgrade from pre-0.9.x versions):
+    - username: `admin`
+    - password: `Duplistatus09` 
+4. After login, the main dashboard will display automatically (with no data on first usage)
 
 ## User Interface Overview
 

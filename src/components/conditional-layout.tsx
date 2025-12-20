@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { AppHeader } from '@/components/app-header';
 import AppVersion from '@/components/app-version';
 import { GithubLink } from '@/components/github-link';
+import { PasswordChangeGuard } from '@/components/password-change-guard';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,7 +17,9 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative flex min-h-screen flex-col">
       <AppHeader />
-      <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
+      <PasswordChangeGuard>
+        <main className="flex-1 w-[95%] mx-auto pt-1 pb-8">{children}</main>
+      </PasswordChangeGuard>
       <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center gap-6">
           <AppVersion />

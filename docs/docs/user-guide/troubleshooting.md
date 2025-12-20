@@ -63,6 +63,16 @@ If the manual backup log collection fails:
     curl -I http://duplicati-server.local:8200
     ```
 
+
+### Upgrade from an earlier version (\<0.9.x) and can't login
+
+**duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
+    - username: `admin`
+    - password: `Duplistatus09` 
+
+You can create additional users accounts in [Settings > Users](settings/user-management-settings.md) after the first login.
+
+
 ### Lost Admin Password or Locked Out
 
 If you've lost your administrator password or been locked out of your account:

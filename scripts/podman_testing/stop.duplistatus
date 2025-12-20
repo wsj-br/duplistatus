@@ -1,10 +1,9 @@
  #!/bin/bash
 
-echo "stop pod"
-podman pod stop Duplistatus
-
+echo "stop container duplistatus"
+podman stop duplistatus
 echo ""
-echo "delete container"
+echo "delete container duplistastus"
 
 podman rm duplistatus
 

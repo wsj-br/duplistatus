@@ -48,10 +48,8 @@ export function AppHeader() {
         const data = await response.json();
         if (data.authenticated) {
           setUser(data.user);
-          // Auto-open change password modal if required
-          if (data.user.mustChangePassword) {
-            setChangePasswordOpen(true);
-          }
+          // Note: Auto-opening password change modal for required changes is handled
+          // by PasswordChangeGuard component, not here
         } else {
           setUser(null);
         }

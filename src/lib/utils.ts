@@ -7,6 +7,27 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Get the browser's locale for number formatting
+ * Falls back to 'en-US' if not available (e.g., in SSR)
+ */
+function getBrowserLocale(): string {
+  if (typeof window === 'undefined') {
+    return 'en-US'; // Default for SSR
+  }
+  // Use navigator.language or navigator.languages[0] if available
+  return navigator.language || navigator.languages?.[0] || 'en-US';
+}
+
+/**
+ * Format a number using the browser's locale
+ * This ensures consistent locale-aware number formatting across the application
+ */
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
+  const locale = getBrowserLocale();
+  return new Intl.NumberFormat(locale, options).format(value);
+}
+
 export function formatBytes(bytes: unknown, decimals = 2): string {
   // Handle all possible invalid inputs
   if (bytes === null || bytes === undefined) return '0 Bytes';
@@ -32,8 +53,16 @@ export function formatBytes(bytes: unknown, decimals = 2): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
   const i = Math.floor(Math.log(numBytes) / Math.log(k));
+  const value = numBytes / Math.pow(k, i);
 
-  return parseFloat((numBytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  // Use Intl.NumberFormat for locale-aware number formatting
+  const locale = getBrowserLocale();
+  const formatter = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: dm,
+    maximumFractionDigits: dm,
+  });
+
+  return formatter.format(value) + ' ' + sizes[i];
 }
 
 export function formatDurationFromMinutes(totalMinutes: unknown): string {
