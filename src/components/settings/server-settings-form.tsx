@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ServerAddress } from '@/lib/types';
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
-import { Server, XCircle, Ellipsis, Loader2, Play, Globe, CheckCircle, User, FileText, RectangleEllipsis, KeyRound, Eye, EyeOff, FastForward, SquareX } from 'lucide-react';
+import { Server, XCircle, Ellipsis, Loader2, Play, Globe, CheckCircle, User, FileText, RectangleEllipsis, KeyRound, FastForward, SquareX } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { ServerConfigurationButton } from '@/components/ui/server-configuration-button';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
@@ -18,6 +18,7 @@ import { CollectAllButton } from '@/components/ui/collect-all-button';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { getCSRFToken, authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 
 interface ServerSettingsFormProps {
   serverAddresses: ServerAddress[];
@@ -54,7 +55,6 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingPassword, setIsDeletingPassword] = useState(false);
   const [csrfToken, setCsrfToken] = useState<string>('');
-  const [showPasswords, setShowPasswords] = useState(false);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -496,7 +496,6 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setSelectedServerName(serverName);
     setNewPassword('');
     setConfirmPassword('');
-    setShowPasswords(false);
 
     try {
       // Get CSRF token
@@ -636,7 +635,6 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     setNewPassword('');
     setConfirmPassword('');
     setCsrfToken('');
-    setShowPasswords(false);
   };
 
 
@@ -1121,57 +1119,24 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
               <Label htmlFor="new-password" className="text-sm font-medium">
                 New Password
               </Label>
-              <div className="relative">
-                <Input
-                  id="new-password"
-                  type={showPasswords ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
-                  className="w-full pr-10"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPasswords(!showPasswords)}
-                >
-                  {showPasswords ? (
-                    <EyeOff className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-500" />
-                  )}
-                </Button>
-              </div>
+              <TogglePasswordInput
+                id="new-password"
+                value={newPassword}
+                onChange={setNewPassword}
+                placeholder="Enter new password"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password" className="text-sm font-medium">
                 Confirm Password
               </Label>
-              <div className="relative">
-                <Input
-                  id="confirm-password"
-                  type={showPasswords ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
-                  className={`w-full pr-10 ${newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}`}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPasswords(!showPasswords)}
-                >
-                  {showPasswords ? (
-                    <EyeOff className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-500" />
-                  )}
-                </Button>
-              </div>
+              <TogglePasswordInput
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                placeholder="Confirm new password"
+                className={newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
+              />
               {newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />

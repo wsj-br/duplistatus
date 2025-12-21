@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { Mail, Eye, EyeOff, Trash2, Loader2, KeyRound, XCircle, AlertTriangle } from 'lucide-react';
+import { Mail, Trash2, Loader2, KeyRound, XCircle, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
+import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -71,8 +72,6 @@ export function EmailConfigurationForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingPassword, setIsDeletingPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   // Ref to track if we're in the middle of a password operation to prevent useEffect from overwriting
   const isPasswordOperationRef = useRef(false);
@@ -447,8 +446,6 @@ export function EmailConfigurationForm() {
     setPasswordDialogOpen(true);
     setNewPassword('');
     setConfirmPassword('');
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
   };
 
   const handlePasswordSave = async () => {
@@ -595,8 +592,6 @@ export function EmailConfigurationForm() {
     setPasswordDialogOpen(false);
     setNewPassword('');
     setConfirmPassword('');
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
   };
 
 
@@ -904,57 +899,24 @@ export function EmailConfigurationForm() {
               <Label htmlFor="new-password" className="text-sm font-medium">
                 New Password
               </Label>
-              <div className="relative">
-                <Input
-                  id="new-password"
-                  type={showNewPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
-                  className="w-full pr-10"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                >
-                  {showNewPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-500" />
-                  )}
-                </Button>
-              </div>
+              <TogglePasswordInput
+                id="new-password"
+                value={newPassword}
+                onChange={setNewPassword}
+                placeholder="Enter new password"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password" className="text-sm font-medium">
                 Confirm Password
               </Label>
-              <div className="relative">
-                <Input
-                  id="confirm-password"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
-                  className={`w-full pr-10 ${newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}`}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-500" />
-                  )}
-                </Button>
-              </div>
+              <TogglePasswordInput
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                placeholder="Confirm new password"
+                className={newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
+              />
               {newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />

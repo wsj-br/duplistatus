@@ -24,6 +24,26 @@ cd duplistatus
 sudo apt update
 sudo apt install sqlite3 git -y
 ```
+
+3. Remove old Node.js installations (if you already had it installed)
+
+```bash
+sudo apt-get purge nodejs npm -y
+sudo apt-get autoremove -y
+sudo rm -rf /usr/local/bin/npm 
+sudo rm -rf /usr/local/share/man/man1/node* 
+sudo rm -rf /usr/local/lib/dtrace/node.d
+rm -rf ~/.npm
+rm -rf ~/.node-gyp
+sudo rm -rf /opt/local/bin/node
+sudo rm -rf /opt/local/include/node
+sudo rm -rf /opt/local/lib/node_modules
+sudo rm -rf /usr/local/lib/node*
+sudo rm -rf /usr/local/include/node*
+sudo rm -rf /usr/local/bin/node*
+```
+
+
 3. Install Node.js and pnpm:
 
 ```bash
@@ -32,6 +52,7 @@ source ~/.bashrc
 nvm install --lts
 nvm use --lts
 npm install -g pnpm npm-check-updates doctoc
+```
 
 
 4. Start the development server:

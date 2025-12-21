@@ -3,7 +3,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![version](https://img.shields.io/badge/version-1.0.2-blue)
+![version](https://img.shields.io/badge/version-1.0.3-blue)
 
 <br/>
 
@@ -16,22 +16,6 @@ It also provides API endpoints that can be integrated with third-party tools suc
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
-
-- [Features](#features)
-- [Installation](#installation)
-- [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
-- [User Guide](#user-guide)
-- [Screenshots](#screenshots)
-  - [Dashboard](#dashboard)
-  - [Backup History](#backup-history)
-  - [Backup Details](#backup-details)
-  - [Overdue Backups](#overdue-backups)
-  - [Overdue notifications on your phone](#overdue-notifications-on-your-phone)
-- [API Reference](#api-reference)
-- [Development](#development)
-- [Credits](#credits)
-- [Migration Information](#migration-information)
-- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

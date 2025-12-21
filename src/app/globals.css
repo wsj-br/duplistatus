@@ -132,6 +132,18 @@ body {
     -webkit-text-fill-color: hsl(var(--foreground)) !important;
     background-color: hsl(var(--background)) !important;
     color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Ensure caret is always visible in input fields */
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"] {
+    caret-color: auto;
   }
 
   .no-scrollbar::-webkit-scrollbar {
