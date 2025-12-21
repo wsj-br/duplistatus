@@ -1,4 +1,4 @@
-# duplistatus Dockerfile with integrated Docusaurus documentation
+# duplistatus Dockerfile
 
 FROM node:lts-alpine AS base
 
@@ -18,19 +18,8 @@ WORKDIR /app
 # Copy workspace configuration files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy full docs directory structure for proper workspace installation
-COPY docs ./docs
-
-# Set the BASE_URL to /docs/ for docs build
-ENV BASE_URL="/docs/"
-
-# Install all workspace dependencies (including docs)
+# Install all workspace dependencies
 RUN pnpm install --frozen-lockfile
-
-# Build Docusaurus documentation right after install (workspace is ready)
-RUN pnpm --filter docs run build
-
-# Output will be in /app/docs/build
 
 # ------------------------------------------------------------
 # Build the application with standalone output
@@ -54,10 +43,6 @@ COPY . .
 # Disable telemetry during the build
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy built Docusaurus files into Next.js public directory before build
-# This makes them available at /docs route
-COPY --from=deps /app/docs/build ./public/docs
-
 # Build the application (standalone output will be in .next/standalone)
 RUN mkdir -p /app/data && pnpm run build
 
@@ -76,7 +61,7 @@ RUN apk add --no-cache curl tzdata icu-libs icu-data-full tini sqlite
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=1.0.2 \
+ENV VERSION=1.0.3 \
     PORT=9666 \
     HOSTNAME=0.0.0.0 \
     CRON_PORT=9667 \
@@ -96,7 +81,7 @@ COPY --chown=node:node --from=builder /app/.next/standalone ./
 # Copy static files (standalone doesn't include .next/static)
 COPY --chown=node:node --from=builder /app/.next/static ./.next/static
 
-# Copy public files (includes /docs from Docusaurus)
+# Copy public files
 COPY --chown=node:node --from=builder /app/public ./public
 
 # Copy bundled cron service

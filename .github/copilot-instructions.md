@@ -71,7 +71,7 @@ pnpm typecheck        # Run TypeScript checks
 
 - Duplicati servers POST to `/api/upload` (JSON backup reports)
 - Notifications via ntfy and optional SMTP
-- Docker images: `wsjbr/duplistatus` and `ghcr.io/wsj-br/duplistatus`
+- Docker images: `docker.io/wsjbr/duplistatus` and `ghcr.io/wsj-br/duplistatus`
 
 ## Testing & Debugging
 

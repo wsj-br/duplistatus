@@ -782,7 +782,7 @@ export function EmailConfigurationForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="smtp-sender-name">Sender Name (Optional)</Label>
+                <Label htmlFor="smtp-sender-name">Sender Name (optional)</Label>
                 <Input
                   id="smtp-sender-name"
                   type="text"
@@ -797,8 +797,12 @@ export function EmailConfigurationForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="smtp-from-address">
-                  From Address {emailConfig.requireAuth === false ? '(Required)' : '(Optional)'}
-                  {emailConfig.requireAuth === false && (!emailConfig.fromAddress || emailConfig.fromAddress.trim() === '' || !isValidEmail(emailConfig.fromAddress)) && <span className="text-red-500 ml-1">(required)</span>}
+                  From Address{' '}
+                  {emailConfig.requireAuth === false ? (
+                    <span className="text-red-500">(required)</span>
+                  ) : (
+                    <span>(optional)</span>
+                  )}
                 </Label>
                 <Input
                   id="smtp-from-address"
@@ -811,11 +815,14 @@ export function EmailConfigurationForm() {
                 <p className="text-xs text-muted-foreground">
                   {emailConfig.requireAuth === false ? (
                     <>
-                      Email address shown as the sender. <span className="text-red-500 font-medium">Required when authentication is disabled.</span> <br /><span className="text-yellow-500">Note:</span> Some email providers (like Gmail) will always use the SMTP Username instead of this value.
+                      Email address shown as the sender. <span className="text-red-500 font-medium">Required when authentication is disabled.</span> <br />
                     </>
                   ) : (
                     <>
-                      Email address shown as the sender. Defaults to SMTP Username if not set. <br /><span className="text-yellow-500">Note:</span> Some email providers (like Gmail) will always use the SMTP Username instead of this value.
+                      Email address shown as the sender. Defaults to 
+                      <code className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">SMTP Server Username</code> if not set. <br />
+                      <span className="text-yellow-500">Note:</span> Some email providers (like Gmail) will always use the 
+                      <code className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">SMTP Server Username</code> instead of this value.
                     </>
                   )}
                 </p>

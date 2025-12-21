@@ -1,7 +1,7 @@
 # duplistatus production compose.yml
 services:
   duplistatus:
-    image: docker.io/wsjbr/duplistatus:latest
+    image: ghcr.io/wsj-br/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
     environment:

@@ -22,12 +22,9 @@ else
 fi
 
 # create the folder (if not exist)
-mkdir -p /root/duplistatus_home/data
+mkdir -p data
 
 # adjust ownership and permissions of the folder /root/duplistatus_home/data
-chown -R 1000:1000 /root/duplistatus_home/data
-chmod -R 755 /root/duplistatus_home/data
-chmod -R 400 /root/duplistatus_home/data/.duplistatus.key
 
 # stop the container duplistatus
 ./stop.duplistatus
@@ -37,10 +34,11 @@ echo "running the container duplistatus"
 
 # Run standalone
 podman run -d \
+  --userns=keep-id \
   --name duplistatus \
   -p 9666:9666 \
-  -v /root/duplistatus_home/data:/app/data \
-  docker.io/$IMAGE
+  -v ./data:/app/data \
+  $IMAGE
 
 
 echo ""

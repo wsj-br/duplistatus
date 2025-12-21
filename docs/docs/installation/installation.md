@@ -27,7 +27,7 @@ You can create additional users accounts in [Settings > Users](user-guide/settin
 
 You can use the images from:
 
-- **Docker Hub**: `wsjbr/duplistatus:latest`
+- **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
 ### Option 1: Using Docker Compose
@@ -35,13 +35,10 @@ You can use the images from:
 This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 ```bash	
-# create a folder for the compose file
-mkdir duplistatus
-cd duplistatus
 # download the compose file
-wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O compose.yml
+wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
 # start the container
-docker compose up -d
+docker compose -f duplistatus.yml up -d
 ```
 
 Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
@@ -56,9 +53,12 @@ Check the [Timezone and Locale](installation/configure-tz-lang.md) section to mo
 # duplistatus production compose.yml
 services:
   duplistatus:
-    image: wsjbr/duplistatus:latest
+    image: ghcr.io/wsj-br/duplistatus:latest
     container_name: duplistatus
     restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - LANG=en_GB
     ports:
       - "9666:9666"
     volumes:
@@ -85,7 +85,7 @@ volumes:
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
 5. In the "Compose path" field, enter: `production.yml`
-6. (optional) Set the `TZ` and `LANG` environment variables in the "Environment variables" section. Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+6. (optional) Set the `TZ` and `LANG` environment variables in the "Environment variables" section. Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format. 
 6. Click "Deploy the stack".
 
 ### Option 4: Using Docker CLI
@@ -98,24 +98,26 @@ docker volume create duplistatus_data
 docker run -d \
   --name duplistatus \
   -p 9666:9666 \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
   -v duplistatus_data:/app/data \
-  wsjbr/duplistatus:latest
+  ghcr.io/wsj-br/duplistatus:latest
 ```
 
-- The `duplistatus_data` volume is used for persistent storage.
+- The `duplistatus_data` volume is used for persistent storage. The container image uses `Europe/London` as the default timezone and `en_GB` as the default locale (language).
 
-### Option 5: Using Podman (CLI)
+### Option 5: Using Podman (CLI) (rootless)
 
 ```bash
-# create the folder to store the database
-mkdir -p /root/duplistatus_home/data
-# adjust the ownership 
-chown -R 1000:1000 /root/duplistatus_home/data
+mkdir -p ~/duplistatus_data
 # Start the container (standalone)
 podman run -d \
   --name duplistatus \
+  --userns=keep-id \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
   -p 9666:9666 \
-  -v /root/duplistatus_home/data:/app/data \
+  -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
@@ -129,13 +131,10 @@ Check the [Timezone and Locale](installation/configure-tz-lang.md) section to mo
 ### Option 6: Using Podman Compose (CLI)
 
 ```bash
-# create a folder for the compose file
-mkdir duplistatus
-cd duplistatus
 # download the compose file
-wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O compose.yml
+wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
 # start the container
-podman-compose up -d
+podman-compose -f duplistatus.yml up -d
 ```
 
 Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.

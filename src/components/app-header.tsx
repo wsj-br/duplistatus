@@ -200,7 +200,7 @@ export function AppHeader() {
             size="icon" 
             title="User Guide"
             className="ml-4"
-            onClick={() => window.open('/docs/user-guide/overview', '_blank', 'noopener,noreferrer')}
+            onClick={() => window.open('https://wsj-br.github.io/duplistatus/user-guide/overview', '_blank', 'noopener,noreferrer')}
           >
             <BookOpenText className="h-4 w-4" />
           </Button>

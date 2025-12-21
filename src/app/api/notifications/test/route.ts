@@ -119,7 +119,7 @@ Email Configuration Details:
 
       // Only show username if authentication is required
       if (requiresAuth) {
-        testMessage += `\n  SMTP Username: ${smtpConfig.username}`;
+        testMessage += `\n  SMTP Server Username: ${smtpConfig.username}`;
       }
 
       testMessage += `

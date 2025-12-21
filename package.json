@@ -1,9 +1,9 @@
 {
   "name": "duplistatus",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.26.0",
+  "packageManager": "pnpm@10.26.1",
   "engines": {
     "node": ">=24.12.0",
     "pnpm": ">=10.24.0"
@@ -17,7 +17,7 @@
     "cron:start": "tsx src/cron-service/index.ts",
     "dev": "./scripts/pre-checks.sh && PORT=8666 NEXT_TELEMETRY_DISABLED=1 next dev",
     "cron:dev": "CRON_PORT=8667 tsx watch src/cron-service/index.ts",
-    "build-local": "./scripts/pre-checks.sh && BASE_URL=/docs/ pnpm --filter docs run build && rm -rf public/docs && cp -r docs/build public/docs && next build && mkdir -p .next/standalone/.next && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public",
+    "build-local": "./scripts/pre-checks.sh && next build && mkdir -p .next/standalone/.next && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public",
     "start-local": "./scripts/pre-checks.sh && NODE_ENV=production HOSTNAME=0.0.0.0 PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
     "cron:start-local": "NODE_ENV=production CRON_PORT=8667 tsx watch src/cron-service/index.ts",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
@@ -29,7 +29,8 @@
     "test-smtp-connections": "tsx --env-file=.env scripts/test-smtp-connections.ts",
     "docker-up": "./scripts/pre-checks.sh && docker compose up --build -d",
     "docker-down": "docker compose down",
-    "docker-clean": "./scripts/clean-docker.sh"
+    "docker-clean": "./scripts/clean-docker.sh", 
+    "docker-devel": "docker build . -t wsj-br/duplistatus:devel"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -63,16 +64,16 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "express": "^5.2.1",
-    "lucide-react": "^0.561.0",
-    "next": "^16.0.10",
+    "lucide-react": "^0.562.0",
+    "next": "^16.1.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.11",
     "qrcode": "^1.5.4",
     "react": "^19.2.3",
-    "react-datepicker": "^9.0.0",
-    "react-day-picker": "^9.12.0",
+    "react-datepicker": "^9.1.0",
+    "react-day-picker": "^9.13.0",
     "react-dom": "^19.2.3",
-    "react-hook-form": "^7.68.0",
+    "react-hook-form": "^7.69.0",
     "recharts": "^3.6.0",
     "string-template": "^1.0.0",
     "tailwind-merge": "^3.4.0",
@@ -90,9 +91,9 @@
     "@types/string-template": "^1.0.7",
     "baseline-browser-mapping": "latest",
     "eslint": "^9.39.2",
-    "eslint-config-next": "16.0.10",
-    "puppeteer": "^24.33.0",
+    "eslint-config-next": "16.1.0",
+    "puppeteer": "^24.34.0",
     "tsx": "^4.21.0",
-    "webpack": "^5.104.0"
+    "webpack": "^5.104.1"
   }
 }

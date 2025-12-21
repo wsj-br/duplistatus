@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed
+- Removed documentation from Docker container image. Documentation is now hosted on GitHub Pages at https://wsj-br.github.io/duplistatus/user-guide/overview
+- Updated app header User Guide link to point to GitHub Pages documentation instead of local /docs route
+- Simplified proxy.ts by removing Docusaurus URL rewriting logic (no longer needed)
+
 ### Fixed
 - Fixed ES module compatibility issues with Node.js 25.x by replacing `require()` statements with proper ES6 `import` statements:
   - `db.ts`: Removed `require('bcrypt')` and `require('util')` - using top-level imports instead

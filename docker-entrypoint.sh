@@ -106,7 +106,7 @@ fi
 # Start the Next.js standalone server in the background
 # Best practice for `output: 'standalone'` is to run the generated server.js
 log_ts "[Entrypoint] Starting duplistatus (Next standalone)..."
-node server.js &
+node server.js --hostname 0.0.0.0 &
 SERVER_PID=$!
 
 # Validate server process started successfully

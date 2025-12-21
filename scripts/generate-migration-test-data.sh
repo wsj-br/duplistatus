@@ -94,8 +94,7 @@ for VERSION in $VERSIONS; do
   sudo docker stop duplistatus
   echo "Remove the docker container"
   sudo docker rm duplistatus
-  # echo "Remove the docker image"
-  # sudo docker rmi wsjbr/duplistatus:$VERSION
+
 
   # flush the WAL file to the backups.db file
   echo "----"
