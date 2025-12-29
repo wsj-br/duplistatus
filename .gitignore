@@ -40,6 +40,7 @@ README_dockerhub.md
 # documentation
 documentation/node_modules
 documentation/build
+documentation/.docusaurus/
 public/documentation
 
 # debug
