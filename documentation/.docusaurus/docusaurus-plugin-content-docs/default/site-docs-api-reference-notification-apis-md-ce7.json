@@ -1,0 +1,23 @@
+{
+  "id": "api-reference/notification-apis",
+  "title": "Notification System",
+  "description": "Test Notification - /api/notifications/test",
+  "source": "@site/docs/api-reference/notification-apis.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/notification-apis",
+  "permalink": "/api-reference/notification-apis",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Monitoring & Health",
+    "permalink": "/api-reference/monitoring-apis"
+  },
+  "next": {
+    "title": "Session Management",
+    "permalink": "/api-reference/session-management-apis"
+  }
+}

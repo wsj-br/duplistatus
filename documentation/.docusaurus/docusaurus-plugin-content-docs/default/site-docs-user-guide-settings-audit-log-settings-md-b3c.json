@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/audit-log-settings",
+  "title": "Audit Log",
+  "description": "The audit log provides a comprehensive record of all system changes and user actions in duplistatus. This helps track configuration changes, user activities, and system operations for security and troubleshooting purposes.",
+  "source": "@site/docs/user-guide/settings/audit-log-settings.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/audit-log-settings",
+  "permalink": "/user-guide/settings/audit-log-settings",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "User Management",
+    "permalink": "/user-guide/settings/user-management-settings"
+  },
+  "next": {
+    "title": "Homepage Integration (Optional)",
+    "permalink": "/user-guide/homepage-integration"
+  }
+}

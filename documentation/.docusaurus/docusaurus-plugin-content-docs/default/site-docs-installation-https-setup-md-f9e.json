@@ -1,0 +1,23 @@
+{
+  "id": "installation/https-setup",
+  "title": "HTTPS Setup (Optional)",
+  "description": "For production deployments, it's recommended to serve duplistatus over HTTPS using a reverse proxy. This section provides configuration examples for popular reverse proxy solutions.",
+  "source": "@site/docs/installation/https-setup.md",
+  "sourceDirName": "installation",
+  "slug": "/installation/https-setup",
+  "permalink": "/installation/https-setup",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Duplicati Server Configuration (Required)",
+    "permalink": "/installation/duplicati-server-configuration"
+  },
+  "next": {
+    "title": "Overview",
+    "permalink": "/user-guide/overview"
+  }
+}

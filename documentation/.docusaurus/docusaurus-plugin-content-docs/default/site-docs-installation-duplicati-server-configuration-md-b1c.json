@@ -1,0 +1,23 @@
+{
+  "id": "installation/duplicati-server-configuration",
+  "title": "Duplicati Server Configuration (Required)",
+  "description": "In order for this application to work properly, each of your Duplicati servers needs to be configured to send HTTP reports for each backup run to the duplistatus server.",
+  "source": "@site/docs/installation/duplicati-server-configuration.md",
+  "sourceDirName": "installation",
+  "slug": "/installation/duplicati-server-configuration",
+  "permalink": "/installation/duplicati-server-configuration",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Environment Variables",
+    "permalink": "/installation/environment-variables"
+  },
+  "next": {
+    "title": "HTTPS Setup (Optional)",
+    "permalink": "/installation/https-setup"
+  }
+}

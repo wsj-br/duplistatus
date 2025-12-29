@@ -1,0 +1,23 @@
+{
+  "id": "installation/installation",
+  "title": "Installation Guide",
+  "description": "The application can be deployed using Docker, Portainer Stacks, or Podman. After the installation, you may want to configure the TIMEZONE and LANGUAGE, as described in the Configure Timezone and Language and need to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the Duplicati Configuration section.",
+  "source": "@site/docs/installation/installation.md",
+  "sourceDirName": "installation",
+  "slug": "/installation/",
+  "permalink": "/installation/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Welcome to duplistatus",
+    "permalink": "/intro"
+  },
+  "next": {
+    "title": "Timezone and Locale",
+    "permalink": "/installation/configure-tz-lang"
+  }
+}

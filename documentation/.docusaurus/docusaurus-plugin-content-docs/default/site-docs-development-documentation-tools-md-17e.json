@@ -1,0 +1,23 @@
+{
+  "id": "development/documentation-tools",
+  "title": "Documentation Tools",
+  "description": "The documentation is built using Docusaurus and is located in the documentation folder.",
+  "source": "@site/docs/development/documentation-tools.md",
+  "sourceDirName": "development",
+  "slug": "/development/documentation-tools",
+  "permalink": "/development/documentation-tools",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Database Schema",
+    "permalink": "/development/database"
+  },
+  "next": {
+    "title": "Podman Testing",
+    "permalink": "/development/podman-testing"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/collect-backup-logs",
+  "title": "Collect Backup Logs",
+  "description": "duplistatus can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.",
+  "source": "@site/docs/user-guide/collect-backup-logs.md",
+  "sourceDirName": "user-guide",
+  "slug": "/user-guide/collect-backup-logs",
+  "permalink": "/user-guide/collect-backup-logs",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Backup Metrics",
+    "permalink": "/user-guide/backup-metrics"
+  },
+  "next": {
+    "title": "Overdue Monitoring",
+    "permalink": "/user-guide/overdue-monitoring"
+  }
+}

@@ -1,0 +1,322 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "api-reference/administration-apis",
+              "path": "/api-reference/administration-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/api-endpoint-list",
+              "path": "/api-reference/api-endpoint-list",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/authentication-security",
+              "path": "/api-reference/authentication-security",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/chart-data-apis",
+              "path": "/api-reference/chart-data-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/configuration-apis",
+              "path": "/api-reference/configuration-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/core-operations",
+              "path": "/api-reference/core-operations",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/cron-service-apis",
+              "path": "/api-reference/cron-service-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/external-apis",
+              "path": "/api-reference/external-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/monitoring-apis",
+              "path": "/api-reference/monitoring-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/notification-apis",
+              "path": "/api-reference/notification-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/overview",
+              "path": "/api-reference/overview",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "api-reference/session-management-apis",
+              "path": "/api-reference/session-management-apis",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/cron-service",
+              "path": "/development/cron-service",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/database",
+              "path": "/development/database",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/devel",
+              "path": "/development/devel",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/development-guidelines",
+              "path": "/development/development-guidelines",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/documentation-tools",
+              "path": "/development/documentation-tools",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/how-i-build-with-ai",
+              "path": "/development/how-i-build-with-ai",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/podman-testing",
+              "path": "/development/podman-testing",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/release-management",
+              "path": "/development/release-management",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/setup",
+              "path": "/development/setup",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/test-scripts",
+              "path": "/development/test-scripts",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "development/workspace-admin-scripts-commands",
+              "path": "/development/workspace-admin-scripts-commands",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "installation/configure-tz-lang",
+              "path": "/installation/configure-tz-lang",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "installation/duplicati-server-configuration",
+              "path": "/installation/duplicati-server-configuration",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "installation/environment-variables",
+              "path": "/installation/environment-variables",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "installation/https-setup",
+              "path": "/installation/https-setup",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "installation/installation",
+              "path": "/installation/",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/intro",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "LICENSE",
+              "path": "/LICENSE"
+            },
+            {
+              "id": "migration/api-changes",
+              "path": "/migration/api-changes",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "migration/version_upgrade",
+              "path": "/migration/version_upgrade",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "release-notes/0.7.x",
+              "path": "/release-notes/0.7.x",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "release-notes/0.8.x",
+              "path": "/release-notes/0.8.x",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "release-notes/0.9.x",
+              "path": "/release-notes/0.9.x",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "release-notes/1.0.x",
+              "path": "/release-notes/1.0.x",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/admin-recovery",
+              "path": "/user-guide/admin-recovery",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/backup-metrics",
+              "path": "/user-guide/backup-metrics",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/collect-backup-logs",
+              "path": "/user-guide/collect-backup-logs",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/dashboard",
+              "path": "/user-guide/dashboard",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/duplicati-configuration",
+              "path": "/user-guide/duplicati-configuration",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/homepage-integration",
+              "path": "/user-guide/homepage-integration",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/overdue-monitoring",
+              "path": "/user-guide/overdue-monitoring",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/overview",
+              "path": "/user-guide/overview",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/server-details",
+              "path": "/user-guide/server-details",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/audit-log-settings",
+              "path": "/user-guide/settings/audit-log-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/backup-notifications-settings",
+              "path": "/user-guide/settings/backup-notifications-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/database-maintenance",
+              "path": "/user-guide/settings/database-maintenance",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/display-settings",
+              "path": "/user-guide/settings/display-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/email-settings",
+              "path": "/user-guide/settings/email-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/notification-templates",
+              "path": "/user-guide/settings/notification-templates",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/ntfy-settings",
+              "path": "/user-guide/settings/ntfy-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/overdue-settings",
+              "path": "/user-guide/settings/overdue-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/overview",
+              "path": "/user-guide/settings/overview",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/server-settings",
+              "path": "/user-guide/settings/server-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/settings/user-management-settings",
+              "path": "/user-guide/settings/user-management-settings",
+              "sidebar": "mainSidebar"
+            },
+            {
+              "id": "user-guide/troubleshooting",
+              "path": "/user-guide/troubleshooting",
+              "sidebar": "mainSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "mainSidebar": {
+              "link": {
+                "path": "/intro",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  },
+  "@cmfcmf/docusaurus-search-local": {
+    "default": {
+      "titleBoost": 5,
+      "contentBoost": 1,
+      "tagsBoost": 3,
+      "parentCategoriesBoost": 2,
+      "indexDocSidebarParentCategories": 0,
+      "maxSearchResults": 8
+    }
+  }
+}

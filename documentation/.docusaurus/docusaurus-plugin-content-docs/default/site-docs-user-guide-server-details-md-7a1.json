@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/server-details",
+  "title": "Server Details",
+  "description": "Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.",
+  "source": "@site/docs/user-guide/server-details.md",
+  "sourceDirName": "user-guide",
+  "slug": "/user-guide/server-details",
+  "permalink": "/user-guide/server-details",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Dashboard",
+    "permalink": "/user-guide/dashboard"
+  },
+  "next": {
+    "title": "Backup Metrics",
+    "permalink": "/user-guide/backup-metrics"
+  }
+}

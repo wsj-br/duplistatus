@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/user-management-settings",
+  "title": "User Management",
+  "description": "Manage user accounts, permissions, and access control for duplistatus. This section allows administrators to create, modify, and delete user accounts.",
+  "source": "@site/docs/user-guide/settings/user-management-settings.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/user-management-settings",
+  "permalink": "/user-guide/settings/user-management-settings",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Database Maintenance",
+    "permalink": "/user-guide/settings/database-maintenance"
+  },
+  "next": {
+    "title": "Audit Log",
+    "permalink": "/user-guide/settings/audit-log-settings"
+  }
+}

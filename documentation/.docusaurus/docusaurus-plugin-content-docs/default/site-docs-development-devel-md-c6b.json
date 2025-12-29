@@ -1,0 +1,23 @@
+{
+  "id": "development/devel",
+  "title": "Most used commands",
+  "description": "Run in dev mode",
+  "source": "@site/docs/development/devel.md",
+  "sourceDirName": "development",
+  "slug": "/development/devel",
+  "permalink": "/development/devel",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Development Setup",
+    "permalink": "/development/setup"
+  },
+  "next": {
+    "title": "Database Schema",
+    "permalink": "/development/database"
+  }
+}

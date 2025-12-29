@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/display-settings",
+  "title": "Display Settings",
+  "description": "Configure user interface and display preferences.",
+  "source": "@site/docs/user-guide/settings/display-settings.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/display-settings",
+  "permalink": "/user-guide/settings/display-settings",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Server",
+    "permalink": "/user-guide/settings/server-settings"
+  },
+  "next": {
+    "title": "Database Maintenance",
+    "permalink": "/user-guide/settings/database-maintenance"
+  }
+}

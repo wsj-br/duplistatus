@@ -1,0 +1,23 @@
+{
+  "id": "development/test-scripts",
+  "title": "Test Scripts",
+  "description": "The project includes several test scripts to help with development and testing:",
+  "source": "@site/docs/development/test-scripts.md",
+  "sourceDirName": "development",
+  "slug": "/development/test-scripts",
+  "permalink": "/development/test-scripts",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Release Management",
+    "permalink": "/development/release-management"
+  },
+  "next": {
+    "title": "Workspace Admin Scripts & Commands",
+    "permalink": "/development/workspace-admin-scripts-commands"
+  }
+}

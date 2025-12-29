@@ -1,0 +1,23 @@
+{
+  "id": "development/how-i-build-with-ai",
+  "title": "How I Build this Application using AI tools",
+  "description": "I started using Duplicati as a backup tool for my home servers. I tried the official Duplicati dashboard and Duplicati Monitoring, but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with Homepage, as I use it for my home lab's homepage.",
+  "source": "@site/docs/development/how-i-build-with-ai.md",
+  "sourceDirName": "development",
+  "slug": "/development/how-i-build-with-ai",
+  "permalink": "/development/how-i-build-with-ai",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Development Reference",
+    "permalink": "/development/development-guidelines"
+  },
+  "next": {
+    "title": "Version 1.0.x",
+    "permalink": "/release-notes/1.0.x"
+  }
+}

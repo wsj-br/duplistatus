@@ -1,0 +1,23 @@
+{
+  "id": "api-reference/external-apis",
+  "title": "External APIs",
+  "description": "These endpoints are designed for use by other applications and integrations, for instance Homepage.",
+  "source": "@site/docs/api-reference/external-apis.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/external-apis",
+  "permalink": "/api-reference/external-apis",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Cron Service Management",
+    "permalink": "/api-reference/cron-service-apis"
+  },
+  "next": {
+    "title": "Monitoring & Health",
+    "permalink": "/api-reference/monitoring-apis"
+  }
+}

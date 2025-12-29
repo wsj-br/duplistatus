@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/ntfy-settings",
+  "title": "NTFY",
+  "description": "NTFY is a simple notification service that can send push notifications to your phone or desktop. This section allows you to set up your notification server connection and authentication.",
+  "source": "@site/docs/user-guide/settings/ntfy-settings.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/ntfy-settings",
+  "permalink": "/user-guide/settings/ntfy-settings",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Templates",
+    "permalink": "/user-guide/settings/notification-templates"
+  },
+  "next": {
+    "title": "Email",
+    "permalink": "/user-guide/settings/email-settings"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/overdue-settings",
+  "title": "Overdue Notifications",
+  "description": "Backup alerts",
+  "source": "@site/docs/user-guide/settings/overdue-settings.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/overdue-settings",
+  "permalink": "/user-guide/settings/overdue-settings",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Backup Notifications",
+    "permalink": "/user-guide/settings/backup-notifications-settings"
+  },
+  "next": {
+    "title": "Templates",
+    "permalink": "/user-guide/settings/notification-templates"
+  }
+}

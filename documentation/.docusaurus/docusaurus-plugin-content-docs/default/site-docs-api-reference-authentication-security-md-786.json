@@ -1,0 +1,23 @@
+{
+  "id": "api-reference/authentication-security",
+  "title": "Authentication & Security",
+  "description": "The API uses a combination of session-based authentication and CSRF protection for all database write operations to prevent unauthorized access and potential denial-of-service attacks. External APIs (used by Duplicati) remain unauthenticated for compatibility.",
+  "source": "@site/docs/api-reference/authentication-security.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/authentication-security",
+  "permalink": "/api-reference/authentication-security",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "API Overview",
+    "permalink": "/api-reference/overview"
+  },
+  "next": {
+    "title": "Core Operations",
+    "permalink": "/api-reference/core-operations"
+  }
+}

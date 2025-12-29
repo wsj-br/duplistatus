@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/notification-templates",
+  "title": "Templates",
+  "description": "duplistatus uses three templates for notification messages. These templates are used for both NTFY and email notifications:",
+  "source": "@site/docs/user-guide/settings/notification-templates.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/notification-templates",
+  "permalink": "/user-guide/settings/notification-templates",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Overdue Notifications",
+    "permalink": "/user-guide/settings/overdue-settings"
+  },
+  "next": {
+    "title": "NTFY",
+    "permalink": "/user-guide/settings/ntfy-settings"
+  }
+}

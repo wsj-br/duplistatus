@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/troubleshooting",
+  "title": "Troubleshooting",
+  "description": "Dashboard Not Loading",
+  "source": "@site/docs/user-guide/troubleshooting.md",
+  "sourceDirName": "user-guide",
+  "slug": "/user-guide/troubleshooting",
+  "permalink": "/user-guide/troubleshooting",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Homepage Integration (Optional)",
+    "permalink": "/user-guide/homepage-integration"
+  },
+  "next": {
+    "title": "Admin Account Recovery",
+    "permalink": "/user-guide/admin-recovery"
+  }
+}

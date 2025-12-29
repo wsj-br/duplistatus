@@ -1,0 +1,23 @@
+{
+  "id": "user-guide/settings/backup-notifications-settings",
+  "title": "Backup Notifications",
+  "description": "Backup alerts",
+  "source": "@site/docs/user-guide/settings/backup-notifications-settings.md",
+  "sourceDirName": "user-guide/settings",
+  "slug": "/user-guide/settings/backup-notifications-settings",
+  "permalink": "/user-guide/settings/backup-notifications-settings",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Overview",
+    "permalink": "/user-guide/settings/overview"
+  },
+  "next": {
+    "title": "Overdue Notifications",
+    "permalink": "/user-guide/settings/overdue-settings"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "api-reference/configuration-apis",
+  "title": "Configuration Management",
+  "description": "Get Email Configuration - /api/configuration/email",
+  "source": "@site/docs/api-reference/configuration-apis.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/configuration-apis",
+  "permalink": "/api-reference/configuration-apis",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Chart Data",
+    "permalink": "/api-reference/chart-data-apis"
+  },
+  "next": {
+    "title": "Cron Service Management",
+    "permalink": "/api-reference/cron-service-apis"
+  }
+}

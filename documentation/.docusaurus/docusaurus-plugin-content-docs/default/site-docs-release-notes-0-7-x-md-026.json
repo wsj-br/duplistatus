@@ -1,0 +1,19 @@
+{
+  "id": "release-notes/0.7.x",
+  "title": "Version 0.7.x",
+  "description": "Overview",
+  "source": "@site/docs/release-notes/0.7.x.md",
+  "sourceDirName": "release-notes",
+  "slug": "/release-notes/0.7.x",
+  "permalink": "/release-notes/0.7.x",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Version 0.8.x",
+    "permalink": "/release-notes/0.8.x"
+  }
+}

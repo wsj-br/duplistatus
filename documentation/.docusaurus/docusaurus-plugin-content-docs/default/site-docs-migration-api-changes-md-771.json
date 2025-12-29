@@ -1,0 +1,23 @@
+{
+  "id": "migration/api-changes",
+  "title": "API Breaking Changes",
+  "description": "This document outlines breaking changes to external API endpoints across different versions of duplistatus. External API endpoints are those designed for use by other applications and integrations (e.g., Homepage integration).",
+  "source": "@site/docs/migration/api-changes.md",
+  "sourceDirName": "migration",
+  "slug": "/migration/api-changes",
+  "permalink": "/migration/api-changes",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Migration Guide",
+    "permalink": "/migration/version_upgrade"
+  },
+  "next": {
+    "title": "API Overview",
+    "permalink": "/api-reference/overview"
+  }
+}

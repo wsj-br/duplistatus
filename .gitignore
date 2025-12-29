@@ -38,8 +38,8 @@ README_dockerhub.md
 *.tmp
 
 # docs
-docs/node_modules
-docs/build
+documentation/node_modules
+documentation/build
 public/docs
 
 # debug

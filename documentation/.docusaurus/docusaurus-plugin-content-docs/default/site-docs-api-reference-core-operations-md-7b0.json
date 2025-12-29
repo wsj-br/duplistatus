@@ -1,0 +1,23 @@
+{
+  "id": "api-reference/core-operations",
+  "title": "Core Operations",
+  "description": "Get Dashboard Data (Consolidated) - /api/dashboard",
+  "source": "@site/docs/api-reference/core-operations.md",
+  "sourceDirName": "api-reference",
+  "slug": "/api-reference/core-operations",
+  "permalink": "/api-reference/core-operations",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "mainSidebar",
+  "previous": {
+    "title": "Authentication & Security",
+    "permalink": "/api-reference/authentication-security"
+  },
+  "next": {
+    "title": "Administration",
+    "permalink": "/api-reference/administration-apis"
+  }
+}
