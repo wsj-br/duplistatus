@@ -12,6 +12,8 @@ export interface ServerWithBackup {
   alias: string;
   note: string;
   hasPassword: boolean;
+  expectedBackupDate?: string; // Calculated next expected backup date
+  lastBackupDate?: string; // Last actual backup received
 }
 
 interface UnifiedConfiguration {

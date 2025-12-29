@@ -7,7 +7,7 @@ import { execSync } from 'child_process';
 const BASE_URL = 'http://localhost:8666';
 const ADMIN_USERNAME = 'admin';
 const USER_USERNAME = 'user';
-const SCREENSHOT_DIR = 'docs/static/img';
+const SCREENSHOT_DIR = 'documentation/static/img';
 const VIEWPORT_WIDTH = 1920;
 const VIEWPORT_HEIGHT = 1080;
 
@@ -29,6 +29,13 @@ function logSuccess(message: string): void {
   console.log(`${colors.blue}${message}${colors.reset}`);
 }
 
+function showEnvFormat(): void {
+  console.log(`${colors.yellow}Environment variables:${colors.reset}`);
+  console.log(`ADMIN_PASSWORD="your-admin-password"`);
+  console.log(`USER_PASSWORD="your-user-password"`);
+  console.log(`${colors.reset}`);
+}
+
 // Read passwords from environment variables
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const USER_PASSWORD = process.env.USER_PASSWORD;
@@ -36,11 +43,13 @@ const USER_PASSWORD = process.env.USER_PASSWORD;
 // Validate that passwords are set
 if (!ADMIN_PASSWORD) {
   logError('ADMIN_PASSWORD environment variable is not set. Please set it before running the script.');
+  showEnvFormat();
   process.exit(1);
 }
 
 if (!USER_PASSWORD) {
   logError('USER_PASSWORD environment variable is not set. Please set it before running the script.');
+  showEnvFormat();
   process.exit(1);
 }
 
@@ -57,6 +66,70 @@ async function ensureDirectoryExists(dir: string) {
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Helper function to wait for server detail page content to load
+async function waitForServerDetailContent(page: Page, maxWaitMs: number = 15000): Promise<boolean> {
+  const startTime = Date.now();
+  let lastCardCount = 0;
+  
+  while (Date.now() - startTime < maxWaitMs) {
+    // Check if content has loaded by looking for cards or the data-screenshot-target
+    const contentInfo = await page.evaluate(() => {
+      // Check for any Card elements
+      const cards = document.querySelectorAll('[class*="Card"]');
+      const cardCount = cards.length;
+      
+      // Check for data-screenshot-target elements
+      const targets = document.querySelectorAll('[data-screenshot-target]');
+      
+      // Check for server detail summary
+      const summary = document.querySelector('[data-screenshot-target="server-detail-summary"]');
+      
+      // Check for backup history table
+      const backupHistory = document.querySelector('[data-screenshot-target="backup-history-table"]');
+      
+      // Check if there's actual content (not just empty cards)
+      const hasTable = document.querySelector('table') !== null;
+      const hasBackupHistoryTitle = Array.from(cards).some(card => {
+        const title = card.querySelector('h3, [class*="CardTitle"]');
+        return title && title.textContent?.includes('Backup History');
+      });
+      
+      return {
+        cardCount,
+        hasTargets: targets.length > 0,
+        hasSummary: !!summary,
+        hasBackupHistory: !!backupHistory,
+        hasTable,
+        hasBackupHistoryTitle
+      };
+    });
+    
+    // If we have cards and they're stable (not changing), content is loaded
+    if (contentInfo.cardCount > 0 && contentInfo.cardCount === lastCardCount) {
+      // Wait a bit more for any animations or final rendering
+      await delay(1000);
+      return true;
+    }
+    
+    // If we have the backup history table or summary, content is loaded
+    if (contentInfo.hasBackupHistory || contentInfo.hasSummary || (contentInfo.hasTable && contentInfo.hasBackupHistoryTitle)) {
+      await delay(1000);
+      return true;
+    }
+    
+    lastCardCount = contentInfo.cardCount;
+    await delay(300);
+  }
+  
+  // Final check - even if timeout, see if we have any content
+  const finalCheck = await page.evaluate(() => {
+    const cards = document.querySelectorAll('[class*="Card"]');
+    return cards.length > 0;
+  });
+  
+  return finalCheck;
 }
 
 async function checkHealth(): Promise<boolean> {
@@ -79,14 +152,51 @@ async function checkHealth(): Promise<boolean> {
 async function generateTestData() {
   console.log('Generating test data...');
   try {
-    execSync('pnpm generate-test-data --servers=12 --quiet', { 
+    const command = 'pnpm generate-test-data --servers=12 --quiet';
+    console.log(`Executing: ${command}`);
+    console.log(`Working directory: ${process.cwd()}`);
+    
+    execSync(command, { 
       stdio: 'inherit',
-      cwd: process.cwd()
+      cwd: process.cwd(),
+      env: { ...process.env }
     });
-    console.log('Test data generated successfully');
+    
+    // Verify that data was actually generated
+    try {
+      const dbModule = await import('../src/lib/db');
+      await dbModule.ensureDatabaseInitialized();
+      const db = dbModule.db;
+      
+      const serverCount = db.prepare('SELECT COUNT(*) as count FROM servers').get() as { count: number };
+      const backupCount = db.prepare('SELECT COUNT(*) as count FROM backups').get() as { count: number };
+      
+      console.log(`Verification: ${serverCount.count} server(s) and ${backupCount.count} backup(s) found in database`);
+      
+      if (serverCount.count === 0 || backupCount.count === 0) {
+        logError(`Warning: Test data generation completed but database appears empty (servers: ${serverCount.count}, backups: ${backupCount.count})`);
+      } else {
+        console.log('Test data generated successfully');
+      }
+    } catch (verifyError) {
+      logError(`Warning: Could not verify test data generation: ${verifyError instanceof Error ? verifyError.message : String(verifyError)}`);
+      console.log('Test data generation command completed (verification failed)');
+    }
+    
     console.log('-------------------------------------------------------');
   } catch (error) {
-    logError('Failed to generate test data: ' + (error instanceof Error ? error.message : String(error)));
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorDetails = error instanceof Error && 'code' in error ? ` (code: ${error.code})` : '';
+    logError(`Failed to generate test data: ${errorMessage}${errorDetails}`);
+    
+    // Log additional details if available
+    if (error instanceof Error && 'stderr' in error) {
+      logError(`stderr: ${String((error as any).stderr)}`);
+    }
+    if (error instanceof Error && 'stdout' in error) {
+      console.log(`stdout: ${String((error as any).stdout)}`);
+    }
+    
     throw error;
   }
 }
@@ -203,30 +313,41 @@ async function getServers(page: Page): Promise<Server[]> {
   return response as Server[];
 }
 
-async function deleteServer(page: Page, serverId: string) {
+async function deleteServerDirect(serverId: string): Promise<{ success: boolean; backupCount: number; error?: string }> {
   console.log(`  Deleting server ${serverId}...`);
   
-  // Get CSRF token
-  const csrfToken = await getCSRFToken(page);
-  
-  // Make DELETE request
-  const response = await page.evaluate(async (serverId: string, csrfToken: string) => {
-    const res = await fetch(`/api/servers/${serverId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
-      },
-      credentials: 'include'
-    });
-    return { ok: res.ok, status: res.status, json: await res.json() };
-  }, serverId, csrfToken);
-  
-  if (!response.ok) {
-    throw new Error(`Failed to delete server ${serverId}: ${response.json.error || 'Unknown error'}`);
+  try {
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    
+    // Verify server exists before deletion
+    const serverInfo = dbUtilsModule.getServerInfoById(serverId);
+    if (!serverInfo) {
+      console.log(`  Server ${serverId} not found in database, skipping deletion`);
+      return { success: false, backupCount: 0, error: 'Server not found' };
+    }
+    
+    // Use dbUtils.deleteServer which handles the transaction and cleanup
+    // This will throw an error if server is not found, but we already checked above
+    const result = dbUtilsModule.dbUtils.deleteServer(serverId);
+    
+    if (result.serverChanges === 0) {
+      return { success: false, backupCount: result.backupChanges, error: 'No server was deleted' };
+    }
+    
+    console.log(`  Successfully deleted server ${serverId} and ${result.backupChanges} backup(s)`);
+    return { success: true, backupCount: result.backupChanges };
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    // If error is "Server not found", treat it as success (already deleted)
+    if (errorMsg.includes('not found')) {
+      console.log(`  Server ${serverId} not found (may already be deleted)`);
+      return { success: false, backupCount: 0, error: 'Server not found' };
+    }
+    logError(`Failed to delete server ${serverId}: ${errorMsg}`);
+    return { success: false, backupCount: 0, error: errorMsg };
   }
-  
-  console.log(`  Successfully deleted server ${serverId}`);
 }
 
 async function updateServerUrl(serverId: string, serverUrl: string) {
@@ -241,7 +362,10 @@ async function updateServerUrl(serverId: string, serverUrl: string) {
     // Get existing server info to preserve alias and note
     const existingServer = dbUtilsModule.getServerInfoById(serverId);
     if (!existingServer) {
-      throw new Error(`Server ${serverId} not found`);
+      // Server doesn't exist - this can happen if it was deleted
+      // Return early instead of throwing to allow the script to continue
+      console.log(`  Warning: Server ${serverId} not found in database, skipping URL update`);
+      return;
     }
     
     // Update only the URL, preserving existing alias and note
@@ -783,6 +907,37 @@ async function findServersWithBackups(): Promise<string[]> {
     return serversWithBackups.map(row => row.server_id);
   } catch (error) {
     logError(`Error finding servers with backups: ${error instanceof Error ? error.message : String(error)}`);
+    return [];
+  }
+}
+
+// Function to find servers that have overdue backups
+async function findServersWithOverdueBackups(): Promise<string[]> {
+  try {
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    
+    // Get all servers
+    const allServers = dbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string }>;
+    const serversWithOverdue: string[] = [];
+    
+    // Check each server for overdue backups
+    for (const server of allServers) {
+      try {
+        const overdueBackups = await dbUtilsModule.getOverdueBackupsForServer(server.id);
+        if (overdueBackups && overdueBackups.length > 0) {
+          serversWithOverdue.push(server.id);
+        }
+      } catch (error) {
+        // Skip servers that fail to check (might not have backup settings configured)
+        continue;
+      }
+    }
+    
+    return serversWithOverdue;
+  } catch (error) {
+    logError(`Error finding servers with overdue backups: ${error instanceof Error ? error.message : String(error)}`);
     return [];
   }
 }
@@ -1432,6 +1587,55 @@ async function captureDashboardSummary(page: Page, filename: string): Promise<bo
   }
 }
 
+async function captureAutoRefreshControls(page: Page): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log('Capturing auto-refresh controls...');
+  try {
+    // Navigate to dashboard
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+    await waitForDashboardLoad(page);
+    await delay(2000);
+    
+    // Wait for the auto-refresh controls to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="auto-refresh-controls"]', { timeout: 5000 });
+    } catch (e) {
+      logError('Auto-refresh controls did not appear on the page');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the auto-refresh controls
+    const controlsBounds = await page.evaluate(() => {
+      const controlsDiv = document.querySelector('[data-screenshot-target="auto-refresh-controls"]');
+      if (controlsDiv) {
+        const rect = controlsDiv.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (controlsBounds) {
+      const success = await takeScreenshot(page, 'screen-auto-refresh.png', {
+        clip: controlsBounds
+      });
+      console.log('Captured auto-refresh controls');
+      return success;
+    } else {
+      logError('Could not find auto-refresh controls bounds');
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing auto-refresh controls: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
 async function captureOverviewSidePanel(page: Page): Promise<{ status: boolean; charts: boolean }> {
   console.log('-------------------------------------------------------');
   console.log('Capturing overview side panel...');
@@ -1675,11 +1879,105 @@ async function captureBackupHistoryTable(page: Page, serverId: string): Promise<
   try {
     // Navigate to server details page
     await page.goto(`${BASE_URL}/detail/${serverId}`, { waitUntil: 'networkidle0' });
-    await delay(3000);
+    
+    // Wait for content to load (client component fetches data after page load)
+    const contentLoaded = await waitForServerDetailContent(page, 15000);
+    if (!contentLoaded) {
+      logError('Server detail content did not load in time');
+    }
+    
+    // Wait for the backup history table to appear
+    try {
+      await page.waitForSelector('[data-screenshot-target="backup-history-table"]', { timeout: 10000 });
+    } catch (e) {
+      // Try waiting for any Card element as fallback
+      try {
+        await page.waitForSelector('[class*="Card"]', { timeout: 3000 });
+        // Check if backup history card exists using evaluate
+        const cardExists = await page.evaluate(() => {
+          const cards = Array.from(document.querySelectorAll('[class*="Card"]'));
+          return cards.some(card => {
+            const title = card.querySelector('h3, [class*="CardTitle"]');
+            return title && title.textContent?.includes('Backup History');
+          });
+        });
+        if (!cardExists) {
+          throw new Error('Backup History card not found');
+        }
+      } catch (e2) {
+        logError('Backup history table did not appear on the page');
+        // Debug: check what's on the page
+        const debugInfo = await page.evaluate(() => {
+          const cards = document.querySelectorAll('[class*="Card"]');
+          const titles = Array.from(cards).map(card => {
+            const title = card.querySelector('h3, [class*="CardTitle"]');
+            return title?.textContent || '';
+          });
+          const allTargets = Array.from(document.querySelectorAll('[data-screenshot-target]')).map(el => el.getAttribute('data-screenshot-target'));
+          const hasTable = document.querySelector('table') !== null;
+          const url = window.location.href;
+          return {
+            totalCards: cards.length,
+            cardTitles: titles,
+            hasBackupHistoryTarget: !!document.querySelector('[data-screenshot-target="backup-history-table"]'),
+            allScreenshotTargets: allTargets,
+            hasTable,
+            pageTitle: document.title,
+            url
+          };
+        });
+        console.log(`Debug info: ${JSON.stringify(debugInfo, null, 2)}`);
+        
+        // Try to get server data from API to see if server has backups
+        try {
+          const serverData = await page.evaluate(async (serverId) => {
+            const res = await fetch(`/api/detail/${serverId}`);
+            if (!res.ok) return { error: `API returned ${res.status}` };
+            return await res.json();
+          }, serverId);
+          console.log(`Server API data: ${JSON.stringify({ 
+            hasServer: !!serverData.server, 
+            backupCount: serverData.server?.backups?.length || 0,
+            serverName: serverData.server?.name 
+          }, null, 2)}`);
+        } catch (apiError) {
+          console.log(`Failed to fetch server data: ${apiError instanceof Error ? apiError.message : String(apiError)}`);
+        }
+        
+        return false;
+      }
+    }
+    await delay(500);
     
     // Find the backup history table section using data-screenshot-target
     const tableBounds = await page.evaluate(() => {
-      const card = document.querySelector('[data-screenshot-target="backup-history-table"]');
+      // First try the data attribute
+      let card = document.querySelector('[data-screenshot-target="backup-history-table"]');
+      
+      // Fallback: find Card with "Backup History" title
+      if (!card) {
+        const cards = Array.from(document.querySelectorAll('[class*="Card"]'));
+        for (const c of cards) {
+          const title = c.querySelector('h3, [class*="CardTitle"]');
+          if (title && title.textContent?.includes('Backup History')) {
+            card = c as HTMLElement;
+            break;
+          }
+        }
+      }
+      
+      // Fallback: find any Card containing a table
+      if (!card) {
+        const cards = Array.from(document.querySelectorAll('[class*="Card"]'));
+        for (const c of cards) {
+          const table = c.querySelector('table');
+          if (table) {
+            card = c as HTMLElement;
+            break;
+          }
+        }
+      }
+      
       if (card) {
         const rect = card.getBoundingClientRect();
         return {
@@ -1714,7 +2012,12 @@ async function captureMetricsChart(page: Page, serverId: string): Promise<boolea
   try {
     // Navigate to server details page
     await page.goto(`${BASE_URL}/detail/${serverId}`, { waitUntil: 'networkidle0' });
-    await delay(3000);
+    
+    // Wait for content to load (client component fetches data after page load)
+    const contentLoaded = await waitForServerDetailContent(page, 15000);
+    if (!contentLoaded) {
+      logError('Server detail content did not load in time');
+    }
     
     // Find the metrics chart section
     const chartBounds = await page.evaluate(() => {
@@ -1769,7 +2072,12 @@ async function captureAvailableBackupsModal(page: Page, serverId: string): Promi
   try {
     // Navigate to server details page (should already be there, but ensure we're on the right page)
     await page.goto(`${BASE_URL}/detail/${serverId}`, { waitUntil: 'networkidle0' });
-    await delay(3000);
+    
+    // Wait for content to load (client component fetches data after page load)
+    const contentLoaded = await waitForServerDetailContent(page, 15000);
+    if (!contentLoaded) {
+      logError('Server detail content did not load in time');
+    }
     
     // Find and click the AvailableBackupsIcon button (button with History icon)
     const buttonFound = await page.evaluate(() => {
@@ -1883,8 +2191,18 @@ async function captureServerOverdueMessage(page: Page): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing server overdue message...');
   try {
-    // Get all servers
-    const servers = await getServers(page);
+    // Get all servers from database (more reliable than API)
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const allDbServers = dbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string; alias: string; note: string }>;
+    const servers: Server[] = allDbServers.map(s => ({
+      id: s.id,
+      name: s.name,
+      alias: s.alias || '',
+      note: s.note || '',
+      server_url: s.server_url || '',
+      backups: []
+    }));
     
     // Find a server with overdue backups
     let serverWithOverdue: Server | null = null;
@@ -1909,11 +2227,16 @@ async function captureServerOverdueMessage(page: Page): Promise<boolean> {
     
     // Navigate to the server detail page
     await page.goto(`${BASE_URL}/detail/${serverWithOverdue.id}`, { waitUntil: 'networkidle0' });
-    await delay(3000);
+    
+    // Wait for content to load (client component fetches data after page load)
+    const contentLoaded = await waitForServerDetailContent(page, 15000);
+    if (!contentLoaded) {
+      logError('Server detail content did not load in time');
+    }
     
     // Wait for the overdue message to appear
     try {
-      await page.waitForSelector('[data-screenshot-target="server-overdue-message"]', { timeout: 5000 });
+      await page.waitForSelector('[data-screenshot-target="server-overdue-message"]', { timeout: 10000 });
     } catch (e) {
       logError('Overdue message did not appear on the page');
       return false;
@@ -1955,8 +2278,18 @@ async function captureServerDetailSummary(page: Page): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing server detail summary...');
   try {
-    // Get all servers
-    const servers = await getServers(page);
+    // Get all servers from database (more reliable than API)
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const allDbServers = dbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string; alias: string; note: string }>;
+    const servers: Server[] = allDbServers.map(s => ({
+      id: s.id,
+      name: s.name,
+      alias: s.alias || '',
+      note: s.note || '',
+      server_url: s.server_url || '',
+      backups: []
+    }));
     
     // Find a server without overdue backups
     let serverWithoutOverdue: Server | null = null;
@@ -1981,11 +2314,16 @@ async function captureServerDetailSummary(page: Page): Promise<boolean> {
     
     // Navigate to the server detail page
     await page.goto(`${BASE_URL}/detail/${serverWithoutOverdue.id}`, { waitUntil: 'networkidle0' });
-    await delay(3000);
+    
+    // Wait for content to load (client component fetches data after page load)
+    const contentLoaded = await waitForServerDetailContent(page, 15000);
+    if (!contentLoaded) {
+      logError('Server detail content did not load in time');
+    }
     
     // Wait for the summary div to appear
     try {
-      await page.waitForSelector('[data-screenshot-target="server-detail-summary"]', { timeout: 5000 });
+      await page.waitForSelector('[data-screenshot-target="server-detail-summary"]', { timeout: 10000 });
     } catch (e) {
       logError('Server detail summary did not appear on the page');
       return false;
@@ -2019,86 +2357,6 @@ async function captureServerDetailSummary(page: Page): Promise<boolean> {
     }
   } catch (error) {
     logError('Error capturing server detail summary: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
-  }
-}
-
-async function captureCollectBackupLogs(page: Page): Promise<boolean> {
-  console.log('-------------------------------------------------------');
-  console.log('Capturing collect backup logs interface...');
-  try {
-    // The collect backup logs popup is already captured as screen-collect-button-popup.png
-    // But we need screen-collect-backup-logs.png which might be the same or a different view
-    // For now, we'll use the same popup screenshot
-    // Navigate to blank page first
-    await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
-    await delay(1000);
-    
-    // Find and click the collect button
-    const collectButtonFound = await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      for (const btn of buttons) {
-        const svg = btn.querySelector('svg');
-        if (svg) {
-          const title = btn.getAttribute('title') || '';
-          if (title.includes('Collect')) {
-            (btn as HTMLButtonElement).click();
-            return true;
-          }
-        }
-      }
-      return false;
-    });
-    
-    if (collectButtonFound) {
-      await delay(1500); // Wait for popover to appear
-      
-      // Capture the popup (same as collect-button-popup but save with different name)
-      const popupBounds = await page.evaluate(() => {
-        const popover = document.querySelector('[data-screenshot-target="collect-button-popup"]');
-        if (popover) {
-          const rect = popover.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        const fallbackPopover = document.querySelector('[data-radix-popover-content], [role="dialog"]');
-        if (fallbackPopover) {
-          const rect = fallbackPopover.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        return null;
-      });
-      
-      if (popupBounds) {
-        const success = await takeScreenshot(page, 'screen-collect-backup-logs.png', {
-          clip: popupBounds
-        });
-        console.log('Captured collect backup logs interface');
-        
-        // Close popup
-        await page.keyboard.press('Escape');
-        await delay(500);
-        return success;
-      } else {
-        // Close popup anyway
-        await page.keyboard.press('Escape');
-        await delay(500);
-        return false;
-      }
-    } else {
-      return false;
-    }
-  } catch (error) {
-    logError('Error capturing collect backup logs: ' + (error instanceof Error ? error.message : String(error)));
     return false;
   }
 }
@@ -2383,11 +2641,6 @@ async function main() {
     if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
     else failed.push('screen-collect-button-right-click-popup.png');
     
-    // Capture collect backup logs interface
-    const collectBackupLogs = await captureCollectBackupLogs(page);
-    if (collectBackupLogs) successful.push('screen-collect-backup-logs.png');
-    else failed.push('screen-collect-backup-logs.png');
-    
     // Capture Duplicati configuration dropdown
     const duplicatiConfig = await captureDuplicatiConfiguration(page);
     if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
@@ -2405,22 +2658,61 @@ async function main() {
     if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
     else failed.push('screen-overview-side-charts.png');
     
-    // Get list of servers
-    const servers = await getServers(page);
-    console.log(`Found ${servers.length} servers`);
+    // Capture auto-refresh controls
+    const autoRefreshControls = await captureAutoRefreshControls(page);
+    if (autoRefreshControls) successful.push('screen-auto-refresh.png');
+    else failed.push('screen-auto-refresh.png');
+    
+    // Get list of servers from database (more reliable than API)
+    // This will be our source of truth for available servers
+    const mainDbModule = await import('../src/lib/db');
+    await mainDbModule.ensureDatabaseInitialized();
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    
+    // Get all servers from database
+    const mainAllDbServers = mainDbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string; alias: string; note: string }>;
+    
+    // Convert to Server format for consistency
+    let availableServers: Server[] = mainAllDbServers.map(s => ({
+      id: s.id,
+      name: s.name,
+      alias: s.alias || '',
+      note: s.note || '',
+      server_url: s.server_url || '',
+      backups: []
+    }));
+    
+    console.log(`Found ${availableServers.length} servers in database`);
     
     // Find servers that have backups - we need to keep at least one of these
     const serversWithBackups = await findServersWithBackups();
     console.log(`Found ${serversWithBackups.length} server(s) with backups`);
     
-    // Identify which server to protect (keep) - prefer the first server with backups
+    // Find servers with overdue backups - prefer these for protection
+    const serversWithOverdue = await findServersWithOverdueBackups();
+    console.log(`Found ${serversWithOverdue.length} server(s) with overdue backups`);
+    
+    // Identify which server to protect (keep) - prefer servers with overdue backups
     let protectedServerId: string | null = null;
-    if (serversWithBackups.length > 0) {
-      // Find the first server in our list that has backups
-      for (const server of servers) {
+    
+    // First, try to find a server with overdue backups
+    if (serversWithOverdue.length > 0) {
+      // Find the first server in our list that has overdue backups
+      for (const server of availableServers) {
+        if (serversWithOverdue.includes(server.id)) {
+          protectedServerId = server.id;
+          console.log(`Protecting server ${server.name} (${server.id}) - it has overdue backups and will be used for overdue screenshot`);
+          break;
+        }
+      }
+    }
+    
+    // Fallback: if no server with overdue backups found, use first server with backups
+    if (!protectedServerId && serversWithBackups.length > 0) {
+      for (const server of availableServers) {
         if (serversWithBackups.includes(server.id)) {
           protectedServerId = server.id;
-          console.log(`Protecting server ${server.name} (${server.id}) - it has backups and will be used for overdue screenshot`);
+          console.log(`Protecting server ${server.name} (${server.id}) - it has backups (no overdue backups found, will create one later)`);
           break;
         }
       }
@@ -2429,9 +2721,9 @@ async function main() {
     // Keep only 3 servers, delete the rest (but never delete the protected server)
     console.log('-------------------------------------------------------');
     console.log('Keeping only 3 servers, deleting the rest...');
-    if (servers.length > 3) {
+    if (availableServers.length > 3) {
       // Sort servers: protected server first, then others
-      const sortedServers = [...servers].sort((a, b) => {
+      const sortedServers = [...availableServers].sort((a, b) => {
         if (a.id === protectedServerId) return -1;
         if (b.id === protectedServerId) return 1;
         return 0;
@@ -2445,7 +2737,7 @@ async function main() {
       if (protectedServerId && !serversToKeep.some(s => s.id === protectedServerId)) {
         // Remove the last server from keep list and add protected server
         serversToKeep.pop();
-        const protectedServer = servers.find(s => s.id === protectedServerId);
+        const protectedServer = availableServers.find(s => s.id === protectedServerId);
         if (protectedServer) {
           serversToKeep.push(protectedServer);
           // Remove protected server from delete list if it's there
@@ -2458,7 +2750,7 @@ async function main() {
       
       console.log(`Deleting ${serversToDelete.length} server(s), keeping 3...`);
       if (protectedServerId) {
-        console.log(`  Protected server (has backups): ${servers.find(s => s.id === protectedServerId)?.name || protectedServerId}`);
+        console.log(`  Protected server (has backups): ${availableServers.find(s => s.id === protectedServerId)?.name || protectedServerId}`);
       }
       
       for (const server of serversToDelete) {
@@ -2468,34 +2760,54 @@ async function main() {
           continue;
         }
         
-        try {
-          await deleteServer(page, server.id);
-          await delay(1000); // Wait between deletions
-        } catch (error) {
-          logError(`Error deleting server ${server.id}: ${error instanceof Error ? error.message : String(error)}`);
+        // Delete server directly using database operations
+        const deleteResult = await deleteServerDirect(server.id);
+        
+        if (deleteResult.success) {
+          // Remove from available servers list immediately after successful deletion
+          availableServers = availableServers.filter(s => s.id !== server.id);
+        } else {
+          // Verify if server still exists - if not, deletion actually succeeded
+          const dbUtilsModule = await import('../src/lib/db-utils');
+          const stillExists = dbUtilsModule.getServerInfoById(server.id);
+          if (!stillExists) {
+            console.log(`  Server ${server.id} was deleted successfully (verified in database)`);
+            availableServers = availableServers.filter(s => s.id !== server.id);
+          } else {
+            logError(`Failed to delete server ${server.id}: ${deleteResult.error || 'Unknown error'}`);
+          }
         }
+        
+        await delay(500); // Small delay between deletions
       }
+      
+      // Log how many servers remain in the database after deletion
+      const dbModule = await import('../src/lib/db');
+      await dbModule.ensureDatabaseInitialized();
+      const remainingServerCount = dbModule.db.prepare('SELECT COUNT(*) as count FROM servers').get() as { count: number };
+      console.log(`  Deletion complete. ${remainingServerCount.count} server(s) remaining in database.`);
       
       // Refresh the page to see updated server list
       await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
     }
     
-    // Get the remaining servers after deletion
-    const remainingServersAfterDeletion = await getServers(page);
-    if (remainingServersAfterDeletion.length < 2) {
-      console.log(`Warning: Only ${remainingServersAfterDeletion.length} server(s) remaining, need at least 2 to configure`);
+    // Now availableServers contains only the remaining servers
+    // No need to fetch from API or verify - we already have the source of truth
+    
+    if (availableServers.length < 2) {
+      console.log(`Warning: Only ${availableServers.length} server(s) remaining, need at least 2 to configure`);
     } else {
       // Configure 2 servers with URLs and passwords
       // Make sure we don't configure the protected server if we only have 2 servers
-      const serversToConfigure = remainingServersAfterDeletion
+      const serversToConfigure = availableServers
         .filter(s => protectedServerId ? s.id !== protectedServerId : true)
         .slice(0, 2);
       
       // If we filtered out protected server and don't have 2 servers, use remaining servers
       const actualServersToConfigure = serversToConfigure.length >= 2 
         ? serversToConfigure 
-        : remainingServersAfterDeletion.slice(0, 2);
+        : availableServers.slice(0, 2);
       
       // Configure first server: http://{servername}.local:8200
       const firstServer = actualServersToConfigure[0];
@@ -2532,46 +2844,74 @@ async function main() {
       await waitForDashboardLoad(page);
     }
     
-    // Delete recent backup(s) from the protected server (or first server with backups) to create overdue backup
-    console.log('-------------------------------------------------------');
-    console.log('Deleting recent backup(s) to create overdue backup...');
-    const finalServers = await getServers(page);
+    // Check if we already have a server with overdue backups (from test data generation)
+    // If so, we don't need to create more overdue backups
+    const finalServers = availableServers;
+    const currentServersWithOverdue = await findServersWithOverdueBackups();
     
-    // Find the server to make overdue - prefer protected server, otherwise find first server with backups
-    let serverToMakeOverdue: Server | null = null;
-    
-    if (protectedServerId) {
-      serverToMakeOverdue = finalServers.find(s => s.id === protectedServerId) || null;
-      if (serverToMakeOverdue) {
-        console.log(`Using protected server for overdue backup: ${serverToMakeOverdue.name}`);
+    if (currentServersWithOverdue.length > 0) {
+      console.log('-------------------------------------------------------');
+      console.log(`Found ${currentServersWithOverdue.length} server(s) with overdue backups (from test data generation)`);
+      console.log('Skipping redundant backup deletion - overdue backups already exist');
+      
+      // Verify that at least one of the remaining servers has overdue backups
+      const remainingServersWithOverdue = finalServers.filter(s => currentServersWithOverdue.includes(s.id));
+      if (remainingServersWithOverdue.length === 0) {
+        logError('Warning: No remaining servers have overdue backups after deletion');
+        // Find a server with backups to create overdue backup
+        const currentServersWithBackups = await findServersWithBackups();
+        let serverToMakeOverdue: Server | null = null;
+        for (const server of finalServers) {
+          if (currentServersWithBackups.includes(server.id)) {
+            serverToMakeOverdue = server;
+            console.log(`Creating overdue backup for server ${server.name} (no overdue backups in remaining servers)`);
+            break;
+          }
+        }
+        
+        if (serverToMakeOverdue) {
+          const backupsToDelete = Math.min(2, Math.floor(Math.random() * 2) + 1);
+          await deleteRecentBackupsToCreateOverdue(serverToMakeOverdue.id, backupsToDelete);
+          await delay(1000);
+        }
+      } else {
+        console.log(`✅ At least one remaining server (${remainingServersWithOverdue[0].name}) has overdue backups`);
       }
-    }
-    
-    // If protected server not found, find first server with backups
-    if (!serverToMakeOverdue) {
+    } else {
+      // No overdue backups found - create one (shouldn't happen if test data generation worked correctly)
+      console.log('-------------------------------------------------------');
+      console.log('Warning: No servers with overdue backups found. Creating one now...');
       const currentServersWithBackups = await findServersWithBackups();
-      for (const server of finalServers) {
-        if (currentServersWithBackups.includes(server.id)) {
-          serverToMakeOverdue = server;
-          console.log(`Using server with backups for overdue backup: ${server.name}`);
-          break;
+      let serverToMakeOverdue: Server | null = null;
+      
+      // Prefer protected server if it has backups
+      if (protectedServerId) {
+        serverToMakeOverdue = finalServers.find(s => s.id === protectedServerId) || null;
+        if (serverToMakeOverdue && currentServersWithBackups.includes(serverToMakeOverdue.id)) {
+          console.log(`Using protected server for overdue backup: ${serverToMakeOverdue.name}`);
+        } else {
+          serverToMakeOverdue = null;
         }
       }
-    }
-    
-    // Fallback to first server if no server with backups found
-    if (!serverToMakeOverdue && finalServers.length > 0) {
-      serverToMakeOverdue = finalServers[0];
-      console.log(`Warning: No server with backups found, using first server: ${serverToMakeOverdue.name}`);
-    }
-    
-    if (serverToMakeOverdue) {
-      // Delete 1-2 recent backups to ensure we have an overdue backup
-      const backupsToDelete = Math.min(2, Math.floor(Math.random() * 2) + 1);
-      await deleteRecentBackupsToCreateOverdue(serverToMakeOverdue.id, backupsToDelete);
-      await delay(1000);
-    } else {
-      logError('Could not find any server to make overdue');
+      
+      // If protected server not found or doesn't have backups, find first server with backups
+      if (!serverToMakeOverdue) {
+        for (const server of finalServers) {
+          if (currentServersWithBackups.includes(server.id)) {
+            serverToMakeOverdue = server;
+            console.log(`Using server with backups for overdue backup: ${server.name}`);
+            break;
+          }
+        }
+      }
+      
+      if (serverToMakeOverdue) {
+        const backupsToDelete = Math.min(2, Math.floor(Math.random() * 2) + 1);
+        await deleteRecentBackupsToCreateOverdue(serverToMakeOverdue.id, backupsToDelete);
+        await delay(1000);
+      } else {
+        logError('Could not find any server with backups to make overdue');
+      }
     }
     
     // Switch to table view
@@ -2589,19 +2929,61 @@ async function main() {
     if (dashboardSummaryTable) successful.push('screen-dashboard-summary-table.png');
     else failed.push('screen-dashboard-summary-table.png');
     
-    // Get the remaining servers
-    const remainingServers = await getServers(page);
+    // Get the remaining servers from database (more reliable than API)
+    // Note: availableServers should already be set in main(), but we'll get fresh from DB here
+    const remainingDbModule = await import('../src/lib/db');
+    await remainingDbModule.ensureDatabaseInitialized();
+    const remainingAllDbServers = remainingDbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string; alias: string; note: string }>;
+    const remainingServers: Server[] = remainingAllDbServers.map(s => ({
+      id: s.id,
+      name: s.name,
+      alias: s.alias || '',
+      note: s.note || '',
+      server_url: s.server_url || '',
+      backups: []
+    }));
+    
     if (remainingServers.length === 0) {
       throw new Error('No servers available for screenshots');
+    }
+    
+    // Find a server with backups by checking the API
+    let firstServer: Server | null = null;
+    for (const server of remainingServers) {
+      try {
+        const serverDetails = await page.evaluate(async (serverId) => {
+          const res = await fetch(`/api/detail/${serverId}`);
+          if (!res.ok) return null;
+          return res.json();
+        }, server.id);
+        
+        if (serverDetails && serverDetails.server && serverDetails.server.backups && serverDetails.server.backups.length > 0) {
+          firstServer = server;
+          break;
+        }
+      } catch (error) {
+        // Continue to next server if this one fails
+        continue;
+      }
+    }
+    
+    // Fallback to first server if none have backups
+    if (!firstServer) {
+      firstServer = remainingServers[0];
+      console.log(`Warning: No server with backups found, using first server: ${firstServer.name}`);
     }
     
     // Navigate to first server's backup list page
     console.log('-------------------------------------------------------');
     console.log('Navigating to first server\'s backup list page...');
-    const firstServer = remainingServers[0];
     console.log(`Navigating to server backup list: ${firstServer.name} (${firstServer.id})`);
     await page.goto(`${BASE_URL}/detail/${firstServer.id}`, { waitUntil: 'networkidle0' });
-    await delay(3000); // Wait for backup list to load
+    
+    // Wait for content to load (client component fetches data after page load)
+    const contentLoaded = await waitForServerDetailContent(page, 15000);
+    if (!contentLoaded) {
+      logError('Server detail content did not load in time');
+    }
     const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', { cropBottom: 80 });
     if (serverBackupList) successful.push('screen-server-backup-list.png');
     else failed.push('screen-server-backup-list.png');

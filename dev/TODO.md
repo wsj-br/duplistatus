@@ -1,4 +1,4 @@
-![duplistatus](../docs/static/img/duplistatus_banner.png)
+![duplistatus](../documentation/static/img/duplistatus_banner.png)
 
 # TODO List
 
@@ -168,9 +168,9 @@ none
 
 **IMPORTANT:** If you have external integrations, scripts, or applications that consume the following API endpoints, you **MUST** update them immediately as the JSON response structure has changed:
 
-- **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](../docs/docs/api-reference/external-apis.md#get-overall-summary---apisummary))
-- **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](../docs/docs/api-reference/external-apis.md#get-latest-backup---apilastbackupserverid))
-- **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](../docs/docs/api-reference/external-apis.md#get-latest-backups---apilastbackupsserverid))
+- **`/api/summary`** - The `totalMachines` field has been renamed to `totalServers` ([API Documentation](../documentation/docs/api-reference/external-apis.md#get-overall-summary---apisummary))
+- **`/api/lastbackup/{serverId}`** - The response object key has changed from `machine` to `server` ([API Documentation](../documentation/docs/api-reference/external-apis.md#get-latest-backup---apilastbackupserverid))
+- **`/api/lastbackups/{serverId}`** - The response object key has changed from `machine` to `server`, and the `backup_types_count` field has been renamed to `backup_jobs_count` ([API Documentation](../documentation/docs/api-reference/external-apis.md#get-latest-backups---apilastbackupsserverid))
 
 
 ### Implemented in Version 0.8.x ✅

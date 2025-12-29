@@ -78,6 +78,7 @@ if (!fs.existsSync(dataDir)) {
 }
 
 const dbPath = path.join(dataDir, 'backups.db');
+console.log(`[Database] Using database at: ${path.resolve(dbPath)}`);
 
 // Use a global singleton to prevent multiple database connections during hot reload
 // This is critical in development mode where Next.js may re-import modules
@@ -1180,6 +1181,8 @@ function createDbOps() {
   `, 'updateBackupServerId'),
 
   // New query for server cards - get backup status history for status bars
+  // Uses LEFT JOIN to include servers without backups
+  // Returns one row per server-backup combination, or one row per server if no backups
    getServersSummary: safePrepare(`
     SELECT
       s.id AS server_id,
@@ -1188,35 +1191,38 @@ function createDbOps() {
       s.alias,
       s.note,
       CASE WHEN s.server_password IS NOT NULL AND s.server_password != '' THEN 1 ELSE 0 END as has_password,
-      b.backup_name,
+      COALESCE(b.backup_name, '') AS backup_name,
       lb.last_backup_date,
       b2.id AS last_backup_id,
       b2.status AS last_backup_status,
       b2.duration_seconds AS last_backup_duration,
-      (
+      COALESCE((
         SELECT COUNT(*)
         FROM backups b_count
-        WHERE b_count.server_id = s.id AND b_count.backup_name = b.backup_name
-      ) AS backup_count,
-      b2.examined_files AS file_count,
-      b2.size AS file_size,
-      b2.known_file_size AS storage_size,
-      b2.backup_list_count AS backup_versions,
+        WHERE b_count.server_id = s.id AND (b.backup_name IS NULL OR b_count.backup_name = b.backup_name)
+      ), 0) AS backup_count,
+      COALESCE(b2.examined_files, 0) AS file_count,
+      COALESCE(b2.size, 0) AS file_size,
+      COALESCE(b2.known_file_size, 0) AS storage_size,
+      COALESCE(b2.backup_list_count, 0) AS backup_versions,
       b2.available_backups AS available_backups,
-      b2.uploaded_size AS uploaded_size,
-      b2.warnings AS warnings,
-      b2.errors AS errors,
+      COALESCE(b2.uploaded_size, 0) AS uploaded_size,
+      COALESCE(b2.warnings, 0) AS warnings,
+      COALESCE(b2.errors, 0) AS errors,
       (
         SELECT GROUP_CONCAT(b_hist_status, ',')
         FROM (
           SELECT b_hist.status as b_hist_status
           FROM backups b_hist
-          WHERE b_hist.server_id = s.id AND b_hist.backup_name = b.backup_name
+          WHERE b_hist.server_id = s.id AND (b.backup_name IS NULL OR b_hist.backup_name = b.backup_name)
           ORDER BY b_hist.date
         )
       ) AS status_history
     FROM servers s
-    JOIN backups b ON b.server_id = s.id
+    LEFT JOIN (
+      SELECT DISTINCT server_id, backup_name
+      FROM backups
+    ) b ON b.server_id = s.id
     LEFT JOIN (
       SELECT
         server_id,
@@ -1224,14 +1230,12 @@ function createDbOps() {
         MAX(date) AS last_backup_date
       FROM backups
       GROUP BY server_id, backup_name
-    ) lb ON lb.server_id = s.id AND lb.backup_name = b.backup_name
+    ) lb ON lb.server_id = s.id AND (b.backup_name IS NULL OR lb.backup_name = b.backup_name)
     LEFT JOIN backups b2
       ON b2.server_id = s.id
-      AND b2.backup_name = b.backup_name
-      AND b2.date = lb.last_backup_date
-    WHERE lb.last_backup_date IS NOT NULL
-    GROUP BY s.id, s.name, b.backup_name, lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size
-    ORDER BY s.name, b.backup_name  
+      AND (b.backup_name IS NULL OR (b2.backup_name = b.backup_name AND b2.date = lb.last_backup_date))
+    GROUP BY s.id, s.name, s.server_url, s.alias, s.note, s.server_password, COALESCE(b.backup_name, ''), lb.last_backup_date, b2.id, b2.status, b2.duration_seconds, b2.examined_files, b2.size, b2.known_file_size, b2.backup_list_count, b2.uploaded_size, b2.available_backups
+    ORDER BY s.name, COALESCE(b.backup_name, '')
   `, 'getServersSummary'),
 
   // Query to get all servers chart data grouped by date and server

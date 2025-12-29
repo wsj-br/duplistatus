@@ -1,11 +1,25 @@
 import { NextResponse } from 'next/server';
-import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache } from '@/lib/db-utils';
+import { getServersSummary, getOverallSummaryFromServers, getAggregatedChartData, clearRequestCache, invalidateDataCache } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
+
+// Force dynamic rendering and disable all caching in production
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export const GET = withCSRF(async () => {
   try {
-    // Clear request cache to ensure fresh data on each request
+    // Clear and invalidate all caches to ensure fresh data on each request
+    // This is especially important in production mode where module-level cache might persist
+    if (process.env.NODE_ENV === 'production') {
+      console.log('[API] /api/dashboard - Starting request, clearing caches...');
+    }
+    invalidateDataCache();
     clearRequestCache();
+    
+    if (process.env.NODE_ENV === 'production') {
+      console.log('[API] /api/dashboard - Caches cleared, fetching data...');
+    }
     
     // Fetch dashboard data efficiently - get serversSummary first, then use it for overallSummary
     const serversSummary = await Promise.resolve(getServersSummary());
@@ -45,6 +59,11 @@ export const GET = withCSRF(async () => {
       overallSummary: enhancedOverallSummary,
       chartData
     };
+
+    if (process.env.NODE_ENV === 'production') {
+      console.log('[API] /api/dashboard - Data fetched successfully, returning response');
+      console.log(`[API] /api/dashboard - Response summary: ${serversSummary.length} servers, ${chartData.length} chart data points`);
+    }
 
     return NextResponse.json(response, {
       headers: {

@@ -1,6 +1,6 @@
 packages:
   - .
-  - docs
+  - documentation
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

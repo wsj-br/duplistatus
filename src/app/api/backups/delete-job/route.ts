@@ -1,6 +1,7 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
+import { invalidateDataCache, clearRequestCache } from '@/lib/db-utils';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -57,6 +58,10 @@ export const DELETE = withCSRF(requireAdmin(async (request: NextRequest, authCon
     }
 
     const serverDisplayName = serverAlias || serverName;
+
+    // Invalidate data cache after backup deletion to ensure fresh data on next request
+    invalidateDataCache();
+    clearRequestCache();
 
     // Log audit event
     if (authContext) {

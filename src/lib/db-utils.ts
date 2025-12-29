@@ -13,11 +13,29 @@ import { defaultBackupNotificationConfig } from './default-config';
 import { encryptData, decryptData } from './secrets';
 
 // Request-level cache to avoid redundant function calls within a single request
+// In production mode, this is a module-level variable that persists across requests,
+// so we need to be careful to clear it properly
 const requestCache = new Map<string, unknown>();
+
+// Track the last cache clear time to help debug cache issues in production
+let lastCacheClearTime: number = Date.now();
+let cacheClearCount: number = 0;
+
+// Helper function to log cache operations in production mode
+function logCacheOperation(operation: string, details?: string): void {
+  if (process.env.NODE_ENV === 'production') {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[CACHE] ${timestamp} - ${operation}${details ? ` - ${details}` : ''}`;
+    console.log(logMessage);
+  }
+}
 
 // Helper function to get cached value or compute and cache it
 function getCachedOrCompute<T>(key: string, computeFn: () => T, functionName?: string): T {
   if (requestCache.has(key)) {
+    if (process.env.NODE_ENV === 'production') {
+      logCacheOperation('CACHE_HIT', `key: ${key}`);
+    }
     return requestCache.get(key) as T;
   }
   if (functionName) {
@@ -25,12 +43,65 @@ function getCachedOrCompute<T>(key: string, computeFn: () => T, functionName?: s
   }
   const result = computeFn();
   requestCache.set(key, result);
+  if (process.env.NODE_ENV === 'production') {
+    logCacheOperation('CACHE_SET', `key: ${key}, function: ${functionName || 'unknown'}`);
+  }
   return result;
 }
 
 // Helper function to clear request cache (call at start of each request)
+// In production mode, this is critical to ensure fresh data on each request
 export function clearRequestCache(): void {
+  const beforeSize = requestCache.size;
+  const beforeKeys = Array.from(requestCache.keys());
   requestCache.clear();
+  lastCacheClearTime = Date.now();
+  cacheClearCount++;
+  
+  if (process.env.NODE_ENV === 'production') {
+    logCacheOperation('CACHE_CLEAR', `cleared ${beforeSize} entries, keys: [${beforeKeys.join(', ')}], total clears: ${cacheClearCount}`);
+  }
+}
+
+// Helper function to invalidate specific cache keys
+// Use this when data changes that affects specific cached values
+export function invalidateCacheKey(key: string): void {
+  const hadKey = requestCache.has(key);
+  requestCache.delete(key);
+  if (process.env.NODE_ENV === 'production') {
+    logCacheOperation('CACHE_INVALIDATE_KEY', `key: ${key}, existed: ${hadKey}`);
+  }
+}
+
+// Helper function to invalidate all data-related cache keys
+// Call this when servers or backups are modified to ensure fresh data on next request
+export function invalidateDataCache(): void {
+  const beforeSize = requestCache.size;
+  const beforeKeys = Array.from(requestCache.keys());
+  
+  // Invalidate all cache keys that depend on server/backup data
+  requestCache.delete('backupSettings');
+  requestCache.delete('lastOverdueBackupCheckTime');
+  requestCache.delete('overdueNotifications');
+  
+  const afterSize = requestCache.size;
+  const afterKeys = Array.from(requestCache.keys());
+  
+  if (process.env.NODE_ENV === 'production') {
+    logCacheOperation('CACHE_INVALIDATE_DATA', `before: ${beforeSize} entries [${beforeKeys.join(', ')}], after: ${afterSize} entries [${afterKeys.join(', ')}]`);
+  }
+  // Note: Configuration caches (ntfy_config, smtp_config, etc.) are not invalidated
+  // as they don't depend on server/backup data
+}
+
+// Helper function to get cache statistics (for debugging)
+export function getCacheStats(): { size: number; lastClearTime: number; keys: string[]; clearCount: number } {
+  return {
+    size: requestCache.size,
+    lastClearTime: lastCacheClearTime,
+    keys: Array.from(requestCache.keys()),
+    clearCount: cacheClearCount
+  };
 }
 
 
@@ -50,19 +121,11 @@ export async function isBackupOverdueByInterval(serverId: string, backupName: st
     // If no settings found or overdue backup check is disabled, return false
     if (!settings || !settings.overdueBackupCheckEnabled) return false;
     
-    // Get backup interval settings
-    const backupIntervalSettings = await getBackupIntervalSettings(serverId, backupName);
-    if (!backupIntervalSettings) return false;
+    // The time field is already the next expected backup date (lastBackupDate + interval)
+    // It was calculated and stored in getConfigBackupSettings()
+    const expectedBackupDate = settings.time;
     
-    // Calculate expected backup date (without tolerance)
-    const expectedBackupDate = GetNextBackupRunDate(
-      lastBackupDate,
-      backupIntervalSettings.scheduleTime,
-      backupIntervalSettings.expectedInterval,
-      backupIntervalSettings.allowedWeekDays
-    );
-    
-    if (expectedBackupDate === 'N/A') return false;
+    if (!expectedBackupDate || expectedBackupDate === 'N/A') return false;
     
     // Add tolerance to the expected backup date for overdue check
     const toleranceMinutes = getConfigOverdueTolerance();
@@ -939,6 +1002,10 @@ export async function getServersSummary() {
         backupNames: string[];
       }>();
       
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`[getServersSummary] Query returned ${rows.length} rows from database`);
+      }
+      
       rows.forEach(row => {
         const serverId = row.server_id;
         
@@ -970,6 +1037,12 @@ export async function getServersSummary() {
         }
         
         const server = serverMap.get(serverId)!;
+        
+        // Skip rows with empty backup_name (servers without backups)
+        // These will still be included in the serverMap but without backup info
+        if (!row.backup_name || row.backup_name.trim() === '') {
+          return; // Skip this row but keep the server in the map
+        }
         
         // Parse status history for status bars
         const statusHistory: BackupStatus[] = [];
@@ -1036,6 +1109,11 @@ export async function getServersSummary() {
         
       });
       
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`[getServersSummary] Processed ${serverMap.size} unique servers from ${rows.length} rows`);
+        console.log(`[getServersSummary] Server IDs: ${Array.from(serverMap.keys()).join(', ')}`);
+      }
+      
       // Process each server to add overdue status and other derived data per backup job
       const result = await Promise.all(Array.from(serverMap.values()).map(async (server) => {
         // Process each backup job to add overdue status and other derived data
@@ -1086,6 +1164,10 @@ export async function getServersSummary() {
         
         return server;
       }));
+      
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`[getServersSummary] Returning ${result.length} servers after processing`);
+      }
            
       return result;
     });
@@ -1180,8 +1262,13 @@ export const dbUtils = {
   getServersBackupNames: () => getServersBackupNames(),
   getAllLatestBackups: () => getAllLatestBackups(),
   
-  insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => 
-    withDb(() => safeDbOperation(() => dbOps.insertBackup.run(data), 'insertBackup')),
+  insertBackup: (data: Parameters<typeof dbOps.insertBackup.run>[0]) => {
+    const result = withDb(() => safeDbOperation(() => dbOps.insertBackup.run(data), 'insertBackup'));
+    // Invalidate data cache after backup insertion to ensure fresh data on next request
+    invalidateDataCache();
+    clearRequestCache();
+    return result;
+  },
   
   upsertServer: (data: Parameters<typeof dbOps.upsertServer.run>[0]) => 
     withDb(() => safeDbOperation(() => dbOps.upsertServer.run(data), 'upsertServer')),
@@ -1220,7 +1307,13 @@ export const dbUtils = {
             serverChanges: serverResult?.changes || 0
           };
         });
-        return transaction();
+        const result = transaction();
+        
+        // Invalidate data cache after server deletion to ensure fresh data on next request
+        invalidateDataCache();
+        clearRequestCache();
+        
+        return result;
       } catch (error) {
         console.error(`Failed to delete server ${serverId}:`, error instanceof Error ? error.message : String(error));
         throw error;
@@ -1710,14 +1803,25 @@ export function setConfigOverdueTolerance(toleranceMinutes: number): void {
 
 // Functions to get/set backup settings configuration
 export async function getConfigBackupSettings(): Promise<Record<BackupKey, BackupNotificationConfig>> {
+  // Check if backup_settings exists in database - if not, clear cache to force regeneration
+  // This handles the case where backup_settings was deleted externally (e.g., by generate-test-data.ts)
+  const backupSettingsJson = getConfiguration('backup_settings');
+  if (!backupSettingsJson || backupSettingsJson.trim() === '') {
+    // If backup_settings was deleted, clear the cache to ensure fresh data is loaded
+    if (requestCache.has('backupSettings')) {
+      requestCache.delete('backupSettings');
+    }
+  }
+  
   return getCachedOrCompute('backupSettings', async () => {
     try {
-    const backupSettingsJson = getConfiguration('backup_settings');
+    // Re-read backup_settings from database (may have changed since initial check)
+    const currentBackupSettingsJson = getConfiguration('backup_settings');
     let currentBackupSettings: Record<BackupKey, BackupNotificationConfig> = {};
     
-    if (backupSettingsJson && backupSettingsJson.trim() !== '') {
+    if (currentBackupSettingsJson && currentBackupSettingsJson.trim() !== '') {
       try {
-        currentBackupSettings = migrateBackupSettings(JSON.parse(backupSettingsJson));
+        currentBackupSettings = migrateBackupSettings(JSON.parse(currentBackupSettingsJson));
       } catch (parseError) {
         console.error('Failed to parse backup settings configuration:', parseError);
         currentBackupSettings = {};
@@ -1759,7 +1863,6 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
     // Check for missing backup settings and add defaults
     let addedSettings = 0;
     let updatedSettings = 0;
-    let timeUpdatedSettings = 0;
     const updatedBackupSettings = { ...currentBackupSettings };
     
     for (const backupKey of serverBackupCombinations) {
@@ -1767,88 +1870,116 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
         // Import default configuration
         const defaultConfig = { ...defaultBackupNotificationConfig };
         
-        // Try to populate the time field with the latest backup date
+        // For new servers (no existing settings): initialize with lastBackup + interval
         const latestBackupDate = latestBackupMap.get(backupKey);
         
         if (latestBackupDate) {
-          defaultConfig.time = latestBackupDate;
+          defaultConfig.lastBackupDate = latestBackupDate;
+          
+          // For new servers: time = lastBackup + interval
+          try {
+            defaultConfig.time = GetNextBackupRunDate(
+              latestBackupDate,
+              latestBackupDate, // Use lastBackup as base time
+              defaultConfig.expectedInterval,
+              defaultConfig.allowedWeekDays || getDefaultAllowedWeekDays()
+            );
+          } catch (error) {
+            console.warn(`Failed to calculate initial time for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+            defaultConfig.time = latestBackupDate; // Fallback
+          }
         }
         
         updatedBackupSettings[backupKey] = defaultConfig;
         addedSettings++;
       } 
 
-      // Check if existing settings need time field populated or updated
+      // Check if existing settings need updates
       const existingSettings = updatedBackupSettings[backupKey];
-      if (!existingSettings.time || existingSettings.time.trim() === '') {
-        // Get the last backup date for this server-backup combination
-        const latestBackupDate = latestBackupMap.get(backupKey);
+      const latestBackupDate = latestBackupMap.get(backupKey);
+      
+      if (latestBackupDate && existingSettings.lastBackupDate !== latestBackupDate) {
+        // New backup received - update lastBackupDate and advance time if needed
+        let newTime = existingSettings.time || latestBackupDate;
         
-        if (latestBackupDate) {
+        try {
+          // Keep adding intervals until time > lastBackupDate
+          // This preserves the original schedule time-of-day
+          const maxIterations = 1000; // Safety limit
+          let iterations = 0;
+          
+          while (new Date(newTime) <= new Date(latestBackupDate) && iterations < maxIterations) {
+            newTime = GetNextBackupRunDate(
+              latestBackupDate, // Reference point
+              newTime, // Current time to advance
+              existingSettings.expectedInterval,
+              existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
+            );
+            iterations++;
+          }
+          
+          if (iterations >= maxIterations) {
+            console.warn(`Max iterations reached for ${backupKey}, using lastBackup + interval`);
+            newTime = GetNextBackupRunDate(
+              latestBackupDate,
+              latestBackupDate,
+              existingSettings.expectedInterval,
+              existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
+            );
+          }
+          
           updatedBackupSettings[backupKey] = {
             ...existingSettings,
-            time: latestBackupDate
+            lastBackupDate: latestBackupDate,
+            time: newTime
+          };
+          updatedSettings++;
+        } catch (error) {
+          console.warn(`Failed to calculate time for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+          // If calculation fails, just update lastBackupDate
+          updatedBackupSettings[backupKey] = {
+            ...existingSettings,
+            lastBackupDate: latestBackupDate
           };
           updatedSettings++;
         }
-      } 
+      }
       
-      // Calculate expected backup date and update time if it has changed
-      const latestBackupDate = latestBackupMap.get(backupKey);
-      const baseTime = existingSettings.time;
-      
-      // Determine the effective baseTime: use last backup date if baseTime is invalid/empty
-      let effectiveBaseTime = baseTime;
-      if (!baseTime || baseTime.trim() === '') {
+      // Populate empty time field if needed (safety net)
+      if (existingSettings && (!existingSettings.time || existingSettings.time.trim() === '')) {
+        const latestBackupDate = latestBackupMap.get(backupKey);
         if (latestBackupDate) {
-          effectiveBaseTime = latestBackupDate;
-          console.log(`Using last backup date as baseTime for ${backupKey}: ${latestBackupDate}`);
-        } else {
-          // No backup data available, skip time calculation
-          console.warn(`No valid baseTime or backup date for ${backupKey}, skipping time calculation`);
-          continue;
-        }
-      } else {
-        // Validate that baseTime is a valid date
-        const baseTimeDate = new Date(baseTime);
-        if (isNaN(baseTimeDate.getTime())) {
-          if (latestBackupDate) {
-            effectiveBaseTime = latestBackupDate;
-            console.log(`Invalid baseTime date for ${backupKey}: ${baseTime}, using last backup date: ${latestBackupDate}`);
-          } else {
-            console.warn(`Invalid baseTime date for ${backupKey}: ${baseTime}, and no backup date available, skipping time calculation`);
-            continue;
+          try {
+            const calculatedTime = GetNextBackupRunDate(
+              latestBackupDate,
+              latestBackupDate,
+              existingSettings.expectedInterval,
+              existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
+            );
+            updatedBackupSettings[backupKey] = {
+              ...updatedBackupSettings[backupKey],
+              time: calculatedTime
+            };
+            updatedSettings++;
+          } catch (error) {
+            console.warn(`Failed to populate empty time for ${backupKey}:`, error instanceof Error ? error.message : String(error));
+            updatedBackupSettings[backupKey] = {
+              ...updatedBackupSettings[backupKey],
+              time: latestBackupDate // Fallback
+            };
+            updatedSettings++;
           }
         }
       }
       
-      // Proceed with time calculation using effective baseTime
-      if (effectiveBaseTime && (latestBackupDate || effectiveBaseTime)) {
-        try {
-          const expectedBackupDate = GetNextBackupRunDate(
-            latestBackupDate || effectiveBaseTime,
-            effectiveBaseTime,
-            existingSettings.expectedInterval,
-            existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
-          );
-          
-          // Only update if the calculated date is valid and different from current time
-          if (expectedBackupDate !== 'N/A' && expectedBackupDate !== existingSettings.time) {
-            updatedBackupSettings[backupKey] = {
-              ...existingSettings,
-              time: expectedBackupDate
-            };
-            timeUpdatedSettings++;
-          }
-        } catch (error) {
-          console.warn(`Failed to calculate expected backup date for ${backupKey}:`, error instanceof Error ? error.message : String(error));
-          // Continue execution without updating the time field
-        }
-      }
+      // NOTE: The time field represents the next expected backup date
+      // Algorithm: while (time <= lastBackupDate) { time = time + interval }
+      // This preserves the original schedule time-of-day even when manual backups arrive
+      // For new servers without Duplicati sync: time = lastBackup + interval
     }
     
     // Save updated settings if any were added or updated
-    if (addedSettings > 0 || updatedSettings > 0 || timeUpdatedSettings > 0) {
+    if (addedSettings > 0 || updatedSettings > 0) {
       setConfigBackupSettings(updatedBackupSettings);
     }
     return updatedBackupSettings;

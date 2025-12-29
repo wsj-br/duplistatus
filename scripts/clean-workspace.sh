@@ -13,13 +13,13 @@ ITEMS_TO_REMOVE=(
     ".turbo"
     "pnpm-lock.yaml"
     "data/*.json"
-    "public/docs"
-    "docs/.docusaurus"
-    "docs/.cache-loader"
-    "docs/.cache"
-    "docs/build"   
-    "docs/node_modules"
-    "docs/pnpm-lock.yaml"
+    "public/documentation"
+    "documentation/.docusaurus"
+    "documentation/.cache-loader"
+    "documentation/.cache"
+    "documentation/build"   
+    "documentation/node_modules"
+    "documentation/pnpm-lock.yaml"
     ".genkit"
 )
 
@@ -37,9 +37,9 @@ done
 # Handle glob patterns separately
 echo "🧹 Cleaning glob patterns..."
 
-# Remove docs/.cache-* directories
-if find "$ROOT_DIR/docs" -maxdepth 1 -type d -name ".cache-*" -exec rm -rf {} + 2>/dev/null; then
-    echo "✅ Removed docs/.cache-* directories"
+# Remove documentation/.cache-* directories
+if find "$ROOT_DIR/documentation" -maxdepth 1 -type d -name ".cache-*" -exec rm -rf {} + 2>/dev/null; then
+    echo "✅ Removed documentation/.cache-* directories"
 fi
 
 # Remove *.tsbuildinfo files

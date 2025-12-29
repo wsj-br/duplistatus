@@ -62,16 +62,13 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
 
   // Calculate statistics and prepare data
   const { successCount, overdueBackups, warningErrorBackups } = useMemo(() => {
-    let successCount = 0;
     const overdueBackups: BackupWithServer[] = [];
     const warningErrorBackups: BackupWithServer[] = [];
+    const nonSuccessBackupIds = new Set<string>();
 
     servers.forEach(server => {
       server.backupInfo.forEach(backup => {
-        // Count successful backups
-        if (backup.lastBackupStatus === 'Success') {
-          successCount++;
-        }
+        const backupId = `${server.id}-${backup.name}`;
 
         // Collect overdue backups
         if (backup.isBackupOverdue) {
@@ -94,6 +91,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             expectedBackupDate: backup.expectedBackupDate,
             notificationEvent: backup.notificationEvent,
           });
+          nonSuccessBackupIds.add(backupId);
         }
 
         // Collect warning/error backups
@@ -117,9 +115,14 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             expectedBackupDate: backup.expectedBackupDate,
             notificationEvent: backup.notificationEvent,
           });
+          nonSuccessBackupIds.add(backupId);
         }
       });
     });
+
+    // Calculate success count: total backups minus (overdue + warnings/errors)
+    // Using Set to avoid double-counting backups that are both overdue and have warnings/errors
+    const successCount = Math.max(0, totalBackups - nonSuccessBackupIds.size);
 
     // Sort overdue backups alphabetically by server name, then by backup name
     overdueBackups.sort((a, b) => {
@@ -142,7 +145,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
     });
 
     return { successCount, overdueBackups, warningErrorBackups };
-  }, [servers]);
+  }, [servers, totalBackups]);
 
   const handleBackupClick = (serverId: string, backupName: string) => {
     router.push(`/detail/${serverId}?backup=${encodeURIComponent(backupName)}`);
@@ -157,7 +160,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ColoredIcon icon={CheckCheck} color="green" size="md" />
-                <span className="text-sm font-medium">Success</span><span className="text-xs text-muted-foreground"> (last backup run)</span>
+                <span className="text-sm font-medium">Success</span>
               </div>
               <div className="text-right">
                 <span className="text-lg font-bold text-green-500">{successCount}</span>

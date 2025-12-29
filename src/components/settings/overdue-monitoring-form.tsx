@@ -393,8 +393,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       const displayUnit = selectedUnits[inputKey] || display.unit;
       const isCustomInterval = displayUnit === 'custom' || display.isCustom;
       
-      // Use the backup settings time field
-      const nextRunDate = backupSetting.time || 'N/A';
+      // Use the calculated expectedBackupDate from server data (calculated on server-side)
+      // This is the correct next expected backup date based on lastBackupDate + interval
+      const nextRunDate = server.expectedBackupDate || 'N/A';
       
       return {
         ...server,

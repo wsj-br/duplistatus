@@ -85,6 +85,11 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
 
   const refreshDashboard = useCallback(async () => {
     try {
+      const refreshStartTime = Date.now();
+      
+      // Log to browser console for debugging (always enabled in production builds)
+      console.log('[CLIENT] refreshDashboard - Starting dashboard refresh...');
+      
       setState(prev => ({
         ...prev,
         isRefreshing: true,
@@ -97,6 +102,9 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
         authenticatedRequestWithRecovery('/api/dashboard'),
         refreshConfigSilently() // Refresh configuration silently
       ]);
+      
+      const fetchTime = Date.now() - refreshStartTime;
+      console.log(`[CLIENT] refreshDashboard - API response received (${fetchTime}ms), status: ${dashboardResponse.status}`);
 
       if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
@@ -114,6 +122,10 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       const serversData = dashboardData.serversSummary;
       const summaryData = dashboardData.overallSummary;
       const chartData = dashboardData.chartData;
+
+      const totalTime = Date.now() - refreshStartTime;
+      console.log(`[CLIENT] refreshDashboard - Data processed, updating state. Total time: ${totalTime}ms`);
+      console.log(`[CLIENT] refreshDashboard - Data summary: ${serversData.length} servers, ${chartData.length} chart points`);
 
       setState(prev => ({
         ...prev,

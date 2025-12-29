@@ -1,9 +1,9 @@
 {
   "name": "duplistatus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.26.1",
+  "packageManager": "pnpm@10.26.2",
   "engines": {
     "node": ">=24.12.0",
     "pnpm": ">=10.24.0"
@@ -65,9 +65,9 @@
     "date-fns": "^4.1.0",
     "express": "^5.2.1",
     "lucide-react": "^0.562.0",
-    "next": "^16.1.0",
+    "next": "^16.1.1",
     "node-cron": "^4.2.1",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^7.0.12",
     "qrcode": "^1.5.4",
     "react": "^19.2.3",
     "react-datepicker": "^9.1.0",
@@ -91,7 +91,7 @@
     "@types/string-template": "^1.0.7",
     "baseline-browser-mapping": "latest",
     "eslint": "^9.39.2",
-    "eslint-config-next": "16.1.0",
+    "eslint-config-next": "16.1.1",
     "puppeteer": "^24.34.0",
     "tsx": "^4.21.0",
     "webpack": "^5.104.1"

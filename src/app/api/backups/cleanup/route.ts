@@ -2,7 +2,7 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { subMonths } from 'date-fns';
 import { db } from '@/lib/db';
-import { setConfiguration } from '@/lib/db-utils';
+import { setConfiguration, invalidateDataCache, clearRequestCache } from '@/lib/db-utils';
 import { requireAdmin } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -44,6 +44,10 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         console.error('Failed to clear configuration settings:', configError instanceof Error ? configError.message : String(configError));
         // Don't fail the entire operation if config cleanup fails
       }
+
+      // Invalidate data cache after cleanup to ensure fresh data on next request
+      invalidateDataCache();
+      clearRequestCache();
 
       // Log audit event
       if (authContext) {
