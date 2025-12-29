@@ -1,6 +1,6 @@
 #!/bin/bash
 # generate-readme-from-intro.sh
-# Generates README.md from docs/docs/intro.md for GitHub
+# Generates README.md from documentation/docs/intro.md for GitHub
 # Adds version badge, banner, TOC, and converts links to absolute GitHub docs URLs
 
 set -e  # Exit on any error
@@ -26,7 +26,7 @@ fi
 echo "📦 Current version: $VERSION"
 
 # Check if intro.md exists
-INTRO_FILE="docs/docs/intro.md"
+INTRO_FILE="documentation/docs/intro.md"
 if [ ! -f "$INTRO_FILE" ]; then
     echo "❌ Error: $INTRO_FILE not found"
     exit 1
@@ -39,7 +39,7 @@ trap "rm -f $TEMP_FILE" EXIT
 # Start building README.md with header
 cat > "$TEMP_FILE" <<EOF
 
-![duplistatus](docs/static/img/duplistatus_banner.png)
+![duplistatus](documentation/static/img/duplistatus_banner.png)
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
@@ -75,8 +75,8 @@ sed 's|(\([^/]*\)/\1\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 # Handle paths with or without ./ prefix, normalize them, convert to absolute URL, and remove .md extension
 sed 's|(\./\([^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 sed 's|(\([^/][^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
-# Convert image paths from /img/ to docs/static/img/
-sed 's|(/img/|(docs/static/img/|g' | \
+# Convert image paths from /img/ to documentation/static/img/
+sed 's|(/img/|(documentation/static/img/|g' | \
 # Fix specific development links that don't have .md extension
 sed 's|(development/setup)|(https://wsj-br.github.io/duplistatus/development/setup)|g' | \
 sed 's|(development/how-i-build-with-ai)|(https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai)|g' >> "$TEMP_FILE"

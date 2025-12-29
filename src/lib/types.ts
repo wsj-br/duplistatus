@@ -127,7 +127,8 @@ export interface BackupNotificationConfig {
   expectedInterval: string; // interval string like "1D2h30m" (1 day, 2 hours, 30 minutes) or "1D" (1 day) or "1W" (1 week) or "1M" (1 month)
   overdueBackupCheckEnabled: boolean;
   allowedWeekDays?: number[]; // allowed week days (0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday)
-  time: string; // ISO timestamp of scheduled backup time from Duplicati
+  time: string; // ISO timestamp of next scheduled backup time from Duplicati (Schedule.Time) - fallback to lastBackupDate if not available
+  lastBackupDate?: string; // ISO timestamp of last successful backup (Schedule.LastRun or actual backup received)
   ntfyEnabled: boolean; // whether to send NTFY notifications for this backup
   emailEnabled: boolean; // whether to send email notifications for this backup
 }

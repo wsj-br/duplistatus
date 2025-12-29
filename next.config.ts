@@ -3,6 +3,7 @@ import { version } from './package.json';
 
 const nextConfig: NextConfig = {
   output: "standalone",  // Enable standalone output to reduce Docker image size
+  devIndicators: false,
   
   // Disable Turbopack to use webpack configuration
   turbopack: {},

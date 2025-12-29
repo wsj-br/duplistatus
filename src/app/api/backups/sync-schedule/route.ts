@@ -233,7 +233,8 @@ async function updateBackupSettingsWithSchedule(
   backupName: string, 
   repeatInterval: string, 
   allowedWeekDays: number[],
-  scheduleTime?: string
+  scheduleTime?: string,
+  lastRunTime?: string
 ): Promise<void> {
   const backupKey = `${serverId}:${backupName}`;
   
@@ -261,9 +262,14 @@ async function updateBackupSettingsWithSchedule(
       backupSettings.expectedInterval = repeatInterval;
       backupSettings.allowedWeekDays = allowedWeekDays;
       
-      // Update schedule time if provided
+      // Update schedule time (Schedule.Time - next scheduled run)
       if (scheduleTime) {
         backupSettings.time = scheduleTime;
+      }
+      
+      // Update last backup date (Schedule.LastRun - last successful backup)
+      if (lastRunTime) {
+        backupSettings.lastBackupDate = lastRunTime;
       }
       
       // Update the settings
@@ -537,18 +543,20 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
           const schedule = backup.Schedule;
           const repeatInterval = schedule.Repeat;
           const allowedWeekDaysString = extractAllowedWeekDaysFromRule(schedule.Rule);
-          const scheduleTime = schedule.Time; // Extract the schedule time
+          const scheduleTime = schedule.Time; // Extract the next scheduled run time
+          const lastRunTime = schedule.LastRun; // Extract the last successful backup time
 
           // Convert AllowedWeekDays string to number array
           const allowedWeekDays = parseAllowedWeekDays(allowedWeekDaysString);
           
-          // Update backup settings
+          // Update backup settings with schedule info including lastRunTime
           await updateBackupSettingsWithSchedule(
-            serverIdForSchedule, 
-            backupName, 
-            repeatInterval, 
-            allowedWeekDays, 
-            scheduleTime
+            serverIdForSchedule,
+            backupName,
+            repeatInterval,
+            allowedWeekDays,
+            scheduleTime,
+            lastRunTime
           );
           
           processedCount++;

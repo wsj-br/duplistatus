@@ -47,7 +47,7 @@ export const GET = withCSRF(async () => {
       };
     }
 
-    // Transform servers data
+    // Transform servers data and include expectedBackupDate from settings
     const serversWithBackups = (serversBackupNames as { 
       id: string; 
       server_id: string;
@@ -57,15 +57,27 @@ export const GET = withCSRF(async () => {
       alias: string;
       note: string;
       hasPassword: boolean;
-    }[]).map((server) => ({
-      id: server.server_id,
-      name: server.server_name,
-      backupName: server.backup_name,
-      server_url: server.server_url,
-      alias: server.alias,
-      note: server.note,
-      hasPassword: server.hasPassword
-    }));
+    }[]).map((server) => {
+      const backupKey = `${server.server_id}:${server.backup_name}`;
+      const settings = backupSettings[backupKey];
+      
+      // The time field is already the calculated next expected backup date (lastBackupDate + interval)
+      // It's updated automatically in getConfigBackupSettings() when new backups arrive
+      const expectedBackupDate = settings?.time;
+      const lastBackupDate = settings?.lastBackupDate;
+      
+      return {
+        id: server.server_id,
+        name: server.server_name,
+        backupName: server.backup_name,
+        server_url: server.server_url,
+        alias: server.alias,
+        note: server.note,
+        hasPassword: server.hasPassword,
+        expectedBackupDate,
+        lastBackupDate
+      };
+    });
 
     // Return unified configuration object
     const unifiedConfig = {

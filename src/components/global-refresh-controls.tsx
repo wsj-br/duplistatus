@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { RotateCcw } from 'lucide-react';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfig } from '@/contexts/config-context';
@@ -17,6 +18,15 @@ interface AutoRefreshButtonProps {
 }
 
 const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress, isLoading = false }: AutoRefreshButtonProps) => {
+  const router = useRouter();
+
+  // Handle right-click to open settings page on display tab
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push('/settings?tab=display');
+  };
+
   return (
     <div className={`relative ${className}`}>
       {/* Progress background - only show when enabled */}
@@ -37,7 +47,8 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress,
             : 'text-gray-500 hover:text-gray-400'
         }`}
         onClick={onToggle}
-        title={isEnabled ? "Disable auto-refresh" : "Enable auto-refresh"}
+        onContextMenu={handleContextMenu}
+        title={isEnabled ? "Disable auto-refresh (Right-click for Display Settings)" : "Enable auto-refresh (Right-click for Display Settings)"}
       >
         {!isEnabled ? (
           'Auto-refresh (disabled)'
@@ -151,7 +162,7 @@ export function GlobalRefreshControls() {
   const isLoading = state.pageSpecificLoading.dashboard || state.pageSpecificLoading.detail;
 
   return (
-    <div className="flex items-center border rounded-md">
+    <div className="flex items-center border rounded-md" data-screenshot-target="auto-refresh-controls">
       {/* Manual refresh button */}
       <button
         onClick={handleManualRefresh}

@@ -11,6 +11,15 @@ export function proxy(request: NextRequest) {
   response.headers.set('x-pathname', pathname);
   response.headers.set('x-search-params', searchParams);
   
+  // Set cache control headers for dashboard and detail pages to prevent caching
+  // This ensures fresh data is loaded when users refresh the page (CTRL-R)
+  if ((pathname === '/' || pathname.startsWith('/detail/')) && !pathname.startsWith('/api/')) {
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    response.headers.set('Surrogate-Control', 'no-store');
+  }
+  
   return response;
 }
 

@@ -6,7 +6,6 @@ import { ServerDetailSummaryItems } from "@/components/server-details/server-det
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
 import type { Server } from "@/lib/types";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
-import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 
 interface OverdueBackup {
   serverName: string;
@@ -27,7 +26,6 @@ interface ServerDetailsContentProps {
 
 export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck, lastRefreshTime: _lastRefreshTime }: ServerDetailsContentProps) {
   const { selectedBackup: selectedBackupName } = useBackupSelection();
-  const { refreshDetail } = useGlobalRefresh();
   
   // Server details always uses content-based height regardless of window dimensions
   // This ensures the content can expand naturally like a table view
@@ -97,15 +95,6 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
   // Calculate total unique backup jobs (configurations)
   const totalBackupJobs = new Set(server.backups.map(backup => backup.name)).size;
 
-  // Handle backup deletion
-  const handleBackupDeleted = async () => {
-    try {
-      await refreshDetail(server.id);
-    } catch (error) {
-      console.error('Error refreshing data after backup deletion:', error);
-    }
-  };
-
   // this page is always show in the table view
 
   return (
@@ -161,7 +150,6 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
             serverName={server.name}
             serverAlias={server.alias}
             serverNote={server.note}
-            onBackupDeleted={handleBackupDeleted}
           />
         </CardContent>
       </Card>

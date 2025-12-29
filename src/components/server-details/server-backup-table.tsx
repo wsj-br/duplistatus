@@ -25,7 +25,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { isDevelopmentMode } from "@/lib/utils";
 import { useAvailableBackupsModal, AvailableBackupsIcon } from "@/components/ui/available-backups-modal";
 import {
   Select,
@@ -36,20 +35,17 @@ import {
 } from "@/components/ui/select";
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { createSortedArray, type SortConfig } from "@/lib/sort-utils";
-import { DeleteBackupButton } from "@/components/ui/delete-backup-button";
 
 interface ServerBackupTableProps {
   backups: Backup[];
   serverName: string;
   serverAlias?: string;
   serverNote?: string;
-  onBackupDeleted?: () => void;
 }
 
-export function ServerBackupTable({ backups, serverName, serverAlias, serverNote, onBackupDeleted }: ServerBackupTableProps) {
+export function ServerBackupTable({ backups, serverName, serverAlias, serverNote }: ServerBackupTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
-  const [isDevMode] = useState(() => isDevelopmentMode());
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
   const { tablePageSize } = useConfig();
   const { handleAvailableBackupsClick } = useAvailableBackupsModal();
@@ -247,18 +243,12 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                   <SortableTableHead column="knownFileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
                     Storage Size
                   </SortableTableHead>
-                  {/* Development mode delete column */}
-                  {isDevMode && (
-                    <TableHead className="w-12">
-                      <div className="sr-only">Actions</div>
-                    </TableHead>
-                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedBackups.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={isDevMode ? 12 : 11} className="text-center h-24">
+                    <TableCell colSpan={11} className="text-center h-24">
                       No backups found for this server.
                     </TableCell>
                   </TableRow>
@@ -313,17 +303,6 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
                     <TableCell className="text-right">{backup.duration}</TableCell>
                     <TableCell className="text-right">{formatBytes(backup.knownFileSize)}</TableCell>
-                    {/* Development mode delete button */}
-                    {isDevMode && (
-                      <TableCell className="text-center">
-                        <DeleteBackupButton
-                          backupId={backup.id}
-                          backupName={backup.name}
-                          backupDate={backup.date}
-                          onDelete={onBackupDeleted}
-                        />
-                      </TableCell>
-                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -431,18 +410,6 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                       <div className="text-sm">{backup.errors}</div>
                     </div>
                   </div>
-
-                  {/* Development mode delete button */}
-                  {isDevMode && (
-                    <div className="border-t pt-3">
-                      <DeleteBackupButton
-                        backupId={backup.id}
-                        backupName={backup.name}
-                        backupDate={backup.date}
-                        onDelete={onBackupDeleted}
-                      />
-                    </div>
-                  )}
 
                   {/* Card Click Action */}
                   {!hasNoMessages(backup) && (

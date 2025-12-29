@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, dbOps, parseDurationToSeconds } from '@/lib/db';
-import { dbUtils, getConfigBackupSettings } from '@/lib/db-utils';
+import { dbUtils, getConfigBackupSettings, invalidateDataCache, clearRequestCache } from '@/lib/db-utils';
 import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
@@ -222,6 +222,11 @@ export async function POST(request: NextRequest) {
 
     // Execute the transaction
     transaction();
+
+    // Invalidate data cache after backup insertion to ensure fresh data on next request
+    // This ensures that when users refresh or auto-refresh triggers, they see the new backup
+    invalidateDataCache();
+    clearRequestCache();
 
     // Log audit entry for backup upload
     try {

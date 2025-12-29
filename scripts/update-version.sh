@@ -47,17 +47,17 @@ if [ -f Dockerfile ]; then
     fi
 fi
 
-# If docs/package.json exists, check if version exists and compare versions
-if [ -f docs/package.json ]; then
-    if grep -q '"version"' docs/package.json; then
-        # Get current version from docs/package.json
-        CURRENT_VERSION=$(grep '"version"' docs/package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/' | head -1)
+# If documentation/package.json exists, check if version exists and compare versions
+if [ -f documentation/package.json ]; then
+    if grep -q '"version"' documentation/package.json; then
+        # Get current version from documentation/package.json
+        CURRENT_VERSION=$(grep '"version"' documentation/package.json | sed 's/.*"version": *"\([^"]*\)".*/\1/' | head -1)
 
         # Compare versions
         if [ "$CURRENT_VERSION" != "$VERSION" ]; then
-            # Update version in docs/package.json
-            sed "s|\"version\": *\"[^\"]*\"|\"version\": \"$VERSION\"|" docs/package.json > docs/package.json.tmp && mv docs/package.json.tmp docs/package.json
-            echo "✅ Updated version=$VERSION in docs/package.json"
+            # Update version in documentation/package.json
+            sed "s|\"version\": *\"[^\"]*\"|\"version\": \"$VERSION\"|" documentation/package.json > documentation/package.json.tmp && mv documentation/package.json.tmp documentation/package.json
+            echo "✅ Updated version=$VERSION in documentation/package.json"
         fi
     fi
 fi

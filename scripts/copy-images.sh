@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Source directory
-SOURCE_DIR="$PROJECT_ROOT/docs/static/img"
+SOURCE_DIR="$PROJECT_ROOT/documentation/static/img"
 
 
 # copy favicon.ico

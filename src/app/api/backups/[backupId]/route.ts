@@ -1,7 +1,7 @@
 import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { db } from '@/lib/db';
-import { getConfigBackupSettings, setConfigBackupSettings } from '@/lib/db-utils';
+import { getConfigBackupSettings, setConfigBackupSettings, invalidateDataCache, clearRequestCache } from '@/lib/db-utils';
 import { getAuthContext } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -91,6 +91,10 @@ export const DELETE = withCSRF(async (
       console.error('Error updating backup_settings:', error instanceof Error ? error.message : String(error));
       // Don't fail the deletion if backup_settings update fails
     }
+
+    // Invalidate data cache after backup deletion to ensure fresh data on next request
+    invalidateDataCache();
+    clearRequestCache();
 
     // Log audit event
     if (authContext) {

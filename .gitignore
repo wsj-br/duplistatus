@@ -37,10 +37,10 @@ README_dockerhub.md
 *.diff
 *.tmp
 
-# docs
-docs/node_modules
-docs/build
-public/docs
+# documentation
+documentation/node_modules
+documentation/build
+public/documentation
 
 # debug
 npm-debug.log*

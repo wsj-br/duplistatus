@@ -1,8 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
 import { db, dbOps, parseDurationToSeconds } from '../src/lib/db';
-import { dbUtils, getConfigBackupSettings, clearRequestCache } from '../src/lib/db-utils';
+import { dbUtils, getConfigBackupSettings, setConfigBackupSettings, clearRequestCache, invalidateDataCache } from '../src/lib/db-utils';
 import { extractAvailableBackups } from '../src/lib/utils';
+import { setServerPassword } from '../src/lib/secrets';
+import { defaultBackupNotificationConfig } from '../src/lib/default-config';
 
 // Function to clean database tables before generating test data
 async function cleanDatabaseTables(quiet: boolean = false) {
@@ -38,32 +40,6 @@ async function cleanDatabaseTables(quiet: boolean = false) {
     return false;
   }
 } 
-
-// Function to clean database tables before generating test data
-async function cleanBackupSettings(quiet: boolean = false) {
-  logConsole('🧹 Cleaning backup_settings configuration...', quiet);
-  
-  try {
-    // Start a transaction for atomic cleanup
-    const transaction = db.transaction(() => {
-
-      // Delete backup_settings configuration specifically (so it can be recalculated)
-      const backupSettingsResult = db.prepare("DELETE FROM configurations WHERE key = 'backup_settings'").run();
-      logConsole(`  🗑️  Deleted backup_settings configuration (${backupSettingsResult.changes} row(s))`, quiet);
-      
-    });
-    
-    // Execute the transaction
-    transaction();
-    
-    logConsole('✅ backup_settings cleanup completed successfully!', quiet);
-    return true;
-  } catch (error) {
-    console.error('🚨 Error during backup_settings cleanup:', error instanceof Error ? error.message : String(error));
-    return false;
-  }
-} 
-
 
 // Server configurations
 const servers = [
@@ -519,344 +495,6 @@ async function writeBackupToDatabase(payload: any, quiet: boolean = false): Prom
   }
 }
 
-// Function to delete backups from randomly chosen configurations to create overdue samples (>48 hours old)
-async function deleteRandomBackups(quiet: boolean = false) {
-  logConsole('\n  🎲 Deleting recent backups from randomly chosen configurations to create overdue samples (>48 hours)...', quiet);
-  
-  try {
-    // Get all unique backup configurations (server_id + backup_name combinations)
-    const configurationsResult = db.prepare(`
-      SELECT DISTINCT b.server_id, b.backup_name, s.name as server_name, s.alias
-      FROM backups b
-      JOIN servers s ON b.server_id = s.id
-      ORDER BY s.name, b.backup_name
-    `).all() as { server_id: string; backup_name: string; server_name: string; alias: string }[];
-    
-    if (configurationsResult.length === 0) {
-      logConsole('    ⚠️  No backup configurations found, skipping random deletion', quiet);
-      return;
-    }
-    
-    if (configurationsResult.length < 2) {
-      logConsole(`    ⚠️  Only ${configurationsResult.length} backup configuration(s) found, cannot delete 2`, quiet);
-      return;
-    }
-    
-    // Randomly select 2 backup configurations
-    const shuffledConfigurations = [...configurationsResult].sort(() => Math.random() - 0.5);
-    const selectedConfigurations = shuffledConfigurations.slice(0, 2);
-    
-    logConsole(`    🎯 Selected ${selectedConfigurations.length} random backup configuration(s):`, quiet);
-    selectedConfigurations.forEach((config, index) => {
-      const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
-      logConsole(`      ${index + 1}. Server: ${serverDisplayName}, Backup: ${config.backup_name}`, quiet);
-    });
-    
-    const now = new Date();
-    const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000)); // 48 hours ago
-    
-    for (const config of selectedConfigurations) {
-      try {
-        const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
-        const configDisplayName = `${serverDisplayName} - ${config.backup_name}`;
-        
-        // Get all backups for this configuration, ordered by date DESC
-        const allBackupsResult = db.prepare(`
-          SELECT b.id, b.date
-          FROM backups b
-          WHERE b.server_id = ? AND b.backup_name = ?
-          ORDER BY b.date DESC
-        `).all(config.server_id, config.backup_name) as { id: string; date: string }[];
-        
-        if (allBackupsResult.length === 0) {
-          logConsole(`      ⚠️  ${configDisplayName}: No backups found`, quiet);
-          continue;
-        }
-        
-        logConsole(`      📊 ${configDisplayName}: Found ${allBackupsResult.length} total backup(s)`, quiet);
-        
-        // Find backups that are newer than 48 hours ago (need to be deleted)
-        const backupsToDelete: { id: string; date: string }[] = [];
-        for (const backup of allBackupsResult) {
-          const backupDate = new Date(backup.date);
-          if (backupDate > fortyEightHoursAgo) {
-            backupsToDelete.push(backup);
-          } else {
-            // Found the first backup that is >48 hours old, stop here
-            break;
-          }
-        }
-        
-        if (backupsToDelete.length === 0) {
-          const mostRecentDate = new Date(allBackupsResult[0].date);
-          const hoursSinceLastBackup = Math.floor((now.getTime() - mostRecentDate.getTime()) / (60 * 60 * 1000));
-          logConsole(`      ✅ ${configDisplayName}: Already overdue (last backup ${hoursSinceLastBackup}h ago)`, quiet);
-          continue;
-        }
-        
-        logConsole(`      🎯 ${configDisplayName}: Will delete ${backupsToDelete.length} backup(s) newer than 48 hours`, quiet);
-        backupsToDelete.forEach((backup, idx) => {
-          const backupDate = new Date(backup.date);
-          const hoursAgo = Math.floor((now.getTime() - backupDate.getTime()) / (60 * 60 * 1000));
-          logConsole(`         ${idx + 1}. Backup ID: ${backup.id.substring(0, 8)}..., Date: ${backupDate.toLocaleString()} (${hoursAgo}h ago)`, quiet);
-        });
-        
-        // Delete all backups that are newer than 48 hours using a transaction
-        const deleteTransaction = db.transaction(() => {
-          let deletedCount = 0;
-          for (const backup of backupsToDelete) {
-            // Verify backup exists before deletion
-            const verifyResult = db.prepare(`
-              SELECT id FROM backups WHERE id = ? AND server_id = ? AND backup_name = ?
-            `).get(backup.id, config.server_id, config.backup_name);
-            
-            if (verifyResult) {
-              const deleteResult = db.prepare(`
-                DELETE FROM backups 
-                WHERE id = ? AND server_id = ? AND backup_name = ?
-              `).run(backup.id, config.server_id, config.backup_name);
-              
-              if (deleteResult.changes > 0) {
-                deletedCount++;
-              }
-            }
-          }
-          return deletedCount;
-        });
-        
-        const deletedCount = deleteTransaction();
-        
-        if (deletedCount > 0) {
-          const remainingMostRecent = allBackupsResult[backupsToDelete.length];
-          if (remainingMostRecent) {
-            const remainingDate = new Date(remainingMostRecent.date);
-            const hoursSinceLastBackup = Math.floor((now.getTime() - remainingDate.getTime()) / (60 * 60 * 1000));
-            logConsole(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), now overdue (last backup ${hoursSinceLastBackup}h ago)`, quiet);
-          } else {
-            logConsole(`      🗑️  ${configDisplayName}: Successfully deleted ${deletedCount} backup(s), no backups remaining`, quiet);
-          }
-        } else {
-          logConsole(`      ⚠️  ${configDisplayName}: Failed to delete backups (no rows affected)`, quiet);
-        }
-      } catch (error) {
-        const serverDisplayName = config.alias ? `${config.server_name} (${config.alias})` : config.server_name;
-        const configDisplayName = `${serverDisplayName} - ${config.backup_name}`;
-        console.error(`      🚨 Error deleting backups for ${configDisplayName}:`, 
-          error instanceof Error ? error.message : String(error));
-      }
-    }
-    
-    logConsole('  ✅ Random backup deletion completed!', quiet);
-    
-  } catch (error) {
-    console.error('  🚨 Error during random backup deletion:', 
-      error instanceof Error ? error.message : String(error));
-  }
-}
-
-// Function to cleanup backups - keep only 5-8 random backups for 1 random backup job from 2 random servers
-async function cleanupBackupsForUserManual(quiet: boolean = false){
-  logConsole('\n  🧹 Cleaning up backups for user manual demonstration...', quiet);
-  
-  // Get servers from generated backups instead of from servers array
-  const serversFromBackupsResult = db.prepare(`
-    SELECT DISTINCT s.id, s.name, s.alias, s.note
-    FROM servers s
-    JOIN backups b ON s.id = b.server_id
-    ORDER BY s.name
-  `).all() as { id: string; name: string; alias: string; note: string }[];
-  
-  if (serversFromBackupsResult.length === 0) {
-    logConsole('    ⚠️  No servers found with generated backups, skipping cleanup', quiet);
-    return;
-  }
-  
-  // Select 2 random servers from the first 6 servers that have backups
-  const firstSixServers = serversFromBackupsResult.slice(0, 6);
-  const shuffledServers = [...firstSixServers].sort(() => Math.random() - 0.5);
-  const selectedServers = shuffledServers.slice(0, 2);
-  
-  // Generate random number of backups to keep 
-  const backupsToKeep = Math.floor(Math.random() * 4) + 4; // 4 to 7
-  
-  logConsole(`    🎯 Selected servers: ${selectedServers.map(s => s.name).join(', ')}`, quiet);
-  logConsole(`    📊 Keeping ${backupsToKeep} most recent backups for each selected server-backup combination`, quiet);
-  
-  for (const server of selectedServers) {
-    try {
-      // Get all backup jobs that exist for this server
-      const backupJobsResult = db.prepare(`
-        SELECT DISTINCT backup_name FROM backups 
-        WHERE server_id = ?
-        ORDER BY backup_name
-      `).all(server.id) as { backup_name: string }[];
-      
-      const availableBackupJobs = backupJobsResult.map(row => row.backup_name);
-      
-      if (availableBackupJobs.length === 0) {
-        logConsole(`      ⚠️  ${server.name}: No backups found, skipping...`, quiet);
-        continue;
-      }
-      
-      // Select 1 random backup job from the available ones for this server
-      const selectedBackupJob = availableBackupJobs[Math.floor(Math.random() * availableBackupJobs.length)];
-      
-      logConsole(`      📁 ${server.name} - Selected backup job: ${selectedBackupJob} (from available: ${availableBackupJobs.join(', ')})`, quiet);
-      
-      // Count total backups for this server-backup combination
-      const countResult = db.prepare(`
-        SELECT COUNT(*) as total FROM backups 
-        WHERE server_id = ? AND backup_name = ?
-      `).get(server.id, selectedBackupJob) as { total: number };
-      
-      const totalBackups = countResult.total;
-      
-      if (totalBackups <= backupsToKeep) {
-        logConsole(`      ✅ ${server.name} - ${selectedBackupJob}: Only ${totalBackups} backups exist, no cleanup needed`, quiet);
-        continue;
-      }
-      
-      const backupsToDelete = totalBackups - backupsToKeep;
-      
-      // Delete older backups, keeping the most recent ones
-      const deleteResult = db.prepare(`
-        DELETE FROM backups 
-        WHERE id IN (
-          SELECT id FROM backups 
-          WHERE server_id = ? AND backup_name = ? 
-          ORDER BY date DESC 
-          LIMIT -1 OFFSET ?
-        )
-      `).run(server.id, selectedBackupJob, backupsToKeep);
-      
-      logConsole(`      🗑️  ${server.name} - ${selectedBackupJob}: Deleted ${deleteResult.changes} backups, kept ${backupsToKeep} most recent`, quiet);
-      
-    } catch (error) {
-      console.error(`      🚨 Error cleaning up backups for ${server.name}:`, 
-        error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  try {
-    // Get all available server-backup combinations
-    const combinationsResult = db.prepare(`
-      SELECT DISTINCT b.server_id, b.backup_name, m.name as server_name
-      FROM backups b
-      JOIN servers m ON b.server_id = m.id
-      ORDER BY b.server_id, b.backup_name
-    `).all() as { server_id: number; backup_name: string; server_name: string }[];
-    
-    if (combinationsResult.length === 0) {
-      logConsole('    ⚠️  No server-backup combinations found for additional cleanup', quiet);
-      return;
-    }
-    
-    // Shuffle and select 3 random combinations
-    const shuffledCombinations = [...combinationsResult].sort(() => Math.random() - 0.5);
-    const selectedCombinations = shuffledCombinations.slice(0, Math.min(2, shuffledCombinations.length));
-    
-    logConsole(`    🎯 Selected ${selectedCombinations.length} combinations for last backup deletion:`, quiet);
-    selectedCombinations.forEach(combo => {
-      logConsole(`      - ${combo.server_name} (${combo.backup_name})`, quiet);
-    });
-    
-    for (const combination of selectedCombinations) {
-      try {
-        // Get the most recent backup for this combination
-        const lastBackupResult = db.prepare(`
-          SELECT id, date FROM backups 
-          WHERE server_id = ? AND backup_name = ? 
-          ORDER BY date DESC 
-          LIMIT 1
-        `).get(combination.server_id, combination.backup_name) as { id: number; date: string } | undefined;
-        
-        if (!lastBackupResult) {
-          logConsole(`      ⚠️  ${combination.server_name} (${combination.backup_name}): No backups found`, quiet);
-          continue;
-        }
-        
-        // Delete the  most recent backups
-        const deleteResult = db.prepare(`
-          DELETE FROM backups 
-          WHERE id = ?
-        `).run(lastBackupResult.id);
-        
-        if (deleteResult.changes > 0) {
-          const backupDate = new Date(lastBackupResult.date).toLocaleDateString();
-          logConsole(`      🗑️  ${combination.server_name} (${combination.backup_name}): Deleted last backup from ${backupDate}`, quiet);
-        } else {
-          logConsole(`      ⚠️  ${combination.server_name} (${combination.backup_name}): Failed to delete backup`, quiet);
-        }
-        
-      } catch (error) {
-        console.error(`      🚨 Error deleting last backup for ${combination.server_name} (${combination.backup_name}):`, 
-          error instanceof Error ? error.message : String(error));
-      }
-    }
-    
-  logConsole('  ✅ Backup cleanup completed!', quiet);
-    
-  } catch (error) {
-    console.error('  🚨 Error during additional cleanup:', 
-      error instanceof Error ? error.message : String(error));
-  }
-
-  // Update server_url for 70% of random servers
-  try {
-    logConsole('\n  🌐 Updating server URLs for random servers...', quiet);
-    
-    // Get servers from generated backups instead of total list
-    const serversFromBackupsResult = db.prepare(`
-      SELECT DISTINCT s.id, s.name, s.alias, s.note
-      FROM servers s
-      JOIN backups b ON s.id = b.server_id
-      ORDER BY s.name
-    `).all() as { id: string; name: string; alias: string; note: string }[];
-    
-    if (serversFromBackupsResult.length === 0) {
-      logConsole('    ⚠️  No servers found with generated backups, skipping server URL update', quiet);
-      return;
-    }
-    
-    // Select 70% of random servers from generated backups
-    const shuffledServers = [...serversFromBackupsResult].sort(() => Math.random() - 0.5);
-    const selectedCount = Math.ceil(serversFromBackupsResult.length * 0.7);
-    const selectedServers = shuffledServers.slice(0, selectedCount);
-    
-    logConsole(`    🎯 Selected servers for server URL update: ${selectedServers.map(s => s.alias ? `${s.name} (${s.alias})` : s.name).join(', ')}`, quiet);
-    
-    const serverUrl = "http://192.168.1.55:8200";
-    let updatedCount = 0;
-    
-    for (const server of selectedServers) {
-      try {
-        const updateResult = db.prepare(`
-          UPDATE servers 
-          SET server_url = ? 
-          WHERE id = ?
-        `).run(serverUrl, server.id);
-        
-        const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
-        if (updateResult.changes > 0) {
-          logConsole(`      🔗 ${serverDisplayName}: Server URL updated to ${serverUrl}`, quiet);
-          updatedCount++;
-        } else {
-          logConsole(`      ⚠️  ${serverDisplayName}: No update performed (server may not exist in DB)`, quiet);
-        }
-      } catch (error) {
-        console.error(`      🚨 Error updating server URL for ${server.name}:`, 
-          error instanceof Error ? error.message : String(error));
-      }
-    }
-    
-    logConsole(`  ✅ Server URL update completed! Updated ${updatedCount} out of ${selectedServers.length} servers`, quiet);
-    
-  } catch (error) {
-    console.error('  🚨 Error during server URL update:', 
-      error instanceof Error ? error.message : String(error));
-  }
-}
-
 // Main function to send test data
 async function sendTestData(useUpload: boolean = false, serverCount: number, port: number = 8666, quiet: boolean = false) {
   const API_URL = `http://localhost:${port}/api/upload`;
@@ -886,21 +524,63 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
     logConsole('  💾 Writing directly to database...', quiet);
   }
 
-  const suffledServers = [...servers].sort(() => Math.random() - 0.5);
+  // Create generation plan
+  const shuffledServers = [...servers].sort(() => Math.random() - 0.5);
+  const selectedServersCount = Math.min(serverCount, servers.length);
+  const generationPlan: Array<{
+    server: typeof servers[0];
+    selectedBackupJobs: string[];
+    isOddServer: boolean;
+    serverIndex: number;
+  }> = [];
 
-  for (let serverIndex = 0; serverIndex < Math.min(serverCount, servers.length); serverIndex++) {
-    const server = suffledServers[serverIndex];
-    const isOddServer = (serverIndex + 1) % 2 === 1;
+  for (let i = 0; i < selectedServersCount; i++) {
+    const server = shuffledServers[i];
+    const isOddServer = (i + 1) % 2 === 1;
     
-    // Randomly select a subset of backup jobs for this server
-    // 70% chance of 2 jobs, 30% chance of 3-4 jobs
-    const randomBackupCount = Math.random() < 0.6 
-      ? 2 
-      : Math.floor(Math.random() * 2) + 3; // 3 or 4 jobs  
+    // Randomly select backup jobs
+    const randomBackupCount = Math.random() < 0.6 ? 2 : Math.floor(Math.random() * 2) + 3;
     const shuffledBackupJobs = [...BACKUP_JOBS].sort(() => Math.random() - 0.5);
     const selectedBackupJobs = shuffledBackupJobs.slice(0, randomBackupCount);
     
+    generationPlan.push({ server, selectedBackupJobs, isOddServer, serverIndex: i });
+  }
+
+  // Preconfigure notifications to disable ntfy (as requested)
+  // This is especially important for --upload mode to prevent spamming notifications
+  logConsole('\n  🔧 Preconfiguring notifications (disabling ntfy for generated backups)...', quiet);
+  try {
+    const currentSettings = await getConfigBackupSettings();
+    let updated = false;
+
+    for (const plan of generationPlan) {
+      for (const backupJob of plan.selectedBackupJobs) {
+        const key = `${plan.server.id}:${backupJob}`;
+        if (!currentSettings[key] || currentSettings[key].ntfyEnabled !== false) {
+          currentSettings[key] = {
+            ...(currentSettings[key] || defaultBackupNotificationConfig),
+            ntfyEnabled: false
+          };
+          updated = true;
+        }
+      }
+    }
+
+    if (updated) {
+      setConfigBackupSettings(currentSettings);
+      logConsole('    ✅ Notification settings updated to disable ntfy', quiet);
+    } else {
+      logConsole('    ℹ️ Notification settings already configured', quiet);
+    }
+  } catch (error) {
+    console.error('🚨 Error preconfiguring notification settings:', error instanceof Error ? error.message : String(error));
+  }
+
+  // Proceed with data generation
+  for (const plan of generationPlan) {
+    const { server, selectedBackupJobs, isOddServer, serverIndex } = plan;
     const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
+    
     logConsole(`\n    🔄 Generating backups for ${serverDisplayName} (${isOddServer ? 'Odd' : 'Even'} server pattern)...`, quiet);
     if (server.note) {
       logConsole(`      📝 Note: ${server.note}`, quiet);
@@ -960,12 +640,268 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
   if (!useUpload) {
     logConsole('\n  🔧 Processing backups after generation...', quiet);
     
-    // Delete 2 randomly chosen backup runs to create overdue samples
-    await deleteRandomBackups(quiet);
+    // Recalculate backup settings to ensure all missing entries are added and times are calculated
+    // This replaces the previous logic of deleting and letting it be recalculated later
+    logConsole('  🔄 Recalculating backup settings...', quiet);
+    await getConfigBackupSettings();
+  }
+
+  // Update server URLs for 90% of generated servers
+  await updateServerUrls(serverCount, quiet);
+
+  // Delete recent backups from 2 random servers to create overdue backups
+  await deleteRecentBackupsForOverdue(quiet);
+}
+
+// Function to update server URLs for 90% of generated servers
+async function updateServerUrls(serverCount: number, quiet: boolean = false) {
+  try {
+    logConsole('\n  🌐 Updating server URLs...', quiet);
     
-    // Delete backup settings after deletions so it can be recalculated based on new most recent backups
-    logConsole('\n  🔄 Deleting backup_settings configuration after deletions...', quiet);
-    await cleanBackupSettings(quiet);
+    // Get all servers from database
+    const allServers = dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string }>;
+    
+    if (allServers.length === 0) {
+      logConsole('    ⚠️  No servers found in database', quiet);
+      return;
+    }
+
+    // Calculate 90% of servers (round up)
+    const targetCount = Math.ceil(allServers.length * 0.9);
+    
+    // Shuffle servers and select targetCount
+    const shuffled = [...allServers].sort(() => Math.random() - 0.5);
+    const selectedServers = shuffled.slice(0, targetCount);
+    
+    logConsole(`    📊 Updating ${selectedServers.length} out of ${allServers.length} servers (${Math.round((selectedServers.length / allServers.length) * 100)}%)`, quiet);
+    
+    // Update each selected server with a random URL and set password
+    const transaction = db.transaction(() => {
+      for (const server of selectedServers) {
+        // Generate random IP between 100-200
+        const randomIp = Math.floor(Math.random() * 101) + 100; // 100 to 200 inclusive
+        const serverUrl = `http://192.168.1.${randomIp}:8200`;
+        
+        dbOps.updateServerServerUrl.run({
+          id: server.id,
+          server_url: serverUrl
+        });
+      }
+    });
+    
+    transaction();
+    
+    // Set password for the same servers (outside transaction since setServerPassword handles encryption)
+    for (const server of selectedServers) {
+      setServerPassword(server.id, 'test-password');
+    }
+    
+    logConsole(`    ✅ Successfully updated ${selectedServers.length} server URLs and set passwords`, quiet);
+  } catch (error) {
+    console.error('🚨 Error updating server URLs:', error instanceof Error ? error.message : String(error));
+  }
+}
+
+// Function to delete recent backups from 2 random servers to create overdue backups
+// Ensures at least 2 backups are overdue (1 from each of 2 random servers)
+// Deletes enough recent backups to guarantee overdue status (default interval is 1D)
+async function deleteRecentBackupsForOverdue(quiet: boolean = false) {
+  try {
+    logConsole('\n  🗑️  Deleting recent backups to create overdue backups...', quiet);
+    
+    // Get all servers that have backups
+    const serversWithBackups = db.prepare(`
+      SELECT DISTINCT s.id, s.name, s.alias
+      FROM servers s
+      INNER JOIN backups b ON s.id = b.server_id
+      ORDER BY s.name
+    `).all() as Array<{ id: string; name: string; alias: string }>;
+    
+    if (serversWithBackups.length < 2) {
+      logConsole(`    ⚠️  Not enough servers with backups (found ${serversWithBackups.length}, need at least 2)`, quiet);
+      return;
+    }
+    
+    // Randomly select 2 servers (ensuring we have 2 different servers)
+    const shuffled = [...serversWithBackups].sort(() => Math.random() - 0.5);
+    const selectedServers = shuffled.slice(0, 2);
+    
+    logConsole(`    📊 Selected ${selectedServers.length} random servers for overdue backup creation`, quiet);
+    
+    // Track which backup keys had backups deleted
+    const affectedBackupKeys: string[] = [];
+    let overdueCount = 0;
+    
+    const transaction = db.transaction(() => {
+      for (const server of selectedServers) {
+        // Get all unique backup names for this server
+        const backupNames = db.prepare(`
+          SELECT DISTINCT backup_name
+          FROM backups
+          WHERE server_id = ?
+          ORDER BY backup_name
+        `).all(server.id) as Array<{ backup_name: string }>;
+        
+        if (backupNames.length === 0) {
+          logConsole(`    ⚠️  No backup names found for server ${server.name}`, quiet);
+          continue;
+        }
+        
+        // Pick a random backup name
+        const randomBackupName = backupNames[Math.floor(Math.random() * backupNames.length)].backup_name;
+        const backupKey = `${server.id}:${randomBackupName}`;
+        
+        // Get total count of backups for this server/backup_name combination
+        const totalBackups = db.prepare(`
+          SELECT COUNT(*) as count
+          FROM backups
+          WHERE server_id = ? AND backup_name = ?
+        `).get(server.id, randomBackupName) as { count: number } | undefined;
+        
+        if (!totalBackups || totalBackups.count === 0) {
+          logConsole(`    ⚠️  No backups found for server ${server.name} with backup name ${randomBackupName}`, quiet);
+          continue;
+        }
+        
+        // Get the 3 most recent backups (or fewer if there aren't enough)
+        // We delete up to 3 to ensure the remaining backup is at least 3 days old (definitely overdue with 1D interval)
+        // But we always leave at least 1 backup remaining
+        const backupsToDelete = Math.min(3, totalBackups.count - 1);
+        
+        if (backupsToDelete <= 0) {
+          logConsole(`    ⚠️  Not enough backups to delete (need at least 2, found ${totalBackups.count}) for ${server.name}:${randomBackupName}`, quiet);
+          continue;
+        }
+        
+        const recentBackups = db.prepare(`
+          SELECT id, date
+          FROM backups
+          WHERE server_id = ? AND backup_name = ?
+          ORDER BY date DESC
+          LIMIT ?
+        `).all(server.id, randomBackupName, backupsToDelete) as Array<{ id: string; date: string }>;
+        
+        if (recentBackups.length === 0) {
+          logConsole(`    ⚠️  No recent backups found for server ${server.name} with backup name ${randomBackupName}`, quiet);
+          continue;
+        }
+        
+        // Delete recent backups to guarantee overdue status (leaving at least 1 backup)
+        let deletedCount = 0;
+        const deletedDates: string[] = [];
+        for (const backup of recentBackups) {
+          const result = db.prepare('DELETE FROM backups WHERE id = ?').run(backup.id);
+          if (result.changes > 0) {
+            deletedCount++;
+            deletedDates.push(new Date(backup.date).toLocaleDateString());
+          }
+        }
+        
+        if (deletedCount > 0) {
+          overdueCount++;
+          affectedBackupKeys.push(backupKey);
+          const serverDisplayName = server.alias ? `${server.name} (${server.alias})` : server.name;
+          logConsole(`    ✅ Deleted ${deletedCount} recent "${randomBackupName}" backup(s) from ${serverDisplayName}`, quiet);
+          logConsole(`       Dates deleted: ${deletedDates.join(', ')}`, quiet);
+        }
+      }
+    });
+    
+    transaction();
+    
+    // Clear caches and recalculate backup settings after deletion
+    // This ensures the 'time' field in backup_settings is updated to reflect the new latest backup date
+    logConsole('    🔄 Recalculating backup settings after deletion...', quiet);
+    clearRequestCache();
+    invalidateDataCache();
+    
+    // Get updated backup settings after deletion
+    const backupSettings = await getConfigBackupSettings();
+    
+    // For affected backups, we need to manually set the time field to make them overdue
+    // The time field should be set to an old date so GetNextBackupRunDate calculates a past expected date
+    let updatedSettings = false;
+    const updatedBackupSettings = { ...backupSettings };
+    
+    for (const backupKey of affectedBackupKeys) {
+      const [serverId, backupName] = backupKey.split(':');
+      const settings = updatedBackupSettings[backupKey];
+      
+      // Get the actual latest backup date from database
+      const latestBackup = db.prepare(`
+        SELECT date
+        FROM backups
+        WHERE server_id = ? AND backup_name = ?
+        ORDER BY date DESC
+        LIMIT 1
+      `).get(serverId, backupName) as { date: string } | undefined;
+      
+      if (settings && latestBackup) {
+        // Set the time field to the latest backup date (not a future expected date)
+        // This ensures GetNextBackupRunDate calculates from the last actual backup
+        // and the result will be in the past (making it overdue)
+        updatedBackupSettings[backupKey] = {
+          ...settings,
+          overdueBackupCheckEnabled: true,
+          time: latestBackup.date // Use the last backup date as the schedule time
+        };
+        updatedSettings = true;
+      } else if (!settings && latestBackup) {
+        // If settings don't exist, create them with overdue check enabled
+        updatedBackupSettings[backupKey] = {
+          ...defaultBackupNotificationConfig,
+          overdueBackupCheckEnabled: true,
+          time: latestBackup.date
+        };
+        updatedSettings = true;
+      }
+    }
+    
+    // Save updated settings if any were changed
+    if (updatedSettings) {
+      setConfigBackupSettings(updatedBackupSettings);
+      clearRequestCache(); // Clear cache again after manual update
+      invalidateDataCache();
+      logConsole('    ✅ Updated backup settings for overdue detection', quiet);
+    }
+    
+    // Verify the affected backups
+    const finalBackupSettings = await getConfigBackupSettings();
+    
+    // Verify the affected backups have correct settings
+    for (const backupKey of affectedBackupKeys) {
+      const [serverId, backupName] = backupKey.split(':');
+      const settings = finalBackupSettings[backupKey];
+      
+      if (settings) {
+        // Get the actual latest backup date from database
+        const latestBackup = db.prepare(`
+          SELECT date
+          FROM backups
+          WHERE server_id = ? AND backup_name = ?
+          ORDER BY date DESC
+          LIMIT 1
+        `).get(serverId, backupName) as { date: string } | undefined;
+        
+        if (latestBackup) {
+          const latestDate = new Date(latestBackup.date);
+          const daysSinceLastBackup = Math.floor((Date.now() - latestDate.getTime()) / (1000 * 60 * 60 * 24));
+          const server = selectedServers.find(s => s.id === serverId);
+          const serverDisplayName = server ? (server.alias ? `${server.name} (${server.alias})` : server.name) : serverId;
+          
+          logConsole(`    📊 ${serverDisplayName}:${backupName} - Last backup: ${latestDate.toLocaleDateString()} (${daysSinceLastBackup} days ago)`, quiet);
+          logConsole(`       Overdue check enabled: ${settings.overdueBackupCheckEnabled}, Expected interval: ${settings.expectedInterval}`, quiet);
+        }
+      }
+    }
+    
+    if (overdueCount >= 2) {
+      logConsole(`    ✅ Successfully made ${overdueCount} backup job(s) overdue (1 from each of ${selectedServers.length} servers)`, quiet);
+    } else {
+      logConsole(`    ⚠️  Only made ${overdueCount} backup job(s) overdue, expected at least 2`, quiet);
+    }
+  } catch (error) {
+    console.error('🚨 Error deleting recent backups:', error instanceof Error ? error.message : String(error));
   }
 }
 
@@ -986,7 +922,9 @@ logConsole('     • Odd servers: Daily for 1 week, then weekly for 2 months, th
 logConsole('     • Even servers: Daily for 1 week, then weekly for 6 months, then monthly for 2 years', quiet);
 logConsole('     • Random backup jobs per server (1-3 jobs from: Files, Databases, System)', quiet);
 logConsole('     • Servers include alias and note fields for testing', quiet);
-logConsole('     • After generation: Random cleanup some servers/backup jobs and last backups for the user manual screenshots\n', quiet);
+logConsole('     • After generation: Cleanup backup_settings configuration', quiet);
+logConsole('     • 90% of servers will get random URLs (http://192.168.1.100-200:8200) and password "test-password"', quiet);
+logConsole('     • 2 random backup jobs (from different servers) will have recent backups deleted to guarantee overdue status\n', quiet);
 
 
 sendTestData(useUpload, serverCount, port, quiet).then(() => {
