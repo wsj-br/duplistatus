@@ -6,6 +6,22 @@ Manage user accounts, permissions, and access control for **duplistatus**. This 
 
 ![User Management](/img/screen-settings-users.png)
 
+## Accessing User Management
+
+You can access the User Management section in two ways:
+
+1. **From the User Menu**: Click the user button in the [Application Toolbar](../overview.md#application-toolbar) and select "Admin Users" (administrators only)
+
+   **Administrator User Menu:**
+
+   ![User Menu - Admin](/img/screen-user-menu-admin.png)
+
+   **Regular User Menu:**
+
+   ![User Menu - User](/img/screen-user-menu-user.png)
+
+2. **From Settings**: Navigate to [Settings → Users](overview.md#system) in the settings sidebar
+
 > [!IMPORTANT]
 > User management is only available to administrators. Non-admin users cannot access this section.
 

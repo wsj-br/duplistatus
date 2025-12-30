@@ -198,14 +198,14 @@ export function EmailConfigurationForm() {
 
     setIsSaving(true);
     try {
-      // Create config without password for saving
+      // Create config with username and password to allow clearing them
       const connectionType = emailConfig.connectionType || 'starttls';
       const configToSave = {
         host: emailConfig.host,
         port: emailConfig.port,
         connectionType,
-        username: emailConfig.username,
-        password: '', // Password is managed separately
+        username: emailConfig.username || '', // Send empty string to allow clearing
+        password: '', // Send empty string to allow clearing (password is managed separately via PATCH endpoint)
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,

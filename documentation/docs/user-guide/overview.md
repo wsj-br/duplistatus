@@ -66,6 +66,29 @@ The application toolbar provides convenient access to key functions and settings
 | <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu. See more in [User Management](settings/user-management-settings.md)                               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Open this User Guide in a new browser tab                                                                                                                                    |
 
+### User Menu
+
+Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
+
+**Administrator Menu:**
+
+![User Menu - Admin](/img/screen-user-menu-admin.png)
+
+Administrators have access to:
+- **Change Password**: Update your account password
+- **Admin Users**: Access the user management interface
+- **Audit Log**: View system audit logs
+- **Logout**: Sign out of your session
+
+**Regular User Menu:**
+
+![User Menu - User](/img/screen-user-menu-user.png)
+
+Regular users have access to:
+- **Change Password**: Update your account password
+- **Audit Log**: View system audit logs (read-only)
+- **Logout**: Sign out of your session
+
 ## Settings Overview
 
 The Settings page provides a comprehensive interface for configuring all aspects of **duplistatus**. Access it by clicking <IconButton icon="lucide:settings" /> in the [Application Toolbar](#application-toolbar).

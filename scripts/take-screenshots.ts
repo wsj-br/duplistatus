@@ -764,57 +764,46 @@ async function switchToTableView(page: Page) {
   }
 }
 
-async function getNtfyConfig(page: Page): Promise<{ url?: string; topic?: string; enabled?: boolean; accessToken?: string } | null> {
-  console.log('Getting NTFY configuration...');
+
+async function configureNtfyTopic(newTopic: string): Promise<void> {
+  console.log(`Configuring NTFY topic to: ${newTopic}`);
   try {
-    const response = await page.evaluate(async () => {
-      const res = await fetch('/api/configuration/unified');
-      return res.json();
-    });
-    return response?.ntfy || null;
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    const defaultConfigModule = await import('../src/lib/default-config');
+    
+    const ntfyConfig = {
+      ...defaultConfigModule.defaultNtfyConfig,
+      topic: newTopic
+    };
+    
+    dbUtilsModule.setNtfyConfig(ntfyConfig);
+    console.log(`NTFY topic configured to "${newTopic}"`);
   } catch (error) {
-    logError('Error getting NTFY config: ' + (error instanceof Error ? error.message : String(error)));
-    return null;
+    logError('Error configuring NTFY topic: ' + (error instanceof Error ? error.message : String(error)));
+    throw error;
   }
 }
 
-async function updateNtfyTopic(page: Page, newTopic: string): Promise<string | null> {
-  console.log(`Updating NTFY topic to: ${newTopic}`);
+async function configureSMTPConfig(): Promise<void> {
+  console.log('Configuring SMTP config...');
   try {
-    // Get current config
-    const currentConfig = await getNtfyConfig(page);
-    if (!currentConfig) {
-      logError('Could not get current NTFY config');
-      return null;
-    }
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    const smtpConfig = {
+      host: 'localhost',
+      port: 25,
+      connectionType: 'plain' as const,
+      username: '',
+      password: '',
+      mailto: 'user@somedomain.com',
+      fromAddress: 'duplistatus@somedomain.com',
+      requireAuth: false
+    };
     
-    const oldTopic = currentConfig.topic || null;
-    
-    // Update via API
-    const csrfToken = await getCSRFToken(page);
-    const response = await page.evaluate(async (config: any, token: string) => {
-      const res = await fetch('/api/configuration/notifications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': token
-        },
-        credentials: 'include',
-        body: JSON.stringify({ ntfy: config })
-      });
-      return res.ok;
-    }, { ...currentConfig, topic: newTopic }, csrfToken);
-    
-    if (response) {
-      console.log(`NTFY topic updated from "${oldTopic}" to "${newTopic}"`);
-      return oldTopic;
-    } else {
-      logError('Failed to update NTFY topic');
-      return null;
-    }
+    dbUtilsModule.setSMTPConfig(smtpConfig);
+    console.log('SMTP config configured successfully');
   } catch (error) {
-    logError('Error updating NTFY topic: ' + (error instanceof Error ? error.message : String(error)));
-    return null;
+    logError('Error configuring SMTP config: ' + (error instanceof Error ? error.message : String(error)));
+    throw error;
   }
 }
 
@@ -1014,6 +1003,7 @@ async function captureCollectButtonPopup(page: Page): Promise<{ popup: boolean; 
   console.log('Capturing collect button popup...');
   try {
     // Navigate to blank page first to reduce background noise
+    console.log('🌐 Navigating to blank page (/blank)...');
     await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
     await delay(1000);
     
@@ -1484,17 +1474,27 @@ async function captureDuplicatiConfiguration(page: Page): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing Duplicati configuration dropdown...');
   try {
-    // Navigate to dashboard
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
-    await waitForDashboardLoad(page);
-    await delay(2000);
+    // Navigate to blank page first to reduce background noise
+    console.log('🌐 Navigating to blank page (/blank)...');
+    await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
+    await delay(1000);
     
     // Find and click the Duplicati button (button with title "Duplicati configuration")
     const button = await page.$('button[title="Duplicati configuration"]');
     
     if (button) {
       await button.click();
-      await delay(1000); // Wait for popover to appear
+      await delay(1500); // Wait for popover to appear
+      
+      // Wait for dropdown to appear
+      try {
+        await page.waitForSelector('[data-screenshot-target="duplicati-configuration"]', { timeout: 5000, visible: true });
+      } catch (e) {
+        logError('Duplicati dropdown did not appear');
+        await page.keyboard.press('Escape');
+        return false;
+      }
+      await delay(500);
       
       // Capture the dropdown using data-screenshot-target
       const dropdownBounds = await page.evaluate(() => {
@@ -1542,72 +1542,109 @@ async function captureUserMenu(page: Page, userType: 'admin' | 'user'): Promise<
   console.log('-------------------------------------------------------');
   console.log(`Capturing user menu dropdown (${userType})...`);
   try {
-    // Navigate to dashboard
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
-    await waitForDashboardLoad(page);
-    await delay(2000);
+    // Navigate to blank page first to reduce background noise
+    console.log('🌐 Navigating to blank page (/blank)...');
+    await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
+    await delay(1000);
     
-    // Find and click the user menu button (looks for User icon and username)
-    const userMenuClicked = await page.evaluate(() => {
+    // Find the user menu button selector
+    const buttonSelector = await page.evaluate(() => {
       const buttons = Array.from(document.querySelectorAll('button'));
-      for (const btn of buttons) {
-        // Look for button with User icon and username text
+      for (let i = 0; i < buttons.length; i++) {
+        const btn = buttons[i];
         const userIcon = btn.querySelector('svg.lucide-user');
         const usernameSpan = btn.querySelector('span.text-sm.font-medium');
         if (userIcon && usernameSpan) {
-          (btn as HTMLButtonElement).click();
-          return true;
+          // Add a temporary id to make it easily selectable
+          btn.setAttribute('data-temp-user-menu-btn', 'true');
+          return '[data-temp-user-menu-btn="true"]';
         }
       }
-      return false;
+      return null;
     });
     
-    if (!userMenuClicked) {
+    if (!buttonSelector) {
       logError('Could not find user menu button');
       return false;
     }
     
-    await delay(1000); // Wait for dropdown to appear
+    // Click the button using Puppeteer's click (more reliable than evaluate click)
+    const button = await page.$(buttonSelector);
+    if (!button) {
+      logError('Could not select user menu button element');
+      return false;
+    }
     
-    // Wait for the dropdown menu to appear
+    await button.click();
+    await delay(1500); // Wait for dropdown animation to complete
+    
+    // Wait for the dropdown menu to appear using data-screenshot-target
     try {
-      await page.waitForSelector('[role="menu"]', { timeout: 3000 });
+      await page.waitForSelector('[data-screenshot-target="user-menu"]', { timeout: 5000, visible: true });
     } catch (e) {
       logError('User menu dropdown did not appear');
+      // Debug: Check if element exists but not visible
+      const exists = await page.$('[data-screenshot-target="user-menu"]');
+      if (exists) {
+        logError('Menu element exists but is not visible');
+      } else {
+        logError('Menu element does not exist in DOM');
+      }
       return false;
     }
     await delay(500);
     
-    // Capture the dropdown menu
-    const dropdownBounds = await page.evaluate(() => {
-      // Find the dropdown menu content
-      const menuContent = document.querySelector('[role="menu"]');
-      if (menuContent) {
-        const rect = menuContent.getBoundingClientRect();
+    // Capture both the button and dropdown menu with external margins
+    const combinedBounds = await page.evaluate(() => {
+      // Find the button
+      const buttonElement = document.querySelector('[data-temp-user-menu-btn="true"]');
+      
+      // Find the dropdown menu
+      const menuContent = document.querySelector('[data-screenshot-target="user-menu"]');
+      
+      if (buttonElement && menuContent) {
+        const buttonRect = buttonElement.getBoundingClientRect();
+        const menuRect = menuContent.getBoundingClientRect();
+        
+        // Calculate combined bounds with margin
+        const margin = 5;
+        const x = Math.min(buttonRect.x, menuRect.x);
+        const y = Math.min(buttonRect.y, menuRect.y);
+        const maxX = Math.max(buttonRect.x + buttonRect.width, menuRect.x + menuRect.width);
+        const maxY = Math.max(buttonRect.y + buttonRect.height, menuRect.y + menuRect.height);
+        
         return {
-          x: Math.max(0, rect.x - 10),
-          y: Math.max(0, rect.y - 10),
-          width: rect.width + 20,
-          height: rect.height + 20
+          x: Math.max(0, x - margin),
+          y: Math.max(0, y - margin),
+          width: (maxX - x) + 2*margin,
+          height: (maxY - y) + 2*margin
         };
       }
       return null;
     });
     
-    if (dropdownBounds) {
+    if (combinedBounds) {
       const filename = `screen-user-menu-${userType}.png`;
       const success = await takeScreenshot(page, filename, {
-        clip: dropdownBounds
+        clip: combinedBounds
       });
       console.log(`Captured user menu dropdown: ${filename}`);
       
-      // Close dropdown
+      // Clean up temporary attribute and close dropdown
+      await page.evaluate(() => {
+        const btn = document.querySelector('[data-temp-user-menu-btn="true"]');
+        if (btn) btn.removeAttribute('data-temp-user-menu-btn');
+      });
       await page.keyboard.press('Escape');
       await delay(500);
       return success;
     } else {
-      logError('Could not find user menu dropdown bounds');
-      // Close dropdown anyway
+      logError('Could not find user menu button or dropdown bounds');
+      // Clean up temporary attribute and close dropdown anyway
+      await page.evaluate(() => {
+        const btn = document.querySelector('[data-temp-user-menu-btn="true"]');
+        if (btn) btn.removeAttribute('data-temp-user-menu-btn');
+      });
       await page.keyboard.press('Escape');
       await delay(500);
       return false;
@@ -1671,14 +1708,12 @@ async function captureAutoRefreshControls(page: Page): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing auto-refresh controls...');
   try {
-    // Navigate to dashboard
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
-    await waitForDashboardLoad(page);
-    await delay(2000);
+    // Already on dashboard from main function (auto-refresh controls only render on dashboard/detail pages)
+    await delay(1000);
     
     // Wait for the auto-refresh controls to appear
     try {
-      await page.waitForSelector('[data-screenshot-target="auto-refresh-controls"]', { timeout: 5000 });
+      await page.waitForSelector('[data-screenshot-target="auto-refresh-controls"]', { timeout: 5000, visible: true });
     } catch (e) {
       logError('Auto-refresh controls did not appear on the page');
       return false;
@@ -2669,6 +2704,10 @@ async function main() {
   // Generate test data
   await generateTestData();
   
+  // Configure NTFY topic and SMTP config after test data generation
+  await configureNtfyTopic('duplicati-screenshots');
+  await configureSMTPConfig();
+  
   // Ensure screenshot directory exists
   await ensureDirectoryExists(SCREENSHOT_DIR);
   
@@ -2694,6 +2733,7 @@ async function main() {
     await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
     
     // Navigate to dashboard
+    console.log('🌐 Navigating to dashboard page (/)...');
     await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
     
@@ -2714,23 +2754,6 @@ async function main() {
     if (backupTooltip) successful.push('screen-backup-tooltip.png');
     else failed.push('screen-backup-tooltip.png');
     
-    // Capture collect button popups
-    const collectPopups = await captureCollectButtonPopup(page);
-    if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
-    else failed.push('screen-collect-button-popup.png');
-    if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
-    else failed.push('screen-collect-button-right-click-popup.png');
-    
-    // Capture Duplicati configuration dropdown
-    const duplicatiConfig = await captureDuplicatiConfiguration(page);
-    if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
-    else failed.push('screen-duplicati-configuration.png');
-    
-    // Capture user menu dropdown (admin)
-    const userMenuAdmin = await captureUserMenu(page, 'admin');
-    if (userMenuAdmin) successful.push('screen-user-menu-admin.png');
-    else failed.push('screen-user-menu-admin.png');
-    
     // Capture dashboard summary card
     const dashboardSummary = await captureDashboardSummary(page, 'screen-dashboard-summary.png');
     if (dashboardSummary) successful.push('screen-dashboard-summary.png');
@@ -2743,10 +2766,28 @@ async function main() {
     if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
     else failed.push('screen-overview-side-charts.png');
     
-    // Capture auto-refresh controls
+    // Capture auto-refresh controls (while still on dashboard - it only renders on dashboard/detail pages)
     const autoRefreshControls = await captureAutoRefreshControls(page);
     if (autoRefreshControls) successful.push('screen-auto-refresh.png');
     else failed.push('screen-auto-refresh.png');
+    
+    // Now capture toolbar elements that work on /blank page
+    // Capture collect button popups (navigates to /blank internally)
+    const collectPopups = await captureCollectButtonPopup(page);
+    if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
+    else failed.push('screen-collect-button-popup.png');
+    if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
+    else failed.push('screen-collect-button-right-click-popup.png');
+    
+    // Capture Duplicati configuration dropdown (navigates to /blank internally)
+    const duplicatiConfig = await captureDuplicatiConfiguration(page);
+    if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
+    else failed.push('screen-duplicati-configuration.png');
+    
+    // Capture user menu dropdown (admin) (navigates to /blank internally)
+    const userMenuAdmin = await captureUserMenu(page, 'admin');
+    if (userMenuAdmin) successful.push('screen-user-menu-admin.png');
+    else failed.push('screen-user-menu-admin.png');
     
     // Get list of servers from database (more reliable than API)
     // This will be our source of truth for available servers
@@ -3062,6 +3103,7 @@ async function main() {
     console.log('-------------------------------------------------------');
     console.log('Navigating to first server\'s backup list page...');
     console.log(`Navigating to server backup list: ${firstServer.name} (${firstServer.id})`);
+    console.log(`🌐 Navigating to server detail page (/detail/${firstServer.id})...`);
     await page.goto(`${BASE_URL}/detail/${firstServer.id}`, { waitUntil: 'networkidle0' });
     
     // Wait for content to load (client component fetches data after page load)
@@ -3101,6 +3143,7 @@ async function main() {
     if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
       const firstBackup = backupDetails.server.backups[0];
       console.log(`Navigating to backup detail: ${firstBackup.id}`);
+      console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
       await page.goto(`${BASE_URL}/detail/${firstServer.id}/backup/${firstBackup.id}`, { waitUntil: 'networkidle0' });
       await delay(2000);
       backupDetail = await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
@@ -3123,7 +3166,9 @@ async function main() {
     else failed.push('screen-detail-summary.png');
     
     // Navigate to settings page
+    console.log('-------------------------------------------------------');
     console.log('Navigating to settings page...');
+    console.log('🌐 Navigating to settings page (/settings)...');
     await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });
     await delay(2000);
     
@@ -3149,17 +3194,9 @@ async function main() {
       'database-maintenance'
     ];
     
-    let oldNtfyTopic: string | null = null;
-    
     for (const tab of adminSettingsTabs) {
       console.log('-------------------------------------------------------');
       console.log(`Taking screenshot of settings tab: ${tab}`);
-      
-      // Special handling for NTFY tab - update topic before screenshot
-      if (tab === 'ntfy') {
-        oldNtfyTopic = await updateNtfyTopic(page, 'duplistatus-screencapture');
-        await delay(1000);
-      }
       
       // Special handling for audit tab - delete server_deletion entries before screenshot
       if (tab === 'audit') {
@@ -3167,6 +3204,7 @@ async function main() {
         await delay(1000);
       }
       
+      console.log(`🌐 Navigating to settings tab: /settings?tab=${tab}...`);
       await page.goto(`${BASE_URL}/settings?tab=${tab}`, { waitUntil: 'networkidle0' });
       await delay(2000);
       
@@ -3181,12 +3219,6 @@ async function main() {
         const ntfyPopup = await captureNtfyConfigureDevicePopup(page);
         if (ntfyPopup) successful.push('screen-settings-ntfy-configure-device-popup.png');
         else failed.push('screen-settings-ntfy-configure-device-popup.png');
-        
-        // Restore old NTFY topic after capturing popup
-        if (oldNtfyTopic) {
-          await updateNtfyTopic(page, oldNtfyTopic);
-          await delay(1000);
-        }
       }
       
       // Capture backup notifications detail after notifications settings screenshot
@@ -3220,6 +3252,7 @@ async function main() {
     else failed.push('screen-user-menu-user.png');
     
     // Navigate to settings page as non-admin
+    console.log('🌐 Navigating to settings page as non-admin (/settings)...');
     await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });
     await delay(2000);
     

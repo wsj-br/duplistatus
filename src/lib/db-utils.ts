@@ -2155,13 +2155,13 @@ export function getSMTPConfig(): SMTPConfig | null {
           ? (encryptedConfig.secure ? 'ssl' : 'starttls')
           : 'starttls');
       
-      // Decrypt username and password
+      // Decrypt username and password (only if they're not empty strings)
       const decryptedConfig: SMTPConfig = {
         host: encryptedConfig.host,
         port: encryptedConfig.port,
         connectionType,
-        username: decryptData(encryptedConfig.username),
-        password: decryptData(encryptedConfig.password),
+        username: (encryptedConfig.username && encryptedConfig.username.trim() !== '') ? decryptData(encryptedConfig.username) : '',
+        password: (encryptedConfig.password && encryptedConfig.password.trim() !== '') ? decryptData(encryptedConfig.password) : '',
         mailto: encryptedConfig.mailto,
         senderName: encryptedConfig.senderName,
         fromAddress: encryptedConfig.fromAddress,
@@ -2186,13 +2186,13 @@ export function getSMTPConfig(): SMTPConfig | null {
 
 export function setSMTPConfig(config: SMTPConfig): void {
   try {
-    // Encrypt username and password
+    // Encrypt username and password only if they're not empty
     const encryptedConfig: SMTPConfigEncrypted = {
       host: config.host,
       port: config.port,
       connectionType: config.connectionType,
-      username: encryptData(config.username),
-      password: encryptData(config.password),
+      username: (config.username && config.username.trim() !== '') ? encryptData(config.username) : '',
+      password: (config.password && config.password.trim() !== '') ? encryptData(config.password) : '',
       mailto: config.mailto,
       senderName: config.senderName,
       fromAddress: config.fromAddress,

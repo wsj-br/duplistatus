@@ -16,6 +16,19 @@
   - Captures admin user menu showing "Change Password", "Admin Users", "Audit Log", and "Logout" options
   - Captures regular user menu showing "Change Password", "Audit Log", and "Logout" options (no Admin Users option)
   - Screenshots saved as `screen-user-menu-admin.png` and `screen-user-menu-user.png`
+  - Added `data-screenshot-target="user-menu"` attribute to `DropdownMenuContent` in `app-header.tsx` for reliable screenshot targeting
+  - Captures both the user button and dropdown menu together with 5px external margin for better context
+  - Uses Puppeteer's native click with temporary data attribute for more reliable dropdown triggering
+- `scripts/take-screenshots.ts`: Reorganized screenshot capture order for efficiency and clarity:
+  - Dashboard screenshots are taken first (card mode, hover cards, tooltips, summary, side panels)
+  - Auto-refresh controls captured while still on dashboard (component only renders on dashboard/detail pages)
+  - Then toolbar elements that work on `/blank`: collect button popups, Duplicati config, user menu
+  - Toolbar functions navigate based on component requirements:
+    - `captureAutoRefreshControls()` assumes already on dashboard (no navigation)
+    - `captureCollectButtonPopup()`, `captureDuplicatiConfiguration()`, `captureUserMenu()` each navigate to `/blank` for clean backgrounds
+  - This order avoids unnecessary navigation back to dashboard after visiting `/blank`
+  - Added increased wait times and better error handling with visibility checks for toolbar element captures
+  - Added navigation log messages with 🌐 emoji to track page transitions during script execution
 
 ### Changed
 - Improved collect backups modal UX: Changed Password label text from "(optional - leave empty to use stored)" to "(only fill if password changed)" when a server is selected from the list, making it clearer that users only need to fill this field if the password has changed. Also fixed the condition logic to properly show the help text when a server is selected (previously the condition required hostname to be empty, but hostname is auto-filled when selecting a server)
@@ -36,6 +49,12 @@
 - Deleted obsolete `scripts/admin-recovery.ts` (TypeScript version). The shell script `/admin-recovery` at project root is the production version used for password recovery
 
 ### Fixed
+- Fixed SMTP configuration storing encrypted values for empty username and password fields:
+  - Updated `setSMTPConfig()` to only encrypt non-empty username and password strings (empty strings are stored as-is)
+  - Updated `getSMTPConfig()` to only decrypt non-empty encrypted values (prevents decryption errors on empty strings)
+  - Updated POST `/api/configuration/email` endpoint to accept explicit empty password/username values to allow clearing them
+  - Updated email configuration form to send empty strings when fields are cleared
+  - Previously, clearing password or username in the UI would still store encrypted values in the database; now empty fields are properly stored as empty strings
 - **Critical**: Fixed Podman pod networking issues preventing external access to the application:
   - Changed `docker-entrypoint.sh` to set `HOSTNAME=0.0.0.0` as environment variable instead of CLI argument
   - Next.js standalone server doesn't accept `--hostname` CLI flag; it only reads the `HOSTNAME` environment variable

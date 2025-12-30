@@ -147,7 +147,7 @@ if (global.__dbInstance) {
 
           cleanupPerformed = true;
           dbInstance.close();
-          logWithTimestamp('[Database] ✅ Database connection closed successfully');
+          //logWithTimestamp('[Database] ✅ Database connection closed successfully');
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
           errorWithTimestamp('[Database] ❌ Error while closing database:', errorMessage);
