@@ -1538,6 +1538,86 @@ async function captureDuplicatiConfiguration(page: Page): Promise<boolean> {
   }
 }
 
+async function captureUserMenu(page: Page, userType: 'admin' | 'user'): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log(`Capturing user menu dropdown (${userType})...`);
+  try {
+    // Navigate to dashboard
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
+    await waitForDashboardLoad(page);
+    await delay(2000);
+    
+    // Find and click the user menu button (looks for User icon and username)
+    const userMenuClicked = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      for (const btn of buttons) {
+        // Look for button with User icon and username text
+        const userIcon = btn.querySelector('svg.lucide-user');
+        const usernameSpan = btn.querySelector('span.text-sm.font-medium');
+        if (userIcon && usernameSpan) {
+          (btn as HTMLButtonElement).click();
+          return true;
+        }
+      }
+      return false;
+    });
+    
+    if (!userMenuClicked) {
+      logError('Could not find user menu button');
+      return false;
+    }
+    
+    await delay(1000); // Wait for dropdown to appear
+    
+    // Wait for the dropdown menu to appear
+    try {
+      await page.waitForSelector('[role="menu"]', { timeout: 3000 });
+    } catch (e) {
+      logError('User menu dropdown did not appear');
+      return false;
+    }
+    await delay(500);
+    
+    // Capture the dropdown menu
+    const dropdownBounds = await page.evaluate(() => {
+      // Find the dropdown menu content
+      const menuContent = document.querySelector('[role="menu"]');
+      if (menuContent) {
+        const rect = menuContent.getBoundingClientRect();
+        return {
+          x: Math.max(0, rect.x - 10),
+          y: Math.max(0, rect.y - 10),
+          width: rect.width + 20,
+          height: rect.height + 20
+        };
+      }
+      return null;
+    });
+    
+    if (dropdownBounds) {
+      const filename = `screen-user-menu-${userType}.png`;
+      const success = await takeScreenshot(page, filename, {
+        clip: dropdownBounds
+      });
+      console.log(`Captured user menu dropdown: ${filename}`);
+      
+      // Close dropdown
+      await page.keyboard.press('Escape');
+      await delay(500);
+      return success;
+    } else {
+      logError('Could not find user menu dropdown bounds');
+      // Close dropdown anyway
+      await page.keyboard.press('Escape');
+      await delay(500);
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing user menu: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
 async function captureDashboardSummary(page: Page, filename: string): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log(`Capturing dashboard summary card (${filename})...`);
@@ -2646,6 +2726,11 @@ async function main() {
     if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
     else failed.push('screen-duplicati-configuration.png');
     
+    // Capture user menu dropdown (admin)
+    const userMenuAdmin = await captureUserMenu(page, 'admin');
+    if (userMenuAdmin) successful.push('screen-user-menu-admin.png');
+    else failed.push('screen-user-menu-admin.png');
+    
     // Capture dashboard summary card
     const dashboardSummary = await captureDashboardSummary(page, 'screen-dashboard-summary.png');
     if (dashboardSummary) successful.push('screen-dashboard-summary.png');
@@ -3128,6 +3213,11 @@ async function main() {
     console.log('Logging out and logging in as non-admin user...');
     await logout(page);
     await login(page, USER_USERNAME, USER_PASSWORD!);
+    
+    // Capture user menu dropdown (user)
+    const userMenuUser = await captureUserMenu(page, 'user');
+    if (userMenuUser) successful.push('screen-user-menu-user.png');
+    else failed.push('screen-user-menu-user.png');
     
     // Navigate to settings page as non-admin
     await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });

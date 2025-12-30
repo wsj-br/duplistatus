@@ -4,6 +4,11 @@
 
 ### Added
 - Added right-click context menu on auto-refresh button: Right-clicking on the auto-refresh button in the application toolbar now opens the Display Settings page for quick access to display preferences
+- `scripts/take-screenshots.ts`: Added user menu dropdown screenshot capture for both admin and regular users:
+  - New `captureUserMenu()` function to capture the user menu dropdown from the app header
+  - Captures admin user menu showing "Change Password", "Admin Users", "Audit Log", and "Logout" options
+  - Captures regular user menu showing "Change Password", "Audit Log", and "Logout" options (no Admin Users option)
+  - Screenshots saved as `screen-user-menu-admin.png` and `screen-user-menu-user.png`
 
 ### Changed
 - Removed documentation from Docker container image. Documentation is now hosted on GitHub Pages at https://wsj-br.github.io/duplistatus/user-guide/overview

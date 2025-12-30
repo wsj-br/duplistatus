@@ -105,8 +105,9 @@ fi
 
 # Start the Next.js standalone server in the background
 # Best practice for `output: 'standalone'` is to run the generated server.js
+# Set HOSTNAME=0.0.0.0 to ensure Next.js binds to all interfaces (important for Podman pods)
 log_ts "[Entrypoint] Starting duplistatus (Next standalone)..."
-node server.js --hostname 0.0.0.0 &
+HOSTNAME=0.0.0.0 node server.js &
 SERVER_PID=$!
 
 # Validate server process started successfully

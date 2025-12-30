@@ -18,6 +18,7 @@ data/*
 backups.db
 tmp/*
 smtp-test-results.json
+scripts/podman_testing/data
 
 
 # next.js

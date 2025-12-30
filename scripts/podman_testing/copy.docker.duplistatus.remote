@@ -21,8 +21,6 @@ else
     exit 1
 fi
 
-# stop the container duplistatus
-./stop.duplistatus
 
 # Get image size
 SIZE=$(ssh $REMOTE_USER@$REMOTE_HOST "docker image inspect $IMAGE --format='{{.Size}}'")
@@ -43,6 +41,6 @@ else
 fi
 
 echo ""
-echo "run the container duplistatus" 
-./start.duplistatus
+# echo "run the container duplistatus" 
+# ./start.duplistatus
 

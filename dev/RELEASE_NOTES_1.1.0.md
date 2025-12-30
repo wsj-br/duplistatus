@@ -1,10 +1,8 @@
-# Release Notes - Version 1.0.4
-
-> **Note**: This is an intermediate version that includes critical bug fixes and compatibility improvements. It is recommended for users experiencing issues with overdue backup detection or running on Node.js 25.x.
+# Release Notes - Version 1.1.0
 
 ## 🎯 Overview
 
-Version 1.0.4 is an intermediate release that addresses critical issues with overdue backup detection, improves Node.js 25.x compatibility, and introduces important container architecture improvements. This version requires special configuration when running inside a Pod (podman) and is designed to work inside a standard podman container.
+Version 1.1.0 is a minor release that addresses critical issues with overdue backup detection, improves Node.js 25.x compatibility, and introduces significant container architecture improvements. This version requires special configuration when running inside a Pod (podman) and is designed to work inside a standard podman container.
 
 ## 🔴 Critical Fixes
 
@@ -51,7 +49,7 @@ For more details, see the [Overdue Detection Algorithm documentation](OVERDUE_DE
 ### Container Architecture
 
 - **Next.js standalone mode**: Docker/runtime now runs Next.js standalone (`server.js`) and bundles the cron service into a single JS file to reduce container size and improve efficiency
-- **Podman container support**: Version 1.0.4 is designed to work inside a standard podman container and requires special configuration when running inside a Pod (podman)
+- **Podman container support**: Version 1.1.0 is designed to work inside a standard podman container and requires special configuration when running inside a Pod (podman)
 
 ## 🐛 Bug Fixes
 
@@ -118,13 +116,13 @@ For more details, see the [Overdue Detection Algorithm documentation](OVERDUE_DE
 
 ## 🔄 Migration Notes
 
-### From Version 1.0.3
+### From Version 1.0.x
 
-When upgrading to version 1.0.4:
+When upgrading to version 1.1.0:
 
 1. **Documentation Location Change**: Documentation is now hosted on GitHub Pages instead of being included in the Docker container. The User Guide link in the app header now points to the external documentation site.
 
-2. **Podman Container Configuration**: Version 1.0.4 requires special configuration to work inside a Pod (podman). Ensure your podman container is configured according to the standard podman container requirements.
+2. **Podman Container Configuration**: Version 1.1.0 requires special configuration to work inside a Pod (podman). Ensure your podman container is configured according to the standard podman container requirements.
 
 3. **Container Architecture**: The container now uses Next.js standalone mode and bundles the cron service into a single file, which may affect resource usage and startup behavior.
 
@@ -141,9 +139,9 @@ This version is fully compatible with Node.js 25.x. If you're upgrading from an 
 ### Docker
 
 ```bash
-docker pull wsjbr/duplistatus:1.0.4
+docker pull wsjbr/duplistatus:1.1.0
 # or
-docker pull ghcr.io/wsj-br/duplistatus:1.0.4
+docker pull ghcr.io/wsj-br/duplistatus:1.1.0
 ```
 
 ### Podman
@@ -160,7 +158,7 @@ When using podman, ensure your container is configured according to the standard
 ## 📝 Reporting Issues
 
 When reporting bugs or issues, please include:
-- Version: 1.0.4
+- Version: 1.1.0
 - Operating system and version
 - Docker/podman version
 - Container type (Docker or podman/Pod)

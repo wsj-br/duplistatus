@@ -33,7 +33,7 @@ See details in the [Installation Guide](installation/installation.md).
 >[!NOTE]
 > - The application was designed to work in a standalone Podman container. If you plan to use it inside a Pod, 
 >  you will need to configure the Pod networking to expose the duplistatus port (defaults to `9666`) to your local network.
-> - It worked before version 1.0.4 inside a Pod as it was using a dedicated server. In this version, it uses the standalone Next.js server to reduce the container image size.
+> - It worked before version 1.1.0 inside a Pod as it was using a dedicated server. In this version, it uses the standalone Next.js server to reduce the container image size.
 
 ## Duplicati Servers Configuration (Required)
 

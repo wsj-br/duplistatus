@@ -76,65 +76,44 @@ get_dns_config() {
     echo "$dns_args $search_args"
 }
 
-if [ -f ".env" ]; then
-    set -a  # automatically export all variables
-    source .env
-    set +a  # disable automatic export
+# test the container inside a POD (podman)
 
-else
-    echo "Error: .env file not found"
-    echo "Please create a .env file in the current directory with the following variables:"
-    echo ""
-    echo "IMAGE=your_image_name"
-    echo "REMOTE_USER=your_username"
-    echo "REMOTE_HOST=your_hostname"
-    echo ""
-    echo "Example:"
-    echo ""
-    echo "IMAGE=wsj-br/duplistatus:devel"
-    echo "REMOTE_USER=devel"
-    echo "REMOTE_HOST=devel-server"
-    exit 1
-fi
+echo "--------------------------------------------------------------"
+echo "starting the pod test"
 
-# create the folder (if not exist)
-mkdir -p data
 
-# adjust ownership and permissions of the folder /root/duplistatus_home/data
-
-# stop the container duplistatus
-./stop.duplistatus
-
-echo ""
-echo "running the container duplistatus"
-
-# Get DNS configuration from host
+echo "--------------------------------------------------------------"
+echo "copying the image from docker to podman"
+./copy.docker.duplistatus.local 
+podman image ls
+echo "--------------------------------------------------------------"
+echo "stoping the pod and removing the container"
+podman pod stop Duplistatus && podman pod rm Duplistatus
+echo "--------------------------------------------------------------"
+echo "creating the pod with DNS from host"
 DNS_CONFIG=$(get_dns_config)
 echo "Using DNS configuration:$DNS_CONFIG"
+podman pod create --name Duplistatus --publish 9666:9666/tcp $DNS_CONFIG
+echo "--------------------------------------------------------------"
+echo "creating the container"
+podman create --name duplistatus --pod Duplistatus --user root --sysctl net.ipv6.conf.all.disable_ipv6=1 \
+        -v ./data:/app/data docker.io/wsj-br/duplistatus:devel
+echo "--------------------------------------------------------------"
+echo "starting the pod"
+podman pod start Duplistatus
+echo "sleeping for 10 seconds"
+sleep 10
+echo "--------------------------------------------------------------"
+echo "checking the container"
+./check.duplistatus 
+echo "--------------------------------------------------------------"
+echo "listing the debug log"
+ls -la data/debug.log 
+echo "--------------------------------------------------------------"
+echo "showing the debug log"
+cat data/debug.log 
+echo "--------------------------------------------------------------"
+echo "done"
+echo "--------------------------------------------------------------"
 
-# Run standalone
-podman run -d \
-  --userns=keep-id \
-  --name duplistatus \
-  -p 9666:9666 \
-  $DNS_CONFIG \
-  -v ./data:/app/data \
-  $IMAGE
-
-
-echo ""
-echo ""
-echo "containers running:"
-echo ""
-podman ps
-
-echo ""
-
-sleep 5
-./logs.duplistatus
-
-echo ""
-echo "check the container health with ./check.duplistatus"
-echo "check the container logs   with ./logs.duplistatus"
-echo "open a shell in the container with ./exec.shell.duplistatus"
-echo ""
+exit 0
