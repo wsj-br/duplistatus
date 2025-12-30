@@ -3,6 +3,13 @@
 ## [Unreleased]
 
 ### Added
+- Added automatic DNS configuration detection for Podman containers and pods:
+  - `scripts/podman_testing/start.duplistatus` and `pod.testing` now include `get_dns_config()` function
+  - Automatically extracts DNS servers and search domains from host using `resolvectl status` (systemd-resolved)
+  - Falls back to parsing `/etc/resolv.conf` on non-systemd systems
+  - Filters out localhost addresses (127.0.0.53) and IPv6 nameservers to avoid musl libc issues
+  - Deduplicates DNS servers and search domains
+  - Works automatically with Tailscale MagicDNS, corporate DNS, and standard network configurations
 - Added right-click context menu on auto-refresh button: Right-clicking on the auto-refresh button in the application toolbar now opens the Display Settings page for quick access to display preferences
 - `scripts/take-screenshots.ts`: Added user menu dropdown screenshot capture for both admin and regular users:
   - New `captureUserMenu()` function to capture the user menu dropdown from the app header
@@ -11,6 +18,9 @@
   - Screenshots saved as `screen-user-menu-admin.png` and `screen-user-menu-user.png`
 
 ### Changed
+- Improved collect backups modal UX: Changed Password label text from "(optional - leave empty to use stored)" to "(only fill if password changed)" when a server is selected from the list, making it clearer that users only need to fill this field if the password has changed. Also fixed the condition logic to properly show the help text when a server is selected (previously the condition required hostname to be empty, but hostname is auto-filled when selecting a server)
+- Updated `.gitignore` to ignore `scripts/podman_testing/.env` and `documentation/pnpm-lock.yaml`
+- Updated `.dockerignore` to exclude development files (`dev/`, `tmp/`, `production.yml`) and testing scripts while keeping build-required scripts (`pre-checks.sh`, `ensure-key-file.sh`, `update-version.sh`, `bundle-cron-service.cjs`)
 - Removed documentation from Docker container image. Documentation is now hosted on GitHub Pages at https://wsj-br.github.io/duplistatus/user-guide/overview
 - Updated app header User Guide link to point to GitHub Pages documentation instead of local /documentation route
 - Simplified proxy.ts by removing Docusaurus URL rewriting logic (no longer needed)
@@ -22,7 +32,21 @@
   - Enables `overdueBackupCheckEnabled` for affected backup jobs
   - Adds verification logging to show the last backup date and days since last backup
 
+### Removed
+- Deleted obsolete `scripts/admin-recovery.ts` (TypeScript version). The shell script `/admin-recovery` at project root is the production version used for password recovery
+
 ### Fixed
+- **Critical**: Fixed Podman pod networking issues preventing external access to the application:
+  - Changed `docker-entrypoint.sh` to set `HOSTNAME=0.0.0.0` as environment variable instead of CLI argument
+  - Next.js standalone server doesn't accept `--hostname` CLI flag; it only reads the `HOSTNAME` environment variable
+  - Podman pods override the `HOSTNAME` env var with the pod name, requiring explicit setting in the entrypoint
+  - Server now correctly binds to all interfaces (`0.0.0.0:9666`) in both Podman pod and standalone container modes
+- **Critical**: Fixed DNS resolution for Tailscale hostnames in Podman containers:
+  - Podman containers/pods don't automatically inherit Tailscale MagicDNS configuration from the host
+  - Alpine Linux's musl libc prefers IPv6 (AAAA) DNS records over IPv4 (A) records, causing resolution to public IPs
+  - Solution: Automatically detect and configure DNS servers from host (including Tailscale's 100.100.100.100)
+  - Both pod and standalone container modes now use `--dns` and `--dns-search` flags with auto-detected values
+  - Works with any DNS configuration (Tailscale, custom DNS servers, standard network setup)
 - **Critical**: Fixed overdue backup detection by properly implementing the `time` field as a moving target:
   - Added `lastBackupDate` field to `BackupNotificationConfig` to track actual backup receipts
   - The `time` field represents the next expected backup date, calculated using the algorithm: `while (time <= lastBackupDate) { time = time + interval }`

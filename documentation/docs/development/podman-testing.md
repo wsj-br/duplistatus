@@ -8,8 +8,24 @@ Copy and execute the scripts located at "scripts/podman_testing" in the Podman t
 
 1. `copy.docker.duplistatus`: to copy the Docker image created in the development server to the Podman test server.
    - Create the image using this command in the devel server `docker build . -t wsj-br/duplistatus:devel`
-2. `start.duplistatus`: to start the container
-3. `stop.duplistatus`: to stop the pod and remove the container
+2. `start.duplistatus`: to start the container (rootless mode)
+3. `pod.testing`: to test the container inside a Podman pod (with root privileges)
+4. `stop.duplistatus`: to stop the pod and remove the container
+
+## DNS Configuration
+
+The scripts automatically detect and configure DNS settings from the host system:
+
+- **Automatic Detection**: Uses `resolvectl status` (systemd-resolved) to extract DNS servers and search domains
+- **Fallback Support**: Falls back to parsing `/etc/resolv.conf` on non-systemd systems
+- **Smart Filtering**: Automatically filters out localhost addresses and IPv6 nameservers
+- **Works with**:
+  - Tailscale MagicDNS (100.100.100.100)
+  - Corporate DNS servers
+  - Standard network configurations
+  - Custom DNS setups
+
+No manual DNS configuration is needed - the scripts handle it automatically!
 
 ## Monitoring and Health Checks
 
@@ -34,7 +50,8 @@ docker build . -t wsj-br/duplistatus:devel
 ### Podman server
 
 1. Use `./copy.docker.duplistatus` to transfer the Docker image
-2. Start the container with `./start.duplistatus`
+2. Start the container with `./start.duplistatus` (standalone, rootless)
+   - Or use `./pod.testing` to test in pod mode (with root)
 3. Monitor with `./check.duplistatus` and `./logs.duplistatus`
 4. Stop with `./stop.duplistatus` when done
 5. Use `./restart.duplistatus` for a complete restart cycle (stop, copy image, start)
@@ -47,3 +64,20 @@ If you are in another server get the URL with
 ```bash
 echo "http://$(hostname -I | awk '{print $1}'):9666" 
 ```
+
+## Important Notes
+
+### Podman Pod Networking
+
+When running in Podman pods, the application requires:
+- Explicit DNS configuration (automatically handled by `pod.testing` script)
+- Port binding to all interfaces (`0.0.0.0:9666`)
+
+The scripts handle these requirements automatically - no manual configuration needed.
+
+### Rootless vs Root Mode
+
+- **Standalone mode** (`start.duplistatus`): Runs rootless with `--userns=keep-id`
+- **Pod mode** (`pod.testing`): Runs as root inside the pod for testing purposes
+
+Both modes work correctly with the automatic DNS detection.

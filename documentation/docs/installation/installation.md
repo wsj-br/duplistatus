@@ -121,9 +121,10 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
->[!IMPORTANT]
-> Start the `duplistatus` container as a standalone container. If it is installed in a Pod, it will not listen on port 9666.
-> This is due to a Podman (Pod) security restriction.
+>[!NOTE]
+> **Podman Pod Support**: Since version 1.1.0, duplistatus works correctly in both standalone containers and Podman pods.
+> The application automatically binds to all network interfaces and handles DNS configuration for proper network connectivity.
+> For custom DNS setups (like Tailscale), the container will automatically detect and use your host's DNS configuration.
 
 
 Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.

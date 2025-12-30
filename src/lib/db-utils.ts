@@ -22,12 +22,9 @@ let lastCacheClearTime: number = Date.now();
 let cacheClearCount: number = 0;
 
 // Helper function to log cache operations in production mode
+// Removed logging for production builds
 function logCacheOperation(operation: string, details?: string): void {
-  if (process.env.NODE_ENV === 'production') {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[CACHE] ${timestamp} - ${operation}${details ? ` - ${details}` : ''}`;
-    console.log(logMessage);
-  }
+  // Logging disabled in production
 }
 
 // Helper function to get cached value or compute and cache it
@@ -1002,9 +999,6 @@ export async function getServersSummary() {
         backupNames: string[];
       }>();
       
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`[getServersSummary] Query returned ${rows.length} rows from database`);
-      }
       
       rows.forEach(row => {
         const serverId = row.server_id;
@@ -1109,10 +1103,6 @@ export async function getServersSummary() {
         
       });
       
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`[getServersSummary] Processed ${serverMap.size} unique servers from ${rows.length} rows`);
-        console.log(`[getServersSummary] Server IDs: ${Array.from(serverMap.keys()).join(', ')}`);
-      }
       
       // Process each server to add overdue status and other derived data per backup job
       const result = await Promise.all(Array.from(serverMap.values()).map(async (server) => {
@@ -1165,14 +1155,11 @@ export async function getServersSummary() {
         return server;
       }));
       
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`[getServersSummary] Returning ${result.length} servers after processing`);
-      }
            
       return result;
     });
   } catch (error) {
-    console.error('[getServersSummary] Error:', error instanceof Error ? error.message : String(error));
+    // Error logging handled by error handler
     return [];
   }
 }

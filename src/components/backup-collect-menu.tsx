@@ -1047,24 +1047,19 @@ export function BackupCollectMenu({
                     {hasMultipleHostnames && (
                       <span className="text-xs text-blue-600 font-medium">({validHostnames.length} servers)</span>
                     )}
-                    {selectedServerId && selectedServerId !== "new-server" && !hostname && !password && (
-                      <span className="text-xs text-muted-foreground">(optional - leave empty to use stored)</span>
+                    {selectedServerId && selectedServerId !== "new-server" && !password && (
+                      <span className="text-xs text-muted-foreground">(stored hostname, change if needed)</span>
                     )}
-                    {selectedServerId && selectedServerId !== "new-server" && hostname && password && (
+                    {selectedServerId && selectedServerId !== "new-server" && password && (
                       <span className="text-xs text-orange-600">(updating stored value)</span>
                     )}
-                    <StatusIndicator 
-                      status="online" 
-                      label={hasMultipleHostnames ? "Multiple servers detected" : "HTTP/HTTPS automatically detected"} 
-                      animate={true}
-                    />
                   </Label>
                   <Input
                     id="hostname"
                     value={hostname}
                     onChange={(e) => setHostname(e.target.value)}
                     onFocus={(e) => e.target.select()}
-                    placeholder={selectedServerId && selectedServerId !== "new-server" && !hostname && !password ? "Leave empty to use stored hostname" : "server name or IP (comma-separated for multiple)"}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" ? "Leave empty to use stored hostname" : "server name or IP (comma-separated for multiple)"}
                     disabled={isCollecting}
                     className={hasMultipleHostnames ? "border-blue-300 dark:border-blue-700" : ""}
                   />
@@ -1085,6 +1080,7 @@ export function BackupCollectMenu({
                     </div>
                   )}
                 </div>
+
                 <div className="grid gap-1.5">
                   <Label htmlFor="port" className="flex items-center gap-2">
                     <ColoredIcon icon={Server} color="purple" size="sm" />
@@ -1103,10 +1099,10 @@ export function BackupCollectMenu({
                   <Label htmlFor="password" className="flex items-center gap-2">
                     <ColoredIcon icon={Lock} color="red" size="sm" />
                     Password
-                    {selectedServerId && selectedServerId !== "new-server" && !hostname && !password && (
-                      <span className="text-xs text-muted-foreground">(optional - leave empty to use stored)</span>
+                    {selectedServerId && selectedServerId !== "new-server" && !password && (
+                      <span className="text-xs text-muted-foreground">(only fill if password changed)</span>
                     )}
-                    {selectedServerId && selectedServerId !== "new-server" && hostname && password && (
+                    {selectedServerId && selectedServerId !== "new-server" && password && (
                       <span className="text-xs text-orange-600">(updating stored value)</span>
                     )}
                   </Label>
@@ -1116,7 +1112,7 @@ export function BackupCollectMenu({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onFocus={(e) => e.target.select()}
-                    placeholder={selectedServerId && selectedServerId !== "new-server" && !hostname && !password ? "Leave empty to use stored password" : "Enter Duplicati password"}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" ? "Leave empty to use stored password" : "Enter Duplicati password"}
                     disabled={isCollecting}
                   />
                   <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>

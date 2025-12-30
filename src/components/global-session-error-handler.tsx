@@ -23,11 +23,8 @@ export function GlobalSessionErrorHandler() {
         
         // Check for authentication errors on API requests
         if (typeof input === 'string' && input.startsWith('/api/') && isAuthenticationError(response)) {
-          console.log('Global error handler detected authentication error, attempting recovery...');
-          
           try {
             await recreateSession();
-            console.log('Session recovery completed by global error handler');
             
             // Note: We don't retry the original request here because:
             // 1. The response has already been consumed
