@@ -7,7 +7,7 @@
   - `dashboard/` - Dashboard-specific components
   - `settings/` - Settings page components
   - `server-details/` - Server detail page components
-- **API Routes**: `src/app/api/` with RESTful endpoint structure (see `API-ENDPOINTS.md`)
+- **API Routes**: `src/app/api/` with RESTful endpoint structure (see [API Reference](../api-reference/overview))
 - **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`, migrations in `src/lib/db-migrations.ts`
 - **Types**: TypeScript interfaces in `src/lib/types.ts`
 - **Configuration**: Default configs in `src/lib/default-config.ts`
@@ -27,19 +27,19 @@
 
 ## Development References
 
-- API endpoints: See `API-ENDPOINTS.md`
-- Database schema: See `DATABASE.md`
+- API endpoints: See [API Reference](../api-reference/overview)
+- Database schema: See [Database Schema](database)
 - Follow patterns in `src/lib/db-utils.ts` for database operations
 
 ## Frameworks & Libraries
 
 ### Runtime & Package Management
-- Node.js ^20.x (minimum: 20.19.0)
-- pnpm ^10.x (minimum: 10.20.0, enforced via preinstall hook)
+- Node.js >=24.12.0
+- pnpm >=10.24.0 (packageManager: pnpm@10.27.0)
 
 ### Core Frameworks & Libraries
-- Next.js ^16.0.6 (App Router)
-- React ^19.2.0 & React-DOM ^19.2.0
+- Next.js ^16.1.1 (App Router)
+- React ^19.2.3 & React-DOM ^19.2.3
 - Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion, alert-dialog, avatar, checkbox, dialog, dropdown-menu, label, menubar, popover, progress, radio-group, scroll-area, select, separator, slider, slot, switch, tabs, toast, tooltip)
 - Tailwind CSS ^4.1.17 + tailwindcss-animate ^1.0.7
 - Better-sqlite3 ^12.5.0

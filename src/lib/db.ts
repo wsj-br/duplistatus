@@ -78,7 +78,7 @@ if (!fs.existsSync(dataDir)) {
 }
 
 const dbPath = path.join(dataDir, 'backups.db');
-console.log(`[Database] Using database at: ${path.resolve(dbPath)}`);
+// console.log(`[Database] Using database at: ${path.resolve(dbPath)}`);
 
 // Use a global singleton to prevent multiple database connections during hot reload
 // This is critical in development mode where Next.js may re-import modules

@@ -18,20 +18,6 @@ The audit log viewer displays a chronological list of all logged events with the
 - **Target**: The object that was affected (if applicable)
 - **Details**: Additional information about the action
 
-### Filtering Audit Logs
-
-You can filter audit logs using the following criteria:
-
-| Filter | Description |
-|:------|:-----------|
-| **Date Range** | Filter logs by start and end dates using the date pickers |
-| **User** | Filter by username (enter username in the search field) |
-| **Action** | Filter by specific action type |
-| **Category** | Filter by category (Authentication, User Management, Configuration, etc.) |
-| **Status** | Filter by status (Success, Failure, Error) |
-
-> [!TIP]
-> The audit log uses infinite scroll loading. As you scroll down, more logs are automatically loaded. You can also use the export function to download all filtered logs.
 
 ### Viewing Log Details
 
@@ -69,31 +55,6 @@ Configure how long audit logs are retained before automatic cleanup.
 ### Retention Settings
 
 - **Range**: 30 to 365 days
-- **Automatic Cleanup**: Runs daily at 2 AM UTC (not configurable)
-- **Manual Cleanup**: Available via API for administrators (see [API Reference](../../api-reference/administration-apis.md))
+- **Automatic Cleanup**: Runs daily at 02:00 UTC (not configurable)
+- **Manual Cleanup**: Available via API for administrators (see [Cleanup Audit Logs](../../api-reference/administration-apis.md#cleanup-audit-logs---apiaudit-logcleanup))
 
-> [!IMPORTANT]
-> Retention configuration is only available to administrators. Non-admin users can view audit logs but cannot modify retention settings.
-
-> [!NOTE]
-> When logs are deleted due to retention policy, the deletion action itself is logged to the audit log.
-
-<br/>
-
-## What Gets Logged
-
-The audit log tracks the following types of events:
-
-| Category                       | Events                                                                                                                                                              |
-|:-------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Authentication Events**      | User login and logout<br/>Password changes<br/>Account lockouts<br/>Failed login attempts                                                                           |
-| **User Management Operations** | User creation, updates, and deletion<br/>Password resets<br/>Admin status changes<br/>Password change requirement settings                                          |
-| **Configuration Changes**      | Email (SMTP) settings<br/>NTFY settings<br/>Notification templates<br/>Overdue tolerance settings<br/>Backup notification settings<br/>Audit log retention settings<br/>Notification frequency settings |
-| **Backup Operations**          | Backup log collection<br/>Backup log upload via API (`/api/upload`)<br/>Backup job deletion<br/>Database cleanup operations                                                                                      |
-| **Server Management**          | Server addition (during backup collection)<br/>Server updates (URL, alias, note)<br/>Server deletion<br/>Server password changes                                                                     |
-| **System Operations**          | Database migrations<br/>Notification sending<br/>System cleanup operations<br/>Audit log cleanup                                                                |
-
-> [!NOTE]
-> **Server merge operations** (merging duplicate servers) are not currently logged in the audit log. This feature may be added in a future release.
-
-<br/>

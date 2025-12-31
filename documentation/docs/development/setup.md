@@ -5,8 +5,8 @@
 ## Prerequisites
 
 - Docker / Docker Compose
-- Node.js ^24.x 
-- pnpm ^10.x 
+- Node.js >=24.12.0
+- pnpm >=10.24.0
 - SQLite3
 
 
@@ -43,8 +43,7 @@ sudo rm -rf /usr/local/include/node*
 sudo rm -rf /usr/local/bin/node*
 ```
 
-
-3. Install Node.js and pnpm:
+4. Install Node.js and pnpm:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -55,7 +54,7 @@ npm install -g pnpm npm-check-updates doctoc
 ```
 
 
-4. Start the development server:
+5. Start the development server:
 
 For the default TCP port (8666):
 ```bash

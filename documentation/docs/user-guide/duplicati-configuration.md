@@ -12,3 +12,12 @@ You can select a server from the dropdown list. If you have already selected a s
 - The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collect Backup Logs`](collect-backup-logs.md) feature.
 - Servers will not appear in the server list if their address has not been configured.
 
+
+
+> [!TIP]
+> Throughout the application, you will see the <SvgButton svgFilename="duplicati_logo.svg" /> button. Click it to open the Duplicati server's web interface in a new tab.
+
+
+>[!NOTE]
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+

@@ -25,7 +25,7 @@ The following are historical migration versions that brought the database to its
 - **Schema v3.1** (Application v0.8.x): Enhanced backup data fields, added server_password column
 - **Schema v4.0** (Application v0.9.x / v1.0.x): Added User Access Control (users, sessions, audit_log tables)
 
-Current application version (v1.0.2) uses **Schema v4.0** as the latest database schema version.
+Current application version (v1.1.0) uses **Schema v4.0** as the latest database schema version.
 
 ### Migration Process
 
@@ -261,7 +261,7 @@ The database includes several indexes for optimal query performance:
 
 - **Primary Keys**: All tables have primary key indexes
 - **Foreign Keys**: Server references in backups table, user references in sessions and audit_log
-- **Query Optimization**: Indexes on frequently queried fields
+- **Query Optimisation**: Indexes on frequently queried fields
 - **Date Indexes**: Indexes on date fields for time-based queries
 - **User Indexes**: Username index for fast user lookups
 - **Session Indexes**: Expiration and user_id indexes for session management

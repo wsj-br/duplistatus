@@ -70,79 +70,32 @@ The application toolbar provides convenient access to key functions and settings
 
 Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
 
-**Administrator Menu:**
-
-![User Menu - Admin](/img/screen-user-menu-admin.png)
-
-Administrators have access to:
-- **Change Password**: Update your account password
-- **Admin Users**: Access the user management interface
-- **Audit Log**: View system audit logs
-- **Logout**: Sign out of your session
-
-**Regular User Menu:**
-
-![User Menu - User](/img/screen-user-menu-user.png)
-
-Regular users have access to:
-- **Change Password**: Update your account password
-- **Audit Log**: View system audit logs (read-only)
-- **Logout**: Sign out of your session
-
-## Settings Overview
-
-The Settings page provides a comprehensive interface for configuring all aspects of **duplistatus**. Access it by clicking <IconButton icon="lucide:settings" /> in the [Application Toolbar](#application-toolbar).
-
-### Settings Sidebar
-
-The settings page features a collapsible sidebar that organises settings into logical groups:
-
-![Settings Sidebar - Admin View](/img/screen-settings-left-panel-admin.png)
-
-**Administrator View** - Administrators see all available settings sections:
-
-#### Notifications
-
-| Setting | Description | Available for Non-Admin |
-|---------|-------------|-------------------------|
-| [Backup Notifications](settings/backup-notifications-settings.md) | Configure per-backup notification settings | Read-only |
-| [Overdue Monitoring](settings/overdue-settings.md) | Configure overdue backup detection and alerts | Read-only |
-| [Templates](settings/notification-templates.md) | Customise notification message templates | Read-only |
-
-#### Integrations
-
-| Setting | Description | Available for Non-Admin |
-|---------|-------------|-------------------------|
-| [NTFY](settings/ntfy-settings.md) | Configure NTFY push notification service | Read-only |
-| [Email](settings/email-settings.md) | Configure SMTP email notifications | Read-only |
-
-#### System
-
-| Setting | Description | Available for Non-Admin |
-|---------|-------------|-------------------------|
-| [Servers](settings/server-settings.md) | Manage Duplicati server configurations | Read-only |
-| [Users](settings/user-management-settings.md) | Manage user accounts (admin only) | No |
-| [Audit Log](settings/audit-log-settings.md) | View system audit logs | Read-only |
-| [Audit Log Retention](settings/audit-log-settings.md#retention-configuration) | Configure audit log retention (admin only) | No |
-| [Display](settings/display-settings.md) | Configure display preferences | Yes |
-| [Database Maintenance](settings/database-maintenance.md) | Perform database cleanup (admin only) | No |
-
-
-<br/>
-
-
-> [!NOTE]
-> Non-admin users can still use test notification features and configure display settings, but most other settings are read-only. A notice is displayed in the sidebar indicating that settings are read-only.
-
+<table>
+  <tr>
+    <th>Administrator</th>
+    <th>Regular User</th>
+  </tr>
+  <tr>
+    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-user.png" alt="User Menu - User" /></td>
+  </tr>
+</table>
 
 ## Essential Configuration
 
-1. Collect initial backup logs - Use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals from the Duplicati servers.
-2. Configure server settings - Set up server aliases and notes in [Settings → Server](settings/server-settings.md) to make your dashboard more informative
-3. Configure email settings - Set up email notifications in [Settings → Email](settings/email-settings.md) as an alternative notification method
+1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
+2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
+3. Configure server settings – set up server aliases and notes in [Settings → Server](settings/server-settings.md) to make your dashboard more informative.
+4. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](settings/ntfy-settings.md).
+5. Configure email settings – set up email notifications in [Settings → Email](settings/email-settings.md).
+6. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](settings/backup-notifications-settings.md).
 
 <br/>
 
 > [!IMPORTANT]
 > Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](/installation/duplicati-server-configuration.md) section.
 
+<br/>
+
+>[!NOTE]
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.

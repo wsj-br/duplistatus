@@ -18,18 +18,17 @@
 | **From Address**        | Email address shown as the sender. Required for Plain SMTP connections or when authentication is disabled. Defaults to SMTP username when authentication is enabled. Note that some email providers will override the `From Address` with the `SMTP Server Username`. |
 | **Recipient Email**     | The email address to receive notifications. Must be a valid email address format. |
 
-<br/>
 
-> [!IMPORTANT]
->
-> To protect your security, you can only perform the following actions:
-> - Set a password for the email configuration
-> - Remove (delete) the password entirely
-> 
-> The password is stored encrypted in the database and is never displayed in the user interface.
 
+
+ A <IIcon2 icon="lucide:mail" color="green"/> green icon next to `Email` in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:mail" color="yellow"/> yellow, your settings are not valid or not configured.
+ 
+ The icon shows green when all required fields are set: SMTP Server Host, SMTP Server Port, Recipient Email, and either (SMTP Username + Password when authentication is required) or (From Address when authentication is not required).
+ 
+ When the configuration is not fully configured, a yellow alert box is displayed informing you that no emails will be sent until the email settings are filled correctly. The Email checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out and show "(disabled)" labels.
 
 <br/>
+
 
 ## Available Actions
 
@@ -42,12 +41,6 @@
 
 <br/>
 
-> [!NOTE]
-> A <IIcon2 icon="lucide:mail" color="green"/> green icon next to `Email` in the tab bar means your settings are valid. If the icon is <IIcon2 icon="lucide:mail" color="yellow"/> yellow, your settings are not valid or not configured.
-> 
-> The icon shows green when all required fields are set: SMTP Server Host, SMTP Server Port, Recipient Email, and either (SMTP Username + Password when authentication is required) or (From Address when authentication is not required).
-> 
-> When the configuration is not fully configured, a yellow alert box is displayed informing you that no emails will be sent until the email settings are filled correctly. The Email checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out and show "(disabled)" labels.
 
 > [!IMPORTANT]
 >   You must use the <IconButton icon="lucide:mail" label="Send Test Email"/> button to make sure your email setup works before relying on it for notifications.
@@ -87,25 +80,21 @@
 - Password: Use an App Password
 - Authentication: Required
 
-<br/>
+### Security Best Practices
 
-> [!TIP]
-> **Security Best Practices:**
->
-> - For Gmail and Yahoo, use App Passwords instead of your regular account password
-> - Consider using a dedicated email account for notifications
-> - Test your configuration using the "Send Test Email" button
-> - Settings are encrypted and stored securely in the database
-> - **Use encrypted connections** - STARTTLS and Direct SSL/TLS are recommended for production use
-> - Plain SMTP connections (port 25) are available for trusted local networks but are not recommended for production use over untrusted networks
-> - When using Plain SMTP or when authentication is disabled, the From Address field is required to ensure proper email sender identification and RFC 5322 compliance
-> - Email format validation is performed on recipient and from address fields to ensure proper email addresses are entered
+ - Consider using a dedicated email account for notifications
+ - Test your configuration using the "Send Test Email" button
+ - Settings are encrypted and stored securely in the database
+ - **Use encrypted connections** - STARTTLS and Direct SSL/TLS are recommended for production use
+ - Plain SMTP connections (port 25) are available for trusted local networks but are not recommended for production use over untrusted networks
 
 <br/>
 
 ## Running Your Own SMTP Relay Server
 
-If you prefer to run your own SMTP relay server locally, you can use a Docker container to set up a simple SMTP server. This is useful for testing or when you want to handle email delivery yourself.
+If you prefer to run your own SMTP relay server locally, you can easily set up a simple SMTP server using a Docker container. This approach is helpful for testing purposes or if you want to manage email delivery yourself.
+
+For example, you can use the [Basic SMTP Server](https://github.com/BytemarkHosting/docker-smtp) from [Bytemark Hosting](https://www.bytemark.co.uk/). Alternatively, you may install an SMTP server of your choice or search online for other SMTP Docker images or relay solutions that best fit your requirements.
 
 ### Using Docker Command
 
@@ -141,19 +130,23 @@ Then run:
 docker-compose up -d
 ```
 
-### Configuring duplistatus to Use the Local SMTP Relay
+### Configuring duplistatus to use this SMTP server
 
 Once your SMTP relay server is running, configure **duplistatus** with the following settings:
 
 - **SMTP Server Host**: `localhost` (or the IP address of the Docker host)
 - **SMTP Server Port**: `25`
 - **Connection Type**: `Plain SMTP`
-- **SMTP Authentication**: Disabled (unless your relay server requires authentication)
+- **SMTP Authentication**: Disabled
 - **From Address**: Enter a valid email address (required for Plain SMTP)
 - **Recipient Email**: Enter the email address where you want to receive notifications
 
+<br/>
+
+
 > [!NOTE]
 > - The SMTP relay server will accept emails and attempt to deliver them. Make sure your server has proper network access and DNS configuration to deliver emails to external recipients, or configure it to relay through another SMTP server.
-> - See more information in [Bytemark Hosting SMTP Relay Server](https://github.com/BytemarkHosting/docker-smtp) repository.
-
+> - See more information in [Bytemark Hosting Basic SMTP Server](https://github.com/BytemarkHosting/docker-smtp) repository.
+>
+> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 

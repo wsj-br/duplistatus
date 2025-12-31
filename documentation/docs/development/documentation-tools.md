@@ -1,6 +1,6 @@
 # Documentation Tools
 
-The documentation is built using [Docusaurus](https://docusaurus.io/) and is located in the `documentation` folder.
+The documentation is built using [Docusaurus](https://docusaurus.io/) and is located in the `documentation` folder. The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistatus/) and is no longer included in the Docker container image.
 
 ## Folder Structure
 
@@ -173,7 +173,7 @@ The script generates the following screenshots (saved to `documentation/static/i
 ## Deploying the Documentation
 
 
-To deploy the documentation to Github pages, we will need to generate a GitHub Personal Access Token, go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
+To deploy the documentation to GitHub Pages, you will need to generate a GitHub Personal Access Token. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
 
 When you have the token, run the following command to store the token in the Git credential store:
 ```bash

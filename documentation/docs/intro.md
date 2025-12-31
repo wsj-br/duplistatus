@@ -14,15 +14,6 @@
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), password policies, account lockout protection, and comprehensive user management.
 - **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 
->[!IMPORTANT]
-> - **Authentication Required**: All pages now require user authentication. A default admin account is created automatically (username: `admin`, password: `Duplistatus09` - must be changed on first login).
-> 
-> - If you are upgrading from an earlier version, your database will be automatically 
-> [migrated](migration/version_upgrade.md) to the new schema during the upgrade process.
-> 
-> - Adjust the time zone and language settings to receive notifications in the correct time zone and number/date/time format. See details in the [Timezone and Locale](installation/configure-tz-lang.md) section.
->
-
 
 ## Installation
 
@@ -30,10 +21,12 @@ The application can be deployed using Docker, Portainer Stacks, or Podman.
 See details in the [Installation Guide](installation/installation.md).
 
 
->[!NOTE]
-> - The application was designed to work in a standalone Podman container. If you plan to use it inside a Pod, 
->  you will need to configure the Pod networking to expose the duplistatus port (defaults to `9666`) to your local network.
-> - It worked before version 1.1.0 inside a Pod as it was using a dedicated server. In this version, it uses the standalone Next.js server to reduce the container image size.
+- If you are upgrading from an earlier version, your database will be automatically 
+[migrated](migration/version_upgrade.md) to the new schema during the upgrade process.
+
+- When using Podman (either as a standalone container or within a pod), and if you require custom DNS settings 
+(such as for Tailscale MagicDNS, corporate networks, or other custom DNS configurations), you can manually 
+specify DNS servers and search domains. See the installation guide for further details.
 
 ## Duplicati Servers Configuration (Required)
 

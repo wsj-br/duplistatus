@@ -3,7 +3,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![version](https://img.shields.io/badge/version-1.0.3-blue)
+![version](https://img.shields.io/badge/version-1.1.0-blue)
 
 <br/>
 
@@ -17,6 +17,22 @@ It also provides API endpoints that can be integrated with third-party tools suc
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
+- [Features](#features)
+- [Installation](#installation)
+- [Duplicati Servers Configuration (Required)](#duplicati-servers-configuration-required)
+- [User Guide](#user-guide)
+- [Screenshots](#screenshots)
+  - [Dashboard](#dashboard)
+  - [Backup History](#backup-history)
+  - [Backup Details](#backup-details)
+  - [Overdue Backups](#overdue-backups)
+  - [Overdue notifications on your phone](#overdue-notifications-on-your-phone)
+- [API Reference](#api-reference)
+- [Development](#development)
+- [Credits](#credits)
+- [Migration Information](#migration-information)
+- [License](#license)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 <br/>
@@ -24,7 +40,7 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 ## Features
 
-- **Quick Setup**: Simple deployment in a container, with images on Docker Hub and GitHub.
+- **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
 - **Unified Dashboard**: View backup status, history, and details for all servers in one place.
 - **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
@@ -37,6 +53,14 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 The application can be deployed using Docker, Portainer Stacks, or Podman. 
 See details in the [Installation Guide](https://wsj-br.github.io/duplistatus/installation).
+
+
+- If you are upgrading from an earlier version, your database will be automatically 
+[migrated](https://wsj-br.github.io/duplistatus/migration/version_upgrade) to the new schema during the upgrade process.
+
+- When using Podman (either as a standalone container or within a pod), and if you require custom DNS settings 
+(such as for Tailscale MagicDNS, corporate networks, or other custom DNS configurations), you can manually 
+specify DNS servers and search domains. See the installation guide for further details.
 
 ## Duplicati Servers Configuration (Required)
 
@@ -82,13 +106,13 @@ This project was mainly built with AI help. To learn how, see [How I Built this 
 
 ## Credits
 
-- First and foremost, thanks to Kenneth Skovhede for creating Duplicati, this amazing backup tool. Thanks also to all the contributors.
+- First and foremost, thanks to Kenneth Skovhede for creating Duplicati—this amazing backup tool. Thanks also to all the contributors.
 
   💙 If you find [Duplicati](https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
 
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
 - Notify SVG icon from https://dashboardicons.com/icons/ntfy
-- Github SVG icon from https://github.com/logos
+- GitHub SVG icon from https://github.com/logos
 
 >[!NOTE]
 > All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.

@@ -108,6 +108,8 @@ docker run -d \
 
 ### Option 5: Using Podman (CLI) `rootless`
 
+For basic setups, you can start the container without DNS configuration:
+
 ```bash
 mkdir -p ~/duplistatus_data
 # Start the container (standalone)
@@ -121,21 +123,135 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
->[!NOTE]
-> **Podman Pod Support**: Since version 1.1.0, duplistatus works correctly in both standalone containers and Podman pods.
-> The application automatically binds to all network interfaces and handles DNS configuration for proper network connectivity.
-> For custom DNS setups (like Tailscale), the container will automatically detect and use your host's DNS configuration.
+#### Configuring DNS for Podman Containers
 
+If you need custom DNS configuration (e.g., for Tailscale MagicDNS, corporate networks, or custom DNS setups), you can manually configure DNS servers and search domains.
 
-Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+**Finding your DNS configuration:**
 
-### Option 6: Using Podman Compose (CLI) `rootless`
+1. **For systemd-resolved systems** (most modern Linux distributions):
+   ```bash
+   # Get DNS servers
+   resolvectl status | grep "DNS Servers:" | awk '{print "--dns " $3}'
+   
+   # Get DNS search domains
+   resolvectl status | grep "DNS Domain:" | awk '{print "--dns-search " $3}'
+   ```
+
+2. **For non-systemd systems** or as a fallback:
+   ```bash
+   cat /run/systemd/resolve/resolv.conf 2>/dev/null || cat /etc/resolv.conf
+   ```
+   
+   Look for lines beginning with `nameserver` (for DNS servers) and `search` (for search domains). If you are unsure of your DNS settings or network search domains, consult your network administrator for this information.
+
+**Example with DNS configuration:**
 
 ```bash
-# download the compose file
-wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-# start the container
-podman-compose -f duplistatus.yml up -d
+mkdir -p ~/duplistatus_data
+# Start the container with DNS configuration
+podman run -d \
+  --name duplistatus \
+  --userns=keep-id \
+  --dns 100.100.100.100 \
+  --dns-search example.com \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -p 9666:9666 \
+  -v ~/duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest
 ```
 
-Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+You can specify multiple DNS servers by adding multiple `--dns` flags:
+```bash
+--dns 8.8.8.8 --dns 1.1.1.1
+```
+
+You can specify multiple search domains by adding multiple `--dns-search` flags:
+```bash
+--dns-search example.com --dns-search internal.local
+```
+
+**Note**: Skip IPv6 addresses (containing `:`) and localhost addresses (like `127.0.0.53`) when configuring DNS servers.
+
+Check the [Timezone and Locale](installation/configure-tz-lang.md) section for more details on how to adjust the timezone and number/date/time format.
+
+### Option 6: Using Podman Pods
+
+Podman pods allow you to run multiple containers in a shared network namespace. This is useful for testing or when you need to run duplistatus alongside other containers.
+
+**Basic pod setup:**
+
+```bash
+mkdir -p ~/duplistatus_data
+
+# Create the pod
+podman pod create --name duplistatus-pod --publish 9666:9666/tcp
+
+# Create the container in the pod
+podman create --name duplistatus \
+  --pod duplistatus-pod \
+  --user root \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -v ~/duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest
+
+# Start the pod
+podman pod start duplistatus-pod
+```
+
+#### Configuring DNS for Podman Pods
+
+When using pods, DNS configuration must be set at the pod level, not the container level.
+Use the same methods described in Option 5 to find your DNS servers and search domains.
+
+**Example with DNS configuration:**
+
+```bash
+mkdir -p ~/duplistatus_data
+
+# Create the pod with DNS configuration
+podman pod create --name duplistatus-pod \
+  --publish 9666:9666/tcp \
+  --dns 100.100.100.100 \
+  --dns-search example.com
+
+# Create the container in the pod
+podman create --name duplistatus \
+  --pod duplistatus-pod \
+  --user root \
+  -e TZ=Europe/London \
+  -e LANG=en_GB \
+  -v ~/duplistatus_data:/app/data \
+  ghcr.io/wsj-br/duplistatus:latest
+
+# Start the pod
+podman pod start duplistatus-pod
+```
+
+**Managing the pod:**
+
+```bash
+# Stop the pod (stops all containers in the pod)
+podman pod stop duplistatus-pod
+
+# Start the pod
+podman pod start duplistatus-pod
+
+# Remove the pod and all containers
+podman pod rm -f duplistatus-pod
+```
+
+
+## Essential Configuration
+
+1. Configure your [Duplicati servers](duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
+2. Log in to duplistatus – see instructions in the [User Guide](../user-guide/overview.md#accessing-the-dashboard).
+3. Collect initial backup logs – use the [Collect Backup Logs](../user-guide/collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
+4. Configure server settings – set up server aliases and notes in [Settings → Server](../user-guide/settings/server-settings.md) to make your dashboard more informative.
+5. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](../user-guide/settings/ntfy-settings.md).
+6. Configure email settings – set up email notifications in [Settings → Email](../user-guide/settings/email-settings.md).
+7. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](../user-guide/settings/backup-notifications-settings.md).
+
+See the following sections to configure optional settings such as timezone, number format, and HTTPS.

@@ -546,34 +546,35 @@ async function sendTestData(useUpload: boolean = false, serverCount: number, por
     generationPlan.push({ server, selectedBackupJobs, isOddServer, serverIndex: i });
   }
 
-  // Preconfigure notifications to disable ntfy (as requested)
-  // This is especially important for --upload mode to prevent spamming notifications
-  logConsole('\n  🔧 Preconfiguring notifications (disabling ntfy for generated backups)...', quiet);
-  try {
-    const currentSettings = await getConfigBackupSettings();
-    let updated = false;
+  // Preconfigure notifications to disable ntfy (only for --upload mode to prevent spamming notifications)
+  if (useUpload) {
+    logConsole('\n  🔧 Preconfiguring notifications (disabling ntfy for generated backups)...', quiet);
+    try {
+      const currentSettings = await getConfigBackupSettings();
+      let updated = false;
 
-    for (const plan of generationPlan) {
-      for (const backupJob of plan.selectedBackupJobs) {
-        const key = `${plan.server.id}:${backupJob}`;
-        if (!currentSettings[key] || currentSettings[key].ntfyEnabled !== false) {
-          currentSettings[key] = {
-            ...(currentSettings[key] || defaultBackupNotificationConfig),
-            ntfyEnabled: false
-          };
-          updated = true;
+      for (const plan of generationPlan) {
+        for (const backupJob of plan.selectedBackupJobs) {
+          const key = `${plan.server.id}:${backupJob}`;
+          if (!currentSettings[key] || currentSettings[key].ntfyEnabled !== false) {
+            currentSettings[key] = {
+              ...(currentSettings[key] || defaultBackupNotificationConfig),
+              ntfyEnabled: false
+            };
+            updated = true;
+          }
         }
       }
-    }
 
-    if (updated) {
-      setConfigBackupSettings(currentSettings);
-      logConsole('    ✅ Notification settings updated to disable ntfy', quiet);
-    } else {
-      logConsole('    ℹ️ Notification settings already configured', quiet);
+      if (updated) {
+        setConfigBackupSettings(currentSettings);
+        logConsole('    ✅ Notification settings updated to disable ntfy', quiet);
+      } else {
+        logConsole('    ℹ️ Notification settings already configured', quiet);
+      }
+    } catch (error) {
+      console.error('🚨 Error preconfiguring notification settings:', error instanceof Error ? error.message : String(error));
     }
-  } catch (error) {
-    console.error('🚨 Error preconfiguring notification settings:', error instanceof Error ? error.message : String(error));
   }
 
   // Proceed with data generation
