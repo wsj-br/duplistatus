@@ -14,17 +14,10 @@ export const GET = withCSRF(async (
   try {
     // Clear and invalidate all caches to ensure fresh data on each request
     // This is especially important in production mode where module-level cache might persist
-    if (process.env.NODE_ENV === 'production') {
-      console.log('[API] /api/detail/[serverId] - Starting request, clearing caches...');
-    }
     invalidateDataCache();
     clearRequestCache();
     
     const { serverId } = await params;
-    
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`[API] /api/detail/[serverId] - Caches cleared, fetching data for server: ${serverId}`);
-    }
     
     // Get server data
     const server = await getServerById(serverId);
@@ -40,10 +33,6 @@ export const GET = withCSRF(async (
 
     // Get the last overdue backup check time
     const lastOverdueCheck = getLastOverdueBackupCheckTime();
-
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`[API] /api/detail/[serverId] - Data fetched successfully for server: ${serverId}, returning response`);
-    }
 
     return NextResponse.json({
       server,

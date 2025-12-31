@@ -8,8 +8,6 @@ You can click on the <SvgButton svgFilename="duplicati_logo.svg" /> button to op
 
 ## Configure Per-Backup Notification Settings
 
-![notification detail](/img/screen-settings-backup-notifications-detail.png)
-
 | Setting                       | Description                                               | Default Value |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
 | **Notification Events**       | Configure when to send notifications for new backup logs. | `Warnings`    |

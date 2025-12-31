@@ -764,57 +764,46 @@ async function switchToTableView(page: Page) {
   }
 }
 
-async function getNtfyConfig(page: Page): Promise<{ url?: string; topic?: string; enabled?: boolean; accessToken?: string } | null> {
-  console.log('Getting NTFY configuration...');
+
+async function configureNtfyTopic(newTopic: string): Promise<void> {
+  console.log(`Configuring NTFY topic to: ${newTopic}`);
   try {
-    const response = await page.evaluate(async () => {
-      const res = await fetch('/api/configuration/unified');
-      return res.json();
-    });
-    return response?.ntfy || null;
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    const defaultConfigModule = await import('../src/lib/default-config');
+    
+    const ntfyConfig = {
+      ...defaultConfigModule.defaultNtfyConfig,
+      topic: newTopic
+    };
+    
+    dbUtilsModule.setNtfyConfig(ntfyConfig);
+    console.log(`NTFY topic configured to "${newTopic}"`);
   } catch (error) {
-    logError('Error getting NTFY config: ' + (error instanceof Error ? error.message : String(error)));
-    return null;
+    logError('Error configuring NTFY topic: ' + (error instanceof Error ? error.message : String(error)));
+    throw error;
   }
 }
 
-async function updateNtfyTopic(page: Page, newTopic: string): Promise<string | null> {
-  console.log(`Updating NTFY topic to: ${newTopic}`);
+async function configureSMTPConfig(): Promise<void> {
+  console.log('Configuring SMTP config...');
   try {
-    // Get current config
-    const currentConfig = await getNtfyConfig(page);
-    if (!currentConfig) {
-      logError('Could not get current NTFY config');
-      return null;
-    }
+    const dbUtilsModule = await import('../src/lib/db-utils');
+    const smtpConfig = {
+      host: 'localhost',
+      port: 25,
+      connectionType: 'plain' as const,
+      username: '',
+      password: '',
+      mailto: 'user@somedomain.com',
+      fromAddress: 'duplistatus@somedomain.com',
+      requireAuth: false
+    };
     
-    const oldTopic = currentConfig.topic || null;
-    
-    // Update via API
-    const csrfToken = await getCSRFToken(page);
-    const response = await page.evaluate(async (config: any, token: string) => {
-      const res = await fetch('/api/configuration/notifications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': token
-        },
-        credentials: 'include',
-        body: JSON.stringify({ ntfy: config })
-      });
-      return res.ok;
-    }, { ...currentConfig, topic: newTopic }, csrfToken);
-    
-    if (response) {
-      console.log(`NTFY topic updated from "${oldTopic}" to "${newTopic}"`);
-      return oldTopic;
-    } else {
-      logError('Failed to update NTFY topic');
-      return null;
-    }
+    dbUtilsModule.setSMTPConfig(smtpConfig);
+    console.log('SMTP config configured successfully');
   } catch (error) {
-    logError('Error updating NTFY topic: ' + (error instanceof Error ? error.message : String(error)));
-    return null;
+    logError('Error configuring SMTP config: ' + (error instanceof Error ? error.message : String(error)));
+    throw error;
   }
 }
 
@@ -1014,6 +1003,7 @@ async function captureCollectButtonPopup(page: Page): Promise<{ popup: boolean; 
   console.log('Capturing collect button popup...');
   try {
     // Navigate to blank page first to reduce background noise
+    console.log('🌐 Navigating to blank page (/blank)...');
     await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
     await delay(1000);
     
@@ -1186,86 +1176,6 @@ async function captureCollectButtonPopup(page: Page): Promise<{ popup: boolean; 
   } catch (error) {
     logError('Error capturing collect button popup: ' + (error instanceof Error ? error.message : String(error)));
     return { popup: false, rightClick: false };
-  }
-}
-
-async function captureNtfyConfigureDevicePopup(page: Page): Promise<boolean> {
-  console.log('-------------------------------------------------------');
-
-  console.log('Capturing NTFY Configure Device popup...');
-  try {
-    // Navigate to NTFY settings
-    await page.goto(`${BASE_URL}/settings?tab=ntfy`, { waitUntil: 'networkidle0' });
-    await delay(2000);
-    
-    // Find and click "Configure Device" button using text content
-    const buttonFound = await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      for (const btn of buttons) {
-        const text = btn.textContent || '';
-        if (text.includes('Configure Device')) {
-          (btn as HTMLButtonElement).click();
-          return true;
-        }
-      }
-      return false;
-    });
-    
-    if (buttonFound) {
-      await delay(1000);
-      
-      // Wait for dialog to appear
-      await page.waitForSelector('[data-screenshot-target="ntfy-configure-device-popup"], [role="dialog"]', { timeout: 3000 });
-      await delay(500);
-      
-      // Capture the dialog
-      const dialogBounds = await page.evaluate(() => {
-        // First try to find element with data attribute
-        const dialog = document.querySelector('[data-screenshot-target="ntfy-configure-device-popup"]');
-        if (dialog) {
-          const rect = dialog.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        // Fallback to generic dialog selector
-        const fallbackDialog = document.querySelector('[role="dialog"]');
-        if (fallbackDialog) {
-          const rect = fallbackDialog.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        return null;
-      });
-      
-      if (dialogBounds) {
-        const success = await takeScreenshot(page, 'screen-settings-ntfy-configure-device-popup.png', {
-          clip: dialogBounds
-        });
-        
-        // Close dialog
-        await page.keyboard.press('Escape');
-        await delay(500);
-        return success;
-      } else {
-        // Close dialog anyway
-        await page.keyboard.press('Escape');
-        await delay(500);
-        return false;
-      }
-    } else {
-      return false;
-    }
-  } catch (error) {
-    logError('Error capturing NTFY Configure Device popup: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
   }
 }
 
@@ -1484,17 +1394,27 @@ async function captureDuplicatiConfiguration(page: Page): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing Duplicati configuration dropdown...');
   try {
-    // Navigate to dashboard
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
-    await waitForDashboardLoad(page);
-    await delay(2000);
+    // Navigate to blank page first to reduce background noise
+    console.log('🌐 Navigating to blank page (/blank)...');
+    await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
+    await delay(1000);
     
     // Find and click the Duplicati button (button with title "Duplicati configuration")
     const button = await page.$('button[title="Duplicati configuration"]');
     
     if (button) {
       await button.click();
-      await delay(1000); // Wait for popover to appear
+      await delay(1500); // Wait for popover to appear
+      
+      // Wait for dropdown to appear
+      try {
+        await page.waitForSelector('[data-screenshot-target="duplicati-configuration"]', { timeout: 5000, visible: true });
+      } catch (e) {
+        logError('Duplicati dropdown did not appear');
+        await page.keyboard.press('Escape');
+        return false;
+      }
+      await delay(500);
       
       // Capture the dropdown using data-screenshot-target
       const dropdownBounds = await page.evaluate(() => {
@@ -1534,6 +1454,123 @@ async function captureDuplicatiConfiguration(page: Page): Promise<boolean> {
     }
   } catch (error) {
     logError('Error capturing Duplicati configuration: ' + (error instanceof Error ? error.message : String(error)));
+    return false;
+  }
+}
+
+async function captureUserMenu(page: Page, userType: 'admin' | 'user'): Promise<boolean> {
+  console.log('-------------------------------------------------------');
+  console.log(`Capturing user menu dropdown (${userType})...`);
+  try {
+    // Navigate to blank page first to reduce background noise
+    console.log('🌐 Navigating to blank page (/blank)...');
+    await page.goto(`${BASE_URL}/blank`, { waitUntil: 'networkidle0' });
+    await delay(1000);
+    
+    // Find the user menu button selector
+    const buttonSelector = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      for (let i = 0; i < buttons.length; i++) {
+        const btn = buttons[i];
+        const userIcon = btn.querySelector('svg.lucide-user');
+        const usernameSpan = btn.querySelector('span.text-sm.font-medium');
+        if (userIcon && usernameSpan) {
+          // Add a temporary id to make it easily selectable
+          btn.setAttribute('data-temp-user-menu-btn', 'true');
+          return '[data-temp-user-menu-btn="true"]';
+        }
+      }
+      return null;
+    });
+    
+    if (!buttonSelector) {
+      logError('Could not find user menu button');
+      return false;
+    }
+    
+    // Click the button using Puppeteer's click (more reliable than evaluate click)
+    const button = await page.$(buttonSelector);
+    if (!button) {
+      logError('Could not select user menu button element');
+      return false;
+    }
+    
+    await button.click();
+    await delay(1500); // Wait for dropdown animation to complete
+    
+    // Wait for the dropdown menu to appear using data-screenshot-target
+    try {
+      await page.waitForSelector('[data-screenshot-target="user-menu"]', { timeout: 5000, visible: true });
+    } catch (e) {
+      logError('User menu dropdown did not appear');
+      // Debug: Check if element exists but not visible
+      const exists = await page.$('[data-screenshot-target="user-menu"]');
+      if (exists) {
+        logError('Menu element exists but is not visible');
+      } else {
+        logError('Menu element does not exist in DOM');
+      }
+      return false;
+    }
+    await delay(500);
+    
+    // Capture both the button and dropdown menu with external margins
+    const combinedBounds = await page.evaluate(() => {
+      // Find the button
+      const buttonElement = document.querySelector('[data-temp-user-menu-btn="true"]');
+      
+      // Find the dropdown menu
+      const menuContent = document.querySelector('[data-screenshot-target="user-menu"]');
+      
+      if (buttonElement && menuContent) {
+        const buttonRect = buttonElement.getBoundingClientRect();
+        const menuRect = menuContent.getBoundingClientRect();
+        
+        // Calculate combined bounds with margin
+        const margin = 5;
+        const x = Math.min(buttonRect.x, menuRect.x);
+        const y = Math.min(buttonRect.y, menuRect.y);
+        const maxX = Math.max(buttonRect.x + buttonRect.width, menuRect.x + menuRect.width);
+        const maxY = Math.max(buttonRect.y + buttonRect.height, menuRect.y + menuRect.height);
+        
+        return {
+          x: Math.max(0, x - margin),
+          y: Math.max(0, y - margin),
+          width: (maxX - x) + 2*margin,
+          height: (maxY - y) + 2*margin
+        };
+      }
+      return null;
+    });
+    
+    if (combinedBounds) {
+      const filename = `screen-user-menu-${userType}.png`;
+      const success = await takeScreenshot(page, filename, {
+        clip: combinedBounds
+      });
+      console.log(`Captured user menu dropdown: ${filename}`);
+      
+      // Clean up temporary attribute and close dropdown
+      await page.evaluate(() => {
+        const btn = document.querySelector('[data-temp-user-menu-btn="true"]');
+        if (btn) btn.removeAttribute('data-temp-user-menu-btn');
+      });
+      await page.keyboard.press('Escape');
+      await delay(500);
+      return success;
+    } else {
+      logError('Could not find user menu button or dropdown bounds');
+      // Clean up temporary attribute and close dropdown anyway
+      await page.evaluate(() => {
+        const btn = document.querySelector('[data-temp-user-menu-btn="true"]');
+        if (btn) btn.removeAttribute('data-temp-user-menu-btn');
+      });
+      await page.keyboard.press('Escape');
+      await delay(500);
+      return false;
+    }
+  } catch (error) {
+    logError('Error capturing user menu: ' + (error instanceof Error ? error.message : String(error)));
     return false;
   }
 }
@@ -1583,55 +1620,6 @@ async function captureDashboardSummary(page: Page, filename: string): Promise<bo
     }
   } catch (error) {
     logError('Error capturing dashboard summary card: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
-  }
-}
-
-async function captureAutoRefreshControls(page: Page): Promise<boolean> {
-  console.log('-------------------------------------------------------');
-  console.log('Capturing auto-refresh controls...');
-  try {
-    // Navigate to dashboard
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
-    await waitForDashboardLoad(page);
-    await delay(2000);
-    
-    // Wait for the auto-refresh controls to appear
-    try {
-      await page.waitForSelector('[data-screenshot-target="auto-refresh-controls"]', { timeout: 5000 });
-    } catch (e) {
-      logError('Auto-refresh controls did not appear on the page');
-      return false;
-    }
-    await delay(500);
-    
-    // Capture the auto-refresh controls
-    const controlsBounds = await page.evaluate(() => {
-      const controlsDiv = document.querySelector('[data-screenshot-target="auto-refresh-controls"]');
-      if (controlsDiv) {
-        const rect = controlsDiv.getBoundingClientRect();
-        return {
-          x: Math.max(0, rect.x - 10),
-          y: Math.max(0, rect.y - 10),
-          width: rect.width + 20,
-          height: rect.height + 20
-        };
-      }
-      return null;
-    });
-    
-    if (controlsBounds) {
-      const success = await takeScreenshot(page, 'screen-auto-refresh.png', {
-        clip: controlsBounds
-      });
-      console.log('Captured auto-refresh controls');
-      return success;
-    } else {
-      logError('Could not find auto-refresh controls bounds');
-      return false;
-    }
-  } catch (error) {
-    logError('Error capturing auto-refresh controls: ' + (error instanceof Error ? error.message : String(error)));
     return false;
   }
 }
@@ -2274,296 +2262,6 @@ async function captureServerOverdueMessage(page: Page): Promise<boolean> {
   }
 }
 
-async function captureServerDetailSummary(page: Page): Promise<boolean> {
-  console.log('-------------------------------------------------------');
-  console.log('Capturing server detail summary...');
-  try {
-    // Get all servers from database (more reliable than API)
-    const dbModule = await import('../src/lib/db');
-    await dbModule.ensureDatabaseInitialized();
-    const allDbServers = dbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string; alias: string; note: string }>;
-    const servers: Server[] = allDbServers.map(s => ({
-      id: s.id,
-      name: s.name,
-      alias: s.alias || '',
-      note: s.note || '',
-      server_url: s.server_url || '',
-      backups: []
-    }));
-    
-    // Find a server without overdue backups
-    let serverWithoutOverdue: Server | null = null;
-    for (const server of servers) {
-      const serverDetails = await page.evaluate(async (serverId) => {
-        const res = await fetch(`/api/detail/${serverId}`);
-        return res.json();
-      }, server.id);
-      
-      if (!serverDetails.overdueBackups || serverDetails.overdueBackups.length === 0) {
-        serverWithoutOverdue = server;
-        break;
-      }
-    }
-    
-    if (!serverWithoutOverdue) {
-      logError('Could not find a server without overdue backups');
-      return false;
-    }
-    
-    console.log(`Found server without overdue backups: ${serverWithoutOverdue.name} (${serverWithoutOverdue.id})`);
-    
-    // Navigate to the server detail page
-    await page.goto(`${BASE_URL}/detail/${serverWithoutOverdue.id}`, { waitUntil: 'networkidle0' });
-    
-    // Wait for content to load (client component fetches data after page load)
-    const contentLoaded = await waitForServerDetailContent(page, 15000);
-    if (!contentLoaded) {
-      logError('Server detail content did not load in time');
-    }
-    
-    // Wait for the summary div to appear
-    try {
-      await page.waitForSelector('[data-screenshot-target="server-detail-summary"]', { timeout: 10000 });
-    } catch (e) {
-      logError('Server detail summary did not appear on the page');
-      return false;
-    }
-    await delay(500);
-    
-    // Capture the summary div
-    const summaryBounds = await page.evaluate(() => {
-      const summaryDiv = document.querySelector('[data-screenshot-target="server-detail-summary"]');
-      if (summaryDiv) {
-        const rect = summaryDiv.getBoundingClientRect();
-        return {
-          x: Math.max(0, rect.x - 10),
-          y: Math.max(0, rect.y - 10),
-          width: rect.width + 20,
-          height: rect.height + 20
-        };
-      }
-      return null;
-    });
-    
-    if (summaryBounds) {
-      const success = await takeScreenshot(page, 'screen-detail-summary.png', {
-        clip: summaryBounds
-      });
-      console.log('Captured server detail summary');
-      return success;
-    } else {
-      logError('Could not find server detail summary bounds');
-      return false;
-    }
-  } catch (error) {
-    logError('Error capturing server detail summary: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
-  }
-}
-
-async function captureOverdueMonitoringTableRows(page: Page): Promise<boolean> {
-  console.log('-------------------------------------------------------');
-  console.log('Capturing overdue monitoring table rows...');
-  try {
-    // Wait for the table to appear
-    try {
-      await page.waitForSelector('[data-screenshot-target="settings-overdue-monitoring-table"]', { timeout: 5000 });
-    } catch (e) {
-      logError('Overdue monitoring table did not appear on the page');
-      return false;
-    }
-    await delay(500);
-    
-    // Capture the first 2 rows of the table
-    const tableRowsBounds = await page.evaluate(() => {
-      const tableBody = document.querySelector('[data-screenshot-target="settings-overdue-monitoring-table"]');
-      if (!tableBody) return null;
-      
-      // Get all table rows (excluding header)
-      const rows = Array.from(tableBody.querySelectorAll('tr'));
-      if (rows.length === 0) return null;
-      
-      // Get the first row bounds
-      const firstRow = rows[0] as HTMLElement;
-      const firstRowRect = firstRow.getBoundingClientRect();
-      
-      // Get the second row bounds if it exists
-      let lastRowRect = firstRowRect;
-      if (rows.length >= 2) {
-        const secondRow = rows[1] as HTMLElement;
-        lastRowRect = secondRow.getBoundingClientRect();
-      }
-      
-      // Calculate bounds for first 2 rows
-      const x = Math.max(0, firstRowRect.x - 10);
-      const y = Math.max(0, firstRowRect.y - 10);
-      const width = firstRowRect.width + 20;
-      const height = (lastRowRect.bottom - firstRowRect.top) + 20;
-      
-      return { x, y, width, height };
-    });
-    
-    if (tableRowsBounds) {
-      const success = await takeScreenshot(page, 'screen-settings-overdue-bkp.png', {
-        clip: tableRowsBounds
-      });
-      console.log('Captured overdue monitoring table rows (first 2 rows)');
-      return success;
-    } else {
-      logError('Could not find overdue monitoring table rows bounds');
-      return false;
-    }
-  } catch (error) {
-    logError('Error capturing overdue monitoring table rows: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
-  }
-}
-
-async function captureOverdueMonitoringConfig(page: Page): Promise<boolean> {
-  console.log('-------------------------------------------------------');
-  console.log('Capturing overdue monitoring configuration card...');
-  try {
-    // Wait for the "Overdue tolerance:" label to appear
-    try {
-      await page.waitForSelector('label[for="overdue-tolerance"]', { timeout: 5000 });
-    } catch (e) {
-      logError('Overdue tolerance label did not appear on the page');
-      return false;
-    }
-    await delay(500);
-    
-    // Find the card containing the "Overdue tolerance:" label and capture from that label to the end
-    const configBounds = await page.evaluate(() => {
-      // Find the label
-      const label = document.querySelector('label[for="overdue-tolerance"]');
-      if (!label) return null;
-      
-      // Find the card containing this label (closest Card ancestor)
-      const card = label.closest('[class*="Card"], [class*="card"]');
-      if (!card) return null;
-      
-      const cardRect = card.getBoundingClientRect();
-      const labelRect = label.getBoundingClientRect();
-      
-      // Calculate bounds from the label's top to the card's bottom
-      const x = Math.max(0, cardRect.x - 10);
-      const y = Math.max(0, labelRect.y - 10);
-      const width = cardRect.width + 20;
-      const height = (cardRect.bottom - labelRect.y) + 20;
-      
-      return { x, y, width, height };
-    });
-    
-    if (configBounds) {
-      const success = await takeScreenshot(page, 'screen-settings-overdue-conf.png', {
-        clip: configBounds
-      });
-      console.log('Captured overdue monitoring configuration card');
-      return success;
-    } else {
-      logError('Could not find overdue monitoring configuration card bounds');
-      return false;
-    }
-  } catch (error) {
-    logError('Error capturing overdue monitoring configuration card: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
-  }
-}
-
-async function captureBackupNotificationsDetail(page: Page) {
-  console.log('-------------------------------------------------------');
-  console.log('Capturing backup notifications detail page...');
-  try {
-    // Navigate to notifications settings
-    await page.goto(`${BASE_URL}/settings?tab=notifications`, { waitUntil: 'networkidle0' });
-    await delay(2000);
-    
-    // Find and click on a backup to view its detail
-    const backupClicked = await page.evaluate(() => {
-      // Look for backup rows or items in the notifications table
-      const rows = Array.from(document.querySelectorAll('tr, [class*="row"], [class*="Row"]'));
-      for (const row of rows) {
-        // Check if this is a clickable backup row
-        if (row.getAttribute('onclick') || row.classList.contains('cursor-pointer')) {
-          (row as HTMLElement).click();
-          return true;
-        }
-      }
-      // Fallback: look for any clickable element in the notifications table
-      const clickable = document.querySelector('[class*="cursor-pointer"], button, a');
-      if (clickable) {
-        (clickable as HTMLElement).click();
-        return true;
-      }
-      return false;
-    });
-    
-    if (backupClicked) {
-      await delay(2000); // Wait for detail page/modal to appear
-      
-      // Capture the detail view
-      const detailBounds = await page.evaluate(() => {
-        // Look for modal or detail card
-        const modal = document.querySelector('[role="dialog"], [data-radix-dialog-content]');
-        if (modal) {
-          const rect = modal.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        // Fallback: look for detail card
-        const card = document.querySelector('[class*="Card"], [class*="card"]');
-        if (card) {
-          const rect = card.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        return null;
-      });
-      
-      if (detailBounds) {
-        const success = await takeScreenshot(page, 'screen-settings-backup-notifications-detail.png', {
-          clip: detailBounds,
-          isSettingsPage: true
-        });
-        console.log('Captured backup notifications detail');
-        
-        // Close modal if open
-        await page.keyboard.press('Escape');
-        await delay(500);
-        return success;
-      } else {
-        // Fallback: take full page screenshot
-        const success = await takeScreenshot(page, 'screen-settings-backup-notifications-detail.png', {
-          isSettingsPage: true
-        });
-        
-        // Close modal if open
-        await page.keyboard.press('Escape');
-        await delay(500);
-        return success;
-      }
-    } else {
-      // If no backup to click, just take a screenshot of the notifications page
-      // which might show the detail view already
-      const success = await takeScreenshot(page, 'screen-settings-backup-notifications-detail.png', {
-        isSettingsPage: true
-      });
-      return success;
-    }
-  } catch (error) {
-    logError('Error capturing backup notifications detail: ' + (error instanceof Error ? error.message : String(error)));
-    return false;
-  }
-}
-
 async function main() {
   console.log(colors.green, '\n');
   console.log('-------------------------------------------------------' );
@@ -2588,6 +2286,10 @@ async function main() {
   
   // Generate test data
   await generateTestData();
+  
+  // Configure NTFY topic and SMTP config after test data generation
+  await configureNtfyTopic('duplicati-screenshots');
+  await configureSMTPConfig();
   
   // Ensure screenshot directory exists
   await ensureDirectoryExists(SCREENSHOT_DIR);
@@ -2614,6 +2316,7 @@ async function main() {
     await login(page, ADMIN_USERNAME, ADMIN_PASSWORD!);
     
     // Navigate to dashboard
+    console.log('🌐 Navigating to dashboard page (/)...');
     await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
     
@@ -2634,18 +2337,6 @@ async function main() {
     if (backupTooltip) successful.push('screen-backup-tooltip.png');
     else failed.push('screen-backup-tooltip.png');
     
-    // Capture collect button popups
-    const collectPopups = await captureCollectButtonPopup(page);
-    if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
-    else failed.push('screen-collect-button-popup.png');
-    if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
-    else failed.push('screen-collect-button-right-click-popup.png');
-    
-    // Capture Duplicati configuration dropdown
-    const duplicatiConfig = await captureDuplicatiConfiguration(page);
-    if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
-    else failed.push('screen-duplicati-configuration.png');
-    
     // Capture dashboard summary card
     const dashboardSummary = await captureDashboardSummary(page, 'screen-dashboard-summary.png');
     if (dashboardSummary) successful.push('screen-dashboard-summary.png');
@@ -2658,10 +2349,23 @@ async function main() {
     if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
     else failed.push('screen-overview-side-charts.png');
     
-    // Capture auto-refresh controls
-    const autoRefreshControls = await captureAutoRefreshControls(page);
-    if (autoRefreshControls) successful.push('screen-auto-refresh.png');
-    else failed.push('screen-auto-refresh.png');
+    // Now capture toolbar elements that work on /blank page
+    // Capture collect button popups (navigates to /blank internally)
+    const collectPopups = await captureCollectButtonPopup(page);
+    if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
+    else failed.push('screen-collect-button-popup.png');
+    if (collectPopups.rightClick) successful.push('screen-collect-button-right-click-popup.png');
+    else failed.push('screen-collect-button-right-click-popup.png');
+    
+    // Capture Duplicati configuration dropdown (navigates to /blank internally)
+    const duplicatiConfig = await captureDuplicatiConfiguration(page);
+    if (duplicatiConfig) successful.push('screen-duplicati-configuration.png');
+    else failed.push('screen-duplicati-configuration.png');
+    
+    // Capture user menu dropdown (admin) (navigates to /blank internally)
+    const userMenuAdmin = await captureUserMenu(page, 'admin');
+    if (userMenuAdmin) successful.push('screen-user-menu-admin.png');
+    else failed.push('screen-user-menu-admin.png');
     
     // Get list of servers from database (more reliable than API)
     // This will be our source of truth for available servers
@@ -2977,6 +2681,7 @@ async function main() {
     console.log('-------------------------------------------------------');
     console.log('Navigating to first server\'s backup list page...');
     console.log(`Navigating to server backup list: ${firstServer.name} (${firstServer.id})`);
+    console.log(`🌐 Navigating to server detail page (/detail/${firstServer.id})...`);
     await page.goto(`${BASE_URL}/detail/${firstServer.id}`, { waitUntil: 'networkidle0' });
     
     // Wait for content to load (client component fetches data after page load)
@@ -3016,6 +2721,7 @@ async function main() {
     if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
       const firstBackup = backupDetails.server.backups[0];
       console.log(`Navigating to backup detail: ${firstBackup.id}`);
+      console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
       await page.goto(`${BASE_URL}/detail/${firstServer.id}/backup/${firstBackup.id}`, { waitUntil: 'networkidle0' });
       await delay(2000);
       backupDetail = await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
@@ -3032,13 +2738,10 @@ async function main() {
     if (serverOverdueMessage) successful.push('screen-server-overdue-message.png');
     else failed.push('screen-server-overdue-message.png');
     
-    // Capture server detail summary (server without overdue backups)
-    const serverDetailSummary = await captureServerDetailSummary(page);
-    if (serverDetailSummary) successful.push('screen-detail-summary.png');
-    else failed.push('screen-detail-summary.png');
-    
     // Navigate to settings page
+    console.log('-------------------------------------------------------');
     console.log('Navigating to settings page...');
+    console.log('🌐 Navigating to settings page (/settings)...');
     await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });
     await delay(2000);
     
@@ -3064,17 +2767,9 @@ async function main() {
       'database-maintenance'
     ];
     
-    let oldNtfyTopic: string | null = null;
-    
     for (const tab of adminSettingsTabs) {
       console.log('-------------------------------------------------------');
       console.log(`Taking screenshot of settings tab: ${tab}`);
-      
-      // Special handling for NTFY tab - update topic before screenshot
-      if (tab === 'ntfy') {
-        oldNtfyTopic = await updateNtfyTopic(page, 'duplistatus-screencapture');
-        await delay(1000);
-      }
       
       // Special handling for audit tab - delete server_deletion entries before screenshot
       if (tab === 'audit') {
@@ -3082,6 +2777,7 @@ async function main() {
         await delay(1000);
       }
       
+      console.log(`🌐 Navigating to settings tab: /settings?tab=${tab}...`);
       await page.goto(`${BASE_URL}/settings?tab=${tab}`, { waitUntil: 'networkidle0' });
       await delay(2000);
       
@@ -3090,37 +2786,6 @@ async function main() {
       const settingsTabResult = await takeScreenshot(page, filename, { isSettingsPage: true });
       if (settingsTabResult) successful.push(filename);
       else failed.push(filename);
-      
-      // Capture NTFY Configure Device popup after NTFY settings screenshot
-      if (tab === 'ntfy') {
-        const ntfyPopup = await captureNtfyConfigureDevicePopup(page);
-        if (ntfyPopup) successful.push('screen-settings-ntfy-configure-device-popup.png');
-        else failed.push('screen-settings-ntfy-configure-device-popup.png');
-        
-        // Restore old NTFY topic after capturing popup
-        if (oldNtfyTopic) {
-          await updateNtfyTopic(page, oldNtfyTopic);
-          await delay(1000);
-        }
-      }
-      
-      // Capture backup notifications detail after notifications settings screenshot
-      if (tab === 'notifications') {
-        const notificationsDetail = await captureBackupNotificationsDetail(page);
-        if (notificationsDetail) successful.push('screen-settings-backup-notifications-detail.png');
-        else failed.push('screen-settings-backup-notifications-detail.png');
-      }
-      
-      // Capture overdue monitoring table rows and configuration card
-      if (tab === 'overdue') {
-        const overdueTableRows = await captureOverdueMonitoringTableRows(page);
-        if (overdueTableRows) successful.push('screen-settings-overdue-bkp.png');
-        else failed.push('screen-settings-overdue-bkp.png');
-        
-        const overdueConfig = await captureOverdueMonitoringConfig(page);
-        if (overdueConfig) successful.push('screen-settings-overdue-conf.png');
-        else failed.push('screen-settings-overdue-conf.png');
-      }
     }
     
     // Logout and login as non-admin user
@@ -3129,7 +2794,13 @@ async function main() {
     await logout(page);
     await login(page, USER_USERNAME, USER_PASSWORD!);
     
+    // Capture user menu dropdown (user)
+    const userMenuUser = await captureUserMenu(page, 'user');
+    if (userMenuUser) successful.push('screen-user-menu-user.png');
+    else failed.push('screen-user-menu-user.png');
+    
     // Navigate to settings page as non-admin
+    console.log('🌐 Navigating to settings page as non-admin (/settings)...');
     await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });
     await delay(2000);
     

@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react'; // Assuming you named it <IIcon> in MDX, 
 import Link from '@docusaurus/Link';
 import styles from './IconButton.module.css'; // Use CSS Modules for local styling
 
-export default function IconButton({ icon, label, onClick, href, className }) {
+export default function IconButton({ icon, label, onClick, href, className, style }) {
   // Prepare the content to be rendered inside the element
   const content = (
     <>
@@ -19,6 +19,7 @@ export default function IconButton({ icon, label, onClick, href, className }) {
         to={href}
         onClick={onClick}
         className={`${styles.iconButton} ${className || ''}`}
+        style={style}
       >
         {content}
       </Link>
@@ -30,6 +31,7 @@ export default function IconButton({ icon, label, onClick, href, className }) {
       type="button"
       onClick={onClick}
       className={`${styles.iconButton} ${className || ''}`}
+      style={style}
     >
       {content}
     </button>

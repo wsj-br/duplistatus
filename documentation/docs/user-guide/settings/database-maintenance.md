@@ -5,6 +5,16 @@ Manage your backup data and optimise performance through database maintenance op
 
 ![Database maintenance](/img/screen-settings-database-maintenance.png)
 
+
+<br/>
+
+> [!NOTE]
+> All statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
+> 
+> If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.
+
+<br/>
+
 ## Data Cleanup Period
 
 Remove outdated backup records to free up storage space and improve system performance.
@@ -63,7 +73,11 @@ Remove a specific server and all its associated backup data.
 
 ## Merge Duplicate Servers
 
-Detect and merge duplicate servers that have the same name but different IDs. This can occur when Duplicati's machine-id changes after an upgrade or reinstall.
+Detect and merge duplicate servers that have the same name but different IDs. se this feature to consolidate them into a single server entry.  
+
+This can occur when Duplicati's `machine-id` changes after an upgrade or reinstall. Duplicate servers are only shown when they exist. If no duplicates are detected, the section will display a message indicating that all servers have unique names.
+
+
 
 1.  Navigate to `Settings → Database Maintenance`.
 2.  If duplicate servers are detected, a **Merge Duplicate Servers** section will appear.
@@ -75,6 +89,7 @@ Detect and merge duplicate servers that have the same name but different IDs. Th
 5.  Click `Merge Selected Servers`.
 6.  Confirm the action in the dialogue box.
 
+
 **Merge Process:**
 
 - All old server IDs are merged into the target server (newest by creation date)
@@ -83,17 +98,5 @@ Detect and merge duplicate servers that have the same name but different IDs. Th
 - Dashboard statistics are updated automatically
 
 > [!IMPORTANT]
-> This action cannot be undone. Make sure you want to merge the selected server groups before confirming.
+> This action cannot be undone. A database backup is recommended before confirming.  
 
-> [!NOTE]
-> Duplicate servers are only shown when they exist. If no duplicates are detected, the section will display a message indicating that all servers have unique names.
-
-> [!TIP]
-> Duplicati's machine-id can change after an upgrade, reinstall or using the ``--machine-id`` command line option. If the `machine-id` is changed, it can create duplicate server entries. Use this feature to consolidate them into a single server entry.  
-
-<br/>
-
-> [!NOTE]
-> All statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
-> 
-> If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.

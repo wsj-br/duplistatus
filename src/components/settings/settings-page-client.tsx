@@ -89,7 +89,6 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
 
     // If the server list has changed, refresh only the server list data
     if (currentServerListHash !== lastServerListHash) {
-      console.log('Server list changed, refreshing server list...');
       refreshServerListOnly().then(() => {
         setLastServerListHash(currentServerListHash);
         toast({
@@ -120,7 +119,6 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
           
           // If server list has changed, refresh only the server list data
           if (freshServerListHash !== lastServerListHash && lastServerListHash !== '') {
-            console.log('Page visibility change detected server list changes, refreshing server list...');
             await refreshServerListOnly();
             setLastServerListHash(freshServerListHash);
             toast({
@@ -150,7 +148,6 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
         
         // If server list has changed, refresh only the server list data
         if (freshServerListHash !== lastServerListHash && lastServerListHash !== '') {
-          console.log('Window focus detected server list changes, refreshing server list...');
           await refreshServerListOnly();
           setLastServerListHash(freshServerListHash);
           toast({

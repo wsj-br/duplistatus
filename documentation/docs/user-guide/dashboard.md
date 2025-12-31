@@ -91,12 +91,12 @@ The table layout lists the most recent backup logs received for all servers and 
 
 ### Notifications Icons
 
-| Icon                                     | Notification Option | Description                                                                                         |
-| ---------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| ![off](/img/screen-nt-off.png)           | Off                 | No notifications will be sent when a new backup log is received                                     |
-| ![all](/img/screen-nt-all.png)           | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
-| ![warnings](/img/screen-nt-warnings.png) | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
-| ![errors](/img/screen-nt-errors.png)     | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
+| Icon                                                                                                                                    | Notification Option | Description                                                                                         |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />     | Off                 | No notifications will be sent when a new backup log is received                                     |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} />     | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} />    | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} />    | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
 > [!NOTE]
 > This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.

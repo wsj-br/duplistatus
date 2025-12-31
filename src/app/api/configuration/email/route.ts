@@ -72,7 +72,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     const existingConfig = getSMTPConfig();
     
     // Extract fields from request body
-    const { host, port, connectionType, secure, username, mailto, senderName, fromAddress, requireAuth } = body;
+    const { host, port, connectionType, secure, username, mailto, senderName, fromAddress, requireAuth, password } = body;
     
     // Validate required fields (excluding password)
     // If requireAuth is false, username is not required
@@ -129,13 +129,20 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       finalConnectionType = 'starttls';
     }
 
-    // Create SMTP config object, preserving existing password
+    // Create SMTP config object
+    // If password is explicitly provided (even if empty), use it; otherwise preserve existing
+    // If username is explicitly provided (even if empty), use it
+    const finalPassword = password !== undefined ? password : (existingConfig?.password || '');
+    const finalUsername = username !== undefined 
+      ? (needsAuth ? username.trim() : (username?.trim() || ''))
+      : (existingConfig?.username || '');
+    
     const smtpConfig: SMTPConfig = {
       host: host.trim(),
       port: portNumber,
       connectionType: finalConnectionType,
-      username: needsAuth ? username.trim() : (username?.trim() || ''), // Use provided username or empty string
-      password: existingConfig?.password || '', // Preserve existing password or use empty string
+      username: finalUsername,
+      password: finalPassword,
       mailto: mailto.trim(),
       senderName: senderName !== undefined ? (senderName.trim() || undefined) : undefined,
       fromAddress: fromAddress !== undefined ? (fromAddress.trim() || undefined) : undefined,

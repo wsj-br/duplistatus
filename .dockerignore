@@ -34,6 +34,28 @@ data/*
 .specstory/*
 *.diff
 *.tmp
+dev/
+tmp/
+production.yml
+
+# Exclude testing/development scripts but keep build-required scripts
+scripts/generate-test-data.ts
+scripts/test-*.ts
+scripts/set-smtp-test-config.ts
+scripts/take-screenshots.ts
+scripts/clean-*.sh
+scripts/compare-versions.sh
+scripts/copy-images.sh
+scripts/delete-*.sql
+scripts/docker-*.sh
+scripts/generate-migration-test-data.sh
+scripts/generate-readme-from-intro.sh
+scripts/migration_test_data/
+scripts/podman_testing/
+scripts/temporary_ntfy.sh_block.sh
+scripts/test-migrations.sh
+scripts/update-readme-for-dockerhub.sh
+scripts/upgrade-dependencies.sh
 
 # Test files
 __tests__

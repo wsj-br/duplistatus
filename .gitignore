@@ -18,6 +18,9 @@ data/*
 backups.db
 tmp/*
 smtp-test-results.json
+scripts/podman_testing/data
+scripts/podman_testing/.data
+scripts/podman_testing/.env
 
 
 # next.js
@@ -31,6 +34,7 @@ smtp-test-results.json
 .DS_Store
 *.pem
 README_dockerhub.md
+RELEASE_NOTES_github_*.md
 
 # development files
 .specstory/**
@@ -41,6 +45,7 @@ README_dockerhub.md
 documentation/node_modules
 documentation/build
 documentation/.docusaurus/
+documentation/pnpm-lock.yaml
 public/documentation
 
 # debug

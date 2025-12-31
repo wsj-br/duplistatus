@@ -87,9 +87,6 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     try {
       const refreshStartTime = Date.now();
       
-      // Log to browser console for debugging (always enabled in production builds)
-      console.log('[CLIENT] refreshDashboard - Starting dashboard refresh...');
-      
       setState(prev => ({
         ...prev,
         isRefreshing: true,
@@ -104,7 +101,6 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       ]);
       
       const fetchTime = Date.now() - refreshStartTime;
-      console.log(`[CLIENT] refreshDashboard - API response received (${fetchTime}ms), status: ${dashboardResponse.status}`);
 
       if (!dashboardResponse.ok) {
         throw new Error('Failed to fetch dashboard data');
@@ -124,8 +120,6 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
       const chartData = dashboardData.chartData;
 
       const totalTime = Date.now() - refreshStartTime;
-      console.log(`[CLIENT] refreshDashboard - Data processed, updating state. Total time: ${totalTime}ms`);
-      console.log(`[CLIENT] refreshDashboard - Data summary: ${serversData.length} servers, ${chartData.length} chart points`);
 
       setState(prev => ({
         ...prev,
@@ -215,7 +209,6 @@ export const GlobalRefreshProvider = ({ children }: { children: React.ReactNode 
     
     // Trigger refresh when returning to dashboard
     if (isReturningToDashboard && !state.isRefreshing && !state.refreshInProgress) {
-      console.log('User returned to dashboard, triggering refresh');
       refreshDashboard();
     }
     

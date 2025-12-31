@@ -22,12 +22,9 @@ let lastCacheClearTime: number = Date.now();
 let cacheClearCount: number = 0;
 
 // Helper function to log cache operations in production mode
+// Removed logging for production builds
 function logCacheOperation(operation: string, details?: string): void {
-  if (process.env.NODE_ENV === 'production') {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[CACHE] ${timestamp} - ${operation}${details ? ` - ${details}` : ''}`;
-    console.log(logMessage);
-  }
+  // Logging disabled in production
 }
 
 // Helper function to get cached value or compute and cache it
@@ -1002,9 +999,6 @@ export async function getServersSummary() {
         backupNames: string[];
       }>();
       
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`[getServersSummary] Query returned ${rows.length} rows from database`);
-      }
       
       rows.forEach(row => {
         const serverId = row.server_id;
@@ -1109,10 +1103,6 @@ export async function getServersSummary() {
         
       });
       
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`[getServersSummary] Processed ${serverMap.size} unique servers from ${rows.length} rows`);
-        console.log(`[getServersSummary] Server IDs: ${Array.from(serverMap.keys()).join(', ')}`);
-      }
       
       // Process each server to add overdue status and other derived data per backup job
       const result = await Promise.all(Array.from(serverMap.values()).map(async (server) => {
@@ -1165,14 +1155,11 @@ export async function getServersSummary() {
         return server;
       }));
       
-      if (process.env.NODE_ENV === 'production') {
-        console.log(`[getServersSummary] Returning ${result.length} servers after processing`);
-      }
            
       return result;
     });
   } catch (error) {
-    console.error('[getServersSummary] Error:', error instanceof Error ? error.message : String(error));
+    // Error logging handled by error handler
     return [];
   }
 }
@@ -2168,13 +2155,13 @@ export function getSMTPConfig(): SMTPConfig | null {
           ? (encryptedConfig.secure ? 'ssl' : 'starttls')
           : 'starttls');
       
-      // Decrypt username and password
+      // Decrypt username and password (only if they're not empty strings)
       const decryptedConfig: SMTPConfig = {
         host: encryptedConfig.host,
         port: encryptedConfig.port,
         connectionType,
-        username: decryptData(encryptedConfig.username),
-        password: decryptData(encryptedConfig.password),
+        username: (encryptedConfig.username && encryptedConfig.username.trim() !== '') ? decryptData(encryptedConfig.username) : '',
+        password: (encryptedConfig.password && encryptedConfig.password.trim() !== '') ? decryptData(encryptedConfig.password) : '',
         mailto: encryptedConfig.mailto,
         senderName: encryptedConfig.senderName,
         fromAddress: encryptedConfig.fromAddress,
@@ -2199,13 +2186,13 @@ export function getSMTPConfig(): SMTPConfig | null {
 
 export function setSMTPConfig(config: SMTPConfig): void {
   try {
-    // Encrypt username and password
+    // Encrypt username and password only if they're not empty
     const encryptedConfig: SMTPConfigEncrypted = {
       host: config.host,
       port: config.port,
       connectionType: config.connectionType,
-      username: encryptData(config.username),
-      password: encryptData(config.password),
+      username: (config.username && config.username.trim() !== '') ? encryptData(config.username) : '',
+      password: (config.password && config.password.trim() !== '') ? encryptData(config.password) : '',
       mailto: config.mailto,
       senderName: config.senderName,
       fromAddress: config.fromAddress,

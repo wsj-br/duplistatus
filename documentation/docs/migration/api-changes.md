@@ -19,12 +19,12 @@ This document covers breaking changes to external API endpoints that affect inte
 
 Version 0.9.x introduces authentication and requires all users to log in. When upgrading from version 0.8.x:
 
-1. **Authentication Required**: All pages and API endpoints now require authentication
+1. **Authentication Required**: All pages and internal API endpoints now require authentication
 2. **Default Admin Account**: A default admin account is created automatically:
    - Username: `admin`
    - Password: `Duplistatus09` (must be changed on first login)
 3. **Session Invalidation**: All existing sessions are invalidated
-4. **API Authentication**: External integrations must include authentication
+4. **External API Access**: External API endpoints (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) remain unauthenticated for compatibility with integrations and Duplicati
 
 ### Version 0.8.x
 
@@ -62,7 +62,7 @@ Version 0.7.x introduces several breaking changes to external API endpoints that
 ##### Endpoint Path Changes
 
 - All API endpoints previously using `/api/machines/...` now use `/api/servers/...`
-- Parameter names changed from `machine_id` to `server_id` (though URL encoding still works with both)
+- Parameter names changed from `machine_id` to `server_id` (URL encoding still works with both)
 
 #### Response Structure Changes
 
@@ -186,20 +186,20 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
    - Update any code that accesses `response.machine` to `response.server`
 
 3. **Update Endpoint Paths**: Change any endpoints using `/api/machines/...` to `/api/servers/...`
-   - Note: Parameters can still accept old identifiers, but paths should be updated
+   - Note: Parameters can still accept old identifiers; paths should be updated
 
 4. **Test Integration**: Verify that your integration works with the new API structure
    - Test all endpoints your application uses
    - Verify response parsing handles new field names correctly
 
 5. **Update Documentation**: Update any internal documentation referencing the old API
-   - Update API examples
-   - Update field name references in documentation
+   - Update API examples and field name references
 
 ## Compatibility
 
 ### Backward Compatibility
 
+- **Version 0.9.x**: Fully backward compatible with 0.8.x API structure
 - **Version 0.8.x**: Fully backward compatible with 0.7.x API structure
 - **Version 0.7.x**: Not backward compatible with versions prior to 0.7.x
   - Old field names will not work
@@ -213,7 +213,7 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
 
 ## Summary of External API Endpoints
 
-The following external API endpoints are maintained for backward compatibility:
+The following external API endpoints are maintained for backward compatibility and remain unauthenticated:
 
 | Endpoint | Method | Description | Breaking Changes |
 |----------|--------|-------------|------------------|

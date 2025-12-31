@@ -4,18 +4,31 @@
 echo "stop the container duplistatus"
 podman stop duplistatus
 
+echo ""
 echo "remove the container duplistatus"
 podman rm duplistatus
 
+echo ""
 echo "remove the pod Duplistatus"
 podman pod rm Duplistatus
 
-# delete the old images of 'duplistsatus'
-IMAGES_TO_DELETE=$(podman images --format "{{.ID}} {{.Repository}}" | grep "duplistsatus:" | awk '{print $1}')
+# delete the old images of 'duplistatus'
+echo ""
+echo "deleting the old images of 'duplistatus'"
+IMAGES_TO_DELETE=$(podman images --format "{{.ID}} {{.Repository}}" | grep "duplistatus" | awk '{print $1}')
 if [ -n "$IMAGES_TO_DELETE" ]; then
-    echo "Found old images of 'duplistsatus'. Deleting..."
+echo "Found old images of 'duplistatus'. Deleting..."
     podman rmi $IMAGES_TO_DELETE
 else
-    echo "No old images of 'duplistsatus' found. Skipping."
+    echo "No old images of 'duplistatus' found. Skipping."
 fi
 
+# purge unused images
+echo ""
+echo "purging unused images"
+podman image prune --force
+
+# list the images
+echo ""
+echo "listing the images"
+podman image ls

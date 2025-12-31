@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ -f ".env" ]; then
+    set -a  # automatically export all variables
+    source .env
+    set +a  # disable automatic export
+    
+else
+    echo "Error: .env file not found"
+    echo "Please create a .env file in the current directory with the following variables: (for local testing)"
+    echo "IMAGE=wsj-br/duplistatus:devel"
+    exit 1
+fi
+
+
+# Get image size
+SIZE=$(docker image inspect $IMAGE --format='{{.Size}}')
+
+# add a overhead of +0%
+SIZE=$((SIZE + SIZE * 0 / 100))
+
+echo "Transferring $IMAGE ($(numfmt --to=iec $SIZE))..."
+
+# Transfer with progress
+docker save $IMAGE | pv -s $SIZE | podman load
+
+if [ $? -eq 0 ]; then
+    echo "Transfer completed successfully!"
+else
+    echo "Transfer failed!"
+    exit 1
+fi
+
+echo ""
+# echo "run the container duplistatus" 
+# ./start.duplistatus
+

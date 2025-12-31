@@ -32,8 +32,8 @@ pnpm generate-test-data --servers=30
 ```
 
 >[!CAUTION]
-> This script delete all the previous data in the database and replace it with the test data.
-> Backup your database before running this script.
+> This script deletes all previous data in the database and replaces it with test data.
+> Back up your database before running this script.
 
 ## Show the overdue notifications contents (to debug notification system)
 

@@ -78,7 +78,7 @@ if (!fs.existsSync(dataDir)) {
 }
 
 const dbPath = path.join(dataDir, 'backups.db');
-console.log(`[Database] Using database at: ${path.resolve(dbPath)}`);
+// console.log(`[Database] Using database at: ${path.resolve(dbPath)}`);
 
 // Use a global singleton to prevent multiple database connections during hot reload
 // This is critical in development mode where Next.js may re-import modules
@@ -147,7 +147,7 @@ if (global.__dbInstance) {
 
           cleanupPerformed = true;
           dbInstance.close();
-          logWithTimestamp('[Database] ✅ Database connection closed successfully');
+          //logWithTimestamp('[Database] ✅ Database connection closed successfully');
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
           errorWithTimestamp('[Database] ❌ Error while closing database:', errorMessage);
