@@ -3,291 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
-<title data-rh="true">Migration Guide | duplistatus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://wsj-br.github.io/duplistatus/img/duplistatus_banner.png"><meta data-rh="true" name="twitter:image" content="https://wsj-br.github.io/duplistatus/img/duplistatus_banner.png"><meta data-rh="true" property="og:url" content="https://wsj-br.github.io/duplistatus/migration/version_upgrade"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Migration Guide | duplistatus"><meta data-rh="true" name="description" content="This guide provides detailed information about migrating between versions of duplistatus. It covers automatic migration processes, manual steps required, and version-specific changes."><meta data-rh="true" property="og:description" content="This guide provides detailed information about migrating between versions of duplistatus. It covers automatic migration processes, manual steps required, and version-specific changes."><link data-rh="true" rel="icon" href="/duplistatus/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://wsj-br.github.io/duplistatus/migration/version_upgrade"><link data-rh="true" rel="alternate" href="https://wsj-br.github.io/duplistatus/migration/version_upgrade" hreflang="en"><link data-rh="true" rel="alternate" href="https://wsj-br.github.io/duplistatus/migration/version_upgrade" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Migration Guide","item":"https://wsj-br.github.io/duplistatus/migration/version_upgrade"}]}</script><link rel="stylesheet" href="/duplistatus/assets/css/styles.94d6ebc8.css">
-<script src="/duplistatus/assets/js/runtime~main.cca3f634.js" defer="defer"></script>
-<script src="/duplistatus/assets/js/main.06b04f52.js" defer="defer"></script>
+<title data-rh="true">Migration Guide | duplistatus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://wsj-br.github.io/duplistatus/img/duplistatus_banner.png"><meta data-rh="true" name="twitter:image" content="https://wsj-br.github.io/duplistatus/img/duplistatus_banner.png"><meta data-rh="true" property="og:url" content="https://wsj-br.github.io/duplistatus/migration/version_upgrade"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Migration Guide | duplistatus"><meta data-rh="true" name="description" content="This guide explains how to upgrade between versions of duplistatus. Migrations are automatic—the database schema updates itself when you start a new version."><meta data-rh="true" property="og:description" content="This guide explains how to upgrade between versions of duplistatus. Migrations are automatic—the database schema updates itself when you start a new version."><link data-rh="true" rel="icon" href="/duplistatus/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://wsj-br.github.io/duplistatus/migration/version_upgrade"><link data-rh="true" rel="alternate" href="https://wsj-br.github.io/duplistatus/migration/version_upgrade" hreflang="en"><link data-rh="true" rel="alternate" href="https://wsj-br.github.io/duplistatus/migration/version_upgrade" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Migration Guide","item":"https://wsj-br.github.io/duplistatus/migration/version_upgrade"}]}</script><link rel="stylesheet" href="/duplistatus/assets/css/styles.6bc6dc47.css">
+<script src="/duplistatus/assets/js/runtime~main.21c1d1d6.js" defer="defer"></script>
+<script src="/duplistatus/assets/js/main.ccc5b950.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
 <symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
 </defs></svg>
-<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"dark"),document.documentElement.setAttribute("data-theme-choice",t||"dark")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/duplistatus/img/duplistatus_logo.svg"><div role="region" aria-label="Skip to main content"><a class="skipToContent_cSro" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/duplistatus/"><div class="navbar__logo"><img src="/duplistatus/img/duplistatus_logo.svg" alt="duplistatus Logo" class="themedComponent_aWkg themedComponent--light_sP9L"><img src="/duplistatus/img/duplistatus_logo.svg" alt="duplistatus Logo" class="themedComponent_aWkg themedComponent--dark_mpjq"></div><b class="navbar__title text--truncate">duplistatus</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/duplistatus/intro">Documentation</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/wsj-br/duplistatus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_XaBQ"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_TXxh colorModeToggle__XY6"><button class="clean-btn toggleButton_HOFv toggleButtonDisabled_G6YD" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon__TqP lightToggleIcon_rr2F"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon__TqP darkToggleIcon_KpkD"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon__TqP systemToggleIcon_Labu"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_bvWG"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_rftW"><div class="docsWrapper_vEwF"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_y_xe" type="button"></button><div class="docRoot_U__G"><aside class="theme-doc-sidebar-container docSidebarContainer_f3dP"><div class="sidebarViewport_bd7m"><div class="sidebar_soWA"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_DBLB"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/duplistatus/intro"><span title="Welcome to duplistatus" class="linkLabel_U6qm">Welcome to duplistatus</span></a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_kxCU menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/installation"><span title="Installation" class="categoryLinkLabel_F9bR">Installation</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_kxCU menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/user-guide/overview"><span title="User Guide" class="categoryLinkLabel_F9bR">User Guide</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_kxCU menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" href="/duplistatus/migration/version_upgrade"><span title="Migration" class="categoryLinkLabel_F9bR">Migration</span></a></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/duplistatus/migration/version_upgrade"><span title="Migration Guide" class="linkLabel_U6qm">Migration Guide</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/duplistatus/migration/api-changes"><span title="API Breaking Changes" class="linkLabel_U6qm">API Breaking Changes</span></a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_kxCU menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/api-reference/overview"><span title="API Reference" class="categoryLinkLabel_F9bR">API Reference</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_kxCU menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/development/setup"><span title="Development" class="categoryLinkLabel_F9bR">Development</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_kxCU menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/release-notes/1.0.x"><span title="Release Notes" class="categoryLinkLabel_F9bR">Release Notes</span></a></div></li></ul></nav></div></div></aside><main class="docMainContainer_G59_"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_q4Q8"><div class="docItemContainer_l6hF"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_i072" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/duplistatus/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_xLof"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Migration</span></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Migration Guide</span></li></ul></nav><div class="tocCollapsible_i7_R theme-doc-toc-mobile tocMobile_qkwp"><button type="button" class="clean-btn tocCollapsibleButton_OIIo">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Migration Guide</h1></header>
-<p>This guide provides detailed information about migrating between versions of duplistatus. It covers automatic migration processes, manual steps required, and version-specific changes.</p>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="overview">Overview<a href="#overview" class="hash-link" aria-label="Direct link to Overview" title="Direct link to Overview" translate="no">​</a></h2>
-<p>duplistatus uses an automatic migration system that updates your database schema when upgrading between versions. This document outlines what to expect during migration and any manual steps that may be required.</p>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="automatic-migration">Automatic Migration<a href="#automatic-migration" class="hash-link" aria-label="Direct link to Automatic Migration" title="Direct link to Automatic Migration" translate="no">​</a></h2>
-<p>The migration process happens automatically when you start a new version:</p>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="migration-process">Migration Process<a href="#migration-process" class="hash-link" aria-label="Direct link to Migration Process" title="Direct link to Migration Process" translate="no">​</a></h3>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"dark"),document.documentElement.setAttribute("data-theme-choice",t||"dark")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/duplistatus/img/duplistatus_logo.svg"><div role="region" aria-label="Skip to main content"><a class="skipToContent_BiSY" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/duplistatus/"><div class="navbar__logo"><img src="/duplistatus/img/duplistatus_logo.svg" alt="duplistatus Logo" class="themedComponent_WUqw themedComponent--light_fUpw"><img src="/duplistatus/img/duplistatus_logo.svg" alt="duplistatus Logo" class="themedComponent_WUqw themedComponent--dark_tqMC"></div><b class="navbar__title text--truncate">duplistatus</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/duplistatus/intro">Documentation</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><div class="navbarSearchContainer_qba_"><div class="dsla-search-wrapper"><div class="dsla-search-field" data-tags="default,docs-default-current"></div></div></div><a href="https://github.com/wsj-br/duplistatus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_bSjt"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_B_jO colorModeToggle_jZxJ"><button class="clean-btn toggleButton_BeCY toggleButtonDisabled_XFEq" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_psOA lightToggleIcon_lzYj"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_psOA darkToggleIcon_iw73"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_psOA systemToggleIcon_lF1S"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_ApF5"><div class="docsWrapper_jTrD"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_UcY2" type="button"></button><div class="docRoot_hFeV"><aside class="theme-doc-sidebar-container docSidebarContainer_Mx1Y"><div class="sidebarViewport_CABn"><div class="sidebar_kv5U"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_nHS1"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/duplistatus/intro"><span title="Welcome to duplistatus" class="linkLabel_rWuR">Welcome to duplistatus</span></a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_DKGJ menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/installation"><span title="Installation" class="categoryLinkLabel_ReCw">Installation</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_DKGJ menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/user-guide/overview"><span title="User Guide" class="categoryLinkLabel_ReCw">User Guide</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_DKGJ menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" href="/duplistatus/migration/version_upgrade"><span title="Migration" class="categoryLinkLabel_ReCw">Migration</span></a></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/duplistatus/migration/version_upgrade"><span title="Migration Guide" class="linkLabel_rWuR">Migration Guide</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/duplistatus/migration/api-changes"><span title="API Breaking Changes" class="linkLabel_rWuR">API Breaking Changes</span></a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_DKGJ menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/api-reference/overview"><span title="API Reference" class="categoryLinkLabel_ReCw">API Reference</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_DKGJ menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/development/setup"><span title="Development" class="categoryLinkLabel_ReCw">Development</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_DKGJ menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/duplistatus/release-notes/1.1.x"><span title="Release Notes" class="categoryLinkLabel_ReCw">Release Notes</span></a></div></li></ul></nav></div></div></aside><main class="docMainContainer_DpxH"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_dr6N"><div class="docItemContainer_y9CV"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer__boP" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/duplistatus/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_eg0p"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Migration</span></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Migration Guide</span></li></ul></nav><div class="tocCollapsible_bTBG theme-doc-toc-mobile tocMobile_aSdP"><button type="button" class="clean-btn tocCollapsibleButton_Bgqj">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Migration Guide</h1></header>
+<p>This guide explains how to upgrade between versions of duplistatus. Migrations are automatic—the database schema updates itself when you start a new version.</p>
+<p>Manual steps are only required if you have customised notification templates (version 0.8.x changed template variables) or external API integrations that need updating (version 0.7.x changed API field names, version 0.9.x requires authentication).</p>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="overview">Overview<a href="#overview" class="hash-link" aria-label="Direct link to Overview" title="Direct link to Overview" translate="no">​</a></h2>
+<p>duplistatus automatically migrates your database schema when upgrading. The system:</p>
 <ol>
-<li class=""><strong>Backup Creation</strong>: Automatic database backup is created before any changes</li>
-<li class=""><strong>Schema Update</strong>: Database schema is updated automatically</li>
-<li class=""><strong>Data Migration</strong>: Existing data is preserved and migrated to the new schema</li>
-<li class=""><strong>Verification</strong>: Migration is verified and logged</li>
+<li class="">Creates a backup of your database before making changes</li>
+<li class="">Updates the database schema to the latest version</li>
+<li class="">Preserves all existing data (servers, backups, configuration)</li>
+<li class="">Verifies the migration completed successfully</li>
 </ol>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="what-gets-migrated">What Gets Migrated<a href="#what-gets-migrated" class="hash-link" aria-label="Direct link to What Gets Migrated" title="Direct link to What Gets Migrated" translate="no">​</a></h3>
-<ul>
-<li class=""><strong>Database Schema</strong>: Tables are renamed, fields are added, and structure is updated as needed</li>
-<li class=""><strong>Data Preservation</strong>: All existing backup data is preserved</li>
-<li class=""><strong>Server Information</strong>: Server data is migrated to new schema</li>
-<li class=""><strong>Backup History</strong>: All backup logs are preserved</li>
-<li class=""><strong>Configuration</strong>: Settings and preferences are migrated when applicable</li>
-</ul>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="manual-steps-required">Manual Steps Required<a href="#manual-steps-required" class="hash-link" aria-label="Direct link to Manual Steps Required" title="Direct link to Manual Steps Required" translate="no">​</a></h2>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="1-update-external-integrations">1. Update External Integrations<a href="#1-update-external-integrations" class="hash-link" aria-label="Direct link to 1. Update External Integrations" title="Direct link to 1. Update External Integrations" translate="no">​</a></h3>
-<p>If you have external tools or scripts using the API, you may need to update them:</p>
-<ul>
-<li class=""><strong>Homepage Integration</strong>: Update API field references if endpoints changed</li>
-<li class=""><strong>Custom Scripts</strong>: Update field names and endpoint paths in your scripts</li>
-<li class=""><strong>Monitoring Tools</strong>: Update any monitoring integrations that consume API endpoints</li>
-<li class=""><strong>Webhooks</strong>: Update webhook payload handling if response structure changed</li>
-</ul>
 <div class="markdown-alert markdown-alert-note">
 <p class="markdown-alert-title"><span class="octicon octicon-note" style="--oct-icon:url(&quot;data:image/svg+xml;utf8,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; class=&#x27;octicon octicon-info mr-2&#x27; viewBox=&#x27;0 0 16 16&#x27; version=&#x27;1.1&#x27; width=&#x27;16&#x27; height=&#x27;16&#x27; aria-hidden=&#x27;true&#x27;%3E%3Cpath d=&#x27;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&#x27;%3E%3C/path%3E%3C/svg%3E&quot;)"></span>Note</p>
-<p>For details on external API endpoint changes, see the <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> guide.</p>
+<p>Current version: <strong>1.1.0</strong> (Schema v4.0). The migration system supports upgrading from any version 0.6.x or later.</p>
 </div>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="2-test-functionality">2. Test Functionality<a href="#2-test-functionality" class="hash-link" aria-label="Direct link to 2. Test Functionality" title="Direct link to 2. Test Functionality" translate="no">​</a></h3>
-<p>After migration, verify that all features work correctly:</p>
-<ul>
-<li class=""><strong>Dashboard</strong>: Check that all servers appear correctly</li>
-<li class=""><strong>Backup History</strong>: Verify backup history is displayed</li>
-<li class=""><strong>Notifications</strong>: Test notification functionality</li>
-<li class=""><strong>API Endpoints</strong>: Test any external API usage</li>
-<li class=""><strong>Settings</strong>: Verify all configuration settings are accessible</li>
-</ul>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="3-update-documentation">3. Update Documentation<a href="#3-update-documentation" class="hash-link" aria-label="Direct link to 3. Update Documentation" title="Direct link to 3. Update Documentation" translate="no">​</a></h3>
-<p>Update any custom documentation or notes:</p>
-<ul>
-<li class=""><strong>Internal Documentation</strong>: Update field references and endpoint paths</li>
-<li class=""><strong>Integration Guides</strong>: Update API examples</li>
-<li class=""><strong>Troubleshooting Guides</strong>: Update error message references</li>
-</ul>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="version-specific-changes">Version-Specific Changes<a href="#version-specific-changes" class="hash-link" aria-label="Direct link to Version-Specific Changes" title="Direct link to Version-Specific Changes" translate="no">​</a></h2>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="version-09x">Version 0.9.x<a href="#version-09x" class="hash-link" aria-label="Direct link to Version 0.9.x" title="Direct link to Version 0.9.x" translate="no">​</a></h3>
-<p>When upgrading to version 0.9.x from 0.8.x or earlier:</p>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="breaking-changes">Breaking Changes<a href="#breaking-changes" class="hash-link" aria-label="Direct link to Breaking Changes" title="Direct link to Breaking Changes" translate="no">​</a></h4>
-<div class="markdown-alert markdown-alert-warning">
-<p class="markdown-alert-title"><span class="octicon octicon-warning" style="--oct-icon:url(&quot;data:image/svg+xml;utf8,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; class=&#x27;octicon octicon-alert mr-2&#x27; viewBox=&#x27;0 0 16 16&#x27; version=&#x27;1.1&#x27; width=&#x27;16&#x27; height=&#x27;16&#x27; aria-hidden=&#x27;true&#x27;%3E%3Cpath d=&#x27;M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z&#x27;%3E%3C/path%3E%3C/svg%3E&quot;)"></span>Warning</p>
-<p><strong>Version 0.9.x introduces authentication requirements. All users must log in after upgrade.</strong></p>
-</div>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="automatic-migration-process">Automatic Migration Process<a href="#automatic-migration-process" class="hash-link" aria-label="Direct link to Automatic Migration Process" title="Direct link to Automatic Migration Process" translate="no">​</a></h2>
+<p>When you start a new version, migrations run automatically:</p>
 <ol>
-<li class=""><strong>Authentication Required</strong>: All pages and API endpoints now require authentication</li>
-<li class=""><strong>Default Admin Account</strong>: A default admin account is created automatically:<!-- -->
-<ul>
-<li class="">Username: <code>admin</code></li>
-<li class="">Password: <code>Duplistatus09</code> (must be changed on first login)</li>
-</ul>
-</li>
-<li class=""><strong>Session Invalidation</strong>: All existing sessions are invalidated</li>
-<li class=""><strong>API Authentication</strong>: External API integrations must include authentication</li>
+<li class=""><strong>Backup Creation</strong>: A timestamped backup is created in your data directory</li>
+<li class=""><strong>Schema Update</strong>: Database tables and fields are updated as needed</li>
+<li class=""><strong>Data Migration</strong>: All existing data is preserved and migrated</li>
+<li class=""><strong>Verification</strong>: Migration success is logged</li>
 </ol>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="automatic-changes">Automatic Changes<a href="#automatic-changes" class="hash-link" aria-label="Direct link to Automatic Changes" title="Direct link to Automatic Changes" translate="no">​</a></h4>
-<ol>
-<li class=""><strong>Database Migration</strong>: The application will automatically migrate your database schema from v3.1 to v4.0</li>
-<li class=""><strong>Database Backup</strong>: An automatic backup is created before migration</li>
-<li class=""><strong>New Tables</strong>: Three new tables are created:<!-- -->
-<ul>
-<li class=""><code>users</code>: User account information</li>
-<li class=""><code>sessions</code>: Session management</li>
-<li class=""><code>audit_log</code>: Audit trail of all actions</li>
-</ul>
-</li>
-<li class=""><strong>Default Admin User</strong>: A default admin user is created with credentials above</li>
-<li class=""><strong>Session Storage</strong>: Sessions are now stored in the database (persist across restarts)</li>
-</ol>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="manual-actions-required">Manual Actions Required<a href="#manual-actions-required" class="hash-link" aria-label="Direct link to Manual Actions Required" title="Direct link to Manual Actions Required" translate="no">​</a></h4>
-<ol>
-<li class=""><strong>First Login</strong>: Log in with default admin credentials (<code>admin</code> / <code>Duplistatus09</code>)</li>
-<li class=""><strong>Change Password</strong>: Change the default admin password when prompted (forced on first login)</li>
-<li class=""><strong>Create User Accounts</strong>: Create individual user accounts for each person who needs access (Settings → Users)</li>
-<li class=""><strong>Update External Integrations</strong>: Update any external tools or scripts using the API to include authentication:<!-- -->
-<ul>
-<li class="">API requests must include session cookies</li>
-<li class="">Or use authenticated requests with proper credentials</li>
-<li class="">See <a class="" href="/duplistatus/api-reference/authentication-security">API Reference</a> for details</li>
-</ul>
-</li>
-<li class=""><strong>Configure Audit Log Retention</strong>: Set appropriate audit log retention period if needed (Settings → Audit Log)</li>
-</ol>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="security-considerations">Security Considerations<a href="#security-considerations" class="hash-link" aria-label="Direct link to Security Considerations" title="Direct link to Security Considerations" translate="no">​</a></h4>
-<ul>
-<li class=""><strong>Change Default Password</strong>: Change the default admin password immediately after first login</li>
-<li class=""><strong>Create User Accounts</strong>: Create individual accounts for each user (don&#x27;t share admin credentials)</li>
-<li class=""><strong>Review Audit Logs</strong>: Check audit logs regularly for security monitoring</li>
-<li class=""><strong>Configure Retention</strong>: Set appropriate audit log retention period based on compliance requirements</li>
-<li class=""><strong>Master Key File</strong>: If upgrading from 0.8.x, ensure the <code>.duplistatus.key</code> file is backed up (still used for encrypted data)</li>
-</ul>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="new-features">New Features<a href="#new-features" class="hash-link" aria-label="Direct link to New Features" title="Direct link to New Features" translate="no">​</a></h4>
-<ul>
-<li class=""><strong>User Access Control</strong>: Complete authentication and authorization system</li>
-<li class=""><strong>User Management</strong>: Create, edit, and manage user accounts with role-based access</li>
-<li class=""><strong>Audit Logging</strong>: Comprehensive audit trail of all system changes and user actions</li>
-<li class=""><strong>Settings Redesign</strong>: Modern settings page with collapsible sidebar</li>
-<li class=""><strong>Admin Recovery Tool</strong>: CLI tool for recovering locked admin accounts</li>
-<li class=""><strong>Password Policy</strong>: Enforced password requirements for security</li>
-<li class=""><strong>Account Lockout</strong>: Protection against brute-force attacks</li>
-</ul>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="migration-process-1">Migration Process<a href="#migration-process-1" class="hash-link" aria-label="Direct link to Migration Process" title="Direct link to Migration Process" translate="no">​</a></h4>
-<p>The migration from v3.1 to v4.0 happens automatically:</p>
-<ol>
-<li class=""><strong>Backup Creation</strong>: Database backup is created automatically</li>
-<li class=""><strong>Schema Update</strong>: New tables (<code>users</code>, <code>sessions</code>, <code>audit_log</code>) are created</li>
-<li class=""><strong>Default User</strong>: Admin user is seeded with default credentials</li>
-<li class=""><strong>Session Migration</strong>: Existing sessions are invalidated (users must log in)</li>
-<li class=""><strong>Data Preservation</strong>: All existing backup data, servers, and configuration are preserved</li>
-</ol>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="post-migration-steps">Post-Migration Steps<a href="#post-migration-steps" class="hash-link" aria-label="Direct link to Post-Migration Steps" title="Direct link to Post-Migration Steps" translate="no">​</a></h4>
-<p>After migration completes:</p>
-<ol>
-<li class="">Log in with default admin credentials</li>
-<li class="">Change admin password when prompted</li>
-<li class="">Create user accounts for other users</li>
-<li class="">Review audit logs to verify system is working</li>
-<li class="">Update external API integrations to include authentication</li>
-<li class="">Configure audit log retention if needed</li>
-</ol>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="version-08x">Version 0.8.x<a href="#version-08x" class="hash-link" aria-label="Direct link to Version 0.8.x" title="Direct link to Version 0.8.x" translate="no">​</a></h3>
-<p>When upgrading to version 0.8.x from 0.7.x or earlier:</p>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="automatic-changes-1">Automatic Changes<a href="#automatic-changes-1" class="hash-link" aria-label="Direct link to Automatic Changes" title="Direct link to Automatic Changes" translate="no">​</a></h4>
-<ol>
-<li class=""><strong>Database Migration</strong>: The application will automatically migrate your database schema to support new features</li>
-<li class=""><strong>Master Key Generation</strong>: A new master key will be generated for encryption of sensitive data (stored in <code>.duplistatus.key</code>)</li>
-<li class=""><strong>Session Management</strong>: Existing sessions will be invalidated and new CSRF-protected sessions will be established</li>
-<li class=""><strong>Configuration Updates</strong>: Some configuration keys have been updated to support new features</li>
-<li class=""><strong>Password Encryption</strong>: Existing passwords will be encrypted using the new cryptographic system</li>
-</ol>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="manual-actions-required-1">Manual Actions Required<a href="#manual-actions-required-1" class="hash-link" aria-label="Direct link to Manual Actions Required" title="Direct link to Manual Actions Required" translate="no">​</a></h4>
-<ol>
-<li class=""><strong>Notification Templates</strong>: The variables <code>{backup_interval_value}</code> and <code>{backup_interval_type}</code> were replaced by <code>{backup_interval}</code>. Default templates will be adjusted automatically, but customised templates will not be migrated. Please review and update your custom templates.</li>
-</ol>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="security-considerations-1">Security Considerations<a href="#security-considerations-1" class="hash-link" aria-label="Direct link to Security Considerations" title="Direct link to Security Considerations" translate="no">​</a></h4>
-<ul>
-<li class=""><strong>Master Key File</strong>: Ensure the <code>.duplistatus.key</code> file is properly backed up and secured</li>
-<li class=""><strong>File Permissions</strong>: The master key file will have restricted permissions (0400) for security</li>
-<li class=""><strong>Session Expiration</strong>: Sessions now expire automatically after 24 hours</li>
-</ul>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="new-features-1">New Features<a href="#new-features-1" class="hash-link" aria-label="Direct link to New Features" title="Direct link to New Features" translate="no">​</a></h4>
-<ul>
-<li class=""><strong>Enhanced Security</strong>: CSRF protection, password encryption, and secure session management</li>
-<li class=""><strong>SMTP Email Support</strong>: Configure email notifications in addition to NTFY</li>
-<li class=""><strong>Improved Backup Collection</strong>: Automatic HTTP/HTTPS detection and bulk collection functionality</li>
-<li class=""><strong>Enhanced Overdue Monitoring</strong>: Custom intervals compatible with Duplicati server configuration</li>
-</ul>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="version-07x">Version 0.7.x<a href="#version-07x" class="hash-link" aria-label="Direct link to Version 0.7.x" title="Direct link to Version 0.7.x" translate="no">​</a></h3>
-<p>When upgrading to version 0.7.x from 0.6.x or earlier:</p>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="database-changes">Database Changes<a href="#database-changes" class="hash-link" aria-label="Direct link to Database Changes" title="Direct link to Database Changes" translate="no">​</a></h4>
-<p><strong>Table Renaming:</strong></p>
-<ul>
-<li class=""><strong><code>machines</code></strong> → <strong><code>servers</code></strong></li>
-<li class=""><strong><code>machine_id</code></strong> → <strong><code>server_id</code></strong> (in related tables)</li>
-</ul>
-<p><strong>New Fields Added:</strong></p>
-<ul>
-<li class=""><strong><code>alias</code></strong>: Friendly server name</li>
-<li class=""><strong><code>notes</code></strong>: Server description/notes</li>
-<li class=""><strong><code>created_at</code></strong>: Server creation timestamp</li>
-<li class=""><strong><code>updated_at</code></strong>: Last update timestamp</li>
-</ul>
-<p><strong>Schema Improvements:</strong></p>
-<ul>
-<li class=""><strong>Better Indexing</strong>: Improved query performance</li>
-<li class=""><strong>Data Validation</strong>: Enhanced data integrity</li>
-<li class=""><strong>Foreign Key Constraints</strong>: Better referential integrity</li>
-</ul>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="api-changes">API Changes<a href="#api-changes" class="hash-link" aria-label="Direct link to API Changes" title="Direct link to API Changes" translate="no">​</a></h4>
-<div class="markdown-alert markdown-alert-important">
-<p class="markdown-alert-title"><span class="octicon octicon-important" style="--oct-icon:url(&quot;data:image/svg+xml;utf8,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; class=&#x27;octicon octicon-report mr-2&#x27; viewBox=&#x27;0 0 16 16&#x27; version=&#x27;1.1&#x27; width=&#x27;16&#x27; height=&#x27;16&#x27; aria-hidden=&#x27;true&#x27;%3E%3Cpath d=&#x27;M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z&#x27;%3E%3C/path%3E%3C/svg%3E&quot;)"></span>Important</p>
-<p>Version 0.7.x introduced breaking changes to external API endpoints. If you have external integrations, scripts, or applications that consume the API, you <strong>MUST</strong> update them. See the <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> guide for detailed information about API response changes.</p>
-</div>
-<p><strong>Key Changes:</strong></p>
-<ul>
-<li class="">Field renaming: <code>totalMachines</code> → <code>totalServers</code> in <code>/api/summary</code> endpoint</li>
-<li class="">Object renaming: <code>machine</code> → <code>server</code> in API response objects</li>
-<li class="">Field renaming: <code>backup_types_count</code> → <code>backup_jobs_count</code> in <code>/api/lastbackups/{serverId}</code> endpoint</li>
-</ul>
-<h4 class="anchor anchorTargetStickyNavbar_AENb" id="configuration-changes">Configuration Changes<a href="#configuration-changes" class="hash-link" aria-label="Direct link to Configuration Changes" title="Direct link to Configuration Changes" translate="no">​</a></h4>
-<ul>
-<li class=""><strong>API Endpoints</strong>: All API endpoints previously using <code>/api/machines/...</code> now use <code>/api/servers/...</code></li>
-<li class=""><strong>Configuration Keys</strong>: Configuration keys for backup settings have been updated from <code>machine_name:backup_name</code> to <code>server_id:backup_name</code></li>
-<li class=""><strong>Notification Templates</strong>: Template variables have been updated (e.g., <code>{machine_name}</code> → <code>{server_name}</code>). Custom templates will need manual updates.</li>
-</ul>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="database-changes-summary">Database Changes Summary<a href="#database-changes-summary" class="hash-link" aria-label="Direct link to Database Changes Summary" title="Direct link to Database Changes Summary" translate="no">​</a></h2>
-<p>The following table summarises major database schema changes across versions:</p>
-<table><thead><tr><th>Version</th><th>Change Type</th><th>Details</th></tr></thead><tbody><tr><td>0.9.x</td><td>Schema</td><td>Added <code>users</code>, <code>sessions</code>, <code>audit_log</code> tables (v4.0)</td></tr><tr><td>0.9.x</td><td>Security</td><td>Complete authentication and authorization system</td></tr><tr><td>0.9.x</td><td>Breaking</td><td>All pages and APIs now require authentication</td></tr><tr><td>0.8.x</td><td>Security</td><td>Added encryption support for sensitive data, master key system</td></tr><tr><td>0.8.x</td><td>Schema</td><td>Enhanced session management and CSRF token storage</td></tr><tr><td>0.7.x</td><td>Table Rename</td><td><code>machines</code> → <code>servers</code>, <code>machine_id</code> → <code>server_id</code></td></tr><tr><td>0.7.x</td><td>New Fields</td><td>Added <code>alias</code>, <code>notes</code>, <code>created_at</code>, <code>updated_at</code> to servers table</td></tr></tbody></table>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="api-changes-1">API Changes<a href="#api-changes-1" class="hash-link" aria-label="Direct link to API Changes" title="Direct link to API Changes" translate="no">​</a></h2>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="external-api-endpoints">External API Endpoints<a href="#external-api-endpoints" class="hash-link" aria-label="Direct link to External API Endpoints" title="Direct link to External API Endpoints" translate="no">​</a></h3>
-<p>For detailed information about changes to external API endpoints and response structures, please refer to the <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> guide. This document covers:</p>
-<ul>
-<li class="">Field renaming in API responses</li>
-<li class="">Response structure changes</li>
-<li class="">Endpoint path changes</li>
-<li class="">Migration steps for external integrations</li>
-</ul>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="internal-api-changes">Internal API Changes<a href="#internal-api-changes" class="hash-link" aria-label="Direct link to Internal API Changes" title="Direct link to Internal API Changes" translate="no">​</a></h3>
-<p>Internal API endpoints used by the web interface are automatically handled during migration. No manual intervention is required for internal API usage.</p>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="troubleshooting">Troubleshooting<a href="#troubleshooting" class="hash-link" aria-label="Direct link to Troubleshooting" title="Direct link to Troubleshooting" translate="no">​</a></h2>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="common-issues">Common Issues<a href="#common-issues" class="hash-link" aria-label="Direct link to Common Issues" title="Direct link to Common Issues" translate="no">​</a></h3>
-<ol>
-<li class="">
-<p><strong>Migration Fails</strong>: Check disk space and permissions</p>
-<ul>
-<li class="">Ensure sufficient disk space for database backup</li>
-<li class="">Verify write permissions on the data directory</li>
-</ul>
-</li>
-<li class="">
-<p><strong>Data Missing</strong>: Verify database backup was created</p>
-<ul>
-<li class="">Check the backup location (typically in the data directory)</li>
-<li class="">Review container logs for backup creation messages</li>
-</ul>
-</li>
-<li class="">
-<p><strong>API Errors</strong>: Update external integrations</p>
-<ul>
-<li class="">Review <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> for endpoint updates</li>
-<li class="">Test API endpoints after migration</li>
-</ul>
-</li>
-<li class="">
-<p><strong>Performance Issues</strong>: Check database indexes</p>
-<ul>
-<li class="">Verify database file integrity</li>
-<li class="">Review container logs for migration warnings</li>
-</ul>
-</li>
-<li class="">
-<p><strong>Master Key Issues</strong> (0.8.x+):</p>
-<ul>
-<li class="">Ensure <code>.duplistatus.key</code> file is accessible</li>
-<li class="">Verify file permissions are set correctly (0400)</li>
-<li class="">Check container logs for key generation errors</li>
-</ul>
-</li>
-<li class="">
-<p><strong>Authentication Issues</strong> (0.9.x+):</p>
-<ul>
-<li class="">Verify default admin account was created (check logs)</li>
-<li class="">Try logging in with default credentials (<code>admin</code> / <code>Duplistatus09</code>)</li>
-<li class="">If locked out, use admin recovery tool: <code>docker exec -it duplistatus /app/admin-recovery admin NewPassword123</code></li>
-<li class="">Check that database migration completed successfully</li>
-<li class="">Verify <code>users</code> table exists in database</li>
-</ul>
-</li>
-</ol>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="recovery-steps">Recovery Steps<a href="#recovery-steps" class="hash-link" aria-label="Direct link to Recovery Steps" title="Direct link to Recovery Steps" translate="no">​</a></h3>
-<p>If migration fails:</p>
-<ol>
-<li class=""><strong>Stop Container</strong>: Stop the duplistatus container</li>
-<li class=""><strong>Restore Backup</strong>: Replace database with backup file (located in the data directory)</li>
-<li class=""><strong>Check Logs</strong>: Review container logs for errors<!-- -->
-<div class="language-bash codeBlockContainer_oIWE theme-code-block" style="--prism-color:#d6deeb;--prism-background-color:#011627"><div class="codeBlockContent_uzLB"><pre tabindex="0" class="prism-code language-bash codeBlock_JYAQ thin-scrollbar" style="color:#d6deeb;background-color:#011627"><code class="codeBlockLines_tn2x"><span class="token-line" style="color:#d6deeb"><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> logs </span><span class="token operator" style="color:rgb(127, 219, 202)">&lt;</span><span class="token plain">container-name</span><span class="token operator" style="color:rgb(127, 219, 202)">&gt;</span><br></span></code></pre></div></div>
-</li>
-<li class=""><strong>Report Issue</strong>: Open GitHub issue with logs and migration details</li>
-</ol>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="monitoring-migration-progress">Monitoring Migration Progress<a href="#monitoring-migration-progress" class="hash-link" aria-label="Direct link to Monitoring Migration Progress" title="Direct link to Monitoring Migration Progress" translate="no">​</a></h3>
-<p>To monitor migration progress, check the Docker logs:</p>
-<div class="language-bash codeBlockContainer_oIWE theme-code-block" style="--prism-color:#d6deeb;--prism-background-color:#011627"><div class="codeBlockContent_uzLB"><pre tabindex="0" class="prism-code language-bash codeBlock_JYAQ thin-scrollbar" style="color:#d6deeb;background-color:#011627"><code class="codeBlockLines_tn2x"><span class="token-line" style="color:#d6deeb"><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> logs </span><span class="token operator" style="color:rgb(127, 219, 202)">&lt;</span><span class="token plain">container-name</span><span class="token operator" style="color:rgb(127, 219, 202)">&gt;</span><br></span></code></pre></div></div>
-<p>Look for these messages to confirm successful migration:</p>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="monitoring-migration">Monitoring Migration<a href="#monitoring-migration" class="hash-link" aria-label="Direct link to Monitoring Migration" title="Direct link to Monitoring Migration" translate="no">​</a></h3>
+<p>Check Docker logs to monitor migration progress:</p>
+<div class="language-bash codeBlockContainer_timU theme-code-block" style="--prism-color:#d6deeb;--prism-background-color:#011627"><div class="codeBlockContent_BQxH"><pre tabindex="0" class="prism-code language-bash codeBlock_DtFS thin-scrollbar" style="color:#d6deeb;background-color:#011627"><code class="codeBlockLines_UsxB"><span class="token-line" style="color:#d6deeb"><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> logs </span><span class="token operator" style="color:rgb(127, 219, 202)">&lt;</span><span class="token plain">container-name</span><span class="token operator" style="color:rgb(127, 219, 202)">&gt;</span><br></span></code></pre></div></div>
+<p>Look for messages like:</p>
 <ul>
 <li class=""><code>&quot;Found X pending migrations&quot;</code></li>
 <li class=""><code>&quot;Running consolidated migration X.0...&quot;</code></li>
@@ -295,63 +45,155 @@
 <li class=""><code>&quot;Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db&quot;</code></li>
 <li class=""><code>&quot;All migrations completed successfully&quot;</code></li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_AENb" id="getting-help">Getting Help<a href="#getting-help" class="hash-link" aria-label="Direct link to Getting Help" title="Direct link to Getting Help" translate="no">​</a></h3>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="version-specific-migration-notes">Version-Specific Migration Notes<a href="#version-specific-migration-notes" class="hash-link" aria-label="Direct link to Version-Specific Migration Notes" title="Direct link to Version-Specific Migration Notes" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="upgrading-to-version-09x-or-later-schema-v40">Upgrading to Version 0.9.x or Later (Schema v4.0)<a href="#upgrading-to-version-09x-or-later-schema-v40" class="hash-link" aria-label="Direct link to Upgrading to Version 0.9.x or Later (Schema v4.0)" title="Direct link to Upgrading to Version 0.9.x or Later (Schema v4.0)" translate="no">​</a></h3>
+<div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><span class="octicon octicon-warning" style="--oct-icon:url(&quot;data:image/svg+xml;utf8,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; class=&#x27;octicon octicon-alert mr-2&#x27; viewBox=&#x27;0 0 16 16&#x27; version=&#x27;1.1&#x27; width=&#x27;16&#x27; height=&#x27;16&#x27; aria-hidden=&#x27;true&#x27;%3E%3Cpath d=&#x27;M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z&#x27;%3E%3C/path%3E%3C/svg%3E&quot;)"></span>Warning</p>
+<p><strong>Authentication is now required.</strong> All users must log in after upgrading.</p>
+</div>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="what-changes-automatically">What Changes Automatically<a href="#what-changes-automatically" class="hash-link" aria-label="Direct link to What Changes Automatically" title="Direct link to What Changes Automatically" translate="no">​</a></h4>
 <ul>
-<li class=""><strong>Documentation</strong>: Check the <a class="" href="/duplistatus/user-guide/overview">User Guide</a></li>
-<li class=""><strong>API Reference</strong>: Review <a class="" href="/duplistatus/api-reference/overview">API Documentation</a></li>
-<li class=""><strong>API Changes</strong>: See <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> for external endpoint details</li>
-<li class=""><strong>Community</strong>: Ask questions on <a href="https://github.com/wsj-br/duplistatus/discussions" target="_blank" rel="noopener noreferrer" class="">GitHub Discussions</a></li>
-<li class=""><strong>Issues</strong>: Report problems on <a href="https://github.com/wsj-br/duplistatus/issues" target="_blank" rel="noopener noreferrer" class="">GitHub Issues</a></li>
+<li class="">Database schema migrates from v3.1 to v4.0</li>
+<li class="">New tables created: <code>users</code>, <code>sessions</code>, <code>audit_log</code></li>
+<li class="">Default admin account created automatically</li>
+<li class="">All existing sessions invalidated</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="post-migration-checklist">Post-Migration Checklist<a href="#post-migration-checklist" class="hash-link" aria-label="Direct link to Post-Migration Checklist" title="Direct link to Post-Migration Checklist" translate="no">​</a></h2>
-<p>After completing migration, verify the following:</p>
-<ul class="contains-task-list containsTaskList_cfwN">
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Verify all servers appear in dashboard</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Check backup history is complete</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Test notification functionality</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Update external integrations (if applicable)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Verify API endpoints work (test external integrations)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Check performance is acceptable</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Update documentation (custom templates, scripts)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Test backup collection</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Verify overdue monitoring works</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Check database size and performance</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Review and update notification templates (0.8.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Verify master key file exists and is secured (0.8.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Log in with default admin credentials (0.9.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Change default admin password (0.9.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Create user accounts for other users (0.9.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Update external API integrations with authentication (0.9.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Configure audit log retention (0.9.x+)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Review audit logs to verify system operation (0.9.x+)</li>
-</ul>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="rollback-procedure">Rollback Procedure<a href="#rollback-procedure" class="hash-link" aria-label="Direct link to Rollback Procedure" title="Direct link to Rollback Procedure" translate="no">​</a></h2>
-<p>If you need to rollback to a previous version:</p>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="what-you-must-do">What You Must Do<a href="#what-you-must-do" class="hash-link" aria-label="Direct link to What You Must Do" title="Direct link to What You Must Do" translate="no">​</a></h4>
 <ol>
-<li class=""><strong>Stop Container</strong>: Stop the current duplistatus container</li>
-<li class=""><strong>Restore Database</strong>: Replace current database with backup file<!-- -->
+<li class=""><strong>Log in</strong> with default admin credentials:<!-- -->
 <ul>
-<li class="">Default location: <code>/var/lib/docker/volumes/duplistatus_data/_data/</code></li>
-<li class="">To find exact path: <code>docker volume inspect duplistatus_data</code></li>
+<li class="">Username: <code>admin</code></li>
+<li class="">Password: <code>Duplistatus09</code></li>
 </ul>
 </li>
-<li class=""><strong>Install Previous Version</strong>: Use the previous container image version</li>
-<li class=""><strong>Start Container</strong>: Start with previous version</li>
-<li class=""><strong>Report Issue</strong>: Open GitHub issue with details and logs</li>
+<li class=""><strong>Change the password</strong> when prompted (required on first login)</li>
+<li class=""><strong>Create user accounts</strong> for other users (Settings → Users)</li>
+<li class=""><strong>Update external API integrations</strong> to include authentication (see <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a>)</li>
+<li class=""><strong>Configure audit log retention</strong> if needed (Settings → Audit Log)</li>
+</ol>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="if-youre-locked-out">If You&#x27;re Locked Out<a href="#if-youre-locked-out" class="hash-link" aria-label="Direct link to If You&#x27;re Locked Out" title="Direct link to If You&#x27;re Locked Out" translate="no">​</a></h4>
+<p>Use the admin recovery tool:</p>
+<div class="language-bash codeBlockContainer_timU theme-code-block" style="--prism-color:#d6deeb;--prism-background-color:#011627"><div class="codeBlockContent_BQxH"><pre tabindex="0" class="prism-code language-bash codeBlock_DtFS thin-scrollbar" style="color:#d6deeb;background-color:#011627"><code class="codeBlockLines_UsxB"><span class="token-line" style="color:#d6deeb"><span class="token function" style="color:rgb(130, 170, 255)">docker</span><span class="token plain"> </span><span class="token builtin class-name" style="color:rgb(255, 203, 139)">exec</span><span class="token plain"> </span><span class="token parameter variable" style="color:rgb(214, 222, 235)">-it</span><span class="token plain"> duplistatus /app/admin-recovery admin NewPassword123</span><br></span></code></pre></div></div>
+<p>See <a class="" href="/duplistatus/user-guide/admin-recovery">Admin Recovery Guide</a> for details.</p>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="upgrading-to-version-08x">Upgrading to Version 0.8.x<a href="#upgrading-to-version-08x" class="hash-link" aria-label="Direct link to Upgrading to Version 0.8.x" title="Direct link to Upgrading to Version 0.8.x" translate="no">​</a></h3>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="what-changes-automatically-1">What Changes Automatically<a href="#what-changes-automatically-1" class="hash-link" aria-label="Direct link to What Changes Automatically" title="Direct link to What Changes Automatically" translate="no">​</a></h4>
+<ul>
+<li class="">Database schema updated to v3.1</li>
+<li class="">Master key generated for encryption (stored in <code>.duplistatus.key</code>)</li>
+<li class="">Sessions invalidated (new CSRF-protected sessions created)</li>
+<li class="">Passwords encrypted using new system</li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="what-you-must-do-1">What You Must Do<a href="#what-you-must-do-1" class="hash-link" aria-label="Direct link to What You Must Do" title="Direct link to What You Must Do" translate="no">​</a></h4>
+<ol>
+<li class=""><strong>Update notification templates</strong> if you customised them:<!-- -->
+<ul>
+<li class="">Replace <code>{backup_interval_value}</code> and <code>{backup_interval_type}</code> with <code>{backup_interval}</code></li>
+<li class="">Default templates are updated automatically</li>
+</ul>
+</li>
+</ol>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="security-notes">Security Notes<a href="#security-notes" class="hash-link" aria-label="Direct link to Security Notes" title="Direct link to Security Notes" translate="no">​</a></h4>
+<ul>
+<li class="">Ensure <code>.duplistatus.key</code> file is backed up (has 0400 permissions)</li>
+<li class="">Sessions expire after 24 hours</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="upgrading-to-version-07x">Upgrading to Version 0.7.x<a href="#upgrading-to-version-07x" class="hash-link" aria-label="Direct link to Upgrading to Version 0.7.x" title="Direct link to Upgrading to Version 0.7.x" translate="no">​</a></h3>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="what-changes-automatically-2">What Changes Automatically<a href="#what-changes-automatically-2" class="hash-link" aria-label="Direct link to What Changes Automatically" title="Direct link to What Changes Automatically" translate="no">​</a></h4>
+<ul>
+<li class=""><code>machines</code> table renamed to <code>servers</code></li>
+<li class=""><code>machine_id</code> fields renamed to <code>server_id</code></li>
+<li class="">New fields added: <code>alias</code>, <code>notes</code>, <code>created_at</code>, <code>updated_at</code></li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_xjbn" id="what-you-must-do-2">What You Must Do<a href="#what-you-must-do-2" class="hash-link" aria-label="Direct link to What You Must Do" title="Direct link to What You Must Do" translate="no">​</a></h4>
+<ol>
+<li class=""><strong>Update external API integrations</strong>:<!-- -->
+<ul>
+<li class="">Change <code>totalMachines</code> → <code>totalServers</code> in <code>/api/summary</code></li>
+<li class="">Change <code>machine</code> → <code>server</code> in API response objects</li>
+<li class="">Change <code>backup_types_count</code> → <code>backup_jobs_count</code> in <code>/api/lastbackups/{serverId}</code></li>
+<li class="">Update endpoint paths from <code>/api/machines/...</code> to <code>/api/servers/...</code></li>
+</ul>
+</li>
+<li class=""><strong>Update notification templates</strong>:<!-- -->
+<ul>
+<li class="">Replace <code>{machine_name}</code> with <code>{server_name}</code></li>
+</ul>
+</li>
+</ol>
+<p>See <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> for detailed API migration steps.</p>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="post-migration-checklist">Post-Migration Checklist<a href="#post-migration-checklist" class="hash-link" aria-label="Direct link to Post-Migration Checklist" title="Direct link to Post-Migration Checklist" translate="no">​</a></h2>
+<p>After upgrading, verify:</p>
+<ul class="contains-task-list containsTaskList_stI0">
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->All servers appear correctly in the dashboard</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Backup history is complete and accessible</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Notifications work (test NTFY/email)</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->External API integrations work (if applicable)</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Settings are accessible and correct</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Overdue monitoring works correctly</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Logged in successfully (0.9.x+)</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Changed default admin password (0.9.x+)</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Created user accounts for other users (0.9.x+)</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Updated external API integrations with authentication (0.9.x+)</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="troubleshooting">Troubleshooting<a href="#troubleshooting" class="hash-link" aria-label="Direct link to Troubleshooting" title="Direct link to Troubleshooting" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="migration-fails">Migration Fails<a href="#migration-fails" class="hash-link" aria-label="Direct link to Migration Fails" title="Direct link to Migration Fails" translate="no">​</a></h3>
+<ol>
+<li class="">Check disk space (backup requires space)</li>
+<li class="">Verify write permissions on data directory</li>
+<li class="">Review container logs for specific errors</li>
+<li class="">Restore from backup if needed (see Rollback below)</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="data-missing-after-migration">Data Missing After Migration<a href="#data-missing-after-migration" class="hash-link" aria-label="Direct link to Data Missing After Migration" title="Direct link to Data Missing After Migration" translate="no">​</a></h3>
+<ol>
+<li class="">Verify backup was created (check data directory)</li>
+<li class="">Review container logs for backup creation messages</li>
+<li class="">Check database file integrity</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="authentication-issues-09x">Authentication Issues (0.9.x+)<a href="#authentication-issues-09x" class="hash-link" aria-label="Direct link to Authentication Issues (0.9.x+)" title="Direct link to Authentication Issues (0.9.x+)" translate="no">​</a></h3>
+<ol>
+<li class="">Verify default admin account exists (check logs)</li>
+<li class="">Try default credentials: <code>admin</code> / <code>Duplistatus09</code></li>
+<li class="">Use admin recovery tool if locked out</li>
+<li class="">Verify <code>users</code> table exists in database</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="api-errors">API Errors<a href="#api-errors" class="hash-link" aria-label="Direct link to API Errors" title="Direct link to API Errors" translate="no">​</a></h3>
+<ol>
+<li class="">Review <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a> for endpoint updates</li>
+<li class="">Update external integrations with new field names</li>
+<li class="">Add authentication to API requests (0.9.x+)</li>
+<li class="">Test API endpoints after migration</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="master-key-issues-08x">Master Key Issues (0.8.x+)<a href="#master-key-issues-08x" class="hash-link" aria-label="Direct link to Master Key Issues (0.8.x+)" title="Direct link to Master Key Issues (0.8.x+)" translate="no">​</a></h3>
+<ol>
+<li class="">Ensure <code>.duplistatus.key</code> file is accessible</li>
+<li class="">Verify file permissions are 0400</li>
+<li class="">Check container logs for key generation errors</li>
+</ol>
+<h3 class="anchor anchorTargetStickyNavbar_xjbn" id="podman-dns-configuration">Podman DNS Configuration<a href="#podman-dns-configuration" class="hash-link" aria-label="Direct link to Podman DNS Configuration" title="Direct link to Podman DNS Configuration" translate="no">​</a></h3>
+<p>If you&#x27;re using Podman and experiencing network connectivity issues after upgrading, you may need to configure DNS settings for your container. See the <a class="" href="/duplistatus/installation#configuring-dns-for-podman-containers">DNS configuration section</a> in the installation guide for details.</p>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="rollback-procedure">Rollback Procedure<a href="#rollback-procedure" class="hash-link" aria-label="Direct link to Rollback Procedure" title="Direct link to Rollback Procedure" translate="no">​</a></h2>
+<p>If you need to rollback to a previous version:</p>
+<ol>
+<li class=""><strong>Stop the container</strong>: <code>docker stop &lt;container-name&gt;</code></li>
+<li class=""><strong>Find your backup</strong>: Located in the data directory (timestamped <code>.db</code> files)</li>
+<li class=""><strong>Restore the database</strong>: Replace <code>backups.db</code> with the backup file</li>
+<li class=""><strong>Use previous image version</strong>: Pull and run the previous container image</li>
+<li class=""><strong>Start the container</strong>: Start with the previous version</li>
 </ol>
 <div class="markdown-alert markdown-alert-warning">
 <p class="markdown-alert-title"><span class="octicon octicon-warning" style="--oct-icon:url(&quot;data:image/svg+xml;utf8,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; class=&#x27;octicon octicon-alert mr-2&#x27; viewBox=&#x27;0 0 16 16&#x27; version=&#x27;1.1&#x27; width=&#x27;16&#x27; height=&#x27;16&#x27; aria-hidden=&#x27;true&#x27;%3E%3Cpath d=&#x27;M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z&#x27;%3E%3C/path%3E%3C/svg%3E&quot;)"></span>Warning</p>
-<p>Rolling back may cause data loss if the newer version&#x27;s schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.</p>
+<p>Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.</p>
 </div>
-<h2 class="anchor anchorTargetStickyNavbar_AENb" id="support">Support<a href="#support" class="hash-link" aria-label="Direct link to Support" title="Direct link to Support" translate="no">​</a></h2>
-<p>For additional help with migration:</p>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="database-schema-versions">Database Schema Versions<a href="#database-schema-versions" class="hash-link" aria-label="Direct link to Database Schema Versions" title="Direct link to Database Schema Versions" translate="no">​</a></h2>
+<table><thead><tr><th>Application Version</th><th>Schema Version</th><th>Key Changes</th></tr></thead><tbody><tr><td>0.6.x and earlier</td><td>v1.0</td><td>Initial schema</td></tr><tr><td>0.7.x</td><td>v2.0, v3.0</td><td>Added configurations, renamed machines → servers</td></tr><tr><td>0.8.x</td><td>v3.1</td><td>Enhanced backup fields, encryption support</td></tr><tr><td>0.9.x, 1.0.x, 1.1.x</td><td>v4.0</td><td>User access control, authentication, audit logging</td></tr></tbody></table>
+<h2 class="anchor anchorTargetStickyNavbar_xjbn" id="getting-help">Getting Help<a href="#getting-help" class="hash-link" aria-label="Direct link to Getting Help" title="Direct link to Getting Help" translate="no">​</a></h2>
 <ul>
 <li class=""><strong>Documentation</strong>: <a class="" href="/duplistatus/user-guide/overview">User Guide</a></li>
 <li class=""><strong>API Reference</strong>: <a class="" href="/duplistatus/api-reference/overview">API Documentation</a></li>
 <li class=""><strong>API Changes</strong>: <a class="" href="/duplistatus/migration/api-changes">API Breaking Changes</a></li>
-<li class=""><strong>Release Notes</strong>: Check version-specific release notes for detailed feature information</li>
+<li class=""><strong>Release Notes</strong>: Check version-specific release notes for detailed changes</li>
 <li class=""><strong>Community</strong>: <a href="https://github.com/wsj-br/duplistatus/discussions" target="_blank" rel="noopener noreferrer" class="">GitHub Discussions</a></li>
 <li class=""><strong>Issues</strong>: <a href="https://github.com/wsj-br/duplistatus/issues" target="_blank" rel="noopener noreferrer" class="">GitHub Issues</a></li>
-</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/duplistatus/user-guide/troubleshooting"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Troubleshooting</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/duplistatus/migration/api-changes"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">API Breaking Changes</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_uFpe thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#overview" class="table-of-contents__link toc-highlight">Overview</a></li><li><a href="#automatic-migration" class="table-of-contents__link toc-highlight">Automatic Migration</a><ul><li><a href="#migration-process" class="table-of-contents__link toc-highlight">Migration Process</a></li><li><a href="#what-gets-migrated" class="table-of-contents__link toc-highlight">What Gets Migrated</a></li></ul></li><li><a href="#manual-steps-required" class="table-of-contents__link toc-highlight">Manual Steps Required</a><ul><li><a href="#1-update-external-integrations" class="table-of-contents__link toc-highlight">1. Update External Integrations</a></li><li><a href="#2-test-functionality" class="table-of-contents__link toc-highlight">2. Test Functionality</a></li><li><a href="#3-update-documentation" class="table-of-contents__link toc-highlight">3. Update Documentation</a></li></ul></li><li><a href="#version-specific-changes" class="table-of-contents__link toc-highlight">Version-Specific Changes</a><ul><li><a href="#version-09x" class="table-of-contents__link toc-highlight">Version 0.9.x</a></li><li><a href="#version-08x" class="table-of-contents__link toc-highlight">Version 0.8.x</a></li><li><a href="#version-07x" class="table-of-contents__link toc-highlight">Version 0.7.x</a></li></ul></li><li><a href="#database-changes-summary" class="table-of-contents__link toc-highlight">Database Changes Summary</a></li><li><a href="#api-changes-1" class="table-of-contents__link toc-highlight">API Changes</a><ul><li><a href="#external-api-endpoints" class="table-of-contents__link toc-highlight">External API Endpoints</a></li><li><a href="#internal-api-changes" class="table-of-contents__link toc-highlight">Internal API Changes</a></li></ul></li><li><a href="#troubleshooting" class="table-of-contents__link toc-highlight">Troubleshooting</a><ul><li><a href="#common-issues" class="table-of-contents__link toc-highlight">Common Issues</a></li><li><a href="#recovery-steps" class="table-of-contents__link toc-highlight">Recovery Steps</a></li><li><a href="#monitoring-migration-progress" class="table-of-contents__link toc-highlight">Monitoring Migration Progress</a></li><li><a href="#getting-help" class="table-of-contents__link toc-highlight">Getting Help</a></li></ul></li><li><a href="#post-migration-checklist" class="table-of-contents__link toc-highlight">Post-Migration Checklist</a></li><li><a href="#rollback-procedure" class="table-of-contents__link toc-highlight">Rollback Procedure</a></li><li><a href="#support" class="table-of-contents__link toc-highlight">Support</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Documentation</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/duplistatus/installation">Installation</a></li><li class="footer__item"><a class="footer__link-item" href="/duplistatus/user-guide/overview">User Guide</a></li><li class="footer__item"><a class="footer__link-item" href="/duplistatus/migration/version_upgrade">Migration</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Development</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/duplistatus/development/setup">Development Setup</a></li><li class="footer__item"><a class="footer__link-item" href="/duplistatus/api-reference/overview">API Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/wsj-br/duplistatus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_XaBQ"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://hub.docker.com/r/wsjbr/duplistatus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Docker Hub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_XaBQ"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © Waldemar Scudeller Jr.</div></div></div></footer></div>
+</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/duplistatus/user-guide/admin-recovery"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Admin Account Recovery</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/duplistatus/migration/api-changes"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">API Breaking Changes</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_S0Bn thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#overview" class="table-of-contents__link toc-highlight">Overview</a></li><li><a href="#automatic-migration-process" class="table-of-contents__link toc-highlight">Automatic Migration Process</a><ul><li><a href="#monitoring-migration" class="table-of-contents__link toc-highlight">Monitoring Migration</a></li></ul></li><li><a href="#version-specific-migration-notes" class="table-of-contents__link toc-highlight">Version-Specific Migration Notes</a><ul><li><a href="#upgrading-to-version-09x-or-later-schema-v40" class="table-of-contents__link toc-highlight">Upgrading to Version 0.9.x or Later (Schema v4.0)</a></li><li><a href="#upgrading-to-version-08x" class="table-of-contents__link toc-highlight">Upgrading to Version 0.8.x</a></li><li><a href="#upgrading-to-version-07x" class="table-of-contents__link toc-highlight">Upgrading to Version 0.7.x</a></li></ul></li><li><a href="#post-migration-checklist" class="table-of-contents__link toc-highlight">Post-Migration Checklist</a></li><li><a href="#troubleshooting" class="table-of-contents__link toc-highlight">Troubleshooting</a><ul><li><a href="#migration-fails" class="table-of-contents__link toc-highlight">Migration Fails</a></li><li><a href="#data-missing-after-migration" class="table-of-contents__link toc-highlight">Data Missing After Migration</a></li><li><a href="#authentication-issues-09x" class="table-of-contents__link toc-highlight">Authentication Issues (0.9.x+)</a></li><li><a href="#api-errors" class="table-of-contents__link toc-highlight">API Errors</a></li><li><a href="#master-key-issues-08x" class="table-of-contents__link toc-highlight">Master Key Issues (0.8.x+)</a></li><li><a href="#podman-dns-configuration" class="table-of-contents__link toc-highlight">Podman DNS Configuration</a></li></ul></li><li><a href="#rollback-procedure" class="table-of-contents__link toc-highlight">Rollback Procedure</a></li><li><a href="#database-schema-versions" class="table-of-contents__link toc-highlight">Database Schema Versions</a></li><li><a href="#getting-help" class="table-of-contents__link toc-highlight">Getting Help</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Documentation</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/duplistatus/installation">Installation</a></li><li class="footer__item"><a class="footer__link-item" href="/duplistatus/user-guide/overview">User Guide</a></li><li class="footer__item"><a class="footer__link-item" href="/duplistatus/migration/version_upgrade">Migration</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Development</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/duplistatus/development/setup">Development Setup</a></li><li class="footer__item"><a class="footer__link-item" href="/duplistatus/api-reference/overview">API Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/wsj-br/duplistatus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_bSjt"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://hub.docker.com/r/wsjbr/duplistatus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Docker Hub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_bSjt"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © Waldemar Scudeller Jr.</div></div></div></footer></div>
 </body>
 </html>
