@@ -40,6 +40,7 @@ For more details, see the [Overdue Detection Algorithm documentation](OVERDUE_DE
 ### User Interface Enhancements
 
 - **Right-click context menu on auto-refresh button**: Right-clicking on the auto-refresh button in the application toolbar now opens the Display Settings page for quick access to display preferences
+- **Improved collect backups modal**: Password field label now clearly indicates "(only fill if password changed)" when a server is selected from the list, making it clearer that users only need to fill this field if the password has changed
 
 ### Documentation Improvements
 
@@ -92,10 +93,12 @@ For more details, see the [Overdue Detection Algorithm documentation](OVERDUE_DE
 
 ### Added
 - Right-click context menu on auto-refresh button to open Display Settings
+- Improved password field label in collect backups modal ("only fill if password changed")
 - `lastBackupDate` field to `BackupNotificationConfig` for tracking backup receipts
 - `expectedBackupDate` and `lastBackupDate` fields to `ServerWithBackup` interface
 
 ### Changed
+- Improved collect backups modal UX: Password label text changed from "(optional - leave empty to use stored)" to "(only fill if password changed)" when a server is selected
 - Removed documentation from Docker container image (now hosted on GitHub Pages)
 - Updated app header User Guide link to point to GitHub Pages documentation
 - Simplified proxy.ts by removing Docusaurus URL rewriting logic

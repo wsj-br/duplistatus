@@ -3,6 +3,16 @@
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [1.1.0]
+
+### Added
 - Added automatic DNS configuration detection for Podman containers and pods:
   - `scripts/podman_testing/start.duplistatus` and `pod.testing` now include `get_dns_config()` function
   - Automatically extracts DNS servers and search domains from host using `resolvectl status` (systemd-resolved)
@@ -44,6 +54,8 @@
   - Explicitly sets the `time` field to the last backup date (not a future expected date) so `GetNextBackupRunDate` calculates an overdue expected date
   - Enables `overdueBackupCheckEnabled` for affected backup jobs
   - Adds verification logging to show the last backup date and days since last backup
+- Reduced console logging from AuditLogger: Only failed login attempts are now logged to console with `[AuditLogger]` prefix. All other audit log entries are still written to the database but no longer logged to console.
+- Docker/runtime now runs Next.js standalone (`server.js`) and bundles the cron service into a single JS file to avoid shipping a separate full `node_modules` for cron.
 
 ### Removed
 - Deleted obsolete `scripts/admin-recovery.ts` (TypeScript version). The shell script `/admin-recovery` at project root is the production version used for password recovery
@@ -93,12 +105,7 @@
   - Added eslint-disable comment for legitimate set-state-in-effect pattern in `display-settings-form.tsx`
   - Removed 13 unused eslint-disable directives across multiple files
   - Fixed missing dependencies in useEffect hooks for `database-maintenance-form.tsx` and `user-management-form.tsx`
-
 - Updated Next proxy file (`src/proxy.ts`) to provide `x-pathname` / `x-search-params` headers for server components and to rewrite Docusaurus clean URLs under `/docs` to `index.html`.
- - Removed the custom Node server (`duplistatus-server.ts`) in favor of Next.js standalone output + proxy.
+- Removed the custom Node server (`duplistatus-server.ts`) in favor of Next.js standalone output + proxy.
 - Fixed `pnpm start-local` script to properly serve static files when running the production server locally. Updated `build-local` to copy static files and public directory to standalone build directory (as per Next.js standalone mode best practices), and added safety check in `start-local` to ensure files exist before starting the server. This resolves 404 errors for JavaScript chunks.
 - Fixed `pnpm build-local` to build Docusaurus documentation and copy it to `public/documentation` before building Next.js, ensuring docs are available when running `pnpm start-local` in standalone mode.
-
-### Changed
-- Reduced console logging from AuditLogger: Only failed login attempts are now logged to console with `[AuditLogger]` prefix. All other audit log entries are still written to the database but no longer logged to console.
-- Docker/runtime now runs Next.js standalone (`server.js`) and bundles the cron service into a single JS file to avoid shipping a separate full `node_modules` for cron.

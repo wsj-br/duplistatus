@@ -164,6 +164,10 @@ After upgrading, verify:
 2. Verify file permissions are 0400
 3. Check container logs for key generation errors
 
+### Podman DNS Configuration
+
+If you're using Podman and experiencing network connectivity issues after upgrading, you may need to configure DNS settings for your container. See the [DNS configuration section](../installation/installation.md#configuring-dns-for-podman-containers) in the installation guide for details.
+
 ## Rollback Procedure
 
 If you need to rollback to a previous version:
