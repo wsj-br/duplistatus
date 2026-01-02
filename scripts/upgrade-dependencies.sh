@@ -34,3 +34,14 @@ npx --yes update-browserslist-db@latest 2>&1 | pr -o 4 -T
 echo -e "${BLUE}✅  Dependency upgrade completed${RESET}"
 echo ""
 
+# check for vulnerabilities
+echo -e "${BLUE}🔍  Checking for vulnerabilities...${RESET}"
+pnpm audit 2>&1 | pr -o 4 -T
+
+# fix vulnerabilities
+echo -e "${BLUE}🔧  Fixing vulnerabilities...${RESET}"
+pnpm audit fix 2>&1 | pr -o 4 -T
+
+# check for vulnerabilities again
+echo -e "${BLUE}🔍  Checking for vulnerabilities again...${RESET}"
+pnpm audit 2>&1 | pr -o 4 -T
