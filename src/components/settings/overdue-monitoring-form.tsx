@@ -16,7 +16,7 @@ import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { cronClient } from '@/lib/cron-client';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
 import { defaultBackupNotificationConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval } from '@/lib/default-config';
-import { RefreshCw, TimerReset } from "lucide-react";
+import { RefreshCw, TimerReset, Download } from "lucide-react";
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
@@ -672,6 +672,109 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     }
   };
 
+  const handleDownloadCSV = () => {
+    try {
+      // Capture current time at the moment of CSV generation
+      const csvGenerationTime = new Date();
+      
+      // Prepare CSV headers
+      const headers = [
+        'CSV Generated At',
+        'Server Name',
+        'Server ID',
+        'Backup Name',
+        'Last Backup',
+        'Last Backup Weekday',
+        'Next Run',
+        'Next Run Weekday',
+        'Is Overdue',
+        'Monitoring Enabled',
+        'Expected Interval',
+        'Allowed Weekdays'
+      ];
+
+      // Prepare CSV rows
+      const rows = sortedServers.map(server => {
+        const backupSetting = getBackupSettingById(server.id, server.backupName);
+        const nextRunDate = server.nextRunDate !== 'N/A' ? new Date(server.nextRunDate) : null;
+        const lastBackupDate = backupSetting.lastBackupDate ? new Date(backupSetting.lastBackupDate) : null;
+        
+        // Determine if overdue using the CSV generation time
+        const isOverdue = nextRunDate && backupSetting.overdueBackupCheckEnabled
+          ? new Date(nextRunDate.getTime() + overdueToleranceMs) < csvGenerationTime
+          : false;
+        
+        // Format allowed weekdays
+        const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const allowedWeekdays = (backupSetting.allowedWeekDays || getDefaultAllowedWeekDays())
+          .sort((a, b) => a - b)
+          .map(day => weekdayNames[day])
+          .join('; ');
+
+        // Get weekday names for dates
+        const lastBackupWeekday = lastBackupDate ? weekdayNames[lastBackupDate.getDay()] : 'N/A';
+        const nextRunWeekday = nextRunDate ? weekdayNames[nextRunDate.getDay()] : 'N/A';
+
+        return [
+          csvGenerationTime.toISOString(),
+          server.alias || server.name,
+          server.id,
+          server.backupName,
+          lastBackupDate ? lastBackupDate.toISOString() : 'N/A',
+          lastBackupWeekday,
+          nextRunDate ? nextRunDate.toISOString() : 'N/A',
+          nextRunWeekday,
+          isOverdue ? 'Yes' : 'No',
+          backupSetting.overdueBackupCheckEnabled ? 'Yes' : 'No',
+          backupSetting.expectedInterval,
+          allowedWeekdays
+        ];
+      });
+
+      // Create CSV content
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => {
+          // Escape cells containing commas, quotes, or newlines
+          const cellStr = String(cell);
+          if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+            return `"${cellStr.replace(/"/g, '""')}"`;
+          }
+          return cellStr;
+        }).join(','))
+      ].join('\n');
+
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `overdue-monitoring-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "CSV file downloaded successfully",
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error('Error generating CSV:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Error",
+        description: "Failed to generate CSV file",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
 
   const handleAutoCollectStart = (serverId: string) => {
     setAutoCollectingServers(prev => new Set(prev).add(serverId));
@@ -1166,6 +1269,16 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 />
               </div>
               <div className="flex gap-2">
+                <Button 
+                  onClick={handleDownloadCSV}
+                  variant="outline"
+                  size="sm"
+                  title="Download backup monitoring data as CSV"
+                >
+                  <Download className="mr-1 h-3 w-3" />
+                  <span className="hidden sm:inline">Download CSV</span>
+                  <span className="sm:hidden">CSV</span>
+                </Button>
                 <Button 
                   onClick={handleTestOverdueBackups} 
                   variant="outline" 

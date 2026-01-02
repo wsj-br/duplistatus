@@ -1789,7 +1789,7 @@ export function setConfigOverdueTolerance(toleranceMinutes: number): void {
 }
 
 // Functions to get/set backup settings configuration
-export async function getConfigBackupSettings(): Promise<Record<BackupKey, BackupNotificationConfig>> {
+export async function getConfigBackupSettings(forceRecalculation: boolean = false): Promise<Record<BackupKey, BackupNotificationConfig>> {
   // Check if backup_settings exists in database - if not, clear cache to force regeneration
   // This handles the case where backup_settings was deleted externally (e.g., by generate-test-data.ts)
   const backupSettingsJson = getConfiguration('backup_settings');
@@ -1798,6 +1798,11 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
     if (requestCache.has('backupSettings')) {
       requestCache.delete('backupSettings');
     }
+  }
+  
+  // If force recalculation is requested, clear cache to force regeneration
+  if (forceRecalculation && requestCache.has('backupSettings')) {
+    requestCache.delete('backupSettings');
   }
   
   return getCachedOrCompute('backupSettings', async () => {
@@ -1885,8 +1890,11 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
       const existingSettings = updatedBackupSettings[backupKey];
       const latestBackupDate = latestBackupMap.get(backupKey);
       
-      if (latestBackupDate && existingSettings.lastBackupDate !== latestBackupDate) {
-        // New backup received - update lastBackupDate and advance time if needed
+      // Force recalculation if requested, or if lastBackupDate has changed
+      const shouldRecalculate = forceRecalculation || (latestBackupDate && existingSettings.lastBackupDate !== latestBackupDate);
+      
+      if (latestBackupDate && shouldRecalculate) {
+        // Update lastBackupDate and recalculate time
         let newTime = existingSettings.time || latestBackupDate;
         
         try {
@@ -1923,12 +1931,14 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
           updatedSettings++;
         } catch (error) {
           console.warn(`Failed to calculate time for ${backupKey}:`, error instanceof Error ? error.message : String(error));
-          // If calculation fails, just update lastBackupDate
-          updatedBackupSettings[backupKey] = {
-            ...existingSettings,
-            lastBackupDate: latestBackupDate
-          };
-          updatedSettings++;
+          // If calculation fails, just update lastBackupDate if it changed
+          if (existingSettings.lastBackupDate !== latestBackupDate) {
+            updatedBackupSettings[backupKey] = {
+              ...existingSettings,
+              lastBackupDate: latestBackupDate
+            };
+            updatedSettings++;
+          }
         }
       }
       
