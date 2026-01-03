@@ -148,7 +148,7 @@ export async function validateCSRFRequest(request: NextRequest): Promise<{ valid
     // If session exists and is valid, validate CSRF token
     // But don't fail if session is invalid - login will create a new one
     if (sessionId) {
-      const isValidSession = await validateSessionAsync(sessionId);
+      const isValidSession = await validateSession(sessionId);
       if (isValidSession) {
         const isValidCSRF = await validateCSRFTokenAsync(sessionId, csrfToken);
         if (!isValidCSRF) {

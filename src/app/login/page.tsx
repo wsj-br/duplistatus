@@ -13,6 +13,7 @@ import AppVersion from '@/components/app-version';
 import { GithubLink } from '@/components/github-link';
 import DupliLogo from '../../../public/images/duplistatus_logo.png';
 import { Info } from 'lucide-react';
+import { KeyChangedModal } from '@/components/key-changed-modal';
 
 const REMEMBERED_USERNAME_KEY = 'duplistatus_remembered_username';
 const REMEMBER_ME_ENABLED_KEY = 'duplistatus_remember_me_enabled';
@@ -28,12 +29,18 @@ function LoginForm() {
     return '';
   });
   const [password, setPassword] = useState('');
-  // Initialize rememberMe to false to avoid hydration mismatch
-  // We'll update it from localStorage after hydration
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
+  // Initialize rememberMe from localStorage with lazy initializer to avoid hydration mismatch
+  const [rememberMe, setRememberMe] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true' && 
+             localStorage.getItem(REMEMBERED_USERNAME_KEY) !== '';
+    }
+    return false;
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showAdminTip, setShowAdminTip] = useState(false);
+  const [showKeyChangedModal, setShowKeyChangedModal] = useState(false);
   const checkAuthCalledRef = useRef(false);
   const checkAdminTipCalledRef = useRef(false);
 
@@ -114,15 +121,6 @@ function LoginForm() {
     checkAdminMustChangePassword();
   }, []);
 
-  // Load rememberMe state from localStorage after hydration to avoid mismatch
-  useEffect(() => {
-    const savedRememberMe = localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true' && 
-                            localStorage.getItem(REMEMBERED_USERNAME_KEY) !== '';
-    if (savedRememberMe !== rememberMe) {
-      setRememberMe(savedRememberMe);
-    }
-  }, []); // Only run once after mount
-
   // Handle remember me checkbox change
   const handleRememberMeChange = (checked: boolean) => {
     setRememberMe(checked);
@@ -193,6 +191,14 @@ function LoginForm() {
           localStorage.removeItem(REMEMBERED_USERNAME_KEY);
           localStorage.removeItem(REMEMBER_ME_ENABLED_KEY);
         }
+      }
+
+      // Check if key file changed
+      if (data.keyChanged) {
+        setShowKeyChangedModal(true);
+        setLoading(false);
+        // Don't redirect yet - wait for user to acknowledge the modal
+        return;
       }
 
       // Login successful - redirect to the redirect URL or home
@@ -314,6 +320,19 @@ function LoginForm() {
           )}
         </div>
       </div>
+
+      <KeyChangedModal 
+        open={showKeyChangedModal} 
+        onOpenChange={(open) => {
+          setShowKeyChangedModal(open);
+          // After user acknowledges, redirect
+          if (!open) {
+            const redirectUrl = searchParams.get('redirect');
+            const targetUrl = validateRedirectUrl(redirectUrl);
+            window.location.href = targetUrl;
+          }
+        }} 
+      />
     </div>
   );
 }

@@ -20,6 +20,18 @@ import fs from 'fs';
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
 export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
+  // CRITICAL: Capture auth context and session info BEFORE restore
+  // This ensures we can complete the restore even if the restored database
+  // has different sessions or the current session doesn't exist in it
+  const preRestoreAuthContext = authContext ? {
+    userId: authContext.userId,
+    username: authContext.username,
+    isAdmin: authContext.isAdmin,
+  } : null;
+  
+  // Get session ID before restore (needed for audit logging)
+  const sessionId = request.cookies.get('sessionId')?.value || null;
+  
   try {
     await ensureDatabaseInitialized();
     
@@ -209,6 +221,10 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       // during the restore process
       clearAllLegacySessions();
       
+      // CRITICAL: After database restore, the current session no longer exists in the restored database
+      // We need to ensure that any subsequent operations don't try to validate or update
+      // the session, as it will fail. The restore operation itself should complete successfully
+      // even though the session doesn't exist in the restored database.
       // Wait a moment to ensure any in-flight session operations complete
       await new Promise(resolve => setTimeout(resolve, 200));
       
@@ -250,20 +266,31 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       }
       
       // Log audit event
-      // Note: After restore, the user from authContext might not exist in the restored database
+      // Note: After restore, the user from preRestoreAuthContext might not exist in the restored database
       // So we log with username only (no userId) to avoid foreign key constraint issues
-      if (authContext) {
+      // Use preRestoreAuthContext instead of authContext to avoid issues if authContext was invalidated
+      if (preRestoreAuthContext) {
         try {
           const ipAddress = getClientIpAddress(request);
           const userAgent = request.headers.get('user-agent') || 'unknown';
           
           // Check if user still exists in restored database
-          const { dbOps } = await import('@/lib/db');
-          const userExists = dbOps.getUserById.get(authContext.userId);
+          // Use try-catch to handle case where dbOps might not be ready or user doesn't exist
+          let userExists = false;
+          try {
+            const { dbOps } = await import('@/lib/db');
+            if (dbOps && dbOps.getUserById) {
+              const user = dbOps.getUserById.get(preRestoreAuthContext.userId);
+              userExists = !!user;
+            }
+          } catch (userCheckError) {
+            // User doesn't exist in restored database or dbOps not ready - that's okay
+            console.log('[Database Restore] User from original database does not exist in restored database (expected when restoring from another system)');
+          }
           
           await AuditLogger.log({
-            userId: userExists ? authContext.userId : undefined, // Only set userId if user exists
-            username: authContext.username,
+            userId: userExists ? preRestoreAuthContext.userId : undefined, // Only set userId if user exists
+            username: preRestoreAuthContext.username,
             action: 'database_restore',
             category: 'system',
             details: {
@@ -323,22 +350,35 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
     console.error('[Database Restore] Error:', error instanceof Error ? error.message : String(error));
     
     // Log audit event for failure
-    if (authContext) {
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      await AuditLogger.log({
-        userId: authContext.userId,
-        username: authContext.username,
-        action: 'database_restore',
-        category: 'system',
-        details: {
-          error: error instanceof Error ? error.message : String(error),
-        },
-        ipAddress,
-        userAgent,
-        status: 'error',
-        errorMessage: error instanceof Error ? error.message : String(error),
-      });
+    // Use preRestoreAuthContext instead of authContext to avoid issues if authContext was invalidated
+    if (preRestoreAuthContext) {
+      try {
+        const ipAddress = getClientIpAddress(request);
+        const userAgent = request.headers.get('user-agent') || 'unknown';
+        
+        // Try to log audit event, but don't fail if it doesn't work (e.g., if database is in bad state)
+        try {
+          await AuditLogger.log({
+            userId: preRestoreAuthContext.userId,
+            username: preRestoreAuthContext.username,
+            action: 'database_restore',
+            category: 'system',
+            details: {
+              error: error instanceof Error ? error.message : String(error),
+            },
+            ipAddress,
+            userAgent,
+            status: 'error',
+            errorMessage: error instanceof Error ? error.message : String(error),
+          });
+        } catch (auditError) {
+          // If audit logging fails (e.g., database is in bad state), just log to console
+          console.warn('[Database Restore] Failed to log audit event for error:', auditError instanceof Error ? auditError.message : String(auditError));
+        }
+      } catch (logError) {
+        // Ignore errors in error logging
+        console.warn('[Database Restore] Failed to prepare audit log:', logError instanceof Error ? logError.message : String(logError));
+      }
     }
     
     return NextResponse.json(

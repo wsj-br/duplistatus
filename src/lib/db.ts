@@ -898,10 +898,20 @@ let startupInitialization: Promise<void> | null = null;
 let initializationComplete = false;
 
 startupInitialization = ensureDatabaseInitialized()
-  .then(() => {
+  .then(async () => {
     initializationComplete = true;
     // Only log if we actually did something (created DB or ran migrations)
     // Silent if database was already ready
+    
+    // Clear all sessions on startup (users must log in again after server restart)
+    try {
+      const { clearAllSessions } = await import('./session-csrf');
+      clearAllSessions();
+      logWithTimestamp('[Database] Cleared all sessions on startup');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      warnWithTimestamp('[Database] Failed to clear sessions on startup:', errorMessage);
+    }
   })
   .catch(error => {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -1479,6 +1489,10 @@ function createDbOps() {
   deleteExpiredSessions: safePrepare(`
     DELETE FROM sessions WHERE expires_at < datetime('now')
   `, 'deleteExpiredSessions'),
+
+  deleteAllSessions: safePrepare(`
+    DELETE FROM sessions
+  `, 'deleteAllSessions'),
 
   // Audit log operations
   insertAuditLog: safePrepare(`

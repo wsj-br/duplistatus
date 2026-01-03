@@ -5,6 +5,7 @@ import { createSession, validateSession } from '@/lib/session-csrf';
 import { AuditLogger } from '@/lib/audit-logger';
 import { withCSRF } from '@/lib/csrf-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
+import { hasKeyFileChanged, clearAllPasswords } from '@/lib/secrets';
 
 const timestamp = () => new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }).replace(',', '');
 
@@ -237,6 +238,47 @@ export const POST = withCSRF(async (request: NextRequest) => {
       userAgent
     );
 
+    // Check if the master key file has changed
+    let keyChanged = false;
+    try {
+      if (hasKeyFileChanged()) {
+        console.warn(`[Login] ${timestamp()}: Master key file changed detected for user: ${user.username} from IP: ${ipAddress}`);
+        
+        // Clear all encrypted passwords
+        clearAllPasswords();
+        
+        // Log to audit log
+        await AuditLogger.logSystem(
+          'master_key_changed',
+          {
+            user_id: user.id,
+            username: user.username,
+            action: 'passwords_cleared',
+            reason: 'Master key file changed, all encrypted passwords cleared'
+          },
+          'success',
+          undefined,
+          userAgent
+        );
+        
+        keyChanged = true;
+      }
+    } catch (error) {
+      // Log error but don't fail login
+      console.error(`[Login] ${timestamp()}: Error checking key file change:`, error instanceof Error ? error.message : String(error));
+      await AuditLogger.logSystem(
+        'master_key_check_failed',
+        {
+          user_id: user.id,
+          username: user.username,
+          error: error instanceof Error ? error.message : String(error)
+        },
+        'error',
+        error instanceof Error ? error.message : String(error),
+        userAgent
+      );
+    }
+
     // Prepare response
     const response = NextResponse.json({
       success: true,
@@ -246,6 +288,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
         isAdmin: user.is_admin === 1,
         mustChangePassword: user.must_change_password === 1,
       },
+      keyChanged,
     });
 
     // Set session cookie

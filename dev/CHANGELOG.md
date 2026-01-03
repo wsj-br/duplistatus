@@ -2,7 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed database restore failing with "Invalid CSRF token" or "invalid or expired session" errors when restoring from another system with a different `.duplistatus.key` file. The restore operation now preserves the authentication context before the database is replaced, ensuring the restore completes successfully even when the restored database has different sessions.
+
 ### Added
+- Added automatic detection of master key file changes: After login, the system now automatically checks if the `.duplistatus.key` file has changed by attempting to decrypt an existing password (server or SMTP). If the key has changed:
+  - All encrypted passwords are automatically cleared (SMTP passwords and Duplicati server passwords)
+  - A modal popup is shown to inform the user that passwords need to be reconfigured
+  - The event is logged in the audit log with action `master_key_changed`
+  - This prevents errors when restoring from backups or migrating to a new system with a different key file
+  - If no passwords are configured, the check is skipped (not relevant)
 - Added database backup functionality: Administrators can now create backups of the entire database from the Database Maintenance settings page. Supports two formats:
   - **Database File (.db)**: Binary format using SQLite's backup API for fast, exact database copies
   - **SQL Dump (.sql)**: Human-readable SQL text format for inspection, migration, or editing before restore
@@ -28,6 +37,7 @@
   - **Mobile-responsive design**: Card-based layout for mobile devices with accordion for additional destinations
 
 ### Changed
+- Changed default behavior: All user sessions are now automatically cleared on server restart. Users must log in again after the server restarts, even if they have an open browser window with an active session. This improves security by ensuring that sessions don't persist across server restarts. **Note**: This does not interfere with database restore operations - restore operations capture authentication context before clearing sessions and have their own independent session clearing logic that runs after restore completes.
 - Added automatic cleanup of old safety backup files: Database restore operations now automatically maintain only the last 5 safety backups, preventing accumulation of old backup files in the data directory. Older safety backups are automatically deleted after creating a new one.
 
 ### Removed

@@ -412,6 +412,25 @@ export function clearAllLegacySessions(): void {
   legacyCSRFTokens.clear();
 }
 
+/**
+ * Clear all sessions from both database and in-memory storage
+ * This is useful for logging out all users on server restart
+ */
+export function clearAllSessions(): void {
+  // Clear in-memory sessions
+  clearAllLegacySessions();
+  
+  // Clear database sessions
+  if (isSessionsTableAvailable() && dbOps) {
+    try {
+      const result = dbOps.deleteAllSessions.run();
+      console.log(`[Session] Cleared all sessions from database (${result.changes} sessions deleted)`);
+    } catch (error) {
+      console.warn('[Session] Failed to clear database sessions:', error);
+    }
+  }
+}
+
 // Get user ID from session (new helper for authentication)
 export function getUserIdFromSession(sessionId: string): string | null {
   if (isSessionsTableAvailable() && dbOps) {
