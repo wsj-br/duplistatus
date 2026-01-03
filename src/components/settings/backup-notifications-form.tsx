@@ -16,11 +16,13 @@ import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { defaultBackupNotificationConfig } from '@/lib/default-config';
 import { ServerConfigurationButton } from '../ui/server-configuration-button';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { ChevronDown, ChevronRight, X, Search } from 'lucide-react';
+import { ChevronDown, ChevronRight, X, Search, SendHorizontal, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import QRCode from 'qrcode';
+import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 
 interface ServerWithBackup {
   id: string;
@@ -79,6 +81,17 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   
   // Confirmation dialog state for bulk clear
   const [isBulkClearConfirmOpen, setIsBulkClearConfirmOpen] = useState(false);
+  
+  // QR code modal state
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
+  const [topicUrl, setTopicUrl] = useState<string>('');
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  
+  // Test notification loading states
+  const [testingEmail, setTestingEmail] = useState<BackupKey | null>(null);
+  const [testingNtfy, setTestingNtfy] = useState<BackupKey | null>(null);
+  const [testingBulkEmail, setTestingBulkEmail] = useState(false);
+  const [testingBulkNtfy, setTestingBulkNtfy] = useState(false);
 
   // Configuration status checks
   const isNtfyConfigured = config?.ntfy && config.ntfy.url && config.ntfy.topic;
@@ -488,6 +501,305 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     } catch (error) {
       // Error already handled in inner try-catch
       console.error('Bulk remove error:', error);
+    }
+  };
+
+  // Test email handler
+  const handleTestEmail = async (backupKey: BackupKey, emails: string) => {
+    if (!emails || !emails.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter email addresses before testing",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    // Validate email addresses (basic check - must contain @)
+    const emailList = emails.split(',').map(e => e.trim()).filter(e => e);
+    const invalidEmails = emailList.filter(e => !e.includes('@'));
+    if (invalidEmails.length > 0) {
+      toast({
+        title: "Validation Error",
+        description: `Invalid email addresses: ${invalidEmails.join(', ')}`,
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setTestingEmail(backupKey);
+    try {
+      // Send test email to each address
+      for (const email of emailList) {
+        const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
+          method: 'POST',
+          body: JSON.stringify({ 
+            type: 'email',
+            toEmail: email,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to send test email');
+        }
+      }
+
+      toast({
+        title: "Test Email Sent",
+        description: `Test email sent to ${emailList.length} address${emailList.length === 1 ? '' : 'es'}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error sending test email:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Test Email Failed",
+        description: error instanceof Error ? error.message : 'Failed to send test email',
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setTestingEmail(null);
+    }
+  };
+
+  // Test NTFY handler
+  const handleTestNtfy = async (backupKey: BackupKey, topic: string) => {
+    if (!topic || !topic.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a topic before testing",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (!config?.ntfy?.url) {
+      toast({
+        title: "Configuration Error",
+        description: "NTFY is not configured. Please configure NTFY settings first.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setTestingNtfy(backupKey);
+    try {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
+        method: 'POST',
+        body: JSON.stringify({ 
+          type: 'simple',
+          ntfyConfig: {
+            url: config.ntfy.url,
+            topic: topic.trim(),
+            accessToken: config.ntfy.accessToken,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send test notification');
+      }
+
+      toast({
+        title: "Test Notification Sent",
+        description: `Test notification sent to topic: ${topic.trim()}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error sending test NTFY notification:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Test Notification Failed",
+        description: error instanceof Error ? error.message : 'Failed to send test notification',
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setTestingNtfy(null);
+    }
+  };
+
+  // Generate QR code handler
+  const handleGenerateQrCode = async (topic: string) => {
+    if (!topic || !topic.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a topic before generating QR code",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (!config?.ntfy?.url) {
+      toast({
+        title: "Configuration Error",
+        description: "NTFY is not configured. Please configure NTFY settings first.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      // Extract server URL from the NTFY URL (remove trailing slash)
+      const serverUrl = config.ntfy.url.replace(/\/$/, '');
+      const topicName = topic.trim();
+      
+      // Build the NTFY URL for phone configuration
+      let ntfyUrl = `ntfy://${serverUrl.replace(/^https?:\/\//, '')}/${topicName}`;
+      
+      // Add access token if configured
+      if (config.ntfy.accessToken && config.ntfy.accessToken.trim() !== '') {
+        ntfyUrl += `?auth=tk_${config.ntfy.accessToken}`;
+      }
+
+      // Generate QR code
+      const qrDataUrl = await QRCode.toDataURL(ntfyUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      
+      setQrCodeDataUrl(qrDataUrl);
+      setTopicUrl(ntfyUrl);
+      setIsQrModalOpen(true);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      toast({
+        title: "QR Code Generation Failed",
+        description: "Failed to generate QR code. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  // Bulk test email handler
+  const handleBulkTestEmail = async () => {
+    if (!bulkEditAdditionalEmails || !bulkEditAdditionalEmails.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter email addresses before testing",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    // Validate email addresses (basic check - must contain @)
+    const emailList = bulkEditAdditionalEmails.split(',').map(e => e.trim()).filter(e => e);
+    const invalidEmails = emailList.filter(e => !e.includes('@'));
+    if (invalidEmails.length > 0) {
+      toast({
+        title: "Validation Error",
+        description: `Invalid email addresses: ${invalidEmails.join(', ')}`,
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setTestingBulkEmail(true);
+    try {
+      // Send test email to each address
+      for (const email of emailList) {
+        const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
+          method: 'POST',
+          body: JSON.stringify({ 
+            type: 'email',
+            toEmail: email,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to send test email');
+        }
+      }
+
+      toast({
+        title: "Test Email Sent",
+        description: `Test email sent to ${emailList.length} address${emailList.length === 1 ? '' : 'es'}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error sending test email:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Test Email Failed",
+        description: error instanceof Error ? error.message : 'Failed to send test email',
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setTestingBulkEmail(false);
+    }
+  };
+
+  // Bulk test NTFY handler
+  const handleBulkTestNtfy = async () => {
+    if (!bulkEditAdditionalNtfyTopic || !bulkEditAdditionalNtfyTopic.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a topic before testing",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    if (!config?.ntfy?.url) {
+      toast({
+        title: "Configuration Error",
+        description: "NTFY is not configured. Please configure NTFY settings first.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setTestingBulkNtfy(true);
+    try {
+      const response = await authenticatedRequestWithRecovery('/api/notifications/test', {
+        method: 'POST',
+        body: JSON.stringify({ 
+          type: 'simple',
+          ntfyConfig: {
+            url: config.ntfy.url,
+            topic: bulkEditAdditionalNtfyTopic.trim(),
+            accessToken: config.ntfy.accessToken,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send test notification');
+      }
+
+      toast({
+        title: "Test Notification Sent",
+        description: `Test notification sent to topic: ${bulkEditAdditionalNtfyTopic.trim()}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error sending test NTFY notification:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Test Notification Failed",
+        description: error instanceof Error ? error.message : 'Failed to send test notification',
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setTestingBulkNtfy(false);
     }
   };
 
@@ -911,15 +1223,34 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               
                               <div className="space-y-1">
                                 <Label className="text-xs font-medium">Additional Emails</Label>
-                                <Input
-                                  type="text"
-                                  placeholder="e.g. user1@example.com, user2@example.com"
-                                  value={backupSetting.additionalEmails ?? ''}
-                                  onChange={(e) => 
-                                    updateBackupSettingById(server.id, server.backupName, 'additionalEmails', e.target.value)
-                                  }
-                                  className="text-xs"
-                                />
+                                <div className="relative">
+                                  <Input
+                                    type="text"
+                                    placeholder="e.g. user1@example.com, user2@example.com"
+                                    value={backupSetting.additionalEmails ?? ''}
+                                    onChange={(e) => 
+                                      updateBackupSettingById(server.id, server.backupName, 'additionalEmails', e.target.value)
+                                    }
+                                    className="text-xs pr-10"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleTestEmail(backupKey, backupSetting.additionalEmails ?? '');
+                                    }}
+                                    disabled={testingEmail === backupKey}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    aria-label="Send test email"
+                                    title="Send test email"
+                                  >
+                                    {testingEmail === backupKey ? (
+                                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                    ) : (
+                                      <SendHorizontal className="h-4 w-4" />
+                                    )}
+                                  </button>
+                                </div>
                                 <p className="text-xs text-muted-foreground">
                                   Notifications for this backup will be sent to these addresses in addition to the global recipient.
                                 </p>
@@ -927,15 +1258,48 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               
                               <div className="space-y-1">
                                 <Label className="text-xs font-medium">Additional NTFY Topic</Label>
-                                <Input
-                                  type="text"
-                                  placeholder="e.g. duplistatus-user-backup-alerts"
-                                  value={backupSetting.additionalNtfyTopic ?? ''}
-                                  onChange={(e) => 
-                                    updateBackupSettingById(server.id, server.backupName, 'additionalNtfyTopic', e.target.value)
-                                  }
-                                  className="text-xs"
-                                />
+                                <div className="relative">
+                                  <Input
+                                    type="text"
+                                    placeholder="e.g. duplistatus-user-backup-alerts"
+                                    value={backupSetting.additionalNtfyTopic ?? ''}
+                                    onChange={(e) => 
+                                      updateBackupSettingById(server.id, server.backupName, 'additionalNtfyTopic', e.target.value)
+                                    }
+                                    className="text-xs pr-20"
+                                  />
+                                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleTestNtfy(backupKey, backupSetting.additionalNtfyTopic ?? '');
+                                      }}
+                                      disabled={testingNtfy === backupKey}
+                                      className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                      aria-label="Send test notification"
+                                      title="Send test notification"
+                                    >
+                                      {testingNtfy === backupKey ? (
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                      ) : (
+                                        <SendHorizontal className="h-4 w-4" />
+                                      )}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleGenerateQrCode(backupSetting.additionalNtfyTopic ?? '');
+                                      }}
+                                      className="text-muted-foreground hover:text-foreground transition-colors"
+                                      aria-label="Show QR code"
+                                      title="Show QR code"
+                                    >
+                                      <QrCode className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
                                 <p className="text-xs text-muted-foreground">
                                   Notifications will be published to this topic in addition to the default topic.
                                 </p>
@@ -1103,15 +1467,34 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             
                             <div className="space-y-1">
                               <Label className="text-xs font-medium">Additional Emails</Label>
-                              <Input
-                                type="text"
-                                placeholder="e.g. user1@example.com, user2@example.com"
-                                value={backupSetting.additionalEmails ?? ''}
-                                onChange={(e) => 
-                                  updateBackupSettingById(server.id, server.backupName, 'additionalEmails', e.target.value)
-                                }
-                                className="text-xs"
-                              />
+                              <div className="relative">
+                                <Input
+                                  type="text"
+                                  placeholder="e.g. user1@example.com, user2@example.com"
+                                  value={backupSetting.additionalEmails ?? ''}
+                                  onChange={(e) => 
+                                    updateBackupSettingById(server.id, server.backupName, 'additionalEmails', e.target.value)
+                                  }
+                                  className="text-xs pr-10"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleTestEmail(backupKey, backupSetting.additionalEmails ?? '');
+                                  }}
+                                  disabled={testingEmail === backupKey}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                  aria-label="Send test email"
+                                  title="Send test email"
+                                >
+                                  {testingEmail === backupKey ? (
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                  ) : (
+                                    <SendHorizontal className="h-4 w-4" />
+                                  )}
+                                </button>
+                              </div>
                               <p className="text-xs text-muted-foreground">
                                 Notifications for this backup will be sent to these addresses in addition to the global recipient.
                               </p>
@@ -1119,15 +1502,48 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             
                             <div className="space-y-1">
                               <Label className="text-xs font-medium">Additional NTFY Topic</Label>
-                              <Input
-                                type="text"
-                                placeholder="e.g. duplistatus-user-backup-alerts"
-                                value={backupSetting.additionalNtfyTopic ?? ''}
-                                onChange={(e) => 
-                                  updateBackupSettingById(server.id, server.backupName, 'additionalNtfyTopic', e.target.value)
-                                }
-                                className="text-xs"
-                              />
+                              <div className="relative">
+                                <Input
+                                  type="text"
+                                  placeholder="e.g. duplistatus-user-backup-alerts"
+                                  value={backupSetting.additionalNtfyTopic ?? ''}
+                                  onChange={(e) => 
+                                    updateBackupSettingById(server.id, server.backupName, 'additionalNtfyTopic', e.target.value)
+                                  }
+                                  className="text-xs pr-20"
+                                />
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleTestNtfy(backupKey, backupSetting.additionalNtfyTopic ?? '');
+                                    }}
+                                    disabled={testingNtfy === backupKey}
+                                    className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    aria-label="Send test notification"
+                                    title="Send test notification"
+                                  >
+                                    {testingNtfy === backupKey ? (
+                                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                    ) : (
+                                      <SendHorizontal className="h-4 w-4" />
+                                    )}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleGenerateQrCode(backupSetting.additionalNtfyTopic ?? '');
+                                    }}
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    aria-label="Show QR code"
+                                    title="Show QR code"
+                                  >
+                                    <QrCode className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </div>
                               <p className="text-xs text-muted-foreground">
                                 Notifications will be published to this topic in addition to the default topic.
                               </p>
@@ -1197,12 +1613,29 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 
                 <div className="space-y-1">
                   <Label className="text-sm font-medium">Additional Emails</Label>
-                  <Input
-                    type="text"
-                    placeholder="e.g. user1@example.com, user2@example.com"
-                    value={bulkEditAdditionalEmails}
-                    onChange={(e) => setBulkEditAdditionalEmails(e.target.value)}
-                  />
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="e.g. user1@example.com, user2@example.com"
+                      value={bulkEditAdditionalEmails}
+                      onChange={(e) => setBulkEditAdditionalEmails(e.target.value)}
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleBulkTestEmail}
+                      disabled={testingBulkEmail}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label="Send test email"
+                      title="Send test email"
+                    >
+                      {testingBulkEmail ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      ) : (
+                        <SendHorizontal className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Notifications for these backups will be sent to these addresses in addition to the global recipient.
                   </p>
@@ -1210,12 +1643,40 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 
                 <div className="space-y-1">
                   <Label className="text-sm font-medium">Additional NTFY Topic</Label>
-                  <Input
-                    type="text"
-                    placeholder="e.g. duplistatus-user-backup-alerts"
-                    value={bulkEditAdditionalNtfyTopic}
-                    onChange={(e) => setBulkEditAdditionalNtfyTopic(e.target.value)}
-                  />
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="e.g. duplistatus-user-backup-alerts"
+                      value={bulkEditAdditionalNtfyTopic}
+                      onChange={(e) => setBulkEditAdditionalNtfyTopic(e.target.value)}
+                      className="pr-20"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleBulkTestNtfy}
+                        disabled={testingBulkNtfy}
+                        className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Send test notification"
+                        title="Send test notification"
+                      >
+                        {testingBulkNtfy ? (
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        ) : (
+                          <SendHorizontal className="h-4 w-4" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateQrCode(bulkEditAdditionalNtfyTopic)}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label="Show QR code"
+                        title="Show QR code"
+                      >
+                        <QrCode className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Notifications will be published to this topic in addition to the default topic.
                   </p>
@@ -1237,6 +1698,14 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          
+          {/* QR Code Modal */}
+          <NtfyQrModal 
+            isOpen={isQrModalOpen} 
+            onOpenChange={setIsQrModalOpen} 
+            qrCodeDataUrl={qrCodeDataUrl} 
+            topicUrl={topicUrl}
+          />
         </CardContent>
       </Card>
     </div>

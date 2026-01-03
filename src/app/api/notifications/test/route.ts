@@ -61,10 +61,11 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
   
   try {
     
-    const { type, ntfyConfig, template }: { 
+    const { type, ntfyConfig, template, toEmail }: { 
       type: 'simple' | 'template' | 'email'; 
       ntfyConfig?: NtfyConfig; 
-      template?: NotificationTemplate 
+      template?: NotificationTemplate;
+      toEmail?: string;
     } = await request.json();
     
     testType = type;
@@ -90,7 +91,7 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
 
       const senderName = smtpConfig.senderName || 'duplistatus';
       const fromAddress = smtpConfig.fromAddress || smtpConfig.username;
-      const recipientEmail = smtpConfig.mailto;
+      const recipientEmail = toEmail || smtpConfig.mailto;
       const requiresAuth = smtpConfig.requireAuth !== false; // Default to true for backward compatibility
       
       const testSubject = 'Test Email from duplistatus';
@@ -135,7 +136,7 @@ Email Configuration Details:
       const userAgent = request.headers.get('user-agent') || 'unknown';
       
       try {
-        await sendEmailNotification(testSubject, htmlContent, testMessage);
+        await sendEmailNotification(testSubject, htmlContent, testMessage, recipientEmail);
         
         // Log audit event for successful email
         if (authContext) {
