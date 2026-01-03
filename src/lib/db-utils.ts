@@ -1903,7 +1903,44 @@ export async function getConfigBackupSettings(forceRecalculation: boolean = fals
           const maxIterations = 1000; // Safety limit
           let iterations = 0;
           
-          while (new Date(newTime) <= new Date(latestBackupDate) && iterations < maxIterations) {
+          const lastBackupDateObj = new Date(latestBackupDate);
+          let newTimeObj = new Date(newTime);
+          
+          // When a new backup arrives, we need to ensure the time field is advanced
+          // by at least one interval from the new last backup date.
+          // If the old time field is already after the last backup, GetNextBackupRunDate
+          // will return it immediately without advancing. To fix this, we need to ensure
+          // we start from a time that's <= lastBackupDate so it will advance.
+          // We preserve the time-of-day from the old time field by applying it to the
+          // last backup date, but if that's still after the last backup, we use the
+          // last backup date itself as the base.
+          if (newTimeObj > lastBackupDateObj) {
+            // Preserve the time-of-day (hours, minutes, seconds) from the old time field
+            const oldTimeOfDay = {
+              hours: newTimeObj.getUTCHours(),
+              minutes: newTimeObj.getUTCMinutes(),
+              seconds: newTimeObj.getUTCSeconds(),
+              milliseconds: newTimeObj.getUTCMilliseconds()
+            };
+            
+            // Create a new date using the last backup date but with the old time-of-day
+            const baseTimeForCalculation = new Date(lastBackupDateObj);
+            baseTimeForCalculation.setUTCHours(oldTimeOfDay.hours, oldTimeOfDay.minutes, oldTimeOfDay.seconds, oldTimeOfDay.milliseconds);
+            
+            // Only use this if it's <= lastBackupDate, otherwise use lastBackupDate itself
+            // This ensures GetNextBackupRunDate will always advance the time
+            if (baseTimeForCalculation <= lastBackupDateObj) {
+              newTime = baseTimeForCalculation.toISOString();
+            } else {
+              // If preserving time-of-day would still be after last backup, use last backup date
+              // The time-of-day will be preserved through the interval advancement
+              newTime = latestBackupDate;
+            }
+            newTimeObj = new Date(newTime);
+          }
+          
+          // Now advance by intervals until we're past the last backup
+          while (newTimeObj <= lastBackupDateObj && iterations < maxIterations) {
             newTime = GetNextBackupRunDate(
               latestBackupDate, // Reference point
               newTime, // Current time to advance
@@ -1911,6 +1948,7 @@ export async function getConfigBackupSettings(forceRecalculation: boolean = fals
               existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
             );
             iterations++;
+            newTimeObj = new Date(newTime);
           }
           
           if (iterations >= maxIterations) {

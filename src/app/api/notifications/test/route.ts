@@ -131,32 +131,91 @@ Email Configuration Details:
   `;
       const htmlContent = convertTextToHtml(testMessage);
       
-      await sendEmailNotification(testSubject, htmlContent, testMessage);
+      const ipAddress = authContext ? getClientIpAddress(request) : null;
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       
-      // Log audit event
-      if (authContext) {
-        const ipAddress = getClientIpAddress(request);
-        const userAgent = request.headers.get('user-agent') || 'unknown';
-        await AuditLogger.log({
-          userId: authContext.userId,
-          username: authContext.username,
-          action: 'test_notification_sent',
-          category: 'system',
-          details: {
-            type: 'email',
-            channel: 'Email',
-            host: smtpConfig.host,
-            port: smtpConfig.port,
-            connectionType: connectionType,
-            secure: useSecure,
-            requireTLS: requireTLS,
-            ignoreTLS: ignoreTLS,
-            requireAuth: requiresAuth,
-          },
-          ipAddress,
-          userAgent,
-          status: 'success',
-        });
+      try {
+        await sendEmailNotification(testSubject, htmlContent, testMessage);
+        
+        // Log audit event for successful email
+        if (authContext) {
+          await AuditLogger.log({
+            userId: authContext.userId,
+            username: authContext.username,
+            action: 'test_email_sent',
+            category: 'system',
+            details: {
+              type: 'email',
+              channel: 'Email',
+              host: smtpConfig.host,
+              port: smtpConfig.port,
+              connectionType: connectionType,
+              secure: useSecure,
+              requireTLS: requireTLS,
+              ignoreTLS: ignoreTLS,
+              requireAuth: requiresAuth,
+            },
+            ipAddress,
+            userAgent,
+            status: 'success',
+          });
+        }
+      } catch (error) {
+        // Log audit event for failed email (connection or delivery failure)
+        if (authContext) {
+          try {
+            // Try to get SMTP config if not available, but don't fail if we can't
+            let emailConfig: ReturnType<typeof getSMTPConfig> = smtpConfig;
+            if (!emailConfig) {
+              try {
+                emailConfig = getSMTPConfig();
+              } catch {
+                // If we can't get config, we'll log with minimal info
+              }
+            }
+            
+            const auditDetails: Record<string, unknown> = {
+              type: 'email',
+              channel: 'Email',
+              error: error instanceof Error ? error.message : String(error),
+            };
+            
+            if (emailConfig) {
+              const connType = emailConfig.connectionType || 'starttls';
+              auditDetails.host = emailConfig.host;
+              auditDetails.port = emailConfig.port;
+              auditDetails.connectionType = connType;
+              auditDetails.secure = connType === 'ssl';
+              auditDetails.requireTLS = connType === 'starttls';
+              auditDetails.ignoreTLS = connType === 'plain';
+              auditDetails.requireAuth = emailConfig.requireAuth !== false;
+            } else if (smtpConfig) {
+              // Fallback to original values if available
+              auditDetails.host = smtpConfig.host;
+              auditDetails.port = smtpConfig.port;
+              auditDetails.connectionType = connectionType;
+              auditDetails.secure = useSecure;
+              auditDetails.requireTLS = requireTLS;
+              auditDetails.ignoreTLS = ignoreTLS;
+              auditDetails.requireAuth = requiresAuth;
+            }
+            
+            await AuditLogger.log({
+              userId: authContext.userId,
+              username: authContext.username,
+              action: 'test_email_sent',
+              category: 'system',
+              details: auditDetails,
+              ipAddress,
+              userAgent,
+              status: 'error',
+              errorMessage: error instanceof Error ? error.message : String(error),
+            });
+          } catch (auditError) {
+            console.error(`Failed to log email failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+          }
+        }
+        throw error;
       }
       
       return NextResponse.json({ message: 'Test email sent successfully' });
@@ -211,6 +270,8 @@ Email Configuration Details:
       // Send notifications to both NTFY and email (if configured)
       const notifications: Promise<void>[] = [];
       const notificationTypes: string[] = [];
+      const ipAddress = authContext ? getClientIpAddress(request) : null;
+      const userAgent = request.headers.get('user-agent') || 'unknown';
 
       // Send NTFY notification
       notifications.push(
@@ -220,10 +281,53 @@ Email Configuration Details:
           processedTitle,
           template.priority || 'default',
           template.tags || ''
-        ).then(() => {
+        ).then(async () => {
           notificationTypes.push('NTFY');
-        }).catch((error) => {
+          // Log audit event for successful NTFY notification
+          if (authContext) {
+            await AuditLogger.log({
+              userId: authContext.userId,
+              username: authContext.username,
+              action: 'test_notification_sent',
+              category: 'system',
+              details: {
+                type: 'template',
+                channel: 'NTFY',
+                templateType: template ? 'custom' : 'default',
+                url: ntfyConfig.url,
+                topic: ntfyConfig.topic,
+              },
+              ipAddress,
+              userAgent,
+              status: 'success',
+            });
+          }
+        }).catch(async (error) => {
           console.error('NTFY test notification failed:', error);
+          // Log audit event for failed NTFY notification
+          if (authContext) {
+            try {
+              await AuditLogger.log({
+                userId: authContext.userId,
+                username: authContext.username,
+                action: 'test_notification_sent',
+                category: 'system',
+                details: {
+                  type: 'template',
+                  channel: 'NTFY',
+                  templateType: template ? 'custom' : 'default',
+                  url: ntfyConfig.url,
+                  topic: ntfyConfig.topic,
+                },
+                ipAddress,
+                userAgent,
+                status: 'error',
+                errorMessage: error instanceof Error ? error.message : String(error),
+              });
+            } catch (auditError) {
+              console.error(`Failed to log NTFY failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+            }
+          }
           throw new Error(`NTFY test failed: ${error instanceof Error ? error.message : String(error)}`);
         })
       );
@@ -231,15 +335,93 @@ Email Configuration Details:
       // Send email notification if configured
       if (getSMTPConfig()) {
         const htmlContent = convertTextToHtml(finalMessage);
+        const smtpConfig = getSMTPConfig();
         notifications.push(
           sendEmailNotification(
             processedTitle,
             htmlContent,
             finalMessage
-          ).then(() => {
+          ).then(async () => {
             notificationTypes.push('Email');
-          }).catch((error) => {
+            // Log audit event for successful email notification
+            if (authContext && smtpConfig) {
+              const connectionType = smtpConfig.connectionType || 'starttls';
+              const useSecure = connectionType === 'ssl';
+              const requireTLS = connectionType === 'starttls';
+              const ignoreTLS = connectionType === 'plain';
+              await AuditLogger.log({
+                userId: authContext.userId,
+                username: authContext.username,
+                action: 'test_email_sent',
+                category: 'system',
+                details: {
+                  type: 'template',
+                  channel: 'Email',
+                  templateType: template ? 'custom' : 'default',
+                  host: smtpConfig.host,
+                  port: smtpConfig.port,
+                  connectionType: connectionType,
+                  secure: useSecure,
+                  requireTLS: requireTLS,
+                  ignoreTLS: ignoreTLS,
+                  requireAuth: smtpConfig.requireAuth !== false,
+                },
+                ipAddress,
+                userAgent,
+                status: 'success',
+              });
+            }
+          }).catch(async (error) => {
             console.error('Email test notification failed:', error);
+            // Log audit event for failed email notification (connection or delivery failure)
+            if (authContext) {
+              try {
+                // Try to get SMTP config if not available, but don't fail if we can't
+                let emailConfig: ReturnType<typeof getSMTPConfig> = smtpConfig;
+                if (!emailConfig) {
+                  try {
+                    emailConfig = getSMTPConfig();
+                  } catch {
+                    // If we can't get config, we'll log with minimal info
+                  }
+                }
+                
+                const auditDetails: Record<string, unknown> = {
+                  type: 'template',
+                  channel: 'Email',
+                  templateType: template ? 'custom' : 'default',
+                  error: error instanceof Error ? error.message : String(error),
+                };
+                
+                if (emailConfig) {
+                  const connectionType = emailConfig.connectionType || 'starttls';
+                  const useSecure = connectionType === 'ssl';
+                  const requireTLS = connectionType === 'starttls';
+                  const ignoreTLS = connectionType === 'plain';
+                  auditDetails.host = emailConfig.host;
+                  auditDetails.port = emailConfig.port;
+                  auditDetails.connectionType = connectionType;
+                  auditDetails.secure = useSecure;
+                  auditDetails.requireTLS = requireTLS;
+                  auditDetails.ignoreTLS = ignoreTLS;
+                  auditDetails.requireAuth = emailConfig.requireAuth !== false;
+                }
+                
+                await AuditLogger.log({
+                  userId: authContext.userId,
+                  username: authContext.username,
+                  action: 'test_email_sent',
+                  category: 'system',
+                  details: auditDetails,
+                  ipAddress,
+                  userAgent,
+                  status: 'error',
+                  errorMessage: error instanceof Error ? error.message : String(error),
+                });
+              } catch (auditError) {
+                console.error(`Failed to log email failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+              }
+            }
             throw new Error(`Email test failed: ${error instanceof Error ? error.message : String(error)}`);
           })
         );
@@ -248,26 +430,6 @@ Email Configuration Details:
       // Wait for all notifications to complete
       await Promise.all(notifications);
 
-      // Log audit event
-      if (authContext) {
-        const ipAddress = getClientIpAddress(request);
-        const userAgent = request.headers.get('user-agent') || 'unknown';
-        await AuditLogger.log({
-          userId: authContext.userId,
-          username: authContext.username,
-          action: 'test_notification_sent',
-          category: 'system',
-          details: {
-            type: 'template',
-            channels: notificationTypes,
-            templateType: template ? 'custom' : 'default',
-          },
-          ipAddress,
-          userAgent,
-          status: 'success',
-        });
-      }
-
       return NextResponse.json({ 
         success: true, 
         message: `Test notifications sent successfully via ${notificationTypes.join(' and ')}`,
@@ -275,33 +437,61 @@ Email Configuration Details:
       });
     } else {
       // Simple test notification
-      await sendNtfyNotificationDirect(
-        ntfyConfig, 
-        'This is a test notification from duplistatus.\n(test sent at ' + new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }) + ')', 
-        'Test Notification', 
-        'default', 
-        'test'
-      );
+      const ipAddress = authContext ? getClientIpAddress(request) : null;
+      const userAgent = request.headers.get('user-agent') || 'unknown';
       
-      // Log audit event
-      if (authContext) {
-        const ipAddress = getClientIpAddress(request);
-        const userAgent = request.headers.get('user-agent') || 'unknown';
-        await AuditLogger.log({
-          userId: authContext.userId,
-          username: authContext.username,
-          action: 'test_notification_sent',
-          category: 'system',
-          details: {
-            type: 'simple',
-            channel: 'NTFY',
-            url: ntfyConfig.url,
-            topic: ntfyConfig.topic,
-          },
-          ipAddress,
-          userAgent,
-          status: 'success',
-        });
+      try {
+        await sendNtfyNotificationDirect(
+          ntfyConfig, 
+          'This is a test notification from duplistatus.\n(test sent at ' + new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' }) + ')', 
+          'Test Notification', 
+          'default', 
+          'test'
+        );
+        
+        // Log audit event for successful NTFY notification
+        if (authContext) {
+          await AuditLogger.log({
+            userId: authContext.userId,
+            username: authContext.username,
+            action: 'test_notification_sent',
+            category: 'system',
+            details: {
+              type: 'simple',
+              channel: 'NTFY',
+              url: ntfyConfig.url,
+              topic: ntfyConfig.topic,
+            },
+            ipAddress,
+            userAgent,
+            status: 'success',
+          });
+        }
+      } catch (error) {
+        // Log audit event for failed NTFY notification
+        if (authContext) {
+          try {
+            await AuditLogger.log({
+              userId: authContext.userId,
+              username: authContext.username,
+              action: 'test_notification_sent',
+              category: 'system',
+              details: {
+                type: 'simple',
+                channel: 'NTFY',
+                url: ntfyConfig.url,
+                topic: ntfyConfig.topic,
+              },
+              ipAddress,
+              userAgent,
+              status: 'error',
+              errorMessage: error instanceof Error ? error.message : String(error),
+            });
+          } catch (auditError) {
+            console.error(`Failed to log NTFY failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+          }
+        }
+        throw error;
       }
       
       return NextResponse.json({ message: 'Test notification sent successfully' });
@@ -342,7 +532,7 @@ Email Configuration Details:
       await AuditLogger.log({
         userId: authContext.userId,
         username: authContext.username,
-        action: 'test_notification_sent',
+        action: testType === 'email' ? 'test_email_sent' : 'test_notification_sent',
         category: 'system',
         details: auditDetails,
         ipAddress,

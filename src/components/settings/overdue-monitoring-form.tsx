@@ -32,6 +32,7 @@ import {
   isWeekDayAllowed
 } from '@/lib/interval-utils';
 import { formatRelativeTime } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 // Use the ServerWithBackup interface from the configuration context
@@ -70,6 +71,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const [isResetting, setIsResetting] = useState(false);
   const [autoCollectingServers, setAutoCollectingServers] = useState<Set<string>>(new Set());
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
+  const [lastBackupTimestamps, setLastBackupTimestamps] = useState<Record<string, string>>({});
   const tableScrollContainerRef = useRef<HTMLDivElement>(null);
 
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
@@ -205,6 +207,28 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       observer.disconnect();
     };
   }, [config?.serversWithBackups, sortConfig]);
+
+  // Fetch last backup timestamps from database
+  useEffect(() => {
+    const fetchLastBackupTimestamps = async () => {
+      try {
+        const response = await authenticatedRequestWithRecovery('/api/backups/last-timestamps', {
+          method: 'GET',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setLastBackupTimestamps(data.timestamps || {});
+        }
+      } catch (error) {
+        console.warn('Error fetching last backup timestamps:', error instanceof Error ? error.message : String(error));
+      }
+    };
+
+    if (config?.serversWithBackups && config.serversWithBackups.length > 0) {
+      fetchLastBackupTimestamps();
+    }
+  }, [config?.serversWithBackups]);
 
   const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean | number[]) => {
     const backupKey = `${serverId}:${backupName}`;
@@ -672,8 +696,25 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     }
   };
 
-  const handleDownloadCSV = () => {
+  const handleDownloadCSV = async () => {
     try {
+      // Fetch last backup timestamps from the database
+      let lastBackupTimestamps: Record<string, string> = {};
+      try {
+        const response = await authenticatedRequestWithRecovery('/api/backups/last-timestamps', {
+          method: 'GET',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          lastBackupTimestamps = data.timestamps || {};
+        } else {
+          console.warn('Failed to fetch last backup timestamps, continuing without them');
+        }
+      } catch (error) {
+        console.warn('Error fetching last backup timestamps, continuing without them:', error instanceof Error ? error.message : String(error));
+      }
+
       // Capture current time at the moment of CSV generation
       const csvGenerationTime = new Date();
       
@@ -683,8 +724,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         'Server Name',
         'Server ID',
         'Backup Name',
-        'Last Backup',
-        'Last Backup Weekday',
+        'Last Backup (cfg)',
+        'Last Backup (cfg) Weekday',
+        'Last Backup (DB)',
         'Next Run',
         'Next Run Weekday',
         'Is Overdue',
@@ -698,6 +740,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         const backupSetting = getBackupSettingById(server.id, server.backupName);
         const nextRunDate = server.nextRunDate !== 'N/A' ? new Date(server.nextRunDate) : null;
         const lastBackupDate = backupSetting.lastBackupDate ? new Date(backupSetting.lastBackupDate) : null;
+        
+        // Get last backup timestamp from database
+        const backupKey = `${server.id}:${server.backupName}`;
+        const lastBackupTimestampDB = lastBackupTimestamps[backupKey] || 'N/A';
+        const lastBackupTimestampDBDate = lastBackupTimestampDB !== 'N/A' ? new Date(lastBackupTimestampDB) : null;
         
         // Determine if overdue using the CSV generation time
         const isOverdue = nextRunDate && backupSetting.overdueBackupCheckEnabled
@@ -722,6 +769,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
           server.backupName,
           lastBackupDate ? lastBackupDate.toISOString() : 'N/A',
           lastBackupWeekday,
+          lastBackupTimestampDB !== 'N/A' ? lastBackupTimestampDB : 'N/A',
           nextRunDate ? nextRunDate.toISOString() : 'N/A',
           nextRunWeekday,
           isOverdue ? 'Yes' : 'No',
@@ -973,19 +1021,44 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     </TableCell>
                     {/* Next Run - Table */}
                     <TableCell>
-                      <div 
-                        className={`text-xs p-1 ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
-                      >
-                        {server.nextRunDate !== 'N/A' ? 
-                          <>
-                            {new Date(server.nextRunDate).toLocaleString()}
-                            <br />
-                            {formatRelativeTime(server.nextRunDate)}
-                          </>
-                         : 
-                          'Not set'
-                        }
-                      </div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div 
+                              className={`text-xs p-1 ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
+                            >
+                              {server.nextRunDate !== 'N/A' ? 
+                                <>
+                                  {new Date(server.nextRunDate).toLocaleString()}
+                                  <br />
+                                  {formatRelativeTime(server.nextRunDate)}
+                                </>
+                               : 
+                                'Not set'
+                              }
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="text-xs">
+                              <div className="font-semibold mb-1">Last Backup:</div>
+                              {(() => {
+                                const backupKey = `${server.id}:${server.backupName}`;
+                                const lastBackupTimestamp = lastBackupTimestamps[backupKey];
+                                if (lastBackupTimestamp) {
+                                  return (
+                                    <>
+                                      {new Date(lastBackupTimestamp).toLocaleString()}
+                                      <br />
+                                      {formatRelativeTime(lastBackupTimestamp)}
+                                    </>
+                                  );
+                                }
+                                return 'N/A';
+                              })()}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </TableCell>
                     {/* Overdue Backup Monitoring - Table */}
                     <TableCell>
@@ -1129,14 +1202,39 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     {/* Next Run - Card */}
                     <div className="space-y-1">
                       <Label className="text-xs font-medium">Next Run</Label>
-                      <div 
-                        className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
-                      >
-                        {server.nextRunDate !== 'N/A' ? 
-                           new Date(server.nextRunDate).toLocaleString()+` (${formatRelativeTime(server.nextRunDate)})` : 
-                          'Not set'
-                        }
-                      </div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div
+                              className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
+                            >
+                              {server.nextRunDate !== 'N/A' ?
+                                 new Date(server.nextRunDate).toLocaleString()+` (${formatRelativeTime(server.nextRunDate)})` :
+                                'Not set'
+                              }
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="text-xs">
+                              <div className="font-semibold mb-1">Last Backup:</div>
+                              {(() => {
+                                const backupKey = `${server.id}:${server.backupName}`;
+                                const lastBackupTimestamp = lastBackupTimestamps[backupKey];
+                                if (lastBackupTimestamp) {
+                                  return (
+                                    <>
+                                      {new Date(lastBackupTimestamp).toLocaleString()}
+                                      <br />
+                                      {formatRelativeTime(lastBackupTimestamp)}
+                                    </>
+                                  );
+                                }
+                                return 'N/A';
+                              })()}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                     
                     {/* Overdue Backup Monitoring */}

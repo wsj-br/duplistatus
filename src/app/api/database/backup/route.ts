@@ -23,9 +23,17 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
     }
     
     const dbPath = getDatabasePath();
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5); // Remove milliseconds
+    // Format timestamp using server's local timezone instead of GMT
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timestamp = `${year}-${month}-${day}T${hours}-${minutes}-${seconds}`;
     const extension = format === 'db' ? 'db' : 'sql';
-    const filename = `backups-${timestamp}.${extension}`;
+    const filename = `duplistatus-backup-${timestamp}.${extension}`;
     
     // Create temporary file for backup
     const tempDir = path.join(process.cwd(), 'data', 'temp');

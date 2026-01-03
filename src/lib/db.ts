@@ -82,9 +82,13 @@ const dbPath = path.join(dataDir, 'backups.db');
 
 // Use a global singleton to prevent multiple database connections during hot reload
 // This is critical in development mode where Next.js may re-import modules
+// Also store initialization state in globals to share across SSR chunks
 declare global {
   var __dbInstance: Database.Database | undefined;
   var __dbCleanupRegistered: boolean | undefined;
+  var __startupInitialization: Promise<void> | null | undefined;
+  var __databaseStatus: DatabaseStatus | undefined;
+  var __initializationPromise: Promise<void> | null | undefined;
 }
 
 let db: Database.Database;
@@ -747,7 +751,8 @@ if (globalWithDupliDbOps.__duplistatusDbOps === undefined) {
 }
 
 let dbOps: ReturnType<typeof createDbOps> | null = globalWithDupliDbOps.__duplistatusDbOps;
-let initializationPromise: Promise<void> | null = null;
+// Use global for initializationPromise to share across SSR chunks
+let initializationPromise: Promise<void> | null = global.__initializationPromise || null;
 
 // Database initialization status tracking
 export enum DatabaseStatus {
@@ -757,11 +762,20 @@ export enum DatabaseStatus {
   ERROR = 'error'
 }
 
-let databaseStatus: DatabaseStatus = DatabaseStatus.NOT_STARTED;
+// Use global for databaseStatus to share across SSR chunks (Next.js/Turbopack creates separate module instances)
+let databaseStatus: DatabaseStatus = global.__databaseStatus || DatabaseStatus.NOT_STARTED;
 let initializationError: Error | null = null;
 
 // Function to ensure database is fully initialized
 async function ensureDatabaseInitialized() {
+  // Sync with global state (important for SSR chunks that have separate module instances)
+  if (global.__databaseStatus) {
+    databaseStatus = global.__databaseStatus;
+  }
+  if (global.__initializationPromise) {
+    initializationPromise = global.__initializationPromise;
+  }
+  
   // If already ready, return immediately (no logging)
   if (databaseStatus === DatabaseStatus.READY) {
     return;
@@ -779,6 +793,7 @@ async function ensureDatabaseInitialized() {
 
   // Start initialization
   databaseStatus = DatabaseStatus.INITIALIZING;
+  global.__databaseStatus = databaseStatus;
   initializationError = null;
 
   initializationPromise = (async () => {
@@ -807,6 +822,7 @@ async function ensureDatabaseInitialized() {
       }
       
       databaseStatus = DatabaseStatus.READY;
+      global.__databaseStatus = databaseStatus;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Don't log ENOENT errors for lock files - they're expected in concurrent scenarios
@@ -814,6 +830,7 @@ async function ensureDatabaseInitialized() {
         errorWithTimestamp('[Database] Initialization failed:', errorMessage);
       }
       databaseStatus = DatabaseStatus.ERROR;
+      global.__databaseStatus = databaseStatus;
       initializationError = error instanceof Error ? error : new Error(errorMessage);
       // Only throw if it's not a lock file ENOENT error
       if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
@@ -821,11 +838,14 @@ async function ensureDatabaseInitialized() {
       } else {
         // For lock file ENOENT errors, just mark as ready (another process handled it)
         databaseStatus = DatabaseStatus.READY;
+        global.__databaseStatus = databaseStatus;
         initializationError = null;
       }
     }
   })();
 
+  // Store in global to share across SSR chunks
+  global.__initializationPromise = initializationPromise;
   return initializationPromise;
 }
 
@@ -897,30 +917,28 @@ function performDatabaseMaintenance(): { success: boolean; error?: string } {
 let startupInitialization: Promise<void> | null = null;
 let initializationComplete = false;
 
-startupInitialization = ensureDatabaseInitialized()
-  .then(async () => {
-    initializationComplete = true;
-    // Only log if we actually did something (created DB or ran migrations)
-    // Silent if database was already ready
-    
-    // Clear all sessions on startup (users must log in again after server restart)
-    try {
-      const { clearAllSessions } = await import('./session-csrf');
-      clearAllSessions();
-      logWithTimestamp('[Database] Cleared all sessions on startup');
-    } catch (error) {
+// Reuse existing startupInitialization if it exists (prevents recreation on module reload)
+if (global.__startupInitialization) {
+  startupInitialization = global.__startupInitialization;
+  initializationComplete = true;
+} else {
+  // First time initialization - just ensure database is ready
+  startupInitialization = ensureDatabaseInitialized()
+    .then(() => {
+      initializationComplete = true;
+    })
+    .catch(error => {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      warnWithTimestamp('[Database] Failed to clear sessions on startup:', errorMessage);
-    }
-  })
-  .catch(error => {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    // Don't log ENOENT errors for lock files
-    if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
-      errorWithTimestamp('[Database] Startup initialization failed:', error);
-    }
-    throw error; // Propagate error to prevent app startup with broken database
-  });
+      // Don't log ENOENT errors for lock files
+      if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+        errorWithTimestamp('[Database] Startup initialization failed:', error);
+      }
+      throw error; // Propagate error to prevent app startup with broken database
+    });
+  
+  // Store in global to persist across module reloads
+  global.__startupInitialization = startupInitialization;
+}
 
 // Export helper to wait for startup initialization
 export async function waitForDatabaseReady(): Promise<void> {
@@ -1140,6 +1158,22 @@ function createDbOps() {
     SELECT MAX(date) as last_backup_date
     FROM backups
   `, 'getLatestBackupDate'),
+
+  getLastBackupTimestamps: safePrepare(`
+    SELECT
+      s.name as server_name,
+      b.server_id,
+      b.backup_name,
+      b.date
+    FROM backups b
+    JOIN servers s ON b.server_id = s.id
+    WHERE (b.server_id, b.backup_name, b.date) IN (
+      SELECT server_id, backup_name, MAX(date) as max_date
+      FROM backups
+      GROUP BY server_id, backup_name
+    )
+    ORDER BY s.name, b.backup_name
+  `, 'getLastBackupTimestamps'),
 
   getAggregatedChartData: safePrepare(`
     SELECT 
@@ -1839,8 +1873,10 @@ export function closeDatabaseConnection(): void {
 function resetDatabaseState(): void {
   // Reset database status to force reinitialization
   databaseStatus = DatabaseStatus.NOT_STARTED;
+  global.__databaseStatus = databaseStatus;
   initializationError = null;
   initializationPromise = null;
+  global.__initializationPromise = null;
   
   // Clear dbOps so it gets recreated with new connection
   dbOps = null;

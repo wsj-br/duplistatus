@@ -198,14 +198,15 @@ export function EmailConfigurationForm() {
 
     setIsSaving(true);
     try {
-      // Create config with username and password to allow clearing them
+      // Create config with username to allow clearing it
+      // Password is NOT included here - it's managed separately via PATCH endpoint
       const connectionType = emailConfig.connectionType || 'starttls';
       const configToSave = {
         host: emailConfig.host,
         port: emailConfig.port,
         connectionType,
         username: emailConfig.username || '', // Send empty string to allow clearing
-        password: '', // Send empty string to allow clearing (password is managed separately via PATCH endpoint)
+        // password is intentionally omitted - it's managed separately via /api/configuration/email/password
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,
@@ -279,13 +280,14 @@ export function EmailConfigurationForm() {
     setIsTesting(true);
     try {
       // First save the current configuration
+      // Password is NOT included here - it's managed separately via PATCH endpoint
       const connectionType = emailConfig.connectionType || 'starttls';
       const configToSave = {
         host: emailConfig.host,
         port: emailConfig.port,
         connectionType,
         username: emailConfig.username,
-        password: '', // Password is managed separately
+        // password is intentionally omitted - it's managed separately via /api/configuration/email/password
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,
@@ -404,7 +406,7 @@ export function EmailConfigurationForm() {
         port: emailConfig.port,
         connectionType,
         username: emailConfig.username,
-        password: '', // Password is managed separately
+        // password is intentionally omitted - it's managed separately via /api/configuration/email/password
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,

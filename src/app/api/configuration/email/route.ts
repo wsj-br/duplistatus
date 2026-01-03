@@ -149,11 +149,72 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       requireAuth: needsAuth
     };
 
+    // Track changed fields with old and new values
+    const changedFields: Record<string, { old: any; new: any }> = {};
+    
+    // Compare old and new values
+    if (!existingConfig || existingConfig.host !== smtpConfig.host) {
+      changedFields.host = {
+        old: existingConfig?.host ?? null,
+        new: smtpConfig.host,
+      };
+    }
+    if (!existingConfig || existingConfig.port !== smtpConfig.port) {
+      changedFields.port = {
+        old: existingConfig?.port ?? null,
+        new: smtpConfig.port,
+      };
+    }
+    if (!existingConfig || existingConfig.connectionType !== smtpConfig.connectionType) {
+      changedFields.connectionType = {
+        old: existingConfig?.connectionType ?? null,
+        new: smtpConfig.connectionType,
+      };
+    }
+    if (!existingConfig || existingConfig.username !== smtpConfig.username) {
+      changedFields.username = {
+        old: existingConfig?.username ?? null,
+        new: smtpConfig.username,
+      };
+    }
+    if (!existingConfig || existingConfig.mailto !== smtpConfig.mailto) {
+      changedFields.mailto = {
+        old: existingConfig?.mailto ?? null,
+        new: smtpConfig.mailto,
+      };
+    }
+    if (!existingConfig || existingConfig.senderName !== smtpConfig.senderName) {
+      changedFields.senderName = {
+        old: existingConfig?.senderName ?? null,
+        new: smtpConfig.senderName,
+      };
+    }
+    if (!existingConfig || existingConfig.fromAddress !== smtpConfig.fromAddress) {
+      changedFields.fromAddress = {
+        old: existingConfig?.fromAddress ?? null,
+        new: smtpConfig.fromAddress,
+      };
+    }
+    if (!existingConfig || existingConfig.requireAuth !== smtpConfig.requireAuth) {
+      changedFields.requireAuth = {
+        old: existingConfig?.requireAuth ?? null,
+        new: smtpConfig.requireAuth,
+      };
+    }
+    const oldHasPassword = existingConfig ? Boolean(existingConfig.password && existingConfig.password.trim() !== '') : false;
+    const newHasPassword = Boolean(smtpConfig.password && smtpConfig.password.trim() !== '');
+    if (!existingConfig || oldHasPassword !== newHasPassword) {
+      changedFields.hasPassword = {
+        old: oldHasPassword,
+        new: newHasPassword,
+      };
+    }
+
     // Save configuration
     setSMTPConfig(smtpConfig);
 
-    // Log audit event
-    if (authContext) {
+    // Log audit event only if there are actual changes
+    if (authContext && Object.keys(changedFields).length > 0) {
       const ipAddress = getClientIpAddress(request);
       const userAgent = request.headers.get('user-agent') || 'unknown';
       await AuditLogger.logConfigChange(
@@ -162,15 +223,7 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         authContext.username,
         'smtp_config',
         {
-          host: smtpConfig.host,
-          port: smtpConfig.port,
-          connectionType: smtpConfig.connectionType,
-          username: smtpConfig.username,
-          mailto: smtpConfig.mailto,
-          senderName: smtpConfig.senderName,
-          fromAddress: smtpConfig.fromAddress,
-          requireAuth: smtpConfig.requireAuth,
-          hasPassword: Boolean(smtpConfig.password && smtpConfig.password.trim() !== ''),
+          changes: changedFields,
         },
         ipAddress,
         userAgent

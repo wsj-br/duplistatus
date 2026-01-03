@@ -487,138 +487,37 @@ export async function sendBackupNotification(
   }
 
   const backupConfig = await getBackupSettings(config, serverId, backup.name);
-  if (!backupConfig || backupConfig.notificationEvent === 'off') {
-    console.log(`Notifications disabled for backup ${backup.name} on server ${serverName}, skipping`);
+  if (!backupConfig) {
+    console.log(`No backup configuration found for backup ${backup.name} on server ${serverName}, skipping`);
     return;
   }
 
-  // Determine which template to use based on backup status and backup settings
-  let template: NotificationTemplate;
   const status = backup.status;
   const notificationConf = backupConfig.notificationEvent;
-  
-  // Check if needed to send a notification
-  switch(notificationConf) {
-    case 'warnings': // send warnings and errors (all but success)
-        if (status === 'Success') {
-          return;
-        }
-        break;
-    case 'errors': // send errors (only errors and fatals and errors count > 0)
-        if (status != 'Error' && status != 'Fatal' && backup.errors == 0) {
-          return;
-        }
-        break;
-    default: // default is to send messages (all)
-        break;
-  }
-  // select the template based on the status
-  if (status === 'Success') {
-    template = config.templates?.success || defaultNotificationTemplates.success;
-  }
-  else {
-    template = config.templates?.warning || defaultNotificationTemplates.warning;
-  }
-
-  let processedTemplate;
-  try {
-    processedTemplate = processTemplate(template, context);
-  } catch (error) {
-    console.error(`Failed to process notification template for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
-    throw error;
-  }
-
-  // Send notifications based on backup configuration
-  const notifications: Promise<void>[] = [];
-  const notificationTypes: string[] = [];
-
-  // Send NTFY notification if enabled
-  if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
-    notifications.push(
-      sendNtfyNotification(
-        config.ntfy.url,
-        config.ntfy.topic,
-        processedTemplate.title,
-        processedTemplate.message,
-        processedTemplate.priority,
-        processedTemplate.tags,
-        config.ntfy.accessToken
-      ).then(() => {
-        notificationTypes.push('NTFY');
-      }).catch((error) => {
-        console.error(`Failed to send NTFY notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
-        throw new Error(`NTFY notification failed: ${error instanceof Error ? error.message : String(error)}`);
-      })
-    );
-  }
-
-  // Send email notification if enabled and configured
-  if (backupConfig.emailEnabled === true && getSMTPConfig()) {
-    const htmlContent = convertTextToHtml(processedTemplate.message);
-    notifications.push(
-      sendEmailNotification(
-        processedTemplate.title,
-        htmlContent,
-        processedTemplate.message
-      ).then(() => {
-        notificationTypes.push('Email');
-      }).catch((error) => {
-        console.error(`Failed to send email notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
-        throw new Error(`Email notification failed: ${error instanceof Error ? error.message : String(error)}`);
-      })
-    );
-  }
-
-  // Wait for all notifications to complete
-  if (notifications.length > 0) {
-    try {
-      await Promise.all(notifications);
-      console.log(`Notifications sent (${notificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
-      
-      // Log audit event for successful notification
-      const { AuditLogger } = await import('@/lib/audit-logger');
-      await AuditLogger.logSystem(
-        'notification_sent',
-        {
-          type: 'backup',
-          serverId,
-          serverName,
-          backupName: backup.name,
-          backupStatus: status,
-          channels: notificationTypes,
-        },
-        'success'
-      );
-    } catch (error) {
-      console.error(`Failed to send notifications for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
-      
-      // Log audit event for failed notification
-      const { AuditLogger } = await import('@/lib/audit-logger');
-      await AuditLogger.logSystem(
-        'notification_failed',
-        {
-          type: 'backup',
-          serverId,
-          serverName,
-          backupName: backup.name,
-          backupStatus: status,
-          channels: notificationTypes,
-          error: error instanceof Error ? error.message : String(error),
-        },
-        'error',
-        error instanceof Error ? error.message : String(error)
-      );
-      
-      throw error;
-    }
-  } else {
-    console.log(`No notification channels enabled for backup ${backup.name} on server ${serverName}, skipping`);
-  }
-
-  // Send to additional destinations if configured
   const additionalNotificationEvent = backupConfig.additionalNotificationEvent ?? backupConfig.notificationEvent;
-  
-  // Check if we should send to additional destinations based on additionalNotificationEvent
+
+  // Check if standard notifications should be sent (independent of additional notifications)
+  let shouldSendStandard = true;
+  if (notificationConf === 'off') {
+    shouldSendStandard = false;
+  } else {
+    switch(notificationConf) {
+      case 'warnings': // send warnings and errors (all but success)
+        if (status === 'Success') {
+          shouldSendStandard = false;
+        }
+        break;
+      case 'errors': // send errors (only errors and fatals and errors count > 0)
+        if (status != 'Error' && status != 'Fatal' && backup.errors == 0) {
+          shouldSendStandard = false;
+        }
+        break;
+      default: // default is to send messages (all)
+        break;
+    }
+  }
+
+  // Check if additional notifications should be sent (independent of standard notifications)
   let shouldSendToAdditional = true;
   switch(additionalNotificationEvent) {
     case 'warnings':
@@ -638,6 +537,198 @@ export async function sendBackupNotification(
       break;
   }
 
+  // If neither standard nor additional notifications should be sent, return early
+  if (!shouldSendStandard && !shouldSendToAdditional) {
+    console.log(`No notifications needed for backup ${backup.name} on server ${serverName}, status: ${status}, standard: ${notificationConf}, additional: ${additionalNotificationEvent}`);
+    return;
+  }
+
+  // Determine which template to use based on backup status
+  let template: NotificationTemplate;
+  if (status === 'Success') {
+    template = config.templates?.success || defaultNotificationTemplates.success;
+  }
+  else {
+    template = config.templates?.warning || defaultNotificationTemplates.warning;
+  }
+
+  let processedTemplate;
+  try {
+    processedTemplate = processTemplate(template, context);
+  } catch (error) {
+    console.error(`Failed to process notification template for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+
+  // Send standard notifications if needed
+  if (shouldSendStandard) {
+    const notifications: Promise<void>[] = [];
+    const notificationTypes: string[] = [];
+
+    // Send NTFY notification if enabled
+    if (backupConfig.ntfyEnabled !== false) { // Default to true if not specified
+      notifications.push(
+        sendNtfyNotification(
+          config.ntfy.url,
+          config.ntfy.topic,
+          processedTemplate.title,
+          processedTemplate.message,
+          processedTemplate.priority,
+          processedTemplate.tags,
+          config.ntfy.accessToken
+        ).then(async () => {
+          notificationTypes.push('NTFY');
+          // Log audit event for successful NTFY notification
+          const { AuditLogger } = await import('@/lib/audit-logger');
+          await AuditLogger.logSystem(
+            'notification_sent',
+            {
+              type: 'backup',
+              channel: 'NTFY',
+              serverId,
+              serverName,
+              backupName: backup.name,
+              backupStatus: status,
+              url: config.ntfy.url,
+              topic: config.ntfy.topic,
+            },
+            'success'
+          );
+        }).catch(async (error) => {
+          console.error(`Failed to send NTFY notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+          // Log audit event for failed NTFY notification
+          try {
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            await AuditLogger.logSystem(
+              'notification_failed',
+              {
+                type: 'backup',
+                channel: 'NTFY',
+                serverId,
+                serverName,
+                backupName: backup.name,
+                backupStatus: status,
+                url: config.ntfy.url,
+                topic: config.ntfy.topic,
+                error: error instanceof Error ? error.message : String(error),
+              },
+              'error',
+              error instanceof Error ? error.message : String(error)
+            );
+          } catch (auditError) {
+            console.error(`Failed to log NTFY failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+          }
+          throw new Error(`NTFY notification failed: ${error instanceof Error ? error.message : String(error)}`);
+        })
+      );
+    }
+
+    // Send email notification if enabled and configured
+    if (backupConfig.emailEnabled === true && getSMTPConfig()) {
+      const htmlContent = convertTextToHtml(processedTemplate.message);
+      const smtpConfig = getSMTPConfig();
+      notifications.push(
+        sendEmailNotification(
+          processedTemplate.title,
+          htmlContent,
+          processedTemplate.message
+        ).then(async () => {
+          notificationTypes.push('Email');
+          // Log audit event for successful email notification
+          if (smtpConfig) {
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            const connectionType = smtpConfig.connectionType || 'starttls';
+            const useSecure = connectionType === 'ssl';
+            const requireTLS = connectionType === 'starttls';
+            const ignoreTLS = connectionType === 'plain';
+            await AuditLogger.logSystem(
+              'email_sent',
+              {
+                type: 'backup',
+                channel: 'Email',
+                serverId,
+                serverName,
+                backupName: backup.name,
+                backupStatus: status,
+                host: smtpConfig.host,
+                port: smtpConfig.port,
+                connectionType: connectionType,
+                secure: useSecure,
+                requireTLS: requireTLS,
+                ignoreTLS: ignoreTLS,
+                requireAuth: smtpConfig.requireAuth !== false,
+              },
+              'success'
+            );
+          }
+        }).catch(async (error) => {
+          console.error(`Failed to send email notification for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+          // Log audit event for failed email notification (connection or delivery failure)
+          try {
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            // Try to get SMTP config if not available, but don't fail if we can't
+            let emailConfig = smtpConfig;
+            if (!emailConfig) {
+              try {
+                emailConfig = getSMTPConfig();
+              } catch {
+                // If we can't get config, we'll log with minimal info
+              }
+            }
+            
+            const auditDetails: Record<string, unknown> = {
+              type: 'backup',
+              channel: 'Email',
+              serverId,
+              serverName,
+              backupName: backup.name,
+              backupStatus: status,
+              error: error instanceof Error ? error.message : String(error),
+            };
+            
+            if (emailConfig) {
+              const connectionType = emailConfig.connectionType || 'starttls';
+              const useSecure = connectionType === 'ssl';
+              const requireTLS = connectionType === 'starttls';
+              const ignoreTLS = connectionType === 'plain';
+              auditDetails.host = emailConfig.host;
+              auditDetails.port = emailConfig.port;
+              auditDetails.connectionType = connectionType;
+              auditDetails.secure = useSecure;
+              auditDetails.requireTLS = requireTLS;
+              auditDetails.ignoreTLS = ignoreTLS;
+              auditDetails.requireAuth = emailConfig.requireAuth !== false;
+            }
+            
+            await AuditLogger.logSystem(
+              'email_failed',
+              auditDetails,
+              'error',
+              error instanceof Error ? error.message : String(error)
+            );
+          } catch (auditError) {
+            console.error(`Failed to log email failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+          }
+          throw new Error(`Email notification failed: ${error instanceof Error ? error.message : String(error)}`);
+        })
+      );
+    }
+
+    // Wait for all standard notifications to complete
+    if (notifications.length > 0) {
+      try {
+        await Promise.all(notifications);
+        console.log(`Standard notifications sent (${notificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}, status: ${status}, notification config: ${notificationConf}`);
+      } catch (error) {
+        console.error(`Failed to send standard notifications for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+        throw error;
+      }
+    } else {
+      console.log(`No standard notification channels enabled for backup ${backup.name} on server ${serverName}, skipping`);
+    }
+  }
+
+  // Send to additional destinations if configured and needed
   if (!shouldSendToAdditional) {
     return;
   }
@@ -655,18 +746,94 @@ export async function sendBackupNotification(
     if (emailAddresses.length > 0) {
       const htmlContent = convertTextToHtml(processedTemplate.message);
       for (const email of emailAddresses) {
+        const smtpConfig = getSMTPConfig();
         additionalNotifications.push(
           sendEmailNotification(
             processedTemplate.title,
             htmlContent,
             processedTemplate.message,
             email
-          ).then(() => {
+          ).then(async () => {
             if (!additionalNotificationTypes.includes('Additional Email')) {
               additionalNotificationTypes.push('Additional Email');
             }
-          }).catch((error) => {
+            // Log audit event for successful additional email notification
+            if (smtpConfig) {
+              const { AuditLogger } = await import('@/lib/audit-logger');
+              const connectionType = smtpConfig.connectionType || 'starttls';
+              const useSecure = connectionType === 'ssl';
+              const requireTLS = connectionType === 'starttls';
+              const ignoreTLS = connectionType === 'plain';
+              await AuditLogger.logSystem(
+                'email_sent',
+                {
+                  type: 'backup',
+                  channel: 'Additional Email',
+                  serverId,
+                  serverName,
+                  backupName: backup.name,
+                  backupStatus: status,
+                  recipientEmail: email,
+                  host: smtpConfig.host,
+                  port: smtpConfig.port,
+                  connectionType: connectionType,
+                  secure: useSecure,
+                  requireTLS: requireTLS,
+                  ignoreTLS: ignoreTLS,
+                  requireAuth: smtpConfig.requireAuth !== false,
+                },
+                'success'
+              );
+            }
+          }).catch(async (error) => {
             console.error(`Failed to send additional email notification to ${email} for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+            // Log audit event for failed additional email notification (connection or delivery failure)
+            try {
+              const { AuditLogger } = await import('@/lib/audit-logger');
+              // Try to get SMTP config if not available, but don't fail if we can't
+              let emailConfig = smtpConfig;
+              if (!emailConfig) {
+                try {
+                  emailConfig = getSMTPConfig();
+                } catch {
+                  // If we can't get config, we'll log with minimal info
+                }
+              }
+              
+              const auditDetails: Record<string, unknown> = {
+                type: 'backup',
+                channel: 'Additional Email',
+                serverId,
+                serverName,
+                backupName: backup.name,
+                backupStatus: status,
+                recipientEmail: email,
+                error: error instanceof Error ? error.message : String(error),
+              };
+              
+              if (emailConfig) {
+                const connectionType = emailConfig.connectionType || 'starttls';
+                const useSecure = connectionType === 'ssl';
+                const requireTLS = connectionType === 'starttls';
+                const ignoreTLS = connectionType === 'plain';
+                auditDetails.host = emailConfig.host;
+                auditDetails.port = emailConfig.port;
+                auditDetails.connectionType = connectionType;
+                auditDetails.secure = useSecure;
+                auditDetails.requireTLS = requireTLS;
+                auditDetails.ignoreTLS = ignoreTLS;
+                auditDetails.requireAuth = emailConfig.requireAuth !== false;
+              }
+              
+              await AuditLogger.logSystem(
+                'email_failed',
+                auditDetails,
+                'error',
+                error instanceof Error ? error.message : String(error)
+              );
+            } catch (auditError) {
+              console.error(`Failed to log email failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+            }
             // Don't throw - additional destinations are supplementary
           })
         );
@@ -676,19 +843,58 @@ export async function sendBackupNotification(
 
   // Send to additional NTFY topic if configured
   if (backupConfig.additionalNtfyTopic && backupConfig.additionalNtfyTopic.trim() && config.ntfy.url) {
+    const additionalTopic = backupConfig.additionalNtfyTopic.trim();
     additionalNotifications.push(
       sendNtfyNotification(
         config.ntfy.url,
-        backupConfig.additionalNtfyTopic.trim(),
+        additionalTopic,
         processedTemplate.title,
         processedTemplate.message,
         processedTemplate.priority,
         processedTemplate.tags,
         config.ntfy.accessToken
-      ).then(() => {
+      ).then(async () => {
         additionalNotificationTypes.push('Additional NTFY');
-      }).catch((error) => {
-        console.error(`Failed to send additional NTFY notification to topic ${backupConfig.additionalNtfyTopic} for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+        // Log audit event for successful additional NTFY notification
+        const { AuditLogger } = await import('@/lib/audit-logger');
+        await AuditLogger.logSystem(
+          'notification_sent',
+          {
+            type: 'backup',
+            channel: 'Additional NTFY',
+            serverId,
+            serverName,
+            backupName: backup.name,
+            backupStatus: status,
+            url: config.ntfy.url,
+            topic: additionalTopic,
+          },
+          'success'
+        );
+      }).catch(async (error) => {
+        console.error(`Failed to send additional NTFY notification to topic ${additionalTopic} for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+        // Log audit event for failed additional NTFY notification
+        try {
+          const { AuditLogger } = await import('@/lib/audit-logger');
+          await AuditLogger.logSystem(
+            'notification_failed',
+            {
+              type: 'backup',
+              channel: 'Additional NTFY',
+              serverId,
+              serverName,
+              backupName: backup.name,
+              backupStatus: status,
+              url: config.ntfy.url,
+              topic: additionalTopic,
+              error: error instanceof Error ? error.message : String(error),
+            },
+            'error',
+            error instanceof Error ? error.message : String(error)
+          );
+        } catch (auditError) {
+          console.error(`Failed to log NTFY failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+        }
         // Don't throw - additional destinations are supplementary
       })
     );
@@ -743,10 +949,46 @@ export async function sendOverdueBackupNotification(
           processedTemplate.priority,
           processedTemplate.tags,
           notificationConfig.ntfy.accessToken
-        ).then(() => {
+        ).then(async () => {
           notificationTypes.push('NTFY');
-        }).catch((error) => {
+          // Log audit event for successful NTFY notification
+          const { AuditLogger } = await import('@/lib/audit-logger');
+          await AuditLogger.logSystem(
+            'notification_sent',
+            {
+              type: 'overdue',
+              channel: 'NTFY',
+              serverId: context.server_id,
+              serverName: context.server_name,
+              backupName: context.backup_name,
+              url: notificationConfig.ntfy.url,
+              topic: notificationConfig.ntfy.topic,
+            },
+            'success'
+          );
+        }).catch(async (error) => {
           console.error(`Failed to send NTFY overdue notification for ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+          // Log audit event for failed NTFY notification
+          try {
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            await AuditLogger.logSystem(
+              'notification_failed',
+              {
+                type: 'overdue',
+                channel: 'NTFY',
+                serverId: context.server_id,
+                serverName: context.server_name,
+                backupName: context.backup_name,
+                url: notificationConfig.ntfy.url,
+                topic: notificationConfig.ntfy.topic,
+                error: error instanceof Error ? error.message : String(error),
+              },
+              'error',
+              error instanceof Error ? error.message : String(error)
+            );
+          } catch (auditError) {
+            console.error(`Failed to log NTFY failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+          }
           throw new Error(`NTFY notification failed: ${error instanceof Error ? error.message : String(error)}`);
         })
       );
@@ -755,15 +997,87 @@ export async function sendOverdueBackupNotification(
     // Send email notification if enabled and configured
     if (backupConfig.emailEnabled === true && getSMTPConfig()) {
       const htmlContent = convertTextToHtml(processedTemplate.message);
+      const smtpConfig = getSMTPConfig();
       notifications.push(
         sendEmailNotification(
           processedTemplate.title,
           htmlContent,
           processedTemplate.message
-        ).then(() => {
+        ).then(async () => {
           notificationTypes.push('Email');
-        }).catch((error) => {
+          // Log audit event for successful email notification
+          if (smtpConfig) {
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            const connectionType = smtpConfig.connectionType || 'starttls';
+            const useSecure = connectionType === 'ssl';
+            const requireTLS = connectionType === 'starttls';
+            const ignoreTLS = connectionType === 'plain';
+            await AuditLogger.logSystem(
+              'email_sent',
+              {
+                type: 'overdue',
+                channel: 'Email',
+                serverId: context.server_id,
+                serverName: context.server_name,
+                backupName: context.backup_name,
+                host: smtpConfig.host,
+                port: smtpConfig.port,
+                connectionType: connectionType,
+                secure: useSecure,
+                requireTLS: requireTLS,
+                ignoreTLS: ignoreTLS,
+                requireAuth: smtpConfig.requireAuth !== false,
+              },
+              'success'
+            );
+          }
+        }).catch(async (error) => {
           console.error(`Failed to send email overdue notification for ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+          // Log audit event for failed email notification (connection or delivery failure)
+          try {
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            // Try to get SMTP config if not available, but don't fail if we can't
+            let emailConfig = smtpConfig;
+            if (!emailConfig) {
+              try {
+                emailConfig = getSMTPConfig();
+              } catch {
+                // If we can't get config, we'll log with minimal info
+              }
+            }
+            
+            const auditDetails: Record<string, unknown> = {
+              type: 'overdue',
+              channel: 'Email',
+              serverId: context.server_id,
+              serverName: context.server_name,
+              backupName: context.backup_name,
+              error: error instanceof Error ? error.message : String(error),
+            };
+            
+            if (emailConfig) {
+              const connectionType = emailConfig.connectionType || 'starttls';
+              const useSecure = connectionType === 'ssl';
+              const requireTLS = connectionType === 'starttls';
+              const ignoreTLS = connectionType === 'plain';
+              auditDetails.host = emailConfig.host;
+              auditDetails.port = emailConfig.port;
+              auditDetails.connectionType = connectionType;
+              auditDetails.secure = useSecure;
+              auditDetails.requireTLS = requireTLS;
+              auditDetails.ignoreTLS = ignoreTLS;
+              auditDetails.requireAuth = emailConfig.requireAuth !== false;
+            }
+            
+            await AuditLogger.logSystem(
+              'email_failed',
+              auditDetails,
+              'error',
+              error instanceof Error ? error.message : String(error)
+            );
+          } catch (auditError) {
+            console.error(`Failed to log email failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+          }
           throw new Error(`Email notification failed: ${error instanceof Error ? error.message : String(error)}`);
         })
       );
@@ -774,39 +1088,8 @@ export async function sendOverdueBackupNotification(
       try {
         await Promise.all(notifications);
         console.log(`Overdue notifications sent (${notificationTypes.join(', ')}) for backup ${context.backup_name} on server ${context.server_name}`);
-        
-        // Log audit event for successful overdue notification
-        const { AuditLogger } = await import('@/lib/audit-logger');
-        await AuditLogger.logSystem(
-          'notification_sent',
-          {
-            type: 'overdue',
-            serverId: context.server_id,
-            serverName: context.server_name,
-            backupName: context.backup_name,
-            channels: notificationTypes,
-          },
-          'success'
-        );
       } catch (error) {
         console.error(`Failed to send overdue notifications for backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
-        
-        // Log audit event for failed overdue notification
-        const { AuditLogger } = await import('@/lib/audit-logger');
-        await AuditLogger.logSystem(
-          'notification_failed',
-          {
-            type: 'overdue',
-            serverId: context.server_id,
-            serverName: context.server_name,
-            backupName: context.backup_name,
-            channels: notificationTypes,
-            error: error instanceof Error ? error.message : String(error),
-          },
-          'error',
-          error instanceof Error ? error.message : String(error)
-        );
-        
         throw error;
       }
     } else {
@@ -832,18 +1115,92 @@ export async function sendOverdueBackupNotification(
         if (emailAddresses.length > 0) {
           const htmlContent = convertTextToHtml(processedTemplate.message);
           for (const email of emailAddresses) {
+            const smtpConfig = getSMTPConfig();
             additionalNotifications.push(
               sendEmailNotification(
                 processedTemplate.title,
                 htmlContent,
                 processedTemplate.message,
                 email
-              ).then(() => {
+              ).then(async () => {
                 if (!additionalNotificationTypes.includes('Additional Email')) {
                   additionalNotificationTypes.push('Additional Email');
                 }
-              }).catch((error) => {
+                // Log audit event for successful additional email notification
+                if (smtpConfig) {
+                  const { AuditLogger } = await import('@/lib/audit-logger');
+                  const connectionType = smtpConfig.connectionType || 'starttls';
+                  const useSecure = connectionType === 'ssl';
+                  const requireTLS = connectionType === 'starttls';
+                  const ignoreTLS = connectionType === 'plain';
+                  await AuditLogger.logSystem(
+                    'email_sent',
+                    {
+                      type: 'overdue',
+                      channel: 'Additional Email',
+                      serverId: context.server_id,
+                      serverName: context.server_name,
+                      backupName: context.backup_name,
+                      recipientEmail: email,
+                      host: smtpConfig.host,
+                      port: smtpConfig.port,
+                      connectionType: connectionType,
+                      secure: useSecure,
+                      requireTLS: requireTLS,
+                      ignoreTLS: ignoreTLS,
+                      requireAuth: smtpConfig.requireAuth !== false,
+                    },
+                    'success'
+                  );
+                }
+              }).catch(async (error) => {
                 console.error(`Failed to send additional email notification to ${email} for overdue backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+                // Log audit event for failed additional email notification (connection or delivery failure)
+                try {
+                  const { AuditLogger } = await import('@/lib/audit-logger');
+                  // Try to get SMTP config if not available, but don't fail if we can't
+                  let emailConfig = smtpConfig;
+                  if (!emailConfig) {
+                    try {
+                      emailConfig = getSMTPConfig();
+                    } catch {
+                      // If we can't get config, we'll log with minimal info
+                    }
+                  }
+                  
+                  const auditDetails: Record<string, unknown> = {
+                    type: 'overdue',
+                    channel: 'Additional Email',
+                    serverId: context.server_id,
+                    serverName: context.server_name,
+                    backupName: context.backup_name,
+                    recipientEmail: email,
+                    error: error instanceof Error ? error.message : String(error),
+                  };
+                  
+                  if (emailConfig) {
+                    const connectionType = emailConfig.connectionType || 'starttls';
+                    const useSecure = connectionType === 'ssl';
+                    const requireTLS = connectionType === 'starttls';
+                    const ignoreTLS = connectionType === 'plain';
+                    auditDetails.host = emailConfig.host;
+                    auditDetails.port = emailConfig.port;
+                    auditDetails.connectionType = connectionType;
+                    auditDetails.secure = useSecure;
+                    auditDetails.requireTLS = requireTLS;
+                    auditDetails.ignoreTLS = ignoreTLS;
+                    auditDetails.requireAuth = emailConfig.requireAuth !== false;
+                  }
+                  
+                  await AuditLogger.logSystem(
+                    'email_failed',
+                    auditDetails,
+                    'error',
+                    error instanceof Error ? error.message : String(error)
+                  );
+                } catch (auditError) {
+                  console.error(`Failed to log email failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+                }
                 // Don't throw - additional destinations are supplementary
               })
             );
@@ -853,19 +1210,56 @@ export async function sendOverdueBackupNotification(
 
       // Send to additional NTFY topic if configured
       if (backupConfig.additionalNtfyTopic && backupConfig.additionalNtfyTopic.trim() && notificationConfig.ntfy.url) {
+        const additionalTopic = backupConfig.additionalNtfyTopic.trim();
         additionalNotifications.push(
           sendNtfyNotification(
             notificationConfig.ntfy.url,
-            backupConfig.additionalNtfyTopic.trim(),
+            additionalTopic,
             processedTemplate.title,
             processedTemplate.message,
             processedTemplate.priority,
             processedTemplate.tags,
             notificationConfig.ntfy.accessToken
-          ).then(() => {
+          ).then(async () => {
             additionalNotificationTypes.push('Additional NTFY');
-          }).catch((error) => {
-            console.error(`Failed to send additional NTFY notification to topic ${backupConfig.additionalNtfyTopic} for overdue backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+            // Log audit event for successful additional NTFY notification
+            const { AuditLogger } = await import('@/lib/audit-logger');
+            await AuditLogger.logSystem(
+              'notification_sent',
+              {
+                type: 'overdue',
+                channel: 'Additional NTFY',
+                serverId: context.server_id,
+                serverName: context.server_name,
+                backupName: context.backup_name,
+                url: notificationConfig.ntfy.url,
+                topic: additionalTopic,
+              },
+              'success'
+            );
+          }).catch(async (error) => {
+            console.error(`Failed to send additional NTFY notification to topic ${additionalTopic} for overdue backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+            // Log audit event for failed additional NTFY notification
+            try {
+              const { AuditLogger } = await import('@/lib/audit-logger');
+              await AuditLogger.logSystem(
+                'notification_failed',
+                {
+                  type: 'overdue',
+                  channel: 'Additional NTFY',
+                  serverId: context.server_id,
+                  serverName: context.server_name,
+                  backupName: context.backup_name,
+                  url: notificationConfig.ntfy.url,
+                  topic: additionalTopic,
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                'error',
+                error instanceof Error ? error.message : String(error)
+              );
+            } catch (auditError) {
+              console.error(`Failed to log NTFY failure to audit log:`, auditError instanceof Error ? auditError.message : String(auditError));
+            }
             // Don't throw - additional destinations are supplementary
           })
         );

@@ -764,8 +764,18 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 
                 return (
                   <Fragment key={`${server.id}-${server.backupName}`}>
-                    <TableRow>
-                      <TableCell className="w-[40px] pl-4 pr-0">
+                    <TableRow 
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={(e) => {
+                        // Only toggle if clicking on the row itself, not on interactive elements
+                        const target = e.target as HTMLElement;
+                        const isInteractiveElement = target.closest('button, input, select, [role="checkbox"], [role="combobox"]');
+                        if (!isInteractiveElement) {
+                          toggleRowExpansion(backupKey);
+                        }
+                      }}
+                    >
+                      <TableCell className="w-[40px] pl-4 pr-0" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selectedBackups.has(backupKey)}
                           onCheckedChange={() => handleToggleSelection(backupKey)}
@@ -778,7 +788,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6"
-                            onClick={() => toggleRowExpansion(backupKey)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleRowExpansion(backupKey);
+                            }}
                           >
                             {isExpanded ? (
                               <ChevronDown className="h-4 w-4" />
@@ -789,15 +802,17 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <div>
                             <div className="font-medium text-sm">
                               <div className="flex items-center gap-1">
-                                <ServerConfigurationButton
-                                  serverUrl={server.server_url}
-                                  serverName={server.name}
-                                  serverAlias={server.alias}
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-xs hover:text-blue-500 transition-colors"
-                                  showText={false}
-                                />
+                                <div onClick={(e) => e.stopPropagation()}>
+                                  <ServerConfigurationButton
+                                    serverUrl={server.server_url}
+                                    serverName={server.name}
+                                    serverAlias={server.alias}
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-xs hover:text-blue-500 transition-colors"
+                                    showText={false}
+                                  />
+                                </div>
                                 <div className="flex flex-col">
                                   <span 
                                     className="truncate" 
@@ -823,7 +838,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         </div>
                       </TableCell>
                       
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <Select
                           value={backupSetting.notificationEvent}
                           onValueChange={(value: NotificationEvent) => 
@@ -842,7 +857,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         </Select>
                       </TableCell>
                       
-                      <TableCell className="text-center">
+                      <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={backupSetting.ntfyEnabled !== undefined ? backupSetting.ntfyEnabled : true}
                           onCheckedChange={(checked: boolean) => 
@@ -853,7 +868,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         />
                       </TableCell>
                       
-                      <TableCell className="text-center">
+                      <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={backupSetting.emailEnabled !== undefined ? backupSetting.emailEnabled : true}
                           onCheckedChange={(checked: boolean) => 

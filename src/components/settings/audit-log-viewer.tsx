@@ -28,8 +28,8 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { Download, ChevronLeft, ChevronRight, Eye, Calendar as CalendarIcon, Loader2 } from 'lucide-react';
-import { formatRelativeTime } from '@/lib/utils';
+import { Download, ChevronLeft, ChevronRight, Eye, Calendar as CalendarIcon, Loader2, RefreshCcw } from 'lucide-react';
+import { formatRelativeTime, formatSQLiteTimestamp } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { DatePicker } from '@/components/ui/date-picker';
 
@@ -374,6 +374,21 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
 
   return (
     <div className="space-y-4" data-screenshot-target="settings-content-card">
+      {/* Header with Refresh Button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Audit Log Viewer</h2>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => loadLogs(true)}
+          disabled={loading}
+          title="Refresh audit logs"
+        >
+          <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+
       {/* Filters */}
       <div className="border rounded-md p-4 space-y-4 bg-muted/30 relative z-30">
         <div className="flex items-center justify-between">
@@ -511,7 +526,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                           {index + 1}
                         </TableCell>
                         <TableCell>
-                          <div>{new Date(log.timestamp).toLocaleString()}</div>
+                          <div>{formatSQLiteTimestamp(log.timestamp)}</div>
                           <div className="text-xs text-muted-foreground">
                             {formatRelativeTime(log.timestamp)}
                           </div>
@@ -616,7 +631,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-xs text-muted-foreground">Timestamp</Label>
-                  <div className="text-sm">{new Date(selectedLog.timestamp).toLocaleString()}</div>
+                  <div className="text-sm">{formatSQLiteTimestamp(selectedLog.timestamp)}</div>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">Status</Label>
