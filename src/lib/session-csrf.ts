@@ -8,13 +8,43 @@ const CSRF_TOKEN_DURATION_MINUTES = 30; // 30 minutes
 // Helper to check if sessions table exists (for graceful handling during migration)
 function isSessionsTableAvailable(): boolean {
   try {
+    // Ensure database is initialized before checking
+    // This is important after restore when dbOps might be null
+    if (!dbOps) {
+      // Try to ensure database is initialized synchronously
+      // Note: ensureDatabaseInitialized is async, but we can't make this async
+      // So we'll just return false if dbOps is not available
+      return false;
+    }
     // Try to query sessions table
     dbOps.deleteExpiredSessions.run();
     return true;
   } catch (error) {
-    // Table doesn't exist yet (pre-migration 4.0)
+    // Table doesn't exist yet (pre-migration 4.0) or dbOps not ready
     return false;
   }
+}
+
+// Helper to wait for dbOps to be ready (for use after restore)
+async function waitForDbOps(maxWaitMs: number = 2000): Promise<boolean> {
+  const startTime = Date.now();
+  
+  while ((Date.now() - startTime) < maxWaitMs) {
+    try {
+      // Import db module and check if dbOps is available
+      const { dbOps: ops } = await import('./db');
+      if (ops && isSessionsTableAvailable()) {
+        return true;
+      }
+    } catch (error) {
+      // dbOps not ready yet
+    }
+    
+    // Wait a bit before retrying
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  
+  return false;
 }
 
 // Fallback in-memory storage for backward compatibility (pre-migration)
@@ -61,7 +91,11 @@ export function createSession(userId: string | null = null, ipAddress?: string, 
   const expiresAt = new Date(now.getTime() + SESSION_DURATION_HOURS * 60 * 60 * 1000);
   
   // Try database-backed storage first
-  if (isSessionsTableAvailable()) {
+  // Important: Check both isSessionsTableAvailable() AND dbOps exists
+  // This ensures we use database storage after restore when dbOps is ready
+  const sessionsTableAvailable = isSessionsTableAvailable();
+
+  if (sessionsTableAvailable && dbOps) {
     try {
       dbOps.createSession.run(
         sessionId,
@@ -85,6 +119,12 @@ export function createSession(userId: string | null = null, ipAddress?: string, 
   }
   
   // Fallback to in-memory storage (legacy or error case)
+  // IMPORTANT: After database restore, this should NOT be used for authenticated sessions
+  // If we're creating a session with a userId but database is not ready, log a warning
+  if (userId) {
+    console.warn('[Session] CRITICAL: Creating authenticated session in memory instead of database. This may cause login loops after restore. userId:', userId);
+  }
+  
   const sessionData: LegacySessionData = {
     id: sessionId,
     createdAt: now,
@@ -102,9 +142,54 @@ export function createSession(userId: string | null = null, ipAddress?: string, 
 }
 
 
-export function validateSession(sessionId: string): boolean {
+export async function validateSession(sessionId: string): Promise<boolean> {
+  // CRITICAL: After database restore, dbOps might be temporarily null
+  // We must wait for it to be ready instead of falling back to memory
+  // Otherwise, old in-memory sessions will be used, causing auth failures
+  if (!dbOps || !isSessionsTableAvailable()) {
+    // Wait for dbOps to be ready (this is fast if already ready)
+    const dbReady = await waitForDbOps(2000);
+    if (!dbReady) {
+      console.warn('[Session] validateSession: dbOps not available after waiting, session validation failed');
+      return false;
+    }
+  }
+  
+  // At this point, dbOps should be ready
+  try {
+    const session = dbOps!.getSessionById.get(sessionId) as {
+      id: string;
+      user_id: string | null;
+      expires_at: string;
+    } | undefined;
+    
+    if (!session) {
+      return false;
+    }
+    
+    // Session found in database - validate it
+    const now = new Date();
+    const expiresAt = new Date(session.expires_at);
+    
+    if (expiresAt <= now) {
+      dbOps!.deleteSession.run(sessionId);
+      return false;
+    }
+    
+    // Valid session in database
+    dbOps!.updateSessionAccess.run(sessionId);
+    return true;
+  } catch (error) {
+    console.error('[Session] Error validating session:', error);
+    return false;
+  }
+}
+
+// Legacy sync version - for backward compatibility, but should not be used after restore
+// This is kept for code that can't be easily converted to async
+export function validateSessionSync(sessionId: string): boolean {
   // Try database-backed storage first
-  if (isSessionsTableAvailable()) {
+  if (isSessionsTableAvailable() && dbOps) {
     try {
       const session = dbOps.getSessionById.get(sessionId) as {
         id: string;
@@ -112,48 +197,29 @@ export function validateSession(sessionId: string): boolean {
         expires_at: string;
       } | undefined;
       
-      if (!session) {
-        return false;
+      if (session) {
+        // Session found in database - validate it
+        const now = new Date();
+        const expiresAt = new Date(session.expires_at);
+        
+        if (expiresAt <= now) {
+          dbOps.deleteSession.run(sessionId);
+          return false;
+        }
+        
+        // Valid session in database
+        dbOps.updateSessionAccess.run(sessionId);
+        return true;
       }
-      
-      // Check if session has expired
-      const now = new Date();
-      const expiresAt = new Date(session.expires_at);
-      
-      if (expiresAt <= now) {
-        dbOps.deleteSession.run(sessionId);
-        return false;
-      }
-      
-      // Update last accessed time
-      dbOps.updateSessionAccess.run(sessionId);
-      
-    return true;
     } catch (error) {
-      console.warn('[Session] Failed to validate database session, falling back to memory:', error);
+      console.warn('[Session] Failed to validate database session (sync):', error);
     }
   }
   
-  // Fallback to in-memory storage
-  const session = legacySessions.get(sessionId);
-  if (!session) {
-    return false;
-  }
-  
-  const now = new Date();
-  if (session.expiresAt <= now) {
-    legacySessions.delete(sessionId);
-    legacyCSRFTokens.delete(sessionId);
-    return false;
-  }
-  
-  session.lastAccessed = now;
-  return true;
-}
-
-// Async version of validateSession (kept for compatibility)
-export async function validateSessionAsync(sessionId: string): Promise<boolean> {
-  return validateSession(sessionId);
+  // If database is not ready, return false (don't fall back to memory)
+  // This prevents using stale in-memory sessions after restore
+  console.warn('[Session] validateSessionSync: dbOps not ready, cannot validate session');
+  return false;
 }
 
 export function updateSessionAccess(sessionId: string): void {
@@ -336,9 +402,19 @@ export function cleanupExpiredData(): void {
   cleanupExpiredSessions();
 }
 
+/**
+ * Clear all in-memory session data
+ * This is important after database restore to prevent stale sessions
+ * from causing authentication issues
+ */
+export function clearAllLegacySessions(): void {
+  legacySessions.clear();
+  legacyCSRFTokens.clear();
+}
+
 // Get user ID from session (new helper for authentication)
 export function getUserIdFromSession(sessionId: string): string | null {
-  if (isSessionsTableAvailable()) {
+  if (isSessionsTableAvailable() && dbOps) {
     try {
       const session = dbOps.getSessionById.get(sessionId) as {
         user_id: string;
@@ -351,7 +427,14 @@ export function getUserIdFromSession(sessionId: string): string | null {
   }
   
   // Legacy sessions don't have user association
-  return 'anonymous';
+  // IMPORTANT: If we reach here with an authenticated session, something is wrong
+  // Log a warning to help debug login loop issues after restore
+  const legacySession = legacySessions.get(sessionId);
+  if (legacySession) {
+    console.warn('[Session] CRITICAL: Trying to get userId from legacy session. This will fail authentication and may cause login loops.');
+  }
+  
+  return null;
 }
 
 // Helper function to get session ID from request

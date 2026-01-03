@@ -96,7 +96,11 @@ export const defaultBackupNotificationConfig: BackupNotificationConfig = {
   allowedWeekDays: [0, 1, 2, 3, 4, 5, 6], // All days enabled (Sunday to Saturday)
   time: '', // Empty string as default
   ntfyEnabled: true, // NTFY enabled by default
-  emailEnabled: true // Email enabled by default
+  emailEnabled: true, // Email enabled by default
+  // Additional destinations are optional and undefined by default
+  additionalNotificationEvent: undefined,
+  additionalEmails: undefined,
+  additionalNtfyTopic: undefined
 };
 
 // Default UI configuration

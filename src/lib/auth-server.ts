@@ -19,6 +19,27 @@ export interface ServerAuthContext {
 export async function requireServerAuth(): Promise<ServerAuthContext> {
   // Ensure database is ready
   await ensureDatabaseInitialized();
+  
+  // Wait for dbOps to be fully initialized after restore
+  // This is important after database restore when dbOps might have been reset
+  // Keep trying until dbOps is available (with timeout)
+  const maxWaitTime = 2000; // 2 seconds maximum wait
+  const startTime = Date.now();
+  let dbOpsReady = false;
+  
+  while (!dbOpsReady && (Date.now() - startTime) < maxWaitTime) {
+    try {
+      // Try to access dbOps - if it's ready, this won't throw
+      const testModule = await import('@/lib/db');
+      if (testModule.dbOps && testModule.dbOps.getUserById) {
+        dbOpsReady = true;
+        break;
+      }
+    } catch (error) {
+      // dbOps not ready yet, wait and retry
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  }
 
   // Get session ID from cookie
   const cookieStore = await cookies();
@@ -46,7 +67,7 @@ export async function requireServerAuth(): Promise<ServerAuthContext> {
   }
 
   // Validate session
-  const isValid = validateSession(sessionId);
+  const isValid = await validateSession(sessionId);
   if (!isValid) {
     redirect(`/login?redirect=${redirectUrl}`);
   }
@@ -56,6 +77,15 @@ export async function requireServerAuth(): Promise<ServerAuthContext> {
   if (!userId) {
     redirect(`/login?redirect=${redirectUrl}`);
   }
+
+  // If dbOps is still not available, redirect to login
+  if (!dbOpsReady) {
+    console.warn('[Auth Server] dbOps not available after waiting, redirecting to login');
+    redirect(`/login?redirect=${redirectUrl}`);
+  }
+
+  // Import dbOps
+  const { dbOps } = await import('@/lib/db');
 
   // Get user from database
   const user = dbOps.getUserById.get(userId) as {
@@ -108,7 +138,7 @@ export async function getServerAuth(): Promise<ServerAuthContext | null> {
     }
 
     // Validate session
-    const isValid = validateSession(sessionId);
+    const isValid = await validateSession(sessionId);
     if (!isValid) {
       return null;
     }

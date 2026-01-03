@@ -3,15 +3,12 @@
 // This script bundles the cron service into a single JS file for production runtime.
 //
 
-/* eslint-disable no-console */
-
 const path = require('node:path');
 const process = require('node:process');
 const fs = require('node:fs');
 
 // Resolve esbuild from a global install in the Docker build stage.
 // (NODE_PATH will be set to /usr/local/lib/node_modules)
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const esbuild = require('esbuild');
 
 function aliasAtToSrcPlugin() {

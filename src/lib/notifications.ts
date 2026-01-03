@@ -614,6 +614,98 @@ export async function sendBackupNotification(
   } else {
     console.log(`No notification channels enabled for backup ${backup.name} on server ${serverName}, skipping`);
   }
+
+  // Send to additional destinations if configured
+  const additionalNotificationEvent = backupConfig.additionalNotificationEvent ?? backupConfig.notificationEvent;
+  
+  // Check if we should send to additional destinations based on additionalNotificationEvent
+  let shouldSendToAdditional = true;
+  switch(additionalNotificationEvent) {
+    case 'warnings':
+      if (status === 'Success') {
+        shouldSendToAdditional = false;
+      }
+      break;
+    case 'errors':
+      if (status !== 'Error' && status !== 'Fatal' && backup.errors === 0) {
+        shouldSendToAdditional = false;
+      }
+      break;
+    case 'off':
+      shouldSendToAdditional = false;
+      break;
+    default:
+      break;
+  }
+
+  if (!shouldSendToAdditional) {
+    return;
+  }
+
+  const additionalNotifications: Promise<void>[] = [];
+  const additionalNotificationTypes: string[] = [];
+
+  // Send to additional email addresses if configured
+  if (backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
+    const emailAddresses = backupConfig.additionalEmails
+      .split(',')
+      .map(email => email.trim())
+      .filter(email => email.length > 0 && email.includes('@'));
+    
+    if (emailAddresses.length > 0) {
+      const htmlContent = convertTextToHtml(processedTemplate.message);
+      for (const email of emailAddresses) {
+        additionalNotifications.push(
+          sendEmailNotification(
+            processedTemplate.title,
+            htmlContent,
+            processedTemplate.message,
+            email
+          ).then(() => {
+            if (!additionalNotificationTypes.includes('Additional Email')) {
+              additionalNotificationTypes.push('Additional Email');
+            }
+          }).catch((error) => {
+            console.error(`Failed to send additional email notification to ${email} for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+            // Don't throw - additional destinations are supplementary
+          })
+        );
+      }
+    }
+  }
+
+  // Send to additional NTFY topic if configured
+  if (backupConfig.additionalNtfyTopic && backupConfig.additionalNtfyTopic.trim() && config.ntfy.url) {
+    additionalNotifications.push(
+      sendNtfyNotification(
+        config.ntfy.url,
+        backupConfig.additionalNtfyTopic.trim(),
+        processedTemplate.title,
+        processedTemplate.message,
+        processedTemplate.priority,
+        processedTemplate.tags,
+        config.ntfy.accessToken
+      ).then(() => {
+        additionalNotificationTypes.push('Additional NTFY');
+      }).catch((error) => {
+        console.error(`Failed to send additional NTFY notification to topic ${backupConfig.additionalNtfyTopic} for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+        // Don't throw - additional destinations are supplementary
+      })
+    );
+  }
+
+  // Wait for additional notifications to complete (errors are logged but don't fail the function)
+  if (additionalNotifications.length > 0) {
+    try {
+      await Promise.all(additionalNotifications);
+      if (additionalNotificationTypes.length > 0) {
+        console.log(`Additional notifications sent (${additionalNotificationTypes.join(', ')}) for backup ${backup.name} on server ${serverName}`);
+      }
+    } catch (error) {
+      // Log but don't throw - additional destinations are supplementary
+      console.error(`Some additional notifications failed for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
+    }
+  }
 }
 
 export async function sendOverdueBackupNotification(
@@ -719,6 +811,78 @@ export async function sendOverdueBackupNotification(
       }
     } else {
       console.log(`No notification channels enabled for overdue backup ${context.backup_name} on server ${context.server_name}, skipping`);
+    }
+
+    // Send to additional destinations if configured
+    // For overdue notifications, we always send unless additionalNotificationEvent is 'off'
+    const additionalNotificationEvent = backupConfig.additionalNotificationEvent ?? backupConfig.notificationEvent;
+    const shouldSendToAdditional = additionalNotificationEvent !== 'off';
+
+    if (shouldSendToAdditional) {
+      const additionalNotifications: Promise<void>[] = [];
+      const additionalNotificationTypes: string[] = [];
+
+      // Send to additional email addresses if configured
+      if (backupConfig.additionalEmails && backupConfig.additionalEmails.trim() && getSMTPConfig()) {
+        const emailAddresses = backupConfig.additionalEmails
+          .split(',')
+          .map(email => email.trim())
+          .filter(email => email.length > 0 && email.includes('@'));
+        
+        if (emailAddresses.length > 0) {
+          const htmlContent = convertTextToHtml(processedTemplate.message);
+          for (const email of emailAddresses) {
+            additionalNotifications.push(
+              sendEmailNotification(
+                processedTemplate.title,
+                htmlContent,
+                processedTemplate.message,
+                email
+              ).then(() => {
+                if (!additionalNotificationTypes.includes('Additional Email')) {
+                  additionalNotificationTypes.push('Additional Email');
+                }
+              }).catch((error) => {
+                console.error(`Failed to send additional email notification to ${email} for overdue backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+                // Don't throw - additional destinations are supplementary
+              })
+            );
+          }
+        }
+      }
+
+      // Send to additional NTFY topic if configured
+      if (backupConfig.additionalNtfyTopic && backupConfig.additionalNtfyTopic.trim() && notificationConfig.ntfy.url) {
+        additionalNotifications.push(
+          sendNtfyNotification(
+            notificationConfig.ntfy.url,
+            backupConfig.additionalNtfyTopic.trim(),
+            processedTemplate.title,
+            processedTemplate.message,
+            processedTemplate.priority,
+            processedTemplate.tags,
+            notificationConfig.ntfy.accessToken
+          ).then(() => {
+            additionalNotificationTypes.push('Additional NTFY');
+          }).catch((error) => {
+            console.error(`Failed to send additional NTFY notification to topic ${backupConfig.additionalNtfyTopic} for overdue backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+            // Don't throw - additional destinations are supplementary
+          })
+        );
+      }
+
+      // Wait for additional notifications to complete (errors are logged but don't fail the function)
+      if (additionalNotifications.length > 0) {
+        try {
+          await Promise.all(additionalNotifications);
+          if (additionalNotificationTypes.length > 0) {
+            console.log(`Additional overdue notifications sent (${additionalNotificationTypes.join(', ')}) for backup ${context.backup_name} on server ${context.server_name}`);
+          }
+        } catch (error) {
+          // Log but don't throw - additional destinations are supplementary
+          console.error(`Some additional overdue notifications failed for backup ${context.backup_name} on server ${context.server_name}:`, error instanceof Error ? error.message : String(error));
+        }
+      }
     }
     
   } catch (error) {

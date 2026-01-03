@@ -28,6 +28,32 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext 
   try {
     // Ensure database is ready
     await ensureDatabaseInitialized();
+    
+    // Wait for dbOps to be fully initialized after restore
+    // This is important after database restore when dbOps might have been reset
+    // Keep trying until dbOps is available (with shorter timeout for API requests)
+    const maxWaitTime = 2000; // 2 seconds maximum wait
+    const startTime = Date.now();
+    let dbOpsReady = false;
+    
+    while (!dbOpsReady && (Date.now() - startTime) < maxWaitTime) {
+      try {
+        // Try to access dbOps - if it's ready, this won't throw
+        const testModule = await import('./db');
+        if (testModule.dbOps && testModule.dbOps.getUserById) {
+          dbOpsReady = true;
+          break;
+        }
+      } catch (error) {
+        // dbOps not ready yet, wait and retry
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+    }
+
+    if (!dbOpsReady) {
+      console.warn('[Auth] dbOps not available after waiting, cannot authenticate');
+      return null;
+    }
 
     // Get session ID from cookie
     const sessionId = request.cookies.get('sessionId')?.value;
@@ -36,7 +62,7 @@ export async function getAuthContext(request: NextRequest): Promise<AuthContext 
     }
 
     // Validate session
-    const isValid = validateSession(sessionId);
+    const isValid = await validateSession(sessionId);
     if (!isValid) {
       return null;
     }

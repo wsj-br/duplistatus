@@ -3,12 +3,38 @@
 ## [Unreleased]
 
 ### Added
+- Added database backup functionality: Administrators can now create backups of the entire database from the Database Maintenance settings page. Supports two formats:
+  - **Database File (.db)**: Binary format using SQLite's backup API for fast, exact database copies
+  - **SQL Dump (.sql)**: Human-readable SQL text format for inspection, migration, or editing before restore
+  - Backups are automatically downloaded with timestamped filenames
+  - All backup operations are logged in the audit log
+- Added database restore functionality: Administrators can restore the database from previously created backup files:
+  - Supports both .db (binary) and .sql (text) file formats
+  - Automatic safety backup creation before restore operations
+  - Database integrity validation before and after restore
+  - Automatic cleanup of old safety backups (keeps only the last 5)
+  - WAL and SHM file handling during restore operations
+  - All sessions are cleared after restore for security (users must log in again)
+  - Automatic rollback to safety backup if restore fails integrity checks
+  - Maximum file size limit of 100MB for security
+  - All restore operations are logged in the audit log
+- Enhanced backup notification settings with advanced features:
+  - **Auto-save functionality**: Settings are automatically saved 500ms after changes with visual feedback (progress cursor)
+  - **Bulk operations**: Select multiple backup jobs to update or clear additional notification destinations in bulk
+  - **Server name filtering**: Filter backup jobs by server name or alias for easier management
+  - **Select all functionality**: Quickly enable/disable all NTFY or Email notifications with a single checkbox
+  - **Additional destinations per backup**: Configure additional email addresses and NTFY topics for individual backup jobs, independent of global notification settings
+  - **Row expansion**: Expandable rows in desktop view to show/hide additional destination settings
+  - **Mobile-responsive design**: Card-based layout for mobile devices with accordion for additional destinations
 
 ### Changed
+- Added automatic cleanup of old safety backup files: Database restore operations now automatically maintain only the last 5 safety backups, preventing accumulation of old backup files in the data directory. Older safety backups are automatically deleted after creating a new one.
 
 ### Removed
 
 ### Fixed
+- Fixed post-database-restore login redirect loop in dev mode by sharing the underlying `dbOps` across module instances (HMR/Turbopack), preventing session validation from reading stale/uninitialized database operations.
+- Fixed post-database-restore “The database connection is not open” console spam by routing `db` operations through the current `global.__dbInstance` (avoids stale closed handles after dev hot reload).
 
 ## [1.1.0]
 

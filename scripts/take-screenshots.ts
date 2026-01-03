@@ -2781,6 +2781,47 @@ async function main() {
       await page.goto(`${BASE_URL}/settings?tab=${tab}`, { waitUntil: 'networkidle0' });
       await delay(2000);
       
+      // Special handling for notifications tab - select 3 backups and expand first row
+      if (tab === 'notifications') {
+        console.log('Selecting 3 backups and expanding first row...');
+        try {
+          // Wait for the table to be rendered
+          await page.waitForSelector('table tbody tr', { timeout: 10000 });
+          await delay(1000);
+          
+          // Find all rows in the table
+          const rows = await page.$$('table tbody tr');
+          
+          if (rows.length >= 3) {
+            // Click checkboxes in the first 3 rows (they're in the first column)
+            for (let i = 0; i < 3; i++) {
+              const checkbox = await rows[i].$('td:first-child button');
+              if (checkbox) {
+                await checkbox.click();
+                await delay(300); // Small delay between clicks
+              }
+            }
+            console.log('Selected 3 backups');
+            await delay(500);
+            
+            // Find the expansion button (chevron) in the first row and click it
+            // The expansion button is in the second column (after checkbox column)
+            const firstRowExpansionButton = await rows[0].$('td:nth-child(2) button');
+            if (firstRowExpansionButton) {
+              await firstRowExpansionButton.click();
+              console.log('Expanded first row');
+              await delay(1000); // Wait for expansion animation
+            } else {
+              console.log('Warning: Could not find expansion button for first row');
+            }
+          } else {
+            console.log(`Warning: Found only ${rows.length} rows, expected at least 3`);
+          }
+        } catch (error) {
+          console.log(`Warning: Failed to interact with notifications page: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+      
       // Sanitize tab name for filename
       const filename = `screen-settings-${tab}.png`;
       const settingsTabResult = await takeScreenshot(page, filename, { isSettingsPage: true });
