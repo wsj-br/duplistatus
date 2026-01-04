@@ -781,3 +781,98 @@
   - Only accessible to admin users
   - Configuration change is logged to audit log
   - Retention period affects automatic and manual cleanup operations
+
+## Database Management
+
+### Backup Database - `/api/database/backup`
+- **Endpoint**: `/api/database/backup`
+- **Method**: GET
+- **Description**: Creates a backup of the database in either binary (.db) or SQL (.sql) format. The backup file is automatically downloaded with a timestamped filename.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Query Parameters**:
+  - `format` (optional): Backup format - `db` (binary) or `sql` (SQL dump). Default: `db`
+- **Response**:
+  - Content-Type: `application/octet-stream` (for .db) or `text/plain` (for .sql)
+  - Content-Disposition: `attachment; filename="duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db"` or `.sql`
+  - Binary file content (for .db) or SQL text content (for .sql)
+- **Error Responses**:
+  - `400`: Invalid format (must be "db" or "sql")
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Failed to create database backup
+- **Notes**:
+  - Only accessible to admin users
+  - Binary format uses SQLite's backup method for integrity
+  - SQL format creates a text dump of all database content
+  - Timestamp in filename uses server's local timezone
+  - Backup operation is logged to audit log
+  - Temporary files are automatically cleaned up after download
+
+### Restore Database - `/api/database/restore`
+- **Endpoint**: `/api/database/restore`
+- **Method**: POST
+- **Description**: Restores the database from a backup file (.db or .sql format). Creates a safety backup before restore and clears all sessions after restore for security.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Request Body**: FormData with a file field named `database`
+  - File must be either `.db`, `.sqlite`, `.sqlite3` (binary format) or `.sql` (SQL format)
+  - Maximum file size: 100MB
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "message": "Database restored successfully from DB file",
+    "safetyBackupPath": "duplistatus-backup-YYYY-MM-DDTHH-MM-SS.db",
+    "requiresReauth": true
+  }
+  ```
+- **Error Responses**:
+  - `400`: No file provided, file size exceeds limit, invalid file format, or database integrity check failed
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Failed to restore database (original database restored from safety backup if restore fails)
+- **Notes**:
+  - Only accessible to admin users
+  - Automatically creates a safety backup before restore
+  - Supports both binary (.db) and SQL (.sql) formats
+  - Validates database integrity after restore
+  - If restore fails, automatically restores from safety backup
+  - All sessions are cleared after successful restore for security
+  - Returns `requiresReauth: true` to indicate user needs to log in again
+  - Restore operation is logged to audit log
+  - For SQL format, validates SQL content before execution
+  - Database connection is reinitialized after restore
+  - All caches are invalidated after restore
+
+## Backup Timestamps
+
+### Get Last Backup Timestamps - `/api/backups/last-timestamps`
+- **Endpoint**: `/api/backups/last-timestamps`
+- **Method**: GET
+- **Description**: Retrieves the last backup timestamp for each server-backup combination. Returns a map for easy lookup.
+- **Authentication**: Requires valid session and CSRF token
+- **Response**:
+  ```json
+  {
+    "timestamps": {
+      "server-id-1:Backup Name 1": "2024-03-20T10:00:00Z",
+      "server-id-1:Backup Name 2": "2024-03-20T11:00:00Z",
+      "server-id-2:Backup Name 1": "2024-03-20T12:00:00Z"
+    },
+    "raw": [
+      {
+        "server_name": "Server Name",
+        "server_id": "server-id-1",
+        "backup_name": "Backup Name 1",
+        "date": "2024-03-20T10:00:00Z"
+      }
+    ]
+  }
+  ```
+- **Error Responses**:
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `500`: Failed to fetch last backup timestamps
+- **Notes**:
+  - Returns both a map (for easy lookup by `server_id:backup_name`) and raw array format
+  - Includes cache control headers to prevent caching
+  - Useful for tracking last backup times across all server-backup combinations
+  - Timestamps are in ISO format

@@ -1,8 +1,29 @@
 # Changelog
 
-## [Unreleased]
+## [1.2.1]
 
 ### Added
+- Enhanced Backup Notifications settings with server-level defaults and inheritance:
+  - **Server-level defaults**: Configure default additional destinations (notification events, emails, and NTFY topics) at the server level that all backups inherit automatically
+  - **Grouped table structure**: Backups are now grouped by server with distinct server header rows showing server name, alias, and backup count
+  - **Inheritance system**: Backups automatically inherit server defaults for additional destinations; individual backups can override these defaults when needed
+  - **Visual inheritance indicators**: 
+    - Link icon (🔗) in blue indicates inherited values from server defaults
+    - Broken link icon (🔗❌) in blue indicates overridden values (click to revert to inheritance)
+    - Tooltips provide clear guidance on inheritance status and actions
+  - **Server default management**:
+    - "Sync to All" button: Clears all backup overrides to make all backups inherit from server defaults
+    - "Clear All" button: Clears all additional destinations from both server defaults and all backups while maintaining inheritance structure
+  - **Improved visual hierarchy**: 
+    - Server headers have distinct styling with blue accent border and enhanced background
+    - Backup rows are visually indented to show they belong to a server group
+    - Inherited fields have muted styling with blue borders for overridden fields
+    - Placeholders show inherited values (e.g., "Inheriting: user@example.com")
+  - **Enhanced UX**:
+    - Clicking inherited fields automatically creates an override for editing
+    - Tooltips on override icons allow quick reversion to inheritance
+    - Clear visual distinction between inherited, overridden, and independent values
+    - Works seamlessly in both desktop table view and mobile card view
 - Added test email and test notification functionality to Backup Notifications settings page:
   - Added "send-horizontal" icon button to "Additional Emails" field that sends test emails to the addresses in the field
   - Added "send-horizontal" icon button to "Additional NTFY Topic" field that sends test notifications to the topic
@@ -15,6 +36,7 @@
 - Added tooltip to "Next Run" text in overdue monitoring settings: Hovering over the "Next Run" value in each row now displays a tooltip showing the last backup timestamp from the database, formatted the same way as the "Next Run" display (full date/time and relative time). This helps users quickly verify the last backup timestamp without downloading the CSV.
 - Added individual audit log entries for each notification and email sent, including when using test buttons. Each notification (NTFY or email) now generates a separate audit log entry with details about the channel, configuration, and outcome (success or failure). This provides better traceability for notification delivery in both test and production scenarios.
 - Enhanced audit logging robustness for notification failures: All audit logging operations for notification failures are now wrapped in try-catch blocks to prevent audit logging errors from breaking notification flows. The system attempts to retrieve SMTP configuration if it's not immediately available when logging email failures, ensuring failures are always logged even if configuration is temporarily unavailable. This improvement applies to both test notifications and production notification sending, covering NTFY and email channels (including additional destinations).
+- Added `log_text` variable to notification templates: The `{log_text}` variable is now available in success and warning notification templates, providing access to log text messages for use in notification messages. The variable contains the full text of warnings and errors combined, formatted as plain text with one item per line. If both warnings and errors arrays are empty, it falls back to using the messages array. This complements the existing `warnings_count` and `errors_count` variables. The default warning template has been updated to include a "Log Messages" section displaying the `{log_text}` content. **Automatic migration for existing installations**: The system includes a lazy upgrade mechanism that automatically detects and updates old default templates when they are first read after an upgrade. The upgrade logic in `getNotificationTemplates()` compares stored templates against previous default templates (stored in `previous-defaults.ts`) and automatically replaces matching old defaults with the new default templates that include `{log_text}`. This migration happens transparently on first access after upgrade, requires no manual intervention, and preserves all custom templates unchanged. The upgrade only affects templates that match the exact previous default format, ensuring that user customizations are never overwritten.
 
 ### Changed
 - Improved audit logging for email and NTFY configuration updates: Both `email_config_updated` and `ntfy_config_updated` audit log entries now only record when there are actual changes to the configuration. When changes are detected, the audit log includes old and new values for each modified field (similar to `backup_notification_updated`), making it easier to track what specifically changed. This prevents unnecessary audit log entries when configuration is saved without modifications.

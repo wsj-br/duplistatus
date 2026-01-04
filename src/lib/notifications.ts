@@ -25,6 +25,7 @@ export interface NotificationContext {
   uploaded_size: string; // formatted size string
   storage_size: string; // formatted size string
   available_versions: number;
+  log_text?: string; // Plain text, one item per line (warnings + errors, or messages as fallback)
 }
 
 export interface OverdueBackupContext {
@@ -97,6 +98,53 @@ function isRetryableNetworkError(error: unknown): boolean {
 // Helper function to sleep for a specified number of milliseconds
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Helper function to extract log text from backup arrays
+// Combines warnings and errors, or falls back to messages if both are empty
+export function extractLogText(backup: Backup): string {
+  try {
+    // Parse warnings and errors arrays
+    let warnings: string[] = [];
+    let errors: string[] = [];
+    
+    if (backup.warnings_array) {
+      try {
+        const parsed = JSON.parse(backup.warnings_array);
+        warnings = Array.isArray(parsed) ? parsed.filter((item: unknown) => item != null && item !== '') : [];
+      } catch {
+        // Invalid JSON, skip
+      }
+    }
+    
+    if (backup.errors_array) {
+      try {
+        const parsed = JSON.parse(backup.errors_array);
+        errors = Array.isArray(parsed) ? parsed.filter((item: unknown) => item != null && item !== '') : [];
+      } catch {
+        // Invalid JSON, skip
+      }
+    }
+    
+    // Combine warnings and errors
+    const combined = [...warnings, ...errors];
+    
+    // If combined array is empty, try messages as fallback
+    if (combined.length === 0 && backup.messages_array) {
+      try {
+        const parsed = JSON.parse(backup.messages_array);
+        const messages = Array.isArray(parsed) ? parsed.filter((item: unknown) => item != null && item !== '') : [];
+        return messages.join('\n');
+      } catch {
+        // Invalid JSON, return empty
+        return '';
+      }
+    }
+    
+    return combined.join('\n');
+  } catch {
+    return '';
+  }
 }
 
 export async function sendNtfyNotification(

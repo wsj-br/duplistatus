@@ -254,6 +254,7 @@ Email Configuration Details:
         uploaded_size: 'uploaded_size',
         storage_size: 'storage_size',
         available_versions: 'available_versions',
+        log_text: 'Sample warning 1\nSample error 1\nSample message 1',
       };
 
       // Process the template with sample data

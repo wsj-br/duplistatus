@@ -24,6 +24,7 @@ export const defaultNotificationTemplates: {
              "☁️ Uploaded: {uploaded_size}\n\n" + 
              "🚨 {warnings_count} warnings\n" + 
              "🛑 {errors_count} errors.\n\n" + 
+             "📄 Log Messages:\n{log_text}\n\n" + 
              "⚠️ Check the duplicati server immediately {server_url}\n",
     priority: "high",
     tags: "duplicati, duplistatus, warning, error"

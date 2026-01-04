@@ -62,3 +62,11 @@ The `available_backups` field contains an array of backup version timestamps (in
 ### File Size Fields
 All file size fields are returned in bytes as numbers, not formatted strings. The frontend is responsible for converting these to human-readable formats (KB, MB, GB, etc.).
 
+<br/>
+
+> [!CAUTION]
+>  Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
+> (e.g., local LAN protected by a firewall).
+>
+> Exposing the **duplistatus** interface to the public
+>  internet without proper security measures could lead to unauthorized access.

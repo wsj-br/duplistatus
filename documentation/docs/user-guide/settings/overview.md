@@ -83,4 +83,12 @@ The Settings page offers a unified interface for configuring all aspects of **du
   </tr>
 </table>
 
+## Status Icons
+
+The sidebar displays status icons next to the **NTFY** and **Email** integration settings:
+- <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Green icon**: Your settings are valid and configured correctly
+- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Yellow icon**: Your settings are not valid or not configured
+
+When the configuration is invalid, the corresponding checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will be greyed out and disabled. For more details, see the [NTFY Settings](ntfy-settings.md) and [Email Settings](email-settings.md) pages.
+
 

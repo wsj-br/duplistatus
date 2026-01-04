@@ -5,6 +5,7 @@ import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
 import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic } from './default-config';
+import { previousTemplatesMessages } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
@@ -1624,6 +1625,27 @@ export function setNtfyConfig(config: NtfyConfig): void {
   }
 }
 
+// Helper function to check if a specific template message matches any previous default template
+function isOldDefaultMessage(message: string | undefined, previousMessages: string[]): boolean {
+  if (!message) return false;
+  return previousMessages.includes(message);
+}
+
+// Helper function to get all previous messages for a specific template type
+function getPreviousMessages(templateType: 'success' | 'warning' | 'overdueBackup'): string[] {
+  const messages: string[] = [];
+  for (const previousTemplate of previousTemplatesMessages) {
+    if (templateType === 'success' && previousTemplate.sucess) {
+      messages.push(previousTemplate.sucess);
+    } else if (templateType === 'warning' && previousTemplate.warning) {
+      messages.push(previousTemplate.warning);
+    } else if (templateType === 'overdueBackup' && previousTemplate.overdueBackup) {
+      messages.push(previousTemplate.overdueBackup);
+    }
+  }
+  return messages;
+}
+
 // New: Functions to get/set Notification Templates under 'notification_templates'
 export function getNotificationTemplates(): { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate } {
   return getCachedOrCompute('notification_templates', () => {
@@ -1634,6 +1656,24 @@ export function getNotificationTemplates(): { success: NotificationTemplate; war
         return defaultNotificationTemplates;
       }
       const parsed = JSON.parse(templatesJson) as { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+      
+      // Lazy upgrade: check if templates match old defaults and upgrade if needed
+      const updatedTemplates = { ...parsed };
+      let needsUpdate = false;
+      
+      // Check and replace warning template if it matches old defaults
+      if (parsed.warning && isOldDefaultMessage(parsed.warning.message, getPreviousMessages('warning'))) {
+        console.log('Lazy upgrade: Detected old warning template, replacing with new default');
+        updatedTemplates.warning = defaultNotificationTemplates.warning;
+        needsUpdate = true;
+      }
+      
+      // Save updated templates if any were upgraded
+      if (needsUpdate) {
+        setNotificationTemplates(updatedTemplates);
+        return updatedTemplates;
+      }
+      
       return {
         success: parsed.success || defaultNotificationTemplates.success,
         warning: parsed.warning || defaultNotificationTemplates.warning,

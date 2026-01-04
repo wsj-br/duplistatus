@@ -24,7 +24,7 @@ The audit log viewer displays a chronological list of all logged events with the
 Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to view detailed information, including:
 - Full timestamp
 - User information
-- Complete action details
+- Complete action details (for example: fields changed, statistics, etc.)
 - IP address and user agent
 - Error messages (if the action failed)
 

@@ -13,6 +13,20 @@ This document covers breaking changes to external API endpoints that affect inte
 
 ## Version-Specific Changes
 
+### Version 1.2.1
+
+**No Breaking Changes to External API Endpoints**
+
+
+### Version 1.1.x
+
+**No Breaking Changes to External API Endpoints**
+
+### Version 1.0.x
+
+**No Breaking Changes to External API Endpoints**
+
+
 ### Version 0.9.x
 
 **No Breaking Changes to External API Endpoints**
@@ -199,6 +213,9 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
 
 ### Backward Compatibility
 
+- **Version 1.2.1**: Fully backward compatible with 1.1.x API structure
+- **Version 1.1.x**: Fully backward compatible with 1.0.x API structure
+- **Version 1.0.x**: Fully backward compatible with 0.9.x API structure
 - **Version 0.9.x**: Fully backward compatible with 0.8.x API structure
 - **Version 0.8.x**: Fully backward compatible with 0.7.x API structure
 - **Version 0.7.x**: Not backward compatible with versions prior to 0.7.x

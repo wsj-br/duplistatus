@@ -5,7 +5,7 @@ import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
-import { sendBackupNotification, NotificationContext } from '@/lib/notifications';
+import { sendBackupNotification, NotificationContext, extractLogText } from '@/lib/notifications';
 import { formatBytes, formatDurationHuman } from '@/lib/utils';
 import { BackupStatus } from '@/lib/types';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -311,6 +311,7 @@ export async function POST(request: NextRequest) {
         uploaded_size: formatBytes(backup.uploadedSize),
         storage_size: formatBytes(backup.knownFileSize),
         available_versions: backup.backup_list_count,
+        log_text: extractLogText(backup),
       };
 
       await sendBackupNotification(backup, serverId, serverName, notificationContext);

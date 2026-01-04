@@ -70,8 +70,10 @@ The project includes several npm scripts for different development tasks:
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
-- `scripts/upgrade-packages.sh` - Upgrade all packages to the latest version
+- `scripts/upgrade-dependencies.sh` - Upgrade all packages to the latest version
 - `scripts/clean-workspace.sh` - Clean the workspace
+
+**Note:** The `preinstall` script automatically enforces pnpm as the package manager.
 
 
 ### Production Scripts
@@ -83,6 +85,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm docker-up` - Start Docker Compose stack
 - `pnpm docker-down` - Stop Docker Compose stack
 - `pnpm docker-clean` - Clean Docker environment and cache
+- `pnpm docker-devel` - Build a development Docker image tagged as `wsj-br/duplistatus:devel`
 
 ### Cron Service Scripts
 - `pnpm cron:start` - Start cron service in production mode
@@ -94,3 +97,6 @@ The project includes several npm scripts for different development tasks:
 - `pnpm show-overdue-notifications` - Show overdue notification contents
 - `pnpm run-overdue-check` - Run overdue check at specific date/time
 - `pnpm test-cron-port` - Test cron service port connectivity
+- `pnpm test-overdue-detection` - Test overdue backup detection logic
+- `pnpm validate-csv-export` - Validate CSV export functionality
+- `pnpm take-screenshots` - Take screenshots for documentation (see [Documentation Tools](documentation-tools))

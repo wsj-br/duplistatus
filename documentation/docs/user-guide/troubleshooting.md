@@ -80,6 +80,19 @@ If you've lost your administrator password or been locked out of your account:
 - **Use Admin Recovery Script**: See the [Admin Account Recovery](admin-recovery.md) guide for instructions on recovering administrator access in Docker environments.
 - **Verify Container Access**: Ensure you have Docker exec access to the container to run the recovery script.
 
+### Database Backup and Migration
+
+When migrating from previous versions or creating a database backup:
+
+**If you're running version 1.2.1 or later:**
+- Use the built-in database backup function in `Settings → Database Maintenance`
+- Select your preferred format (.db or .sql) and click `Download Backup`
+- The backup file will be downloaded to your computer
+- See [Database Maintenance](settings/database-maintenance.md#database-backup) for detailed instructions
+
+**If you're running a version before 1.2.1:**
+- You'll need to manually backup.  see the [Migration Guide](../migration/version_upgrade.md#backing-up-your-database-before-migration) for more information.
+
 If you still experience issues, try the following steps:
 
 1.  **Inspect Application Logs**: If using Docker, run `docker logs <container-name>` to review detailed error information.
@@ -90,6 +103,7 @@ If you still experience issues, try the following steps:
 6.  **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).
 
 <br/>
+
 
 # Additional Resources
 
