@@ -187,13 +187,32 @@ const response = await fetch('/api/servers/server-id', {
   - Password changes are logged to audit log
   - New password must be different from current password
 
+### Check Admin Must Change Password - `/api/auth/admin-must-change-password`
+- **Endpoint**: `/api/auth/admin-must-change-password`
+- **Method**: GET
+- **Description**: Checks if the admin user must change their password. This endpoint is public (no authentication required) as it only returns a boolean flag.
+- **Response**:
+  ```json
+  {
+    "mustChangePassword": false
+  }
+  ```
+- **Error Responses**:
+  - `500`: Internal server error (returns `mustChangePassword: false` on error to avoid showing tip if there's a database issue)
+- **Notes**:
+  - Public endpoint, no authentication required
+  - Returns `false` if admin user doesn't exist
+  - Used to determine if password change tip should be shown
+  - On error, returns `false` to avoid showing tip if there's a database issue
+
 ### Error Responses
 - `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
 - `403 Forbidden`: CSRF token validation failed or operation not allowed
 
-> [!CAUTION]
->  Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
-> (e.g., local LAN protected by a firewall).
->
-> Exposing the **duplistatus** interface to the public
->  internet without proper security measures could lead to unauthorized access.
+:::caution
+ Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
+(e.g., local LAN protected by a firewall).
+
+Exposing the **duplistatus** interface to the public
+ internet without proper security measures could lead to unauthorized access.
+:::

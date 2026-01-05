@@ -72,6 +72,8 @@ export function EmailConfigurationForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingPassword, setIsDeletingPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   
   // Ref to track if we're in the middle of a password operation to prevent useEffect from overwriting
   const isPasswordOperationRef = useRef(false);
@@ -92,6 +94,41 @@ export function EmailConfigurationForm() {
       });
     }
   }, [config]);
+
+  // Handle password dialog open/close - reset form when opening, clear passwords when closing
+  useEffect(() => {
+    if (passwordDialogOpen) {
+      // Reset form state when dialog opens
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowPassword(false);
+    } else {
+      // Safely clear passwords from memory when dialog closes (covers all close methods)
+      // Capture current values before clearing
+      const currentNewPassword = newPassword;
+      const currentConfirmPassword = confirmPassword;
+      const randomStr = 'x'.repeat(Math.max(currentNewPassword.length, currentConfirmPassword.length, 100));
+      setNewPassword(randomStr);
+      setConfirmPassword(randomStr);
+      // Clear after overwrite
+      setTimeout(() => {
+        setNewPassword('');
+        setConfirmPassword('');
+      }, 0);
+      setShowPassword(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passwordDialogOpen]);
+
+  // Copy new password to confirm password when hiding password
+  const prevShowPasswordRef = useRef(showPassword);
+  useEffect(() => {
+    // When password visibility changes from shown to hidden, copy new password to confirm
+    if (prevShowPasswordRef.current === true && showPassword === false && newPassword) {
+      setConfirmPassword(newPassword);
+    }
+    prevShowPasswordRef.current = showPassword;
+  }, [showPassword, newPassword]);
 
   const handleInputChange = (field: keyof EmailConfig, value: string | number | boolean) => {
     setEmailConfig(prev => ({
@@ -198,14 +235,15 @@ export function EmailConfigurationForm() {
 
     setIsSaving(true);
     try {
-      // Create config with username and password to allow clearing them
+      // Create config with username to allow clearing it
+      // Password is NOT included here - it's managed separately via PATCH endpoint
       const connectionType = emailConfig.connectionType || 'starttls';
       const configToSave = {
         host: emailConfig.host,
         port: emailConfig.port,
         connectionType,
         username: emailConfig.username || '', // Send empty string to allow clearing
-        password: '', // Send empty string to allow clearing (password is managed separately via PATCH endpoint)
+        // password is intentionally omitted - it's managed separately via /api/configuration/email/password
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,
@@ -279,13 +317,14 @@ export function EmailConfigurationForm() {
     setIsTesting(true);
     try {
       // First save the current configuration
+      // Password is NOT included here - it's managed separately via PATCH endpoint
       const connectionType = emailConfig.connectionType || 'starttls';
       const configToSave = {
         host: emailConfig.host,
         port: emailConfig.port,
         connectionType,
         username: emailConfig.username,
-        password: '', // Password is managed separately
+        // password is intentionally omitted - it's managed separately via /api/configuration/email/password
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,
@@ -404,7 +443,7 @@ export function EmailConfigurationForm() {
         port: emailConfig.port,
         connectionType,
         username: emailConfig.username,
-        password: '', // Password is managed separately
+        // password is intentionally omitted - it's managed separately via /api/configuration/email/password
         mailto: emailConfig.mailto,
         senderName: emailConfig.senderName || undefined,
         fromAddress: emailConfig.fromAddress || undefined,
@@ -444,12 +483,12 @@ export function EmailConfigurationForm() {
     }
     
     setPasswordDialogOpen(true);
-    setNewPassword('');
-    setConfirmPassword('');
+    // Form reset is handled by useEffect watching passwordDialogOpen
   };
 
   const handlePasswordSave = async () => {
-    if (!newPassword || !confirmPassword) {
+    // When password is visible, confirmation field is synced, so only check newPassword
+    if (!newPassword || (!showPassword && !confirmPassword)) {
       toast({
         title: "Error",
         description: "Please enter both password fields",
@@ -459,7 +498,8 @@ export function EmailConfigurationForm() {
       return;
     }
 
-    if (newPassword !== confirmPassword) {
+    // When password is visible, confirmation is synced, so they match
+    if (!showPassword && newPassword !== confirmPassword) {
       toast({
         title: "Error",
         description: "Passwords do not match",
@@ -498,8 +538,8 @@ export function EmailConfigurationForm() {
           duration: 3000,
         });
         setPasswordDialogOpen(false);
-        setNewPassword('');
-        setConfirmPassword('');
+        // Safely clear passwords from memory
+        safeClearPasswords();
         // Refresh configuration to update hasPassword status
         await refreshConfigSilently();
         // Update hasPassword in local state
@@ -588,10 +628,22 @@ export function EmailConfigurationForm() {
     }
   };
 
+  // Safely clear password fields by overwriting before clearing
+  const safeClearPasswords = () => {
+    // Overwrite with random characters to clear from memory
+    const randomStr = 'x'.repeat(Math.max(newPassword.length, confirmPassword.length, 100));
+    setNewPassword(randomStr);
+    setConfirmPassword(randomStr);
+    // Clear after overwrite
+    setTimeout(() => {
+      setNewPassword('');
+      setConfirmPassword('');
+    }, 0);
+  };
+
   const handlePasswordDialogClose = () => {
     setPasswordDialogOpen(false);
-    setNewPassword('');
-    setConfirmPassword('');
+    // Password clearing is handled by useEffect watching passwordDialogOpen
   };
 
 
@@ -900,14 +952,17 @@ export function EmailConfigurationForm() {
                 New Password
               </Label>
               <TogglePasswordInput
+                ref={passwordInputRef}
                 id="new-password"
                 value={newPassword}
                 onChange={setNewPassword}
                 placeholder="Enter new password"
+                showPassword={showPassword}
+                onTogglePassword={() => setShowPassword(!showPassword)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm-password" className="text-sm font-medium">
+              <Label htmlFor="confirm-password" className={`text-sm font-medium ${showPassword ? 'opacity-60' : ''}`}>
                 Confirm Password
               </Label>
               <TogglePasswordInput
@@ -915,9 +970,14 @@ export function EmailConfigurationForm() {
                 value={confirmPassword}
                 onChange={setConfirmPassword}
                 placeholder="Confirm new password"
-                className={newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
+                className={!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
+                showPassword={showPassword}
+                onTogglePassword={() => setShowPassword(!showPassword)}
+                isConfirmation={true}
+                syncValue={newPassword}
+                passwordInputRef={passwordInputRef}
               />
-              {newPassword && confirmPassword && newPassword !== confirmPassword && (
+              {!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />
                   Passwords do not match
@@ -955,7 +1015,7 @@ export function EmailConfigurationForm() {
                 <Button
                   type="button"
                   onClick={handlePasswordSave}
-                  disabled={isSavingPassword || isDeletingPassword || !newPassword || !confirmPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
+                  disabled={isSavingPassword || isDeletingPassword || !newPassword || (!showPassword && (!confirmPassword || newPassword !== confirmPassword))}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
                   {isSavingPassword ? (

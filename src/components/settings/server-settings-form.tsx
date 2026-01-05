@@ -55,6 +55,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [isDeletingPassword, setIsDeletingPassword] = useState(false);
   const [csrfToken, setCsrfToken] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   // Column configuration for sorting
   const columnConfig = {
@@ -88,6 +90,64 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     }));
     setConnections(initialConnections);
   }, [serverAddresses, isSavingInProgress]);
+
+  // Handle password dialog open/close - reset form when opening, clear passwords when closing
+  useEffect(() => {
+    if (passwordDialogOpen) {
+      // Reset form state when dialog opens
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowPassword(false);
+    } else {
+      // Safely clear passwords from memory when dialog closes (covers all close methods)
+      // Capture current values before clearing
+      const currentNewPassword = newPassword;
+      const currentConfirmPassword = confirmPassword;
+      const randomStr = 'x'.repeat(Math.max(currentNewPassword.length, currentConfirmPassword.length, 100));
+      setNewPassword(randomStr);
+      setConfirmPassword(randomStr);
+      // Clear after overwrite
+      setTimeout(() => {
+        setNewPassword('');
+        setConfirmPassword('');
+      }, 0);
+      setShowPassword(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passwordDialogOpen]);
+
+  // Copy new password to confirm password when dialog opens and new password is autofilled
+  const prevPasswordDialogOpenRef = useRef(passwordDialogOpen);
+  useEffect(() => {
+    // When dialog just opened and new password has a value (from browser autofill), copy to confirm
+    if (passwordDialogOpen && !prevPasswordDialogOpenRef.current && newPassword && !confirmPassword) {
+      setConfirmPassword(newPassword);
+    }
+    prevPasswordDialogOpenRef.current = passwordDialogOpen;
+  }, [passwordDialogOpen, newPassword, confirmPassword]);
+
+  // Watch for autofill after dialog opens (browser autofill happens asynchronously)
+  useEffect(() => {
+    if (passwordDialogOpen && newPassword && !confirmPassword) {
+      // Small delay to allow browser autofill to complete, then copy to confirm
+      const timeoutId = setTimeout(() => {
+        if (newPassword && !confirmPassword) {
+          setConfirmPassword(newPassword);
+        }
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [passwordDialogOpen, newPassword, confirmPassword]);
+
+  // Copy new password to confirm password when hiding password
+  const prevShowPasswordRef = useRef(showPassword);
+  useEffect(() => {
+    // When password visibility changes from shown to hidden, copy new password to confirm
+    if (prevShowPasswordRef.current === true && showPassword === false && newPassword) {
+      setConfirmPassword(newPassword);
+    }
+    prevShowPasswordRef.current = showPassword;
+  }, [showPassword, newPassword]);
 
   // Check for URL validity
   const isValidUrl = (url: string): boolean => {
@@ -504,6 +564,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       setCsrfToken(csrfToken);
 
       setPasswordDialogOpen(true);
+      // Form reset is handled by useEffect watching passwordDialogOpen
     } catch {
       toast({
         title: "Error",
@@ -515,7 +576,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   };
 
   const handlePasswordSave = async () => {
-    if (!newPassword || !confirmPassword) {
+    // When password is visible, confirmation field is synced, so only check newPassword
+    if (!newPassword || (!showPassword && !confirmPassword)) {
       toast({
         title: "Error",
         description: "Please enter both password fields",
@@ -525,7 +587,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       return;
     }
 
-    if (newPassword !== confirmPassword) {
+    // When password is visible, confirmation is synced, so they match
+    if (!showPassword && newPassword !== confirmPassword) {
       toast({
         title: "Error",
         description: "Passwords do not match",
@@ -555,8 +618,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
           duration: 3000,
         });
         setPasswordDialogOpen(false);
-        setNewPassword('');
-        setConfirmPassword('');
+        // Safely clear passwords from memory
+        safeClearPasswords();
         // Refresh configuration to update hasPassword status and UI buttons
         await refreshConfigSilently();
         
@@ -630,11 +693,23 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
     }
   };
 
+  // Safely clear password fields by overwriting before clearing
+  const safeClearPasswords = () => {
+    // Overwrite with random characters to clear from memory
+    const randomStr = 'x'.repeat(Math.max(newPassword.length, confirmPassword.length, 100));
+    setNewPassword(randomStr);
+    setConfirmPassword(randomStr);
+    // Clear after overwrite
+    setTimeout(() => {
+      setNewPassword('');
+      setConfirmPassword('');
+    }, 0);
+  };
+
   const handlePasswordDialogClose = () => {
     setPasswordDialogOpen(false);
-    setNewPassword('');
-    setConfirmPassword('');
     setCsrfToken('');
+    // Password clearing is handled by useEffect watching passwordDialogOpen
   };
 
 
@@ -730,7 +805,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   <TableRow key={connection.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium truncate">{connection.name}</span>
+                        <span className="font-medium truncate" title={connection.id}>{connection.name}</span>
                         {connection.hasPassword && (
                           <Button
                             type="button"
@@ -877,7 +952,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   {/* Header with Machine Name */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">{connection.name}</span>
+                      <span className="font-medium text-sm" title={connection.id}>{connection.name}</span>
                       {connection.hasPassword && (
                         <Button
                           type="button"
@@ -1120,14 +1195,17 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 New Password
               </Label>
               <TogglePasswordInput
+                ref={passwordInputRef}
                 id="new-password"
                 value={newPassword}
                 onChange={setNewPassword}
                 placeholder="Enter new password"
+                showPassword={showPassword}
+                onTogglePassword={() => setShowPassword(!showPassword)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm-password" className="text-sm font-medium">
+              <Label htmlFor="confirm-password" className={`text-sm font-medium ${showPassword ? 'opacity-60' : ''}`}>
                 Confirm Password
               </Label>
               <TogglePasswordInput
@@ -1135,9 +1213,14 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 value={confirmPassword}
                 onChange={setConfirmPassword}
                 placeholder="Confirm new password"
-                className={newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
+                className={!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
+                showPassword={showPassword}
+                onTogglePassword={() => setShowPassword(!showPassword)}
+                isConfirmation={true}
+                syncValue={newPassword}
+                passwordInputRef={passwordInputRef}
               />
-              {newPassword && confirmPassword && newPassword !== confirmPassword && (
+              {!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />
                   Passwords do not match
@@ -1175,7 +1258,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 <Button
                   type="button"
                   onClick={handlePasswordSave}
-                  disabled={isDeletingPassword || isSavingPassword || !newPassword || !confirmPassword || Boolean(newPassword && confirmPassword && newPassword !== confirmPassword)}
+                  disabled={isDeletingPassword || isSavingPassword || !newPassword || (!showPassword && (!confirmPassword || newPassword !== confirmPassword))}
                   variant="gradient"
                 >
                   {isSavingPassword ? (

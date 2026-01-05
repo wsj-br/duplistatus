@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    const isValid = validateSession(sessionId);
+    const isValid = await validateSession(sessionId);
     
     return NextResponse.json({ 
       valid: isValid,

@@ -64,7 +64,7 @@ const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress,
 
 export function GlobalRefreshControls() {
   const { state, refreshDashboard, refreshDetail, toggleAutoRefresh, getCurrentPageType } = useGlobalRefresh();
-  const { autoRefreshInterval, isLoading: configLoading } = useConfig();
+  const { autoRefreshInterval } = useConfig();
   const { toast } = useToast();
   const pathname = usePathname();
   
@@ -184,7 +184,7 @@ export function GlobalRefreshControls() {
         interval={state.interval}
         onToggle={handleToggleAutoRefresh}
         progress={progress}
-        isLoading={configLoading}
+        isLoading={isLoading}
       />
     </div>
   );

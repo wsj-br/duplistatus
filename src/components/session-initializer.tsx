@@ -1,15 +1,46 @@
 "use client";
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { getSession, validateSession, recreateSession } from '@/lib/client-session-csrf';
+
+/**
+ * Check if session cookie exists (client-side)
+ */
+function hasSessionCookie(): boolean {
+  if (typeof document === 'undefined') {
+    return false;
+  }
+  const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+    const [key] = cookie.trim().split('=');
+    acc[key] = true;
+    return acc;
+  }, {} as Record<string, boolean>);
+  return !!(cookies['sessionId'] || cookies['session']);
+}
 
 /**
  * Component responsible for initializing authentication session on app startup.
  * This ensures that all authenticated API calls work properly from the first page load.
  * Enhanced to handle Docker restart scenarios and session recovery.
+ * Skips initialization on login page or when no session cookie exists to avoid unnecessary API calls.
  */
 export function SessionInitializer() {
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login' || pathname?.startsWith('/login');
+
   useEffect(() => {
+    // Skip session initialization on login page
+    if (isLoginPage) {
+      return;
+    }
+
+    // If we're on root path and no session cookie, we'll be redirected to login
+    // Skip session initialization to avoid unnecessary requests
+    if (pathname === '/' && !hasSessionCookie()) {
+      return;
+    }
+
     const initializeSession = async () => {
       try {
         // First, try to validate existing session
@@ -41,7 +72,7 @@ export function SessionInitializer() {
     };
     
     initializeSession();
-  }, []);
+  }, [isLoginPage, pathname]);
 
   return null; // This component doesn't render anything
 }

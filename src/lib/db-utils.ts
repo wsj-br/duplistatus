@@ -5,6 +5,7 @@ import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
 import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic } from './default-config';
+import { previousTemplatesMessages } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
 import { getDefaultAllowedWeekDays } from './interval-utils';
@@ -1624,6 +1625,27 @@ export function setNtfyConfig(config: NtfyConfig): void {
   }
 }
 
+// Helper function to check if a specific template message matches any previous default template
+function isOldDefaultMessage(message: string | undefined, previousMessages: string[]): boolean {
+  if (!message) return false;
+  return previousMessages.includes(message);
+}
+
+// Helper function to get all previous messages for a specific template type
+function getPreviousMessages(templateType: 'success' | 'warning' | 'overdueBackup'): string[] {
+  const messages: string[] = [];
+  for (const previousTemplate of previousTemplatesMessages) {
+    if (templateType === 'success' && previousTemplate.sucess) {
+      messages.push(previousTemplate.sucess);
+    } else if (templateType === 'warning' && previousTemplate.warning) {
+      messages.push(previousTemplate.warning);
+    } else if (templateType === 'overdueBackup' && previousTemplate.overdueBackup) {
+      messages.push(previousTemplate.overdueBackup);
+    }
+  }
+  return messages;
+}
+
 // New: Functions to get/set Notification Templates under 'notification_templates'
 export function getNotificationTemplates(): { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate } {
   return getCachedOrCompute('notification_templates', () => {
@@ -1634,6 +1656,24 @@ export function getNotificationTemplates(): { success: NotificationTemplate; war
         return defaultNotificationTemplates;
       }
       const parsed = JSON.parse(templatesJson) as { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+      
+      // Lazy upgrade: check if templates match old defaults and upgrade if needed
+      const updatedTemplates = { ...parsed };
+      let needsUpdate = false;
+      
+      // Check and replace warning template if it matches old defaults
+      if (parsed.warning && isOldDefaultMessage(parsed.warning.message, getPreviousMessages('warning'))) {
+        console.log('Lazy upgrade: Detected old warning template, replacing with new default');
+        updatedTemplates.warning = defaultNotificationTemplates.warning;
+        needsUpdate = true;
+      }
+      
+      // Save updated templates if any were upgraded
+      if (needsUpdate) {
+        setNotificationTemplates(updatedTemplates);
+        return updatedTemplates;
+      }
+      
       return {
         success: parsed.success || defaultNotificationTemplates.success,
         warning: parsed.warning || defaultNotificationTemplates.warning,
@@ -1789,7 +1829,7 @@ export function setConfigOverdueTolerance(toleranceMinutes: number): void {
 }
 
 // Functions to get/set backup settings configuration
-export async function getConfigBackupSettings(): Promise<Record<BackupKey, BackupNotificationConfig>> {
+export async function getConfigBackupSettings(forceRecalculation: boolean = false): Promise<Record<BackupKey, BackupNotificationConfig>> {
   // Check if backup_settings exists in database - if not, clear cache to force regeneration
   // This handles the case where backup_settings was deleted externally (e.g., by generate-test-data.ts)
   const backupSettingsJson = getConfiguration('backup_settings');
@@ -1798,6 +1838,11 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
     if (requestCache.has('backupSettings')) {
       requestCache.delete('backupSettings');
     }
+  }
+  
+  // If force recalculation is requested, clear cache to force regeneration
+  if (forceRecalculation && requestCache.has('backupSettings')) {
+    requestCache.delete('backupSettings');
   }
   
   return getCachedOrCompute('backupSettings', async () => {
@@ -1885,8 +1930,11 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
       const existingSettings = updatedBackupSettings[backupKey];
       const latestBackupDate = latestBackupMap.get(backupKey);
       
-      if (latestBackupDate && existingSettings.lastBackupDate !== latestBackupDate) {
-        // New backup received - update lastBackupDate and advance time if needed
+      // Force recalculation if requested, or if lastBackupDate has changed
+      const shouldRecalculate = forceRecalculation || (latestBackupDate && existingSettings.lastBackupDate !== latestBackupDate);
+      
+      if (latestBackupDate && shouldRecalculate) {
+        // Update lastBackupDate and recalculate time
         let newTime = existingSettings.time || latestBackupDate;
         
         try {
@@ -1895,7 +1943,44 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
           const maxIterations = 1000; // Safety limit
           let iterations = 0;
           
-          while (new Date(newTime) <= new Date(latestBackupDate) && iterations < maxIterations) {
+          const lastBackupDateObj = new Date(latestBackupDate);
+          let newTimeObj = new Date(newTime);
+          
+          // When a new backup arrives, we need to ensure the time field is advanced
+          // by at least one interval from the new last backup date.
+          // If the old time field is already after the last backup, GetNextBackupRunDate
+          // will return it immediately without advancing. To fix this, we need to ensure
+          // we start from a time that's <= lastBackupDate so it will advance.
+          // We preserve the time-of-day from the old time field by applying it to the
+          // last backup date, but if that's still after the last backup, we use the
+          // last backup date itself as the base.
+          if (newTimeObj > lastBackupDateObj) {
+            // Preserve the time-of-day (hours, minutes, seconds) from the old time field
+            const oldTimeOfDay = {
+              hours: newTimeObj.getUTCHours(),
+              minutes: newTimeObj.getUTCMinutes(),
+              seconds: newTimeObj.getUTCSeconds(),
+              milliseconds: newTimeObj.getUTCMilliseconds()
+            };
+            
+            // Create a new date using the last backup date but with the old time-of-day
+            const baseTimeForCalculation = new Date(lastBackupDateObj);
+            baseTimeForCalculation.setUTCHours(oldTimeOfDay.hours, oldTimeOfDay.minutes, oldTimeOfDay.seconds, oldTimeOfDay.milliseconds);
+            
+            // Only use this if it's <= lastBackupDate, otherwise use lastBackupDate itself
+            // This ensures GetNextBackupRunDate will always advance the time
+            if (baseTimeForCalculation <= lastBackupDateObj) {
+              newTime = baseTimeForCalculation.toISOString();
+            } else {
+              // If preserving time-of-day would still be after last backup, use last backup date
+              // The time-of-day will be preserved through the interval advancement
+              newTime = latestBackupDate;
+            }
+            newTimeObj = new Date(newTime);
+          }
+          
+          // Now advance by intervals until we're past the last backup
+          while (newTimeObj <= lastBackupDateObj && iterations < maxIterations) {
             newTime = GetNextBackupRunDate(
               latestBackupDate, // Reference point
               newTime, // Current time to advance
@@ -1903,6 +1988,7 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
               existingSettings.allowedWeekDays || getDefaultAllowedWeekDays()
             );
             iterations++;
+            newTimeObj = new Date(newTime);
           }
           
           if (iterations >= maxIterations) {
@@ -1923,12 +2009,14 @@ export async function getConfigBackupSettings(): Promise<Record<BackupKey, Backu
           updatedSettings++;
         } catch (error) {
           console.warn(`Failed to calculate time for ${backupKey}:`, error instanceof Error ? error.message : String(error));
-          // If calculation fails, just update lastBackupDate
-          updatedBackupSettings[backupKey] = {
-            ...existingSettings,
-            lastBackupDate: latestBackupDate
-          };
-          updatedSettings++;
+          // If calculation fails, just update lastBackupDate if it changed
+          if (existingSettings.lastBackupDate !== latestBackupDate) {
+            updatedBackupSettings[backupKey] = {
+              ...existingSettings,
+              lastBackupDate: latestBackupDate
+            };
+            updatedSettings++;
+          }
         }
       }
       

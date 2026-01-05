@@ -27,9 +27,10 @@ import { useToast } from '@/components/ui/use-toast';
 import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { Database, Loader2, Trash2, Server, FolderOpen, Clock, Info, GitMerge } from 'lucide-react';
+import { Database, Loader2, Trash2, Server, FolderOpen, Clock, Info, GitMerge, Download, Upload } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 
 interface Server {
   id: string;
@@ -77,6 +78,10 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
   const [isDeletingServer, setIsDeletingServer] = useState(false);
   const [isDeletingBackupJob, setIsDeletingBackupJob] = useState(false);
   const [isMerging, setIsMerging] = useState(false);
+  const [isBackingUp, setIsBackingUp] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [backupFormat, setBackupFormat] = useState<'db' | 'sql'>('db');
+  const [restoreFile, setRestoreFile] = useState<File | null>(null);
   const [servers, setServers] = useState<Server[]>([]);
   const [backupJobs, setBackupJobs] = useState<BackupJob[]>([]);
   const [duplicateServers, setDuplicateServers] = useState<DuplicateServer[]>([]);
@@ -370,6 +375,149 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
     setSelectedDuplicateNames(newSelected);
   };
 
+  const handleBackup = async () => {
+    try {
+      setIsBackingUp(true);
+      
+      // Get CSRF token
+      const csrfResponse = await authenticatedRequestWithRecovery('/api/csrf');
+      if (!csrfResponse.ok) {
+        throw new Error('Failed to get CSRF token');
+      }
+      const { csrfToken } = await csrfResponse.json();
+      
+      // Download backup
+      const backupResponse = await fetch(`/api/database/backup?format=${backupFormat}`, {
+        method: 'GET',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+        },
+        credentials: 'include',
+      });
+      
+      if (!backupResponse.ok) {
+        const errorData = await backupResponse.json();
+        throw new Error(errorData.error || 'Failed to create backup');
+      }
+      
+      // Get filename from Content-Disposition header or use default
+      const contentDisposition = backupResponse.headers.get('Content-Disposition');
+      let filename = `backups-${new Date().toISOString().split('T')[0]}.${backupFormat}`;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?(.+?)"?$/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+      
+      // Download file
+      const blob = await backupResponse.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Backup created",
+        description: `Database backup downloaded successfully as ${filename}`,
+        variant: "default",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error creating backup:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Backup Failed",
+        description: error instanceof Error ? error.message : 'Failed to create backup. Please try again.',
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsBackingUp(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!restoreFile) {
+      toast({
+        title: "No file selected",
+        description: "Please select a database backup file to restore.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      setIsRestoring(true);
+      
+      // Get CSRF token
+      const csrfResponse = await authenticatedRequestWithRecovery('/api/csrf');
+      if (!csrfResponse.ok) {
+        throw new Error('Failed to get CSRF token');
+      }
+      const { csrfToken } = await csrfResponse.json();
+      
+      // Create form data
+      const formData = new FormData();
+      formData.append('database', restoreFile);
+      
+      // Upload and restore
+      const restoreResponse = await fetch('/api/database/restore', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+        },
+        credentials: 'include',
+        body: formData,
+      });
+      
+      if (restoreResponse.ok) {
+        const result = await restoreResponse.json();
+        toast({
+          title: "Database restored",
+          description: result.requiresReauth 
+            ? `${result.message || 'Database restored successfully'}. You will need to log in again.`
+            : result.message || 'Database restored successfully',
+          variant: "default",
+          duration: 8000,
+        });
+        
+        // Reset file input
+        setRestoreFile(null);
+        
+        // If reauth is required, redirect to login after a short delay
+        if (result.requiresReauth) {
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+          return;
+        }
+        
+        // Refresh dashboard and configuration
+        await refreshDashboard();
+        await refreshConfigSilently();
+        window.dispatchEvent(new CustomEvent('configuration-saved'));
+      } else {
+        const errorData = await restoreResponse.json();
+        throw new Error(errorData.error || errorData.details || 'Failed to restore database');
+      }
+    } catch (error) {
+      console.error('Error restoring database:', error instanceof Error ? error.message : String(error));
+      toast({
+        title: "Restore Failed",
+        description: error instanceof Error ? error.message : 'Failed to restore database. Please try again.',
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
   const handleMergeSelectedServers = async () => {
     if (selectedDuplicateNames.size === 0) {
       toast({
@@ -479,6 +627,152 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               </p>
             </div>
           )}
+
+          {/* Database Backup & Restore Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Backup Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <ColoredIcon icon={Download} color="green" size="sm" />
+                  Database Backup
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                <div className="grid gap-2">
+                  <Label htmlFor="backup-format">
+                    Backup Format
+                  </Label>
+                  <Select
+                    value={backupFormat}
+                    onValueChange={(value) => setBackupFormat(value as 'db' | 'sql')}
+                    disabled={!isAdmin || isBackingUp}
+                  >
+                    <SelectTrigger id="backup-format" disabled={!isAdmin || isBackingUp}>
+                      <SelectValue placeholder="Select format" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="db">Database File (.db)</SelectItem>
+                      <SelectItem value="sql">SQL Dump (.sql)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground">
+                    {backupFormat === 'db' 
+                      ? 'Binary database file - fastest backup, preserves all database structure'
+                      : 'SQL text file - human-readable, can be edited before restore'}
+                  </p>
+                </div>
+                
+                <div className="flex">
+                  <Button 
+                    variant="gradient" 
+                    disabled={!isAdmin || isBackingUp}
+                    onClick={handleBackup}
+                    className="relative overflow-hidden"
+                  >
+                    {isBackingUp ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Backup...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Backup
+                      </>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Create a backup of the entire database. The backup will be downloaded to your computer.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Restore Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <ColoredIcon icon={Upload} color="orange" size="sm" />
+                  Database Restore
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                <div className="grid gap-2">
+                  <Label htmlFor="restore-file">
+                    Select Backup File
+                  </Label>
+                  <Input
+                    id="restore-file"
+                    type="file"
+                    accept=".db,.sql,.sqlite,.sqlite3"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setRestoreFile(file);
+                    }}
+                    disabled={!isAdmin || isRestoring}
+                    className="border-0 bg-transparent p-0 file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground hover:file:bg-primary/90"
+                  />
+                  {restoreFile ? (
+                    <p className="text-sm text-muted-foreground">
+                      Selected: {restoreFile.name} ({(restoreFile.size / 1024 / 1024).toFixed(2)} MB)
+                    </p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Select a .db or .sql backup file to restore. This will replace the current database.
+                    </p>
+                  )}
+                </div>
+                
+                <div className="flex">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="gradient" 
+                        disabled={!isAdmin || isRestoring || !restoreFile}
+                        className="relative overflow-hidden"
+                      >
+                        {isRestoring ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Restoring...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="mr-2 h-4 w-4" />
+                            Restore Database
+                          </>
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Restore Database?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will replace the current database with the backup file. All current data will be lost unless you have a backup. 
+                          A safety backup of the current database will be created automatically before restore.
+                          <br /><br />
+                          <strong>This action cannot be undone.</strong>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={handleRestore} 
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Restore Database
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-destructive">Warning:</span> Restoring will replace all current database data. A safety backup will be created automatically.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* 2-Column Layout for Database Cleanup and Delete Backup Job */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

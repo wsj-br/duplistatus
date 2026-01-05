@@ -10,7 +10,7 @@ import { validateIntervalString } from '@/lib/interval-utils';
 export const runtime = 'nodejs';
 
 // Core function that can be called directly
-export async function checkOverdueBackups(checkDate?: Date) {
+export async function checkOverdueBackups(checkDate?: Date, forceRecalculation: boolean = true) {
   try {
     // Get current time
     const currentTime = checkDate || new Date();
@@ -22,7 +22,8 @@ export async function checkOverdueBackups(checkDate?: Date) {
 
     // Ensure backup settings are complete for all machines and backups
     // This will add default settings for any missing machine-backup combinations
-    const backupSettings = await getConfigBackupSettings();
+    // When called manually (forceRecalculation=true by default), recalculate all next run times
+    const backupSettings = await getConfigBackupSettings(forceRecalculation);
 
     // Get notification frequency configuration
     const notificationFrequency = getNotificationFrequencyConfig();
@@ -182,7 +183,9 @@ export async function checkOverdueBackups(checkDate?: Date) {
     setConfiguration('last_overdue_check', currentTime.toISOString());
 
     return {
-      message: 'Overdue backup check completed',
+      message: forceRecalculation 
+        ? 'Overdue backup check completed with next run times recalculated'
+        : 'Overdue backup check completed',
       statistics: {
         totalBackupConfigs: Object.keys(backupSettings || {}).length,
         checkedBackups,

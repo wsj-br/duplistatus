@@ -1,8 +1,25 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { NotificationFrequencyConfig, OverdueTolerance, NtfyConfig, EmailConfig, NotificationTemplate, BackupNotificationConfig, BackupKey, ServerAddress } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+
+/**
+ * Check if session cookie exists (client-side)
+ * This helps detect if user will be redirected to login
+ */
+function hasSessionCookie(): boolean {
+  if (typeof document === 'undefined') {
+    return false;
+  }
+  const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+    const [key] = cookie.trim().split('=');
+    acc[key] = true;
+    return acc;
+  }, {} as Record<string, boolean>);
+  return !!(cookies['sessionId'] || cookies['session']);
+}
 
 export interface ServerWithBackup {
   id: string;
@@ -50,6 +67,8 @@ interface ConfigurationContextType {
 const ConfigurationContext = createContext<ConfigurationContextType | undefined>(undefined);
 
 export function ConfigurationProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isLoginPage = pathname === '/login' || pathname?.startsWith('/login');
   const [config, setConfig] = useState<UnifiedConfiguration | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -114,10 +133,32 @@ export function ConfigurationProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (mounted) {
-      fetchUnifiedConfiguration();
+    // Skip configuration fetch on login page to avoid unnecessary API calls
+    // Wait for both mounted and pathname to be available before making decisions
+    if (!mounted) {
+      return; // Wait for client-side mount
     }
-  }, [fetchUnifiedConfiguration, mounted]);
+    
+    // If pathname is not available yet, wait (it will trigger effect again when set)
+    if (!pathname) {
+      return;
+    }
+    
+    if (isLoginPage) {
+      setLoading(false); // Set loading to false so components don't wait
+      return; // Skip on login page
+    }
+
+    // If we're on root path and no session cookie, we'll be redirected to login
+    // Skip API call to avoid unnecessary requests
+    if (pathname === '/' && !hasSessionCookie()) {
+      setLoading(false);
+      return;
+    }
+    
+    // Only fetch if we're not on login page and have a session
+    fetchUnifiedConfiguration();
+  }, [fetchUnifiedConfiguration, mounted, isLoginPage, pathname]);
 
   // Listen for configuration change events from other parts of the app
   useEffect(() => {

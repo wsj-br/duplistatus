@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.27.0",
@@ -21,6 +21,8 @@
     "start-local": "./scripts/pre-checks.sh && NODE_ENV=production HOSTNAME=0.0.0.0 PORT=8666 CRON_PORT=8667 NEXT_TELEMETRY_DISABLED=1 node .next/standalone/server.js",
     "cron:start-local": "NODE_ENV=production CRON_PORT=8667 tsx watch src/cron-service/index.ts",
     "generate-test-data": "tsx scripts/generate-test-data.ts",
+    "test-overdue-detection": "tsx scripts/test-overdue-detection.ts",
+    "validate-csv-export": "tsx scripts/validate-csv-export.ts",
     "show-overdue-notifications": "tsx scripts/show-overdue-notifications.ts",
     "run-overdue-check": "tsx scripts/run-overdue-check.ts",
     "test-cron-port": "tsx scripts/test-cron-port.ts",
@@ -73,7 +75,7 @@
     "react-datepicker": "^9.1.0",
     "react-day-picker": "^9.13.0",
     "react-dom": "^19.2.3",
-    "react-hook-form": "^7.69.0",
+    "react-hook-form": "^7.70.0",
     "recharts": "^3.6.0",
     "string-template": "^1.0.0",
     "tailwind-merge": "^3.4.0",
@@ -95,5 +97,10 @@
     "puppeteer": "^24.34.0",
     "tsx": "^4.21.0",
     "webpack": "^5.104.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "qs": ">=6.14.1"
+    }
   }
 }

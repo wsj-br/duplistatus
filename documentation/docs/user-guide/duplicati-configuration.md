@@ -14,10 +14,12 @@ You can select a server from the dropdown list. If you have already selected a s
 
 
 
-> [!TIP]
-> Throughout the application, you will see the <SvgButton svgFilename="duplicati_logo.svg" /> button. Click it to open the Duplicati server's web interface in a new tab.
+:::tip
+Throughout the application, you will see the <SvgButton svgFilename="duplicati_logo.svg" /> button. Click it to open the Duplicati server's web interface in a new tab.
+:::
 
 
->[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+:::note
+All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+:::
 

@@ -82,12 +82,21 @@ const dbPath = path.join(dataDir, 'backups.db');
 
 // Use a global singleton to prevent multiple database connections during hot reload
 // This is critical in development mode where Next.js may re-import modules
+// Also store initialization state in globals to share across SSR chunks
 declare global {
   var __dbInstance: Database.Database | undefined;
   var __dbCleanupRegistered: boolean | undefined;
+  var __startupInitialization: Promise<void> | null | undefined;
+  var __databaseStatus: DatabaseStatus | undefined;
+  var __initializationPromise: Promise<void> | null | undefined;
 }
 
 let db: Database.Database;
+
+// Function to update db variable (used by reinitializeDatabaseConnection)
+function updateDbInstance(newInstance: Database.Database): void {
+  db = newInstance;
+}
 
 // Reuse existing database connection if available (hot reload in dev)
 if (global.__dbInstance) {
@@ -729,9 +738,21 @@ async function populateDefaultConfigurations() {
 }
 
 // Initialize migrations and database operations
-const migrator = new DatabaseMigrator(db, dbPath);
-let dbOps: ReturnType<typeof createDbOps> | null = null;
-let initializationPromise: Promise<void> | null = null;
+let migrator: DatabaseMigrator = new DatabaseMigrator(db, dbPath);
+
+// In dev (Turbopack/HMR), it's possible to have multiple module instances in-memory.
+// Store the actual dbOps in global so all module instances share the same underlying ops.
+type GlobalWithDupliDbOps = typeof globalThis & {
+  __duplistatusDbOps?: ReturnType<typeof createDbOps> | null;
+};
+const globalWithDupliDbOps = global as GlobalWithDupliDbOps;
+if (globalWithDupliDbOps.__duplistatusDbOps === undefined) {
+  globalWithDupliDbOps.__duplistatusDbOps = null;
+}
+
+let dbOps: ReturnType<typeof createDbOps> | null = globalWithDupliDbOps.__duplistatusDbOps;
+// Use global for initializationPromise to share across SSR chunks
+let initializationPromise: Promise<void> | null = global.__initializationPromise || null;
 
 // Database initialization status tracking
 export enum DatabaseStatus {
@@ -741,11 +762,20 @@ export enum DatabaseStatus {
   ERROR = 'error'
 }
 
-let databaseStatus: DatabaseStatus = DatabaseStatus.NOT_STARTED;
+// Use global for databaseStatus to share across SSR chunks (Next.js/Turbopack creates separate module instances)
+let databaseStatus: DatabaseStatus = global.__databaseStatus || DatabaseStatus.NOT_STARTED;
 let initializationError: Error | null = null;
 
 // Function to ensure database is fully initialized
 async function ensureDatabaseInitialized() {
+  // Sync with global state (important for SSR chunks that have separate module instances)
+  if (global.__databaseStatus) {
+    databaseStatus = global.__databaseStatus;
+  }
+  if (global.__initializationPromise) {
+    initializationPromise = global.__initializationPromise;
+  }
+  
   // If already ready, return immediately (no logging)
   if (databaseStatus === DatabaseStatus.READY) {
     return;
@@ -763,6 +793,7 @@ async function ensureDatabaseInitialized() {
 
   // Start initialization
   databaseStatus = DatabaseStatus.INITIALIZING;
+  global.__databaseStatus = databaseStatus;
   initializationError = null;
 
   initializationPromise = (async () => {
@@ -786,9 +817,12 @@ async function ensureDatabaseInitialized() {
       // Create database operations if not already created
       if (!dbOps) {
         dbOps = createDbOps();
+        // Keep global in sync for HMR/multi-module-instance scenarios
+        globalWithDupliDbOps.__duplistatusDbOps = dbOps;
       }
       
       databaseStatus = DatabaseStatus.READY;
+      global.__databaseStatus = databaseStatus;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Don't log ENOENT errors for lock files - they're expected in concurrent scenarios
@@ -796,6 +830,7 @@ async function ensureDatabaseInitialized() {
         errorWithTimestamp('[Database] Initialization failed:', errorMessage);
       }
       databaseStatus = DatabaseStatus.ERROR;
+      global.__databaseStatus = databaseStatus;
       initializationError = error instanceof Error ? error : new Error(errorMessage);
       // Only throw if it's not a lock file ENOENT error
       if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
@@ -803,11 +838,14 @@ async function ensureDatabaseInitialized() {
       } else {
         // For lock file ENOENT errors, just mark as ready (another process handled it)
         databaseStatus = DatabaseStatus.READY;
+        global.__databaseStatus = databaseStatus;
         initializationError = null;
       }
     }
   })();
 
+  // Store in global to share across SSR chunks
+  global.__initializationPromise = initializationPromise;
   return initializationPromise;
 }
 
@@ -879,20 +917,28 @@ function performDatabaseMaintenance(): { success: boolean; error?: string } {
 let startupInitialization: Promise<void> | null = null;
 let initializationComplete = false;
 
-startupInitialization = ensureDatabaseInitialized()
-  .then(() => {
-    initializationComplete = true;
-    // Only log if we actually did something (created DB or ran migrations)
-    // Silent if database was already ready
-  })
-  .catch(error => {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    // Don't log ENOENT errors for lock files
-    if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
-      errorWithTimestamp('[Database] Startup initialization failed:', error);
-    }
-    throw error; // Propagate error to prevent app startup with broken database
-  });
+// Reuse existing startupInitialization if it exists (prevents recreation on module reload)
+if (global.__startupInitialization) {
+  startupInitialization = global.__startupInitialization;
+  initializationComplete = true;
+} else {
+  // First time initialization - just ensure database is ready
+  startupInitialization = ensureDatabaseInitialized()
+    .then(() => {
+      initializationComplete = true;
+    })
+    .catch(error => {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      // Don't log ENOENT errors for lock files
+      if (!errorMessage.includes('ENOENT') || !errorMessage.includes('lock')) {
+        errorWithTimestamp('[Database] Startup initialization failed:', error);
+      }
+      throw error; // Propagate error to prevent app startup with broken database
+    });
+  
+  // Store in global to persist across module reloads
+  global.__startupInitialization = startupInitialization;
+}
 
 // Export helper to wait for startup initialization
 export async function waitForDatabaseReady(): Promise<void> {
@@ -1112,6 +1158,22 @@ function createDbOps() {
     SELECT MAX(date) as last_backup_date
     FROM backups
   `, 'getLatestBackupDate'),
+
+  getLastBackupTimestamps: safePrepare(`
+    SELECT
+      s.name as server_name,
+      b.server_id,
+      b.backup_name,
+      b.date
+    FROM backups b
+    JOIN servers s ON b.server_id = s.id
+    WHERE (b.server_id, b.backup_name, b.date) IN (
+      SELECT server_id, backup_name, MAX(date) as max_date
+      FROM backups
+      GROUP BY server_id, backup_name
+    )
+    ORDER BY s.name, b.backup_name
+  `, 'getLastBackupTimestamps'),
 
   getAggregatedChartData: safePrepare(`
     SELECT 
@@ -1462,6 +1524,10 @@ function createDbOps() {
     DELETE FROM sessions WHERE expires_at < datetime('now')
   `, 'deleteExpiredSessions'),
 
+  deleteAllSessions: safePrepare(`
+    DELETE FROM sessions
+  `, 'deleteAllSessions'),
+
   // Audit log operations
   insertAuditLog: safePrepare(`
     INSERT INTO audit_log (
@@ -1586,7 +1652,8 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
 
     // If database is not ready, throw a clear error
     // We cannot wait asynchronously because better-sqlite3 operations are synchronous
-          if (!dbOps) {
+          const currentDbOps = globalWithDupliDbOps.__duplistatusDbOps ?? dbOps;
+          if (!currentDbOps) {
       throw new Error(
         `[Database] Operation '${prop}' attempted before database initialization completed. ` +
         `This is likely a timing issue during startup. Database operations are synchronous and ` +
@@ -1596,13 +1663,35 @@ const dbOpsProxy = new Proxy({} as ReturnType<typeof createDbOps>, {
           }
           
           // Get the actual method from dbOps
-          const method = (dbOps as Record<string, unknown>)[prop];
+          const method = (currentDbOps as Record<string, unknown>)[prop];
           if (typeof method !== 'object' || method === null) {
             throw new Error(`Database operation '${prop}' not found or is not an object.`);
           }
           
     // Return the method directly (it's a prepared statement object with .all, .get, .run)
     return method;
+  }
+});
+
+// Create a proxy for the *db connection* itself.
+// This avoids "database connection is not open" errors caused by stale module instances
+// after restore/reinitialize in dev/HMR: the proxy always uses global.__dbInstance.
+const dbProxy = new Proxy({} as Database.Database, {
+  get(_target, prop) {
+    if (typeof prop !== 'string') {
+      return undefined;
+    }
+
+    const currentDb = (global.__dbInstance && global.__dbInstance.open) ? global.__dbInstance : db;
+    if (!currentDb || !currentDb.open) {
+      throw new Error('The database connection is not open');
+    }
+
+    const value = (currentDb as unknown as Record<string, unknown>)[prop];
+    if (typeof value === 'function') {
+      return (value as (...args: unknown[]) => unknown).bind(currentDb);
+    }
+    return value;
   }
 });
 
@@ -1614,9 +1703,415 @@ export function performDatabaseCleanup(reason?: string): void {
   }
 }
 
+// Export database path for backup/restore operations
+export function getDatabasePath(): string {
+  return dbPath;
+}
+
+/**
+ * Create a backup of the database using better-sqlite3's backup method
+ * This ensures a consistent backup even while the database is in use
+ */
+export async function backupDatabaseToFile(backupPath: string): Promise<void> {
+  if (!db || !db.open) {
+    throw new Error('Database is not initialized or closed');
+  }
+  
+  // Use better-sqlite3's backup method for consistent backup
+  // The backup() method returns a Promise when given a path string
+  await db.backup(backupPath);
+}
+
+/**
+ * Generate SQL dump of the database
+ */
+export function dumpDatabaseToSQL(): string {
+  if (!db || !db.open) {
+    throw new Error('Database is not initialized or closed');
+  }
+
+  const sqlStatements: string[] = [];
+  
+  // Begin transaction
+  sqlStatements.push('BEGIN TRANSACTION;');
+  
+  // Get all tables
+  const tables = db.prepare(`
+    SELECT name FROM sqlite_master 
+    WHERE type='table' AND name NOT LIKE 'sqlite_%'
+    ORDER BY name
+  `).all() as Array<{ name: string }>;
+  
+  for (const table of tables) {
+    const tableName = table.name;
+    
+    // Get table schema
+    const schema = db.prepare(`SELECT sql FROM sqlite_master WHERE type='table' AND name=?`).get(tableName) as { sql: string } | undefined;
+    if (schema && schema.sql) {
+      sqlStatements.push(schema.sql + ';');
+    }
+    
+    // Get table data
+    const rows = db.prepare(`SELECT * FROM ${tableName}`).all() as Array<Record<string, unknown>>;
+    
+    if (rows.length > 0) {
+      // Get column names
+      const firstRow = rows[0];
+      const columns = Object.keys(firstRow);
+      
+      for (const row of rows) {
+        const values = columns.map(col => {
+          const value = row[col];
+          if (value === null) {
+            return 'NULL';
+          } else if (typeof value === 'string') {
+            // Escape single quotes
+            return `'${value.replace(/'/g, "''")}'`;
+          } else if (typeof value === 'number') {
+            return String(value);
+          } else if (typeof value === 'boolean') {
+            return value ? '1' : '0';
+          } else {
+            // For JSON or other types, stringify and escape
+            return `'${JSON.stringify(value).replace(/'/g, "''")}'`;
+          }
+        });
+        
+        sqlStatements.push(`INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values.join(', ')});`);
+      }
+    }
+  }
+  
+  // Commit transaction
+  sqlStatements.push('COMMIT;');
+  
+  return sqlStatements.join('\n');
+}
+
+/**
+ * Validate database file integrity
+ */
+export function validateDatabaseFile(filePath: string): boolean {
+  try {
+    const testDb = new Database(filePath, { readonly: true });
+    const result = testDb.prepare('PRAGMA integrity_check').get() as { 'integrity_check': string };
+    testDb.close();
+    
+    return result['integrity_check'] === 'ok';
+  } catch (error) {
+    console.error('Database integrity check failed:', error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
+
+/**
+ * Create a safety backup before restore operations
+ * Automatically maintains only the last 5 safety backups
+ */
+export function createSafetyBackup(): string {
+  const dbDir = path.dirname(dbPath);
+  const dbName = path.basename(dbPath, path.extname(dbPath));
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const backupPath = path.join(dbDir, `${dbName}-safety-backup-${timestamp}.db`);
+  
+  if (fs.existsSync(dbPath)) {
+    fs.copyFileSync(dbPath, backupPath);
+  }
+  
+  // Clean up old safety backups, keeping only the last 5
+  try {
+    const safetyBackupPattern = `${dbName}-safety-backup-*.db`;
+    const files = fs.readdirSync(dbDir)
+      .filter(file => {
+        const fullPath = path.join(dbDir, file);
+        return file.startsWith(`${dbName}-safety-backup-`) && 
+               file.endsWith('.db') &&
+               fs.statSync(fullPath).isFile();
+      })
+      .map(file => ({
+        name: file,
+        path: path.join(dbDir, file),
+        mtime: fs.statSync(path.join(dbDir, file)).mtime.getTime()
+      }))
+      .sort((a, b) => b.mtime - a.mtime); // Sort by modification time, newest first
+    
+    // Keep only the last 5 safety backups
+    const MAX_SAFETY_BACKUPS = 5;
+    if (files.length > MAX_SAFETY_BACKUPS) {
+      const filesToDelete = files.slice(MAX_SAFETY_BACKUPS);
+      for (const file of filesToDelete) {
+        try {
+          fs.unlinkSync(file.path);
+          console.log(`[Database] Deleted old safety backup: ${file.name}`);
+        } catch (deleteError) {
+          console.warn(`[Database] Failed to delete old safety backup ${file.name}:`, deleteError instanceof Error ? deleteError.message : String(deleteError));
+        }
+      }
+    }
+  } catch (cleanupError) {
+    // Don't fail the backup creation if cleanup fails
+    console.warn('[Database] Failed to cleanup old safety backups:', cleanupError instanceof Error ? cleanupError.message : String(cleanupError));
+  }
+  
+  return backupPath;
+}
+
+/**
+ * Close database connection (for restore operations)
+ */
+export function closeDatabaseConnection(): void {
+  if (global.__dbInstance && global.__dbInstance.open) {
+    global.__dbInstance.close();
+    global.__dbInstance = undefined;
+  }
+}
+
+/**
+ * Reset database state after restore
+ * This forces reinitialization of dbOps, migrator, and other components
+ */
+function resetDatabaseState(): void {
+  // Reset database status to force reinitialization
+  databaseStatus = DatabaseStatus.NOT_STARTED;
+  global.__databaseStatus = databaseStatus;
+  initializationError = null;
+  initializationPromise = null;
+  global.__initializationPromise = null;
+  
+  // Clear dbOps so it gets recreated with new connection
+  dbOps = null;
+  globalWithDupliDbOps.__duplistatusDbOps = null;
+  
+  // Recreate migrator with the new database connection
+  // Use global.__dbInstance which should have been updated by reinitializeDatabaseConnection
+  if (global.__dbInstance && global.__dbInstance.open) {
+    migrator = new DatabaseMigrator(global.__dbInstance, dbPath);
+  } else {
+    // Fallback to module-level db (should also be updated)
+    if (db && db.open) {
+      migrator = new DatabaseMigrator(db, dbPath);
+    }
+  }
+}
+
+/**
+ * Public function to reset database state after restore
+ * Exported for use in restore operations
+ */
+export function resetDatabaseStateAfterRestore(): void {
+  resetDatabaseState();
+}
+
+/**
+ * Reinitialize database connection after restore
+ * Updates both global and module-level db variables and resets state
+ */
+export function reinitializeDatabaseConnection(): void {
+  // Close existing connection if any
+  if (global.__dbInstance && global.__dbInstance.open) {
+    global.__dbInstance.close();
+  }
+  
+  // Create new connection
+  let newDb: Database.Database;
+  try {
+    newDb = new Database(dbPath, {
+      timeout: 10000,
+      readonly: false,
+      fileMustExist: false
+    });
+    
+    // Configure SQLite settings
+    try {
+      newDb.pragma('journal_mode = WAL');
+    } catch (error) {
+      warnWithTimestamp('Could not set WAL mode:', error);
+    }
+    
+    newDb.pragma('synchronous = NORMAL');
+    newDb.pragma('cache_size = -10000');
+    newDb.pragma('temp_store = memory');
+    newDb.pragma('mmap_size = 0');
+    newDb.pragma('wal_autocheckpoint = 1000');
+    newDb.pragma('busy_timeout = 30000');
+    
+    // Update global instance
+    global.__dbInstance = newDb;
+    
+    // Update module-level db variable
+    updateDbInstance(newDb);
+    
+    // Reset database state to force reinitialization
+    resetDatabaseState();
+  } catch (error) {
+    errorWithTimestamp('Failed to reinitialize database:', error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+/**
+ * Restore database from SQL dump
+ */
+/**
+ * Parse SQL content into individual statements, respecting string boundaries
+ * This properly handles semicolons inside string literals
+ */
+function parseSQLStatements(sqlContent: string): string[] {
+  const statements: string[] = [];
+  let currentStatement = '';
+  let inString = false;
+  let i = 0;
+  
+  while (i < sqlContent.length) {
+    const char = sqlContent[i];
+    const nextChar = i + 1 < sqlContent.length ? sqlContent[i + 1] : null;
+    
+    if (char === "'" && !inString) {
+      // Start of string literal
+      inString = true;
+      currentStatement += char;
+    } else if (char === "'" && inString) {
+      // Check if it's an escaped quote ('') or end of string
+      if (nextChar === "'") {
+        // Escaped quote ('')
+        currentStatement += "''";
+        i++; // Skip the next quote
+      } else {
+        // End of string literal
+        inString = false;
+        currentStatement += char;
+      }
+    } else if (char === ';' && !inString) {
+      // Statement terminator (only outside strings)
+      currentStatement = currentStatement.trim();
+      if (currentStatement.length > 0) {
+        statements.push(currentStatement);
+      }
+      currentStatement = '';
+    } else {
+      currentStatement += char;
+    }
+    
+    i++;
+  }
+  
+  // Add final statement if there's any remaining content
+  currentStatement = currentStatement.trim();
+  if (currentStatement.length > 0) {
+    statements.push(currentStatement);
+  }
+  
+  return statements;
+}
+
+export function restoreDatabaseFromSQL(sqlContent: string): void {
+  // Get current database instance (from global if local is closed)
+  const currentDb = (global.__dbInstance && global.__dbInstance.open) ? global.__dbInstance : db;
+  
+  if (!currentDb || !currentDb.open) {
+    throw new Error('Database is not initialized or closed');
+  }
+  
+  // Parse SQL statements properly (respecting string boundaries)
+  const allStatements = parseSQLStatements(sqlContent);
+  
+  // Filter out empty statements, comments, and transaction control statements
+  const statements = allStatements
+    .map(s => s.trim())
+    .filter(s => {
+      // Filter out empty statements and comments
+      if (s.length === 0 || s.startsWith('--')) {
+        return false;
+      }
+      
+      // Filter out transaction control statements (case-insensitive)
+      const upperStatement = s.toUpperCase().trim();
+      if (
+        upperStatement === 'BEGIN TRANSACTION' ||
+        upperStatement === 'BEGIN' ||
+        upperStatement === 'COMMIT' ||
+        upperStatement === 'COMMIT TRANSACTION' ||
+        upperStatement === 'ROLLBACK' ||
+        upperStatement === 'ROLLBACK TRANSACTION'
+      ) {
+        return false;
+      }
+      
+      return true;
+    });
+  
+  // Separate CREATE TABLE statements from other statements (INSERT, CREATE INDEX, etc.)
+  // This ensures tables are created before data is inserted
+  const createTableStatements: string[] = [];
+  const otherStatements: string[] = [];
+  
+  for (const statement of statements) {
+    const upperStatement = statement.toUpperCase().trim();
+    if (upperStatement.startsWith('CREATE TABLE')) {
+      createTableStatements.push(statement);
+    } else {
+      otherStatements.push(statement);
+    }
+  }
+  
+  // Disable foreign key checks BEFORE starting the transaction
+  // In SQLite, PRAGMA foreign_keys must be set before the transaction begins
+  currentDb.pragma('foreign_keys = OFF');
+  
+  // Execute in a transaction
+  const transaction = currentDb.transaction(() => {
+    // First, drop all existing user tables (excluding sqlite system tables)
+    // This ensures we can restore from SQL that contains CREATE TABLE statements
+    const tables = currentDb.prepare(`
+      SELECT name FROM sqlite_master
+      WHERE type='table' AND name NOT LIKE 'sqlite_%'
+      ORDER BY name
+    `).all() as Array<{ name: string }>;
+    
+    try {
+      // Drop all user tables
+      for (const table of tables) {
+        currentDb.exec(`DROP TABLE IF EXISTS ${table.name};`);
+      }
+      
+      // Execute CREATE TABLE statements first
+      for (const statement of createTableStatements) {
+        if (statement.trim()) {
+          try {
+            currentDb.exec(statement);
+          } catch (error) {
+            throw new Error(`Failed to execute CREATE TABLE statement: ${statement.substring(0, 100)}... Error: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        }
+      }
+      
+      // Then execute all other statements (INSERT, CREATE INDEX, etc.)
+      for (const statement of otherStatements) {
+        if (statement.trim()) {
+          try {
+            currentDb.exec(statement);
+          } catch (error) {
+            throw new Error(`Failed to execute SQL statement: ${statement.substring(0, 100)}... Error: ${error instanceof Error ? error.message : String(error)}`);
+          }
+        }
+      }
+    } catch (error) {
+      // Re-throw to let transaction handle rollback
+      throw error;
+    }
+  });
+  
+  try {
+    transaction();
+  } finally {
+    // Always re-enable foreign keys at the end, even if there's an error
+    currentDb.pragma('foreign_keys = ON');
+  }
+}
+
 // Export the database instance and operations
 export { 
-  db, 
+  dbProxy as db, 
   dbOpsProxy as dbOps, 
   ensureDatabaseInitialized, 
   getDatabaseStatus, 

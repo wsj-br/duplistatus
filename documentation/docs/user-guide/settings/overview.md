@@ -6,7 +6,9 @@ The Settings page offers a unified interface for configuring all aspects of **du
 
 
 
-## Administrator View - Administrators see all available settings sections
+## Administrator View
+
+Administrators see all available settings.
 
 <table>
   <tr>
@@ -20,7 +22,7 @@ The Settings page offers a unified interface for configuring all aspects of **du
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: Configure per-backup notification settings</li>
             <li><a href="overdue-settings.md">Overdue Monitoring</a>: Configure overdue backup detection and alerts</li>
-            <li><a href="notification-templates.md">Templates</a>: Customize notification message templates</li>
+            <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
           </ul>
         </li><br/>
         <li>
@@ -46,7 +48,9 @@ The Settings page offers a unified interface for configuring all aspects of **du
   </tr>
 </table>
 
-## Non-Administrator View - Regular users see a limited set of settings
+## Non-Administrator View
+
+Regular users see a limited set of settings.
 
 <table>
   <tr>
@@ -83,4 +87,19 @@ The Settings page offers a unified interface for configuring all aspects of **du
   </tr>
 </table>
 
+## Status Icons
+
+The sidebar displays status icons next to the **NTFY** and **Email** integration settings:
+- <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Green icon**: Your settings are valid and configured correctly
+- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Yellow icon**: Your settings are not valid or not configured
+
+When the configuration is invalid, the corresponding checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will be greyed out and disabled. For more details, see the [NTFY Settings](ntfy-settings.md) and [Email Settings](email-settings.md) pages.
+
+<br/>
+
+:::important
+A green icon does not necessarily mean that notifications are functioning correctly. Always use the available test features to confirm your notifications are working before relying on them. 
+:::
+
+<br/>
 

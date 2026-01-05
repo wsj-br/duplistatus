@@ -42,12 +42,13 @@
 <br/>
 
 
-> [!IMPORTANT]
->   You must use the <IconButton icon="lucide:mail" label="Send Test Email"/> button to make sure your email setup works before relying on it for notifications.
->
-> Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and everything looks configured, emails may not be sent.
-> 
-> `duplistatus` only checks if your SMTP settings are filled in, not if emails can actually be delivered.
+:::info[IMPORTANT]
+  You must use the <IconButton icon="lucide:mail" label="Send Test Email"/> button to make sure your email setup works before relying on it for notifications.
+
+ Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and everything looks configured, emails may not be sent.
+ 
+ `duplistatus` only checks if your SMTP settings are filled in, not if emails can actually be delivered.
+:::
 
 <br/>
 
@@ -87,66 +88,4 @@
  - Settings are encrypted and stored securely in the database
  - **Use encrypted connections** - STARTTLS and Direct SSL/TLS are recommended for production use
  - Plain SMTP connections (port 25) are available for trusted local networks but are not recommended for production use over untrusted networks
-
-<br/>
-
-## Running Your Own SMTP Relay Server
-
-If you prefer to run your own SMTP relay server locally, you can easily set up a simple SMTP server using a Docker container. This approach is helpful for testing purposes or if you want to manage email delivery yourself.
-
-For example, you can use the [Basic SMTP Server](https://github.com/BytemarkHosting/docker-smtp) from [Bytemark Hosting](https://www.bytemark.co.uk/). Alternatively, you may install an SMTP server of your choice or search online for other SMTP Docker images or relay solutions that best fit your requirements.
-
-### Using Docker Command
-
-Run the following command to start an SMTP relay server:
-
-```bash
-docker run -d \
-  --name smtp-relay \
-  -p 25:25 \
-  --restart unless-stopped \
-  bytemark/smtp:latest
-```
-
-### Using Docker Compose
-
-Alternatively, create a `docker-compose.yml` file with the following content:
-
-```yaml
-version: '3.8'
-
-services:
-  smtp-server:
-    image: bytemark/smtp:latest
-    container_name: smtp-relay
-    ports:
-      - "25:25" 
-    restart: unless-stopped
-```
-
-Then run:
-
-```bash
-docker-compose up -d
-```
-
-### Configuring duplistatus to use this SMTP server
-
-Once your SMTP relay server is running, configure **duplistatus** with the following settings:
-
-- **SMTP Server Host**: `localhost` (or the IP address of the Docker host)
-- **SMTP Server Port**: `25`
-- **Connection Type**: `Plain SMTP`
-- **SMTP Authentication**: Disabled
-- **From Address**: Enter a valid email address (required for Plain SMTP)
-- **Recipient Email**: Enter the email address where you want to receive notifications
-
-<br/>
-
-
-> [!NOTE]
-> - The SMTP relay server will accept emails and attempt to deliver them. Make sure your server has proper network access and DNS configuration to deliver emails to external recipients, or configure it to relay through another SMTP server.
-> - See more information in [Bytemark Hosting Basic SMTP Server](https://github.com/BytemarkHosting/docker-smtp) repository.
->
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 

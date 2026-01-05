@@ -38,8 +38,9 @@ These endpoints are designed for use by other applications and integrations, for
 - **Parameters**:
   - `serverId`: the server identifier (ID or name)
 
-> [!NOTE]
-> The server identifier has to be URL Encoded.
+:::note
+The server identifier has to be URL Encoded.
+:::
   
 - **Response**:
   ```json
@@ -92,8 +93,9 @@ These endpoints are designed for use by other applications and integrations, for
 - **Parameters**:
   - `serverId`: the server identifier (ID or name)
 
-> [!NOTE]
-> The server identifier has to be URL Encoded.
+:::note
+The server identifier has to be URL Encoded.
+:::
   
 - **Response**:
   ```json

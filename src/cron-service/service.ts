@@ -139,7 +139,7 @@ class CronService {
       
       switch (taskName) {
         case 'overdue-backup-check':
-          result = await checkOverdueBackups();
+          result = await checkOverdueBackups(undefined, false); // Don't force recalculation on automatic checks
           break;
         case 'audit-log-cleanup':
           // Get retention days from configuration

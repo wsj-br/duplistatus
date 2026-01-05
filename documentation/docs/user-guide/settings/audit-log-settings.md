@@ -24,7 +24,7 @@ The audit log viewer displays a chronological list of all logged events with the
 Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to view detailed information, including:
 - Full timestamp
 - User information
-- Complete action details
+- Complete action details (for example: fields changed, statistics, etc.)
 - IP address and user agent
 - Error messages (if the action failed)
 
@@ -37,8 +37,9 @@ You can export filtered audit logs in two formats:
 | <IconButton icon="lucide:download" label="Export CSV"/> | Export logs as a CSV file for spreadsheet analysis |
 | <IconButton icon="lucide:download" label="Export JSON"/> | Export logs as a JSON file for programmatic analysis |
 
-> [!NOTE]
-> Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+:::note
+Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+:::
 
 <br/>
 

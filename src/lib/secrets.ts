@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { dbOps } from './db';
+import { getConfiguration, setConfiguration } from './db-utils';
 
 // Encryption configuration
 const ALGORITHM = 'aes-256-gcm';
@@ -224,6 +225,134 @@ export function setServerPassword(serverId: string, password: string): boolean {
   } catch (error) {
     console.error(`Failed to set server password for ${serverId}:`, error instanceof Error ? error.message : String(error));
     return false;
+  }
+}
+
+/**
+ * Check if the key file has changed by attempting to decrypt an existing password
+ * @returns true if the key file has changed (decryption fails), false otherwise
+ * @returns false if no passwords are stored (check is not relevant)
+ */
+export function hasKeyFileChanged(): boolean {
+  try {
+    // First, try to find a server password
+    const allServers = dbOps.getAllServers.all() as Array<{ id: string }>;
+    for (const server of allServers) {
+      const result = dbOps.getServerPassword.get(server.id) as { server_password: string } | undefined;
+      if (result && result.server_password && result.server_password.trim() !== '') {
+        // Found a password, try to decrypt it
+        try {
+          decryptData(result.server_password);
+          // Decryption succeeded, key is valid
+          return false;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          // If decryption fails with master key error, the key has changed
+          if (errorMessage.includes('MASTER_KEY_INVALID') || isInvalidMasterKeyError(error instanceof Error ? error : new Error(errorMessage))) {
+            return true;
+          }
+          // Other decryption errors are not related to key change
+          // Continue to check other passwords
+        }
+      }
+    }
+    
+    // If no server passwords found, check SMTP password
+    const smtpConfigJson = getConfiguration('smtp_config');
+    if (smtpConfigJson) {
+      try {
+        const smtpConfig = JSON.parse(smtpConfigJson) as {
+          password?: string;
+          username?: string;
+        };
+        
+        // Try to decrypt password if it exists
+        if (smtpConfig.password && smtpConfig.password.trim() !== '') {
+          try {
+            decryptData(smtpConfig.password);
+            // Decryption succeeded, key is valid
+            return false;
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            // If decryption fails with master key error, the key has changed
+            if (errorMessage.includes('MASTER_KEY_INVALID') || isInvalidMasterKeyError(error instanceof Error ? error : new Error(errorMessage))) {
+              return true;
+            }
+          }
+        }
+        
+        // Try to decrypt username if it exists
+        if (smtpConfig.username && smtpConfig.username.trim() !== '') {
+          try {
+            decryptData(smtpConfig.username);
+            // Decryption succeeded, key is valid
+            return false;
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            // If decryption fails with master key error, the key has changed
+            if (errorMessage.includes('MASTER_KEY_INVALID') || isInvalidMasterKeyError(error instanceof Error ? error : new Error(errorMessage))) {
+              return true;
+            }
+          }
+        }
+      } catch (error) {
+        // Failed to parse SMTP config, ignore
+        console.error('Failed to parse SMTP config for key check:', error instanceof Error ? error.message : String(error));
+      }
+    }
+    
+    // No passwords found, check is not relevant
+    return false;
+  } catch (error) {
+    // Error during check, assume no change to be safe
+    console.error('Error checking if key file changed:', error instanceof Error ? error.message : String(error));
+    return false;
+  }
+}
+
+/**
+ * Clear all encrypted passwords (server passwords and SMTP passwords)
+ * This should be called when the master key changes
+ */
+export function clearAllPasswords(): void {
+  try {
+    // Clear all server passwords
+    const allServers = dbOps.getAllServers.all() as Array<{ id: string }>;
+    for (const server of allServers) {
+      dbOps.setServerPassword.run('', server.id);
+    }
+    
+    // Clear SMTP password (but keep other SMTP config)
+    const smtpConfigJson = getConfiguration('smtp_config');
+    if (smtpConfigJson) {
+      try {
+        const smtpConfig = JSON.parse(smtpConfigJson) as {
+          host?: string;
+          port?: number;
+          connectionType?: string;
+          secure?: boolean;
+          username?: string;
+          password?: string;
+          mailto?: string;
+          senderName?: string;
+          fromAddress?: string;
+          requireAuth?: boolean;
+        };
+        
+        // Clear password and username (they're encrypted and can't be decrypted with new key)
+        smtpConfig.password = '';
+        smtpConfig.username = '';
+        
+        setConfiguration('smtp_config', JSON.stringify(smtpConfig));
+      } catch (error) {
+        console.error('Failed to clear SMTP password:', error instanceof Error ? error.message : String(error));
+        // If we can't parse the config, delete it entirely
+        setConfiguration('smtp_config', '');
+      }
+    }
+  } catch (error) {
+    console.error('Failed to clear all passwords:', error instanceof Error ? error.message : String(error));
+    throw error;
   }
 }
 

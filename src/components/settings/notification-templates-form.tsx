@@ -28,6 +28,7 @@ const TEMPLATE_VARIABLES = [
   { name: 'messages_count', description: 'Number of messages' },
   { name: 'warnings_count', description: 'Number of warnings' },
   { name: 'errors_count', description: 'Number of errors' },
+  { name: 'log_text', description: 'Log text messages (warnings and errors)' },
   { name: 'duration', description: 'Backup duration' },
   { name: 'file_count', description: 'Number of files processed' },
   { name: 'file_size', description: 'Total file size' },

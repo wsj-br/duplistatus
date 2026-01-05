@@ -5,8 +5,9 @@ Configure user interface and display preferences.
 
 ![Display Settings](/img/screen-settings-display.png)
 
-> [!TIP]
-> **Quick Access**: You can quickly access this page by right-clicking on the auto-refresh button in the application toolbar.
+:::tip
+**Quick Access**: You can quickly access this page by right-clicking on the auto-refresh button in the application toolbar.
+:::
 
 | Setting                   | Description                                         | Default Value       |
 | :------------------------ | :-------------------------------------------------- | :------------------ |

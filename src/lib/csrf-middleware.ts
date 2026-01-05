@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionIdFromRequest, getCSRFTokenFromRequest, validateSessionAsync, validateCSRFTokenAsync, updateSessionAccess } from './session-csrf';
+import { getSessionIdFromRequest, getCSRFTokenFromRequest, validateSession, validateCSRFTokenAsync, updateSessionAccess } from './session-csrf';
 
 // List of external APIs that should not have CSRF protection
 const EXTERNAL_APIS = [
@@ -60,7 +60,7 @@ export function withCSRF<T extends unknown[]>(
       if (sessionId && csrfToken) {
         // If we have both session and CSRF token, validate them
         // But don't fail if session is invalid - login will create a new one
-        const isValidSession = await validateSessionAsync(sessionId);
+        const isValidSession = await validateSession(sessionId);
         if (isValidSession) {
           const isValidCSRF = await validateCSRFTokenAsync(sessionId, csrfToken);
           if (!isValidCSRF) {
@@ -85,7 +85,7 @@ export function withCSRF<T extends unknown[]>(
     }
     
     // For all other endpoints, validate session
-    if (!sessionId || !(await validateSessionAsync(sessionId))) {
+    if (!sessionId || !(await validateSession(sessionId))) {
       return NextResponse.json(
         { error: 'Invalid or expired session' },
         { status: 401 }
@@ -148,7 +148,7 @@ export async function validateCSRFRequest(request: NextRequest): Promise<{ valid
     // If session exists and is valid, validate CSRF token
     // But don't fail if session is invalid - login will create a new one
     if (sessionId) {
-      const isValidSession = await validateSessionAsync(sessionId);
+      const isValidSession = await validateSession(sessionId);
       if (isValidSession) {
         const isValidCSRF = await validateCSRFTokenAsync(sessionId, csrfToken);
         if (!isValidCSRF) {
@@ -169,7 +169,7 @@ export async function validateCSRFRequest(request: NextRequest): Promise<{ valid
   // For GET requests, only validate session (no CSRF token needed)
   if (request.method === 'GET') {
     const sessionId = getSessionIdFromRequest(request);
-    if (!sessionId || !(await validateSessionAsync(sessionId))) {
+    if (!sessionId || !(await validateSession(sessionId))) {
       return { 
         valid: false, 
         error: 'Invalid or expired session', 
@@ -185,7 +185,7 @@ export async function validateCSRFRequest(request: NextRequest): Promise<{ valid
   const csrfToken = getCSRFTokenFromRequest(request);
   
   // Validate session with retry logic
-  if (!sessionId || !(await validateSessionAsync(sessionId))) {
+  if (!sessionId || !(await validateSession(sessionId))) {
     return { 
       valid: false, 
       error: 'Invalid or expired session', 

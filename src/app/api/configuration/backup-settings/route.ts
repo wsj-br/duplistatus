@@ -139,6 +139,24 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
             new: newConfig.allowedWeekDays,
           };
         }
+        if (!oldConfig || oldConfig.additionalNotificationEvent !== newConfig.additionalNotificationEvent) {
+          changedFields.additionalNotificationEvent = {
+            old: oldConfig?.additionalNotificationEvent ?? null,
+            new: newConfig.additionalNotificationEvent,
+          };
+        }
+        if (!oldConfig || oldConfig.additionalEmails !== newConfig.additionalEmails) {
+          changedFields.additionalEmails = {
+            old: oldConfig?.additionalEmails ?? null,
+            new: newConfig.additionalEmails,
+          };
+        }
+        if (!oldConfig || oldConfig.additionalNtfyTopic !== newConfig.additionalNtfyTopic) {
+          changedFields.additionalNtfyTopic = {
+            old: oldConfig?.additionalNtfyTopic ?? null,
+            new: newConfig.additionalNtfyTopic,
+          };
+        }
         
         // Only include this backup if there are actual changes
         if (Object.keys(changedFields).length > 0) {

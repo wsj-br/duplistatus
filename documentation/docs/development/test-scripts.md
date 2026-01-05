@@ -68,6 +68,32 @@ pnpm test-cron-port
 
 This script tests the connectivity to the cron service port and provides detailed information about the connection status.
 
+## Test overdue detection
+
+```bash
+pnpm test-overdue-detection
+```
+
+This script tests the overdue backup detection logic. It verifies:
+- Overdue backup identification
+- Notification triggering
+- Date/time calculations for overdue status
+
+Useful for debugging overdue backup detection and notification systems.
+
+## Validate CSV export
+
+```bash
+pnpm validate-csv-export
+```
+
+This script validates the CSV export functionality. It:
+- Tests CSV export generation
+- Verifies data format and structure
+- Checks for data integrity in exported files
+
+Useful for ensuring CSV exports work correctly before releases.
+
 ## Test password utilities
 
 ```bash

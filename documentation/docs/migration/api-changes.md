@@ -8,10 +8,25 @@ This document outlines breaking changes to external API endpoints across differe
 
 This document covers breaking changes to external API endpoints that affect integrations, scripts, and applications consuming these endpoints. For internal API endpoints used by the web interface, changes are handled automatically and do not require manual updates.
 
-> [!NOTE]
-> External API endpoints are maintained for backward compatibility when possible. Breaking changes are only introduced when necessary for consistency, security, or functionality improvements.
+:::note
+External API endpoints are maintained for backward compatibility when possible. Breaking changes are only introduced when necessary for consistency, security, or functionality improvements.
+:::
 
 ## Version-Specific Changes
+
+### Version 1.2.1
+
+**No Breaking Changes to External API Endpoints**
+
+
+### Version 1.1.x
+
+**No Breaking Changes to External API Endpoints**
+
+### Version 1.0.x
+
+**No Breaking Changes to External API Endpoints**
+
 
 ### Version 0.9.x
 
@@ -44,8 +59,9 @@ While no breaking changes were made to external API endpoints, version 0.8.x inc
 - **CSRF Protection**: CSRF token validation is enforced for state-changing API requests, but external APIs remain compatible
 - **Password Security**: Password endpoints are restricted to the user interface for security reasons
 
-> [!NOTE]
-> These security enhancements do not affect external API endpoints used for reading backup data. If you have custom scripts using internal endpoints, they may require CSRF token handling.
+:::note
+These security enhancements do not affect external API endpoints used for reading backup data. If you have custom scripts using internal endpoints, they may require CSRF token handling.
+:::
 
 ### Version 0.7.x
 
@@ -199,6 +215,9 @@ If you're upgrading from a version prior to 0.7.x, follow these steps:
 
 ### Backward Compatibility
 
+- **Version 1.2.1**: Fully backward compatible with 1.1.x API structure
+- **Version 1.1.x**: Fully backward compatible with 1.0.x API structure
+- **Version 1.0.x**: Fully backward compatible with 0.9.x API structure
 - **Version 0.9.x**: Fully backward compatible with 0.8.x API structure
 - **Version 0.8.x**: Fully backward compatible with 0.7.x API structure
 - **Version 0.7.x**: Not backward compatible with versions prior to 0.7.x

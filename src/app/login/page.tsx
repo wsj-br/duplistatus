@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import AppVersion from '@/components/app-version';
 import { GithubLink } from '@/components/github-link';
 import DupliLogo from '../../../public/images/duplistatus_logo.png';
 import { Info } from 'lucide-react';
+import { KeyChangedModal } from '@/components/key-changed-modal';
 
 const REMEMBERED_USERNAME_KEY = 'duplistatus_remembered_username';
 const REMEMBER_ME_ENABLED_KEY = 'duplistatus_remember_me_enabled';
@@ -28,6 +29,7 @@ function LoginForm() {
     return '';
   });
   const [password, setPassword] = useState('');
+  // Initialize rememberMe from localStorage with lazy initializer to avoid hydration mismatch
   const [rememberMe, setRememberMe] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem(REMEMBER_ME_ENABLED_KEY) === 'true' && 
@@ -38,8 +40,9 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showAdminTip, setShowAdminTip] = useState(false);
-  // Track if component is mounted to avoid hydration mismatches
-  const [mounted, setMounted] = useState(false);
+  const [showKeyChangedModal, setShowKeyChangedModal] = useState(false);
+  const checkAuthCalledRef = useRef(false);
+  const checkAdminTipCalledRef = useRef(false);
 
   // Validate redirect URL to prevent open redirect vulnerabilities
   const validateRedirectUrl = (url: string | null): string => {
@@ -59,32 +62,50 @@ function LoginForm() {
     return '/';
   };
 
-  // Set mounted state after component mounts to avoid hydration mismatches
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // Check if already authenticated
+  // Only redirect if we're not in a redirect loop (i.e., no redirect param or redirect param is not the same as current)
   useEffect(() => {
+    // Prevent duplicate calls in React Strict Mode
+    if (checkAuthCalledRef.current) {
+      return;
+    }
+    checkAuthCalledRef.current = true;
+
     async function checkAuth() {
       try {
         const response = await fetch('/api/auth/me');
         const data = await response.json();
         if (data.authenticated) {
           // Already logged in, redirect to the redirect URL or home
+          // But only if we're not already being redirected (to prevent loops)
           const redirectUrl = searchParams.get('redirect');
           const targetUrl = validateRedirectUrl(redirectUrl);
+          
+          // Prevent redirect loop: if redirect URL is /login, just go to home
+          if (targetUrl === '/login' || targetUrl.startsWith('/login?')) {
+            window.location.href = '/';
+            return;
+          }
+          
           window.location.href = targetUrl;
         }
       } catch (error) {
         console.error('Error checking auth:', error);
       }
     }
-    checkAuth();
+    // Add a small delay to avoid race conditions after restore
+    const timeoutId = setTimeout(checkAuth, 100);
+    return () => clearTimeout(timeoutId);
   }, [searchParams]);
 
   // Check if admin must change password to show tip
   useEffect(() => {
+    // Prevent duplicate calls in React Strict Mode
+    if (checkAdminTipCalledRef.current) {
+      return;
+    }
+    checkAdminTipCalledRef.current = true;
+
     async function checkAdminMustChangePassword() {
       try {
         const response = await fetch('/api/auth/admin-must-change-password');
@@ -172,6 +193,14 @@ function LoginForm() {
         }
       }
 
+      // Check if key file changed
+      if (data.keyChanged) {
+        setShowKeyChangedModal(true);
+        setLoading(false);
+        // Don't redirect yet - wait for user to acknowledge the modal
+        return;
+      }
+
       // Login successful - redirect to the redirect URL or home
       // Use full page reload to ensure cookie is available
       // The change password modal will auto-open if mustChangePassword is true
@@ -251,7 +280,7 @@ function LoginForm() {
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="remember-me"
-                      checked={mounted ? rememberMe : false}
+                      checked={rememberMe}
                       onCheckedChange={(checked) => handleRememberMeChange(checked === true)}
                       disabled={loading}
                     />
@@ -291,6 +320,19 @@ function LoginForm() {
           )}
         </div>
       </div>
+
+      <KeyChangedModal 
+        open={showKeyChangedModal} 
+        onOpenChange={(open) => {
+          setShowKeyChangedModal(open);
+          // After user acknowledges, redirect
+          if (!open) {
+            const redirectUrl = searchParams.get('redirect');
+            const targetUrl = validateRedirectUrl(redirectUrl);
+            window.location.href = targetUrl;
+          }
+        }} 
+      />
     </div>
   );
 }

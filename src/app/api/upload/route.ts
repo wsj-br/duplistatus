@@ -5,7 +5,7 @@ import { extractAvailableBackups } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
-import { sendBackupNotification, NotificationContext } from '@/lib/notifications';
+import { sendBackupNotification, NotificationContext, extractLogText } from '@/lib/notifications';
 import { formatBytes, formatDurationHuman } from '@/lib/utils';
 import { BackupStatus } from '@/lib/types';
 import { AuditLogger } from '@/lib/audit-logger';
@@ -166,7 +166,18 @@ export async function POST(request: NextRequest) {
         messages_array:  data.LogLines ? JSON.stringify(data.LogLines) : // look for LogLines or Data.Messages
                         (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null), 
         warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
-        errors_array: data.Data.Errors ? JSON.stringify(data.Data.Errors) : null,
+        errors_array: (() => {
+          // If Errors array exists and is not empty, use it
+          if (data.Data.Errors && Array.isArray(data.Data.Errors) && data.Data.Errors.length > 0) {
+            return JSON.stringify(data.Data.Errors);
+          }
+          // If Exception exists and errors_array is null/empty, use Exception
+          const exception = data.Data.Exception || data.Exception;
+          if (exception && exception.trim() !== '') {
+            return JSON.stringify([exception]);
+          }
+          return null;
+        })(),
         available_backups: JSON.stringify(extractAvailableBackups(
           data.LogLines ? JSON.stringify(data.LogLines) : 
           (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null)
@@ -270,7 +281,7 @@ export async function POST(request: NextRequest) {
       
       // Create backup object for notification service
       const backup = {
-        id: uuidv4(), // This should match the ID used in the transaction
+        id: backupId, // Use the same ID that was used in the transaction
         server_id: serverId,
         name: backupName,
         date: new Date(data.Data.BeginTime).toISOString(),
@@ -286,10 +297,26 @@ export async function POST(request: NextRequest) {
         durationInMinutes: parseDurationToSeconds(data.Data.Duration) / 60,
         knownFileSize: data.Data.BackendStatistics?.KnownFileSize || 0,
         backup_list_count: data.Data.BackendStatistics?.BackupListCount || 0,
-        messages_array: null,
-        warnings_array: null,
-        errors_array: null,
-        available_backups: null,
+        // Populate arrays with the same logic used for database insertion
+        messages_array: data.LogLines ? JSON.stringify(data.LogLines) : 
+                        (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null),
+        warnings_array: data.Data.Warnings ? JSON.stringify(data.Data.Warnings) : null,
+        errors_array: (() => {
+          // If Errors array exists and is not empty, use it
+          if (data.Data.Errors && Array.isArray(data.Data.Errors) && data.Data.Errors.length > 0) {
+            return JSON.stringify(data.Data.Errors);
+          }
+          // If Exception exists and errors_array is null/empty, use Exception
+          const exception = data.Data.Exception || data.Exception;
+          if (exception && exception.trim() !== '') {
+            return JSON.stringify([exception]);
+          }
+          return null;
+        })(),
+        available_backups: extractAvailableBackups(
+          data.LogLines ? JSON.stringify(data.LogLines) : 
+          (data.Data.Messages ? JSON.stringify(data.Data.Messages) : null)
+        ),
       };
 
       // Create notification context derived from backup object to eliminate duplication
@@ -311,6 +338,7 @@ export async function POST(request: NextRequest) {
         uploaded_size: formatBytes(backup.uploadedSize),
         storage_size: formatBytes(backup.knownFileSize),
         available_versions: backup.backup_list_count,
+        log_text: extractLogText(backup),
       };
 
       await sendBackupNotification(backup, serverId, serverName, notificationContext);

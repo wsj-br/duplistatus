@@ -13,8 +13,127 @@ duplistatus automatically migrates your database schema when upgrading. The syst
 3. Preserves all existing data (servers, backups, configuration)
 4. Verifies the migration completed successfully
 
-> [!NOTE]
-> Current version: **1.1.0** (Schema v4.0). The migration system supports upgrading from any version 0.6.x or later.
+
+
+## Backing Up Your Database Before Migration
+
+Before upgrading to a new version, it's recommended to create a backup of your database. This ensures you can restore your data if something goes wrong during the migration process.
+
+### If You're Running Version 1.2.1 or Later
+
+Use the built-in database backup function:
+
+1. Navigate to `Settings → Database Maintenance` in the web interface
+2. In the **Database Backup** section, select a backup format:
+   - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
+   - **SQL Dump (.sql)**: Text format - human-readable SQL statements
+3. Click `Download Backup`
+4. The backup file will be downloaded to your computer with a timestamped filename
+
+For more details, see the [Database Maintenance](../user-guide/settings/database-maintenance.md#database-backup) documentation.
+
+### If You're Running a Version Before 1.2.1
+
+#### Backup
+
+You must manually back up the database before proceeding. The database file is located at `/app/data/backups.db` inside the container.
+
+##### For Linux Users
+If you are on Linux, don't worry about spinning up helper containers. You can use the native `cp` command to extract the database directly from the running container to your host.
+
+###### Using Docker or Podman:
+
+```bash
+# Replace 'duplistatus' with your actual container name if different
+docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).db
+```
+(If using Podman, simply replace `docker` with `podman` in the command above.)
+
+##### For Windows Users
+If you are running Docker Desktop on Windows, you have two simple ways to handle this without using the command line:
+
+###### Option A: Use Docker Desktop (Easiest)
+1. Open the Docker Desktop Dashboard.
+2. Go to the Containers tab and click on your duplistatus container.
+3. Click on the Files tab.
+4. Navigate to `/app/data/`.
+5. Right-click `backups.db` and select **Save as...** to download it to your Windows folders.
+
+###### Option B: Use PowerShell
+If you prefer the terminal, you can use PowerShell to copy the file to your Desktop:
+
+```powershell
+docker cp duplistatus:/app/data/backups.db $HOME\Desktop\duplistatus-backup.db
+```
+
+##### If You Use Bind Mounts
+If you originally set up your container using a bind mount (e.g., you mapped a local folder like `/opt/duplistatus` to the container), you don't need Docker commands at all. Just copy the file using your file manager:
+- Linux: `cp /path/to/your/folder/backups.db ~/backups.db`
+- Windows: Simply copy the file in **File Explorer** from the folder you designated during setup.
+
+
+#### Restoring Your Data
+If you need to restore your database from a previous backup, follow the steps below based on your operating system.
+
+:::info[IMPORTANT] 
+Stop the container before restoring the database to prevent file corruption.
+:::
+
+##### For Linux Users
+The easiest way to restore is to "push" the backup file back into the container's internal storage path.
+
+###### Using Docker or Podman:
+
+```bash
+# stop the container
+docker stop duplistatus
+
+# Replace 'duplistatus-backup.db' with your actual backup filename
+docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
+
+# Restart the container
+docker start duplistatus
+```
+
+##### For Windows Users
+If you are using Docker Desktop, you can perform the restore via the GUI or PowerShell.
+
+###### Option A: Use Docker Desktop (GUI)
+1. Ensure the duplistatus container is Running (Docker Desktop requires the container to be active to upload files via the GUI).
+2. Go to the Files tab in your container settings.
+3. Navigate to `/app/data/`.
+4. Right-click the existing backups.db and select Delete.
+5. Click the Import button (or right-click in the folder area) and select your backup file from your computer.
+
+Rename the imported file to exactly backups.db if it has a timestamp in the name.
+
+Restart the container.
+
+###### Option B: Use PowerShell
+
+```powershell
+# Copy the file from your Desktop back into the container
+docker cp $HOME\Desktop\duplistatus-backup.db duplistatus:/app/data/backups.db
+
+# Restart the container
+docker start duplistatus
+```
+
+
+##### If You Use Bind Mounts
+If you are using a local folder mapped to the container, you don't need any special commands.
+
+1. Stop the container.
+2. Manually copy your backup file into your mapped folder (e.g., `/opt/duplistatus` or `C:\duplistatus_data`).
+3. Ensure the file is named exactly `backups.db`.
+4. Start the container.
+
+
+:::note
+If you restore the database manually, you may encounter permission errors. 
+
+Check the container logs and adjust the permissions if necessary. See the [Troubleshooting](#troubleshooting-your-restore--rollback) section below for more information.
+::: 
 
 ## Automatic Migration Process
 
@@ -44,8 +163,9 @@ Look for messages like:
 
 ### Upgrading to Version 0.9.x or Later (Schema v4.0)
 
-> [!WARNING]
-> **Authentication is now required.** All users must log in after upgrading.
+:::warning
+**Authentication is now required.** All users must log in after upgrading.
+:::
 
 #### What Changes Automatically
 
@@ -172,23 +292,77 @@ If you're using Podman and experiencing network connectivity issues after upgrad
 
 If you need to rollback to a previous version:
 
-1. **Stop the container**: `docker stop <container-name>`
-2. **Find your backup**: Located in the data directory (timestamped `.db` files)
-3. **Restore the database**: Replace `backups.db` with the backup file
+1. **Stop the container**: `docker stop <container-name>` (or `podman stop <container-name>`)
+2. **Find your backup**: 
+   - If you created a backup using the web interface (version 1.2.1+), use that downloaded backup file
+   - If you created a manual volume backup, extract it first
+   - Automatic migration backups are located in the data directory (timestamped `.db` files)
+3. **Restore the database**: 
+   - **For web interface backups (version 1.2.1+)**: Use the restore function in `Settings → Database Maintenance` (see [Database Maintenance](../user-guide/settings/database-maintenance.md#database-restore))
+   - **For manual backups**: Replace `backups.db` in your data directory/volume with the backup file
 4. **Use previous image version**: Pull and run the previous container image
 5. **Start the container**: Start with the previous version
 
-> [!WARNING]
-> Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.
+:::warning
+Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.
+:::
+
+### Troubleshooting Your Restore / Rollback
+
+If the application doesn't start or your data isn't appearing after a restore or rollback, check the following common issues:
+
+#### 1. Database File Permissions (Linux/Podman)
+
+If you restored the file as the `root` user, the application inside the container might not have permission to read or write to it.
+
+* **The Symptom:** Logs show "Permission Denied" or "Read-only database."
+* **The Fix:** Reset the permissions of the file inside the container to ensure it is accessible.
+
+```bash
+# Set ownership (usually UID 1000 or the app user)
+docker exec -u 0 duplistatus chown 1000:1000 /app/data/backups.db
+# Set read/write permissions
+docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
+```
+
+
+
+#### 2. Incorrect Filename
+
+The application looks specifically for a file named `backups.db`.
+
+* **The Symptom:** The application starts but looks "empty" (like a fresh install).
+* **The Fix:** Check the `/app/data/` directory. If your file is named `duplistatus-backup-2024.db` or has a `.sqlite` extension, the app will ignore it. Use the `mv` command or Docker Desktop GUI to rename it exactly to `backups.db`.
+
+#### 3. Container Not Restarted
+
+On some systems, using `docker cp` while the container is running may not immediately "refresh" the application's connection to the database.
+
+* **The Fix:** Always perform a full restart after a restore:
+```bash
+docker restart duplistatus
+```
+
+
+
+#### 4. Database Version Mismatch
+
+If you are restoring a backup from a much newer version of duplistatus into an older version of the app, the database schema might be incompatible.
+
+* **The Fix:** Always ensure you are running the same (or a newer) version of the duplistatus image as the one that created the backup. Check your version with:
+```bash
+docker inspect duplistatus --format '{{.Config.Image}}'
+```
+
 
 ## Database Schema Versions
 
-| Application Version | Schema Version | Key Changes |
-|---------------------|----------------|-------------|
-| 0.6.x and earlier | v1.0 | Initial schema |
-| 0.7.x | v2.0, v3.0 | Added configurations, renamed machines → servers |
-| 0.8.x | v3.1 | Enhanced backup fields, encryption support |
-| 0.9.x, 1.0.x, 1.1.x | v4.0 | User access control, authentication, audit logging |
+| Application Version        | Schema Version | Key Changes                                        |
+|----------------------------|----------------|----------------------------------------------------|
+| 0.6.x and earlier          | v1.0           | Initial schema                                     |
+| 0.7.x                      | v2.0, v3.0     | Added configurations, renamed machines → servers   |
+| 0.8.x                      | v3.1           | Enhanced backup fields, encryption support         |
+| 0.9.x, 1.0.x, 1.1.x, 1.2.x | v4.0           | User access control, authentication, audit logging |
 
 ## Getting Help
 

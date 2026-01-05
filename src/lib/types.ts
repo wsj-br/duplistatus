@@ -131,6 +131,9 @@ export interface BackupNotificationConfig {
   lastBackupDate?: string; // ISO timestamp of last successful backup (Schedule.LastRun or actual backup received)
   ntfyEnabled: boolean; // whether to send NTFY notifications for this backup
   emailEnabled: boolean; // whether to send email notifications for this backup
+  additionalNotificationEvent?: NotificationEvent; // Notification event configuration for additional destinations (defaults to notificationEvent if not set)
+  additionalEmails?: string; // Comma-separated email addresses for additional recipients
+  additionalNtfyTopic?: string; // Additional NTFY topic name
 }
 
 // Helper type for backup identification

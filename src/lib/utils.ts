@@ -101,7 +101,14 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
 export function formatRelativeTime(dateString: string, currentTime?: Date): string {
   if (!dateString || dateString === "N/A") return "";
   try {
-    const date = parseISO(dateString);
+    // Handle SQLite timestamps (YYYY-MM-DD HH:MM:SS format, UTC)
+    // Convert to ISO format by replacing space with 'T' and appending 'Z' for UTC
+    let isoString = dateString;
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateString.trim())) {
+      isoString = dateString.replace(' ', 'T') + 'Z';
+    }
+    
+    const date = parseISO(isoString);
     if (!isValid(date)) {
       return ""; 
     }
@@ -616,6 +623,39 @@ export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
 //     };
 //   }
 // }
+
+/**
+ * Parse a SQLite DATETIME timestamp string (UTC) and format it for display in browser timezone
+ * SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format and are stored in UTC
+ * @param timestamp - SQLite timestamp string in "YYYY-MM-DD HH:MM:SS" format
+ * @returns Formatted date string in browser's local timezone
+ */
+export function formatSQLiteTimestamp(timestamp: string): string {
+  if (!timestamp) return '';
+  
+  try {
+    // SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format (UTC)
+    // Convert to ISO format by replacing space with 'T' and appending 'Z' for UTC
+    const isoString = timestamp.replace(' ', 'T') + 'Z';
+    const date = new Date(isoString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      // Fallback: try parsing as-is (might already be in a different format)
+      const fallbackDate = new Date(timestamp);
+      if (isNaN(fallbackDate.getTime())) {
+        return timestamp; // Return original if can't parse
+      }
+      return fallbackDate.toLocaleString();
+    }
+    
+    // Format in browser's local timezone
+    return date.toLocaleString();
+  } catch (error) {
+    console.error('Error formatting SQLite timestamp:', error);
+    return timestamp; // Return original on error
+  }
+}
 
 
 

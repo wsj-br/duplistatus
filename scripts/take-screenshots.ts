@@ -998,6 +998,84 @@ async function deleteRecentBackupsToCreateOverdue(serverId: string, count: numbe
   }
 }
 
+async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
+  console.log(`Keeping only one backup for server ${serverId} (keeping from backup_name with most entries)...`);
+  try {
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const db = dbModule.db;
+    
+    // First, find which backup_name has the most entries
+    const backupNameCounts = db.prepare(`
+      SELECT backup_name, COUNT(*) as count
+      FROM backups
+      WHERE server_id = ?
+      GROUP BY backup_name
+      ORDER BY count DESC
+    `).all(serverId) as { backup_name: string; count: number }[];
+    
+    if (backupNameCounts.length === 0) {
+      console.log(`  No backups found for server ${serverId}`);
+      return false;
+    }
+    
+    // Get the backup_name with the most entries
+    const backupNameWithMostEntries = backupNameCounts[0].backup_name;
+    const entryCount = backupNameCounts[0].count;
+    
+    console.log(`  Found ${backupNameCounts.length} backup_name(s), ${backupNameWithMostEntries} has the most entries (${entryCount})`);
+    
+    // Get all backups for this server
+    const allBackups = db.prepare(`
+      SELECT id, date, backup_name
+      FROM backups
+      WHERE server_id = ?
+      ORDER BY backup_name = ? DESC, date DESC
+    `).all(serverId, backupNameWithMostEntries) as { id: string; date: string; backup_name: string }[];
+    
+    if (allBackups.length === 0) {
+      console.log(`  No backups found for server ${serverId}`);
+      return false;
+    }
+    
+    if (allBackups.length === 1) {
+      console.log(`  Server ${serverId} already has only one backup`);
+      return true;
+    }
+    
+    // Keep the most recent backup from the backup_name with most entries
+    const backupToKeep = allBackups[0];
+    const backupsToDelete = allBackups.slice(1);
+    
+    console.log(`  Found ${allBackups.length} backup(s), keeping most recent from ${backupNameWithMostEntries} (date: ${backupToKeep.date}), deleting ${backupsToDelete.length} other(s)`);
+    
+    // Delete all backups except the one we're keeping
+    const deleteTransaction = db.transaction(() => {
+      let deletedCount = 0;
+      for (const backup of backupsToDelete) {
+        const result = db.prepare('DELETE FROM backups WHERE id = ?').run(backup.id);
+        if (result.changes > 0) {
+          deletedCount++;
+        }
+      }
+      return deletedCount;
+    });
+    
+    const deletedCount = deleteTransaction();
+    
+    if (deletedCount > 0) {
+      console.log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, kept 1 backup from ${backupNameWithMostEntries} (${entryCount} entries originally)`);
+      return true;
+    } else {
+      logError(`Failed to delete backups (no rows affected)`);
+      return false;
+    }
+  } catch (error) {
+    logError(`Error keeping only one backup: ${error instanceof Error ? error.message : String(error)}`);
+    return false;
+  }
+}
+
 async function captureCollectButtonPopup(page: Page): Promise<{ popup: boolean; rightClick: boolean }> {
   console.log('-------------------------------------------------------');
   console.log('Capturing collect button popup...');
@@ -2499,6 +2577,36 @@ async function main() {
     // Now availableServers contains only the remaining servers
     // No need to fetch from API or verify - we already have the source of truth
     
+    // For one of the servers (not the protected one), keep only one backup
+    if (availableServers.length > 0) {
+      console.log('-------------------------------------------------------');
+      console.log('Keeping only one backup for a non-protected server...');
+      
+      // Find a server that is NOT the protected server and has backups
+      const serversWithBackups = await findServersWithBackups();
+      let serverToReduce: Server | null = null;
+      
+      for (const server of availableServers) {
+        // Skip the protected server
+        if (server.id === protectedServerId) {
+          continue;
+        }
+        // Check if this server has backups
+        if (serversWithBackups.includes(server.id)) {
+          serverToReduce = server;
+          break;
+        }
+      }
+      
+      if (serverToReduce) {
+        console.log(`Reducing backups for server ${serverToReduce.name} (${serverToReduce.id}) to only one backup...`);
+        await keepOnlyOneBackup(serverToReduce.id);
+        await delay(500);
+      } else {
+        console.log('No non-protected server with backups found to reduce (this is okay)');
+      }
+    }
+    
     if (availableServers.length < 2) {
       console.log(`Warning: Only ${availableServers.length} server(s) remaining, need at least 2 to configure`);
     } else {
@@ -2781,11 +2889,277 @@ async function main() {
       await page.goto(`${BASE_URL}/settings?tab=${tab}`, { waitUntil: 'networkidle0' });
       await delay(2000);
       
-      // Sanitize tab name for filename
-      const filename = `screen-settings-${tab}.png`;
-      const settingsTabResult = await takeScreenshot(page, filename, { isSettingsPage: true });
-      if (settingsTabResult) successful.push(filename);
-      else failed.push(filename);
+      // Special handling for notifications tab - take 3 different screenshots
+      if (tab === 'notifications') {
+        try {
+          // Wait for the table to be rendered
+          await page.waitForSelector('table tbody tr', { timeout: 10000 });
+          await delay(1000);
+          
+          // Screenshot 1: Initial render (no interaction)
+          console.log('Taking screenshot 1: Initial render (no interaction)...');
+          const filename1 = 'screen-settings-notifications.png';
+          const screenshot1 = await takeScreenshot(page, filename1, { isSettingsPage: true });
+          if (screenshot1) successful.push(filename1);
+          else failed.push(filename1);
+          await delay(1000);
+          
+          // Screenshot 2: Select 2 servers (server-level checkboxes)
+          console.log('Taking screenshot 2: After selecting 2 servers...');
+          // Find server header rows - they have pl-4 in the first cell (not pl-12)
+          const allRows = await page.$$('table tbody tr');
+          console.log(`  📍 Found ${allRows.length} total rows in table`);
+          let serverRowsFound = 0;
+          
+          for (let i = 0; i < allRows.length && serverRowsFound < 2; i++) {
+            const row = allRows[i];
+            // Check if this is a server header row by looking at the first cell's classes
+            const firstCell = await row.$('td:first-child');
+            if (firstCell) {
+              const classList = await firstCell.evaluate(el => Array.from(el.classList));
+              // Server rows have pl-4, backup rows have pl-12
+              const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
+              
+              if (isServerRow) {
+                console.log(`  📍 Row ${i + 1} is a server row`);
+                // This is a server header row, click its checkbox
+                const checkbox = await firstCell.$('[role="checkbox"]');
+                if (checkbox) {
+                  await checkbox.click();
+                  serverRowsFound++;
+                  console.log(`  ✅ Selected server ${serverRowsFound}`);
+                  await delay(300);
+                } else {
+                  console.log(`  ⚠️  Row ${i + 1} is a server row but no checkbox found`);
+                }
+              }
+            }
+          }
+          
+          if (serverRowsFound >= 2) {
+            console.log(`  ✅ Selected ${serverRowsFound} servers`);
+            await delay(1000);
+            const filename2 = 'screen-settings-notifications-bulk.png';
+            // Capture only the bulk action bar card with a 4px margin
+            const bulkCardBounds = await page.evaluate(() => {
+              // Find the bulk action bar div (has "Additional Destinations:" text and buttons)
+              const divs = Array.from(document.querySelectorAll('div'));
+              const bulkBar = divs.find(div => {
+                const text = div.textContent || '';
+                return text.includes('Additional Destinations:') && 
+                       text.includes('backup') && 
+                       text.includes('selected') &&
+                       div.classList.contains('bg-muted') &&
+                       div.classList.contains('rounded-md');
+              });
+              if (bulkBar) {
+                const rect = bulkBar.getBoundingClientRect();
+                const margin = 4;
+                return {
+                  x: rect.x - margin,
+                  y: rect.y - margin,
+                  width: rect.width + (margin * 2),
+                  height: rect.height + (margin * 2)
+                };
+              }
+              return null;
+            });
+            
+            if (bulkCardBounds) {
+              const viewportSize = await page.viewport();
+              const pageWidth = viewportSize?.width || VIEWPORT_WIDTH;
+              const pageHeight = viewportSize?.height || VIEWPORT_HEIGHT;
+              
+              // Ensure we don't go outside page bounds
+              const clipX = Math.max(0, Math.round(bulkCardBounds.x));
+              const clipY = Math.max(0, Math.round(bulkCardBounds.y));
+              const clipWidth = Math.min(Math.round(bulkCardBounds.width), pageWidth - clipX);
+              const clipHeight = Math.min(Math.round(bulkCardBounds.height), pageHeight - clipY);
+              
+              const screenshot2 = await takeScreenshot(page, filename2, { 
+                clip: {
+                  x: clipX,
+                  y: clipY,
+                  width: clipWidth,
+                  height: clipHeight
+                }
+              });
+              if (screenshot2) successful.push(filename2);
+              else failed.push(filename2);
+            } else {
+              console.log('  ⚠️  Could not find bulk action bar card');
+              failed.push(filename2);
+            }
+          } else {
+            console.log(`  ⚠️  Warning: Found only ${serverRowsFound} server rows, expected at least 2`);
+            const filename2 = 'screen-settings-notifications-bulk.png';
+            failed.push(filename2);
+          }
+          await delay(1000);
+          
+          // Screenshot 3: Clear selections, expand first server row, expand second backup row
+          console.log('Taking screenshot 3: Expanding server and backup rows...');
+          // Clear any selections first - find button by text using evaluate
+          console.log('  📍 Looking for "Clear Selection" button...');
+          const clearButtonClicked = await page.evaluate(() => {
+            const buttons = Array.from(document.querySelectorAll('button'));
+            const clearButton = buttons.find(btn => btn.textContent?.trim() === 'Clear Selection');
+            if (clearButton) {
+              (clearButton as HTMLButtonElement).click();
+              return true;
+            }
+            return false;
+          });
+          
+          if (clearButtonClicked) {
+            console.log('  ✅ Clicked "Clear Selection" button');
+            await delay(500);
+          } else {
+            console.log('  ⚠️  "Clear Selection" button not found (may not be needed if no selections)');
+          }
+          
+          // Find and expand the first server row
+          console.log('  📍 Looking for first server row to expand...');
+          const allRows2 = await page.$$('table tbody tr');
+          let firstServerExpanded = false;
+          let expandedServerRowIndex = -1;
+          
+          for (let i = 0; i < allRows2.length && !firstServerExpanded; i++) {
+            const row = allRows2[i];
+            const firstCell = await row.$('td:first-child');
+            if (firstCell) {
+              const classList = await firstCell.evaluate(el => Array.from(el.classList));
+              const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
+              
+              if (isServerRow) {
+                console.log(`  📍 Row ${i + 1} is a server row, looking for expansion button...`);
+                // This is a server row, find and click its expansion button
+                const chevronButton = await row.$('td button[class*="h-6"]');
+                if (chevronButton) {
+                  await chevronButton.click();
+                  firstServerExpanded = true;
+                  expandedServerRowIndex = i;
+                  console.log('  ✅ Expanded first server row (index ' + i + ')');
+                  await delay(1000);
+                  break;
+                } else {
+                  console.log(`  ⚠️  Row ${i + 1} is a server row but no expansion button found`);
+                }
+              }
+            }
+          }
+          
+          if (!firstServerExpanded) {
+            console.log('  ⚠️  Could not find or expand first server row');
+          }
+          
+          // Now find and expand the second backup row of the expanded server
+          // Backup rows have pl-12 in the first cell (indented) and appear after their server row
+          console.log('  📍 Looking for second backup row of the expanded server to expand...');
+          // Get all rows again after expansion (backup rows should now be visible)
+          const allRowsAfterExpansion = await page.$$('table tbody tr');
+          let backupRowsFound = 0;
+          
+          // Start looking after the expanded server row
+          for (let i = expandedServerRowIndex + 1; i < allRowsAfterExpansion.length; i++) {
+            const row = allRowsAfterExpansion[i];
+            const firstCell = await row.$('td:first-child');
+            if (firstCell) {
+              const classList = await firstCell.evaluate(el => Array.from(el.classList));
+              // Backup rows have pl-12 (padding-left)
+              const isBackupRow = classList.some(cls => cls === 'pl-12' || cls.includes('pl-12'));
+              
+              // If we hit another server row (pl-4), we've gone past this server's backups
+              const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
+              if (isServerRow) {
+                console.log(`  📍 Reached next server row at index ${i}, stopping search`);
+                break;
+              }
+              
+              if (isBackupRow) {
+                const backupChevron = await row.$('td button[class*="h-6"]');
+                if (backupChevron) {
+                  backupRowsFound++;
+                  console.log(`  📍 Found backup row ${backupRowsFound} of the expanded server (index ${i})`);
+                  // Skip the first backup row, expand the second one
+                  if (backupRowsFound === 2) {
+                    await backupChevron.click();
+                    console.log('  ✅ Expanded second backup row of the expanded server');
+                    await delay(1000);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          
+          if (backupRowsFound < 2) {
+            console.log(`  ⚠️  Warning: Found only ${backupRowsFound} backup rows for the expanded server, expected at least 2`);
+          }
+          
+          const filename3 = 'screen-settings-notifications-server.png';
+          // Capture only the table with a 4px margin
+          const tableBounds = await page.evaluate(() => {
+            const table = document.querySelector('table');
+            if (table) {
+              const rect = table.getBoundingClientRect();
+              const margin = 4;
+              return {
+                x: rect.x - margin,
+                y: rect.y - margin,
+                width: rect.width + (margin * 2),
+                height: rect.height + (margin * 2)
+              };
+            }
+            return null;
+          });
+          
+          if (tableBounds) {
+            const viewportSize = await page.viewport();
+            const pageWidth = viewportSize?.width || VIEWPORT_WIDTH;
+            const pageHeight = viewportSize?.height || VIEWPORT_HEIGHT;
+            
+            // Ensure we don't go outside page bounds
+            const clipX = Math.max(0, Math.round(tableBounds.x));
+            const clipY = Math.max(0, Math.round(tableBounds.y));
+            const clipWidth = Math.min(Math.round(tableBounds.width), pageWidth - clipX);
+            const clipHeight = Math.min(Math.round(tableBounds.height), pageHeight - clipY);
+            
+            const screenshot3 = await takeScreenshot(page, filename3, { 
+              clip: {
+                x: clipX,
+                y: clipY,
+                width: clipWidth,
+                height: clipHeight
+              }
+            });
+            if (screenshot3) successful.push(filename3);
+            else failed.push(filename3);
+          } else {
+            console.log('  ⚠️  Could not find table element');
+            failed.push(filename3);
+          }
+          
+        } catch (error) {
+          console.log(`  ❌ Warning: Failed to interact with notifications page: ${error instanceof Error ? error.message : String(error)}`);
+          // Only add to failed if not already in successful
+          if (!successful.includes('screen-settings-notifications.png') && !failed.includes('screen-settings-notifications.png')) {
+            failed.push('screen-settings-notifications.png');
+          }
+          if (!successful.includes('screen-settings-notifications-bulk.png') && !failed.includes('screen-settings-notifications-bulk.png')) {
+            failed.push('screen-settings-notifications-bulk.png');
+          }
+          if (!successful.includes('screen-settings-notifications-server.png') && !failed.includes('screen-settings-notifications-server.png')) {
+            failed.push('screen-settings-notifications-server.png');
+          }
+        }
+      } else {
+        // For other tabs, use the standard filename
+        const filename = `screen-settings-${tab}.png`;
+        const settingsTabResult = await takeScreenshot(page, filename, { isSettingsPage: true });
+        if (settingsTabResult) successful.push(filename);
+        else failed.push(filename);
+      }
     }
     
     // Logout and login as non-admin user
