@@ -70,9 +70,53 @@ async function getNotificationConfig(): Promise<{
 // Helper function to get backup settings with fallback to server settings
 async function getBackupSettings(config: { backupSettings: Record<BackupKey, import('./types').BackupNotificationConfig> }, serverId: string, backupName: string) {
   const backupKey: BackupKey = `${serverId}:${backupName}`;
-  const backupConfig = config.backupSettings?.[backupKey];
+  const serverDefaultKey: BackupKey = `${serverId}:__default__`;
   
-  return backupConfig || null;
+  const backupConfig = config.backupSettings?.[backupKey];
+  const serverDefaults = config.backupSettings?.[serverDefaultKey];
+  
+  // If no backup config exists, return null (backup not configured)
+  if (!backupConfig) {
+    return null;
+  }
+  
+  // Merge server defaults with backup overrides
+  // Start with backup config as base
+  const mergedConfig = { ...backupConfig };
+  
+  // Merge additional destinations with inheritance rules
+  if (serverDefaults) {
+    // For additionalNotificationEvent: use backup value if explicitly set, otherwise server default, otherwise fall back to notificationEvent
+    if (!('additionalNotificationEvent' in backupConfig) || backupConfig.additionalNotificationEvent === undefined) {
+      if (serverDefaults.additionalNotificationEvent !== undefined) {
+        mergedConfig.additionalNotificationEvent = serverDefaults.additionalNotificationEvent;
+      } else {
+        // Fall back to notificationEvent if neither backup nor server default is set
+        mergedConfig.additionalNotificationEvent = backupConfig.notificationEvent;
+      }
+    }
+    
+    // For additionalEmails: use backup value if field exists (even if empty), otherwise use server default
+    if (!('additionalEmails' in backupConfig) || backupConfig.additionalEmails === undefined) {
+      if (serverDefaults.additionalEmails !== undefined) {
+        mergedConfig.additionalEmails = serverDefaults.additionalEmails;
+      }
+    }
+    
+    // For additionalNtfyTopic: use backup value if field exists (even if empty), otherwise use server default
+    if (!('additionalNtfyTopic' in backupConfig) || backupConfig.additionalNtfyTopic === undefined) {
+      if (serverDefaults.additionalNtfyTopic !== undefined) {
+        mergedConfig.additionalNtfyTopic = serverDefaults.additionalNtfyTopic;
+      }
+    }
+  } else {
+    // No server defaults, ensure additionalNotificationEvent falls back to notificationEvent if not set
+    if (!('additionalNotificationEvent' in backupConfig) || backupConfig.additionalNotificationEvent === undefined) {
+      mergedConfig.additionalNotificationEvent = backupConfig.notificationEvent;
+    }
+  }
+  
+  return mergedConfig;
 }
 
 
@@ -496,7 +540,9 @@ function processTemplate(template: NotificationTemplate, context: NotificationCo
   // Add additional server variables to context 
   const serverInfo = getServerInfoById(context.server_id);
   formattedContext.server_url = serverInfo?.server_url || '';
-  formattedContext.server_alias = serverInfo?.alias || context.server_name;
+  formattedContext.server_alias = serverInfo?.alias 
+    ? `${serverInfo.alias} (${context.server_name})` 
+    : context.server_name;
   formattedContext.server_note = serverInfo?.note || '';
 
   // backward compatibility

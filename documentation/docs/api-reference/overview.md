@@ -64,9 +64,10 @@ All file size fields are returned in bytes as numbers, not formatted strings. Th
 
 <br/>
 
-> [!CAUTION]
->  Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
-> (e.g., local LAN protected by a firewall).
->
-> Exposing the **duplistatus** interface to the public
->  internet without proper security measures could lead to unauthorized access.
+:::caution
+ Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
+(e.g., local LAN protected by a firewall).
+
+Exposing the **duplistatus** interface to the public
+ internet without proper security measures could lead to unauthorized access.
+:::

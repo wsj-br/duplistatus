@@ -25,16 +25,14 @@
     - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
 4.  Click `Collect Backups`.
 
-
-> [!IMPORTANT]
-> If you enter multiple hostnames, the collection will be performed using the same port and password for all servers.
-
-> [!NOTE]
-> **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback.
+***Notes:***
+- If you enter multiple hostnames, the collection will be performed using the same port and password for all servers.
+- **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback.
 
 
-> [!TIP]
-> <IconButton icon="lucide:download" /> buttons are available in `Settings → Overdue Monitoring` and `Settings → Server Settings` for single-server collection.
+:::tip
+<IconButton icon="lucide:download" /> buttons are available in `Settings → Overdue Monitoring` and `Settings → Server Settings` for single-server collection.
+:::
 
 
 
@@ -46,8 +44,9 @@ _Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` bu
 
 ![Collect All Right-Click Menu](/img/screen-collect-button-right-click-popup.png)
 
-> [!TIP]
-> You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
+:::tip
+You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
+:::
 
 
 ## How the Collection Process Works
@@ -60,10 +59,11 @@ _Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` bu
 - If the download option is selected, it will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
 - The dashboard updates to reflect the new information.
 
-> [!NOTE]
-> Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
->
-> - Confirm that the hostname (or IP address) and port number are correct. You can test this by accessing the Duplicati server UI in your browser (e.g., `http://hostname:port`).
-> - Check that **duplistatus** can connect to the Duplicati server. A common problem is DNS name resolution (the system cannot find the server by its hostname).
-> - Ensure the password you provided is correct.
+## Troubleshooting Collection Issues
+
+Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
+
+- Confirm that the hostname (or IP address) and port number are correct. You can test this by accessing the Duplicati server UI in your browser (e.g., `http://hostname:port`).
+- Check that **duplistatus** can connect to the Duplicati server. A common problem is DNS name resolution (the system cannot find the server by its hostname). See more in [troubleshooting section](troubleshooting.md#collect-backup-logs-not-working).
+- Ensure the password you provided is correct.
 

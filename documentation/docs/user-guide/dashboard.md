@@ -2,8 +2,9 @@
 
 # Dashboard
 
-> [!TIP]
-> **Quick Access to Display Settings**: Right-click on the auto-refresh button in the application toolbar to quickly open the [Display Settings](settings/display-settings.md) page.
+:::tip
+**Quick Access to Display Settings**: Right-click on the auto-refresh button in the application toolbar to quickly open the [Display Settings](settings/display-settings.md) page.
+:::
 
 ## Dashboard Summary
 
@@ -37,8 +38,9 @@ The cards layout shows the status of the most recent backup log received for eac
   - **Last backup received**: The elapsed time since the current time of the last log received. It will show a warning icon if the backup is overdue.
     - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for years.
 
-> [!NOTE]
-> You can use the [Display Settings](settings/display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
+:::note
+You can use the [Display Settings](settings/display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
+:::
 
 You can toggle the top right button on the side panel to change the panel view:
 
@@ -98,8 +100,9 @@ The table layout lists the most recent backup logs received for all servers and 
 | <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} />    | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
 | <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} />    | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
-> [!NOTE]
-> This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
+:::note
+This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
+:::
 
 ### Overdue Details
 
@@ -121,7 +124,8 @@ Clicking the blue clock icon opens a list of available backup versions at the ti
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.
 
-> [!NOTE]
-> If the icon is greyed out, it means that no detailed information was received in the message logs.
-> See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
+:::note
+If the icon is greyed out, it means that no detailed information was received in the message logs.
+See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
+:::
 

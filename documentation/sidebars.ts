@@ -18,6 +18,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Installation',
+      className: 'sidebar-category-expandable',
+      customProps: {
+        icon: 'wrench',
+      },
       items: [
         'installation/installation',
         'installation/configure-tz-lang',
@@ -29,6 +33,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'User Guide',
+      className: 'sidebar-category-expandable',
+      customProps: {
+        icon: 'bookOpen',
+      },
       items: [
         'user-guide/overview',
         'user-guide/dashboard',
@@ -40,6 +48,10 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Settings',
+          className: 'sidebar-category-expandable',
+          customProps: {
+            icon: 'settings',
+          },
           items: [
             'user-guide/settings/overview',
             'user-guide/settings/backup-notifications-settings',
@@ -62,6 +74,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Migration',
+      className: 'sidebar-category-expandable',
+      customProps: {
+        icon: 'arrowRightLeft',
+      },
       items: [
         'migration/version_upgrade',
         'migration/api-changes',
@@ -70,6 +86,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'API Reference',
+      className: 'sidebar-category-expandable',
+      customProps: {
+        icon: 'code2',
+      },
       items: [
         'api-reference/overview',
         'api-reference/authentication-security',
@@ -88,6 +108,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Development',
+      className: 'sidebar-category-expandable',
+      customProps: {
+        icon: 'terminal',
+      },
       items: [
         'development/setup',
         'development/devel',
@@ -105,6 +129,10 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Release Notes',
+      className: 'sidebar-category-expandable',
+      customProps: {
+        icon: 'history',
+      },
       items: [
         'release-notes/1.2.1',
         'release-notes/1.1.x',

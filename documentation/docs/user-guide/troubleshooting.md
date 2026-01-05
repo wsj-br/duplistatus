@@ -53,7 +53,7 @@ If overdue backup notifications are not being sent:
 
 If the manual backup log collection fails:
 
-- **Check Duplicati Server Access**: Verify the Duplicati server hostname and port are correct. Confirm remote access is enabled in Duplicati. Ensure the authentication password and protocol (HTTP/HTTPS) are correct.
+- **Check Duplicati Server Access**: Verify the Duplicati server hostname and port are correct. Confirm remote access is enabled in Duplicati. Ensure the authentication password is correct.
 - **Check Network Connectivity**: Test connectivity from **duplistatus** to the Duplicati server. Confirm the Duplicati server port is accessible (default: `8200`).
   For example, if you are using Docker, you can use `docker exec -it <container-name> /bin/sh` to access the container's command line and run network tools like `ping` and `curl`.
 
@@ -62,6 +62,7 @@ If the manual backup log collection fails:
     ping duplicati-server.local
     curl -I http://duplicati-server.local:8200
     ```
+  Also check for the DNS configuration inside the container (see more at [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
 
 ### Upgrade from an earlier version (\<0.9.x) and can't login

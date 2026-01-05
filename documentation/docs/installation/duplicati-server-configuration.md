@@ -10,22 +10,23 @@ Apply this configuration to each of your Duplicati servers:
 
 ![Duplicati settings](/img/duplicati-settings.png)
 
-> [!CAUTION]
-> Only enable remote access if your Duplicati server is protected by a secure network
-> (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public Internet
-> without proper security measures could lead to unauthorised access.
+    :::caution
+    Only enable remote access if your Duplicati server is protected by a secure network
+    (e.g., VPN, private LAN, or firewall rules). Exposing the Duplicati interface to the public Internet
+    without proper security measures could lead to unauthorised access.
+    :::
 
 2. **Configure backup result reporting:** On the Duplicati configuration page, select `Settings` and, in the `Default Options` section, include the following options. Replace 'my.local.server' with your server name or IP address where **duplistatus** is running.
 
-| Advanced option                  | Value                                    |
-| -------------------------------- | ---------------------------------------- |
-| `send-http-url`                  | `http://my.local.server:9666/api/upload` |
-| `send-http-result-output-format` | `Json`                                   |
-| `send-http-log-level`            | `Information`                            |
-| `send-http-max-log-lines`        | `0`                                      |
+    | Advanced option                  | Value                                    |
+    | -------------------------------- | ---------------------------------------- |
+    | `send-http-url`                  | `http://my.local.server:9666/api/upload` |
+    | `send-http-result-output-format` | `Json`                                   |
+    | `send-http-log-level`            | `Information`                            |
+    | `send-http-max-log-lines`        | `0`                                      |
 
-> [!TIP]
-> Click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
+Alternativelly, you can click on `Edit as text` and copy the lines below, replacing `my.local.server` with your actual server address.
+
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
@@ -42,6 +43,7 @@ Apply this configuration to each of your Duplicati servers:
 - The recommended configuration is `--send-http-max-log-lines=0` for unlimited messages, since the Duplicati default of 100 messages may prevent the available versions from being received in the log.
 - If you limit the number of messages, the log messages required to obtain the available backup versions may not be received. This will prevent those versions from being displayed for that backup run.
 
-> [!TIP]
-> After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](../user-guide/collect-backup-logs.md).
+:::tip
+After configuring the **duplistatus** server, collect the backup logs for all your Duplicati servers using [Collect Backup Logs](../user-guide/collect-backup-logs.md).
+:::
 

@@ -61,8 +61,9 @@ When you collect backup logs from a Duplicati server, **duplistatus** automatica
 - Synchronises allowed weekdays and scheduled times
 - Preserves your notification preferences
 
-> [!TIP]
-> For best results, collect backup logs after changing backup job intervals in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+:::tip
+For best results, collect backup logs after changing backup job intervals in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+:::
 
 Review the [Overdue Settings](settings/overdue-settings.md) section for detailed configuration options.
 

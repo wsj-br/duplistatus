@@ -58,11 +58,12 @@ Restore your database from a previously created backup file.
 - **.db files**: The database file is directly replaced. Fastest restore method.
 - **.sql files**: SQL statements are executed to recreate the database. Allows for selective restoration if needed.
 
-> [!WARNING]
-> Restoring a database will **replace all current data**. This action cannot be undone.  
-> A safety backup is created automatically, but it's recommended to create your own backup before restoring.
-> 
-> **Important:** After restore, all user sessions are cleared for security. You will need to log in again.
+:::warning
+Restoring a database will **replace all current data**. This action cannot be undone.  
+A safety backup is created automatically, but it's recommended to create your own backup before restoring.
+ 
+**Important:** After restore, all user sessions are cleared for security. You will need to log in again.
+:::
 
 **Troubleshooting:**
 
@@ -76,10 +77,11 @@ Restore your database from a previously created backup file.
 
 <br/>
 
-> [!NOTE]
-> This applies to all the maintenance functions below: all statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
-> 
-> If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.
+:::note
+This applies to all the maintenance functions below: all statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
+ 
+If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.
+:::
 
 <br/>
 
@@ -165,7 +167,8 @@ This can occur when Duplicati's `machine-id` changes after an upgrade or reinsta
 - The old server entries are deleted
 - Dashboard statistics are updated automatically
 
-> [!IMPORTANT]
-> This action cannot be undone. A database backup is recommended before confirming.  
+:::info[IMPORTANT]
+This action cannot be undone. A database backup is recommended before confirming.  
+:::
 
 <br/>

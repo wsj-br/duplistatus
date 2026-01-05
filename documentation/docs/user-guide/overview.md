@@ -57,7 +57,7 @@ The application toolbar provides convenient access to key functions and settings
 
 | Button                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen                                                                                    | Execute an immediate manual  sacreen refresh of all data                                                                                                                     |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen                                                                                    | Execute an immediate manual screen refresh of all data                                                                                                                     |
 | <IconButton label="Auto-refresh" />                                                                                                              | Enable or disable automatic refresh functionality. Configure in [Display Settings](settings/display-settings.md) <br/> _Right-click_ to open Display Settings page           |
 | <SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY                                                                                            | Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus. |
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface                                                                                                                           |
@@ -92,10 +92,12 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
 
 <br/>
 
-> [!IMPORTANT]
-> Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](/installation/duplicati-server-configuration.md) section.
+:::info[IMPORTANT]
+Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](/installation/duplicati-server-configuration.md) section.
+:::
 
 <br/>
 
->[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+:::note
+All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+:::

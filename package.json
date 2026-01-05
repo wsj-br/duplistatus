@@ -75,7 +75,7 @@
     "react-datepicker": "^9.1.0",
     "react-day-picker": "^9.13.0",
     "react-dom": "^19.2.3",
-    "react-hook-form": "^7.69.0",
+    "react-hook-form": "^7.70.0",
     "recharts": "^3.6.0",
     "string-template": "^1.0.0",
     "tailwind-merge": "^3.4.0",

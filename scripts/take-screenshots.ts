@@ -998,6 +998,84 @@ async function deleteRecentBackupsToCreateOverdue(serverId: string, count: numbe
   }
 }
 
+async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
+  console.log(`Keeping only one backup for server ${serverId} (keeping from backup_name with most entries)...`);
+  try {
+    const dbModule = await import('../src/lib/db');
+    await dbModule.ensureDatabaseInitialized();
+    const db = dbModule.db;
+    
+    // First, find which backup_name has the most entries
+    const backupNameCounts = db.prepare(`
+      SELECT backup_name, COUNT(*) as count
+      FROM backups
+      WHERE server_id = ?
+      GROUP BY backup_name
+      ORDER BY count DESC
+    `).all(serverId) as { backup_name: string; count: number }[];
+    
+    if (backupNameCounts.length === 0) {
+      console.log(`  No backups found for server ${serverId}`);
+      return false;
+    }
+    
+    // Get the backup_name with the most entries
+    const backupNameWithMostEntries = backupNameCounts[0].backup_name;
+    const entryCount = backupNameCounts[0].count;
+    
+    console.log(`  Found ${backupNameCounts.length} backup_name(s), ${backupNameWithMostEntries} has the most entries (${entryCount})`);
+    
+    // Get all backups for this server
+    const allBackups = db.prepare(`
+      SELECT id, date, backup_name
+      FROM backups
+      WHERE server_id = ?
+      ORDER BY backup_name = ? DESC, date DESC
+    `).all(serverId, backupNameWithMostEntries) as { id: string; date: string; backup_name: string }[];
+    
+    if (allBackups.length === 0) {
+      console.log(`  No backups found for server ${serverId}`);
+      return false;
+    }
+    
+    if (allBackups.length === 1) {
+      console.log(`  Server ${serverId} already has only one backup`);
+      return true;
+    }
+    
+    // Keep the most recent backup from the backup_name with most entries
+    const backupToKeep = allBackups[0];
+    const backupsToDelete = allBackups.slice(1);
+    
+    console.log(`  Found ${allBackups.length} backup(s), keeping most recent from ${backupNameWithMostEntries} (date: ${backupToKeep.date}), deleting ${backupsToDelete.length} other(s)`);
+    
+    // Delete all backups except the one we're keeping
+    const deleteTransaction = db.transaction(() => {
+      let deletedCount = 0;
+      for (const backup of backupsToDelete) {
+        const result = db.prepare('DELETE FROM backups WHERE id = ?').run(backup.id);
+        if (result.changes > 0) {
+          deletedCount++;
+        }
+      }
+      return deletedCount;
+    });
+    
+    const deletedCount = deleteTransaction();
+    
+    if (deletedCount > 0) {
+      console.log(`  Successfully deleted ${deletedCount} backup(s) from server ${serverId}, kept 1 backup from ${backupNameWithMostEntries} (${entryCount} entries originally)`);
+      return true;
+    } else {
+      logError(`Failed to delete backups (no rows affected)`);
+      return false;
+    }
+  } catch (error) {
+    logError(`Error keeping only one backup: ${error instanceof Error ? error.message : String(error)}`);
+    return false;
+  }
+}
+
 async function captureCollectButtonPopup(page: Page): Promise<{ popup: boolean; rightClick: boolean }> {
   console.log('-------------------------------------------------------');
   console.log('Capturing collect button popup...');
@@ -2499,6 +2577,36 @@ async function main() {
     // Now availableServers contains only the remaining servers
     // No need to fetch from API or verify - we already have the source of truth
     
+    // For one of the servers (not the protected one), keep only one backup
+    if (availableServers.length > 0) {
+      console.log('-------------------------------------------------------');
+      console.log('Keeping only one backup for a non-protected server...');
+      
+      // Find a server that is NOT the protected server and has backups
+      const serversWithBackups = await findServersWithBackups();
+      let serverToReduce: Server | null = null;
+      
+      for (const server of availableServers) {
+        // Skip the protected server
+        if (server.id === protectedServerId) {
+          continue;
+        }
+        // Check if this server has backups
+        if (serversWithBackups.includes(server.id)) {
+          serverToReduce = server;
+          break;
+        }
+      }
+      
+      if (serverToReduce) {
+        console.log(`Reducing backups for server ${serverToReduce.name} (${serverToReduce.id}) to only one backup...`);
+        await keepOnlyOneBackup(serverToReduce.id);
+        await delay(500);
+      } else {
+        console.log('No non-protected server with backups found to reduce (this is okay)');
+      }
+    }
+    
     if (availableServers.length < 2) {
       console.log(`Warning: Only ${availableServers.length} server(s) remaining, need at least 2 to configure`);
     } else {
@@ -2893,18 +3001,19 @@ async function main() {
           console.log('Taking screenshot 3: Expanding server and backup rows...');
           // Clear any selections first - find button by text using evaluate
           console.log('  📍 Looking for "Clear Selection" button...');
-          const clearButton = await page.evaluateHandle(() => {
+          const clearButtonClicked = await page.evaluate(() => {
             const buttons = Array.from(document.querySelectorAll('button'));
-            return buttons.find(btn => btn.textContent?.trim() === 'Clear Selection') || null;
+            const clearButton = buttons.find(btn => btn.textContent?.trim() === 'Clear Selection');
+            if (clearButton) {
+              (clearButton as HTMLButtonElement).click();
+              return true;
+            }
+            return false;
           });
           
-          if (clearButton && (await clearButton.evaluate(el => el !== null))) {
-            const clearButtonElement = clearButton.asElement();
-            if (clearButtonElement) {
-              await clearButtonElement.click();
-              console.log('  ✅ Clicked "Clear Selection" button');
-              await delay(500);
-            }
+          if (clearButtonClicked) {
+            console.log('  ✅ Clicked "Clear Selection" button');
+            await delay(500);
           } else {
             console.log('  ⚠️  "Clear Selection" button not found (may not be needed if no selections)');
           }

@@ -15,6 +15,7 @@ Before releasing a new version, ensure you have completed the following:
 - [ ] All changes are committed and pushed to the `vMAJOR.MINOR.x` branch.
 - [ ] The version number is updated in `package.json` (use `scripts/update-version.sh` to synchronise it across files).
 - [ ] All tests pass (in devel mode, local, docker and podman). 
+- [ ] Run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running).
 - [ ] Documentation is up to date, update the screenshots (use `pnpm take-screenshots`)
 - [ ] Release notes are prepared in `documentation/docs/release-notes/VERSION.md`.
 - [ ] Run `scripts/generate-release-notes-github.sh VERSION` to generate GitHub release notes.

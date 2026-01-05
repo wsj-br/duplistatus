@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Dialog,
@@ -50,29 +50,82 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
-  // Reset form when modal closes
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen) {
-      // Reset form when closing
+  // Safely clear password fields by overwriting before clearing
+  const safeClearPasswords = () => {
+    // Overwrite with random characters to clear from memory
+    const randomStr = 'x'.repeat(Math.max(newPassword.length, confirmPassword.length, 100));
+    setNewPassword(randomStr);
+    setConfirmPassword(randomStr);
+    // Clear after overwrite
+    setTimeout(() => {
+      setNewPassword('');
+      setConfirmPassword('');
+    }, 0);
+  };
+
+  // Handle modal open/close - reset form when opening, clear passwords when closing
+  useEffect(() => {
+    if (open) {
+      // Reset form state when modal opens
       setNewPassword('');
       setConfirmPassword('');
       setError('');
       setSuccess(false);
+      setShowPassword(false);
+      setLoading(false);
+    } else {
+      // Safely clear passwords from memory when modal closes (covers all close methods)
+      // Capture current values before clearing
+      const currentNewPassword = newPassword;
+      const currentConfirmPassword = confirmPassword;
+      const randomStr = 'x'.repeat(Math.max(currentNewPassword.length, currentConfirmPassword.length, 100));
+      setNewPassword(randomStr);
+      setConfirmPassword(randomStr);
+      // Clear after overwrite
+      setTimeout(() => {
+        setNewPassword('');
+        setConfirmPassword('');
+      }, 0);
+      setError('');
+      setSuccess(false);
+      setShowPassword(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // Copy new password to confirm password when hiding password
+  const prevShowPasswordRef = useRef(showPassword);
+  useEffect(() => {
+    // When password visibility changes from shown to hidden, copy new password to confirm
+    if (prevShowPasswordRef.current === true && showPassword === false && newPassword) {
+      setConfirmPassword(newPassword);
+    }
+    prevShowPasswordRef.current = showPassword;
+  }, [showPassword, newPassword]);
+
+  // Reset form when modal closes
+  const handleOpenChange = (newOpen: boolean) => {
     onOpenChange(newOpen);
   };
 
   // Real-time password validation
   const requirements = useMemo<PasswordRequirements>(() => {
+    // When password is visible, confirmation field is synced, so consider them matching
+    const passwordsMatch = showPassword 
+      ? newPassword.length > 0 
+      : newPassword === confirmPassword && confirmPassword.length > 0;
+    
     return {
       minLength: newPassword.length >= 8,
       hasUppercase: /[A-Z]/.test(newPassword),
       hasLowercase: /[a-z]/.test(newPassword),
       hasNumber: /[0-9]/.test(newPassword),
-      passwordsMatch: newPassword === confirmPassword && confirmPassword.length > 0,
+      passwordsMatch,
     };
-  }, [newPassword, confirmPassword]);
+  }, [newPassword, confirmPassword, showPassword]);
 
   // Check if all requirements are met
   const isPasswordValid = useMemo(() => {
@@ -173,22 +226,30 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           <div className="space-y-2">
             <Label htmlFor="new-password">New Password</Label>
             <TogglePasswordInput
+              ref={passwordInputRef}
               id="new-password"
               value={newPassword}
               onChange={setNewPassword}
               placeholder="Enter new password"
               disabled={loading || success}
+              showPassword={showPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Label htmlFor="confirm-password" className={showPassword ? 'opacity-60' : ''}>Confirm New Password</Label>
             <TogglePasswordInput
               id="confirm-password"
               value={confirmPassword}
               onChange={setConfirmPassword}
               placeholder="Confirm new password"
               disabled={loading || success}
+              showPassword={showPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
+              isConfirmation={true}
+              syncValue={newPassword}
+              passwordInputRef={passwordInputRef}
             />
           </div>
 

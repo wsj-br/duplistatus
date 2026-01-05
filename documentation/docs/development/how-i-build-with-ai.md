@@ -13,8 +13,9 @@ Since I was also experimenting with AI code tools, I decided to try using AI to 
 1. For the UI: [Google's Firebase Studio](https://firebase.studio/)
 2. For the implementation: Cursor (https://www.cursor.com/)
 
-> [!NOTE]
-> I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
+:::note
+I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
+:::
 
 # UI
 
@@ -69,8 +70,9 @@ After iterating through these prompts, Firebase generated the prototype as shown
 
 ![prototype-detail](/img/screen-prototype-detail.png)
 
-> [!NOTE]
-> One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
+:::note
+One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
+:::
 
 After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
 
@@ -144,8 +146,9 @@ I created a new chat by clicking the `+` button, switched to `Agent` mode, and p
 
 After the plan was generated, I typed `please, implement this plan` in the chat to begin the implementation.
 
-> [!NOTE]
-> I only included the starting point since I didn't record all the prompts used. There were many of them.
+:::note
+I only included the starting point since I didn't record all the prompts used. There were many of them.
+:::
 
 # Notes
 

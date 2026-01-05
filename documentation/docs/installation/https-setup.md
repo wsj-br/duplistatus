@@ -106,17 +106,19 @@ Caddy will automatically obtain and manage SSL certificates from Let's Encrypt.
 
 ### Important Notes
 
-> [!IMPORTANT]
-> After setting up HTTPS, remember to update your Duplicati server configuration to use the HTTPS URL:
->
-> ```bash
-> --send-http-url=https://your-domain.com/api/upload
-> ```
+:::info[IMPORTANT]
+After setting up HTTPS, remember to update your Duplicati server configuration to use the HTTPS URL:
 
-> [!TIP]
->
-> - Replace `your-domain.com` with your actual domain name
-> - Ensure your domain's DNS A record points to your server's IP address
-> - Both solutions will automatically renew SSL certificates
-> - Consider setting up a firewall to only allow HTTP/HTTPS traffic
+```bash
+--send-http-url=https://your-domain.com/api/upload
+```
+:::
+
+:::tip
+
+- Replace `your-domain.com` with your actual domain name
+- Ensure your domain's DNS A record points to your server's IP address
+- Both solutions will automatically renew SSL certificates
+- Consider setting up a firewall to only allow HTTP/HTTPS traffic
+:::
 

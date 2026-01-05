@@ -37,8 +37,9 @@ You can export filtered audit logs in two formats:
 | <IconButton icon="lucide:download" label="Export CSV"/> | Export logs as a CSV file for spreadsheet analysis |
 | <IconButton icon="lucide:download" label="Export JSON"/> | Export logs as a JSON file for programmatic analysis |
 
-> [!NOTE]
-> Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+:::note
+Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+:::
 
 <br/>
 

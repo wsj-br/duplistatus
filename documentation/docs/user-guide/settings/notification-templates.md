@@ -44,8 +44,9 @@ All templates support variables that will be replaced with actual values. The fo
 
 
 
-> [!TIP]
-> After updating a template, use the <IconButton icon="lucide:send" label="Send Test Notification"/> button to check it. The variables will be replaced with their names for the test. For email notifications, the template title becomes the email subject line.
->
-> Click on <IconButton icon="lucide:rotate-ccw" label="Reset to Default"/> to restore the default template for the **selected template**. Remember to save it after resetting.
+:::tip
+After updating a template, use the <IconButton icon="lucide:send" label="Send Test Notification"/> button to check it. The variables will be replaced with their names for the test. For email notifications, the template title becomes the email subject line.
+
+Click on <IconButton icon="lucide:rotate-ccw" label="Reset to Default"/> to restore the default template for the **selected template**. Remember to save it after resetting.
+:::
 

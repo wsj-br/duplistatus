@@ -55,7 +55,7 @@ If you are running Docker Desktop on Windows, you have two simple ways to handle
 ###### Option A: Use Docker Desktop (Easiest)
 1. Open the Docker Desktop Dashboard.
 2. Go to the Containers tab and click on your duplistatus container.
-3. Cick on the Files tab.
+3. Click on the Files tab.
 4. Navigate to `/app/data/`.
 5. Right-click `backups.db` and select **Save as...** to download it to your Windows folders.
 
@@ -75,8 +75,9 @@ If you originally set up your container using a bind mount (e.g., you mapped a l
 #### Restoring Your Data
 If you need to restore your database from a previous backup, follow the steps below based on your operating system.
 
->[!IMPORTANT] 
-> Stop the container before restoring the database to prevent file corruption.
+:::info[IMPORTANT] 
+Stop the container before restoring the database to prevent file corruption.
+:::
 
 ##### For Linux Users
 The easiest way to restore is to "push" the backup file back into the container's internal storage path.
@@ -128,10 +129,11 @@ If you are using a local folder mapped to the container, you don't need any spec
 4. Start the container.
 
 
->[!NOTE]
-> If you restore the database manually, you may encounter permission errors. 
->
-> Check the container logs and adjust the permissions if necessary. See the [Troubleshooting](#troubleshooting-your-restore--rollback) section below for more information. 
+:::note
+If you restore the database manually, you may encounter permission errors. 
+
+Check the container logs and adjust the permissions if necessary. See the [Troubleshooting](#troubleshooting-your-restore--rollback) section below for more information.
+::: 
 
 ## Automatic Migration Process
 
@@ -161,8 +163,9 @@ Look for messages like:
 
 ### Upgrading to Version 0.9.x or Later (Schema v4.0)
 
-> [!WARNING]
-> **Authentication is now required.** All users must log in after upgrading.
+:::warning
+**Authentication is now required.** All users must log in after upgrading.
+:::
 
 #### What Changes Automatically
 
@@ -300,8 +303,9 @@ If you need to rollback to a previous version:
 4. **Use previous image version**: Pull and run the previous container image
 5. **Start the container**: Start with the previous version
 
-> [!WARNING]
-> Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.
+:::warning
+Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.
+:::
 
 ### Troubleshooting Your Restore / Rollback
 

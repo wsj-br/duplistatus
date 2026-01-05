@@ -112,6 +112,12 @@ const config: Config = {
       disableSwitch: false,
       respectPrefersColorScheme: false,
     },
+    docs: {
+      sidebar: {
+        autoCollapseCategories: true,
+        hideable: true,
+      },
+    },
     navbar: {
       title: 'duplistatus',
       logo: {

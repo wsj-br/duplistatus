@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { GradientCardHeader } from "@/components/ui/card";
 import { ColoredIcon, StatusIndicator } from "@/components/ui/colored-icon";
+import { TogglePasswordInput } from "@/components/ui/toggle-password-input";
 import {
   Select,
   SelectContent,
@@ -73,7 +74,21 @@ export function BackupCollectMenu({
   const [hostname, setHostname] = useState("");
   const [port, setPort] = useState(defaultAPIConfig.duplicatiPort.toString());
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [downloadJson, setDownloadJson] = useState(false);
+
+  // Safely clear password field by overwriting before clearing
+  const safeClearPassword = () => {
+    // Capture current value before clearing
+    const currentPassword = password;
+    // Overwrite with random characters to clear from memory
+    const randomStr = 'x'.repeat(Math.max(currentPassword.length, 100));
+    setPassword(randomStr);
+    // Clear after overwrite
+    setTimeout(() => {
+      setPassword('');
+    }, 0);
+  };
   const [stats, setStats] = useState<{ processed: number; skipped: number; errors: number } | null>(null);
   const [serverAddresses, setServerAddresses] = useState<ServerAddress[]>([]);
   const [selectedServerId, setSelectedServerId] = useState<string>("new-server");
@@ -912,6 +927,9 @@ export function BackupCollectMenu({
       if (!open) {
         setSelectedServerId("new-server");
         setIsInAutoCollectOperation(false);
+        setShowPassword(false);
+        // Safely clear password from memory when popover closes
+        safeClearPassword();
       }
     }}>
       <PopoverTrigger asChild>
@@ -1106,14 +1124,14 @@ export function BackupCollectMenu({
                       <span className="text-xs text-orange-600">(updating stored value)</span>
                     )}
                   </Label>
-                  <Input
+                  <TogglePasswordInput
                     id="password"
-                    type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onFocus={(e) => e.target.select()}
+                    onChange={setPassword}
                     placeholder={selectedServerId && selectedServerId !== "new-server" ? "Leave empty to use stored password" : "Enter Duplicati password"}
                     disabled={isCollecting}
+                    showPassword={showPassword}
+                    onTogglePassword={() => setShowPassword(!showPassword)}
                   />
                   <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
                 </div>

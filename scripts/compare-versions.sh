@@ -8,6 +8,7 @@ set -euo pipefail
 # Symbols
 CHECKMARK="✅"
 CROSS="❌"
+SEARCH="🔍"
 
 # Container name
 CONTAINER_NAME="duplistatus"
@@ -47,6 +48,12 @@ extract_sqlite_version() {
     echo "$version_string" | awk '{print $1}' | xargs
 }
 
+# Function to extract major version number (first digit before the first dot)
+extract_major_version() {
+    local version_string="$1"
+    echo "$version_string" | cut -d. -f1 | xargs
+}
+
 # Function to get package.json version (works without jq)
 get_package_version() {
     local pkg_file="$1"
@@ -62,7 +69,6 @@ echo "Collecting development environment versions..."
 DEV_SQLITE_VERSION=$(sqlite3 --version 2>/dev/null | awk '{print $1}' || echo "N/A")
 DEV_NODE_VERSION=$(node -v 2>/dev/null | sed 's/v//' || echo "N/A")
 DEV_NPM_VERSION=$(npm -v 2>/dev/null || echo "N/A")
-DEV_PNPM_VERSION=$(pnpm -v 2>/dev/null || echo "N/A")
 DEV_DUPLISTATUS_VERSION=$(get_package_version "$PROJECT_ROOT/package.json")
 
 # Get Docker container versions from logs
@@ -71,7 +77,6 @@ DOCKER_SQLITE_VERSION_RAW=$(extract_docker_version "SQLite version")
 DOCKER_SQLITE_VERSION=$(extract_sqlite_version "$DOCKER_SQLITE_VERSION_RAW")
 DOCKER_NODE_VERSION=$(extract_docker_version "Node version" | sed 's/v//')
 DOCKER_NPM_VERSION=$(extract_docker_version "npm version")
-DOCKER_PNPM_VERSION=$(extract_docker_version "pnpm version")
 DOCKER_DUPLISTATUS_VERSION=$(extract_docker_version "Duplistatus Version")
 
 # Function to compare and display versions
@@ -79,32 +84,49 @@ compare_versions() {
     local label="$1"
     local dev_version="$2"
     local docker_version="$3"
+    local major_only="${4:-false}"
     local match=""
     
     # Normalize versions for comparison (remove extra whitespace)
+    local dev_display="$dev_version"
+    local docker_display="$docker_version"
     dev_version=$(echo "$dev_version" | xargs)
     docker_version=$(echo "$docker_version" | xargs)
     
-    if [ "$dev_version" = "$docker_version" ]; then
-        match="$CHECKMARK"
+    # For major-only comparison, extract and compare only the major version
+    if [ "$major_only" = "true" ]; then
+        local dev_major=$(extract_major_version "$dev_version")
+        local docker_major=$(extract_major_version "$docker_version")
+        if [ "$dev_major" = "$docker_major" ]; then
+            if [ "$dev_version" = "$docker_version" ]; then
+                match="$CHECKMARK"
+            else
+                match="$CHECKMARK (major)"
+            fi
+        else
+            match="$CROSS"
+        fi
     else
-        match="$CROSS"
+        if [ "$dev_version" = "$docker_version" ]; then
+            match="$CHECKMARK"
+        else
+            match="$CROSS"
+        fi
     fi
     
-    printf "│ %-23s │ %-28s │ %-28s │    %-4s   │\n" "$label" "$dev_version" "$docker_version" "$match"
+    printf "│ %-23s │ %-28s │ %-28s │ %-13s │\n" "$label" "$dev_display" "$docker_display" "$match"
 }
 
 # Display comparison table
 echo ""
-echo "┌─────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────┐"
-echo "│ Component               │ Development                  │ Docker                       │   Match  │"
-echo "├─────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────┤"
-compare_versions "SQLite" "$DEV_SQLITE_VERSION" "$DOCKER_SQLITE_VERSION"
+echo "┌─────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────┐"
+echo "│ Component               │ Development                  │ Docker                       │   Match      │"
+echo "├─────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────┤"
+compare_versions "SQLite" "$DEV_SQLITE_VERSION" "$DOCKER_SQLITE_VERSION" "true"
 compare_versions "Node" "$DEV_NODE_VERSION" "$DOCKER_NODE_VERSION"
 compare_versions "npm" "$DEV_NPM_VERSION" "$DOCKER_NPM_VERSION"
-compare_versions "pnpm" "$DEV_PNPM_VERSION" "$DOCKER_PNPM_VERSION"
 compare_versions "Duplistatus" "$DEV_DUPLISTATUS_VERSION" "$DOCKER_DUPLISTATUS_VERSION"
-echo "└─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────┘"
+echo "└─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘"
 echo ""
 
 # Summary
@@ -112,33 +134,56 @@ echo "Summary:"
 TOTAL=0
 MISMATCHES=0
 MISMATCHED_COMPONENTS=()
+SQLITE_MAJOR_MATCH=false
 
 check_mismatch() {
     local component="$1"
     local dev="$2"
     local docker="$3"
+    local major_only="${4:-false}"
     dev=$(echo "$dev" | xargs)
     docker=$(echo "$docker" | xargs)
     TOTAL=$((TOTAL + 1))
-    if [ "$dev" != "$docker" ]; then
-        MISMATCHES=$((MISMATCHES + 1))
-        MISMATCHED_COMPONENTS+=("$component")
+    
+    # For major-only comparison, extract and compare only the major version
+    if [ "$major_only" = "true" ]; then
+        local dev_major=$(extract_major_version "$dev")
+        local docker_major=$(extract_major_version "$docker")
+        if [ "$dev_major" != "$docker_major" ]; then
+            MISMATCHES=$((MISMATCHES + 1))
+            MISMATCHED_COMPONENTS+=("$component")
+        elif [ "$dev" != "$docker" ]; then
+            # Major versions match but full versions don't - track this for SQLite
+            if [ "$component" = "SQLite" ]; then
+                SQLITE_MAJOR_MATCH=true
+            fi
+        fi
+    else
+        if [ "$dev" != "$docker" ]; then
+            MISMATCHES=$((MISMATCHES + 1))
+            MISMATCHED_COMPONENTS+=("$component")
+        fi
     fi
 }
 
-check_mismatch "SQLite" "$DEV_SQLITE_VERSION" "$DOCKER_SQLITE_VERSION"
+check_mismatch "SQLite" "$DEV_SQLITE_VERSION" "$DOCKER_SQLITE_VERSION" "true"
 check_mismatch "Node" "$DEV_NODE_VERSION" "$DOCKER_NODE_VERSION"
 check_mismatch "npm" "$DEV_NPM_VERSION" "$DOCKER_NPM_VERSION"
-check_mismatch "pnpm" "$DEV_PNPM_VERSION" "$DOCKER_PNPM_VERSION"
 check_mismatch "Duplistatus" "$DEV_DUPLISTATUS_VERSION" "$DOCKER_DUPLISTATUS_VERSION"
 
 if [ $MISMATCHES -eq 0 ]; then
     echo "${CHECKMARK} All versions match!"
+    if [ "$SQLITE_MAJOR_MATCH" = "true" ]; then
+        echo "${SEARCH} SQLite versions are the same major version (${DEV_SQLITE_VERSION} vs ${DOCKER_SQLITE_VERSION})"
+    fi
     exit 0
 else
     echo "${CROSS} Found $MISMATCHES mismatch(es) out of $TOTAL components"
     if [ ${#MISMATCHED_COMPONENTS[@]} -gt 0 ]; then
         echo "Non-matching components: ${MISMATCHED_COMPONENTS[*]}"
+    fi
+    if [ "$SQLITE_MAJOR_MATCH" = "true" ]; then
+        echo "${SEARCH} SQLite versions are the same major version (${DEV_SQLITE_VERSION} vs ${DOCKER_SQLITE_VERSION})"
     fi
     echo ""
     exit 1

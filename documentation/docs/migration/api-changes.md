@@ -8,8 +8,9 @@ This document outlines breaking changes to external API endpoints across differe
 
 This document covers breaking changes to external API endpoints that affect integrations, scripts, and applications consuming these endpoints. For internal API endpoints used by the web interface, changes are handled automatically and do not require manual updates.
 
-> [!NOTE]
-> External API endpoints are maintained for backward compatibility when possible. Breaking changes are only introduced when necessary for consistency, security, or functionality improvements.
+:::note
+External API endpoints are maintained for backward compatibility when possible. Breaking changes are only introduced when necessary for consistency, security, or functionality improvements.
+:::
 
 ## Version-Specific Changes
 
@@ -58,8 +59,9 @@ While no breaking changes were made to external API endpoints, version 0.8.x inc
 - **CSRF Protection**: CSRF token validation is enforced for state-changing API requests, but external APIs remain compatible
 - **Password Security**: Password endpoints are restricted to the user interface for security reasons
 
-> [!NOTE]
-> These security enhancements do not affect external API endpoints used for reading backup data. If you have custom scripts using internal endpoints, they may require CSRF token handling.
+:::note
+These security enhancements do not affect external API endpoints used for reading backup data. If you have custom scripts using internal endpoints, they may require CSRF token handling.
+:::
 
 ### Version 0.7.x
 

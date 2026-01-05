@@ -40,16 +40,18 @@ This table lists the backup logs for the selected server.
 - **Available Versions**: The number of available backup versions on the backup destination. If the icon is greyed out, detailed information was not received.
 - **File Count, File Size, Uploaded Size, Duration, Storage Size**: Values as reported by the Duplicati server.
 
-> [!TIP] Tips
-> • Use the dropdown menu in the **Backup History** section to select `All Backups` or a specific backup for this server.
->
-> • You can sort any column by clicking its header, click again to reverse the sort order.
-> 
-> • Click anywhere on a row to view the [Backup Details](#backup-details).
-> 
+:::tip Tips
+• Use the dropdown menu in the **Backup History** section to select `All Backups` or a specific backup for this server.
 
-> [!NOTE]
-> When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
+• You can sort any column by clicking its header, click again to reverse the sort order.
+ 
+• Click anywhere on a row to view the [Backup Details](#backup-details).
+
+::: 
+
+:::note
+When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
+:::
 
 <br/>
 
@@ -68,5 +70,6 @@ Clicking on a status badge in the dashboard (table view) or any row in the backu
 
 <br/>
 
-> [!NOTE]
-> Refer to the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) to learn how to configure Duplicati server to send complete execution logs and avoid truncation.
+:::note
+Refer to the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) to learn how to configure Duplicati server to send complete execution logs and avoid truncation.
+:::

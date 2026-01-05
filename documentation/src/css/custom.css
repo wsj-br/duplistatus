@@ -6,37 +6,175 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #3b82f6;
+  --ifm-color-primary-dark: #2563eb;
+  --ifm-color-primary-darker: #1d4ed8;
+  --ifm-color-primary-darkest: #1e40af;
+  --ifm-color-primary-light: #60a5fa;
+  --ifm-color-primary-lighter: #93c5fd;
+  --ifm-color-primary-lightest: #dbeafe;
   --ifm-code-font-size: 75%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #3b82f6;
+  --ifm-color-primary-dark: #2563eb;
+  --ifm-color-primary-darker: #1d4ed8;
+  --ifm-color-primary-darkest: #1e40af;
+  --ifm-color-primary-light: #60a5fa;
+  --ifm-color-primary-lighter: #93c5fd;
+  --ifm-color-primary-lightest: #dbeafe;
   --ifm-code-font-size: 75%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  
+  /* Override Docusaurus default admonition/alert background colors */
+  --ifm-alert-background-color: transparent !important;
+  --ifm-alert-background-color-highlight: transparent !important;
+  --ifm-alert-color: var(--ifm-font-color-base) !important;
 }
 
+/* ============================================
+   MODERN TABLE STYLING
+   ============================================ */
+
+/* Table Container & Layout */
+table {
+  display: table !important;
+  width: auto !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border: 1.8px solid hsl(217.2 32.6% 17.5%) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  background-color: var(--ifm-background-color) !important;
+}
+
+/* Remove side borders from table cells, keep only bottom borders for row separators */
+table th,
+table td {
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+}
+
+/* Table Header Styling - Light Mode */
 table thead {
-  background-color: darkslategray;
+  background-color: hsl(217.2 32.6% 95%) !important;
 }
 
 table thead th {
-  color: lightgray;
-  font-weight: bold;
+  color: var(--ifm-font-color-base) !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 12px 16px !important;
+  border-bottom: 2px solid #3b82f6 !important;
+  text-align: left !important;
+}
+
+table thead th:first-child {
+  border-top-left-radius: 8px !important;
+}
+
+table thead th:last-child {
+  border-top-right-radius: 8px !important;
+}
+
+
+/* Table Body & Cell Styling */
+table tbody td {
+  padding: 12px 16px !important;
+  vertical-align: top !important;
+  border-bottom: 1.8px solid hsl(217.2 32.6% 17.5%) !important;
+  color: var(--ifm-font-color-base) !important;
+}
+
+/* Zebra Striping - Even rows */
+table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* First column (Setting/Key) - Bold */
+table tbody td:first-child {
+  font-weight: 600 !important;
+  color: var(--ifm-font-color-base) !important;
+}
+
+/* Description column - Muted foreground */
+table tbody td:not(:first-child) {
+  color: hsl(215 20.2% 65.1%) !important;
+}
+
+/* Last row - Remove bottom border to respect rounded corners */
+table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px !important;
+}
+
+table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px !important;
+}
+
+table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Hover Effects */
+table tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+table tbody tr:nth-child(even):hover {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+/* Dark Theme Adjustments */
+[data-theme='dark'] table {
+  border-color: hsl(217.2 32.6% 40%) !important;
+}
+
+[data-theme='dark'] table thead {
+  background-color: hsl(217.2 32.6% 17.5%) !important;
+}
+
+/* Light Mode - Ensure header has light background */
+:root:not([data-theme='dark']) table thead {
+  background-color: hsl(217.2 32.6% 95%) !important;
+}
+
+/* Light Mode - Ensure outer border is visible */
+:root:not([data-theme='dark']) table {
+  border-color: hsl(217.2 32.6% 50%) !important;
+}
+
+[data-theme='dark'] table thead th {
+  color: var(--ifm-font-color-base) !important;
+  border-bottom-color: #3b82f6 !important;
+}
+
+[data-theme='dark'] table tbody td {
+  border-bottom: 1.8px solid hsl(217.2 32.6% 40%) !important;
+}
+
+/* Light Mode - Ensure inner borders are visible */
+:root:not([data-theme='dark']) table tbody td {
+  border-bottom: 1.8px solid hsl(217.2 32.6% 50%) !important;
+}
+
+[data-theme='dark'] table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+[data-theme='dark'] table tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+[data-theme='dark'] table tbody tr:nth-child(even):hover {
+  background-color: rgba(59, 130, 246, 0.05) !important;
 }
 
 /* Mermaid Gantt Chart Zoom */
@@ -171,24 +309,24 @@ table thead th {
 /* Search Component Styling - Match Documentation Theme */
 /* Override Autocomplete.js CSS variables used by @cmfcmf/docusaurus-search-local */
 :root {
-  /* Override purple primary color with teal to match documentation */
-  --aa-primary-color-rgb: 37, 194, 160 !important; /* #25c2a0 */
+  /* Override purple primary color with blue to match documentation */
+  --aa-primary-color-rgb: 59, 130, 246 !important; /* #3b82f6 */
   --aa-primary-color-alpha: 1 !important;
-  --aa-selected-color-rgb: 37, 194, 160 !important;
+  --aa-selected-color-rgb: 59, 130, 246 !important;
   --aa-selected-color-alpha: 0.2 !important;
-  --aa-icon-color-rgb: 37, 194, 160 !important;
-  --aa-description-highlight-background-color-rgb: 37, 194, 160 !important;
+  --aa-icon-color-rgb: 59, 130, 246 !important;
+  --aa-description-highlight-background-color-rgb: 59, 130, 246 !important;
   --aa-description-highlight-background-color-alpha: 0.2 !important;
 }
 
 [data-theme='dark'] {
-  /* Dark theme teal colors */
-  --aa-primary-color-rgb: 37, 194, 160 !important; /* #25c2a0 */
+  /* Dark theme blue colors */
+  --aa-primary-color-rgb: 59, 130, 246 !important; /* #3b82f6 */
   --aa-primary-color-alpha: 1 !important;
-  --aa-selected-color-rgb: 37, 194, 160 !important;
+  --aa-selected-color-rgb: 59, 130, 246 !important;
   --aa-selected-color-alpha: 0.25 !important;
-  --aa-icon-color-rgb: 37, 194, 160 !important;
-  --aa-description-highlight-background-color-rgb: 37, 194, 160 !important;
+  --aa-icon-color-rgb: 59, 130, 246 !important;
+  --aa-description-highlight-background-color-rgb: 59, 130, 246 !important;
   --aa-description-highlight-background-color-alpha: 0.25 !important;
 }
 
@@ -199,7 +337,7 @@ table thead th {
 }
 
 .aa-PanelHeader {
-  background: rgba(37, 194, 160, 1) !important; /* Teal header */
+  background: rgba(59, 130, 246, 1) !important; /* Blue header */
   background: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
@@ -220,9 +358,9 @@ table thead th {
 .aa-Input:focus,
 .aa-DetachedSearchButton:focus,
 .navbar__search-input:focus {
-  border-color: rgba(37, 194, 160, 1) !important;
+  border-color: rgba(59, 130, 246, 1) !important;
   border-color: rgba(var(--aa-primary-color-rgb), 1) !important;
-  box-shadow: 0 0 0 3px rgba(37, 194, 160, 0.1), inset 0 0 0 2px rgba(37, 194, 160, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), inset 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
   outline: none !important;
 }
 
@@ -233,7 +371,7 @@ table thead th {
 }
 
 .aa-DetachedSearchButtonIcon {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
@@ -247,9 +385,9 @@ table thead th {
   background-color: var(--ifm-color-emphasis-100) !important;
 }
 
-/* Selected search result - override purple with teal */
+/* Selected search result - override purple with blue */
 .aa-Item[aria-selected="true"] {
-  background-color: rgba(37, 194, 160, 0.2) !important;
+  background-color: rgba(59, 130, 246, 0.2) !important;
   background-color: rgba(var(--aa-selected-color-rgb), var(--aa-selected-color-alpha)) !important;
 }
 
@@ -268,7 +406,7 @@ table thead th {
 
 /* Search Highlight - Autocomplete.js */
 .aa-ItemContent mark {
-  background-color: rgba(37, 194, 160, 0.25) !important;
+  background-color: rgba(59, 130, 246, 0.25) !important;
   background-color: rgba(var(--aa-description-highlight-background-color-rgb), var(--aa-description-highlight-background-color-alpha)) !important;
   color: var(--ifm-color-primary-light) !important;
   font-weight: 600 !important;
@@ -277,7 +415,7 @@ table thead th {
 }
 
 .aa-ItemContentDescription mark {
-  background-color: rgba(37, 194, 160, 0.2) !important;
+  background-color: rgba(59, 130, 246, 0.2) !important;
   background-color: rgba(var(--aa-description-highlight-background-color-rgb), var(--aa-description-highlight-background-color-alpha)) !important;
   color: var(--ifm-color-primary-light) !important;
 }
@@ -317,32 +455,32 @@ table thead th {
 
 /* Item Icon */
 .aa-ItemIcon {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-icon-color-rgb), 1) !important;
 }
 
 /* Item Action Button - Arrow icon on selected items */
 .aa-ItemActionButton,
 .aa-ItemActionButton svg {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
 .aa-ItemActionButton:hover,
 .aa-ItemActionButton:hover svg {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
 /* Active/Selected indicator - Arrow icon */
 .aa-ActiveOnly {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
 .aa-Item[aria-selected="true"] .aa-ActiveOnly,
 .aa-Item[aria-selected="true"] .aa-ItemActionButton {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
@@ -353,9 +491,9 @@ table thead th {
 
 .aa-DetachedCancelButton:hover,
 .aa-DetachedCancelButton:focus {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
-  box-shadow: inset 0 0 0 1px rgba(37, 194, 160, 0.3) !important;
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3) !important;
   box-shadow: inset 0 0 0 1px rgba(var(--aa-primary-color-rgb), 0.3) !important;
 }
 
@@ -363,35 +501,511 @@ table thead th {
 .aa-ClearButton,
 .aa-ClearButton svg,
 .aa-ClearButton path {
-  color: rgba(37, 194, 160, 1) !important;
+  color: rgba(59, 130, 246, 1) !important;
   color: rgba(var(--aa-primary-color-rgb), 1) !important;
-  fill: rgba(37, 194, 160, 1) !important;
+  fill: rgba(59, 130, 246, 1) !important;
   fill: rgba(var(--aa-primary-color-rgb), 1) !important;
-  stroke: rgba(37, 194, 160, 1) !important;
+  stroke: rgba(59, 130, 246, 1) !important;
   stroke: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
 .aa-ClearButton:hover,
 .aa-ClearButton:hover svg,
 .aa-ClearButton:hover path {
-  color: rgba(37, 194, 160, 0.8) !important;
+  color: rgba(59, 130, 246, 0.8) !important;
   color: rgba(var(--aa-primary-color-rgb), 0.8) !important;
-  fill: rgba(37, 194, 160, 0.8) !important;
+  fill: rgba(59, 130, 246, 0.8) !important;
   fill: rgba(var(--aa-primary-color-rgb), 0.8) !important;
-  stroke: rgba(37, 194, 160, 0.8) !important;
+  stroke: rgba(59, 130, 246, 0.8) !important;
   stroke: rgba(var(--aa-primary-color-rgb), 0.8) !important;
 }
 
-/* Any remaining purple elements - override with teal */
+/* Any remaining purple elements - override with blue */
 .aa-Item[aria-selected="true"]::before,
 .aa-Item[aria-selected="true"]::after {
-  border-color: rgba(37, 194, 160, 1) !important;
+  border-color: rgba(59, 130, 246, 1) !important;
   border-color: rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
 /* Left border indicator on selected items */
 .aa-Item[aria-selected="true"] {
-  border-left: 2px solid rgba(37, 194, 160, 1) !important;
+  border-left: 2px solid rgba(59, 130, 246, 1) !important;
   border-left: 2px solid rgba(var(--aa-primary-color-rgb), 1) !important;
 }
 
+/* ============================================
+   SIDEBAR HIERARCHY & STYLING IMPROVEMENTS
+   ============================================ */
+
+/* CSS Variables for consistency */
+:root {
+  --muted-foreground: hsl(215 20.2% 65.1%);
+  --sidebar-accent-bg: hsl(240 3.7% 15.9%);
+}
+
+[data-theme='dark'] {
+  --muted-foreground: hsl(215 20.2% 65.1%);
+  --sidebar-accent-bg: hsl(240 3.7% 15.9%);
+}
+
+/* Parent Categories - Top-level sections */
+.menu__list-item--category > .menu__link,
+.menu__category > .menu__link {
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.02em !important;
+  color: var(--ifm-font-color-base) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Parent category icons - Primary blue */
+.menu__list-item--category > .menu__link svg,
+.menu__category > .menu__link svg {
+  color: #3b82f6 !important;
+  margin-right: 12px !important;
+}
+
+/* Vertical Rhythm - Spacing between categories */
+.menu__list-item--category {
+  margin-bottom: 0.5rem !important;
+}
+
+.menu__list-item--category:first-child {
+  margin-top: 0 !important;
+}
+
+/* Dark theme adjustments for parent categories */
+[data-theme='dark'] .menu__list-item.sidebar-category-expandable > .menu__link,
+[data-theme='dark'] .sidebar-category-expandable > .menu__link,
+[data-theme='dark'] .sidebar-category-expandable.menu__link,
+[data-theme='dark'] .menu__list-item-collapsible > .menu__link,
+[data-theme='dark'] .menu__list-item--category > .menu__link,
+[data-theme='dark'] .menu__category > .menu__link {
+  color: var(--ifm-font-color-base) !important;
+}
+
+[data-theme='dark'] .menu__list-item--category > .menu__link svg,
+[data-theme='dark'] .menu__category > .menu__link svg {
+  color: #3b82f6 !important;
+}
+
+/* Nesting Guide Lines - Vertical border for nested items */
+.menu__list .menu__list {
+  border-left: 1px solid hsl(217.2 32.6% 17.5%) !important;
+  margin-left: 1.25rem !important;
+  padding-left: 0.5rem !important;
+}
+
+[data-theme='dark'] .menu__list .menu__list {
+  border-left-color: hsl(217.2 32.6% 17.5%) !important;
+}
+
+/* Documentation Pages (Children) - Non-category items */
+.menu__list-item:not(.menu__list-item--category) > .menu__link {
+  font-weight: 400 !important;
+  font-size: 0.85rem !important;
+  color: hsl(215 20.2% 65.1%) !important;
+  padding-left: 1.5rem !important; /* Increased indentation to "tuck" under parent */
+}
+
+/* Active State - Enhanced with white text and glow for top-level items */
+.menu__link--active {
+  border-left: 3px solid #3b82f6 !important;
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  padding-left: calc(0.75rem - 3px) !important; /* Adjust for border */
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3) !important; /* Subtle glow effect */
+}
+
+[data-theme='dark'] .menu__link--active {
+  border-left: 3px solid #3b82f6 !important;
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important; /* Enhanced glow for dark theme */
+}
+
+/* Active state for child items - Simple text color and thicker left border */
+.menu__list-item:not(.menu__list-item--category) > .menu__link--active {
+  color: #3b82f6 !important;
+  border-left: 4px solid #3b82f6 !important;
+  background-color: transparent !important;
+  padding-left: calc(1.5rem - 4px) !important; /* Adjust for thicker border with child indentation */
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .menu__list-item:not(.menu__list-item--category) > .menu__link--active {
+  color: #3b82f6 !important;
+  border-left: 4px solid #3b82f6 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Active nested items should highlight the vertical line */
+.menu__list .menu__list:has(.menu__link--active) {
+  border-left-color: #3b82f6 !important;
+}
+
+/* Nested Indentation - Child items (Level 2+) */
+.menu__list-item .menu__list-item {
+  margin-left: 0.5rem !important;
+}
+
+.menu__list-item .menu__list-item .menu__link {
+  font-size: 0.85rem !important;
+  color: hsl(215 20.2% 65.1%) !important;
+  padding-left: 1.5rem !important; /* Match child item indentation */
+}
+
+.menu__list-item .menu__list-item .menu__list-item .menu__link {
+  font-size: 0.85rem !important;
+  color: hsl(215 20.2% 65.1%) !important;
+  padding-left: 2rem !important; /* Deeper nesting */
+}
+
+/* Icon Alignment - Ensure Lucide icons have consistent spacing */
+.menu__link svg {
+  margin-right: 12px !important;
+}
+
+/* Override for child items to maintain icon spacing */
+.menu__list-item:not(.menu__list-item--category) > .menu__link svg {
+  margin-right: 12px !important;
+}
+
+/* Carets - Expand/collapse arrows with better contrast */
+.menu__caret {
+  opacity: 0.8 !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+.menu__caret:hover {
+  opacity: 1 !important;
+}
+
+[data-theme='dark'] .menu__caret {
+  opacity: 0.9 !important;
+  filter: brightness(1.2) !important;
+}
+
+[data-theme='dark'] .menu__caret:hover {
+  opacity: 1 !important;
+  filter: brightness(1.4) !important;
+}
+
+/* Hover States - Using sidebar-accent color */
+.menu__link:hover:not(.menu__link--active) {
+  background-color: var(--sidebar-accent-bg) !important;
+  color: var(--ifm-color-primary-light) !important;
+}
+
+[data-theme='dark'] .menu__link:hover:not(.menu__link--active) {
+  background-color: var(--sidebar-accent-bg) !important;
+  color: var(--ifm-color-primary-light) !important;
+}
+
+/* Child items hover - bring them forward from muted state */
+.menu__list-item:not(.menu__list-item--category) > .menu__link:hover:not(.menu__link--active) {
+  color: var(--ifm-color-primary-light) !important;
+}
+
+/* Ensure parent category hover doesn't override active state */
+.menu__list-item--category > .menu__link:hover:not(.menu__link--active) {
+  background-color: var(--sidebar-accent-bg) !important;
+}
+
+[data-theme='dark'] .menu__list-item--category > .menu__link:hover:not(.menu__link--active) {
+  background-color: var(--sidebar-accent-bg) !important;
+}
+
+/* Active link hover - maintain active styling with enhanced glow for top-level */
+.menu__link--active:hover {
+  background-color: rgba(59, 130, 246, 0.3) !important;
+  border-left-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+[data-theme='dark'] .menu__link--active:hover {
+  background-color: rgba(59, 130, 246, 0.35) !important;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Active child item hover - maintain simple styling */
+.menu__list-item:not(.menu__list-item--category) > .menu__link--active:hover {
+  color: #3b82f6 !important;
+  border-left-color: #3b82f6 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ============================================
+   DOCUSAURUS ADMONITIONS (CALLOUTS) STYLING
+   ============================================
+   
+   This section provides custom styling for Docusaurus Admonitions (Callouts)
+   that matches the design system defined in globals.css.
+   
+   LUCIDE ICON INTEGRATION:
+   -----------------------
+   The default Docusaurus icons have been replaced with Lucide icons via a custom
+   Admonition component located at:
+   `documentation/src/theme/Admonition/index.tsx`
+   
+   The component uses Iconify (@iconify/react) to render Lucide icons:
+   - Note/Info: lucide:info
+   - Tip/Success: lucide:check-circle
+   - Warning: lucide:alert-triangle
+   - Danger/Caution: lucide:alert-octagon
+   
+   To customize icons further, edit the `admonitionIcons` mapping in the
+   Admonition component file.
+   
+   USAGE IN MARKDOWN:
+   ------------------
+   Use standard Docusaurus admonition syntax:
+   
+   :::note Title (optional)
+   Content here
+   :::
+   
+   :::tip Title (optional)
+   Content here
+   :::
+   
+   :::warning Title (optional)
+   Content here
+   :::
+   
+   :::danger Title (optional)
+   Content here
+   :::
+   
+   DESIGN TOKENS:
+   --------------
+   Colors match the design system from globals.css:
+   - Info: hsl(59 130 246) - #3b82f6
+   - Success: hsl(16 185 129) - #10b981
+   - Warning: hsl(245 158 11) - #f59e0b
+   - Error: hsl(239 68 68) - #ef4444
+   - Card Background: hsl(222.2 84% 4.9%)
+   - Border Radius: 8px (0.5rem)
+   - Shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1/0.5)
+   ============================================ */
+
+/* Design System Variables for Admonitions */
+:root {
+  --admonition-radius: 8px;
+  --admonition-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  
+  /* Status Colors - Professional, Less Vibrant Palette */
+  --admonition-note-color: hsl(215, 20.2%, 65.1%);  /* Muted foreground */
+  --admonition-tip-color: #10b981;                  /* Emerald Green */
+  --admonition-warning-color: #fbbf24;              /* Amber Gold */
+  --admonition-important-color: #ef4444;             /* Crimson Red */
+}
+
+[data-theme='dark'] {
+  --admonition-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* General Admonition Structure */
+.admonition {
+  margin: 1.5rem 0 !important;
+  padding: 12px 16px !important;
+  border-radius: var(--admonition-radius) !important;
+  border: 1px solid !important;
+  border-left: 4px solid !important;
+  box-shadow: var(--admonition-shadow) !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* Admonition Content */
+.admonition-content {
+  margin-top: 0.5rem !important;
+  color: var(--ifm-font-color-base) !important;
+}
+
+.admonition-content > :first-child {
+  margin-top: 0 !important;
+}
+
+.admonition-content > :last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Admonition Heading (Title) */
+.admonition-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin: 0 !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1.5 !important;
+}
+
+/* Admonition Icon */
+.admonition-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+.admonition-icon svg {
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+/* Note/Info Admonition - Most Discreet, Using Muted Foreground */
+.admonition-note,
+.admonition-info {
+  border-left-color: var(--muted-foreground) !important;
+  border-color: hsla(215, 20.2%, 65.1%, 0.1) !important;
+  background-color: hsla(215, 20.2%, 65.1%, 0.05) !important;
+}
+
+.admonition-note .admonition-heading,
+.admonition-info .admonition-heading {
+  color: var(--muted-foreground) !important;
+}
+
+.admonition-note .admonition-icon svg,
+.admonition-info .admonition-icon svg {
+  color: var(--muted-foreground) !important;
+  fill: var(--muted-foreground) !important;
+}
+
+[data-theme='dark'] .admonition-note,
+[data-theme='dark'] .admonition-info {
+  border-left-color: var(--muted-foreground) !important;
+  border-color: hsla(215, 20.2%, 65.1%, 0.1) !important;
+  background-color: hsla(215, 20.2%, 65.1%, 0.05) !important;
+}
+
+/* Tip/Success Admonition - Emerald Green (#10b981) */
+.admonition-tip,
+.admonition-success {
+  border-left-color: #10b981 !important;
+  border-color: rgba(16, 185, 129, 0.15) !important;
+  background-color: rgba(5, 27, 20, 0.15) !important;
+}
+
+.admonition-tip .admonition-heading,
+.admonition-success .admonition-heading {
+  color: #10b981 !important;
+}
+
+.admonition-tip .admonition-icon svg,
+.admonition-success .admonition-icon svg {
+  color: #10b981 !important;
+  fill: #10b981 !important;
+}
+
+/* Dark theme - More specific selector to ensure it overrides */
+/* Target both .admonition and .alert class names (Docusaurus may use either) */
+html[data-theme='dark'] .admonition-tip,
+html[data-theme='dark'] .admonition-success,
+[data-theme='dark'] .admonition.admonition-tip,
+[data-theme='dark'] .admonition.admonition-success,
+html[data-theme='dark'] .admonition.admonition-tip,
+html[data-theme='dark'] .admonition.admonition-success,
+html[data-theme='dark'] .alert.alert--tip,
+html[data-theme='dark'] .alert.alert--success,
+html[data-theme='dark'] div.admonition.admonition-tip,
+html[data-theme='dark'] div.admonition.admonition-success,
+html[data-theme='dark'] div.alert.alert--tip,
+html[data-theme='dark'] div.alert.alert--success {
+  border-left-color: #10b981 !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Warning Admonition - Amber Gold (#fbbf24) */
+.admonition-warning {
+  border-left-color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.1) !important;
+  background-color: rgba(251, 191, 36, 0.05) !important;
+}
+
+.admonition-warning .admonition-heading {
+  color: #fbbf24 !important;
+}
+
+.admonition-warning .admonition-icon svg {
+  color: #fbbf24 !important;
+  fill: #fbbf24 !important;
+}
+
+[data-theme='dark'] .admonition-warning {
+  border-left-color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.1) !important;
+  background-color: rgba(251, 191, 36, 0.05) !important;
+}
+
+/* Danger/Important Admonition - Crimson Red (#ef4444) */
+.admonition-danger,
+.admonition-caution,
+.admonition-important {
+  border-left-color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.1) !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.admonition-danger .admonition-heading,
+.admonition-caution .admonition-heading,
+.admonition-important .admonition-heading {
+  color: #ef4444 !important;
+}
+
+.admonition-danger .admonition-icon svg,
+.admonition-caution .admonition-icon svg,
+.admonition-important .admonition-icon svg {
+  color: #ef4444 !important;
+  fill: #ef4444 !important;
+}
+
+[data-theme='dark'] .admonition-danger,
+[data-theme='dark'] .admonition-caution,
+[data-theme='dark'] .admonition-important {
+  border-left-color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.1) !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+/* Final override for dark theme tip - Maximum specificity */
+/* Target both .admonition and .alert class names (Docusaurus uses both) */
+/* Also target any possible wrapper divs */
+html[data-theme='dark'] body .admonition.admonition-tip,
+html[data-theme='dark'] body .admonition.admonition-success,
+html[data-theme='dark'] body .alert.alert--tip,
+html[data-theme='dark'] body .alert.alert--success,
+html[data-theme='dark'] body div.admonition.admonition-tip,
+html[data-theme='dark'] body div.admonition.admonition-success,
+html[data-theme='dark'] body div.alert.alert--tip,
+html[data-theme='dark'] body div.alert.alert--success,
+html[data-theme='dark'] .admonition-tip,
+html[data-theme='dark'] .admonition-success,
+html[data-theme='dark'] .alert--tip,
+html[data-theme='dark'] .alert--success {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  background: rgba(16, 185, 129, 0.15) !important;
+  background-image: none !important;
+}
+
+/* Additional override - in case Docusaurus applies styles via attribute selectors */
+html[data-theme='dark'] [class*='admonition-tip'],
+html[data-theme='dark'] [class*='admonition-success'],
+html[data-theme='dark'] [class*='alert--tip'],
+html[data-theme='dark'] [class*='alert--success'] {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+}

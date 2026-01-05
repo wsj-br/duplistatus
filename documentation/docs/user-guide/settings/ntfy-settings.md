@@ -37,19 +37,21 @@ You should install the NTFY application on your device before configuring it ([s
 
 <br/>
 
-> [!CAUTION]
-> If you use the public `ntfy.sh` server without an access token, anyone with your topic name can view your
-> notifications. 
-> 
-> To provide a degree of privacy, a random 12-character topic is generated, offering over
-> 3 sextillion (3,000,000,000,000,000,000,000) possible combinations, making it difficult to guess.
->
-> For improved security, consider using [access token authentication](https://docs.ntfy.sh/config/#access-tokens) and [access control lists](https://docs.ntfy.sh/config/#access-control-list-acl) to protect your topics, or [self-host NTFY](https://docs.ntfy.sh/install/#docker) for total control.
->
-> ⚠️ **You are responsible for securing your NTFY topics. Please use this service at your own discretion.**
+:::caution
+If you use the public `ntfy.sh` server without an access token, anyone with your topic name can view your
+notifications. 
+ 
+To provide a degree of privacy, a random 12-character topic is generated, offering over
+3 sextillion (3,000,000,000,000,000,000,000) possible combinations, making it difficult to guess.
+
+For improved security, consider using [access token authentication](https://docs.ntfy.sh/config/#access-tokens) and [access control lists](https://docs.ntfy.sh/config/#access-control-list-acl) to protect your topics, or [self-host NTFY](https://docs.ntfy.sh/install/#docker) for total control.
+
+⚠️ **You are responsible for securing your NTFY topics. Please use this service at your own discretion.**
+:::
 
 <br/>
 <br/>
 
->[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+:::note
+All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+:::
