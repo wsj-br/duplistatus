@@ -79,11 +79,13 @@ To generate or update the README.md file:
 This script:
 - Extracts the current version from `package.json` and adds a version badge
 - Copies content from `documentation/docs/intro.md`
+- Converts Docusaurus admonitions (note, tip, warning, etc.) to GitHub-style alerts
 - Converts all relative Docusaurus links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
-- Converts image paths from `/img/` to `documentation/img/` for GitHub compatibility
+- Converts image paths from `/img/` to `documentation/static/img/` for GitHub compatibility
 - Removes the migration IMPORTANT block and adds a Migration Information section with a link to the Docusaurus docs
 - Generates a table of contents using `doctoc`
-- Automatically runs `update-readme-for-dockerhub.sh` to create `README.tmp` for Docker Hub
+- Generates `README_dockerhub.md` with Docker Hub-compatible formatting (converts images and links to absolute URLs, converts GitHub alerts to emoji-based format)
+- Generates GitHub release notes (`RELEASE_NOTES_github_VERSION.md`) from `documentation/docs/release-notes/VERSION.md` (converts links and images to absolute URLs)
 
 **Note:** You need to have `doctoc` installed globally for the TOC generation:
 ```bash
@@ -92,41 +94,31 @@ npm install -g doctoc
 
 ## Update README for Docker Hub
 
-```bash
-./scripts/update-readme-for-dockerhub.sh
-```
-
-This script creates a Docker Hub-compatible version of the README (`README_dockerhub.md`). It:
+The `generate-readme-from-intro.sh` script automatically generates `README_dockerhub.md` with Docker Hub-compatible formatting. It:
 - Copies `README.md` to `README_dockerhub.md`
 - Converts relative image paths to absolute GitHub raw URLs
 - Converts relative document links to absolute GitHub blob URLs
+- Converts GitHub-style alerts (`[!NOTE]`, `[!WARNING]`, etc.) to emoji-based format for better Docker Hub compatibility
 - Ensures all images and links work correctly on Docker Hub
-
-This script is automatically called by `generate-readme-from-intro.sh`.
 
 ## Generate GitHub Release Notes
 
-Before creating a GitHub release, generate a GitHub-compatible version of your release notes:
-
-```bash
-./scripts/generate-release-notes-github.sh VERSION
-```
-
-Replace `VERSION` with your release version (e.g., `1.1.x` or `1.2.0`).
-
-**Example:**
-```bash
-./scripts/generate-release-notes-github.sh 1.1.x
-```
-
-This script:
-- Reads the release notes from `documentation/docs/release-notes/VERSION.md`
+The `generate-readme-from-intro.sh` script automatically generates GitHub release notes when run. It:
+- Reads the release notes from `documentation/docs/release-notes/VERSION.md` (where VERSION is extracted from `package.json`)
+- Changes the title from "# Version xxxx" to "# Release Notes - Version xxxxx"
 - Converts relative markdown links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
 - Converts image paths to GitHub raw URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) for proper display in release descriptions
+- Handles relative paths with `../` prefix
 - Preserves absolute URLs (http:// and https://) unchanged
 - Creates `RELEASE_NOTES_github_VERSION.md` in the project root
 
-The generated file can be copied and pasted directly into the GitHub release description. All links and images will work correctly in the GitHub release context.
+**Example:**
+```bash
+# This will generate both README.md and RELEASE_NOTES_github_VERSION.md
+./scripts/generate-readme-from-intro.sh
+```
+
+The generated release notes file can be copied and pasted directly into the GitHub release description. All links and images will work correctly in the GitHub release context.
 
 **Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
 

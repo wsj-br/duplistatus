@@ -70,7 +70,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
 - `pnpm typecheck` - Run TypeScript type checking
-- `scripts/upgrade-dependencies.sh` - Upgrade all packages to the latest version
+- `scripts/upgrade-dependencies.sh` - Upgrade all packages to the latest version, check for vulnerabilities, and automatically fix them
 - `scripts/clean-workspace.sh` - Clean the workspace
 
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.

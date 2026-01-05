@@ -15,11 +15,10 @@ Before releasing a new version, ensure you have completed the following:
 - [ ] All changes are committed and pushed to the `vMAJOR.MINOR.x` branch.
 - [ ] The version number is updated in `package.json` (use `scripts/update-version.sh` to synchronise it across files).
 - [ ] All tests pass (in devel mode, local, docker and podman). 
-- [ ] Run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running).
+- [ ] Run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running). This script compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible), and compares Node, npm, and Duplistatus versions exactly.
 - [ ] Documentation is up to date, update the screenshots (use `pnpm take-screenshots`)
 - [ ] Release notes are prepared in `documentation/docs/release-notes/VERSION.md`.
-- [ ] Run `scripts/generate-release-notes-github.sh VERSION` to generate GitHub release notes.
-- [ ] Run `scripts/generate-readme-from-intro.sh` to update `README.md` with the new version and any changes from `documentation/docs/intro.md`.
+- [ ] Run `scripts/generate-readme-from-intro.sh` to update `README.md` with the new version and any changes from `documentation/docs/intro.md`. This script also automatically generates `README_dockerhub.md` and `RELEASE_NOTES_github_VERSION.md`.
 
 
 ## Release Process Overview
@@ -192,27 +191,15 @@ Deploy documentation updates:
 
 ### Preparing Release Notes for GitHub
 
-Before creating a GitHub release, generate a GitHub-compatible version of your release notes:
-
-```bash
-./scripts/generate-release-notes-github.sh VERSION
-```
-
-Replace `VERSION` with your release version (e.g., `1.1.x` or `1.2.0`).
-
-This script:
-- Reads the release notes from `documentation/docs/release-notes/VERSION.md`
-- Converts relative markdown links to absolute GitHub docs URLs
-- Converts image paths to GitHub raw URLs for proper display in release descriptions
-- Preserves absolute URLs (http:// and https://) unchanged
-- Creates `RELEASE_NOTES_github_VERSION.md` in the project root
+The `generate-readme-from-intro.sh` script automatically generates GitHub release notes when run. It reads the release notes from `documentation/docs/release-notes/VERSION.md` (where VERSION is extracted from `package.json`) and creates `RELEASE_NOTES_github_VERSION.md` in the project root.
 
 **Example:**
 ```bash
-./scripts/generate-release-notes-github.sh 1.1.x
+# This will generate README.md, README_dockerhub.md, and RELEASE_NOTES_github_VERSION.md
+./scripts/generate-readme-from-intro.sh
 ```
 
-This generates `RELEASE_NOTES_github_1.1.x.md` which you can copy and paste into the GitHub release description.
+The generated release notes file can be copied and pasted directly into the GitHub release description. All links and images will work correctly in the GitHub release context.
 
 **Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
 
@@ -226,8 +213,9 @@ If you've made changes to `documentation/docs/intro.md`, regenerate the reposito
 
 This script:
 - Extracts the version from `package.json`
-- Generates `README.md` from `documentation/docs/intro.md`
-- Creates `README_dockerhub.md` for Docker Hub
-- Updates the table of contents
+- Generates `README.md` from `documentation/docs/intro.md` (converts Docusaurus admonitions to GitHub-style alerts, converts links and images)
+- Creates `README_dockerhub.md` for Docker Hub (with Docker Hub-compatible formatting)
+- Generates `RELEASE_NOTES_github_VERSION.md` from `documentation/docs/release-notes/VERSION.md` (converts links and images to absolute URLs)
+- Updates the table of contents using `doctoc`
 
 Commit and push the updated `README.md` along with your release.

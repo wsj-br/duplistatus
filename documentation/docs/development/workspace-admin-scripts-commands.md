@@ -39,10 +39,26 @@ Perform a complete Docker cleanup, which is useful for:
 
 ## Update the packages to the latest version
 
+You can update packages manually using:
 ```bash
 ncu --upgrade
 pnpm update
 ```
+
+Or use the automated script:
+```bash
+./scripts/upgrade-dependencies.sh
+```
+
+The `upgrade-dependencies.sh` script automates the entire dependency upgrade process:
+- Updates `package.json` with latest versions using `npm-check-updates`
+- Updates the pnpm lockfile and installs updated dependencies
+- Updates the browserslist database
+- Checks for vulnerabilities using `pnpm audit`
+- Automatically fixes vulnerabilities using `pnpm audit fix`
+- Re-checks for vulnerabilities after fixing to verify the fixes
+
+This script provides a complete workflow for keeping dependencies up to date and secure.
 
 ## Check for unused packages
 
@@ -56,11 +72,13 @@ pnpm depcheck
 ./scripts/update-version.sh
 ```
 
-This script automatically updates the `.env` file with the current version from `package.json`. It:
+This script automatically updates version information across multiple files to keep them synchronized. It:
 - Extracts the version from `package.json`
-- Creates or updates the `.env` file with the `VERSION` variable
+- Updates the `.env` file with the `VERSION` variable (creates it if it doesn't exist)
+- Updates the `Dockerfile` with the `VERSION` variable (if it exists)
+- Updates the `documentation/package.json` version field (if it exists)
 - Only updates if the version has changed
-- Provides feedback on the operation
+- Provides feedback on each operation
 
 ## Pre-checks script
 
@@ -144,6 +162,37 @@ Copies image files from `docs/static/img` to their appropriate locations in the 
 - Copies `duplistatus_banner.png` to `public/images/`
 
 Useful for keeping application images synchronized with documentation images.
+
+## Compare versions between development and Docker
+
+```bash
+./scripts/compare-versions.sh
+```
+
+This script compares versions between your development environment and a running Docker container. It:
+- Compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible, shown as "✅ (major)")
+- Compares Node, npm, and Duplistatus versions exactly (must match exactly)
+- Displays a formatted table showing all version comparisons
+- Provides a summary with color-coded results (✅ for matches, ❌ for mismatches)
+- Exits with code 0 if all versions match, 1 if there are mismatches
+
+**Requirements:**
+- Docker container named `duplistatus` must be running
+- The script reads version information from Docker container logs
+
+**Example output:**
+```
+┌─────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────┐
+│ Component               │ Development                  │ Docker                       │   Match      │
+├─────────────────────────┼──────────────────────────────┼──────────────────────────────┼──────────────┤
+│ SQLite                  │ 3.45.1                       │ 3.51.1                       │ ✅ (major)   │
+│ Node                    │ 24.12.0                      │ 24.12.0                      │ ✅           │
+│ npm                     │ 10.9.2                       │ 10.9.2                       │ ✅           │
+│ Duplistatus             │ 1.2.1                        │ 1.2.1                        │ ✅           │
+└─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
+```
+
+**Note:** SQLite versions are compared by major version only because different patch versions within the same major version are generally compatible. The script will indicate if SQLite versions match at the major level but differ in patch versions.
 
 ## Viewing the configurations in the database
 
