@@ -19,7 +19,8 @@ All notable changes to this project will be documented in this file.
   - Auto-scroll toggle for real-time log monitoring with automatic polling (every 2 seconds when enabled and viewing current file)
   - Auto-scroll only triggers when new log lines are actually added (tracks line count changes)
   - Copy to clipboard functionality for filtered log content
-  - Export filtered logs as text file via `/api/application-logs/export` endpoint
+  - View logs via `/api/application-logs` endpoint (GET) with file selection and tail functionality
+  - Export filtered logs as text file via `/api/application-logs/export` endpoint (GET)
   - Scroll navigation buttons (scroll to top/bottom) for easy navigation in long log files
   - File metadata display showing line count, file size (KB), and last modified timestamp
   - Automatic file switching if selected file becomes unavailable (handles log rotation gracefully)
