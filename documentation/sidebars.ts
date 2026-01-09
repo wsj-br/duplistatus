@@ -64,6 +64,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/settings/database-maintenance',
             'user-guide/settings/user-management-settings',
             'user-guide/settings/audit-log-settings',
+            'user-guide/settings/application-logs-settings',
           ],
         },
         'user-guide/homepage-integration',

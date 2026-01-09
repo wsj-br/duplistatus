@@ -12,12 +12,11 @@ You can select a server from the dropdown list. If you have already selected a s
 - The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collect Backup Logs`](collect-backup-logs.md) feature.
 - Servers will not appear in the server list if their address has not been configured.
 
+## Accessing the Old Duplicati UI
 
+If you experience login issues with the new Duplicati web interface (`/ngclient/`), you can right-click the <SvgButton svgFilename="duplicati_logo.svg" /> button on or any server item in the server selection popover to open the old Duplicati UI (`/ngax/`) in a new tab. 
 
-:::tip
-Throughout the application, you will see the <SvgButton svgFilename="duplicati_logo.svg" /> button. Click it to open the Duplicati server's web interface in a new tab.
-:::
-
+<br/><br/>
 
 :::note
 All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.

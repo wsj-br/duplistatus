@@ -6,6 +6,7 @@ import { getSMTPConfig, clearRequestCache } from '@/lib/db-utils';
 import { optionalAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
+import { isDevelopmentMode } from '@/lib/utils';
 
 async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, title: string, priority: string, tags: string) {
   const { url, topic, accessToken } = config;
@@ -75,19 +76,23 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       // Clear request cache to ensure we get the latest SMTP configuration
       // This is important when the config is updated by external scripts
       clearRequestCache();
-      console.log('[API Test Email] Cache cleared, reading fresh SMTP config from database');
+      if (isDevelopmentMode()) {
+        console.log('[API Test Email] Cache cleared, reading fresh SMTP config from database');
+      }
       
       const smtpConfig = getSMTPConfig();
       if (!smtpConfig) {
         return NextResponse.json({ error: 'Email is not configured. Please configure SMTP settings.' }, { status: 400 });
       }
       
-      console.log('[API Test Email] Read SMTP config:', {
-        host: smtpConfig.host,
-        port: smtpConfig.port,
-        connectionType: smtpConfig.connectionType || 'starttls',
-        requireAuth: smtpConfig.requireAuth !== false
-      });
+      if (isDevelopmentMode()) {
+        console.log('[API Test Email] Read SMTP config:', {
+          host: smtpConfig.host,
+          port: smtpConfig.port,
+          connectionType: smtpConfig.connectionType || 'starttls',
+          requireAuth: smtpConfig.requireAuth !== false
+        });
+      }
 
       const senderName = smtpConfig.senderName || 'duplistatus';
       const fromAddress = smtpConfig.fromAddress || smtpConfig.username;

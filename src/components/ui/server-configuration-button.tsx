@@ -45,6 +45,23 @@ export function ServerConfigurationButton({
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Open old UI by replacing/adding /ngax path to the existing URL
+    try {
+      const url = new URL(serverUrl);
+      if (['http:', 'https:'].includes(url.protocol)) {
+        // Replace the pathname with /ngax
+        url.pathname = '/ngax';
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+      }
+    } catch (error) {
+      console.error('Invalid server URL for old UI:', error);
+    }
+  };
+
   const isUrlValid = () => {
     if (!serverUrl || serverUrl.trim() === '') return false;
     try {
@@ -74,8 +91,9 @@ export function ServerConfigurationButton({
       size={size === 'md' ? 'default' : size}
       className={`${className} ${isDisabled ? 'cursor-not-allowed disabled:pointer-events-auto' : ''}`}
       onClick={handleClick}
+      onContextMenu={handleContextMenu}
       disabled={isDisabled}
-      title={isDisabled ? "No URL configured" : (serverAlias ? `Open ${serverAlias}(${serverName}) configuration` : (serverName ? `Open ${serverName} configuration` : "Open Duplicati configuration"))}
+      title={isDisabled ? "No URL configured" : (serverAlias ? `Open ${serverAlias}(${serverName}) configuration (Right-click for old UI)` : (serverName ? `Open ${serverName} configuration (Right-click for old UI)` : "Open Duplicati configuration (Right-click for old UI)"))}
     >
       <ServerIcon size={getIconSize()} className="mr-1" />
       {showText && "Duplicati configuration"}

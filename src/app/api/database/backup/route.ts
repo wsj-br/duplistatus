@@ -7,6 +7,7 @@ import { AuditLogger } from '@/lib/audit-logger';
 import path from 'path';
 import fs from 'fs';
 import { Readable } from 'stream';
+import { getDataDir } from '@/lib/paths';
 
 export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   try {
@@ -36,7 +37,7 @@ export const GET = withCSRF(requireAdmin(async (request: NextRequest, authContex
     const filename = `duplistatus-backup-${timestamp}.${extension}`;
     
     // Create temporary file for backup
-    const tempDir = path.join(process.cwd(), 'data', 'temp');
+    const tempDir = path.join(getDataDir(), 'temp');
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }

@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { BackupNotificationConfig } from '@/lib/types';
 import { defaultAuthConfig } from './default-config';
+import { getDataDir } from './paths';
 
 const databaseTimestamp = (): string =>
   new Date().toLocaleString(undefined, { hour12: false });
@@ -72,7 +73,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Create data directory if it doesn't exist
-const dataDir = path.join(process.cwd(), 'data');
+const dataDir = getDataDir();
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }

@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates } from './db-utils';
 import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType } from './types';
 import { defaultNotificationTemplates } from './default-config';
+import { isDevelopmentMode } from './utils';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -298,6 +299,82 @@ export async function sendNtfyNotification(
   }
 }
 
+// Helper function to analyze SMTP errors and provide user-friendly messages
+function analyzeSMTPError(
+  errorMessage: string,
+  connectionType: SMTPConnectionType,
+  host: string,
+  port: number
+): {
+  type: 'authentication' | 'ssl_version' | 'connection_type' | 'generic';
+  userMessage: string;
+} {
+  const lowerError = errorMessage.toLowerCase();
+  
+  // Check for authentication errors first (highest priority)
+  if (
+    lowerError.includes('invalid login') ||
+    lowerError.includes('badcredentials') ||
+    lowerError.includes('535-5.7.8') ||
+    lowerError.includes('username and password not accepted') ||
+    lowerError.includes('authentication failed') ||
+    lowerError.includes('invalid credentials') ||
+    lowerError.includes('535')
+  ) {
+    return {
+      type: 'authentication',
+      userMessage: 'SMTP authentication failed. Please verify your username and password are correct.'
+    };
+  }
+  
+  // Check for SSL/TLS version errors
+  if (
+    lowerError.includes('wrong version number') ||
+    lowerError.includes('tls_validate_record_header') ||
+    lowerError.includes('ssl routines') ||
+    lowerError.includes('tlsv1') ||
+    lowerError.includes('protocol version')
+  ) {
+    return {
+      type: 'ssl_version',
+      userMessage: 'SSL/TLS version mismatch. The server may require a different TLS version or connection type. Try using "STARTTLS" if currently using "Direct SSL/TLS", or vice versa.'
+    };
+  }
+  
+  // Check for connection type errors (only when error actually indicates connection type issues)
+  if (
+    lowerError.includes('does not support starttls') ||
+    lowerError.includes('starttls') && (lowerError.includes('not supported') || lowerError.includes('failed')) ||
+    lowerError.includes('ehlo') && lowerError.includes('error') ||
+    lowerError.includes('connection refused') ||
+    lowerError.includes('econnrefused')
+  ) {
+    let userMessage = '';
+    if (connectionType === 'plain') {
+      userMessage = `Failed to connect to SMTP server at ${host}:${port} using Plain SMTP. ` +
+        `Please verify the server address and port are correct.`;
+    } else if (connectionType === 'starttls') {
+      userMessage = `The SMTP server at ${host}:${port} does not support STARTTLS. ` +
+        `Please change the connection type to "Plain SMTP" or use "Direct SSL/TLS" if your server supports it.`;
+    } else if (connectionType === 'ssl') {
+      userMessage = `Cannot establish SSL/TLS connection to ${host}:${port}. ` +
+        `The server may not support direct SSL/TLS on this port. Try using "STARTTLS" or "Plain SMTP" instead, or use port 465 for SSL/TLS.`;
+    } else {
+      userMessage = `Failed to connect to SMTP server at ${host}:${port}.`;
+    }
+    return {
+      type: 'connection_type',
+      userMessage
+    };
+  }
+  
+  // Generic error fallback
+  return {
+    type: 'generic',
+    userMessage: `Failed to connect to SMTP server at ${host}:${port}. Please verify your SMTP configuration.`
+  };
+}
+
 // Email configuration functions
 export async function createEmailTransporter(): Promise<nodemailer.Transporter | null> {
   try {
@@ -323,16 +400,6 @@ export async function createEmailTransporter(): Promise<nodemailer.Transporter |
   try {
     // Determine connection type (default to STARTTLS if not set)
     const connectionType: SMTPConnectionType = config.connectionType || 'starttls';
-    
-    // Log the SMTP configuration being used
-    console.log('[SMTP Config] Creating transporter with:', {
-      host: config.host,
-      port: config.port,
-      connectionType: connectionType,
-      requireAuth: config.requireAuth !== false,
-      username: config.username ? '***' : '(not set)',
-      hasPassword: !!config.password
-    });
     
     // Set secure based on connection type (true for ssl, false otherwise)
     const useSecure = connectionType === 'ssl';
@@ -390,24 +457,15 @@ export async function createEmailTransporter(): Promise<nodemailer.Transporter |
     } catch (verifyError) {
       const errorMessage = verifyError instanceof Error ? verifyError.message : String(verifyError);
       
-      // Provide user-friendly error messages based on connection type
-      let userMessage = '';
+      // Analyze the error to provide accurate user-friendly messages
+      const errorAnalysis = analyzeSMTPError(errorMessage, connectionType, config.host, config.port);
       
-      if (connectionType === 'plain') {
-        userMessage = `Failed to connect to SMTP server at ${config.host}:${config.port} using Plain SMTP. ` +
-          `Please verify the server address and port are correct.`;
-      } else if (connectionType === 'starttls') {
-        userMessage = `The SMTP server at ${config.host}:${config.port} does not support STARTTLS. ` +
-          `Please change the connection type to "Plain SMTP" or use "Direct SSL/TLS" if your server supports it.`;
-      } else if (connectionType === 'ssl') {
-        userMessage = `Cannot establish SSL/TLS connection to ${config.host}:${config.port}. ` +
-          `The server may not support direct SSL/TLS on this port. Try using "STARTTLS" or "Plain SMTP" instead, or use port 465 for SSL/TLS.`;
-      } else {
-        userMessage = `Failed to connect to SMTP server at ${config.host}:${config.port}.`;
-      }
+      // Append the original error message for debugging (only in development)
+      const fullMessage = isDevelopmentMode()
+        ? `${errorAnalysis.userMessage}\n\nOriginal error: ${errorMessage}`
+        : errorAnalysis.userMessage;
       
-      // Append the original error message for debugging
-      throw new Error(`${userMessage}\n\nOriginal error: ${errorMessage}`);
+      throw new Error(fullMessage);
     }
     
     return transporter;
@@ -446,18 +504,20 @@ export async function sendEmailNotification(
     throw error;
   }
 
-  // Log the SMTP configuration being used for sending email
-  console.log('[SMTP Config] Sending email with config:', {
-    host: config.host,
-    port: config.port,
-    connectionType: config.connectionType || 'starttls',
-    requireAuth: config.requireAuth !== false,
-    username: config.username ? '***' : '(not set)',
-    hasPassword: !!config.password,
-    mailto: config.mailto,
-    senderName: config.senderName,
-    fromAddress: config.fromAddress || '(not set)'
-  });
+  // Log the SMTP configuration being used for sending email (development only)
+  if (isDevelopmentMode()) {
+    console.log('[SMTP Config] Sending email with config:', {
+      host: config.host,
+      port: config.port,
+      connectionType: config.connectionType || 'starttls',
+      requireAuth: config.requireAuth !== false,
+      username: config.username ? '***' : '(not set)',
+      hasPassword: !!config.password,
+      mailto: config.mailto,
+      senderName: config.senderName,
+      fromAddress: config.fromAddress || '(not set)'
+    });
+  }
 
   // Use configured sender name and from address, with fallback to current behavior
   const senderName = config.senderName || 'duplistatus';
@@ -486,9 +546,11 @@ export async function sendEmailNotification(
     );
   }
   
+  const recipientEmail = toEmail || config.mailto;
+  
   const mailOptions = {
     from: `"${senderName}" <${fromAddress}>`,
-    to: toEmail || config.mailto, // Use SMTP_MAILTO as default recipient
+    to: recipientEmail, // Use SMTP_MAILTO as default recipient
     subject,
     text: textContent,
     html: htmlContent,
@@ -496,7 +558,8 @@ export async function sendEmailNotification(
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.messageId);
+    const timestamp = new Date().toLocaleString(undefined, { hour12: false, timeZoneName: 'short' });
+    console.log(`Email sent successfully to ${recipientEmail} at ${timestamp} (messageId: ${info.messageId})`);
   } catch (error) {
     console.error('Failed to send email:', error instanceof Error ? error.message : String(error));
     throw error;

@@ -327,4 +327,46 @@ Configurations should only work with their intended connection type (e.g., plain
 - Console output with a summary table showing test results
 - `smtp-test-results.json` file with detailed test results for each configuration and connection type combination
 
+## Test Docker Entrypoint Script
+
+```bash
+pnpm test-entrypoint
+```
+
+This script provides a test wrapper for `docker-entrypoint.sh` in local development. It sets up the environment to test the entrypoint logging functionality and ensures logs are written to `data/logs/` so the application can access them.
+
+**What it does:**
+
+1. **Always builds a fresh version**: Automatically runs `pnpm build-local` to create a fresh build before testing (no need to manually build first)
+2. **Builds cron service**: Ensures the cron service is built (`dist/cron-service.cjs`)
+3. **Sets up Docker-like structure**: Creates necessary symlinks and directory structure to mimic the Docker environment
+4. **Runs entrypoint script**: Executes `docker-entrypoint.sh` with proper environment variables
+5. **Cleans up**: Automatically removes temporary files on exit
+
+**Usage:**
+```bash
+# Run the test (builds fresh version automatically)
+pnpm test-entrypoint
+```
+
+**Environment Variables:**
+- `PORT=8666` - Port for the Next.js server (matches `start-local`)
+- `CRON_PORT=8667` - Port for the cron service
+- `VERSION` - Automatically set to `test-YYYYMMDD-HHMMSS` format
+
+**Output:**
+- Logs are written to `data/logs/application.log` (accessible by the application)
+- Console output shows the entrypoint script execution
+- Press Ctrl+C to stop and test log flushing
+
+**Requirements:**
+- Script must be run from the repository root directory (pnpm handles this automatically)
+- The script automatically handles all prerequisites (build, cron service, etc.)
+
+**Use Cases:**
+- Testing entrypoint script changes locally before Docker deployment
+- Verifying log rotation and logging functionality
+- Testing graceful shutdown and signal handling
+- Debugging entrypoint script behavior in a local environment
+
 

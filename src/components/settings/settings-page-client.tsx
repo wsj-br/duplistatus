@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ColoredIcon } from '@/components/ui/colored-icon';
-import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database } from 'lucide-react';
+import { Settings, Bell, AlertTriangle, Server, MessageSquare, Mail, FileText, Users, ScrollText, Clock, PanelLeftClose, PanelLeftOpen, MonitorCog, Database, Terminal } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
@@ -18,6 +18,7 @@ import { AuditLogViewer } from '@/components/settings/audit-log-viewer';
 import { AuditLogRetentionForm } from '@/components/settings/audit-log-retention-form';
 import { DisplaySettingsForm } from '@/components/settings/display-settings-form';
 import { DatabaseMaintenanceForm } from '@/components/settings/database-maintenance-form';
+import { ApplicationLogsViewer } from '@/components/settings/application-logs-viewer';
 import { getUserLocalStorageItem, setUserLocalStorageItem } from '@/lib/user-local-storage';
 
 interface SettingsPageClientProps {
@@ -172,8 +173,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
   useEffect(() => {
     // Check for section parameter in URL first
     const sectionParam = searchParams.get('tab') || searchParams.get('section');
-    const validSections = ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'database-maintenance'];
-    const adminOnlySections = ['users', 'database-maintenance', 'audit-retention'];
+    const validSections = ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'database-maintenance', 'application-logs'];
+    const adminOnlySections = ['users', 'database-maintenance', 'audit-retention', 'application-logs'];
     
     // Redirect non-admin users away from admin-only sections
     if (sectionParam && adminOnlySections.includes(sectionParam) && !currentUser?.isAdmin) {
@@ -506,6 +507,20 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                       <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'audit-retention' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Audit Log Retention</span>
                     </button>
                   )}
+                  {currentUser?.isAdmin && (
+                    <button
+                      onClick={() => handleSectionChange('application-logs')}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
+                        activeSection === 'application-logs'
+                          ? 'bg-accent text-accent-foreground'
+                          : 'hover:bg-accent/50'
+                      }`}
+                      title={isSidebarCollapsed ? 'Application Logs' : undefined}
+                    >
+                      <Terminal className="h-4 w-4 flex-shrink-0" />
+                      <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'application-logs' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'}`}>Application Logs</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -653,6 +668,11 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
               {/* Database Maintenance Section (Admin only) */}
               {activeSection === 'database-maintenance' && currentUser?.isAdmin && (
                 <DatabaseMaintenanceForm isAdmin={currentUser?.isAdmin || false} />
+              )}
+
+              {/* Application Logs Section (Admin only) */}
+              {activeSection === 'application-logs' && currentUser?.isAdmin && (
+                <ApplicationLogsViewer />
               )}
             </div>
         </main>

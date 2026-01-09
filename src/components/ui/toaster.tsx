@@ -16,6 +16,12 @@ export function Toaster() {
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, variant, duration, ...props }) {
+        // Error toasts (destructive) should persist until manually closed
+        // Success/info toasts should auto-dismiss after their specified duration or default 3 seconds
+        const toastDuration = variant === "destructive" 
+          ? Infinity 
+          : (typeof duration === "number" ? duration : 3000);
+        
         return (
           <Toast 
             key={id}
@@ -23,7 +29,7 @@ export function Toaster() {
             onOpenChange={(open) => {
               if (!open) removeToast(id);
             }}
-            duration={duration || 5000}
+            duration={toastDuration}
             {...props}
           >
             <div className="grid gap-1">

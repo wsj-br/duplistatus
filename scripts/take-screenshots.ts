@@ -2872,7 +2872,8 @@ async function main() {
       'audit',
       'audit-retention',
       'display',
-      'database-maintenance'
+      'database-maintenance',
+      'application-logs'
     ];
     
     for (const tab of adminSettingsTabs) {

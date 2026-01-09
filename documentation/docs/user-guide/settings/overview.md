@@ -41,6 +41,7 @@ Administrators see all available settings.
             <li><a href="user-management-settings.md">Users</a>: Manage user accounts (admin only)</li>
             <li><a href="audit-log-settings.md">Audit Log</a>: View system audit logs</li>
             <li><a href="audit-log-settings.md#retention-configuration">Audit Log Retention</a>: Configure audit log retention (admin only)</li>
+            <li><a href="application-logs-settings.md">Application Logs</a>: View and export application logs (admin only)</li>
           </ul>
         </li>
       </ul>

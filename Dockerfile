@@ -61,7 +61,13 @@ RUN apk add --no-cache curl tzdata icu-libs icu-data-full tini sqlite
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV VERSION=1.2.1 \
+# Unset npm config environment variables to prevent warnings
+# These are set by pnpm or inherited from base image but not recognized by npm
+ENV npm_config_verify-deps-before-run= \
+    npm_config_npm-globalconfig= \
+    npm_config__jsr-registry=
+
+ENV VERSION=1.3.0 \
     PORT=9666 \
     HOSTNAME=0.0.0.0 \
     CRON_PORT=9667 \

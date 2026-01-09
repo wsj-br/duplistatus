@@ -32,7 +32,8 @@
     "docker-up": "./scripts/pre-checks.sh && docker compose up --build -d",
     "docker-down": "docker compose down",
     "docker-clean": "./scripts/clean-docker.sh", 
-    "docker-devel": "docker build . -t wsj-br/duplistatus:devel"
+    "docker-devel": "docker build . -t wsj-br/duplistatus:devel",
+    "test-entrypoint": "./scripts/test-entrypoint.sh"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

@@ -7,7 +7,7 @@ import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
 import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
 import { OpenServerConfigButton } from '@/components/open-server-config-button';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useState, useEffect } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
+import { getHelpUrl } from '@/lib/helpMapper';
 
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
@@ -32,11 +33,18 @@ interface User {
 export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isDashboardPage = pathname === '/';
   const isSettingsPage = pathname === '/settings';
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+
+  // Get context-aware help URL and page name
+  const helpInfo = getHelpUrl(pathname, searchParams.toString());
+  const helpTooltip = helpInfo.pageName === 'User Guide' 
+    ? 'User Guide' 
+    : `Help for ${helpInfo.pageName}`;
 
   // Check authentication status
   useEffect(() => {
@@ -198,9 +206,9 @@ export function AppHeader() {
           <Button 
             variant="outline" 
             size="icon" 
-            title="User Guide"
+            title={helpTooltip}
             className="ml-4"
-            onClick={() => window.open('https://wsj-br.github.io/duplistatus/user-guide/overview', '_blank', 'noopener,noreferrer')}
+            onClick={() => window.open(helpInfo.url, '_blank', 'noopener,noreferrer')}
           >
             <BookOpenText className="h-4 w-4" />
           </Button>

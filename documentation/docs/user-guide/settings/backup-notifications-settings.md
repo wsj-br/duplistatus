@@ -46,7 +46,15 @@ Use the **Filter by Server Name** field at the top of the page to quickly find s
 Additional notification destinations allow you to send notifications to specific email addresses or NTFY topics beyond the global settings. The system uses a hierarchical inheritance model where backups can inherit default settings from their server, or override them with backup-specific values.
 
 
-If a server or backup has an additional destination configured, the <IconButton icon="lucide:chevron-right" style={{border: 'none', padding: 0, color: '#3B82F6', background: 'transparent'}} /> or <IconButton icon="lucide:chevron-down" style={{border: 'none', padding: 0, color: '#3B82F6', background: 'transparent'}} /> will be blue; if it is in the regular colour, it is using the default or is not configured.
+Additional destination configuration is indicated by contextual icons next to server and backup names:
+
+- **Server icon** <IconButton icon="lucide:settings-2" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />: Appears next to server names when default additional destinations are configured at the server level. 
+
+- **Backup icon** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> (blue): Appears next to backup names when custom additional destinations are configured (overriding server defaults). 
+
+- **Backup icon** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#64748b', background: 'transparent'}} /> (gray): Appears next to backup names when the backup is inheriting additional destinations from server defaults. 
+
+If no icon is displayed, the server or backup does not have additional destinations configured.
 
 
 ![Server-level additional destinations](/img/screen-settings-notifications-server.png)
