@@ -807,3 +807,79 @@
   - Includes cache control headers to prevent caching
   - Useful for tracking last backup times across all server-backup combinations
   - Timestamps are in ISO format
+
+## Application Logs Management
+
+### Get Application Logs - `/api/application-logs`
+- **Endpoint**: `/api/application-logs`
+- **Method**: GET
+- **Description**: Retrieves application log entries from log files. Supports reading current and rotated log files with tail functionality.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Query Parameters**:
+  - `file` (optional): Log file name to read - `application.log`, `application.log.1`, `application.log.2`, etc. If not provided, returns available files list
+  - `tail` (optional): Number of lines to return from the end of the file (default: 1000, min: 1, max: 10000)
+- **Response** (with file parameter):
+  ```json
+  {
+    "logs": "log content as string...",
+    "fileSize": 1024000,
+    "lastModified": "2024-03-20T10:00:00Z",
+    "lineCount": 5000,
+    "currentFile": "application.log",
+    "availableFiles": ["application.log", "application.log.1", "application.log.2"]
+  }
+  ```
+- **Response** (without file parameter):
+  ```json
+  {
+    "logs": "",
+    "fileSize": 0,
+    "lastModified": "2024-03-20T10:00:00Z",
+    "lineCount": 0,
+    "currentFile": "",
+    "availableFiles": ["application.log", "application.log.1", "application.log.2"]
+  }
+  ```
+- **Error Responses**:
+  - `400`: Invalid tail parameter (must be 1-10000) or invalid file parameter format
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `404`: Log file not found
+  - `500`: Failed to read log file
+- **Notes**:
+  - Only accessible to admin users
+  - Supports reading current log file and rotated log files (up to 10 rotated files)
+  - Returns last N lines (tail) from the specified log file
+  - Log file name is determined by environment variable (default: `application.log`)
+  - Returns list of available log files when file parameter is not provided
+  - File names are validated to prevent directory traversal attacks
+  - Rotated files are numbered sequentially (`.1`, `.2`, etc.)
+
+### Export Application Logs - `/api/application-logs/export`
+- **Endpoint**: `/api/application-logs/export`
+- **Method**: GET
+- **Description**: Exports application log entries in filtered text format. Supports filtering by log level and search string.
+- **Authentication**: Requires admin privileges, valid session and CSRF token
+- **Query Parameters**:
+  - `file` (required): Log file name to export - `application.log`, `application.log.1`, `application.log.2`, etc.
+  - `logLevels` (optional): Comma-separated list of log levels to include - `INFO`, `WARN`, `ERROR` (default: `INFO,WARN,ERROR`)
+  - `search` (optional): Search string to filter log lines (case-insensitive)
+- **Response**:
+  - Content-Type: `text/plain`
+  - Content-Disposition: `attachment; filename="duplistatus-logs-YYYY-MM-DDTHH-MM-SS.txt"`
+  - Filtered log content as plain text
+- **Error Responses**:
+  - `400`: File parameter is required or invalid file parameter format
+  - `401`: Unauthorized - Invalid session or CSRF token
+  - `403`: Forbidden - Admin privileges required
+  - `500`: Failed to export logs
+- **Notes**:
+  - Only accessible to admin users
+  - Exports filtered log entries based on log level and search criteria
+  - Supports filtering by log levels: `INFO`, `WARN`, `ERROR`
+  - Search string filtering is case-insensitive
+  - Empty lines are automatically filtered out
+  - Log file name is determined by environment variable (default: `application.log`)
+  - File names are validated to prevent directory traversal attacks
+  - Exported file includes timestamp in filename
+  - Useful for external analysis and troubleshooting
