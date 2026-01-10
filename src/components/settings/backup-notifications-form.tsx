@@ -15,7 +15,7 @@ import { NotificationEvent, BackupNotificationConfig, BackupKey } from '@/lib/ty
 import { SortConfig, createSortedArray, sortFunctions } from '@/lib/sort-utils';
 import { defaultBackupNotificationConfig } from '@/lib/default-config';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
-import { ChevronDown, ChevronRight, X, Search, SendHorizontal, QrCode, Link as LinkIcon, Link2Off } from 'lucide-react';
+import { ChevronDown, ChevronRight, X, Search, SendHorizontal, QrCode, Link as LinkIcon, Link2Off, Settings2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -148,12 +148,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const justSavedRef = useRef(false);
   const justSavedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Column configuration for sorting
-  const columnConfig = {
+  // Column configuration for sorting - memoized to prevent recreation on every render
+  const columnConfig = useMemo(() => ({
     name: { type: 'text' as keyof typeof sortFunctions, path: 'name' },
     backupName: { type: 'text' as keyof typeof sortFunctions, path: 'backupName' },
     notificationEvent: { type: 'notificationEvent' as keyof typeof sortFunctions, path: 'notificationEvent' },
-  };
+  }), []);
 
   // Keep settingsRef in sync with settings state
   useEffect(() => {
@@ -309,64 +309,20 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   }, [isAutoSaving]);
 
-  const updateBackupSettingById = (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
-    const backupKey = `${serverId}:${backupName}`;
-    
-    // Use functional update to avoid creating new object unnecessarily
-    // This is more efficient and prevents unnecessary re-renders
-    setSettings(prev => {
-      const currentSetting = prev[backupKey] || { ...defaultBackupNotificationConfig };
-      
-      // Check if there are server defaults
-      const serverDefaultKey = getServerDefaultKey(serverId);
-      const serverDefaults = prev[serverDefaultKey];
-      const hasServerDefaults = serverDefaults !== null;
-      
-      // Set the value, then remove empty fields for additionalEmails and additionalNtfyTopic
-      const updatedSetting = {
-        ...currentSetting,
-        [field]: value,
-      };
-      const cleanedSetting = removeEmptyFields(updatedSetting);
-      
-      // If the config is now effectively empty after removing empty fields, remove the key entirely
-      const isConfigEmpty = (
-        cleanedSetting.notificationEvent === defaultBackupNotificationConfig.notificationEvent &&
-        cleanedSetting.expectedInterval === defaultBackupNotificationConfig.expectedInterval &&
-        cleanedSetting.overdueBackupCheckEnabled === defaultBackupNotificationConfig.overdueBackupCheckEnabled &&
-        cleanedSetting.ntfyEnabled === defaultBackupNotificationConfig.ntfyEnabled &&
-        cleanedSetting.emailEnabled === defaultBackupNotificationConfig.emailEnabled &&
-        (!cleanedSetting.allowedWeekDays || 
-         JSON.stringify(cleanedSetting.allowedWeekDays.sort()) === JSON.stringify(defaultBackupNotificationConfig.allowedWeekDays?.sort())) &&
-        !cleanedSetting.additionalNotificationEvent &&
-        !cleanedSetting.additionalEmails &&
-        !cleanedSetting.additionalNtfyTopic
-      );
-      
-      const newSettings = { ...prev };
-      if (isConfigEmpty) {
-        delete newSettings[backupKey];
-      } else {
-        newSettings[backupKey] = cleanedSetting;
-      }
-      
-      // Update ref immediately so autoSave can access latest state
-      settingsRef.current = newSettings;
-      
-      // For text input fields, don't trigger autosave during typing
-      // Autosave will happen on blur or after 5 seconds of inactivity
-      if (field === 'additionalEmails' || field === 'additionalNtfyTopic') {
-        // Schedule autoSave with 5 second timeout (only saves if user stops typing)
-        autoSaveTextInput();
-      } else {
-        // Use regular auto-save for other fields
-        autoSave(newSettings);
-      }
-      
-      return newSettings;
-    });
-  };
-
+  // Helper function to remove empty email/topic fields from a config
+  const removeEmptyFields = useCallback((config: BackupNotificationConfig): BackupNotificationConfig => {
+    const cleaned = { ...config };
+    // Remove empty string/null fields for additionalEmails and additionalNtfyTopic
+    if (cleaned.additionalEmails !== undefined && (cleaned.additionalEmails === null || cleaned.additionalEmails === '' || (typeof cleaned.additionalEmails === 'string' && cleaned.additionalEmails.trim() === ''))) {
+      const { additionalEmails, ...rest } = cleaned;
+      return removeEmptyFields(rest as BackupNotificationConfig);
+    }
+    if (cleaned.additionalNtfyTopic !== undefined && (cleaned.additionalNtfyTopic === null || cleaned.additionalNtfyTopic === '' || (typeof cleaned.additionalNtfyTopic === 'string' && cleaned.additionalNtfyTopic.trim() === ''))) {
+      const { additionalNtfyTopic, ...rest } = cleaned;
+      return removeEmptyFields(rest as BackupNotificationConfig);
+    }
+    return cleaned;
+  }, []);
 
   // Clear override and revert to inheritance
   const clearOverride = (serverId: string, backupName: string, field: 'additionalEmails' | 'additionalNtfyTopic' | 'additionalNotificationEvent') => {
@@ -524,6 +480,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       additionalNtfyTopic: serverDefaults.additionalNtfyTopic,
     };
   }, [settings]);
+
+  // Check if server has additional destinations configured
+  const hasServerAdditionalDestinations = useCallback((serverDefaults: BackupNotificationConfig | null): boolean => {
+    if (!serverDefaults) return false;
+    return (
+      (serverDefaults.additionalNotificationEvent && serverDefaults.additionalNotificationEvent !== 'off') ||
+      !!(serverDefaults.additionalEmails && serverDefaults.additionalEmails.trim() !== '') ||
+      !!(serverDefaults.additionalNtfyTopic && serverDefaults.additionalNtfyTopic.trim() !== '')
+    );
+  }, []);
 
   // Update server default settings
   const updateServerDefaultSetting = (serverId: string, field: 'additionalNotificationEvent' | 'additionalEmails' | 'additionalNtfyTopic', value: string | NotificationEvent) => {
@@ -732,24 +698,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }, 500); // 500ms debounce
   }, [refreshConfigSilently, refreshOverdueTolerance, toast, isAutoSaving]);
 
-  // Helper function to remove empty email/topic fields from a config
-  const removeEmptyFields = (config: BackupNotificationConfig): BackupNotificationConfig => {
-    const cleaned = { ...config };
-    // Remove empty string/null fields for additionalEmails and additionalNtfyTopic
-    if (cleaned.additionalEmails !== undefined && (cleaned.additionalEmails === null || cleaned.additionalEmails === '' || (typeof cleaned.additionalEmails === 'string' && cleaned.additionalEmails.trim() === ''))) {
-      const { additionalEmails, ...rest } = cleaned;
-      return removeEmptyFields(rest as BackupNotificationConfig);
-    }
-    if (cleaned.additionalNtfyTopic !== undefined && (cleaned.additionalNtfyTopic === null || cleaned.additionalNtfyTopic === '' || (typeof cleaned.additionalNtfyTopic === 'string' && cleaned.additionalNtfyTopic.trim() === ''))) {
-      const { additionalNtfyTopic, ...rest } = cleaned;
-      return removeEmptyFields(rest as BackupNotificationConfig);
-    }
-    return cleaned;
-  };
-
   // Build settings object by reading values directly from input elements
   // This is simpler and more reliable than trying to keep state/refs in sync
-  const buildSettingsFromInputs = (): Record<BackupKey, BackupNotificationConfig> => {
+  const buildSettingsFromInputs = useCallback((): Record<BackupKey, BackupNotificationConfig> => {
     // Start with current settings state (for non-text fields like checkboxes, selects)
     // Use settingsRef.current to get the latest state, not the potentially stale settings state
     const settingsToSave = { ...settingsRef.current };
@@ -870,7 +821,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     });
     
     return settingsToSave;
-  };
+  }, [removeEmptyFields]);
 
   // Auto-save function specifically for text inputs
   // Reads values directly from input elements - simple and reliable
@@ -1099,7 +1050,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         autoSaveTextInputTimeoutRef.current = null;
       }
     }, 5000); // 5 second timeout - only saves if user stops typing for 5 seconds
-  }, [refreshConfigSilently, refreshOverdueTolerance, toast]);
+  }, [refreshConfigSilently, refreshOverdueTolerance, toast, buildSettingsFromInputs]);
 
   // Trigger autosave immediately for text fields (called on blur)
   const triggerTextInputAutoSave = useCallback(() => {
@@ -1112,6 +1063,64 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     autoSaveTextInput(true);
   }, [autoSaveTextInput]);
 
+  const updateBackupSettingById: (serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => void = useCallback((serverId: string, backupName: string, field: keyof BackupNotificationConfig, value: string | number | boolean) => {
+    const backupKey = `${serverId}:${backupName}`;
+    
+    // Use functional update to avoid creating new object unnecessarily
+    // This is more efficient and prevents unnecessary re-renders
+    setSettings(prev => {
+      const currentSetting = prev[backupKey] || { ...defaultBackupNotificationConfig };
+      
+      // Check if there are server defaults
+      const serverDefaultKey = getServerDefaultKey(serverId);
+      const serverDefaults = prev[serverDefaultKey];
+      const hasServerDefaults = serverDefaults !== null;
+      
+      // Set the value, then remove empty fields for additionalEmails and additionalNtfyTopic
+      const updatedSetting = {
+        ...currentSetting,
+        [field]: value,
+      };
+      const cleanedSetting = removeEmptyFields(updatedSetting);
+      
+      // If the config is now effectively empty after removing empty fields, remove the key entirely
+      const isConfigEmpty = (
+        cleanedSetting.notificationEvent === defaultBackupNotificationConfig.notificationEvent &&
+        cleanedSetting.expectedInterval === defaultBackupNotificationConfig.expectedInterval &&
+        cleanedSetting.overdueBackupCheckEnabled === defaultBackupNotificationConfig.overdueBackupCheckEnabled &&
+        cleanedSetting.ntfyEnabled === defaultBackupNotificationConfig.ntfyEnabled &&
+        cleanedSetting.emailEnabled === defaultBackupNotificationConfig.emailEnabled &&
+        (!cleanedSetting.allowedWeekDays || 
+         JSON.stringify(cleanedSetting.allowedWeekDays.sort()) === JSON.stringify(defaultBackupNotificationConfig.allowedWeekDays?.sort())) &&
+        !cleanedSetting.additionalNotificationEvent &&
+        !cleanedSetting.additionalEmails &&
+        !cleanedSetting.additionalNtfyTopic
+      );
+      
+      const newSettings = { ...prev };
+      if (isConfigEmpty) {
+        delete newSettings[backupKey];
+      } else {
+        newSettings[backupKey] = cleanedSetting;
+      }
+      
+      // Update ref immediately so autoSave can access latest state
+      settingsRef.current = newSettings;
+      
+      // For text input fields, don't trigger autosave during typing
+      // Autosave will happen on blur or after 5 seconds of inactivity
+      if (field === 'additionalEmails' || field === 'additionalNtfyTopic') {
+        // Schedule autoSave with 5 second timeout (only saves if user stops typing)
+        autoSaveTextInput();
+      } else {
+        // Use regular auto-save for other fields
+        autoSave(newSettings);
+      }
+      
+      return newSettings;
+    });
+  }, [setSettings, removeEmptyFields, autoSaveTextInput, autoSave]);
+
   // Store value in ref (no re-renders, no expensive computations)
   // Input is uncontrolled, so we just store the value for later use
   // The value will be read by autoSaveTextInput's 5-second timeout
@@ -1123,7 +1132,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   };
 
   // Update all backup inputs that inherit from a server default when that default changes
-  const updateInheritingBackupInputs = (serverId: string, field: 'additionalEmails' | 'additionalNtfyTopic', newValue: string) => {
+  const updateInheritingBackupInputs = useCallback((serverId: string, field: 'additionalEmails' | 'additionalNtfyTopic', newValue: string) => {
     if (!config?.serversWithBackups) return;
     
     // Find all backups for this server
@@ -1149,10 +1158,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         }
       }
     });
-  };
+  }, [config?.serversWithBackups]);
 
   // Update main state from text input value (called on blur or timeout)
-  const updateTextInputToMainState = (key: string, value: string, syncInputAfterUpdate: boolean = false) => {
+  const updateTextInputToMainState = useCallback((key: string, value: string, syncInputAfterUpdate: boolean = false) => {
     // Parse key: format is either "serverId:__default__:field" or "serverId:backupName:field"
     const parts = key.split(':');
     if (parts.length < 3) return;
@@ -1313,7 +1322,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         }, 100);
       }, 0);
     }
-  };
+  }, [setSettings, removeEmptyFields, updateInheritingBackupInputs, updateBackupSettingById]);
 
 
   // Get current value from input ref or effective value (for test buttons, etc.)
@@ -1388,7 +1397,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   };
 
   // Create servers with settings for sorting
-  const getServersWithBackupAndSettings = (): ServerWithBackupAndSettings[] => {
+  const getServersWithBackupAndSettings = useCallback((): ServerWithBackupAndSettings[] => {
     if (!config?.serversWithBackups) return [];
     
     return config.serversWithBackups.map((server: ServerWithBackup) => {
@@ -1399,7 +1408,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         notificationEvent: backupSetting.notificationEvent,
       };
     });
-  };
+  }, [config?.serversWithBackups, getBackupSettingById]);
 
   // Group backups by server - memoized to prevent recalculation on every render
   const serverGroups = useMemo((): ServerGroup[] => {
@@ -1472,7 +1481,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   // Legacy: Get sorted servers (for backward compatibility with some logic) - memoized
   const sortedServers = useMemo(() => {
     return createSortedArray(getServersWithBackupAndSettings(), sortConfig, columnConfig);
-  }, [config?.serversWithBackups, sortConfig, getBackupSettingById]);
+  }, [sortConfig, getServersWithBackupAndSettings, columnConfig]);
 
   // Filter servers by server name/alias (for backward compatibility) - memoized
   const filteredServers = useMemo(() => {
@@ -2355,11 +2364,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           <CardTitle>Configure Backup Notifications</CardTitle>
           <CardDescription>
              Configure notification settings for a server or backup when a new backup log is received.
-             Blue chevrons (
-              <ChevronRight className="text-[#3B82F6] inline w-3 h-3 align-middle" /> or{' '}
-              <ChevronDown className="text-[#3B82F6] inline w-3 h-3 align-middle" />{' '}
-             ) indicate additional destinations are configured. {' '}
-             
+             Icons indicate additional destinations: <Settings2 className="inline w-3 h-3 align-middle" /> for server defaults,{' '}
+             <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(96 165 250)' }} /> for custom backup overrides,{' '}
+             <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(100 116 139)' }} /> for inherited destinations.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -2451,15 +2458,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Server Name
-                </SortableTableHead>
-                <SortableTableHead 
-                  className="w-[150px] min-w-[120px] bg-muted" 
-                  column="backupName" 
-                  sortConfig={sortConfig} 
-                  onSort={handleSort}
-                >
-                  Backup Name
+                  Server / Backup
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[140px] min-w-[120px] bg-muted" 
@@ -2560,7 +2559,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             title="Select this backup"
                           />
                         </TableCell>
-                        <TableCell className="pl-1" colSpan={2}>
+                        <TableCell className="pl-1" colSpan={1}>
                           <div className="flex items-center gap-0.5">
                             <Button
                               variant="ghost"
@@ -2572,15 +2571,40 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               }}
                             >
                               {isExpanded ? (
-                                <ChevronDown className={`h-4 w-4 ${hasBackupOverridesOrValues ? 'text-blue-500' : ''}`} />
+                                <ChevronDown className="h-4 w-4" />
                               ) : (
-                                <ChevronRight className={`h-4 w-4 ${hasBackupOverridesOrValues ? 'text-blue-500' : ''}`} />
+                                <ChevronRight className="h-4 w-4" />
                               )}
                             </Button>
                             <div className="flex flex-col">
-                              <span className="font-medium text-sm" title={`ServerID: ${group.serverId}`}>
-                                {combinedName}
-                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-sm" title={`ServerID: ${group.serverId}`}>
+                                  {combinedName}
+                                </span>
+                                {(hasBackupOverridesOrValues || (hasServerDefaults && !hasBackupOverridesOrValues && hasServerAdditionalDestinations(serverDefaults))) && (
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <ExternalLink 
+                                          className="w-3.5 h-3.5" 
+                                          style={{ 
+                                            color: hasBackupOverridesOrValues 
+                                              ? 'rgb(96 165 250)' // blue-400
+                                              : 'rgb(100 116 139)' // slate-500
+                                          }} 
+                                        />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>
+                                          {hasBackupOverridesOrValues 
+                                            ? 'Custom additional destinations configured'
+                                            : 'Using server default destinations'}
+                                        </p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                )}
+                              </div>
                               {group.serverNote && (
                                 <span className="text-xs text-muted-foreground truncate">
                                   {group.serverNote}
@@ -2635,7 +2659,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       {/* Expanded Additional Destinations for Merged Row */}
                       {isExpanded && (
                         <TableRow>
-                          <TableCell colSpan={6} className="bg-muted/30 pl-12 border-l border-l-border/50 ml-6">
+                          <TableCell colSpan={5} className="bg-muted/30 pl-12 border-l border-l-border/50 ml-6">
                             <div className="py-0 px-2">
                               <div className="font-medium text-sm mb-3 flex items-center gap-2">
                                 Additional Destinations
@@ -2944,7 +2968,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           title={isServerPartially ? "Some backups selected - click to select all" : "Select all backups for this server"}
                         />
                       </TableCell>
-                      <TableCell colSpan={5} className="pl-1">
+                      <TableCell colSpan={4} className="pl-1">
                         <div className="flex items-center gap-2">
                           <Button
                             variant="ghost"
@@ -2956,21 +2980,35 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             }}
                           >
                             {isServerHeaderExpanded ? (
-                              <ChevronDown className={`h-4 w-4 ${serverDefaults ? 'text-blue-500' : ''}`} />
+                              <ChevronDown className="h-4 w-4" />
                             ) : (
-                              <ChevronRight className={`h-4 w-4 ${serverDefaults ? 'text-blue-500' : ''}`} />
+                              <ChevronRight className="h-4 w-4" />
                             )}
                           </Button>
                           <div className="flex flex-col">
-                            <span className="font-semibold text-sm" title={`ServerID: ${group.serverId}`} >
-                              {group.serverAlias ? (
-                                <>
-                                  {group.serverAlias} ({group.serverName})
-                                </>
-                              ) : (
-                                <span title={group.serverId}>{group.serverName}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-sm" title={`ServerID: ${group.serverId}`} >
+                                {group.serverAlias ? (
+                                  <>
+                                    {group.serverAlias} ({group.serverName})
+                                  </>
+                                ) : (
+                                  <span title={group.serverId}>{group.serverName}</span>
+                                )}
+                              </span>
+                              {hasServerAdditionalDestinations(serverDefaults) && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Settings2 className="w-3.5 h-3.5" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Default additional destinations configured</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               )}
-                            </span>
+                            </div>
                             {group.serverNote && (
                               <span className="text-xs text-muted-foreground truncate">
                                 {group.serverNote}
@@ -2987,7 +3025,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     {/* Server Default Settings Row (when expanded) */}
                     {isServerHeaderExpanded && (
                       <TableRow className="bg-blue-500/5">
-                        <TableCell colSpan={6} className="bg-blue-500/5">
+                        <TableCell colSpan={5} className="bg-blue-500/5">
                           <div className="py-2 px-2">
                             <div className="flex items-center justify-between mb-3">
                               <div className="font-medium text-sm">Default Additional Destinations for this Server</div>
@@ -3252,7 +3290,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 title="Select this backup"
                               />
                             </TableCell>
-                            <TableCell className="pl-1" colSpan={2}>
+                            <TableCell className="pl-1" colSpan={1}>
                               <div className="flex items-center gap-0.5">
                                 <Button
                                   variant="ghost"
@@ -3264,15 +3302,40 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   }}
                                 >
                                   {isExpanded ? (
-                                    <ChevronDown className={`h-4 w-4 ${hasBackupOverridesOrValues ? 'text-blue-500' : ''}`} />
+                                    <ChevronDown className="h-4 w-4" />
                                   ) : (
-                                    <ChevronRight className={`h-4 w-4 ${hasBackupOverridesOrValues ? 'text-blue-500' : ''}`} />
+                                    <ChevronRight className="h-4 w-4" />
                                   )}
                                 </Button>
                                 <div className="flex flex-col">
-                                  <span className="font-medium text-sm">
-                                    {backup.backupName}
-                                  </span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium text-sm">
+                                      {backup.backupName}
+                                    </span>
+                                    {(hasBackupOverridesOrValues || (hasServerDefaults && !hasBackupOverridesOrValues && hasServerAdditionalDestinations(serverDefaults))) && (
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <ExternalLink 
+                                              className="w-3.5 h-3.5" 
+                                              style={{ 
+                                                color: hasBackupOverridesOrValues 
+                                                  ? 'rgb(96 165 250)' // blue-400
+                                                  : 'rgb(100 116 139)' // slate-500
+                                              }} 
+                                            />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>
+                                              {hasBackupOverridesOrValues 
+                                                ? 'Custom additional destinations configured'
+                                                : 'Using server default destinations'}
+                                            </p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </TableCell>
@@ -3320,7 +3383,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           </TableRow>
                           {isExpanded && (
                             <TableRow>
-                              <TableCell colSpan={6} className="bg-muted/30 pl-12 border-l border-l-border/50 ml-6">
+                              <TableCell colSpan={5} className="bg-muted/30 pl-12 border-l border-l-border/50 ml-6">
                                 <div className="py-0 px-2">
                                   <div className="font-medium text-sm mb-3 flex items-center gap-2">
                                     Additional Destinations
@@ -4050,19 +4113,33 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onClick={() => toggleServerHeaderExpansion(group.serverId)}
                           >
                             {isServerHeaderExpanded ? (
-                              <ChevronDown className={`h-4 w-4 ${serverDefaults ? 'text-blue-500' : ''}`} />
+                              <ChevronDown className="h-4 w-4" />
                             ) : (
-                              <ChevronRight className={`h-4 w-4 ${serverDefaults ? 'text-blue-500' : ''}`} />
+                              <ChevronRight className="h-4 w-4" />
                             )}
                           </Button>
                           <div className="flex-1">
-                            <div className="font-semibold text-sm" title={`ServerID: ${group.serverId}`}>
-                              {group.serverAlias ? (
-                                <>
-                                  {group.serverAlias} ({group.serverName})
-                                </>
-                              ) : (
-                                <span title={group.serverId}>{group.serverName}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="font-semibold text-sm" title={`ServerID: ${group.serverId}`}>
+                                {group.serverAlias ? (
+                                  <>
+                                    {group.serverAlias} ({group.serverName})
+                                  </>
+                                ) : (
+                                  <span title={group.serverId}>{group.serverName}</span>
+                                )}
+                              </div>
+                              {hasServerAdditionalDestinations(serverDefaults) && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Settings2 className="w-3.5 h-3.5" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Default additional destinations configured</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               )}
                             </div>
                             {group.serverNote && (

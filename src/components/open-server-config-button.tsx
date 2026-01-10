@@ -121,6 +121,30 @@ export function OpenServerConfigButton() {
     }
   };
 
+  const handleServerContextMenu = (e: React.MouseEvent, serverUrl: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Open old UI by replacing/adding /ngax path to the existing URL
+    try {
+      const url = new URL(serverUrl);
+      if (['http:', 'https:'].includes(url.protocol)) {
+        // Replace the pathname with /ngax
+        url.pathname = '/ngax';
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+        setIsPopoverOpen(false);
+      }
+    } catch (error) {
+      console.error('Invalid server URL for old UI:', error);
+      toast({
+        title: "Error",
+        description: "Failed to open old UI",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
   const handleSettingsClick = () => {
     router.push('/settings?tab=server');
     setIsPopoverOpen(false);
@@ -211,6 +235,11 @@ export function OpenServerConfigButton() {
           variant="outline"
           size="icon"
           onClick={handleButtonClick}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleButtonClick();
+          }}
           disabled={isLoading}
           title="Duplicati configuration"
         >
@@ -248,7 +277,9 @@ export function OpenServerConfigButton() {
                   <button
                     key={server.id}
                     onClick={() => handleServerClick(server.server_url)}
+                    onContextMenu={(e) => handleServerContextMenu(e, server.server_url)}
                     className="flex items-center gap-3 p-3 text-left hover:bg-muted/50 rounded-lg transition-all duration-200 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md hover:-translate-y-0.5 group"
+                    title={`Open ${server.alias ? `${server.alias} (${server.name})` : server.name} configuration (Right-click for old UI)`}
                   >
                     <div className="p-1 rounded bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
                       <ServerIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />

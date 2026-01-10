@@ -13,13 +13,52 @@ export interface PasswordPolicy {
   requireSpecialChars: boolean;
 }
 
-export const passwordPolicy: PasswordPolicy = {
-  minLength: 8,
-  requireUppercase: true,
-  requireLowercase: true,
-  requireNumbers: true,
-  requireSpecialChars: false, // Optional but accepted
-};
+/**
+ * Get password enforcement setting from environment variable
+ * @returns true if password complexity should be enforced, false otherwise
+ */
+function getPasswordEnforce(): boolean {
+  const envValue = process.env.PWD_ENFORCE;
+  if (!envValue) {
+    return true; // Default: enforce all rules
+  }
+  // Case-insensitive check for 'false'
+  return envValue.toLowerCase() !== 'false';
+}
+
+/**
+ * Get minimum password length from environment variable
+ * @returns Minimum password length (default: 8)
+ */
+function getPasswordMinLength(): number {
+  const envValue = process.env.PWD_MIN_LEN;
+  if (!envValue) {
+    return 8; // Default: 8 characters
+  }
+  const parsed = parseInt(envValue, 10);
+  if (isNaN(parsed) || parsed < 1) {
+    return 8; // Fallback to default if invalid
+  }
+  return parsed;
+}
+
+/**
+ * Get password policy based on environment variables
+ * @returns Password policy configuration
+ */
+export function getPasswordPolicy(): PasswordPolicy {
+  const enforce = getPasswordEnforce();
+  return {
+    minLength: getPasswordMinLength(),
+    requireUppercase: enforce,
+    requireLowercase: enforce,
+    requireNumbers: enforce,
+    requireSpecialChars: false, // Optional but accepted
+  };
+}
+
+// Legacy export for backwards compatibility (deprecated, use getPasswordPolicy() instead)
+export const passwordPolicy: PasswordPolicy = getPasswordPolicy();
 
 // Password validation result
 export interface PasswordValidationResult {
@@ -35,29 +74,32 @@ export interface PasswordValidationResult {
  */
 export function validatePassword(password: string): PasswordValidationResult {
   const errors: string[] = [];
+  const policy = getPasswordPolicy();
 
-  // Prevent using the default password
+  // Prevent using the default password (always enforced for security)
   if (password === defaultAuthConfig.defaultPassword) {
     errors.push('Cannot use the default password. Please choose a different password');
   }
 
-  if (!password || password.length < passwordPolicy.minLength) {
-    errors.push(`Password must be at least ${passwordPolicy.minLength} characters long`);
+  // Always enforce minimum length
+  if (!password || password.length < policy.minLength) {
+    errors.push(`Password must be at least ${policy.minLength} characters long`);
   }
 
-  if (passwordPolicy.requireUppercase && !/[A-Z]/.test(password)) {
+  // Only enforce complexity rules if PWD_ENFORCE is true (default)
+  if (policy.requireUppercase && !/[A-Z]/.test(password)) {
     errors.push('Password must contain at least one uppercase letter (A-Z)');
   }
 
-  if (passwordPolicy.requireLowercase && !/[a-z]/.test(password)) {
+  if (policy.requireLowercase && !/[a-z]/.test(password)) {
     errors.push('Password must contain at least one lowercase letter (a-z)');
   }
 
-  if (passwordPolicy.requireNumbers && !/[0-9]/.test(password)) {
+  if (policy.requireNumbers && !/[0-9]/.test(password)) {
     errors.push('Password must contain at least one number (0-9)');
   }
 
-  if (passwordPolicy.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+  if (policy.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     errors.push('Password must contain at least one special character');
   }
 
@@ -106,24 +148,38 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 /**
  * Generate a random secure password
  * Useful for creating temporary passwords for new users
- * @param length - Length of the password to generate (default: 12)
+ * @param length - Length of the password to generate (default: uses policy minimum or 12, whichever is greater)
  * @returns A random password that meets policy requirements
  */
-export function generateSecurePassword(length: number = 12): string {
+export function generateSecurePassword(length?: number): string {
+  const policy = getPasswordPolicy();
+  const minLength = policy.minLength;
+  // Use provided length or default to max of policy minimum and 12
+  const targetLength = length ?? Math.max(minLength, 12);
+  // Ensure length is at least the policy minimum
+  const finalLength = Math.max(targetLength, minLength);
+  
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lowercase = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
   const special = '!@#$%^&*';
   
-  // Ensure we have at least one of each required type
   let password = '';
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += numbers[Math.floor(Math.random() * numbers.length)];
+  
+  // Only add required character types if enforcement is enabled
+  if (policy.requireUppercase) {
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+  }
+  if (policy.requireLowercase) {
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+  }
+  if (policy.requireNumbers) {
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+  }
   
   // Fill the rest with random characters from all sets
   const allChars = uppercase + lowercase + numbers + special;
-  for (let i = password.length; i < length; i++) {
+  for (let i = password.length; i < finalLength; i++) {
     password += allChars[Math.floor(Math.random() * allChars.length)];
   }
   

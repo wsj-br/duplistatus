@@ -547,6 +547,96 @@ export function getOverdueToleranceLabel(tolerance: OverdueTolerance): string {
 }
 
 /**
+ * Get locale-aware weekday information
+ * Returns an array of weekday objects ordered by the locale's first day of the week
+ * @param locale - Optional locale string. If not provided, uses browser locale
+ * @returns Array of objects with dayNumber (0-6, where 0=Sunday), shortName, and fullName
+ */
+export interface LocaleWeekDay {
+  dayNumber: number; // JavaScript day number (0=Sunday, 1=Monday, etc.)
+  shortName: string; // Abbreviated name (e.g., "Mon", "Tue")
+  fullName: string; // Full name (e.g., "Monday", "Tuesday")
+}
+
+export function getLocaleWeekDays(locale?: string): LocaleWeekDay[] {
+  const browserLocale = locale || getBrowserLocale();
+  
+  // Create a date for a known Sunday (January 7, 2024 was a Sunday)
+  const baseDate = new Date(2024, 0, 7); // January 7, 2024 (Sunday)
+  
+  // Get all 7 weekdays starting from Sunday
+  const weekDays: LocaleWeekDay[] = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(baseDate);
+    date.setDate(baseDate.getDate() + i);
+    const dayNumber = date.getDay(); // 0=Sunday, 1=Monday, etc.
+    
+    const shortFormatter = new Intl.DateTimeFormat(browserLocale, { weekday: 'short' });
+    const fullFormatter = new Intl.DateTimeFormat(browserLocale, { weekday: 'long' });
+    
+    weekDays.push({
+      dayNumber,
+      shortName: shortFormatter.format(date),
+      fullName: fullFormatter.format(date),
+    });
+  }
+  
+  // Determine the first day of the week for this locale
+  // We'll check which day the locale considers as the start of the week
+  // by looking at the calendar week numbering
+  let firstDayOfWeek = 0; // Default to Sunday
+  
+  try {
+    // Try to get the first day of the week from Intl
+    // Create a date in the middle of a week and check formatting
+    const testDate = new Date(2024, 0, 10); // Wednesday, January 10, 2024
+    const formatter = new Intl.DateTimeFormat(browserLocale, { 
+      weekday: 'long',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    });
+    
+    // For most European locales, Monday is day 1
+    // For US/Brazil locales, Sunday is day 0
+    // We can determine this by checking locale patterns
+    const localeLower = browserLocale.toLowerCase();
+    
+    // Common Monday-first locales
+    const mondayFirstLocales = [
+      'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt', 
+      'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
+      'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
+    ];
+    
+    // Check if locale starts with any Monday-first locale prefix
+    const isMondayFirst = mondayFirstLocales.some(prefix => 
+      localeLower.startsWith(prefix)
+    );
+    
+    if (isMondayFirst) {
+      firstDayOfWeek = 1; // Monday
+    } else {
+      firstDayOfWeek = 0; // Sunday (default for US, Brazil, etc.)
+    }
+  } catch {
+    // Fallback to Sunday if detection fails
+    firstDayOfWeek = 0;
+  }
+  
+  // Reorder weekdays based on first day of week
+  if (firstDayOfWeek === 0) {
+    // Sunday first (US, Brazil) - already in correct order
+    return weekDays;
+  } else {
+    // Monday first (UK, France, most of Europe)
+    // Reorder: Monday (1) through Sunday (0)
+    const mondayFirst = weekDays.slice(1).concat(weekDays.slice(0, 1));
+    return mondayFirst;
+  }
+}
+
+/**
  * Convert server interval string to hours or days
  * Parses strings like "1D2h30m" (1 day, 2 hours, 30 minutes) and converts to total hours or days
  * Returns hours if total < 24 hours, otherwise returns days

@@ -5,13 +5,14 @@ import fs from 'fs';
 import path from 'path';
 import { dbOps, ensureDatabaseInitialized } from '@/lib/db';
 import { clearAllSessions } from '@/lib/session-csrf';
+import { getDataDir } from '@/lib/paths';
 
 export async function clearSessionsOnStartup() {
   console.log('[Instrumentation] Server initialization started');
   
   // Use a lock file to prevent concurrent execution
   // This is important for production with multiple workers
-  const dataDir = path.join(process.cwd(), 'data');
+  const dataDir = getDataDir();
   const lockFile = path.join(dataDir, '.session-clear.lock');
   
   try {

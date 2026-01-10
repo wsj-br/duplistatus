@@ -14,6 +14,10 @@ External API endpoints are maintained for backward compatibility when possible. 
 
 ## Version-Specific Changes
 
+### Version 1.3.0
+
+**No Breaking Changes to External API Endpoints**
+
 ### Version 1.2.1
 
 **No Breaking Changes to External API Endpoints**

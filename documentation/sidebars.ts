@@ -63,7 +63,9 @@ const sidebars: SidebarsConfig = {
             'user-guide/settings/display-settings',
             'user-guide/settings/database-maintenance',
             'user-guide/settings/user-management-settings',
-            'user-guide/settings/audit-log-settings',
+            'user-guide/settings/audit-logs-viewer',
+            'user-guide/settings/audit-logs-retention',
+            'user-guide/settings/application-logs-settings',
           ],
         },
         'user-guide/homepage-integration',
@@ -134,6 +136,7 @@ const sidebars: SidebarsConfig = {
         icon: 'history',
       },
       items: [
+        'release-notes/1.3.0',
         'release-notes/1.2.1',
         'release-notes/1.1.x',
         'release-notes/1.0.x',

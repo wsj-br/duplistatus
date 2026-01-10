@@ -99,4 +99,7 @@ The project includes several npm scripts for different development tasks:
 - `pnpm test-cron-port` - Test cron service port connectivity
 - `pnpm test-overdue-detection` - Test overdue backup detection logic
 - `pnpm validate-csv-export` - Validate CSV export functionality
+- `pnpm set-smtp-test-config` - Set SMTP test configuration from environment variables (see [Test Scripts](test-scripts))
+- `pnpm test-smtp-connections` - Test SMTP connection type cross-compatibility (see [Test Scripts](test-scripts))
+- `pnpm test-entrypoint` - Test Docker entrypoint script in local development (see [Test Scripts](test-scripts))
 - `pnpm take-screenshots` - Take screenshots for documentation (see [Documentation Tools](documentation-tools))

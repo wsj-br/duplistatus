@@ -10,6 +10,7 @@ import { formatBytes, formatDurationHuman } from '@/lib/utils';
 import { BackupStatus } from '@/lib/types';
 import { AuditLogger } from '@/lib/audit-logger';
 import { getClientIpAddress } from '@/lib/ip-utils';
+import { getDataDir } from '@/lib/paths';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
     if (process.env.NODE_ENV != 'production') {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `${timestamp}.json`;
-      const dataDir = path.join(process.cwd(), 'data');
+      const dataDir = getDataDir();
       const filePath = path.join(dataDir, filename);
       
       // Ensure data directory exists

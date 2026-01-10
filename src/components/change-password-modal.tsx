@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Check, X } from 'lucide-react';
+import { usePasswordPolicy } from '@/hooks/use-password-policy';
 
 interface ChangePasswordModalProps {
   open: boolean;
@@ -45,6 +46,7 @@ const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
 
 export function ChangePasswordModal({ open, onOpenChange, required = false }: ChangePasswordModalProps) {
   const router = useRouter();
+  const passwordPolicy = usePasswordPolicy();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -118,17 +120,27 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
       ? newPassword.length > 0 
       : newPassword === confirmPassword && confirmPassword.length > 0;
     
+    // Use policy if available, otherwise fallback to defaults
+    const minLength = passwordPolicy?.minLength ?? 8;
+    const requireUppercase = passwordPolicy?.requireUppercase ?? true;
+    const requireLowercase = passwordPolicy?.requireLowercase ?? true;
+    const requireNumbers = passwordPolicy?.requireNumbers ?? true;
+    
     return {
-      minLength: newPassword.length >= 8,
-      hasUppercase: /[A-Z]/.test(newPassword),
-      hasLowercase: /[a-z]/.test(newPassword),
-      hasNumber: /[0-9]/.test(newPassword),
+      minLength: newPassword.length >= minLength,
+      hasUppercase: !requireUppercase || /[A-Z]/.test(newPassword),
+      hasLowercase: !requireLowercase || /[a-z]/.test(newPassword),
+      hasNumber: !requireNumbers || /[0-9]/.test(newPassword),
       passwordsMatch,
     };
-  }, [newPassword, confirmPassword, showPassword]);
+  }, [newPassword, confirmPassword, showPassword, passwordPolicy]);
 
   // Check if all requirements are met
   const isPasswordValid = useMemo(() => {
+    if (!passwordPolicy) {
+      // Wait for policy to load
+      return false;
+    }
     return (
       requirements.minLength &&
       requirements.hasUppercase &&
@@ -136,7 +148,7 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
       requirements.hasNumber &&
       requirements.passwordsMatch
     );
-  }, [requirements]);
+  }, [requirements, passwordPolicy]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -256,26 +268,36 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           <div className="space-y-2 rounded-md bg-muted p-3">
             <div className="text-sm font-semibold mb-2">Password Requirements:</div>
             <div className="space-y-1.5">
-              <RequirementItem 
-                met={requirements.minLength} 
-                label="At least 8 characters long" 
-              />
-              <RequirementItem 
-                met={requirements.hasUppercase} 
-                label="Contains at least one uppercase letter (A-Z)" 
-              />
-              <RequirementItem 
-                met={requirements.hasLowercase} 
-                label="Contains at least one lowercase letter (a-z)" 
-              />
-              <RequirementItem 
-                met={requirements.hasNumber} 
-                label="Contains at least one number (0-9)" 
-              />
-              <RequirementItem 
-                met={requirements.passwordsMatch} 
-                label="Passwords match" 
-              />
+              {passwordPolicy && (
+                <>
+                  <RequirementItem 
+                    met={requirements.minLength} 
+                    label={`At least ${passwordPolicy.minLength} characters long`}
+                  />
+                  {passwordPolicy.requireUppercase && (
+                    <RequirementItem 
+                      met={requirements.hasUppercase} 
+                      label="Contains at least one uppercase letter (A-Z)" 
+                    />
+                  )}
+                  {passwordPolicy.requireLowercase && (
+                    <RequirementItem 
+                      met={requirements.hasLowercase} 
+                      label="Contains at least one lowercase letter (a-z)" 
+                    />
+                  )}
+                  {passwordPolicy.requireNumbers && (
+                    <RequirementItem 
+                      met={requirements.hasNumber} 
+                      label="Contains at least one number (0-9)" 
+                    />
+                  )}
+                  <RequirementItem 
+                    met={requirements.passwordsMatch} 
+                    label="Passwords match" 
+                  />
+                </>
+              )}
             </div>
           </div>
 
