@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
       args:
         VERSION: ${VERSION}
+      network: host
     image: wsjbr/duplistatus:${VERSION}
     labels:
       - "com.centurylinklabs.watchtower.enable=false"

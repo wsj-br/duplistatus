@@ -128,28 +128,6 @@ This script allows recovery of admin accounts if locked out or password forgotte
 >[!CAUTION]
 > This script directly modifies the database. Use only when necessary for account recovery.
 
-## Docker build script
-
-```bash
-./scripts/docker-build.sh
-```
-
-Builds a Docker image with the version from `.env` or `package.json`. The script:
-- Extracts the version from `.env` file (or falls back to `package.json`)
-- Builds the Docker image with the version as a build argument
-- Tags the image as `duplistatus:$VERSION`
-
-## Docker Compose with version
-
-```bash
-./scripts/docker-compose-with-version.sh [docker-compose-args]
-```
-
-Runs docker-compose with the version automatically set from `.env` or `package.json`. This script:
-- Exports the version as an environment variable
-- Passes all arguments to docker-compose
-- Ensures version consistency across Docker operations
-
 ## Copy images
 
 ```bash

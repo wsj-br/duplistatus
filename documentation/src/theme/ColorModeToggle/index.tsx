@@ -1,57 +1,26 @@
 import React from 'react';
-import type {Props} from '@theme/ColorModeToggle';
+import {useColorMode} from '@docusaurus/theme-common';
 import {Icon} from '@iconify/react';
-
 import styles from './styles.module.css';
 
-/**
- * Custom ColorModeToggle component using Lucide icons
- * 
- * Pill-shaped segmented toggle matching the Lucide website design:
- * - Both Sun and Moon icons visible
- * - Active mode is highlighted with background
- * 
- * Props received from Docusaurus:
- * - value: 'light' | 'dark' - current color mode
- * - onChange: (colorMode: ColorMode) => void - callback to change mode
- */
-export default function ColorModeToggle({value, onChange}: Props): JSX.Element {
-  const isDarkMode = value === 'dark';
+export default function ColorModeToggle(): JSX.Element {
+  const {colorMode, setColorMode} = useColorMode();
+  const isDark = colorMode === 'dark';
 
   return (
-    <div className={styles.toggleContainer} role="radiogroup" aria-label="Color mode">
-      <button
-        className={`${styles.toggleOption} ${!isDarkMode ? styles.active : ''}`}
-        onClick={() => onChange('light')}
-        title="Light mode"
-        aria-label="Light mode"
-        aria-checked={!isDarkMode}
-        role="radio"
-        type="button"
-      >
-        <Icon
-          icon="lucide:sun"
-          width={16}
-          height={16}
-          className={styles.toggleIcon}
-        />
-      </button>
-      <button
-        className={`${styles.toggleOption} ${isDarkMode ? styles.active : ''}`}
-        onClick={() => onChange('dark')}
-        title="Dark mode"
-        aria-label="Dark mode"
-        aria-checked={isDarkMode}
-        role="radio"
-        type="button"
-      >
-        <Icon
-          icon="lucide:moon"
-          width={16}
-          height={16}
-          className={styles.toggleIcon}
-        />
-      </button>
-    </div>
+    <button
+      className={`${styles.colorModeToggle} ${isDark ? styles.dark : styles.light}`}
+      type="button"
+      onClick={() => setColorMode(isDark ? 'light' : 'dark')}
+      title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+    >
+      <div className={styles.track}>
+        <div className={styles.slider}>
+          {!isDark && <Icon icon="lucide:sun" className={styles.icon} />}
+          {isDark && <Icon icon="lucide:moon" className={styles.icon} />}
+        </div>
+      </div>
+    </button>
   );
 }

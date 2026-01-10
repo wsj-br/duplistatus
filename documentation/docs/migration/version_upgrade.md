@@ -362,7 +362,7 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 | 0.6.x and earlier          | v1.0           | Initial schema                                     |
 | 0.7.x                      | v2.0, v3.0     | Added configurations, renamed machines → servers   |
 | 0.8.x                      | v3.1           | Enhanced backup fields, encryption support         |
-| 0.9.x, 1.0.x, 1.1.x, 1.2.x | v4.0           | User access control, authentication, audit logging |
+| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0           | User access control, authentication, audit logging |
 
 ## Getting Help
 

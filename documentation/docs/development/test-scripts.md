@@ -94,20 +94,6 @@ This script validates the CSV export functionality. It:
 
 Useful for ensuring CSV exports work correctly before releases.
 
-## Test password utilities
-
-```bash
-tsx scripts/test-password.ts
-```
-
-This script tests the password utility functions used by the authentication system. It verifies:
-- Password validation (length, complexity requirements)
-- Password hashing (bcrypt with salt)
-- Password verification
-- Secure password generation
-
-Useful for debugging password-related authentication issues.
-
 ## Temporarily block NTFY server (for testing)
 
 ```bash

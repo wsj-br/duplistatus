@@ -122,7 +122,10 @@ const config: Config = {
       title: 'duplistatus',
       logo: {
         alt: 'duplistatus Logo',
-        src: 'img/duplistatus_logo.svg',
+        src: 'img/duplistatus_logo.png',
+        srcDark: 'img/duplistatus_logo.png',
+        width: 40,
+        height: 40,
       },
       items: [
         {

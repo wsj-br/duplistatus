@@ -34,7 +34,7 @@ class CronService {
 
     // Trigger task manually endpoint
     this.app.post('/trigger/:taskName', async (req: Request, res: Response) => {
-      const { taskName } = req.params;
+      const taskName = Array.isArray(req.params.taskName) ? req.params.taskName[0] : req.params.taskName;
       console.log(`[CronService] ${timestamp()}: Manual trigger requested for task: ${taskName}`);
       try {
         const result = await this.executeTask(taskName);
@@ -48,7 +48,7 @@ class CronService {
 
     // Stop task endpoint
     this.app.post('/stop/:taskName', (req: Request, res: Response) => {
-      const { taskName } = req.params;
+      const taskName = Array.isArray(req.params.taskName) ? req.params.taskName[0] : req.params.taskName;
       console.log(`[CronService] ${timestamp()}: Stop requested for task: ${taskName}`);
       const task = this.tasks.get(taskName);
       if (task) {
@@ -64,7 +64,7 @@ class CronService {
 
     // Start task endpoint
     this.app.post('/start/:taskName', (req: Request, res: Response) => {
-      const { taskName } = req.params;
+      const taskName = Array.isArray(req.params.taskName) ? req.params.taskName[0] : req.params.taskName;
       console.log(`[CronService] ${timestamp()}: Start requested for task: ${taskName}`);
       if (this.config.tasks[taskName]) {
         this.startTask(taskName);

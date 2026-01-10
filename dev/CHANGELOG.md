@@ -37,7 +37,6 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- **Documentation theme toggle**: Replaced the default dark/light mode toggle with a pill-shaped segmented toggle (matching the Lucide website design) featuring both Sun and Moon icons visible, with the active mode highlighted
 - **Locale-aware weekday display**: Weekday display in the overdue monitoring form now respects the user's browser locale settings (suggested by `Taomyn`)
   - Weekdays are displayed in the correct order based on locale (Monday-Sunday for UK/France/Europe, Sunday-Saturday for US/Brazil)
   - Uses JavaScript's `Intl.DateTimeFormat` API to detect locale and determine the first day of the week

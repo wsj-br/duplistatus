@@ -205,6 +205,28 @@ const response = await fetch('/api/servers/server-id', {
   - Used to determine if password change tip should be shown
   - On error, returns `false` to avoid showing tip if there's a database issue
 
+### Get Password Policy - `/api/auth/password-policy`
+- **Endpoint**: `/api/auth/password-policy`
+- **Method**: GET
+- **Description**: Returns the current password policy configuration. This endpoint is public (no authentication required) as it's needed for frontend validation.
+- **Response**:
+  ```json
+  {
+    "minLength": 8,
+    "requireUppercase": true,
+    "requireLowercase": true,
+    "requireNumbers": true,
+    "requireSpecialChars": false
+  }
+  ```
+- **Error Responses**:
+  - `500`: Internal server error
+- **Notes**:
+  - Public endpoint, no authentication required
+  - Used by frontend components to display password requirements and validate passwords before submission
+  - Policy is configured via environment variables (`PWD_ENFORCE`, `PWD_MIN_LEN`)
+  - Default password check (preventing use of default admin password) is always enforced regardless of policy settings
+
 ### Error Responses
 - `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
 - `403 Forbidden`: CSRF token validation failed or operation not allowed
