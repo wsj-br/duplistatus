@@ -1,6 +1,6 @@
 
 
-# User Management 
+# Users
 
 Manage user accounts, permissions, and access control for **duplistatus**. This section allows administrators to create, modify, and delete user accounts.
 
@@ -33,7 +33,7 @@ You can access the User Management section in two ways:
    - **Password**: 
      - Option 1: Check "Auto-generate password" to create a secure temporary password
      - Option 2: Uncheck and enter a custom password
-3. Click `Create User`
+3. Click <IconButton icon="lucide:user-plus" label="Create User" />.
 
 ## Editing a User
 
@@ -42,7 +42,7 @@ You can access the User Management section in two ways:
    - **Username**: Change the username (must be unique)
    - **Admin**: Toggle administrator privileges
    - **Require Password Change**: Toggle password change requirement
-3. Click `Save Changes`
+3. Click <IconButton icon="lucide:check" label="Save Changes" />.
 
 ## Resetting a User Password
 

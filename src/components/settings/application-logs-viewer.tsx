@@ -451,11 +451,11 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         <div className="flex gap-2 pt-2 border-t">
           <Button variant="outline" size="sm" onClick={handleCopy}>
             <Copy className="h-4 w-4 mr-2" />
-            Copy to clipboard
+            Copy
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            Export
+            Download
           </Button>
         </div>
       </div>

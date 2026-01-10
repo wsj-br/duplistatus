@@ -5,12 +5,21 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Password policy environment variables**: Added configurable password validation via environment variables (suggested by `danpeig`)
+  - `PWD_ENFORCE`: Set to `false` to disable password complexity requirements (uppercase, lowercase, numbers). Defaults to enforcing all rules. When disabled, only minimum length is enforced.
+  - `PWD_MIN_LEN`: Sets minimum password length in characters. Defaults to 8 characters.
+  - Password policy is evaluated at runtime, allowing changes without code modifications
+  - Backend validation in `src/lib/auth.ts` now dynamically reads policy from environment variables
+  - Frontend components (`change-password-modal.tsx` and `user-management-form.tsx`) now fetch and display requirements based on the current policy
+  - New API endpoint `/api/auth/password-policy` (GET) returns current password policy configuration
+  - New React hook `usePasswordPolicy()` fetches and caches password policy for frontend components
+  - Default password check (preventing use of default admin password) always enforced regardless of `PWD_ENFORCE` setting
 - **Test Entrypoint Script**: New test script (`pnpm test-entrypoint`) to test the Docker entrypoint script in local development
   - Automatically builds a fresh version with `pnpm build-local` before testing
   - Sets up the environment to test entrypoint logging functionality
   - Logs are written to `data/logs/` so the application can access them
   - Script located in `scripts/test-entrypoint.sh` with pnpm shortcut
-- **Application Logs Viewer**: New admin-only settings tab to view and export application logs
+- **Application Logs Viewer**: New admin-only settings tab to view and download application logs
   - View logs from a single consolidated `data/logs/application.log` file
   - Access rotated log files (supports up to 10 rotated versions: `application.log.1`, `application.log.2`, etc.)
   - File version selector with intuitive display names ("Current" for active log, ".1", ".2", etc. for rotated files)
@@ -28,6 +37,14 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **Documentation theme toggle**: Replaced the default dark/light mode toggle with a pill-shaped segmented toggle (matching the Lucide website design) featuring both Sun and Moon icons visible, with the active mode highlighted
+- **Locale-aware weekday display**: Weekday display in the overdue monitoring form now respects the user's browser locale settings (suggested by `Taomyn`)
+  - Weekdays are displayed in the correct order based on locale (Monday-Sunday for UK/France/Europe, Sunday-Saturday for US/Brazil)
+  - Uses JavaScript's `Intl.DateTimeFormat` API to detect locale and determine the first day of the week
+  - Added `getLocaleWeekDays()` utility function in `src/lib/utils.ts` to provide locale-aware weekday information
+  - Updated desktop table view, mobile card view, and weekday button displays to use locale-ordered weekdays
+  - CSV export uses English weekday names but orders allowed weekdays according to locale
+  - Internal day number representation (0=Sunday, 1=Monday, etc.) remains unchanged for compatibility
 - **Application Logs Viewer**: Simplified and improved the application logs viewer interface
   - Removed log source selection (entrypoint/server/cron) - now reads from single `application.log` file
   - Removed log combining logic - simplified to read directly from `data/logs/application.log`

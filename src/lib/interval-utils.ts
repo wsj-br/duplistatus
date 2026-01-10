@@ -3,6 +3,8 @@
 // Units: s=seconds, m=minutes, h=hours, D=days, W=weeks, M=months, Y=years
 // Tokens can be concatenated like "1D2h30m" (1 day, 2 hours, 30 minutes)
 
+import { getLocaleWeekDays } from './utils';
+
 export type IntervalUnit = 'custom' | 'Minutes' | 'Hours' | 'Days' | 'Weeks' | 'Months' | 'Years';
 
 export interface ParsedInterval {
@@ -249,9 +251,22 @@ export function getDefaultAllowedWeekDays(): number[] {
 /**
  * Convert weekday numbers to display names
  * @param weekDays - array of weekday numbers
+ * @param locale - Optional locale string. If not provided, uses browser locale (client-side) or 'en-US' (server-side)
  * @returns array of weekday names
  */
-export function getWeekDayNames(weekDays: number[]): string[] {
+export function getWeekDayNames(weekDays: number[], locale?: string): string[] {
+  try {
+    // Use locale-aware names if available (client-side)
+    if (typeof window !== 'undefined') {
+      const localeWeekDays = getLocaleWeekDays(locale);
+      const dayNameMap = new Map(localeWeekDays.map(wd => [wd.dayNumber, wd.shortName]));
+      return weekDays.map(day => dayNameMap.get(day) || `Day ${day}`).filter(Boolean);
+    }
+  } catch {
+    // Fallback if getLocaleWeekDays fails
+  }
+  
+  // Fallback to English names (for server-side or if locale-aware function fails)
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return weekDays.map(day => dayNames[day]).filter(Boolean);
 }

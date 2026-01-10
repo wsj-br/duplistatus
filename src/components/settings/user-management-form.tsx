@@ -40,6 +40,7 @@ import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X, UserCog } from 'l
 import { formatRelativeTime } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ColoredIcon } from '@/components/ui/colored-icon';
+import { usePasswordPolicy } from '@/hooks/use-password-policy';
 
 interface User {
   id: string;
@@ -61,6 +62,7 @@ interface UserManagementFormProps {
 
 export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const { toast } = useToast();
+  const passwordPolicy = usePasswordPolicy();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -159,23 +161,34 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
         hasNumber: true,
       };
     }
+    
+    // Use policy if available, otherwise fallback to defaults
+    const minLength = passwordPolicy?.minLength ?? 8;
+    const requireUppercase = passwordPolicy?.requireUppercase ?? true;
+    const requireLowercase = passwordPolicy?.requireLowercase ?? true;
+    const requireNumbers = passwordPolicy?.requireNumbers ?? true;
+    
     return {
-      minLength: formPassword.length >= 8,
-      hasUppercase: /[A-Z]/.test(formPassword),
-      hasLowercase: /[a-z]/.test(formPassword),
-      hasNumber: /[0-9]/.test(formPassword),
+      minLength: formPassword.length >= minLength,
+      hasUppercase: !requireUppercase || /[A-Z]/.test(formPassword),
+      hasLowercase: !requireLowercase || /[a-z]/.test(formPassword),
+      hasNumber: !requireNumbers || /[0-9]/.test(formPassword),
     };
-  }, [formPassword, formAutoGeneratePassword]);
+  }, [formPassword, formAutoGeneratePassword, passwordPolicy]);
 
   const isPasswordValid = useMemo(() => {
     if (formAutoGeneratePassword) return true;
+    if (!passwordPolicy) {
+      // Wait for policy to load
+      return false;
+    }
     return (
       passwordRequirements.minLength &&
       passwordRequirements.hasUppercase &&
       passwordRequirements.hasLowercase &&
       passwordRequirements.hasNumber
     );
-  }, [passwordRequirements, formAutoGeneratePassword]);
+  }, [passwordRequirements, formAutoGeneratePassword, passwordPolicy]);
 
   // Requirement item component (defined inside to avoid recreation warnings)
   const RequirementItem = useCallback(({ met, label }: { met: boolean; label: string }) => (
@@ -779,22 +792,32 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   <div className="space-y-2 rounded-md bg-muted p-3">
                     <div className="text-sm font-semibold mb-2">Password Requirements:</div>
                     <div className="space-y-1.5">
-                      <RequirementItem 
-                        met={passwordRequirements.minLength} 
-                        label="At least 8 characters long" 
-                      />
-                      <RequirementItem 
-                        met={passwordRequirements.hasUppercase} 
-                        label="Contains at least one uppercase letter (A-Z)" 
-                      />
-                      <RequirementItem 
-                        met={passwordRequirements.hasLowercase} 
-                        label="Contains at least one lowercase letter (a-z)" 
-                      />
-                      <RequirementItem 
-                        met={passwordRequirements.hasNumber} 
-                        label="Contains at least one number (0-9)" 
-                      />
+                      {passwordPolicy && (
+                        <>
+                          <RequirementItem 
+                            met={passwordRequirements.minLength} 
+                            label={`At least ${passwordPolicy.minLength} characters long`}
+                          />
+                          {passwordPolicy.requireUppercase && (
+                            <RequirementItem 
+                              met={passwordRequirements.hasUppercase} 
+                              label="Contains at least one uppercase letter (A-Z)" 
+                            />
+                          )}
+                          {passwordPolicy.requireLowercase && (
+                            <RequirementItem 
+                              met={passwordRequirements.hasLowercase} 
+                              label="Contains at least one lowercase letter (a-z)" 
+                            />
+                          )}
+                          {passwordPolicy.requireNumbers && (
+                            <RequirementItem 
+                              met={passwordRequirements.hasNumber} 
+                              label="Contains at least one number (0-9)" 
+                            />
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

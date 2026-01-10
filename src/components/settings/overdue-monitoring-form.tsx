@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -31,7 +31,7 @@ import {
   toggleWeekDay,
   isWeekDayAllowed
 } from '@/lib/interval-utils';
-import { formatRelativeTime } from '@/lib/utils';
+import { formatRelativeTime, getLocaleWeekDays } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
@@ -73,6 +73,20 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
   const [lastBackupTimestamps, setLastBackupTimestamps] = useState<Record<string, string>>({});
   const tableScrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Get locale-aware weekdays ordered by locale's first day of week
+  const localeWeekDays = useMemo(() => getLocaleWeekDays(), []);
+  
+  // English day names mapping (keep English names but use locale order)
+  const englishDayNames: Record<number, string> = {
+    0: 'Sun', // Sunday
+    1: 'Mon', // Monday
+    2: 'Tue', // Tuesday
+    3: 'Wed', // Wednesday
+    4: 'Thu', // Thursday
+    5: 'Fri', // Friday
+    6: 'Sat', // Saturday
+  };
 
   const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
     { value: 'onetime', label: 'One time' },
@@ -751,14 +765,23 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
           ? new Date(nextRunDate.getTime() + overdueToleranceMs) < csvGenerationTime
           : false;
         
-        // Format allowed weekdays
+        // Format allowed weekdays using English names for CSV export (consistent format)
+        // But order them according to locale (e.g., Monday-Sunday for UK, Sunday-Saturday for US)
         const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const allowedWeekdays = (backupSetting.allowedWeekDays || getDefaultAllowedWeekDays())
-          .sort((a, b) => a - b)
+        const allowedWeekDaysArray = backupSetting.allowedWeekDays || getDefaultAllowedWeekDays();
+        
+        // Sort allowed weekdays according to locale order (localeWeekDays is already ordered by locale)
+        const localeOrderedDays = localeWeekDays.map(wd => wd.dayNumber);
+        const allowedWeekdays = allowedWeekDaysArray
+          .sort((a, b) => {
+            const indexA = localeOrderedDays.indexOf(a);
+            const indexB = localeOrderedDays.indexOf(b);
+            return indexA - indexB;
+          })
           .map(day => weekdayNames[day])
           .join('; ');
 
-        // Get weekday names for dates
+        // Get weekday names for dates (using English names)
         const lastBackupWeekday = lastBackupDate ? weekdayNames[lastBackupDate.getDay()] : 'N/A';
         const nextRunWeekday = nextRunDate ? weekdayNames[nextRunDate.getDay()] : 'N/A';
 
@@ -1117,20 +1140,20 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     {/* Allowed Days - Table */}
                     <TableCell>
                       <div className="flex gap-1">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                        {localeWeekDays.map((weekDay) => (
                           <Button
-                            key={day}
-                            variant={isWeekDayAllowed(server.allowedWeekDays, index) ? "default" : "outline"}
+                            key={weekDay.dayNumber}
+                            variant={isWeekDayAllowed(server.allowedWeekDays, weekDay.dayNumber) ? "default" : "outline"}
                             size="sm"
                             className={`text-xs px-2 py-1 h-6 min-w-8 ${!backupSetting.overdueBackupCheckEnabled ? 'opacity-50 cursor-not-allowed' : ''} ${
-                              isWeekDayAllowed(server.allowedWeekDays, index) 
+                              isWeekDayAllowed(server.allowedWeekDays, weekDay.dayNumber) 
                                 ? 'bg-blue-800 hover:bg-blue-600 text-white border-blue-800' 
                                 : 'border-gray-800 text-gray-600 hover:bg-blue-400'
                             }`}
-                            onClick={() => handleWeekDayToggle(server.id, server.backupName, index)}
+                            onClick={() => handleWeekDayToggle(server.id, server.backupName, weekDay.dayNumber)}
                             disabled={!backupSetting.overdueBackupCheckEnabled}
                           >
-                            {day}
+                            {englishDayNames[weekDay.dayNumber]}
                           </Button>
                         ))}
                       </div>
@@ -1296,20 +1319,20 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     <div className="space-y-1">
                       <Label className="text-xs font-medium">Allowed Days</Label>
                       <div className="flex gap-1 flex-wrap">
-                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                        {localeWeekDays.map((weekDay) => (
                           <Button
-                            key={day}
-                            variant={isWeekDayAllowed(server.allowedWeekDays, index) ? "default" : "outline"}
+                            key={weekDay.dayNumber}
+                            variant={isWeekDayAllowed(server.allowedWeekDays, weekDay.dayNumber) ? "default" : "outline"}
                             size="sm"
                             className={`text-xs px-2 py-1 h-6 min-w-8 ${!backupSetting.overdueBackupCheckEnabled ? 'opacity-50 cursor-not-allowed' : ''} ${
-                              isWeekDayAllowed(server.allowedWeekDays, index) 
+                              isWeekDayAllowed(server.allowedWeekDays, weekDay.dayNumber) 
                                 ? 'bg-blue-500 hover:bg-blue-600 text-white border-blue-500' 
                                 : 'border-blue-500 text-blue-500 hover:bg-blue-50'
                             }`}
-                            onClick={() => handleWeekDayToggle(server.id, server.backupName, index)}
+                            onClick={() => handleWeekDayToggle(server.id, server.backupName, weekDay.dayNumber)}
                             disabled={!backupSetting.overdueBackupCheckEnabled}
                           >
-                            {day}
+                            {englishDayNames[weekDay.dayNumber]}
                           </Button>
                         ))}
                       </div>

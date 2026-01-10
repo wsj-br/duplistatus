@@ -1,4 +1,4 @@
-# Application Logs Settings
+# Application Logs
 
 The Application Logs viewer lets administrators monitor all application logs in one place, with filtering, export, and real-time updates directly from the web interface.
 

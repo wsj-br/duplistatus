@@ -29,12 +29,6 @@
 
 - internationalization with versions initially in english, spanish, french and portuguese (pt-br).
 
-- implement the suggestion from Taomyn: 
-
-  >  BTW, for a future update you might want to consider anywhere you show the week days that it adheres to local regional settings i.e. the week begins on a Monday ;-)'
-
-- create a environment variable, when set it will relax the new password rules for users, also one to configure the minimum acceptable password characters.
-
 - check if make sense to group servers in a hierarchy
 
 <br/>

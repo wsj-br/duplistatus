@@ -15,7 +15,7 @@ You can configure an alternative name (alias) for your servers, a note to descri
 | **Status**                      | Display the test or collect backup logs results                                                                                                                                              |
 | **Actions**                     | You can test, open Duplicati interface, collect logs and set a password, see below for more details.                                                                                         |
 
-
+<br/>
 :::note
 If the Web Interface Address (URL) is not configured, the <SvgIcon svgFilename="duplicati_logo.svg" /> button 
 will be disabled in all pages and the server will not be shown in [`Duplicati Configuration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>  list.
@@ -31,6 +31,8 @@ will be disabled in all pages and the server will not be shown in [`Duplicati Co
 | <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Open the Duplicati server's web interface in a new browser tab.         |
 | <IconButton icon="lucide:download" />                                                                       | Collect backup logs from the Duplicati server.                          |
 | <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; or <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Change or set a password for the Duplicati server to collected backups. |
+
+<br/>
 
 :::info[IMPORTANT]
 

@@ -2,7 +2,11 @@
  * Maps application routes to documentation URLs
  */
 
-const DOCS_BASE_URL = 'https://wsj-br.github.io/duplistatus/';
+// the URL has to end in a trailing slash (/)
+const DOCS_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://wsj-br.github.io/duplistatus/'
+    : 'http://localhost:3000/';
 
 interface HelpMapping {
   url: string;
@@ -58,11 +62,11 @@ const HELP_MAP: Record<string, HelpMapping> = {
     pageName: 'User Management',
   },
   'settings:audit': {
-    url: 'user-guide/settings/audit-log-settings',
-    pageName: 'Audit Log',
+    url: 'user-guide/settings/audit-logs-viewer',
+    pageName: 'Audit Log Viewer',
   },
   'settings:audit-retention': {
-    url: 'user-guide/settings/audit-log-settings',
+    url: 'user-guide/settings/audit-logs-retention',
     pageName: 'Audit Log Retention',
   },
   'settings:application-logs': {
@@ -120,8 +124,8 @@ export function getHelpUrl(
     // Check if it's a backup detail page (pattern: /detail/[serverId]/backup/[backupId])
     if (/^\/detail\/[^/]+\/backup\/[^/]+$/.test(pathname)) {
       return {
-        url: `${DOCS_BASE_URL}user-guide/backup-metrics`,
-        pageName: 'Backup Metrics',
+        url: `${DOCS_BASE_URL}user-guide/server-details#backup-details`,
+        pageName: 'Backup Details',
       };
     }
     // Regular server detail page (pattern: /detail/[serverId])

@@ -39,8 +39,8 @@ Administrators see all available settings.
             <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
             <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
             <li><a href="user-management-settings.md">Users</a>: Manage user accounts (admin only)</li>
-            <li><a href="audit-log-settings.md">Audit Log</a>: View system audit logs</li>
-            <li><a href="audit-log-settings.md#retention-configuration">Audit Log Retention</a>: Configure audit log retention (admin only)</li>
+            <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs</li>
+            <li><a href="audit-logs-retention.md">Audit Log Retention</a>: Configure audit log retention (admin only)</li>
             <li><a href="application-logs-settings.md">Application Logs</a>: View and export application logs (admin only)</li>
           </ul>
         </li>
@@ -80,7 +80,7 @@ Regular users see a limited set of settings.
           <ul>
             <li><a href="server-settings.md">Servers</a>: View server configurations (read-only)</li>
             <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
-            <li><a href="audit-log-settings.md">Audit Log</a>: View system audit logs (read-only)</li>
+            <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs (read-only)</li>
           </ul>
         </li>
       </ul>

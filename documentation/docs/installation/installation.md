@@ -23,6 +23,11 @@ Ensure you have the following installed:
 You can create additional users accounts in [Settings > Users](user-guide/settings/user-management-settings.md) after the first login.
 
 
+::::info[IMPORTANT]
+The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please configure these settings carefully.
+::::
+
+
 ### Container Images
 
 You can use the images from:
@@ -59,6 +64,8 @@ services:
     environment:
       - TZ=Europe/London
       - LANG=en_GB
+      - PWD_ENFORCE=true
+      - PWD_MIN_LEN=8
     ports:
       - "9666:9666"
     volumes:
@@ -85,7 +92,7 @@ volumes:
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
 5. In the "Compose path" field, enter: `production.yml`
-6. (optional) Set the `TZ` and `LANG` environment variables in the "Environment variables" section. Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format. 
+6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone and Locale](installation/configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format. 
 6. Click "Deploy the stack".
 
 ### Option 4: Using Docker CLI

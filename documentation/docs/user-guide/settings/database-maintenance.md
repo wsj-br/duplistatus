@@ -18,7 +18,7 @@ Create a backup of your entire database for safekeeping or migration purposes.
 2.  In the **Database Backup** section, select a backup format:
     - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
     - **SQL Dump (.sql)**: Text format - human-readable SQL statements, can be edited before restore
-3.  Click `Download Backup`.
+3.  Click <IconButton icon="lucide:download" label="Download Backup" />.
 4.  The backup file will be downloaded to your computer with a timestamped filename.
 
 **Backup Formats:**
@@ -42,7 +42,7 @@ Restore your database from a previously created backup file.
 2.  In the **Database Restore** section, click the file input and select a backup file:
     - Supported formats: `.db`, `.sql`, `.sqlite`, `.sqlite3`
     - Maximum file size: 100MB
-3.  Click `Restore Database`.
+3.  Click <IconButton icon="lucide:upload" label="Restore Database" />.
 4.  Confirm the action in the dialogue box.
 
 **Restore Process:**
@@ -94,15 +94,23 @@ Remove outdated backup records to free up storage space and improve system perfo
     - **6 months**: Retain records from the last 6 months.
     - **1 year**: Retain records from the last year.
     - **2 years**: Retain records from the last 2 years (default).
-    - **Delete all data**: Remove all backup records and servers.
-3.  Click `Clear Old Records`.
+    - **Delete all data**: Remove all backup records and servers. 
+3.  Click <IconButton icon="lucide:trash-2" label="Clear Old Records" />.
 4.  Confirm the action in the dialogue box.
 
 **Cleanup Effects:**
 
 - Deletes backup records older than the selected period
 - Updates all related statistics and metrics
-- The "Delete all data" option also clears all associated configuration settings
+
+
+:::warning
+
+Selecting the "Delete all data" option will **permanently remove all backup records and configuration settings** from the system.
+
+It is strongly recommended to create a database backup before proceeding with this action.
+
+:::
 
 <br/>
 
@@ -113,7 +121,7 @@ Remove a specific Backup Job (type) data.
 1.  Navigate to `Settings → Database Maintenance`.
 2.  Select a Backup Job from the dropdown list.
     - The backups will be ordered by server alias or name, then the backup name.
-3.  Click `Delete Backup Job`.
+3.  Click <IconButton icon="lucide:folder-open" label="Delete Backup Job" />.
 4.  Confirm the action in the dialogue box.
 
 **Deletion Effects:**
@@ -130,7 +138,7 @@ Remove a specific server and all its associated backup data.
 
 1.  Navigate to `Settings → Database Maintenance`.
 2.  Select a server from the dropdown list.
-3.  Click `Delete Server Data`.
+3.  Click <IconButton icon="lucide:server" label="Delete Server Data" />.
 4.  Confirm the action in the dialogue box.
 
 **Deletion Effects:**
@@ -156,7 +164,7 @@ This can occur when Duplicati's `machine-id` changes after an upgrade or reinsta
     - The **Target Server** (newest by creation date) is highlighted
     - **Old Server IDs** that will be merged are listed separately
 4.  Select the server groups you want to merge by checking the checkbox next to each group.
-5.  Click `Merge Selected Servers`.
+5.  Click <IconButton icon="lucide:git-merge" label="Merge Selected Servers" />.
 6.  Confirm the action in the dialogue box.
 
 
