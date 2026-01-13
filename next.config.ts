@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   
   // Disable Turbopack to use webpack configuration
   turbopack: {},
+
   
   // Optimize preloading to reduce warnings
   experimental: {
@@ -18,6 +19,16 @@ const nextConfig: NextConfig = {
   
   // Configure what Next.js should ignore during build
   distDir: '.next',
+  
+  outputFileTracingExcludes: {
+    '*': [
+      './.next/**',
+      '.next/**',
+      './.next/standalone/**/*',
+      '.next/standalone/**/*',
+      '**/data/**',
+    ],
+  },
   
   // Configure webpack to handle binary files
   webpack: (config, { isServer, webpack }) => {

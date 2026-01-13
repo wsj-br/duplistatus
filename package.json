@@ -10,7 +10,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build": "./scripts/pre-checks.sh && next build",
+    "build": "./scripts/pre-checks.sh && next build --webpack",
     "lint": "pnpm exec eslint .",
     "typecheck": "tsc --noEmit",
     "start": "NODE_ENV=production HOSTNAME=0.0.0.0 PORT=9666 node .next/standalone/server.js",
