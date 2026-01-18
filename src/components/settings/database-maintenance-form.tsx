@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -69,6 +70,8 @@ interface DatabaseMaintenanceFormProps {
 }
 
 export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProps) {
+  const content = useIntlayer('database-maintenance-form');
+  const common = useIntlayer('common');
   const {
     databaseCleanupPeriod,
     setDatabaseCleanupPeriod,
@@ -198,8 +201,8 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       
       // Show success toast
       toast({
-        title: "Database cleaned",
-        description: "Old records have been successfully removed.",
+        title: content.databaseCleaned,
+        description: content.oldRecordsRemoved,
         variant: "default",
         duration: 2000,
       });
@@ -217,7 +220,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       
       // Show detailed error toast
       toast({
-        title: "Database Cleanup Failed",
+        title: content.databaseCleanupFailed,
         description: errorMessage,
         variant: "destructive",
         duration: 3000,
@@ -275,16 +278,16 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       
       // Find the selected server details for the error toast
       const selectedServerDetails = servers.find(server => server.id === selectedServer);
-      const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
+      const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : content.unknownServer;
       
       // Extract error message
       const errorMessage = error instanceof Error 
         ? error.message 
-        : 'Failed to delete server. Please try again.';
+        : content.failedToDeleteServer;
       
       // Show detailed error toast
       toast({
-        title: `Server "${serverDisplayName}" Deletion Failed`,
+        title: content.serverDeletionFailed.value.replace('{serverName}', serverDisplayName),
         description: `${errorMessage}`,
         variant: "destructive",
         duration: 3000,
@@ -346,16 +349,16 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       
       // Find the selected backup job details for the error toast
       const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
-      const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
+      const backupJobName = selectedBackupJobDetails?.backup_name || content.unknownBackup;
       
       // Extract error message
       const errorMessage = error instanceof Error 
         ? error.message 
-        : 'Failed to delete backup job. Please try again.';
+        : content.failedToDeleteBackupJob;
       
       // Show detailed error toast
       toast({
-        title: `Backup Job "${backupJobName}" Deletion Failed`,
+        title: content.backupJobDeletionFailed.replace('{backupName}', backupJobName),
         description: `${errorMessage}`,
         variant: "destructive",
         duration: 3000,
@@ -443,8 +446,8 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
   const handleRestore = async () => {
     if (!restoreFile) {
       toast({
-        title: "No file selected",
-        description: "Please select a database backup file to restore.",
+        title: content.noFileSelected,
+        description: content.pleaseSelectBackupFile,
         variant: "destructive",
         duration: 3000,
       });
@@ -503,13 +506,13 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
         window.dispatchEvent(new CustomEvent('configuration-saved'));
       } else {
         const errorData = await restoreResponse.json();
-        throw new Error(errorData.error || errorData.details || 'Failed to restore database');
+        throw new Error(errorData.error || errorData.details || content.failedToRestoreDatabase);
       }
     } catch (error) {
       console.error('Error restoring database:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Restore Failed",
-        description: error instanceof Error ? error.message : 'Failed to restore database. Please try again.',
+        title: content.restoreFailed,
+        description: error instanceof Error ? error.message : content.failedToRestoreDatabase,
         variant: "destructive",
         duration: 5000,
       });
@@ -575,8 +578,10 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       const totalMerged = successfulMerges.reduce((sum, r) => sum + (r?.count || 0), 0);
       
       toast({
-        title: "Servers merged successfully",
-        description: `Successfully merged ${totalMerged} server(s) across ${successfulMerges.length} server group(s).`,
+        title: content.serversMergedSuccessfully,
+        description: content.successfullyMergedServers
+          .replace('{totalMerged}', totalMerged.toString())
+          .replace('{groupCount}', successfulMerges.length.toString()),
         variant: "default",
         duration: 3000,
       });
@@ -613,17 +618,17 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ColoredIcon icon={Database} color="blue" size="md" />
-            Database Maintenance
+            {content.title}
           </CardTitle>
           <CardDescription>
-            Reduce database size by cleaning up old records and managing data
+            {content.cardDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {!isAdmin && (
             <div className="rounded-md bg-blue-50 dark:bg-blue-950 p-3 border border-blue-200 dark:border-blue-800">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                You are viewing this in read-only mode. Only administrators can perform maintenance operations.
+                {content.readOnlyMode}
               </p>
             </div>
           )}
@@ -635,13 +640,13 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ColoredIcon icon={Download} color="green" size="sm" />
-                  Database Backup
+                  {content.databaseBackup}
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3">
                 <div className="grid gap-2">
                   <Label htmlFor="backup-format">
-                    Backup Format
+                    {content.backupFormat}
                   </Label>
                   <Select
                     value={backupFormat}
@@ -649,17 +654,17 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                     disabled={!isAdmin || isBackingUp}
                   >
                     <SelectTrigger id="backup-format" disabled={!isAdmin || isBackingUp}>
-                      <SelectValue placeholder="Select format" />
+                      <SelectValue placeholder={content.selectFormat.value} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="db">Database File (.db)</SelectItem>
-                      <SelectItem value="sql">SQL Dump (.sql)</SelectItem>
+                      <SelectItem value="db">{content.databaseFile.value}</SelectItem>
+                      <SelectItem value="sql">{content.sqlDump.value}</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-sm text-muted-foreground">
                     {backupFormat === 'db' 
-                      ? 'Binary database file - fastest backup, preserves all database structure'
-                      : 'SQL text file - human-readable, can be edited before restore'}
+                      ? content.binaryDatabaseFileDescription
+                      : content.sqlTextFileDescription}
                   </p>
                 </div>
                 
@@ -673,18 +678,18 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                     {isBackingUp ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating Backup...
+                        {content.creatingBackup}
                       </>
                     ) : (
                       <>
                         <Download className="mr-2 h-4 w-4" />
-                        Download Backup
+                        {content.downloadBackup}
                       </>
                     )}
                   </Button>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Create a backup of the entire database. The backup will be downloaded to your computer.
+                  {content.createBackupDescription}
                 </p>
               </CardContent>
             </Card>
@@ -694,13 +699,13 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ColoredIcon icon={Upload} color="orange" size="sm" />
-                  Database Restore
+                  {content.databaseRestore}
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3">
                 <div className="grid gap-2">
                   <Label htmlFor="restore-file">
-                    Select Backup File
+                    {content.selectBackupFile}
                   </Label>
                   <Input
                     id="restore-file"
@@ -715,11 +720,11 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                   />
                   {restoreFile ? (
                     <p className="text-sm text-muted-foreground">
-                      Selected: {restoreFile.name} ({(restoreFile.size / 1024 / 1024).toFixed(2)} MB)
+                      {content.selected.value.replace('{filename}', restoreFile.name).replace('{size}', (restoreFile.size / 1024 / 1024).toFixed(2))}
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      Select a .db or .sql backup file to restore. This will replace the current database.
+                      {content.selectBackupFileDescription.value}
                     </p>
                   )}
                 </div>
@@ -735,7 +740,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                         {isRestoring ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Restoring...
+                            {content.restoring}
                           </>
                         ) : (
                           <>
@@ -749,10 +754,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                       <AlertDialogHeader>
                         <AlertDialogTitle>Restore Database?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will replace the current database with the backup file. All current data will be lost unless you have a backup. 
-                          A safety backup of the current database will be created automatically before restore.
-                          <br /><br />
-                          <strong>This action cannot be undone.</strong>
+                          {content.restoreDatabaseDialogDescription.value}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -761,7 +763,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                           onClick={handleRestore} 
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                          Restore Database
+                          {content.restoreDatabase}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -781,13 +783,13 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ColoredIcon icon={Clock} color="blue" size="sm" />
-                  Database Cleanup Period
+                  {content.databaseCleanupPeriod}
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3">
               <div className="grid gap-2">
                 <Label htmlFor="database-cleanup">
-                  Select cleanup period
+                  {content.selectCleanupPeriod}
                 </Label>
                 <Select
                 value={databaseCleanupPeriod}
@@ -795,17 +797,17 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 disabled={!isAdmin}
               >
                 <SelectTrigger id="database-cleanup" disabled={!isAdmin}>
-                  <SelectValue placeholder="Select cleanup period" />
+                  <SelectValue placeholder={content.selectCleanupPeriod.value} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Delete all data">Delete all data</SelectItem>
-                  <SelectItem value="6 months">6 months</SelectItem>
-                  <SelectItem value="1 year">1 year</SelectItem>
-                  <SelectItem value="2 years">2 years</SelectItem>
+                  <SelectItem value="Delete all data">{content.deleteAllData.value}</SelectItem>
+                  <SelectItem value="6 months">{content.sixMonths.value}</SelectItem>
+                  <SelectItem value="1 year">{content.oneYear.value}</SelectItem>
+                  <SelectItem value="2 years">{content.twoYears.value}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-sm text-muted-foreground">
-                Select how long backup records are kept in the database.
+                {content.selectCleanupPeriodDescription}
               </p>
             </div>
 
@@ -820,36 +822,34 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                   {isCleaning ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Cleaning...
+                      {content.cleaning}
                     </>
                   ) : (
                     <>
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Clear Old Records
+                      {content.clearOldRecords}
                     </>
                   )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogTitle>{content.areYouSure}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will permanently delete all backup records older than the selected cleanup period. 
-                      This action cannot be undone.
+                      {content.cleanupDialogDescription}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel autoFocus>{content.cancel}</AlertDialogCancel>
                     <AlertDialogAction onClick={handleCleanup} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                      Continue
+                      {content.continue}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
             </div>
             <p className="text-sm text-muted-foreground">
-              This will remove all backup records older than the selected cleanup period.
-              <span className="font-medium"> Manual action required</span> - you must click the button to perform the cleanup.
+              {content.cleanupDescription}
             </p>
               </CardContent>
             </Card>
@@ -859,7 +859,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ColoredIcon icon={FolderOpen} color="yellow" size="sm" />
-                  Delete Backup Job
+                  {content.deleteBackupJob}
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3">
@@ -899,7 +899,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                   {isDeletingBackupJob ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deleting...
+                      {content.deleting}
                     </>
                   ) : (
                     <>
@@ -924,7 +924,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                   <AlertDialogFooter>
                     <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDeleteBackupJob} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                      Delete Backup Job
+                      {content.deleteBackupJobButton}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -941,13 +941,13 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ColoredIcon icon={Server} color="red" size="sm" />
-                  Delete Server Data
+                  {content.deleteServerData}
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3 min-w-0">
               <div className="grid gap-2">
                 <Label htmlFor="server-select">
-                  Select server
+                  {content.selectServer}
                 </Label>
                 <Select
                 value={selectedServer}
@@ -955,7 +955,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 disabled={!isAdmin}
               >
                 <SelectTrigger id="server-select" disabled={!isAdmin}>
-                  <SelectValue placeholder="Select server to delete" />
+                  <SelectValue placeholder={content.selectServerToDelete.value} />
                 </SelectTrigger>
                 <SelectContent>
                   {servers.map((server) => (
@@ -966,7 +966,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 </SelectContent>
               </Select>
               <p className="text-sm text-muted-foreground">
-                Select a server to delete all its backup data permanently.
+                {content.selectServerDescription}
               </p>
             </div>
             
@@ -981,31 +981,31 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                   {isDeletingServer ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deleting...
+                      {content.deleting}
                     </>
                   ) : (
                     <>
                       <Server className="mr-2 h-4 w-4" />
-                      Delete Server Data
+                      {content.deleteServerDataButton}
                     </>
                   )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Server Data?</AlertDialogTitle>
+                    <AlertDialogTitle>{content.deleteServerDataDialogTitle}</AlertDialogTitle>
                     <AlertDialogDescription>
                       {(() => {
                         const selectedServerDetails = servers.find(server => server.id === selectedServer);
-                        const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : 'Unknown Server';
-                        return `This will permanently delete server "${serverDisplayName}" and all its backup records. This action cannot be undone.`;
+                        const serverDisplayName = selectedServerDetails ? (selectedServerDetails.alias || selectedServerDetails.name) : content.unknownServer;
+                        return content.deleteServerDataDialogDescription.value.replace('{serverName}', serverDisplayName);
                       })()}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel autoFocus>{content.cancel}</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDeleteServer} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                      Delete Server
+                      {content.deleteServer}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -1066,7 +1066,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                         />
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm mb-3">
-                            Server Name: <span className="font-semibold">{duplicate.name}</span>
+                            {content.serverName} <span className="font-semibold">{duplicate.name}</span>
                           </div>
                           <div className="overflow-x-auto min-w-0">
                             <table className="w-full text-sm border-collapse min-w-0">
@@ -1074,12 +1074,12 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                                 <tr className="border-b">
                                   <th className="text-left p-2 font-medium">
                                     <span className="inline-block px-2 py-1 rounded-md bg-blue-700 dark:bg-blue-800 text-blue-100 dark:text-blue-200 shadow-inner border border-blue-600 dark:border-blue-700">
-                                      Target Server (newest)
+                                      {content.targetServerNewest}
                                     </span>
                                   </th>
                                   <th className="text-left p-2 font-medium">
                                     <span className="inline-block px-2 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600">
-                                      Old Server ID
+                                      {content.oldServerId}
                                     </span>
                                   </th>
                                 </tr>
@@ -1088,14 +1088,14 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                                 <tr>
                                   <td className="p-2 align-top break-words">
                                     <div className="space-y-1">
-                                      <div className="font-medium break-all">{targetServer.id || 'N/A'}</div>
+                                      <div className="font-medium break-all">{targetServer.id || common.status.notAvailable}</div>
                                       <div className="text-xs text-muted-foreground">
-                                        Created: {targetServer.created_at && !isNaN(new Date(targetServer.created_at).getTime()) 
+                                        {content.created} {targetServer.created_at && !isNaN(new Date(targetServer.created_at).getTime()) 
                                           ? new Date(targetServer.created_at).toLocaleString() 
-                                          : 'Invalid Date'}
+                                          : content.invalidDate}
                                       </div>
                                       {targetServer.alias && (
-                                        <div className="text-xs text-muted-foreground">Alias: {targetServer.alias}</div>
+                                        <div className="text-xs text-muted-foreground">{content.alias} {targetServer.alias}</div>
                                       )}
                                     </div>
                                   </td>
@@ -1104,19 +1104,19 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                                       {oldServers.length > 0 ? (
                                         oldServers.map((server, idx) => (
                                           <div key={server.id || idx} className="space-y-1">
-                                            <div className="font-medium break-all">{server.id || 'N/A'}</div>
+                                            <div className="font-medium break-all">{server.id || common.status.notAvailable}</div>
                                             <div className="text-xs text-muted-foreground">
-                                              Created: {server.created_at && !isNaN(new Date(server.created_at).getTime()) 
+                                              {content.created} {server.created_at && !isNaN(new Date(server.created_at).getTime()) 
                                                 ? new Date(server.created_at).toLocaleString() 
-                                                : 'Invalid Date'}
+                                                : content.invalidDate}
                                             </div>
                                             {server.alias && (
-                                              <div className="text-xs text-muted-foreground">Alias: {server.alias}</div>
+                                              <div className="text-xs text-muted-foreground">{content.alias} {server.alias}</div>
                                             )}
                                           </div>
                                         ))
                                       ) : (
-                                        <span className="text-muted-foreground">None</span>
+                                        <span className="text-muted-foreground">{content.none}</span>
                                       )}
                                     </div>
                                   </td>
@@ -1182,10 +1182,10 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-base">
                     <ColoredIcon icon={GitMerge} color="purple" size="sm" />
-                    Duplicate Servers
+                    {content.duplicateServers}
                   </CardTitle>
                   <CardDescription>
-                    No duplicate servers found. All servers have unique names.
+                    {content.noDuplicateServersFound}
                   </CardDescription>
                 </CardHeader>
               </Card>

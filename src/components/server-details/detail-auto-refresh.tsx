@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { ServerDetailsContent } from "@/components/server-details/server-details-content";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -31,6 +32,7 @@ interface DetailAutoRefreshProps {
 }
 
 export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
+  const common = useIntlayer('common');
   const [data, setData] = useState<DetailData>(initialData);
   const [lastError, setLastError] = useState<string | null>(null);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
@@ -78,7 +80,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         setLastError(errorMessage);
         
         toast({
-          title: "Update Failed",
+          title: common.status.error,
           description: `Failed to refresh detail data: ${errorMessage}`,
           variant: "destructive",
           duration: 3000,
@@ -91,7 +93,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
     if (!state.isRefreshing && !state.pageSpecificLoading.detail && !state.refreshInProgress && state.lastRefresh) {
       fetchData();
     }
-  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, serverId, toast]);
+  }, [state.isRefreshing, state.pageSpecificLoading.detail, state.refreshInProgress, state.lastRefresh, serverId, toast, common.status.error]);
 
   return (
     <div className="flex flex-col gap-8">

@@ -95,8 +95,11 @@ export function getHelpUrl(
   pathname: string,
   searchParams?: string
 ): { url: string; pageName: string } {
-  // Handle settings routes with query parameters
-  if (pathname === '/settings') {
+  // Normalize: strip optional locale prefix (e.g. /en, /de) for routing logic
+  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(-[A-Za-z0-9]+)?/, "") || "/";
+
+  // Handle settings routes with query parameters (/settings or /en/settings etc.)
+  if (pathWithoutLocale === "/settings" || pathWithoutLocale.startsWith("/settings?")) {
     if (searchParams) {
       const params = new URLSearchParams(searchParams);
       const tab = params.get('tab');
@@ -119,26 +122,24 @@ export function getHelpUrl(
     };
   }
 
-  // Handle dynamic routes - server details
-  if (pathname.startsWith('/detail/')) {
-    // Check if it's a backup detail page (pattern: /detail/[serverId]/backup/[backupId])
-    if (/^\/detail\/[^/]+\/backup\/[^/]+$/.test(pathname)) {
+  // Handle dynamic routes - server details (pathWithoutLocale: /detail/xxx or /detail/xxx/backup/yyy)
+  if (pathWithoutLocale.startsWith("/detail/")) {
+    if (/^\/detail\/[^/]+\/backup\/[^/]+$/.test(pathWithoutLocale)) {
       return {
         url: `${DOCS_BASE_URL}user-guide/server-details#backup-details`,
-        pageName: 'Backup Details',
+        pageName: "Backup Details",
       };
     }
-    // Regular server detail page (pattern: /detail/[serverId])
-    if (/^\/detail\/[^/]+$/.test(pathname)) {
+    if (/^\/detail\/[^/]+$/.test(pathWithoutLocale)) {
       return {
         url: `${DOCS_BASE_URL}user-guide/server-details`,
-        pageName: 'Server Details',
+        pageName: "Server Details",
       };
     }
   }
 
-  // Exact path matches
-  const exactMatch = HELP_MAP[pathname];
+  // Exact path matches (dashboard / or /en -> /, etc.)
+  const exactMatch = HELP_MAP[pathWithoutLocale];
   if (exactMatch) {
     return {
       url: `${DOCS_BASE_URL}${exactMatch.url}`,

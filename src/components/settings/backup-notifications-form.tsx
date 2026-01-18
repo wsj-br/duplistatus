@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import QRCode from 'qrcode';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
+import { useIntlayer } from 'react-intlayer';
 
 interface ServerWithBackup {
   id: string;
@@ -59,6 +60,8 @@ interface ServerGroup {
 }
 
 export function BackupNotificationsForm({ backupSettings }: BackupNotificationsFormProps) {
+  const content = useIntlayer('backup-notifications-form');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const { config, refreshConfigSilently } = useConfiguration();
   const { refreshOverdueTolerance } = useConfig();
@@ -140,6 +143,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const autoSaveTextInputTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pendingChangesRef = useRef<Record<BackupKey, BackupNotificationConfig> | null>(null);
   const isAutoSaveInProgressRef = useRef(false);
+  const autoSaveTextInputRef = useRef<((immediate?: boolean) => Promise<void>) | null>(null);
+  const updateTextInputToMainStateRef = useRef<((key: string, value: string, syncInputAfterUpdate?: boolean) => void) | null>(null);
   const [isSavingInProgress, setIsSavingInProgress] = useState(false);
   const tableScrollContainerRef = useRef<HTMLDivElement>(null);
   // Ref to store latest settings for autoSave to avoid passing large objects on every keystroke
@@ -826,7 +831,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   // Auto-save function specifically for text inputs
   // Reads values directly from input elements - simple and reliable
   // If immediate is true, saves right away (for blur events). Otherwise, waits 5 seconds.
-  const autoSaveTextInput = useCallback(async (immediate: boolean = false) => {
+  const autoSaveTextInput: (immediate?: boolean) => Promise<void> = useCallback(async (immediate: boolean = false) => {
     // Clear existing timeout
     if (autoSaveTextInputTimeoutRef.current) {
       clearTimeout(autoSaveTextInputTimeoutRef.current);
@@ -962,7 +967,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         inputValuesToSave.set(key, currentValue);
         
         // Update the state with the current input value
-        updateTextInputToMainState(key, currentValue, true);
+        updateTextInputToMainStateRef.current?.(key, currentValue, true);
         
         // Clean up any pending timeouts or refs for this key
         delete textInputValuesRef.current[key];
@@ -1051,6 +1056,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       }
     }, 5000); // 5 second timeout - only saves if user stops typing for 5 seconds
   }, [refreshConfigSilently, refreshOverdueTolerance, toast, buildSettingsFromInputs]);
+  
+  // Store autoSaveTextInput in ref so updateTextInputToMainState can call it without circular dependency
+  autoSaveTextInputRef.current = autoSaveTextInput;
 
   // Trigger autosave immediately for text fields (called on blur)
   const triggerTextInputAutoSave = useCallback(() => {
@@ -1161,7 +1169,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   }, [config?.serversWithBackups]);
 
   // Update main state from text input value (called on blur or timeout)
-  const updateTextInputToMainState = useCallback((key: string, value: string, syncInputAfterUpdate: boolean = false) => {
+  const updateTextInputToMainState = useCallback((key: string, value: string, syncInputAfterUpdate: boolean = false): void => {
     // Parse key: format is either "serverId:__default__:field" or "serverId:backupName:field"
     const parts = key.split(':');
     if (parts.length < 3) return;
@@ -1256,7 +1264,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
               }
               
               settingsRef.current = newSettings;
-              autoSaveTextInput(true);
+              autoSaveTextInputRef.current?.(true);
               
               return newSettings;
             });
@@ -1323,6 +1331,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       }, 0);
     }
   }, [setSettings, removeEmptyFields, updateInheritingBackupInputs, updateBackupSettingById]);
+  
+  // Store updateTextInputToMainState in ref so autoSaveTextInput can call it without circular dependency
+  updateTextInputToMainStateRef.current = updateTextInputToMainState;
 
 
   // Get current value from input ref or effective value (for test buttons, etc.)
@@ -2340,45 +2351,27 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     }
   };
 
-
-  if (!config?.serversWithBackups || config.serversWithBackups.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Backup Notifications</CardTitle>
-          <CardDescription>No servers with backups found in the database</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            No servers with backups have been registered yet. Add some backup data first to see backup notification settings.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card>
         <CardHeader>
-          <CardTitle>Configure Backup Notifications</CardTitle>
+          <CardTitle>{content.title}</CardTitle>
           <CardDescription>
-             Configure notification settings for a server or backup when a new backup log is received.
-             Icons indicate additional destinations: <Settings2 className="inline w-3 h-3 align-middle" /> for server defaults,{' '}
-             <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(96 165 250)' }} /> for custom backup overrides,{' '}
-             <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(100 116 139)' }} /> for inherited destinations.
+             {content.description} <Settings2 className="inline w-3 h-3 align-middle" /> {content.serverDefaults},{' '}
+             <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(96 165 250)' }} /> {content.customBackupOverrides},{' '}
+             <ExternalLink className="inline w-3 h-3 align-middle" style={{ color: 'rgb(100 116 139)' }} /> {content.inheritedDestinations}.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {/* Filter Input */}
           <div className="mb-4">
             <div className="flex items-center gap-2">
-              <Label htmlFor="server-filter" className="text-sm font-medium">Filter by Server Name</Label>
+              <Label htmlFor="server-filter" className="text-sm font-medium">{content.filterByServerName}</Label>
               <div className="relative w-[260px]">
                 <Input
                   id="server-filter"
                   type="text"
-                  placeholder="Search by server name or alias..."
+                  placeholder={content.searchPlaceholder.value}
                   value={serverNameFilter}
                   onChange={(e) => setServerNameFilter(e.target.value)}
                   className="pr-10"
@@ -2458,7 +2451,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Server / Backup
+                  {content.serverBackup}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[140px] min-w-[120px] bg-muted" 
@@ -2466,7 +2459,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Notification Events
+                  {content.notificationEvents}
                 </SortableTableHead>
                 <th className="text-center font-medium text-sm text-muted-foreground px-2 py-3 w-[80px] bg-muted">
                   <div className="flex items-center justify-center gap-2">
@@ -2477,7 +2470,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
                     <span className={isNtfyConfigured ? "" : "text-gray-500"} title={isNtfyConfigured ? undefined : "not configured"}>
-                      NTFY Notifications{!isNtfyConfigured ? " (disabled)" : ""}
+                      {content.ntfyNotifications}{!isNtfyConfigured ? ` (${common.disabled})` : ""}
                     </span>
                   </div>
                 </th>
@@ -2490,7 +2483,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
                     <span className={isEmailConfigured ? "" : "text-gray-500"} title={isEmailConfigured ? undefined : "not configured"}>
-                      Email Notifications{!isEmailConfigured ? " (disabled)" : ""}
+                      {!isEmailConfigured ? content.emailNotificationsDisabled : content.emailNotifications}
                     </span>
                   </div>
                 </th>
@@ -3759,7 +3752,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       
                       {/* Notification Events */}
                       <div className="space-y-1">
-                        <Label className="text-xs font-medium">Notification Events</Label>
+                        <Label className="text-xs font-medium">{content.notificationEvents}</Label>
                         <Select
                           value={backupSetting.notificationEvent}
                           onValueChange={(value: NotificationEvent) => 
@@ -3770,10 +3763,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="off">Off</SelectItem>
-                            <SelectItem value="all">All</SelectItem>
-                            <SelectItem value="warnings">Warnings</SelectItem>
-                            <SelectItem value="errors">Errors</SelectItem>
+                            <SelectItem value="off">{content.off}</SelectItem>
+                            <SelectItem value="all">{content.all}</SelectItem>
+                            <SelectItem value="warnings">{content.warnings}</SelectItem>
+                            <SelectItem value="errors">{content.errors}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -4383,8 +4376,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           </div>
                     
                     {/* Notification Events */}
-                    <div className="space-y-1">
-                      <Label className="text-xs font-medium">Notification Events</Label>
+                      <div className="space-y-1">
+                        <Label className="text-xs font-medium">{content.notificationEvents}</Label>
                       <Select
                         value={backupSetting.notificationEvent}
                         onValueChange={(value: NotificationEvent) => 
@@ -4395,10 +4388,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="off">Off</SelectItem>
-                          <SelectItem value="all">All</SelectItem>
-                          <SelectItem value="warnings">Warnings</SelectItem>
-                          <SelectItem value="errors">Errors</SelectItem>
+                          <SelectItem value="off">{content.off}</SelectItem>
+                          <SelectItem value="all">{content.all}</SelectItem>
+                          <SelectItem value="warnings">{content.warnings}</SelectItem>
+                          <SelectItem value="errors">{content.errors}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -4454,9 +4447,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       </div>
                     </div>
                     
-                          {/* Notification Events */}
-                          <div className="space-y-1">
-                            <Label className="text-xs font-medium">Notification Events</Label>
+                    {/* Notification Events */}
+                      <div className="space-y-1">
+                        <Label className="text-xs font-medium">{content.notificationEvents}</Label>
                             <Select
                               value={backupSetting.notificationEvent}
                               onValueChange={(value: NotificationEvent) => 

@@ -98,7 +98,14 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
   return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
 }
 
-export function formatRelativeTime(dateString: string, currentTime?: Date): string {
+/**
+ * Format a relative time string (e.g., "2 hours ago", "in 3 days")
+ * Uses Intl.RelativeTimeFormat for locale-aware formatting when locale is provided
+ * @param dateString - ISO date string or SQLite timestamp
+ * @param currentTime - Optional reference time (defaults to now)
+ * @param locale - Optional locale string (e.g., "en", "de", "fr"). If not provided, uses English
+ */
+export function formatRelativeTime(dateString: string, currentTime?: Date, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     // Handle SQLite timestamps (YYYY-MM-DD HH:MM:SS format, UTC)
@@ -119,22 +126,80 @@ export function formatRelativeTime(dateString: string, currentTime?: Date): stri
 
     // Use absolute value for "just now" case as requested
     if (Math.abs(diffInSeconds) < 15) {
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+          return rtf.format(0, 'second');
+        } catch {
+          return "just now";
+        }
+      }
       return "just now";
     }
 
     const isFuture = diffInSeconds < 0;
     const absDiffInSeconds = Math.abs(diffInSeconds);
 
+    // Use Intl.RelativeTimeFormat if locale is provided
+    if (locale) {
+      try {
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+        
+        if (absDiffInSeconds < 60) {
+          const seconds = Math.floor(absDiffInSeconds);
+          return rtf.format(isFuture ? seconds : -seconds, 'second');
+        }
+        
+        if (absDiffInSeconds < 3600) {
+          const minutes = Math.floor(absDiffInSeconds / 60);
+          return rtf.format(isFuture ? minutes : -minutes, 'minute');
+        }
+        
+        if (absDiffInSeconds < 86400) {
+          const hours = Math.floor(absDiffInSeconds / 3600);
+          return rtf.format(isFuture ? hours : -hours, 'hour');
+        }
+        
+        if (absDiffInSeconds < 604800) {
+          const days = Math.floor(absDiffInSeconds / 86400);
+          return rtf.format(isFuture ? days : -days, 'day');
+        }
+        
+        if (absDiffInSeconds < 2592000) {
+          const weeks = Math.floor(absDiffInSeconds / 604800);
+          return rtf.format(isFuture ? weeks : -weeks, 'week');
+        }
+        
+        if (absDiffInSeconds < 31536000) {
+          const months = Math.floor(absDiffInSeconds / 2592000);
+          return rtf.format(isFuture ? months : -months, 'month');
+        }
+        
+        // For periods longer than 1 year, show years and months
+        const years = Math.floor(absDiffInSeconds / 31536000);
+        const remainingSeconds = absDiffInSeconds % 31536000;
+        const months = Math.floor(remainingSeconds / 2592000);
+        
+        if (months === 0) {
+          return rtf.format(isFuture ? years : -years, 'year');
+        } else {
+          // Intl.RelativeTimeFormat doesn't support compound formats, so we format separately
+          const yearPart = rtf.format(isFuture ? years : -years, 'year');
+          const monthPart = rtf.format(isFuture ? months : -months, 'month');
+          // Try to combine them in a locale-appropriate way
+          // For most locales, we can use a simple conjunction
+          return `${yearPart} ${monthPart}`;
+        }
+      } catch {
+        // Fall through to English fallback
+      }
+    }
+
+    // Fallback to English formatting if locale not provided or Intl.RelativeTimeFormat fails
     if (absDiffInSeconds < 60) {  
       const seconds = Math.floor(absDiffInSeconds);
       return isFuture ? `in ${seconds} second${seconds === 1 ? '' : 's'}` : `${seconds} second${seconds === 1 ? '' : 's'} ago`;
     }
-
-    if (absDiffInSeconds < 3600) {
-      const minutes = Math.floor(absDiffInSeconds / 60);
-      return isFuture ? `in ${minutes} minute${minutes === 1 ? '' : 's'}` : `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
-    }
-
 
     if (absDiffInSeconds < 3600) {
       const minutes = Math.floor(absDiffInSeconds / 60);
@@ -177,7 +242,15 @@ export function formatRelativeTime(dateString: string, currentTime?: Date): stri
 }
 
 
-export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean): string {
+/**
+ * Format a short relative time string (e.g., "6 mo", "2 y")
+ * Uses abbreviated format for compact display
+ * @param dateString - ISO date string
+ * @param currentTime - Optional reference time (defaults to now)
+ * @param addPlural - Optional flag for plural suffix (legacy parameter, not used with locale)
+ * @param locale - Optional locale string (e.g., "en", "de", "fr"). If not provided, uses English abbreviations
+ */
+export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -185,22 +258,25 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
       return ""; 
     }
 
-    const plural = addPlural === undefined ? '' : addPlural ? 's' : '';
-
     // Use a fixed reference time (server-side) to avoid hydration mismatches
     const now = currentTime || new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {
-      return "future";
+      return locale ? (locale === 'de' ? 'Zukunft' : locale === 'fr' ? 'Futur' : locale === 'es' ? 'Futuro' : locale === 'pt-BR' ? 'Futuro' : 'future') : "future";
     }
 
     if (diffInSeconds < 60) {
-      return "now";
+      return locale ? (locale === 'de' ? 'jetzt' : locale === 'fr' ? 'maintenant' : locale === 'es' ? 'ahora' : locale === 'pt-BR' ? 'agora' : 'now') : "now";
     }
+
+    // For short format, we'll use abbreviated units that are more universal
+    // But we can still make them locale-aware for the unit abbreviations
+    const plural = addPlural === undefined ? '' : addPlural ? 's' : '';
 
     if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
+      // Abbreviated minutes - keep short for compact display
       return `${minutes} m${minutes === 1 ? '' : plural}`;
     }
 
@@ -221,6 +297,11 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
 
     if (diffInSeconds < 31536000) {
       const months = Math.floor(diffInSeconds / 2592000);
+      // Use locale-appropriate month abbreviation
+      if (locale) {
+        const monthAbbr = locale === 'de' ? 'Mo' : locale === 'fr' ? 'mois' : locale === 'es' ? 'mes' : locale === 'pt-BR' ? 'mês' : 'mo';
+        return `${months} ${monthAbbr}`;
+      }
       return `${months} mo${months === 1 ? '' : plural}`;
     }
 
@@ -228,6 +309,17 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
     const years = Math.floor(diffInSeconds / 31536000);
     const remainingSeconds = diffInSeconds % 31536000;
     const months = Math.floor(remainingSeconds / 2592000);
+    
+    if (locale) {
+      const yearAbbr = locale === 'de' ? 'J' : locale === 'fr' ? 'a' : locale === 'es' ? 'a' : locale === 'pt-BR' ? 'a' : 'y';
+      const monthAbbr = locale === 'de' ? 'Mo' : locale === 'fr' ? 'mois' : locale === 'es' ? 'mes' : locale === 'pt-BR' ? 'mês' : 'mo';
+      
+      if (months === 0) {
+        return `${years} ${yearAbbr}`;
+      } else {
+        return `${years} ${yearAbbr} ${months} ${monthAbbr}`;
+      }
+    }
     
     if (months === 0) {
       return `${years} y`;

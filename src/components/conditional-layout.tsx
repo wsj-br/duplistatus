@@ -9,7 +9,7 @@ import { PasswordChangeGuard } from '@/components/password-change-guard';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === '/login';
+  const isLoginPage = /\/login$/.test(pathname ?? "");
 
   if (isLoginPage) {
     return <>{children}</>;

@@ -22,6 +22,8 @@ import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { BackupCollectMenu } from '../backup-collect-menu';
 import { CollectAllButton } from '../ui/collect-all-button';
 import Link from 'next/link';
+import { useIntlayer } from 'react-intlayer';
+import { useLocale } from '@/contexts/locale-context';
 import { 
   getIntervalDisplay, 
   createIntervalString, 
@@ -54,6 +56,8 @@ interface ServerWithBackupAndSettings extends ServerWithBackup {
 }
 
 export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormProps) {
+  const content = useIntlayer('overdue-monitoring-form');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const { config, refreshConfigSilently, updateConfig } = useConfiguration();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
@@ -88,12 +92,13 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     6: 'Sat', // Saturday
   };
 
-  const notificationFrequencyOptions: { value: NotificationFrequencyConfig; label: string }[] = [
-    { value: 'onetime', label: 'One time' },
-    { value: 'every_day', label: 'Every day' },
-    { value: 'every_week', label: 'Every week' },
-    { value: 'every_month', label: 'Every month' },
-  ];
+  // Notification frequency options - will be created inside component to use content
+  const notificationFrequencyOptions = useMemo(() => [
+    { value: 'onetime' as NotificationFrequencyConfig, label: content.oneTime.value },
+    { value: 'every_day' as NotificationFrequencyConfig, label: content.everyDay.value },
+    { value: 'every_week' as NotificationFrequencyConfig, label: content.everyWeek.value },
+    { value: 'every_month' as NotificationFrequencyConfig, label: content.everyMonth.value },
+  ], [content]);
 
   const overdueToleranceOptions: { value: OverdueTolerance; label: string; milliseconds: number }[] = [
     { value: 'no_tolerance', label: 'No tolerance', milliseconds: 0 },
@@ -285,7 +290,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       if (!validation.isValid) {
         setValidationErrors(prev => ({
           ...prev,
-          [inputKey]: validation.error || 'Invalid interval format'
+          [inputKey]: validation.error || content.invalidIntervalFormat
         }));
       }
     }
@@ -325,7 +330,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         // Set validation error and don't update
         setValidationErrors(prev => ({
           ...prev,
-          [inputKey]: 'Please enter a valid positive number'
+          [inputKey]: content.pleaseEnterValidPositiveNumber
         }));
         return;
       }
@@ -346,7 +351,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
         // Set validation error and don't update
         setValidationErrors(prev => ({
           ...prev,
-          [inputKey]: error instanceof Error ? error.message : 'Invalid interval format'
+          [inputKey]: error instanceof Error ? error.message : content.invalidIntervalFormat
         }));
         return;
       }
@@ -460,23 +465,26 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error('You do not have permission to run overdue backup checks. Only administrators can perform this action.');
+          throw new Error(content.noPermissionToRunOverdueBackupChecks);
         }
-        const errorData = await response.json().catch(() => ({ error: 'Failed to run overdue backup check' }));
-        throw new Error(errorData.error || 'Failed to run overdue backup check');
+        const errorData = await response.json().catch(() => ({ error: content.failedToRunOverdueBackupCheck }));
+        throw new Error(errorData.error || content.failedToRunOverdueBackupCheck);
       }
 
       const result = await response.json();
       toast({
-        title: "Overdue Backup Check Complete",
-        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
+        title: content.overdueBackupCheckComplete,
+        description: content.checkedBackupsFoundOverdue.value
+          .replace('{checked}', result.statistics.checkedBackups.toString())
+          .replace('{overdue}', result.statistics.overdueBackupsFound.toString())
+          .replace('{notifications}', result.statistics.notificationsSent.toString()),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to run overdue backup check",
+        title: common.status.error,
+        description: content.failedToRunOverdueBackupCheck,
         variant: "destructive",
         duration: 3000,
       });
@@ -541,10 +549,10 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       
       if (!backupResponse.ok) {
         if (backupResponse.status === 403) {
-          throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+          throw new Error(content.noPermissionToModifySetting);
         }
-        const errorData = await backupResponse.json().catch(() => ({ error: 'Failed to save backup settings' }));
-        throw new Error(errorData.error || 'Failed to save backup settings');
+        const errorData = await backupResponse.json().catch(() => ({ error: content.failedToSaveOverdueMonitoringSettings }));
+        throw new Error(errorData.error || content.failedToSaveOverdueMonitoringSettings);
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -554,15 +562,15 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       await refreshConfigSilently();
       
       toast({
-        title: "Success",
-        description: "Overdue monitoring settings saved successfully",
+        title: common.status.success,
+        description: content.overdueMonitoringSettingsSaved,
         duration: 2000,
       });
     } catch (error) {
       console.error('Error saving settings:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to save overdue monitoring settings",
+        title: common.status.error,
+        description: content.failedToSaveOverdueMonitoringSettings,
         variant: "destructive",
         duration: 3000,
       });
@@ -585,7 +593,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
       
       if (!backupResponse.ok) {
-        throw new Error('Failed to save backup settings');
+        throw new Error(content.failedToSaveOverdueMonitoringSettings);
       }
       
       // Dispatch custom event to notify other components about configuration change
@@ -601,23 +609,26 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error('You do not have permission to run overdue backup checks. Only administrators can perform this action.');
+          throw new Error(content.noPermissionToRunOverdueBackupChecks);
         }
-        const errorData = await response.json().catch(() => ({ error: 'Failed to run overdue backup check' }));
-        throw new Error(errorData.error || 'Failed to run overdue backup check');
+        const errorData = await response.json().catch(() => ({ error: content.failedToRunOverdueBackupCheck }));
+        throw new Error(errorData.error || content.failedToRunOverdueBackupCheck);
       }
 
       const result = await response.json();
       toast({
-        title: "Overdue Backup Check Complete",
-        description: `Checked ${result.statistics.checkedBackups} backups, found ${result.statistics.overdueBackupsFound} overdue backups, sent ${result.statistics.notificationsSent} notifications.`,
+        title: content.overdueBackupCheckComplete,
+        description: content.checkedBackupsFoundOverdue.value
+          .replace('{checked}', result.statistics.checkedBackups.toString())
+          .replace('{overdue}', result.statistics.overdueBackupsFound.toString())
+          .replace('{notifications}', result.statistics.notificationsSent.toString()),
         duration: 2000,
       });
     } catch (error) {
       console.error('Error running overdue backup check:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to run overdue backup check",
+        title: common.status.error,
+        description: content.failedToRunOverdueBackupCheck,
         variant: "destructive",
         duration: 3000,
       });
@@ -636,10 +647,10 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       });
       if (!response.ok) throw new Error('Failed to update notification frequency');
       setNotificationFrequency(value);
-      toast({ title: 'Success', description: 'Notification frequency updated.', duration: 2000 });
+      toast({ title: common.status.success, description: content.notificationFrequencyUpdated, duration: 2000 });
     } catch {
-      setNotificationFrequencyError('Failed to update notification frequency');
-      toast({ title: 'Error', description: 'Failed to update notification frequency', variant: 'destructive', duration: 3000 });
+      setNotificationFrequencyError(content.failedToUpdateNotificationFrequency);
+      toast({ title: common.status.error, description: content.failedToUpdateNotificationFrequency, variant: 'destructive', duration: 3000 });
     } finally {
       setNotificationFrequencyLoading(false);
     }
@@ -734,19 +745,19 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       
       // Prepare CSV headers
       const headers = [
-        'CSV Generated At',
-        'Server Name',
-        'Server ID',
-        'Backup Name',
-        'Last Backup (cfg)',
-        'Last Backup (cfg) Weekday',
-        'Last Backup (DB)',
-        'Next Run',
-        'Next Run Weekday',
-        'Is Overdue',
-        'Monitoring Enabled',
-        'Expected Interval',
-        'Allowed Weekdays'
+        content.csvGeneratedAt,
+        content.csvServerName,
+        content.csvServerId,
+        content.csvBackupName,
+        content.csvLastBackupCfg,
+        content.csvLastBackupCfgWeekday,
+        content.csvLastBackupDb,
+        content.csvNextRun,
+        content.csvNextRunWeekday,
+        content.csvIsOverdue,
+        content.csvMonitoringEnabled,
+        content.csvExpectedInterval,
+        content.csvAllowedWeekdays
       ];
 
       // Prepare CSV rows
@@ -831,15 +842,15 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Success",
-        description: "CSV file downloaded successfully",
+        title: common.status.success,
+        description: content.csvFileDownloadedSuccessfully,
         duration: 2000,
       });
     } catch (error) {
       console.error('Error generating CSV:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to generate CSV file",
+        title: common.status.error,
+        description: content.failedToGenerateCsvFile,
         variant: "destructive",
         duration: 3000,
       });
@@ -905,10 +916,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
     <div className="space-y-6" data-screenshot-target="settings-content-card">
       <Card>
         <CardHeader>
-          <CardTitle>Configure Overdue Monitoring</CardTitle>
+          <CardTitle>{content.configureOverdueMonitoring}</CardTitle>
           <CardDescription>
-             Configure overdue backup monitoring settings for each backup. 
-             Enable/disable overdue backup monitoring, set the timeout period and notification frequency.
+            {content.configureOverdueMonitoringDescription}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -929,7 +939,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Server Name
+                  {content.serverName}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[120px] min-w-[90px]" 
@@ -937,7 +947,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Backup Name
+                  {content.backupName}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[140px] min-w-[120px]" 
@@ -945,7 +955,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Next Run
+                  {content.nextRun}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[130px] min-w-[110px]" 
@@ -953,7 +963,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Overdue Backup Monitoring
+                  {content.overdueBackupMonitoring}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[120px] min-w-[100px]" 
@@ -961,7 +971,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Expected Backup Interval
+                  {content.expectedBackupInterval}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[80px] min-w-[60px]" 
@@ -969,7 +979,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Unit
+                  {content.unit}
                 </SortableTableHead>
                 <SortableTableHead 
                   className="w-[200px] min-w-[180px]" 
@@ -977,7 +987,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   sortConfig={sortConfig} 
                   onSort={handleSort}
                 >
-                  Allowed Days
+                  {content.allowedDays}
                 </SortableTableHead>
               </TableRow>
             </TableHeader>
@@ -1054,10 +1064,10 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                                 <>
                                   {new Date(server.nextRunDate).toLocaleString()}
                                   <br />
-                                  {formatRelativeTime(server.nextRunDate)}
+                                  {formatRelativeTime(server.nextRunDate, undefined, locale)}
                                 </>
                                : 
-                                'Not set'
+                                content.notSet
                               }
                             </div>
                           </TooltipTrigger>
@@ -1095,7 +1105,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                           className="data-[state=checked]:bg-blue-500"
                         />
                         <Label htmlFor={`overdue-backup-${inputKey}`} className="text-xs">
-                          {backupSetting.overdueBackupCheckEnabled ? 'Enabled' : 'Disabled'}
+                          {backupSetting.overdueBackupCheckEnabled ? content.enabled : content.disabled}
                         </Label>
                       </div>
                     </TableCell>
@@ -1107,7 +1117,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                           value={inputValues[inputKey] ?? (server.isCustomInterval ? server.expectedInterval : server.displayInterval.toString())}
                           onChange={(e) => handleIntervalInputChangeById(server.id, server.backupName, e.target.value)}
                           onBlur={(e) => handleIntervalBlurById(server.id, server.backupName, e.target.value, server.displayUnit)}
-                          placeholder={server.isCustomInterval ? "1D2h30m" : "1"}
+                          placeholder={server.isCustomInterval ? content.customIntervalPlaceholder.value : "1"}
                           disabled={!backupSetting.overdueBackupCheckEnabled}
                           className={`text-xs ${!backupSetting.overdueBackupCheckEnabled ? 'bg-muted text-muted-foreground' : ''} ${validationErrors[inputKey] ? 'border-red-500' : ''}`}
                         />
@@ -1127,13 +1137,13 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                           <SelectValue placeholder={server.displayUnit} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="custom">Custom</SelectItem>
-                          <SelectItem value="Minutes">Minute(s)</SelectItem>
-                          <SelectItem value="Hours">Hour(s)</SelectItem>
-                          <SelectItem value="Days">Day(s)</SelectItem>
-                          <SelectItem value="Weeks">Week(s)</SelectItem>
-                          <SelectItem value="Months">Month(s)</SelectItem>
-                          <SelectItem value="Years">Year(s)</SelectItem>
+                          <SelectItem value="custom">{content.custom.value}</SelectItem>
+                          <SelectItem value="Minutes">{content.minutes.value}</SelectItem>
+                          <SelectItem value="Hours">{content.hours.value}</SelectItem>
+                          <SelectItem value="Days">{content.days.value}</SelectItem>
+                          <SelectItem value="Weeks">{content.weeks.value}</SelectItem>
+                          <SelectItem value="Months">{content.months.value}</SelectItem>
+                          <SelectItem value="Years">{content.years.value}</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -1224,7 +1234,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     
                     {/* Next Run - Card */}
                     <div className="space-y-1">
-                      <Label className="text-xs font-medium">Next Run</Label>
+                      <Label className="text-xs font-medium">{content.nextRun}</Label>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -1232,7 +1242,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                               className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                             >
                               {server.nextRunDate !== 'N/A' ?
-                                 new Date(server.nextRunDate).toLocaleString()+` (${formatRelativeTime(server.nextRunDate)})` :
+                                 new Date(server.nextRunDate).toLocaleString()+` (${formatRelativeTime(server.nextRunDate, undefined, locale)})` :
                                 'Not set'
                               }
                             </div>
@@ -1317,7 +1327,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     
                     {/* Allowed Days - Card */}
                     <div className="space-y-1">
-                      <Label className="text-xs font-medium">Allowed Days</Label>
+                      <Label className="text-xs font-medium">{content.allowedDays}</Label>
                       <div className="flex gap-1 flex-wrap">
                         {localeWeekDays.map((weekDay) => (
                           <Button
@@ -1350,7 +1360,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                 <Button onClick={() => {
                   handleSave();
                 }} disabled={isSaving} variant="gradient">
-                  {isSaving ? "Saving..." : "Save Overdue Monitoring Settings"}
+                  {isSaving ? content.saving : content.saveOverdueMonitoringSettings}
                 </Button>
                 <CollectAllButton
                   servers={(() => {
@@ -1378,8 +1388,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   onCollectionStart={(showInstructionToast) => {
                     if (showInstructionToast) {
                       toast({
-                        title: "Starting Collection",
-                        description: "Collecting backup logs from all configured servers...",
+                        title: content.startingCollection,
+                        description: content.collectingBackupLogs,
                         duration: 4000,
                       });
                     }
@@ -1394,11 +1404,11 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   onClick={handleDownloadCSV}
                   variant="outline"
                   size="sm"
-                  title="Download backup monitoring data as CSV"
+                  title={content.downloadBackupMonitoringDataAsCsv}
                 >
                   <Download className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">Download CSV</span>
-                  <span className="sm:hidden">CSV</span>
+                  <span className="hidden sm:inline">{content.downloadCSV}</span>
+                  <span className="sm:hidden">{content.csv}</span>
                 </Button>
                 <Button 
                   onClick={handleTestOverdueBackups} 
@@ -1407,8 +1417,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   size="sm"
                 >
                   <RefreshCw className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">{isTesting ? "Checking..." : "Check now"}</span>
-                  <span className="sm:hidden">{isTesting ? "..." : "Check"}</span>
+                  <span className="hidden sm:inline">{isTesting ? content.checking : content.checkNow}</span>
+                  <span className="sm:hidden">{isTesting ? "..." : content.check}</span>
                 </Button>
                 <Button 
                   onClick={handleResetNotifications}
@@ -1417,8 +1427,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   size="sm"
                 >
                   <TimerReset className="mr-1 h-3 w-3" />
-                  <span className="hidden sm:inline">{isResetting ? "Resetting..." : "Reset notifications"}</span>
-                  <span className="sm:hidden">{isResetting ? "..." : "Reset notifications"}</span>
+                  <span className="hidden sm:inline">{isResetting ? content.resetting : content.resetNotifications}</span>
+                  <span className="sm:hidden">{isResetting ? "..." : content.resetNotifications}</span>
                 </Button>
               </div>
             </div>
@@ -1427,8 +1437,8 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <Label htmlFor="overdue-tolerance" className="mb-2 text-sm">
-                  <span className="hidden sm:inline">Overdue tolerance:</span>
-                  <span className="sm:hidden">Tolerance:</span>
+                  <span className="hidden sm:inline">{content.overdueTolerance}</span>
+                  <span className="sm:hidden">{content.tolerance}</span>
                 </Label>
                 <Select
                   value={config?.overdue_tolerance || defaultOverdueTolerance}
@@ -1449,9 +1459,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
               
               <div className="flex flex-col">
                 <Label htmlFor="cron-interval" className="mb-2 text-sm">
-                  <span className="hidden lg:inline">Overdue monitoring interval:</span>
-                  <span className="lg:hidden hidden sm:inline">Monitoring interval:</span>
-                  <span className="sm:hidden">Interval:</span>
+                  <span className="hidden lg:inline">{content.overdueMonitoringInterval}</span>
+                  <span className="lg:hidden hidden sm:inline">{content.monitoringInterval}</span>
+                  <span className="sm:hidden">{content.interval}</span>
                 </Label>
                 <Select
                   value={cronInterval}
@@ -1472,9 +1482,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
               
               <div className="flex flex-col">
                 <Label htmlFor="notification-frequency" className="mb-2 text-sm">
-                  <span className="hidden lg:inline">Notification frequency:</span>
-                  <span className="lg:hidden hidden sm:inline">Notification freq:</span>
-                  <span className="sm:hidden">Frequency:</span>
+                  <span className="hidden lg:inline">{content.notificationFrequency}</span>
+                  <span className="lg:hidden hidden sm:inline">{content.notificationFreq}</span>
+                  <span className="sm:hidden">{content.frequency}</span>
                 </Label>
                 <Select
                   value={notificationFrequency}
@@ -1492,7 +1502,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                     ))}
                   </SelectContent>
                 </Select>
-                {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">Loading...</span>}
+                {notificationFrequencyLoading && <span className="text-xs text-muted-foreground mt-1">{content.loading}</span>}
                 {notificationFrequencyError && <span className="text-xs text-destructive mt-1">{notificationFrequencyError}</span>}
               </div>
             </div>

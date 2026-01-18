@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,6 +31,8 @@ interface ApplicationLogsViewerProps {
 }
 
 export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
+  const content = useIntlayer('application-logs-viewer');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const [logData, setLogData] = useState<LogData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,15 +55,15 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
   };
 
   // Helper: Check if a filename is the current (base) log file
-  const isCurrentFile = (fileName: string): boolean => {
+  const isCurrentFile = useCallback((fileName: string): boolean => {
     if (!baseLogFileName) return false;
     return fileName === baseLogFileName;
-  };
+  }, [baseLogFileName]);
 
   // Helper: Get display name for a file
   const getFileDisplayName = (fileName: string): string => {
     if (isCurrentFile(fileName)) {
-      return 'Current';
+      return content.current;
     }
     // Extract the number from 'baseFileName.1' -> '.1'
     if (baseLogFileName && fileName.startsWith(baseLogFileName + '.')) {
@@ -157,11 +160,11 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         console.error(`File mismatch: requested "${selectedFile}", got "${data.currentFile}". This indicates a bug.`);
         // If there's a mismatch, don't display the wrong data - reload with correct file
         if (!silent) {
-          toast({
-            title: 'Error',
-            description: `File mismatch detected. Please refresh.`,
-            variant: 'destructive',
-          });
+        toast({
+          title: common.status.error,
+          description: content.fileMismatch,
+          variant: 'destructive',
+        });
         }
         if (!silent) {
           setLoading(false);
@@ -203,7 +206,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         setLoading(false);
       }
     }
-  }, [selectedFile, tail, toast, autoScroll]);
+  }, [selectedFile, tail, toast, autoScroll, baseLogFileName, isCurrentFile]);
 
   // Initial load and when filters change
   useEffect(() => {
@@ -224,7 +227,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         }
       });
     }
-  }, [autoScroll, selectedFile]); // Only depend on autoScroll and selectedFile, not logData
+  }, [autoScroll, selectedFile, isCurrentFile, logData]); // Include isCurrentFile and logData for proper dependency tracking
 
   // Polling for current log file when auto-scroll is enabled
   useEffect(() => {
@@ -248,7 +251,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         pollingIntervalRef.current = null;
       }
     }
-  }, [selectedFile, autoScroll, loadLogs]);
+  }, [selectedFile, autoScroll, loadLogs, isCurrentFile]);
 
   // Filter logs based on search string
   const filteredLogs = useMemo(() => {
@@ -276,11 +279,11 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         duration: 2000,
       });
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to copy logs to clipboard',
-        variant: 'destructive',
-      });
+        toast({
+          title: common.status.error,
+          description: content.failedToCopy,
+          variant: 'destructive',
+        });
     }
   };
 
@@ -313,8 +316,8 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
       window.URL.revokeObjectURL(url);
 
       toast({
-        title: 'Success',
-        description: 'Logs exported successfully',
+        title: common.status.success,
+        description: content.logsExported,
         duration: 2000,
       });
     } catch (error) {
@@ -347,17 +350,17 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <Terminal className="h-5 w-5" />
-          Application Logs Viewer
+          {content.title}
         </h2>
         <Button 
           variant="outline" 
           size="sm" 
           onClick={() => loadLogs(false)}
           disabled={loading}
-          title="Refresh logs"
+          title={content.refreshLogs}
         >
           <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
+          {content.refresh}
         </Button>
       </div>
 
@@ -432,7 +435,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
 
             {/* Auto-scroll Toggle - Third, smaller */}
             <div className="space-y-2">
-              <Label htmlFor="auto-scroll">Auto-scroll</Label>
+              <Label htmlFor="auto-scroll">{content.autoScroll}</Label>
               <div className="flex items-center space-x-2 pt-2">
                 <Checkbox
                   id="auto-scroll"
@@ -440,7 +443,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                   onCheckedChange={(checked: boolean) => setAutoScroll(checked === true)}
                 />
                 <Label htmlFor="auto-scroll" className="text-sm font-normal cursor-pointer whitespace-nowrap">
-                  Enable auto-scroll
+                  {content.enableAutoScroll}
                 </Label>
               </div>
             </div>
@@ -451,27 +454,27 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         <div className="flex gap-2 pt-2 border-t">
           <Button variant="outline" size="sm" onClick={handleCopy}>
             <Copy className="h-4 w-4 mr-2" />
-            Copy
+            {content.copy}
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
-            Download
+            {content.download}
           </Button>
         </div>
       </div>
 
       {/* Log Display */}
       {loading ? (
-        <div className="text-center py-8 text-muted-foreground">Loading logs...</div>
+        <div className="text-center py-8 text-muted-foreground">{content.loadingLogs}</div>
       ) : !logData || filteredLogs.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          {logData && logData.logs ? 'No logs match the current filters' : 'No logs available'}
+          {logData && logData.logs ? content.noLogsMatch : content.noLogsAvailable}
         </div>
       ) : (
         <div className="border rounded-md">
           <div className="p-2 bg-muted/50 border-b text-sm text-muted-foreground flex items-center justify-between">
             <span>
-              Showing {filteredLogs.length} of {logData.lineCount} lines
+              {content.showingLines.value.replace('{filtered}', filteredLogs.length.toString()).replace('{total}', logData.lineCount.toString())}
               {logData.fileSize > 0 && ` (${(logData.fileSize / 1024).toFixed(2)} KB)`}
             </span>
             <div className="flex items-center gap-2">
@@ -480,7 +483,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                 size="sm"
                 onClick={scrollToTop}
                 className="h-7 px-2"
-                title="Scroll to top"
+                title={content.scrollToTop.value}
               >
                 <ArrowDownFromLine className="h-4 w-4" />
               
@@ -490,14 +493,14 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
                 size="sm"
                 onClick={scrollToBottom}
                 className="h-7 px-2"
-                title="Scroll to bottom"
+                title={content.scrollToBottom.value}
               >
                 <ArrowDownToLine className="h-4 w-4" />
                
               </Button>
             </div>
             <span>
-              Last modified: {new Date(logData.lastModified).toLocaleString()}
+              {content.lastModified} {new Date(logData.lastModified).toLocaleString()}
             </span>
           </div>
           <div

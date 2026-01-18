@@ -1,37 +1,12 @@
-import type {NextConfig} from 'next';
-import { version } from './package.json';
+import type { NextConfig } from "next";
+import { withIntlayerSync } from "next-intlayer/server";
+import { version } from "./package.json";
 
-const nextConfig: NextConfig = {
-  output: "standalone",  // Enable standalone output to reduce Docker image size
-  devIndicators: false,
-  
-  // Disable Turbopack to use webpack configuration
-  turbopack: {},
-
-  
-  // Optimize preloading to reduce warnings
-  experimental: {
-    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
-  },
-  
-  // Exclude data directory from file system scanning
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  
-  // Configure what Next.js should ignore during build
-  distDir: '.next',
-  
-  outputFileTracingExcludes: {
-    '*': [
-      './.next/**',
-      '.next/**',
-      './.next/standalone/**/*',
-      '.next/standalone/**/*',
-      '**/data/**',
-    ],
-  },
-  
-  // Configure webpack to handle binary files
-  webpack: (config, { isServer, webpack }) => {
+/**
+ * Our webpack customizations (better-sqlite3, watchOptions, resolve, rules, etc.).
+ * Composed with Intlayer's webpack in the final config so both run: ours first, then Intlayer.
+ */
+const ourWebpack: NextConfig["webpack"] = (config, { isServer, webpack }) => {
     // Add support for better-sqlite3
     if (isServer) {
       config.externals.push('better-sqlite3');
@@ -107,26 +82,56 @@ const nextConfig: NextConfig = {
       };
     }
 
-    // Return the modified config
-    return config;
+  return config;
+};
+
+/** Next.js config without webpack (webpack is composed below with Intlayer). */
+const configWithoutWebpack: NextConfig = {
+  output: "standalone",
+  devIndicators: false,
+  turbopack: {},
+  experimental: {
+    optimizePackageImports: ["@radix-ui/react-icons", "lucide-react"],
   },
-  
-  allowedDevOrigins: ['192.168.1.20', 'g5-server'],
-  typescript: {
-    ignoreBuildErrors: false,
+  transpilePackages: [
+    "@intlayer/config",
+    "@intlayer/core",
+    "@intlayer/types",
+    "intlayer",
+    "react-intlayer",
+    "next-intlayer",
+  ],
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  distDir: ".next",
+  outputFileTracingExcludes: {
+    "*": [
+      "./.next/**",
+      ".next/**",
+      "./.next/standalone/**/*",
+      ".next/standalone/**/*",
+      "**/data/**",
+    ],
   },
-  env: {
-    NEXT_PUBLIC_APP_VERSION: version,
-  },
+  allowedDevOrigins: ["192.168.1.20", "g5-server"],
+  typescript: { ignoreBuildErrors: false },
+  env: { NEXT_PUBLIC_APP_VERSION: version },
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
+      { protocol: "https", hostname: "picsum.photos", port: "", pathname: "/**" },
     ],
+  },
+};
+
+/** Intlayer-wrapped config: webpack, aliases, IntlayerPlugin, optional SWC build optimization. */
+const base = withIntlayerSync(configWithoutWebpack);
+
+/** Final config: our webpack runs first, then Intlayer's (preserves better-sqlite3, etc.). */
+const nextConfig: NextConfig = {
+  ...base,
+  webpack: (config, options) => {
+    ourWebpack?.(config, options);
+    base.webpack?.(config, options);
+    return config;
   },
 };
 

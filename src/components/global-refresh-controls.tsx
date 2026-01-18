@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { RotateCcw } from 'lucide-react';
-import { useGlobalRefresh } from '@/contexts/global-refresh-context';
-import { useConfig } from '@/contexts/config-context';
-import { useToast } from '@/components/ui/use-toast';
-import { usePathname } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { RotateCcw } from "lucide-react";
+import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useConfig } from "@/contexts/config-context";
+import { useToast } from "@/components/ui/use-toast";
+import { usePathname } from "next/navigation";
+import { useLocale } from "@/contexts/locale-context";
 
 interface AutoRefreshButtonProps {
   className?: string;
@@ -19,12 +20,13 @@ interface AutoRefreshButtonProps {
 
 const AutoRefreshButton = ({ className, isEnabled, interval, onToggle, progress, isLoading = false }: AutoRefreshButtonProps) => {
   const router = useRouter();
+  const locale = useLocale();
 
   // Handle right-click to open settings page on display tab
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    router.push('/settings?tab=display');
+    router.push(`/${locale}/settings?tab=display`);
   };
 
   return (

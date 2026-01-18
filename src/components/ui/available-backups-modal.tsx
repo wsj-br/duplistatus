@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, createContext, useContext, useCallback } from "react";
+import { useIntlayer } from 'react-intlayer';
+import { useLocale } from '@/contexts/locale-context';
 import { History } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
 import {
@@ -45,6 +47,9 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 // Global modal component that will be rendered in the layout
 const GlobalAvailableBackupsModal = React.memo(() => {
+  const content = useIntlayer('available-backups-modal');
+  const common = useIntlayer('common');
+  const locale = useLocale();
   const { modalState, closeModal } = useModalContext();
 
   const formatAvailableBackupDate = (isoTimestamp: string): string => {
@@ -107,7 +112,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
         >
           <DialogHeader className="pb-3 leading-8">
             <DialogTitle>
-            Available Backup Versions    <br/> <br/>
+            {content.title}    <br/> <br/>
 
               <span className="font-medium text-muted-foreground">{modalState.serverAlias || modalState.serverName}</span>
               {modalState.serverAlias && modalState.serverName !== modalState.serverAlias && (
@@ -129,9 +134,9 @@ const GlobalAvailableBackupsModal = React.memo(() => {
             <Table>
               <TableHeader>
                 <TableRow className="border-b">
-                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">Version</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Created</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Age</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">{content.version}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{content.created}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{content.age}</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -146,7 +151,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
                   <TableRow key={index} className="border-b">
                     <TableCell className="w-16 py-1.5 px-3">{index + 1}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(timestamp)}</TableCell>
-                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp)}</TableCell>
+                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp, undefined, locale)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -238,6 +243,8 @@ interface AvailableBackupsIconProps {
 }
 
 export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serverName, serverAlias, serverNote, backupName, onIconClick, count }: AvailableBackupsIconProps) {
+  const content = useIntlayer('available-backups-modal');
+  const common = useIntlayer('common');
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
   return (
@@ -260,7 +267,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Click to view available versions</p>
+              <p>{content.clickToView}</p>
             </TooltipContent>
           </Tooltip>
         ) : (
@@ -269,7 +276,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
               <History className="h-4 w-4 text-gray-400 opacity-30 cursor-help" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Version info not received</p>
+              <p>{content.versionInfoNotReceived}</p>
             </TooltipContent>
           </Tooltip>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useEffect, useRef, useState } from "react";
+import { useIntlayer } from 'react-intlayer';
 import type { ServerSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
@@ -35,6 +36,7 @@ export function DashboardLayout({
   onServerSelect,
   onRefresh: _onRefresh
 }: DashboardLayoutProps) {
+  const common = useIntlayer('common');
   const { state: serverSelectionState, setSelectedServerId, setViewMode, setServers } = useServerSelection();
   const { viewMode, isInitialized, overviewSidePanel } = serverSelectionState;
   const { state: globalRefreshState, setVisibleCardIndex } = useGlobalRefresh();
@@ -126,7 +128,7 @@ export function DashboardLayout({
           <Card className="shadow-lg border-2 border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-center h-32">
-                <div className="text-muted-foreground">Loading...</div>
+                <div className="text-muted-foreground">{common.status.loading}</div>
               </div>
             </CardContent>
           </Card>
@@ -135,7 +137,7 @@ export function DashboardLayout({
           <Card className="h-full shadow-lg border-2 border-border">
             <CardContent className="h-full p-0">
               <div className="flex items-center justify-center h-full">
-                <div className="text-muted-foreground">Loading...</div>
+                <div className="text-muted-foreground">{common.status.loading}</div>
               </div>
             </CardContent>
           </Card>

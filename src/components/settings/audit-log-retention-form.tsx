@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,8 @@ interface AuditLogRetentionFormProps {
 }
 
 export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
+  const content = useIntlayer('audit-log-retention-form');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const [retentionDays, setRetentionDays] = useState<number>(90);
   const [retentionLoading, setRetentionLoading] = useState(false);
@@ -34,8 +37,8 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
         } catch (error) {
           console.error('Error loading retention:', error);
           toast({
-            title: 'Error',
-            description: 'Failed to load retention configuration',
+            title: common.status.error,
+            description: content.failedToLoad,
             variant: 'destructive',
           });
         } finally {
@@ -79,8 +82,8 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
       }
 
       toast({
-        title: 'Success',
-        description: `Audit log retention updated to ${retentionDays} days`,
+        title: common.status.success,
+        description: content.updatedSuccessfully.value.replace('{days}', retentionDays.toString()),
       });
     } catch (error) {
       console.error('Error saving retention:', error);
@@ -97,7 +100,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
   if (!isAdmin) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        <p>You do not have permission to access this section.</p>
+        <p>{content.noPermission}</p>
       </div>
     );
   }
@@ -117,7 +120,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Label htmlFor="retention-days">Retention (days):</Label>
+              <Label htmlFor="retention-days">{content.retentionDays}</Label>
               <Input
                 id="retention-days"
                 type="number"
@@ -135,15 +138,15 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
               disabled={retentionLoading || retentionSaving || retentionDays < 30 || retentionDays > 365}
               size="sm"
             >
-              {retentionSaving ? 'Saving...' : 'Save'}
+              {retentionSaving ? content.saving : content.save}
             </Button>
             <span className="text-xs text-muted-foreground">
-              (Range: 30-365 days)
+              {content.range}
             </span>
           </div>
           
           {retentionLoading && (
-            <p className="text-sm text-muted-foreground">Loading retention configuration...</p>
+            <p className="text-sm text-muted-foreground">{content.loadingRetention}</p>
           )}
         </CardContent>
       </Card>

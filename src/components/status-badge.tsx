@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, AlertOctagon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import { useIntlayer } from 'react-intlayer';
 
 interface StatusBadgeProps {
   status: BackupStatus | 'N/A';
@@ -18,6 +19,8 @@ interface StatusConfig {
 
 
 export function StatusBadge({ status, onClick }: StatusBadgeProps) {
+  const content = useIntlayer('status-badge');
+  
   const statusConfig: Record<BackupStatus | 'N/A', StatusConfig> = {
     Success: { icon: CheckCircle2, color: "bg-emerald-500 hover:bg-emerald-600", text: "text-emerald-50" },
     Unknown: { icon: HelpCircle, color: "bg-gray-400 hover:bg-gray-500", text: "text-gray-50" },
@@ -25,6 +28,25 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
     Error:   { icon: XCircle, color: "bg-red-500 hover:bg-red-600", text: "text-red-50" },
     Fatal:   { icon: AlertOctagon, color: "bg-red-500 hover:bg-red-600", text: "text-red-50" },
     'N/A':   { icon: HelpCircle, color: "bg-gray-600 hover:bg-gray-600", text: "text-gray-50" },
+  };
+
+  const getStatusLabel = (status: BackupStatus | 'N/A'): string => {
+    switch (status) {
+      case 'Success':
+        return content.success;
+      case 'Unknown':
+        return content.unknown;
+      case 'Warning':
+        return content.warning;
+      case 'Error':
+        return content.error;
+      case 'Fatal':
+        return content.fatal;
+      case 'N/A':
+        return content.na;
+      default:
+        return content.na;
+    }
   };
 
   const config = statusConfig[status] || statusConfig['N/A'];
@@ -43,7 +65,7 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
       role={onClick ? "button" : undefined}
     >
       <IconComponent className={cn("h-3.5 w-3.5", config.animate)} />
-      <span>{status}</span>
+      <span>{getStatusLabel(status)}</span>
     </Badge>
   );
 }

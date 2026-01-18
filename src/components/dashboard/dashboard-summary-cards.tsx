@@ -16,6 +16,7 @@ import {
 import { useServerSelection } from "@/contexts/server-selection-context";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { setUserLocalStorageItem } from "@/lib/user-local-storage";
+import { useIntlayer } from 'react-intlayer';
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
@@ -23,11 +24,6 @@ interface DashboardSummaryCardsProps {
 }
 
 const availableViewModes = ['overview', 'table', ];
-const viewModeTooltipsTexts = {
-  overview: 'overview',
-  table: 'table view',
-  analytics: 'analytics view',
-};
 
 export function DashboardSummaryCards({ 
   summary, 
@@ -36,6 +32,14 @@ export function DashboardSummaryCards({
   const { state: serverSelectionState, setViewMode } = useServerSelection();
   const { viewMode } = serverSelectionState;
   const currentUser = useCurrentUser();
+  const content = useIntlayer('dashboard-summary-cards');
+  const common = useIntlayer('common');
+  
+  const viewModeTooltipsTexts = {
+    overview: content.overviewView,
+    table: content.tableView,
+    analytics: content.analyticsView,
+  };
 
   // Handle view mode toggle - cycle through available view modes
   const handleViewModeToggle = () => {
@@ -53,44 +57,51 @@ export function DashboardSummaryCards({
 
   const summaryItems = [
     {
-      title: "Total Servers",
+      id: 'totalServers',
+      title: content.totalServers,
       value: summary.totalServers.toLocaleString(),
       icon: <ColoredIcon icon={HardDrive} color="blue" size="lg" />,
       "data-ai-hint": "server computer",
     },
     {
-      title: "Total Backup Jobs",
+      id: 'totalBackupJobs',
+      title: content.totalBackupJobs,
       value: summary.totalBackups.toLocaleString(),
       icon: <ColoredIcon icon={Archive} color="green" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
-      title: "Total Backup Runs",
+      id: 'totalBackupRuns',
+      title: content.totalBackupRuns,
       value: summary.totalBackupsRuns.toLocaleString(),
       icon: <ColoredIcon icon={Archive} color="purple" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
-      title: "Total Backup Size",
+      id: 'totalBackupSize',
+      title: content.totalBackupSize,
       value: formatBytes(summary.totalBackupSize),
       icon: <ColoredIcon icon={FileSearch} color="yellow" size="lg" />,
       "data-ai-hint": "file search",
     },
     {
-      title: "Total Storage Used",
+      id: 'totalStorageUsed',
+      title: content.totalStorageUsed,
       value: formatBytes(summary.totalStorageUsed),
       icon: <ColoredIcon icon={Database} color="blue" size="lg" />,
       "data-ai-hint": "database storage",
     },
     {
-      title: "Total Uploaded Size",
+      id: 'totalUploadedSize',
+      title: content.totalUploadedSize,
       value: formatBytes(summary.totalUploadedSize),
       icon: <ColoredIcon icon={UploadCloud} color="blue" size="lg" />,
       "data-ai-hint": "cloud upload",
     },
     // Only show Overdue Backups card when not in overview mode
     ...(viewMode !== 'overview' ? [{
-      title: "Overdue Backups",
+      id: 'overdueBackups',
+      title: content.overdueBackups,
       value: summary.overdueBackupsCount.toLocaleString(),
       icon: summary.overdueBackupsCount > 0 ? (
         <ColoredIcon icon={AlertTriangle} color="red" size="lg" />
@@ -105,7 +116,7 @@ export function DashboardSummaryCards({
     <div className="flex gap-3" data-screenshot-target="dashboard-summary">
       <div className={`grid gap-3 md:grid-cols-2 ${viewMode === 'overview' ? 'lg:grid-cols-6' : 'lg:grid-cols-7'} flex-1`}>
         {summaryItems.map((item) => (
-          <Card key={item.title} variant="modern" hover={true} data-ai-hint={item['data-ai-hint']}>
+          <Card key={item.id} variant="modern" hover={true} data-ai-hint={item['data-ai-hint']}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-3 pt-3">
               <CardTitle className="text-sm font-medium">
                 {item.title}
@@ -113,7 +124,7 @@ export function DashboardSummaryCards({
               {item.icon}
             </CardHeader>
             <CardContent className="px-3 pb-3">
-              <div className={`text-2xl font-bold ${item.title === "Overdue Backups" ? (summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
+              <div className={`text-2xl font-bold ${item.id === 'overdueBackups' ? (summary.overdueBackupsCount > 0 ? 'text-red-600' : 'text-gray-500') : ''}`}>
                 {item.value}
               </div>
             </CardContent>
@@ -143,7 +154,7 @@ export function DashboardSummaryCards({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Show {(() => {
+                <p>{common.ui.show} {(() => {
                   const currentIndex = availableViewModes.indexOf(viewMode);
                   const nextIndex = (currentIndex + 1) % availableViewModes.length;
                   const nextViewMode = availableViewModes[nextIndex];

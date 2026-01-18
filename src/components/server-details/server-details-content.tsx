@@ -1,5 +1,6 @@
 "use client";
 
+import { useIntlayer } from 'react-intlayer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ServerBackupTable } from "@/components/server-details/server-backup-table";
 import { ServerDetailSummaryItems } from "@/components/server-details/server-detail-summary-items";
@@ -25,6 +26,8 @@ interface ServerDetailsContentProps {
 }
 
 export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck, lastRefreshTime: _lastRefreshTime }: ServerDetailsContentProps) {
+  const content = useIntlayer('server-details-content');
+  const common = useIntlayer('common');
   const { selectedBackup: selectedBackupName } = useBackupSelection();
   
   // Server details always uses content-based height regardless of window dimensions
@@ -136,11 +139,11 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
       
       <Card className="shadow-lg" data-screenshot-target="backup-history-table">
         <CardHeader>
-          <CardTitle>Backup History</CardTitle>
+          <CardTitle>{content.backupHistory}</CardTitle>
           <CardDescription>
             {selectedBackup 
-              ? <>List of all <span className="text-primary font-medium">{selectedBackup.name}</span> backups</>
-              : <>List of all backups for  <span className="text-primary font-medium">{server.alias || server.name}</span></>
+              ? <>{content.listOfAllBackups.value.replace('{backupName}', selectedBackup.name)}</>
+              : <>{content.listOfAllBackupsForServer.value.replace('{serverName}', server.alias || server.name)}</>
             }
           </CardDescription>
         </CardHeader>

@@ -9,10 +9,12 @@ import { formatRelativeTime, formatBytes, formatShortTimeAgo } from "@/lib/utils
 import { HardDrive, AlertTriangle, Download, ChevronLeft, ChevronRight, Server, Database, Calendar } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/contexts/locale-context";
 import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
+import { useIntlayer } from 'react-intlayer';
 
 
 const MIN_CARD_WIDTH = 230;         // the minimum width of a card
@@ -133,6 +135,9 @@ interface ServerCardProps {
 const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
+  const locale = useLocale();
+  const content = useIntlayer('server-cards');
+  const common = useIntlayer('common');
 
   const handleCardClick = () => {
     onSelect(server.id);
@@ -156,7 +161,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/detail/${server.id}`);
+                router.push(`/${locale}/detail/${server.id}`);
               }}
               className="flex items-center hover:text-blue-600 transition-colors duration-200 cursor-pointer"
               title={server.alias ? server.name : undefined}
@@ -188,7 +193,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <HardDrive className="h-3 w-3" />
-              <span>Size</span>
+              <span>{content.size}</span>
             </div>
             <p className="font-semibold text-sm">
               {server.totalFileSize > 0 ? formatBytes(server.totalFileSize) : 'N/A'}
@@ -197,7 +202,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Server className="h-3 w-3" />
-              <span>Storage</span>
+              <span>{content.storage}</span>
             </div>
             <p className="font-semibold text-sm">
               {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize) : 'N/A'}
@@ -213,7 +218,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate)}</span>
+                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate, undefined, locale)}</span>
                     </TooltipTrigger>
                     <TooltipContent>
                       {new Date(server.lastBackupDate).toLocaleString()}
@@ -229,7 +234,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
 
         {/* Backup List - Each backup job on its own row */}
         <section className="space-y-0.5 flex-1 flex flex-col mt-auto">
-          <h3 className="text-xs text-muted-foreground font-medium">Backups:</h3>
+          <h3 className="text-xs text-muted-foreground font-medium">{content.backups}</h3>
           {server.backupInfo.length > 0 ? (
             <div className="flex-1 flex flex-col divide-y divide-border/30">
               {server.backupInfo.map((backupJob, index) => (
@@ -240,7 +245,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
                         data-screenshot-trigger="backup-item"
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
+                          router.push(`/${locale}/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
                         }}
                       >
                         {/* Backup job name */}
@@ -313,7 +318,7 @@ const ServerCard = ({ server, isSelected, onSelect }: ServerCardProps) => {
               ))}
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground italic">No backup jobs available</div>
+            <div className="text-xs text-muted-foreground italic">{content.noBackupJobsAvailable}</div>
           )}
         </section>
       </CardContent>
@@ -358,6 +363,7 @@ export const ServerCards = memo(function ServerCards({ servers, selectedServerId
     );
     
     // Sort based on dashboardCardsSortOrder configuration
+    // Note: dashboardCardsSortOrder stores English strings, so we compare against English values
     return [...filtered].sort((a, b) => {
       switch (dashboardCardsSortOrder) {
         case 'Server name (a-z)':

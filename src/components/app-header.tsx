@@ -19,6 +19,7 @@ import {
 import { useState, useEffect } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
 import { getHelpUrl } from '@/lib/helpMapper';
+import { useLocale } from '@/contexts/locale-context';
 
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
@@ -34,8 +35,9 @@ export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isDashboardPage = pathname === '/';
-  const isSettingsPage = pathname === '/settings';
+  const locale = useLocale();
+  const isDashboardPage = pathname === '/' || /^\/[^/]+\/?$/.test(pathname ?? '');
+  const isSettingsPage = /\/settings/.test(pathname ?? '');
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -88,7 +90,7 @@ export function AppHeader() {
 
       if (response.ok) {
         setUser(null);
-        router.push('/login');
+        router.push(`/${locale}/login`);
       }
     } catch (error) {
       console.error('Logout error:', error);
@@ -98,7 +100,7 @@ export function AppHeader() {
   return (
     <div className="sticky top-0 z-50 w-full border-b border-x-[20px] border-solid border-b-border border-x-transparent bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="w-[95%] mx-auto flex flex-wrap items-center py-4 min-h-16">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
+        <Link href={`/${locale}`} className="mr-6 flex items-center space-x-2">
           <div className="p-1">
             <Image
               src={DupliLogo}
@@ -115,7 +117,7 @@ export function AppHeader() {
         {!isDashboardPage && (
           <div className="flex items-center gap-2 ml-4">
             <Link 
-              href="/" 
+              href={`/${locale}`} 
               className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <LayoutDashboard className="h-4 w-4" />
@@ -140,7 +142,7 @@ export function AppHeader() {
           <NtfyMessagesButton />
           <OpenServerConfigButton />
           <BackupCollectMenu />
-          <Link href="/settings" className="ml-4">
+          <Link href={`/${locale}/settings`} className="ml-4">
             <Button variant="outline" size="icon" title="Settings">
               <Settings className="h-4 w-4" />
             </Button>
@@ -184,14 +186,14 @@ export function AppHeader() {
                 {user.isAdmin && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push('/settings?tab=users')}>
+                    <DropdownMenuItem onClick={() => router.push(`/${locale}/settings?tab=users`)}>
                       <Users className="h-4 w-4 mr-2" />
                       Admin Users
                     </DropdownMenuItem>
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push('/settings?tab=audit')}>
+                <DropdownMenuItem onClick={() => router.push(`/${locale}/settings?tab=audit`)}>
                   <ScrollText className="h-4 w-4 mr-2" />
                   Audit Log
                 </DropdownMenuItem>

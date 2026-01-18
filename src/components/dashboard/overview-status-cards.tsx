@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useLocale } from "@/contexts/locale-context";
 import type { ServerSummary, BackupStatus, NotificationEvent } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -10,6 +11,7 @@ import { ColoredIcon } from "@/components/ui/colored-icon";
 import { formatShortTimeAgo } from "@/lib/utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
+import { useIntlayer } from 'react-intlayer';
 
 interface OverviewStatusPanelProps {
   servers: ServerSummary[];
@@ -38,6 +40,8 @@ interface BackupWithServer {
 
 export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPanelProps) {
   const router = useRouter();
+  const locale = useLocale();
+  const content = useIntlayer('overview-status-cards');
 
   // Helper function to calculate percentage
   const calculatePercentage = (count: number): number => {
@@ -148,7 +152,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
   }, [servers, totalBackups]);
 
   const handleBackupClick = (serverId: string, backupName: string) => {
-    router.push(`/detail/${serverId}?backup=${encodeURIComponent(backupName)}`);
+    router.push(`/${locale}/detail/${serverId}?backup=${encodeURIComponent(backupName)}`);
   };
 
   return (
@@ -160,7 +164,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ColoredIcon icon={CheckCheck} color="green" size="md" />
-                <span className="text-sm font-medium">Success</span>
+                <span className="text-sm font-medium">{content.success}</span>
               </div>
               <div className="text-right">
                 <span className="text-lg font-bold text-green-500">{successCount}</span>
@@ -209,7 +213,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                             <div className="flex items-center gap-2 justify-end">
                               {getStatusIcon(backup.lastBackupStatus)}
                               <span className="text-xs text-red-500 truncate">
-                                {formatShortTimeAgo(backup.lastBackupDate)}
+                                {formatShortTimeAgo(backup.lastBackupDate, undefined, undefined, locale)}
                               </span>
                               <ServerConfigurationButton
                                 serverUrl={backup.serverUrl}
@@ -280,7 +284,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ColoredIcon icon={OctagonAlert} color={warningErrorBackups.length > 0 ? "yellow" : "gray"} size="md" />
-                <CardTitle className="text-sm font-medium">Warnings & Errors</CardTitle>
+                <CardTitle className="text-sm font-medium">{content.warningsAndErrors}</CardTitle>
               </div>
               <div className="text-right">
                 <span className={`text-lg font-bold ${warningErrorBackups.length > 0 ? 'text-yellow-500' : 'text-gray-500'}`}>{warningErrorBackups.length}</span>

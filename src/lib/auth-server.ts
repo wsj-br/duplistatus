@@ -57,31 +57,37 @@ export async function requireServerAuth(): Promise<ServerAuthContext> {
   const searchParams = urlFromStore.searchParams || headersList.get('x-search-params') || '';
   
   // Construct the full URL with query params if they exist
-  const currentUrl = searchParams && searchParams.length > 0 
-    ? `${pathname}?${searchParams}` 
+  const currentUrl = searchParams && searchParams.length > 0
+    ? `${pathname}?${searchParams}`
     : pathname;
   const redirectUrl = encodeURIComponent(currentUrl);
 
+  // Extract locale from pathname (e.g. /en/settings -> en) for locale-prefixed login redirect
+  const localeMatch = pathname.match(/^\/([^/]+)/);
+  const locale = localeMatch && ["en", "de", "fr", "es", "pt-BR"].includes(localeMatch[1])
+    ? localeMatch[1]
+    : "en";
+
   if (!sessionId) {
-    redirect(`/login?redirect=${redirectUrl}`);
+    redirect(`/${locale}/login?redirect=${redirectUrl}`);
   }
 
   // Validate session
   const isValid = await validateSession(sessionId);
   if (!isValid) {
-    redirect(`/login?redirect=${redirectUrl}`);
+    redirect(`/${locale}/login?redirect=${redirectUrl}`);
   }
 
   // Get user ID from session
   const userId = getUserIdFromSession(sessionId);
   if (!userId) {
-    redirect(`/login?redirect=${redirectUrl}`);
+    redirect(`/${locale}/login?redirect=${redirectUrl}`);
   }
 
   // If dbOps is still not available, redirect to login
   if (!dbOpsReady) {
     console.warn('[Auth Server] dbOps not available after waiting, redirecting to login');
-    redirect(`/login?redirect=${redirectUrl}`);
+    redirect(`/${locale}/login?redirect=${redirectUrl}`);
   }
 
   // Import dbOps
@@ -97,14 +103,14 @@ export async function requireServerAuth(): Promise<ServerAuthContext> {
   } | undefined;
 
   if (!user) {
-    redirect(`/login?redirect=${redirectUrl}`);
+    redirect(`/${locale}/login?redirect=${redirectUrl}`);
   }
 
   // Check if user is locked
   if (user.locked_until) {
     const lockExpiry = new Date(user.locked_until);
     if (lockExpiry > new Date()) {
-      redirect(`/login?redirect=${redirectUrl}`);
+      redirect(`/${locale}/login?redirect=${redirectUrl}`);
     }
   }
 

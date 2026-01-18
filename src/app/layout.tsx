@@ -1,18 +1,94 @@
-import type { Metadata } from 'next';
-import localFont from 'next/font/local';
-import './globals.css';
-import { CustomThemeProvider } from '@/contexts/theme-context';
-import { ConfigProvider } from '@/contexts/config-context';
-import { GlobalRefreshProvider } from '@/contexts/global-refresh-context';
-import { ServerSelectionProvider } from '@/contexts/server-selection-context';
-import { ConfigurationProvider } from '@/contexts/configuration-context';
-import { AvailableBackupsModalProvider } from '@/components/ui/available-backups-modal';
+import type { Metadata } from "next";
+import { cookies, headers } from "next/headers";
+import localFont from "next/font/local";
+import "./globals.css";
+import { CustomThemeProvider } from "@/contexts/theme-context";
+import { ConfigProvider } from "@/contexts/config-context";
+import { GlobalRefreshProvider } from "@/contexts/global-refresh-context";
+import { ServerSelectionProvider } from "@/contexts/server-selection-context";
+import { ConfigurationProvider } from "@/contexts/configuration-context";
+import { AvailableBackupsModalProvider } from "@/components/ui/available-backups-modal";
 import { Toaster } from "@/components/ui/toaster";
 import { ToastProvider } from "@/components/ui/use-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SessionInitializer } from '@/components/session-initializer';
-import { GlobalSessionErrorHandler } from '@/components/global-session-error-handler';
-import { ConditionalLayout } from '@/components/conditional-layout';
+import { SessionInitializer } from "@/components/session-initializer";
+import { GlobalSessionErrorHandler } from "@/components/global-session-error-handler";
+import { ConditionalLayout } from "@/components/conditional-layout";
+import { ClientLocaleProvider } from "@/contexts/locale-context";
+
+const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
+const DEFAULT_LOCALE = "en";
+const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
+
+type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+/**
+ * Gets the locale from server-side sources (cookies, headers, or default).
+ * Used for setting HTML lang attribute in root layout.
+ * Silently falls back to default locale during static generation.
+ */
+async function getServerLocale(): Promise<SupportedLocale> {
+  try {
+    // 1. Check cookie for persisted locale preference
+    const cookieStore = await cookies();
+    const cookieLocale = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
+    if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as SupportedLocale)) {
+      return cookieLocale as SupportedLocale;
+    }
+
+    // 2. Check pathname header (set by proxy/middleware) to extract locale
+    const headersList = await headers();
+    const pathname = headersList.get("x-pathname") || "";
+    const pathLocaleMatch = pathname.match(/^\/([^/]+)/);
+    if (pathLocaleMatch) {
+      const pathLocale = pathLocaleMatch[1];
+      if (SUPPORTED_LOCALES.includes(pathLocale as SupportedLocale)) {
+        return pathLocale as SupportedLocale;
+      }
+    }
+
+    // 3. Check Accept-Language header
+    const acceptLanguage = headersList.get("accept-language");
+    if (acceptLanguage) {
+      const languages = acceptLanguage
+        .split(",")
+        .map((lang) => {
+          const [code, q = "q=1"] = lang.trim().split(";");
+          const quality = parseFloat(q.replace("q=", "")) || 1;
+          return { code: code.toLowerCase().split("-")[0], quality };
+        })
+        .sort((a, b) => b.quality - a.quality);
+
+      for (const { code } of languages) {
+        let mappedLocale: SupportedLocale | null = null;
+        if (code === "en") mappedLocale = "en";
+        else if (code === "de") mappedLocale = "de";
+        else if (code === "fr") mappedLocale = "fr";
+        else if (code === "es") mappedLocale = "es";
+        else if (code === "pt") mappedLocale = "pt-BR";
+
+        if (mappedLocale && SUPPORTED_LOCALES.includes(mappedLocale)) {
+          return mappedLocale;
+        }
+      }
+    }
+  } catch (error) {
+    // If cookies/headers are not available (e.g., during static generation),
+    // silently fall back to default locale. This is expected behavior.
+    // The error is typically "Dynamic server usage" during static generation.
+  }
+
+  // 4. Fallback to default locale
+  return DEFAULT_LOCALE;
+}
+
+/**
+ * Maps locale code to HTML lang attribute value.
+ * pt-BR -> pt-BR, others use the same code.
+ */
+function getHtmlLang(locale: SupportedLocale): string {
+  return locale; // pt-BR is already correct, others are fine as-is
+}
 
 const geistSans = localFont({
   src: [
@@ -68,33 +144,39 @@ const geistMono = localFont({
 
 // Dynamic title based on environment
 const getTitle = () => {
-  const baseTitle = 'duplistatus';
-  const isDev = process.env.NODE_ENV === 'development';
-  
+  const baseTitle = "duplistatus";
+  const isDev = process.env.NODE_ENV === "development";
+
   if (isDev) {
-    // Get version from package.json
-    const version = process.env.npm_package_version || 'v?.?.?';
+    const version = process.env.npm_package_version || "v?.?.?";
     return `${baseTitle} (dev v${version})`;
   }
-  
+
   return baseTitle;
 };
 
+// Generate metadata - can be made async if needed for locale-specific descriptions
 export const metadata: Metadata = {
   title: getTitle(),
-  description: 'Monitor the execution and metrics of your Duplicatibackups.',
+  description: "Monitor the execution and metrics of your Duplicatibackups.",
   icons: {
-    icon: '/favicon.ico',
+    icon: "/favicon.ico",
   },
+  // Note: For locale-specific metadata, consider using generateMetadata() function
+  // in individual page components or [locale]/layout.tsx
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Get locale for HTML lang attribute (server-side)
+  const locale = await getServerLocale();
+  const htmlLang = getHtmlLang(locale);
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={htmlLang} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -124,6 +206,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CustomThemeProvider>
+          <ClientLocaleProvider>
           <ConfigProvider>
             <ConfigurationProvider>
               <GlobalRefreshProvider>
@@ -142,6 +225,7 @@ export default function RootLayout({
               </GlobalRefreshProvider>
             </ConfigurationProvider>
           </ConfigProvider>
+          </ClientLocaleProvider>
         </CustomThemeProvider>
       </body>
     </html>

@@ -12,8 +12,9 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { ServerIcon } from '@/components/ui/server-icon';
 import { Settings, Server, Loader2 } from 'lucide-react';
-import { useServerSelection } from '@/contexts/server-selection-context';
-import { ServerAddress } from '@/lib/types';
+import { useServerSelection } from "@/contexts/server-selection-context";
+import { useLocale } from "@/contexts/locale-context";
+import { ServerAddress } from "@/lib/types";
 import { GradientCardHeader } from '@/components/ui/card';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
@@ -24,6 +25,7 @@ export function OpenServerConfigButton() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
   const { toast } = useToast();
   const { state: serverSelectionState, getSelectedServer } = useServerSelection();
 
@@ -31,8 +33,8 @@ export function OpenServerConfigButton() {
     try {
       setIsLoading(true);
       
-      // Check if we're on a server detail page
-      if (pathname.startsWith('/detail/')) {
+      // Check if we're on a server detail page (with or without locale prefix)
+      if (pathname?.includes("/detail/")) {
         // On detail page, don't fetch server connections for popup
         // The popup should not be shown for single servers
         setServerAddresses([]);
@@ -146,15 +148,15 @@ export function OpenServerConfigButton() {
   };
 
   const handleSettingsClick = () => {
-    router.push('/settings?tab=server');
+    router.push(`/${locale}/settings?tab=server`);
     setIsPopoverOpen(false);
   };
 
   const handleButtonClick = async () => {
-    // Check if we're on a server detail page (including backup detail pages)
-    if (pathname.startsWith('/detail/')) {
-      // Extract serverId from the pathname
-      const pathMatch = pathname.match(/^\/detail\/([^\/\?]+)/);
+    // Check if we're on a server detail page (including backup detail pages, with or without locale prefix)
+    if (pathname?.includes("/detail/")) {
+      // Extract serverId from the pathname (e.g. /en/detail/abc or /detail/abc)
+      const pathMatch = pathname.match(/\/detail\/([^\/\?]+)/);
       const currentServerId = pathMatch ? pathMatch[1] : undefined;
       
       if (currentServerId) {

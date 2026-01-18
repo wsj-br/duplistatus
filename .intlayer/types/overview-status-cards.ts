@@ -1,0 +1,37 @@
+/* eslint-disable */
+export default {
+  "key": "overview-status-cards",
+  "content": {
+    "nodeType": "translation",
+    "translation": {
+      "en": {
+        "success": "Success",
+        "overdueBackups": "Overdue Backups",
+        "warningsAndErrors": "Warnings & Errors"
+      },
+      "de": {
+        "success": "Erfolg",
+        "overdueBackups": "Überfällige Sicherungen",
+        "warningsAndErrors": "Warnungen & Fehler"
+      },
+      "fr": {
+        "success": "Succès",
+        "overdueBackups": "Sauvegardes en retard",
+        "warningsAndErrors": "Avertissements & Erreurs"
+      },
+      "es": {
+        "success": "Éxito",
+        "overdueBackups": "Respaldos vencidos",
+        "warningsAndErrors": "Advertencias y Errores"
+      },
+      "pt-BR": {
+        "success": "Sucesso",
+        "overdueBackups": "Backups atrasados",
+        "warningsAndErrors": "Avisos e Erros"
+      }
+    }
+  },
+  "localIds": [
+    "overview-status-cards::local::src/components/dashboard/overview-status-cards.content.ts"
+  ]
+} as const;

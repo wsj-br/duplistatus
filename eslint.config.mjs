@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     'next-env.d.ts',
     // Ignore Docusaurus documentation directory (auto-generated files)
     'documentation/**',
+    // Ignore Intlayer auto-generated files
+    '.intlayer/**',
   ]),
 ])
  

@@ -1,0 +1,57 @@
+/* eslint-disable */
+export default {
+  "key": "available-backups-modal",
+  "content": {
+    "nodeType": "translation",
+    "translation": {
+      "en": {
+        "title": "Available Backup Versions",
+        "version": "Version",
+        "date": "Date",
+        "clickToView": "Click to view available versions",
+        "versionInfoNotReceived": "Version info not received",
+        "created": "Created",
+        "age": "Age"
+      },
+      "de": {
+        "title": "Verfügbare Sicherungsversionen",
+        "version": "Version",
+        "date": "Datum",
+        "clickToView": "Klicken Sie, um verfügbare Versionen anzuzeigen",
+        "versionInfoNotReceived": "Versionsinformationen nicht erhalten",
+        "created": "Erstellt",
+        "age": "Alter"
+      },
+      "fr": {
+        "title": "Versions de sauvegarde disponibles",
+        "version": "Version",
+        "date": "Date",
+        "clickToView": "Cliquez pour voir les versions disponibles",
+        "versionInfoNotReceived": "Informations de version non reçues",
+        "created": "Créé",
+        "age": "Âge"
+      },
+      "es": {
+        "title": "Versiones de respaldo disponibles",
+        "version": "Versión",
+        "date": "Fecha",
+        "clickToView": "Haga clic para ver versiones disponibles",
+        "versionInfoNotReceived": "Información de versión no recibida",
+        "created": "Creado",
+        "age": "Antigüedad"
+      },
+      "pt-BR": {
+        "title": "Versões de backup disponíveis",
+        "version": "Versão",
+        "date": "Data",
+        "clickToView": "Clique para ver versões disponíveis",
+        "versionInfoNotReceived": "Informações de versão não recebidas",
+        "created": "Criado",
+        "age": "Idade"
+      }
+    }
+  },
+  "localIds": [
+    "available-backups-modal::local::src/components/ui/available-backups-modal.content.ts"
+  ]
+} as const;

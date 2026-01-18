@@ -6,6 +6,128 @@
 **Target Languages**: English (en), German (de), French (fr), Spanish (es), Brazilian Portuguese (pt-BR)  
 **i18n Framework**: Intlayer with AI-powered translation  
 **Implementation Method**: Multi-session AI agent execution  
+**Architecture**: **Hybrid Per-Component Management** (centralized common + co-located component content)
+
+---
+
+## 🔄 MIGRATION: Centralized → Hybrid Per-Component Approach
+
+### Current Status (Phase 3.1 Completed)
+- ✅ `src/app/[locale]/content/common.content.ts` (471 lines) - **KEEP AS-IS**
+- ✅ `src/app/[locale]/content/dashboard.content.ts` (100 lines) - **NEEDS MIGRATION**
+
+### Why Hybrid Approach?
+
+Intlayer's **per-component management control** concept means content files should be co-located with their components for:
+- **Automatic cleanup**: Removing a component removes its translations
+- **Better organization**: Translations next to component code
+- **Optimal bundling**: Tree-shaking of unused component content
+- **No duplication**: Common UI terms shared via `common.content.ts`
+
+### Migration Strategy
+
+**HYBRID = Centralized Common + Co-located Component Content**
+
+```
+Before (Centralized):                After (Hybrid):
+src/app/[locale]/content/           src/app/[locale]/content/
+├── common.content.ts               ├── common.content.ts ✅ (keep)
+├── dashboard.content.ts            └── types.ts
+├── settings.content.ts             
+└── auth.content.ts                 src/components/dashboard/
+                                    ├── dashboard-table.tsx
+                                    ├── dashboard-table.content.ts 🆕
+                                    ├── server-cards.tsx
+                                    └── server-cards.content.ts 🆕
+```
+
+### Decision Matrix: What Goes Where?
+
+**COMMON CONTENT** (`common.content.ts`):
+- ✅ UI actions: save, cancel, delete, edit, add, search, filter, refresh
+- ✅ Status terms: success, error, loading, pending, failed, completed
+- ✅ Navigation: dashboard, settings, servers, logout
+- ✅ Time terms: today, yesterday, last7Days, last30Days
+- ✅ Generic status: online, offline, active, inactive
+
+**COMPONENT CONTENT** (co-located `.content.ts`):
+- ✅ Component-specific headings and titles
+- ✅ Feature-specific terminology ("Server Overview", "Backup History")
+- ✅ Context-specific messages ("No servers found")
+- ✅ Component-unique tooltips and help text
+- ✅ Technical terms specific to that component
+
+### Migration Prompt (Execute After Phase 3.1)
+
+```plaintext
+TASK: Migrate existing centralized dashboard.content.ts to hybrid per-component structure.
+
+STEPS:
+
+1. ANALYZE dashboard.content.ts
+   - Identify content sections: overview.*, servers.*, backups.*, charts.*, alerts.*
+   - Map each section to its corresponding component
+
+2. CREATE COMPONENT CONTENT FILES
+   
+   a. src/components/dashboard/overview-cards.content.ts
+      - Move: overview.* (totalServers, onlineServers, etc.)
+   
+   b. src/components/dashboard/dashboard-table.content.ts
+      - Move: servers.* and backups.* (table-specific)
+   
+   c. src/components/dashboard/overview-charts-panel.content.ts
+      - Move: charts.* (chart titles, legends, axes)
+   
+   d. src/app/[locale]/page.content.ts
+      - Move: title, subtitle, alerts.* (page-level)
+
+3. CONTENT FILE TEMPLATE
+   ```typescript
+   import { t, type Dictionary } from 'intlayer';
+   
+   export default {
+     key: 'dashboard-table',  // Unique key
+     content: {
+       tableTitle: t({ 
+         en: 'Server Overview', 
+         de: 'Server-Übersicht',
+         // ... other languages
+       }),
+     },
+   } satisfies Dictionary;
+   ```
+
+4. UPDATE COMPONENT IMPORTS
+   ```typescript
+   // Before:
+   const { title } = useIntlayer('dashboard');
+   
+   // After:
+   const content = useIntlayer('dashboard-table');  // Component-specific
+   const common = useIntlayer('common');  // Shared UI
+   
+   return (
+     <div>
+       <h2>{content.tableTitle}</h2>
+       <Button>{common.ui.save}</Button>
+     </div>
+   );
+   ```
+
+5. VERIFY MIGRATION
+   - [ ] Each component has its own .content.ts file
+   - [ ] common.content.ts unchanged (50+ shared terms)
+   - [ ] No broken imports
+   - [ ] All 5 languages work correctly
+   - [ ] Delete centralized dashboard.content.ts
+
+EXPECTED OUTCOME:
+- common.content.ts: 50+ shared UI terms
+- 5-8 component-specific .content.ts files for dashboard
+- No centralized dashboard.content.ts
+- All components use hybrid approach
+```
 
 ---
 
@@ -26,19 +148,19 @@
 - [ ] Phase 2.3: Root layout updated
 
 ### Session 3 - [Date]
-- [ ] Phase 3.1: Content structure created
-- [ ] Phase 3.2: String extraction completed
-- [ ] Phase 3.3: Content files populated
+- [x] Phase 3.1: Hybrid content structure created (common + component files) ✅
+- [x] Phase 3.2: Strings extracted and categorized (common vs component) ✅
+- [x] Phase 3.3: All content files populated (common + 18 component files + 2 pages) ✅
 
 ### Session 4 - [Date]
-- [ ] Phase 4.1: Component integration started
-- [ ] Phase 4.2: Dashboard components updated
-- [ ] Phase 4.3: Settings components updated
+- [ ] Phase 4.1: Components updated to hybrid pattern (common + component)
+- [ ] Phase 4.2: TypeScript types added for all content files
+- [ ] Phase 4.3: Component integration tested in all 5 languages
 
 ### Session 5 - [Date]
-- [ ] Phase 5.1: AI translation configured
-- [ ] Phase 5.2: Batch translations generated
-- [ ] Phase 5.3: Manual review completed
+- [ ] Phase 5.1: AI translation configured for all content files
+- [ ] Phase 5.2: Batch translations generated (common + all components)
+- [ ] Phase 5.3: Manual review completed for all translations
 
 ### Session 6 - [Date]
 - [ ] Phase 6.1: Date/time localization enhanced
@@ -204,294 +326,582 @@ Current layout.tsx uses:
 
 ---
 
-### **SESSION 3 PROMPTS (Content Structure Creation)**
+### **SESSION 3 PROMPTS (Content Structure Creation - HYBRID APPROACH)**
 
-#### **Prompt 3.1: Create Content Directory Structure**
+#### **Prompt 3.1: Create Hybrid Content Structure**
 ```
-Create content directory structure for Intlayer content files:
+Create HYBRID content structure following Intlayer's per-component management:
 
-1. Create /src/app/[locale]/content/ directory
-2. Set up content file structure:
-   - common.content.ts (shared UI elements)
-   - dashboard.content.ts (dashboard-specific)
-   - settings.content.ts (settings pages)
-   - auth.content.ts (authentication)
-   - api.content.ts (API messages)
-   - notifications.content.ts (email/NTFY messages)
-3. Create TypeScript types for content organization
-4. Set up proper imports and exports
+ARCHITECTURE:
+- Centralized common content: src/app/[locale]/content/common.content.ts
+- Co-located component content: .content.ts files next to each component
 
-Structure should be scalable and maintainable for 5 languages.
+1. CREATE COMMON CONTENT (centralized for shared UI)
+   
+   Location: /src/app/[locale]/content/
+   Files to create:
+   - common.content.ts (50+ shared UI terms)
+   - types.ts (TypeScript interfaces)
+   
+   Common content includes:
+   - UI actions: save, cancel, delete, edit, add, search, filter, refresh, close
+   - Status terms: success, error, loading, pending, failed, completed
+   - Navigation: dashboard, settings, servers, logout, profile, help
+   - Time terms: today, yesterday, last7Days, last30Days, thisWeek, thisMonth
+   - Generic status: online, offline, active, inactive, unknown
+
+2. IDENTIFY COMPONENTS NEEDING CONTENT FILES
+   
+   Create .content.ts files ONLY for components with unique strings:
+   
+   Dashboard (5-6 files):
+   - src/components/dashboard/dashboard-table.content.ts
+   - src/components/dashboard/server-cards.content.ts
+   - src/components/dashboard/overview-cards.content.ts
+   - src/components/dashboard/overview-charts-panel.content.ts
+   
+   Settings (8 files):
+   - src/components/settings/server-settings-form.content.ts
+   - src/components/settings/email-configuration-form.content.ts
+   - src/components/settings/ntfy-form.content.ts
+   - src/components/settings/notification-templates-form.content.ts
+   - src/components/settings/overdue-monitoring-form.content.ts
+   - src/components/settings/user-management-form.content.ts
+   - src/components/settings/audit-log-viewer.content.ts
+   - src/components/settings/database-maintenance-form.content.ts
+   
+   Server Details (3-4 files):
+   - src/components/server-details/server-backup-table.content.ts
+   - src/components/server-details/server-detail-summary-items.content.ts
+   
+   UI Components (only those with unique strings):
+   - src/components/ui/backup-tooltip-content.content.ts
+   - src/components/ui/available-backups-modal.content.ts
+   
+   Pages (page-level content):
+   - src/app/[locale]/page.content.ts (dashboard page)
+   - src/app/[locale]/login/page.content.ts
+
+3. DO NOT CREATE content files for:
+   - Generic UI components (button, label, input) - they use common.content.ts
+   - Components that only use shared UI terms
+
+Target: ~25-30 total content files (1 common + 24-29 component-specific)
 ```
 
-#### **Prompt 3.2: Extract All Hard-coded Strings**
+#### **Prompt 3.2: Extract and Categorize Hard-coded Strings**
 ```
-Systematically extract all hard-coded strings from duplistatus application:
+Extract all hard-coded strings and categorize for hybrid structure:
 
-1. Scan all components and pages for hard-coded text:
-   - Navigation elements (header, menu items)
-   - Button labels and tooltips
-   - Form labels, placeholders, validation messages
-   - Table headers and filter options
-   - Status indicators and messages
-   - Chart labels and legends
-   - Error messages and notifications
+1. SCAN COMPONENTS FOR STRINGS
+   Directories to scan:
+   - src/components/dashboard/ (6 components)
+   - src/components/settings/ (8 form components)
+   - src/components/server-details/ (4 components)
+   - src/components/ui/ (only those with unique text)
+   - src/app/[locale]/ pages
 
-2. Focus on key directories:
-   - src/components/dashboard/
-   - src/components/settings/
-   - src/components/ui/
-   - src/app/detail/
-   - src/app/login/
-   - src/app/api/
+2. CATEGORIZATION DECISION
+   
+   For each string, ask:
+   
+   → Is it shared across multiple components? 
+      YES: Add to common.content.ts
+      Examples: "Save", "Cancel", "Delete", "Loading...", "Error"
+   
+   → Is it specific to ONE component?
+      YES: Create component .content.ts file
+      Examples: "Server Overview", "Backup History", "No servers found"
 
-3. Categorize strings by component/page:
-   - Dashboard components
-   - Settings forms
-   - Authentication pages
-   - Server detail views
-   - API responses
+3. CREATE EXTRACTION DOCUMENT
+   
+   Format for each component:
+   ```
+   Component: dashboard-table.tsx
+   Common strings (use common.content.ts):
+   - Save, Cancel, Refresh, Search, Filter
+   
+   Unique strings (create dashboard-table.content.ts):
+   - "Server Overview"
+   - "Last Backup Time"
+   - "No servers configured"
+   - "View backup details"
+   ```
 
-4. Create comprehensive list with context for each string
-5. Identify strings requiring special formatting (dates, numbers, plurals)
+4. STRINGS TO EXTRACT BY TYPE
+   - Table headers and column names → component content
+   - Form labels and placeholders → component content
+   - Button text → common content (if generic) OR component content (if specific)
+   - Status messages → common content (if generic) OR component content (if specific)
+   - Error messages → component content (context-specific)
+   - Tooltips and help text → component content
+   - Chart labels and axes → component content
 
-Focus on user-facing text, not code comments or internal identifiers.
-```
-
-#### **Prompt 3.3: Create Content Files with 5-Language Structure**
-```
-Create comprehensive content files for all 5 languages (en, de, fr, es, pt-BR):
-
-1. Create common.content.ts with shared UI elements:
-   - Navigation items (Dashboard, Settings, Servers, Logout)
-   - Common actions (Save, Cancel, Delete, Edit)
-   - Status messages (Success, Error, Loading)
-   - Form elements (Submit, Reset, Required)
-
-2. Create dashboard.content.ts:
-   - Dashboard title and headings
-   - Server status indicators
-   - Backup terminology
-   - Chart labels and tooltips
-   - Time-related terms
-
-3. Create settings.content.ts:
-   - Settings section titles
-   - Form labels and descriptions
-   - Configuration options
-   - Help text and tooltips
-
-4. Create auth.content.ts:
-   - Login form labels
-   - Authentication messages
-   - Password requirements
-   - Session management
-
-5. Create api.content.ts:
-   - Success/error messages
-   - Validation responses
-   - Status descriptions
-
-Each file should use t() function with all 5 language variants.
-
-Key translations to focus on:
+Key translations vocabulary:
 - "Backup" → "Sicherung" (DE), "sauvegarde" (FR), "copia de seguridad" (ES), "backup" (PT-BR)
 - "Server" → "Server" (DE), "serveur" (FR), "servidor" (ES/PT-BR)
-- "Dashboard" → "Dashboard" (DE), "tableau de bord" (FR), "panel de control" (ES), "painel" (PT-BR)
+```
+
+#### **Prompt 3.3: Populate Content Files (Hybrid Structure)**
+```
+Create all content files with 5-language translations (en, de, fr, es, pt-BR):
+
+1. CREATE COMMON CONTENT FIRST
+   
+   File: src/app/[locale]/content/common.content.ts
+   
+   Template:
+   ```typescript
+   import { t, type Dictionary } from 'intlayer';
+   
+   export default {
+     key: 'common',
+     content: {
+       ui: {
+         save: t({ en: 'Save', de: 'Speichern', fr: 'Enregistrer', es: 'Guardar', 'pt-BR': 'Salvar' }),
+         cancel: t({ en: 'Cancel', de: 'Abbrechen', fr: 'Annuler', es: 'Cancelar', 'pt-BR': 'Cancelar' }),
+         delete: t({ en: 'Delete', de: 'Löschen', fr: 'Supprimer', es: 'Eliminar', 'pt-BR': 'Excluir' }),
+         // ... 50+ more shared terms
+       },
+       navigation: { ... },
+       status: { ... },
+       time: { ... },
+     },
+   } satisfies Dictionary;
+   ```
+
+2. CREATE COMPONENT CONTENT FILES
+   
+   For each component identified in 3.1, create co-located .content.ts file:
+   
+   Template:
+   ```typescript
+   import { t, type Dictionary } from 'intlayer';
+   
+   export default {
+     key: 'dashboard-table',  // Must be unique
+     content: {
+       tableTitle: t({ 
+         en: 'Server Overview', 
+         de: 'Server-Übersicht',
+         fr: 'Vue d\'ensemble des serveurs',
+         es: 'Resumen del servidor',
+         'pt-BR': 'Visão geral do servidor'
+       }),
+       // Component-specific strings only
+     },
+   } satisfies Dictionary;
+   ```
+
+3. PRIORITY ORDER
+   
+   Create in this order:
+   1. common.content.ts (foundation)
+   2. Dashboard components (5-6 files)
+   3. Page-level content (dashboard, login)
+   4. Settings components (8 files)
+   5. Server details components (3-4 files)
+   6. UI components with unique strings (2-3 files)
+
+4. VALIDATION CHECKLIST
+   - [ ] Each .content.ts file has unique key
+   - [ ] All 5 languages present for each string
+   - [ ] No duplication between common and component content
+   - [ ] Component content files are co-located next to their .tsx files
+   - [ ] TypeScript types match content structure
 ```
 
 ---
 
-### **SESSION 4 PROMPTS (Component Integration)**
+### **SESSION 4 PROMPTS (Component Integration - HYBRID APPROACH)**
 
-#### **Prompt 4.1: Update Dashboard Components**
+#### **Prompt 4.1: Update Components to Use Hybrid Content**
 ```
-Update dashboard components to use Intlayer translations:
+Update all components to use HYBRID approach (common + component-specific content):
 
-1. Modify /src/app/[locale]/page.tsx:
-   - Import useIntlayer hook
-   - Replace hard-coded strings with content keys
-   - Test all dashboard elements are translated
+1. COMPONENT INTEGRATION PATTERN
+   
+   For Client Components:
+   ```typescript
+   'use client';
+   import { useIntlayer } from 'react-intlayer';
+   
+   export function DashboardTable() {
+     // Get component-specific content
+     const content = useIntlayer('dashboard-table');
+     
+     // Get shared common content
+     const common = useIntlayer('common');
+     
+     return (
+       <div>
+         <h2>{content.tableTitle}</h2>  {/* Component-specific */}
+         <Button>{common.ui.save}</Button>  {/* Shared */}
+         <Button>{common.ui.cancel}</Button>  {/* Shared */}
+         <span>{content.noServersMessage}</span>  {/* Component-specific */}
+       </div>
+     );
+   }
+   ```
+   
+   For Server Components:
+   ```typescript
+   import { getContent } from 'intlayer';
+   
+   export default function DashboardPage() {
+     const content = getContent('dashboard-page');
+     const common = getContent('common');
+     
+     return <div>{content.title}</div>;
+   }
+   ```
 
-2. Update dashboard component files:
-   - /src/components/dashboard/*.tsx files
-   - Server cards and status indicators
-   - Backup tables and charts
-   - Filter and search elements
+2. UPDATE PRIORITY (by component group):
+   
+   A. Dashboard Components (src/components/dashboard/):
+      - dashboard-table.tsx → useIntlayer('dashboard-table') + useIntlayer('common')
+      - server-cards.tsx → useIntlayer('server-cards') + useIntlayer('common')
+      - overview-cards.tsx → useIntlayer('overview-cards') + useIntlayer('common')
+      - overview-charts-panel.tsx → useIntlayer('overview-charts-panel') + useIntlayer('common')
+   
+   B. Settings Components (src/components/settings/):
+      - Each form component uses its own content + common
+      - Example: server-settings-form.tsx → useIntlayer('server-settings-form') + useIntlayer('common')
+   
+   C. Server Details Components (src/components/server-details/):
+      - server-backup-table.tsx → useIntlayer('server-backup-table') + useIntlayer('common')
+      - server-detail-summary-items.tsx → useIntlayer('server-detail-summary-items') + useIntlayer('common')
 
-3. Ensure proper type safety:
-   - TypeScript types for content keys
-   - Handle missing translations gracefully
-   - Maintain existing functionality
+3. DECISION GUIDE: When to Use Which Content
+   
+   Use common.ui.*:
+   - Save, Cancel, Delete, Edit, Add, Remove
+   - Search, Filter, Refresh, Clear, Reset
+   - Close, Back, Next, Previous, Continue
+   - Select, Copy, Export, Import, Download, Upload
+   
+   Use common.status.*:
+   - Success, Error, Warning, Info, Loading
+   - Pending, Failed, Completed, Cancelled
+   - Unauthorized, Forbidden, Not Found
+   
+   Use common.navigation.*:
+   - Dashboard, Settings, Servers, Logout
+   
+   Use common.time.*:
+   - Today, Yesterday, Last 7 Days, Last 30 Days
+   
+   Use component content:
+   - Everything else unique to that component
 
-4. Test responsive design with longer text (German, French, Spanish, Portuguese)
-
-Focus on main dashboard components first for pilot testing.
-
-Current dashboard components include:
-- Server status cards
-- Backup history tables
-- Charts and graphs
-- Filter controls
-- Search functionality
-```
-
-#### **Prompt 4.2: Update Settings Components**
-```
-Update settings components to use Intlayer translations:
-
-1. Modify settings pages:
-   - /src/app/[locale]/settings/page.tsx
-   - All settings sub-pages
-
-2. Update settings components:
-   - /src/components/settings/*.tsx files
-   - Server configuration forms
-   - User management interfaces
-   - Notification settings
-   - Email/NTFY configuration
-
-3. Handle form-specific translations:
-   - Labels and placeholders
-   - Validation messages
-   - Help text and descriptions
-   - Success/error notifications
-
-4. Ensure form validation works with all languages
-
-Settings have extensive forms - ensure complete translation coverage.
-
-Current settings include:
-- Server configuration
-- User management
-- Email/NTFY notifications
-- Audit logs
-- Application settings
-```
-
-#### **Prompt 4.3: Update Authentication Components**
-```
-Update authentication components to use Intlayer translations:
-
-1. Modify authentication pages:
-   - /src/app/[locale]/login/page.tsx
-   - Password change modals
-
-2. Update auth components:
-   - Login forms
-   - Password validation
-   - Session management
-
-3. Handle security-related translations:
-   - Error messages
-   - Security warnings
-   - Password requirements
-
-4. Ensure authentication flow works in all languages
-
-Authentication is critical - ensure accuracy and security across all languages.
-
-Current auth features:
-- Login page
-- Password requirements
-- Session management
-- User authentication
+4. VALIDATION FOR EACH COMPONENT
+   - [ ] Imports both useIntlayer('component-key') and useIntlayer('common')
+   - [ ] Replaces all hard-coded strings
+   - [ ] Uses common content for shared terms
+   - [ ] Uses component content for unique strings
+   - [ ] No TypeScript errors
+   - [ ] Component renders correctly in all 5 languages
 ```
 
-#### **Prompt 4.4: Update Server Detail Components**
+#### **Prompt 4.2: Update TypeScript Types**
 ```
-Update server detail components to use Intlayer translations:
+Update type definitions for hybrid content structure:
 
-1. Modify server detail pages:
-   - /src/app/[locale]/detail/[id]/page.tsx
-   - All server detail sub-pages
+1. LOCATION: src/app/[locale]/content/types.ts
 
-2. Update server detail components:
-   - /src/components/server-details/*.tsx files
-   - Server status information
-   - Backup history tables
-   - Log viewers
+2. CREATE INTERFACES
+   
+   ```typescript
+   // Keep CommonContent interface (already exists)
+   export interface CommonContent {
+     ui: { save: string; cancel: string; ... };
+     navigation: { dashboard: string; ... };
+     status: { success: string; error: string; ... };
+     time: { today: string; yesterday: string; ... };
+   }
+   
+   // Add component-specific interfaces
+   export interface DashboardTableContent {
+     tableTitle: string;
+     serverName: string;
+     lastBackup: string;
+     viewDetails: string;
+     noServersMessage: string;
+   }
+   
+   export interface ServerCardsContent {
+     cardTitle: string;
+     statusOnline: string;
+     statusOffline: string;
+     lastBackupLabel: string;
+   }
+   
+   // Add interface for each component with content file
+   export interface OverviewCardsContent { ... }
+   export interface ServerSettingsFormContent { ... }
+   // ... etc for each component
+   ```
 
-3. Handle technical terminology:
-   - Backup-specific terms
-   - Server status indicators
-   - Technical descriptions
+3. TYPE SAFETY
+   - Ensure each content interface matches its .content.ts structure
+   - Export all interfaces for use in components
+   - TypeScript will catch missing translations or typos
 
-4. Ensure technical accuracy in all languages
+4. VALIDATION
+   - [x] Interface for common.content.ts (CommonContent interface exists)
+   - [x] Interface for each component .content.ts file (All 25 content files have corresponding interfaces)
+   - [x] Type definitions are correct (All interfaces match their .content.ts structures)
+   - [x] All content keys typed correctly (All keys in ContentTypes interface and contentKeys array)
+   
+   **Status**: ✅ Type definitions are complete and correct. All 25 content files have corresponding TypeScript interfaces in types.ts:
+   - CommonContent (common.content.ts)
+   - 20 component-specific interfaces (dashboard, settings, server-details, ui components, pages)
+   - 4 feature-level interfaces (settings, auth, api, notifications)
+   
+   **Note**: There are TypeScript errors in components (missing useIntlayer hooks), but these are implementation issues, not type definition problems. The type definitions themselves are correct and complete.
+```
 
-Server details contain technical terms - ensure precise translations.
+#### **Prompt 4.3: Test Component Integration**
+```
+Test all updated components in all 5 languages:
+
+1. COMPONENT-BY-COMPONENT TESTING
+   
+   For each component:
+   - Load in browser with locale parameter: /en/dashboard, /de/dashboard, etc.
+   - Verify component-specific content loads correctly
+   - Verify common content (buttons, status) loads correctly
+   - Check for missing translations (fallback to English = error)
+   - Test locale switching preserves functionality
+
+2. TEST CHECKLIST BY COMPONENT GROUP
+   
+   Dashboard:
+   - [ ] dashboard-table shows correct table headers in all languages
+   - [ ] server-cards displays correct status messages
+   - [ ] overview-cards shows correct metric names
+   - [ ] Save/Cancel/Delete buttons use common content
+   
+   Settings:
+   - [ ] All 8 form components load correct labels
+   - [ ] Form validation messages appear in correct language
+   - [ ] Common buttons (Save, Cancel) work across all forms
+   
+   Server Details:
+   - [ ] Backup table headers translate correctly
+   - [ ] Technical terms maintain accuracy
+   - [ ] Common UI elements consistent across components
+
+3. CROSS-LANGUAGE TESTING
+   - English (en): Verify all features work as baseline
+   - German (de): Check text expansion, compound words
+   - French (fr): Verify accented characters, longer text
+   - Spanish (es): Check accented characters, gender agreement
+   - Portuguese (pt-BR): Verify regional terms
+
+4. ISSUES TO WATCH FOR
+   - Missing translations (text stays in English)
+   - Broken imports (component can't find content)
+   - Type errors (TypeScript complains about missing keys)
+   - UI breaks with longer text (German/French)
+   - Inconsistent terminology across components
+
+Document any issues and fix before proceeding to Phase 5.
 ```
 
 ---
 
-### **SESSION 5 PROMPTS (AI-Powered Translation)**
+### **SESSION 5 PROMPTS (AI-Powered Translation - HYBRID STRUCTURE)**
 
-#### **Prompt 5.1: Configure AI Translation Provider**
+#### **Prompt 5.1: Configure AI Translation for All Content Files**
 ```
-Configure AI translation provider for Intlayer:
+Configure AI translation for both common and component-specific content:
 
-1. Set up AI translation configuration in intlayer.config.ts:
-   - Choose AI provider (OpenAI, Claude, etc.)
-   - Configure API key and settings
-   - Set translation quality parameters
-   - Configure target languages (en, de, fr, es, pt-BR)
+1. SET UP AI TRANSLATION IN intlayer.config.ts
+   
+   ```typescript
+   const config: IntlayerConfig = {
+     internationalization: {
+       locales: [Locales.ENGLISH, Locales.GERMAN, Locales.FRENCH, 
+                 Locales.SPANISH, Locales.PORTUGUESE_BRAZIL],
+       defaultLocale: Locales.ENGLISH,
+     },
+     ai: {
+       enabled: true,
+       provider: 'openai',  // or 'claude', 'deepl', etc.
+       apiKey: process.env.AI_TRANSLATION_KEY,
+       model: 'gpt-4',  // or appropriate model
+       translationQuality: 'high',
+       preserveTechnicalTerms: true,  // Important for backup/IT terms
+     },
+   };
+   ```
 
-2. Test AI translation with sample content
-3. Validate translation quality for technical terms
-4. Set up translation validation rules
+2. PREPARE TRANSLATION GLOSSARY
+   
+   Create glossary for consistent technical terminology:
+   - "Backup" → maintain accuracy across all languages
+   - "Server" → consistent translation
+   - "Database" → technical precision
+   - "Configuration" → exact terminology
+   - Status terms (Success, Failed, Pending) → consistent across all content
 
-Focus on backup/IT terminology accuracy for technical content.
+3. CONTENT FILES TO TRANSLATE
+   
+   Priority order:
+   1. common.content.ts (foundation - 50+ terms)
+   2. Dashboard component content (5-6 files)
+   3. Settings component content (8 files)
+   4. Server details component content (3-4 files)
+   5. Page-level content (2-3 files)
+   6. UI component content (2-3 files)
+   
+   Total: ~25-30 content files
+
+4. TRANSLATION VALIDATION SETUP
+   - Verify all 5 languages present for each key
+   - Check technical term consistency
+   - Validate German compound words (not too long)
+   - Verify French/Spanish gender agreement
+   - Check Portuguese regional variations
 ```
 
-#### **Prompt 5.2: Generate Batch Translations**
+#### **Prompt 5.2: Generate Batch Translations for All Content Files**
 ```
-Generate AI translations for all content files:
+Run AI translation on all content files (common + component-specific):
 
-1. Run Intlayer AI translation on all content files:
-   - common.content.ts
-   - dashboard.content.ts
-   - settings.content.ts
-   - auth.content.ts
-   - api.content.ts
+1. TRANSLATION EXECUTION
+   
+   Run Intlayer AI translation command for all .content.ts files:
+   ```bash
+   # Translate all content files
+   npx intlayer translate
+   
+   # Or translate specific files
+   npx intlayer translate src/app/[locale]/content/common.content.ts
+   npx intlayer translate src/components/dashboard/dashboard-table.content.ts
+   ```
 
-2. Handle specific translation challenges:
-   - Technical backup terminology
-   - German compound words
-   - French/Spanish gender agreement
-   - Portuguese variations
+2. TRANSLATION CHALLENGES TO HANDLE
+   
+   Technical terminology:
+   - "Backup" terminology - ensure consistency
+   - "Server", "Database", "Configuration" - technical precision
+   - Status messages - maintain clarity
+   
+   Language-specific:
+   - German: Watch for overly long compound words in UI elements
+   - French: Gender agreement, text expansion (~25% longer)
+   - Spanish: Accented characters, gender agreement
+   - Portuguese (pt-BR): Regional Brazilian variations, not European Portuguese
 
-3. Validate translation completeness:
-   - Ensure all keys have translations
-   - Check for missing language variants
-   - Verify consistent terminology
+3. BATCH TRANSLATION PROCESS
+   
+   For each content file:
+   a. AI translates English (en) to 4 target languages
+   b. Verify all keys have translations
+   c. Check for missing language variants
+   d. Validate technical term consistency
+   e. Review context accuracy
 
-4. Review translations for context accuracy
+4. POST-TRANSLATION CHECKS
+   
+   Common content (common.content.ts):
+   - [ ] All 50+ UI terms translated consistently
+   - [ ] Navigation terms accurate
+   - [ ] Status messages clear and precise
+   - [ ] Time terms correct for each locale
+   
+   Component content (all 24-29 files):
+   - [ ] Component-specific terminology accurate
+   - [ ] Technical terms consistent with common content
+   - [ ] Context-appropriate translations
+   - [ ] No missing translations
 
-Generate high-quality initial translations for all 5 languages.
+5. VERIFICATION COMMAND
+   ```bash
+   # Build to verify all translations compile correctly
+   pnpm build
+   
+   # Check for missing translations
+   grep -r "TODO.*translation" src/
+   ```
 ```
 
 #### **Prompt 5.3: Manual Review and Refinement**
 ```
-Perform manual review and refinement of AI translations:
+Perform manual review of AI translations across all content files:
 
-1. Review technical terminology:
-   - "Backup" terminology in each language
-   - "Server" and status terms
-   - UI consistency terms
+1. REVIEW COMMON CONTENT FIRST (Foundation)
+   
+   File: src/app/[locale]/content/common.content.ts
+   
+   Focus areas:
+   - UI actions (Save, Cancel, Delete) - must be natural, not literal
+   - Status terms (Success, Error, Loading) - clear and concise
+   - Navigation (Dashboard, Settings) - match industry standards
+   - Time terms (Today, Yesterday) - culturally appropriate
+   
+   Verify consistency: These terms will be used across ALL components
 
-2. Check for common AI translation issues:
-   - Literal translations vs idiomatic usage
-   - Cultural appropriateness
-   - Technical accuracy
+2. REVIEW COMPONENT-SPECIFIC CONTENT
+   
+   Priority review order:
+   
+   A. Dashboard components (high visibility):
+      - dashboard-table.content.ts: Table headers, tooltips
+      - overview-cards.content.ts: Metric names, descriptions
+      - Review for clarity and technical accuracy
+   
+   B. Settings components (extensive content):
+      - Review form labels for clarity
+      - Validate help text makes sense in each language
+      - Check validation messages are understandable
+   
+   C. Server details (technical content):
+      - Verify backup terminology accuracy
+      - Check technical descriptions maintain precision
+      - Validate status messages
 
-3. Refine translations:
-   - German compound words (if too long)
-   - French/Spanish text expansion issues
-   - Portuguese regional variations
+3. COMMON AI TRANSLATION ISSUES TO FIX
+   
+   Overly literal translations:
+   - AI often translates word-by-word, missing idiomatic usage
+   - Example: "Log in" might become overly formal in some languages
+   
+   Cultural inappropriateness:
+   - Some phrases don't translate culturally
+   - Adjust for natural language usage
+   
+   Technical inaccuracy:
+   - AI might not know specialized backup/IT terminology
+   - Verify with technical glossaries or native IT professionals
+   
+   German compound words:
+   - AI may create overly long compound words
+   - Simplify if they break UI layout
 
-4. Validate with native speakers if possible
+4. REFINEMENT PROCESS
+   
+   For each language:
+   - German (de): Simplify compound words, check formality level
+   - French (fr): Verify gender agreement, check text expansion
+   - Spanish (es): Check regional appropriateness (neutral Spanish vs specific)
+   - Portuguese (pt-BR): Ensure Brazilian Portuguese, not European
 
-Focus on technical accuracy and user experience in each language.
+5. NATIVE SPEAKER REVIEW (Optional but Recommended)
+   - Have native speakers review key components
+   - Focus on dashboard and settings (most user-facing)
+   - Validate technical terminology makes sense
+   - Check for cultural appropriateness
+
+6. FINAL VALIDATION
+   - [ ] Common content reviewed and refined
+   - [ ] All component content reviewed
+   - [ ] Technical terminology consistent
+   - [ ] No awkward or literal translations
+   - [ ] Cultural appropriateness verified
+   - [ ] Text expansion acceptable for UI
 ```
 
 ---
@@ -766,9 +1176,11 @@ Current setup:
 Begin with Phase 2.1: Implement dynamic locale routing.
 ```
 
-### **To Resume at Session 3 (Phase 3)**
+### **To Resume at Session 3 (Phase 3) - HYBRID APPROACH**
 ```
-Continue internationalisation implementation from Session 3. Phases 1-2 completed. Current status: Intlayer configured with routing and middleware. Need to create content structure and extract strings for 5 languages (en, de, fr, es, pt-BR).
+Continue internationalisation from Session 3. Phases 1-2 completed. 
+Current status: Intlayer configured with routing and middleware. 
+Need to create HYBRID content structure (common + per-component).
 
 Completed setup:
 - Dynamic locale routing (/[locale]/)
@@ -776,32 +1188,49 @@ Completed setup:
 - Root layout updated for locale support
 - Configuration files ready
 
-Begin with Phase 3.1: Create content directory structure and extract strings.
+HYBRID ARCHITECTURE:
+- Centralized: common.content.ts (50+ shared UI terms)
+- Co-located: .content.ts files next to each component (24-29 files)
+
+Begin with Phase 3.1: Create hybrid content structure.
 ```
 
-### **To Resume at Session 4 (Phase 4)**
+### **To Resume at Session 4 (Phase 4) - HYBRID APPROACH**
 ```
-Continue internationalisation implementation from Session 4. Phases 1-3 completed. Current status: Content structure created, strings extracted, content files populated with 5-language translations.
+Continue internationalisation from Session 4. Phases 1-3 completed. 
+Current status: HYBRID content structure created with common + component files.
 
 Completed:
-- Content files: common.content.ts, dashboard.content.ts, settings.content.ts, auth.content.ts, api.content.ts
-- All strings categorized and structured
+- common.content.ts with 50+ shared UI terms
+- 24-29 component-specific .content.ts files co-located with components
+- All strings extracted and categorized
 - 5-language translation framework ready
 
-Begin with Phase 4.1: Update dashboard components to use useIntlayer hook.
+NEXT: Update components to use HYBRID approach:
+- Import both useIntlayer('component-key') and useIntlayer('common')
+- Use common content for shared UI (Save, Cancel, Delete, etc.)
+- Use component content for unique strings
+
+Begin with Phase 4.1: Update components to hybrid content pattern.
 ```
 
-### **To Resume at Session 5 (Phase 5)**
+### **To Resume at Session 5 (Phase 5) - HYBRID APPROACH**
 ```
-Continue internationalisation implementation from Session 5. Phases 1-4 completed. Current status: All components updated with useIntlayer hook, content structure in place. Need to configure AI translation and generate translations.
+Continue internationalisation from Session 5. Phases 1-4 completed. 
+Current status: All components updated with hybrid content approach.
 
 Completed:
-- Dashboard, settings, auth, server detail components updated
-- All hard-coded strings replaced with content keys
-- Type safety implemented
-- Component integration tested
+- All components use useIntlayer('component-key') + useIntlayer('common')
+- Common content shared across all components
+- Component-specific content co-located with components
+- Type safety implemented for all content files
 
-Begin with Phase 5.1: Configure AI translation provider for 5 languages.
+Content files ready for translation:
+- 1 common.content.ts file
+- 24-29 component-specific .content.ts files
+- Total: ~25-30 files needing AI translation
+
+Begin with Phase 5.1: Configure AI translation for all content files.
 ```
 
 ### **To Resume at Session 6 (Phase 6)**
@@ -847,35 +1276,143 @@ Begin with Phase 8.1: Configure Intlayer visual editor.
 
 ## Implementation Guidelines and Best Practices
 
-### Code Style Guidelines
-```typescript
-// Use descriptive content keys
-const { dashboardTitle, serverStatus } = useIntlayer("dashboard");
+### Hybrid Architecture Pattern
 
-// Maintain type safety
+**HYBRID = Centralized Common + Co-located Component Content**
+
+```typescript
+// PATTERN 1: Client Component with Hybrid Content
+'use client';
+import { useIntlayer } from 'react-intlayer';
+
+export function DashboardTable() {
+  const content = useIntlayer('dashboard-table');  // Component-specific
+  const common = useIntlayer('common');  // Shared UI
+  
+  return (
+    <div>
+      <h2>{content.tableTitle}</h2>  {/* Component-specific */}
+      <Button>{common.ui.save}</Button>  {/* Shared */}
+      <Button>{common.ui.cancel}</Button>  {/* Shared */}
+      <span>{content.noServersFound}</span>  {/* Component-specific */}
+    </div>
+  );
+}
+
+// PATTERN 2: Server Component with Hybrid Content
+import { getContent } from 'intlayer';
+
+export default function DashboardPage() {
+  const content = getContent('dashboard-page');
+  const common = getContent('common');
+  
+  return (
+    <div>
+      <h1>{content.pageTitle}</h1>
+      <button>{common.ui.refresh}</button>
+    </div>
+  );
+}
+```
+
+### Code Style Guidelines
+
+```typescript
+// ✅ GOOD: Use descriptive content keys
+const content = useIntlayer('dashboard-table');
+const common = useIntlayer('common');
+
+// ✅ GOOD: Destructure for cleaner code
+const { tableTitle, noServersFound } = useIntlayer('dashboard-table');
+const { ui, navigation, status } = useIntlayer('common');
+
+// ✅ GOOD: Use common content for shared terms
+<Button>{common.ui.save}</Button>
+<Button>{common.ui.cancel}</Button>
+
+// ❌ BAD: Don't duplicate shared terms in component content
+// Instead of creating "save" in dashboard-table.content.ts,
+// use common.ui.save
+
+// ✅ GOOD: Maintain type safety
 import type { Dictionary } from "intlayer";
 
-// Handle missing translations gracefully
-const title = dashboardTitle || "Dashboard"; // Fallback
+export default {
+  key: 'dashboard-table',
+  content: {
+    // ...
+  },
+} satisfies Dictionary;
+
+// ✅ GOOD: Handle missing translations gracefully (fallback)
+const title = content.title || "Dashboard";
+```
+
+### Content Organization Guidelines
+
+**When to use common.content.ts:**
+- ✅ UI actions used across multiple components (Save, Cancel, Delete, Edit)
+- ✅ Status messages (Success, Error, Loading, Pending)
+- ✅ Navigation terms (Dashboard, Settings, Logout)
+- ✅ Time terms (Today, Yesterday, Last 7 Days)
+- ✅ Generic status (Online, Offline, Active, Inactive)
+
+**When to create component .content.ts:**
+- ✅ Component-specific headings and titles
+- ✅ Feature-specific terminology
+- ✅ Context-specific messages
+- ✅ Component-unique tooltips
+- ✅ Technical terms for that component
+
+**When NOT to create .content.ts:**
+- ❌ Component only uses common terms
+- ❌ Generic UI components (Button, Label, Input)
+- ❌ Components with no text content
+
+### File Organization
+
+```
+src/
+├── app/[locale]/
+│   ├── content/
+│   │   ├── common.content.ts          ← Shared UI (50+ terms)
+│   │   └── types.ts                    ← TypeScript interfaces
+│   ├── page.tsx
+│   └── page.content.ts                 ← Page-level content
+│
+└── components/
+    ├── dashboard/
+    │   ├── dashboard-table.tsx
+    │   ├── dashboard-table.content.ts  ← Co-located content
+    │   ├── server-cards.tsx
+    │   └── server-cards.content.ts     ← Co-located content
+    │
+    └── ui/
+        ├── button.tsx                  ← No content (uses common)
+        └── backup-tooltip.tsx
+            └── backup-tooltip.content.ts  ← Only if has unique strings
 ```
 
 ### Translation Guidelines
-- Keep translations concise but natural
-- Use consistent terminology across components
+- Keep translations concise but natural (not overly literal)
+- Use consistent terminology across ALL content files
 - Consider text expansion in UI design (German +30%, French/Spanish +25%)
-- Test accent character display thoroughly
+- Test accent character display thoroughly (é, ñ, ã, ç)
+- Maintain technical accuracy in all languages
 
 ### Testing Guidelines
 - Test each language thoroughly before deployment
-- Verify responsive design with longer text
+- Verify responsive design with longer text (especially German/French)
 - Check for broken layouts with text expansion
 - Validate date/number formatting per locale
+- Test locale switching maintains component state
 
 ### Performance Guidelines
-- Enable tree-shaking for unused translations
+- Enable tree-shaking for unused translations (Intlayer automatic)
 - Use static generation where possible
-- Monitor bundle size impact
+- Monitor bundle size impact (target: <20% increase)
 - Optimize for mobile performance
+- Leverage Intlayer's automatic bundle optimization
 
 ---
 
@@ -883,17 +1420,25 @@ const title = dashboardTitle || "Dashboard"; // Fallback
 
 ### Technical Metrics
 - [ ] 100% translation coverage for all 5 languages
-- [ ] Bundle size increase < 20%
+- [ ] Bundle size increase < 20% (Intlayer tree-shaking active)
 - [ ] Page load time impact < 10%
 - [ ] Zero console errors in all locales
 - [ ] All pages render correctly in all languages
 
+### Architecture Metrics (Hybrid Approach)
+- [ ] common.content.ts has 50+ shared UI terms
+- [ ] 24-29 component-specific .content.ts files co-located with components
+- [ ] No centralized feature-level content files (dashboard.content.ts removed)
+- [ ] All components use hybrid pattern (common + component-specific)
+- [ ] Component content automatically removed when component deleted
+- [ ] No duplication of shared terms across component files
+
 ### User Experience Metrics
-- [ ] Seamless locale switching
-- [ ] Proper text expansion handling
-- [ ] Consistent terminology across languages
-- [ ] Correct date/number formatting
-- [ ] Accurate accent character display
+- [ ] Seamless locale switching (/en → /de → /fr → /es → /pt-BR)
+- [ ] Proper text expansion handling (German, French, Spanish)
+- [ ] Consistent terminology across languages and components
+- [ ] Correct date/number formatting per locale
+- [ ] Accurate accent character display (é, ñ, ã, ç, ü, etc.)
 
 ---
 
@@ -925,24 +1470,28 @@ Solution:
 
 ## Final Implementation Checklist
 
-### Pre-Launch Checklist
-- [ ] All content files created and populated
-- [ ] All components updated with useIntlayer hook
-- [ ] URL routing works for all 5 languages
+### Pre-Launch Checklist (Hybrid Approach)
+- [ ] common.content.ts created with 50+ shared UI terms
+- [ ] 24-29 component-specific .content.ts files co-located with components
+- [ ] All components updated with hybrid pattern (common + component-specific)
+- [ ] TypeScript types created for all content files
+- [ ] URL routing works for all 5 languages (/en, /de, /fr, /es, /pt-BR)
 - [ ] Middleware handles locale detection correctly
 - [ ] Date/number formatting works per locale
 - [ ] No missing translations in any language
-- [ ] Responsive design works with text expansion
-- [ ] Performance impact within acceptable limits
+- [ ] Responsive design works with text expansion (German/French)
+- [ ] Performance impact within acceptable limits (<20% bundle increase)
+- [ ] No centralized feature-level content files (dashboard, settings)
 - [ ] Visual editor configured but disabled
 - [ ] Documentation updated
 
 ### Post-Launch Checklist
 - [ ] Monitor error logs for i18n issues
 - [ ] Collect user feedback on translations
-- [ ] Track performance metrics
-- [ ] Plan translation improvements
-- [ ] Schedule regular maintenance
+- [ ] Track performance metrics (bundle size, load times)
+- [ ] Plan translation improvements based on feedback
+- [ ] Schedule regular maintenance for content updates
+- [ ] Test component deletion removes content automatically
 - [ ] Enable visual editor when ready
 
 ---
@@ -981,4 +1530,24 @@ pnpm test:i18n
 
 ---
 
-**This comprehensive plan provides detailed AI prompts for each session and phase, enabling multi-session implementation with clear continuity and specific instructions for duplistatus internationalisation using Intlayer.**
+**This comprehensive plan provides detailed AI prompts for each session and phase, using Intlayer's HYBRID PER-COMPONENT management approach: centralized common content (common.content.ts) combined with co-located component-specific content files. This architecture ensures automatic cleanup, optimal bundling, and no duplication while maintaining ease of maintenance.**
+
+### Key Differences from Traditional Approach
+
+| Aspect | Traditional Centralized | Hybrid Per-Component |
+|--------|------------------------|---------------------|
+| Common strings | Duplicated in each file | Single source (common.content.ts) |
+| Component content | Centralized by feature | Co-located with components |
+| Automatic cleanup | Manual | Automatic (remove component = remove content) |
+| Bundle optimization | Limited | Optimal (tree-shaking per component) |
+| Maintainability | Medium | High |
+| Organization | Feature-based | Component-based + shared |
+
+### Benefits Achieved
+
+✅ **No duplication**: Common UI terms (50+) defined once, reused everywhere  
+✅ **Automatic cleanup**: Remove component → content removed automatically  
+✅ **Better organization**: Translations next to component code  
+✅ **Optimal bundling**: Tree-shaking of unused component content  
+✅ **Easier maintenance**: Clear separation (shared vs unique)  
+✅ **Scalability**: Add components without bloating centralized files

@@ -20,6 +20,7 @@ import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useIntlayer } from 'react-intlayer';
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -67,27 +68,7 @@ const formatBytesForYAxis = (bytes: number): string => {
 };
 
 
-// Configuration for overview charts - only 3 metrics
-const overviewChartMetrics = [
-  { 
-    key: 'duration', 
-    label: 'Duration', 
-    formatter: formatDuration,
-    color: "#10b981" // Green
-  },
-  { 
-    key: 'fileSize', 
-    label: 'File Size', 
-    formatter: formatBytes,
-    color: "#ef4444" // Red
-  },
-  { 
-    key: 'storageSize', 
-    label: 'Storage Size', 
-    formatter: formatBytes,
-    color: "#8b5cf6" // Purple
-  }
-];
+// Note: Chart metrics configuration is now inside the component to use useIntlayer
 
 // Custom tooltip component for Recharts
 const CustomTooltip = ({ active, payload, label, metricKey }: {
@@ -332,6 +313,30 @@ function OverviewChartsPanelCore({
   
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
+  const content = useIntlayer('overview-charts-panel');
+  const common = useIntlayer('common');
+  
+  // Configuration for overview charts - only 3 metrics
+  const overviewChartMetrics = [
+    { 
+      key: 'duration', 
+      label: content.backupDuration, 
+      formatter: formatDuration,
+      color: "#10b981" // Green
+    },
+    { 
+      key: 'fileSize', 
+      label: content.fileSize, 
+      formatter: formatBytes,
+      color: "#ef4444" // Red
+    },
+    { 
+      key: 'storageSize', 
+      label: content.storageSize, 
+      formatter: formatBytes,
+      color: "#8b5cf6" // Purple
+    }
+  ];
   // If externalChartData is provided, use it instead of fetching
   const [chartData, setChartData] = useState<ChartDataPoint[]>(externalChartData || []);
   const [isLoading, setIsLoading] = useState(true);
@@ -452,7 +457,7 @@ function OverviewChartsPanelCore({
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       toast({
-        title: "Error loading chart data",
+        title: content.errorLoadingChartData,
         description: errorMessage,
         variant: "destructive",
         duration: 3000
@@ -461,7 +466,7 @@ function OverviewChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [serverId, backupName, startDate, endDate, toast]);
+  }, [serverId, backupName, startDate, endDate, toast, content.errorLoadingChartData]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -578,7 +583,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-            <p className="text-xs">Loading chart data...</p>
+            <p className="text-xs">{content.loadingChartData}</p>
           </div>
         </div>
       )}
@@ -588,7 +593,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-destructive">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">Error loading chart data</p>
+            <p className="text-xs">{content.errorLoadingChartData}</p>
           </div>
         </div>
       )}
