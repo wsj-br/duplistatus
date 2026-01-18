@@ -69,3 +69,8 @@ next-env.d.ts
 .genkit/*
 .env*
 
+# intlayer - auto-generated files
+.intlayer/
+
+
+

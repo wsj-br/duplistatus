@@ -150,9 +150,11 @@ const parseJsonArray = (jsonString: string | null): string[] => {
 const AvailableBackupsTable = ({
   availableBackups,
   currentBackupDate,
+  locale,
 }: {
   availableBackups: string[] | null;
   currentBackupDate: string;
+  locale: string;
 }) => {
   if (!availableBackups || availableBackups.length === 0) {
     return <span className="text-sm text-muted-foreground"> </span>;

@@ -59,6 +59,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const content = useIntlayer('overdue-monitoring-form');
   const common = useIntlayer('common');
   const { toast } = useToast();
+  const locale = useLocale();
   const { config, refreshConfigSilently, updateConfig } = useConfiguration();
   const [settings, setSettings] = useState<Record<BackupKey, BackupNotificationConfig>>(backupSettings);
   const [isSaving, setIsSaving] = useState(false);

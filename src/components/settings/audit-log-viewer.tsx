@@ -64,6 +64,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const content = useIntlayer('audit-log-viewer');
   const common = useIntlayer('common');
   const { toast } = useToast();
+  const locale = useLocale();
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);

@@ -66,6 +66,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
   const content = useIntlayer('user-management-form');
   const common = useIntlayer('common');
   const { toast } = useToast();
+  const locale = useLocale();
   const passwordPolicy = usePasswordPolicy();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
