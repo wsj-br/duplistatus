@@ -14,7 +14,7 @@ export default {
       en: 'Machine Statistics', 
       de: 'Maschinenstatistiken', 
       fr: 'Statistiques de la machine', 
-      es: 'Estadísticas de la máquina', 
+      es: 'Estadísticas del sistema', 
       'pt-BR': 'Estatísticas da máquina' 
     }),
     backupStatistics: t({ 
@@ -42,7 +42,7 @@ export default {
       en: 'Total Uploaded Size', 
       de: 'Gesamte hochgeladene Größe', 
       fr: 'Taille totale téléversée', 
-      es: 'Total cargado', 
+      es: 'Total Enviado', 
       'pt-BR': 'Tamanho total enviado' 
     }),
     lastBackupStorageSize: t({ 
@@ -133,7 +133,7 @@ export default {
       en: 'Total Uploaded', 
       de: 'Gesamt hochgeladen', 
       fr: 'Total téléversé', 
-      es: 'Total cargado', 
+      es: 'Total Enviado', 
       'pt-BR': 'Total enviado' 
     }),
     overdueScheduledBackups: t({ 

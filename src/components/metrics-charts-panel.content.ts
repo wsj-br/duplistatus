@@ -14,7 +14,7 @@ export default {
       en: 'Uploaded Size',
       de: 'Hochgeladene Größe',
       fr: 'Taille téléversée',
-      es: 'Tamaño cargado',
+      es: 'Tamaño enviado',
       'pt-BR': 'Tamanho enviado',
     }),
     chartLabelDuration: t({

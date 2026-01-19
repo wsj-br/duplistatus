@@ -42,7 +42,7 @@ export default {
       en: 'Total Uploaded Size', 
       de: 'Gesamte hochgeladene Größe', 
       fr: 'Taille totale téléversée', 
-      es: 'Total cargado', 
+      es: 'Total enviado', 
       'pt-BR': 'Tamanho total enviado' 
     }),
     overdueBackups: t({ 

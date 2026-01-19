@@ -394,7 +394,7 @@ export default {
       en: 'Size of uploaded data', 
       de: 'Größe der hochgeladenen Daten', 
       fr: 'Taille des données téléversées', 
-      es: 'Tamaño de datos cargados', 
+      es: 'Tamaño de datos enviados', 
       'pt-BR': 'Tamanho dos dados enviados' 
     }),
     variableStorageSize: t({ 

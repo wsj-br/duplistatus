@@ -166,7 +166,7 @@ export function ServerDetailSummaryItems({
     <div className="pt-4" data-screenshot-target="server-detail-summary">
       <div>
         <h3 className="text-base font-semibold mb-2 text-foreground">
-          {selectedBackup ? `${selectedBackup.name} ${content.statistics.value}` : content.machineStatistics.value}
+          {selectedBackup ? `${selectedBackup.name} - ${content.statistics.value}` : content.machineStatistics.value}
         </h3>
         
         <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 ${!selectedBackup ? 'lg:grid-cols-7' : 'lg:grid-cols-6'} gap-2 lg:gap-3`}>

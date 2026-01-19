@@ -63,14 +63,14 @@ export default {
       en: 'Uploaded Size:', 
       de: 'Hochgeladene Größe:', 
       fr: 'Taille téléversée:', 
-      es: 'Tamaño cargado:', 
+      es: 'Tamaño enviado:', 
       'pt-BR': 'Tamanho enviado:' 
     }),
     uploaded: t({ 
       en: 'Uploaded:', 
       de: 'Hochgeladen:', 
       fr: 'Téléversé:', 
-      es: 'Cargado:', 
+      es: 'Enviado:', 
       'pt-BR': 'Enviado:' 
     }),
     versions: t({ 

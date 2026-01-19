@@ -1,7 +1,7 @@
 import { t, type Dictionary } from 'intlayer';
 
 export default {
-  key: 'backup-detail-content',
+  key: 'backup-detail-page',
   content: {
     backupDetails: t({ 
       en: 'Backup details:', 
@@ -24,6 +24,55 @@ export default {
       es: 'ID:', 
       'pt-BR': 'ID:' 
     }),
+    date: t({ 
+      en: 'Date:', 
+      de: 'Datum:', 
+      fr: 'Date:', 
+      es: 'Fecha:', 
+      'pt-BR': 'Data:' 
+    }),
+    backupStatistics: t({ 
+      en: 'Backup Statistics', 
+      de: 'Sicherungsstatistiken', 
+      fr: 'Statistiques de sauvegarde', 
+      es: 'Estadísticas del backup', 
+      'pt-BR': 'Estatísticas do backup' 
+    }),
+    fileCount: t({ 
+      en: 'File Count:', 
+      de: 'Dateianzahl:', 
+      fr: 'Nombre de fichiers:', 
+      es: 'Cantidad de archivos:', 
+      'pt-BR': 'Quantidade de arquivos:' 
+    }),
+    fileSize: t({ 
+      en: 'File Size:', 
+      de: 'Dateigröße:', 
+      fr: 'Taille des fichiers:', 
+      es: 'Tamaño de archivos:', 
+      'pt-BR': 'Tamanho dos arquivos:' 
+    }),
+    uploadedSize: t({ 
+      en: 'Uploaded Size:', 
+      de: 'Hochgeladene Größe:', 
+      fr: 'Taille téléversée:', 
+      es: 'Tamaño enviado:', 
+      'pt-BR': 'Tamanho enviado:' 
+    }),
+    duration: t({ 
+      en: 'Duration:', 
+      de: 'Dauer:', 
+      fr: 'Durée:', 
+      es: 'Duración:', 
+      'pt-BR': 'Duração:' 
+    }),
+    storageSize: t({ 
+      en: 'Storage Size:', 
+      de: 'Speichergröße:', 
+      fr: 'Taille de stockage:', 
+      es: 'Tamaño de almacenamiento:', 
+      'pt-BR': 'Tamanho de armazenamento:' 
+    }),
     logSummary: t({ 
       en: 'Log Summary', 
       de: 'Protokollzusammenfassung', 
@@ -38,6 +87,20 @@ export default {
       es: 'Mensajes:', 
       'pt-BR': 'Mensagens:' 
     }),
+    warnings: t({ 
+      en: 'Warnings:', 
+      de: 'Warnungen:', 
+      fr: 'Avertissements:', 
+      es: 'Advertencias:', 
+      'pt-BR': 'Avisos:' 
+    }),
+    errors: t({ 
+      en: 'Errors:', 
+      de: 'Fehler:', 
+      fr: 'Erreurs:', 
+      es: 'Errores:', 
+      'pt-BR': 'Erros:' 
+    }),
     availableVersionsAtTime: t({ 
       en: 'Available versions at the time of the backup:', 
       de: 'Verfügbare Versionen zum Zeitpunkt der Sicherung:', 
@@ -45,28 +108,14 @@ export default {
       es: 'Versiones disponibles en el momento del backup:', 
       'pt-BR': 'Versões disponíveis no momento do backup:' 
     }),
-    backupDate: t({ 
-      en: 'Backup Date', 
-      de: 'Sicherungsdatum', 
-      fr: 'Date de sauvegarde', 
-      es: 'Fecha del backup', 
-      'pt-BR': 'Data do backup' 
-    }),
-    when: t({ 
-      en: 'When', 
-      de: 'Wann', 
-      fr: 'Quand', 
-      es: 'Cuándo', 
-      'pt-BR': 'Quando' 
-    }),
-    errors: t({ 
+    errorsTitle: t({ 
       en: 'Errors', 
       de: 'Fehler', 
       fr: 'Erreurs', 
       es: 'Errores', 
       'pt-BR': 'Erros' 
     }),
-    warnings: t({ 
+    warningsTitle: t({ 
       en: 'Warnings', 
       de: 'Warnungen', 
       fr: 'Avertissements', 
@@ -122,68 +171,26 @@ export default {
       es: 'No se pueden cargar los datos del backup. La base de datos puede estar temporalmente no disponible. Por favor, inténtelo de nuevo más tarde o contacte a su administrador.', 
       'pt-BR': 'Não foi possível carregar os dados do backup. O banco de dados pode estar temporariamente indisponível. Por favor, tente novamente mais tarde ou entre em contato com seu administrador.' 
     }),
-    date: t({ 
-      en: 'Date:', 
-      de: 'Datum:', 
-      fr: 'Date:', 
-      es: 'Fecha:', 
-      'pt-BR': 'Data:' 
+    backupDate: t({ 
+      en: 'Backup Date', 
+      de: 'Sicherungsdatum', 
+      fr: 'Date de sauvegarde', 
+      es: 'Fecha del backup', 
+      'pt-BR': 'Data do backup' 
     }),
-    backupStatistics: t({ 
-      en: 'Backup Statistics', 
-      de: 'Sicherungsstatistiken', 
-      fr: 'Statistiques de sauvegarde', 
-      es: 'Estadísticas del backup', 
-      'pt-BR': 'Estatísticas do backup' 
+    when: t({ 
+      en: 'When', 
+      de: 'Wann', 
+      fr: 'Quand', 
+      es: 'Cuándo', 
+      'pt-BR': 'Quando' 
     }),
-    fileCount: t({ 
-      en: 'File Count:', 
-      de: 'Dateianzahl:', 
-      fr: 'Nombre de fichiers:', 
-      es: 'Cantidad de archivos:', 
-      'pt-BR': 'Quantidade de arquivos:' 
-    }),
-    fileSize: t({ 
-      en: 'File Size:', 
-      de: 'Dateigröße:', 
-      fr: 'Taille des fichiers:', 
-      es: 'Tamaño de archivos:', 
-      'pt-BR': 'Tamanho dos arquivos:' 
-    }),
-    uploadedSize: t({ 
-      en: 'Uploaded Size:', 
-      de: 'Hochgeladene Größe:', 
-      fr: 'Taille téléversée:', 
-      es: 'Tamaño cargado:', 
-      'pt-BR': 'Tamanho enviado:' 
-    }),
-    duration: t({ 
-      en: 'Duration:', 
-      de: 'Dauer:', 
-      fr: 'Durée:', 
-      es: 'Duración:', 
-      'pt-BR': 'Duração:' 
-    }),
-    storageSize: t({ 
-      en: 'Storage Size:', 
-      de: 'Speichergröße:', 
-      fr: 'Taille de stockage:', 
-      es: 'Tamaño de almacenamiento:', 
-      'pt-BR': 'Tamanho de armazenamento:' 
-    }),
-    warningsLabel: t({ 
-      en: 'Warnings:', 
-      de: 'Warnungen:', 
-      fr: 'Avertissements:', 
-      es: 'Advertencias:', 
-      'pt-BR': 'Avisos:' 
-    }),
-    errorsLabel: t({ 
-      en: 'Errors:', 
-      de: 'Fehler:', 
-      fr: 'Erreurs:', 
-      es: 'Errores:', 
-      'pt-BR': 'Erros:' 
+    tableNumber: t({ 
+      en: '#', 
+      de: '#', 
+      fr: '#', 
+      es: '#', 
+      'pt-BR': '#' 
     }),
   },
 } satisfies Dictionary;
