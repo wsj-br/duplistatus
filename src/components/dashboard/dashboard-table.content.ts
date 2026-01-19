@@ -397,21 +397,21 @@ export default {
       en: 'Overdue configuration', 
       de: 'Überfälligkeitskonfiguration', 
       fr: 'Configuration des retards', 
-      es: 'Configuración de vencimientos', 
+      es: 'Configuración de retrasos', 
       'pt-BR': 'Configuração de atrasos' 
     }),
     overdueConfig: t({ 
       en: 'Overdue Config', 
       de: 'Überfälligkeits-Konfig', 
       fr: 'Config des retards', 
-      es: 'Config de vencimientos', 
+      es: 'Config de retrasos', 
       'pt-BR': 'Config de atrasos' 
     }),
     overdueDetails: t({ 
       en: 'Overdue Details', 
       de: 'Überfälligkeitsdetails', 
       fr: 'Détails des retards', 
-      es: 'Detalles de vencimientos', 
+      es: 'Detalles de retrasos', 
       'pt-BR': 'Detalhes de atrasos' 
     }),
     overdue: t({ 

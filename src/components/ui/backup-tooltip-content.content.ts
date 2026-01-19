@@ -98,7 +98,7 @@ export default {
       en: 'Overdue configuration', 
       de: 'Überfälligkeitskonfiguration', 
       fr: 'Configuration des retards', 
-      es: 'Configuración de vencimientos', 
+      es: 'Configuración de retrasos', 
       'pt-BR': 'Configuração de atrasos' 
     }),
   },

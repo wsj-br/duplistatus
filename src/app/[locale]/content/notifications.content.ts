@@ -73,9 +73,9 @@ export default {
         footer: t({ en: 'This is an automated message from {applicationName}.', de: 'Dies ist eine automatische Nachricht von {applicationName}.', fr: 'Ceci est un message automatisé de {applicationName}.', es: 'Este es un mensaje automático de {applicationName}.', 'pt-BR': 'Esta é uma mensagem automática de {applicationName}.' }),
       },
       certificateExpired: {
-        subject: t({ en: 'Certificate Expired Alert', de: 'Zertifikat-abgelaufen-Warnung', fr: 'Alerte certificat expiré', es: 'Alerta de certificado expirado', 'pt-BR': 'Alerta de Certificado Expirado' }),
+        subject: t({ en: 'Certificate Expired Alert', de: 'Zertifikatsablauf-Warnung', fr: 'Alerte certificat expiré', es: 'Alerta de certificado expirado', 'pt-BR': 'Alerta de Certificado Expirado' }),
         greeting: t({ en: 'Hello {userName},', de: 'Hallo {userName},', fr: 'Bonjour {userName},', es: 'Hola {userName},', 'pt-BR': 'Olá {userName},' }),
-        message: t({ en: 'Certificate {certificateName} on server {serverName} has expired.', de: 'Zertifikat {certificateName} auf Server {serverName} ist abgelaufen.', fr: 'Le certificat {certificateName} sur le serveur {serverName} a expiré.', es: 'El certificado {certificateName} en el servidor {serverName} ha expirado.', 'pt-BR': 'O certificado {certificateName} no servidor {serverName} expirou.' }),
+        message: t({ en: 'Certificate {certificateName} on server {serverName} has expired.', de: 'Zertifikat {certificateName} auf Server {serverName} ist abgelaufen.', fr: 'Le certificat {certificateName} sur le serveur {serverName} a expiré.', es: 'El certificado {certificateName} en el servidor {serverName} ha caducado.', 'pt-BR': 'O certificado {certificateName} no servidor {serverName} expirou.' }),
         details: {
           serverName: t({ en: 'Server Name', de: 'Servername', fr: 'Nom du serveur', es: 'Nombre del servidor', 'pt-BR': 'Nome do Servidor' }),
           certificateName: t({ en: 'Certificate Name', de: 'Zertifikatsname', fr: 'Nom du certificat', es: 'Nombre del certificado', 'pt-BR': 'Nome do Certificado' }),

@@ -451,7 +451,7 @@ export default {
       en: 'Configured overdue tolerance (1 hour, 1 day, etc.)', 
       de: 'Konfigurierte Überfälligkeitstoleranz (1 Stunde, 1 Tag, etc.)', 
       fr: 'Tolérance de retard configurée (1 heure, 1 jour, etc.)', 
-      es: 'Tolerancia de vencimiento configurada (1 hora, 1 día, etc.)', 
+      es: 'Tolerancia de retraso configurada (1 hora, 1 día, etc.)', 
       'pt-BR': 'Tolerância de atraso configurada (1 hora, 1 dia, etc.)' 
     }),
   },
