@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Settings, BookOpenText, LogOut, User, KeyRound, Users, ChevronDown, ArrowLeft, ScrollText } from 'lucide-react';
+import { LayoutDashboard, Settings, BookOpenText, LogOut, User, KeyRound, Users, ChevronDown, ArrowLeft, ScrollText, Languages } from 'lucide-react';
 import { BackupCollectMenu } from '@/components/backup-collect-menu';
 import { GlobalRefreshControls } from '@/components/global-refresh-controls';
 import { NtfyMessagesButton } from '@/components/ntfy-messages-button';
@@ -15,6 +15,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
 import { useState, useEffect } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
@@ -32,6 +37,18 @@ interface User {
   mustChangePassword?: boolean;
 }
 
+const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
+const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
+type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+const LOCALE_NAMES: Record<SupportedLocale, string> = {
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+  es: "Español",
+  "pt-BR": "Português (BR)",
+};
+
 export function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
@@ -48,8 +65,8 @@ export function AppHeader() {
   // Get context-aware help URL and page name
   const helpInfo = getHelpUrl(pathname, searchParams.toString());
   const helpTooltip = helpInfo.pageName === 'User Guide' 
-    ? 'User Guide' 
-    : `Help for ${helpInfo.pageName}`;
+    ? common.navigation.help.value
+    : common.navigation.helpFor.value.replace('{pageName}', helpInfo.pageName);
 
   // Check authentication status
   useEffect(() => {
@@ -75,6 +92,27 @@ export function AppHeader() {
     }
     checkAuth();
   }, []); // Only check once on mount
+
+  const handleLocaleChange = (newLocale: string) => {
+    if (newLocale === locale) return;
+    
+    // Set cookie
+    document.cookie = `${LOCALE_COOKIE_NAME}=${newLocale}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
+    
+    // Get current path without locale prefix
+    const currentPath = pathname || '';
+    let pathWithoutLocale = currentPath.replace(/^\/(en|de|fr|es|pt-BR)(\/|$)/, '/');
+    if (pathWithoutLocale === '/') {
+      pathWithoutLocale = '';
+    }
+    
+    // Preserve query parameters
+    const queryString = searchParams.toString();
+    const newPath = `/${newLocale}${pathWithoutLocale}${queryString ? `?${queryString}` : ''}`;
+    
+    // Redirect to new locale
+    window.location.href = newPath;
+  };
 
   const handleLogout = async () => {
     try {
@@ -146,7 +184,7 @@ export function AppHeader() {
           <OpenServerConfigButton />
           <BackupCollectMenu />
           <Link href={`/${locale}/settings`} className="ml-4">
-            <Button variant="outline" size="icon" title="Settings">
+            <Button variant="outline" size="icon" title={common.navigation.settings.value}>
               <Settings className="h-4 w-4" />
             </Button>
           </Link>
@@ -175,7 +213,7 @@ export function AppHeader() {
                   <span className="text-sm font-medium">{user.username}</span>
                   {user.isAdmin && (
                     <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400">
-                      Admin
+                      {content.admin.value}
                     </span>
                   )}
                   <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -184,26 +222,42 @@ export function AppHeader() {
               <DropdownMenuContent align="end" className="w-48" data-screenshot-target="user-menu">
                 <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
                   <KeyRound className="h-4 w-4 mr-2" />
-                  Change Password
+                  {content.changePassword.value}
                 </DropdownMenuItem>
                 {user.isAdmin && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => router.push(`/${locale}/settings?tab=users`)}>
                       <Users className="h-4 w-4 mr-2" />
-                      Admin Users
+                      {content.users.value}
                     </DropdownMenuItem>
                   </>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => router.push(`/${locale}/settings?tab=audit`)}>
                   <ScrollText className="h-4 w-4 mr-2" />
-                  Audit Log
+                  {content.auditLog.value}
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Languages className="h-4 w-4 mr-2" />
+                    {content.language.value}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup value={locale} onValueChange={handleLocaleChange}>
+                      {SUPPORTED_LOCALES.map((loc) => (
+                        <DropdownMenuRadioItem key={loc} value={loc}>
+                          {LOCALE_NAMES[loc]}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="h-4 w-4 mr-2" />
-                  Logout
+                  {common.navigation.logout.value}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

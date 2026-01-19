@@ -16,9 +16,22 @@ import DupliLogo from "../../../../public/images/duplistatus_logo.png";
 import { Info } from "lucide-react";
 import { KeyChangedModal } from "@/components/key-changed-modal";
 import { useLocale } from "@/contexts/locale-context";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Languages } from "lucide-react";
 
 const REMEMBERED_USERNAME_KEY = "duplistatus_remembered_username";
 const REMEMBER_ME_ENABLED_KEY = "duplistatus_remember_me_enabled";
+const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
+const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
+type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+const LOCALE_NAMES: Record<SupportedLocale, string> = {
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+  es: "Español",
+  "pt-BR": "Português (BR)",
+};
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -180,8 +193,46 @@ function LoginForm() {
     }
   };
 
+  const handleLocaleChange = (newLocale: string) => {
+    if (newLocale === locale) return;
+    
+    // Set cookie
+    document.cookie = `${LOCALE_COOKIE_NAME}=${newLocale}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
+    
+    // Get current path without locale prefix
+    const currentPath = window.location.pathname;
+    let pathWithoutLocale = currentPath.replace(/^\/(en|de|fr|es|pt-BR)(\/|$)/, '/');
+    if (pathWithoutLocale === '/') {
+      pathWithoutLocale = '/login';
+    }
+    
+    // Preserve query parameters
+    const queryString = window.location.search;
+    const newPath = `/${newLocale}${pathWithoutLocale}${queryString}`;
+    
+    // Redirect to new locale
+    window.location.href = newPath;
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background relative">
+      {/* Language Selector - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <Select value={locale} onValueChange={handleLocaleChange}>
+          <SelectTrigger className="w-[160px] h-9 pl-3">
+            <Languages className="h-4 w-4 mr-2 shrink-0" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SUPPORTED_LOCALES.map((loc) => (
+              <SelectItem key={loc} value={loc}>
+                {LOCALE_NAMES[loc]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="flex flex-col items-center">

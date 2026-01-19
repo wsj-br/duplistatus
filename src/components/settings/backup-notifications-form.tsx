@@ -2367,7 +2367,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           <div className="mb-4">
             <div className="flex items-center gap-2">
               <Label htmlFor="server-filter" className="text-sm font-medium">{content.filterByServerName}</Label>
-              <div className="relative w-[260px]">
+              <div className="relative w-[360px]">
                 <Input
                   id="server-filter"
                   type="text"
@@ -2398,7 +2398,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           {selectedBackups.size > 0 && (
             <div className="mb-4 p-3 bg-muted rounded-md border flex items-center justify-between">
               <div className="text-sm font-medium text-muted-foreground">
-                <span className="font-bold">Additional Destinations:</span> {selectedBackups.size} backup{selectedBackups.size === 1 ? '' : 's'} selected
+                <span className="font-bold">{content.additionalDestinations.value}</span> {selectedBackups.size === 1 
+                  ? content.backupsSelected.value.replace('{count}', selectedBackups.size.toString())
+                  : content.backupsSelectedPlural.value.replace('{count}', selectedBackups.size.toString())}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -2407,7 +2409,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   onClick={handleClearSelection}
                   className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600 transition-none"
                 >
-                  Clear Selection
+                  {content.clearSelection.value}
                 </Button>
                 <Button
                   variant="default"
@@ -2415,14 +2417,14 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   onClick={() => setIsBulkEditModalOpen(true)}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Bulk Edit
+                  {content.bulkEdit.value}
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => setIsBulkClearConfirmOpen(true)}
                 >
-                  Bulk Clear
+                  {content.bulkClear.value}
                 </Button>
               </div>
             </div>

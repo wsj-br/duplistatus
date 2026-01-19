@@ -115,15 +115,15 @@ export default {
         auditLog: t({ 
           en: 'Audit Log', 
           de: 'Audit-Log', 
-          fr: 'Journal d\'audit', 
-          es: 'Registro de auditoría', 
-          'pt-BR': 'Registro de auditoria' 
+          fr: 'Journal d\'Audit', 
+          es: 'Log de Auditoría', 
+          'pt-BR': 'Log de Auditoria' 
         }),
         auditLogRetention: t({ 
           en: 'Audit Log Retention', 
           de: 'Aufbewahrungsfrist', 
           fr: 'Rétention du journal d\'audit', 
-          es: 'Retención de registro de auditoría', 
+          es: 'Retención de Logs de Auditoría', 
           'pt-BR': 'Retenção de registro de auditoria' 
         }),
         applicationLogs: t({ 

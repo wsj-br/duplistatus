@@ -102,6 +102,47 @@ export interface CommonContent {
     thisWeek: string;
     thisMonth: string;
     thisYear: string;
+    minutes: string;
+    minutesShort: string;
+    hours: string;
+    days: string;
+    weeks: string;
+    months: string;
+    years: string;
+    enabled: string;
+    disabled: string;
+    intervals: {
+      disabled: string;
+      '1min': string;
+      '2min': string;
+      '3min': string;
+      '4min': string;
+      '5min': string;
+      '10min': string;
+      '15min': string;
+      '20min': string;
+      '30min': string;
+      '1hour': string;
+      '2hours': string;
+    };
+    tolerance: {
+      noTolerance: string;
+      '5min': string;
+      '15min': string;
+      '30min': string;
+      '1h': string;
+      '2h': string;
+      '4h': string;
+      '6h': string;
+      '12h': string;
+      '1d': string;
+    };
+    frequency: {
+      oneTime: string;
+      everyDay: string;
+      everyWeek: string;
+      everyMonth: string;
+    };
   };
 }
 
@@ -611,16 +652,7 @@ export interface OverdueMonitoringFormContent {
   expectedBackupInterval: string;
   unit: string;
   allowedDays: string;
-  enabled: string;
-  disabled: string;
   custom: string;
-  minutes: string;
-  minutesShort: string;
-  hours: string;
-  days: string;
-  weeks: string;
-  months: string;
-  years: string;
   notSet: string;
   customIntervalPlaceholder: string;
   lastBackup: string;
@@ -851,6 +883,8 @@ export interface DatabaseMaintenanceFormContent {
   selectBackupFile: string;
   selected: string;
   selectBackupFileDescription: string;
+  chooseFile: string;
+  noFileChosen: string;
   restoring: string;
   restoreDatabase: string;
   restoreDatabaseDialogTitle: string;

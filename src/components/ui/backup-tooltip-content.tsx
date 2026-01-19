@@ -4,9 +4,9 @@ import { useIntlayer } from 'react-intlayer';
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/contexts/locale-context";
 import type { BackupStatus, NotificationEvent } from "@/lib/types";
-import { formatRelativeTime, formatBytes, getStatusColor } from "@/lib/utils";
+import { formatRelativeTime, getStatusColor } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
-import { formatInteger } from "@/lib/number-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 import { AlertTriangle, Settings, MessageSquareMore, MessageSquareOff } from "lucide-react";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
@@ -67,8 +67,29 @@ export function BackupTooltipContent({
 }: BackupTooltipContentProps) {
   const content = useIntlayer('backup-tooltip-content');
   const common = useIntlayer('common');
+  const statusContent = useIntlayer('status-badge');
   const router = useRouter();
   const locale = useLocale();
+
+  // Helper function to get translated status label
+  const getStatusLabel = (status: BackupStatus | 'N/A'): string => {
+    switch (status) {
+      case 'Success':
+        return statusContent.success.value;
+      case 'Unknown':
+        return statusContent.unknown.value;
+      case 'Warning':
+        return statusContent.warning.value;
+      case 'Error':
+        return statusContent.error.value;
+      case 'Fatal':
+        return statusContent.fatal.value;
+      case 'N/A':
+        return statusContent.na.value;
+      default:
+        return statusContent.na.value;
+    }
+  };
 
   return (
     <>
@@ -100,9 +121,7 @@ export function BackupTooltipContent({
           <div>
             <div className="text-muted-foreground text-left mb-1">{content.status}</div>
             <div className={`font-semibold text-left ${getStatusColor(lastBackupStatus)}`}>
-              {lastBackupStatus !== "N/A" 
-                ? lastBackupStatus
-                : common.status.notAvailable}
+              {getStatusLabel(lastBackupStatus)}
             </div>
           </div>
 
@@ -128,7 +147,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{content.size}</div>
             <div className="font-semibold text-left">
               {fileSize !== null && fileSize !== undefined
-                ? formatBytes(fileSize)
+                ? formatBytes(fileSize, locale)
                 : common.status.notAvailable}
             </div>
           </div>
@@ -137,7 +156,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{content.storage}</div>
             <div className="font-semibold text-left">
               {storageSize !== null && storageSize !== undefined
-                ? formatBytes(storageSize)
+                ? formatBytes(storageSize, locale)
                 : common.status.notAvailable}
             </div>
           </div>
@@ -146,7 +165,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{content.uploaded}</div>
             <div className="font-semibold text-left">
               {uploadedSize !== null && uploadedSize !== undefined
-                ? formatBytes(uploadedSize)
+                ? formatBytes(uploadedSize, locale)
                 : common.status.notAvailable}
             </div>
           </div>

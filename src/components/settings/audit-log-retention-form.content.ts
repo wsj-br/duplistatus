@@ -7,7 +7,7 @@ export default {
       en: 'Audit Log Retention', 
       de: 'Aufbewahrungsfrist', 
       fr: 'Rétention du journal d\'audit', 
-      es: 'Retención de registro de auditoría', 
+      es: 'Retención de Logs de Auditoría', 
       'pt-BR': 'Retenção de registro de auditoria' 
     }),
     description: t({ 
@@ -77,7 +77,7 @@ export default {
       en: 'Audit log retention updated to {days} days', 
       de: 'Aufbewahrungsfrist auf {days} Tage aktualisiert', 
       fr: 'Rétention du journal d\'audit mise à jour à {days} jours', 
-      es: 'Retención de registro de auditoría actualizada a {days} días', 
+      es: 'Retención de Logs de Auditoría actualizada a {days} días', 
       'pt-BR': 'Retenção de registro de auditoria atualizada para {days} dias' 
     }),
     failedToSave: t({ 

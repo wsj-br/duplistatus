@@ -32,6 +32,7 @@ import { Database, Loader2, Trash2, Server, FolderOpen, Clock, Info, GitMerge, D
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { LocalizedFileInput } from '@/components/ui/localized-file-input';
 
 interface Server {
   id: string;
@@ -699,24 +700,24 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <ColoredIcon icon={Upload} color="orange" size="sm" />
-                  {content.databaseRestore}
+                  {content.databaseRestore.value}
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3">
                 <div className="grid gap-2">
                   <Label htmlFor="restore-file">
-                    {content.selectBackupFile}
+                    {content.selectBackupFile.value}
                   </Label>
-                  <Input
+                  <LocalizedFileInput
                     id="restore-file"
-                    type="file"
                     accept=".db,.sql,.sqlite,.sqlite3"
                     onChange={(e) => {
                       const file = e.target.files?.[0] || null;
                       setRestoreFile(file);
                     }}
                     disabled={!isAdmin || isRestoring}
-                    className="border-0 bg-transparent p-0 file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-primary-foreground hover:file:bg-primary/90"
+                    chooseFileText={content.chooseFile.value}
+                    noFileChosenText={content.noFileChosen.value}
                   />
                   {restoreFile ? (
                     <p className="text-sm text-muted-foreground">
@@ -740,19 +741,19 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                         {isRestoring ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            {content.restoring}
+                            {content.restoring.value}
                           </>
                         ) : (
                           <>
                             <Upload className="mr-2 h-4 w-4" />
-                            Restore Database
+                            {content.restoreDatabase.value}
                           </>
                         )}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Restore Database?</AlertDialogTitle>
+                        <AlertDialogTitle>{content.restoreDatabaseDialogTitle.value}</AlertDialogTitle>
                         <AlertDialogDescription>
                           {content.restoreDatabaseDialogDescription.value}
                         </AlertDialogDescription>
@@ -763,14 +764,14 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                           onClick={handleRestore} 
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                          {content.restoreDatabase}
+                          {content.restoreDatabase.value}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-medium text-destructive">Warning:</span> Restoring will replace all current database data. A safety backup will be created automatically.
+                  {content.restoreWarning.value}
                 </p>
               </CardContent>
             </Card>
@@ -865,7 +866,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
               <CardContent className="grid gap-3">
               <div className="grid gap-2">
                 <Label htmlFor="backup-job-select">
-                  Select backup job
+                  {content.selectBackupJob.value}
                 </Label>
                 <Select
                 value={selectedBackupJob}
@@ -873,7 +874,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 disabled={!isAdmin}
               >
                 <SelectTrigger id="backup-job-select" disabled={!isAdmin}>
-                  <SelectValue placeholder="Select backup job to delete" />
+                  <SelectValue placeholder={content.selectBackupJobToDelete.value} />
                 </SelectTrigger>
                 <SelectContent>
                   {backupJobs.map((job) => (
@@ -884,7 +885,7 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                 </SelectContent>
               </Select>
               <p className="text-sm text-muted-foreground">
-                Select a backup job to delete all its backup records permanently.
+                {content.selectBackupJobDescription.value}
               </p>
             </div>
             
@@ -899,32 +900,34 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
                   {isDeletingBackupJob ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {content.deleting}
+                      {content.deleting.value}
                     </>
                   ) : (
                     <>
                       <FolderOpen className="mr-2 h-4 w-4" />
-                      Delete Backup Job
+                      {content.deleteBackupJobButton.value}
                     </>
                   )}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Delete Backup Job?</AlertDialogTitle>
+                    <AlertDialogTitle>{content.deleteBackupJobDialogTitle.value}</AlertDialogTitle>
                     <AlertDialogDescription>
                       {(() => {
                         const selectedBackupJobDetails = backupJobs.find(job => job.id === selectedBackupJob);
                         const serverDisplayName = selectedBackupJobDetails ? (selectedBackupJobDetails.alias || selectedBackupJobDetails.server_name) : 'Unknown Server';
                         const backupJobName = selectedBackupJobDetails?.backup_name || 'Unknown Backup';
-                        return `This will permanently delete all backup records for "${backupJobName}" from server "${serverDisplayName}". This action cannot be undone.`;
+                        return content.deleteBackupJobDialogDescription.value
+                          .replace('{backupName}', backupJobName)
+                          .replace('{serverName}', serverDisplayName);
                       })()}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDeleteBackupJob} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                      {content.deleteBackupJobButton}
+                      {content.deleteBackupJobButton.value}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

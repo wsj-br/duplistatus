@@ -19,69 +19,6 @@ function getBrowserLocale(): string {
   return navigator.language || navigator.languages?.[0] || 'en-US';
 }
 
-/**
- * Format a number using the browser's locale or provided locale
- * This ensures consistent locale-aware number formatting across the application
- * 
- * @param value - Number to format
- * @param options - Optional Intl.NumberFormatOptions for custom formatting
- * @param locale - Optional locale string (e.g., "en", "de", "fr", "es", "pt-BR"). If not provided, uses browser locale.
- * @returns Formatted number string
- * 
- * @deprecated For new code, use formatNumber from '@/lib/number-format' with explicit locale parameter
- */
-export function formatNumber(value: number, options?: Intl.NumberFormatOptions, locale?: string): string {
-  const effectiveLocale = locale || getBrowserLocale();
-  return new Intl.NumberFormat(effectiveLocale, options).format(value);
-}
-
-/**
- * Format bytes with locale-aware number formatting
- * 
- * @param bytes - Number of bytes
- * @param decimals - Number of decimal places (default: 2)
- * @param locale - Optional locale string (e.g., "en", "de", "fr", "es", "pt-BR"). If not provided, uses browser locale.
- * @returns Formatted bytes string
- * 
- * @deprecated For new code, use formatBytes from '@/lib/number-format' with explicit locale parameter
- */
-export function formatBytes(bytes: unknown, decimals = 2, locale?: string): string {
-  // Handle all possible invalid inputs
-  if (bytes === null || bytes === undefined) return '0 Bytes';
-  
-  let numBytes: number;
-  
-  if (typeof bytes === 'number') {
-    numBytes = bytes;
-  } else if (typeof bytes === 'string') {
-    try {
-      numBytes = Number(bytes);
-    } catch {
-      return '0 Bytes';
-    }
-  } else {
-    return '0 Bytes';
-  }
-  
-  if (isNaN(numBytes) || !isFinite(numBytes) || numBytes <= 0) return '0 Bytes';
-
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-  const i = Math.floor(Math.log(numBytes) / Math.log(k));
-  const value = numBytes / Math.pow(k, i);
-
-  // Use locale-aware number formatting
-  const effectiveLocale = locale || getBrowserLocale();
-  const formatter = new Intl.NumberFormat(effectiveLocale, {
-    minimumFractionDigits: dm,
-    maximumFractionDigits: dm,
-  });
-
-  return formatter.format(value) + ' ' + sizes[i];
-}
-
 export function formatDurationFromMinutes(totalMinutes: unknown): string {
   // Handle all possible invalid inputs
   if (totalMinutes === null || totalMinutes === undefined) return "00:00:00";
@@ -952,40 +889,6 @@ export function getLocaleWeekDays(locale?: string): LocaleWeekDay[] {
 //   }
 // }
 
-/**
- * Parse a SQLite DATETIME timestamp string (UTC) and format it for display in browser timezone
- * SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format and are stored in UTC
- * 
- * @deprecated Use formatSQLiteTimestamp from '@/lib/date-format' with locale parameter instead
- * @param timestamp - SQLite timestamp string in "YYYY-MM-DD HH:MM:SS" format
- * @returns Formatted date string in browser's local timezone
- */
-export function formatSQLiteTimestamp(timestamp: string): string {
-  if (!timestamp) return '';
-  
-  try {
-    // SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format (UTC)
-    // Convert to ISO format by replacing space with 'T' and appending 'Z' for UTC
-    const isoString = timestamp.replace(' ', 'T') + 'Z';
-    const date = new Date(isoString);
-    
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      // Fallback: try parsing as-is (might already be in a different format)
-      const fallbackDate = new Date(timestamp);
-      if (isNaN(fallbackDate.getTime())) {
-        return timestamp; // Return original if can't parse
-      }
-      return fallbackDate.toLocaleString();
-    }
-    
-    // Format in browser's local timezone
-    return date.toLocaleString();
-  } catch (error) {
-    console.error('Error formatting SQLite timestamp:', error);
-    return timestamp; // Return original on error
-  }
-}
 
 
 

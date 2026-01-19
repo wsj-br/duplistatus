@@ -5,7 +5,7 @@ export default {
   content: {
     title: t({ 
       en: 'Configure Backup Notifications', 
-      de: 'Sicherungsbenachrichtigungen konfigurieren', 
+      de: 'Backup-Benachrichtigungen konfigurieren', 
       fr: 'Configurer les notifications de sauvegarde', 
       es: 'Configurar notificaciones de backup', 
       'pt-BR': 'Configurar notificações de backup' 
@@ -117,7 +117,7 @@ export default {
     }),
     backupNotifications: t({ 
       en: 'Backup Notifications', 
-      de: 'Sicherungsbenachrichtigungen', 
+      de: 'Backup-Benachrichtigungen', 
       fr: 'Notifications de sauvegarde', 
       es: 'Notificaciones de backup', 
       'pt-BR': 'Notificações de backup' 
@@ -131,10 +131,52 @@ export default {
     }),
     noServersRegistered: t({ 
       en: 'No servers with backups have been registered yet. Add some backup data first to see backup notification settings.', 
-      de: 'Es wurden noch keine Server mit Sicherungen registriert. Fügen Sie zuerst einige Sicherungsdaten hinzu, um die Einstellungen für Sicherungsbenachrichtigungen anzuzeigen.', 
+      de: 'Es wurden noch keine Server mit Sicherungen registriert. Fügen Sie zuerst einige Sicherungsdaten hinzu, um die Einstellungen für Backup-Benachrichtigungen anzuzeigen.', 
       fr: 'Aucun serveur avec sauvegardes n\'a encore été enregistré. Ajoutez d\'abord des données de sauvegarde pour voir les paramètres de notification de sauvegarde.', 
       es: 'Aún no se han registrado servidores con backups. Agregue primero algunos datos de backup para ver la configuración de notificaciones de backup.', 
       'pt-BR': 'Nenhum servidor com backups foi registrado ainda. Adicione primeiro alguns dados de backup para ver as configurações de notificação de backup.' 
+    }),
+    additionalDestinations: t({ 
+      en: 'Additional Destinations:', 
+      de: 'Zusätzliche Ziele:', 
+      fr: 'Destinations supplémentaires:', 
+      es: 'Destinos adicionales:', 
+      'pt-BR': 'Destinos adicionais:' 
+    }),
+    backupsSelected: t({ 
+      en: '{count} backup selected', 
+      de: '{count} Sicherung ausgewählt', 
+      fr: '{count} sauvegarde sélectionnée', 
+      es: '{count} backup seleccionado', 
+      'pt-BR': '{count} backup selecionado' 
+    }),
+    backupsSelectedPlural: t({ 
+      en: '{count} backups selected', 
+      de: '{count} Sicherungen ausgewählt', 
+      fr: '{count} sauvegardes sélectionnées', 
+      es: '{count} backups seleccionados', 
+      'pt-BR': '{count} backups selecionados' 
+    }),
+    clearSelection: t({ 
+      en: 'Clear Selection', 
+      de: 'Auswahl löschen', 
+      fr: 'Effacer la sélection', 
+      es: 'Limpiar selección', 
+      'pt-BR': 'Limpar seleção' 
+    }),
+    bulkEdit: t({ 
+      en: 'Bulk Edit', 
+      de: 'Massenbearbeitung', 
+      fr: 'Modification en masse', 
+      es: 'Edición masiva', 
+      'pt-BR': 'Edição em massa' 
+    }),
+    bulkClear: t({ 
+      en: 'Bulk Clear', 
+      de: 'Massenlöschung', 
+      fr: 'Effacement en masse', 
+      es: 'Limpiar en masa', 
+      'pt-BR': 'Limpar em massa' 
     }),
   },
 } satisfies Dictionary;

@@ -16,14 +16,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Locale-aware navigation**: All `Link` and `router.push` updated to use `/[locale]/...` in app-header, conditional-layout, dashboard (table, overview/status/server/overview-cards), server-details (summary-items, backup-table), backup-tooltip-content, global-refresh-controls, open-server-config-button. `requireServerAuth` redirects to `/[locale]/login`; login form and `getHelpUrl` support locale-prefixed paths.
 - **Locale detection and request proxy**: `src/proxy.ts` implements automatic locale detection, URL rewriting, and request header management. Detects locale from: (1) URL path (if already prefixed), (2) `NEXT_LOCALE` cookie (persisted preference), (3) `Accept-Language` header (browser language), (4) default "en". Automatically redirects requests without locale prefix to `/[locale]/path`. Sets custom headers (`x-pathname`, `x-search-params`) and cache control headers for dashboard and detail pages. Excludes API routes, `_next`, and static files. Matcher: `/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)`.
 - **Root layout locale support**: `src/app/layout.tsx` now dynamically sets HTML `lang` attribute based on detected locale (from cookies, headers, or Accept-Language). Root layout is async and uses `getServerLocale()` helper to determine locale server-side for SEO. ClientLocaleProvider continues to update `document.documentElement.lang` on client-side for consistency. All existing styling, authentication, and theming preserved.
+- **Locale switcher in app header**: Added language selection dropdown in the app header with support for all 5 languages (English, Deutsch, Français, Español, Português (BR)). Language preference is saved in `NEXT_LOCALE` cookie and persists across sessions. Switching languages automatically redirects to the same page in the selected locale.
+- **LocalizedFileInput component**: Created new `src/components/ui/localized-file-input.tsx` component for locale-aware file input with customizable button and "no file chosen" text, improving file selection UX across all languages.
+- **Common translation strings**: Extended `common.content.ts` with additional shared translations:
+  - Password visibility controls (show/hide password)
+  - GitHub link text
+  - Help tooltips with page name support
+  - Time units (minutes, hours, days, weeks, months, years)
+  - Status labels (enabled/disabled)
+  - Cron interval options (disabled, 1min through 2hours)
+  - Overdue tolerance values (no tolerance, 5min through 1d)
+  - Notification frequency options (one time, every day/week/month)
 
 ### Fixed
+- **Spanish translations**: Fixed Spanish translations for overdue notifications and configuration settings to ensure consistency and accuracy.
 
 
 
 ### Changed
-
- 
+- **Translation consolidation**: Refactored components to use common translations from `common.content.ts` instead of component-specific translations for better consistency:
+  - `overdue-monitoring-form`: Now uses common translations for time units, intervals, tolerance values, and frequency options
+  - `backup-notifications-form`: Updated to use common translations for bulk operations (additional destinations, backups selected, clear selection, bulk edit, bulk clear)
+  - `app-header`: Uses common translations for help tooltips
+  - `display-settings-form`: Removed redundant translations in favor of common ones
+- **Code cleanup**: Removed deprecated functions from `src/lib/utils.ts`:
+  - `formatNumber()` (use `formatNumber` from `@/lib/number-format` instead)
+  - `formatBytes()` (use `formatBytes` from `@/lib/number-format` instead)
+  - `formatSQLiteTimestamp()` (use `formatSQLiteTimestamp` from `@/lib/date-format` instead)
+  These functions were marked as deprecated and have been replaced by locale-aware versions in dedicated modules.
 
 
 ### Improved
@@ -47,7 +67,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Overview cards (total file counts)
     - Chart components (Y-axis labels and tooltips in overview and metrics charts)
   - Functions: `formatNumber()`, `formatInteger()`, `formatDecimal()`, `formatBytes()`, `formatCurrency()`, and `formatPercentage()` with locale support
-  - Updated existing `formatNumber()` and `formatBytes()` in `utils.ts` to accept optional locale parameter for backward compatibility
+  - Updated existing `formatNumber()` and `formatBytes()` in `utils.ts` to accept optional locale parameter for backward compatibility (now removed in favor of dedicated modules)
+- **Internationalization consistency**: Improved translation usage across components:
+  - Components now consistently use common translations for shared strings (time units, intervals, status labels)
+  - Better separation between component-specific and common translations
+  - Improved locale-aware week day ordering in overdue monitoring form
+- **UI improvements**:
+  - Increased server filter width in backup notifications form (260px → 360px) for better usability
+  - Enhanced bulk selection UI with proper pluralization support for backup counts
+  - Improved help tooltip text with page name context
 - **RTL (Right-to-Left) Support Preparation**: Added foundation for future RTL language support:
   - Created `src/lib/rtl-utils.ts` with RTL detection utilities (`isRTL()`, `getTextDirection()`, `getLogicalProperties()`)
   - Created `src/hooks/use-rtl.ts` hook for RTL-aware components
@@ -61,4 +89,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Removed
+- **Test and documentation files**: Removed obsolete development files:
+  - `dev/phase4-testing-checklist.md`
+  - `dev/phase4-testing-guide.md`
+  - `dev/phase4-testing-results.md`
+  - `dev/session-ses_4364.md`
+  - `dev/string-extraction-document.md`
 

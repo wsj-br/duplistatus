@@ -1,8 +1,10 @@
 "use client";
 
 import Link from 'next/link';
+import { useIntlayer } from 'react-intlayer';
 
 export function GithubLink() {
+  const common = useIntlayer('common');
   return (
     <div className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center">
       <Link 
@@ -10,7 +12,7 @@ export function GithubLink() {
         target="_blank" 
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1"
-        aria-label="View source code on GitHub"
+        aria-label={common.ui.viewSourceCodeOnGitHub.value}
       >
         <svg 
           height="16" 

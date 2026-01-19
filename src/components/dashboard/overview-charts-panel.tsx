@@ -10,7 +10,7 @@ import {
   Tooltip
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
+import { formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
@@ -329,13 +329,11 @@ function OverviewChartsPanelCore({
     { 
       key: 'fileSize', 
       label: content.fileSize, 
-      formatter: formatBytes,
       color: "#ef4444" // Red
     },
     { 
       key: 'storageSize', 
       label: content.storageSize, 
-      formatter: formatBytes,
       color: "#8b5cf6" // Purple
     }
   ];

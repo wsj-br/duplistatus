@@ -948,7 +948,7 @@ export function BackupCollectMenu({
           variant={variant} 
           size={getButtonSize()} 
           className={className}
-          title="Collect backup logs (Right-click for Collect All)"
+          title={content.buttonTitle.value}
           disabled={disabled}
           onClick={(e) => {
             e.preventDefault();

@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { StatusBadge } from '@/components/status-badge';
 import { MessageSquare, AlertTriangle, XCircle, Info } from 'lucide-react';
-import { formatRelativeTime, formatBytes } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/utils';
+import { formatBytes } from '@/lib/number-format';
 import { BackButton } from '@/components/ui/back-button';
 import {
   Table,
@@ -333,11 +334,11 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{content.fileSize.value}</span>
-                      <span>{formatBytes(backup.fileSize || 0)}</span>
+                      <span>{formatBytes(backup.fileSize || 0, locale)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{content.uploadedSize.value}</span>
-                      <span>{formatBytes(backup.uploadedSize || 0)}</span>
+                      <span>{formatBytes(backup.uploadedSize || 0, locale)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{content.duration.value}</span>
@@ -345,7 +346,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-muted-foreground">{content.storageSize.value}</span>
-                      <span>{formatBytes(backup.knownFileSize || 0)}</span>
+                      <span>{formatBytes(backup.knownFileSize || 0, locale)}</span>
                     </div>
                   </dd>
                 </div>

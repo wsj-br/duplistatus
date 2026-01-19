@@ -123,12 +123,12 @@ export function DisplaySettingsForm() {
               <SelectContent>
                 <SelectItem value="0.25">{content.seconds15.value}</SelectItem>
                 <SelectItem value="0.5">{content.seconds30.value}</SelectItem>
-                <SelectItem value="1">{content.minute1.value}</SelectItem>
-                <SelectItem value="2">{content.minutes2.value}</SelectItem>
-                <SelectItem value="3">{content.minutes3.value}</SelectItem>
-                <SelectItem value="4">{content.minutes4.value}</SelectItem>
-                <SelectItem value="5">{content.minutes5.value}</SelectItem>
-                <SelectItem value="10">{content.minutes10.value}</SelectItem>
+                <SelectItem value="1">{common.time.intervals['1min'].value}</SelectItem>
+                <SelectItem value="2">{common.time.intervals['2min'].value}</SelectItem>
+                <SelectItem value="3">{common.time.intervals['3min'].value}</SelectItem>
+                <SelectItem value="4">{common.time.intervals['4min'].value}</SelectItem>
+                <SelectItem value="5">{common.time.intervals['5min'].value}</SelectItem>
+                <SelectItem value="10">{common.time.intervals['10min'].value}</SelectItem>
               </SelectContent>
             </Select>
           </div>

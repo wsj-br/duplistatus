@@ -6,9 +6,9 @@ export default {
     title: t({ 
       en: 'Audit Log', 
       de: 'Audit-Log', 
-      fr: 'Journal d\'audit', 
-      es: 'Registro de auditoría', 
-      'pt-BR': 'Registro de auditoria' 
+      fr: 'Journal d\'Audit', 
+      es: 'Log de Auditoría', 
+      'pt-BR': 'Log de Auditoria' 
     }),
     description: t({ 
       en: 'View application audit log entries', 

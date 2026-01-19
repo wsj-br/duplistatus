@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
 import { sendBackupNotification, NotificationContext, extractLogText } from '@/lib/notifications';
-import { formatBytes, formatDurationHuman } from '@/lib/utils';
+import { formatDurationHuman } from '@/lib/utils';
+import { formatBytes } from '@/lib/number-format';
 import { BackupStatus } from '@/lib/types';
 import { AuditLogger } from '@/lib/audit-logger';
 import { getClientIpAddress } from '@/lib/ip-utils';
@@ -335,9 +336,9 @@ export async function POST(request: NextRequest) {
         errors_count: backup.errors,
         duration: backup.duration,
         file_count: backup.fileCount,
-        file_size: formatBytes(backup.fileSize),
-        uploaded_size: formatBytes(backup.uploadedSize),
-        storage_size: formatBytes(backup.knownFileSize),
+        file_size: formatBytes(backup.fileSize, 'en'), // API route uses default locale
+        uploaded_size: formatBytes(backup.uploadedSize, 'en'), // API route uses default locale
+        storage_size: formatBytes(backup.knownFileSize, 'en'), // API route uses default locale
         available_versions: backup.backup_list_count,
         log_text: extractLogText(backup),
       };

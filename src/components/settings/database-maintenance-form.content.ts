@@ -147,6 +147,20 @@ export default {
       es: 'Seleccione un archivo de backup .db o .sql para restaurar. Esto reemplazará la base de datos actual.', 
       'pt-BR': 'Selecione um arquivo de backup .db ou .sql para restaurar. Isso substituirá o banco de dados atual.' 
     }),
+    chooseFile: t({ 
+      en: 'Choose file', 
+      de: 'Datei auswählen', 
+      fr: 'Choisir un fichier', 
+      es: 'Elegir archivo', 
+      'pt-BR': 'Escolher arquivo' 
+    }),
+    noFileChosen: t({ 
+      en: 'No file chosen', 
+      de: 'Keine Datei ausgewählt', 
+      fr: 'Aucun fichier sélectionné', 
+      es: 'Ningún archivo elegido', 
+      'pt-BR': 'Nenhum arquivo escolhido' 
+    }),
     restoring: t({ 
       en: 'Restoring...', 
       de: 'Wird wiederhergestellt...', 

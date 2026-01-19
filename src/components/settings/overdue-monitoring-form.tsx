@@ -81,39 +81,44 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
   const tableScrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Get locale-aware weekdays ordered by locale's first day of week
-  const localeWeekDays = useMemo(() => getLocaleWeekDays(), []);
-  
-  // English day names mapping (keep English names but use locale order)
-  const englishDayNames: Record<number, string> = {
-    0: 'Sun', // Sunday
-    1: 'Mon', // Monday
-    2: 'Tue', // Tuesday
-    3: 'Wed', // Wednesday
-    4: 'Thu', // Thursday
-    5: 'Fri', // Friday
-    6: 'Sat', // Saturday
-  };
+  const localeWeekDays = useMemo(() => getLocaleWeekDays(locale), [locale]);
 
-  // Notification frequency options - will be created inside component to use content
+  // Notification frequency options - will be created inside component to use common
   const notificationFrequencyOptions = useMemo(() => [
-    { value: 'onetime' as NotificationFrequencyConfig, label: content.oneTime.value },
-    { value: 'every_day' as NotificationFrequencyConfig, label: content.everyDay.value },
-    { value: 'every_week' as NotificationFrequencyConfig, label: content.everyWeek.value },
-    { value: 'every_month' as NotificationFrequencyConfig, label: content.everyMonth.value },
-  ], [content]);
+    { value: 'onetime' as NotificationFrequencyConfig, label: common.time.frequency.oneTime.value },
+    { value: 'every_day' as NotificationFrequencyConfig, label: common.time.frequency.everyDay.value },
+    { value: 'every_week' as NotificationFrequencyConfig, label: common.time.frequency.everyWeek.value },
+    { value: 'every_month' as NotificationFrequencyConfig, label: common.time.frequency.everyMonth.value },
+  ], [common]);
 
-  const overdueToleranceOptions: { value: OverdueTolerance; label: string; milliseconds: number }[] = [
-    { value: 'no_tolerance', label: 'No tolerance', milliseconds: 0 },
-    { value: '5min', label: '5 min', milliseconds: 5 * 60 * 1000 },
-    { value: '15min', label: '15 min', milliseconds: 15 * 60 * 1000 },
-    { value: '30min', label: '30 min', milliseconds: 30 * 60 * 1000 },
-    { value: '1h', label: '1 hour', milliseconds: 60 * 60 * 1000 },
-    { value: '2h', label: '2 hours', milliseconds: 2 * 60 * 60 * 1000 },
-    { value: '4h', label: '4 hours', milliseconds: 4 * 60 * 60 * 1000 },
-    { value: '6h', label: '6 hours', milliseconds: 6 * 60 * 60 * 1000 },
-    { value: '12h', label: '12 hours', milliseconds: 12 * 60 * 60 * 1000 },
-    { value: '1d', label: '1 day', milliseconds: 24 * 60 * 60 * 1000 },
-  ];
+  // Create translated cron interval map
+  const translatedCronIntervalMap = useMemo(() => {
+    const labelMap: Record<CronInterval, string> = {
+      'disabled': common.time.intervals.disabled.value,
+      '1min': common.time.intervals['1min'].value,
+      '5min': common.time.intervals['5min'].value,
+      '10min': common.time.intervals['10min'].value,
+      '15min': common.time.intervals['15min'].value,
+      '20min': common.time.intervals['20min'].value,
+      '30min': common.time.intervals['30min'].value,
+      '1hour': common.time.intervals['1hour'].value,
+      '2hours': common.time.intervals['2hours'].value,
+    };
+    return labelMap;
+  }, [common]);
+
+  const overdueToleranceOptions: { value: OverdueTolerance; label: string; milliseconds: number }[] = useMemo(() => [
+    { value: 'no_tolerance', label: common.time.tolerance.noTolerance.value, milliseconds: 0 },
+    { value: '5min', label: common.time.tolerance['5min'].value, milliseconds: 5 * 60 * 1000 },
+    { value: '15min', label: common.time.tolerance['15min'].value, milliseconds: 15 * 60 * 1000 },
+    { value: '30min', label: common.time.tolerance['30min'].value, milliseconds: 30 * 60 * 1000 },
+    { value: '1h', label: common.time.tolerance['1h'].value, milliseconds: 60 * 60 * 1000 },
+    { value: '2h', label: common.time.tolerance['2h'].value, milliseconds: 2 * 60 * 60 * 1000 },
+    { value: '4h', label: common.time.tolerance['4h'].value, milliseconds: 4 * 60 * 60 * 1000 },
+    { value: '6h', label: common.time.tolerance['6h'].value, milliseconds: 6 * 60 * 60 * 1000 },
+    { value: '12h', label: common.time.tolerance['12h'].value, milliseconds: 12 * 60 * 60 * 1000 },
+    { value: '1d', label: common.time.tolerance['1d'].value, milliseconds: 24 * 60 * 60 * 1000 },
+  ], [common]);
 
   // Create lookup map from the options array
   const toleranceByValue = Object.fromEntries(
@@ -1107,7 +1112,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                           className="data-[state=checked]:bg-blue-500"
                         />
                         <Label htmlFor={`overdue-backup-${inputKey}`} className="text-xs">
-                          {backupSetting.overdueBackupCheckEnabled ? content.enabled : content.disabled}
+                          {backupSetting.overdueBackupCheckEnabled ? common.time.enabled.value : common.time.disabled.value}
                         </Label>
                       </div>
                     </TableCell>
@@ -1140,12 +1145,12 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="custom">{content.custom.value}</SelectItem>
-                          <SelectItem value="Minutes">{content.minutes.value}</SelectItem>
-                          <SelectItem value="Hours">{content.hours.value}</SelectItem>
-                          <SelectItem value="Days">{content.days.value}</SelectItem>
-                          <SelectItem value="Weeks">{content.weeks.value}</SelectItem>
-                          <SelectItem value="Months">{content.months.value}</SelectItem>
-                          <SelectItem value="Years">{content.years.value}</SelectItem>
+                          <SelectItem value="Minutes">{common.time.minutes.value}</SelectItem>
+                          <SelectItem value="Hours">{common.time.hours.value}</SelectItem>
+                          <SelectItem value="Days">{common.time.days.value}</SelectItem>
+                          <SelectItem value="Weeks">{common.time.weeks.value}</SelectItem>
+                          <SelectItem value="Months">{common.time.months.value}</SelectItem>
+                          <SelectItem value="Years">{common.time.years.value}</SelectItem>
                         </SelectContent>
                       </Select>
                     </TableCell>
@@ -1165,7 +1170,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             onClick={() => handleWeekDayToggle(server.id, server.backupName, weekDay.dayNumber)}
                             disabled={!backupSetting.overdueBackupCheckEnabled}
                           >
-                            {englishDayNames[weekDay.dayNumber]}
+                            {weekDay.shortName}
                           </Button>
                         ))}
                       </div>
@@ -1344,7 +1349,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             onClick={() => handleWeekDayToggle(server.id, server.backupName, weekDay.dayNumber)}
                             disabled={!backupSetting.overdueBackupCheckEnabled}
                           >
-                            {englishDayNames[weekDay.dayNumber]}
+                            {weekDay.shortName}
                           </Button>
                         ))}
                       </div>
@@ -1439,15 +1444,15 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <Label htmlFor="overdue-tolerance" className="mb-2 text-sm">
-                  <span className="hidden sm:inline">{content.overdueTolerance}</span>
-                  <span className="sm:hidden">{content.tolerance}</span>
+                  <span className="hidden sm:inline">{content.overdueTolerance.value}</span>
+                  <span className="sm:hidden">{content.tolerance.value}</span>
                 </Label>
                 <Select
                   value={config?.overdue_tolerance || defaultOverdueTolerance}
                   onValueChange={(value: OverdueTolerance) => handleOverdueToleranceChange(value)}
                 >
                   <SelectTrigger id="overdue-tolerance" className="w-full">
-                    <SelectValue placeholder="Select tolerance" />
+                    <SelectValue placeholder={content.selectTolerance.value} />
                   </SelectTrigger>
                   <SelectContent>
                     {overdueToleranceOptions.map(option => (
@@ -1461,9 +1466,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
               
               <div className="flex flex-col">
                 <Label htmlFor="cron-interval" className="mb-2 text-sm">
-                  <span className="hidden lg:inline">{content.overdueMonitoringInterval}</span>
-                  <span className="lg:hidden hidden sm:inline">{content.monitoringInterval}</span>
-                  <span className="sm:hidden">{content.interval}</span>
+                  <span className="hidden lg:inline">{content.overdueMonitoringInterval.value}</span>
+                  <span className="lg:hidden hidden sm:inline">{content.monitoringInterval.value}</span>
+                  <span className="sm:hidden">{content.interval.value}</span>
                 </Label>
                 <Select
                   value={cronInterval}
@@ -1475,7 +1480,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                   <SelectContent>
                     {Object.entries(cronIntervalMap).map(([value, config]) => (
                       <SelectItem key={value} value={value}>
-                        {config.label}
+                        {translatedCronIntervalMap[value as CronInterval]}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -1484,9 +1489,9 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
               
               <div className="flex flex-col">
                 <Label htmlFor="notification-frequency" className="mb-2 text-sm">
-                  <span className="hidden lg:inline">{content.notificationFrequency}</span>
-                  <span className="lg:hidden hidden sm:inline">{content.notificationFreq}</span>
-                  <span className="sm:hidden">{content.frequency}</span>
+                  <span className="hidden lg:inline">{content.notificationFrequency.value}</span>
+                  <span className="lg:hidden hidden sm:inline">{content.notificationFreq.value}</span>
+                  <span className="sm:hidden">{content.frequency.value}</span>
                 </Label>
                 <Select
                   value={notificationFrequency}

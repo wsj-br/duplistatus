@@ -54,6 +54,9 @@ export default {
       stop: t({ en: 'Stop', de: 'Stoppen', fr: 'Arrêter', es: 'Detener', 'pt-BR': 'Parar' }),
       pause: t({ en: 'Pause', de: 'Pausieren', fr: 'Pause', es: 'Pausar', 'pt-BR': 'Pausar' }),
       resume: t({ en: 'Resume', de: 'Fortsetzen', fr: 'Reprendre', es: 'Reanudar', 'pt-BR': 'Retomar' }),
+      showPassword: t({ en: 'Show password', de: 'Passwort anzeigen', fr: 'Afficher le mot de passe', es: 'Mostrar contraseña', 'pt-BR': 'Mostrar senha' }),
+      hidePassword: t({ en: 'Hide password', de: 'Passwort ausblenden', fr: 'Masquer le mot de passe', es: 'Ocultar contraseña', 'pt-BR': 'Ocultar senha' }),
+      viewSourceCodeOnGitHub: t({ en: 'View source code on GitHub', de: 'Quellcode auf GitHub anzeigen', fr: 'Voir le code source sur GitHub', es: 'Ver código fuente en GitHub', 'pt-BR': 'Ver código-fonte no GitHub' }),
     },
     navigation: {
       dashboard: t({ en: 'Dashboard', de: 'Dashboard', fr: 'Tableau de bord', es: 'Panel de control', 'pt-BR': 'Painel' }),
@@ -63,6 +66,7 @@ export default {
       profile: t({ en: 'Profile', de: 'Profil', fr: 'Profil', es: 'Perfil', 'pt-BR': 'Perfil' }),
       help: t({ en: 'Help', de: 'Hilfe', fr: 'Aide', es: 'Ayuda', 'pt-BR': 'Ajuda' }),
       about: t({ en: 'About', de: 'Über', fr: 'À propos', es: 'Acerca de', 'pt-BR': 'Sobre' }),
+      helpFor: t({ en: 'Help for {pageName}', de: 'Hilfe für {pageName}', fr: 'Aide pour {pageName}', es: 'Ayuda para {pageName}', 'pt-BR': 'Ajuda para {pageName}' }),
     },
     status: {
       success: t({ en: 'Success', de: 'Erfolg', fr: 'Succès', es: 'Éxito', 'pt-BR': 'Sucesso' }),
@@ -102,6 +106,52 @@ export default {
       thisWeek: t({ en: 'This Week', de: 'Diese Woche', fr: 'Cette semaine', es: 'Esta semana', 'pt-BR': 'Esta semana' }),
       thisMonth: t({ en: 'This Month', de: 'Dieser Monat', fr: 'Ce mois-ci', es: 'Este mes', 'pt-BR': 'Este mês' }),
       thisYear: t({ en: 'This Year', de: 'Dieses Jahr', fr: 'Cette année', es: 'Este año', 'pt-BR': 'Este ano' }),
+      // Time units
+      minutes: t({ en: 'Minute(s)', de: 'Minute(n)', fr: 'Minute(s)', es: 'Minuto(s)', 'pt-BR': 'Minuto(s)' }),
+      minutesShort: t({ en: 'Min(s)', de: 'Min(n)', fr: 'Min(s)', es: 'Min(s)', 'pt-BR': 'Min(s)' }),
+      hours: t({ en: 'Hour(s)', de: 'Stunde(n)', fr: 'Heure(s)', es: 'Hora(s)', 'pt-BR': 'Hora(s)' }),
+      days: t({ en: 'Day(s)', de: 'Tag(e)', fr: 'Jour(s)', es: 'Día(s)', 'pt-BR': 'Dia(s)' }),
+      weeks: t({ en: 'Week(s)', de: 'Woche(n)', fr: 'Semaine(s)', es: 'Semana(s)', 'pt-BR': 'Semana(s)' }),
+      months: t({ en: 'Month(s)', de: 'Monat(e)', fr: 'Mois', es: 'Mes(es)', 'pt-BR': 'Mês(es)' }),
+      years: t({ en: 'Year(s)', de: 'Jahr(e)', fr: 'Année(s)', es: 'Año(s)', 'pt-BR': 'Ano(s)' }),
+      // Status
+      enabled: t({ en: 'Enabled', de: 'Aktiviert', fr: 'Activé', es: 'Habilitado', 'pt-BR': 'Habilitado' }),
+      disabled: t({ en: 'Disabled', de: 'Deaktiviert', fr: 'Désactivé', es: 'Deshabilitado', 'pt-BR': 'Desabilitado' }),
+      // Intervals
+      intervals: {
+        disabled: t({ en: 'Disabled', de: 'Deaktiviert', fr: 'Désactivé', es: 'Deshabilitado', 'pt-BR': 'Desabilitado' }),
+        '1min': t({ en: '1 minute', de: '1 Minute', fr: '1 minute', es: '1 minuto', 'pt-BR': '1 minuto' }),
+        '2min': t({ en: '2 minutes', de: '2 Minuten', fr: '2 minutes', es: '2 minutos', 'pt-BR': '2 minutos' }),
+        '3min': t({ en: '3 minutes', de: '3 Minuten', fr: '3 minutes', es: '3 minutos', 'pt-BR': '3 minutos' }),
+        '4min': t({ en: '4 minutes', de: '4 Minuten', fr: '4 minutes', es: '4 minutos', 'pt-BR': '4 minutos' }),
+        '5min': t({ en: '5 minutes', de: '5 Minuten', fr: '5 minutes', es: '5 minutos', 'pt-BR': '5 minutos' }),
+        '10min': t({ en: '10 minutes', de: '10 Minuten', fr: '10 minutes', es: '10 minutos', 'pt-BR': '10 minutos' }),
+        '15min': t({ en: '15 minutes', de: '15 Minuten', fr: '15 minutes', es: '15 minutos', 'pt-BR': '15 minutos' }),
+        '20min': t({ en: '20 minutes', de: '20 Minuten', fr: '20 minutes', es: '20 minutos', 'pt-BR': '20 minutos' }),
+        '30min': t({ en: '30 minutes', de: '30 Minuten', fr: '30 minutes', es: '30 minutos', 'pt-BR': '30 minutos' }),
+        '1hour': t({ en: '1 hour', de: '1 Stunde', fr: '1 heure', es: '1 hora', 'pt-BR': '1 hora' }),
+        '2hours': t({ en: '2 hours', de: '2 Stunden', fr: '2 heures', es: '2 horas', 'pt-BR': '2 horas' }),
+      },
+      // Tolerance values
+      tolerance: {
+        noTolerance: t({ en: 'No tolerance', de: 'Keine Toleranz', fr: 'Aucune tolérance', es: 'Sin tolerancia', 'pt-BR': 'Sem tolerância' }),
+        '5min': t({ en: '5 min', de: '5 Min', fr: '5 min', es: '5 min', 'pt-BR': '5 min' }),
+        '15min': t({ en: '15 min', de: '15 Min', fr: '15 min', es: '15 min', 'pt-BR': '15 min' }),
+        '30min': t({ en: '30 min', de: '30 Min', fr: '30 min', es: '30 min', 'pt-BR': '30 min' }),
+        '1h': t({ en: '1 hour', de: '1 Stunde', fr: '1 heure', es: '1 hora', 'pt-BR': '1 hora' }),
+        '2h': t({ en: '2 hours', de: '2 Stunden', fr: '2 heures', es: '2 horas', 'pt-BR': '2 horas' }),
+        '4h': t({ en: '4 hours', de: '4 Stunden', fr: '4 heures', es: '4 horas', 'pt-BR': '4 horas' }),
+        '6h': t({ en: '6 hours', de: '6 Stunden', fr: '6 heures', es: '6 horas', 'pt-BR': '6 horas' }),
+        '12h': t({ en: '12 hours', de: '12 Stunden', fr: '12 heures', es: '12 horas', 'pt-BR': '12 horas' }),
+        '1d': t({ en: '1 day', de: '1 Tag', fr: '1 jour', es: '1 día', 'pt-BR': '1 dia' }),
+      },
+      // Frequency options
+      frequency: {
+        oneTime: t({ en: 'One time', de: 'Einmalig', fr: 'Une fois', es: 'Una vez', 'pt-BR': 'Uma vez' }),
+        everyDay: t({ en: 'Every day', de: 'Jeden Tag', fr: 'Chaque jour', es: 'Todos los días', 'pt-BR': 'Todos os dias' }),
+        everyWeek: t({ en: 'Every week', de: 'Jede Woche', fr: 'Chaque semaine', es: 'Cada semana', 'pt-BR': 'Toda semana' }),
+        everyMonth: t({ en: 'Every month', de: 'Jeden Monat', fr: 'Chaque mois', es: 'Cada mes', 'pt-BR': 'Todo mês' }),
+      },
     },
   },
 } satisfies Dictionary;

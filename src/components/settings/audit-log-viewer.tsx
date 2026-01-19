@@ -31,7 +31,8 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { Download, ChevronLeft, ChevronRight, Eye, Calendar as CalendarIcon, Loader2, RefreshCcw } from 'lucide-react';
-import { formatRelativeTime, formatSQLiteTimestamp } from '@/lib/utils';
+import { formatRelativeTime } from '@/lib/utils';
+import { formatSQLiteTimestamp } from '@/lib/date-format';
 import { Badge } from '@/components/ui/badge';
 import { DatePicker } from '@/components/ui/date-picker';
 
@@ -531,7 +532,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
                           {index + 1}
                         </TableCell>
                         <TableCell>
-                          <div>{formatSQLiteTimestamp(log.timestamp)}</div>
+                          <div>{formatSQLiteTimestamp(log.timestamp, locale)}</div>
                           <div className="text-xs text-muted-foreground">
                             {formatRelativeTime(log.timestamp, undefined, locale)}
                           </div>
@@ -636,7 +637,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-xs text-muted-foreground">{content.timestampLabel}</Label>
-                  <div className="text-sm">{formatSQLiteTimestamp(selectedLog.timestamp)}</div>
+                  <div className="text-sm">{formatSQLiteTimestamp(selectedLog.timestamp, locale)}</div>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">{content.statusLabel}</Label>

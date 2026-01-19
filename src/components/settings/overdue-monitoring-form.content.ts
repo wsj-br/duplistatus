@@ -103,21 +103,6 @@ export default {
       es: 'Días permitidos', 
       'pt-BR': 'Dias permitidos' 
     }),
-    // Status labels
-    enabled: t({ 
-      en: 'Enabled', 
-      de: 'Aktiviert', 
-      fr: 'Activé', 
-      es: 'Habilitado', 
-      'pt-BR': 'Habilitado' 
-    }),
-    disabled: t({ 
-      en: 'Disabled', 
-      de: 'Deaktiviert', 
-      fr: 'Désactivé', 
-      es: 'Deshabilitado', 
-      'pt-BR': 'Desabilitado' 
-    }),
     // Unit labels
     custom: t({ 
       en: 'Custom', 
@@ -125,55 +110,6 @@ export default {
       fr: 'Personnalisé', 
       es: 'Personalizado', 
       'pt-BR': 'Personalizado' 
-    }),
-    minutes: t({ 
-      en: 'Minute(s)', 
-      de: 'Minute(n)', 
-      fr: 'Minute(s)', 
-      es: 'Minuto(s)', 
-      'pt-BR': 'Minuto(s)' 
-    }),
-    minutesShort: t({ 
-      en: 'Min(s)', 
-      de: 'Min(n)', 
-      fr: 'Min(s)', 
-      es: 'Min(s)', 
-      'pt-BR': 'Min(s)' 
-    }),
-    hours: t({ 
-      en: 'Hour(s)', 
-      de: 'Stunde(n)', 
-      fr: 'Heure(s)', 
-      es: 'Hora(s)', 
-      'pt-BR': 'Hora(s)' 
-    }),
-    days: t({ 
-      en: 'Day(s)', 
-      de: 'Tag(e)', 
-      fr: 'Jour(s)', 
-      es: 'Día(s)', 
-      'pt-BR': 'Dia(s)' 
-    }),
-    weeks: t({ 
-      en: 'Week(s)', 
-      de: 'Woche(n)', 
-      fr: 'Semaine(s)', 
-      es: 'Semana(s)', 
-      'pt-BR': 'Semana(s)' 
-    }),
-    months: t({ 
-      en: 'Month(s)', 
-      de: 'Monat(e)', 
-      fr: 'Mois', 
-      es: 'Mes(es)', 
-      'pt-BR': 'Mês(es)' 
-    }),
-    years: t({ 
-      en: 'Year(s)', 
-      de: 'Jahr(e)', 
-      fr: 'Année(s)', 
-      es: 'Año(s)', 
-      'pt-BR': 'Ano(s)' 
     }),
     // Placeholders
     notSet: t({ 
@@ -318,106 +254,6 @@ export default {
       fr: 'Fréquence:', 
       es: 'Frecuencia:', 
       'pt-BR': 'Frequência:' 
-    }),
-    // Tolerance options
-    noTolerance: t({ 
-      en: 'No tolerance', 
-      de: 'Keine Toleranz', 
-      fr: 'Aucune tolérance', 
-      es: 'Sin tolerancia', 
-      'pt-BR': 'Sem tolerância' 
-    }),
-    tolerance5min: t({ 
-      en: '5 min', 
-      de: '5 Min', 
-      fr: '5 min', 
-      es: '5 min', 
-      'pt-BR': '5 min' 
-    }),
-    tolerance15min: t({ 
-      en: '15 min', 
-      de: '15 Min', 
-      fr: '15 min', 
-      es: '15 min', 
-      'pt-BR': '15 min' 
-    }),
-    tolerance30min: t({ 
-      en: '30 min', 
-      de: '30 Min', 
-      fr: '30 min', 
-      es: '30 min', 
-      'pt-BR': '30 min' 
-    }),
-    tolerance1h: t({ 
-      en: '1 hour', 
-      de: '1 Stunde', 
-      fr: '1 heure', 
-      es: '1 hora', 
-      'pt-BR': '1 hora' 
-    }),
-    tolerance2h: t({ 
-      en: '2 hours', 
-      de: '2 Stunden', 
-      fr: '2 heures', 
-      es: '2 horas', 
-      'pt-BR': '2 horas' 
-    }),
-    tolerance4h: t({ 
-      en: '4 hours', 
-      de: '4 Stunden', 
-      fr: '4 heures', 
-      es: '4 horas', 
-      'pt-BR': '4 horas' 
-    }),
-    tolerance6h: t({ 
-      en: '6 hours', 
-      de: '6 Stunden', 
-      fr: '6 heures', 
-      es: '6 horas', 
-      'pt-BR': '6 horas' 
-    }),
-    tolerance12h: t({ 
-      en: '12 hours', 
-      de: '12 Stunden', 
-      fr: '12 heures', 
-      es: '12 horas', 
-      'pt-BR': '12 horas' 
-    }),
-    tolerance1d: t({ 
-      en: '1 day', 
-      de: '1 Tag', 
-      fr: '1 jour', 
-      es: '1 día', 
-      'pt-BR': '1 dia' 
-    }),
-    // Notification frequency options
-    oneTime: t({ 
-      en: 'One time', 
-      de: 'Einmalig', 
-      fr: 'Une fois', 
-      es: 'Una vez', 
-      'pt-BR': 'Uma vez' 
-    }),
-    everyDay: t({ 
-      en: 'Every day', 
-      de: 'Jeden Tag', 
-      fr: 'Chaque jour', 
-      es: 'Todos los días', 
-      'pt-BR': 'Todos os dias' 
-    }),
-    everyWeek: t({ 
-      en: 'Every week', 
-      de: 'Jede Woche', 
-      fr: 'Chaque semaine', 
-      es: 'Cada semana', 
-      'pt-BR': 'Toda semana' 
-    }),
-    everyMonth: t({ 
-      en: 'Every month', 
-      de: 'Jeden Monat', 
-      fr: 'Chaque mois', 
-      es: 'Cada mes', 
-      'pt-BR': 'Todo mês' 
     }),
     // Toast messages
     overdueBackupCheckComplete: t({ 
