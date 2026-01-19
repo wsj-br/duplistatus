@@ -21,7 +21,24 @@ const ourWebpack: NextConfig["webpack"] = (config, { isServer, webpack }) => {
         '**/.git/**',
         '**/.next/**',
       ],
+      // Poll for changes (helps with file watching reliability)
+      poll: 1000,
     };
+    
+    // In development, make webpack re-read intlayer dictionary files on changes
+    if (process.env.NODE_ENV === 'development') {
+      // Add .intlayer dictionary directory to webpack's watch list
+      if (!config.watchOptions.ignored) {
+        config.watchOptions.ignored = [];
+      }
+      // Don't ignore .intlayer dictionary files - we want to watch them
+      // But we do want to ignore the cache
+      if (Array.isArray(config.watchOptions.ignored)) {
+        config.watchOptions.ignored = config.watchOptions.ignored.filter(
+          (pattern: string) => !pattern.includes('.intlayer/dictionary')
+        );
+      }
+    }
 
     // Additional configuration to prevent webpack from scanning these directories
     config.resolve = config.resolve || {};
@@ -96,6 +113,44 @@ const ourWebpack: NextConfig["webpack"] = (config, { isServer, webpack }) => {
       },
     ];
 
+    // In development, ensure webpack watches intlayer dictionary files and invalidates cache
+    if (process.env.NODE_ENV === 'development') {
+      const path = require('path');
+      const fs = require('fs');
+      
+      // Add a plugin to watch dictionary files and invalidate webpack cache
+      config.plugins = config.plugins || [];
+      config.plugins.push(
+        new (class {
+          apply(compiler: any) {
+            compiler.hooks.afterCompile.tap('IntlayerDictionaryWatcher', (compilation: any) => {
+              const dictPath = path.join(process.cwd(), '.intlayer', 'dictionary');
+              const dictMjsPath = path.join(process.cwd(), '.intlayer', 'main', 'dictionaries.mjs');
+              
+              // Add dictionary directory and main file to dependencies
+              if (fs.existsSync(dictPath)) {
+                const files = fs.readdirSync(dictPath)
+                  .filter((file: string) => file.endsWith('.json'))
+                  .map((file: string) => path.join(dictPath, file));
+                
+                files.forEach((file: string) => {
+                  if (fs.existsSync(file)) {
+                    compilation.fileDependencies.add(file);
+                  }
+                });
+              }
+              
+              // Also watch the dictionaries.mjs file itself
+              if (fs.existsSync(dictMjsPath)) {
+                compilation.fileDependencies.add(dictMjsPath);
+              }
+            });
+          }
+        })()
+      );
+    }
+
+
   return config;
 };
 
@@ -119,10 +174,6 @@ const configWithoutWebpack: NextConfig = {
   distDir: ".next",
   outputFileTracingExcludes: {
     "*": [
-      "./.next/**",
-      ".next/**",
-      "./.next/standalone/**/*",
-      ".next/standalone/**/*",
       "**/data/**",
     ],
   },

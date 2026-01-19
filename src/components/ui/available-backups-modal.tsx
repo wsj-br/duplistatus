@@ -5,6 +5,8 @@ import { useIntlayer } from 'react-intlayer';
 import { useLocale } from '@/contexts/locale-context';
 import { History } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger } from "@/lib/number-format";
 import {
   Dialog,
   DialogContent,
@@ -121,7 +123,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
               <span className="font-normal text-muted-foreground"> : </span>
               <span className="font-medium text-muted-foreground">{modalState.backupName}</span>
               <span className="font-normal text-muted-foreground"> @ </span>
-              <span className="text-blue-400 font-normal">{new Date(modalState.backupDate).toLocaleString()}</span>
+              <span className="text-blue-400 font-normal">{formatDateTime(modalState.backupDate, locale)}</span>
               {modalState.serverNote && (
                 <>
                   <br/>
@@ -245,13 +247,14 @@ interface AvailableBackupsIconProps {
 export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serverName, serverAlias, serverNote, backupName, onIconClick, count }: AvailableBackupsIconProps) {
   const content = useIntlayer('available-backups-modal');
   const common = useIntlayer('common');
+  const locale = useLocale();
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
   return (
     <TooltipProvider>
       <div className="flex items-center justify-center gap-2">
         <span>
-          {count !== null ? count.toLocaleString() : 'N/A'}
+          {count !== null ? formatInteger(count, locale) : 'N/A'}
         </span>
         {hasAvailableBackups ? (
           <Tooltip>

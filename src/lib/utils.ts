@@ -20,15 +20,32 @@ function getBrowserLocale(): string {
 }
 
 /**
- * Format a number using the browser's locale
+ * Format a number using the browser's locale or provided locale
  * This ensures consistent locale-aware number formatting across the application
+ * 
+ * @param value - Number to format
+ * @param options - Optional Intl.NumberFormatOptions for custom formatting
+ * @param locale - Optional locale string (e.g., "en", "de", "fr", "es", "pt-BR"). If not provided, uses browser locale.
+ * @returns Formatted number string
+ * 
+ * @deprecated For new code, use formatNumber from '@/lib/number-format' with explicit locale parameter
  */
-export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
-  const locale = getBrowserLocale();
-  return new Intl.NumberFormat(locale, options).format(value);
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions, locale?: string): string {
+  const effectiveLocale = locale || getBrowserLocale();
+  return new Intl.NumberFormat(effectiveLocale, options).format(value);
 }
 
-export function formatBytes(bytes: unknown, decimals = 2): string {
+/**
+ * Format bytes with locale-aware number formatting
+ * 
+ * @param bytes - Number of bytes
+ * @param decimals - Number of decimal places (default: 2)
+ * @param locale - Optional locale string (e.g., "en", "de", "fr", "es", "pt-BR"). If not provided, uses browser locale.
+ * @returns Formatted bytes string
+ * 
+ * @deprecated For new code, use formatBytes from '@/lib/number-format' with explicit locale parameter
+ */
+export function formatBytes(bytes: unknown, decimals = 2, locale?: string): string {
   // Handle all possible invalid inputs
   if (bytes === null || bytes === undefined) return '0 Bytes';
   
@@ -55,9 +72,9 @@ export function formatBytes(bytes: unknown, decimals = 2): string {
   const i = Math.floor(Math.log(numBytes) / Math.log(k));
   const value = numBytes / Math.pow(k, i);
 
-  // Use Intl.NumberFormat for locale-aware number formatting
-  const locale = getBrowserLocale();
-  const formatter = new Intl.NumberFormat(locale, {
+  // Use locale-aware number formatting
+  const effectiveLocale = locale || getBrowserLocale();
+  const formatter = new Intl.NumberFormat(effectiveLocale, {
     minimumFractionDigits: dm,
     maximumFractionDigits: dm,
   });
@@ -99,6 +116,31 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
 }
 
 /**
+ * Remove articles from the beginning of relative time strings for certain locales
+ * This fixes cases where Intl.RelativeTimeFormat produces articles like:
+ * - Spanish: "la semana pasada" -> "semana pasada"
+ * - French: "la semaine dernière" -> "semaine dernière"
+ */
+function removeLocaleArticles(text: string, locale?: string): string {
+  if (!locale) {
+    return text;
+  }
+  const localeLower = locale.toLowerCase();
+  
+  // Spanish articles: el, la, los, las
+  if (localeLower.startsWith('es')) {
+    return text.replace(/^(el|la|los|las)\s+/i, '');
+  }
+  
+  // French articles: le, la, les, l'
+  if (localeLower.startsWith('fr')) {
+    return text.replace(/^(le|la|les|l')\s+/i, '');
+  }
+  
+  return text;
+}
+
+/**
  * Format a relative time string (e.g., "2 hours ago", "in 3 days")
  * Uses Intl.RelativeTimeFormat for locale-aware formatting when locale is provided
  * @param dateString - ISO date string or SQLite timestamp
@@ -129,7 +171,7 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
       if (locale) {
         try {
           const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-          return rtf.format(0, 'second');
+          return removeLocaleArticles(rtf.format(0, 'second'), locale);
         } catch {
           return "just now";
         }
@@ -147,32 +189,32 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
         
         if (absDiffInSeconds < 60) {
           const seconds = Math.floor(absDiffInSeconds);
-          return rtf.format(isFuture ? seconds : -seconds, 'second');
+          return removeLocaleArticles(rtf.format(isFuture ? seconds : -seconds, 'second'), locale);
         }
         
         if (absDiffInSeconds < 3600) {
           const minutes = Math.floor(absDiffInSeconds / 60);
-          return rtf.format(isFuture ? minutes : -minutes, 'minute');
+          return removeLocaleArticles(rtf.format(isFuture ? minutes : -minutes, 'minute'), locale);
         }
         
         if (absDiffInSeconds < 86400) {
           const hours = Math.floor(absDiffInSeconds / 3600);
-          return rtf.format(isFuture ? hours : -hours, 'hour');
+          return removeLocaleArticles(rtf.format(isFuture ? hours : -hours, 'hour'), locale);
         }
         
         if (absDiffInSeconds < 604800) {
           const days = Math.floor(absDiffInSeconds / 86400);
-          return rtf.format(isFuture ? days : -days, 'day');
+          return removeLocaleArticles(rtf.format(isFuture ? days : -days, 'day'), locale);
         }
         
         if (absDiffInSeconds < 2592000) {
           const weeks = Math.floor(absDiffInSeconds / 604800);
-          return rtf.format(isFuture ? weeks : -weeks, 'week');
+          return removeLocaleArticles(rtf.format(isFuture ? weeks : -weeks, 'week'), locale);
         }
         
         if (absDiffInSeconds < 31536000) {
           const months = Math.floor(absDiffInSeconds / 2592000);
-          return rtf.format(isFuture ? months : -months, 'month');
+          return removeLocaleArticles(rtf.format(isFuture ? months : -months, 'month'), locale);
         }
         
         // For periods longer than 1 year, show years and months
@@ -181,11 +223,11 @@ export function formatRelativeTime(dateString: string, currentTime?: Date, local
         const months = Math.floor(remainingSeconds / 2592000);
         
         if (months === 0) {
-          return rtf.format(isFuture ? years : -years, 'year');
+          return removeLocaleArticles(rtf.format(isFuture ? years : -years, 'year'), locale);
         } else {
           // Intl.RelativeTimeFormat doesn't support compound formats, so we format separately
-          const yearPart = rtf.format(isFuture ? years : -years, 'year');
-          const monthPart = rtf.format(isFuture ? months : -months, 'month');
+          const yearPart = removeLocaleArticles(rtf.format(isFuture ? years : -years, 'year'), locale);
+          const monthPart = removeLocaleArticles(rtf.format(isFuture ? months : -months, 'month'), locale);
           // Try to combine them in a locale-appropriate way
           // For most locales, we can use a simple conjunction
           return `${yearPart} ${monthPart}`;
@@ -263,11 +305,36 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {
-      return locale ? (locale === 'de' ? 'Zukunft' : locale === 'fr' ? 'Futur' : locale === 'es' ? 'Futuro' : locale === 'pt-BR' ? 'Futuro' : 'future') : "future";
+      // Use Intl.RelativeTimeFormat for locale-aware "future" text
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'short' });
+          const absSeconds = Math.abs(diffInSeconds);
+          if (absSeconds < 60) {
+            return rtf.format(1, 'second').replace(/^in\s+/i, '') || 'future';
+          } else if (absSeconds < 3600) {
+            return rtf.format(Math.ceil(absSeconds / 60), 'minute').replace(/^in\s+/i, '') || 'future';
+          } else {
+            return rtf.format(Math.ceil(absSeconds / 3600), 'hour').replace(/^in\s+/i, '') || 'future';
+          }
+        } catch {
+          return "future";
+        }
+      }
+      return "future";
     }
 
     if (diffInSeconds < 60) {
-      return locale ? (locale === 'de' ? 'jetzt' : locale === 'fr' ? 'maintenant' : locale === 'es' ? 'ahora' : locale === 'pt-BR' ? 'agora' : 'now') : "now";
+      // Use Intl.RelativeTimeFormat for locale-aware "now" text
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+          return rtf.format(0, 'second');
+        } catch {
+          return "now";
+        }
+      }
+      return "now";
     }
 
     // For short format, we'll use abbreviated units that are more universal
@@ -297,10 +364,16 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
 
     if (diffInSeconds < 31536000) {
       const months = Math.floor(diffInSeconds / 2592000);
-      // Use locale-appropriate month abbreviation
+      // Use Intl.RelativeTimeFormat with narrow style for compact month abbreviation
       if (locale) {
-        const monthAbbr = locale === 'de' ? 'Mo' : locale === 'fr' ? 'mois' : locale === 'es' ? 'mes' : locale === 'pt-BR' ? 'mês' : 'mo';
-        return `${months} ${monthAbbr}`;
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' });
+          const formatted = rtf.format(-months, 'month');
+          // Extract just the number and abbreviation (e.g., "3mo" from "3mo ago")
+          return formatted.replace(/\s*ago\s*$/i, '').trim();
+        } catch {
+          return `${months} mo${months === 1 ? '' : plural}`;
+        }
       }
       return `${months} mo${months === 1 ? '' : plural}`;
     }
@@ -311,13 +384,23 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
     const months = Math.floor(remainingSeconds / 2592000);
     
     if (locale) {
-      const yearAbbr = locale === 'de' ? 'J' : locale === 'fr' ? 'a' : locale === 'es' ? 'a' : locale === 'pt-BR' ? 'a' : 'y';
-      const monthAbbr = locale === 'de' ? 'Mo' : locale === 'fr' ? 'mois' : locale === 'es' ? 'mes' : locale === 'pt-BR' ? 'mês' : 'mo';
-      
-      if (months === 0) {
-        return `${years} ${yearAbbr}`;
-      } else {
-        return `${years} ${yearAbbr} ${months} ${monthAbbr}`;
+      try {
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' });
+        if (months === 0) {
+          const formatted = rtf.format(-years, 'year');
+          return formatted.replace(/\s*ago\s*$/i, '').trim();
+        } else {
+          const yearFormatted = rtf.format(-years, 'year').replace(/\s*ago\s*$/i, '').trim();
+          const monthFormatted = rtf.format(-months, 'month').replace(/\s*ago\s*$/i, '').trim();
+          return `${yearFormatted} ${monthFormatted}`;
+        }
+      } catch {
+        // Fallback to English abbreviations
+        if (months === 0) {
+          return `${years} y`;
+        } else {
+          return `${years} y ${months} mo${months === 1 ? '' : plural}`;
+        }
       }
     }
     
@@ -332,7 +415,7 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
 }
 
 
-export function formatTimeElapsed(dateString: string, currentTime?: Date): string {
+export function formatTimeElapsed(dateString: string, currentTime?: Date, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -345,9 +428,72 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date): strin
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {
+      if (locale) {
+        // Try to get locale-specific translation
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+          // For future dates, we'll just return a generic message
+          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
+        } catch {
+          return "in the future";
+        }
+      }
       return "in the future";
     }
 
+    // Use Intl.RelativeTimeFormat if locale is provided
+    if (locale) {
+      try {
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
+        
+        if (Math.abs(diffInSeconds) < 15) {
+          return removeLocaleArticles(rtf.format(0, 'second'), locale);
+        }
+        
+        if (diffInSeconds < 3600) {
+          const minutes = Math.floor(diffInSeconds / 60);
+          return removeLocaleArticles(rtf.format(-minutes, 'minute'), locale);
+        }
+        
+        if (diffInSeconds < 86400) {
+          const hours = Math.floor(diffInSeconds / 3600);
+          return removeLocaleArticles(rtf.format(-hours, 'hour'), locale);
+        }
+        
+        if (diffInSeconds < 604800) {
+          const days = Math.floor(diffInSeconds / 86400);
+          return removeLocaleArticles(rtf.format(-days, 'day'), locale);
+        }
+        
+        if (diffInSeconds < 2592000) {
+          const weeks = Math.floor(diffInSeconds / 604800);
+          return removeLocaleArticles(rtf.format(-weeks, 'week'), locale);
+        }
+        
+        if (diffInSeconds < 31536000) {
+          const months = Math.floor(diffInSeconds / 2592000);
+          return removeLocaleArticles(rtf.format(-months, 'month'), locale);
+        }
+        
+        // Calculate years and remaining months for periods longer than 1 year
+        const years = Math.floor(diffInSeconds / 31536000);
+        const remainingSeconds = diffInSeconds % 31536000;
+        const months = Math.floor(remainingSeconds / 2592000);
+        
+        if (months === 0) {
+          return removeLocaleArticles(rtf.format(-years, 'year'), locale);
+        } else {
+          const yearPart = removeLocaleArticles(rtf.format(-years, 'year'), locale);
+          const monthPart = removeLocaleArticles(rtf.format(-months, 'month'), locale);
+          // For most locales, we can use a simple conjunction
+          return `${yearPart} ${monthPart}`;
+        }
+      } catch {
+        // Fall through to English fallback
+      }
+    }
+
+    // Fallback to English formatting if locale not provided or Intl.RelativeTimeFormat fails
     if (Math.abs(diffInSeconds) < 15) {
       return "just now";
     }
@@ -809,6 +955,8 @@ export function getLocaleWeekDays(locale?: string): LocaleWeekDay[] {
 /**
  * Parse a SQLite DATETIME timestamp string (UTC) and format it for display in browser timezone
  * SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format and are stored in UTC
+ * 
+ * @deprecated Use formatSQLiteTimestamp from '@/lib/date-format' with locale parameter instead
  * @param timestamp - SQLite timestamp string in "YYYY-MM-DD HH:MM:SS" format
  * @returns Formatted date string in browser's local timezone
  */

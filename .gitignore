@@ -59,7 +59,8 @@ run.log*
 .vscode/*
 !.vscode/launch.json
 .cursor/*
-!.cursor/rules/project-rule.mdc
+!.cursor/rules/
+!.cursor/rules/**
 
 
 # typescript

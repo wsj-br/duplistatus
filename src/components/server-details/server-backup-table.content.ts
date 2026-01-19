@@ -8,7 +8,7 @@ export default {
       en: 'Backup Name', 
       de: 'Sicherungsname', 
       fr: 'Nom de sauvegarde', 
-      es: 'Nombre de respaldo', 
+      es: 'Nombre de backup', 
       'pt-BR': 'Nome do backup' 
     }),
     date: t({ 
@@ -56,8 +56,8 @@ export default {
     uploadedSize: t({ 
       en: 'Uploaded Size', 
       de: 'Hochgeladene Größe', 
-      fr: 'Taille téléchargée', 
-      es: 'Tamaño subido', 
+      fr: 'Taille téléversée', 
+      es: 'Tamaño cargado', 
       'pt-BR': 'Tamanho enviado' 
     }),
     duration: t({ 
@@ -71,21 +71,21 @@ export default {
       en: 'Filter by Backup', 
       de: 'Nach Sicherung filtern', 
       fr: 'Filtrer par sauvegarde', 
-      es: 'Filtrar por respaldo', 
+      es: 'Filtrar por backup', 
       'pt-BR': 'Filtrar por backup' 
     }),
     allBackups: t({ 
       en: 'All Backups', 
       de: 'Alle Sicherungen', 
       fr: 'Toutes les sauvegardes', 
-      es: 'Todos los respaldos', 
+      es: 'Todos los backups', 
       'pt-BR': 'Todos os backups' 
     }),
     noBackupsFound: t({ 
       en: 'No backups found', 
       de: 'Keine Sicherungen gefunden', 
       fr: 'Aucune sauvegarde trouvée', 
-      es: 'No se encontraron respaldos', 
+      es: 'No se encontraron backups', 
       'pt-BR': 'Nenhum backup encontrado' 
     }),
     // Additional table headers
@@ -122,7 +122,7 @@ export default {
       en: 'Select backup', 
       de: 'Sicherung auswählen', 
       fr: 'Sélectionner la sauvegarde', 
-      es: 'Seleccionar respaldo', 
+      es: 'Seleccionar backup', 
       'pt-BR': 'Selecionar backup' 
     }),
     // Empty states
@@ -130,14 +130,14 @@ export default {
       en: 'No backups found for this server.', 
       de: 'Keine Sicherungen für diesen Server gefunden.', 
       fr: 'Aucune sauvegarde trouvée pour ce serveur.', 
-      es: 'No se encontraron respaldos para este servidor.', 
+      es: 'No se encontraron backups para este servidor.', 
       'pt-BR': 'Nenhum backup encontrado para este servidor.' 
     }),
     noBackupsFoundForThisMachine: t({ 
       en: 'No backups found for this machine.', 
       de: 'Keine Sicherungen für diese Maschine gefunden.', 
       fr: 'Aucune sauvegarde trouvée pour cette machine.', 
-      es: 'No se encontraron respaldos para esta máquina.', 
+      es: 'No se encontraron backups para esta máquina.', 
       'pt-BR': 'Nenhum backup encontrado para esta máquina.' 
     }),
     // Tooltip
@@ -145,7 +145,7 @@ export default {
       en: 'No messages were received for this backup.', 
       de: 'Für diese Sicherung wurden keine Nachrichten empfangen.', 
       fr: 'Aucun message n\'a été reçu pour cette sauvegarde.', 
-      es: 'No se recibieron mensajes para este respaldo.', 
+      es: 'No se recibieron mensajes para este backup.', 
       'pt-BR': 'Nenhuma mensagem foi recebida para este backup.' 
     }),
     // Mobile view labels

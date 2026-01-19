@@ -21,8 +21,8 @@ export default {
       en: 'Vacuum Database', 
       de: 'Datenbank bereinigen', 
       fr: 'Nettoyer la base de données', 
-      es: 'Limpiar base de datos', 
-      'pt-BR': 'Limpar banco de dados' 
+      es: 'Optimizar espacio', 
+      'pt-BR': 'Otimizar espaço' 
     }),
     optimize: t({ 
       en: 'Optimize Database', 
@@ -52,14 +52,14 @@ export default {
       en: 'Database Backup', 
       de: 'Datenbanksicherung', 
       fr: 'Sauvegarde de la base de données', 
-      es: 'Respaldo de base de datos', 
+      es: 'Backup de base de datos', 
       'pt-BR': 'Backup do banco de dados' 
     }),
     backupFormat: t({ 
       en: 'Backup Format', 
       de: 'Sicherungsformat', 
       fr: 'Format de sauvegarde', 
-      es: 'Formato de respaldo', 
+      es: 'Formato de backup', 
       'pt-BR': 'Formato de backup' 
     }),
     selectFormat: t({ 
@@ -87,7 +87,7 @@ export default {
       en: 'Binary database file - fastest backup, preserves all database structure', 
       de: 'Binäre Datenbankdatei - schnellste Sicherung, bewahrt die gesamte Datenbankstruktur', 
       fr: 'Fichier de base de données binaire - sauvegarde la plus rapide, préserve toute la structure de la base de données', 
-      es: 'Archivo de base de datos binario - respaldo más rápido, preserva toda la estructura de la base de datos', 
+      es: 'Archivo de base de datos binario - backup más rápido, preserva toda la estructura de la base de datos', 
       'pt-BR': 'Arquivo de banco de dados binário - backup mais rápido, preserva toda a estrutura do banco de dados' 
     }),
     sqlTextFileDescription: t({ 
@@ -101,21 +101,21 @@ export default {
       en: 'Creating Backup...', 
       de: 'Sicherung wird erstellt...', 
       fr: 'Création de la sauvegarde...', 
-      es: 'Creando respaldo...', 
+      es: 'Creando backup...', 
       'pt-BR': 'Criando backup...' 
     }),
     downloadBackup: t({ 
       en: 'Download Backup', 
       de: 'Sicherung herunterladen', 
       fr: 'Télécharger la sauvegarde', 
-      es: 'Descargar respaldo', 
+      es: 'Descargar backup', 
       'pt-BR': 'Baixar backup' 
     }),
     createBackupDescription: t({ 
       en: 'Create a backup of the entire database. The backup will be downloaded to your computer.', 
       de: 'Erstellen Sie eine Sicherung der gesamten Datenbank. Die Sicherung wird auf Ihren Computer heruntergeladen.', 
       fr: 'Créez une sauvegarde de toute la base de données. La sauvegarde sera téléchargée sur votre ordinateur.', 
-      es: 'Cree un respaldo de toda la base de datos. El respaldo se descargará en su computadora.', 
+      es: 'Cree un backup de toda la base de datos. El backup se descargará en su computadora.', 
       'pt-BR': 'Crie um backup de todo o banco de dados. O backup será baixado para o seu computador.' 
     }),
     // Database Restore
@@ -130,7 +130,7 @@ export default {
       en: 'Select Backup File', 
       de: 'Sicherungsdatei auswählen', 
       fr: 'Sélectionner le fichier de sauvegarde', 
-      es: 'Seleccionar archivo de respaldo', 
+      es: 'Seleccionar archivo de backup', 
       'pt-BR': 'Selecionar arquivo de backup' 
     }),
     selected: t({ 
@@ -144,7 +144,7 @@ export default {
       en: 'Select a .db or .sql backup file to restore. This will replace the current database.', 
       de: 'Wählen Sie eine .db- oder .sql-Sicherungsdatei zur Wiederherstellung aus. Dies ersetzt die aktuelle Datenbank.', 
       fr: 'Sélectionnez un fichier de sauvegarde .db ou .sql à restaurer. Cela remplacera la base de données actuelle.', 
-      es: 'Seleccione un archivo de respaldo .db o .sql para restaurar. Esto reemplazará la base de datos actual.', 
+      es: 'Seleccione un archivo de backup .db o .sql para restaurar. Esto reemplazará la base de datos actual.', 
       'pt-BR': 'Selecione um arquivo de backup .db ou .sql para restaurar. Isso substituirá o banco de dados atual.' 
     }),
     restoring: t({ 
@@ -172,14 +172,14 @@ export default {
       en: 'This will replace the current database with the backup file. All current data will be lost unless you have a backup. A safety backup of the current database will be created automatically before restore.\n\nThis action cannot be undone.', 
       de: 'Dies ersetzt die aktuelle Datenbank durch die Sicherungsdatei. Alle aktuellen Daten gehen verloren, es sei denn, Sie haben eine Sicherung. Eine Sicherungssicherung der aktuellen Datenbank wird automatisch vor der Wiederherstellung erstellt.\n\nDiese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela remplacera la base de données actuelle par le fichier de sauvegarde. Toutes les données actuelles seront perdues sauf si vous avez une sauvegarde. Une sauvegarde de sécurité de la base de données actuelle sera créée automatiquement avant la restauration.\n\nCette action ne peut pas être annulée.', 
-      es: 'Esto reemplazará la base de datos actual con el archivo de respaldo. Se perderán todos los datos actuales a menos que tenga un respaldo. Se creará automáticamente un respaldo de seguridad de la base de datos actual antes de la restauración.\n\nEsta acción no se puede deshacer.', 
+      es: 'Esto reemplazará la base de datos actual con el archivo de backup. Se perderán todos los datos actuales a menos que tenga un backup. Se creará automáticamente un backup de seguridad de la base de datos actual antes de la restauración.\n\nEsta acción no se puede deshacer.', 
       'pt-BR': 'Isso substituirá o banco de dados atual pelo arquivo de backup. Todos os dados atuais serão perdidos, a menos que você tenha um backup. Um backup de segurança do banco de dados atual será criado automaticamente antes da restauração.\n\nEsta ação não pode ser desfeita.' 
     }),
     restoreWarning: t({ 
       en: 'Warning: Restoring will replace all current database data. A safety backup will be created automatically.', 
       de: 'Warnung: Die Wiederherstellung ersetzt alle aktuellen Datenbankdaten. Eine Sicherungssicherung wird automatisch erstellt.', 
       fr: 'Avertissement: La restauration remplacera toutes les données actuelles de la base de données. Une sauvegarde de sécurité sera créée automatiquement.', 
-      es: 'Advertencia: La restauración reemplazará todos los datos actuales de la base de datos. Se creará automáticamente un respaldo de seguridad.', 
+      es: 'Advertencia: La restauración reemplazará todos los datos actuales de la base de datos. Se creará automáticamente un backup de seguridad.', 
       'pt-BR': 'Aviso: A restauração substituirá todos os dados atuais do banco de dados. Um backup de segurança será criado automaticamente.' 
     }),
     // Database Cleanup
@@ -229,7 +229,7 @@ export default {
       en: 'Select how long backup records are kept in the database.', 
       de: 'Wählen Sie aus, wie lange Sicherungsdatensätze in der Datenbank gespeichert werden.', 
       fr: 'Sélectionnez la durée de conservation des enregistrements de sauvegarde dans la base de données.', 
-      es: 'Seleccione cuánto tiempo se conservan los registros de respaldo en la base de datos.', 
+      es: 'Seleccione cuánto tiempo se conservan los registros de backup en la base de datos.', 
       'pt-BR': 'Selecione por quanto tempo os registros de backup são mantidos no banco de dados.' 
     }),
     cleaning: t({ 
@@ -257,7 +257,7 @@ export default {
       en: 'This will permanently delete all backup records older than the selected cleanup period. This action cannot be undone.', 
       de: 'Dies löscht dauerhaft alle Sicherungsdatensätze, die älter als der ausgewählte Bereinigungszeitraum sind. Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela supprimera définitivement tous les enregistrements de sauvegarde plus anciens que la période de nettoyage sélectionnée. Cette action ne peut pas être annulée.', 
-      es: 'Esto eliminará permanentemente todos los registros de respaldo más antiguos que el período de limpieza seleccionado. Esta acción no se puede deshacer.', 
+      es: 'Esto eliminará permanentemente todos los registros de backup más antiguos que el período de limpieza seleccionado. Esta acción no se puede deshacer.', 
       'pt-BR': 'Isso excluirá permanentemente todos os registros de backup mais antigos que o período de limpeza selecionado. Esta ação não pode ser desfeita.' 
     }),
     continue: t({ 
@@ -271,7 +271,7 @@ export default {
       en: 'This will remove all backup records older than the selected cleanup period. Manual action required - you must click the button to perform the cleanup.', 
       de: 'Dies entfernt alle Sicherungsdatensätze, die älter als der ausgewählte Bereinigungszeitraum sind. Manuelle Aktion erforderlich - Sie müssen auf die Schaltfläche klicken, um die Bereinigung durchzuführen.', 
       fr: 'Cela supprimera tous les enregistrements de sauvegarde plus anciens que la période de nettoyage sélectionnée. Action manuelle requise - vous devez cliquer sur le bouton pour effectuer le nettoyage.', 
-      es: 'Esto eliminará todos los registros de respaldo más antiguos que el período de limpieza seleccionado. Se requiere acción manual: debe hacer clic en el botón para realizar la limpieza.', 
+      es: 'Esto eliminará todos los registros de backup más antiguos que el período de limpieza seleccionado. Se requiere acción manual: debe hacer clic en el botón para realizar la limpieza.', 
       'pt-BR': 'Isso removerá todos os registros de backup mais antigos que o período de limpeza selecionado. Ação manual necessária - você deve clicar no botão para realizar a limpeza.' 
     }),
     // Delete Backup Job
@@ -279,28 +279,28 @@ export default {
       en: 'Delete Backup Job', 
       de: 'Sicherungsauftrag löschen', 
       fr: 'Supprimer le travail de sauvegarde', 
-      es: 'Eliminar trabajo de respaldo', 
+      es: 'Eliminar trabajo de backup', 
       'pt-BR': 'Excluir trabalho de backup' 
     }),
     selectBackupJob: t({ 
       en: 'Select backup job', 
       de: 'Sicherungsauftrag auswählen', 
       fr: 'Sélectionner le travail de sauvegarde', 
-      es: 'Seleccionar trabajo de respaldo', 
+      es: 'Seleccionar trabajo de backup', 
       'pt-BR': 'Selecionar trabalho de backup' 
     }),
     selectBackupJobToDelete: t({ 
       en: 'Select backup job to delete', 
       de: 'Zu löschenden Sicherungsauftrag auswählen', 
       fr: 'Sélectionner le travail de sauvegarde à supprimer', 
-      es: 'Seleccionar trabajo de respaldo a eliminar', 
+      es: 'Seleccionar trabajo de backup a eliminar', 
       'pt-BR': 'Selecionar trabalho de backup para excluir' 
     }),
     selectBackupJobDescription: t({ 
       en: 'Select a backup job to delete all its backup records permanently.', 
       de: 'Wählen Sie einen Sicherungsauftrag aus, um alle zugehörigen Sicherungsdatensätze dauerhaft zu löschen.', 
       fr: 'Sélectionnez un travail de sauvegarde pour supprimer définitivement tous ses enregistrements de sauvegarde.', 
-      es: 'Seleccione un trabajo de respaldo para eliminar permanentemente todos sus registros de respaldo.', 
+      es: 'Seleccione un trabajo de backup para eliminar permanentemente todos sus registros de backup.', 
       'pt-BR': 'Selecione um trabalho de backup para excluir permanentemente todos os seus registros de backup.' 
     }),
     deleting: t({ 
@@ -314,21 +314,21 @@ export default {
       en: 'Delete Backup Job', 
       de: 'Sicherungsauftrag löschen', 
       fr: 'Supprimer le travail de sauvegarde', 
-      es: 'Eliminar trabajo de respaldo', 
+      es: 'Eliminar trabajo de backup', 
       'pt-BR': 'Excluir trabalho de backup' 
     }),
     deleteBackupJobDialogTitle: t({ 
       en: 'Delete Backup Job?', 
       de: 'Sicherungsauftrag löschen?', 
       fr: 'Supprimer le travail de sauvegarde?', 
-      es: '¿Eliminar trabajo de respaldo?', 
+      es: '¿Eliminar trabajo de backup?', 
       'pt-BR': 'Excluir trabalho de backup?' 
     }),
     deleteBackupJobDialogDescription: t({ 
       en: 'This will permanently delete all backup records for "{backupName}" from server "{serverName}". This action cannot be undone.', 
       de: 'Dies löscht dauerhaft alle Sicherungsdatensätze für "{backupName}" vom Server "{serverName}". Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela supprimera définitivement tous les enregistrements de sauvegarde pour "{backupName}" du serveur "{serverName}". Cette action ne peut pas être annulée.', 
-      es: 'Esto eliminará permanentemente todos los registros de respaldo para "{backupName}" del servidor "{serverName}". Esta acción no se puede deshacer.', 
+      es: 'Esto eliminará permanentemente todos los registros de backup para "{backupName}" del servidor "{serverName}". Esta acción no se puede deshacer.', 
       'pt-BR': 'Isso excluirá permanentemente todos os registros de backup para "{backupName}" do servidor "{serverName}". Esta ação não pode ser desfeita.' 
     }),
     // Delete Server Data
@@ -357,7 +357,7 @@ export default {
       en: 'Select a server to delete all its backup data permanently.', 
       de: 'Wählen Sie einen Server aus, um alle zugehörigen Sicherungsdaten dauerhaft zu löschen.', 
       fr: 'Sélectionnez un serveur pour supprimer définitivement toutes ses données de sauvegarde.', 
-      es: 'Seleccione un servidor para eliminar permanentemente todos sus datos de respaldo.', 
+      es: 'Seleccione un servidor para eliminar permanentemente todos sus datos de backup.', 
       'pt-BR': 'Selecione um servidor para excluir permanentemente todos os seus dados de backup.' 
     }),
     deleteServerDataButton: t({ 
@@ -378,7 +378,7 @@ export default {
       en: 'This will permanently delete server "{serverName}" and all its backup records. This action cannot be undone.', 
       de: 'Dies löscht dauerhaft den Server "{serverName}" und alle zugehörigen Sicherungsdatensätze. Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela supprimera définitivement le serveur "{serverName}" et tous ses enregistrements de sauvegarde. Cette action ne peut pas être annulée.', 
-      es: 'Esto eliminará permanentemente el servidor "{serverName}" y todos sus registros de respaldo. Esta acción no se puede deshacer.', 
+      es: 'Esto eliminará permanentemente el servidor "{serverName}" y todos sus registros de backup. Esta acción no se puede deshacer.', 
       'pt-BR': 'Isso excluirá permanentemente o servidor "{serverName}" e todos os seus registros de backup. Esta ação não pode ser desfeita.' 
     }),
     deleteServer: t({ 
@@ -407,7 +407,7 @@ export default {
       en: 'Duplicati\'s machine-id can be changed after an upgrade or reinstall.\nAll backup logs and configurations will be transferred to the target servers.', 
       de: 'Die Maschinen-ID von Duplicati kann nach einem Upgrade oder einer Neuinstallation geändert werden.\nAlle Sicherungsprotokolle und Konfigurationen werden auf die Zielserver übertragen.', 
       fr: 'L\'ID machine de Duplicati peut être modifié après une mise à niveau ou une réinstallation.\nTous les journaux de sauvegarde et configurations seront transférés vers les serveurs cibles.', 
-      es: 'El ID de máquina de Duplicati puede cambiar después de una actualización o reinstalación.\nTodos los registros de respaldo y configuraciones se transferirán a los servidores objetivo.', 
+      es: 'El ID de máquina de Duplicati puede cambiar después de una actualización o reinstalación.\nTodos los registros de backup y configuraciones se transferirán a los servidores objetivo.', 
       'pt-BR': 'O ID da máquina do Duplicati pode ser alterado após uma atualização ou reinstalação.\nTodos os logs de backup e configurações serão transferidos para os servidores de destino.' 
     }),
     serverName: t({ 
@@ -484,7 +484,7 @@ export default {
       en: 'This will merge {count} server group(s). For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.', 
       de: 'Dies führt {count} Servergruppe(n) zusammen. Für jede Gruppe werden alle alten Server-IDs in den Zielserver (neueste nach Erstellungsdatum) zusammengeführt. Alle Sicherungsdatensätze und Konfigurationen werden auf die Zielserver übertragen. Die alten Servereinträge werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela fusionnera {count} groupe(s) de serveurs. Pour chaque groupe, tous les anciens ID de serveur seront fusionnés dans le serveur cible (le plus récent par date de création). Tous les enregistrements de sauvegarde et configurations seront transférés vers les serveurs cibles. Les anciennes entrées de serveur seront supprimées. Cette action ne peut pas être annulée.', 
-      es: 'Esto fusionará {count} grupo(s) de servidores. Para cada grupo, todos los ID de servidor antiguos se fusionarán en el servidor objetivo (más reciente por fecha de creación). Todos los registros de respaldo y configuraciones se transferirán a los servidores objetivo. Las entradas antiguas del servidor se eliminarán. Esta acción no se puede deshacer.', 
+      es: 'Esto fusionará {count} grupo(s) de servidores. Para cada grupo, todos los ID de servidor antiguos se fusionarán en el servidor objetivo (más reciente por fecha de creación). Todos los registros de backup y configuraciones se transferirán a los servidores objetivo. Las entradas antiguas del servidor se eliminarán. Esta acción no se puede deshacer.', 
       'pt-BR': 'Isso mesclará {count} grupo(s) de servidores. Para cada grupo, todos os IDs de servidor antigos serão mesclados no servidor de destino (mais recente por data de criação). Todos os registros de backup e configurações serão transferidos para os servidores de destino. As entradas antigas do servidor serão excluídas. Esta ação não pode ser desfeita.' 
     }),
     mergeServers: t({ 
@@ -555,49 +555,49 @@ export default {
       en: 'Backup Job "{backupName}" deleted', 
       de: 'Sicherungsauftrag "{backupName}" gelöscht', 
       fr: 'Travail de sauvegarde "{backupName}" supprimé', 
-      es: 'Trabajo de respaldo "{backupName}" eliminado', 
+      es: 'Trabajo de backup "{backupName}" eliminado', 
       'pt-BR': 'Trabalho de backup "{backupName}" excluído' 
     }),
     backupJobDeletionFailed: t({ 
       en: 'Backup Job "{backupName}" Deletion Failed', 
       de: 'Löschen des Sicherungsauftrags "{backupName}" fehlgeschlagen', 
       fr: 'Échec de la suppression du travail de sauvegarde "{backupName}"', 
-      es: 'Error al eliminar trabajo de respaldo "{backupName}"', 
+      es: 'Error al eliminar trabajo de backup "{backupName}"', 
       'pt-BR': 'Falha ao excluir trabalho de backup "{backupName}"' 
     }),
     failedToDeleteBackupJob: t({ 
       en: 'Failed to delete backup job. Please try again.', 
       de: 'Fehler beim Löschen des Sicherungsauftrags. Bitte versuchen Sie es erneut.', 
       fr: 'Échec de la suppression du travail de sauvegarde. Veuillez réessayer.', 
-      es: 'Error al eliminar trabajo de respaldo. Por favor, intente de nuevo.', 
+      es: 'Error al eliminar trabajo de backup. Por favor, intente de nuevo.', 
       'pt-BR': 'Falha ao excluir trabalho de backup. Por favor, tente novamente.' 
     }),
     backupCreated: t({ 
       en: 'Backup created', 
       de: 'Sicherung erstellt', 
       fr: 'Sauvegarde créée', 
-      es: 'Respaldo creado', 
+      es: 'Backup creado', 
       'pt-BR': 'Backup criado' 
     }),
     databaseBackupDownloadedSuccessfully: t({ 
       en: 'Database backup downloaded successfully as {filename}', 
       de: 'Datenbanksicherung erfolgreich als {filename} heruntergeladen', 
       fr: 'Sauvegarde de la base de données téléchargée avec succès sous {filename}', 
-      es: 'Respaldo de base de datos descargado exitosamente como {filename}', 
+      es: 'Backup de base de datos descargado exitosamente como {filename}', 
       'pt-BR': 'Backup do banco de dados baixado com sucesso como {filename}' 
     }),
     backupFailed: t({ 
       en: 'Backup Failed', 
       de: 'Sicherung fehlgeschlagen', 
       fr: 'Échec de la sauvegarde', 
-      es: 'Error en el respaldo', 
+      es: 'Error en el backup', 
       'pt-BR': 'Falha no backup' 
     }),
     failedToCreateBackup: t({ 
       en: 'Failed to create backup. Please try again.', 
       de: 'Fehler beim Erstellen der Sicherung. Bitte versuchen Sie es erneut.', 
       fr: 'Échec de la création de la sauvegarde. Veuillez réessayer.', 
-      es: 'Error al crear respaldo. Por favor, intente de nuevo.', 
+      es: 'Error al crear backup. Por favor, intente de nuevo.', 
       'pt-BR': 'Falha ao criar backup. Por favor, tente novamente.' 
     }),
     noFileSelected: t({ 
@@ -611,7 +611,7 @@ export default {
       en: 'Please select a database backup file to restore.', 
       de: 'Bitte wählen Sie eine Datenbanksicherungsdatei zur Wiederherstellung aus.', 
       fr: 'Veuillez sélectionner un fichier de sauvegarde de base de données à restaurer.', 
-      es: 'Por favor, seleccione un archivo de respaldo de base de datos para restaurar.', 
+      es: 'Por favor, seleccione un archivo de backup de base de datos para restaurar.', 
       'pt-BR': 'Por favor, selecione um arquivo de backup do banco de dados para restaurar.' 
     }),
     databaseRestored: t({ 
@@ -710,7 +710,7 @@ export default {
       en: 'Unknown Backup', 
       de: 'Unbekannte Sicherung', 
       fr: 'Sauvegarde inconnue', 
-      es: 'Respaldo desconocido', 
+      es: 'Backup desconocido', 
       'pt-BR': 'Backup desconhecido' 
     }),
   },

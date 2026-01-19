@@ -14,21 +14,21 @@ export default {
       en: 'Total Backup Jobs', 
       de: 'Gesamte Backup-Jobs', 
       fr: 'Total des tâches de sauvegarde', 
-      es: 'Total de trabajos de respaldo', 
+      es: 'Total de trabajos de backup', 
       'pt-BR': 'Total de trabalhos de backup' 
     }),
     totalBackupRuns: t({ 
       en: 'Total Backup Runs', 
       de: 'Gesamte Backup-Läufe', 
       fr: 'Total des exécutions de sauvegarde', 
-      es: 'Total de ejecuciones de respaldo', 
+      es: 'Total de ejecuciones de backup', 
       'pt-BR': 'Total de execuções de backup' 
     }),
     totalBackupSize: t({ 
       en: 'Total Backup Size', 
       de: 'Gesamte Sicherungsgröße', 
       fr: 'Taille totale des sauvegardes', 
-      es: 'Tamaño total de respaldos', 
+      es: 'Tamaño total de backups', 
       'pt-BR': 'Tamanho total de backups' 
     }),
     totalStorageUsed: t({ 
@@ -41,15 +41,15 @@ export default {
     totalUploadedSize: t({ 
       en: 'Total Uploaded Size', 
       de: 'Gesamte hochgeladene Größe', 
-      fr: 'Taille totale téléchargée', 
-      es: 'Tamaño total subido', 
+      fr: 'Taille totale téléversée', 
+      es: 'Total cargado', 
       'pt-BR': 'Tamanho total enviado' 
     }),
     overdueBackups: t({ 
       en: 'Overdue Backups', 
       de: 'Überfällige Sicherungen', 
       fr: 'Sauvegardes en retard', 
-      es: 'Respaldos vencidos', 
+      es: 'Backups retrasados', 
       'pt-BR': 'Backups atrasados' 
     }),
     switchToTable: t({ 

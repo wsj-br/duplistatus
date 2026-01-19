@@ -10,6 +10,7 @@ export interface CommonContent {
     success: string;
     cancel: string;
     save: string;
+    saveChanges: string;
     delete: string;
     edit: string;
     add: string;
@@ -91,6 +92,13 @@ export interface CommonContent {
     last30Days: string;
     last90Days: string;
     lastYear: string;
+    lastWeek: string;
+    lastMonth: string;
+    last2Weeks: string;
+    lastQuarter: string;
+    lastSemester: string;
+    last2Years: string;
+    allAvailableData: string;
     thisWeek: string;
     thisMonth: string;
     thisYear: string;
@@ -236,20 +244,6 @@ export interface DashboardPageContent {
     viewDetails: string;
     dismiss: string;
   };
-}
-
-export interface ServerCardsContent {
-  sortOptions: {
-    serverName: string;
-    status: string;
-    lastBackup: string;
-  };
-  files: string;
-  size: string;
-  storage: string;
-  last: string;
-  backups: string;
-  noBackupJobsAvailable: string;
 }
 
 export interface ServerSettingsFormContent {
@@ -1071,6 +1065,9 @@ export interface SettingsContent {
     cancelEdit: string;
     confirmDelete: string;
     noServers: string;
+    loadingServers: string;
+    loadingServerConnections: string;
+    noServersWithUrls: string;
     serverAdded: string;
     serverUpdated: string;
     serverDeleted: string;
@@ -1378,6 +1375,8 @@ export interface ApiContent {
     parseError: string;
     validationError: string;
     unknownError: string;
+    failedToLoadServerConnections: string;
+    failedToUpdateDetailData: string;
   };
   success: {
     created: string;
@@ -1772,7 +1771,6 @@ export interface ContentTypes {
   'dashboard-table': DashboardTableContent;
   'overview-charts-panel': OverviewChartsPanelContent;
   'dashboard-page': DashboardPageContent;
-  'server-cards': ServerCardsContent;
   'dashboard-summary-cards': DashboardSummaryCardsContent;
   'server-backup-table': ServerBackupTableContent;
   'server-detail-summary-items': ServerDetailSummaryItemsContent;
@@ -1806,7 +1804,6 @@ export const contentKeys = [
   'dashboard-table',
   'overview-charts-panel',
   'dashboard-page',
-  'server-cards',
   'dashboard-summary-cards',
   'server-backup-table',
   'server-detail-summary-items',

@@ -6,7 +6,6 @@ import type { ServerSummary, Backup, DashboardData } from "@/lib/types";
 import { DashboardSummaryCards } from "@/components/dashboard/dashboard-summary-cards";
 import { DashboardTable } from "@/components/dashboard/dashboard-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { ServerCards } from "./server-cards";
 import { OverviewCards } from "./overview-cards";
 import { MetricsChartsPanel } from "@/components/metrics-charts-panel";
 import { OverviewStatusPanel } from "./overview-status-cards";
@@ -72,7 +71,7 @@ export function DashboardLayout({
   const visibleCardIndex = globalRefreshState.visibleCardIndex;
 
   // Handle view mode changes
-  const handleViewModeChange = (newViewMode: 'analytics' | 'table' | 'overview') => {
+  const handleViewModeChange = (newViewMode: 'table' | 'overview') => {
     setViewMode(newViewMode);
   };
 
@@ -207,21 +206,11 @@ export function DashboardLayout({
         </div>
       ) : (
         <>
-          {/* Server Overview Panel - auto height */}
+          {/* Table View - Server Overview Panel - auto height */}
           <div className="mt-2 mb-2">
             <Card className="shadow-lg border-2 border-border">
               <CardContent className="p-4">
-                {viewMode === 'analytics' ? (
-                  <ServerCards 
-                    servers={data.serversSummary} 
-                    selectedServerId={selectedServerId}
-                    onSelect={onServerSelect}
-                    visibleCardIndex={visibleCardIndex}
-                    onVisibleCardIndexChange={setVisibleCardIndex}
-                  />
-                ) : (
-                  <DashboardTable servers={data.serversSummary} />
-                )}
+                <DashboardTable servers={data.serversSummary} />
               </CardContent>
             </Card>
           </div>

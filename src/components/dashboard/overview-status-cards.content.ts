@@ -14,7 +14,7 @@ export default {
       en: 'Overdue Backups', 
       de: 'Überfällige Sicherungen', 
       fr: 'Sauvegardes en retard', 
-      es: 'Respaldos vencidos', 
+      es: 'Backups retrasados', 
       'pt-BR': 'Backups atrasados' 
     }),
     warningsAndErrors: t({ 

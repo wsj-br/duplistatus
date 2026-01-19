@@ -328,15 +328,15 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
       if (!result.success) {
         toast({
-          title: "Connection Failed",
+          title: content.connectionFailed,
           description: result.message,
           variant: "destructive",
           duration: 5000,
         });
       } else {
         toast({
-          title: "Connection Successful",
-          description: "Server connection test passed",
+          title: content.connectionSuccessful,
+          description: content.serverConnectionTestPassed,
           duration: 3000,
         });
       }
@@ -436,8 +436,11 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
       });
       
       toast({
-        title: "Connection Tests Complete",
-        description: `Tested ${connectionsWithUrls.length} connections: ${successCount} successful, ${failureCount} failed`,
+        title: content.connectionTestsComplete,
+        description: content.testedConnections.value
+          .replace('{count}', String(connectionsWithUrls.length))
+          .replace('{success}', String(successCount))
+          .replace('{failed}', String(failureCount)),
         duration: 5000,
       });
     } catch {
@@ -455,8 +458,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
   const handleSave = async () => {
     if (hasInvalidUrls) {
       toast({
-        title: "Validation Error",
-        description: "Please fix invalid URLs before saving",
+        title: content.validationError,
+        description: content.pleaseFixInvalidUrls,
         variant: "destructive",
         duration: 3000,
       });
@@ -514,8 +517,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
 
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save server details",
+        title: common.status.error,
+        description: error instanceof Error ? error.message : content.failedToSaveServerDetails,
         variant: "destructive",
         duration: 5000,
       });
@@ -908,7 +911,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           className="px-2"
                         >
                           <Play className="h-3 w-3" />
-                          <span className="hidden sm:inline ml-1">Test</span>
+                          <span className="hidden sm:inline ml-1">{content.test}</span>
                         </Button>
                         <ServerConfigurationButton
                           serverUrl={connection.server_url}
@@ -963,7 +966,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                           size="sm"
                           className="h-auto p-0 hover:bg-transparent"
                           onClick={() => handlePasswordButtonClick(connection.id, connection.name)}
-                          title="Click to change password"
+                          title={content.clickToChangePassword}
                         >
                           <KeyRound className="h-3 w-3 text-orange-500" />
                         </Button>
@@ -1005,7 +1008,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   <div className="space-y-1">
                     <Label className="text-xs font-medium flex items-center gap-1">
                       <ColoredIcon icon={Globe} color="purple" size="sm" />
-                      Web Interface Address (URL)
+                      {content.webInterfaceAddress}
                     </Label>
                     <div className="flex flex-col space-y-1">
                       <Input
@@ -1023,12 +1026,12 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                             testConnection(connection.id, connection.server_url);
                           }
                         }}
-                        placeholder="https://server:8200"
+                        placeholder={content.urlPlaceholder.value}
                         className={`text-xs ${!isValidUrl(connection.server_url) ? 'border-red-500' : ''}`}
                       />
                       {!isValidUrl(connection.server_url) && (
                         <div className="text-xs text-red-600">
-                          Invalid URL
+                          {content.invalidUrl}
                         </div>
                       )}
                     </div>
@@ -1059,7 +1062,7 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                   
                   {/* Actions */}
                   <div className="space-y-1">
-                    <Label className="text-xs font-medium">Actions</Label>
+                    <Label className="text-xs font-medium">{content.actions}</Label>
                     <div className="flex flex-col gap-2">
                       <Button
                         type="button"
@@ -1154,8 +1157,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 onCollectionStart={(showInstructionToast) => {
                   if (showInstructionToast) {
                     toast({
-                      title: "Starting Collection",
-                      description: "Collecting backup logs from all configured servers...",
+                      title: content.startingCollection,
+                      description: content.collectingBackupLogs,
                       duration: 4000,
                     });
                   }

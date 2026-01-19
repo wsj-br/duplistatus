@@ -7,7 +7,7 @@ export default {
       en: 'Last Backup Details', 
       de: 'Details der letzten Sicherung', 
       fr: 'Détails de la dernière sauvegarde', 
-      es: 'Detalles del último respaldo', 
+      es: 'Detalles del último backup', 
       'pt-BR': 'Detalhes do último backup' 
     }),
     date: t({ 
@@ -54,7 +54,7 @@ export default {
     }),
     storage: t({ 
       en: 'Storage:', 
-      de: 'Speicher:', 
+      de: 'Speicherplatz:', 
       fr: 'Stockage:', 
       es: 'Almacenamiento:', 
       'pt-BR': 'Armazenamento:' 
@@ -62,15 +62,15 @@ export default {
     uploadedSize: t({ 
       en: 'Uploaded Size:', 
       de: 'Hochgeladene Größe:', 
-      fr: 'Taille téléchargée:', 
-      es: 'Tamaño subido:', 
+      fr: 'Taille téléversée:', 
+      es: 'Tamaño cargado:', 
       'pt-BR': 'Tamanho enviado:' 
     }),
     uploaded: t({ 
       en: 'Uploaded:', 
       de: 'Hochgeladen:', 
-      fr: 'Téléchargé:', 
-      es: 'Subido:', 
+      fr: 'Téléversé:', 
+      es: 'Cargado:', 
       'pt-BR': 'Enviado:' 
     }),
     versions: t({ 
@@ -84,7 +84,7 @@ export default {
       en: 'Backup Overdue', 
       de: 'Sicherung überfällig', 
       fr: 'Sauvegarde en retard', 
-      es: 'Respaldo vencido', 
+      es: 'Backup retrasado', 
       'pt-BR': 'Backup atrasado' 
     }),
     expected: t({ 

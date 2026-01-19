@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     'documentation/**',
     // Ignore Intlayer auto-generated files
     '.intlayer/**',
+    // Ignore generated server.js file (created during build)
+    'server.js',
   ]),
 ])
  

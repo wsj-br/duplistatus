@@ -8,6 +8,18 @@ const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 /**
+ * Normalizes a locale string to the canonical format.
+ * Accepts both "pt-br" and "pt-BR" and normalizes to "pt-BR".
+ */
+function normalizeLocale(locale: string): SupportedLocale | null {
+  const normalized = locale.toLowerCase() === "pt-br" ? "pt-BR" : locale;
+  if (SUPPORTED_LOCALES.includes(normalized as SupportedLocale)) {
+    return normalized as SupportedLocale;
+  }
+  return null;
+}
+
+/**
  * Detects the user's preferred locale from multiple sources (priority order):
  * 1. URL path (if already has locale prefix)
  * 2. Cookie (persisted preference)
@@ -21,15 +33,19 @@ function detectLocale(request: NextRequest): SupportedLocale {
   const pathLocaleMatch = pathname.match(/^\/([^/]+)/);
   if (pathLocaleMatch) {
     const pathLocale = pathLocaleMatch[1];
-    if (SUPPORTED_LOCALES.includes(pathLocale as SupportedLocale)) {
-      return pathLocale as SupportedLocale;
+    const normalized = normalizeLocale(pathLocale);
+    if (normalized) {
+      return normalized;
     }
   }
 
   // 2. Check cookie for persisted locale preference
   const cookieLocale = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
-  if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as SupportedLocale)) {
-    return cookieLocale as SupportedLocale;
+  if (cookieLocale) {
+    const normalized = normalizeLocale(cookieLocale);
+    if (normalized) {
+      return normalized;
+    }
   }
 
   // 3. Check Accept-Language header
@@ -70,7 +86,7 @@ function detectLocale(request: NextRequest): SupportedLocale {
 function hasLocalePrefix(pathname: string): boolean {
   const match = pathname.match(/^\/([^/]+)/);
   if (!match) return false;
-  return SUPPORTED_LOCALES.includes(match[1] as SupportedLocale);
+  return normalizeLocale(match[1]) !== null;
 }
 
 /**
@@ -87,7 +103,7 @@ function addLocalePrefix(pathname: string, locale: SupportedLocale): string {
  */
 function removeLocalePrefix(pathname: string): string {
   const match = pathname.match(/^\/([^/]+)(\/.*)?$/);
-  if (match && SUPPORTED_LOCALES.includes(match[1] as SupportedLocale)) {
+  if (match && normalizeLocale(match[1])) {
     return match[2] || "/";
   }
   return pathname;
@@ -122,9 +138,48 @@ export function proxy(request: NextRequest) {
   // If pathname already has a valid locale prefix, extract it and ensure cookie is set
   if (hasLocalePrefix(pathname)) {
     const pathLocaleMatch = pathname.match(/^\/([^/]+)/);
-    const pathLocale = pathLocaleMatch![1] as SupportedLocale;
+    const rawLocale = pathLocaleMatch![1];
+    const pathLocale = normalizeLocale(rawLocale);
+    if (!pathLocale) {
+      // Should not happen if hasLocalePrefix returned true, but handle gracefully
+      const locale = detectLocale(request);
+      const pathWithoutLocale = removeLocalePrefix(pathname);
+      const newPathname = addLocalePrefix(pathWithoutLocale, locale);
+      url.pathname = newPathname;
+      response = NextResponse.redirect(url);
+      response.cookies.set(LOCALE_COOKIE_NAME, locale, {
+        maxAge: LOCALE_COOKIE_MAX_AGE,
+        path: "/",
+        sameSite: "lax",
+        httpOnly: false,
+      });
+      finalPathname = newPathname;
+      response.headers.set('x-pathname', finalPathname);
+      response.headers.set('x-search-params', search);
+      return response;
+    }
+    
+    // If the URL has pt-br (lowercase), redirect to pt-BR (canonical form)
+    if (rawLocale.toLowerCase() === "pt-br" && rawLocale !== "pt-BR") {
+      const pathWithoutLocale = removeLocalePrefix(pathname);
+      const newPathname = addLocalePrefix(pathWithoutLocale, pathLocale);
+      url.pathname = newPathname;
+      response = NextResponse.redirect(url);
+      response.cookies.set(LOCALE_COOKIE_NAME, pathLocale, {
+        maxAge: LOCALE_COOKIE_MAX_AGE,
+        path: "/",
+        sameSite: "lax",
+        httpOnly: false,
+      });
+      finalPathname = newPathname;
+      response.headers.set('x-pathname', finalPathname);
+      response.headers.set('x-search-params', search);
+      return response;
+    }
+    
     response = NextResponse.next();
     // Set/update locale cookie to match URL (user may have manually changed locale)
+    // Always use normalized locale (pt-BR) in cookie
     response.cookies.set(LOCALE_COOKIE_NAME, pathLocale, {
       maxAge: LOCALE_COOKIE_MAX_AGE,
       path: "/",

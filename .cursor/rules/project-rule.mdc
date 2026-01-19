@@ -12,6 +12,7 @@ alwaysApply: true
 - **pnpm**: >=10.24.0 (packageManager: pnpm@10.28.0)
 - **React & React-DOM**: ^19.2.3
 - **Tailwind CSS**: ^4.1.18
+- **intlayer**: i18n/internationalization library
 - **@radix-ui/react-*** modules: latest versions
 - **ESLint**: bundled with Next.js
 - **Prettier**: not used
@@ -80,4 +81,6 @@ No automated tests.
 ## Key Patterns
 
 - DB access: use functions in `src/lib/db.ts`
+- **Intlayer translations**: Access translation strings using `.value` property (e.g., `content.title.value`). Do NOT use `String()` or helper functions - `.value` works directly.
+- always try to put the translations in the .content.ts file next to the component.
 

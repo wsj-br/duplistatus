@@ -7,7 +7,7 @@ export default {
       en: 'Available Backup Versions', 
       de: 'Verfügbare Sicherungsversionen', 
       fr: 'Versions de sauvegarde disponibles', 
-      es: 'Versiones de respaldo disponibles', 
+      es: 'Versiones de backup disponibles', 
       'pt-BR': 'Versões de backup disponíveis' 
     }),
     version: t({ 

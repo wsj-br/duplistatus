@@ -9,7 +9,9 @@ import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, Settings, FolderOpen } from "lucide-react";
-import { formatBytes, formatDurationFromMinutes, formatRelativeTime } from "@/lib/utils";
+import { formatBytes, formatDurationFromMinutes, formatRelativeTime, formatTimeElapsed } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
 import type { Backup } from "@/lib/types";
 
 interface OverdueBackup {
@@ -64,7 +66,7 @@ export function ServerDetailSummaryItems({
   const getFormattedNumber = (value: number, defaultValue: string = '0') => {
     try {
       const num = Number(value);
-      return isNaN(num) ? defaultValue : num.toLocaleString();
+      return isNaN(num) ? defaultValue : formatInteger(num, locale);
     } catch {
       return defaultValue;
     }
@@ -75,20 +77,20 @@ export function ServerDetailSummaryItems({
     overdue => overdue.backupName === selectedBackup.name
   );
 
-  // Get the expected backup elapsed time for the selected backup
-  const SelectedExpectedBackupElapsed = selectedBackup && overdueBackups.find(
-    overdue => overdue.backupName === selectedBackup.name
-  )?.expectedBackupElapsed;
-  
   // Get the expected backup date for the selected backup
   const SelectedExpectedBackupDate = selectedBackup && overdueBackups.find(
     overdue => overdue.backupName === selectedBackup.name
   )?.expectedBackupDate;
   
-  // Format the expected backup date with toLocaleString()
+  // Format the expected backup date with locale-aware formatting
   const formattedExpectedBackupDate = SelectedExpectedBackupDate && SelectedExpectedBackupDate !== 'N/A' 
-    ? new Date(SelectedExpectedBackupDate).toLocaleString()
+    ? formatDateTime(SelectedExpectedBackupDate, locale)
     : SelectedExpectedBackupDate;
+  
+  // Format the expected backup elapsed time client-side with locale-aware formatting
+  const formattedExpectedBackupElapsed = SelectedExpectedBackupDate && SelectedExpectedBackupDate !== 'N/A'
+    ? formatTimeElapsed(SelectedExpectedBackupDate, undefined, locale)
+    : 'N/A';
 
 
   const getSummaryItems = () => {
@@ -98,7 +100,7 @@ export function ServerDetailSummaryItems({
     if (!selectedBackup && totalBackupJobs !== undefined) {
       items.push({
         id: 'totalBackupJobs',
-        title: content.totalBackupJobs,
+        title: content.totalBackupJobs.value,
         value: getFormattedNumber(totalBackupJobs),
         icon: <FolderOpen className="h-4 w-4 text-blue-600" />,
         "data-ai-hint": "folder backup jobs"
@@ -109,43 +111,43 @@ export function ServerDetailSummaryItems({
     items.push(
       { 
         id: 'totalBackupRuns',
-        title: content.totalBackupRuns, 
+        title: content.totalBackupRuns.value, 
         value: getFormattedNumber(totalBackupsRuns),
         icon: <Archive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "archive storage" 
       },
       { 
         id: 'availableVersions',
-        title: content.availableVersions, 
+        title: content.availableVersions.value, 
         value: lastBackupListCount !== null ? getFormattedNumber(lastBackupListCount) : 'N/A',
         icon: <History className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "history versions" 
       },
       { 
         id: 'avgDuration',
-        title: content.avgDuration, 
+        title: content.avgDuration.value, 
         value: getFormattedValue(averageDuration, formatDurationFromMinutes, "00:00:00"),
         icon: <Clock className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "timer clock" 
       },
       { 
         id: 'lastBackupSize',
-        title: content.lastBackupSize, 
-        value: getFormattedValue(lastBackupFileSize, formatBytes, "0 Bytes"),
+        title: content.lastBackupSize.value, 
+        value: getFormattedValue(lastBackupFileSize, (val) => formatBytesLocale(val, locale), "0 Bytes"),
         icon: <HardDrive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "hard drive" 
       },
       { 
         id: 'totalStorageUsed',
-        title: content.totalStorageUsed, 
-        value: getFormattedValue(lastBackupStorageSize, formatBytes, "0 Bytes"),
+        title: content.totalStorageUsed.value, 
+        value: getFormattedValue(lastBackupStorageSize, (val) => formatBytesLocale(val, locale), "0 Bytes"),
         icon: <Database className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "database symbol" 
       },
       { 
         id: 'totalUploaded',
-        title: content.totalUploaded, 
-        value: getFormattedValue(totalUploadedSize, formatBytes, "0 Bytes"),
+        title: content.totalUploaded.value, 
+        value: getFormattedValue(totalUploadedSize, (val) => formatBytesLocale(val, locale), "0 Bytes"),
         icon: <UploadCloud className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "cloud data" 
       }
@@ -164,7 +166,7 @@ export function ServerDetailSummaryItems({
     <div className="pt-4" data-screenshot-target="server-detail-summary">
       <div>
         <h3 className="text-base font-semibold mb-2 text-foreground">
-          {selectedBackup ? `${selectedBackup.name} ${content.statistics}` : content.machineStatistics}
+          {selectedBackup ? `${selectedBackup.name} ${content.statistics.value}` : content.machineStatistics.value}
         </h3>
         
         <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 ${!selectedBackup ? 'lg:grid-cols-7' : 'lg:grid-cols-6'} gap-2 lg:gap-3`}>
@@ -192,7 +194,12 @@ export function ServerDetailSummaryItems({
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm">
-                    <span className="text-muted-foreground">Overdue scheduled backups:</span> {overdueBackups.map(ob => `'${ob.backupName} (${ob.expectedBackupElapsed} overdue)'`).join(', ')}.
+                    <span className="text-muted-foreground">{content.overdueScheduledBackups.value}</span> {overdueBackups.map(ob => {
+                      const elapsed = ob.expectedBackupDate !== 'N/A' 
+                        ? formatTimeElapsed(ob.expectedBackupDate, undefined, locale)
+                        : ob.expectedBackupElapsed;
+                      return `'${ob.backupName} (${elapsed} ${content.overdue.value})'`;
+                    }).join(', ')}.
                     {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
                       <span className="px-3 text-muted-foreground">Last checked: {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
                     )}
@@ -218,11 +225,11 @@ export function ServerDetailSummaryItems({
                 <div className="flex items-center gap-2">
                   <CalendarX2 className="h-4 w-4 text-red-400" />
                   <span className="text-sm font-medium text-muted-foreground">
-                     {content.scheduledBackupIsOverdue
+                     {content.scheduledBackupIsOverdue.value
                        .replace('{date}', formattedExpectedBackupDate || 'N/A')
-                       .replace('{elapsed}', SelectedExpectedBackupElapsed || 'N/A')}
+                       .replace('{elapsed}', formattedExpectedBackupElapsed || 'N/A')}
                      {lastOverdueCheck && lastOverdueCheck !== 'N/A' && (
-                       <span className="px-3 text-muted-foreground">{content.lastChecked} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
+                       <span className="px-3 text-muted-foreground">{content.lastChecked.value} {formatRelativeTime(lastOverdueCheck, undefined, locale)}</span>
                      )}
                   </span>
                 </div>
@@ -233,7 +240,7 @@ export function ServerDetailSummaryItems({
                   className="text-xs h-7 px-2"
                 >
                   <Settings className="h-3 w-3 mr-1" />
-                  {content.configure}
+                  {content.configure.value}
                 </Button>
               </div>
             </div>

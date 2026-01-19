@@ -33,6 +33,8 @@ interface DetailAutoRefreshProps {
 
 export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
   const common = useIntlayer('common');
+  const api = useIntlayer('api');
+  const content = useIntlayer('detail-auto-refresh');
   const [data, setData] = useState<DetailData>(initialData);
   const [lastError, setLastError] = useState<string | null>(null);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
@@ -102,7 +104,7 @@ export function DetailAutoRefresh({ initialData }: DetailAutoRefreshProps) {
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Failed to update detail data: {lastError}
+            {api.errors.failedToUpdateDetailData.value}: {lastError}
           </AlertDescription>
         </Alert>
       )}

@@ -27,6 +27,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Improved
+- **Date/Time Localization**: Enhanced date and time formatting with locale-aware utilities. Created `src/lib/date-format.ts` with locale-specific date/time formatting functions:
+  - Date formats: English (MM/DD/YYYY), German (DD.MM.YYYY), French/Spanish/Portuguese (DD/MM/YYYY)
+  - Time formats: 12-hour format for English, 24-hour format for German, French, Spanish, and Portuguese
+  - Updated all date displays across the application to use locale-aware formatting:
+    - Dashboard table (last backup dates, expected backup dates, overdue check times)
+    - Server backup table (backup dates with relative time)
+    - Chart components (tooltips and X-axis labels in overview and metrics charts)
+    - Backup tooltip content (last backup date, expected backup date)
+    - Server detail summary items (expected backup date formatting)
+    - Overdue monitoring form (next run dates, last backup timestamps)
+  - Functions: `formatDate()`, `formatTime()`, `formatDateTime()`, `formatDateForChart()`, and enhanced `formatSQLiteTimestamp()` with locale support
+- **Number Localization**: Enhanced number formatting with locale-aware utilities. Created `src/lib/number-format.ts` with locale-specific number formatting functions:
+  - Number formats: English (1,234.56), German (1.234,56), French (1 234,56), Spanish/Portuguese (1.234,56)
+  - Updated all number displays across the application to use locale-aware formatting:
+    - Dashboard summary cards (server counts, backup counts, file sizes)
+    - Server detail summary items (backup statistics, file counts)
+    - Backup tooltip content (file counts, backup versions)
+    - Overview cards (total file counts)
+    - Chart components (Y-axis labels and tooltips in overview and metrics charts)
+  - Functions: `formatNumber()`, `formatInteger()`, `formatDecimal()`, `formatBytes()`, `formatCurrency()`, and `formatPercentage()` with locale support
+  - Updated existing `formatNumber()` and `formatBytes()` in `utils.ts` to accept optional locale parameter for backward compatibility
+- **RTL (Right-to-Left) Support Preparation**: Added foundation for future RTL language support:
+  - Created `src/lib/rtl-utils.ts` with RTL detection utilities (`isRTL()`, `getTextDirection()`, `getLogicalProperties()`)
+  - Created `src/hooks/use-rtl.ts` hook for RTL-aware components
+  - Added CSS variables in `globals.css` for RTL-aware styling (direction, text-align, margins, padding, borders)
+  - Added RTL utility classes (`.rtl-safe-ml`, `.rtl-safe-mr`, `.rtl-safe-pl`, `.rtl-safe-pr`, `.rtl-safe-text-left`, `.rtl-safe-text-right`, etc.)
+  - Updated `locale-context.tsx` and root `layout.tsx` to automatically set `dir` attribute based on locale
+  - Added icon mirroring classes (`.rtl-mirror`, `.rtl-flip-icon`) for directional icons
+  - Updated navigation components (app-header) to use RTL-aware icon classes
+  - All current languages (en, de, fr, es, pt-BR) are LTR, but infrastructure is ready for future RTL languages (Arabic, Hebrew, etc.)
 
 
 

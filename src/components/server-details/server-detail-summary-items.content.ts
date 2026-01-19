@@ -28,7 +28,7 @@ export default {
       en: 'Total Backup Runs', 
       de: 'Gesamte Backup-Läufe', 
       fr: 'Total des exécutions de sauvegarde', 
-      es: 'Total de ejecuciones de respaldo', 
+      es: 'Total de ejecuciones de backup', 
       'pt-BR': 'Total de execuções de backup' 
     }),
     averageDuration: t({ 
@@ -41,36 +41,36 @@ export default {
     totalUploadedSize: t({ 
       en: 'Total Uploaded Size', 
       de: 'Gesamte hochgeladene Größe', 
-      fr: 'Taille totale téléchargée', 
-      es: 'Tamaño total subido', 
+      fr: 'Taille totale téléversée', 
+      es: 'Total cargado', 
       'pt-BR': 'Tamanho total enviado' 
     }),
     lastBackupStorageSize: t({ 
       en: 'Last Backup Storage Size', 
       de: 'Speichergröße der letzten Sicherung', 
       fr: 'Taille de stockage de la dernière sauvegarde', 
-      es: 'Tamaño de almacenamiento del último respaldo', 
+      es: 'Tamaño de almacenamiento del último backup', 
       'pt-BR': 'Tamanho de armazenamento do último backup' 
     }),
     lastBackupListCount: t({ 
       en: 'Last Backup List Count', 
       de: 'Anzahl der letzten Sicherungsliste', 
       fr: 'Nombre d\'éléments de la dernière sauvegarde', 
-      es: 'Cantidad de elementos del último respaldo', 
-      'pt-BR': 'Contagem da lista do último backup' 
+      es: 'Cantidad de elementos del último backup', 
+      'pt-BR': 'Total de arquivos do último backup' 
     }),
     lastBackupFileSize: t({ 
       en: 'Last Backup File Size', 
       de: 'Dateigröße der letzten Sicherung', 
       fr: 'Taille de fichier de la dernière sauvegarde', 
-      es: 'Tamaño de archivo del último respaldo', 
+      es: 'Tamaño de archivo del último backup', 
       'pt-BR': 'Tamanho do arquivo do último backup' 
     }),
     overdueBackups: t({ 
       en: 'Overdue Backups', 
       de: 'Überfällige Sicherungen', 
       fr: 'Sauvegardes en retard', 
-      es: 'Respaldos vencidos', 
+      es: 'Backups retrasados', 
       'pt-BR': 'Backups atrasados' 
     }),
     configureMonitoring: t({ 
@@ -91,14 +91,14 @@ export default {
       en: 'all backups', 
       de: 'alle Sicherungen', 
       fr: 'toutes les sauvegardes', 
-      es: 'todos los respaldos', 
+      es: 'todos los backups', 
       'pt-BR': 'todos os backups' 
     }),
     totalBackupJobs: t({ 
       en: 'Total Backup Jobs', 
       de: 'Gesamte Backup-Aufträge', 
       fr: 'Total des travaux de sauvegarde', 
-      es: 'Total de trabajos de respaldo', 
+      es: 'Total de trabajos de backup', 
       'pt-BR': 'Total de trabalhos de backup' 
     }),
     availableVersions: t({ 
@@ -119,7 +119,7 @@ export default {
       en: 'Last Backup Size', 
       de: 'Größe der letzten Sicherung', 
       fr: 'Taille de la dernière sauvegarde', 
-      es: 'Tamaño del último respaldo', 
+      es: 'Tamaño del último backup', 
       'pt-BR': 'Tamanho do último backup' 
     }),
     totalStorageUsed: t({ 
@@ -132,15 +132,15 @@ export default {
     totalUploaded: t({ 
       en: 'Total Uploaded', 
       de: 'Gesamt hochgeladen', 
-      fr: 'Total téléchargé', 
-      es: 'Total subido', 
+      fr: 'Total téléversé', 
+      es: 'Total cargado', 
       'pt-BR': 'Total enviado' 
     }),
     overdueScheduledBackups: t({ 
       en: 'Overdue scheduled backups:', 
       de: 'Überfällige geplante Sicherungen:', 
       fr: 'Sauvegardes planifiées en retard:', 
-      es: 'Respaldos programados vencidos:', 
+      es: 'Backups programados retrasados:', 
       'pt-BR': 'Backups agendados atrasados:' 
     }),
     lastChecked: t({ 
@@ -161,8 +161,15 @@ export default {
       en: 'Scheduled backup is overdue. Expected backup date: {date} ({elapsed} overdue).', 
       de: 'Geplante Sicherung ist überfällig. Erwartetes Sicherungsdatum: {date} ({elapsed} überfällig).', 
       fr: 'La sauvegarde planifiée est en retard. Date de sauvegarde attendue: {date} ({elapsed} en retard).', 
-      es: 'El respaldo programado está vencido. Fecha de respaldo esperada: {date} ({elapsed} vencido).', 
+      es: 'El backup programado está retrasado. Fecha de backup esperada: {date} ({elapsed} retrasado).', 
       'pt-BR': 'Backup agendado está atrasado. Data de backup esperada: {date} ({elapsed} atrasado).' 
+    }),
+    overdue: t({ 
+      en: 'overdue', 
+      de: 'überfällig', 
+      fr: 'en retard', 
+      es: 'retrasado', 
+      'pt-BR': 'atrasado' 
     }),
   },
 } satisfies Dictionary;

@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react';
 import { ChangePasswordModal } from '@/components/change-password-modal';
 import { getHelpUrl } from '@/lib/helpMapper';
 import { useLocale } from '@/contexts/locale-context';
+import { useIntlayer } from 'react-intlayer';
 
 //import the logo image
 import DupliLogo from '../../public/images/duplistatus_logo.png';
@@ -36,6 +37,8 @@ export function AppHeader() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
+  const content = useIntlayer('app-header');
+  const common = useIntlayer('common');
   const isDashboardPage = pathname === '/' || /^\/[^/]+\/?$/.test(pathname ?? '');
   const isSettingsPage = /\/settings/.test(pathname ?? '');
   const [user, setUser] = useState<User | null>(null);
@@ -121,7 +124,7 @@ export function AppHeader() {
               className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <LayoutDashboard className="h-4 w-4" />
-              <span className="text-sm font-medium">Return to Dashboard</span>
+              <span className="text-sm font-medium">{content.returnToDashboard.value}</span>
             </Link>
             {isSettingsPage && (
               <Button 
@@ -130,8 +133,8 @@ export function AppHeader() {
                 onClick={() => router.back()}
                 className="flex items-center gap-1"
               >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back</span>
+                <ArrowLeft className="h-4 w-4 rtl-flip-icon" />
+                <span>{common.ui.back.value}</span>
               </Button>
             )}
           </div>

@@ -7,7 +7,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 
 interface ServerSelectionState {
   selectedServerId: string | null;
-  viewMode: 'analytics' | 'table' | 'overview';
+  viewMode: 'table' | 'overview';
   servers: ServerSummary[];
   isInitialized: boolean;
   overviewSidePanel: 'status' | 'chart';
@@ -16,7 +16,7 @@ interface ServerSelectionState {
 interface ServerSelectionContextProps {
   state: ServerSelectionState;
   setSelectedServerId: (serverId: string | null) => void;
-  setViewMode: (viewMode: 'analytics' | 'table' | 'overview') => void;
+  setViewMode: (viewMode: 'table' | 'overview') => void;
   setServers: (servers: ServerSummary[]) => void;
   getSelectedServer: () => ServerSummary | null;
   setOverviewSidePanel: (panel: 'status' | 'chart') => void;
@@ -67,7 +67,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
       const savedViewMode = getUserLocalStorageItem('dashboard-view-mode', currentUser.id);
       const savedOverviewSidePanel = getUserLocalStorageItem('overview-side-panel', currentUser.id);
       
-      const viewMode = (savedViewMode === 'analytics' || savedViewMode === 'table' || savedViewMode === 'overview') 
+      const viewMode = (savedViewMode === 'table' || savedViewMode === 'overview') 
         ? savedViewMode 
         : 'overview';
       
@@ -78,7 +78,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setState(prev => ({
         ...prev,
-        viewMode: viewMode as 'analytics' | 'table' | 'overview',
+        viewMode: viewMode as 'table' | 'overview',
         overviewSidePanel: overviewSidePanel as 'status' | 'chart',
       }));
     } catch (error) {
@@ -90,7 +90,7 @@ export function ServerSelectionProvider({ children }: ServerSelectionProviderPro
     setState(prev => ({ ...prev, selectedServerId: serverId }));
   }, []);
 
-  const setViewMode = useCallback((viewMode: 'analytics' | 'table' | 'overview') => {
+  const setViewMode = useCallback((viewMode: 'table' | 'overview') => {
     setState(prev => ({ ...prev, viewMode }));
     // Save to localStorage (only in browser environment and if user is loaded)
     if (typeof window !== 'undefined' && currentUser) {

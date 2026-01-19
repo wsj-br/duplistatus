@@ -78,14 +78,14 @@ export default {
         en: 'Last Backup', 
         de: 'Letzte Sicherung', 
         fr: 'Dernière sauvegarde', 
-        es: 'Último respaldo', 
+        es: 'Último backup', 
         'pt-BR': 'Último backup' 
       }),
       nextBackup: t({ 
         en: 'Next Backup', 
         de: 'Nächste Sicherung', 
         fr: 'Prochaine sauvegarde', 
-        es: 'Próximo respaldo', 
+        es: 'Próximo backup', 
         'pt-BR': 'Próximo backup' 
       }),
       actions: t({ 
@@ -127,21 +127,21 @@ export default {
         en: 'Force Backup', 
         de: 'Sicherung erzwingen', 
         fr: 'Forcer la sauvegarde', 
-        es: 'Forzar respaldo', 
+        es: 'Forzar backup', 
         'pt-BR': 'Forçar backup' 
       }),
       backupName: t({ 
         en: 'Backup Name', 
         de: 'Sicherungsname', 
         fr: 'Nom de sauvegarde', 
-        es: 'Nombre de respaldo', 
+        es: 'Nombre de backup', 
         'pt-BR': 'Nome do backup' 
       }),
       overdueNextRun: t({ 
         en: 'Overdue / Next run', 
         de: 'Überfällig / Nächster Lauf', 
         fr: 'En retard / Prochaine exécution', 
-        es: 'Vencido / Próxima ejecución', 
+        es: 'Retrasado / Próxima ejecución', 
         'pt-BR': 'Atrasado / Próxima execução' 
       }),
       availableVersions: t({ 
@@ -155,21 +155,21 @@ export default {
         en: 'Backup Count', 
         de: 'Anzahl der Sicherungen', 
         fr: 'Nombre de sauvegardes', 
-        es: 'Cantidad de respaldos', 
+        es: 'Cantidad de backups', 
         'pt-BR': 'Contagem de backups' 
       }),
       lastBackupDate: t({ 
         en: 'Last Backup Date', 
         de: 'Datum der letzten Sicherung', 
         fr: 'Date de la dernière sauvegarde', 
-        es: 'Fecha del último respaldo', 
+        es: 'Fecha del último backup', 
         'pt-BR': 'Data do último backup' 
       }),
       lastBackupStatus: t({ 
         en: 'Last Backup Status', 
         de: 'Status der letzten Sicherung', 
         fr: 'Statut de la dernière sauvegarde', 
-        es: 'Estado del último respaldo', 
+        es: 'Estado del último backup', 
         'pt-BR': 'Status do último backup' 
       }),
       settingsActions: t({ 
@@ -190,7 +190,7 @@ export default {
         en: '(Collect backups logs)', 
         de: '(Sicherungsprotokolle sammeln)', 
         fr: '(Collecter les journaux de sauvegarde)', 
-        es: '(Recopilar registros de respaldo)', 
+        es: '(Recopilar registros de backup)', 
         'pt-BR': '(Coletar logs de backup)' 
       }),
     },
@@ -199,14 +199,14 @@ export default {
         en: 'Backups', 
         de: 'Sicherungen', 
         fr: 'Sauvegardes', 
-        es: 'Respaldos', 
+        es: 'Backups', 
         'pt-BR': 'Backups' 
       }),
       searchPlaceholder: t({ 
         en: 'Search backups...', 
         de: 'Sicherungen suchen...', 
         fr: 'Rechercher des sauvegardes...', 
-        es: 'Buscar respaldos...', 
+        es: 'Buscar backups...', 
         'pt-BR': 'Pesquisar backups...' 
       }),
       filterByStatus: t({ 
@@ -249,7 +249,7 @@ export default {
         de: 'Fehlgeschlagene anzeigen', 
         fr: 'Afficher les échoués', 
         es: 'Mostrar fallidos', 
-        'pt-BR': 'Mostrar falhados' 
+        'pt-BR': 'Mostrar com falha' 
       }),
       showPending: t({ 
         en: 'Show Pending', 
@@ -262,14 +262,14 @@ export default {
         en: 'No backups found', 
         de: 'Keine Sicherungen gefunden', 
         fr: 'Aucune sauvegarde trouvée', 
-        es: 'No se encontraron respaldos', 
+        es: 'No se encontraron backups', 
         'pt-BR': 'Nenhum backup encontrado' 
       }),
       backupId: t({ 
         en: 'Backup ID', 
         de: 'Sicherungs-ID', 
         fr: 'ID de sauvegarde', 
-        es: 'ID de respaldo', 
+        es: 'ID de backup', 
         'pt-BR': 'ID do backup' 
       }),
       serverName: t({ 
@@ -353,7 +353,7 @@ export default {
         en: 'Retry Backup', 
         de: 'Sicherung wiederholen', 
         fr: 'Réessayer la sauvegarde', 
-        es: 'Reintentar respaldo', 
+        es: 'Reintentar backup', 
         'pt-BR': 'Tentar backup novamente' 
       }),
     },
@@ -376,14 +376,14 @@ export default {
       en: 'Last backup:', 
       de: 'Letzte Sicherung:', 
       fr: 'Dernière sauvegarde:', 
-      es: 'Último respaldo:', 
+      es: 'Último backup:', 
       'pt-BR': 'Último backup:' 
     }),
     expectedBackup: t({ 
       en: 'Expected backup:', 
       de: 'Erwartete Sicherung:', 
       fr: 'Sauvegarde attendue:', 
-      es: 'Respaldo esperado:', 
+      es: 'Backup esperado:', 
       'pt-BR': 'Backup esperado:' 
     }),
     lastNotification: t({ 
@@ -414,6 +414,13 @@ export default {
       es: 'Detalles de vencimientos', 
       'pt-BR': 'Detalhes de atrasos' 
     }),
+    overdue: t({ 
+      en: 'overdue', 
+      de: 'überfällig', 
+      fr: 'en retard', 
+      es: 'retrasado', 
+      'pt-BR': 'atrasado' 
+    }),
     off: t({ 
       en: 'Off', 
       de: 'Aus', 
@@ -425,7 +432,7 @@ export default {
       en: 'Last Backup', 
       de: 'Letzte Sicherung', 
       fr: 'Dernière sauvegarde', 
-      es: 'Último respaldo', 
+      es: 'Último backup', 
       'pt-BR': 'Último backup' 
     }),
     settings: t({ 

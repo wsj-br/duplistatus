@@ -7,15 +7,15 @@ export default {
       en: 'Configure Backup Notifications', 
       de: 'Sicherungsbenachrichtigungen konfigurieren', 
       fr: 'Configurer les notifications de sauvegarde', 
-      es: 'Configurar notificaciones de respaldo', 
+      es: 'Configurar notificaciones de backup', 
       'pt-BR': 'Configurar notificações de backup' 
     }),
     description: t({ 
       en: 'Configure notification settings for a server or backup when a new backup log is received. Icons indicate additional destinations:', 
       de: 'Konfigurieren Sie Benachrichtigungseinstellungen für einen Server oder eine Sicherung, wenn ein neues Sicherungsprotokoll empfangen wird. Symbole zeigen zusätzliche Ziele an:', 
       fr: 'Configurez les paramètres de notification pour un serveur ou une sauvegarde lorsqu\'un nouveau journal de sauvegarde est reçu. Les icônes indiquent des destinations supplémentaires:', 
-      es: 'Configure los ajustes de notificación para un servidor o respaldo cuando se recibe un nuevo registro de respaldo. Los iconos indican destinos adicionales:', 
-      'pt-BR': 'Configure as configurações de notificação para um servidor ou backup quando um novo log de backup é recebido. Os ícones indicam destinos adicionais:' 
+      es: 'Configure los ajustes de notificación para un servidor o backup cuando se recibe un nuevo registro de backup. Los iconos indican destinos adicionales:', 
+      'pt-BR': 'Configure as notificações para um servidor ou backup quando um novo log de backup é recebido. Os ícones indicam destinos adicionais:' 
     }),
     serverDefaults: t({ 
       en: 'for server defaults', 
@@ -28,7 +28,7 @@ export default {
       en: 'for custom backup overrides', 
       de: 'für benutzerdefinierte Sicherungsüberschreibungen', 
       fr: 'pour les remplacements de sauvegarde personnalisés', 
-      es: 'para anulaciones de respaldo personalizadas', 
+      es: 'para anulaciones de backup personalizadas', 
       'pt-BR': 'para substituições de backup personalizadas' 
     }),
     inheritedDestinations: t({ 
@@ -56,7 +56,7 @@ export default {
       en: 'Server / Backup', 
       de: 'Server / Sicherung', 
       fr: 'Serveur / Sauvegarde', 
-      es: 'Servidor / Respaldo', 
+      es: 'Servidor / Backup', 
       'pt-BR': 'Servidor / Backup' 
     }),
     notificationEvents: t({ 
@@ -119,21 +119,21 @@ export default {
       en: 'Backup Notifications', 
       de: 'Sicherungsbenachrichtigungen', 
       fr: 'Notifications de sauvegarde', 
-      es: 'Notificaciones de respaldo', 
+      es: 'Notificaciones de backup', 
       'pt-BR': 'Notificações de backup' 
     }),
     noServersWithBackups: t({ 
       en: 'No servers with backups found in the database', 
       de: 'Keine Server mit Sicherungen in der Datenbank gefunden', 
       fr: 'Aucun serveur avec sauvegardes trouvé dans la base de données', 
-      es: 'No se encontraron servidores con respaldos en la base de datos', 
+      es: 'No se encontraron servidores con backups en la base de datos', 
       'pt-BR': 'Nenhum servidor com backups encontrado no banco de dados' 
     }),
     noServersRegistered: t({ 
       en: 'No servers with backups have been registered yet. Add some backup data first to see backup notification settings.', 
       de: 'Es wurden noch keine Server mit Sicherungen registriert. Fügen Sie zuerst einige Sicherungsdaten hinzu, um die Einstellungen für Sicherungsbenachrichtigungen anzuzeigen.', 
       fr: 'Aucun serveur avec sauvegardes n\'a encore été enregistré. Ajoutez d\'abord des données de sauvegarde pour voir les paramètres de notification de sauvegarde.', 
-      es: 'Aún no se han registrado servidores con respaldos. Agregue primero algunos datos de respaldo para ver la configuración de notificaciones de respaldo.', 
+      es: 'Aún no se han registrado servidores con backups. Agregue primero algunos datos de backup para ver la configuración de notificaciones de backup.', 
       'pt-BR': 'Nenhum servidor com backups foi registrado ainda. Adicione primeiro alguns dados de backup para ver as configurações de notificação de backup.' 
     }),
   },

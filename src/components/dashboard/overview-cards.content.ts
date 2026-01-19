@@ -28,22 +28,22 @@ export default {
       en: 'Total Backups', 
       de: 'Gesamtsicherungen', 
       fr: 'Total des sauvegardes', 
-      es: 'Respaldos totales', 
+      es: 'Backups totales', 
       'pt-BR': 'Total de backups' 
     }),
     successfulBackups: t({ 
       en: 'Successful Backups', 
       de: 'Erfolgreiche Sicherungen', 
       fr: 'Sauvegardes réussies', 
-      es: 'Respaldos exitosos', 
+      es: 'Backups exitosos', 
       'pt-BR': 'Backups bem-sucedidos' 
     }),
     failedBackups: t({ 
       en: 'Failed Backups', 
       de: 'Fehlgeschlagene Sicherungen', 
       fr: 'Sauvegardes échouées', 
-      es: 'Respaldos fallidos', 
-      'pt-BR': 'Backups falharam' 
+      es: 'Backups fallidos', 
+      'pt-BR': 'Backups com falha' 
     }),
     last24Hours: t({ 
       en: 'Last 24 Hours', 
@@ -83,10 +83,10 @@ export default {
     }),
     storage: t({ 
       en: 'Storage', 
-      de: 'Speicher', 
+      de: 'Speicherplatz', 
       fr: 'Stockage', 
-      es: 'Almacenamiento', 
-      'pt-BR': 'Armazenamento' 
+      es: 'Alm.', 
+      'pt-BR': 'Armaz.' 
     }),
     last: t({ 
       en: 'Last', 
@@ -99,14 +99,14 @@ export default {
       en: 'Backups:', 
       de: 'Sicherungen:', 
       fr: 'Sauvegardes:', 
-      es: 'Respaldos:', 
+      es: 'Backups:', 
       'pt-BR': 'Backups:' 
     }),
     noBackupJobsAvailable: t({ 
       en: 'No backup jobs available', 
       de: 'Keine Backup-Jobs verfügbar', 
       fr: 'Aucune tâche de sauvegarde disponible', 
-      es: 'No hay trabajos de respaldo disponibles', 
+      es: 'No hay trabajos de backup disponibles', 
       'pt-BR': 'Nenhum trabalho de backup disponível' 
     }),
     noServersFound: t({ 
@@ -127,10 +127,10 @@ export default {
       en: '(Collect backups logs)', 
       de: '(Sicherungsprotokolle sammeln)', 
       fr: '(Collecter les journaux de sauvegarde)', 
-      es: '(Recopilar registros de respaldo)', 
+      es: '(Recopilar registros de backup)', 
       'pt-BR': '(Coletar logs de backup)' 
     }),
-    // Sort options (used from server-cards but referenced here)
+    // Sort options
     sortServerName: t({ 
       en: 'Server name (a-z)', 
       de: 'Servername (a-z)', 
@@ -149,8 +149,8 @@ export default {
       en: 'Last backup received (new>old)', 
       de: 'Letzte Sicherung erhalten (neu>alt)', 
       fr: 'Dernière sauvegarde reçue (nouveau>ancien)', 
-      es: 'Último respaldo recibido (nuevo>antiguo)', 
-      'pt-BR': 'Último backup recebido (novo>antigo)' 
+      es: 'Último backup recibido (nuevo>antiguo)', 
+      'pt-BR': 'Último backup recebido (recente>antigo)' 
     }),
   },
 } satisfies Dictionary;

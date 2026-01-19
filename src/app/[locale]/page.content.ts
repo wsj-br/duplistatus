@@ -14,7 +14,7 @@ export default {
       en: 'Monitor your backup servers and systems', 
       de: 'Überwachen Sie Ihre Backup-Server und Systeme', 
       fr: 'Surveillez vos serveurs de sauvegarde et systèmes', 
-      es: 'Monitoree sus servidores de respaldo y sistemas', 
+      es: 'Monitoree sus servidores de backup y sistemas', 
       'pt-BR': 'Monitore seus servidores de backup e sistemas' 
     }),
     alerts: {
@@ -78,14 +78,14 @@ export default {
         en: 'Backup Failed', 
         de: 'Sicherung fehlgeschlagen', 
         fr: 'Sauvegarde échouée', 
-        es: 'Respaldo fallido', 
-        'pt-BR': 'Backup falhou' 
+        es: 'Backup fallido', 
+        'pt-BR': 'Falha no backup' 
       }),
       diskSpaceLow: t({ 
         en: 'Disk Space Low', 
         de: 'Wenig Speicherplatz', 
         fr: 'Espace disque faible', 
-        es: 'Espacio en disco bajo', 
+        es: 'Poco espacio en disco', 
         'pt-BR': 'Pouco espaço em disco' 
       }),
       connectionLost: t({ 

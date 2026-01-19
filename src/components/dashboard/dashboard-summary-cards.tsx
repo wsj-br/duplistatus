@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, ChartLine, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { formatBytes } from "@/lib/utils";
+import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
+import { useLocale } from "@/contexts/locale-context";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -20,10 +22,10 @@ import { useIntlayer } from 'react-intlayer';
 
 interface DashboardSummaryCardsProps {
   summary: OverallSummary;
-  onViewModeChange?: (viewMode: 'analytics' | 'table' | 'overview') => void;
+  onViewModeChange?: (viewMode: 'table' | 'overview') => void;
 }
 
-const availableViewModes = ['overview', 'table', ];
+const availableViewModes = ['overview', 'table'];
 
 export function DashboardSummaryCards({ 
   summary, 
@@ -34,18 +36,18 @@ export function DashboardSummaryCards({
   const currentUser = useCurrentUser();
   const content = useIntlayer('dashboard-summary-cards');
   const common = useIntlayer('common');
+  const locale = useLocale();
   
   const viewModeTooltipsTexts = {
     overview: content.overviewView,
     table: content.tableView,
-    analytics: content.analyticsView,
   };
 
   // Handle view mode toggle - cycle through available view modes
   const handleViewModeToggle = () => {
     const currentIndex = availableViewModes.indexOf(viewMode);
     const nextIndex = (currentIndex + 1) % availableViewModes.length;
-    const newViewMode = availableViewModes[nextIndex] as 'analytics' | 'table' | 'overview';
+    const newViewMode = availableViewModes[nextIndex] as 'table' | 'overview';
     
     setViewMode(newViewMode);
     // Note: setViewMode already saves to user-specific localStorage, but we keep this for compatibility
@@ -59,42 +61,42 @@ export function DashboardSummaryCards({
     {
       id: 'totalServers',
       title: content.totalServers,
-      value: summary.totalServers.toLocaleString(),
+      value: formatInteger(summary.totalServers, locale),
       icon: <ColoredIcon icon={HardDrive} color="blue" size="lg" />,
       "data-ai-hint": "server computer",
     },
     {
       id: 'totalBackupJobs',
       title: content.totalBackupJobs,
-      value: summary.totalBackups.toLocaleString(),
+      value: formatInteger(summary.totalBackups, locale),
       icon: <ColoredIcon icon={Archive} color="green" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
       id: 'totalBackupRuns',
       title: content.totalBackupRuns,
-      value: summary.totalBackupsRuns.toLocaleString(),
+      value: formatInteger(summary.totalBackupsRuns, locale),
       icon: <ColoredIcon icon={Archive} color="purple" size="lg" />,
       "data-ai-hint": "archive box",
     },
     {
       id: 'totalBackupSize',
       title: content.totalBackupSize,
-      value: formatBytes(summary.totalBackupSize),
+      value: formatBytesLocale(summary.totalBackupSize, locale),
       icon: <ColoredIcon icon={FileSearch} color="yellow" size="lg" />,
       "data-ai-hint": "file search",
     },
     {
       id: 'totalStorageUsed',
       title: content.totalStorageUsed,
-      value: formatBytes(summary.totalStorageUsed),
+      value: formatBytesLocale(summary.totalStorageUsed, locale),
       icon: <ColoredIcon icon={Database} color="blue" size="lg" />,
       "data-ai-hint": "database storage",
     },
     {
       id: 'totalUploadedSize',
       title: content.totalUploadedSize,
-      value: formatBytes(summary.totalUploadedSize),
+      value: formatBytesLocale(summary.totalUploadedSize, locale),
       icon: <ColoredIcon icon={UploadCloud} color="blue" size="lg" />,
       "data-ai-hint": "cloud upload",
     },
@@ -102,7 +104,7 @@ export function DashboardSummaryCards({
     ...(viewMode !== 'overview' ? [{
       id: 'overdueBackups',
       title: content.overdueBackups,
-      value: summary.overdueBackupsCount.toLocaleString(),
+      value: formatInteger(summary.overdueBackupsCount, locale),
       icon: summary.overdueBackupsCount > 0 ? (
         <ColoredIcon icon={AlertTriangle} color="red" size="lg" />
       ) : (
@@ -144,9 +146,7 @@ export function DashboardSummaryCards({
                   className="h-8 w-8 p-6  [&_svg]:!h-8 [&_svg]:!w-8 text-blue-600 hover:text-foreground bg-black-100 backdrop-blur-sm border-white-500 text-blue-600 shadow-lg hover:bg-blue-900 hover:border-blue-600 transition-all duration-200"
                   onClick={handleViewModeToggle}
                 >
-                  {viewMode === 'analytics' ? (
-                    <ChartLine className="h-6 w-6" />
-                  ) : viewMode === 'table' ? (
+                  {viewMode === 'table' ? (
                     <Sheet className="h-8 w-8" />
                   ) : (
                     <LayoutDashboard className="h-6 w-6" />

@@ -354,11 +354,11 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
   const getStatusBadge = (statusValue: string) => {
     switch (statusValue) {
       case 'success':
-        return <Badge className="bg-green-500/20 text-green-600 dark:text-green-400">{content.success}</Badge>;
+        return <Badge className="bg-green-500/20 text-green-600 dark:text-green-400">{common.status.success.value}</Badge>;
       case 'failure':
         return <Badge className="bg-yellow-500/20 text-yellow-600 dark:text-yellow-400">{content.failure}</Badge>;
       case 'error':
-        return <Badge className="bg-red-500/20 text-red-600 dark:text-red-400">{content.error}</Badge>;
+        return <Badge className="bg-red-500/20 text-red-600 dark:text-red-400">{common.status.error.value}</Badge>;
       default:
         return <Badge>{statusValue}</Badge>;
     }
@@ -390,7 +390,7 @@ export function AuditLogViewer({ currentUserId, isAdmin = false }: AuditLogViewe
           title={content.refreshAuditLogs}
         >
           <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {content.refresh}
+          {common.ui.refresh.value}
         </Button>
       </div>
 

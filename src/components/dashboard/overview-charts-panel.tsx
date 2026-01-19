@@ -21,6 +21,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { useIntlayer } from 'react-intlayer';
+import { useLocale } from "@/contexts/locale-context";
+import { formatDateTime, formatDate } from "@/lib/date-format";
+import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -44,7 +47,7 @@ const formatDuration = (minutes: number): string => {
 };
 
 // Use existing library function for bytes formatting with Y-axis specific precision
-const formatBytesForYAxis = (bytes: number): string => {
+const formatBytesForYAxis = (bytes: number, locale: string = 'en'): string => {
   if (bytes === 0) return '0 B';
   
   // Determine the appropriate precision based on the size for Y-axis labels
@@ -53,17 +56,17 @@ const formatBytesForYAxis = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
-  if (i >= sizes.length) return formatBytes(bytes, 1);
+  if (i >= sizes.length) return formatBytesLocale(bytes, locale, 1);
   
   const size = sizes[i];
   
   // Apply specific precision rules for Y-axis labels using the library function
   if (size === 'GB') {
-    return formatBytes(bytes, 1);  // 1 decimal place for GB
+    return formatBytesLocale(bytes, locale, 1);  // 1 decimal place for GB
   } else if (size === 'MB' || size === 'KB' || size === 'B') {
-    return formatBytes(bytes, 0);  // 0 decimal places for MB, KB, B
+    return formatBytesLocale(bytes, locale, 0);  // 0 decimal places for MB, KB, B
   } else {
-    return formatBytes(bytes, 1);  // 1 decimal place for TB+
+    return formatBytesLocale(bytes, locale, 1);  // 1 decimal place for TB+
   }
 };
 
@@ -71,11 +74,12 @@ const formatBytesForYAxis = (bytes: number): string => {
 // Note: Chart metrics configuration is now inside the component to use useIntlayer
 
 // Custom tooltip component for Recharts
-const CustomTooltip = ({ active, payload, label, metricKey }: {
+const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
   active?: boolean;
   payload?: Array<{ value: number; dataKey: string; payload: { isoDate: string } }>;
   label?: string;
   metricKey: keyof ChartDataPoint;
+  locale: string;
 }) => {
   if (!active || !payload || !payload.length) {
     return null;
@@ -84,15 +88,11 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   const data = payload[0];
   const value = data.value;
   
-  // Format the date for display
+  // Format the date for display using locale-aware formatting
   let formattedDate = label;
   try {
     if (data.payload?.isoDate) {
-      const date = new Date(data.payload.isoDate);
-      formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
+      formattedDate = formatDateTime(data.payload.isoDate, locale);
     }
   } catch {
     // Fallback to original label if date parsing fails
@@ -101,11 +101,11 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   // Format the value based on metric type
   let formattedValue: string;
   if (metricKey === 'fileSize' || metricKey === 'storageSize') {
-    formattedValue = formatBytesForYAxis(value);
+    formattedValue = formatBytesForYAxis(value, locale);
   } else if (metricKey === 'duration') {
     formattedValue = formatDuration(value);
   } else {
-    formattedValue = value.toLocaleString();
+    formattedValue = formatInteger(value, locale);
   }
 
   return (
@@ -125,11 +125,13 @@ function OverviewMetricChart({
   metricKey, 
   label, 
   color,
+  locale,
 }: { 
   data: ChartDataPoint[]; 
   metricKey: keyof ChartDataPoint; 
   label: string; 
   color: string;
+  locale: string;
 }) {
 
   // Create chart config
@@ -254,9 +256,8 @@ function OverviewMetricChart({
                   const dataIndex = resampledData.findIndex(item => item.isoDate === value);
                   if (dataIndex === 0 || dataIndex === resampledData.length - 1) {
                     try {
-                      // Parse the ISO date and format using browser locale
-                      const date = new Date(value);
-                      return date.toLocaleDateString();
+                      // Format using locale-aware date formatting
+                      return formatDate(value, locale);
                     } catch {
                       return value;
                     }
@@ -276,12 +277,12 @@ function OverviewMetricChart({
                   if (typeof value === 'number') {
                     // Format based on metric type with specific precision
                     if (metricKey === 'fileSize' || metricKey === 'storageSize') {
-                      return formatBytesForYAxis(value);
+                      return formatBytesForYAxis(value, locale);
                     } else if (metricKey === 'duration') {
                       return formatDuration(value);
                     } else {
                       // For counts - no decimal positions
-                      return Math.round(value).toLocaleString();
+                      return formatInteger(Math.round(value), locale);
                     }
                   }
                   return '';
@@ -296,7 +297,7 @@ function OverviewMetricChart({
                 connectNulls
                 isAnimationActive={false}
               />
-              <Tooltip content={<CustomTooltip metricKey={metricKey} />} />
+              <Tooltip content={<CustomTooltip metricKey={metricKey} locale={locale} />} />
           </ComposedChart>
         </ChartContainer>
         </div>
@@ -315,6 +316,7 @@ function OverviewChartsPanelCore({
   const { state: globalRefreshState } = useGlobalRefresh();
   const content = useIntlayer('overview-charts-panel');
   const common = useIntlayer('common');
+  const locale = useLocale();
   
   // Configuration for overview charts - only 3 metrics
   const overviewChartMetrics = [
@@ -608,6 +610,7 @@ function OverviewChartsPanelCore({
                 metricKey={metric.key as keyof ChartDataPoint}
                 label={metric.label}
                 color={metric.color}
+                locale={locale}
               />
             </div>
           ))}

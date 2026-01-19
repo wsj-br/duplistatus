@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -20,6 +21,10 @@ import { ColoredIcon } from '@/components/ui/colored-icon';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 
 export function OpenServerConfigButton() {
+  const content = useIntlayer('open-server-config-button');
+  const common = useIntlayer('common');
+  const api = useIntlayer('api');
+  const settings = useIntlayer('settings');
   const [isLoading, setIsLoading] = useState(false);
   const [serverAddresses, setServerAddresses] = useState<ServerAddress[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -77,8 +82,8 @@ export function OpenServerConfigButton() {
     } catch (error) {
       console.error('Error fetching server connections:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to load server connections",
+        title: common.ui.error.value,
+        description: api.errors.failedToLoadServerConnections.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -115,8 +120,8 @@ export function OpenServerConfigButton() {
     } catch (error) {
       console.error('Error opening server URL:', error);
       toast({
-        title: "Error",
-        description: "Failed to open server URL",
+        title: common.ui.error.value,
+        description: content.errorOpenUrl.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -139,8 +144,8 @@ export function OpenServerConfigButton() {
     } catch (error) {
       console.error('Invalid server URL for old UI:', error);
       toast({
-        title: "Error",
-        description: "Failed to open old UI",
+        title: common.ui.error.value,
+        description: content.errorOpenOldUi.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -200,8 +205,8 @@ export function OpenServerConfigButton() {
       }
     }
     
-    // Check if we have a selected server on dashboard (both analytics and overview view modes)
-    if (pathname === '/' && (serverSelectionState.viewMode === 'analytics' || serverSelectionState.viewMode === 'overview') && serverSelectionState.selectedServerId) {
+    // Check if we have a selected server on dashboard (overview view mode)
+    if (pathname === '/' && serverSelectionState.viewMode === 'overview' && serverSelectionState.selectedServerId) {
       const selectedServer = getSelectedServer();
       if (selectedServer && selectedServer.server_url && selectedServer.server_url.trim() !== '') {
         try {
@@ -243,7 +248,7 @@ export function OpenServerConfigButton() {
             handleButtonClick();
           }}
           disabled={isLoading}
-          title="Duplicati configuration"
+          title={content.buttonTitle.value}
         >
           <ServerIcon className="h-4 w-4" />
         </Button>
@@ -251,11 +256,11 @@ export function OpenServerConfigButton() {
             <PopoverContent className="w-auto max-w-100 shadow-lg backdrop-blur-sm bg-popover/95 border-border/50" data-screenshot-target="duplicati-configuration">
         <div className="grid gap-4">
           <GradientCardHeader>
-            <h4 className="text-lg font-semibold leading-none text-white">Open Duplicati Configuration</h4>
+            <h4 className="text-lg font-semibold leading-none text-white">{content.popoverTitle.value}</h4>
           </GradientCardHeader>
           <div className="px-1 -mt-2">
             <p className="text-xs text-muted-foreground">
-               Select a server below to manage its settings and backups
+               {content.description.value}
             </p>
           </div>
           <div className="max-h-128 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
@@ -264,14 +269,14 @@ export function OpenServerConfigButton() {
                 <div className="flex flex-col items-center justify-center py-4 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
                   <Loader2 className="h-6 w-6 animate-spin text-blue-500 mb-2" />
                   <p className="text-sm text-blue-700 dark:text-blue-300">
-                    Loading server connections...
+                    {settings.servers.loadingServerConnections.value}
                   </p>
                 </div>
               ) : serverAddresses.length === 0 ? (
                 <div className="text-center py-4 px-4 bg-muted/30 rounded-lg border border-border/50">
                   <ColoredIcon icon={Server} color="gray" size="lg" className="mb-2 mx-auto" />
                   <p className="text-sm text-muted-foreground">
-                    No servers with server URLs configured
+                    {settings.servers.noServersWithUrls.value}
                   </p>
                 </div>
               ) : (
@@ -281,7 +286,7 @@ export function OpenServerConfigButton() {
                     onClick={() => handleServerClick(server.server_url)}
                     onContextMenu={(e) => handleServerContextMenu(e, server.server_url)}
                     className="flex items-center gap-3 p-3 text-left hover:bg-muted/50 rounded-lg transition-all duration-200 border border-border hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md hover:-translate-y-0.5 group"
-                    title={`Open ${server.alias ? `${server.alias} (${server.name})` : server.name} configuration (Right-click for old UI)`}
+                    title={content.serverTitle.value.replace('{serverName}', server.alias ? `${server.alias} (${server.name})` : server.name)}
                   >
                     <div className="p-1 rounded bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/50 transition-colors">
                       <ServerIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -301,7 +306,7 @@ export function OpenServerConfigButton() {
               onClick={handleSettingsClick}
             >
               <ColoredIcon icon={Settings} color="purple" size="sm" className="group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">Configure server addresses</span>
+              <span className="text-sm font-medium">{content.configureServers.value}</span>
             </button>
           </div>
         </div>

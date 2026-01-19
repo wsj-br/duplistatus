@@ -34,6 +34,7 @@ import {
   isWeekDayAllowed
 } from '@/lib/interval-utils';
 import { formatRelativeTime, getLocaleWeekDays } from '@/lib/utils';
+import { formatDateTime } from '@/lib/date-format';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
@@ -1063,7 +1064,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                             >
                               {server.nextRunDate !== 'N/A' ? 
                                 <>
-                                  {new Date(server.nextRunDate).toLocaleString()}
+                                  {formatDateTime(server.nextRunDate, locale)}
                                   <br />
                                   {formatRelativeTime(server.nextRunDate, undefined, locale)}
                                 </>
@@ -1074,14 +1075,14 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="text-xs">
-                              <div className="font-semibold mb-1">Last Backup:</div>
+                              <div className="font-semibold mb-1">{content.lastBackup.value}</div>
                               {(() => {
                                 const backupKey = `${server.id}:${server.backupName}`;
                                 const lastBackupTimestamp = lastBackupTimestamps[backupKey];
                                 if (lastBackupTimestamp) {
                                   return (
                                     <>
-                                      {new Date(lastBackupTimestamp).toLocaleString()}
+                                      {formatDateTime(lastBackupTimestamp, locale)}
                                       <br />
                                       {formatRelativeTime(lastBackupTimestamp)}
                                     </>
@@ -1243,21 +1244,21 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                               className={`text-xs p-1 rounded ${getNextRunDateStyle(server.nextRunDate, backupSetting.overdueBackupCheckEnabled)}`}
                             >
                               {server.nextRunDate !== 'N/A' ?
-                                 new Date(server.nextRunDate).toLocaleString()+` (${formatRelativeTime(server.nextRunDate, undefined, locale)})` :
+                                 formatDateTime(server.nextRunDate, locale)+` (${formatRelativeTime(server.nextRunDate, undefined, locale)})` :
                                 'Not set'
                               }
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div className="text-xs">
-                              <div className="font-semibold mb-1">Last Backup:</div>
+                              <div className="font-semibold mb-1">{content.lastBackup.value}</div>
                               {(() => {
                                 const backupKey = `${server.id}:${server.backupName}`;
                                 const lastBackupTimestamp = lastBackupTimestamps[backupKey];
                                 if (lastBackupTimestamp) {
                                   return (
                                     <>
-                                      {new Date(lastBackupTimestamp).toLocaleString()}
+                                      {formatDateTime(lastBackupTimestamp, locale)}
                                       <br />
                                       {formatRelativeTime(lastBackupTimestamp)}
                                     </>

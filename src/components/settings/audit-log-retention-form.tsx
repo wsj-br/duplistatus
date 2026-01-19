@@ -55,8 +55,8 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
     
     if (retentionDays < 30 || retentionDays > 365) {
       toast({
-        title: 'Error',
-        description: 'Retention days must be between 30 and 365',
+        title: common.status.error,
+        description: content.invalidRange.value,
         variant: 'destructive',
       });
       return;
@@ -78,7 +78,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to save retention configuration');
+        throw new Error(error.error || content.failedToSave.value);
       }
 
       toast({
@@ -88,8 +88,8 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
     } catch (error) {
       console.error('Error saving retention:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to save retention configuration',
+        title: common.status.error,
+        description: error instanceof Error ? error.message : content.failedToSave.value,
         variant: 'destructive',
       });
     } finally {
@@ -100,7 +100,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
   if (!isAdmin) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        <p>{content.noPermission}</p>
+        <p>{content.noPermission.value}</p>
       </div>
     );
   }
@@ -111,16 +111,16 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ColoredIcon icon={Clock} color="blue" size="md" />
-            Audit Log Retention
+            {content.title.value}
           </CardTitle>
           <CardDescription>
-            Configure how long audit logs are retained before automatic cleanup. Set the number of days audit logs should be retained. Logs older than this period will be automatically deleted during daily cleanup.
+            {content.description.value}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Label htmlFor="retention-days">{content.retentionDays}</Label>
+              <Label htmlFor="retention-days">{content.retentionDays.value}</Label>
               <Input
                 id="retention-days"
                 type="number"
@@ -138,15 +138,15 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
               disabled={retentionLoading || retentionSaving || retentionDays < 30 || retentionDays > 365}
               size="sm"
             >
-              {retentionSaving ? content.saving : content.save}
+              {retentionSaving ? content.saving.value : content.save.value}
             </Button>
             <span className="text-xs text-muted-foreground">
-              {content.range}
+              {content.range.value}
             </span>
           </div>
           
           {retentionLoading && (
-            <p className="text-sm text-muted-foreground">{content.loadingRetention}</p>
+            <p className="text-sm text-muted-foreground">{content.loadingRetention.value}</p>
           )}
         </CardContent>
       </Card>

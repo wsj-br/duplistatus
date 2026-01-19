@@ -50,7 +50,7 @@ export default {
       de: 'Fehlgeschlagen', 
       fr: 'Échoué', 
       es: 'Fallido', 
-      'pt-BR': 'Falhou' 
+      'pt-BR': 'Falha' 
     }),
   },
 } satisfies Dictionary;

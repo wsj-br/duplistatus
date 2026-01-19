@@ -1,0 +1,218 @@
+import { t, type Dictionary } from 'intlayer';
+
+export default {
+  key: 'display-settings-form',
+  content: {
+    title: t({
+      en: 'Display Settings',
+      de: 'Anzeigeeinstellungen',
+      fr: 'Paramètres d\'affichage',
+      es: 'Configuración de pantalla',
+      'pt-BR': 'Configurações de exibição',
+    }),
+    description: t({
+      en: 'Customize how duplistatus displays your data and controls the visual appearance',
+      de: 'Passen Sie an, wie duplistatus Ihre Daten anzeigt und das visuelle Erscheinungsbild steuert',
+      fr: 'Personnalisez la façon dont duplistatus affiche vos données et contrôle l\'apparence visuelle',
+      es: 'Personalice cómo duplistatus muestra sus datos y controla la apariencia visual',
+      'pt-BR': 'Personalize como o duplistatus exibe seus dados e controla a aparência visual',
+    }),
+    tablePageSizeLabel: t({
+      en: 'Table Page Size',
+      de: 'Tabellenseitengröße',
+      fr: 'Taille de page du tableau',
+      es: 'Tamaño de página de tabla',
+      'pt-BR': 'Tamanho da página da tabela',
+    }),
+    tablePageSizePlaceholder: t({
+      en: 'Select page size',
+      de: 'Seitengröße auswählen',
+      fr: 'Sélectionner la taille de page',
+      es: 'Seleccionar tamaño de página',
+      'pt-BR': 'Selecionar tamanho da página',
+    }),
+    rows: t({
+      en: '{count} rows',
+      de: '{count} Zeilen',
+      fr: '{count} lignes',
+      es: '{count} filas',
+      'pt-BR': '{count} linhas',
+    }),
+    chartTimeRangeLabel: t({
+      en: 'Chart Time Range',
+      de: 'Diagramm-Zeitbereich',
+      fr: 'Plage temporelle du graphique',
+      es: 'Rango de tiempo del gráfico',
+      'pt-BR': 'Intervalo de tempo do gráfico',
+    }),
+    chartTimeRangePlaceholder: t({
+      en: 'Select time range',
+      de: 'Zeitbereich auswählen',
+      fr: 'Sélectionner la plage temporelle',
+      es: 'Seleccionar rango de tiempo',
+      'pt-BR': 'Selecionar intervalo de tempo',
+    }),
+    // Time ranges are now available in common.time:
+    // last2Weeks -> common.time.last2Weeks
+    // lastMonth -> common.time.lastMonth
+    // lastQuarter -> common.time.lastQuarter
+    // lastSemester -> common.time.lastSemester
+    // lastYear -> common.time.lastYear
+    // last2Years -> common.time.last2Years
+    // allData -> common.time.allAvailableData
+    autoRefreshLabel: t({
+      en: 'Auto-refresh Interval',
+      de: 'Automatische Aktualisierung',
+      fr: 'Intervalle de rafraîchissement automatique',
+      es: 'Intervalo de actualización automática',
+      'pt-BR': 'Intervalo de atualização automática',
+    }),
+    autoRefreshPlaceholder: t({
+      en: 'Select refresh interval',
+      de: 'Aktualisierungsintervall auswählen',
+      fr: 'Sélectionner l\'intervalle de rafraîchissement',
+      es: 'Seleccionar intervalo de actualización',
+      'pt-BR': 'Selecionar intervalo de atualização',
+    }),
+    seconds15: t({
+      en: '15 seconds',
+      de: '15 Sekunden',
+      fr: '15 secondes',
+      es: '15 segundos',
+      'pt-BR': '15 segundos',
+    }),
+    seconds30: t({
+      en: '30 seconds',
+      de: '30 Sekunden',
+      fr: '30 secondes',
+      es: '30 segundos',
+      'pt-BR': '30 segundos',
+    }),
+    minute1: t({
+      en: '1 minute',
+      de: '1 Minute',
+      fr: '1 minute',
+      es: '1 minuto',
+      'pt-BR': '1 minuto',
+    }),
+    minutes2: t({
+      en: '2 minutes',
+      de: '2 Minuten',
+      fr: '2 minutes',
+      es: '2 minutos',
+      'pt-BR': '2 minutos',
+    }),
+    minutes3: t({
+      en: '3 minutes',
+      de: '3 Minuten',
+      fr: '3 minutes',
+      es: '3 minutos',
+      'pt-BR': '3 minutos',
+    }),
+    minutes4: t({
+      en: '4 minutes',
+      de: '4 Minuten',
+      fr: '4 minutes',
+      es: '4 minutos',
+      'pt-BR': '4 minutos',
+    }),
+    minutes5: t({
+      en: '5 minutes',
+      de: '5 Minuten',
+      fr: '5 minutes',
+      es: '5 minutos',
+      'pt-BR': '5 minutos',
+    }),
+    minutes10: t({
+      en: '10 minutes',
+      de: '10 Minuten',
+      fr: '10 minutes',
+      es: '10 minutos',
+      'pt-BR': '10 minutos',
+    }),
+    cardsSortOrderLabel: t({
+      en: 'Cards Sort Order',
+      de: 'Kartensortierung',
+      fr: 'Ordre de tri des cartes',
+      es: 'Orden de clasificación de tarjetas',
+      'pt-BR': 'Ordem de classificação dos cartões',
+    }),
+    cardsSortOrderPlaceholder: t({
+      en: 'Select sort order',
+      de: 'Sortierung auswählen',
+      fr: 'Sélectionner l\'ordre de tri',
+      es: 'Seleccionar orden de clasificación',
+      'pt-BR': 'Selecionar ordem de classificação',
+    }),
+    sortByServerName: t({
+      en: 'Server name (a-z)',
+      de: 'Servername (a-z)',
+      fr: 'Nom du serveur (a-z)',
+      es: 'Nombre del servidor (a-z)',
+      'pt-BR': 'Nome do servidor (a-z)',
+    }),
+    sortByStatus: t({
+      en: 'Status (error > warning > success)',
+      de: 'Status (Fehler > Warnung > Erfolg)',
+      fr: 'Statut (erreur > avertissement > succès)',
+      es: 'Estado (error > advertencia > éxito)',
+      'pt-BR': 'Status (erro > aviso > sucesso)',
+    }),
+    sortByLastBackup: t({
+      en: 'Last backup received (new > old)',
+      de: 'Letzte Sicherung empfangen (neu > alt)',
+      fr: 'Dernière sauvegarde reçue (récent > ancien)',
+      es: 'Última copia de seguridad recibida (nuevo > antiguo)',
+      'pt-BR': 'Último backup recebido (recente > antigo)',
+    }),
+    themeLabel: t({
+      en: 'Theme',
+      de: 'Thema',
+      fr: 'Thème',
+      es: 'Tema',
+      'pt-BR': 'Tema',
+    }),
+    toggleTheme: t({
+      en: 'Toggle Theme',
+      de: 'Thema wechseln',
+      fr: 'Changer de thème',
+      es: 'Cambiar tema',
+      'pt-BR': 'Alternar tema',
+    }),
+    switchToDark: t({
+      en: 'Switch to Dark Mode',
+      de: 'Zum dunklen Modus wechseln',
+      fr: 'Passer en mode sombre',
+      es: 'Cambiar a modo oscuro',
+      'pt-BR': 'Mudar para modo escuro',
+    }),
+    switchToLight: t({
+      en: 'Switch to Light Mode',
+      de: 'Zum hellen Modus wechseln',
+      fr: 'Passer en mode clair',
+      es: 'Cambiar a modo claro',
+      'pt-BR': 'Mudar para modo claro',
+    }),
+    currentTheme: t({
+      en: 'Current theme:',
+      de: 'Aktuelles Thema:',
+      fr: 'Thème actuel:',
+      es: 'Tema actual:',
+      'pt-BR': 'Tema atual:',
+    }),
+    themeLight: t({
+      en: 'Light',
+      de: 'Hell',
+      fr: 'Clair',
+      es: 'Claro',
+      'pt-BR': 'Claro',
+    }),
+    themeDark: t({
+      en: 'Dark',
+      de: 'Dunkel',
+      fr: 'Sombre',
+      es: 'Oscuro',
+      'pt-BR': 'Escuro',
+    }),
+  },
+} satisfies Dictionary;

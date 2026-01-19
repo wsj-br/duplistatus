@@ -15,12 +15,26 @@ import { SessionInitializer } from "@/components/session-initializer";
 import { GlobalSessionErrorHandler } from "@/components/global-session-error-handler";
 import { ConditionalLayout } from "@/components/conditional-layout";
 import { ClientLocaleProvider } from "@/contexts/locale-context";
+import { IntlayerProviderClient } from "./intlayer-provider-client";
+import { getTextDirection } from "@/lib/rtl-utils";
 
 const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
 const DEFAULT_LOCALE = "en";
 const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
 
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+/**
+ * Normalizes a locale string to the canonical format.
+ * Accepts both "pt-br" and "pt-BR" and normalizes to "pt-BR".
+ */
+function normalizeLocale(locale: string): SupportedLocale | null {
+  const normalized = locale.toLowerCase() === "pt-br" ? "pt-BR" : locale;
+  if (SUPPORTED_LOCALES.includes(normalized as SupportedLocale)) {
+    return normalized as SupportedLocale;
+  }
+  return null;
+}
 
 /**
  * Gets the locale from server-side sources (cookies, headers, or default).
@@ -32,8 +46,11 @@ async function getServerLocale(): Promise<SupportedLocale> {
     // 1. Check cookie for persisted locale preference
     const cookieStore = await cookies();
     const cookieLocale = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
-    if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as SupportedLocale)) {
-      return cookieLocale as SupportedLocale;
+    if (cookieLocale) {
+      const normalized = normalizeLocale(cookieLocale);
+      if (normalized) {
+        return normalized;
+      }
     }
 
     // 2. Check pathname header (set by proxy/middleware) to extract locale
@@ -42,8 +59,9 @@ async function getServerLocale(): Promise<SupportedLocale> {
     const pathLocaleMatch = pathname.match(/^\/([^/]+)/);
     if (pathLocaleMatch) {
       const pathLocale = pathLocaleMatch[1];
-      if (SUPPORTED_LOCALES.includes(pathLocale as SupportedLocale)) {
-        return pathLocale as SupportedLocale;
+      const normalized = normalizeLocale(pathLocale);
+      if (normalized) {
+        return normalized;
       }
     }
 
@@ -171,12 +189,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Get locale for HTML lang attribute (server-side)
+  // Get locale for HTML lang and dir attributes (server-side)
   const locale = await getServerLocale();
   const htmlLang = getHtmlLang(locale);
+  const direction = getTextDirection(locale);
 
   return (
-    <html lang={htmlLang} suppressHydrationWarning>
+    <html lang={htmlLang} dir={direction} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -205,28 +224,30 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CustomThemeProvider>
-          <ClientLocaleProvider>
-          <ConfigProvider>
-            <ConfigurationProvider>
-              <GlobalRefreshProvider>
-                <ServerSelectionProvider>
-                  <AvailableBackupsModalProvider>
-                    <TooltipProvider delayDuration={300}>
-                      <ToastProvider>
-                      <SessionInitializer />
-                      <GlobalSessionErrorHandler />
-                      <ConditionalLayout>{children}</ConditionalLayout>
-                      <Toaster />
-                    </ToastProvider>
-                    </TooltipProvider>
-                  </AvailableBackupsModalProvider>
-                </ServerSelectionProvider>
-              </GlobalRefreshProvider>
-            </ConfigurationProvider>
-          </ConfigProvider>
-          </ClientLocaleProvider>
-        </CustomThemeProvider>
+        <IntlayerProviderClient>
+          <CustomThemeProvider>
+            <ClientLocaleProvider>
+            <ConfigProvider>
+              <ConfigurationProvider>
+                <GlobalRefreshProvider>
+                  <ServerSelectionProvider>
+                    <AvailableBackupsModalProvider>
+                      <TooltipProvider delayDuration={300}>
+                        <ToastProvider>
+                        <SessionInitializer />
+                        <GlobalSessionErrorHandler />
+                        <ConditionalLayout>{children}</ConditionalLayout>
+                        <Toaster />
+                      </ToastProvider>
+                      </TooltipProvider>
+                    </AvailableBackupsModalProvider>
+                  </ServerSelectionProvider>
+                </GlobalRefreshProvider>
+              </ConfigurationProvider>
+            </ConfigProvider>
+            </ClientLocaleProvider>
+          </CustomThemeProvider>
+        </IntlayerProviderClient>
       </body>
     </html>
   );

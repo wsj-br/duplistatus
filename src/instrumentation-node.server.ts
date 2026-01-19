@@ -10,6 +10,13 @@ import { getDataDir } from '@/lib/paths';
 export async function clearSessionsOnStartup() {
   console.log('[Instrumentation] Server initialization started');
   
+  // Only clear sessions in production mode
+  // In development mode, preserve sessions for easier testing
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[Instrumentation] Skipping session clearing (development mode)');
+    return;
+  }
+  
   // Use a lock file to prevent concurrent execution
   // This is important for production with multiple workers
   const dataDir = getDataDir();

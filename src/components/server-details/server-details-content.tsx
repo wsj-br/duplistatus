@@ -116,8 +116,8 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
           </CardTitle>
           <CardDescription>
             {selectedBackup 
-              ? <>Details for backup <span className="text-primary font-medium">{selectedBackup.name}</span></>
-              : <>Details for <span className="text-primary font-medium">all backups</span></>
+              ? <>{content.detailsForBackup.value} <span className="text-primary font-medium">{selectedBackup.name}</span></>
+              : <>{content.detailsFor.value} <span className="text-primary font-medium">{content.allBackups.value}</span></>
             }
           </CardDescription>
         </CardHeader>
@@ -139,7 +139,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
       
       <Card className="shadow-lg" data-screenshot-target="backup-history-table">
         <CardHeader>
-          <CardTitle>{content.backupHistory}</CardTitle>
+          <CardTitle>{content.backupHistory.value}</CardTitle>
           <CardDescription>
             {selectedBackup 
               ? <>{content.listOfAllBackups.value.replace('{backupName}', selectedBackup.name)}</>

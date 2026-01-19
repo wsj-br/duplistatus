@@ -2618,10 +2618,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="off">Off</SelectItem>
-                              <SelectItem value="all">All</SelectItem>
-                              <SelectItem value="warnings">Warnings</SelectItem>
-                              <SelectItem value="errors">Errors</SelectItem>
+                              <SelectItem value="off">{content.off}</SelectItem>
+                              <SelectItem value="all">{content.all}</SelectItem>
+                              <SelectItem value="warnings">{content.warnings}</SelectItem>
+                              <SelectItem value="errors">{content.errors}</SelectItem>
                             </SelectContent>
                           </Select>
                         </TableCell>
@@ -2700,10 +2700,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="off">Off</SelectItem>
-                                      <SelectItem value="all">All</SelectItem>
-                                      <SelectItem value="warnings">Warnings</SelectItem>
-                                      <SelectItem value="errors">Errors</SelectItem>
+                                      <SelectItem value="off">{content.off}</SelectItem>
+                                      <SelectItem value="all">{content.all}</SelectItem>
+                                      <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                      <SelectItem value="errors">{content.errors}</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   <p className="text-xs text-muted-foreground">
@@ -3057,10 +3057,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="off">Off</SelectItem>
-                                    <SelectItem value="all">All</SelectItem>
-                                    <SelectItem value="warnings">Warnings</SelectItem>
-                                    <SelectItem value="errors">Errors</SelectItem>
+                                    <SelectItem value="off">{content.off}</SelectItem>
+                                    <SelectItem value="all">{content.all}</SelectItem>
+                                    <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                    <SelectItem value="errors">{content.errors}</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <p className="text-xs text-muted-foreground">
@@ -3344,10 +3344,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="off">Off</SelectItem>
-                                  <SelectItem value="all">All</SelectItem>
-                                  <SelectItem value="warnings">Warnings</SelectItem>
-                                  <SelectItem value="errors">Errors</SelectItem>
+                                  <SelectItem value="off">{content.off}</SelectItem>
+                                  <SelectItem value="all">{content.all}</SelectItem>
+                                  <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                  <SelectItem value="errors">{content.errors}</SelectItem>
                                 </SelectContent>
                               </Select>
                             </TableCell>
@@ -3424,10 +3424,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                          <SelectItem value="off">Off</SelectItem>
-                                          <SelectItem value="all">All</SelectItem>
-                                          <SelectItem value="warnings">Warnings</SelectItem>
-                                          <SelectItem value="errors">Errors</SelectItem>
+                                          <SelectItem value="off">{content.off}</SelectItem>
+                                          <SelectItem value="all">{content.all}</SelectItem>
+                                          <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                          <SelectItem value="errors">{content.errors}</SelectItem>
                                         </SelectContent>
                                       </Select>
                                       <p className="text-xs text-muted-foreground">
@@ -3853,10 +3853,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="off">Off</SelectItem>
-                                    <SelectItem value="all">All</SelectItem>
-                                    <SelectItem value="warnings">Warnings</SelectItem>
-                                    <SelectItem value="errors">Errors</SelectItem>
+                                    <SelectItem value="off">{content.off}</SelectItem>
+                                    <SelectItem value="all">{content.all}</SelectItem>
+                                    <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                    <SelectItem value="errors">{content.errors}</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <p className="text-xs text-muted-foreground">
@@ -4186,10 +4186,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="off">Off</SelectItem>
-                                <SelectItem value="all">All</SelectItem>
-                                <SelectItem value="warnings">Warnings</SelectItem>
-                                <SelectItem value="errors">Errors</SelectItem>
+                                <SelectItem value="off">{content.off}</SelectItem>
+                                <SelectItem value="all">{content.all}</SelectItem>
+                                <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                <SelectItem value="errors">{content.errors}</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -4460,10 +4460,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="off">Off</SelectItem>
-                                <SelectItem value="all">All</SelectItem>
-                                <SelectItem value="warnings">Warnings</SelectItem>
-                                <SelectItem value="errors">Errors</SelectItem>
+                                <SelectItem value="off">{content.off}</SelectItem>
+                                <SelectItem value="all">{content.all}</SelectItem>
+                                <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                <SelectItem value="errors">{content.errors}</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -4550,10 +4550,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
-                                        <SelectItem value="off">Off</SelectItem>
-                                        <SelectItem value="all">All</SelectItem>
-                                        <SelectItem value="warnings">Warnings</SelectItem>
-                                        <SelectItem value="errors">Errors</SelectItem>
+                                        <SelectItem value="off">{content.off}</SelectItem>
+                                        <SelectItem value="all">{content.all}</SelectItem>
+                                        <SelectItem value="warnings">{content.warnings}</SelectItem>
+                                        <SelectItem value="errors">{content.errors}</SelectItem>
                                       </SelectContent>
                                     </Select>
                                     <p className="text-xs text-muted-foreground">
@@ -4875,10 +4875,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="off">Off</SelectItem>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="warnings">Warnings</SelectItem>
-                      <SelectItem value="errors">Errors</SelectItem>
+                      <SelectItem value="off">{content.off}</SelectItem>
+                      <SelectItem value="all">{content.all}</SelectItem>
+                      <SelectItem value="warnings">{content.warnings}</SelectItem>
+                      <SelectItem value="errors">{content.errors}</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">

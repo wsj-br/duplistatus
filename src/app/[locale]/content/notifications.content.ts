@@ -6,13 +6,13 @@ export default {
   content: {
     email: {
       backupSuccess: {
-        subject: t({ en: 'Backup Completed Successfully', de: 'Sicherung erfolgreich abgeschlossen', fr: 'Sauvegarde terminée avec succès', es: 'Respaldo completado exitosamente', 'pt-BR': 'Backup concluído com sucesso' }),
+        subject: t({ en: 'Backup Completed Successfully', de: 'Sicherung erfolgreich abgeschlossen', fr: 'Sauvegarde terminée avec succès', es: 'Backup completado exitosamente', 'pt-BR': 'Backup concluído com sucesso' }),
         greeting: t({ en: 'Hello {userName},', de: 'Hallo {userName},', fr: 'Bonjour {userName},', es: 'Hola {userName},', 'pt-BR': 'Olá {userName},' }),
-        message: t({ en: 'The backup for server {serverName} has completed successfully.', de: 'Die Sicherung für Server {serverName} wurde erfolgreich abgeschlossen.', fr: 'La sauvegarde du serveur {serverName} s\'est terminée avec succès.', es: 'El respaldo del servidor {serverName} se ha completado exitosamente.', 'pt-BR': 'O backup do servidor {serverName} foi concluído com sucesso.' }),
+        message: t({ en: 'The backup for server {serverName} has completed successfully.', de: 'Die Sicherung für Server {serverName} wurde erfolgreich abgeschlossen.', fr: 'La sauvegarde du serveur {serverName} s\'est terminée avec succès.', es: 'El backup del servidor {serverName} se ha completado exitosamente.', 'pt-BR': 'O backup do servidor {serverName} foi concluído com sucesso.' }),
         details: {
           serverName: t({ en: 'Server Name', de: 'Servername', fr: 'Nom du serveur', es: 'Nombre del servidor', 'pt-BR': 'Nome do Servidor' }),
-          backupTime: t({ en: 'Backup Time', de: 'Sicherungszeit', fr: 'Heure de sauvegarde', es: 'Hora del respaldo', 'pt-BR': 'Horário do Backup' }),
-          backupSize: t({ en: 'Backup Size', de: 'Sicherungsgröße', fr: 'Taille de sauvegarde', es: 'Tamaño del respaldo', 'pt-BR': 'Tamanho do Backup' }),
+          backupTime: t({ en: 'Backup Time', de: 'Sicherungszeit', fr: 'Heure de sauvegarde', es: 'Hora del backup', 'pt-BR': 'Horário do Backup' }),
+          backupSize: t({ en: 'Backup Size', de: 'Sicherungsgröße', fr: 'Taille de sauvegarde', es: 'Tamaño del backup', 'pt-BR': 'Tamanho do Backup' }),
           backupDuration: t({ en: 'Duration', de: 'Dauer', fr: 'Durée', es: 'Duración', 'pt-BR': 'Duração' }),
           filesCount: t({ en: 'Files Count', de: 'Dateianzahl', fr: 'Nombre de fichiers', es: 'Cantidad de archivos', 'pt-BR': 'Quantidade de Arquivos' }),
           errorsCount: t({ en: 'Errors', de: 'Fehler', fr: 'Erreurs', es: 'Errores', 'pt-BR': 'Erros' }),
@@ -21,12 +21,12 @@ export default {
         footer: t({ en: 'This is an automated message from {applicationName}.', de: 'Dies ist eine automatische Nachricht von {applicationName}.', fr: 'Ceci est un message automatisé de {applicationName}.', es: 'Este es un mensaje automático de {applicationName}.', 'pt-BR': 'Esta é uma mensagem automática de {applicationName}.' }),
       },
       backupFailed: {
-        subject: t({ en: 'Backup Failed', de: 'Sicherung fehlgeschlagen', fr: 'Sauvegarde échouée', es: 'Respaldo fallido', 'pt-BR': 'Backup Falhou' }),
+        subject: t({ en: 'Backup Failed', de: 'Sicherung fehlgeschlagen', fr: 'Sauvegarde échouée', es: 'Backup fallido', 'pt-BR': 'Falha no Backup' }),
         greeting: t({ en: 'Hello {userName},', de: 'Hallo {userName},', fr: 'Bonjour {userName},', es: 'Hola {userName},', 'pt-BR': 'Olá {userName},' }),
-        message: t({ en: 'The backup for server {serverName} has failed.', de: 'Die Sicherung für Server {serverName} ist fehlgeschlagen.', fr: 'La sauvegarde du serveur {serverName} a échoué.', es: 'El respaldo del servidor {serverName} ha fallado.', 'pt-BR': 'O backup do servidor {serverName} falhou.' }),
+        message: t({ en: 'The backup for server {serverName} has failed.', de: 'Die Sicherung für Server {serverName} ist fehlgeschlagen.', fr: 'La sauvegarde du serveur {serverName} a échoué.', es: 'El backup del servidor {serverName} ha fallado.', 'pt-BR': 'O backup do servidor {serverName} falhou.' }),
         details: {
           serverName: t({ en: 'Server Name', de: 'Servername', fr: 'Nom du serveur', es: 'Nombre del servidor', 'pt-BR': 'Nome do Servidor' }),
-          backupTime: t({ en: 'Backup Time', de: 'Sicherungszeit', fr: 'Heure de sauvegarde', es: 'Hora del respaldo', 'pt-BR': 'Horário do Backup' }),
+          backupTime: t({ en: 'Backup Time', de: 'Sicherungszeit', fr: 'Heure de sauvegarde', es: 'Hora del backup', 'pt-BR': 'Horário do Backup' }),
           errorMessage: t({ en: 'Error Message', de: 'Fehlermeldung', fr: 'Message d\'erreur', es: 'Mensaje de error', 'pt-BR': 'Mensagem de Erro' }),
           errorDetails: t({ en: 'Error Details', de: 'Fehlerdetails', fr: 'Détails de l\'erreur', es: 'Detalles del error', 'pt-BR': 'Detalhes do Erro' }),
           retryCount: t({ en: 'Retry Count', de: 'Wiederholungsversuche', fr: 'Nombre de tentatives', es: 'Conteo de reintentos', 'pt-BR': 'Contador de Tentativas' }),
@@ -101,14 +101,14 @@ export default {
     },
     ntfy: {
       backupSuccess: {
-        title: t({ en: 'Backup Completed', de: 'Sicherung abgeschlossen', fr: 'Sauvegarde terminée', es: 'Respaldo completado', 'pt-BR': 'Backup Concluído' }),
-        message: t({ en: 'Server {serverName} backup completed successfully', de: 'Server {serverName} Sicherung erfolgreich abgeschlossen', fr: 'Sauvegarde du serveur {serverName} terminée avec succès', es: 'Respaldo del servidor {serverName} completado exitosamente', 'pt-BR': 'Backup do servidor {serverName} concluído com sucesso' }),
+        title: t({ en: 'Backup Completed', de: 'Sicherung abgeschlossen', fr: 'Sauvegarde terminée', es: 'Backup completado', 'pt-BR': 'Backup Concluído' }),
+        message: t({ en: 'Server {serverName} backup completed successfully', de: 'Server {serverName} Sicherung erfolgreich abgeschlossen', fr: 'Sauvegarde du serveur {serverName} terminée avec succès', es: 'Backup del servidor {serverName} completado exitosamente', 'pt-BR': 'Backup do servidor {serverName} concluído com sucesso' }),
         tags: ['white_check_mark', 'backup', 'success'],
         priority: 'default',
       },
       backupFailed: {
-        title: t({ en: 'Backup Failed', de: 'Sicherung fehlgeschlagen', fr: 'Sauvegarde échouée', es: 'Respaldo fallido', 'pt-BR': 'Backup Falhou' }),
-        message: t({ en: 'Server {serverName} backup failed', de: 'Server {serverName} Sicherung fehlgeschlagen', fr: 'Sauvegarde du serveur {serverName} échouée', es: 'Respaldo del servidor {serverName} fallido', 'pt-BR': 'Backup do servidor {serverName} falhou' }),
+        title: t({ en: 'Backup Failed', de: 'Sicherung fehlgeschlagen', fr: 'Sauvegarde échouée', es: 'Backup fallido', 'pt-BR': 'Backup Falha' }),
+        message: t({ en: 'Server {serverName} backup failed', de: 'Server {serverName} Sicherung fehlgeschlagen', fr: 'Sauvegarde du serveur {serverName} échouée', es: 'Backup del servidor {serverName} fallido', 'pt-BR': 'Backup do servidor {serverName} falhou' }),
         tags: ['x', 'backup', 'error'],
         priority: 'high',
       },
@@ -145,14 +145,14 @@ export default {
     },
     web: {
       backupSuccess: {
-        title: t({ en: 'Backup completed successfully', de: 'Sicherung erfolgreich abgeschlossen', fr: 'Sauvegarde terminée avec succès', es: 'Respaldo completado exitosamente', 'pt-BR': 'Backup concluído com sucesso' }),
-        message: t({ en: 'The backup for {serverName} has been completed successfully.', de: 'Die Sicherung für {serverName} wurde erfolgreich abgeschlossen.', fr: 'La sauvegarde de {serverName} s\'est terminée avec succès.', es: 'El respaldo de {serverName} se ha completado exitosamente.', 'pt-BR': 'O backup de {serverName} foi concluído com sucesso.' }),
+        title: t({ en: 'Backup completed successfully', de: 'Sicherung erfolgreich abgeschlossen', fr: 'Sauvegarde terminée avec succès', es: 'Backup completado exitosamente', 'pt-BR': 'Backup concluído com sucesso' }),
+        message: t({ en: 'The backup for {serverName} has been completed successfully.', de: 'Die Sicherung für {serverName} wurde erfolgreich abgeschlossen.', fr: 'La sauvegarde de {serverName} s\'est terminée avec succès.', es: 'El backup de {serverName} se ha completado exitosamente.', 'pt-BR': 'O backup de {serverName} foi concluído com sucesso.' }),
         type: 'success',
         duration: 5000,
       },
       backupFailed: {
-        title: t({ en: 'Backup failed', de: 'Sicherung fehlgeschlagen', fr: 'Sauvegarde échouée', es: 'Respaldo fallido', 'pt-BR': 'Backup falhou' }),
-        message: t({ en: 'The backup for {serverName} has failed.', de: 'Die Sicherung für {serverName} ist fehlgeschlagen.', fr: 'La sauvegarde de {serverName} a échoué.', es: 'El respaldo de {serverName} ha fallado.', 'pt-BR': 'O backup de {serverName} falhou.' }),
+        title: t({ en: 'Backup failed', de: 'Sicherung fehlgeschlagen', fr: 'Sauvegarde échouée', es: 'Backup fallido', 'pt-BR': 'Backup falhou' }),
+        message: t({ en: 'The backup for {serverName} has failed.', de: 'Die Sicherung für {serverName} ist fehlgeschlagen.', fr: 'La sauvegarde de {serverName} a échoué.', es: 'El backup de {serverName} ha fallado.', 'pt-BR': 'O backup de {serverName} falhou.' }),
         type: 'error',
         duration: 8000,
       },

@@ -8,18 +8,35 @@ import {
   useMemo,
 } from "react";
 import { usePathname } from "next/navigation";
+import { getTextDirection } from "@/lib/rtl-utils";
 
 const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "pt-BR"] as const;
 const DEFAULT_LOCALE = "en";
 
 const LocaleContext = createContext<string>(DEFAULT_LOCALE);
 
+/**
+ * Normalizes a locale string to the canonical format.
+ * Accepts both "pt-br" and "pt-BR" and normalizes to "pt-BR".
+ */
+function normalizeLocale(locale: string): string | null {
+  const normalized = locale.toLowerCase() === "pt-br" ? "pt-BR" : locale;
+  if (SUPPORTED_LOCALES.includes(normalized as (typeof SUPPORTED_LOCALES)[number])) {
+    return normalized;
+  }
+  return null;
+}
+
 function getLocaleFromPathname(pathname: string | null): string {
   if (!pathname) return DEFAULT_LOCALE;
   const m = pathname.match(/^\/([^/]+)/);
-  return m && SUPPORTED_LOCALES.includes(m[1] as (typeof SUPPORTED_LOCALES)[number])
-    ? m[1]
-    : DEFAULT_LOCALE;
+  if (m) {
+    const normalized = normalizeLocale(m[1]);
+    if (normalized) {
+      return normalized;
+    }
+  }
+  return DEFAULT_LOCALE;
 }
 
 /**
@@ -32,6 +49,9 @@ export function ClientLocaleProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    // Set text direction based on locale (RTL or LTR)
+    const direction = getTextDirection(locale);
+    document.documentElement.dir = direction;
   }, [locale]);
 
   return (

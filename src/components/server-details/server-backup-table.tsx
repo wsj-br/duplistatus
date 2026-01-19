@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatBytes, formatRelativeTime } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger } from "@/lib/number-format";
 import { useConfig } from "@/contexts/config-context";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
 import { useRouter } from "next/navigation";
@@ -266,7 +268,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                   >
                     <TableCell className="font-medium">{backup.name}</TableCell>
                     <TableCell>
-                      <div>{new Date(backup.date).toLocaleString()}</div>
+                      <div>{formatDateTime(backup.date, locale)}</div>
                       <div className="text-xs text-muted-foreground">
                         {formatRelativeTime(backup.date, undefined, locale)}
                       </div>
@@ -303,7 +305,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                         count={backup.backup_list_count}
                       />
                     </TableCell>
-                    <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
+                    <TableCell className="text-right">{formatInteger(backup.fileCount, locale)}</TableCell>
                     <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
                     <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
                     <TableCell className="text-right">{backup.duration}</TableCell>
@@ -329,7 +331,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     <div className="flex-1">
                       <div className="font-medium text-sm">{backup.name}</div>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(backup.date).toLocaleString()}
+                        {formatDateTime(backup.date, locale)}
                       </div>
                     </div>
                     
@@ -377,7 +379,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">File Count</Label>
-                      <div className="text-sm">{backup.fileCount.toLocaleString()}</div>
+                      <div className="text-sm">{formatInteger(backup.fileCount, locale)}</div>
                     </div>
 
                     {/* Row 2 */}

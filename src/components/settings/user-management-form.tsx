@@ -40,6 +40,7 @@ import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Edit, Trash2, KeyRound, Search, Copy, Check, X, UserCog } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
+import { formatDateTime } from '@/lib/date-format';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 import { usePasswordPolicy } from '@/hooks/use-password-policy';
@@ -544,7 +545,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                   <TableCell>
                     {user.lastLoginAt ? (
                       <>
-                        <div>{new Date(user.lastLoginAt).toLocaleString()}</div>
+                        <div>{formatDateTime(user.lastLoginAt, locale)}</div>
                         <div className="text-xs text-muted-foreground">
                           {formatRelativeTime(user.lastLoginAt, undefined, locale)}
                         </div>
@@ -554,13 +555,13 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <div>{new Date(user.updatedAt).toLocaleString()}</div>
+                    <div>{formatDateTime(user.updatedAt, locale)}</div>
                     <div className="text-xs text-muted-foreground">
                       {formatRelativeTime(user.updatedAt)}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div>{new Date(user.createdAt).toLocaleString()}</div>
+                    <div>{formatDateTime(user.createdAt, locale)}</div>
                     <div className="text-xs text-muted-foreground">
                       {formatRelativeTime(user.createdAt)}
                     </div>
@@ -703,7 +704,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                       <div className="text-sm">
                         {user.lastLoginAt ? (
                           <>
-                            <div>{new Date(user.lastLoginAt).toLocaleString()}</div>
+                            <div>{formatDateTime(user.lastLoginAt, locale)}</div>
                             <div className="text-xs text-muted-foreground">
                               {formatRelativeTime(user.lastLoginAt, undefined, locale)}
                             </div>
@@ -718,7 +719,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Last Update</Label>
                       <div className="text-sm">
-                        <div>{new Date(user.updatedAt).toLocaleString()}</div>
+                        <div>{formatDateTime(user.updatedAt, locale)}</div>
                         <div className="text-xs text-muted-foreground">
                           {formatRelativeTime(user.updatedAt)}
                         </div>
@@ -729,7 +730,7 @@ export function UserManagementForm({ currentUserId }: UserManagementFormProps) {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Created</Label>
                       <div className="text-sm">
-                        <div>{new Date(user.createdAt).toLocaleString()}</div>
+                        <div>{formatDateTime(user.createdAt, locale)}</div>
                         <div className="text-xs text-muted-foreground">
                           {formatRelativeTime(user.createdAt, undefined, locale)}
                         </div>

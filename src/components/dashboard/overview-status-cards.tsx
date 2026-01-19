@@ -184,7 +184,7 @@ export function OverviewStatusPanel({ servers, totalBackups }: OverviewStatusPan
                 ) : (
                   <ColoredIcon icon={ThumbsUp} color="green" size="md" />
                 )}
-                <CardTitle className="text-sm font-medium">Overdue Backups</CardTitle>
+                <CardTitle className="text-sm font-medium">{content.overdueBackups.value}</CardTitle>
               </div>
               <div className="text-right">
                 <span className={`text-lg font-bold ${overdueBackups.length > 0 ? 'text-red-500' : 'text-green-500'}`}>{overdueBackups.length}</span>

@@ -43,14 +43,14 @@ export default {
       en: 'Overdue Backup', 
       de: 'Überfällige Sicherung', 
       fr: 'Sauvegarde en retard', 
-      es: 'Respaldo vencido', 
+      es: 'Backup retrasado', 
       'pt-BR': 'Backup atrasado' 
     }),
     overdueTabShort: t({ 
       en: 'Overdue', 
       de: 'Überfällig', 
       fr: 'En retard', 
-      es: 'Vencido', 
+      es: 'Retrasado', 
       'pt-BR': 'Atrasado' 
     }),
     // Template titles and descriptions
@@ -86,7 +86,7 @@ export default {
       en: 'Overdue Backup Notification Template', 
       de: 'Überfällige Sicherungs-Benachrichtigungsvorlage', 
       fr: 'Modèle de notification de sauvegarde en retard', 
-      es: 'Plantilla de notificación de respaldo vencido', 
+      es: 'Plantilla de notificación de backup retrasado', 
       'pt-BR': 'Modelo de notificação de backup atrasado' 
     }),
     overdueTemplateDescription: t({ 
@@ -324,22 +324,22 @@ export default {
       en: 'Name of the backup', 
       de: 'Name der Sicherung', 
       fr: 'Nom de la sauvegarde', 
-      es: 'Nombre del respaldo', 
+      es: 'Nombre del backup', 
       'pt-BR': 'Nome do backup' 
     }),
     variableBackupDate: t({ 
       en: 'Date/time of the backup', 
       de: 'Datum/Zeit der Sicherung', 
       fr: 'Date/heure de la sauvegarde', 
-      es: 'Fecha/hora del respaldo', 
+      es: 'Fecha/hora del backup', 
       'pt-BR': 'Data/hora do backup' 
     }),
     variableStatus: t({ 
       en: 'Backup status (Success, Failed, etc.)', 
       de: 'Sicherungsstatus (Erfolg, Fehlgeschlagen, etc.)', 
       fr: 'Statut de la sauvegarde (Succès, Échoué, etc.)', 
-      es: 'Estado del respaldo (Éxito, Fallido, etc.)', 
-      'pt-BR': 'Status do backup (Sucesso, Falhou, etc.)' 
+      es: 'Estado del backup (Éxito, Fallido, etc.)', 
+      'pt-BR': 'Status do backup (Sucesso, Falha, etc.)' 
     }),
     variableMessagesCount: t({ 
       en: 'Number of messages', 
@@ -373,7 +373,7 @@ export default {
       en: 'Backup duration', 
       de: 'Sicherungsdauer', 
       fr: 'Durée de la sauvegarde', 
-      es: 'Duración del respaldo', 
+      es: 'Duración del backup', 
       'pt-BR': 'Duração do backup' 
     }),
     variableFileCount: t({ 
@@ -393,8 +393,8 @@ export default {
     variableUploadedSize: t({ 
       en: 'Size of uploaded data', 
       de: 'Größe der hochgeladenen Daten', 
-      fr: 'Taille des données téléchargées', 
-      es: 'Tamaño de datos subidos', 
+      fr: 'Taille des données téléversées', 
+      es: 'Tamaño de datos cargados', 
       'pt-BR': 'Tamanho dos dados enviados' 
     }),
     variableStorageSize: t({ 
@@ -416,35 +416,35 @@ export default {
       en: 'Date/time of the last backup', 
       de: 'Datum/Zeit der letzten Sicherung', 
       fr: 'Date/heure de la dernière sauvegarde', 
-      es: 'Fecha/hora del último respaldo', 
+      es: 'Fecha/hora del último backup', 
       'pt-BR': 'Data/hora do último backup' 
     }),
     variableLastElapsed: t({ 
       en: 'Time ago since the last backup', 
       de: 'Zeit seit der letzten Sicherung', 
       fr: 'Temps écoulé depuis la dernière sauvegarde', 
-      es: 'Tiempo transcurrido desde el último respaldo', 
+      es: 'Tiempo transcurrido desde el último backup', 
       'pt-BR': 'Tempo decorrido desde o último backup' 
     }),
     variableExpectedDate: t({ 
       en: 'Date/time when the backup was expected', 
       de: 'Datum/Zeit, zu der die Sicherung erwartet wurde', 
       fr: 'Date/heure à laquelle la sauvegarde était attendue', 
-      es: 'Fecha/hora en que se esperaba el respaldo', 
+      es: 'Fecha/hora en que se esperaba el backup', 
       'pt-BR': 'Data/hora em que o backup era esperado' 
     }),
     variableExpectedElapsed: t({ 
       en: 'Time elapsed since the expected backup date', 
       de: 'Zeit seit dem erwarteten Sicherungsdatum', 
       fr: 'Temps écoulé depuis la date de sauvegarde attendue', 
-      es: 'Tiempo transcurrido desde la fecha de respaldo esperada', 
+      es: 'Tiempo transcurrido desde la fecha de backup esperada', 
       'pt-BR': 'Tempo decorrido desde a data de backup esperada' 
     }),
     variableBackupInterval: t({ 
       en: 'Backup interval string (e.g., "1D", "2W", "1M")', 
       de: 'Sicherungsintervall-String (z.B. "1D", "2W", "1M")', 
       fr: 'Chaîne d\'intervalle de sauvegarde (par ex. "1D", "2W", "1M")', 
-      es: 'Cadena de intervalo de respaldo (ej. "1D", "2W", "1M")', 
+      es: 'Cadena de intervalo de backup (ej. "1D", "2W", "1M")', 
       'pt-BR': 'String de intervalo de backup (ex: "1D", "2W", "1M")' 
     }),
     variableOverdueTolerance: t({ 

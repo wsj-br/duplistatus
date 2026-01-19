@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "@/contexts/locale-context";
 import type { BackupStatus, NotificationEvent } from "@/lib/types";
 import { formatRelativeTime, formatBytes, getStatusColor } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger } from "@/lib/number-format";
 import { AlertTriangle, Settings, MessageSquareMore, MessageSquareOff } from "lucide-react";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 
@@ -90,7 +92,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{content.date}</div>
             <div className="font-semibold text-left">
               {lastBackupDate !== "N/A" 
-                ? new Date(lastBackupDate).toLocaleString() + " (" + formatRelativeTime(lastBackupDate, undefined, locale) + ")"
+                ? formatDateTime(lastBackupDate, locale) + " (" + formatRelativeTime(lastBackupDate, undefined, locale) + ")"
                 : common.status.notAvailable}
             </div>
           </div>
@@ -117,7 +119,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{content.files}</div>
             <div className="font-semibold text-left">
               {fileCount !== null && fileCount !== undefined
-                ? fileCount.toLocaleString()
+                ? formatInteger(fileCount, locale)
                 : common.status.notAvailable}
             </div>
           </div>
@@ -153,7 +155,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-left mb-1">{content.versions}</div>
             <div className="font-semibold text-left">
               {lastBackupListCount !== null && lastBackupListCount !== undefined
-                ? lastBackupListCount.toLocaleString()
+                ? formatInteger(lastBackupListCount, locale)
                 : common.status.notAvailable}
             </div>
           </div>
@@ -163,7 +165,7 @@ export function BackupTooltipContent({
             <div className="col-span-2">
               <div className="text-muted-foreground text-left mb-1">{content.expected}</div>
               <div className="font-semibold text-left">
-                {new Date(expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(expectedBackupDate, undefined, locale) + ")"}
+                {formatDateTime(expectedBackupDate, locale) + " (" + formatRelativeTime(expectedBackupDate, undefined, locale) + ")"}
               </div>
             </div>
           )}
@@ -182,7 +184,7 @@ export function BackupTooltipContent({
             <div className="text-muted-foreground text-right">{content.expected}</div>
             <div className="font-semibold text-left">
               {expectedBackupDate !== "N/A" 
-                ? new Date(expectedBackupDate).toLocaleString() + " (" + formatRelativeTime(expectedBackupDate) + ")"
+                ? formatDateTime(expectedBackupDate, locale) + " (" + formatRelativeTime(expectedBackupDate, undefined, locale) + ")"
                 : common.status.notAvailable}
             </div>
           </div>

@@ -85,7 +85,7 @@ export default {
       de: 'Anmeldung fehlgeschlagen', 
       fr: 'Connexion échouée', 
       es: 'Inicio de sesión fallido', 
-      'pt-BR': 'Login falhou' 
+      'pt-BR': 'Falha no login' 
     }),
     invalidCredentials: t({ 
       en: 'Invalid username or password', 

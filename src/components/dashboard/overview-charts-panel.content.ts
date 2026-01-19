@@ -7,7 +7,7 @@ export default {
       en: 'Backup History', 
       de: 'Sicherungsverlauf', 
       fr: 'Historique des sauvegardes', 
-      es: 'Historial de respaldos', 
+      es: 'Historial de backups', 
       'pt-BR': 'Histórico de backups' 
     }),
     successRate: t({ 
@@ -21,7 +21,7 @@ export default {
       en: 'Backup Size', 
       de: 'Sicherungsgröße', 
       fr: 'Taille de sauvegarde', 
-      es: 'Tamaño de respaldo', 
+      es: 'Tamaño de backup', 
       'pt-BR': 'Tamanho do backup' 
     }),
     fileSize: t({ 
@@ -42,7 +42,7 @@ export default {
       en: 'Backup Duration', 
       de: 'Sicherungsdauer', 
       fr: 'Durée de sauvegarde', 
-      es: 'Duración de respaldo', 
+      es: 'Duración de backup', 
       'pt-BR': 'Duração do backup' 
     }),
     serverStatus: t({ 
@@ -92,7 +92,7 @@ export default {
       de: 'Fehlgeschlagen', 
       fr: 'Échoué', 
       es: 'Fallido', 
-      'pt-BR': 'Falhado' 
+      'pt-BR': 'Falha' 
     }),
     total: t({ 
       en: 'Total', 
@@ -134,14 +134,14 @@ export default {
       en: ' (all backups)', 
       de: ' (alle Sicherungen)', 
       fr: ' (toutes les sauvegardes)', 
-      es: ' (todos los respaldos)', 
+      es: ' (todos los backups)', 
       'pt-BR': ' (todos os backups)' 
     }),
     allServersAndBackups: t({ 
       en: 'All Servers & Backups', 
       de: 'Alle Server & Sicherungen', 
       fr: 'Tous les serveurs et sauvegardes', 
-      es: 'Todos los servidores y respaldos', 
+      es: 'Todos los servidores y backups', 
       'pt-BR': 'Todos os servidores e backups' 
     }),
     loadingChartData: t({ 

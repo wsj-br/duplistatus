@@ -215,7 +215,7 @@ function LoginForm() {
                       type="text"
                       autoComplete="username"
                       required
-                      placeholder={content.usernamePlaceholder}
+                      placeholder={content.usernamePlaceholder.value}
                       value={username}
                       onChange={handleUsernameChange}
                       disabled={loading}
@@ -227,7 +227,7 @@ function LoginForm() {
                       id="password"
                       value={password}
                       onChange={setPassword}
-                      placeholder={content.passwordPlaceholder}
+                      placeholder={content.passwordPlaceholder.value}
                       disabled={loading}
                     />
                   </div>

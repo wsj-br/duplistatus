@@ -5,14 +5,14 @@ export default {
   content: {
     title: t({ 
       en: 'Audit Log', 
-      de: 'Prüfprotokoll', 
+      de: 'Audit-Log', 
       fr: 'Journal d\'audit', 
       es: 'Registro de auditoría', 
       'pt-BR': 'Registro de auditoria' 
     }),
     description: t({ 
       en: 'View application audit log entries', 
-      de: 'Anwendungsprüfprotokolleinträge anzeigen', 
+      de: 'Anwendungs-Audit-Log-Einträge anzeigen', 
       fr: 'Afficher les entrées du journal d\'audit de l\'application', 
       es: 'Ver entradas del registro de auditoría de la aplicación', 
       'pt-BR': 'Ver entradas do registro de auditoria do aplicativo' 
@@ -27,21 +27,15 @@ export default {
     // Header
     auditLogViewer: t({ 
       en: 'Audit Log Viewer', 
-      de: 'Prüfprotokoll-Viewer', 
+      de: 'Audit-Log-Viewer', 
       fr: 'Visualiseur de journal d\'audit', 
       es: 'Visor de registro de auditoría', 
       'pt-BR': 'Visualizador de registro de auditoria' 
     }),
-    refresh: t({ 
-      en: 'Refresh', 
-      de: 'Aktualisieren', 
-      fr: 'Actualiser', 
-      es: 'Actualizar', 
-      'pt-BR': 'Atualizar' 
-    }),
+    // 'refresh' is now available in common.ui.refresh
     refreshAuditLogs: t({ 
       en: 'Refresh audit logs', 
-      de: 'Prüfprotokolle aktualisieren', 
+      de: 'Audit-Logs aktualisieren', 
       fr: 'Actualiser les journaux d\'audit', 
       es: 'Actualizar registros de auditoría', 
       'pt-BR': 'Atualizar registros de auditoria' 
@@ -148,14 +142,14 @@ export default {
     // Loading and empty states
     loadingAuditLogs: t({ 
       en: 'Loading audit logs...', 
-      de: 'Prüfprotokolle werden geladen...', 
+      de: 'Audit-Logs werden geladen...', 
       fr: 'Chargement des journaux d\'audit...', 
       es: 'Cargando registros de auditoría...', 
       'pt-BR': 'Carregando registros de auditoria...' 
     }),
     noAuditLogsFound: t({ 
       en: 'No audit logs found', 
-      de: 'Keine Prüfprotokolle gefunden', 
+      de: 'Keine Audit-Logs gefunden', 
       fr: 'Aucun journal d\'audit trouvé', 
       es: 'No se encontraron registros de auditoría', 
       'pt-BR': 'Nenhum registro de auditoria encontrado' 
@@ -271,14 +265,14 @@ export default {
     // Dialog
     auditLogDetails: t({ 
       en: 'Audit Log Details', 
-      de: 'Prüfprotokoll-Details', 
+      de: 'Audit-Log-Details', 
       fr: 'Détails du journal d\'audit', 
       es: 'Detalles del registro de auditoría', 
       'pt-BR': 'Detalhes do registro de auditoria' 
     }),
     completeInformationForAuditLogEntry: t({ 
       en: 'Complete information for audit log entry #{id}', 
-      de: 'Vollständige Informationen für Prüfprotokolleintrag #{id}', 
+      de: 'Vollständige Informationen für Audit-Log-Eintrag #{id}', 
       fr: 'Informations complètes pour l\'entrée du journal d\'audit #{id}', 
       es: 'Información completa para la entrada del registro de auditoría #{id}', 
       'pt-BR': 'Informações completas para a entrada do registro de auditoria #{id}' 
@@ -362,13 +356,7 @@ export default {
       'pt-BR': 'Mensagem de erro' 
     }),
     // Status badges
-    success: t({ 
-      en: 'Success', 
-      de: 'Erfolg', 
-      fr: 'Succès', 
-      es: 'Éxito', 
-      'pt-BR': 'Sucesso' 
-    }),
+    // 'success' is now available in common.status.success
     failure: t({ 
       en: 'Failure', 
       de: 'Fehler', 
@@ -376,17 +364,11 @@ export default {
       es: 'Fallo', 
       'pt-BR': 'Falha' 
     }),
-    error: t({ 
-      en: 'Error', 
-      de: 'Fehler', 
-      fr: 'Erreur', 
-      es: 'Error', 
-      'pt-BR': 'Erro' 
-    }),
+    // 'error' is now available in common.status.error
     // Toast messages
     failedToLoadAuditLogs: t({ 
       en: 'Failed to load audit logs', 
-      de: 'Fehler beim Laden der Prüfprotokolle', 
+      de: 'Fehler beim Laden der Audit-Logs', 
       fr: 'Échec du chargement des journaux d\'audit', 
       es: 'Error al cargar registros de auditoría', 
       'pt-BR': 'Falha ao carregar registros de auditoria' 
@@ -407,7 +389,7 @@ export default {
     }),
     auditLogDownloadedAs: t({ 
       en: 'Audit log downloaded as {format}', 
-      de: 'Prüfprotokoll als {format} heruntergeladen', 
+      de: 'Audit-Log als {format} heruntergeladen', 
       fr: 'Journal d\'audit téléchargé au format {format}', 
       es: 'Registro de auditoría descargado como {format}', 
       'pt-BR': 'Registro de auditoria baixado como {format}' 

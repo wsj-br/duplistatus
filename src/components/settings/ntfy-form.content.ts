@@ -196,7 +196,7 @@ export default {
       de: 'Test fehlgeschlagen', 
       fr: 'Test échoué', 
       es: 'Prueba fallida', 
-      'pt-BR': 'Teste falhou' 
+      'pt-BR': 'Falha no teste' 
     }),
     failedToSendTestNotification: t({ 
       en: 'Failed to send test notification', 

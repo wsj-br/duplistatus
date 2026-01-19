@@ -14,7 +14,7 @@ export default {
       en: 'Add, edit, and manage backup servers', 
       de: 'Backup-Server hinzufügen, bearbeiten und verwalten', 
       fr: 'Ajouter, modifier et gérer les serveurs de sauvegarde', 
-      es: 'Agregar, editar y administrar servidores de respaldo', 
+      es: 'Agregar, editar y administrar servidores de backup', 
       'pt-BR': 'Adicionar, editar e gerenciar servidores de backup' 
     }),
     addServer: t({ 
@@ -172,7 +172,7 @@ export default {
       de: 'Fehlgeschlagen', 
       fr: 'Échoué', 
       es: 'Fallido', 
-      'pt-BR': 'Falhou' 
+      'pt-BR': 'Falha' 
     }),
     testing: t({ 
       en: 'Testing...', 
@@ -440,7 +440,7 @@ export default {
       en: 'Collecting backup logs from all configured servers...', 
       de: 'Sammle Backup-Protokolle von allen konfigurierten Servern...', 
       fr: 'Collecte des journaux de sauvegarde de tous les serveurs configurés...', 
-      es: 'Recopilando registros de respaldo de todos los servidores configurados...', 
+      es: 'Recopilando registros de backup de todos los servidores configurados...', 
       'pt-BR': 'Coletando logs de backup de todos os servidores configurados...' 
     }),
     deletePassword: t({ 

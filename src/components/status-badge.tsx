@@ -1,3 +1,5 @@
+"use client";
+
 import type { BackupStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, AlertOctagon } from "lucide-react";
@@ -33,19 +35,19 @@ export function StatusBadge({ status, onClick }: StatusBadgeProps) {
   const getStatusLabel = (status: BackupStatus | 'N/A'): string => {
     switch (status) {
       case 'Success':
-        return content.success;
+        return content.success.value;
       case 'Unknown':
-        return content.unknown;
+        return content.unknown.value;
       case 'Warning':
-        return content.warning;
+        return content.warning.value;
       case 'Error':
-        return content.error;
+        return content.error.value;
       case 'Fatal':
-        return content.fatal;
+        return content.fatal.value;
       case 'N/A':
-        return content.na;
+        return content.na.value;
       default:
-        return content.na;
+        return content.na.value;
     }
   };
 

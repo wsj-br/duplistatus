@@ -28,7 +28,6 @@ export type {
   DashboardTableContent,
   OverviewChartsPanelContent,
   DashboardPageContent,
-  ServerCardsContent,
   DashboardSummaryCardsContent,
   ServerBackupTableContent,
   ServerDetailSummaryItemsContent,
