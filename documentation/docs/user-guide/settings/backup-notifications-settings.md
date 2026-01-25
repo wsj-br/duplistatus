@@ -3,7 +3,7 @@
 # Backup Notifications 
 
 
-Use this settings to send notifications when a [new backup log is received](/installation/duplicati-server-configuration.md).
+Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
 
 ![Backup alerts](/img/screen-settings-notifications.png)
 

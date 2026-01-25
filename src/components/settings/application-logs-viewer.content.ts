@@ -7,15 +7,15 @@ export default {
       en: 'Application Logs Viewer', 
       de: 'Anwendungsprotokoll-Viewer', 
       fr: 'Visualiseur de journaux d\'application', 
-      es: 'Visor de registros de aplicación', 
-      'pt-BR': 'Visualizador de registros do aplicativo' 
+      es: 'Visor de Logs de aplicación', 
+      'pt-BR': 'Visualizador de logs do aplicativo' 
     }),
     refreshLogs: t({ 
       en: 'Refresh logs', 
       de: 'Protokolle aktualisieren', 
       fr: 'Actualiser les journaux', 
-      es: 'Actualizar registros', 
-      'pt-BR': 'Atualizar registros' 
+      es: 'Actualizar logs', 
+      'pt-BR': 'Atualizar logs' 
     }),
     refresh: t({ 
       en: 'Refresh', 
@@ -98,22 +98,22 @@ export default {
       en: 'Loading logs...', 
       de: 'Protokolle werden geladen...', 
       fr: 'Chargement des journaux...', 
-      es: 'Cargando registros...', 
-      'pt-BR': 'Carregando registros...' 
+      es: 'Cargando logs...', 
+      'pt-BR': 'Carregando logs...' 
     }),
     noLogsMatch: t({ 
       en: 'No logs match the current filters', 
       de: 'Keine Protokolle entsprechen den aktuellen Filtern', 
       fr: 'Aucun journal ne correspond aux filtres actuels', 
-      es: 'Ningún registro coincide con los filtros actuales', 
-      'pt-BR': 'Nenhum registro corresponde aos filtros atuais' 
+      es: 'Ningún log coincide con los filtros actuales', 
+      'pt-BR': 'Nenhum log corresponde aos filtros atuais' 
     }),
     noLogsAvailable: t({ 
       en: 'No logs available', 
       de: 'Keine Protokolle verfügbar', 
       fr: 'Aucun journal disponible', 
-      es: 'No hay registros disponibles', 
-      'pt-BR': 'Nenhum registro disponível' 
+      es: 'No hay logs disponibles', 
+      'pt-BR': 'Nenhum log disponível' 
     }),
     showingLines: t({ 
       en: 'Showing {filtered} of {total} lines', 
@@ -154,36 +154,36 @@ export default {
       en: 'Failed to load logs', 
       de: 'Fehler beim Laden der Protokolle', 
       fr: 'Échec du chargement des journaux', 
-      es: 'Error al cargar los registros', 
-      'pt-BR': 'Falha ao carregar registros' 
+      es: 'Error al cargar los logs', 
+      'pt-BR': 'Falha ao carregar logs' 
     }),
     logsCopied: t({ 
       en: 'Logs copied to clipboard', 
       de: 'Protokolle in die Zwischenablage kopiert', 
       fr: 'Journaux copiés dans le presse-papiers', 
-      es: 'Registros copiados al portapapeles', 
-      'pt-BR': 'Registros copiados para a área de transferência' 
+      es: 'Logs copiados al portapapeles', 
+      'pt-BR': 'Logs copiados para a área de transferência' 
     }),
     failedToCopy: t({ 
       en: 'Failed to copy logs to clipboard', 
       de: 'Fehler beim Kopieren der Protokolle in die Zwischenablage', 
       fr: 'Échec de la copie des journaux dans le presse-papiers', 
-      es: 'Error al copiar los registros al portapapeles', 
-      'pt-BR': 'Falha ao copiar registros para a área de transferência' 
+      es: 'Error al copiar los logs al portapapeles', 
+      'pt-BR': 'Falha ao copiar logs para a área de transferência' 
     }),
     logsExported: t({ 
       en: 'Logs exported successfully', 
       de: 'Protokolle erfolgreich exportiert', 
       fr: 'Journaux exportés avec succès', 
-      es: 'Registros exportados exitosamente', 
-      'pt-BR': 'Registros exportados com sucesso' 
+      es: 'Logs exportados exitosamente', 
+      'pt-BR': 'Logs exportados com sucesso' 
     }),
     failedToExport: t({ 
       en: 'Failed to export logs', 
       de: 'Fehler beim Exportieren der Protokolle', 
       fr: 'Échec de l\'exportation des journaux', 
-      es: 'Error al exportar los registros', 
-      'pt-BR': 'Falha ao exportar registros' 
+      es: 'Error al exportar los logs', 
+      'pt-BR': 'Falha ao exportar logs' 
     }),
   },
 } satisfies Dictionary;

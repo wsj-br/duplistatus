@@ -127,7 +127,7 @@ export default {
       en: '(Collect backups logs)', 
       de: '(Sicherungsprotokolle sammeln)', 
       fr: '(Collecter les journaux de sauvegarde)', 
-      es: '(Recopilar registros de backup)', 
+      es: '(Recopilar logs de backup)', 
       'pt-BR': '(Coletar logs de backup)' 
     }),
     // Sort options

@@ -4,18 +4,18 @@ export default {
   key: 'audit-log-retention-form',
   content: {
     title: t({ 
-      en: 'Audit Log Retention', 
-      de: 'Aufbewahrungsfrist', 
+      en: 'Audit Log Retention',
+      de: 'Audit-Log-Aufbewahrung', 
       fr: 'Rétention du journal d\'audit', 
-      es: 'Retención de Logs de Auditoría', 
-      'pt-BR': 'Retenção de registro de auditoria' 
+      es: 'Retención del log de auditoría', 
+      'pt-BR': 'Retenção de log de auditoria' 
     }),
     description: t({ 
       en: 'Configure how long audit logs are retained before automatic cleanup. Set the number of days audit logs should be retained. Logs older than this period will be automatically deleted during daily cleanup.', 
       de: 'Konfigurieren Sie, wie lange Audit-Logs vor der automatischen Bereinigung aufbewahrt werden. Legen Sie die Anzahl der Tage fest, für die Audit-Logs aufbewahrt werden sollen. Logs, die älter als dieser Zeitraum sind, werden während der täglichen Bereinigung automatisch gelöscht.', 
       fr: 'Configurez la durée de conservation des journaux d\'audit avant le nettoyage automatique. Définissez le nombre de jours pendant lesquels les journaux d\'audit doivent être conservés. Les journaux plus anciens que cette période seront automatiquement supprimés lors du nettoyage quotidien.', 
-      es: 'Configure cuánto tiempo se conservan los registros de auditoría antes de la limpieza automática. Establezca el número de días que se deben conservar los registros de auditoría. Los registros más antiguos que este período se eliminarán automáticamente durante la limpieza diaria.', 
-      'pt-BR': 'Configure por quanto tempo os registros de auditoria são retidos antes da limpeza automática. Defina o número de dias que os registros de auditoria devem ser retidos. Registros mais antigos que este período serão automaticamente excluídos durante a limpeza diária.' 
+      es: 'Configure cuánto tiempo se conservan los logs de auditoría antes de la limpieza automática. Establezca el número de días que se deben conservar los logs de auditoría. Los logs más antiguos que este período se eliminarán automáticamente durante la limpieza diaria.', 
+      'pt-BR': 'Configure por quanto tempo os logs de auditoria são retidos antes da limpeza automática. Defina o número de dias que os logs de auditoria devem ser retidos. Logs mais antigos que este período serão automaticamente excluídos durante a limpeza diária.' 
     }),
     retentionDays: t({ 
       en: 'Retention (days):', 
@@ -78,7 +78,7 @@ export default {
       de: 'Aufbewahrungsfrist auf {days} Tage aktualisiert', 
       fr: 'Rétention du journal d\'audit mise à jour à {days} jours', 
       es: 'Retención de Logs de Auditoría actualizada a {days} días', 
-      'pt-BR': 'Retenção de registro de auditoria atualizada para {days} dias' 
+      'pt-BR': 'Retenção de log de auditoria atualizada para {days} dias' 
     }),
     failedToSave: t({ 
       en: 'Failed to save retention configuration', 

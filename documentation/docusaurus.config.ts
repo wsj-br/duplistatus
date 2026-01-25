@@ -44,12 +44,42 @@ const config: Config = {
     },
   },
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
+  // Internationalization configuration for multi-language support
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'fr', 'de', 'es', 'pt-BR'],
+    localeConfigs: {
+      en: {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en-US',
+        calendar: 'gregory',
+      },
+      fr: {
+        label: 'Français',
+        direction: 'ltr',
+        htmlLang: 'fr-FR',
+        calendar: 'gregory',
+      },
+      de: {
+        label: 'Deutsch',
+        direction: 'ltr',
+        htmlLang: 'de-DE',
+        calendar: 'gregory',
+      },
+      es: {
+        label: 'Español',
+        direction: 'ltr',
+        htmlLang: 'es-ES',
+        calendar: 'gregory',
+      },
+      'pt-BR': {
+        label: 'Português (Brasil)',
+        direction: 'ltr',
+        htmlLang: 'pt-BR',
+        calendar: 'gregory',
+      },
+    },
   },
 
   plugins: [
@@ -65,11 +95,11 @@ const config: Config = {
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
-        language: ['en'],
+        language: ['en', 'fr', 'de', 'es', 'pt'],
         style: undefined,
         maxSearchResults: 8,
         lunr: {
-          // Use English language for better search results
+          // Support multiple languages for search results
           tokenizerSeparator: /[\s\-]+/,
         },
       },
@@ -135,6 +165,12 @@ const config: Config = {
           label: 'Documentation',
         },
         {
+          type: 'localeDropdown',
+          position: 'right',
+          dropdownItemsBefore: [],
+          dropdownItemsAfter: [],
+        },
+        {
           type: 'search',
           position: 'right',
         },
@@ -153,7 +189,7 @@ const config: Config = {
             items: [
               {
                 label: 'Installation',
-                to: '/installation/',
+                to: '/installation',
               },
               {
                 label: 'User Guide',
@@ -170,11 +206,11 @@ const config: Config = {
             items: [
               {
                 label: 'Development Setup',
-                to: 'development/setup',
+                to: '/development/setup',
               },
               {
                 label: 'API Reference',
-                to: 'api-reference/overview',
+                to: '/api-reference/overview',
               },
             ],
           },

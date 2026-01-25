@@ -1062,3 +1062,63 @@
     margin-bottom: 300px;
   }
 
+  /* ============================================
+     LOCALE DROPDOWN STYLING
+     ============================================ */
+
+  .navbar__item.dropdown .navbar__link {
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .navbar__item.dropdown .navbar__link:hover {
+    opacity: 0.8;
+  }
+
+  .dropdown__menu .dropdown__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .dropdown__menu .dropdown__link:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  [data-theme='dark'] .dropdown__menu .dropdown__link:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+
+  /* Flag emojis for locale dropdown */
+  .dropdown__menu .dropdown__link[href*="/en/"]::before,
+  .dropdown__menu .dropdown__link[href*="/en"]::before {
+    content: "🇬🇧";
+    font-size: 1.2em;
+  }
+
+  .dropdown__menu .dropdown__link[href*="/fr/"]::before,
+  .dropdown__menu .dropdown__link[href*="/fr"]::before {
+    content: "🇫🇷";
+    font-size: 1.2em;
+  }
+
+  .dropdown__menu .dropdown__link[href*="/de/"]::before,
+  .dropdown__menu .dropdown__link[href*="/de"]::before {
+    content: "🇩🇪";
+    font-size: 1.2em;
+  }
+
+  .dropdown__menu .dropdown__link[href*="/es/"]::before,
+  .dropdown__menu .dropdown__link[href*="/es"]::before {
+    content: "🇪🇸";
+    font-size: 1.2em;
+  }
+
+  .dropdown__menu .dropdown__link[href*="/pt-br/"]::before,
+  .dropdown__menu .dropdown__link[href*="/pt-br"]::before {
+    content: "🇧🇷";
+    font-size: 1.2em;
+  }
+

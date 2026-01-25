@@ -16,7 +16,7 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 
 ## Installation
 
-For prerequisites and detailed installation instructions, please refer to the [Installation Guide](/installation/).
+For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../installation/installation.md).
 
 ## Accessing the Dashboard
 
@@ -93,7 +93,7 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
 <br/>
 
 :::info[IMPORTANT]
-Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](/installation/duplicati-server-configuration.md) section.
+Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](../installation/duplicati-server-configuration.md) section.
 :::
 
 <br/>

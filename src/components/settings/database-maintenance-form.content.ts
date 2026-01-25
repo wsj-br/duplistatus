@@ -36,8 +36,8 @@ export default {
       en: 'Reduce database size by cleaning up old records and managing data', 
       de: 'Datenbankgröße durch Bereinigung alter Datensätze und Datenverwaltung reduzieren', 
       fr: 'Réduire la taille de la base de données en nettoyant les anciens enregistrements et en gérant les données', 
-      es: 'Reducir el tamaño de la base de datos limpiando registros antiguos y gestionando datos', 
-      'pt-BR': 'Reduzir o tamanho do banco de dados limpando registros antigos e gerenciando dados' 
+      es: 'Reducir el tamaño de la base de datos limpiando logs antiguos y gestionando datos', 
+      'pt-BR': 'Reduzir o tamanho do banco de dados limpando logs antigos e gerenciando dados' 
     }),
     // Read-only mode
     readOnlyMode: t({ 
@@ -243,8 +243,8 @@ export default {
       en: 'Select how long backup records are kept in the database.', 
       de: 'Wählen Sie aus, wie lange Sicherungsdatensätze in der Datenbank gespeichert werden.', 
       fr: 'Sélectionnez la durée de conservation des enregistrements de sauvegarde dans la base de données.', 
-      es: 'Seleccione cuánto tiempo se conservan los registros de backup en la base de datos.', 
-      'pt-BR': 'Selecione por quanto tempo os registros de backup são mantidos no banco de dados.' 
+      es: 'Seleccione cuánto tiempo se conservan los logs de backup en la base de datos.', 
+      'pt-BR': 'Selecione por quanto tempo os logs de backup são mantidos no banco de dados.' 
     }),
     cleaning: t({ 
       en: 'Cleaning...', 
@@ -257,8 +257,8 @@ export default {
       en: 'Clear Old Records', 
       de: 'Alte Datensätze löschen', 
       fr: 'Effacer les anciens enregistrements', 
-      es: 'Limpiar registros antiguos', 
-      'pt-BR': 'Limpar registros antigos' 
+      es: 'Limpiar logs antiguos', 
+      'pt-BR': 'Limpar logs antigos' 
     }),
     areYouSure: t({ 
       en: 'Are you sure?', 
@@ -271,8 +271,8 @@ export default {
       en: 'This will permanently delete all backup records older than the selected cleanup period. This action cannot be undone.', 
       de: 'Dies löscht dauerhaft alle Sicherungsdatensätze, die älter als der ausgewählte Bereinigungszeitraum sind. Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela supprimera définitivement tous les enregistrements de sauvegarde plus anciens que la période de nettoyage sélectionnée. Cette action ne peut pas être annulée.', 
-      es: 'Esto eliminará permanentemente todos los registros de backup más antiguos que el período de limpieza seleccionado. Esta acción no se puede deshacer.', 
-      'pt-BR': 'Isso excluirá permanentemente todos os registros de backup mais antigos que o período de limpeza selecionado. Esta ação não pode ser desfeita.' 
+      es: 'Esto eliminará permanentemente todos los logs de backup más antiguos que el período de limpieza seleccionado. Esta acción no se puede deshacer.', 
+      'pt-BR': 'Isso excluirá permanentemente todos os logs de backup mais antigos que o período de limpeza selecionado. Esta ação não pode ser desfeita.' 
     }),
     continue: t({ 
       en: 'Continue', 
@@ -285,8 +285,8 @@ export default {
       en: 'This will remove all backup records older than the selected cleanup period. Manual action required - you must click the button to perform the cleanup.', 
       de: 'Dies entfernt alle Sicherungsdatensätze, die älter als der ausgewählte Bereinigungszeitraum sind. Manuelle Aktion erforderlich - Sie müssen auf die Schaltfläche klicken, um die Bereinigung durchzuführen.', 
       fr: 'Cela supprimera tous les enregistrements de sauvegarde plus anciens que la période de nettoyage sélectionnée. Action manuelle requise - vous devez cliquer sur le bouton pour effectuer le nettoyage.', 
-      es: 'Esto eliminará todos los registros de backup más antiguos que el período de limpieza seleccionado. Se requiere acción manual: debe hacer clic en el botón para realizar la limpieza.', 
-      'pt-BR': 'Isso removerá todos os registros de backup mais antigos que o período de limpeza selecionado. Ação manual necessária - você deve clicar no botão para realizar a limpeza.' 
+      es: 'Esto eliminará todos los logs de backup más antiguos que el período de limpieza seleccionado. Se requiere acción manual: debe hacer clic en el botón para realizar la limpieza.', 
+      'pt-BR': 'Isso removerá todos os logs de backup mais antigos que o período de limpeza selecionado. Ação manual necessária - você deve clicar no botão para realizar a limpeza.' 
     }),
     // Delete Backup Job
     deleteBackupJob: t({ 
@@ -314,8 +314,8 @@ export default {
       en: 'Select a backup job to delete all its backup records permanently.', 
       de: 'Wählen Sie einen Sicherungsauftrag aus, um alle zugehörigen Sicherungsdatensätze dauerhaft zu löschen.', 
       fr: 'Sélectionnez un travail de sauvegarde pour supprimer définitivement tous ses enregistrements de sauvegarde.', 
-      es: 'Seleccione un trabajo de backup para eliminar permanentemente todos sus registros de backup.', 
-      'pt-BR': 'Selecione um trabalho de backup para excluir permanentemente todos os seus registros de backup.' 
+      es: 'Seleccione un trabajo de backup para eliminar permanentemente todos sus logs de backup.', 
+      'pt-BR': 'Selecione um trabalho de backup para excluir permanentemente todos os seus logs de backup.' 
     }),
     deleting: t({ 
       en: 'Deleting...', 
@@ -342,8 +342,8 @@ export default {
       en: 'This will permanently delete all backup records for "{backupName}" from server "{serverName}". This action cannot be undone.', 
       de: 'Dies löscht dauerhaft alle Sicherungsdatensätze für "{backupName}" vom Server "{serverName}". Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela supprimera définitivement tous les enregistrements de sauvegarde pour "{backupName}" du serveur "{serverName}". Cette action ne peut pas être annulée.', 
-      es: 'Esto eliminará permanentemente todos los registros de backup para "{backupName}" del servidor "{serverName}". Esta acción no se puede deshacer.', 
-      'pt-BR': 'Isso excluirá permanentemente todos os registros de backup para "{backupName}" do servidor "{serverName}". Esta ação não pode ser desfeita.' 
+      es: 'Esto eliminará permanentemente todos los logs de backup para "{backupName}" del servidor "{serverName}". Esta acción no se puede deshacer.', 
+      'pt-BR': 'Isso excluirá permanentemente todos os logs de backup para "{backupName}" do servidor "{serverName}". Esta ação não pode ser desfeita.' 
     }),
     // Delete Server Data
     deleteServerData: t({ 
@@ -392,8 +392,8 @@ export default {
       en: 'This will permanently delete server "{serverName}" and all its backup records. This action cannot be undone.', 
       de: 'Dies löscht dauerhaft den Server "{serverName}" und alle zugehörigen Sicherungsdatensätze. Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela supprimera définitivement le serveur "{serverName}" et tous ses enregistrements de sauvegarde. Cette action ne peut pas être annulée.', 
-      es: 'Esto eliminará permanentemente el servidor "{serverName}" y todos sus registros de backup. Esta acción no se puede deshacer.', 
-      'pt-BR': 'Isso excluirá permanentemente o servidor "{serverName}" e todos os seus registros de backup. Esta ação não pode ser desfeita.' 
+      es: 'Esto eliminará permanentemente el servidor "{serverName}" y todos sus logs de backup. Esta acción no se puede deshacer.', 
+      'pt-BR': 'Isso excluirá permanentemente o servidor "{serverName}" e todos os seus logs de backup. Esta ação não pode ser desfeita.' 
     }),
     deleteServer: t({ 
       en: 'Delete Server', 
@@ -421,7 +421,7 @@ export default {
       en: 'Duplicati\'s machine-id can be changed after an upgrade or reinstall.\nAll backup logs and configurations will be transferred to the target servers.', 
       de: 'Die Maschinen-ID von Duplicati kann nach einem Upgrade oder einer Neuinstallation geändert werden.\nAlle Sicherungsprotokolle und Konfigurationen werden auf die Zielserver übertragen.', 
       fr: 'L\'ID machine de Duplicati peut être modifié après une mise à niveau ou une réinstallation.\nTous les journaux de sauvegarde et configurations seront transférés vers les serveurs cibles.', 
-      es: 'El ID de máquina de Duplicati puede cambiar después de una actualización o reinstalación.\nTodos los registros de backup y configuraciones se transferirán a los servidores objetivo.', 
+      es: 'El ID de máquina de Duplicati puede cambiar después de una actualización o reinstalación.\nTodos los logs de backup y configuraciones se transferirán a los servidores objetivo.', 
       'pt-BR': 'O ID da máquina do Duplicati pode ser alterado após uma atualização ou reinstalação.\nTodos os logs de backup e configurações serão transferidos para os servidores de destino.' 
     }),
     serverName: t({ 
@@ -498,8 +498,8 @@ export default {
       en: 'This will merge {count} server group(s). For each group, all old server IDs will be merged into the target server (newest by creation date). All backup records and configurations will be transferred to the target servers. The old server entries will be deleted. This action cannot be undone.', 
       de: 'Dies führt {count} Servergruppe(n) zusammen. Für jede Gruppe werden alle alten Server-IDs in den Zielserver (neueste nach Erstellungsdatum) zusammengeführt. Alle Sicherungsdatensätze und Konfigurationen werden auf die Zielserver übertragen. Die alten Servereinträge werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.', 
       fr: 'Cela fusionnera {count} groupe(s) de serveurs. Pour chaque groupe, tous les anciens ID de serveur seront fusionnés dans le serveur cible (le plus récent par date de création). Tous les enregistrements de sauvegarde et configurations seront transférés vers les serveurs cibles. Les anciennes entrées de serveur seront supprimées. Cette action ne peut pas être annulée.', 
-      es: 'Esto fusionará {count} grupo(s) de servidores. Para cada grupo, todos los ID de servidor antiguos se fusionarán en el servidor objetivo (más reciente por fecha de creación). Todos los registros de backup y configuraciones se transferirán a los servidores objetivo. Las entradas antiguas del servidor se eliminarán. Esta acción no se puede deshacer.', 
-      'pt-BR': 'Isso mesclará {count} grupo(s) de servidores. Para cada grupo, todos os IDs de servidor antigos serão mesclados no servidor de destino (mais recente por data de criação). Todos os registros de backup e configurações serão transferidos para os servidores de destino. As entradas antigas do servidor serão excluídas. Esta ação não pode ser desfeita.' 
+      es: 'Esto fusionará {count} grupo(s) de servidores. Para cada grupo, todos los ID de servidor antiguos se fusionarán en el servidor objetivo (más reciente por fecha de creación). Todos los logs de backup y configuraciones se transferirán a los servidores objetivo. Las entradas antiguas del servidor se eliminarán. Esta acción no se puede deshacer.', 
+      'pt-BR': 'Isso mesclará {count} grupo(s) de servidores. Para cada grupo, todos os IDs de servidor antigos serão mesclados no servidor de destino (mais recente por data de criação). Todos os logs de backup e configurações serão transferidos para os servidores de destino. As entradas antigas do servidor serão excluídas. Esta ação não pode ser desfeita.' 
     }),
     mergeServers: t({ 
       en: 'Merge Servers', 
@@ -534,8 +534,8 @@ export default {
       en: 'Old records have been successfully removed.', 
       de: 'Alte Datensätze wurden erfolgreich entfernt.', 
       fr: 'Les anciens enregistrements ont été supprimés avec succès.', 
-      es: 'Los registros antiguos se han eliminado exitosamente.', 
-      'pt-BR': 'Os registros antigos foram removidos com sucesso.' 
+      es: 'Los logs antiguos se han eliminado exitosamente.', 
+      'pt-BR': 'Os logs antigos foram removidos com sucesso.' 
     }),
     databaseCleanupFailed: t({ 
       en: 'Database Cleanup Failed', 

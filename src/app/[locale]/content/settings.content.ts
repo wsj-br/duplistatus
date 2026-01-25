@@ -13,7 +13,7 @@ export default {
       users: t({ en: 'Users', de: 'Benutzer', fr: 'Utilisateurs', es: 'Usuarios', 'pt-BR': 'Usuários' }),
       security: t({ en: 'Security', de: 'Sicherheit', fr: 'Sécurité', es: 'Seguridad', 'pt-BR': 'Segurança' }),
       backup: t({ en: 'Backup', de: 'Sicherung', fr: 'Sauvegarde', es: 'Backup', 'pt-BR': 'Backup' }),
-      logs: t({ en: 'Logs', de: 'Protokolle', fr: 'Journaux', es: 'Registros', 'pt-BR': 'Logs' }),
+      logs: t({ en: 'Logs', de: 'Protokolle', fr: 'Journaux', es: 'Logs', 'pt-BR': 'Logs' }),
       about: t({ en: 'About', de: 'Über', fr: 'À propos', es: 'Acerca de', 'pt-BR': 'Sobre' }),
     },
     general: {

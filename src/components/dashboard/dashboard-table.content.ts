@@ -190,7 +190,7 @@ export default {
         en: '(Collect backups logs)', 
         de: '(Sicherungsprotokolle sammeln)', 
         fr: '(Collecter les journaux de sauvegarde)', 
-        es: '(Recopilar registros de backup)', 
+        es: '(Recopilar logs de backup)', 
         'pt-BR': '(Coletar logs de backup)' 
       }),
     },
@@ -346,7 +346,7 @@ export default {
         en: 'Download Log', 
         de: 'Log herunterladen', 
         fr: 'Télécharger le journal', 
-        es: 'Descargar registro', 
+        es: 'Descargar log', 
         'pt-BR': 'Baixar log' 
       }),
       retryBackup: t({ 

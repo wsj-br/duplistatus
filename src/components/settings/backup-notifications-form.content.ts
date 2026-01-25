@@ -14,7 +14,7 @@ export default {
       en: 'Configure notification settings for a server or backup when a new backup log is received. Icons indicate additional destinations:', 
       de: 'Konfigurieren Sie Benachrichtigungseinstellungen für einen Server oder eine Sicherung, wenn ein neues Sicherungsprotokoll empfangen wird. Symbole zeigen zusätzliche Ziele an:', 
       fr: 'Configurez les paramètres de notification pour un serveur ou une sauvegarde lorsqu\'un nouveau journal de sauvegarde est reçu. Les icônes indiquent des destinations supplémentaires:', 
-      es: 'Configure los ajustes de notificación para un servidor o backup cuando se recibe un nuevo registro de backup. Los iconos indican destinos adicionales:', 
+      es: 'Configure los ajustes de notificación para un servidor o backup cuando se recibe un nuevo log de backup. Los iconos indican destinos adicionales:', 
       'pt-BR': 'Configure as notificações para um servidor ou backup quando um novo log de backup é recebido. Os ícones indicam destinos adicionais:' 
     }),
     serverDefaults: t({ 

@@ -315,7 +315,7 @@ export default {
     }),
     variableServerUrl: t({ 
       en: 'URL of the Duplicati server', 
-      de: 'URL des Duplicati-Servers', 
+      de: 'Duplicati-Server-URL', 
       fr: 'URL du serveur Duplicati', 
       es: 'URL del servidor Duplicati', 
       'pt-BR': 'URL do servidor Duplicati' 
@@ -366,7 +366,7 @@ export default {
       en: 'Log text messages (warnings and errors)', 
       de: 'Protokolltextnachrichten (Warnungen und Fehler)', 
       fr: 'Messages texte du journal (avertissements et erreurs)', 
-      es: 'Mensajes de texto del registro (advertencias y errores)', 
+      es: 'Mensajes de texto del log (advertencias y errores)', 
       'pt-BR': 'Mensagens de texto do log (avisos e erros)' 
     }),
     variableDuration: t({ 

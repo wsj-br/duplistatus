@@ -5,9 +5,9 @@ export default {
   content: {
     sidebar: {
       header: t({ 
-        en: 'System Settings', 
-        de: 'Systemeinstellungen', 
-        fr: 'Paramètres système', 
+        en: 'Settings', 
+        de: 'Einstellungen', 
+        fr: 'Paramètres', 
         es: 'Configuración', 
         'pt-BR': 'Configurações' 
       }),
@@ -57,10 +57,10 @@ export default {
           'pt-BR': 'Notificações de backup' 
         }),
         overdueMonitoring: t({ 
-          en: 'Overdue Monitoring', 
-          de: 'Überfällige Überwachung', 
-          fr: 'Surveillance des retards', 
-          es: 'Monitoreo de retrasos', 
+          en: 'Overdue Monitoring',
+          de: 'Überfälligkeitsüberwachung',
+          fr: 'Suivi des retards', 
+          es: 'Monitor de atrasos', 
           'pt-BR': 'Monitoramento de atrasos' 
         }),
         templates: t({ 
@@ -78,10 +78,10 @@ export default {
           'pt-BR': 'NTFY' 
         }),
         email: t({ 
-          en: 'Email', 
+          en: 'Email',
           de: 'E-Mail', 
           fr: 'E-mail', 
-          es: 'Correo electrónico', 
+          es: 'Email', 
           'pt-BR': 'E-mail' 
         }),
         servers: t({ 
@@ -92,11 +92,11 @@ export default {
           'pt-BR': 'Servidores' 
         }),
         display: t({ 
-          en: 'Display', 
-          de: 'Anzeige', 
-          fr: 'Affichage', 
-          es: 'Visualización', 
-          'pt-BR': 'Exibição' 
+          en: 'Display Settings',
+          de: 'Anzeigeeinstellungen',
+          fr: 'Paramètres d\'affichage',
+          es: 'Configuración de visualización',
+          'pt-BR': 'Configurações de exibição'
         }),
         databaseMaintenance: t({ 
           en: 'Database Maintenance', 
@@ -120,18 +120,18 @@ export default {
           'pt-BR': 'Log de Auditoria' 
         }),
         auditLogRetention: t({ 
-          en: 'Audit Log Retention', 
-          de: 'Aufbewahrungsfrist', 
+          en: 'Audit Log Retention',
+          de: 'Audit-Log-Aufbewahrung', 
           fr: 'Rétention du journal d\'audit', 
-          es: 'Retención de Logs de Auditoría', 
-          'pt-BR': 'Retenção de registro de auditoria' 
+          es: 'Retención del log de auditoría', 
+          'pt-BR': 'Retenção de log de auditoria'
         }),
         applicationLogs: t({ 
-          en: 'Application Logs', 
+          en: 'Application Logs',
           de: 'Anwendungsprotokolle', 
           fr: 'Journaux d\'application', 
-          es: 'Registros de aplicación', 
-          'pt-BR': 'Registros da aplicação' 
+          es: 'Logs de aplicación', 
+          'pt-BR': 'Logs da aplicação' 
         }),
       },
       nonAdminNotice: t({ 

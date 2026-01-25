@@ -77,7 +77,7 @@ export default {
       en: 'Log Summary', 
       de: 'Protokollzusammenfassung', 
       fr: 'Résumé du journal', 
-      es: 'Resumen del registro', 
+      es: 'Resumen del log', 
       'pt-BR': 'Resumo do log' 
     }),
     messages: t({ 
@@ -147,14 +147,14 @@ export default {
       en: 'If the backup log was collected using the Collect backup logs feature, the number of messages is limited to 20 due to a hardcoded limit in the Duplicati Server when saving to the local database.', 
       de: 'Wenn das Sicherungsprotokoll mit der Funktion "Sicherungsprotokolle sammeln" gesammelt wurde, ist die Anzahl der Nachrichten auf 20 begrenzt, da der Duplicati-Server beim Speichern in der lokalen Datenbank eine fest codierte Begrenzung hat.', 
       fr: 'Si le journal de sauvegarde a été collecté à l\'aide de la fonctionnalité Collecter les journaux de sauvegarde, le nombre de messages est limité à 20 en raison d\'une limite codée en dur dans le serveur Duplicati lors de l\'enregistrement dans la base de données locale.', 
-      es: 'Si el registro de backup se recopiló usando la función Recopilar registros de backup, el número de mensajes está limitado a 20 debido a un límite codificado en el servidor Duplicati al guardar en la base de datos local.', 
+      es: 'Si el log de backup se recopiló usando la función Recopilar logs de backup, el número de mensajes está limitado a 20 debido a un límite codificado en el servidor Duplicati al guardar en la base de datos local.', 
       'pt-BR': 'Se o log de backup foi coletado usando o recurso Coletar logs de backup, o número de mensagens é limitado a 20 devido a um limite codificado no servidor Duplicati ao salvar no banco de dados local.' 
     }),
     duplicatiServerOptions: t({ 
       en: 'If the backup log was received directly from the Duplicati server, ensure you are using the following options: send-http-log-level=Information and send-http-max-log-lines=0 in the Duplicati server configuration.', 
       de: 'Wenn das Sicherungsprotokoll direkt vom Duplicati-Server empfangen wurde, stellen Sie sicher, dass Sie die folgenden Optionen verwenden: send-http-log-level=Information und send-http-max-log-lines=0 in der Duplicati-Server-Konfiguration.', 
       fr: 'Si le journal de sauvegarde a été reçu directement du serveur Duplicati, assurez-vous d\'utiliser les options suivantes : send-http-log-level=Information et send-http-max-log-lines=0 dans la configuration du serveur Duplicati.', 
-      es: 'Si el registro de backup se recibió directamente del servidor Duplicati, asegúrese de usar las siguientes opciones: send-http-log-level=Information y send-http-max-log-lines=0 en la configuración del servidor Duplicati.', 
+      es: 'Si el log de backup se recibió directamente del servidor Duplicati, asegúrese de usar las siguientes opciones: send-http-log-level=Information y send-http-max-log-lines=0 en la configuración del servidor Duplicati.', 
       'pt-BR': 'Se o log de backup foi recebido diretamente do servidor Duplicati, certifique-se de usar as seguintes opções: send-http-log-level=Information e send-http-max-log-lines=0 na configuração do servidor Duplicati.' 
     }),
     databaseError: t({ 

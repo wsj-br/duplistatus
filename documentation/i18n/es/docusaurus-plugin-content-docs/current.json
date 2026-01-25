@@ -1,0 +1,34 @@
+{
+  "version.label": {
+    "message": "Siguiente",
+    "description": "The label for version current"
+  },
+  "sidebar.mainSidebar.category.Installation": {
+    "message": "Instalación",
+    "description": "The label for category 'Installation' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.User Guide": {
+    "message": "Guía del Usuario",
+    "description": "The label for category 'User Guide' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.Settings": {
+    "message": "Configuración",
+    "description": "The label for category 'Settings' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.Migration": {
+    "message": "Migración",
+    "description": "The label for category 'Migration' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.API Reference": {
+    "message": "Referencia de API",
+    "description": "The label for category 'API Reference' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.Development": {
+    "message": "Desarrollo",
+    "description": "The label for category 'Development' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.Release Notes": {
+    "message": "Notas de la Versión",
+    "description": "The label for category 'Release Notes' in sidebar 'mainSidebar'"
+  }
+}

@@ -379,7 +379,7 @@ export default {
       en: 'Collecting backup logs from all configured servers...', 
       de: 'Sammle Backup-Protokolle von allen konfigurierten Servern...', 
       fr: 'Collecte des journaux de sauvegarde de tous les serveurs configurés...', 
-      es: 'Recopilando registros de backup de todos los servidores configurados...', 
+      es: 'Recopilando logs de backup de todos los servidores configurados...', 
       'pt-BR': 'Coletando logs de backup de todos os servidores configurados...' 
     }),
     // Validation errors

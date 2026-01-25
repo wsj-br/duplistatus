@@ -209,7 +209,7 @@ export default {
       en: 'Collecting backup logs from all configured servers...', 
       de: 'Sammle Backup-Protokolle von allen konfigurierten Servern...', 
       fr: 'Collecte des journaux de sauvegarde de tous les serveurs configurés...', 
-      es: 'Recopilando registros de backup de todos los servidores configurados...', 
+      es: 'Recopilando logs de backup de todos los servidores configurados...', 
       'pt-BR': 'Coletando logs de backup de todos os servidores configurados...' 
     }),
     collectAllBackups: t({ 
@@ -223,7 +223,7 @@ export default {
       en: 'This will collect backup logs from all configured servers. Are you sure you want to continue?', 
       de: 'Dies wird Backup-Protokolle von allen konfigurierten Servern sammeln. Möchten Sie fortfahren?', 
       fr: 'Cela collectera les journaux de sauvegarde de tous les serveurs configurés. Êtes-vous sûr de vouloir continuer?', 
-      es: 'Esto recopilará registros de backup de todos los servidores configurados. ¿Está seguro de que desea continuar?', 
+      es: 'Esto recopilará logs de backup de todos los servidores configurados. ¿Está seguro de que desea continuar?', 
       'pt-BR': 'Isso coletará logs de backup de todos os servidores configurados. Tem certeza de que deseja continuar?' 
     }),
     // 'cancel' is now available in common.ui.cancel
@@ -232,7 +232,7 @@ export default {
       en: 'Collect backup logs (Right-click for Collect All)',
       de: 'Backup-Protokolle sammeln (Rechtsklick für Alle sammeln)',
       fr: 'Collecter les journaux de sauvegarde (Clic droit pour tout collecter)',
-      es: 'Recopilar registros de backup (Clic derecho para recopilar todo)',
+      es: 'Recopilar logs de backup (Clic derecho para recopilar todo)',
       'pt-BR': 'Coletar logs de backup (Clique direito para coletar todos)',
     }),
     buttonText: t({
@@ -246,14 +246,14 @@ export default {
       en: 'Collect Backup Logs',
       de: 'Backup-Protokolle sammeln',
       fr: 'Collecter les journaux de sauvegarde',
-      es: 'Recopilar registros de backup',
+      es: 'Recopilar logs de backup',
       'pt-BR': 'Coletar logs de backup',
     }),
     descriptionPrefilled: t({
       en: 'Extract backup logs and configuration from {serverName}',
       de: 'Backup-Protokolle und Konfiguration von {serverName} extrahieren',
       fr: 'Extraire les journaux de sauvegarde et la configuration de {serverName}',
-      es: 'Extraer registros de backup y configuración de {serverName}',
+      es: 'Extraer logs de backup y configuración de {serverName}',
       'pt-BR': 'Extrair logs de backup e configuração de {serverName}',
     }),
     descriptionStoredCredentials: t({
@@ -274,14 +274,14 @@ export default {
       en: 'Extract backup logs from {count} servers using the same port and password',
       de: 'Backup-Protokolle von {count} Servern mit demselben Port und Passwort extrahieren',
       fr: 'Extraire les journaux de sauvegarde de {count} serveurs en utilisant le même port et mot de passe',
-      es: 'Extraer registros de backup de {count} servidores usando el mismo puerto y contraseña',
+      es: 'Extraer logs de backup de {count} servidores usando el mismo puerto y contraseña',
       'pt-BR': 'Extrair logs de backup de {count} servidores usando a mesma porta e senha',
     }),
     descriptionDefault: t({
       en: 'Extract backup logs and schedule configuration directly from Duplicati server',
       de: 'Backup-Protokolle und Zeitplan-Konfiguration direkt vom Duplicati-Server extrahieren',
       fr: 'Extraire les journaux de sauvegarde et la configuration de planification directement du serveur Duplicati',
-      es: 'Extraer registros de backup y configuración de programación directamente del servidor Duplicati',
+      es: 'Extraer logs de backup y configuración de programación directamente del servidor Duplicati',
       'pt-BR': 'Extrair logs de backup e configuração de agendamento diretamente do servidor Duplicati',
     }),
     selectServer: t({
@@ -416,7 +416,7 @@ export default {
       en: 'Collecting backup logs from {serverName}...',
       de: 'Sammle Backup-Protokolle von {serverName}...',
       fr: 'Collecte des journaux de sauvegarde de {serverName}...',
-      es: 'Recopilando registros de backup de {serverName}...',
+      es: 'Recopilando logs de backup de {serverName}...',
       'pt-BR': 'Coletando logs de backup de {serverName}...',
     }),
     percentComplete: t({
@@ -458,7 +458,7 @@ export default {
       en: 'Collect backup logs from {count} servers',
       de: 'Backup-Protokolle von {count} Servern sammeln',
       fr: 'Collecter les journaux de sauvegarde de {count} serveurs',
-      es: 'Recopilar registros de backup de {count} servidores',
+      es: 'Recopilar logs de backup de {count} servidores',
       'pt-BR': 'Coletar logs de backup de {count} servidores',
     }),
     collectingFromMultiple: t({

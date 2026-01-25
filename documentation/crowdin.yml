@@ -1,0 +1,61 @@
+#
+# Crowdin configuration for duplistatus documentation
+#
+
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+preserve_hierarchy: true
+
+files:
+  # Markdown documentation files
+  - source: /docs/**/*.md
+    translation: /docs/%locale%/**/%original_file_name%
+    update_option: update_as_unapproved
+    languages_mapping:
+      locale:
+        en: en
+        fr: fr
+        de: de
+        es-ES: es
+        pt-BR: pt-BR
+    
+  # JSON translation files for UI strings
+  - source: /i18n/en/code.json
+    translation: /i18n/%locale%/code.json
+    languages_mapping:
+      locale:
+        en: en
+        fr: fr
+        de: de
+        es-ES: es
+        pt-BR: pt-BR
+    
+  - source: /i18n/en/docusaurus-plugin-content-docs/current.json
+    translation: /i18n/%locale%/docusaurus-plugin-content-docs/current.json
+    languages_mapping:
+      locale:
+        en: en
+        fr: fr
+        de: de
+        es-ES: es
+        pt-BR: pt-BR
+    
+  - source: /i18n/en/docusaurus-theme-classic/navbar.json
+    translation: /i18n/%locale%/docusaurus-theme-classic/navbar.json
+    languages_mapping:
+      locale:
+        en: en
+        fr: fr
+        de: de
+        es-ES: es
+        pt-BR: pt-BR
+    
+  - source: /i18n/en/docusaurus-theme-classic/footer.json
+    translation: /i18n/%locale%/docusaurus-theme-classic/footer.json
+    languages_mapping:
+      locale:
+        en: en
+        fr: fr
+        de: de
+        es-ES: es
+        pt-BR: pt-BR

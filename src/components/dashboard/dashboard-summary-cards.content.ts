@@ -12,7 +12,7 @@ export default {
     }),
     totalBackupJobs: t({ 
       en: 'Total Backup Jobs', 
-      de: 'Gesamte Backup-Jobs', 
+      de: 'Backup-Jobs gesamt', 
       fr: 'Total des tâches de sauvegarde', 
       es: 'Total de trabajos de backup', 
       'pt-BR': 'Total de trabalhos de backup' 

@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "duplistatus",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Logo do duplistatus",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Documentation": {
+    "message": "Documentação",
+    "description": "Navbar item with label Documentation"
+  }
+}
