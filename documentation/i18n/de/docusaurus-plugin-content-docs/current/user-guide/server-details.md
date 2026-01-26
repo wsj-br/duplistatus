@@ -1,72 +1,72 @@
-# Server Details
+# Server Details {#server-details}
 
-Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
+Wenn Sie auf einen Server im Dashboard klicken, wird eine Seite mit einer Liste von Sicherungen für diesen Server geöffnet. Sie können alle Sicherungen anzeigen oder eine bestimmte auswählen, wenn der Server mehrere Sicherungen konfiguriert hat.
 
 ![Server Details](/img/screen-server-backup-list.png)
 
-## Server/Backup Statistics
+## Server / Sicherung Statistiken {#serverbackup-statistics}
 
-This section shows statistics for either all backups on the server or a single selected backup.
+Dieser Abschnitt zeigt Statistiken für entweder alle Sicherungen auf dem Server oder eine einzelne ausgewählte Sicherung.
 
-- **TOTAL BACKUP JOBS**: Total number of backup jobs configured on this server.
-- **TOTAL BACKUP RUNS**: Total number of backup runs executed (as reported by the Duplicati server).
-- **AVAILABLE VERSIONS**: Number of available versions (as reported by the Duplicati server).
-- **AVG DURATION**: Average (mean) duration of backups recorded in the **duplistatus** database.
-- **LAST BACKUP SIZE**: Size of the source files from the last backup log received.
-- **TOTAL STORAGE USED**: Storage used on the backup destination, as reported in the last backup log.
-- **TOTAL UPLOADED**: Sum of all uploaded data recorded in the **duplistatus** database.
+- **BACKUP-JOBS GESAMT**: Gesamtzahl der auf diesem Server konfigurierten Backup-Jobs.
+- **GESAMTE BACKUP-LÄUFE**: Gesamtzahl der ausgeführten Backup-Läufe (wie vom Duplicati-Server gemeldet).
+- **VERFÜGBARE VERSIONEN**: Anzahl der verfügbaren Versionen (wie vom Duplicati-Server gemeldet).
+- **DURCHSCHNITTLICHE DAUER**: Durchschnittliche (mittlere) Dauer von Sicherungen, die in der **duplistatus**-Datenbank aufgezeichnet sind.
+- **GRÖSSE DER LETZTEN SICHERUNG**: Größe der Quelldateien aus dem zuletzt empfangenen Sicherungsprotokoll.
+- **GESAMTER SPEICHERPLATZ VERWENDET**: Speicherplatz, der am Sicherungsziel verwendet wird, wie im letzten Sicherungsprotokoll gemeldet.
+- **GESAMT HOCHGELADEN**: Summe aller hochgeladenen Daten, die in der **duplistatus**-Datenbank aufgezeichnet sind.
 
-If this backup or any of the backups on the server (when `All Backups` is selected) is overdue, a message appears below the summary.
+Wenn diese Sicherung oder eine der Sicherungen auf dem Server (wenn `Alle Sicherungen` ausgewählt ist) überfällig ist, wird eine Nachricht unter der Zusammenfassung angezeigt.
 
-![Server Details - Overdue Scheduled Backups](/img/screen-server-overdue-message.png)
+![Server Details - Überfällige geplante Sicherungen](/img/screen-server-overdue-message.png)
 
-Click the <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configure"/> to go to [`Settings → Overdue Monitoring`](settings/overdue-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
+Klicken Sie auf die <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Konfigurieren"/> um zu [`Einstellungen → Überwachung überfälliger Sicherungen`](settings/overdue-settings.md) zu gehen. Oder klicken Sie auf die <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> in der Symbolleiste, um die Weboberfläche des Duplicati-Servers zu öffnen und die Protokolle zu prüfen.
 
 <br/>
 
-## Backup History
+## Sicherungsverlauf {#backup-history}
 
-This table lists the backup logs for the selected server.
+Diese Tabelle listet die Sicherungsprotokolle für den ausgewählten Server auf.
 
-![Backup History](/img/screen-backup-history.png)
+![Sicherungsverlauf](/img/screen-backup-history.png)
 
-- **Backup Name**: The name of the backup in the Duplicati server.
-- **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
-- **Status**: The status of the backup (Success, Warning, Error, Fatal).
-- **Warnings/Errors**: The number of warnings/errors reported in the backup log.
-- **Available Versions**: The number of available backup versions on the backup destination. If the icon is greyed out, detailed information was not received.
-- **File Count, File Size, Uploaded Size, Duration, Storage Size**: Values as reported by the Duplicati server.
+- **Sicherungsname**: Der Name der Sicherung im Duplicati-Server.
+- **Datum**: Der Zeitstempel der Sicherung und die verstrichene Zeit seit der letzten Bildschirmaktualisierung.
+- **Status**: Der Status der Sicherung (Erfolg, Warnung, Fehler, Kritisch).
+- **Warnungen/Fehler**: Die Anzahl der im Sicherungsprotokoll gemeldeten Warnungen/Fehler.
+- **Verfügbare Versionen**: Die Anzahl der verfügbaren Sicherungsversionen am Sicherungsziel. Wenn das Symbol ausgegraut ist, wurden detaillierte Informationen nicht empfangen.
+- **Dateianzahl, Dateigröße, Hochgeladene Größe, Dauer, Speichergröße**: Werte wie vom Duplicati-Server gemeldet.
 
-:::tip Tips
-• Use the dropdown menu in the **Backup History** section to select `All Backups` or a specific backup for this server.
+:::tip Tipps
+• Verwenden Sie das Dropdown-Menü im Abschnitt **Sicherungsverlauf**, um `Alle Sicherungen` oder eine bestimmte Sicherung für diesen Server auszuwählen.
 
-• You can sort any column by clicking its header, click again to reverse the sort order.
+• Sie können jede Spalte sortieren, indem Sie auf ihre Kopfzeile klicken. Klicken Sie erneut, um die Sortierreihenfolge umzukehren.
 
-• Click anywhere on a row to view the [Backup Details](#backup-details).
+• Klicken Sie auf eine beliebige Stelle in einer Zeile, um die [Sicherungsdetails](#backup-details) anzuzeigen.
 
 :::
 
 :::note
-When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
+Wenn `Alle Sicherungen` ausgewählt ist, zeigt die Liste alle Sicherungen standardmäßig von neuesten zu ältesten sortiert an.
 :::
 
 <br/>
 
-## Backup Details
+## Sicherungsdetails {#backup-details}
 
-Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
+Wenn Sie auf ein Statusabzeichen im Dashboard (Tabellenansicht) oder eine beliebige Zeile in der Sicherungsverlaufstabelle klicken, werden die detaillierten Sicherungsinformationen angezeigt.
 
-![Backup Details](/img/screen-backup-detail.png)
+![Sicherungsdetails](/img/screen-backup-detail.png)
 
-- **Server details**: server name, alias and note.
-- **Backup Information**: The timestamp of the backup and its ID.
-- **Backup Statistics**: A summary of reported counters, sizes, and duration.
-- **Log Summary**: The number of reported messages.
-- **Available Versions**: A list of available versions (only displayed if the information was received in the logs).
-- **Messages/Warnings/Errors**: The complete execution logs. The subtitle indicates if the log was truncated by the Duplicati server.
+- **Serverdetails**: Servername, Alias und Notiz.
+- **Sicherungsinformationen**: Der Zeitstempel der Sicherung und ihre ID.
+- **Sicherungsstatistiken**: Eine Zusammenfassung der gemeldeten Zähler, Größen und Dauer.
+- **Protokollzusammenfassung**: Die Anzahl der gemeldeten Nachrichten.
+- **Verfügbare Versionen**: Eine Liste der verfügbaren Versionen (wird nur angezeigt, wenn die Informationen in den Protokollen empfangen wurden).
+- **Nachrichten/Warnungen/Fehler**: Die vollständigen Ausführungsprotokolle. Der Untertitel zeigt an, ob das Protokoll vom Duplicati-Server gekürzt wurde.
 
 <br/>
 
 :::note
-Refer to the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) to learn how to configure Duplicati server to send complete execution logs and avoid truncation.
+Weitere Informationen zum Konfigurieren des Duplicati-Servers zum Senden vollständiger Ausführungsprotokolle und zum Vermeiden von Kürzungen finden Sie in den [Duplicati-Konfigurationsanweisungen](../installation/duplicati-server-configuration.md).
 :::

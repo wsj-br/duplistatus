@@ -1,10 +1,10 @@
 
 
-# Installation Guide
+# Installation Guide {#installation-guide}
 
 The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. After the installation, you may want to configure the TIMEZONE and LANGUAGE, as described in the [Configure Timezone and Language](./configure-tz-lang.md) and need to configure the Duplicati servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](./duplicati-server-configuration.md) section.
 
-## Prerequisites
+## Prerequisites {#prerequisites}
 
 Ensure you have the following installed:
 
@@ -14,7 +14,7 @@ Ensure you have the following installed:
 - Podman (optional) - [Installation guide](http://podman.io/docs/installation#debian)
 
 
-## Authentication
+## Authentication {#authentication}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
     - username: `admin`
@@ -28,34 +28,34 @@ The system enforces a minimum password length and complexity. These requirements
 ::::
 
 
-### Container Images
+### Container Images {#container-images}
 
 You can use the images from:
 
 - **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-### Option 1: Using Docker Compose
+### Option 1: Using Docker Compose {#option-1-using-docker-compose}
 
 This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 ```bash	
-# download the compose file
+# download the compose file {#download-the-compose-file}
 wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-# start the container
+# start the container {#start-the-container}
 docker compose -f duplistatus.yml up -d
 ```
 
 Check [Timezone and Locale](./configure-tz-lang.md) section to more details on how to adjust timezone and number/date/time format.
 
-### Option 2: Using Portainer Stacks (Docker Compose)
+### Option 2: Using Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
 1. Go to "Stacks" in your [Portainer](https://docs.portainer.io/user/docker/stacks) server and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
 3. Choose "Build method" as "Web editor".
 4. Copy and paste this in the web editor:
 ```yaml
-# duplistatus production compose.yml
+# duplistatus production compose.yml {#duplistatus-production-composeyml}
 services:
   duplistatus:
     image: ghcr.io/wsj-br/duplistatus:latest
@@ -85,7 +85,7 @@ volumes:
 5. Check the [Timezone and Locale](./configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
 6. Click "Deploy the stack".
 
-### Option 3: Using Portainer Stacks (GitHub Repository)
+### Option 3: Using Portainer Stacks (GitHub Repository) {#option-3-using-portainer-stacks-github-repository}
 
 1. In [Portainer](https://docs.portainer.io/user/docker/stacks), go to "Stacks" and click "Add stack".
 2. Name your stack (e.g., "duplistatus").
@@ -95,13 +95,13 @@ volumes:
 6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone and Locale](./configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format. 
 6. Click "Deploy the stack".
 
-### Option 4: Using Docker CLI
+### Option 4: Using Docker CLI {#option-4-using-docker-cli}
 
 ```bash
-# Create the volume
+# Create the volume {#create-the-volume}
 docker volume create duplistatus_data
 
-# Start the container
+# Start the container {#start-the-container}
 docker run -d \
   --name duplistatus \
   -p 9666:9666 \
@@ -113,13 +113,13 @@ docker run -d \
 
 - The `duplistatus_data` volume is used for persistent storage. The container image uses `Europe/London` as the default timezone and `en_GB` as the default locale (language).
 
-### Option 5: Using Podman (CLI) `rootless`
+### Option 5: Using Podman (CLI) `rootless` {#option-5-using-podman-cli-rootless}
 
 For basic setups, you can start the container without DNS configuration:
 
 ```bash
 mkdir -p ~/duplistatus_data
-# Start the container (standalone)
+# Start the container (standalone) {#start-the-container-standalone}
 podman run -d \
   --name duplistatus \
   --userns=keep-id \
@@ -130,7 +130,7 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### Configuring DNS for Podman Containers
+#### Configuring DNS for Podman Containers {#configuring-dns-for-podman-containers}
 
 If you need custom DNS configuration (e.g., for Tailscale MagicDNS, corporate networks, or custom DNS setups), you can manually configure DNS servers and search domains.
 
@@ -156,7 +156,7 @@ If you need custom DNS configuration (e.g., for Tailscale MagicDNS, corporate ne
 
 ```bash
 mkdir -p ~/duplistatus_data
-# Start the container with DNS configuration
+# Start the container with DNS configuration {#start-the-container-with-dns-configuration}
 podman run -d \
   --name duplistatus \
   --userns=keep-id \
@@ -183,7 +183,7 @@ You can specify multiple search domains by adding multiple `--dns-search` flags:
 
 Check the [Timezone and Locale](./configure-tz-lang.md) section for more details on how to adjust the timezone and number/date/time format.
 
-### Option 6: Using Podman Pods
+### Option 6: Using Podman Pods {#option-6-using-podman-pods}
 
 Podman pods allow you to run multiple containers in a shared network namespace. This is useful for testing or when you need to run duplistatus alongside other containers.
 
@@ -192,10 +192,10 @@ Podman pods allow you to run multiple containers in a shared network namespace. 
 ```bash
 mkdir -p ~/duplistatus_data
 
-# Create the pod
+# Create the pod {#create-the-pod}
 podman pod create --name duplistatus-pod --publish 9666:9666/tcp
 
-# Create the container in the pod
+# Create the container in the pod {#create-the-container-in-the-pod}
 podman create --name duplistatus \
   --pod duplistatus-pod \
   --user root \
@@ -204,11 +204,11 @@ podman create --name duplistatus \
   -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 
-# Start the pod
+# Start the pod {#start-the-pod}
 podman pod start duplistatus-pod
 ```
 
-#### Configuring DNS for Podman Pods
+#### Configuring DNS for Podman Pods {#configuring-dns-for-podman-pods}
 
 When using pods, DNS configuration must be set at the pod level, not the container level.
 Use the same methods described in Option 5 to find your DNS servers and search domains.
@@ -218,13 +218,13 @@ Use the same methods described in Option 5 to find your DNS servers and search d
 ```bash
 mkdir -p ~/duplistatus_data
 
-# Create the pod with DNS configuration
+# Create the pod with DNS configuration {#create-the-pod-with-dns-configuration}
 podman pod create --name duplistatus-pod \
   --publish 9666:9666/tcp \
   --dns 100.100.100.100 \
   --dns-search example.com
 
-# Create the container in the pod
+# Create the container in the pod {#create-the-container-in-the-pod}
 podman create --name duplistatus \
   --pod duplistatus-pod \
   --user root \
@@ -233,25 +233,25 @@ podman create --name duplistatus \
   -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 
-# Start the pod
+# Start the pod {#start-the-pod}
 podman pod start duplistatus-pod
 ```
 
 **Managing the pod:**
 
 ```bash
-# Stop the pod (stops all containers in the pod)
+# Stop the pod (stops all containers in the pod) {#stop-the-pod-stops-all-containers-in-the-pod}
 podman pod stop duplistatus-pod
 
-# Start the pod
+# Start the pod {#start-the-pod}
 podman pod start duplistatus-pod
 
-# Remove the pod and all containers
+# Remove the pod and all containers {#remove-the-pod-and-all-containers}
 podman pod rm -f duplistatus-pod
 ```
 
 
-## Essential Configuration
+## Essential Configuration {#essential-configuration}
 
 1. Configure your [Duplicati servers](duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
 2. Log in to duplistatus – see instructions in the [User Guide](../user-guide/overview.md#accessing-the-dashboard).

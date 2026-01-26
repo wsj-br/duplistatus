@@ -1,35 +1,32 @@
-# Overview
+# Overview {#overview}
 
 The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> `Settings` button in the [Application Toolbar](../overview#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
 
-## Administrator View
+## Administrator View {#administrator-view}
 
 Administrators see all available settings.
 
 <table>
-  <tr>
+  <tbody><tr>
     <td>
-      <img src="/img/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
+      <img src="/assets/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
     </td>
     <td>
       <ul>
-        <li>
-          <strong>Notifications</strong>
+        <li><strong>Notifications</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: Configure per-backup notification settings</li>
             <li><a href="overdue-settings.md">Overdue Monitoring</a>: Configure overdue backup detection and alerts</li>
             <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
           </ul>
         </li><br/>
-        <li>
-          <strong>Integrations</strong>
+        <li><strong>Integrations</strong>
           <ul>
             <li><a href="ntfy-settings.md">NTFY</a>: Configure NTFY push notification service</li>
             <li><a href="email-settings.md">Email</a>: Configure SMTP email notifications</li>
           </ul>
         </li><br/>
-        <li>
-          <strong id="system">System</strong>
+        <li><strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Servers</a>: Manage Duplicati server configurations</li>
             <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
@@ -43,36 +40,33 @@ Administrators see all available settings.
       </ul>
     </td>
   </tr>
-</table>
+</tbody></table>
 
-## Non-Administrator View
+## Non-Administrator View {#non-administrator-view}
 
 Regular users see a limited set of settings.
 
 <table>
-  <tr>
+  <tbody><tr>
     <td>
-      <img src="/img/screen-settings-left-panel-non-admin.png" alt="Settings Sidebar - Non-Admin View" />
+      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Settings Sidebar - Non-Admin View" />
     </td>
     <td>
       <ul>
-        <li>
-          <strong>Notifications</strong>
+        <li><strong>Notifications</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: View per-backup notification settings (read-only)</li>
             <li><a href="overdue-settings.md">Overdue Monitoring</a>: View overdue backup settings (read-only)</li>
             <li><a href="notification-templates.md">Templates</a>: View notification templates (read-only)</li>
           </ul>
         </li><br/>
-        <li>
-          <strong>Integrations</strong>
+        <li><strong>Integrations</strong>
           <ul>
             <li><a href="ntfy-settings.md">NTFY</a>: View NTFY settings (read-only)</li>
             <li><a href="email-settings.md">Email</a>: View email settings (read-only)</li>
           </ul>
         </li><br/>
-        <li>
-          <strong id="system">System</strong>
+        <li><strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Servers</a>: View server configurations (read-only)</li>
             <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
@@ -82,9 +76,9 @@ Regular users see a limited set of settings.
       </ul>
     </td>
   </tr>
-</table>
+</tbody></table>
 
-## Status Icons
+## Status Icons {#status-icons}
 
 The sidebar displays status icons next to the **NTFY** and **Email** integration settings:
 

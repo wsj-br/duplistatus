@@ -1,8 +1,8 @@
-# External APIs
+# External APIs {#external-apis}
 
 These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md).
 
-## Get Overall Summary - `/api/summary`
+## Get Overall Summary - `/api/summary` {#get-overall-summary-apisummary}
 
 - **Endpoint**: `/api/summary`
 - **Method**: GET
@@ -30,7 +30,7 @@ These endpoints are designed for use by other applications and integrations, for
   - Returns fallback response with zeros if data fetching fails
   - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
 
-## Get Latest Backup - `/api/lastbackup/:serverId`
+## Get Latest Backup - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
 
 - **Endpoint**: `/api/lastbackup/:serverId`
 - **Method**: GET
@@ -86,7 +86,7 @@ The server identifier has to be URL Encoded.
   - Returns null for latest_backup if no backups exist
   - Includes cache control headers to prevent caching
 
-## Get Latest Backups - `/api/lastbackups/:serverId`
+## Get Latest Backups - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
 
 - **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
@@ -169,7 +169,7 @@ The server identifier has to be URL Encoded.
   - Unlike `/api/lastbackup/:serverId` which returns only the single most recent backup of the server (independ of backup job)
   - Includes cache control headers to prevent caching
 
-## Upload Backup Data - `/api/upload`
+## Upload Backup Data - `/api/upload` {#upload-backup-data-apiupload}
 
 - **Endpoint**: `/api/upload`
 

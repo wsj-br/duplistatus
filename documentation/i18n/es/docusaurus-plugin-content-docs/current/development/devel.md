@@ -1,6 +1,6 @@
-# Most used commands
+# Most used commands {#most-used-commands}
 
-## Run in dev mode
+## Run in dev mode {#run-in-dev-mode}
 
 ```bash
 pnpm dev
@@ -14,7 +14,7 @@ pnpm dev
 
 - **Backup Deletion**: On the server detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
 
-## Start the production server (in development environment)
+## Start the production server (in development environment) {#start-the-production-server-in-development-environment}
 
 First, build the application for local production:
 
@@ -28,7 +28,7 @@ Then start the production server:
 pnpm start-local
 ```
 
-## Start a Docker stack (Docker Compose)
+## Start a Docker stack (Docker Compose) {#start-a-docker-stack-docker-compose}
 
 ```bash
 pnpm docker-up
@@ -40,7 +40,7 @@ Or manually:
 docker compose up --build -d
 ```
 
-## Stop a Docker stack (Docker Compose)
+## Stop a Docker stack (Docker Compose) {#stop-a-docker-stack-docker-compose}
 
 ```bash
 pnpm docker-down
@@ -52,7 +52,7 @@ Or manually:
 docker compose down
 ```
 
-## Clean Docker environment
+## Clean Docker environment {#clean-docker-environment}
 
 ```bash
 pnpm docker-clean
@@ -71,7 +71,7 @@ This script performs a complete Docker cleanup, which is useful for:
 - Cleaning up after development or testing sessions
 - Maintaining a clean Docker environment
 
-## Create a development image (to test locally or with Podman)
+## Create a development image (to test locally or with Podman) {#create-a-development-image-to-test-locally-or-with-podman}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

@@ -1,129 +1,129 @@
-# Backup Notifications
+# Notifications de sauvegarde {#backup-notifications}
 
-Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
+Utilisez ces paramètres pour envoyer des notifications quand un [nouveau journal de sauvegarde est reçu](../../installation/duplicati-server-configuration.md).
 
-![Backup alerts](/img/screen-settings-notifications.png)
+![Alertes de sauvegarde](/img/screen-settings-notifications.png)
 
-The backup notifications table is organised by server. The display format depends on how many backups a server has:
+Le tableau des notifications de sauvegarde est organisé par serveur. Le format d'affichage dépend du nombre de sauvegardes qu'un serveur possède:
 
-- **Multiple backups**: Shows a server header row with individual backup rows below it. Click the server header to expand or collapse the backup list.
-- **Single backup**: Displays a **merged row** with a blue left border, showing:
-  - **Server Name : Backup Name** if no server alias configured,  or
-  - **Server Alias (Server Name) : Backup Name** if it is configured.
+- **Plusieurs sauvegardes**: Affiche une ligne d'en-tête de serveur avec des lignes de sauvegarde individuelles en dessous. Cliquez sur l'en-tête du serveur pour développer ou réduire la liste des sauvegardes.
+- **Sauvegarde unique**: Affiche une **ligne fusionnée** avec une bordure gauche bleue, montrant:
+  - **Nom du serveur: Nom de sauvegarde** si aucun alias de serveur n'est configuré, ou
+  - **Alias du serveur (Nom du serveur): Nom de sauvegarde** s'il est configuré.
 
-This page has an auto-save feature. Any changes you make will be saved automatically.
-
-<br/>
-
-## Filter and Search
-
-Use the **Filter by Server Name** field at the top of the page to quickly find specific backups by server name or alias. The table will automatically filter to show only matching entries.
+Cette page dispose d'une fonction d'enregistrement automatique. Toutes les modifications que vous apportez seront enregistrées automatiquement.
 
 <br/>
 
-## Configure Per-Backup Notification Settings
+## Filtrer et rechercher {#filter-and-search}
 
-| Setting                 | Description                                                               | Default Value |
-| :---------------------- | :------------------------------------------------------------------------ | :------------ |
-| **Notification Events** | Configure when to send notifications for new backup logs. | `Warnings`    |
-| **NTFY**                | Enable or disable NTFY notifications for this backup.     | `Enabled`     |
-| **Email**               | Enable or disable email notifications for this backup.    | `Enabled`     |
-
-**Notification Events Options:**
-
-- `all`: Send notifications for all backup events.
-- `warnings`: Send notifications for warnings and errors only (default).
-- `errors`: Send notifications for errors only.
-- `off`: Disable notifications for new backup logs for this backup.
+Utilisez le champ **Filtrer par nom de serveur** en haut de la page pour trouver rapidement des sauvegardes spécifiques par nom de serveur ou alias. Le tableau se filtrera automatiquement pour afficher uniquement les entrées correspondantes.
 
 <br/>
 
-## Additional Destinations
+## Configurer les paramètres de notification par sauvegarde {#configure-per-backup-notification-settings}
 
-Additional notification destinations allow you to send notifications to specific email addresses or NTFY topics beyond the global settings. The system uses a hierarchical inheritance model where backups can inherit default settings from their server, or override them with backup-specific values.
+| Paramètre                      | Description                                                                                          | Valeur par défaut |
+| :----------------------------- | :--------------------------------------------------------------------------------------------------- | :---------------- |
+| **Événements de notification** | Configurez quand envoyer des notifications pour les nouveaux journaux de sauvegarde. | `Avertissements`  |
+| **NTFY**                       | Activez ou désactivez les notifications NTFY pour cette sauvegarde.                  | `Activé`          |
+| **E-mail**                     | Activez ou désactivez les notifications par e-mail pour cette sauvegarde.            | `Activé`          |
 
-Additional destination configuration is indicated by contextual icons next to server and backup names:
+**Options des événements de notification:**
 
-- **Server icon** <IconButton icon="lucide:settings-2" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />: Appears next to server names when default additional destinations are configured at the server level.
-
-- **Backup icon** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> (blue): Appears next to backup names when custom additional destinations are configured (overriding server defaults).
-
-- **Backup icon** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#64748b', background: 'transparent'}} /> (gray): Appears next to backup names when the backup is inheriting additional destinations from server defaults.
-
-If no icon is displayed, the server or backup does not have additional destinations configured.
-
-![Server-level additional destinations](/img/screen-settings-notifications-server.png)
-
-### Server-Level Defaults
-
-You can configure default additional destinations at the server level that all backups on that server will automatically inherit.
-
-1. Navigate to `Settings → Backup Notifications`.
-2. The table is grouped by server, with distinct server header rows showing the server name, alias, and backup count.
-   - **Note**: For servers with only one backup, a merged row is displayed instead of a separate server header. Server-level defaults cannot be configured directly from merged rows. If you need to configure server defaults for a single-backup server, you can do so by temporarily adding another backup to that server, or the backup's Additional Destinations will automatically inherit from any existing server defaults.
-3. Click anywhere in a server row to expand the **Default Additional Destinations for this server** section.
-4. Configure the following default settings:
-   - **Notification event**: Choose which events trigger notifications to the additional destinations (`all`, `warnings`, `errors`, or `off`).
-   - **Additional Emails**: Enter one or more email addresses (comma-separated) that will receive notifications for all backups on this server. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test email to the addresses in the field.
-   - **Additional NTFY Topic**: Enter a custom NTFY topic name where notifications will be published for all backups on this server. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test notification to the topic, or click the <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to display a QR code for the topic to configure your device to receive notifications.
-
-**Server Default Management:**
-
-- **Sync to All**: Clears all backup overrides, making all backups inherit from the server defaults.
-- **Clear All**: Clears all additional destinations from both server defaults and all backups while maintaining the inheritance structure.
-
-### Per-Backup Configuration
-
-Individual backups automatically inherit the server defaults, but you can override them for specific backup jobs.
-
-1. Click the anywhere in a backup row to expand its **Additional Destinations** section.
-2. Configure the following settings:
-   - **Notification event**: Choose which events trigger notifications to the additional destinations (`all`, `warnings`, `errors`, or `off`).
-   - **Additional Emails**: Enter one or more email addresses (comma-separated) that will receive notifications in addition to the global recipient. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test email to the addresses in the field.
-   - **Additional NTFY Topic**: Enter a custom NTFY topic name where notifications will be published in addition to the default topic. Click the <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to send a test notification to the topic, or click the <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> icon button to display a QR code for the topic to configure your device to receive notifications.
-
-**Inheritance Indicators:**
-
-- **Link icon** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in blue: Indicates the value is inherited from server defaults. Clicking the field will create an override for editing.
-- **Broken link icon** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> in blue: Indicates the value has been overridden. Click the icon to revert to inheritance.
-
-**Additional Destinations Behavior:**
-
-- Notifications are sent to both the global settings and the additional destinations when configured.
-- The notification event setting for additional destinations is independent of the main notification event setting.
-- If additional destinations are set to `off`, no notifications will be sent to those destinations, but the main notifications will still work according to the primary settings.
-- When a backup inherits from server defaults, any changes to the server defaults will automatically apply to that backup (unless it has been overridden).
+- `tous`: Envoyer des notifications pour tous les événements de sauvegarde.
+- `avertissements`: Envoyer des notifications pour les avertissements et erreurs uniquement (par défaut).
+- `erreurs`: Envoyer des notifications pour les erreurs uniquement.
+- `désactivé`: Désactiver les notifications pour les nouveaux journaux de sauvegarde pour cette sauvegarde.
 
 <br/>
 
-## Bulk Edit
+## Destinations supplémentaires {#additional-destinations}
 
-You can edit additional destination settings for multiple backups at once using the bulk edit feature. This is particularly useful when you need to apply the same additional destinations to many backup jobs.
+Les destinations de notification supplémentaires vous permettent d'envoyer des notifications à des adresses e-mail spécifiques ou à des sujets NTFY au-delà des paramètres globaux. Le système utilise un modèle d'héritage hiérarchique où les sauvegardes peuvent hériter des paramètres par défaut de leur serveur, ou les remplacer par des valeurs spécifiques à la sauvegarde.
 
-![Bulk edit dialog](/img/screen-settings-notifications-bulk.png)
+La configuration de destination supplémentaire est indiquée par des icônes contextuelles à côté des noms de serveur et de sauvegarde:
 
-1. Navigate to `Settings → Backup Notifications`.
-2. Use the checkboxes in the first column to select the backups or servers you want to edit.
-   - Use the checkbox in the header row to select or deselect all visible backups.
-   - You can use the filter to narrow down the list before selecting.
-3. Once backups are selected, a bulk action bar will appear showing the number of selected backups.
-4. Click `Bulk Edit` to open the edit dialog.
-5. Configure the additional destination settings:
-   - **Notification Event**: Set the notification event for all selected backups.
-   - **Additional Emails**: Enter email addresses (comma-separated) to apply to all selected backups.
-   - **Additional NTFY Topic**: Enter a NTFY topic name to apply to all selected backups.
-   - Test buttons are available in the bulk edit dialog to verify email addresses and NTFY topics before applying to multiple backups.
-6. Click `Save` to apply the settings to all selected backups.
+- **Icône de serveur** <IconButton icon="lucide:settings-2" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} />: Apparaît à côté des noms de serveur quand les destinations supplémentaires par défaut sont configurées au niveau du serveur.
 
-**Bulk Clear:**
+- **Icône de sauvegarde** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> (bleue): Apparaît à côté des noms de sauvegarde quand les destinations supplémentaires personnalisées sont configurées (remplaçant les valeurs par défaut du serveur).
 
-To remove all additional destination settings from selected backups:
+- **Icône de sauvegarde** <IconButton icon="lucide:external-link" style={{border: 'none', padding: 0, color: '#64748b', background: 'transparent'}} /> (grise): Apparaît à côté des noms de sauvegarde quand la sauvegarde hérite des destinations supplémentaires des valeurs par défaut du serveur.
 
-1. Select the backups you want to clear.
-2. Click `Bulk Clear` in the bulk action bar.
-3. Confirm the action in the dialogue box.
+Si aucune icône n'est affichée, le serveur ou la sauvegarde n'a pas de destinations supplémentaires configurées.
 
-This will remove all additional email addresses, NTFY topics, and notification event for the selected backups. After clearing, backups will revert to inheriting from server defaults (if any are configured).
+![Destinations supplémentaires au niveau du serveur](/img/screen-settings-notifications-server.png)
+
+### Valeurs par défaut au niveau du serveur {#server-level-defaults}
+
+Vous pouvez configurer les destinations supplémentaires par défaut au niveau du serveur que toutes les sauvegardes sur ce serveur hériteront automatiquement.
+
+1. Accédez à `Paramètres → Notifications de sauvegarde`.
+2. Le tableau est groupé par serveur, avec des lignes d'en-tête de serveur distinctes affichant le nom du serveur, l'alias et le nombre de sauvegardes.
+   - **Remarque**: Pour les serveurs avec une seule sauvegarde, une ligne fusionnée est affichée à la place d'un en-tête de serveur séparé. Les valeurs par défaut au niveau du serveur ne peuvent pas être configurées directement à partir des lignes fusionnées. Si vous devez configurer les valeurs par défaut du serveur pour un serveur avec une seule sauvegarde, vous pouvez le faire en ajoutant temporairement une autre sauvegarde à ce serveur, ou les destinations supplémentaires de la sauvegarde hériteront automatiquement de toutes les valeurs par défaut du serveur existantes.
+3. Cliquez n'importe où dans une ligne de serveur pour développer la section **Destinations supplémentaires par défaut pour ce serveur**.
+4. Configurez les paramètres par défaut suivants:
+   - **Événement de notification**: Choisissez les événements qui déclenchent des notifications vers les destinations supplémentaires (`tous`, `avertissements`, `erreurs`, ou `désactivé`).
+   - **E-mails supplémentaires**: Entrez une ou plusieurs adresses e-mail (séparées par des virgules) qui recevront des notifications pour toutes les sauvegardes sur ce serveur. Cliquez sur l'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer un e-mail de test aux adresses du champ.
+   - **Sujet NTFY supplémentaire**: Entrez un nom de sujet NTFY personnalisé où les notifications seront publiées pour toutes les sauvegardes sur ce serveur. Cliquez sur l'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer une notification de test au sujet, ou cliquez sur l'icône <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour afficher un code QR pour le sujet afin de configurer votre appareil pour recevoir des notifications.
+
+**Gestion des valeurs par défaut du serveur:**
+
+- **Synchroniser avec tous**: Efface tous les remplacements de sauvegarde, ce qui fait que toutes les sauvegardes héritent des valeurs par défaut du serveur.
+- **Effacer tous**: Efface toutes les destinations supplémentaires des valeurs par défaut du serveur et de toutes les sauvegardes tout en maintenant la structure d'héritage.
+
+### Configuration par sauvegarde {#per-backup-configuration}
+
+Les sauvegardes individuelles héritent automatiquement des valeurs par défaut du serveur, mais vous pouvez les remplacer pour des travaux de sauvegarde spécifiques.
+
+1. Cliquez n'importe où dans une ligne de sauvegarde pour développer sa section **Destinations supplémentaires**.
+2. Configurez les paramètres suivants:
+   - **Événement de notification**: Choisissez les événements qui déclenchent des notifications vers les destinations supplémentaires (`tous`, `avertissements`, `erreurs`, ou `désactivé`).
+   - **E-mails supplémentaires**: Entrez une ou plusieurs adresses e-mail (séparées par des virgules) qui recevront des notifications en plus du destinataire global. Cliquez sur l'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer un e-mail de test aux adresses du champ.
+   - **Sujet NTFY supplémentaire**: Entrez un nom de sujet NTFY personnalisé où les notifications seront publiées en plus du sujet par défaut. Cliquez sur l'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer une notification de test au sujet, ou cliquez sur l'icône <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour afficher un code QR pour le sujet afin de configurer votre appareil pour recevoir des notifications.
+
+**Indicateurs d'héritage:**
+
+- **Icône de lien** <IconButton icon="lucide:link" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> en bleu: Indique que la valeur est héritée des valeurs par défaut du serveur. Cliquer sur le champ créera un remplacement pour l'édition.
+- **Icône de lien cassé** <IconButton icon="lucide:link-2-off" style={{border: 'none', padding: 0, color: '#3b82f6', background: 'transparent'}} /> en bleu: Indique que la valeur a été remplacée. Cliquez sur l'icône pour revenir à l'héritage.
+
+**Comportement des destinations supplémentaires:**
+
+- Les notifications sont envoyées aux paramètres globaux et aux destinations supplémentaires quand elles sont configurées.
+- Le paramètre d'événement de notification pour les destinations supplémentaires est indépendant du paramètre d'événement de notification principal.
+- Si les destinations supplémentaires sont définies sur `désactivé`, aucune notification ne sera envoyée à ces destinations, mais les notifications principales continueront à fonctionner selon les paramètres principaux.
+- Quand une sauvegarde hérite des valeurs par défaut du serveur, toute modification des valeurs par défaut du serveur s'appliquera automatiquement à cette sauvegarde (sauf si elle a été remplacée).
+
+<br/>
+
+## Modification en masse {#bulk-edit}
+
+Vous pouvez modifier les paramètres de destination supplémentaire pour plusieurs sauvegardes à la fois en utilisant la fonction de modification en masse. Ceci est particulièrement utile quand vous devez appliquer les mêmes destinations supplémentaires à de nombreux travaux de sauvegarde.
+
+![Dialogue de modification en masse](/img/screen-settings-notifications-bulk.png)
+
+1. Accédez à `Paramètres → Notifications de sauvegarde`.
+2. Utilisez les cases à cocher dans la première colonne pour sélectionner les sauvegardes ou serveurs que vous souhaitez modifier.
+   - Utilisez la case à cocher dans la ligne d'en-tête pour sélectionner ou désélectionner toutes les sauvegardes visibles.
+   - Vous pouvez utiliser le filtre pour réduire la liste avant de sélectionner.
+3. Une fois les sauvegardes sélectionnées, une barre d'action en masse apparaîtra affichant le nombre de sauvegardes sélectionnées.
+4. Cliquez sur `Modification en masse` pour ouvrir le dialogue d'édition.
+5. Configurez les paramètres de destination supplémentaire:
+   - **Événement de notification**: Définissez l'événement de notification pour toutes les sauvegardes sélectionnées.
+   - **E-mails supplémentaires**: Entrez les adresses e-mail (séparées par des virgules) à appliquer à toutes les sauvegardes sélectionnées.
+   - **Sujet NTFY supplémentaire**: Entrez un nom de sujet NTFY à appliquer à toutes les sauvegardes sélectionnées.
+   - Les boutons de test sont disponibles dans le dialogue de modification en masse pour vérifier les adresses e-mail et les sujets NTFY avant de les appliquer à plusieurs sauvegardes.
+6. Cliquez sur `Enregistrer` pour appliquer les paramètres à toutes les sauvegardes sélectionnées.
+
+**Effacement en masse:**
+
+Pour supprimer tous les paramètres de destination supplémentaire des sauvegardes sélectionnées:
+
+1. Sélectionnez les sauvegardes que vous souhaitez effacer.
+2. Cliquez sur `Effacement en masse` dans la barre d'action en masse.
+3. Confirmez l'action dans la boîte de dialogue.
+
+Cela supprimera toutes les adresses e-mail supplémentaires, les sujets NTFY et l'événement de notification pour les sauvegardes sélectionnées. Après l'effacement, les sauvegardes reviendront à l'héritage des valeurs par défaut du serveur (si des valeurs sont configurées).
 
 <br/>
 

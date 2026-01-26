@@ -1,8 +1,8 @@
 
 
-# Core Operations
+# Core Operations {#core-operations}
 
-## Get Dashboard Data (Consolidated) - `/api/dashboard`
+## Get Dashboard Data (Consolidated) - `/api/dashboard` {#get-dashboard-data-consolidated-apidashboard}
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
 - **Description**: Retrieves all dashboard data in a single consolidated response, including server summaries, overall summary, and chart data.
@@ -64,7 +64,7 @@
   - All data is fetched in parallel for optimal performance
   - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
 
-## Get All Servers - `/api/servers`
+## Get All Servers - `/api/servers` {#get-all-servers-apiservers}
 - **Endpoint**: `/api/servers`
 - **Method**: GET
 - **Description**: Retrieves a list of all servers with their basic information. Optionally includes backup information.
@@ -106,7 +106,7 @@
   - Used for server selection, display, and configuration purposes
   - Includes `hasPassword` field to indicate if server has stored password
 
-## Get Server Details - `/api/servers/:id`
+## Get Server Details - `/api/servers/:id` {#get-server-details-apiserversid}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
 - **Description**: Retrieves information about a specific server. Can return basic server info or detailed information including backups and chart data.
@@ -171,7 +171,7 @@
   - Use query parameters to include additional data when needed
   - Optimised for different use cases (settings vs detail views)
 
-## Update Server - `/api/servers/:id`
+## Update Server - `/api/servers/:id` {#update-server-apiserversid}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
 - **Description**: Updates server details including alias, note, and server URL.
@@ -205,7 +205,7 @@
   - All fields are optional
   - Empty strings are allowed for all fields
 
-## Delete Server - `/api/servers/:id`
+## Delete Server - `/api/servers/:id` {#delete-server-apiserversid}
 - **Endpoint**: `/api/servers/:id`
 - **Method**: DELETE
 - **Description**: Deletes a server and all its associated backups.
@@ -234,7 +234,7 @@
   - The server record itself will also be removed
   - Returns count of deleted backups and servers
 
-## Get Server Data with Overdue Info - `/api/detail/:serverId`
+## Get Server Data with Overdue Info - `/api/detail/:serverId` {#get-server-data-with-overdue-info-apidetailserverid}
 - **Endpoint**: `/api/detail/:serverId`
 - **Method**: GET
 - **Description**: Retrieves detailed server information including overdue backup status.
@@ -271,7 +271,7 @@
   - Includes overdue backup details and timestamps
   - Used for overdue backup management and monitoring
 
-## Get Duplicate Servers - `/api/servers/duplicates`
+## Get Duplicate Servers - `/api/servers/duplicates` {#get-duplicate-servers-apiserversduplicates}
 - **Endpoint**: `/api/servers/duplicates`
 - **Method**: GET
 - **Description**: Retrieves a list of duplicate servers based on machine ID. Duplicate servers are servers that share the same machine ID but are stored as separate records in the database.
@@ -311,7 +311,7 @@
   - Used for identifying and merging duplicate server records
   - Includes server details and backup counts for each duplicate
 
-## Merge Servers - `/api/servers/merge`
+## Merge Servers - `/api/servers/merge` {#merge-servers-apiserversmerge}
 - **Endpoint**: `/api/servers/merge`
 - **Method**: POST
 - **Description**: Merges multiple servers into a target server. All backups from the source servers are transferred to the target server, and the source servers are deleted.

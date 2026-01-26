@@ -4,7 +4,7 @@
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.BackToTopButton.buttonAriaLabel": {
-    "message": "Retour en haut de page",
+    "message": "Retour vers le haut",
     "description": "The ARIA label for the back to top button"
   },
   "theme.blog.archive.title": {
@@ -16,7 +16,7 @@
     "description": "The page & hero description of the blog archive page"
   },
   "theme.blog.paginator.navAriaLabel": {
-    "message": "Navigation de la liste des articles du blog",
+    "message": "Navigation de la Page de liste de blog",
     "description": "The ARIA label for the blog pagination"
   },
   "theme.blog.paginator.newerEntries": {
@@ -28,7 +28,7 @@
     "description": "The label used to navigate to the older blog posts page (next page)"
   },
   "theme.blog.post.paginator.navAriaLabel": {
-    "message": "Navigation des articles du blog",
+    "message": "Navigation de la Page d'article de blog",
     "description": "The ARIA label for the blog posts pagination"
   },
   "theme.blog.post.paginator.newerPost": {
@@ -40,7 +40,7 @@
     "description": "The blog post button label to navigate to the older/next post"
   },
   "theme.tags.tagsPageLink": {
-    "message": "Voir tous les tags",
+    "message": "Voir tout",
     "description": "The label of the link targeting the tag list page"
   },
   "theme.colorToggle.ariaLabel.mode.system": {
@@ -56,7 +56,7 @@
     "description": "The name for the dark color mode"
   },
   "theme.colorToggle.ariaLabel": {
-    "message": "Basculer entre le mode sombre et le mode clair (actuellement {mode})",
+    "message": "Basculer entre le mode sombre et clair (actuellement {mode})",
     "description": "The ARIA label for the color mode toggle"
   },
   "theme.docs.breadcrumbs.navAriaLabel": {
@@ -64,7 +64,7 @@
     "description": "The ARIA label for the breadcrumbs"
   },
   "theme.docs.DocCard.categoryDescription.plurals": {
-    "message": "{count} élément|{count} éléments",
+    "message": "1 élément|{count} éléments",
     "description": "The default description for a category card in the generated index about how many items this category includes"
   },
   "theme.docs.paginator.navAriaLabel": {
@@ -80,7 +80,7 @@
     "description": "The label used to navigate to the next doc"
   },
   "theme.docs.tagDocListPageTitle.nDocsTagged": {
-    "message": "Un document tagué|{count} documents tagués",
+    "message": "Un document étiqueté|{count} documents étiquetés",
     "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.docs.tagDocListPageTitle": {
@@ -91,7 +91,7 @@
     "message": "Version : {versionLabel}"
   },
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "Ceci est la documentation non publiée pour {siteTitle} version {versionLabel}.",
+    "message": "Ceci est la documentation non publiée pour {siteTitle} {versionLabel}.",
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
@@ -99,7 +99,7 @@
     "description": "The label used to tell the user that he's browsing an unmaintained doc version"
   },
   "theme.docs.versions.latestVersionSuggestionLabel": {
-    "message": "Pour une documentation à jour, consultez la {latestVersionLink} ({versionLabel}).",
+    "message": "Pour la documentation à jour, consultez {latestVersionLink} ({versionLabel}).",
     "description": "The label used to tell the user to check the latest version"
   },
   "theme.docs.versions.latestVersionLinkLabel": {
@@ -107,7 +107,7 @@
     "description": "The label used for the latest version suggestion link label"
   },
   "theme.common.editThisPage": {
-    "message": "Éditer cette page",
+    "message": "Modifier cette page",
     "description": "The link label to edit the current page"
   },
   "theme.common.headingLinkTitle": {
@@ -131,11 +131,11 @@
     "description": "The label for the navbar versions dropdown on mobile view"
   },
   "theme.NotFound.title": {
-    "message": "Page non trouvée",
+    "message": "Page introuvable",
     "description": "The title of the 404 page"
   },
   "theme.tags.tagsListLabel": {
-    "message": "Tags :",
+    "message": "Étiquettes :",
     "description": "The label alongside a tag list"
   },
   "theme.AnnouncementBar.closeButtonAriaLabel": {
@@ -159,11 +159,11 @@
     "description": "The default label used for the Note admonition (:::note)"
   },
   "theme.admonition.tip": {
-    "message": "astuce",
+    "message": "conseil",
     "description": "The default label used for the Tip admonition (:::tip)"
   },
   "theme.admonition.warning": {
-    "message": "avertissement",
+    "message": "Avertissement",
     "description": "The default label used for the Warning admonition (:::warning)"
   },
   "theme.blog.sidebar.navAriaLabel": {
@@ -187,11 +187,11 @@
     "description": "The ARIA label for the main navigation"
   },
   "theme.NotFound.p1": {
-    "message": "Nous n'avons pas pu trouver ce que vous recherchiez.",
+    "message": "Nous n'avons pas pu trouver ce que vous cherchiez.",
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "Veuillez contacter le propriétaire du site qui vous a redirigé vers l'URL d'origine et lui faire savoir que son lien est cassé.",
+    "message": "Veuillez contacter le propriétaire du site qui vous a lié à l'URL d'origine et lui faire savoir que son lien est cassé.",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.navbar.mobileLanguageDropdown.label": {
@@ -211,7 +211,7 @@
     "description": "The ARIA label for the link to full blog posts from excerpts"
   },
   "theme.blog.post.readingTime.plurals": {
-    "message": "{readingTime} min de lecture|{readingTime} min de lecture",
+    "message": "Une minute de lecture|{readingTime} minutes de lecture",
     "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.CodeBlock.copy": {
@@ -227,7 +227,7 @@
     "description": "The ARIA label for copy code blocks button"
   },
   "theme.CodeBlock.wordWrapToggle": {
-    "message": "Activer le retour à la ligne",
+    "message": "Basculer l'habillage du texte",
     "description": "The title attribute for toggle word wrapping button of code block lines"
   },
   "theme.docs.breadcrumbs.home": {
@@ -259,11 +259,11 @@
     "description": "The ARIA label for hamburger menu button of mobile navigation"
   },
   "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
-    "message": "Développer le menu déroulant",
+    "message": "Développer la liste déroulante",
     "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
   },
   "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
-    "message": "Réduire le menu déroulant",
+    "message": "Réduire la liste déroulante",
     "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
   },
   "theme.docs.sidebar.expandButtonTitle": {
@@ -295,11 +295,11 @@
     "description": "message shown if no results are found"
   },
   "theme.blog.post.plurals": {
-    "message": "{count} article|{count} articles",
+    "message": "Un article|{count} articles",
     "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.blog.tagTitle": {
-    "message": "{nPosts} tagués avec \"{tagName}\"",
+    "message": "{nPosts} étiqueté avec \"{tagName}\"",
     "description": "The title of the page for a blog tag"
   },
   "theme.blog.author.pageTitle": {
@@ -315,15 +315,15 @@
     "description": "The label of the link targeting the blog authors page"
   },
   "theme.blog.author.noPosts": {
-    "message": "Cet auteur n'a encore écrit aucun article.",
+    "message": "Cet auteur n'a pas encore écrit d'articles.",
     "description": "The text for authors with 0 blog post"
   },
   "theme.contentVisibility.unlistedBanner.title": {
-    "message": "Page non répertoriée",
+    "message": "Page non listée",
     "description": "The unlisted content banner title"
   },
   "theme.contentVisibility.unlistedBanner.message": {
-    "message": "Cette page n'est pas répertoriée. Les moteurs de recherche ne l'indexeront pas, et seuls les utilisateurs disposant d'un lien direct peuvent y accéder.",
+    "message": "Cette page n'est pas listée. Les moteurs de recherche ne l'indexeront pas, et seuls les utilisateurs ayant un lien direct peuvent y accéder.",
     "description": "The unlisted content banner message"
   },
   "theme.contentVisibility.draftBanner.title": {
@@ -331,7 +331,7 @@
     "description": "The draft content banner title"
   },
   "theme.contentVisibility.draftBanner.message": {
-    "message": "Cette page est un brouillon. Elle ne sera visible qu'en développement et sera exclue de la version de production.",
+    "message": "Cette page est un brouillon. Elle ne sera visible que en développement et sera exclue de la version de production.",
     "description": "The draft content banner message"
   },
   "theme.ErrorPageContent.tryAgain": {
@@ -343,7 +343,7 @@
     "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
   },
   "theme.tags.tagsPageTitle": {
-    "message": "Tags",
+    "message": "Étiquettes",
     "description": "The title of the tag list page"
   }
 }

@@ -1,8 +1,8 @@
-# NTFY
+# NTFY {#ntfy}
 
 NTFY is an [open-source](https://github.com/binwiederhier/ntfy) simple notification service that can send push notifications to your phone or desktop. This section allows you to set up your notification server connection and authentication.
 
-![Ntfy settings](/img/screen-settings-ntfy.png)
+![Ntfy settings](/assets/screen-settings-ntfy.png)
 
 | Setting               | Description                                                                                                                                                                   |
 | :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -15,7 +15,7 @@ NTFY is an [open-source](https://github.com/binwiederhier/ntfy) simple notificat
 A <IIcon2 icon="lucide:message-square" color="green"/> green icon next to `NTFY` in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:message-square" color="yellow"/> yellow, your settings are not valid.
 When the configuration is not valid, the NTFY checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out.
 
-## Available Actions
+## Available Actions {#available-actions}
 
 | Button                                                                | Description                                                                                                                  |
 | :-------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
@@ -23,7 +23,7 @@ When the configuration is not valid, the NTFY checkboxes in the [`Backup Notific
 | <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Send a test message to your NTFY server to check your configuration.                                         |
 | <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Display a QR code that allows you to quickly configure your mobile device or desktop for NTFY notifications. |
 
-## Device Configuration
+## Device Configuration {#device-configuration}
 
 You should install the NTFY application on your device before configuring it ([see here](https://ntfy.sh/)). Clicking the <IconButton icon="lucide:qr-code" label="Configure Device"/> button, or right-clicking the <SvgButton svgFilename="ntfy.svg" /> icon  in the application toolbar, will display a QR code. Scanning this QR code will automatically configure your device with the correct NTFY topic for notifications.
 

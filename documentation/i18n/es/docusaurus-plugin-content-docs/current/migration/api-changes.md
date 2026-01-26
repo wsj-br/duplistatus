@@ -1,94 +1,93 @@
-# Cambios Incompatibles de la API
+# Cambios que rompen la API
 
-Este documento describe los cambios incompatibles en los endpoints de API externos en las diferentes versiones de duplistatus. Los endpoints de API externos son aquellos diseñados para ser utilizados por otras aplicaciones e integraciones (por ejemplo, integración con Homepage).
+Este documento describe los cambios que rompen la compatibilidad de los puntos finales de la API externa en diferentes versiones de duplistatus. Los puntos finales de la API externa son aquellos diseñados para ser utilizados por otras aplicaciones e Integraciones (por ejemplo, integración de página de inicio).
 
-## Descripción general
+## resumen
 
-Este documento cubre los cambios incompatibles en los endpoints de API externos que afectan a integraciones, scripts y aplicaciones que consumen estos endpoints. Para los endpoints de API internos utilizados por la interfaz web, los cambios se manejan automáticamente y no requieren actualizaciones manuales.
+Este documento cubre los cambios que rompen la compatibilidad de los puntos finales de la API externa que afectan a Integraciones, scripts y aplicaciones que consumen estos puntos finales. Para los puntos finales de la API interna utilizados por la interfaz web, los cambios se manejan automáticamente y no requieren actualizaciones manuales.
 
 :::note
-Los endpoints de API externos se mantienen retrocompatibles cuando es posible. Los cambios incompatibles solo se introducen cuando son necesarios para la consistencia, seguridad o mejoras de funcionalidad.
+Los puntos finales de la API externa se mantienen para compatibilidad hacia atrás Cuándo es posible. Los cambios que rompen la compatibilidad se introducen solo Cuándo es necesario para mejoras de consistencia, Seguridad o funcionalidad.
 :::
 
-## Cambios por Versión
+## Cambios específicos de versión
 
 ### Versión 1.3.0
 
-**Sin cambios incompatibles en los endpoints de API externos**
+**No hay cambios que rompan la compatibilidad de los puntos finales de la API externa**
 
 ### Versión 1.2.1
 
-**Sin cambios incompatibles en los endpoints de API externos**
-
+**No hay cambios que rompan la compatibilidad de los puntos finales de la API externa**
 
 ### Versión 1.1.x
 
-**Sin cambios incompatibles en los endpoints de API externos**
+**No hay cambios que rompan la compatibilidad de los puntos finales de la API externa**
 
 ### Versión 1.0.x
 
-**Sin cambios incompatibles en los endpoints de API externos**
-
+**No hay cambios que rompan la compatibilidad de los puntos finales de la API externa**
 
 ### Versión 0.9.x
 
-**Sin cambios incompatibles en los endpoints de API externos**
+**No hay cambios que rompan la compatibilidad de los puntos finales de la API externa**
 
-La versión 0.9.x introduce autenticación y requiere que todos los usuarios inicien sesión. Al actualizar desde la versión 0.8.x:
+La Versión 0.9.x introduce autenticación y requiere que todos los Usuarios inicien sesión. Al actualizar desde la Versión 0.8.x:
 
-1. **Autenticación requerida**: Todas las páginas y endpoints de API internos ahora requieren autenticación
-2. **Cuenta de administrador predeterminada**: Se crea automáticamente una cuenta de administrador predeterminada:
+1. **Autenticación requerida**: Todas las Páginas y puntos finales de la API interna ahora requieren autenticación
+2. **Cuenta de administrador predeterminada**: Se crea automáticamente una cuenta de administrador Por defecto:
    - Nombre de usuario: `admin`
-   - Contraseña: `Duplistatus09` (debe cambiarse en el primer inicio de sesión)
-3. **Invalidación de sesiones**: Todas las sesiones existentes son invalidadas
-4. **Acceso a API externa**: Los endpoints de API externos (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecen sin autenticación para compatibilidad con integraciones y Duplicati
+   - Contraseña: `Duplistatus09` (debe cambiarse en el primer Iniciar sesión)
+3. **Invalidación de sesión**: Todos los sesiones existentes se invalidan
+4. **Acceso a la API externa**: Los puntos finales de la API externa (`/api/summary`, `/api/lastbackup`, `/api/lastbackups`, `/api/upload`) permanecen sin autenticar para compatibilidad con Integraciones y Duplicati
 
 ### Versión 0.8.x
 
-**Sin cambios incompatibles en los endpoints de API externos**
+**No hay cambios que rompan la compatibilidad de los puntos finales de la API externa**
 
-La versión 0.8.x no introduce cambios incompatibles en los endpoints de API externos. Los siguientes endpoints permanecen sin cambios:
+La Versión 0.8.x no introduce ningún cambio que rompa la compatibilidad de los puntos finales de la API externa. Los siguientes puntos finales permanecen sin cambios:
 
 - `/api/summary` - Estructura de respuesta sin cambios
 - `/api/lastbackup/{serverId}` - Estructura de respuesta sin cambios
 - `/api/lastbackups/{serverId}` - Estructura de respuesta sin cambios
 - `/api/upload` - Formato de solicitud/respuesta sin cambios
 
-#### Mejoras de seguridad
+#### Mejoras de Seguridad
 
-Aunque no se realizaron cambios incompatibles en los endpoints de API externos, la versión 0.8.x incluye mejoras de seguridad:
+Aunque no se realizaron cambios que rompan la compatibilidad de los puntos finales de la API externa, la Versión 0.8.x incluye mejoras de Seguridad:
 
-- **Protección CSRF**: La validación de token CSRF se aplica para solicitudes de API que modifican estado, pero las APIs externas permanecen compatibles
-- **Seguridad de contraseñas**: Los endpoints de contraseña están restringidos a la interfaz de usuario por razones de seguridad
+- **Protección CSRF**: La validación del token CSRF se aplica para solicitudes de API que cambian estado, pero las API externas permanecen compatibles
+- **Seguridad de Contraseña**: Los puntos finales de Contraseña se restringen a la interfaz de Usuario por razones de Seguridad
 
 :::note
-Estas mejoras de seguridad no afectan a los endpoints de API externos utilizados para leer datos de respaldo. Si tiene scripts personalizados que usan endpoints internos, pueden requerir manejo de tokens CSRF.
+Estas mejoras de Seguridad no afectan a los puntos finales de la API externa utilizados para leer datos de backup. Si tiene scripts Personalizado que utilizan puntos finales internos, es posible que requieran manejo de token CSRF.
 :::
 
 ### Versión 0.7.x
 
-La versión 0.7.x introduce varios cambios incompatibles en los endpoints de API externos que requieren actualizaciones en las integraciones externas.
+La Versión 0.7.x introduce varios cambios que rompen la compatibilidad de los puntos finales de la API externa que requieren actualizaciones de Integraciones externas.
 
-#### Cambios Incompatibles
+#### Cambios que rompen la compatibilidad
 
-##### Renombrado de campos
+##### Cambio de nombre de campo
 
-- **`totalMachines`** → **`totalServers`** en el endpoint `/api/summary`
+- **`totalMachines`** → **`totalServers`** en el punto final `/api/summary`
 - **`machine`** → **`server`** en objetos de respuesta de API
-- **`backup_types_count`** → **`backup_jobs_count`** en el endpoint `/api/lastbackups/{serverId}`
+- **`backup_types_count`** → **`backup_jobs_count`** en el punto final `/api/lastbackups/{serverId}`
 
-##### Cambios en rutas de endpoints
+##### Cambios de ruta de punto final
 
-- Todos los endpoints de API que usaban `/api/machines/...` ahora usan `/api/servers/...`
-- Los nombres de parámetros cambiaron de `machine_id` a `server_id` (la codificación URL sigue funcionando con ambos)
+- Todos los puntos finales de API que anteriormente usaban `/api/machines/...` Ahora usan `/api/servers/...`
+- Los nombres de parámetros cambiaron de `machine_id` a `server_id` (la codificación de URL aún funciona con ambos)
 
 #### Cambios en la estructura de respuesta
 
-La estructura de respuesta para varios endpoints ha sido actualizada para mayor consistencia:
+La estructura de respuesta para varios puntos finales se ha actualizado para mayor consistencia:
 
 ##### `/api/summary`
 
-**Antes (0.6.x y anterior):**
+**Antes (0.6.x y anteriores):**
+
 ```json
 {
   "totalMachines": 3,
@@ -103,9 +102,10 @@ La estructura de respuesta para varios endpoints ha sido actualizada para mayor 
 ```
 
 **Después (0.7.x+):**
+
 ```json
 {
-  "totalServers": 3,  // Cambiado de "totalMachines"
+  "totalServers": 3,  // Cambió de "totalMachines"
   "totalBackupsRuns": 9,
   "totalBackups": 9,
   "totalUploadedSize": 2397229507,
@@ -118,35 +118,37 @@ La estructura de respuesta para varios endpoints ha sido actualizada para mayor 
 
 ##### `/api/lastbackup/{serverId}`
 
-**Antes (0.6.x y anterior):**
+**Antes (0.6.x y anteriores):**
+
 ```json
 {
-  "machine": {  // Cambiado a "server"
+  "machine": {  // Cambió a "server"
     "id": "unique-server-id",
-    "name": "Server Name",
-    "backup_name": "Backup Name",
+    "name": "Nombre del servidor",
+    "backup_name": "Nombre de backup",
     "backup_id": "backup-id",
     "created_at": "2024-03-20T10:00:00Z"
   },
   "latest_backup": {
-    // ... detalles del respaldo
+    // ... Detalles
   },
   "status": 200
 }
 ```
 
 **Después (0.7.x+):**
+
 ```json
 {
-  "server": {  // Cambiado de "machine"
+  "server": {  // Cambió de "machine"
     "id": "unique-server-id",
-    "name": "Server Name",
-    "backup_name": "Backup Name",
+    "name": "Nombre del servidor",
+    "backup_name": "Nombre de backup",
     "backup_id": "backup-id",
     "created_at": "2024-03-20T10:00:00Z"
   },
   "latest_backup": {
-    // ... detalles del respaldo
+    // ... Detalles
   },
   "status": 200
 }
@@ -154,101 +156,103 @@ La estructura de respuesta para varios endpoints ha sido actualizada para mayor 
 
 ##### `/api/lastbackups/{serverId}`
 
-**Antes (0.6.x y anterior):**
+**Antes (0.6.x y anteriores):**
+
 ```json
 {
-  "machine": {  // Cambiado a "server"
+  "machine": {  // Cambió a "server"
     "id": "unique-server-id",
-    "name": "Server Name",
-    "backup_name": "Default Backup",
+    "name": "Nombre del servidor",
+    "backup_name": "Backup Por defecto",
     "backup_id": "backup-id",
     "created_at": "2024-03-20T10:00:00Z"
   },
   "latest_backups": [
-    // ... array de respaldos
+    // ... matriz de backup
   ],
-  "backup_types_count": 2,  // Cambiado a "backup_jobs_count"
-  "backup_names": ["Files", "Databases"],
+  "backup_types_count": 2,  // Cambió a "backup_jobs_count"
+  "backup_names": ["Archivos", "Databases"],
   "status": 200
 }
 ```
 
 **Después (0.7.x+):**
+
 ```json
 {
-  "server": {  // Cambiado de "machine"
+  "server": {  // Cambió de "machine"
     "id": "unique-server-id",
-    "name": "Server Name",
-    "backup_name": "Default Backup",
+    "name": "Nombre del servidor",
+    "backup_name": "Backup Por defecto",
     "backup_id": "backup-id",
     "created_at": "2024-03-20T10:00:00Z"
   },
   "latest_backups": [
-    // ... array de respaldos
+    // ... matriz de backup
   ],
-  "backup_jobs_count": 2,  // Cambiado de "backup_types_count"
-  "backup_names": ["Files", "Databases"],
+  "backup_jobs_count": 2,  // Cambió de "backup_types_count"
+  "backup_names": ["Archivos", "Databases"],
   "status": 200
 }
 ```
 
 ## Pasos de migración
 
-Si está actualizando desde una versión anterior a 0.7.x, siga estos pasos:
+Si está actualizando desde una Versión anterior a 0.7.x, siga estos pasos:
 
-1. **Actualizar referencias de campos**: Reemplace todas las referencias a nombres de campos antiguos por los nuevos
+1. **Actualizar referencias de campo**: Reemplace Todos las referencias a nombres de campo antiguos con nuevos
    - `totalMachines` → `totalServers`
    - `backup_types_count` → `backup_jobs_count`
 
-2. **Actualizar claves de objeto**: Cambie `machine` a `server` al analizar respuestas
+2. **Actualizar claves de objeto**: Cambie `machine` a `server` en el análisis de respuesta
    - Actualice cualquier código que acceda a `response.machine` a `response.server`
 
-3. **Actualizar rutas de endpoints**: Cambie todos los endpoints que usen `/api/machines/...` a `/api/servers/...`
-   - Nota: Los parámetros pueden seguir aceptando identificadores antiguos; las rutas deben actualizarse
+3. **Actualizar rutas de punto final**: Cambie cualquier punto final que use `/api/machines/...` a `/api/servers/...`
+   - Nota: Los parámetros aún pueden aceptar identificadores antiguos; las rutas deben actualizarse
 
-4. **Probar la integración**: Verifique que su integración funcione con la nueva estructura de API
-   - Pruebe todos los endpoints que usa su aplicación
-   - Verifique que el análisis de respuestas maneje correctamente los nuevos nombres de campos
+4. **Probar integración**: Verificar que su Integraciones funcione con la nueva estructura de API
+   - Probar Todos los puntos finales que utiliza su aplicación
+   - Verificar que el análisis de respuesta maneje correctamente los nuevos nombres de campo
 
 5. **Actualizar documentación**: Actualice cualquier documentación interna que haga referencia a la API antigua
-   - Actualice ejemplos de API y referencias de nombres de campos
+   - Actualizar ejemplos de API y referencias de nombres de campo
 
 ## Compatibilidad
 
-### Retrocompatibilidad
+### Compatibilidad hacia atrás
 
-- **Versión 1.2.1**: Completamente retrocompatible con la estructura de API 1.1.x
-- **Versión 1.1.x**: Completamente retrocompatible con la estructura de API 1.0.x
-- **Versión 1.0.x**: Completamente retrocompatible con la estructura de API 0.9.x
-- **Versión 0.9.x**: Completamente retrocompatible con la estructura de API 0.8.x
-- **Versión 0.8.x**: Completamente retrocompatible con la estructura de API 0.7.x
-- **Versión 0.7.x**: No retrocompatible con versiones anteriores a 0.7.x
-  - Los nombres de campos antiguos no funcionarán
-  - Las rutas de endpoints antiguas no funcionarán
+- **Versión 1.2.1**: Totalmente compatible hacia atrás con la estructura de API 1.1.x
+- **Versión 1.1.x**: Totalmente compatible hacia atrás con la estructura de API 1.0.x
+- **Versión 1.0.x**: Totalmente compatible hacia atrás con la estructura de API 0.9.x
+- **Versión 0.9.x**: Totalmente compatible hacia atrás con la estructura de API 0.8.x
+- **Versión 0.8.x**: Totalmente compatible hacia atrás con la estructura de API 0.7.x
+- **Versión 0.7.x**: No es compatible hacia atrás con versiones anteriores a 0.7.x
+  - Los nombres de campo antiguos no funcionarán
+  - Las rutas de punto final antiguas no funcionarán
 
 ### Soporte futuro
 
-- Los nombres de campos antiguos de versiones anteriores a 0.7.x no son soportados
-- Las rutas de endpoints antiguas de versiones anteriores a 0.7.x no son soportadas
-- Las versiones futuras mantendrán la estructura de API actual a menos que se necesiten cambios incompatibles
+- Los nombres de campo antiguos de versiones anteriores a 0.7.x no son No compatible
+- Las rutas de punto final antiguas de versiones anteriores a 0.7.x no son No compatible
+- Las versiones futuras mantendrán la estructura de API Actual a menos que sean necesarios cambios que rompan la compatibilidad
 
-## Resumen de endpoints de API externos
+## Resumen de puntos finales de la API externa
 
-Los siguientes endpoints de API externos se mantienen para retrocompatibilidad y permanecen sin autenticación:
+Los siguientes puntos finales de la API externa se mantienen para compatibilidad hacia atrás y permanecen sin autenticar:
 
-| Endpoint | Método | Descripción | Cambios incompatibles |
-|----------|--------|-------------|----------------------|
-| `/api/summary` | GET | Resumen general de operaciones de respaldo | 0.7.x: `totalMachines` → `totalServers` |
-| `/api/lastbackup/{serverId}` | GET | Último respaldo para un servidor | 0.7.x: `machine` → `server` |
-| `/api/lastbackups/{serverId}` | GET | Últimos respaldos para todos los trabajos | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
-| `/api/upload` | POST | Subir datos de respaldo desde Duplicati | Sin cambios incompatibles |
+| Punto final                   | Método | Descripción                                       | Cambios que rompen la compatibilidad                                                                                    |
+| ----------------------------- | ------ | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `/api/summary`                | GET    | Resumen general de operaciones de backup          | 0.7.x: `totalMachines` → `totalServers`                                 |
+| `/api/lastbackup/{serverId}`  | GET    | Último backup para un Servidores                  | 0.7.x: `machine` → `server`                                             |
+| `/api/lastbackups/{serverId}` | GET    | Últimos Backups para Todos los trabajos de backup | 0.7.x: `machine` → `server`, `backup_types_count` → `backup_jobs_count` |
+| `/api/upload`                 | POST   | Subir datos de backup desde Duplicati             | No hay cambios que rompan la compatibilidad                                                                             |
 
-## ¿Necesita ayuda?
+## ¿Necesita ayuda? {#need-help}
 
-Si necesita asistencia para actualizar su integración:
+Si necesita asistencia para actualizar su Integraciones:
 
-- **Referencia de API**: Consulte la [Referencia de API](../api-reference/overview.md) para documentación actual de endpoints
-- **APIs externas**: Vea [APIs externas](../api-reference/external-apis.md) para documentación detallada de endpoints
-- **Guía de migración**: Revise la [Guía de migración](version_upgrade.md) para información general de migración
-- **Notas de versión**: Revise las [Notas de versión](../release-notes/0.8.x.md) específicas para contexto adicional
-- **Soporte**: Abra un issue en [GitHub](https://github.com/wsj-br/duplistatus/issues) para obtener soporte
+- **Referencia de API**: Verificar la [Referencia de API](../api-reference/overview.md) para documentación de punto final Actual
+- **API externas**: Consulte [API externas](../api-reference/external-apis.md) para documentación detallada de puntos finales
+- **Guía de migración**: Revise la [Guía de migración](version_upgrade.md) para información de migración General
+- **Notas de la versión**: Revise las [Notas de la versión](../release-notes/0.8.x.md) específicas de la Versión para contexto adicional
+- **Soporte**: Abra un problema en [GitHub](https://github.com/wsj-br/duplistatus/issues) para obtener soporte

@@ -1,6 +1,6 @@
-# Core Operations
+# Core Operations {#core-operations}
 
-## Get Dashboard Data (Consolidated) - `/api/dashboard`
+## Get Dashboard Data (Consolidated) - `/api/dashboard` {#get-dashboard-data-consolidated-apidashboard}
 
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
@@ -63,7 +63,7 @@
   - All data is fetched in parallel for optimal performance
   - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
 
-## Get All Servers - `/api/servers`
+## Get All Servers - `/api/servers` {#get-all-servers-apiservers}
 
 - **Endpoint**: `/api/servers`
 - **Method**: GET
@@ -106,7 +106,7 @@
   - Used for server selection, display, and configuration purposes
   - Includes `hasPassword` field to indicate if server has stored password
 
-## Get Server Details - `/api/servers/:id`
+## Get Server Details - `/api/servers/:id` {#get-server-details-apiserversid}
 
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
@@ -172,7 +172,7 @@
   - Use query parameters to include additional data when needed
   - Optimised for different use cases (settings vs detail views)
 
-## Update Server - `/api/servers/:id`
+## Update Server - `/api/servers/:id` {#update-server-apiserversid}
 
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
@@ -207,7 +207,7 @@
   - All fields are optional
   - Empty strings are allowed for all fields
 
-## Delete Server - `/api/servers/:id`
+## Delete Server - `/api/servers/:id` {#delete-server-apiserversid}
 
 - **Endpoint**: `/api/servers/:id`
 
@@ -243,7 +243,7 @@
   - The server record itself will also be removed
   - Returns count of deleted backups and servers
 
-## Get Server Data with Overdue Info - `/api/detail/:serverId`
+## Get Server Data with Overdue Info - `/api/detail/:serverId` {#get-server-data-with-overdue-info-apidetailserverid}
 
 - **Endpoint**: `/api/detail/:serverId`
 
@@ -286,7 +286,7 @@
   - Includes overdue backup details and timestamps
   - Used for overdue backup management and monitoring
 
-## Get Duplicate Servers - `/api/servers/duplicates`
+## Get Duplicate Servers - `/api/servers/duplicates` {#get-duplicate-servers-apiserversduplicates}
 
 - **Endpoint**: `/api/servers/duplicates`
 - **Method**: GET
@@ -327,7 +327,7 @@
   - Used for identifying and merging duplicate server records
   - Includes server details and backup counts for each duplicate
 
-## Merge Servers - `/api/servers/merge`
+## Merge Servers - `/api/servers/merge` {#merge-servers-apiserversmerge}
 
 - **Endpoint**: `/api/servers/merge`
 - **Method**: POST

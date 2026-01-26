@@ -1,6 +1,6 @@
-# Notification System
+# Notification System {#notification-system}
 
-## Test Notification - `/api/notifications/test`
+## Test Notification - `/api/notifications/test` {#test-notification-apinotificationstest}
 
 - **Endpoint**: `/api/notifications/test`
 - **Method**: POST
@@ -84,7 +84,7 @@
   - Email tests require SMTP configuration to be set up
   - The test email endpoint clears the request cache before reading SMTP configuration, ensuring that external scripts can update the configuration and have it immediately reflected in test emails
 
-## Check Overdue Backups - `/api/notifications/check-overdue`
+## Check Overdue Backups - `/api/notifications/check-overdue` {#check-overdue-backups-apinotificationscheck-overdue}
 
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
@@ -110,7 +110,7 @@
   - Returns statistics about the check process
   - Sends notifications for overdue backups found
 
-## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps`
+## Clear Overdue Timestamps - `/api/notifications/clear-overdue-timestamps` {#clear-overdue-timestamps-apinotificationsclear-overdue-timestamps}
 
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST

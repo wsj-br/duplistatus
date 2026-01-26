@@ -1,21 +1,21 @@
 
 
-# Database Schema
+# Database Schema {#database-schema}
 
 This document describes the SQLite database schema used by duplistatus to store backup operation data.
 
-## Database Location
+## Database Location {#database-location}
 
 The database is stored in the application data directory:
 - **Default Location**: `/app/data/backups.db`
 - **Docker Volume**: `duplistatus_data:/app/data`
 - **File Name**: `backups.db`
 
-## Database Migration System
+## Database Migration System {#database-migration-system}
 
 duplistatus uses an automated migration system to handle database schema changes between versions.
 
-### Migration Version History
+### Migration Version History {#migration-version-history}
 
 The following are historical migration versions that brought the database to its current state:
 
@@ -27,20 +27,20 @@ The following are historical migration versions that brought the database to its
 
 Current application version (v1.1.0) uses **Schema v4.0** as the latest database schema version.
 
-### Migration Process
+### Migration Process {#migration-process}
 
 1. **Automatic Backup**: Creates backup before migration
 2. **Schema Update**: Updates database structure
 3. **Data Migration**: Preserves existing data
 4. **Verification**: Confirms successful migration
 
-## Tables
+## Tables {#tables}
 
-### Servers Table
+### Servers Table {#servers-table}
 
 Stores information about Duplicati servers being monitored.
 
-#### Fields
+#### Fields {#fields}
 
 | Field             | Type             | Description                        |
 |-------------------|------------------|------------------------------------|
@@ -52,11 +52,11 @@ Stores information about Duplicati servers being monitored.
 | `server_password` | TEXT             | Server password for authentication |
 | `created_at`      | DATETIME         | Server creation timestamp          |
 
-### Backups Table
+### Backups Table {#backups-table}
 
 Stores backup operation data received from Duplicati servers.
 
-#### Key Fields
+#### Key Fields {#key-fields}
 
 | Field              | Type              | Description                                    |
 |--------------------|-------------------|------------------------------------------------|
@@ -74,7 +74,7 @@ Stores backup operation data received from Duplicati servers.
 | `errors`           | INTEGER           | Number of errors                               |
 | `created_at`       | DATETIME          | Record creation timestamp                      |
 
-#### Message Arrays (JSON Storage)
+#### Message Arrays (JSON Storage) {#message-arrays-json-storage}
 
 | Field               | Type | Description                             |
 |---------------------|------|-----------------------------------------|
@@ -83,7 +83,7 @@ Stores backup operation data received from Duplicati servers.
 | `errors_array`      | TEXT | JSON array of error messages            |
 | `available_backups` | TEXT | JSON array of available backup versions |
 
-#### File Operation Fields
+#### File Operation Fields {#file-operation-fields}
 
 | Field                 | Type    | Description                  |
 |-----------------------|---------|------------------------------|
@@ -102,7 +102,7 @@ Stores backup operation data received from Duplicati servers.
 | `modified_symlinks`   | INTEGER | Symbolic links modified      |
 | `deleted_symlinks`    | INTEGER | Symbolic links deleted       |
 
-#### File Size Fields
+#### File Size Fields {#file-size-fields}
 
 | Field                    | Type    | Description                          |
 |--------------------------|---------|--------------------------------------|
@@ -111,7 +111,7 @@ Stores backup operation data received from Duplicati servers.
 | `size_of_added_files`    | INTEGER | Size of new files added to backup    |
 | `size_of_modified_files` | INTEGER | Size of files modified in backup     |
 
-#### Operation Status Fields
+#### Operation Status Fields {#operation-status-fields}
 
 | Field                    | Type              | Description                    |
 |--------------------------|-------------------|--------------------------------|
@@ -127,7 +127,7 @@ Stores backup operation data received from Duplicati servers.
 | `errors_actual_length`   | INTEGER           | Actual errors count            |
 | `messages_actual_length` | INTEGER           | Actual messages count          |
 
-#### Backend Statistics Fields
+#### Backend Statistics Fields {#backend-statistics-fields}
 
 | Field                            | Type     | Description                       |
 |----------------------------------|----------|-----------------------------------|
@@ -146,18 +146,18 @@ Stores backup operation data received from Duplicati servers.
 | `backend_warnings_actual_length` | INTEGER  | Backend warnings count            |
 | `backend_errors_actual_length`   | INTEGER  | Backend errors count              |
 
-### Configurations Table
+### Configurations Table {#configurations-table}
 
 Stores application configuration settings.
 
-#### Fields
+#### Fields {#fields}
 
 | Field   | Type                      | Description                |
 |---------|---------------------------|----------------------------|
 | `key`   | TEXT PRIMARY KEY NOT NULL | Configuration key          |
 | `value` | TEXT                      | Configuration value (JSON) |
 
-#### Common Configuration Keys
+#### Common Configuration Keys {#common-configuration-keys}
 
 - `email_config`: Email notification settings
 - `ntfy_config`: NTFY notification settings
@@ -165,22 +165,22 @@ Stores application configuration settings.
 - `notification_templates`: Notification message templates
 - `audit_retention_days`: Audit log retention period (default: 90 days)
 
-### Database Version Table
+### Database Version Table {#database-version-table}
 
 Tracks database schema version for migration purposes.
 
-#### Fields
+#### Fields {#fields}
 
 | Field        | Type             | Description                |
 |--------------|------------------|----------------------------|
 | `version`    | TEXT PRIMARY KEY | Database version           |
 | `applied_at` | DATETIME         | When migration was applied |
 
-### Users Table
+### Users Table {#users-table}
 
 Stores user account information for authentication and access control.
 
-#### Fields
+#### Fields {#fields}
 
 | Field                   | Type                 | Description                         |
 |-------------------------|----------------------|-------------------------------------|
@@ -196,11 +196,11 @@ Stores user account information for authentication and access control.
 | `failed_login_attempts` | INTEGER              | Count of failed login attempts      |
 | `locked_until`          | DATETIME             | Account lock expiration (if locked) |
 
-### Sessions Table
+### Sessions Table {#sessions-table}
 
 Stores user session data for authentication and security.
 
-#### Fields
+#### Fields {#fields}
 
 | Field             | Type              | Description                                                      |
 |-------------------|-------------------|------------------------------------------------------------------|
@@ -214,11 +214,11 @@ Stores user session data for authentication and security.
 | `csrf_token`      | TEXT              | CSRF token for the session                                       |
 | `csrf_expires_at` | DATETIME          | CSRF token expiration                                            |
 
-### Audit Log Table
+### Audit Log Table {#audit-log-table}
 
 Stores audit trail of user actions and system events.
 
-#### Fields
+#### Fields {#fields}
 
 | Field           | Type                              | Description                                                       |
 |-----------------|-----------------------------------|-------------------------------------------------------------------|
@@ -236,9 +236,9 @@ Stores audit trail of user actions and system events.
 | `status`        | TEXT NOT NULL                     | Status of action ('success', 'failure', 'error')                  |
 | `error_message` | TEXT                              | Error message if action failed                                    |
 
-## Session Management
+## Session Management {#session-management}
 
-### Database-Backed Session Storage
+### Database-Backed Session Storage {#database-backed-session-storage}
 
 Sessions are stored in the database with in-memory fallback:
 - **Primary Storage**: Database-backed sessions table
@@ -248,14 +248,14 @@ Sessions are stored in the database with in-memory fallback:
 - **CSRF Protection**: Cross-site request forgery protection
 - **Automatic Cleanup**: Expired sessions are automatically removed
 
-### Session API Endpoints
+### Session API Endpoints {#session-api-endpoints}
 
 - `POST /api/session`: Create new session
 - `GET /api/session`: Validate existing session
 - `DELETE /api/session`: Destroy session
 - `GET /api/csrf`: Get CSRF token
 
-## Indexes
+## Indexes {#indexes}
 
 The database includes several indexes for optimal query performance:
 
@@ -267,7 +267,7 @@ The database includes several indexes for optimal query performance:
 - **Session Indexes**: Expiration and user_id indexes for session management
 - **Audit Indexes**: Timestamp, user_id, action, category, and status indexes for audit queries
 
-## Relationships
+## Relationships {#relationships}
 
 - **Servers → Backups**: One-to-many relationship
 - **Users → Sessions**: One-to-many relationship (sessions can exist without users)
@@ -275,7 +275,7 @@ The database includes several indexes for optimal query performance:
 - **Backups → Messages**: Embedded JSON arrays
 - **Configurations**: Key-value storage
 
-## Data Types
+## Data Types {#data-types}
 
 - **TEXT**: String data, JSON arrays
 - **INTEGER**: Numeric data, file counts, sizes
@@ -283,16 +283,16 @@ The database includes several indexes for optimal query performance:
 - **DATETIME**: Timestamp data
 - **BOOLEAN**: True/false values
 
-## Backup Status Values
+## Backup Status Values {#backup-status-values}
 
 - **Success**: Backup completed successfully
 - **Warning**: Backup completed with warnings
 - **Error**: Backup completed with errors
 - **Fatal**: Backup failed fatally
 
-## Common Queries
+## Common Queries {#common-queries}
 
-### Get Latest Backup for a Server
+### Get Latest Backup for a Server {#get-latest-backup-for-a-server}
 
 ```sql
 SELECT * FROM backups 
@@ -301,7 +301,7 @@ ORDER BY date DESC
 LIMIT 1;
 ```
 
-### Get All Backups for a Server
+### Get All Backups for a Server {#get-all-backups-for-a-server}
 
 ```sql
 SELECT * FROM backups 
@@ -309,7 +309,7 @@ WHERE server_id = ?
 ORDER BY date DESC;
 ```
 
-### Get Server Summary
+### Get Server Summary {#get-server-summary}
 
 ```sql
 SELECT 
@@ -323,7 +323,7 @@ LEFT JOIN backups b ON s.id = b.server_id
 GROUP BY s.id;
 ```
 
-### Get Overall Summary
+### Get Overall Summary {#get-overall-summary}
 
 ```sql
 SELECT 
@@ -353,7 +353,7 @@ FROM servers s
 LEFT JOIN backups b ON b.server_id = s.id;
 ```
 
-### Database Cleanup
+### Database Cleanup {#database-cleanup}
 
 ```sql
 -- Delete old backups (older than 30 days)
@@ -365,9 +365,9 @@ DELETE FROM servers
 WHERE id NOT IN (SELECT DISTINCT server_id FROM backups);
 ```
 
-## JSON to Database Mapping
+## JSON to Database Mapping {#json-to-database-mapping}
 
-### API Request Body to Database Columns Mapping
+### API Request Body to Database Columns Mapping {#api-request-body-to-database-columns-mapping}
 
 When Duplicati sends backup data via HTTP POST, the JSON structure is mapped to database columns:
 

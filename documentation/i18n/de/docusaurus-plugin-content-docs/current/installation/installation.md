@@ -1,57 +1,57 @@
-# Installationsanleitung
+# Installationsleitfaden {#installation-guide}
 
-Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die ZEITZONE und SPRACHE konfigurieren, wie in [Zeitzone und Sprache konfigurieren](./configure-tz-lang.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass sie Backup-Protokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) beschrieben.
+Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die Zeitzone und Sprache konfigurieren, wie in [Zeitzone und Sprache konfigurieren](./configure-tz-lang.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass sie Sicherungsprotokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) beschrieben.
 
-## Voraussetzungen
+## Voraussetzungen {#prerequisites}
 
 Stellen Sie sicher, dass Sie Folgendes installiert haben:
 
-- Docker Engine - [Debian-Installationsanleitung](https://docs.docker.com/engine/install/debian/)
-- Docker Compose - [Linux-Installationsanleitung](https://docs.docker.com/compose/install/linux/)
-- Portainer (optional) - [Docker-Installationsanleitung](https://docs.portainer.io/start/install-ce/server/docker/linux)
-- Podman (optional) - [Installationsanleitung](http://podman.io/docs/installation#debian)
+- Docker Engine - [Debian-Installationsleitfaden](https://docs.docker.com/engine/install/debian/)
+- Docker Compose - [Linux-Installationsleitfaden](https://docs.docker.com/compose/install/linux/)
+- Portainer (optional) - [Docker-Installationsleitfaden](https://docs.portainer.io/start/install-ce/server/docker/linux)
+- Podman (optional) - [Installationsleitfaden](http://podman.io/docs/installation#debian)
 
-## Authentifizierung
+## Authentifizierung {#authentication}
 
-**duplistatus** erfordert seit Version 0.9.x eine Benutzerauthentifizierung. Ein Standard-`admin`-Konto wird automatisch erstellt, wenn die Anwendung zum ersten Mal installiert oder von einer früheren Version aktualisiert wird:
+**duplistatus** erfordert seit Version 0.9.x eine Benutzerauthentifizierung. Ein Standard-`admin`-Konto wird automatisch erstellt, wenn Sie die Anwendung zum ersten Mal installieren oder von einer früheren Version aktualisieren:
 \- Benutzername: `admin`
 \- Passwort: `Duplistatus09`
 
-Sie können nach der ersten Anmeldung zusätzliche Benutzerkonten unter [Einstellungen > Benutzer](../user-guide/settings/user-management-settings.md) erstellen.
+Sie können zusätzliche Benutzerkonten in [Einstellungen > Benutzer](../user-guide/settings/user-management-settings.md) nach der ersten Anmeldung erstellen.
 
 ::::info\[IMPORTANT]
 The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please configure these settings carefully.
 ::::
 
-### Container-Images
+### Container-Images {#container-images}
 
-Sie können die Images verwenden von:
+Sie können die Images von folgenden Quellen verwenden:
 
 - **Docker Hub**: `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry**: `ghcr.io/wsj-br/duplistatus:latest`
 
-### Option 1: Verwendung von Docker Compose
+### Option 1: Docker Compose verwenden {#option-1-using-docker-compose}
 
 Dies ist die empfohlene Methode für lokale Bereitstellungen oder wenn Sie die Konfiguration anpassen möchten. Es verwendet eine `docker compose`-Datei, um den Container mit allen seinen Einstellungen zu definieren und auszuführen.
 
 ```bash
-# Compose-Datei herunterladen
+# Compose-Datei herunterladen {#download-the-compose-file}
 wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-# Container starten
+# Container starten {#start-the-container}
 docker compose -f duplistatus.yml up -d
 ```
 
-Weitere Informationen zum Anpassen von Zeitzone und Zahlen-/Datums-/Zeitformat finden Sie im Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md).
+Lesen Sie den Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md), um weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats zu erhalten.
 
-### Option 2: Verwendung von Portainer Stacks (Docker Compose)
+### Option 2: Portainer Stacks (Docker Compose) verwenden {#option-2-using-portainer-stacks-docker-compose}
 
-1. Gehen Sie in Ihrem [Portainer](https://docs.portainer.io/user/docker/stacks)-Server zu "Stacks" und klicken Sie auf "Add stack".
+1. Gehen Sie zu "Stacks" auf Ihrem [Portainer](https://docs.portainer.io/user/docker/stacks)-Server und klicken Sie auf "Stack hinzufügen".
 2. Benennen Sie Ihren Stack (z. B. "duplistatus").
-3. Wählen Sie "Build method" als "Web editor".
+3. Wählen Sie "Build-Methode" als "Web-Editor".
 4. Kopieren Sie dies und fügen Sie es in den Web-Editor ein:
 
 ```yaml
-# duplistatus production compose.yml
+# duplistatus production compose.yml {#duplistatus-production-composeyml}
 services:
   duplistatus:
     image: ghcr.io/wsj-br/duplistatus:latest
@@ -78,26 +78,26 @@ volumes:
     name: duplistatus_data
 ```
 
-5. Weitere Informationen zum Anpassen von Zeitzone und Zahlen-/Datums-/Zeitformat finden Sie im Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md).
-6. Klicken Sie auf "Deploy the stack".
+5. Lesen Sie den Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md), um weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats zu erhalten.
+6. Klicken Sie auf "Stack bereitstellen".
 
-### Option 3: Verwendung von Portainer Stacks (GitHub-Repository)
+### Option 3: Portainer Stacks (GitHub-Repository) verwenden {#option-3-using-portainer-stacks-github-repository}
 
-1. Gehen Sie in [Portainer](https://docs.portainer.io/user/docker/stacks) zu "Stacks" und klicken Sie auf "Add stack".
+1. Gehen Sie in [Portainer](https://docs.portainer.io/user/docker/stacks) zu "Stacks" und klicken Sie auf "Stack hinzufügen".
 2. Benennen Sie Ihren Stack (z. B. "duplistatus").
-3. Wählen Sie "Build method" als "Repository".
+3. Wählen Sie "Build-Methode" als "Repository".
 4. Geben Sie die Repository-URL ein: `https://github.com/wsj-br/duplistatus.git`
-5. Geben Sie im Feld "Compose path" ein: `production.yml`
-6. (optional) Legen Sie die Umgebungsvariablen `TZ`, `LANG`, `PWD_ENFORCE` und `PWD_MIN_LEN` im Abschnitt "Environment variables" fest. Weitere Informationen zum Anpassen von Zeitzone und Zahlen-/Datums-/Zeitformat finden Sie im Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md).
-7. Klicken Sie auf "Deploy the stack".
+5. Geben Sie im Feld "Compose-Pfad" Folgendes ein: `production.yml`
+6. (optional) Legen Sie die Umgebungsvariablen `TZ`, `LANG`, `PWD_ENFORCE` und `PWD_MIN_LEN` im Abschnitt "Umgebungsvariablen" fest. Lesen Sie den Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md), um weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats zu erhalten.
+7. Klicken Sie auf "Stack bereitstellen".
 
-### Option 4: Verwendung der Docker-CLI
+### Option 4: Docker CLI verwenden {#option-4-using-docker-cli}
 
 ```bash
-# Volume erstellen
+# Volume erstellen {#create-the-volume}
 docker volume create duplistatus_data
 
-# Container starten
+# Container starten {#start-the-container}
 docker run -d \
   --name duplistatus \
   -p 9666:9666 \
@@ -107,15 +107,15 @@ docker run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-- Das `duplistatus_data`-Volume wird für persistenten Speicher verwendet. Das Container-Image verwendet `Europe/London` als Standardzeitzone und `en_GB` als Standardgebietsschema (Sprache).
+- Das Volume `duplistatus_data` wird für persistenten Speicherplatz verwendet. Das Container-Image verwendet `Europe/London` als Standard-Zeitzone und `en_GB` als Standard-Gebietsschema (Sprache).
 
-### Option 5: Verwendung von Podman (CLI) `rootless`
+### Option 5: Podman (CLI) `rootless` verwenden {#option-5-using-podman-cli-rootless}
 
 Für grundlegende Setups können Sie den Container ohne DNS-Konfiguration starten:
 
 ```bash
 mkdir -p ~/duplistatus_data
-# Container starten (eigenständig)
+# Container starten (eigenständig) {#start-the-container-standalone}
 podman run -d \
   --name duplistatus \
   --userns=keep-id \
@@ -153,7 +153,7 @@ Wenn Sie eine benutzerdefinierte DNS-Konfiguration benötigen (z. B. für Tailsc
 
 ```bash
 mkdir -p ~/duplistatus_data
-# Container mit DNS-Konfiguration starten
+# Container mit DNS-Konfiguration starten {#start-the-container-with-dns-configuration}
 podman run -d \
   --name duplistatus \
   --userns=keep-id \
@@ -178,23 +178,23 @@ Sie können mehrere Suchdomänen angeben, indem Sie mehrere `--dns-search`-Flags
 --dns-search example.com --dns-search internal.local
 ```
 
-**Hinweis**: Überspringen Sie IPv6-Adressen (die `:` enthalten) und Localhost-Adressen (wie `127.0.0.53`) beim Konfigurieren von DNS-Servern.
+**Hinweis**: Überspringen Sie IPv6-Adressen (mit `:`) und Localhost-Adressen (wie `127.0.0.53`) bei der Konfiguration von DNS-Servern.
 
-Weitere Informationen zum Anpassen von Zeitzone und Zahlen-/Datums-/Zeitformat finden Sie im Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md).
+Lesen Sie den Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md), um weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats zu erhalten.
 
-### Option 6: Verwendung von Podman Pods
+### Option 6: Podman Pods verwenden {#option-6-using-podman-pods}
 
-Podman-Pods ermöglichen es Ihnen, mehrere Container in einem gemeinsamen Netzwerk-Namespace auszuführen. Dies ist nützlich zum Testen oder wenn Sie duplistatus zusammen mit anderen Containern ausführen müssen.
+Podman Pods ermöglichen es Ihnen, mehrere Container in einem gemeinsamen Netzwerk-Namespace auszuführen. Dies ist nützlich zum Testen oder wenn Sie duplistatus neben anderen Containern ausführen müssen.
 
 **Grundlegendes Pod-Setup:**
 
 ```bash
 mkdir -p ~/duplistatus_data
 
-# Pod erstellen
+# Pod erstellen {#create-the-pod}
 podman pod create --name duplistatus-pod --publish 9666:9666/tcp
 
-# Container im Pod erstellen
+# Container im Pod erstellen {#create-the-container-in-the-pod}
 podman create --name duplistatus \
   --pod duplistatus-pod \
   --user root \
@@ -203,27 +203,27 @@ podman create --name duplistatus \
   -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 
-# Pod starten
+# Pod starten {#start-the-pod}
 podman pod start duplistatus-pod
 ```
 
-#### DNS für Podman-Pods konfigurieren
+#### DNS für Podman Pods konfigurieren {#configuring-dns-for-podman-pods}
 
-Bei Verwendung von Pods muss die DNS-Konfiguration auf Pod-Ebene festgelegt werden, nicht auf Container-Ebene.
-Verwenden Sie die gleichen Methoden, die in Option 5 beschrieben sind, um Ihre DNS-Server und Suchdomänen zu finden.
+Bei Verwendung von Pods muss die DNS-Konfiguration auf Pod-Ebene und nicht auf Container-Ebene festgelegt werden.
+Verwenden Sie die gleichen Methoden wie in Option 5 beschrieben, um Ihre DNS-Server und Suchdomänen zu finden.
 
 **Beispiel mit DNS-Konfiguration:**
 
 ```bash
 mkdir -p ~/duplistatus_data
 
-# Pod mit DNS-Konfiguration erstellen
+# Pod mit DNS-Konfiguration erstellen {#create-the-pod-with-dns-configuration}
 podman pod create --name duplistatus-pod \
   --publish 9666:9666/tcp \
   --dns 100.100.100.100 \
   --dns-search example.com
 
-# Container im Pod erstellen
+# Container im Pod erstellen {#create-the-container-in-the-pod}
 podman create --name duplistatus \
   --pod duplistatus-pod \
   --user root \
@@ -232,31 +232,31 @@ podman create --name duplistatus \
   -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 
-# Pod starten
+# Pod starten {#start-the-pod}
 podman pod start duplistatus-pod
 ```
 
 **Pod verwalten:**
 
 ```bash
-# Pod stoppen (stoppt alle Container im Pod)
+# Pod stoppen (stoppt alle Container im Pod) {#stop-the-pod-stops-all-containers-in-the-pod}
 podman pod stop duplistatus-pod
 
-# Pod starten
+# Pod starten {#start-the-pod}
 podman pod start duplistatus-pod
 
-# Pod und alle Container entfernen
+# Pod und alle Container entfernen {#remove-the-pod-and-all-containers}
 podman pod rm -f duplistatus-pod
 ```
 
-## Wesentliche Konfiguration
+## Wesentliche Konfiguration {#essential-configuration}
 
-1. Konfigurieren Sie Ihre [Duplicati-Server](duplicati-server-configuration.md), um Backup-Protokollnachrichten an duplistatus zu senden (erforderlich).
+1. Konfigurieren Sie Ihre [Duplicati-Server](duplicati-server-configuration.md), um Sicherungsprotokolle an duplistatus zu senden (erforderlich).
 2. Melden Sie sich bei duplistatus an – siehe Anweisungen im [Benutzerhandbuch](../user-guide/overview.md#accessing-the-dashboard).
-3. Sammeln Sie erste Backup-Protokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](../user-guide/collect-backup-logs.md), um die Datenbank mit historischen Backup-Daten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Überwachungsintervalle für überfällige Backups basierend auf der Konfiguration jedes Servers.
-4. Konfigurieren Sie Servereinstellungen – richten Sie Server-Aliase und Notizen unter [Einstellungen → Server](../user-guide/settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
-5. Konfigurieren Sie NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY unter [Einstellungen → NTFY](../user-guide/settings/ntfy-settings.md) ein.
-6. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen unter [Einstellungen → E-Mail](../user-guide/settings/email-settings.md) ein.
-7. Konfigurieren Sie Backup-Benachrichtigungen – richten Sie Benachrichtigungen pro Backup oder pro Server unter [Einstellungen → Backup-Benachrichtigungen](../user-guide/settings/backup-notifications-settings.md) ein.
+3. Sammeln Sie anfängliche Sicherungsprotokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](../user-guide/collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Überwachungsintervalle für überfällige Sicherungen basierend auf der Konfiguration jedes Servers.
+4. Konfigurieren Sie Server-Einstellungen – richten Sie Server-Aliase und Notizen in [Einstellungen → Server](../user-guide/settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
+5. Konfigurieren Sie NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY in [Einstellungen → NTFY](../user-guide/settings/ntfy-settings.md) ein.
+6. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen in [Einstellungen → E-Mail](../user-guide/settings/email-settings.md) ein.
+7. Konfigurieren Sie Backup-Benachrichtigungen – richten Sie Benachrichtigungen pro Sicherung oder pro Server in [Einstellungen → Backup-Benachrichtigungen](../user-guide/settings/backup-notifications-settings.md) ein.
 
-In den folgenden Abschnitten finden Sie Informationen zum Konfigurieren optionaler Einstellungen wie Zeitzone, Zahlenformat und HTTPS.
+Lesen Sie die folgenden Abschnitte, um optionale Einstellungen wie Zeitzone, Zahlenformat und HTTPS zu konfigurieren.

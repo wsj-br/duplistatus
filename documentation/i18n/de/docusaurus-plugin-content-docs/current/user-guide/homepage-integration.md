@@ -1,10 +1,10 @@
-# Homepage Integration (Optional)
+# Homepage-Integration (optional) {#homepage-integration-optional}
 
-[Homepage](https://gethomepage.dev/) is a customisable dashboard application. To integrate **duplistatus** with Homepage, add a widget to your `services.yaml` file using the [Custom API widget type](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) ist eine anpassbare Dashboard-Anwendung. Um **duplistatus** mit Homepage zu integrieren, fügen Sie ein Widget zu Ihrer `services.yaml`-Datei hinzu, indem Sie den [Benutzerdefinierten API-Widget-Typ](https://gethomepage.dev/widgets/services/customapi/) verwenden.
 
-## Summary Widget
+## Zusammenfassungs-Widget {#summary-widget}
 
-This widget displays overall backup statistics on your Homepage dashboard.
+Dieses Widget zeigt Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard an.
 
 ```yaml
 - Dashboard:
@@ -17,36 +17,36 @@ This widget displays overall backup statistics on your Homepage dashboard.
       refreshInterval: 60000
       mappings:
         - field: totalServers
-          label: Servers
+          label: Server
         - field: totalBackups
-          label: Backups received
+          label: Sicherungen empfangen
         - field: secondsSinceLastBackup
-          label: Last backup
+          label: Letzte Sicherung
           format: duration
         - field: totalBackupSize
-          label: Backed up size
+          label: Gesicherte Größe
           format: number
           scale: 0.000000001
           suffix: GB
         - field: totalStorageUsed
-          label: Storage used
+          label: Speicherplatz verwendet
           format: number
           scale: 0.000000001
           suffix: GB
         - field: totalUploadedSize
-          label: Uploaded size
+          label: Hochgeladene Größe
           format: number
           scale: 0.000000001
           suffix: GB
 ```
 
-**Widget Display:**
+**Widget-Anzeige:**
 
 ![Homepage Summary Widget](/img/homepage-summary.png)
 
-## Last Backup Information Widget
+## Letzte Sicherungsinformationen-Widget {#last-backup-information-widget}
 
-This widget displays the latest backup information for a specific machine.
+Dieses Widget zeigt die neuesten Sicherungsinformationen für einen bestimmten Computer an.
 
 ```yaml
 - Test Machine 1:
@@ -58,31 +58,31 @@ This widget displays the latest backup information for a specific machine.
       refreshInterval: 60000
       mappings:
         - field: latest_backup.name
-          label: Backup name
+          label: Sicherungsname
         - field: latest_backup.status
-          label: Result
+          label: Ergebnis
         - field: latest_backup.date
-          label: Date
+          label: Datum
           format: relativeDate
         - field: latest_backup.duration
-          label: Duration
+          label: Dauer
         - field: latest_backup.uploadedSize
-          label: Bytes Uploaded
+          label: Bytes hochgeladen
           format: number
           scale: 0.000001
           suffix: MB
         - field: latest_backup.backup_list_count
-          label: Versions
+          label: Versionen
 ```
 
-**Widget Display:**
+**Widget-Anzeige:**
 
 ![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
 
-## Configuration Notes
+## Konfigurationshinweise {#configuration-notes}
 
-- Replace `your-server` with your server's IP address or hostname.
-- Adjust the `refreshInterval` as needed (in milliseconds).
-- Replace spaces in machine names with `%20` in the URL (e.g., `Test Machine 1` becomes `Test%20Machine%201`).
-- The `scale` values convert bytes to more readable units (GB, MB).
+- Ersetzen Sie `your-server` durch die IP-Adresse oder den Hostname Ihres Servers.
+- Passen Sie das `refreshInterval` nach Bedarf an (in Millisekunden).
+- Ersetzen Sie Leerzeichen in Computernamen durch `%20` in der URL (z. B. `Test Machine 1` wird zu `Test%20Machine%201`).
+- Die `scale`-Werte konvertieren Bytes in besser lesbare Einheiten (GB, MB).
 

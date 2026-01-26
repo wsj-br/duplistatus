@@ -1,9 +1,9 @@
 
-# Display
+# Display {#display}
 
 Configure user interface and display preferences.
 
-![Display Settings](/img/screen-settings-display.png)
+![Display Settings](/assets/screen-settings-display.png)
 
 <br/>
 

@@ -1,77 +1,72 @@
-# Willkommen bei duplistatus
+# Willkommen bei duplistatus {#welcome-to-duplistatus}
 
 **duplistatus** - Ein weiteres [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-## Funktionen
+## Funktionen {#features}
 
-- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung mit Images auf Docker Hub und GitHub verfügbar.
-- **Einheitliches Dashboard**: Zeigen Sie Backup-Status, Verlauf und Details für alle Server an einem Ort an.
-- **Überfälligkeitsüberwachung**: Automatische Überprüfung und Benachrichtigung bei überfälligen geplanten Backups.
+- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung mit Images auf Docker Hub und GitHub.
+- **Einheitliches Dashboard**: Anzeigen von Status, Verlauf und Details für Alle Server an einem Ort.
+- **Überwachung überfälliger Sicherungen**: Automatische Überprüfung und Benachrichtigungen für überfällige geplante Sicherungen.
 - **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollerfassung von Duplicati-Servern.
-- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Warnungen, einschließlich Benachrichtigungen über überfällige Backups.
-- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Admin-/Benutzerrollen), konfigurierbaren Passwortrichtlinien, Kontosperrschutz und umfassender Benutzerverwaltung.
-- **Audit-Protokollierung**: Vollständiger Prüfpfad aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Aufbewahrungsfristen.
-- **Anwendungsprotokolle-Viewer**: Nur-Admin-Schnittstelle zum Anzeigen, Durchsuchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeit-Überwachungsfunktionen.
+- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Benachrichtigungen, einschließlich Benachrichtigungen für überfällige Sicherungen.
+- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Admin-/Benutzerrollen), konfigurierbare Passwortrichtlinien, Kontosperrschutz und umfassende Benutzerverwaltung.
+- **Audit-Protokollierung**: Vollständige Audit-Spur aller Systemänderungen und Benutzeraktionen mit erweiterten Filterungsmöglichkeiten, Exportfunktionen und konfigurierbaren Aufbewahrungszeiträumen.
+- **Anwendungsprotokoll-Viewer**: Nur für Administratoren verfügbare Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt aus der Weboberfläche mit Echtzeitüberwachungsfunktionen.
 
-## Installation
+## Installation {#installation}
 
 Die Anwendung kann mit Docker, Portainer Stacks oder Podman bereitgestellt werden.
-Siehe Details im [Installationshandbuch](installation/installation.md).
+Weitere Details finden Sie im [Installationsleitfaden](installation/installation.md).
 
-- Wenn Sie von einer früheren Version aktualisieren, wird Ihre Datenbank während des Upgrade-Prozesses automatisch
-  [migriert](migration/version_upgrade.md) zum neuen Schema.
+- Wenn Sie von einer früheren Version aktualisieren, wird Ihre Datenbank während des Aktualisierungsvorgangs automatisch [migriert](migration/version_upgrade.md) zum neuen Schema.
 
-- Bei Verwendung von Podman (entweder als eigenständiger Container oder innerhalb eines Pods) und wenn Sie benutzerdefinierte DNS-Einstellungen
-  benötigen (z. B. für Tailscale MagicDNS, Unternehmensnetzwerke oder andere benutzerdefinierte DNS-Konfigurationen), können Sie DNS-Server
-  und Suchdomänen manuell angeben. Weitere Details finden Sie im Installationshandbuch.
+- Bei Verwendung von Podman (entweder als eigenständiger Container oder innerhalb eines Pod) und wenn Sie benutzerdefinierte DNS-Einstellungen benötigen (z. B. für Tailscale MagicDNS, Unternehmensnetzwerke oder andere benutzerdefinierte DNS-Konfigurationen), können Sie DNS-Server und Suchdomänen manuell angeben. Weitere Details finden Sie im Installationsleitfaden.
 
-## Duplicati-Server-Konfiguration (Erforderlich)
+## Duplicati-Serverkonfiguration (erforderlich) {#duplicati-servers-configuration-required}
 
-Sobald Ihr **duplistatus**-Server läuft, müssen Sie Ihre **Duplicati**-Server so konfigurieren, dass sie
-Backup-Protokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](installation/duplicati-server-configuration.md)
-des Installationshandbuchs beschrieben. Ohne diese Konfiguration erhält das Dashboard keine Backup-Daten von Ihren Duplicati-Servern.
+Sobald Ihr **duplistatus**-Server läuft, müssen Sie Ihre **Duplicati**-Server so konfigurieren, dass sie Sicherungsprotokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](installation/duplicati-server-configuration.md) des Installationsleitfadens beschrieben. Ohne diese Konfiguration erhält das Dashboard keine Sicherungsdaten von Ihren Duplicati-Servern.
 
-## Benutzerhandbuch
+## Benutzerhandbuch {#user-guide}
 
-Siehe das [Benutzerhandbuch](user-guide/overview.md) für detaillierte Anweisungen zur Konfiguration und Verwendung von **duplistatus**, einschließlich Ersteinrichtung, Funktionskonfiguration und Fehlerbehebung.
+Weitere Informationen finden Sie im [Benutzerhandbuch](user-guide/overview.md) mit detaillierten Anweisungen zur Konfiguration und Verwendung von **duplistatus**, einschließlich Ersteinrichtung, Funktionskonfiguration und Fehlerbehebung.
 
-## Screenshots
+## Screenshots {#screenshots}
 
-### Dashboard
+### Dashboard {#dashboard}
 
 ![dashboard](/img/screen-main-dashboard-card-mode.png)
 
-### Backup-Verlauf
+### Sicherungsverlauf {#backup-history}
 
 ![server-detail](/img/screen-server-backup-list.png)
 
-### Backup-Details
+### Sicherungsdetails {#backup-details}
 
 ![backup-detail](/img/screen-backup-detail.png)
 
-### Überfällige Backups
+### Überfällige Sicherungen {#overdue-backups}
 
 ![overdue backups](/img/screen-overdue-backup-hover-card.png)
 
-### Überfälligkeitsbenachrichtigungen auf Ihrem Telefon
+### Benachrichtigungen für überfällige Sicherungen auf Ihrem Telefon {#overdue-notifications-on-your-phone}
 
 ![ntfy overdue message](/img/screen-overdue-notification.png)
 
-## API-Referenz
+## API-Referenz {#api-reference}
 
-Siehe die [API-Endpunkte-Dokumentation](api-reference/overview.md) für Details zu verfügbaren Endpunkten, Anfrage-/Antwortformaten und Beispielen.
+Weitere Informationen zu verfügbaren Endpunkten, Request-/Response-Formaten und Beispielen finden Sie in der [API-Endpunkte-Dokumentation](api-reference/overview.md).
 
-## Entwicklung
+## Entwicklung {#development}
 
-Für Anweisungen zum Herunterladen, Ändern oder Ausführen des Codes siehe [Entwicklungseinrichtung](development/setup.md).
+Anweisungen zum Herunterladen, Ändern oder Ausführen des Codes finden Sie unter [Entwicklungseinrichtung](development/setup.md).
 
-Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahren, wie, siehe [Wie ich diese Anwendung mit KI-Tools erstellt habe](development/how-i-build-with-ai).
+Dieses Projekt wurde hauptsächlich mit KI-Hilfe erstellt. Weitere Informationen finden Sie unter [Wie ich diese Anwendung mit KI-Tools erstellt habe](development/how-i-build-with-ai).
 
-## Danksagungen
+## Danksagungen {#credits}
 
-- Zuallererst Dank an Kenneth Skovhede für die Entwicklung von Duplicati – diesem großartigen Backup-Tool. Dank auch an alle Mitwirkenden.
+- Zunächst möchte ich Kenneth Skovhede danken, der Duplicati—dieses erstaunliche Sicherungstool—entwickelt hat. Danke auch an alle Mitwirkenden.
 
-  💙 Wenn Sie [Duplicati](https://www.duplicati.com) nützlich finden, erwägen Sie bitte, den Entwickler zu unterstützen. Weitere Details finden Sie auf der Website oder GitHub-Seite.
+  💙 Wenn Sie [Duplicati](https://www.duplicati.com) nützlich finden, unterstützen Sie bitte den Entwickler. Weitere Details finden Sie auf der Website oder GitHub-Seite.
 
 - Duplicati SVG-Symbol von https://dashboardicons.com/icons/duplicati
 
@@ -80,11 +75,11 @@ Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahr
 - GitHub SVG-Symbol von https://github.com/logos
 
 > [!NOTE]
-> Alle Produktnamen, Marken und eingetragenen Marken sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Unterstützung.
+> Alle Produktnamen, Marken und eingetragenen Marken sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
 
-## Lizenz
+## Lizenz {#license}
 
-Das Projekt ist unter der [Apache License 2.0](LICENSE.md) lizenziert.
+Das Projekt ist unter der [Apache-Lizenz 2.0](LICENSE.md) lizenziert.
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Urheberrecht © 2025 Waldemar Scudeller Jr.**
 

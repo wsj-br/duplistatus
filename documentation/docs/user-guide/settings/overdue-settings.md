@@ -1,10 +1,10 @@
 
 
-# Overdue Notifications
+# Overdue Notifications {#overdue-notifications}
 
-![Backup alerts](/img/screen-settings-overdue.png)
+![Backup alerts](/assets/screen-settings-overdue.png)
 
-## Configure Per-Backup Overdue Settings
+## Configure Per-Backup Overdue Settings {#configure-per-backup-overdue-settings}
 
 -  **Server Name**: The name of the server to monitor for overdue backups. 
    - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
@@ -26,7 +26,7 @@ When you collect backup logs from a Duplicati server, **duplistatus** automatica
 For best results, collect backup logs after changing backup job intervals configuration in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
 :::
 
-## Global Configurations
+## Global Configurations {#global-configurations}
 
 These settings apply to all backups:
 
@@ -36,7 +36,7 @@ These settings apply to all backups:
 | **Overdue Monitoring Interval** | How often the system checks for overdue backups. The default is `5 minutes`.                                                                                                                                                                                                                          |
 | **Notification Frequency**      | How often to send overdue notifications: <br/> `One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month`: Send **monthly** notifications while overdue. |
 
-## Available Actions
+## Available Actions {#available-actions}
 
 | Button                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|

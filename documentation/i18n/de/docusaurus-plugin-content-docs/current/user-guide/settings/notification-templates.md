@@ -1,56 +1,56 @@
-# Templates
+# Vorlagen {#templates}
 
-**duplistatus** uses three templates for notification messages. These templates are used for both NTFY and Email notifications:
+**duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet:
 
-![notification templates](/img/screen-settings-templates.png)
+![Benachrichtigungsvorlagen](/img/screen-settings-templates.png)
 
-| Template           | Description                                                         |
-| :----------------- | :------------------------------------------------------------------ |
-| **Success**        | Used when backups complete successfully.            |
-| **Warning/Error**  | Used when backups complete with warnings or errors. |
-| **Overdue Backup** | Used when backups are overdue.                      |
-
-<br/>
-
-## Available Actions
-
-| Button                                                          | Description                                                                                                                                                                                                                      |
-| :-------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <IconButton label="Save Template Settings" />                   | Saves the settings when changing the template. The button saves the template being displayed (Success, Warning/Error or Overdue Backup).                                      |
-| <IconButton icon="lucide:send" label="Send Test Notification"/> | Checks the template after updating it. The variables will be replaced with their names for the test. For email notifications, the template title becomes the email subject line. |
-| <IconButton icon="lucide:rotate-ccw" label="Reset to Default"/> | Restores the default template for the **selected template**. Remember to save it after resetting.                                                                                                |
+| Vorlage                   | Beschreibung                                                                                      |
+| :------------------------ | :------------------------------------------------------------------------------------------------ |
+| **Erfolg**                | Wird verwendet, wenn Sicherungen erfolgreich abgeschlossen werden.                |
+| **Warnung/Fehler**        | Wird verwendet, wenn Sicherungen mit Warnungen oder Fehlern abgeschlossen werden. |
+| **Überfällige Sicherung** | Wird verwendet, wenn Sicherungen überfällig sind.                                 |
 
 <br/>
 
-## Variables
+## Verfügbare Aktionen {#available-actions}
 
-All templates support variables that will be replaced with actual values. The following table shows the available variables:
+| Schaltfläche                                                             | Beschreibung                                                                                                                                                                                                                            |
+| :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <IconButton label="Vorlageneinstellungen speichern" />                   | Speichert die Einstellungen beim Ändern der Vorlage. Die Schaltfläche speichert die angezeigte Vorlage (Erfolg, Warnung/Fehler oder Überfällige Sicherung).                          |
+| <IconButton icon="lucide:send" label="Testbenachrichtigung senden"/>     | Prüft die Vorlage nach dem Aktualisieren. Die Variablen werden für den Test durch ihre Namen ersetzt. Bei E-Mail-Benachrichtigungen wird der Vorlagentitel zur Betreffzeile der E-Mail. |
+| <IconButton icon="lucide:rotate-ccw" label="Auf Standard zurücksetzen"/> | Stellt die Standardvorlage für die **ausgewählte Vorlage** wieder her. Denken Sie daran, sie nach dem Zurücksetzen zu speichern.                                                                        |
 
-| Variable               | Description                                                                                                  | Available In     |
-| :--------------------- | :----------------------------------------------------------------------------------------------------------- | :--------------- |
-| `{server_name}`        | Name of the server.                                                                          | All templates    |
-| `{server_alias}`       | Alias of the server.                                                                         | All templates    |
-| `{server_note}`        | Note for the server.                                                                         | All templates    |
-| `{server_url}`         | URL of the Duplicati Server web configuration                                                                | All templates    |
-| `{backup_name}`        | Name of the backup.                                                                          | All templates    |
-| `{status}`             | Backup status (Success, Warning, Error, Fatal).                           | Success, Warning |
-| `{backup_date}`        | Date and time of the backup.                                                                 | Success, Warning |
-| `{duration}`           | Duration of the backup.                                                                      | Success, Warning |
-| `{uploaded_size}`      | Amount of data uploaded.                                                                     | Success, Warning |
-| `{storage_size}`       | Storage usage information.                                                                   | Success, Warning |
-| `{available_versions}` | Number of available backup versions.                                                         | Success, Warning |
-| `{file_count}`         | Number of files processed.                                                                   | Success, Warning |
-| `{file_size}`          | Total size of files backed up.                                                               | Success, Warning |
-| `{messages_count}`     | Number of messages.                                                                          | Success, Warning |
-| `{warnings_count}`     | Number of warnings.                                                                          | Success, Warning |
-| `{errors_count}`       | Number of errors.                                                                            | Success, Warning |
-| `{log_text}`           | Log messages (warnings and errors)                                                        | Success, Warning |
-| `{last_backup_date}`   | Date of the last backup.                                                                     | Overdue          |
-| `{last_elapsed}`       | Time elapsed since the last backup.                                                          | Overdue          |
-| `{expected_date}`      | Expected backup date.                                                                        | Overdue          |
-| `{expected_elapsed}`   | Time elapsed since the expected date.                                                        | Overdue          |
-| `{backup_interval}`    | Interval string (e.g., "1D", "2W", "1M"). | Overdue          |
-| `{overdue_tolerance}`  | Overdue tolerance setting.                                                                   | Overdue          |
+<br/>
+
+## Variablen {#variables}
+
+Alle Vorlagen unterstützen Variablen, die durch tatsächliche Werte ersetzt werden. Die folgende Tabelle zeigt die verfügbaren Variablen:
+
+| Variable               | Beschreibung                                                                                                       | Verfügbar in    |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------- | :-------------- |
+| `{server_name}`        | Name des Servers.                                                                                  | Alle Vorlagen   |
+| `{server_alias}`       | Alias des Servers.                                                                                 | Alle Vorlagen   |
+| `{server_note}`        | Notiz für den Server.                                                                              | Alle Vorlagen   |
+| `{server_url}`         | Duplicati-Server-URL                                                                                               | Alle Vorlagen   |
+| `{backup_name}`        | Name der Sicherung.                                                                                | Alle Vorlagen   |
+| `{status}`             | Sicherungsstatus (Erfolg, Warnung, Fehler, Kritisch).                           | Erfolg, Warnung |
+| `{backup_date}`        | Datum und Uhrzeit der Sicherung.                                                                   | Erfolg, Warnung |
+| `{duration}`           | Dauer der Sicherung.                                                                               | Erfolg, Warnung |
+| `{uploaded_size}`      | Menge der hochgeladenen Daten.                                                                     | Erfolg, Warnung |
+| `{storage_size}`       | Speicherplatznutzungsinformationen.                                                                | Erfolg, Warnung |
+| `{available_versions}` | Verfügbare Sicherungsversionen.                                                                    | Erfolg, Warnung |
+| `{file_count}`         | Anzahl der verarbeiteten Dateien.                                                                  | Erfolg, Warnung |
+| `{file_size}`          | Gesamtgröße der gesicherten Dateien.                                                               | Erfolg, Warnung |
+| `{messages_count}`     | Anzahl der Nachrichten.                                                                            | Erfolg, Warnung |
+| `{warnings_count}`     | Anzahl der Warnungen.                                                                              | Erfolg, Warnung |
+| `{errors_count}`       | Anzahl der Fehler.                                                                                 | Erfolg, Warnung |
+| `{log_text}`           | Protokollnachrichten (Warnungen und Fehler)                                                     | Erfolg, Warnung |
+| `{last_backup_date}`   | Datum der letzten Sicherung.                                                                       | Überfällig      |
+| `{last_elapsed}`       | Seit der letzten Sicherung verstrichene Zeit.                                                      | Überfällig      |
+| `{expected_date}`      | Erwartetes Sicherungsdatum.                                                                        | Überfällig      |
+| `{expected_elapsed}`   | Seit dem erwarteten Datum verstrichene Zeit.                                                       | Überfällig      |
+| `{backup_interval}`    | Intervallzeichenfolge (z. B. "1D", "2W", "1M"). | Überfällig      |
+| `{overdue_tolerance}`  | Einstellung der Überfälligkeitstoleranz.                                                           | Überfällig      |
 
 
 

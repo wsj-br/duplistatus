@@ -1,26 +1,26 @@
-# Troubleshooting
+# Troubleshooting {#troubleshooting}
 
-### Dashboard Not Loading
+### Dashboard Not Loading {#dashboard-not-loading}
 
 - Check if the container is running: `docker ps`
 - Verify port 9666 is accessible
 - Check container logs: `docker logs duplistatus`
 
-### No Backup Data
+### No Backup Data {#no-backup-data}
 
 - Verify Duplicati server configuration
 - Check network connectivity between servers
 - Review duplistatus logs for errors
 - Ensure backup jobs are running
 
-### Notifications Not Working
+### Notifications Not Working {#notifications-not-working}
 
 - Check notification configuration
 - Verify NTFY server connectivity (if using NTFY)
 - Test notification settings
 - Check notification logs
 
-### New Backups Not Showing
+### New Backups Not Showing {#new-backups-not-showing}
 
 If you see Duplicati server warnings like `HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:`, and new backups do not appear in the dashboard or backup history:
 
@@ -28,7 +28,7 @@ If you see Duplicati server warnings like `HTTP Response request failed for:` an
 - **Check Network Connectivity**: Ensure the Duplicati server can connect to the **duplistatus** server. Confirm the port is correct (default: `9666`).
 - **Review Duplicati Logs**: Check for HTTP request errors in the Duplicati logs.
 
-### Notifications Not Working (Detailed)
+### Notifications Not Working (Detailed) {#notifications-not-working-detailed}
 
 If notifications are not being sent or received:
 
@@ -36,13 +36,13 @@ If notifications are not being sent or received:
 - **Check Network Connectivity**: Verify that **duplistatus** can reach your NTFY server. Review firewall settings if applicable.
 - **Check Notification Settings**: Confirm that notifications are enabled for the relevant backups.
 
-### Available Versions Not Appearing
+### Available Versions Not Appearing {#available-versions-not-appearing}
 
 If backup versions are not shown on the dashboard or details page:
 
 - **Check Duplicati Configuration**: Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.
 
-### Overdue Backup Alerts Not Working
+### Overdue Backup Alerts Not Working {#overdue-backup-alerts-not-working}
 
 If overdue backup notifications are not being sent:
 
@@ -50,7 +50,7 @@ If overdue backup notifications are not being sent:
 - **Check Notification Frequency**: If set to `One time`, alerts are only sent once per overdue event.
 - **Check Cron Service**: Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors. Verify the cron service is accessible at the configured port (default: `8667`).
 
-### Collect Backup Logs Not Working
+### Collect Backup Logs Not Working {#collect-backup-logs-not-working}
 
 If the manual backup log collection fails:
 
@@ -66,7 +66,7 @@ If the manual backup log collection fails:
 
   Also check for the DNS configuration inside the container (see more at [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
-### Upgrade from an earlier version (\<0.9.x) and can't login
+### Upgrade from an earlier version (\<0.9.x) and can't login {#upgrade-from-an-earlier-version-09x-and-cant-login}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version:
 \- username: `admin`
@@ -74,14 +74,14 @@ If the manual backup log collection fails:
 
 You can create additional users accounts in [Settings > Users](settings/user-management-settings.md) after the first login.
 
-### Lost Admin Password or Locked Out
+### Lost Admin Password or Locked Out {#lost-admin-password-or-locked-out}
 
 If you've lost your administrator password or been locked out of your account:
 
 - **Use Admin Recovery Script**: See the [Admin Account Recovery](admin-recovery.md) guide for instructions on recovering administrator access in Docker environments.
 - **Verify Container Access**: Ensure you have Docker exec access to the container to run the recovery script.
 
-### Database Backup and Migration
+### Database Backup and Migration {#database-backup-and-migration}
 
 When migrating from previous versions or creating a database backup:
 
@@ -107,7 +107,7 @@ If you still experience issues, try the following steps:
 
 <br/>
 
-# Additional Resources
+# Additional Resources {#additional-resources}
 
 - **Installation Guide**: [Installation Guide](../installation/installation.md)
 - **Duplicati Documentation**: [docs.duplicati.com](https://docs.duplicati.com)
@@ -116,6 +116,6 @@ If you still experience issues, try the following steps:
 - **Development Guide**: [Development Guide](../development/setup.md)
 - **Database Schema**: [Database Documentation](../development/database)
 
-### Support
+### Support {#support}
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/wsj-br/duplistatus/issues)

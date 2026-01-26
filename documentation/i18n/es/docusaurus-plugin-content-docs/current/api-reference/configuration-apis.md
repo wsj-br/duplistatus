@@ -1,6 +1,6 @@
-# Configuration Management
+# Configuration Management {#configuration-management}
 
-## Get Email Configuration - `/api/configuration/email`
+## Get Email Configuration - `/api/configuration/email` {#get-email-configuration-apiconfigurationemail}
 
 - **Endpoint**: `/api/configuration/email`
 - **Method**: GET
@@ -39,7 +39,7 @@
   - Indicates if email notifications are available for test and production use
   - Handles master key validation errors gracefully
 
-## Update Email Configuration - `/api/configuration/email`
+## Update Email Configuration - `/api/configuration/email` {#update-email-configuration-apiconfigurationemail}
 
 - **Endpoint**: `/api/configuration/email`
 - **Method**: POST
@@ -73,7 +73,7 @@
   - Secure field is boolean (true for SSL/TLS)
   - Password is managed separately through the password endpoint
 
-## Delete Email Configuration - `/api/configuration/email`
+## Delete Email Configuration - `/api/configuration/email` {#delete-email-configuration-apiconfigurationemail}
 
 - **Endpoint**: `/api/configuration/email`
 - **Method**: DELETE
@@ -94,7 +94,7 @@
   - This operation permanently removes the SMTP configuration
   - Returns 404 if no configuration exists to delete
 
-## Update Email Password - `/api/configuration/email/password`
+## Update Email Password - `/api/configuration/email/password` {#update-email-password-apiconfigurationemailpassword}
 
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: PATCH
@@ -129,7 +129,7 @@
   - Config parameter is required when no existing SMTP configuration exists
   - Password is stored securely using encryption
 
-## Get Email Password CSRF Token - `/api/configuration/email/password`
+## Get Email Password CSRF Token - `/api/configuration/email/password` {#get-email-password-csrf-token-apiconfigurationemailpassword}
 
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: GET
@@ -148,7 +148,7 @@
   - Returns CSRF token for use with password update operations
   - Session must be valid to generate token
 
-## Get Unified Configuration - `/api/configuration/unified`
+## Get Unified Configuration - `/api/configuration/unified` {#get-unified-configuration-apiconfigurationunified}
 
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
@@ -229,7 +229,7 @@
   - Email configuration includes `hasPassword` field but not the actual password
   - Fetches all data in parallel for better performance
 
-## Get NTFY Configuration - `/api/configuration/ntfy`
+## Get NTFY Configuration - `/api/configuration/ntfy` {#get-ntfy-configuration-apiconfigurationntfy}
 
 - **Endpoint**: `/api/configuration/ntfy`
 - **Method**: GET
@@ -253,7 +253,7 @@
   - Used for notification system management
   - Requires authentication for accessing configuration data
 
-## Get Notification Configuration - `/api/configuration/notifications`
+## Get Notification Configuration - `/api/configuration/notifications` {#get-notification-configuration-apiconfigurationnotifications}
 
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: GET
@@ -273,7 +273,7 @@
   - Used for overdue backup notification management
   - Returns one of: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
-## Update Notification Configuration - `/api/configuration/notifications`
+## Update Notification Configuration - `/api/configuration/notifications` {#update-notification-configuration-apiconfigurationnotifications}
 
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: POST
@@ -331,7 +331,7 @@
   - Validates notification frequency value against allowed options
   - Affects how often overdue notifications are sent
 
-## Update Backup Settings - `/api/configuration/backup-settings`
+## Update Backup Settings - `/api/configuration/backup-settings` {#update-backup-settings-apiconfigurationbackup-settings}
 
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
@@ -365,7 +365,7 @@
   - Cleans up overdue backup notifications for disabled backups
   - Clears notifications when timeout settings change
 
-## Update Notification Templates - `/api/configuration/templates`
+## Update Notification Templates - `/api/configuration/templates` {#update-notification-templates-apiconfigurationtemplates}
 
 - **Endpoint**: `/api/configuration/templates`
 - **Method**: POST
@@ -399,7 +399,7 @@
   - Preserves existing configuration settings
   - Templates support variable substitution
 
-## Get Overdue Tolerance - `/api/configuration/overdue-tolerance`
+## Get Overdue Tolerance - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance-apiconfigurationoverdue-tolerance}
 
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: GET
@@ -416,7 +416,7 @@
   - Returns the current overdue tolerance setting
   - Used for displaying current configuration
 
-## Update Overdue Tolerance - `/api/configuration/overdue-tolerance`
+## Update Overdue Tolerance - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance-apiconfigurationoverdue-tolerance}
 
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST

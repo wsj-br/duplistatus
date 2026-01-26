@@ -1,12 +1,12 @@
 
 
-# Timezone and Locale
+# Timezone and Locale {#timezone-and-locale}
 
 The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` and `LANG` environment variables to use the correct time zones and to format number, date and time values.
 
 The default values are `TZ=Europe/London` and `LANG=en_GB` if these environment variables are not set.
 
-## Configuring the Timezone
+## Configuring the Timezone {#configuring-the-timezone}
 
 The application user interface date and time will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `TZ` environment variable to format time zones.
 
@@ -25,7 +25,7 @@ or pass the environment variable in the command line:
   --env TZ=America/Sao_Paulo
 ```
 
-### Using your Linux Configuration
+### Using your Linux Configuration {#using-your-linux-configuration}
 
 To obtain your Linux host's configuration, you can execute:
 
@@ -33,11 +33,11 @@ To obtain your Linux host's configuration, you can execute:
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-### List of Timezones
+### List of Timezones {#list-of-timezones}
 
 You can find a list of timezones here: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
-## Configuring the Locale
+## Configuring the Locale {#configuring-the-locale}
 
 The application user interface dates and numbers will be displayed according to the browser's settings. However, for logging and notification purposes, the application will use the value defined in the `LANG` environment variable to format dates and numbers.
 
@@ -56,7 +56,7 @@ or pass the environment variable in the command line:
   --env LANG=pt_BR
 ```
 
-### Using your Linux Configuration
+### Using your Linux Configuration {#using-your-linux-configuration}
 
 To obtain your Linux host's configuration, you can execute:
 
@@ -64,7 +64,7 @@ To obtain your Linux host's configuration, you can execute:
 echo ${LANG%.*}
 ```
 
-### List of Locales
+### List of Locales {#list-of-locales}
 
 You can find a list of locales here: [LocalePlanet: International Components for Unicode (ICU) Data](https://www.localeplanet.com/icu/)
 

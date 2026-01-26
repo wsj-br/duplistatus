@@ -1,6 +1,6 @@
 
 
-# Environment Variables
+# Environment Variables {#environment-variables}
 
 The application supports the following environment variables for configuration:
 

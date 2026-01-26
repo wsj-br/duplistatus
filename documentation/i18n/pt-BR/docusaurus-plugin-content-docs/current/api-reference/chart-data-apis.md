@@ -1,6 +1,6 @@
-# Chart Data
+# Chart Data {#chart-data}
 
-## Get Aggregated Chart Data - `/api/chart-data/aggregated`
+## Get Aggregated Chart Data - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
 
 - **Endpoint**: `/api/chart-data/aggregated`
 - **Method**: GET
@@ -31,7 +31,7 @@
   - Validates date format before processing
   - Returns aggregated data across all servers
 
-## Get Server Chart Data - `/api/chart-data/server/:serverId`
+## Get Server Chart Data - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
 
 - **Endpoint**: `/api/chart-data/server/:serverId`
 - **Method**: GET
@@ -64,7 +64,7 @@
   - Validates date format before processing
   - Returns chart data for specific server
 
-## Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName`
+## Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
 
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
 - **Method**: GET

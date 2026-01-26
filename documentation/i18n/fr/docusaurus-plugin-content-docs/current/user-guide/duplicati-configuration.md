@@ -1,23 +1,23 @@
-# Duplicati Configuration
+# Configuration Duplicati {#duplicati-configuration}
 
-The <SvgButton svgFilename="duplicati_logo.svg" /> button on the [Application Toolbar](overview#application-toolbar) opens the Duplicati server's web interface in a new tab.
+Le bouton <SvgButton svgFilename="duplicati_logo.svg" /> sur la [Barre d'outils de l'application](overview#application-toolbar) ouvre l'interface web du serveur Duplicati dans un nouvel onglet.
 
-You can select a server from the dropdown list. If you have already selected a server (by clicking its card) or are viewing its details, the button will open that specific server's Duplicati configuration directly.
+Vous pouvez Sélectionner un Serveur dans la liste déroulante. Si vous avez déjà Sélectionné un Serveur (en cliquant sur sa carte) ou que vous Affichage ses Détails, le bouton ouvrira la Configuration Duplicati de ce Serveur spécifique directement.
 
-![Duplicati configuration](/img/screen-duplicati-configuration.png)
+![Configuration Duplicati](/img/screen-duplicati-configuration.png)
 
-- The list of servers will show the `server name` or `server alias (server name)`.
-- Server addresses are configured in [`Settings → Server`](settings/server-settings.md).
-- The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collect Backup Logs`](collect-backup-logs.md) feature.
-- Servers will not appear in the server list if their address has not been configured.
+- La liste des Serveurs affichera le `Nom du serveur` ou `Alias du serveur (Nom du serveur)`.
+- Les Adresses des serveurs sont Configurées dans [`Paramètres → Serveur`](settings/server-settings.md).
+- L'application enregistre automatiquement l'URL d'un Serveur Quand vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collecter les journaux de sauvegarde`](collect-backup-logs.md).
+- Les Serveurs n'apparaîtront pas dans la liste des Serveurs si leur adresse n'a pas été Configurée.
 
-## Accessing the Old Duplicati UI
+## Accès à l'ancienne interface utilisateur Duplicati {#accessing-the-old-duplicati-ui}
 
-If you experience login issues with the new Duplicati web interface (`/ngclient/`), you can right-click the <SvgButton svgFilename="duplicati_logo.svg" /> button on or any server item in the server selection popover to open the old Duplicati UI (`/ngax/`) in a new tab.
+Si vous rencontrez des problèmes de Connexion avec la nouvelle interface web Duplicati (`/ngclient/`), vous pouvez faire un clic droit sur le bouton <SvgButton svgFilename="duplicati_logo.svg" /> ou sur n'importe quel élément de Serveur dans le popover de sélection des Serveurs pour ouvrir l'ancienne interface utilisateur Duplicati (`/ngax/`) dans un nouvel onglet.
 
 <br/><br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+Tous les noms de produits, marques commerciales et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à des fins d'identification uniquement et n'impliquent pas une approbation.
 :::
 

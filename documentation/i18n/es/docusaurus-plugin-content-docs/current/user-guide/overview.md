@@ -1,8 +1,8 @@
-# Overview
+# Overview {#overview}
 
 Welcome to the duplistatus user guide. This comprehensive document provides detailed instructions for using duplistatus to monitor and manage your Duplicati backup operations across multiple servers.
 
-## What is duplistatus?
+## What is duplistatus? {#what-is-duplistatus}
 
 duplistatus is a powerful monitoring dashboard designed specifically for Duplicati backup systems. It provides:
 
@@ -12,11 +12,11 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 - Comprehensive metrics and visualisation of backup performance
 - Flexible notification system via NTFY and email
 
-## Installation
+## Installation {#installation}
 
 For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../installation/installation.md).
 
-## Accessing the Dashboard
+## Accessing the Dashboard {#accessing-the-dashboard}
 
 After successful installation, access the duplistatus web interface by following these steps:
 
@@ -29,11 +29,11 @@ After successful installation, access the duplistatus web interface by following
    - password: `Duplistatus09`
 4. After login, the main dashboard will display automatically (with no data on first usage)
 
-## User Interface Overview
+## User Interface Overview {#user-interface-overview}
 
 duplistatus provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
 
-![Dashboard Overview](/img/screen-main-dashboard-card-mode.png)
+![Dashboard Overview](/assets/screen-main-dashboard-card-mode.png)
 
 The user interface is organised into several key sections to provide a clear and comprehensive monitoring experience:
 
@@ -46,7 +46,7 @@ The user interface is organised into several key sections to provide a clear and
 7. [Server Details](server-details.md): Comprehensive list of recorded backups for specific servers, including detailed statistics
 8. [Backup Details](server-details.md#backup-details): In-depth information for individual backups, including execution logs, warnings, and errors
 
-## Application Toolbar
+## Application Toolbar {#application-toolbar}
 
 The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
@@ -63,7 +63,7 @@ The application toolbar provides convenient access to key functions and settings
 | <IconButton icon="lucide:user" label="username" />                                                                                                                   | Show the connected user, user type (`Admin`, `User`), click for user menu. See more in [User Management](settings/user-management-settings.md)                                                                                               |
 | <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Opens the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened. |
 
-### User Menu
+### User Menu {#user-menu}
 
 Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
 
@@ -73,12 +73,12 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
     <th>Regular User</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-user.png" alt="User Menu - User" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
   </tr>
 </tbody></table>
 
-## Essential Configuration
+## Essential Configuration {#essential-configuration}
 
 1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
 2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.

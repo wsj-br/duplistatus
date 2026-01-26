@@ -1,6 +1,6 @@
-# Monitoring & Health
+# Monitoring & Health {#monitoring-health}
 
-## Health Check - `/api/health`
+## Health Check - `/api/health` {#health-check-apihealth}
 
 - **Endpoint**: `/api/health`
 

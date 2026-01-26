@@ -1,14 +1,14 @@
-# HTTPS-Einrichtung (Optional)
+# HTTPS-Setup (Optional) {#https-setup-optional}
 
-Für Produktionsumgebungen wird empfohlen, **duplistatus** über HTTPS mit einem Reverse-Proxy bereitzustellen. Dieser Abschnitt enthält Konfigurationsbeispiele für gängige Reverse-Proxy-Lösungen.
+Für Produktionsbereitstellungen wird empfohlen, **duplistatus** über HTTPS mit einem Reverse Proxy bereitzustellen. Dieser Abschnitt enthält Konfigurationsbeispiele für beliebte Reverse-Proxy-Lösungen.
 
-### Option 1: Nginx mit Certbot (Let's Encrypt)
+### Option 1: Nginx mit Certbot (Let's Encrypt) {#option-1-nginx-with-certbot-lets-encrypt}
 
-[Nginx](https://nginx.org/) ist ein beliebter Webserver, der als Reverse-Proxy fungieren kann, und [Certbot](https://certbot.eff.org/) stellt kostenlose SSL-Zertifikate von Let's Encrypt bereit.
+[Nginx](https://nginx.org/) ist ein beliebter Webserver, der als Reverse Proxy fungieren kann, und [Certbot](https://certbot.eff.org/) bietet kostenlose SSL-Zertifikate von Let's Encrypt.
 
 **Voraussetzungen:**
 
-- Domainname, der auf Ihren Server verweist
+- Domänenname, der auf Ihren Server verweist
 - Nginx auf Ihrem System installiert
 - Certbot für Ihr Betriebssystem installiert
 
@@ -40,19 +40,19 @@ server {
 }
 ```
 
-**Schritt 3: Website aktivieren und SSL-Zertifikat erhalten**
+**Schritt 3: Website aktivieren und SSL-Zertifikat abrufen**
 
 ```bash
-# Website aktivieren
+# Website aktivieren {#enable-the-site}
 sudo ln -s /etc/nginx/sites-available/duplistatus /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
-# SSL-Zertifikat erhalten
+# SSL-Zertifikat abrufen {#obtain-ssl-certificate}
 sudo certbot --nginx -d your-domain.com
 ```
 
-Certbot aktualisiert automatisch Ihre Nginx-Konfiguration, um SSL-Einstellungen einzuschließen und HTTP auf HTTPS umzuleiten.
+Certbot aktualisiert automatisch Ihre Nginx-Konfiguration, um SSL-Einstellungen einzubeziehen und HTTP zu HTTPS umzuleiten.
 
 **Dokumentation:**
 
@@ -60,22 +60,22 @@ Certbot aktualisiert automatisch Ihre Nginx-Konfiguration, um SSL-Einstellungen 
 - [Certbot-Dokumentation](https://certbot.eff.org/instructions)
 - [Let's Encrypt-Dokumentation](https://letsencrypt.org/docs/)
 
-### Option 2: Caddy
+### Option 2: Caddy {#option-2-caddy}
 
-[Caddy](https://caddyserver.com/) ist ein moderner Webserver mit automatischem HTTPS, der die SSL-Zertifikatsverwaltung vereinfacht.
+[Caddy](https://caddyserver.com/) ist ein moderner Webserver mit automatischem HTTPS, der die SSL-Zertifikatverwaltung vereinfacht.
 
 **Voraussetzungen:**
 
-- Domainname, der auf Ihren Server verweist
+- Domänenname, der auf Ihren Server verweist
 - Caddy auf Ihrem System installiert
 
 **Schritt 1: Caddy installieren**
 
-Folgen Sie der [offiziellen Installationsanleitung](https://caddyserver.com/docs/install) für Ihr Betriebssystem.
+Folgen Sie dem [offiziellen Installationsleitfaden](https://caddyserver.com/docs/install) für Ihr Betriebssystem.
 
 **Schritt 2: Caddyfile erstellen**
 
-Erstellen Sie ein `Caddyfile` mit folgendem Inhalt:
+Erstellen Sie eine `Caddyfile` mit folgendem Inhalt:
 
 ```caddy
 your-domain.com {
@@ -95,17 +95,17 @@ Oder verwenden Sie es als Systemdienst:
 sudo caddy start --config Caddyfile
 ```
 
-Caddy wird automatisch SSL-Zertifikate von Let's Encrypt beziehen und verwalten.
+Caddy ruft automatisch SSL-Zertifikate von Let's Encrypt ab und verwaltet diese.
 
 **Dokumentation:**
 
 - [Caddy-Dokumentation](https://caddyserver.com/docs/)
-- [Caddy Reverse-Proxy-Anleitung](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
+- [Caddy Reverse-Proxy-Leitfaden](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
-### Wichtige Hinweise
+### Wichtige Notizen {#important-notes}
 
 :::info[IMPORTANT]
-Denken Sie nach der Einrichtung von HTTPS daran, Ihre Duplicati-Serverkonfiguration zu aktualisieren, um die HTTPS-URL zu verwenden:
+Nach der Einrichtung von HTTPS müssen Sie Ihre Duplicati-Serverkonfiguration aktualisieren, um die HTTPS-URL zu verwenden:
 
 ```bash
 --send-http-url=https://your-domain.com/api/upload
@@ -115,9 +115,9 @@ Denken Sie nach der Einrichtung von HTTPS daran, Ihre Duplicati-Serverkonfigurat
 
 :::tip
 
-- Ersetzen Sie `your-domain.com` durch Ihren tatsächlichen Domainnamen
-- Stellen Sie sicher, dass der DNS-A-Eintrag Ihrer Domain auf die IP-Adresse Ihres Servers verweist
+- Ersetzen Sie `your-domain.com` durch Ihren tatsächlichen Domänennamen
+- Stellen Sie sicher, dass der DNS-A-Datensatz Ihrer Domäne auf die IP-Adresse Ihres Servers verweist
 - Beide Lösungen erneuern SSL-Zertifikate automatisch
-- Erwägen Sie die Einrichtung einer Firewall, um nur HTTP/HTTPS-Verkehr zuzulassen
+- Erwägen Sie die Einrichtung einer Firewall, um nur HTTP/HTTPS-Datenverkehr zuzulassen
   :::
 

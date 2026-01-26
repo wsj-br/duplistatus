@@ -1,16 +1,16 @@
-# Zeitzone und Gebietsschema
+# Zeitzone und Gebietsschema {#timezone-and-locale}
 
-Datum und Uhrzeit der Anwendungsbenutzeroberfläche werden entsprechend den Browsereinstellungen angezeigt. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch die in den Umgebungsvariablen `TZ` und `LANG` definierten Werte, um die korrekten Zeitzonen zu verwenden und Zahlen-, Datums- und Uhrzeitwerte zu formatieren.
+Das Datum und die Uhrzeit der Benutzeroberfläche der Anwendung werden gemäß den Einstellungen des Browsers angezeigt. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in den Umgebungsvariablen `TZ` und `LANG` definierten Wert, um die korrekten Zeitzonen zu verwenden und Zahlen-, Datums- und Zeitwerte zu formatieren.
 
 Die Standardwerte sind `TZ=Europe/London` und `LANG=en_GB`, wenn diese Umgebungsvariablen nicht gesetzt sind.
 
-## Konfigurieren der Zeitzone
+## Konfigurieren der Zeitzone {#configuring-the-timezone}
 
-Datum und Uhrzeit der Anwendungsbenutzeroberfläche werden entsprechend den Browsereinstellungen angezeigt. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariable `TZ` definierten Wert, um Zeitzonen zu formatieren.
+Das Datum und die Uhrzeit der Benutzeroberfläche der Anwendung werden gemäß den Einstellungen des Browsers angezeigt. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariablen `TZ` definierten Wert, um Zeitzonen zu formatieren.
 
 Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht gesetzt ist.
 
-Um beispielsweise die Zeitzone auf São Paulo zu ändern, fügen Sie diese Zeilen zur `compose.yml` im Verzeichnis `duplistatus` hinzu:
+Um beispielsweise die Zeitzone auf São Paulo zu ändern, fügen Sie diese Zeilen in der Datei `compose.yml` im Verzeichnis `duplistatus` hinzu:
 
 ```yaml
 environment:
@@ -23,25 +23,25 @@ oder übergeben Sie die Umgebungsvariable in der Befehlszeile:
   --env TZ=America/Sao_Paulo
 ```
 
-### Verwenden Ihrer Linux-Konfiguration
+### Verwendung Ihrer Linux-Konfiguration {#using-your-linux-configuration}
 
-Um die Konfiguration Ihres Linux-Hosts zu erhalten, können Sie Folgendes ausführen:
+Um die Konfiguration Ihres Linux-Host zu erhalten, können Sie Folgendes ausführen:
 
 ```bash
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-### Liste der Zeitzonen
+### Liste von Zeitzonen {#list-of-timezones}
 
-Eine Liste der Zeitzonen finden Sie hier: [Wikipedia: Liste der tz-Datenbank-Zeitzonen](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
+Sie können eine Liste von Zeitzonen hier finden: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
-## Konfigurieren des Gebietsschemas
+## Konfigurieren des Gebietsschemas {#configuring-the-locale}
 
-Datumsangaben und Zahlen der Anwendungsbenutzeroberfläche werden entsprechend den Browsereinstellungen angezeigt. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariable `LANG` definierten Wert, um Datumsangaben und Zahlen zu formatieren.
+Die Daten und Zahlen der Benutzeroberfläche der Anwendung werden gemäß den Einstellungen des Browsers angezeigt. Für Protokollierungs- und Benachrichtigungszwecke verwendet die Anwendung jedoch den in der Umgebungsvariablen `LANG` definierten Wert, um Daten und Zahlen zu formatieren.
 
 Der Standardwert ist `LANG=en_GB`, wenn diese Umgebungsvariable nicht gesetzt ist.
 
-Um beispielsweise das Gebietsschema auf brasilianisches Portugiesisch zu ändern, fügen Sie diese Zeilen zur `compose.yml` im Verzeichnis `duplistatus` hinzu:
+Um beispielsweise das Gebietsschema auf brasilianisches Portugiesisch zu ändern, fügen Sie diese Zeilen in der Datei `compose.yml` im Verzeichnis `duplistatus` hinzu:
 
 ```yaml
 environment:
@@ -54,15 +54,15 @@ oder übergeben Sie die Umgebungsvariable in der Befehlszeile:
   --env LANG=pt_BR
 ```
 
-### Verwenden Ihrer Linux-Konfiguration
+### Verwendung Ihrer Linux-Konfiguration {#using-your-linux-configuration}
 
-Um die Konfiguration Ihres Linux-Hosts zu erhalten, können Sie Folgendes ausführen:
+Um die Konfiguration Ihres Linux-Host zu erhalten, können Sie Folgendes ausführen:
 
 ```bash
 echo ${LANG%.*}
 ```
 
-### Liste der Gebietsschemas
+### Liste von Gebietsschemas {#list-of-locales}
 
-Eine Liste der Gebietsschemas finden Sie hier: [LocalePlanet: International Components for Unicode (ICU) Data](https://www.localeplanet.com/icu/)
+Sie können eine Liste von Gebietsschemas hier finden: [LocalePlanet: International Components for Unicode (ICU) Data](https://www.localeplanet.com/icu/)
 

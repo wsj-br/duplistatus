@@ -1,22 +1,22 @@
-# Display
+# Anzeige {#display}
 
-Configure user interface and display preferences.
+Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 
-![Display Settings](/img/screen-settings-display.png)
+![Anzeigeeinstellungen](/img/screen-settings-display.png)
 
 <br/>
 
-| Setting                   | Description                                                         | Default Value       |
-| :------------------------ | :------------------------------------------------------------------ | :------------------ |
-| **Table Size**            | Number of rows per page on the server details page. | 5 rows              |
-| **Chart Time Range**      | Time interval shown in the charts.                  | All available data  |
-| **Auto-refresh Interval** | How often pages refresh automatically.              | 1 minute            |
-| **Cards Sort Order**      | How cards are sorted on the dashboard.              | `Server name (a-z)` |
-| **Theme**                 | Select the light or dark theme.                     | Dark                |
+| Einstellung                     | Beschreibung                                                                 | Standardwert           |
+| :------------------------------ | :--------------------------------------------------------------------------- | :--------------------- |
+| **Tabellengröße**               | Anzahl der Zeilen pro Seite auf der Seite mit Serverdetails. | 5 Zeilen               |
+| **Diagramm-Zeitbereich**        | Zeitintervall, das in den Diagrammen angezeigt wird.         | Alle verfügbaren Daten |
+| **Automatische Aktualisierung** | Wie oft Seiten automatisch aktualisiert werden.              | 1 Minute               |
+| **Kartensortierung**            | Wie Karten auf dem Dashboard sortiert werden.                | `Servername (a-z)`     |
+| **Thema**                       | Wählen Sie das helle oder dunkle Thema aus.                  | Dunkel                 |
 
 <br/>
 
 :::tip
-**Quick Access**: You can quickly access this page by right-clicking on the auto-refresh button in the application toolbar.
+**Schnellzugriff**: Sie können schnell auf diese Seite zugreifen, indem Sie mit der rechten Maustaste auf die Schaltfläche für die automatische Aktualisierung in der Anwendungssymbolleiste klicken.
 :::
 

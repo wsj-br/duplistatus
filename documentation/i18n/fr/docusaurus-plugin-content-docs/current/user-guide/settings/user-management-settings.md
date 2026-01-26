@@ -1,66 +1,66 @@
-# Users
+# Utilisateurs {#users}
 
-Manage user accounts, permissions, and access control for **duplistatus**. This section allows administrators to create, modify, and delete user accounts.
+Gérez les comptes d'utilisateurs, les autorisations et le contrôle d'accès pour **duplistatus**. Cette section permet aux administrateurs de créer, modifier et supprimer des comptes d'utilisateurs.
 
-![User Management](/img/screen-settings-users.png)
+![Gestion des utilisateurs](/img/screen-settings-users.png)
 
 > [!TIP]
-> The default `admin` account can be deleted. To do so, first create a new admin user, log in with that account,
-> and then delete the `admin` account.
+> Le compte `admin` par défaut peut être supprimé. Pour ce faire, créez d'abord un nouvel utilisateur administrateur, connectez-vous avec ce compte,
+> puis supprimez le compte `admin`.
 >
-> The default password for the `admin` account is `Duplistatus09`. You will be required to change it upon first login.
+> Le mot de passe par défaut du compte `admin` est `Duplistatus09`. Vous devrez le modifier lors de votre première connexion.
 
-## Accessing User Management
+## Accès à la Gestion des utilisateurs {#accessing-user-management}
 
-You can access the User Management section in two ways:
+Vous pouvez accéder à la section Gestion des utilisateurs de deux façons :
 
-1. **From the User Menu**: Click the <IconButton icon="lucide:user" label="username" />   in the [Application Toolbar](../overview.md#application-toolbar) and select "Admin Users".
+1. **À partir du Menu Utilisateur** : Cliquez sur <IconButton icon="lucide:user" label="username" />   dans la [Barre d'outils de l'application](../overview.md#application-toolbar) et sélectionnez "Utilisateurs administrateurs".
 
-2. **From Settings**: Click on <IconButton icon="lucide:settings"/> and `Users` in the settings sidebar
+2. **À partir des Paramètres** : Cliquez sur <IconButton icon="lucide:settings"/> et `Utilisateurs` dans la barre latérale des paramètres
 
-## Creating a New User
+## Création d'un nouvel utilisateur {#creating-a-new-user}
 
-1. Click the <IconButton icon="lucide:plus" label="Add User"/> button
-2. Enter the user details:
-   - **Username**: Must be 3-50 characters, unique, case-insensitive
-   - **Admin**: Check to grant administrator privileges
-   - **Require Password Change**: Check to force password change on first login
-   - **Password**:
-     - Option 1: Check "Auto-generate password" to create a secure temporary password
-     - Option 2: Uncheck and enter a custom password
-3. Click <IconButton icon="lucide:user-plus" label="Create User" />.
+1. Cliquez sur le bouton <IconButton icon="lucide:plus" label="Add User"/>
+2. Entrez les détails de l'utilisateur :
+   - **Nom d'utilisateur** : Doit contenir 3 à 50 caractères, être unique, insensible à la casse
+   - **Admin** : Cochez pour accorder les privilèges d'administrateur
+   - **Exiger le changement de mot de passe** : Cochez pour forcer le changement de mot de passe lors de la première connexion
+   - **Mot de passe** :
+     - Option 1 : Cochez "Générer automatiquement le mot de passe" pour créer un mot de passe temporaire sécurisé
+     - Option 2 : Décochez et entrez un mot de passe personnalisé
+3. Cliquez sur <IconButton icon="lucide:user-plus" label="Create User" />.
 
-## Editing a User
+## Modification d'un utilisateur {#editing-a-user}
 
-1. Click the <IconButton icon="lucide:edit" /> edit icon next to the user
-2. Modify any of the following:
-   - **Username**: Change the username (must be unique)
-   - **Admin**: Toggle administrator privileges
-   - **Require Password Change**: Toggle password change requirement
-3. Click <IconButton icon="lucide:check" label="Save Changes" />.
+1. Cliquez sur l'icône <IconButton icon="lucide:edit" /> de modification à côté de l'utilisateur
+2. Modifiez l'un des éléments suivants :
+   - **Nom d'utilisateur** : Modifiez le nom d'utilisateur (doit être unique)
+   - **Admin** : Basculez les privilèges d'administrateur
+   - **Exiger le changement de mot de passe** : Basculez l'exigence de changement de mot de passe
+3. Cliquez sur <IconButton icon="lucide:check" label="Save Changes" />.
 
-## Resetting a User Password
+## Réinitialisation du mot de passe d'un utilisateur {#resetting-a-user-password}
 
-1. Click the <IconButton icon="lucide:key-round" /> key icon next to the user
-2. Confirm the password reset
-3. A new temporary password will be generated and displayed
-4. Copy the password and provide it to the user securely
+1. Cliquez sur l'icône <IconButton icon="lucide:key-round" /> de clé à côté de l'utilisateur
+2. Confirmez la réinitialisation du mot de passe
+3. Un nouveau mot de passe temporaire sera généré et affiché
+4. Copiez le mot de passe et fournissez-le à l'utilisateur de manière sécurisée
 
-## Deleting a User
+## Suppression d'un utilisateur {#deleting-a-user}
 
-1. Click the <IconButton icon="lucide:trash-2" /> delete icon next to the user
-2. Confirm the deletion in the dialog box.  **User deletion is permanent and cannot be undone.**
+1. Cliquez sur l'icône <IconButton icon="lucide:trash-2" /> de suppression à côté de l'utilisateur
+2. Confirmez la suppression dans la boîte de dialogue.  **La suppression d'utilisateur est permanente et ne peut pas être annulée.**
 
-## Account Lockout
+## Verrouillage de compte {#account-lockout}
 
-Accounts are automatically locked after multiple failed login attempts:
+Les comptes sont automatiquement verrouillés après plusieurs tentatives de connexion échouées :
 
-- **Lockout Threshold**: 5 failed attempts
-- **Lockout Duration**: 15 minutes
-- Locked accounts cannot log in until the lockout period expires
+- **Seuil de verrouillage** : 5 tentatives échouées
+- **Durée du verrouillage** : 15 minutes
+- Les comptes verrouillés ne peuvent pas se connecter jusqu'à l'expiration de la période de verrouillage
 
-## Recovering Admin Access
+## Récupération de l'accès administrateur {#recovering-admin-access}
 
-If you've lost your admin password or been locked out of your account, you can recover access using the admin recovery script. See the [Admin Account Recovery](../admin-recovery.md) guide for detailed instructions on recovering administrator access in Docker environments.
+Si vous avez perdu votre mot de passe administrateur ou avez été verrouillé de votre compte, vous pouvez récupérer l'accès en utilisant le script de récupération administrateur. Consultez le guide [Récupération du compte administrateur](../admin-recovery.md) pour des instructions détaillées sur la récupération de l'accès administrateur dans les environnements Docker.
 
 

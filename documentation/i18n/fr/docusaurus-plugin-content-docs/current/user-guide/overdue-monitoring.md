@@ -1,73 +1,72 @@
-import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
+importer { ZoomMermaid } de '@site/src/components/ZoomMermaid';
 
-# Overdue Monitoring
+# Surveillance des sauvegardes en retard {#overdue-monitoring}
 
-The overdue monitoring feature allows you to track and alert on backups that are overdue. The notifications can be via NTFY or Email.
+La fonctionnalité de surveillance des sauvegardes en retard vous permet de suivre et d'alerter sur les sauvegardes qui sont en retard. Les notifications peuvent être envoyées via NTFY ou E-mail.
 
-In the user interface, the overdue backups are displayed with a warning icon . Hovering over the icon displays the details of the overdue backup, including the last backup time, the expected backup time, the tolerance period and the expected next backup time.
+Dans l'interface utilisateur, les sauvegardes en retard sont affichées avec une icône d'avertissement . Le survol de l'icône affiche les détails de la sauvegarde en retard, y compris l'heure de la dernière sauvegarde, l'heure de sauvegarde attendue, la période de tolérance et l'heure de la prochaine sauvegarde attendue.
 
-## Overdue Check Process
+## Processus de vérification des sauvegardes en retard {#overdue-check-process}
 
-**How it works:**
+**Fonctionnement :**
 
-| **Step** | **Value**                  | **Description**                                                                      | **Example**        |
-| :------: | :------------------------- | :----------------------------------------------------------------------------------- | :----------------- |
-|     1    | **Last Backup**            | The timestamp of the last successful backup.                         | `2024-01-01 08:00` |
-|     2    | **Expected Interval**      | The configured backup frequency.                                     | `1 day`            |
-|     3    | **Calculated Next Backup** | `Last Backup` + `Expected Interval`                                                  | `2024-01-02 08:00` |
-|     4    | **Tolerance**              | The configured grace period (extra time allowed). | `1 hour`           |
-|     5    | **Expected Next Backup**   | `Calculated Next Backup` + `Tolerance`                                               | `2024-01-02 09:00` |
+| **Étape** | **Valeur**                        | **Description**                                                                                    | **Exemple**        |
+| :-------: | :-------------------------------- | :------------------------------------------------------------------------------------------------- | :----------------- |
+|     1     | **Dernière sauvegarde**           | L'horodatage de la dernière sauvegarde réussie.                                    | `2024-01-01 08:00` |
+|     2     | **Intervalle attendu**            | La fréquence de sauvegarde configurée.                                             | `1 jour`           |
+|     3     | **Prochaine sauvegarde calculée** | `Dernière sauvegarde` + `Intervalle attendu`                                                       | `2024-01-02 08:00` |
+|     4     | **Tolérance**                     | La période de grâce configurée (temps supplémentaire autorisé). | `1 heure`          |
+|     5     | **Prochaine sauvegarde attendue** | `Prochaine sauvegarde calculée` + `Tolérance`                                                      | `2024-01-02 09:00` |
 
-A backup is considered **overdue** if the current time is later than the `Expected Next Backup` time.
+Une sauvegarde est considérée comme **en retard** si l'heure actuelle est ultérieure à l'heure de la `Prochaine sauvegarde attendue`.
 
 <ZoomMermaid>
 ```mermaid
 gantt
-    title Backup Schedule Timeline with Tolerance
+    title Chronologie de planification de sauvegarde avec tolérance
     dateFormat  YYYY-MM-DD HH:mm
     axisFormat %m/%d %H:%M
 
     ```
-    Last Backup Received    :done, last-backup, 2024-01-01 08:00, 0.5h
+    Dernière sauvegarde reçue    :done, last-backup, 2024-01-01 08:00, 0.5h
     
-    Interval                :active, interval, 2024-01-01 08:00, 24h
-    Calculated Next Backup                :milestone, expected, 2024-01-02 08:00, 0h
-    Tolerance Period        :active, tolerance period, 2024-01-02 08:00, 1h
+    Intervalle                :active, interval, 2024-01-01 08:00, 24h
+    Prochaine sauvegarde calculée                :milestone, expected, 2024-01-02 08:00, 0h
+    Période de tolérance        :active, tolerance period, 2024-01-02 08:00, 1h
     
-    Expected Next Backup               :milestone, adjusted, 2024-01-02 09:00, 0h
+    Prochaine sauvegarde attendue               :milestone, adjusted, 2024-01-02 09:00, 0h
     
-    Check 1 : milestone, deadline, 2024-01-01 21:00, 0h
-    Check 2 : milestone, deadline, 2024-01-02 08:30, 0h
-    Check 3 : milestone, deadline, 2024-01-02 10:00, 0h
+    Vérification 1 : milestone, deadline, 2024-01-01 21:00, 0h
+    Vérification 2 : milestone, deadline, 2024-01-02 08:30, 0h
+    Vérification 3 : milestone, deadline, 2024-01-02 10:00, 0h
     ```
 
 ```
 </ZoomMermaid>
 
-**Examples based on the timeline above:**
+**Exemples basés sur la chronologie ci-dessus :**
 
-- At `2024-01-01 21:00` (🔹Check 1), the backup is **on time**.
-- At `2024-01-02 08:30` (🔹Check 2), the backup is **on time**, as it is still within the tolerance period.
-- At `2024-01-02 10:00` (🔹Check 3), the backup is **overdue**, as this is after the `Expected Next Backup` time.
+- À `2024-01-01 21:00` (🔹Vérification 1), la sauvegarde est **à l'heure**.
+- À `2024-01-02 08:30` (🔹Vérification 2), la sauvegarde est **à l'heure**, car elle est toujours dans la période de tolérance.
+- À `2024-01-02 10:00` (🔹Vérification 3), la sauvegarde est **en retard**, car c'est après l'heure de la `Prochaine sauvegarde attendue`.
 
-## Periodic Checks
+## Vérifications périodiques {#periodic-checks}
 
-**duplistatus** performs periodic checks for overdue backups at configurable intervals. The default interval is 20 minutes, but you can configure it in [Settings → Overdue Monitoring](settings/overdue-settings.md).
+**duplistatus** effectue des vérifications périodiques des sauvegardes en retard à des intervalles configurables. L'intervalle par défaut est de 20 minutes, mais vous pouvez le configurer dans [Paramètres → Surveillance des sauvegardes en retard](settings/overdue-settings.md).
 
-## Automatic Configuration
+## Configuration automatique {#automatic-configuration}
 
-When you collect backup logs from a Duplicati server, **duplistatus** automatically:
+Lorsque vous collectez les journaux de sauvegarde d'un serveur Duplicati, **duplistatus** effectue automatiquement :
 
-- Extracts the backup schedule from the Duplicati configuration
-- Updates the overdue monitoring intervals to match exactly
-- Synchronises allowed weekdays and scheduled times
-- Preserves your notification preferences
+- L'extraction de la planification de sauvegarde à partir de la configuration Duplicati
+- La mise à jour des intervalles de surveillance des sauvegardes en retard pour correspondre exactement
+- La synchronisation des jours de la semaine autorisés et des heures planifiées
+- La préservation de vos préférences de notification
 
 :::tip
-For best results, collect backup logs after changing backup job intervals in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+Pour de meilleurs résultats, collectez les journaux de sauvegarde après avoir modifié les intervalles des tâches de sauvegarde sur votre serveur Duplicati. Cela garantit que **duplistatus** reste synchronisé avec votre configuration actuelle.
 :::
 
-Review the [Overdue Settings](settings/overdue-settings.md) section for detailed configuration options.
-
+Consultez la section [Paramètres de surveillance des sauvegardes en retard](settings/overdue-settings.md) pour les options de configuration détaillées.
 ```
 

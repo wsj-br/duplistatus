@@ -1,8 +1,8 @@
-# Server
+# Server {#server}
 
 You can configure an alternative name (alias) for your servers, a note to describe its function and the web addresses of your Duplicati Servers here.
 
-![server settings](/img/screen-settings-server.png)
+![server settings](/assets/screen-settings-server.png)
 
 | Setting                                            | Description                                                                                                                                                                                                                  |
 | :------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -21,7 +21,7 @@ will be disabled in all pages and the server will not be shown in [`Duplicati Co
 
 <br/>
 
-## Available Actions for each server
+## Available Actions for each server {#available-actions-for-each-server}
 
 | Button                                                                                                                          | Description                                                                             |
 | :------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------- |
@@ -44,7 +44,7 @@ The password is stored encrypted in the database and is never displayed in the u
 
 <br/>
 
-## Available Actions for all servers
+## Available Actions for all servers {#available-actions-for-all-servers}
 
 | Button                                                     | Description                                                     |
 | :--------------------------------------------------------- | :-------------------------------------------------------------- |

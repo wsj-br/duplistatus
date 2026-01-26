@@ -1,8 +1,8 @@
-# Email
+# Email {#email}
 
 **duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
 
-![Email Configuration](/img/screen-settings-email.png)
+![Email Configuration](/assets/screen-settings-email.png)
 
 | Setting                 | Description                                                                                                                                                                                                                                                                                                                           |
 | :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -24,7 +24,7 @@ When the configuration is not fully configured, a yellow alert box is displayed 
 
 <br/>
 
-## Available Actions
+## Available Actions {#available-actions}
 
 | Button                                                           | Description                                                                                                                                                                                                                                                                                       |
 | :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -44,7 +44,7 @@ Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and ever
 
 <br/>
 
-## Common SMTP Providers
+## Common SMTP Providers {#common-smtp-providers}
 
 **Gmail:**
 
@@ -73,7 +73,7 @@ Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and ever
 - Password: Use an App Password
 - Authentication: Required
 
-### Security Best Practices
+### Security Best Practices {#security-best-practices}
 
 - Consider using a dedicated email account for notifications
 - Test your configuration using the "Send Test Email" button

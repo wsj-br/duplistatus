@@ -1,165 +1,165 @@
-# Migration Guide
+# Guia de Migração
 
-This guide explains how to upgrade between versions of duplistatus. Migrations are automatic—the database schema updates itself when you start a new version.
+Este guia explica como fazer upgrade entre versões de duplistatus. As migrações são automáticas—o esquema do banco de dados se atualiza automaticamente quando você inicia uma nova versão.
 
-Manual steps are only required if you have customised notification templates (version 0.8.x changed template variables) or external API integrations that need updating (version 0.7.x changed API field names, version 0.9.x requires authentication).
+Etapas manuais são necessárias apenas se você personalizou modelos de notificação (versão 0.8.x alterou variáveis de modelo) ou integrações de API externas que precisam de atualização (versão 0.7.x alterou nomes de campos de API, versão 0.9.x requer autenticação).
 
-## Overview
+## Visão geral
 
-duplistatus automatically migrates your database schema when upgrading. The system:
+duplistatus migra automaticamente seu esquema de banco de dados ao fazer upgrade. O sistema:
 
-1. Creates a backup of your database before making changes
-2. Updates the database schema to the latest version
-3. Preserves all existing data (servers, backups, configuration)
-4. Verifies the migration completed successfully
+1. Cria um backup do seu banco de dados antes de fazer alterações
+2. Atualiza o esquema do banco de dados para a versão mais recente
+3. Preserva todos os dados existentes (servidores, backups, configuração)
+4. Verifica se a migração foi concluída com sucesso
 
-## Backing Up Your Database Before Migration
+## Fazendo Backup do Seu Banco de Dados Antes da Migração
 
-Before upgrading to a new version, it's recommended to create a backup of your database. This ensures you can restore your data if something goes wrong during the migration process.
+Antes de fazer upgrade para uma nova versão, é recomendado criar um backup do seu banco de dados. Isso garante que você possa restaurar seus dados se algo der errado durante o processo de migração.
 
-### If You're Running Version 1.2.1 or Later
+### Se Você Está Executando a Versão 1.2.1 ou Posterior
 
-Use the built-in database backup function:
+Use a função de backup de banco de dados integrada:
 
-1. Navigate to `Settings → Database Maintenance` in the web interface
-2. In the **Database Backup** section, select a backup format:
-   - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
-   - **SQL Dump (.sql)**: Text format - human-readable SQL statements
-3. Click `Download Backup`
-4. The backup file will be downloaded to your computer with a timestamped filename
+1. Navegue até `Configurações → Manutenção do banco de dados` na interface web
+2. Na seção **Backup do banco de dados**, selecione um formato de backup:
+   - **Arquivo de banco de dados (.db)**: Formato binário - backup mais rápido, preserva toda a estrutura do banco de dados exatamente
+   - **Dump SQL (.sql)**: Formato de texto - instruções SQL legíveis por humanos
+3. Clique em `Baixar backup`
+4. O arquivo de backup será baixado para seu computador com um nome de arquivo com data e hora
 
-For more details, see the [Database Maintenance](../user-guide/settings/database-maintenance.md#database-backup) documentation.
+Para mais detalhes, consulte a documentação de [Manutenção do banco de dados](../user-guide/settings/database-maintenance.md#database-backup).
 
-### If You're Running a Version Before 1.2.1
+### Se Você Está Executando uma Versão Anterior a 1.2.1
 
 #### Backup
 
-You must manually back up the database before proceeding. The database file is located at `/app/data/backups.db` inside the container.
+Você deve fazer backup manual do banco de dados antes de prosseguir. O arquivo de banco de dados está localizado em `/app/data/backups.db` dentro do contêiner.
 
-##### For Linux Users
+##### Para Usuários Linux
 
-If you are on Linux, don't worry about spinning up helper containers. You can use the native `cp` command to extract the database directly from the running container to your host.
+Se você está no Linux, não se preocupe em iniciar contêineres auxiliares. Você pode usar o comando nativo `cp` para extrair o banco de dados diretamente do contêiner em execução para seu host.
 
-###### Using Docker or Podman:
+###### Usando Docker ou Podman:
 
 ```bash
-# Replace 'duplistatus' with your actual container name if different
+# Substitua 'duplistatus' pelo nome real do seu contêiner se diferente
 docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).db
 ```
 
-(If using Podman, simply replace `docker` with `podman` in the command above.)
+(Se estiver usando Podman, simplesmente substitua `docker` por `podman` no comando acima.)
 
-##### For Windows Users
+##### Para Usuários Windows
 
-If you are running Docker Desktop on Windows, you have two simple ways to handle this without using the command line:
+Se você está executando Docker Desktop no Windows, você tem duas maneiras simples de lidar com isso sem usar a linha de comando:
 
-###### Option A: Use Docker Desktop (Easiest)
+###### Opção A: Use Docker Desktop (Mais Fácil)
 
-1. Open the Docker Desktop Dashboard.
-2. Go to the Containers tab and click on your duplistatus container.
-3. Click on the Files tab.
-4. Navigate to `/app/data/`.
-5. Right-click `backups.db` and select **Save as...** to download it to your Windows folders.
+1. Abra o Painel do Docker Desktop.
+2. Vá para a aba Contêineres e clique no seu contêiner duplistatus.
+3. Clique na aba Arquivos.
+4. Navegue até `/app/data/`.
+5. Clique com o botão direito em `backups.db` e selecione **Salvar como...** para baixá-lo para suas pastas do Windows.
 
-###### Option B: Use PowerShell
+###### Opção B: Use PowerShell
 
-If you prefer the terminal, you can use PowerShell to copy the file to your Desktop:
+Se você preferir o terminal, você pode usar PowerShell para copiar o arquivo para sua Área de Trabalho:
 
 ```powershell
 docker cp duplistatus:/app/data/backups.db $HOME\Desktop\duplistatus-backup.db
 ```
 
-##### If You Use Bind Mounts
+##### Se Você Usar Bind Mounts
 
-If you originally set up your container using a bind mount (e.g., you mapped a local folder like `/opt/duplistatus` to the container), you don't need Docker commands at all. Just copy the file using your file manager:
+Se você configurou originalmente seu contêiner usando um bind mount (por exemplo, você mapeou uma pasta local como `/opt/duplistatus` para o contêiner), você não precisa de comandos Docker. Apenas copie o arquivo usando seu gerenciador de arquivos:
 
 - Linux: `cp /path/to/your/folder/backups.db ~/backups.db`
-- Windows: Simply copy the file in **File Explorer** from the folder you designated during setup.
+- Windows: Simplesmente copie o arquivo no **Explorador de Arquivos** da pasta que você designou durante a configuração.
 
-#### Restoring Your Data
+#### Restaurando Seus Dados
 
-If you need to restore your database from a previous backup, follow the steps below based on your operating system.
+Se você precisar restaurar seu banco de dados de um backup anterior, siga as etapas abaixo com base no seu sistema operacional.
 
 :::info[IMPORTANT]
-Stop the container before restoring the database to prevent file corruption.
+Pare o contêiner antes de restaurar o banco de dados para evitar corrupção de arquivos.
 :::
 
-##### For Linux Users
+##### Para Usuários Linux
 
-The easiest way to restore is to "push" the backup file back into the container's internal storage path.
+A maneira mais fácil de restaurar é "enviar" o arquivo de backup de volta para o caminho de armazenamento interno do contêiner.
 
-###### Using Docker or Podman:
+###### Usando Docker ou Podman:
 
 ```bash
-# stop the container
+# parar o contêiner
 docker stop duplistatus
 
-# Replace 'duplistatus-backup.db' with your actual backup filename
+# Substitua 'duplistatus-backup.db' pelo nome real do seu arquivo de backup
 docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
 
-# Restart the container
+# Reiniciar o contêiner
 docker start duplistatus
 ```
 
-##### For Windows Users
+##### Para Usuários Windows
 
-If you are using Docker Desktop, you can perform the restore via the GUI or PowerShell.
+Se você estiver usando Docker Desktop, você pode executar a restauração via GUI ou PowerShell.
 
-###### Option A: Use Docker Desktop (GUI)
+###### Opção A: Use Docker Desktop (GUI)
 
-1. Ensure the duplistatus container is Running (Docker Desktop requires the container to be active to upload files via the GUI).
-2. Go to the Files tab in your container settings.
-3. Navigate to `/app/data/`.
-4. Right-click the existing backups.db and select Delete.
-5. Click the Import button (or right-click in the folder area) and select your backup file from your computer.
+1. Certifique-se de que o contêiner duplistatus está Em Execução (Docker Desktop requer que o contêiner esteja ativo para fazer upload de arquivos via GUI).
+2. Vá para a aba Arquivos nas configurações do seu contêiner.
+3. Navegue até `/app/data/`.
+4. Clique com o botão direito no backups.db existente e selecione Excluir.
+5. Clique no botão Importar (ou clique com o botão direito na área da pasta) e selecione seu arquivo de backup do seu computador.
 
-Rename the imported file to exactly backups.db if it has a timestamp in the name.
+Renomeie o arquivo importado para exatamente backups.db se ele tiver um carimbo de data/hora no nome.
 
-Restart the container.
+Reinicie o contêiner.
 
-###### Option B: Use PowerShell
+###### Opção B: Use PowerShell
 
 ```powershell
-# Copy the file from your Desktop back into the container
+# Copie o arquivo de sua Área de Trabalho de volta para o contêiner
 docker cp $HOME\Desktop\duplistatus-backup.db duplistatus:/app/data/backups.db
 
-# Restart the container
+# Reiniciar o contêiner
 docker start duplistatus
 ```
 
-##### If You Use Bind Mounts
+##### Se Você Usar Bind Mounts
 
-If you are using a local folder mapped to the container, you don't need any special commands.
+Se você estiver usando uma pasta local mapeada para o contêiner, você não precisa de comandos especiais.
 
-1. Stop the container.
-2. Manually copy your backup file into your mapped folder (e.g., `/opt/duplistatus` or `C:\duplistatus_data`).
-3. Ensure the file is named exactly `backups.db`.
-4. Start the container.
+1. Pare o contêiner.
+2. Copie manualmente seu arquivo de backup para sua pasta mapeada (por exemplo, `/opt/duplistatus` ou `C:\duplistatus_data`).
+3. Certifique-se de que o arquivo é nomeado exatamente `backups.db`.
+4. Inicie o contêiner.
 
 :::note
-If you restore the database manually, you may encounter permission errors.
+Se você restaurar o banco de dados manualmente, você pode encontrar erros de permissão.
 
-Check the container logs and adjust the permissions if necessary. See the [Troubleshooting](#troubleshooting-your-restore--rollback) section below for more information.
+Verifique os logs do contêiner e ajuste as permissões se necessário. Consulte a seção [Solução de Problemas](#troubleshooting-your-restore--rollback) abaixo para mais informações.
 :::
 
-## Automatic Migration Process
+## Processo de Migração Automática
 
-When you start a new version, migrations run automatically:
+Quando você inicia uma nova versão, as migrações são executadas automaticamente:
 
-1. **Backup Creation**: A timestamped backup is created in your data directory
-2. **Schema Update**: Database tables and fields are updated as needed
-3. **Data Migration**: All existing data is preserved and migrated
-4. **Verification**: Migration success is logged
+1. **Criação de Backup**: Um backup com data e hora é criado em seu diretório de dados
+2. **Atualização de Esquema**: Tabelas e campos do banco de dados são atualizados conforme necessário
+3. **Migração de Dados**: Todos os dados existentes são preservados e migrados
+4. **Verificação**: O sucesso da migração é registrado
 
-### Monitoring Migration
+### Monitorando a Migração
 
-Check Docker logs to monitor migration progress:
+Verifique os logs do Docker para monitorar o progresso da migração:
 
 ```bash
 docker logs <container-name>
 ```
 
-Look for messages like:
+Procure por mensagens como:
 
 - `"Found X pending migrations"`
 - `"Running consolidated migration X.0..."`
@@ -167,213 +167,213 @@ Look for messages like:
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## Version-Specific Migration Notes
+## Notas de Migração Específicas da Versão
 
-### Upgrading to Version 0.9.x or Later (Schema v4.0)
+### Fazendo Upgrade para Versão 0.9.x ou Posterior (Schema v4.0)
 
 :::warning
-**Authentication is now required.** All users must log in after upgrading.
+**Autenticação agora é obrigatória.** Todos os usuários devem fazer login após fazer upgrade.
 :::
 
-#### What Changes Automatically
+#### O Que Muda Automaticamente
 
-- Database schema migrates from v3.1 to v4.0
-- New tables created: `users`, `sessions`, `audit_log`
-- Default admin account created automatically
-- All existing sessions invalidated
+- O esquema do banco de dados migra de v3.1 para v4.0
+- Novas tabelas criadas: `users`, `sessions`, `audit_log`
+- Conta de admin padrão criada automaticamente
+- Todas as sessões existentes invalidadas
 
-#### What You Must Do
+#### O Que Você Deve Fazer
 
-1. **Log in** with default admin credentials:
-   - Username: `admin`
-   - Password: `Duplistatus09`
-2. **Change the password** when prompted (required on first login)
-3. **Create user accounts** for other users (Settings → Users)
-4. **Update external API integrations** to include authentication (see [API Breaking Changes](api-changes.md))
-5. **Configure audit log retention** if needed (Settings → Audit Log)
+1. **Faça login** com credenciais de admin padrão:
+   - Nome de usuário: `admin`
+   - Senha: `Duplistatus09`
+2. **Altere a senha** quando solicitado (obrigatório no primeiro login)
+3. **Crie contas de usuário** para outros usuários (Configurações → Usuários)
+4. **Atualize integrações de API externas** para incluir autenticação (consulte [Alterações Significativas de API](api-changes.md))
+5. **Configure retenção de log de auditoria** se necessário (Configurações → Log de Auditoria)
 
-#### If You're Locked Out
+#### Se Você Estiver Bloqueado
 
-Use the admin recovery tool:
+Use a ferramenta de recuperação de admin:
 
 ```bash
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 ```
 
-See [Admin Recovery Guide](../user-guide/admin-recovery.md) for details.
+Consulte [Guia de Recuperação de Admin](../user-guide/admin-recovery.md) para detalhes.
 
-### Upgrading to Version 0.8.x
+### Fazendo Upgrade para Versão 0.8.x
 
-#### What Changes Automatically
+#### O Que Muda Automaticamente
 
-- Database schema updated to v3.1
-- Master key generated for encryption (stored in `.duplistatus.key`)
-- Sessions invalidated (new CSRF-protected sessions created)
-- Passwords encrypted using new system
+- Esquema do banco de dados atualizado para v3.1
+- Chave mestra gerada para criptografia (armazenada em `.duplistatus.key`)
+- Sessões invalidadas (novas sessões protegidas por CSRF criadas)
+- Senhas criptografadas usando novo sistema
 
-#### What You Must Do
+#### O Que Você Deve Fazer
 
-1. **Update notification templates** if you customised them:
-   - Replace `{backup_interval_value}` and `{backup_interval_type}` with `{backup_interval}`
-   - Default templates are updated automatically
+1. **Atualize modelos de notificação** se você os personalizou:
+   - Substitua `{backup_interval_value}` e `{backup_interval_type}` por `{backup_interval}`
+   - Modelos padrão são atualizados automaticamente
 
-#### Security Notes
+#### Notas de Segurança
 
-- Ensure `.duplistatus.key` file is backed up (has 0400 permissions)
-- Sessions expire after 24 hours
+- Certifique-se de que o arquivo `.duplistatus.key` é feito backup (tem permissões 0400)
+- As sessões expiram após 24 horas
 
-### Upgrading to Version 0.7.x
+### Fazendo Upgrade para Versão 0.7.x
 
-#### What Changes Automatically
+#### O Que Muda Automaticamente
 
-- `machines` table renamed to `servers`
-- `machine_id` fields renamed to `server_id`
-- New fields added: `alias`, `notes`, `created_at`, `updated_at`
+- Tabela `machines` renomeada para `servers`
+- Campos `machine_id` renomeados para `server_id`
+- Novos campos adicionados: `alias`, `notes`, `created_at`, `updated_at`
 
-#### What You Must Do
+#### O Que Você Deve Fazer
 
-1. **Update external API integrations**:
-   - Change `totalMachines` → `totalServers` in `/api/summary`
-   - Change `machine` → `server` in API response objects
-   - Change `backup_types_count` → `backup_jobs_count` in `/api/lastbackups/{serverId}`
-   - Update endpoint paths from `/api/machines/...` to `/api/servers/...`
-2. **Update notification templates**:
-   - Replace `{machine_name}` with `{server_name}`
+1. **Atualize integrações de API externas**:
+   - Altere `totalMachines` → `totalServers` em `/api/summary`
+   - Altere `machine` → `server` em objetos de resposta de API
+   - Altere `backup_types_count` → `backup_jobs_count` em `/api/lastbackups/{serverId}`
+   - Atualize caminhos de endpoint de `/api/machines/...` para `/api/servers/...`
+2. **Atualize modelos de notificação**:
+   - Substitua `{machine_name}` por `{server_name}`
 
-See [API Breaking Changes](api-changes.md) for detailed API migration steps.
+Consulte [Alterações Significativas de API](api-changes.md) para etapas detalhadas de migração de API.
 
-## Post-Migration Checklist
+## Lista de Verificação Pós-Migração
 
-After upgrading, verify:
+Após fazer upgrade, verifique:
 
-- [ ] All servers appear correctly in the dashboard
-- [ ] Backup history is complete and accessible
-- [ ] Notifications work (test NTFY/email)
-- [ ] External API integrations work (if applicable)
-- [ ] Settings are accessible and correct
-- [ ] Overdue monitoring works correctly
-- [ ] Logged in successfully (0.9.x+)
-- [ ] Changed default admin password (0.9.x+)
-- [ ] Created user accounts for other users (0.9.x+)
-- [ ] Updated external API integrations with authentication (0.9.x+)
+- [ ] Todos os servidores aparecem corretamente no painel
+- [ ] O histórico de backup está completo e acessível
+- [ ] As notificações funcionam (teste NTFY/e-mail)
+- [ ] As integrações de API externas funcionam (se aplicável)
+- [ ] As configurações estão acessíveis e corretas
+- [ ] O monitoramento de backups atrasados funciona corretamente
+- [ ] Fez login com sucesso (0.9.x+)
+- [ ] Alterou a senha de admin padrão (0.9.x+)
+- [ ] Criou contas de usuário para outros usuários (0.9.x+)
+- [ ] Atualizou integrações de API externas com autenticação (0.9.x+)
 
-## Troubleshooting
+## Solução de Problemas
 
-### Migration Fails
+### A Migração Falha
 
-1. Check disk space (backup requires space)
-2. Verify write permissions on data directory
-3. Review container logs for specific errors
-4. Restore from backup if needed (see Rollback below)
+1. Verifique espaço em disco (backup requer espaço)
+2. Verifique permissões de escrita no diretório de dados
+3. Revise os logs do contêiner para erros específicos
+4. Restaure do backup se necessário (consulte Reversão abaixo)
 
-### Data Missing After Migration
+### Dados Faltando Após Migração
 
-1. Verify backup was created (check data directory)
-2. Review container logs for backup creation messages
-3. Check database file integrity
+1. Verifique se o backup foi criado (verifique o diretório de dados)
+2. Revise os logs do contêiner para mensagens de criação de backup
+3. Verifique a integridade do arquivo de banco de dados
 
-### Authentication Issues (0.9.x+)
+### Problemas de Autenticação (0.9.x+)
 
-1. Verify default admin account exists (check logs)
-2. Try default credentials: `admin` / `Duplistatus09`
-3. Use admin recovery tool if locked out
-4. Verify `users` table exists in database
+1. Verifique se a conta de admin padrão existe (verifique os logs)
+2. Tente credenciais padrão: `admin` / `Duplistatus09`
+3. Use a ferramenta de recuperação de admin se estiver bloqueado
+4. Verifique se a tabela `users` existe no banco de dados
 
-### API Errors
+### Erros de API
 
-1. Review [API Breaking Changes](api-changes.md) for endpoint updates
-2. Update external integrations with new field names
-3. Add authentication to API requests (0.9.x+)
-4. Test API endpoints after migration
+1. Revise [Alterações Significativas de API](api-changes.md) para atualizações de endpoint
+2. Atualize integrações externas com novos nomes de campo
+3. Adicione autenticação às solicitações de API (0.9.x+)
+4. Teste endpoints de API após a migração
 
-### Master Key Issues (0.8.x+)
+### Problemas de Chave Mestra (0.8.x+)
 
-1. Ensure `.duplistatus.key` file is accessible
-2. Verify file permissions are 0400
-3. Check container logs for key generation errors
+1. Certifique-se de que o arquivo `.duplistatus.key` está acessível
+2. Verifique se as permissões do arquivo são 0400
+3. Verifique os logs do contêiner para erros de geração de chave
 
-### Podman DNS Configuration
+### Configuração de DNS do Podman
 
-If you're using Podman and experiencing network connectivity issues after upgrading, you may need to configure DNS settings for your container. See the [DNS configuration section](../installation/installation.md#configuring-dns-for-podman-containers) in the installation guide for details.
+Se você estiver usando Podman e enfrentando problemas de conectividade de rede após fazer upgrade, você pode precisar configurar as definições de DNS para seu contêiner. Consulte a [seção de configuração de DNS](../installation/installation.md#configuring-dns-for-podman-containers) no guia de instalação para detalhes.
 
-## Rollback Procedure
+## Procedimento de Reversão
 
-If you need to rollback to a previous version:
+Se você precisar reverter para uma versão anterior:
 
-1. **Stop the container**: `docker stop <container-name>` (or `podman stop <container-name>`)
-2. **Find your backup**:
-   - If you created a backup using the web interface (version 1.2.1+), use that downloaded backup file
-   - If you created a manual volume backup, extract it first
-   - Automatic migration backups are located in the data directory (timestamped `.db` files)
-3. **Restore the database**:
-   - **For web interface backups (version 1.2.1+)**: Use the restore function in `Settings → Database Maintenance` (see [Database Maintenance](../user-guide/settings/database-maintenance.md#database-restore))
-   - **For manual backups**: Replace `backups.db` in your data directory/volume with the backup file
-4. **Use previous image version**: Pull and run the previous container image
-5. **Start the container**: Start with the previous version
+1. **Pare o contêiner**: `docker stop <container-name>` (ou `podman stop <container-name>`)
+2. **Encontre seu backup**:
+   - Se você criou um backup usando a interface web (versão 1.2.1+), use esse arquivo de backup baixado
+   - Se você criou um backup de volume manual, extraia-o primeiro
+   - Os backups de migração automática estão localizados no diretório de dados (arquivos `.db` com data e hora)
+3. **Restaure o banco de dados**:
+   - **Para backups de interface web (versão 1.2.1+)**: Use a função de restauração em `Configurações → Manutenção do banco de dados` (consulte [Manutenção do banco de dados](../user-guide/settings/database-maintenance.md#database-restore))
+   - **Para backups manuais**: Substitua `backups.db` em seu diretório/volume de dados pelo arquivo de backup
+4. **Use versão de imagem anterior**: Puxe e execute a imagem de contêiner anterior
+5. **Inicie o contêiner**: Inicie com a versão anterior
 
 :::warning
-Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.
+A reversão pode causar perda de dados se o esquema mais recente for incompatível com a versão anterior. Sempre certifique-se de ter um backup recente antes de tentar reversão.
 :::
 
-### Troubleshooting Your Restore / Rollback
+### Solução de Problemas de Sua Restauração / Reversão
 
-If the application doesn't start or your data isn't appearing after a restore or rollback, check the following common issues:
+Se o aplicativo não iniciar ou seus dados não aparecerem após uma restauração ou reversão, verifique os seguintes problemas comuns:
 
-#### 1. Database File Permissions (Linux/Podman)
+#### 1. Permissões de Arquivo de Banco de Dados (Linux/Podman)
 
-If you restored the file as the `root` user, the application inside the container might not have permission to read or write to it.
+Se você restaurou o arquivo como o usuário `root`, o aplicativo dentro do contêiner pode não ter permissão para ler ou escrever nele.
 
-- **The Symptom:** Logs show "Permission Denied" or "Read-only database."
-- **The Fix:** Reset the permissions of the file inside the container to ensure it is accessible.
+- **O Sintoma:** Os logs mostram "Permission Denied" ou "Read-only database."
+- **A Correção:** Redefina as permissões do arquivo dentro do contêiner para garantir que seja acessível.
 
 ```bash
-# Set ownership (usually UID 1000 or the app user)
+# Definir propriedade (geralmente UID 1000 ou o usuário do app)
 docker exec -u 0 duplistatus chown 1000:1000 /app/data/backups.db
-# Set read/write permissions
+# Definir permissões de leitura/escrita
 docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
 ```
 
-#### 2. Incorrect Filename
+#### 2. Nome de Arquivo Incorreto
 
-The application looks specifically for a file named `backups.db`.
+O aplicativo procura especificamente por um arquivo nomeado `backups.db`.
 
-- **The Symptom:** The application starts but looks "empty" (like a fresh install).
-- **The Fix:** Check the `/app/data/` directory. If your file is named `duplistatus-backup-2024.db` or has a `.sqlite` extension, the app will ignore it. Use the `mv` command or Docker Desktop GUI to rename it exactly to `backups.db`.
+- **O Sintoma:** O aplicativo inicia mas parece "vazio" (como uma instalação nova).
+- **A Correção:** Verifique o diretório `/app/data/`. Se seu arquivo é nomeado `duplistatus-backup-2024.db` ou tem uma extensão `.sqlite`, o app o ignorará. Use o comando `mv` ou GUI do Docker Desktop para renomeá-lo exatamente para `backups.db`.
 
-#### 3. Container Not Restarted
+#### 3. Contêiner Não Reiniciado
 
-On some systems, using `docker cp` while the container is running may not immediately "refresh" the application's connection to the database.
+Em alguns sistemas, usar `docker cp` enquanto o contêiner está em execução pode não "atualizar" imediatamente a conexão do aplicativo com o banco de dados.
 
-- **The Fix:** Always perform a full restart after a restore:
+- **A Correção:** Sempre execute uma reinicialização completa após uma restauração:
 
 ```bash
 docker restart duplistatus
 ```
 
-#### 4. Database Version Mismatch
+#### 4. Incompatibilidade de Versão de Banco de Dados
 
-If you are restoring a backup from a much newer version of duplistatus into an older version of the app, the database schema might be incompatible.
+Se você estiver restaurando um backup de uma versão muito mais recente de duplistatus em uma versão mais antiga do app, o esquema do banco de dados pode ser incompatível.
 
-- **The Fix:** Always ensure you are running the same (or a newer) version of the duplistatus image as the one that created the backup. Check your version with:
+- **A Correção:** Sempre certifique-se de que você está executando a mesma (ou uma versão mais recente) da imagem duplistatus que a que criou o backup. Verifique sua versão com:
 
 ```bash
 docker inspect duplistatus --format '{{.Config.Image}}'
 ```
 
-## Database Schema Versions
+## Versões de Esquema de Banco de Dados
 
-| Application Version                                                                                                                                                                               | Schema Version                             | Key Changes                                        |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
-| 0.6.x and earlier                                                                                                                                                 | v1.0                       | Initial schema                                     |
-| 0.7.x                                                                                                                                                             | v2.0, v3.0 | Added configurations, renamed machines → servers   |
-| 0.8.x                                                                                                                                                             | v3.1                       | Enhanced backup fields, encryption support         |
-| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0                       | User access control, authentication, audit logging |
+| Versão do Aplicativo                                                                                                                                                                              | Versão do Esquema                          | Alterações Principais                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------- |
+| 0.6.x e anterior                                                                                                                                                  | v1.0                       | Esquema inicial                                               |
+| 0.7.x                                                                                                                                                             | v2.0, v3.0 | Adicionadas configurações, máquinas renomeadas → servidores   |
+| 0.8.x                                                                                                                                                             | v3.1                       | Campos de backup aprimorados, suporte a criptografia          |
+| 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0                       | Controle de acesso de usuário, autenticação, log de auditoria |
 
-## Getting Help
+## Obtendo Ajuda
 
-- **Documentation**: [User Guide](../user-guide/overview.md)
-- **API Reference**: [API Documentation](../api-reference/overview.md)
-- **API Changes**: [API Breaking Changes](api-changes.md)
-- **Release Notes**: Check version-specific release notes for detailed changes
-- **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
-- **Issues**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)
+- **Documentação**: [Guia do Usuário](../user-guide/overview.md)
+- **Referência de API**: [Documentação de API](../api-reference/overview.md)
+- **Alterações de API**: [Alterações Significativas de API](api-changes.md)
+- **Notas de Lançamento**: Verifique as notas de lançamento específicas da versão para alterações detalhadas
+- **Comunidade**: [Discussões do GitHub](https://github.com/wsj-br/duplistatus/discussions)
+- **Problemas**: [Problemas do GitHub](https://github.com/wsj-br/duplistatus/issues)

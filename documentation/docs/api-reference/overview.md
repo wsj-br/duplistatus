@@ -1,10 +1,10 @@
 
 
-# API Overview
+# API Overview {#api-overview}
 
 This document describes all available API endpoints for the duplistatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
 
-## API Structure
+## API Structure {#api-structure}
 
 For a quick reference of all endpoints, see the [API Endpoint List](api-endpoint-list).
 
@@ -22,13 +22,13 @@ The API is organised into logical groups:
 
 For a quick reference of all endpoints, see the [API Endpoint List](api-endpoint-list).
 
-## Response Format
+## Response Format {#response-format}
 
 All API responses are returned in JSON format with consistent error handling patterns. Successful responses typically include a `status` field, while error responses include `error` and `message` fields.
 
 ---
 
-## Error Handling
+## Error Handling {#error-handling}
 
 All endpoints follow a consistent error handling pattern:
 
@@ -46,20 +46,20 @@ Error responses include:
 - `stack`: Error stack trace (in development mode)
 - `timestamp`: When the error occurred
 
-## Data Type Notes
+## Data Type Notes {#data-type-notes}
 
-### Message Arrays
+### Message Arrays {#message-arrays}
 The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
 
-### Available Backups
+### Available Backups {#available-backups}
 The `available_backups` field contains an array of backup version timestamps (in ISO format) that are available for restoration. This is extracted from the backup log messages.
 
-### Duration Fields
+### Duration Fields {#duration-fields}
 - `duration`: Human-readable format (e.g., "00:38:31")
 - `duration_seconds`: Raw duration in seconds
 - `durationInMinutes`: Duration converted to minutes for charting purposes
 
-### File Size Fields
+### File Size Fields {#file-size-fields}
 All file size fields are returned in bytes as numbers, not formatted strings. The frontend is responsible for converting these to human-readable formats (KB, MB, GB, etc.).
 
 <br/>

@@ -1,62 +1,62 @@
-# Collect Backup Logs
+# Backup-Protokolle sammeln {#collect-backup-logs}
 
-**duplistatus** can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.
+**duplistatus** kann Sicherungsprotokolle direkt von Duplicati-Servern abrufen, um die Datenbank zu füllen oder fehlende Protokolldaten wiederherzustellen. Die Anwendung überspringt automatisch alle doppelten Protokolle, die bereits in der Datenbank vorhanden sind.
 
-## Steps to Collect Backup Logs
+## Schritte zum Sammeln von Backup-Protokollen {#steps-to-collect-backup-logs}
 
-### Manual Collection
+### Manuelle Erfassung {#manual-collection}
 
-1. Click the <IconButton icon="lucide:download" /> `Collect Backup Logs` icon on the [Application Toolbar](overview#application-toolbar).
+1. Klicken Sie auf das Symbol <IconButton icon="lucide:download" /> `Backup-Protokolle sammeln` in der [Anwendungssymbolleiste](overview#application-toolbar).
 
-![Collect Backup Logs Popup](/img/screen-collect-button-popup.png)
+![Backup-Protokolle sammeln Popup](/img/screen-collect-button-popup.png)
 
-2. Select Server
+2. Server auswählen
 
-   If you have server addresses configured in `Settings → Server Settings`, select one from the dropdown list for instant collection. If you don't have any servers configured, you can enter the Duplicati server details manually.
+   Wenn Sie Serveradressen in `Einstellungen → Server-Einstellungen` konfiguriert haben, wählen Sie eine aus der Dropdown-Liste für sofortige Erfassung aus. Wenn Sie keine Server konfiguriert haben, können Sie die Duplicati-Serverdetails manuell eingeben.
 
-3. Enter the Duplicati server details:
-   - **Hostname**: The hostname or IP address of the Duplicati server. You can enter multiple hostnames separated by commas, for example `192.168.1.23,someserver.local,192.168.1.89`
-   - **Port**: The port number used by the Duplicati server (default: `8200`).
-   - **Password**: Enter the authentication password if required.
-   - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
+3. Geben Sie die Duplicati-Serverdetails ein:
+   - **Hostname**: Der Hostname oder die IP-Adresse des Duplicati-Servers. Sie können mehrere Hostnamen eingeben, die durch Kommas getrennt sind, z. B. `192.168.1.23,someserver.local,192.168.1.89`
+   - **Port**: Die vom Duplicati-Server verwendete Portnummer (Standard: `8200`).
+   - **Passwort**: Geben Sie das Authentifizierungspasswort ein, falls erforderlich.
+   - **Gesammelte JSON-Daten herunterladen**: Aktivieren Sie diese Option, um die von duplistatus gesammelten Daten herunterzuladen.
 
-4. Click `Collect Backups`.
+4. Klicken Sie auf `Backups sammeln`.
 
-_**Notes:**_
+_**Hinweise:**_
 
-- If you enter multiple hostnames, the collection will be performed using the same port and password for all servers.
-- **duplistatus** will automatically detect the best connection protocol (HTTPS or HTTP). It tries HTTPS first (with proper SSL validation), then HTTPS with self-signed certificates, and finally HTTP as a fallback.
+- Wenn Sie mehrere Hostnamen eingeben, wird die Erfassung mit demselben Port und Passwort für alle Server durchgeführt.
+- **duplistatus** erkennt automatisch das beste Verbindungsprotokoll (HTTPS oder HTTP). Es versucht zuerst HTTPS (mit ordnungsgemäßer SSL-Validierung), dann HTTPS mit selbstsigniertem Zertifikat und schließlich HTTP als Fallback.
 
-:::tip <IconButton icon="lucide:download" /> buttons are available in `Settings → Overdue Monitoring` and `Settings → Server Settings` for single-server collection.
+:::tip <IconButton icon="lucide:download" /> Schaltflächen sind in `Einstellungen → Überwachung überfälliger Sicherungen` und `Einstellungen → Server-Einstellungen` für die Erfassung von einzelnen Servern verfügbar.
 :::
 
 <br/>
 
-### Bulk Collection
+### Massenerfassung {#bulk-collection}
 
-_Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
+_Klicken Sie mit der rechten Maustaste_ auf die Schaltfläche <IconButton icon="lucide:download" /> `Backup-Protokolle sammeln` in der Anwendungssymbolleiste, um von allen konfigurierten Servern zu sammeln.
 
-![Collect All Right-Click Menu](/img/screen-collect-button-right-click-popup.png)
+![Alle sammeln Rechtsklick-Menü](/img/screen-collect-button-right-click-popup.png)
 
 :::tip
-You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
+Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle sammeln"/> auf den Seiten `Einstellungen → Überwachung überfälliger Sicherungen` und `Einstellungen → Server-Einstellungen` verwenden, um von allen konfigurierten Servern zu sammeln.
 :::
 
-## How the Collection Process Works
+## Wie der Erfassungsprozess funktioniert {#how-the-collection-process-works}
 
-- **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
-- It retrieves backup history, log information, and backup settings (for overdue monitoring).
-- Any logs already present in the **duplistatus** database are skipped.
-- New data is processed and stored in the local database.
-- The URL used (with the detected protocol) will be stored or updated in the local database.
-- If the download option is selected, it will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
-- The dashboard updates to reflect the new information.
+- **duplistatus** erkennt automatisch das beste Verbindungsprotokoll und verbindet sich mit dem angegebenen Duplicati-Server.
+- Es ruft Sicherungsverlauf, Protokollinformationen und Sicherungseinstellungen ab (für die Überwachung überfälliger Sicherungen).
+- Alle Protokolle, die bereits in der **duplistatus**-Datenbank vorhanden sind, werden übersprungen.
+- Neue Daten werden verarbeitet und in der lokalen Datenbank gespeichert.
+- Die verwendete URL (mit dem erkannten Protokoll) wird in der lokalen Datenbank gespeichert oder aktualisiert.
+- Wenn die Download-Option ausgewählt ist, werden die gesammelten JSON-Daten heruntergeladen. Der Dateiname hat folgendes Format: `[serverName]_collected_[Timestamp].json`. Der Zeitstempel verwendet das ISO-8601-Datumsformat (YYYY-MM-DDTHH:MM:SS).
+- Das Dashboard wird aktualisiert, um die neuen Informationen widerzuspiegeln.
 
-## Troubleshooting Collection Issues
+## Behebung von Erfassungsproblemen {#troubleshooting-collection-issues}
 
-Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
+Die Erfassung von Sicherungsprotokollen erfordert, dass der Duplicati-Server von der **duplistatus**-Installation aus erreichbar ist. Wenn Sie auf Probleme stoßen, überprüfen Sie bitte Folgendes:
 
-- Confirm that the hostname (or IP address) and port number are correct. You can test this by accessing the Duplicati server UI in your browser (e.g., `http://hostname:port`).
-- Check that **duplistatus** can connect to the Duplicati server. A common problem is DNS name resolution (the system cannot find the server by its hostname). See more in [troubleshooting section](troubleshooting.md#collect-backup-logs-not-working).
-- Ensure the password you provided is correct.
+- Bestätigen Sie, dass der Hostname (oder die IP-Adresse) und die Portnummer korrekt sind. Sie können dies testen, indem Sie die Duplicati-Server-Benutzeroberfläche in Ihrem Browser aufrufen (z. B. `http://hostname:port`).
+- Überprüfen Sie, dass **duplistatus** eine Verbindung zum Duplicati-Server herstellen kann. Ein häufiges Problem ist die DNS-Namensauflösung (das System kann den Server nicht anhand seines Hostnamens finden). Weitere Informationen finden Sie im [Abschnitt Fehlerbehebung](troubleshooting.md#collect-backup-logs-not-working).
+- Stellen Sie sicher, dass das von Ihnen angegebene Passwort korrekt ist.
 

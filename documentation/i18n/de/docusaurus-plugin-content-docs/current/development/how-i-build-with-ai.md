@@ -1,6 +1,6 @@
-# How I Build this Application using AI tools
+# How I Build this Application using AI tools {#how-i-build-this-application-using-ai-tools}
 
-# Motivation
+# Motivation {#motivation}
 
 I started using Duplicati as a backup tool for my home servers. I tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with [Homepage](https://gethomepage.dev/), as I use it for my home lab's homepage.
 
@@ -8,7 +8,7 @@ I also tried connecting directly to each Duplicati server on the network, but th
 
 Since I was also experimenting with AI code tools, I decided to try using AI to build this tool. Here is the process I used...
 
-# Tools used
+# Tools used {#tools-used}
 
 1. For the UI: [Google's Firebase Studio](https://firebase.studio/)
 2. For the implementation: Cursor (https://www.cursor.com/)
@@ -17,7 +17,7 @@ Since I was also experimenting with AI code tools, I decided to try using AI to 
 I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
 :::
 
-# UI
+# UI {#ui}
 
 I created a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI" feature:
 
@@ -67,9 +67,9 @@ I later used these prompts to adjust and refine the design and behaviour:
 
 After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
 
-![prototype](/img/screen-prototype.png)
+![prototype](/assets/screen-prototype.png)
 
-![prototype-detail](/img/screen-prototype-detail.png)
+![prototype-detail](/assets/screen-prototype-detail.png)
 
 :::note
 One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
@@ -77,9 +77,9 @@ One interesting point was that, since the first interaction, Firebase Studio gen
 
 After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
 
-# Backend
+# Backend {#backend}
 
-## Setup
+## Setup {#setup}
 
 I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running Linux) and installed the dependencies Node.js, npm, and pnpm. See more details in [DEVELOPMENT.md](../development/setup.md).
 
@@ -87,11 +87,11 @@ I set up Cursor to access the code folder from my Windows machine using an SSH c
 
 I copied a sample of the JSON sent by Duplicati into a file called [`database_values.json`](../api-reference/database_values.json), clearing some unwanted fields.
 
-## Implementation
+## Implementation {#implementation}
 
 I used an initial prompt to begin the implementation, focusing on persistence, fixes, and new features. It was a long but very interesting process.
 
-### Using AI to generate the prompt
+### Using AI to generate the prompt {#using-ai-to-generate-the-prompt}
 
 I created a detailed prompt using Cursor Chat (`Manual` mode, `Auto` model):
 
@@ -162,7 +162,7 @@ The AI generated the following prompt:
 
 I copied the generated prompt to the clipboard.
 
-### Start the implementation journey
+### Start the implementation journey {#start-the-implementation-journey}
 
 I created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
 
@@ -172,7 +172,7 @@ After the plan was generated, I typed `please, implement this plan` in the chat 
 I only included the starting point since I didn't record all the prompts used. There were many of them.
 :::
 
-# Notes
+# Notes {#notes}
 
 - Some models can get stuck when fixing bugs. "claude-3.5" and "claude-4" are usually better, but sometimes you have to try another model (GPT, Gemini, etc.).
   For complex bugs or errors, use a prompt to analyse possible causes of the error instead of simply asking to fix it.

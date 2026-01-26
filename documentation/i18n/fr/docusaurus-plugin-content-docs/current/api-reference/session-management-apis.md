@@ -1,6 +1,6 @@
-# Session Management
+# Session Management {#session-management}
 
-## Create Session - `/api/session`
+## Create Session - `/api/session` {#create-session-apisession}
 
 - **Endpoint**: `/api/session`
 - **Method**: POST
@@ -19,7 +19,7 @@
   - Sets HTTP-only session cookie
   - Required for accessing protected endpoints
 
-## Validate Session - `/api/session`
+## Validate Session - `/api/session` {#validate-session-apisession}
 
 - **Endpoint**: `/api/session`
 - **Method**: GET
@@ -45,7 +45,7 @@
   - Checks if the session cookie exists and is valid
   - Returns session ID if valid
 
-## Delete Session - `/api/session`
+## Delete Session - `/api/session` {#delete-session-apisession}
 
 - **Endpoint**: `/api/session`
 - **Method**: DELETE
@@ -62,7 +62,7 @@
   - Clears the session from server and client
   - Removes session cookie
 
-## Get CSRF Token - `/api/csrf`
+## Get CSRF Token - `/api/csrf` {#get-csrf-token-apicsrf}
 
 - **Endpoint**: `/api/csrf`
 - **Method**: GET

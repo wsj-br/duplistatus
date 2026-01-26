@@ -1,8 +1,8 @@
 
 
-# Development Setup
+# Development Setup {#development-setup}
 
-## Prerequisites
+## Prerequisites {#prerequisites}
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
@@ -10,7 +10,7 @@
 - SQLite3
 
 
-## Steps
+## Steps {#steps}
 
 1. Clone the repository:
 ```bash
@@ -61,11 +61,11 @@ For the default TCP port (8666):
 pnpm dev
 ```
 
-## Available Scripts
+## Available Scripts {#available-scripts}
 
 The project includes several npm scripts for different development tasks:
 
-### Development Scripts
+### Development Scripts {#development-scripts}
 - `pnpm dev` - Start development server on port 8666 (includes pre-checks)
 - `pnpm build` - Build the application for production (includes pre-checks)
 - `pnpm lint` - Run ESLint to check code quality
@@ -76,23 +76,23 @@ The project includes several npm scripts for different development tasks:
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.
 
 
-### Production Scripts
+### Production Scripts {#production-scripts}
 - `pnpm build-local` - Build and prepare for local production (includes pre-checks, copies static files to standalone directory)
 - `pnpm start-local` - Start production server locally (port 8666, includes pre-checks). **Note:** Run `pnpm build-local` first.
 - `pnpm start` - Start production server (port 9666)
 
-### Docker Scripts
+### Docker Scripts {#docker-scripts}
 - `pnpm docker-up` - Start Docker Compose stack
 - `pnpm docker-down` - Stop Docker Compose stack
 - `pnpm docker-clean` - Clean Docker environment and cache
 - `pnpm docker-devel` - Build a development Docker image tagged as `wsj-br/duplistatus:devel`
 
-### Cron Service Scripts
+### Cron Service Scripts {#cron-service-scripts}
 - `pnpm cron:start` - Start cron service in production mode
 - `pnpm cron:dev` - Start cron service in development mode with file watching (port 8667)
 - `pnpm cron:start-local` - Start cron service locally for testing (port 8667)
 
-### Test Scripts
+### Test Scripts {#test-scripts}
 - `pnpm generate-test-data` - Generate test backup data (requires --servers=N parameter)
 - `pnpm show-overdue-notifications` - Show overdue notification contents
 - `pnpm run-overdue-check` - Run overdue check at specific date/time

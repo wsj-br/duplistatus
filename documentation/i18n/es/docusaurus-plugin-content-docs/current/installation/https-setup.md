@@ -1,16 +1,16 @@
-# Configuración HTTPS (Opcional)
+# Configuración HTTPS (opcional) {#https-setup-optional}
 
-Para implementaciones en producción, se recomienda servir **duplistatus** a través de HTTPS utilizando un proxy inverso. Esta sección proporciona ejemplos de configuración para soluciones populares de proxy inverso.
+Para implementaciones en producción, se recomienda servir **duplistatus** sobre HTTPS utilizando un proxy inverso. Esta sección proporciona ejemplos de configuración para soluciones populares de proxy inverso.
 
-### Opción 1: Nginx con Certbot (Let's Encrypt)
+### Opción 1: Nginx con Certbot (Let's Encrypt) {#option-1-nginx-with-certbot-lets-encrypt}
 
 [Nginx](https://nginx.org/) es un servidor web popular que puede actuar como proxy inverso, y [Certbot](https://certbot.eff.org/) proporciona certificados SSL gratuitos de Let's Encrypt.
 
 **Requisitos previos:**
 
-- Nombre de dominio apuntando a su servidor
-- Nginx instalado en su sistema
-- Certbot instalado para su sistema operativo
+- Nombre de dominio apuntando a su Servidor
+- Nginx instalado en su Sistema
+- Certbot instalado para su Sistema operativo
 
 **Paso 1: Instalar Nginx y Certbot**
 
@@ -40,19 +40,19 @@ server {
 }
 ```
 
-**Paso 3: Habilitar el sitio y obtener certificado SSL**
+**Paso 3: Activar el sitio y obtener certificado SSL**
 
 ```bash
-# Habilitar el sitio
+# Activar el sitio {#enable-the-site}
 sudo ln -s /etc/nginx/sites-available/duplistatus /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
-# Obtener certificado SSL
+# Obtener certificado SSL {#obtain-ssl-certificate}
 sudo certbot --nginx -d your-domain.com
 ```
 
-Certbot actualizará automáticamente su configuración de Nginx para incluir la configuración SSL y redirigir HTTP a HTTPS.
+Certbot actualizará automáticamente su configuración de Nginx para incluir configuración SSL y redirigir HTTP a HTTPS.
 
 **Documentación:**
 
@@ -60,18 +60,18 @@ Certbot actualizará automáticamente su configuración de Nginx para incluir la
 - [Documentación de Certbot](https://certbot.eff.org/instructions)
 - [Documentación de Let's Encrypt](https://letsencrypt.org/docs/)
 
-### Opción 2: Caddy
+### Opción 2: Caddy {#option-2-caddy}
 
-[Caddy](https://caddyserver.com/) es un servidor web moderno con HTTPS automático que simplifica la gestión de certificados SSL.
+[Caddy](https://caddyserver.com/) es un Servidor web moderno con HTTPS automático que simplifica la gestión de certificados SSL.
 
 **Requisitos previos:**
 
-- Nombre de dominio apuntando a su servidor
-- Caddy instalado en su sistema
+- Nombre de dominio apuntando a su Servidor
+- Caddy instalado en su Sistema
 
 **Paso 1: Instalar Caddy**
 
-Siga la [guía de instalación oficial](https://caddyserver.com/docs/install) para su sistema operativo.
+Siga la [guía de instalación oficial](https://caddyserver.com/docs/install) para su Sistema operativo.
 
 **Paso 2: Crear Caddyfile**
 
@@ -89,23 +89,23 @@ your-domain.com {
 sudo caddy run --config Caddyfile
 ```
 
-O usarlo como un servicio del sistema:
+O úselo como un Servicio del Sistema:
 
 ```bash
 sudo caddy start --config Caddyfile
 ```
 
-Caddy obtendrá y gestionará automáticamente los certificados SSL de Let's Encrypt.
+Caddy obtendrá y gestionará automáticamente certificados SSL de Let's Encrypt.
 
 **Documentación:**
 
 - [Documentación de Caddy](https://caddyserver.com/docs/)
 - [Guía de Proxy Inverso de Caddy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
-### Notas Importantes
+### Notas Importantes {#important-notes}
 
 :::info[IMPORTANT]
-Después de configurar HTTPS, recuerde actualizar la configuración de su servidor Duplicati para usar la URL HTTPS:
+Después de configurar HTTPS, recuerde actualizar la configuración de su Servidor Duplicati para usar la URL HTTPS:
 
 ```bash
 --send-http-url=https://your-domain.com/api/upload
@@ -116,7 +116,7 @@ Después de configurar HTTPS, recuerde actualizar la configuración de su servid
 :::tip
 
 - Reemplace `your-domain.com` con su nombre de dominio real
-- Asegúrese de que el registro A de DNS de su dominio apunte a la dirección IP de su servidor
+- Asegúrese de que el registro DNS A de su dominio apunte a la Dirección IP de su Servidor
 - Ambas soluciones renovarán automáticamente los certificados SSL
 - Considere configurar un firewall para permitir solo tráfico HTTP/HTTPS
   :::

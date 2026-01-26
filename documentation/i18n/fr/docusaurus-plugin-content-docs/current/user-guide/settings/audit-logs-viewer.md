@@ -1,40 +1,40 @@
-# Audit Logs
+# Journaux d'Audit {#audit-logs}
 
-The audit log provides a comprehensive record of all system changes and user actions in **duplistatus**. This helps track configuration changes, user activities, and system operations for security and troubleshooting purposes.
+Le Journal d'Audit fournit un enregistrement complet de tous les changements de Système et Actions des Utilisateurs dans **duplistatus**. Cela aide à suivre les changements de configuration, les activités des Utilisateurs et les opérations du Système à des fins de Sécurité et de dépannage.
 
-![Audit Log](/img/screen-settings-audit.png)
+![Journal d'Audit](/img/screen-settings-audit.png)
 
-## Audit Log Viewer
+## Visualiseur de journal d'audit {#audit-log-viewer}
 
-The audit log viewer displays a chronological list of all logged events with the following information:
+Le visualiseur de journal d'audit affiche une liste chronologique de Tous les événements enregistrés avec les informations suivantes :
 
-- **Timestamp**: When the event occurred
-- **User**: The username who performed the action (or "System" for automated actions)
-- **Action**: The specific action that was performed
-- **Category**: The category of the action (Authentication, User Management, Configuration, Backup Operations, Server Management, System Operations)
-- **Status**: Whether the action succeeded or failed
-- **Target**: The object that was affected (if applicable)
-- **Details**: Additional information about the action
+- **Horodatage** : Quand l'événement s'est produit
+- **Utilisateur** : Le Nom d'utilisateur qui a effectué l'Action (ou "Système" pour les Actions automatisées)
+- **Action** : L'Action spécifique qui a été effectuée
+- **Catégorie** : La Catégorie de l'Action (Authentification, Gestion des utilisateurs, Configuration, Opérations de sauvegarde, Gestion des serveurs, Opérations du Système)
+- **Statut** : Si l'Action a réussi ou a échoué
+- **Cible** : L'objet qui a été affecté (le cas échéant)
+- **Détails** : Informations supplémentaires À propos de l'Action
 
-### Viewing Log Details
+### Affichage des Détails des Journaux {#viewing-log-details}
 
-Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to view detailed information, including:
+Cliquez sur l'icône <IconButton icon="lucide:eye" /> en Suivant n'importe quelle entrée de journal pour Afficher des informations détaillées, notamment :
 
-- Full timestamp
-- User information
-- Complete action details (for example: fields changed, statistics, etc.)
-- IP address and user agent
-- Error messages (if the action failed)
+- Horodatage complet
+- Informations sur l'Utilisateur
+- Détails complets de l'Action (par exemple : champs modifiés, Statistiques, etc.)
+- Adresse IP et Agent utilisateur
+- Messages d'erreur (si l'Action a échoué)
 
-### Exporting Audit Logs
+### Exportation des Journaux d'Audit {#exporting-audit-logs}
 
-You can export filtered audit logs in two formats:
+Vous pouvez Exporter les Journaux d'Audit filtrés dans deux formats :
 
-| Button                                            | Description                                          |
-| :------------------------------------------------ | :--------------------------------------------------- |
-| <IconButton icon="lucide:download" label="CSV"/>  | Export logs as a CSV file for spreadsheet analysis   |
-| <IconButton icon="lucide:download" label="JSON"/> | Export logs as a JSON file for programmatic analysis |
+| Bouton                                            | Description                                                                         |
+| :------------------------------------------------ | :---------------------------------------------------------------------------------- |
+| <IconButton icon="lucide:download" label="CSV"/>  | Exporter les Journaux sous forme de fichier CSV pour l'analyse de feuille de calcul |
+| <IconButton icon="lucide:download" label="JSON"/> | Exporter les Journaux sous forme de fichier JSON pour l'analyse programmatique      |
 
 :::note
-Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+Les Exportations incluent uniquement les Journaux actuellement visibles en fonction de vos Filtres Actifs. Pour Exporter Tous les Journaux, Effacez d'abord Tous les Filtres.
 :::

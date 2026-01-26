@@ -1,8 +1,8 @@
-# Documentation Tools
+# Documentation Tools {#documentation-tools}
 
 The documentation is built using [Docusaurus](https://docusaurus.io/) and is located in the `documentation` folder. The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistatus/) and is no longer included in the Docker container image.
 
-## Folder Structure
+## Folder Structure {#folder-structure}
 
 ```
 documentation/
@@ -23,11 +23,11 @@ documentation/
 └── package.json       # Dependencies and scripts
 ```
 
-## Common Commands
+## Common Commands {#common-commands}
 
 All commands should be run from the `documentation` directory:
 
-### Development
+### Development {#development}
 
 Start the development server with hot-reload:
 
@@ -38,7 +38,7 @@ pnpm start
 
 The site will be available at `http://localhost:3000` (or the next available port).
 
-### Build
+### Build {#build}
 
 Build the documentation site for production:
 
@@ -49,7 +49,7 @@ pnpm build
 
 This generates static HTML files in the `documentation/build` directory.
 
-### Serve Production Build
+### Serve Production Build {#serve-production-build}
 
 Preview the production build locally:
 
@@ -60,13 +60,13 @@ pnpm serve
 
 This serves the built site from the `documentation/build` directory.
 
-### Other Useful Commands
+### Other Useful Commands {#other-useful-commands}
 
 - `pnpm clear` - Clear Docusaurus cache
 - `pnpm typecheck` - Run TypeScript type checking
 - `pnpm write-heading-ids` - Add heading IDs to markdown files for anchor links
 
-## Generating README.md
+## Generating README.md {#generating-readmemd}
 
 The project's `README.md` file is automatically generated from `documentation/docs/intro.md` to keep the GitHub repository README synchronised with the Docusaurus documentation.
 
@@ -94,7 +94,7 @@ This script:
 npm install -g doctoc
 ```
 
-## Update README for Docker Hub
+## Update README for Docker Hub {#update-readme-for-docker-hub}
 
 The `generate-readme-from-intro.sh` script automatically generates `README_dockerhub.md` with Docker Hub-compatible formatting. It:
 
@@ -104,7 +104,7 @@ The `generate-readme-from-intro.sh` script automatically generates `README_docke
 - Converts GitHub-style alerts (`[!NOTE]`, `[!WARNING]`, etc.) to emoji-based format for better Docker Hub compatibility
 - Ensures all images and links work correctly on Docker Hub
 
-## Generate GitHub Release Notes
+## Generate GitHub Release Notes {#generate-github-release-notes}
 
 The `generate-readme-from-intro.sh` script automatically generates GitHub release notes when run. It:
 
@@ -119,7 +119,7 @@ The `generate-readme-from-intro.sh` script automatically generates GitHub releas
 **Example:**
 
 ```bash
-# This will generate both README.md and RELEASE_NOTES_github_VERSION.md
+# This will generate both README.md and RELEASE_NOTES_github_VERSION.md {#this-will-generate-both-readmemd-and-release_notes_github_versionmd}
 ./scripts/generate-readme-from-intro.sh
 ```
 
@@ -127,7 +127,7 @@ The generated release notes file can be copied and pasted directly into the GitH
 
 **Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
 
-## Take screenshots for documentation
+## Take screenshots for documentation {#take-screenshots-for-documentation}
 
 ```bash
 tsx scripts/take-screenshots.ts
@@ -200,7 +200,7 @@ The script generates the following screenshots (saved to `documentation/static/i
 - `screen-settings-ntfy-configure-device-popup.png` - NTFY configure device popup
 - `screen-settings-backup-notifications-detail.png` - Backup notifications detail page
 
-## Deploying the Documentation
+## Deploying the Documentation {#deploying-the-documentation}
 
 To deploy the documentation to GitHub Pages, you will need to generate a GitHub Personal Access Token. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
 
@@ -218,7 +218,7 @@ pnpm run deploy
 
 This will build the documentation and push it to the `gh-pages` branch of the repository, and the documentation will be available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
 
-## Working with Documentation
+## Working with Documentation {#working-with-documentation}
 
 - Documentation files are written in Markdown (`.md`) and located in `documentation/docs/`
 - The sidebar navigation is configured in `documentation/sidebars.ts`

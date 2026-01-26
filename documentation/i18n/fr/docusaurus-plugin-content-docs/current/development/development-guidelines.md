@@ -1,6 +1,6 @@
-# Development Reference
+# Development Reference {#development-reference}
 
-## Code Organisation
+## Code Organisation {#code-organisation}
 
 - **Components**: `src/components/` with subdirectories:
   - `ui/` - shadcn/ui components and reusable UI elements
@@ -15,7 +15,7 @@
 - **Scripts**: Utility scripts in `scripts/` directory
 - **Security**: CSRF protection in `src/lib/csrf-middleware.ts`, use `withCSRF` middleware for protected endpoints
 
-## Testing & Debugging
+## Testing & Debugging {#testing-debugging}
 
 - Test data generation: `pnpm generate-test-data --servers=N`
 - Notification testing: `/api/notifications/test` endpoint
@@ -25,20 +25,20 @@
 - Database maintenance: use maintenance menu for cleanup operations
 - Pre-checks: `scripts/pre-checks.sh` for troubleshooting startup issues
 
-## Development References
+## Development References {#development-references}
 
 - API endpoints: See [API Reference](../api-reference/overview)
 - Database schema: See [Database Schema](database)
 - Follow patterns in `src/lib/db-utils.ts` for database operations
 
-## Frameworks & Libraries
+## Frameworks & Libraries {#frameworks-libraries}
 
-### Runtime & Package Management
+### Runtime & Package Management {#runtime-package-management}
 
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.28.0)
 
-### Core Frameworks & Libraries
+### Core Frameworks & Libraries {#core-frameworks-libraries}
 
 - Next.js ^16.1.1 (App Router)
 - React ^19.2.3 & React-DOM ^19.2.3
@@ -51,13 +51,13 @@
 - express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^7.0.12, qrcode ^1.5.4
 
-### Type Checking & Linting
+### Type Checking & Linting {#type-checking-linting}
 
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.39.2 (via `next lint`)
 
-### Build & Deployment
+### Build & Deployment {#build-deployment}
 
 - Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
 - Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
@@ -66,12 +66,12 @@
 - Docusaurus for documentation
 - Greenfish Icon Editor for icons
 
-### Project Configuration
+### Project Configuration {#project-configuration}
 
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## System Features
+## System Features {#system-features}
 
 - **Cron Service**: Separate service for scheduled tasks, auto-restart via `duplistatus-cron.sh`
 - **Notifications**: ntfy.sh integration and SMTP email (nodemailer), configurable templates

@@ -1,17 +1,17 @@
 
 
-# Dashboard
+# Dashboard {#dashboard}
 
 :::tip
 **Quick Access to Display Settings**: Right-click on the auto-refresh button in the application toolbar to quickly open the [Display Settings](settings/display-settings.md) page.
 :::
 
-## Dashboard Summary
+## Dashboard Summary {#dashboard-summary}
 
 This section displays aggregated statistics for all backups.
 
-![Dashboard summary - overview](/img/screen-dashboard-summary.png)
-![Dashboard summary - table](/img/screen-dashboard-summary-table.png)
+![Dashboard summary - overview](/assets/screen-dashboard-summary.png)
+![Dashboard summary - table](/assets/screen-dashboard-summary-table.png)
 
 - **Total Servers**: The number of servers being monitored.                                                                                                             |
 - **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                |
@@ -22,7 +22,7 @@ This section displays aggregated statistics for all backups.
 - **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                             |
 - **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                  |
 
-## Cards Layout
+## Cards Layout {#cards-layout}
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
@@ -46,17 +46,17 @@ You can toggle the top right button on the side panel to change the panel view:
 
 - Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status.
 
-![status panel](/img/screen-overview-side-status.png)
+![status panel](/assets/screen-overview-side-status.png)
 
 - Metrics: Show charts with duration, file size and storage size over time for the aggregated or selected server.
 
-![charts panel](/img/screen-overview-side-charts.png)
+![charts panel](/assets/screen-overview-side-charts.png)
 
-### Backup Details
+### Backup Details {#backup-details}
 
 Hovering over a backup in the list displays details of the last backup log received and any overdue information.
 
-![Overdue details](/img/screen-backup-tooltip.png)
+![Overdue details](/assets/screen-backup-tooltip.png)
 
 - **Server Name : Backup**: The name or alias of the Duplicati server and backup, will also show the server name and note.
   - The alias and note can be configured at `Settings → Server Settings`.
@@ -72,11 +72,11 @@ If this backup is overdue, the tooltip also shows:
 
 You can also click the buttons at the bottom to open `Settings → Backup Notifications` to configure overdue settings or open the Duplicati server's web interface.
 
-## Table Layout
+## Table Layout {#table-layout}
 
 The table layout lists the most recent backup logs received for all servers and backups.
 
-![Dashboard Table Mode](/img/screen-main-dashboard-table-mode.png)
+![Dashboard Table Mode](/assets/screen-main-dashboard-table-mode.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
@@ -91,7 +91,7 @@ The table layout lists the most recent backup logs received for all servers and 
   - **Notification**: An icon showing the configured notification setting for new backup logs.
   - **Duplicati configuration**: A button to open the Duplicati server's web interface
 
-### Notifications Icons
+### Notifications Icons {#notifications-icons}
 
 | Icon                                                                                                                                    | Notification Option | Description                                                                                         |
 | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
@@ -104,22 +104,22 @@ The table layout lists the most recent backup logs received for all servers and 
 This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
 :::
 
-### Overdue Details
+### Overdue Details {#overdue-details}
 
 Hovering over the overdue warning icon displays details about the overdue backup.
 
-![Overdue details](/img/screen-overdue-backup-hover-card.png)
+![Overdue details](/assets/screen-overdue-backup-hover-card.png)
 
 - **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](settings/backup-notifications-settings.md).
 - **Last Backup**: When the last backup log was received.
 - **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
 - **Last Notification**: When the last overdue notification was sent.
 
-### Available Backup Versions
+### Available Backup Versions {#available-backup-versions}
 
 Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
 
-![Available versions](/img/screen-available-backups-modal.png)
+![Available versions](/assets/screen-available-backups-modal.png)
 
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.

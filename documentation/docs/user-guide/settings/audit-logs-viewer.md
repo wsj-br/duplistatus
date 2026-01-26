@@ -1,11 +1,11 @@
 
-# Audit Logs
+# Audit Logs {#audit-logs}
 
 The audit log provides a comprehensive record of all system changes and user actions in **duplistatus**. This helps track configuration changes, user activities, and system operations for security and troubleshooting purposes.
 
-![Audit Log](/img/screen-settings-audit.png)
+![Audit Log](/assets/screen-settings-audit.png)
 
-## Audit Log Viewer
+## Audit Log Viewer {#audit-log-viewer}
 
 The audit log viewer displays a chronological list of all logged events with the following information:
 
@@ -18,7 +18,7 @@ The audit log viewer displays a chronological list of all logged events with the
 - **Details**: Additional information about the action
 
 
-### Viewing Log Details
+### Viewing Log Details {#viewing-log-details}
 
 Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to view detailed information, including:
 - Full timestamp
@@ -27,7 +27,7 @@ Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to vie
 - IP address and user agent
 - Error messages (if the action failed)
 
-### Exporting Audit Logs
+### Exporting Audit Logs {#exporting-audit-logs}
 
 You can export filtered audit logs in two formats:
 

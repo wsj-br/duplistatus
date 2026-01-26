@@ -1,11 +1,11 @@
 
 
-# Backup Notifications 
+# Backup Notifications {#backup-notifications}
 
 
 Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
 
-![Backup alerts](/img/screen-settings-notifications.png)
+![Backup alerts](/assets/screen-settings-notifications.png)
 
 The backup notifications table is organised by server. The display format depends on how many backups a server has:
 - **Multiple backups**: Shows a server header row with individual backup rows below it. Click the server header to expand or collapse the backup list.
@@ -18,13 +18,13 @@ This page has an auto-save feature. Any changes you make will be saved automatic
 <br/>
 
 
-## Filter and Search
+## Filter and Search {#filter-and-search}
 
 Use the **Filter by Server Name** field at the top of the page to quickly find specific backups by server name or alias. The table will automatically filter to show only matching entries.
 
 <br/>
 
-## Configure Per-Backup Notification Settings
+## Configure Per-Backup Notification Settings {#configure-per-backup-notification-settings}
 
 | Setting                       | Description                                               | Default Value |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
@@ -41,7 +41,7 @@ Use the **Filter by Server Name** field at the top of the page to quickly find s
 
 <br/>
 
-## Additional Destinations
+## Additional Destinations {#additional-destinations}
 
 Additional notification destinations allow you to send notifications to specific email addresses or NTFY topics beyond the global settings. The system uses a hierarchical inheritance model where backups can inherit default settings from their server, or override them with backup-specific values.
 
@@ -57,10 +57,10 @@ Additional destination configuration is indicated by contextual icons next to se
 If no icon is displayed, the server or backup does not have additional destinations configured.
 
 
-![Server-level additional destinations](/img/screen-settings-notifications-server.png)
+![Server-level additional destinations](/assets/screen-settings-notifications-server.png)
 
 
-### Server-Level Defaults
+### Server-Level Defaults {#server-level-defaults}
 
 You can configure default additional destinations at the server level that all backups on that server will automatically inherit.
 
@@ -81,7 +81,7 @@ You can configure default additional destinations at the server level that all b
 
 
 
-### Per-Backup Configuration
+### Per-Backup Configuration {#per-backup-configuration}
 
 Individual backups automatically inherit the server defaults, but you can override them for specific backup jobs.
 
@@ -106,11 +106,11 @@ Individual backups automatically inherit the server defaults, but you can overri
 
 <br/>
 
-## Bulk Edit
+## Bulk Edit {#bulk-edit}
 
 You can edit additional destination settings for multiple backups at once using the bulk edit feature. This is particularly useful when you need to apply the same additional destinations to many backup jobs.
 
-![Bulk edit dialog](/img/screen-settings-notifications-bulk.png)
+![Bulk edit dialog](/assets/screen-settings-notifications-bulk.png)
 
 1. Navigate to `Settings → Backup Notifications`.
 2. Use the checkboxes in the first column to select the backups or servers you want to edit.

@@ -1,10 +1,10 @@
 
 
-# Welcome to duplistatus
+# Welcome to duplistatus {#welcome-to-duplistatus}
 
 **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-## Features
+## Features {#features}
 
 - **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
 - **Unified Dashboard**: View backup status, history, and details for all servers in one place.
@@ -16,7 +16,7 @@
 - **Application Logs Viewer**: Admin-only interface to view, search, and export application logs directly from the web interface with real-time monitoring capabilities.
 
 
-## Installation
+## Installation {#installation}
 
 The application can be deployed using Docker, Portainer Stacks, or Podman. 
 See details in the [Installation Guide](installation/installation.md).
@@ -29,49 +29,49 @@ See details in the [Installation Guide](installation/installation.md).
 (such as for Tailscale MagicDNS, corporate networks, or other custom DNS configurations), you can manually 
 specify DNS servers and search domains. See the installation guide for further details.
 
-## Duplicati Servers Configuration (Required)
+## Duplicati Servers Configuration (Required) {#duplicati-servers-configuration-required}
 
 Once your **duplistatus** server is up and running, you need to configure your **Duplicati** servers to 
 send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](installation/duplicati-server-configuration.md) 
 section of the Installation Guide. Without this configuration, the dashboard will not receive backup data from your Duplicati servers.
 
-## User Guide
+## User Guide {#user-guide}
 
 See the [User Guide](user-guide/overview.md) for detailed instructions on how to configure and use **duplistatus**, including initial setup, feature configuration, and troubleshooting.
 
-## Screenshots
+## Screenshots {#screenshots}
 
-### Dashboard
+### Dashboard {#dashboard}
 
-![dashboard](/img/screen-main-dashboard-card-mode.png)
+![dashboard](/assets/screen-main-dashboard-card-mode.png)
 
-### Backup History
+### Backup History {#backup-history}
 
-![server-detail](/img/screen-server-backup-list.png)
+![server-detail](/assets/screen-server-backup-list.png)
 
-### Backup Details
+### Backup Details {#backup-details}
 
-![backup-detail](/img/screen-backup-detail.png)
+![backup-detail](/assets/screen-backup-detail.png)
 
-### Overdue Backups
+### Overdue Backups {#overdue-backups}
 
-![overdue backups](/img/screen-overdue-backup-hover-card.png)
+![overdue backups](/assets/screen-overdue-backup-hover-card.png)
 
-### Overdue notifications on your phone
+### Overdue notifications on your phone {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/img/screen-overdue-notification.png)
+![ntfy overdue message](/assets/screen-overdue-notification.png)
 
-## API Reference
+## API Reference {#api-reference}
 
 See the [API Endpoints Documentation](api-reference/overview.md) for details about available endpoints, request/response formats, and examples.
 
-## Development
+## Development {#development}
 
 For instructions on downloading, changing, or running the code, see [Development Setup](development/setup.md).
 
 This project was mainly built with AI help. To learn how, see [How I Built this Application using AI tools](development/how-i-build-with-ai).
 
-## Credits
+## Credits {#credits}
 
 - First and foremost, thanks to Kenneth Skovhede for creating Duplicati—this amazing backup tool. Thanks also to all the contributors.
 
@@ -84,7 +84,7 @@ This project was mainly built with AI help. To learn how, see [How I Built this 
 >[!NOTE]
 > All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 
-## License
+## License {#license}
 
 The project is licensed under the [Apache License 2.0](LICENSE.md).   
 

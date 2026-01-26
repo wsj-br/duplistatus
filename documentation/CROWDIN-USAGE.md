@@ -214,6 +214,61 @@ This is necessary because Crowdin uses full locale codes (fr-FR, de-DE) but Docu
 
 You typically don't need to edit this unless adding new languages.
 
+## Translation Status Detection
+
+### Check Which Files Are Translated
+
+To identify which files are actually translated vs untranslated (placeholders), use the translation status checker:
+
+```bash
+cd documentation
+node scripts/check-translation-status.js
+```
+
+This script:
+- Compares each translated file with the English source
+- Identifies files that are **identical** to English (placeholders)
+- Identifies files that are **very similar** (>95% similarity) - likely untranslated
+- Identifies files that are **actually translated**
+- Reports **missing files** that need English copies
+- Saves a detailed JSON report to `translation-status-report.json`
+
+**Output categories:**
+- ✅ **Translated**: Files that appear to be translated (<95% similarity)
+- ⚠️ **Untranslated**: Files very similar to English (>95% similarity)
+- = **Identical**: Exact copies of English (placeholders)
+- ✗ **Missing**: Files that don't exist in i18n folder
+
+### Copy Untranslated Files
+
+When you need to copy English files to i18n folders for untranslated files:
+
+```bash
+cd documentation
+
+# Dry run (see what would be copied without actually copying)
+node scripts/copy-untranslated-files.js --dry-run
+
+# Copy missing files only
+node scripts/copy-untranslated-files.js
+
+# Force overwrite identical files (use with caution!)
+node scripts/copy-untranslated-files.js --force
+```
+
+**When to use:**
+- **Missing files**: When a new English file is added and needs to be copied to all locales
+- **Identical files**: Files that are exact copies of English (already have English copies, so usually no action needed)
+- **Force mode**: Only use `--force` if you want to overwrite existing translations with English (dangerous!)
+
+**Best practice workflow:**
+1. Add/update English files in `docs/`
+2. Run `node scripts/check-translation-status.js` to see what needs attention
+3. Run `node scripts/copy-untranslated-files.js --dry-run` to preview
+4. Run `node scripts/copy-untranslated-files.js` to copy missing files
+5. Upload to Crowdin: `crowdin upload sources`
+6. After translation: `crowdin download translations`
+
 ## Next Steps
 
 1. Create Crowdin project

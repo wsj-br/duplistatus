@@ -1,51 +1,49 @@
-# NTFY
+# NTFY {#ntfy}
 
-NTFY is an [open-source](https://github.com/binwiederhier/ntfy) simple notification service that can send push notifications to your phone or desktop. This section allows you to set up your notification server connection and authentication.
+NTFY ist ein [Open-Source](https://github.com/binwiederhier/ntfy) einfacher Benachrichtigungsdienst, der Push-Benachrichtigungen auf Ihr Telefon oder Ihren Desktop senden kann. Dieser Abschnitt ermöglicht es Ihnen, Ihre Benachrichtigungsserver-Verbindung und Authentifizierung einzurichten.
 
-![Ntfy settings](/img/screen-settings-ntfy.png)
+![Ntfy-Einstellungen](/img/screen-settings-ntfy.png)
 
-| Setting               | Description                                                                                                                                                                   |
-| :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **NTFY URL**          | The URL of your NTFY server (defaults to the public `https://ntfy.sh/`).                                                                   |
-| **NTFY Topic**        | A unique identifier for your notifications. The system will automatically generate a random topic if left empty, or you can specify your own. |
-| **NTFY Access Token** | An optional access token for authenticated NTFY servers. Leave this field blank if your server does not require authentication.               |
+| Einstellung            | Beschreibung                                                                                                                                                                                                    |
+| :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NTFY-URL**           | Die URL Ihres NTFY-Servers (Standard ist der öffentliche `https://ntfy.sh/`).                                                                                                |
+| **NTFY-Thema**         | Ein eindeutiger Bezeichner für Ihre Benachrichtigungen. Das System generiert automatisch ein zufälliges Thema, wenn es leer gelassen wird, oder Sie können Ihr eigenes angeben. |
+| **NTFY-Zugriffstoken** | Ein optionales Zugriffstoken für authentifizierte NTFY-Server. Lassen Sie dieses Feld leer, wenn Ihr Server keine Authentifizierung erfordert.                                  |
 
 <br/>
 
-A <IIcon2 icon="lucide:message-square" color="green"/> green icon next to `NTFY` in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:message-square" color="yellow"/> yellow, your settings are not valid.
-When the configuration is not valid, the NTFY checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out.
+Ein <IIcon2 icon="lucide:message-square" color="green"/> grünes Symbol neben `NTFY` in der Seitenleiste bedeutet, dass Ihre Einstellungen gültig sind. Wenn das Symbol <IIcon2 icon="lucide:message-square" color="yellow"/> gelb ist, sind Ihre Einstellungen nicht gültig.
+Wenn die Konfiguration nicht gültig ist, werden die NTFY-Kontrollkästchen auf der Registerkarte [`Backup-Benachrichtigungen`](backup-notifications-settings.md) auch ausgegraut.
 
-## Available Actions
+## Verfügbare Aktionen {#available-actions}
 
-| Button                                                                | Description                                                                                                                  |
-| :-------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| <IconButton label="Save Settings" />                                  | Save any changes made to the NTFY settings.                                                                  |
-| <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Send a test message to your NTFY server to check your configuration.                                         |
-| <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Display a QR code that allows you to quickly configure your mobile device or desktop for NTFY notifications. |
+| Schaltfläche                                                          | Beschreibung                                                                                                                                         |
+| :-------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <IconButton label="Save Settings" />                                  | Speichern Sie alle Änderungen an den NTFY-Einstellungen.                                                                             |
+| <IconButton icon="lucide:send-horizontal" label="Send Test Message"/> | Senden Sie eine Testnachricht an Ihren NTFY-Server, um Ihre Konfiguration zu prüfen.                                                 |
+| <IconButton icon="lucide:qr-code" label="Configure Device"/>          | Zeigen Sie einen QR-Code an, mit dem Sie Ihr Mobilgerät oder Ihren Desktop schnell für NTFY-Benachrichtigungen konfigurieren können. |
 
-## Device Configuration
+## Gerätekonfiguration {#device-configuration}
 
-You should install the NTFY application on your device before configuring it ([see here](https://ntfy.sh/)). Clicking the <IconButton icon="lucide:qr-code" label="Configure Device"/> button, or right-clicking the <SvgButton svgFilename="ntfy.svg" /> icon  in the application toolbar, will display a QR code. Scanning this QR code will automatically configure your device with the correct NTFY topic for notifications.
+Sie sollten die NTFY-Anwendung auf Ihrem Gerät installieren, bevor Sie es konfigurieren ([siehe hier](https://ntfy.sh/)). Wenn Sie auf die Schaltfläche <IconButton icon="lucide:qr-code" label="Configure Device"/> klicken oder mit der rechten Maustaste auf das Symbol <SvgButton svgFilename="ntfy.svg" /> in der Anwendungssymbolleiste klicken, wird ein QR-Code angezeigt. Durch Scannen dieses QR-Codes wird Ihr Gerät automatisch mit dem korrekten NTFY-Thema für Benachrichtigungen konfiguriert.
 
 <br/>
 
 <br/>
 
 :::caution
-If you use the public `ntfy.sh` server without an access token, anyone with your topic name can view your
-notifications.
+Wenn Sie den öffentlichen Server `ntfy.sh` ohne Zugriffstoken verwenden, kann jeder mit Ihrem Themennamen Ihre Benachrichtigungen anzeigen.
 
-To provide a degree of privacy, a random 12-character topic is generated, offering over
-3 sextillion (3,000,000,000,000,000,000,000) possible combinations, making it difficult to guess.
+Um einen gewissen Datenschutz zu bieten, wird ein zufälliges 12-stelliges Thema generiert, das über 3 Sextillionen (3.000.000.000.000.000.000.000) mögliche Kombinationen bietet, was es schwierig macht, es zu erraten.
 
-For improved security, consider using [access token authentication](https://docs.ntfy.sh/config/#access-tokens) and [access control lists](https://docs.ntfy.sh/config/#access-control-list-acl) to protect your topics, or [self-host NTFY](https://docs.ntfy.sh/install/#docker) for total control.
+Für verbesserte Sicherheit sollten Sie [Zugriffstoken-Authentifizierung](https://docs.ntfy.sh/config/#access-tokens) und [Zugriffskontrolllisten](https://docs.ntfy.sh/config/#access-control-list-acl) verwenden, um Ihre Themen zu schützen, oder [NTFY selbst hosten](https://docs.ntfy.sh/install/#docker), um die vollständige Kontrolle zu haben.
 
-⚠️ **You are responsible for securing your NTFY topics. Please use this service at your own discretion.**
+⚠️ **Sie sind verantwortlich für die Sicherung Ihrer NTFY-Themen. Bitte verwenden Sie diesen Dienst auf eigenes Risiko.**
 :::
 
 <br/>
 <br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+Alle Produktnamen, Marken und eingetragenen Marken sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
 :::

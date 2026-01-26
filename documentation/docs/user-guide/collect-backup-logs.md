@@ -1,18 +1,18 @@
 
 
-# Collect Backup Logs
+# Collect Backup Logs {#collect-backup-logs}
 
 **duplistatus** can retrieve backup logs directly from Duplicati servers to populate the database or restore missing log data. The application automatically skips any duplicate logs that already exist in the database.
 
 
-## Steps to Collect Backup Logs
+## Steps to Collect Backup Logs {#steps-to-collect-backup-logs}
 
 
-### Manual Collection
+### Manual Collection {#manual-collection}
 
 1.  Click the <IconButton icon="lucide:download" /> `Collect Backup Logs` icon on the [Application Toolbar](overview#application-toolbar).
 
-![Collect Backup Logs Popup](/img/screen-collect-button-popup.png)
+![Collect Backup Logs Popup](/assets/screen-collect-button-popup.png)
 
 2.  Select Server
 
@@ -38,18 +38,18 @@
 
 <br/>
 
-### Bulk Collection
+### Bulk Collection {#bulk-collection}
 
 _Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
 
-![Collect All Right-Click Menu](/img/screen-collect-button-right-click-popup.png)
+![Collect All Right-Click Menu](/assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
 :::
 
 
-## How the Collection Process Works
+## How the Collection Process Works {#how-the-collection-process-works}
 
 - **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
 - It retrieves backup history, log information, and backup settings (for overdue monitoring).
@@ -59,7 +59,7 @@ You can also use the <IconButton icon="lucide:import" label="Collect All"/> butt
 - If the download option is selected, it will download the JSON data collected. The file name will be in this format: `[serverName]_collected_[Timestamp].json`. The timestamp uses the ISO 8601 date format (YYYY-MM-DDTHH:MM:SS).
 - The dashboard updates to reflect the new information.
 
-## Troubleshooting Collection Issues
+## Troubleshooting Collection Issues {#troubleshooting-collection-issues}
 
 Backup log collection requires the Duplicati server to be accessible from the **duplistatus** installation. If you encounter issues, please verify the following:
 

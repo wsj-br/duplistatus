@@ -1,47 +1,47 @@
-# Overdue Notifications
+# Überfällige Benachrichtigungen {#overdue-notifications}
 
-![Backup alerts](/img/screen-settings-overdue.png)
+![Sicherungswarnungen](/img/screen-settings-overdue.png)
 
-## Configure Per-Backup Overdue Settings
+## Konfigurieren Sie die Einstellungen für überfällige Sicherungen pro Sicherung {#configure-per-backup-overdue-settings}
 
-- **Server Name**: The name of the server to monitor for overdue backups.
-  - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
-  - Click <IIcon2 icon="lucide:download" height="18"/> to collect backup logs from this server.
-- **Backup Name**: The name of the backup to monitor for overdue backups.
-- **Next Run**: The next scheduled backup time displayed in green if scheduled in the future, or in red if overdue. Hovering over the "Next Run" value displays a tooltip showing the last backup timestamp from the database, formatted with full date/time and relative time.
-- **Overdue Backup Monitoring**: Enable or disable overdue monitoring for this backup.
-- **Expected Backup Interval**: The expected backup interval.
-- **Unit**: The unit of the expected interval.
-- **Allowed Days**: The allowed weekdays for the backup.
+- **Servername**: Der Name des Servers, der auf überfällige Sicherungen überwacht werden soll.
+  - Klicken Sie auf <SvgIcon svgFilename="duplicati_logo.svg" height="18"/>, um die Weboberfläche des Duplicati-Servers zu öffnen
+  - Klicken Sie auf <IIcon2 icon="lucide:download" height="18"/>, um Sicherungsprotokolle von diesem Server zu sammeln.
+- **Sicherungsname**: Der Name der Sicherung, die auf überfällige Sicherungen überwacht werden soll.
+- **Nächster Lauf**: Die nächste geplante Sicherungszeit wird in Grün angezeigt, wenn sie in der Zukunft geplant ist, oder in Rot, wenn sie überfällig ist. Wenn Sie den Mauszeiger über den Wert "Nächster Lauf" bewegen, wird ein Tooltip angezeigt, der den letzten Sicherungs-Zeitstempel aus der Datenbank mit vollständigem Datum/Uhrzeit und relativer Zeit anzeigt.
+- **Überwachung überfälliger Sicherungen**: Aktivieren oder deaktivieren Sie die Überwachung überfälliger Sicherungen für diese Sicherung.
+- **Erwartetes Sicherungsintervall**: Das erwartete Sicherungsintervall.
+- **Einheit**: Die Einheit des erwarteten Intervalls.
+- **Erlaubte Tage**: Die erlaubten Wochentage für die Sicherung.
 
-If the icons on the side of the server name are greyed out, the server is not configured in the [`Settings → Server Settings`](server-settings.md).
+Wenn die Symbole neben dem Servernamen ausgegraut sind, ist der Server nicht in den [`Einstellungen → Servereinstellungen`](server-settings.md) konfiguriert.
 
 :::note
-When you collect backup logs from a Duplicati server, **duplistatus** automatically updates the overdue monitoring intervals and configurations.
+Wenn Sie Sicherungsprotokolle von einem Duplicati-Server sammeln, aktualisiert **duplistatus** automatisch die Überwachungsintervalle und Konfigurationen für überfällige Sicherungen.
 :::
 
 :::tip
-For best results, collect backup logs after changing backup job intervals configuration in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+Sammeln Sie Sicherungsprotokolle, nachdem Sie die Konfiguration der Sicherungsauftragsintervalle auf Ihrem Duplicati-Server geändert haben, um optimale Ergebnisse zu erzielen. Dies stellt sicher, dass **duplistatus** mit Ihrer aktuellen Konfiguration synchronisiert bleibt.
 :::
 
-## Global Configurations
+## Globale Konfigurationen {#global-configurations}
 
-These settings apply to all backups:
+Diese Einstellungen gelten für alle Sicherungen:
 
-| Setting                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| :------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Overdue Tolerance**           | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is `1 hour`.                                                                                                                                                                                                                                                                                                                             |
-| **Overdue Monitoring Interval** | How often the system checks for overdue backups. The default is `5 minutes`.                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Notification Frequency**      | How often to send overdue notifications: <br/> `One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month`: Send **monthly** notifications while overdue. |
+| Einstellung                                           | Beschreibung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| :---------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Toleranz für überfällige Sicherungen**              | Die Kulanzfrist (zusätzlich gewährte Zeit), die zur erwarteten Sicherungszeit hinzugefügt wird, bevor die Sicherung als überfällig markiert wird. Der Standard ist `1 Stunde`.                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Überwachungsintervall für überfällige Sicherungen** | Wie oft das System auf überfällige Sicherungen prüft. Der Standard ist `5 Minuten`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Benachrichtigungshäufigkeit**                       | Wie oft Benachrichtigungen über überfällige Sicherungen gesendet werden: <br/> `Einmalig`: Senden Sie **nur eine** Benachrichtigung, wenn die Sicherung überfällig wird. <br/> `Jeden Tag`: Senden Sie **täglich** Benachrichtigungen, während die Sicherung überfällig ist (Standard). <br/> `Jede Woche`: Senden Sie **wöchentlich** Benachrichtigungen, während die Sicherung überfällig ist. <br/> `Jeden Monat`: Senden Sie **monatlich** Benachrichtigungen, während die Sicherung überfällig ist. |
 
-## Available Actions
+## Verfügbare Aktionen {#available-actions}
 
-| Button                                                              | Description                                                                                                                                                                           |
-| :------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| <IconButton label="Save Overdue Monitoring Settings" />             | Saves the settings, clears timers for any disabled backups, and runs an overdue check.                                                                                |
-| <IconButton icon="lucide:import" label="Collect All (#)"/>          | Collect backup logs from all configured servers, in brackets the number of servers to collect from.                                                                   |
-| <IconButton icon="lucide:download" label="Download CSV"/>           | Downloads a CSV file containing all overdue monitoring settings and the "Last Backup Timestamp (DB)" from the database.                            |
-| <IconButton icon="lucide:refresh-cw" label="Check now"/>            | Runs the overdue backup check immediately. This is useful after changing configurations. It also triggers a "Next Run" recalculation. |
-| <IconButton icon="lucide:timer-reset" label="Reset notifications"/> | Resets the last overdue notification sent for all backups.                                                                                                            |
+| Schaltfläche                                                                            | Beschreibung                                                                                                                                                                                                               |
+| :-------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <IconButton label="Einstellungen für Überwachung überfälliger Sicherungen speichern" /> | Speichert die Einstellungen, löscht Timer für alle deaktivierten Sicherungen und führt eine Überprüfung auf überfällige Sicherungen durch.                                                                 |
+| <IconButton icon="lucide:import" label="Alle sammeln (#)"/>                             | Sammeln Sie Sicherungsprotokolle von allen konfigurierten Servern, in Klammern die Anzahl der Server, von denen gesammelt werden soll.                                                                     |
+| <IconButton icon="lucide:download" label="CSV herunterladen"/>                          | Lädt eine CSV-Datei herunter, die alle Einstellungen für die Überwachung überfälliger Sicherungen und den "Letzten Sicherungs-Zeitstempel (DB)" aus der Datenbank enthält.              |
+| <IconButton icon="lucide:refresh-cw" label="Jetzt prüfen"/>                             | Führt die Überprüfung auf überfällige Sicherungen sofort durch. Dies ist nützlich nach Konfigurationsänderungen. Es löst auch eine Neuberechnung des "Nächsten Laufs" aus. |
+| <IconButton icon="lucide:timer-reset" label="Benachrichtigungen zurücksetzen"/>         | Setzt die zuletzt gesendete Benachrichtigung über überfällige Sicherungen für alle Sicherungen zurück.                                                                                                     |
 
 

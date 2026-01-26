@@ -1,8 +1,8 @@
-# Podman Testing
+# Podman Testing {#podman-testing}
 
 Copy and execute the scripts located at `scripts/podman_testing` on the Podman test server.
 
-## Initial Setup and Management
+## Initial Setup and Management {#initial-setup-and-management}
 
 1. `copy.docker.duplistatus.local`: Copies the Docker image from the local Docker daemon to Podman (for local testing).
 2. `copy.docker.duplistatus.remote`: Copies the Docker image from a remote development server to Podman (requires SSH access).
@@ -12,7 +12,7 @@ Copy and execute the scripts located at `scripts/podman_testing` on the Podman t
 5. `stop.duplistatus`: Stops the pod and removes the container.
 6. `clean.duplistatus`: Stops containers, removes pods, and cleans up old images.
 
-## DNS Configuration
+## DNS Configuration {#dns-configuration}
 
 The scripts automatically detect and configure DNS settings from the host system:
 
@@ -27,19 +27,19 @@ The scripts automatically detect and configure DNS settings from the host system
 
 No manual DNS configuration is needed - the scripts handle it automatically!
 
-## Monitoring and Health Checks
+## Monitoring and Health Checks {#monitoring-and-health-checks}
 
 - `check.duplistatus`: Checks the logs, connectivity, and application health.
 
-## Debugging Commands
+## Debugging Commands {#debugging-commands}
 
 - `logs.duplistatus`: Shows the logs of the pod.
 - `exec.shell.duplistatus`: Opens a shell in the container.
 - `restart.duplistatus`: Stops the pod, removes the container, copies the image, creates the container, and starts the pod.
 
-## Usage Workflow
+## Usage Workflow {#usage-workflow}
 
-### Development Server
+### Development Server {#development-server}
 
 Create the Docker image on the development server:
 
@@ -47,7 +47,7 @@ Create the Docker image on the development server:
 docker build . -t wsj-br/duplistatus:devel
 ```
 
-### Podman Server
+### Podman Server {#podman-server}
 
 1. Transfer the Docker image:
    - Use `./copy.docker.duplistatus.local` if Docker and Podman are on the same machine
@@ -60,7 +60,7 @@ docker build . -t wsj-br/duplistatus:devel
    - **Note**: This script currently references `copy.docker.duplistatus` which should be replaced with either `.local` or `.remote` variant
 6. Use `./clean.duplistatus` to remove containers, pods, and old images
 
-# Testing the Application
+# Testing the Application {#testing-the-application}
 
 If you are running the Podman server on the same machine, use `http://localhost:9666`.
 
@@ -70,9 +70,9 @@ If you are on another server, get the URL with:
 echo "http://$(hostname -I | awk '{print $1}'):9666"
 ```
 
-## Important Notes
+## Important Notes {#important-notes}
 
-### Podman Pod Networking
+### Podman Pod Networking {#podman-pod-networking}
 
 When running in Podman pods, the application requires:
 
@@ -81,14 +81,14 @@ When running in Podman pods, the application requires:
 
 The scripts handle these requirements automatically - no manual configuration needed.
 
-### Rootless vs Root Mode
+### Rootless vs Root Mode {#rootless-vs-root-mode}
 
 - **Standalone mode** (`start.duplistatus`): Runs rootless with `--userns=keep-id`
 - **Pod mode** (`pod.testing`): Runs as root inside the pod for testing purposes
 
 Both modes work correctly with the automatic DNS detection.
 
-## Environment Configuration
+## Environment Configuration {#environment-configuration}
 
 Both `copy.docker.duplistatus.local` and `copy.docker.duplistatus.remote` require a `.env` file in the `scripts/podman_testing` directory:
 

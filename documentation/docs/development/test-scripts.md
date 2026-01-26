@@ -1,10 +1,10 @@
 
 
-# Test Scripts
+# Test Scripts {#test-scripts}
 
 The project includes several test scripts to help with development and testing:
 
-## Generate Test Data
+## Generate Test Data {#generate-test-data}
 
 ```bash
 pnpm generate-test-data --servers=N
@@ -21,13 +21,13 @@ pnpm generate-test-data --servers=N --upload
 
 **Examples:**
 ```bash
-# Generate data for 5 servers
+# Generate data for 5 servers {#generate-data-for-5-servers}
 pnpm generate-test-data --servers=5
 
-# Generate data for 1 server with upload mode
+# Generate data for 1 server with upload mode {#generate-data-for-1-server-with-upload-mode}
 pnpm generate-test-data --upload --servers=1
 
-# Generate data for all 30 servers
+# Generate data for all 30 servers {#generate-data-for-all-30-servers}
 pnpm generate-test-data --servers=30
 ```
 
@@ -35,19 +35,19 @@ pnpm generate-test-data --servers=30
 > This script deletes all previous data in the database and replaces it with test data.
 > Back up your database before running this script.
 
-## Show the overdue notifications contents (to debug notification system)
+## Show the overdue notifications contents (to debug notification system) {#show-the-overdue-notifications-contents-to-debug-notification-system}
 
 ```bash
 pnpm show-overdue-notifications
 ```
 
-## Run overdue-check at a specific date/time (to debug notification system)
+## Run overdue-check at a specific date/time (to debug notification system) {#run-overdue-check-at-a-specific-datetime-to-debug-notification-system}
 
 ```bash
 pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
 ``` 
 
-## Test cron service port connectivity
+## Test cron service port connectivity {#test-cron-service-port-connectivity}
 
 To test cron service connectivity, you can:
 
@@ -68,7 +68,7 @@ pnpm test-cron-port
 
 This script tests the connectivity to the cron service port and provides detailed information about the connection status.
 
-## Test overdue detection
+## Test overdue detection {#test-overdue-detection}
 
 ```bash
 pnpm test-overdue-detection
@@ -81,7 +81,7 @@ This script tests the overdue backup detection logic. It verifies:
 
 Useful for debugging overdue backup detection and notification systems.
 
-## Validate CSV export
+## Validate CSV export {#validate-csv-export}
 
 ```bash
 pnpm validate-csv-export
@@ -94,7 +94,7 @@ This script validates the CSV export functionality. It:
 
 Useful for ensuring CSV exports work correctly before releases.
 
-## Temporarily block NTFY server (for testing)
+## Temporarily block NTFY server (for testing) {#temporarily-block-ntfy-server-for-testing}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
@@ -110,11 +110,11 @@ This script temporarily blocks outgoing network access to the NTFY server (`ntfy
 >[!CAUTION]
 > This script modifies iptables rules and requires root privileges. Use only for testing notification retry mechanisms.
 
-## Database Migration Testing
+## Database Migration Testing {#database-migration-testing}
 
 The project includes scripts to test database migrations from older versions to the current version. These scripts ensure that database migrations work correctly and preserve data integrity.
 
-### Generate Migration Test Data
+### Generate Migration Test Data {#generate-migration-test-data}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
@@ -156,7 +156,7 @@ This script generates test databases for multiple historical versions of the app
 >[!IMPORTANT]
 > This script was supposed to run only once, as new versions the developer can copy the database file and screenshots directly to the `scripts/migration_test_data/` directory. During development, just run the `./scripts/test-migrations.sh` script to test the migrations.
 
-### Test Database Migrations
+### Test Database Migrations {#test-database-migrations}
 
 ```bash
 ./scripts/test-migrations.sh
@@ -221,17 +221,17 @@ All migration tests passed!
 
 **Usage:**
 ```bash
-# Run all migration tests
+# Run all migration tests {#run-all-migration-tests}
 ./scripts/test-migrations.sh
 
-# Check exit code
+# Check exit code {#check-exit-code}
 echo $?  # 0 = all passed, 1 = some failed
 ```
 
 >[!NOTE]
 > This script uses the TypeScript migration test script (`test-migration.ts`) internally. The test script validates the database structure after migration and ensures data integrity.
 
-## Set SMTP Test Configuration
+## Set SMTP Test Configuration {#set-smtp-test-configuration}
 
 ```bash
 pnpm set-smtp-test-config <connectionType>
@@ -243,20 +243,20 @@ For plain connections, the script reads `PLAIN_SMTP_FROM` environment variable t
 
 **Usage:**
 ```bash
-# Set Plain SMTP configuration
+# Set Plain SMTP configuration {#set-plain-smtp-configuration}
 PLAIN_SMTP_HOST=smtp.example.com \
 PLAIN_SMTP_PORT=25 \
 PLAIN_SMTP_FROM=noreply@example.com \
 pnpm set-smtp-test-config plain
 
-# Set STARTTLS configuration
+# Set STARTTLS configuration {#set-starttls-configuration}
 STARTTLS_SMTP_HOST=smtp.example.com \
 STARTTLS_SMTP_PORT=587 \
 STARTTLS_SMTP_USERNAME=user@example.com \
 STARTTLS_SMTP_PASSWORD=password \
 pnpm set-smtp-test-config starttls
 
-# Set Direct SSL/TLS configuration
+# Set Direct SSL/TLS configuration {#set-direct-ssltls-configuration}
 SSL_SMTP_HOST=smtp.example.com \
 SSL_SMTP_PORT=465 \
 SSL_SMTP_USERNAME=user@example.com \
@@ -269,7 +269,7 @@ pnpm set-smtp-test-config ssl
 - Environment variables must be set with the appropriate prefix for the connection type
 - For plain connections, `PLAIN_SMTP_FROM` is required
 
-## Test SMTP Connection Type Cross-Compatibility
+## Test SMTP Connection Type Cross-Compatibility {#test-smtp-connection-type-cross-compatibility}
 
 ```bash
 pnpm test-smtp-connections
@@ -286,7 +286,7 @@ This script performs a comprehensive 3x3 matrix test that validates whether conf
 
 **Usage:**
 ```bash
-# Set environment variables for all three connection types
+# Set environment variables for all three connection types {#set-environment-variables-for-all-three-connection-types}
 PLAIN_SMTP_HOST=smtp.example.com \
 PLAIN_SMTP_PORT=25 \
 PLAIN_SMTP_FROM=noreply@example.com \
@@ -313,7 +313,7 @@ Configurations should only work with their intended connection type (e.g., plain
 - Console output with a summary table showing test results
 - `smtp-test-results.json` file with detailed test results for each configuration and connection type combination
 
-## Test Docker Entrypoint Script
+## Test Docker Entrypoint Script {#test-docker-entrypoint-script}
 
 ```bash
 pnpm test-entrypoint
@@ -331,7 +331,7 @@ This script provides a test wrapper for `docker-entrypoint.sh` in local developm
 
 **Usage:**
 ```bash
-# Run the test (builds fresh version automatically)
+# Run the test (builds fresh version automatically) {#run-the-test-builds-fresh-version-automatically}
 pnpm test-entrypoint
 ```
 

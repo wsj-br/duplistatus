@@ -8,7 +8,7 @@
     "description": "The label for category 'Installation' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.User Guide": {
-    "message": "Benutzerhandbuch",
+    "message": "Benutzer Handbuch",
     "description": "The label for category 'User Guide' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Settings": {
@@ -20,7 +20,7 @@
     "description": "The label for category 'Migration' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.API Reference": {
-    "message": "API-Referenz",
+    "message": "API Referenz",
     "description": "The label for category 'API Reference' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Development": {

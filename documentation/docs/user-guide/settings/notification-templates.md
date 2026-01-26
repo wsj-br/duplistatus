@@ -1,11 +1,11 @@
 
 
-# Templates
+# Templates {#templates}
 
 **duplistatus** uses three templates for notification messages. These templates are used for both NTFY and Email notifications:
 
 
-![notification templates](/img/screen-settings-templates.png)
+![notification templates](/assets/screen-settings-templates.png)
 
 
 | Template           | Description                                         |
@@ -16,7 +16,7 @@
 
 <br/>
 
-## Available Actions
+## Available Actions {#available-actions}
 
 | Button                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -26,7 +26,7 @@
 
 <br/>
 
-##  Variables
+## Variables {#variables}
 
 
 All templates support variables that will be replaced with actual values. The following table shows the available variables:

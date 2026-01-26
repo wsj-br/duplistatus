@@ -1,35 +1,35 @@
-# Application Logs
+# Journaux d'application {#application-logs}
 
-The Application Logs viewer lets administrators monitor all application logs in one place, with filtering, export, and real-time updates directly from the web interface.
+Le Visualiseur de journaux d'application permet aux administrateurs de surveiller tous les journaux d'application en un seul endroit, avec filtrage, export et mises à jour en temps réel directement depuis l'interface web.
 
-![Application Log Viewer](/img/screen-settings-application-logs.png)
-
-<br/>
-
-## Available Actions
-
-| Button                                                      | Description                                                                                                                                                                                                                                                                                                   |
-| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| <IconButton icon="lucide:refresh-cw" label="Refresh" />     | Manually reload logs from the selected file. Shows a loading spinner while refreshing and resets tracking for new line detection.                                                                                                                                             |
-| <IconButton icon="lucide:copy" label="Copy to clipboard" /> | Copy all filtered log lines to your clipboard. Respects the current search filter. Useful for quick sharing or pasting into other tools.                                                                                                                      |
-| <IconButton icon="lucide:download" label="Export" />        | Download logs as a text file. Exports from the currently selected file version and applies the current search filter (if any). Filename format: `duplistatus-logs-YYYY-MM-DD.txt` (date in ISO format). |
-| <IconButton icon="lucide:arrow-down-from-line" />           | Quickly jump to the beginning of the displayed logs. Useful when auto-scroll is disabled or when navigating through long log files.                                                                                                                                           |
-| <IconButton icon="lucide:arrow-down-to-line" />             | Quickly jump to the end of the displayed logs. Useful when auto-scroll is disabled or when navigating through long log files.                                                                                                                                                 |
+![Visualiseur de journaux d'application](/img/screen-settings-application-logs.png)
 
 <br/>
 
-## Controls and Filters
+## Actions disponibles {#available-actions}
 
-| Control           | Description                                                                                                                                                                                                         |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **File Version**  | Select which log file to view: **Current** (active file) or rotated files (`.1`, `.2`, etc., where higher numbers are older). |
-| **Lines to Show** | Display the most recent **100**, **500**, **1000** (default), **5000**, or **10000** lines from the selected file.                                                               |
-| **Auto-scroll**   | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the `Current` file version.      |
-| **Search**        | Filter log lines by text (case-insensitive). Filters apply to the currently displayed lines.                                                                     |
+| Bouton                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                    |
+| :---------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <IconButton icon="lucide:refresh-cw" label="Actualiser" />              | Rechargez manuellement les journaux à partir du fichier sélectionné. Affiche un indicateur de chargement lors de l'actualisation et réinitialise le suivi pour la détection de nouvelles lignes.                                                                                                                                               |
+| <IconButton icon="lucide:copy" label="Copier dans le presse-papiers" /> | Copiez toutes les lignes de journal filtrées dans votre presse-papiers. Respecte le filtre de recherche actuel. Utile pour un partage rapide ou un collage dans d'autres outils.                                                                                                                                               |
+| <IconButton icon="lucide:download" label="Exporter" />                  | Téléchargez les journaux sous forme de fichier texte. Exporte à partir de la version de fichier actuellement sélectionnée et applique le filtre de recherche actuel (le cas échéant). Format du nom de fichier : `duplistatus-logs-YYYY-MM-DD.txt` (date au format ISO). |
+| <IconButton icon="lucide:arrow-down-from-line" />                       | Accédez rapidement au début des journaux affichés. Utile lorsque le défilement automatique est désactivé ou lors de la navigation dans de longs fichiers journaux.                                                                                                                                                                             |
+| <IconButton icon="lucide:arrow-down-to-line" />                         | Accédez rapidement à la fin des journaux affichés. Utile lorsque le défilement automatique est désactivé ou lors de la navigation dans de longs fichiers journaux.                                                                                                                                                                             |
 
 <br/>
 
-The log display header shows the filtered line count, total lines, file size, and last modified timestamp.
+## Contrôles et filtres {#controls-and-filters}
+
+| Contrôle                   | Description                                                                                                                                                                                                                                                                |
+| :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Version du fichier**     | Sélectionnez le fichier journal à afficher : **Actuel** (fichier actif) ou fichiers archivés (`.1`, `.2`, etc., où les numéros plus élevés sont plus anciens).                       |
+| **Lignes à afficher**      | Affiche les **100**, **500**, **1000** (par défaut), **5000** ou **10000** lignes les plus récentes du fichier sélectionné.                                                                                                             |
+| **Défilement automatique** | Lorsqu'il est activé (par défaut pour le fichier actuel), défile automatiquement vers les nouvelles entrées de journal et s'actualise toutes les 2 secondes. Fonctionne uniquement pour la version de fichier `Actuel`. |
+| **Rechercher**             | Filtrez les lignes de journal par texte (insensible à la casse). Les filtres s'appliquent aux lignes actuellement affichées.                                                                                            |
+
+<br/>
+
+L'en-tête d'affichage du journal affiche le nombre de lignes filtrées, le nombre total de lignes, la taille du fichier et l'horodatage de la dernière modification.
 
 <br/>
 

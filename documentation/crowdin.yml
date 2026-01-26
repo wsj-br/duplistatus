@@ -9,7 +9,9 @@ preserve_hierarchy: true
 files:
   # Markdown documentation files
   - source: /docs/**/*.md
-    translation: /docs/%locale%/**/%original_file_name%
+    translation: /i18n/%locale%/docusaurus-plugin-content-docs/current/**/%original_file_name%
+    ignore:
+      - /docs/**/assets/**/*
     update_option: update_as_unapproved
     languages_mapping:
       locale:

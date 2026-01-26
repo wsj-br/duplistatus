@@ -1,22 +1,22 @@
 
 
-# Cron Service
+# Cron Service {#cron-service}
 
 The application includes a separate cron service for handling scheduled tasks:
 
-## Start cron service in development mode
+## Start cron service in development mode {#start-cron-service-in-development-mode}
 
 ```bash
 pnpm cron:dev
 ```
 
-## Start cron service in production mode
+## Start cron service in production mode {#start-cron-service-in-production-mode}
 
 ```bash
 pnpm cron:start
 ```
 
-## Start cron service locally (for testing)
+## Start cron service locally (for testing) {#start-cron-service-locally-for-testing}
 
 ```bash
 pnpm cron:start-local

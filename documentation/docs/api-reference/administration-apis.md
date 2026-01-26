@@ -1,8 +1,8 @@
 
 
-# Administration
+# Administration {#administration}
 
-## Collect Backups - `/api/backups/collect`
+## Collect Backups - `/api/backups/collect` {#collect-backups-apibackupscollect}
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
 - **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint automatically detects the best connection protocol (HTTPS with SSL validation, HTTPS with self-signed certificates, or HTTP as fallback) and connects to the Duplicati server to retrieve backup information and process it into the local database.
@@ -49,7 +49,7 @@
   - The frontend should use `serverAlias || serverName` for display purposes
   - Supports both JSON download and direct API collection methods
 
-## Cleanup Backups - `/api/backups/cleanup`
+## Cleanup Backups - `/api/backups/cleanup` {#cleanup-backups-apibackupscleanup}
 - **Endpoint**: `/api/backups/cleanup`
 - **Method**: POST
 - **Description**: Deletes old backup data based on retention period. This endpoint helps manage database size by removing outdated backup records while preserving recent and important data.
@@ -88,7 +88,7 @@
   - Enhanced error reporting includes details and stack trace in development mode
   - Supports both time-based retention and complete data deletion
 
-## Delete Backup Job - `/api/backups/delete-job`
+## Delete Backup Job - `/api/backups/delete-job` {#delete-backup-job-apibackupsdelete-job}
 - **Endpoint**: `/api/backups/delete-job`
 - **Method**: DELETE
 - **Description**: Deletes all backup records for a specific server-backup combination. This endpoint is only available in development mode.
@@ -123,7 +123,7 @@
   - Returns count of deleted backups and server information
   - Uses server alias for display if available, otherwise falls back to server name
 
-## Sync Backup Schedules - `/api/backups/sync-schedule`
+## Sync Backup Schedules - `/api/backups/sync-schedule` {#sync-backup-schedules-apibackupssync-schedule}
 - **Endpoint**: `/api/backups/sync-schedule`
 - **Method**: POST
 - **Description**: Synchronizes backup schedule information from a Duplicati server. This endpoint connects to the server, retrieves schedule information for all backups, and updates the local backup settings with schedule details including repeat intervals, allowed week days, and schedule times.
@@ -196,7 +196,7 @@
   - Logs audit events for successful and failed sync operations
   - Uses default port 8200 if not specified
 
-## Test Server Connection - `/api/servers/test-connection`
+## Test Server Connection - `/api/servers/test-connection` {#test-server-connection-apiserverstest-connection}
 - **Endpoint**: `/api/servers/test-connection`
 - **Method**: POST
 - **Description**: Tests the connection to a Duplicati server to verify it's accessible.
@@ -223,7 +223,7 @@
   - Supports both HTTP and HTTPS protocols
   - Uses timeout configuration for connection testing
 
-## Get Server URL - `/api/servers/:serverId/server-url`
+## Get Server URL - `/api/servers/:serverId/server-url` {#get-server-url-apiserversserveridserver-url}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: GET
 - **Description**: Retrieves the server URL for a specific server.
@@ -245,7 +245,7 @@
   - Used for server connection management
   - Returns empty string if no server URL is set
 
-## Update Server URL - `/api/servers/:serverId/server-url`
+## Update Server URL - `/api/servers/:serverId/server-url` {#update-server-url-apiserversserveridserver-url}
 - **Endpoint**: `/api/servers/:serverId/server-url`
 - **Method**: PATCH
 - **Description**: Updates the server URL for a specific server.
@@ -278,7 +278,7 @@
   - Supports both HTTP and HTTPS protocols
   - Returns updated server information
 
-## Get Server Password - `/api/servers/:serverId/password`
+## Get Server Password - `/api/servers/:serverId/password` {#get-server-password-apiserversserveridpassword}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: GET
 - **Description**: Retrieves a CSRF token for server password operations.
@@ -299,7 +299,7 @@
   - Returns CSRF token for use with password update operations
   - Session must be valid to generate token
 
-## Update Server Password - `/api/servers/:serverId/password`
+## Update Server Password - `/api/servers/:serverId/password` {#update-server-password-apiserversserveridpassword}
 - **Endpoint**: `/api/servers/:serverId/password`
 - **Method**: PATCH
 - **Description**: Updates the password for a specific server.
@@ -327,9 +327,9 @@
   - Password can be an empty string to clear the password
   - Password is stored securely using the secrets management system
 
-## User Management
+## User Management {#user-management}
 
-### List Users - `/api/users`
+### List Users - `/api/users` {#list-users-apiusers}
 - **Endpoint**: `/api/users`
 - **Method**: GET
 - **Description**: Lists all users with pagination and optional search filtering. Returns user information including login history and account status.
@@ -372,7 +372,7 @@
   - Supports pagination and search filtering
   - Returns user account status including lock status
 
-### Create User - `/api/users`
+### Create User - `/api/users` {#create-user-apiusers}
 - **Endpoint**: `/api/users`
 - **Method**: POST
 - **Description**: Creates a new user account. Can generate a temporary password or use a provided password.
@@ -416,7 +416,7 @@
   - Generated temporary passwords are only returned once in the response
   - User creation is logged to audit log
 
-### Update User - `/api/users/:id`
+### Update User - `/api/users/:id` {#update-user-apiusersid}
 - **Endpoint**: `/api/users/:id`
 - **Method**: PATCH
 - **Description**: Updates user information including username, admin status, password change requirement, and password reset.
@@ -470,7 +470,7 @@
   - Password reset generates a secure 12-character temporary password
   - All changes are logged to audit log
 
-### Delete User - `/api/users/:id`
+### Delete User - `/api/users/:id` {#delete-user-apiusersid}
 - **Endpoint**: `/api/users/:id`
 - **Method**: DELETE
 - **Description**: Deletes a user account. Prevents deleting yourself or the last admin account.
@@ -497,9 +497,9 @@
   - User deletion is logged to audit log
   - Associated sessions are automatically deleted (cascade)
 
-## Audit Log Management
+## Audit Log Management {#audit-log-management}
 
-### List Audit Logs - `/api/audit-log`
+### List Audit Logs - `/api/audit-log` {#list-audit-logs-apiaudit-log}
 - **Endpoint**: `/api/audit-log`
 - **Method**: GET
 - **Description**: Retrieves audit log entries with filtering, pagination, and search capabilities. Supports both page-based and offset-based pagination.
@@ -553,7 +553,7 @@
   - `details` field contains parsed JSON with additional context
   - All audit log queries are logged
 
-### Get Audit Log Filter Values - `/api/audit-log/filters`
+### Get Audit Log Filter Values - `/api/audit-log/filters` {#get-audit-log-filter-values-apiaudit-logfilters}
 - **Endpoint**: `/api/audit-log/filters`
 - **Method**: GET
 - **Description**: Retrieves unique filter values available for filtering audit logs. Returns all distinct actions, categories, and statuses that exist in the audit log database. Useful for populating filter dropdowns in the UI.
@@ -591,7 +591,7 @@
   - Empty arrays are returned if no data exists or on error
   - Used by the audit log viewer to populate filter dropdowns dynamically
 
-### Download Audit Logs - `/api/audit-log/download`
+### Download Audit Logs - `/api/audit-log/download` {#download-audit-logs-apiaudit-logdownload}
 - **Endpoint**: `/api/audit-log/download`
 - **Method**: GET
 - **Description**: Downloads audit logs in CSV or JSON format with optional filtering. Useful for external analysis and reporting.
@@ -623,7 +623,7 @@
   - Details field in CSV is JSON-stringified
   - File name includes the current date
 
-### Cleanup Audit Logs - `/api/audit-log/cleanup`
+### Cleanup Audit Logs - `/api/audit-log/cleanup` {#cleanup-audit-logs-apiaudit-logcleanup}
 - **Endpoint**: `/api/audit-log/cleanup`
 - **Method**: POST
 - **Description**: Manually triggers cleanup of old audit logs based on retention period. Supports dry-run mode to preview what would be deleted.
@@ -667,7 +667,7 @@
   - Cleanup operation is logged to audit log
   - Dry-run mode is useful for previewing cleanup impact
 
-### Get Audit Log Retention - `/api/audit-log/retention`
+### Get Audit Log Retention - `/api/audit-log/retention` {#get-audit-log-retention-apiaudit-logretention}
 - **Endpoint**: `/api/audit-log/retention`
 - **Method**: GET
 - **Description**: Retrieves the current audit log retention configuration in days.
@@ -684,7 +684,7 @@
   - Default retention is 90 days if not configured
   - Can be accessed without authentication (read-only)
 
-### Update Audit Log Retention - `/api/audit-log/retention`
+### Update Audit Log Retention - `/api/audit-log/retention` {#update-audit-log-retention-apiaudit-logretention}
 - **Endpoint**: `/api/audit-log/retention`
 - **Method**: PATCH
 - **Description**: Updates the audit log retention period in days. This setting determines how long audit logs are kept before automatic cleanup.
@@ -713,9 +713,9 @@
   - Configuration change is logged to audit log
   - Retention period affects automatic and manual cleanup operations
 
-## Database Management
+## Database Management {#database-management}
 
-### Backup Database - `/api/database/backup`
+### Backup Database - `/api/database/backup` {#backup-database-apidatabasebackup}
 - **Endpoint**: `/api/database/backup`
 - **Method**: GET
 - **Description**: Creates a backup of the database in either binary (.db) or SQL (.sql) format. The backup file is automatically downloaded with a timestamped filename.
@@ -739,7 +739,7 @@
   - Backup operation is logged to audit log
   - Temporary files are automatically cleaned up after download
 
-### Restore Database - `/api/database/restore`
+### Restore Database - `/api/database/restore` {#restore-database-apidatabaserestore}
 - **Endpoint**: `/api/database/restore`
 - **Method**: POST
 - **Description**: Restores the database from a backup file (.db or .sql format). Creates a safety backup before restore and clears all sessions after restore for security.
@@ -774,9 +774,9 @@
   - Database connection is reinitialized after restore
   - All caches are invalidated after restore
 
-## Backup Timestamps
+## Backup Timestamps {#backup-timestamps}
 
-### Get Last Backup Timestamps - `/api/backups/last-timestamps`
+### Get Last Backup Timestamps - `/api/backups/last-timestamps` {#get-last-backup-timestamps-apibackupslast-timestamps}
 - **Endpoint**: `/api/backups/last-timestamps`
 - **Method**: GET
 - **Description**: Retrieves the last backup timestamp for each server-backup combination. Returns a map for easy lookup.
@@ -808,9 +808,9 @@
   - Useful for tracking last backup times across all server-backup combinations
   - Timestamps are in ISO format
 
-## Application Logs Management
+## Application Logs Management {#application-logs-management}
 
-### Get Application Logs - `/api/application-logs`
+### Get Application Logs - `/api/application-logs` {#get-application-logs-apiapplication-logs}
 - **Endpoint**: `/api/application-logs`
 - **Method**: GET
 - **Description**: Retrieves application log entries from log files. Supports reading current and rotated log files with tail functionality.
@@ -855,7 +855,7 @@
   - File names are validated to prevent directory traversal attacks
   - Rotated files are numbered sequentially (`.1`, `.2`, etc.)
 
-### Export Application Logs - `/api/application-logs/export`
+### Export Application Logs - `/api/application-logs/export` {#export-application-logs-apiapplication-logsexport}
 - **Endpoint**: `/api/application-logs/export`
 - **Method**: GET
 - **Description**: Exports application log entries in filtered text format. Supports filtering by log level and search string.

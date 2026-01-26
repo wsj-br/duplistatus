@@ -1,12 +1,12 @@
-# Database Maintenance
+# Database Maintenance {#database-maintenance}
 
 Manage your backup data and optimise performance through database maintenance operations.
 
-![Database maintenance](/img/screen-settings-database-maintenance.png)
+![Database maintenance](/assets/screen-settings-database-maintenance.png)
 
 <br/>
 
-## Database Backup
+## Database Backup {#database-backup}
 
 Create a backup of your entire database for safekeeping or migration purposes.
 
@@ -30,7 +30,7 @@ Create a backup of your entire database for safekeeping or migration purposes.
 
 <br/>
 
-## Database Restore
+## Database Restore {#database-restore}
 
 Restore your database from a previously created backup file.
 
@@ -81,7 +81,7 @@ If you accidentally delete data, you can restore it using the [Collect Backup Lo
 
 <br/>
 
-## Data Cleanup Period
+## Data Cleanup Period {#data-cleanup-period}
 
 Remove outdated backup records to free up storage space and improve system performance.
 
@@ -109,7 +109,7 @@ It is strongly recommended to create a database backup before proceeding with th
 
 <br/>
 
-## Delete Backup Job Data
+## Delete Backup Job Data {#delete-backup-job-data}
 
 Remove a specific Backup Job (type) data.
 
@@ -127,7 +127,7 @@ Remove a specific Backup Job (type) data.
 
 <br/>
 
-## Delete Server Data
+## Delete Server Data {#delete-server-data}
 
 Remove a specific server and all its associated backup data.
 
@@ -144,7 +144,7 @@ Remove a specific server and all its associated backup data.
 
 <br/>
 
-## Merge Duplicate Servers
+## Merge Duplicate Servers {#merge-duplicate-servers}
 
 Detect and merge duplicate servers that have the same name but different IDs. se this feature to consolidate them into a single server entry.
 

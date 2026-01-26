@@ -1,100 +1,100 @@
-# Overview
+# Vue d'ensemble {#overview}
 
-Welcome to the duplistatus user guide. This comprehensive document provides detailed instructions for using duplistatus to monitor and manage your Duplicati backup operations across multiple servers.
+Bienvenue dans le guide utilisateur de duplistatus. Ce document complet fournit des instructions détaillées pour utiliser duplistatus afin de surveiller et gérer vos opérations de sauvegarde Duplicati sur plusieurs serveurs.
 
-## What is duplistatus?
+## Qu'est-ce que duplistatus ? {#what-is-duplistatus}
 
-duplistatus is a powerful monitoring dashboard designed specifically for Duplicati backup systems. It provides:
+duplistatus est un puissant tableau de bord de surveillance conçu spécifiquement pour les systèmes de sauvegarde Duplicati. Il fournit :
 
-- Centralised monitoring of multiple Duplicati servers from a single interface
-- Real-time status tracking of all backup operations
-- Automated overdue backup detection with configurable alerts
-- Comprehensive metrics and visualisation of backup performance
-- Flexible notification system via NTFY and email
+- Surveillance centralisée de plusieurs serveurs Duplicati à partir d'une seule interface
+- Suivi du statut en temps réel de toutes les opérations de sauvegarde
+- Détection automatique des sauvegardes en retard avec alertes configurables
+- Métriques complètes et visualisation des performances de sauvegarde
+- Système de notification flexible via NTFY et e-mail
 
-## Installation
+## Installation {#installation}
 
-For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../installation/installation.md).
+Pour les prérequis et les instructions d'installation détaillées, veuillez consulter le [Guide d'installation](../installation/installation.md).
 
-## Accessing the Dashboard
+## Accès au tableau de bord {#accessing-the-dashboard}
 
-After successful installation, access the duplistatus web interface by following these steps:
+Après une installation réussie, accédez à l'interface web de duplistatus en suivant ces étapes :
 
-1. Open your preferred web browser
-2. Navigate to `http://your-server-ip:9666`
-   - Replace `your-server-ip` with the actual IP address or hostname of your duplistatus server
-   - The default port is `9666`
-3. You will be presented with a login page. Use these credentials for the first usage (or after an upgrade from pre-0.9.x versions):
-   - username: `admin`
-   - password: `Duplistatus09`
-4. After login, the main dashboard will display automatically (with no data on first usage)
+1. Ouvrez votre navigateur web préféré
+2. Accédez à `http://your-server-ip:9666`
+   - Remplacez `your-server-ip` par l'adresse IP réelle ou le nom d'hôte de votre serveur duplistatus
+   - Le port par défaut est `9666`
+3. Une page de connexion vous sera présentée. Utilisez ces identifiants pour la première utilisation (ou après une mise à niveau à partir de versions antérieures à 0.9.x) :
+   - nom d'utilisateur : `admin`
+   - mot de passe : `Duplistatus09`
+4. Après la connexion, le tableau de bord principal s'affichera automatiquement (sans données lors de la première utilisation)
 
-## User Interface Overview
+## Vue d'ensemble de l'interface utilisateur {#user-interface-overview}
 
-duplistatus provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
+duplistatus fournit un tableau de bord intuitif pour surveiller les opérations de sauvegarde Duplicati dans toute votre infrastructure.
 
-![Dashboard Overview](/img/screen-main-dashboard-card-mode.png)
+![Vue d'ensemble du tableau de bord](/img/screen-main-dashboard-card-mode.png)
 
-The user interface is organised into several key sections to provide a clear and comprehensive monitoring experience:
+L'interface utilisateur est organisée en plusieurs sections clés pour offrir une expérience de surveillance claire et complète :
 
-1. [Application Toolbar](#application-toolbar): Quick access to essential functions and configurations
-2. [Dashboard Summary](dashboard.md#dashboard-summary): Overview statistics for all monitored servers
-3. Servers Overview: [Cards layout](dashboard.md#cards-layout) or [table layout](dashboard.md#table-layout) showing the latest status of all backups
-4. [Overdue Details](dashboard.md#overdue-details): Visual warnings for overdue backups with detailed information on hover
-5. [Available Backup Versions](dashboard.md#available-backup-versions): Click the blue icon to view backup versions available at the destination
-6. [Backup Metrics](backup-metrics.md): Interactive charts displaying backup performance over time
-7. [Server Details](server-details.md): Comprehensive list of recorded backups for specific servers, including detailed statistics
-8. [Backup Details](server-details.md#backup-details): In-depth information for individual backups, including execution logs, warnings, and errors
+1. [Barre d'outils de l'application](#application-toolbar) : Accès rapide aux fonctions essentielles et aux configurations
+2. [Résumé du tableau de bord](dashboard.md#dashboard-summary) : Statistiques de vue d'ensemble pour tous les serveurs surveillés
+3. Vue d'ensemble des serveurs : [Disposition en cartes](dashboard.md#cards-layout) ou [disposition en tableau](dashboard.md#table-layout) affichant le dernier statut de toutes les sauvegardes
+4. [Détails des retards](dashboard.md#overdue-details) : Avertissements visuels pour les sauvegardes en retard avec des informations détaillées au survol
+5. [Versions de sauvegarde disponibles](dashboard.md#available-backup-versions) : Cliquez sur l'icône bleue pour afficher les versions de sauvegarde disponibles à la destination
+6. [Métriques de sauvegarde](backup-metrics.md) : Graphiques interactifs affichant les performances de sauvegarde au fil du temps
+7. [Détails du serveur](server-details.md) : Liste complète des sauvegardes enregistrées pour des serveurs spécifiques, y compris des statistiques détaillées
+8. [Détails de la sauvegarde](server-details.md#backup-details) : Informations approfondies pour les sauvegardes individuelles, y compris les journaux d'exécution, les avertissements et les erreurs
 
-## Application Toolbar
+## Barre d'outils de l'application {#application-toolbar}
 
-The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
+La barre d'outils de l'application fournit un accès pratique aux fonctions clés et aux paramètres, organisés pour un flux de travail efficace.
 
-![application toolbar](/img/duplistatus_toolbar.png)
+![barre d'outils de l'application](/img/duplistatus_toolbar.png)
 
-| Button                                                                                                                                                               | Description                                                                                                                                                                                                                                                                     |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen                                                                                    | Execute an immediate manual screen refresh of all data                                                                                                                                                                                                                          |
-| <IconButton label="Auto-refresh" />                                                                                                                                  | Enable or disable automatic refresh functionality. Configure in [Display Settings](settings/display-settings.md) <br/> _Right-click_ to open Display Settings page                                                                                              |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY                                                                                            | Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.                                                    |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab                                                                                                                                |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)                                   | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers                                                                                                                                                            |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server, and notification templates                                                                                                                                                                                                    |
-| <IconButton icon="lucide:user" label="username" />                                                                                                                   | Show the connected user, user type (`Admin`, `User`), click for user menu. See more in [User Management](settings/user-management-settings.md)                                                                                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Opens the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened. |
+| Bouton                                                                                                                                                                 | Description                                                                                                                                                                                                                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                  | Exécutez une actualisation manuelle immédiate de l'écran de toutes les données                                                                                                                                                                                                                          |
+| <IconButton label="Actualisation automatique" />                                                                                                                       | Activez ou désactivez la fonctionnalité d'actualisation automatique. Configurez dans [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page Paramètres d'affichage                                                                               |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accédez au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR pour configurer votre appareil afin de recevoir des notifications de duplistatus.                                                   |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration Duplicati](duplicati-configuration.md)         | Ouvrez l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface utilisateur héritée Duplicati (`/ngax`) dans un nouvel onglet                                                                                                                     |
+| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collecter les journaux](collect-backup-logs.md)                           | Connectez-vous aux serveurs Duplicati et récupérez les journaux de sauvegarde <br/> _Clic droit_ pour collecter les journaux de tous les serveurs configurés                                                                                                                                            |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md) | Configurez les notifications, la surveillance, le serveur SMTP et les modèles de notification                                                                                                                                                                                                           |
+| <IconButton icon="lucide:user" label="nom d'utilisateur" />                                                                                                            | Affiche l'utilisateur connecté, le type d'utilisateur (`Admin`, `Utilisateur`), cliquez pour le menu utilisateur. Voir plus dans [Gestion des utilisateurs](settings/user-management-settings.md)                                                                    |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide utilisateur                                                               | Ouvre le [Guide utilisateur](overview.md) à la section pertinente pour la page que vous consultez actuellement. L'infobulle affiche « Aide pour [Nom de la page] » pour indiquer quelle documentation sera ouverte. |
 
-### User Menu
+### Menu utilisateur {#user-menu}
 
-Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
+Cliquer sur le bouton utilisateur ouvre un menu déroulant avec des options spécifiques à l'utilisateur. Les options du menu diffèrent selon que vous êtes connecté en tant qu'administrateur ou utilisateur ordinaire.
 
 <table>
   <tbody><tr>
-    <th>Administrator</th>
-    <th>Regular User</th>
+    <th>Administrateur</th>
+    <th>Utilisateur ordinaire</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-user.png" alt="User Menu - User" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
   </tr>
 </tbody></table>
 
-## Essential Configuration
+## Configuration essentielle {#essential-configuration}
 
-1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
-2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
-3. Configure server settings – set up server aliases and notes in [Settings → Server](settings/server-settings.md) to make your dashboard more informative.
-4. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](settings/ntfy-settings.md).
-5. Configure email settings – set up email notifications in [Settings → Email](settings/email-settings.md).
-6. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](settings/backup-notifications-settings.md).
+1. Configurez vos [serveurs Duplicati](../installation/duplicati-server-configuration.md) pour envoyer les messages du journal de sauvegarde à duplistatus (requis).
+2. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en retard en fonction de la configuration de chaque serveur.
+3. Configurez les paramètres du serveur – configurez les alias de serveur et les notes dans [Paramètres → Serveur](settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
+4. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](settings/ntfy-settings.md).
+5. Configurez les paramètres e-mail – configurez les notifications par e-mail dans [Paramètres → E-mail](settings/email-settings.md).
+6. Configurez les notifications de sauvegarde – configurez les notifications par sauvegarde ou par serveur dans [Paramètres → Notifications de sauvegarde](settings/backup-notifications-settings.md).
 
 <br/>
 
 :::info[IMPORTANT]
-Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](../installation/duplicati-server-configuration.md) section.
+N'oubliez pas de configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à duplistatus, comme indiqué dans la section [Configuration Duplicati](../installation/duplicati-server-configuration.md).
 :::
 
 <br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+Tous les noms de produits, marques commerciales et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à titre d'identification uniquement et n'impliquent pas une approbation.
 :::

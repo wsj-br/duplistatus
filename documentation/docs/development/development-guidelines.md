@@ -1,6 +1,6 @@
-# Development Reference
+# Development Reference {#development-reference}
 
-## Code Organisation
+## Code Organisation {#code-organisation}
 
 - **Components**: `src/components/` with subdirectories:
   - `ui/` - shadcn/ui components and reusable UI elements
@@ -15,7 +15,7 @@
 - **Scripts**: Utility scripts in `scripts/` directory
 - **Security**: CSRF protection in `src/lib/csrf-middleware.ts`, use `withCSRF` middleware for protected endpoints
 
-## Testing & Debugging
+## Testing & Debugging {#testing-debugging}
 
 - Test data generation: `pnpm generate-test-data --servers=N`
 - Notification testing: `/api/notifications/test` endpoint
@@ -25,19 +25,19 @@
 - Database maintenance: use maintenance menu for cleanup operations
 - Pre-checks: `scripts/pre-checks.sh` for troubleshooting startup issues
 
-## Development References
+## Development References {#development-references}
 
 - API endpoints: See [API Reference](../api-reference/overview)
 - Database schema: See [Database Schema](database)
 - Follow patterns in `src/lib/db-utils.ts` for database operations
 
-## Frameworks & Libraries
+## Frameworks & Libraries {#frameworks-libraries}
 
-### Runtime & Package Management
+### Runtime & Package Management {#runtime-package-management}
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.28.0)
 
-### Core Frameworks & Libraries
+### Core Frameworks & Libraries {#core-frameworks-libraries}
 - Next.js ^16.1.1 (App Router)
 - React ^19.2.3 & React-DOM ^19.2.3
 - Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
@@ -49,12 +49,12 @@
 - express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^7.0.12, qrcode ^1.5.4
 
-### Type Checking & Linting
+### Type Checking & Linting {#type-checking-linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.39.2 (via `next lint`)
 
-### Build & Deployment
+### Build & Deployment {#build-deployment}
 - Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
 - Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
 - GitHub Actions workflows for CI/CD
@@ -63,11 +63,11 @@
 - Greenfish Icon Editor for icons
 
 
-### Project Configuration
+### Project Configuration {#project-configuration}
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## System Features
+## System Features {#system-features}
 
 - **Cron Service**: Separate service for scheduled tasks, auto-restart via `duplistatus-cron.sh`
 - **Notifications**: ntfy.sh integration and SMTP email (nodemailer), configurable templates

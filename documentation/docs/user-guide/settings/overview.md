@@ -1,19 +1,19 @@
 
 
-# Overview
+# Overview {#overview}
 
 The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> `Settings` button in the [Application Toolbar](../overview#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
 
 
 
-## Administrator View
+## Administrator View {#administrator-view}
 
 Administrators see all available settings.
 
 <table>
   <tr>
     <td>
-      <img src="/img/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
+      <img src="/assets/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
     </td>
     <td>
       <ul>
@@ -49,14 +49,14 @@ Administrators see all available settings.
   </tr>
 </table>
 
-## Non-Administrator View
+## Non-Administrator View {#non-administrator-view}
 
 Regular users see a limited set of settings.
 
 <table>
   <tr>
     <td>
-      <img src="/img/screen-settings-left-panel-non-admin.png" alt="Settings Sidebar - Non-Admin View" />
+      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Settings Sidebar - Non-Admin View" />
     </td>
     <td>
       <ul>
@@ -88,7 +88,7 @@ Regular users see a limited set of settings.
   </tr>
 </table>
 
-## Status Icons
+## Status Icons {#status-icons}
 
 The sidebar displays status icons next to the **NTFY** and **Email** integration settings:
 - <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Green icon**: Your settings are valid and configured correctly
