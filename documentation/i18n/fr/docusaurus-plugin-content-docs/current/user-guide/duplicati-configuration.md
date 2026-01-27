@@ -4,7 +4,7 @@ Le bouton <SvgButton svgFilename="duplicati_logo.svg" /> sur la [Barre d'outils 
 
 Vous pouvez Sélectionner un Serveur dans la liste déroulante. Si vous avez déjà Sélectionné un Serveur (en cliquant sur sa carte) ou que vous Affichage ses Détails, le bouton ouvrira la Configuration Duplicati de ce Serveur spécifique directement.
 
-![Configuration Duplicati](/img/screen-duplicati-configuration.png)
+![Configuration Duplicati](/assets/screen-duplicati-configuration.png)
 
 - La liste des Serveurs affichera le `Nom du serveur` ou `Alias du serveur (Nom du serveur)`.
 - Les Adresses des serveurs sont Configurées dans [`Paramètres → Serveur`](settings/server-settings.md).

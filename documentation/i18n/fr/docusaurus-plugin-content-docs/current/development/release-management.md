@@ -1,83 +1,83 @@
-# Release Management {#release-management}
+# Gestion des versions {#release-management}
 
 ## Versioning (Semantic Versioning) {#versioning-semantic-versioning}
 
-The project follows Semantic Versioning (SemVer) with the format `MAJOR.MINOR.PATCH`:
+Le projet suit la Versioning Sémantique (SemVer) avec le format `MAJOR.MINOR.PATCH`:
 
-- **MAJOR** version (x.0.0): When you make incompatible API changes
-- **MINOR** version (0.x.0): When you add functionality in a backward-compatible manner
-- **PATCH** version (0.0.x): When you make backward-compatible bug fixes
+- **MAJOR** Version (x.0.0): Quand vous apportez des modifications d'API incompatibles
+- **MINOR** Version (0.x.0): Quand vous Ajouter des fonctionnalités de manière rétrocompatible
+- **PATCH** Version (0.0.x): Quand vous apportez des corrections de bogues rétrocompatibles
 
-## Pre-Release Checklist {#pre-release-checklist}
+## Liste de contrôle de pré-version {#pre-release-checklist}
 
-Before releasing a new version, ensure you have completed the following:
+Avant de publier une nouvelle Version, assurez-vous d'avoir Terminé les éléments suivants:
 
-- [ ] All changes are committed and pushed to the `vMAJOR.MINOR.x` branch.
-- [ ] The version number is updated in `package.json` (use `scripts/update-version.sh` to synchronise it across files).
-- [ ] All tests pass (in devel mode, local, docker and podman).
-- [ ] Start a Docker container with `pnpm docker-up` and run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running). This script compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible), and compares Node, npm, and Duplistatus versions exactly.
-- [ ] Documentation is up to date, update the screenshots (use `pnpm take-screenshots`)
-- [ ] Release notes are prepared in `documentation/docs/release-notes/VERSION.md`.
-- [ ] Run `scripts/generate-readme-from-intro.sh` to update `README.md` with the new version and any changes from `documentation/docs/intro.md`. This script also automatically generates `README_dockerhub.md` and `RELEASE_NOTES_github_VERSION.md`.
+- [ ] Tous les changements sont validés et poussés vers la branche `vMAJOR.MINOR.x`.
+- [ ] Le numéro de Version est mis à jour dans `package.json` (utilisez `scripts/update-version.sh` pour le synchroniser dans les Fichiers).
+- [ ] Tous les tests réussissent (en mode devel, local, docker et podman).
+- [ ] Démarrez un conteneur Docker avec `pnpm docker-up` et exécutez `scripts/compare-versions.sh` pour Vérifier la cohérence des Versions entre l'environnement de développement et le conteneur Docker (nécessite que le conteneur Docker soit en cours d'exécution). Ce script compare les Versions SQLite par Version majeure uniquement (par exemple, 3.45.1 par rapport à 3.51.1 sont considérés comme compatibles), et compare exactement les Versions Node, npm et duplistatus.
+- [ ] La documentation est à jour, mettez à jour les captures d'écran (utilisez `pnpm take-screenshots`)
+- [ ] Les Notes de version sont préparées dans `documentation/docs/release-notes/VERSION.md`.
+- [ ] Exécutez `scripts/generate-readme-from-intro.sh` pour mettre à jour `README.md` avec la nouvelle Version et tous les changements de `documentation/docs/intro.md`. Ce script génère également automatiquement `README_dockerhub.md` et `RELEASE_NOTES_github_VERSION.md`.
 
-## Release Process Overview {#release-process-overview}
+## Aperçu du processus de version {#release-process-overview}
 
-The recommended release process uses **GitHub Pull Requests and Releases** (see below). This provides better visibility, review capabilities, and automatically triggers Docker image builds. The command-line method is available as an alternative.
+Le processus de version recommandé utilise **GitHub Pull Requests and Releases** (voir ci-dessous). Cela offre une meilleure visibilité, des capacités d'examen et déclenche automatiquement les builds d'images Docker. La méthode en ligne de commande est disponible comme alternative.
 
-## Method 1: GitHub Pull Request and Release (Recommended) {#method-1-github-pull-request-and-release-recommended}
+## Méthode 1: GitHub Pull Request and Release (Recommandé) {#method-1-github-pull-request-and-release-recommended}
 
-This is the preferred method as it provides better traceability and automatically triggers Docker builds.
+C'est la méthode préférée car elle offre une meilleure traçabilité et déclenche automatiquement les builds Docker.
 
-### Step 1: Create Pull Request {#step-1-create-pull-request}
+### Étape 1: Créer une Pull Request {#step-1-create-pull-request}
 
-1. Navigate to the [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
-2. Click the **"Pull requests"** tab.
-3. Click **"New pull request."**
-4. Set the **base branch** to `master` and the **compare branch** to `vMAJOR.MINOR.x`.
-5. Review the changes preview to ensure everything looks correct.
-6. Click **"Create pull request."**
-7. Add a descriptive title (e.g., "Release v1.2.0") and description summarizing the changes.
-8. Click **"Create pull request"** again.
+1. Accédez au [référentiel duplistatus](https://github.com/wsj-br/duplistatus) sur GitHub.
+2. Cliquez sur l'onglet **"Pull requests"**.
+3. Cliquez sur **"New pull request."**
+4. Définissez la **branche de base** sur `master` et la **branche de comparaison** sur `vMAJOR.MINOR.x`.
+5. Examinez l'aperçu des modifications pour vous assurer que tout semble correct.
+6. Cliquez sur **"Create pull request."**
+7. Ajouter un Titre descriptif (par exemple, "Release v1.2.0") et une Description résumant les modifications.
+8. Cliquez sur **"Create pull request"** à nouveau.
 
-### Step 2: Merge the Pull Request {#step-2-merge-the-pull-request}
+### Étape 2: Fusionner la Pull Request {#step-2-merge-the-pull-request}
 
-After reviewing the pull request:
+Après examen de la pull request:
 
-1. If there are no conflicts, click the green **"Merge pull request"** button.
-2. Choose your merge strategy (typically "Create a merge commit").
-3. Confirm the merge.
+1. S'il n'y a Non de conflits, cliquez sur le bouton vert **"Merge pull request"**.
+2. Choisissez votre stratégie de fusion (généralement "Create a merge commit").
+3. Confirmer la fusion.
 
-### Step 3: Create GitHub Release {#step-3-create-github-release}
+### Étape 3: Créer une version GitHub {#step-3-create-github-release}
 
-Once the merge is complete, create a GitHub release:
+Une fois la fusion terminée, créez une version GitHub:
 
-1. Navigate to the [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
-2. Go to the **"Releases"** section (or click "Releases" in the right sidebar).
-3. Click **"Draft a new release."**
-4. In the **"Choose a tag"** field, type your new version number in the format `vMAJOR.MINOR.PATCH` (e.g., `v1.2.0`). This will create a new tag.
-5. Select `master` as the target branch.
-6. Add a **release title** (e.g., "Release v1.2.0").
-7. Add a **description** documenting the changes in this version. You can:
-   - Copy the contents from `RELEASE_NOTES_github_VERSION.md` (generated by `scripts/generate-readme-from-intro.sh`)
-   - Or reference release notes from `documentation/docs/release-notes/` (but note that relative links won't work in GitHub releases)
-8. Click **"Publish release."**
+1. Accédez au [référentiel duplistatus](https://github.com/wsj-br/duplistatus) sur GitHub.
+2. Allez à la section **"Releases"** (ou cliquez sur "Releases" dans la barre latérale droite).
+3. Cliquez sur **"Draft a new release."**
+4. Dans le champ **"Choose a tag"**, tapez votre nouveau numéro de Version au format `vMAJOR.MINOR.PATCH` (par exemple, `v1.2.0`). Cela créera une nouvelle balise.
+5. Sélectionner `master` comme branche cible.
+6. Ajouter un **Titre de version** (par exemple, "Release v1.2.0").
+7. Ajouter une **Description** documentant les modifications dans cette Version. Vous pouvez:
+   - Copier le contenu de `RELEASE_NOTES_github_VERSION.md` (généré par `scripts/generate-readme-from-intro.sh`)
+   - Ou référencer les Notes de version de `documentation/docs/release-notes/` (notez que les liens relatifs ne fonctionneront pas dans les versions GitHub)
+8. Cliquez sur **"Publish release."**
 
-**What happens automatically:**
+**Ce qui se passe automatiquement:**
 
-- A new Git tag is created
-- The "Build and Publish Docker Image" workflow is triggered
-- Docker images are built for AMD64 and ARM64 architectures
-- Images are pushed to:
-  - Docker Hub: `wsjbr/duplistatus:VERSION` and `wsjbr/duplistatus:latest` (if this is the latest release)
-  - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` and `ghcr.io/wsj-br/duplistatus:latest` (if this is the latest release)
+- Une nouvelle balise Git est Créée
+- Le workflow "Build and Publish Docker Image" est déclenché
+- Les images Docker sont construites pour les architectures AMD64 et ARM64
+- Les images sont poussées vers:
+  - Docker Hub: `wsjbr/duplistatus:VERSION` et `wsjbr/duplistatus:latest` (si c'est la dernière version)
+  - GitHub Container Registry: `ghcr.io/wsj-br/duplistatus:VERSION` et `ghcr.io/wsj-br/duplistatus:latest` (si c'est la dernière version)
 
-## Method 2: Command Line (Alternative) {#method-2-command-line-alternative}
+## Méthode 2: Ligne de commande (Alternative) {#method-2-command-line-alternative}
 
-If you prefer using the command line, follow these steps:
+Si vous préférez utiliser la ligne de commande, suivez ces étapes:
 
-### Step 1: Update Local Master Branch {#step-1-update-local-master-branch}
+### Étape 1: Mettre à jour la branche Master locale {#step-1-update-local-master-branch}
 
-Ensure your local `master` branch is up to date:
+Assurez-vous que votre branche `master` locale est à jour:
 
 ```bash
 # Checkout the master branch {#checkout-the-master-branch}
@@ -87,35 +87,35 @@ git checkout master
 git pull origin master
 ```
 
-### Step 2: Merge Development Branch {#step-2-merge-development-branch}
+### Étape 2: Fusionner la branche de développement {#step-2-merge-development-branch}
 
-Merge the `vMAJOR.MINOR.x` branch into `master`:
+Fusionnez la branche `vMAJOR.MINOR.x` dans `master`:
 
 ```bash
 # Merge the vMAJOR.MINOR.x branch into master {#merge-the-vmajorminorx-branch-into-master}
 git merge vMAJOR.MINOR.x
 ```
 
-If there are **merge conflicts**, resolve them manually:
+S'il y a des **conflits de fusion**, résolvez-les manuellement:
 
-1. Edit the conflicted files
-2. Stage the resolved files: `git add <file>`
-3. Complete the merge: `git commit`
+1. Modifier les Fichiers en conflit
+2. Préparer les Fichiers résolus: `git add <file>`
+3. Terminer la fusion: `git commit`
 
-### Step 3: Tag the Release {#step-3-tag-the-release}
+### Étape 3: Marquer la version {#step-3-tag-the-release}
 
-Create an annotated tag for the new version:
+Créez une balise annotée pour la nouvelle Version:
 
 ```bash
 # Create an annotated tag for the new version {#create-an-annotated-tag-for-the-new-version}
-git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description"
+git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief Description"
 ```
 
-The `-a` flag creates an annotated tag (recommended for releases), and the `-m` flag adds a message.
+Le drapeau `-a` crée une balise annotée (recommandée pour les versions), et le drapeau `-m` Ajoute un Messages.
 
-### Step 4: Push to GitHub {#step-4-push-to-github}
+### Étape 4: Pousser vers GitHub {#step-4-push-to-github}
 
-Push both the updated `master` branch and the new tag:
+Poussez à la fois la branche `master` mise à jour et la nouvelle balise:
 
 ```bash
 # Push the updated master branch {#push-the-updated-master-branch}
@@ -125,102 +125,102 @@ git push origin master
 git push origin vMAJOR.MINOR.PATCH
 ```
 
-Alternatively, push all tags at once: `git push --tags`
+Alternativement, poussez Tous les balises à la fois: `git push --tags`
 
-### Step 5: Create GitHub Release {#step-5-create-github-release}
+### Étape 5: Créer une version GitHub {#step-5-create-github-release}
 
-After pushing the tag, create a GitHub release (see Method 1, Step 3) to trigger the Docker build workflow.
+Après avoir poussé la balise, créez une version GitHub (voir Méthode 1, Étape 3) pour déclencher le workflow de build Docker.
 
-## Manual Docker Image Build {#manual-docker-image-build}
+## Build manuel d'image Docker {#manual-docker-image-build}
 
-To manually trigger the Docker image build workflow without creating a release:
+Pour déclencher manuellement le workflow de build d'image Docker sans créer de version:
 
-1. Navigate to the [duplistatus repository](https://github.com/wsj-br/duplistatus) on GitHub.
-2. Click on the **"Actions"** tab.
-3. Select the **"Build and Publish Docker Image"** workflow.
-4. Click **"Run workflow"**.
-5. Select the branch to build from (typically `master`).
-6. Click **"Run workflow"** again.
+1. Accédez au [référentiel duplistatus](https://github.com/wsj-br/duplistatus) sur GitHub.
+2. Cliquez sur l'onglet **"Actions"**.
+3. Sélectionner le workflow **"Build and Publish Docker Image"**.
+4. Cliquez sur **"Run workflow"**.
+5. Sélectionner la branche à construire (généralement `master`).
+6. Cliquez sur **"Run workflow"** à nouveau.
 
-**Note:** Manual builds will not automatically tag images as `latest` unless the workflow determines it's the latest release.
+**Remarque:** Les builds manuels ne marqueront pas automatiquement les images comme `latest` sauf si le workflow détermine que c'est la dernière version.
 
-## Releasing Documentation {#releasing-documentation}
+## Libération de la documentation {#releasing-documentation}
 
-The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistatus/) and is deployed separately from the application release. Follow these steps to release updated documentation:
+La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/) et est déployée séparément de la version de l'application. Suivez ces étapes pour publier la documentation mise à jour:
 
-### Prerequisites {#prerequisites}
+### Conditions préalables {#prerequisites}
 
-1. Ensure you have a GitHub Personal Access Token with the `repo` scope.
-2. Set up Git credentials (one-time setup):
+1. Assurez-vous que vous disposez d'un jeton d'accès personnel GitHub avec la portée `repo`.
+2. Configurez les identifiants Git (configuration unique):
 
 ```bash
 cd documentation
 ./setup-git-credentials.sh
 ```
 
-This will prompt you for your GitHub Personal Access Token and store it securely.
+Cela vous demandera votre jeton d'accès personnel GitHub et le stockera de manière sécurisée.
 
-### Deploy Documentation {#deploy-documentation}
+### Déployer la documentation {#deploy-documentation}
 
-1. Navigate to the `documentation` directory:
+1. Accédez au répertoire `documentation`:
 
 ```bash
 cd documentation
 ```
 
-2. Ensure all documentation changes are committed and pushed to the repository.
+2. Assurez-vous que Tous les modifications de documentation sont validées et poussées vers le référentiel.
 
-3. Build and deploy the documentation:
+3. Construire et déployer la documentation:
 
 ```bash
 pnpm run deploy
 ```
 
-This command will:
+Cette commande va:
 
-- Build the Docusaurus documentation site
-- Push the built site to the `gh-pages` branch
-- Make the documentation available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
+- Construire le site de documentation Docusaurus
+- Pousser le site construit vers la branche `gh-pages`
+- Rendre la documentation disponible à [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
 
-### When to Deploy Documentation {#when-to-deploy-documentation}
+### Quand déployer la documentation {#when-to-deploy-documentation}
 
-Deploy documentation updates:
+Déployer les mises à jour de documentation:
 
-- After merging documentation changes to `master`
-- When releasing a new version (if documentation was updated)
-- After significant documentation improvements
+- Après fusion des modifications de documentation vers `master`
+- Lors de la publication d'une nouvelle Version (si la documentation a été mise à jour)
+- Après des améliorations significatives de la documentation
 
-**Note:** The documentation deployment is independent of application releases. You can deploy documentation multiple times between application releases.
+**Remarque:** Le déploiement de la documentation est indépendant des versions d'application. Vous pouvez déployer la documentation plusieurs fois entre les versions d'application.
 
-### Preparing Release Notes for GitHub {#preparing-release-notes-for-github}
+### Préparation des Notes de version pour GitHub {#preparing-release-notes-for-github}
 
-The `generate-readme-from-intro.sh` script automatically generates GitHub release notes when run. It reads the release notes from `documentation/docs/release-notes/VERSION.md` (where VERSION is extracted from `package.json`) and creates `RELEASE_NOTES_github_VERSION.md` in the project root.
+Le script `generate-readme-from-intro.sh` génère automatiquement les Notes de version GitHub lors de son exécution. Il lit les Notes de version de `documentation/docs/release-notes/VERSION.md` (où VERSION est extrait de `package.json`) et crée `RELEASE_NOTES_github_VERSION.md` à la racine du projet.
 
-**Example:**
+**Exemple:**
 
 ```bash
 # This will generate README.md, README_dockerhub.md, and RELEASE_NOTES_github_VERSION.md {#this-will-generate-readmemd-readme_dockerhubmd-and-release_notes_github_versionmd}
 ./scripts/generate-readme-from-intro.sh
 ```
 
-The generated release notes file can be copied and pasted directly into the GitHub release description. All links and images will work correctly in the GitHub release context.
+Le Fichier de Notes de version généré peut être copié et collé directement dans la Description de la version GitHub. Tous les liens et images fonctionneront correctement dans le contexte de la version GitHub.
 
-**Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
+**Remarque:** Le Fichier généré est temporaire et peut être supprimé après la création de la version GitHub. Il est recommandé d'Ajouter `RELEASE_NOTES_github_*.md` à `.gitignore` si vous ne voulez pas valider ces Fichiers.
 
-### Update README.md {#update-readmemd}
+### Mettre à jour README.md {#update-readmemd}
 
-If you've made changes to `documentation/docs/intro.md`, regenerate the repository `README.md`:
+Si vous avez apporté des modifications à `documentation/docs/intro.md`, régénérez le `README.md` du référentiel:
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
 ```
 
-This script:
+Ce script:
 
-- Extracts the version from `package.json`
-- Generates `README.md` from `documentation/docs/intro.md` (converts Docusaurus admonitions to GitHub-style alerts, converts links and images)
-- Creates `README_dockerhub.md` for Docker Hub (with Docker Hub-compatible formatting)
-- Generates `RELEASE_NOTES_github_VERSION.md` from `documentation/docs/release-notes/VERSION.md` (converts links and images to absolute URLs)
-- Updates the table of contents using `doctoc`
+- Extrait la Version de `package.json`
+- Génère `README.md` à partir de `documentation/docs/intro.md` (convertit les admonitions Docusaurus en Alertes de style GitHub, convertit les liens et les images)
+- Crée `README_dockerhub.md` pour Docker Hub (avec formatage compatible Docker Hub)
+- Génère `RELEASE_NOTES_github_VERSION.md` à partir de `documentation/docs/release-notes/VERSION.md` (convertit les liens et les images en URL absolues)
+- Met à jour la table de matières en utilisant `doctoc`
 
-Commit and push the updated `README.md` along with your release.
+Validez et poussez le `README.md` mis à jour avec votre version.

@@ -197,6 +197,25 @@ crowdin upload sources
 - Ensure translations are approved (if approval workflow is enabled)
 - Try `crowdin download translations --skip-untranslated-strings=false`
 
+### Warning: "Downloaded translations don't match the current project configuration"
+
+If you see a warning like:
+```
+⚠️  Downloaded translations don't match the current project configuration. 
+The translations for the following sources will be omitted:
+  - docs/LICENSE.md (4)
+```
+
+This happens when a file is added to the `ignore` list in `crowdin.yml` but still exists in the Crowdin project. This is **not an error** - it's just informing you that those translations won't be downloaded because the file is now excluded.
+
+**To remove the warning:**
+1. Go to your Crowdin project in the web interface
+2. Navigate to the file (e.g., `docs/LICENSE.md`)
+3. Delete the file from the project
+4. The warning will disappear on the next download
+
+**Note:** For LICENSE.md specifically, we use a script (`scripts/copy-license-to-translations.sh`) to copy the English version to all locales, so the warning can be safely ignored.
+
 ## Configuration File
 
 The `crowdin.yml` file defines:

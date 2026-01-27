@@ -2,7 +2,7 @@
 
 Cliquer sur un serveur du tableau de bord ouvre une page avec une liste de sauvegardes pour ce serveur. Vous pouvez afficher toutes les sauvegardes ou sélectionner une sauvegarde spécifique si le serveur a plusieurs sauvegardes configurées.
 
-![Détails du serveur](/img/screen-server-backup-list.png)
+![Détails du serveur](/assets/screen-server-backup-list.png)
 
 ## Serveur/Statistiques de sauvegarde {#serverbackup-statistics}
 
@@ -18,7 +18,7 @@ Cette section affiche les statistiques pour toutes les sauvegardes du serveur ou
 
 Si cette sauvegarde ou l'une des sauvegardes du serveur (quand `Toutes les sauvegardes` est sélectionné) est en retard, un message apparaît sous le résumé.
 
-![Détails du serveur - Sauvegardes planifiées en retard](/img/screen-server-overdue-message.png)
+![Détails du serveur - Sauvegardes planifiées en retard](/assets/screen-server-overdue-message.png)
 
 Cliquez sur le <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configurer"/> pour accéder à [`Paramètres → Surveillance des sauvegardes en retard`](settings/overdue-settings.md). Ou cliquez sur le <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> dans la barre d'outils pour ouvrir l'interface web du serveur Duplicati et vérifier les journaux.
 
@@ -28,7 +28,7 @@ Cliquez sur le <IconButton icon="lucide:settings" href="settings/overdue-setting
 
 Ce tableau liste les journaux de sauvegarde pour le serveur sélectionné.
 
-![Historique des sauvegardes](/img/screen-backup-history.png)
+![Historique des sauvegardes](/assets/screen-backup-history.png)
 
 - **Nom de sauvegarde** : Le nom de la sauvegarde dans le serveur Duplicati.
 - **Date** : L'horodatage de la sauvegarde et le temps écoulé depuis la dernière actualisation de l'écran.
@@ -56,7 +56,7 @@ Quand `Toutes les sauvegardes` est sélectionné, la liste affiche toutes les sa
 
 Cliquer sur un badge de statut dans le tableau de bord (vue tableau) ou n'importe quelle ligne du tableau d'historique de sauvegarde affiche les informations détaillées de la sauvegarde.
 
-![Détails de la sauvegarde](/img/screen-backup-detail.png)
+![Détails de la sauvegarde](/assets/screen-backup-detail.png)
 
 - **Détails du serveur** : nom du serveur, alias et note.
 - **Informations de sauvegarde** : L'horodatage de la sauvegarde et son ID.

@@ -2,7 +2,7 @@
 
 Le Journal d'Audit fournit un enregistrement complet de tous les changements de Système et Actions des Utilisateurs dans **duplistatus**. Cela aide à suivre les changements de configuration, les activités des Utilisateurs et les opérations du Système à des fins de Sécurité et de dépannage.
 
-![Journal d'Audit](/img/screen-settings-audit.png)
+![Journal d'Audit](/assets/screen-settings-audit.png)
 
 ## Visualiseur de journal d'audit {#audit-log-viewer}
 

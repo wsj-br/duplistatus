@@ -46,7 +46,6 @@ This table lists the backup logs for the selected server.
 
 :::
 
-:::note
 When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
 :::
 

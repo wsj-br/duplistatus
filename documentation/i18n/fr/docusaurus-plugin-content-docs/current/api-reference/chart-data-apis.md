@@ -1,14 +1,14 @@
-# Chart Data {#chart-data}
+# Données de graphique {#chart-data}
 
-## Get Aggregated Chart Data - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
+## Obtenir les données de graphique agrégées - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
 
-- **Endpoint**: `/api/chart-data/aggregated`
-- **Method**: GET
-- **Description**: Retrieves aggregated chart data with optional time range filtering.
-- **Query Parameters**:
-  - `startDate` (optional): Start date for filtering (ISO format)
-  - `endDate` (optional): End date for filtering (ISO format)
-- **Response**:
+- **Point de terminaison** : `/api/chart-data/aggregated`
+- **Méthode** : GET
+- **Description** : Récupère les données de graphique agrégées avec filtrage de plage horaire optionnel.
+- **Paramètres de requête** :
+  - `startDate` (optionnel) : Date de début pour le filtrage (format ISO)
+  - `endDate` (optionnel) : Date de fin pour le filtrage (format ISO)
+- **Réponse** :
   ```json
   [
     {
@@ -23,25 +23,25 @@
     }
   ]
   ```
-- **Error Responses**:
-  - `400`: Invalid date parameters
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Supports time range filtering with startDate and endDate parameters
-  - Validates date format before processing
-  - Returns aggregated data across all servers
+- **Réponses d'erreur** :
+  - `400` : Date invalide
+  - `500` : Erreur serveur lors de la récupération des données de graphique
+- **Notes** :
+  - Prend en charge le filtrage de plage horaire avec les paramètres startDate et endDate
+  - Valide le format de date avant le traitement
+  - Retourne les données agrégées sur tous les serveurs
 
-## Get Server Chart Data - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
+## Obtenir les données de graphique du serveur - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
 
-- **Endpoint**: `/api/chart-data/server/:serverId`
-- **Method**: GET
-- **Description**: Retrieves chart data for a specific server with optional time range filtering.
-- **Parameters**:
-  - `serverId`: the server identifier
-- **Query Parameters**:
-  - `startDate` (optional): Start date for filtering (ISO format)
-  - `endDate` (optional): End date for filtering (ISO format)
-- **Response**:
+- **Point de terminaison** : `/api/chart-data/server/:serverId`
+- **Méthode** : GET
+- **Description** : Récupère les données de graphique pour un serveur spécifique avec filtrage de plage horaire optionnel.
+- **Paramètres** :
+  - `serverId` : l'identifiant du serveur
+- **Paramètres de requête** :
+  - `startDate` (optionnel) : Date de début pour le filtrage (format ISO)
+  - `endDate` (optionnel) : Date de fin pour le filtrage (format ISO)
+- **Réponse** :
   ```json
   [
     {
@@ -56,26 +56,26 @@
     }
   ]
   ```
-- **Error Responses**:
-  - `400`: Invalid date parameters
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Supports time range filtering with startDate and endDate parameters
-  - Validates date format before processing
-  - Returns chart data for specific server
+- **Réponses d'erreur** :
+  - `400` : Date invalide
+  - `500` : Erreur serveur lors de la récupération des données de graphique
+- **Notes** :
+  - Prend en charge le filtrage de plage horaire avec les paramètres startDate et endDate
+  - Valide le format de date avant le traitement
+  - Retourne les données de graphique pour un serveur spécifique
 
-## Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
+## Obtenir les données de graphique de sauvegarde du serveur - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
 
-- **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
-- **Method**: GET
-- **Description**: Retrieves chart data for a specific server and backup with optional time range filtering.
-- **Parameters**:
-  - `serverId`: the server identifier
-  - `backupName`: the backup name (URL encoded)
-- **Query Parameters**:
-  - `startDate` (optional): Start date for filtering (ISO format)
-  - `endDate` (optional): End date for filtering (ISO format)
-- **Response**:
+- **Point de terminaison** : `/api/chart-data/server/:serverId/backup/:backupName`
+- **Méthode** : GET
+- **Description** : Récupère les données de graphique pour un serveur et une sauvegarde spécifiques avec filtrage de plage horaire optionnel.
+- **Paramètres** :
+  - `serverId` : l'identifiant du serveur
+  - `backupName` : le nom de la sauvegarde (codé en URL)
+- **Paramètres de requête** :
+  - `startDate` (optionnel) : Date de début pour le filtrage (format ISO)
+  - `endDate` (optionnel) : Date de fin pour le filtrage (format ISO)
+- **Réponse** :
   ```json
   [
     {
@@ -90,11 +90,11 @@
     }
   ]
   ```
-- **Error Responses**:
-  - `400`: Invalid date parameters
-  - `500`: Server error fetching chart data
-- **Notes**:
-  - Supports time range filtering with startDate and endDate parameters
-  - Validates date format before processing
-  - Returns chart data for specific server and backup combination
-  - Backup name must be URL encoded
+- **Réponses d'erreur** :
+  - `400` : Date invalide
+  - `500` : Erreur serveur lors de la récupération des données de graphique
+- **Notes** :
+  - Prend en charge le filtrage de plage horaire avec les paramètres startDate et endDate
+  - Valide le format de date avant le traitement
+  - Retourne les données de graphique pour une combinaison spécifique de serveur et de sauvegarde
+  - Le nom de la sauvegarde doit être codé en URL

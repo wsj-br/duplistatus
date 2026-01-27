@@ -2,7 +2,7 @@
 
 **duplistatus** utilise trois Modèles pour les Messages de Notifications. Ces Modèles sont utilisés pour les Notifications NTFY et Notifications par e-mail :
 
-![Modèles de notification](/img/screen-settings-templates.png)
+![Modèles de notification](/assets/screen-settings-templates.png)
 
 | Modèle                   | Description                                                                                        |
 | :----------------------- | :------------------------------------------------------------------------------------------------- |

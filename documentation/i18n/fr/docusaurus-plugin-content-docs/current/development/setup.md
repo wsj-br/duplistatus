@@ -1,29 +1,29 @@
-# Development Setup {#development-setup}
+# Configuration de développement {#development-setup}
 
-## Prerequisites {#prerequisites}
+## Conditions préalables {#prerequisites}
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
 - pnpm >=10.24.0
 - SQLite3
 
-## Steps {#steps}
+## Étapes {#steps}
 
-1. Clone the repository:
+1. Cloner le référentiel :
 
 ```bash
 git clone https://github.com/wsj-br/duplistatus.git
 cd duplistatus
 ```
 
-2. Install dependencies (Debian/Ubuntu):
+2. Installer les dépendances (Debian/Ubuntu) :
 
 ```bash
 sudo apt update
 sudo apt install sqlite3 git -y
 ```
 
-3. Remove old Node.js installations (if you already had it installed)
+3. Supprimer les anciennes installations de Node.js (si vous l'aviez déjà installé)
 
 ```bash
 sudo apt-get purge nodejs npm -y
@@ -41,7 +41,7 @@ sudo rm -rf /usr/local/include/node*
 sudo rm -rf /usr/local/bin/node*
 ```
 
-4. Install Node.js and pnpm:
+4. Installer Node.js et pnpm :
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -51,57 +51,57 @@ nvm use --lts
 npm install -g pnpm npm-check-updates doctoc
 ```
 
-5. Start the development server:
+5. Démarrer le serveur de développement :
 
-For the default TCP port (8666):
+Pour le port TCP par défaut (8666) :
 
 ```bash
 pnpm dev
 ```
 
-## Available Scripts {#available-scripts}
+## Scripts disponibles {#available-scripts}
 
-The project includes several npm scripts for different development tasks:
+Le projet inclut plusieurs scripts npm pour différentes tâches de développement :
 
-### Development Scripts {#development-scripts}
+### Scripts de développement {#development-scripts}
 
-- `pnpm dev` - Start development server on port 8666 (includes pre-checks)
-- `pnpm build` - Build the application for production (includes pre-checks)
-- `pnpm lint` - Run ESLint to check code quality
-- `pnpm typecheck` - Run TypeScript type checking
-- `scripts/upgrade-dependencies.sh` - Upgrade all packages to the latest version, check for vulnerabilities, and automatically fix them
-- `scripts/clean-workspace.sh` - Clean the workspace
+- `pnpm dev` - Démarrer le serveur de développement sur le port 8666 (inclut des pré-vérifications)
+- `pnpm build` - Construire l'application pour la production (inclut des pré-vérifications)
+- `pnpm lint` - Exécuter ESLint pour vérifier la qualité du code
+- `pnpm typecheck` - Exécuter la vérification de type TypeScript
+- `scripts/upgrade-dependencies.sh` - Mettre à niveau tous les packages vers la dernière version, vérifier les vulnérabilités et les corriger automatiquement
+- `scripts/clean-workspace.sh` - Nettoyer l'espace de travail
 
-**Note:** The `preinstall` script automatically enforces pnpm as the package manager.
+**Note :** Le script `preinstall` applique automatiquement pnpm comme gestionnaire de packages.
 
-### Production Scripts {#production-scripts}
+### Scripts de production {#production-scripts}
 
-- `pnpm build-local` - Build and prepare for local production (includes pre-checks, copies static files to standalone directory)
-- `pnpm start-local` - Start production server locally (port 8666, includes pre-checks). **Note:** Run `pnpm build-local` first.
-- `pnpm start` - Start production server (port 9666)
+- `pnpm build-local` - Construire et préparer pour la production locale (inclut des pré-vérifications, copie les fichiers statiques dans le répertoire autonome)
+- `pnpm start-local` - Démarrer le serveur de production localement (port 8666, inclut des pré-vérifications). **Note :** Exécutez d'abord `pnpm build-local`.
+- `pnpm start` - Démarrer le serveur de production (port 9666)
 
-### Docker Scripts {#docker-scripts}
+### Scripts Docker {#docker-scripts}
 
-- `pnpm docker-up` - Start Docker Compose stack
-- `pnpm docker-down` - Stop Docker Compose stack
-- `pnpm docker-clean` - Clean Docker environment and cache
-- `pnpm docker-devel` - Build a development Docker image tagged as `wsj-br/duplistatus:devel`
+- `pnpm docker-up` - Démarrer la pile Docker Compose
+- `pnpm docker-down` - Arrêter la pile Docker Compose
+- `pnpm docker-clean` - Nettoyer l'environnement Docker et le cache
+- `pnpm docker-devel` - Construire une image Docker de développement étiquetée comme `wsj-br/duplistatus:devel`
 
-### Cron Service Scripts {#cron-service-scripts}
+### Scripts du service Cron {#cron-service-scripts}
 
-- `pnpm cron:start` - Start cron service in production mode
-- `pnpm cron:dev` - Start cron service in development mode with file watching (port 8667)
-- `pnpm cron:start-local` - Start cron service locally for testing (port 8667)
+- `pnpm cron:start` - Démarrer le service cron en mode production
+- `pnpm cron:dev` - Démarrer le service cron en mode développement avec surveillance des fichiers (port 8667)
+- `pnpm cron:start-local` - Démarrer le service cron localement pour les tests (port 8667)
 
-### Test Scripts {#test-scripts}
+### Scripts de test {#test-scripts}
 
-- `pnpm generate-test-data` - Generate test backup data (requires --servers=N parameter)
-- `pnpm show-overdue-notifications` - Show overdue notification contents
-- `pnpm run-overdue-check` - Run overdue check at specific date/time
-- `pnpm test-cron-port` - Test cron service port connectivity
-- `pnpm test-overdue-detection` - Test overdue backup detection logic
-- `pnpm validate-csv-export` - Validate CSV export functionality
-- `pnpm set-smtp-test-config` - Set SMTP test configuration from environment variables (see [Test Scripts](test-scripts))
-- `pnpm test-smtp-connections` - Test SMTP connection type cross-compatibility (see [Test Scripts](test-scripts))
-- `pnpm test-entrypoint` - Test Docker entrypoint script in local development (see [Test Scripts](test-scripts))
-- `pnpm take-screenshots` - Take screenshots for documentation (see [Documentation Tools](documentation-tools))
+- `pnpm generate-test-data` - Générer des données de sauvegarde de test (nécessite le paramètre --servers=N)
+- `pnpm show-overdue-notifications` - Afficher le contenu des notifications en retard
+- `pnpm run-overdue-check` - Exécuter la vérification des retards à une date/heure spécifique
+- `pnpm test-cron-port` - Tester la connectivité du port du service cron
+- `pnpm test-overdue-detection` - Tester la logique de détection des sauvegardes en retard
+- `pnpm validate-csv-export` - Valider la fonctionnalité d'exportation CSV
+- `pnpm set-smtp-test-config` - Définir la configuration de test SMTP à partir des variables d'environnement (voir [Scripts de test](test-scripts))
+- `pnpm test-smtp-connections` - Tester la compatibilité croisée du type de connexion SMTP (voir [Scripts de test](test-scripts))
+- `pnpm test-entrypoint` - Tester le script de point d'entrée Docker en développement local (voir [Scripts de test](test-scripts))
+- `pnpm take-screenshots` - Prendre des captures d'écran pour la documentation (voir [Outils de documentation](documentation-tools))

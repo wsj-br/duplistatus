@@ -39,23 +39,23 @@ Consultez le [Guide utilisateur](user-guide/overview.md) pour des instructions d
 
 ### Tableau de bord
 
-![tableau de bord](/img/screen-main-dashboard-card-mode.png)
+![tableau de bord](/assets/screen-main-dashboard-card-mode.png)
 
 ### Historique des sauvegardes
 
-![détail du serveur](/img/screen-server-backup-list.png)
+![détail du serveur](/assets/screen-server-backup-list.png)
 
 ### Détails de la sauvegarde
 
-![détail de la sauvegarde](/img/screen-backup-detail.png)
+![détail de la sauvegarde](/assets/screen-backup-detail.png)
 
 ### Sauvegardes en retard
 
-![sauvegardes en retard](/img/screen-overdue-backup-hover-card.png)
+![sauvegardes en retard](/assets/screen-overdue-backup-hover-card.png)
 
 ### Notifications en retard sur votre téléphone
 
-![message en retard ntfy](/img/screen-overdue-notification.png)
+![message en retard ntfy](/assets/screen-overdue-notification.png)
 
 ## Référence API
 

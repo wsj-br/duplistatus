@@ -2,7 +2,7 @@
 
 **duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet:
 
-![Benachrichtigungsvorlagen](/img/screen-settings-templates.png)
+![Benachrichtigungsvorlagen](/assets/screen-settings-templates.png)
 
 | Vorlage                   | Beschreibung                                                                                      |
 | :------------------------ | :------------------------------------------------------------------------------------------------ |

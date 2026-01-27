@@ -5,7 +5,7 @@ Un graphique des Métriques de sauvegarde au fil du temps est affiché à la foi
 - **Tableau de bord**, le graphique affiche le nombre total de Sauvegardes enregistrées dans la base de données **duplistatus**. Si vous utilisez la disposition Cartes, vous pouvez Sélectionner un serveur pour voir ses Métriques consolidées (quand le panneau latéral affiche les Métriques).
 - Page **Détails du serveur**, le graphique affiche les Métriques pour le serveur sélectionné (pour Toutes ses Sauvegardes) ou pour une seule Sauvegarde spécifique.
 
-![Métriques de sauvegarde](/img/screen-metrics.png)
+![Métriques de sauvegarde](/assets/screen-metrics.png)
 
 - **Taille téléversée** : Montant total de données téléversées/transmises lors des Sauvegardes du serveur Duplicati vers la destination de sauvegarde (Stockage local, FTP, fournisseur cloud, ...) par jour.
 

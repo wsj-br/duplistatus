@@ -1,37 +1,37 @@
-# Cron Service {#cron-service}
+# Service Cron {#cron-service}
 
-The application includes a separate cron service for handling scheduled tasks:
+L'application inclut un service cron séparé pour gérer les tâches planifiées :
 
-## Start cron service in development mode {#start-cron-service-in-development-mode}
+## Démarrer le service cron en mode développement {#start-cron-service-in-development-mode}
 
 ```bash
 pnpm cron:dev
 ```
 
-## Start cron service in production mode {#start-cron-service-in-production-mode}
+## Démarrer le service cron en mode production {#start-cron-service-in-production-mode}
 
 ```bash
 pnpm cron:start
 ```
 
-## Start cron service locally (for testing) {#start-cron-service-locally-for-testing}
+## Démarrer le service cron localement (pour les tests) {#start-cron-service-locally-for-testing}
 
 ```bash
 pnpm cron:start-local
 ```
 
-The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using the `CRON_PORT` environment variable.
+Le service cron s'exécute sur un port séparé (8667 en développement, 9667 en production) et gère les tâches planifiées comme les notifications de sauvegarde en retard. Le port peut être configuré à l'aide de la variable d'environnement `CRON_PORT`.
 
-The cron service includes:
+Le service cron inclut :
 
-- **Health check endpoint**: `/health` - Returns service status and active tasks
-- **Manual task triggering**: `POST /trigger/:taskName` - Manually execute scheduled tasks
-- **Task management**: `POST /start/:taskName` and `POST /stop/:taskName` - Control individual tasks
-- **Configuration reload**: `POST /reload-config` - Reload configuration from database
-- **Automatic restart**: The service automatically restarts if it crashes (managed by `duplistatus-cron.sh`)
-- **Watch mode**: Development mode includes file watching for automatic restarts on code changes
-- **Overdue backup monitoring**: Automated checking and notification of overdue backups (runs every 5 minutes by default)
-- **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
-- **Flexible scheduling**: Configurable cron expressions for different tasks
-- **Database integration**: Shares the same SQLite database with the main application
-- **RESTful API**: Complete API for service management and monitoring
+- **Point de terminaison de vérification de santé** : `/health` - Retourne le statut du service et les tâches actives
+- **Déclenchement manuel de tâches** : `POST /trigger/:taskName` - Exécuter manuellement les tâches planifiées
+- **Gestion des tâches** : `POST /start/:taskName` et `POST /stop/:taskName` - Contrôler les tâches individuelles
+- **Rechargement de la configuration** : `POST /reload-config` - Recharger la configuration à partir de la base de données
+- **Redémarrage automatique** : Le service redémarre automatiquement en cas de panne (géré par `duplistatus-cron.sh`)
+- **Mode surveillance** : Le mode développement inclut la surveillance des fichiers pour les redémarrages automatiques lors des modifications de code
+- **Surveillance des sauvegardes en retard** : Vérification automatisée et notification des sauvegardes en retard (s'exécute toutes les 5 minutes par défaut)
+- **Nettoyage du journal d'audit** : Nettoyage automatisé des anciennes entrées du journal d'audit (s'exécute quotidiennement à 2 h UTC)
+- **Planification flexible** : Expressions cron configurables pour différentes tâches
+- **Intégration de base de données** : Partage la même base de données SQLite avec l'application principale
+- **API RESTful** : API complète pour la gestion et la surveillance du service

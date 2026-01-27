@@ -2,7 +2,7 @@
 
 Gérez vos données de sauvegarde et optimisez les performances grâce aux opérations de maintenance de la base de données.
 
-![Maintenance de la base de données](/img/screen-settings-database-maintenance.png)
+![Maintenance de la base de données](/assets/screen-settings-database-maintenance.png)
 
 <br/>
 

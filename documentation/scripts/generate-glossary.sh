@@ -1,4 +1,4 @@
-#!/bin/bash
+cd #!/bin/bash
 # Generate glossary from intlayer dictionaries for Crowdin import
 # This script extracts terminology and updates the documentation glossary
 

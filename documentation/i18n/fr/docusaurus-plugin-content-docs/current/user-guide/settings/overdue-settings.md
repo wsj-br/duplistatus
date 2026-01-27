@@ -1,6 +1,6 @@
 # Notifications en retard {#overdue-notifications}
 
-![Alertes de sauvegarde](/img/screen-settings-overdue.png)
+![Alertes de sauvegarde](/assets/screen-settings-overdue.png)
 
 ## Configurer les paramètres de sauvegarde en retard par sauvegarde {#configure-per-backup-overdue-settings}
 

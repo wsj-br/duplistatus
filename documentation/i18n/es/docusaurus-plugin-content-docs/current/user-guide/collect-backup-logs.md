@@ -39,6 +39,7 @@ _Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` bu
 ![Collect All Right-Click Menu](/assets/screen-collect-button-right-click-popup.png)
 
 :::tip
+:::tip
 You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
 :::
 

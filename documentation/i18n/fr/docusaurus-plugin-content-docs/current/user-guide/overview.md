@@ -33,7 +33,7 @@ Après une installation réussie, accédez à l'interface web de duplistatus en 
 
 duplistatus fournit un tableau de bord intuitif pour surveiller les opérations de sauvegarde Duplicati dans toute votre infrastructure.
 
-![Vue d'ensemble du tableau de bord](/img/screen-main-dashboard-card-mode.png)
+![Vue d'ensemble du tableau de bord](/assets/screen-main-dashboard-card-mode.png)
 
 L'interface utilisateur est organisée en plusieurs sections clés pour offrir une expérience de surveillance claire et complète :
 

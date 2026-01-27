@@ -2,7 +2,7 @@
 
 Configurer les préférences de l'interface utilisateur et d'affichage.
 
-![Paramètres d'affichage](/img/screen-settings-display.png)
+![Paramètres d'affichage](/assets/screen-settings-display.png)
 
 <br/>
 

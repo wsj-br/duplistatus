@@ -1,6 +1,6 @@
 # Überfällige Benachrichtigungen {#overdue-notifications}
 
-![Sicherungswarnungen](/img/screen-settings-overdue.png)
+![Sicherungswarnungen](/assets/screen-settings-overdue.png)
 
 ## Konfigurieren Sie die Einstellungen für überfällige Sicherungen pro Sicherung {#configure-per-backup-overdue-settings}
 

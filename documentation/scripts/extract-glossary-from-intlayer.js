@@ -50,6 +50,53 @@ const KEY_TIME_TERMS = [
 ];
 
 /**
+ * Remove {} placeholders from text (for Crowdin compatibility)
+ */
+function removePlaceholders(str) {
+  if (!str || typeof str !== 'string') return str;
+  return str.replace(/\{[^}]+\}/g, '').trim();
+}
+
+/**
+ * Remove parentheses from text (for Crowdin compatibility)
+ * Converts "(Collect backups logs)" to "Collect backups logs"
+ */
+function removeParentheses(str) {
+  if (!str || typeof str !== 'string') return str;
+  // Remove leading and trailing parentheses if the entire string is wrapped
+  let cleaned = str.trim();
+  if (cleaned.startsWith('(') && cleaned.endsWith(')')) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+  return cleaned;
+}
+
+/**
+ * Remove trailing colons from text (for Crowdin compatibility)
+ * Converts "Checked:" to "Checked"
+ */
+function removeTrailingColon(str) {
+  if (!str || typeof str !== 'string') return str;
+  let cleaned = str.trim();
+  // Remove trailing colon if present
+  if (cleaned.endsWith(':')) {
+    cleaned = cleaned.slice(0, -1).trim();
+  }
+  return cleaned;
+}
+
+/**
+ * Clean text: remove placeholders, parentheses, and trailing colons
+ */
+function cleanText(str) {
+  if (!str || typeof str !== 'string') return str;
+  let cleaned = removePlaceholders(str);
+  cleaned = removeParentheses(cleaned);
+  cleaned = removeTrailingColon(cleaned);
+  return cleaned.trim();
+}
+
+/**
  * Check if a string should be included as terminology
  * Now includes ALL UI elements - be more permissive
  */
@@ -204,8 +251,8 @@ function extractAllTerms(dictionaries) {
       // Check if we should include this term (now includes ALL UI elements)
       if (!shouldIncludeTerm(enValue, key)) continue;
       
-      // Clean up the English term
-      const cleanEnValue = enValue.trim();
+      // Clean up the English term - remove {} placeholders and parentheses
+      const cleanEnValue = cleanText(enValue);
       
       // Get translations for all languages by extracting from each language's structure
       const termTranslations = {
@@ -216,20 +263,27 @@ function extractAllTerms(dictionaries) {
       for (const lang of ['de', 'fr', 'es', 'pt-BR']) {
         const langTerms = extractTerms(translations[lang] || {});
         const langValue = langTerms[key] || '';
-        termTranslations[lang] = langValue.trim();
+        // Clean translations - remove {} placeholders and parentheses
+        termTranslations[lang] = cleanText(langValue);
+      }
+      
+      // Skip entries where all languages are just "#"
+      const allValues = Object.values(termTranslations);
+      if (allValues.every(v => v.trim() === '#' || v.trim() === '')) {
+        continue;
       }
       
       // Use English term as the key (normalized)
       const termKey = cleanEnValue.toLowerCase();
       
       // Only add if we have at least English and one other translation
-      const hasTranslations = Object.values(termTranslations).filter(v => v && v.trim()).length >= 2;
+      const hasTranslations = Object.values(termTranslations).filter(v => v && v.trim() && v.trim() !== '#').length >= 2;
       
       if (hasTranslations) {
-        // If term already exists, prefer the one with more translations
+        // If term already exists with same key, prefer the one with more translations
         const existing = termMap.get(termKey);
-        const newTranslationCount = Object.values(termTranslations).filter(v => v && v.trim()).length;
-        const existingTranslationCount = existing ? Object.values(existing).filter(v => v && v.trim()).length : 0;
+        const newTranslationCount = Object.values(termTranslations).filter(v => v && v.trim() && v.trim() !== '#').length;
+        const existingTranslationCount = existing ? Object.values(existing).filter(v => v && v.trim() && v.trim() !== '#').length : 0;
         
         if (!existing || newTranslationCount > existingTranslationCount) {
           termMap.set(termKey, termTranslations);
@@ -238,7 +292,45 @@ function extractAllTerms(dictionaries) {
     }
   }
   
-  return termMap;
+  // Post-process: remove duplicates based on actual content
+  return removeDuplicates(termMap);
+}
+
+/**
+ * Remove duplicate entries based on actual content (not just English key)
+ */
+function removeDuplicates(termMap) {
+  const uniqueMap = new Map();
+  const seenContent = new Set();
+  
+  // Sort by number of translations (descending) to keep entries with more translations
+  const sortedEntries = Array.from(termMap.entries()).sort((a, b) => {
+    const aCount = Object.values(a[1]).filter(v => v && v.trim() && v.trim() !== '#').length;
+    const bCount = Object.values(b[1]).filter(v => v && v.trim() && v.trim() !== '#').length;
+    return bCount - aCount;
+  });
+  
+  for (const [termKey, translations] of sortedEntries) {
+    // Create a unique signature from all non-empty, non-# translations
+    const allValues = Object.values(translations)
+      .filter(v => v && v.trim() && v.trim() !== '#')
+      .map(v => v.toLowerCase().trim())
+      .sort()
+      .join('|');
+    
+    // Skip if we've seen this exact content combination before
+    if (allValues && seenContent.has(allValues)) {
+      continue;
+    }
+    
+    // Mark this content as seen and add to unique map
+    if (allValues) {
+      seenContent.add(allValues);
+    }
+    uniqueMap.set(termKey, translations);
+  }
+  
+  return uniqueMap;
 }
 
 /**
@@ -272,11 +364,18 @@ function generateCSV(termMap) {
   };
   
   for (const [termKey, translations] of sortedTerms) {
-    const enTerm = translations.en || '';
-    const frTerm = translations.fr || '';
-    const deTerm = translations.de || '';
-    const ptTerm = translations['pt-BR'] || '';
-    const esTerm = translations.es || ''; // Map to es-ES
+    // Clean all terms - remove {} placeholders and parentheses
+    const enTerm = cleanText(translations.en || '');
+    const frTerm = cleanText(translations.fr || '');
+    const deTerm = cleanText(translations.de || '');
+    const ptTerm = cleanText(translations['pt-BR'] || '');
+    const esTerm = cleanText(translations.es || ''); // Map to es-ES
+    
+    // Skip entries where all terms are just "#" or empty
+    const allTerms = [enTerm, frTerm, deTerm, ptTerm, esTerm];
+    if (allTerms.every(t => t.trim() === '#' || t.trim() === '')) {
+      continue;
+    }
     
     // Get part of speech for each language (use English as base)
     const posEn = getPartOfSpeech(enTerm);
@@ -369,11 +468,18 @@ function generateMarkdownTable(termMap) {
   );
   
   for (const [termKey, translations] of sortedTerms) {
-    const enTerm = translations.en || '';
-    const frTerm = translations.fr || '';
-    const deTerm = translations.de || '';
-    const esTerm = translations.es || '';
-    const ptTerm = translations['pt-BR'] || '';
+    // Clean all terms - remove {} placeholders and parentheses
+    const enTerm = cleanText(translations.en || '');
+    const frTerm = cleanText(translations.fr || '');
+    const deTerm = cleanText(translations.de || '');
+    const esTerm = cleanText(translations.es || '');
+    const ptTerm = cleanText(translations['pt-BR'] || '');
+    
+    // Skip entries where all terms are just "#" or empty
+    const allTerms = [enTerm, frTerm, deTerm, esTerm, ptTerm];
+    if (allTerms.every(t => t.trim() === '#' || t.trim() === '')) {
+      continue;
+    }
     
     rows.push(`| ${enTerm} | ${frTerm} | ${deTerm} | ${esTerm} | ${ptTerm} |`);
   }

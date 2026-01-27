@@ -1,19 +1,6 @@
 | English | French | German | Spanish | Portuguese |
 |---------|--------|--------|---------|------------|
-| ({count} servers) | ({count} serveurs) | ({count} Server) | ({count} servidores) | ({count} servidores) |
-| (all backups) | (toutes les sauvegardes) | (alle Sicherungen) | (todas las copias de seguridad) | (todos os backups) |
-| (Collect backups logs) | (Collecter les journaux de sauvegarde) | (Sicherungsprotokolle sammeln) | (Recopilar logs de backup) | (Coletar logs de backup) |
-| (only fill if password changed) | (remplir uniquement si le mot de passe a changé) | (nur ausfüllen, wenn Passwort geändert wurde) | (solo completar si la contraseña cambió) | (preencher apenas se a senha mudou) |
-| (optional) | (optionnel) | (optional) | (opcional) | (opcional) |
-| (Range: 30-365 days) | (Plage: 30-365 jours) | (Bereich: 30-365 Tage) | (Rango: 30-365 días) | (Intervalo: 30-365 dias) |
-| (required) | (requis) | (erforderlich) | (requerido) | (obrigatório) |
-| (stored hostname, change if needed) | (nom d'hôte stocké, modifier si nécessaire) | (gespeicherter Hostname, bei Bedarf ändern) | (nombre de host almacenado, cambiar si es necesario) | (nome do host armazenado, alterar se necessário) |
-| (updating stored value) | (mise à jour de la valeur stockée) | (gespeicherten Wert aktualisieren) | (actualizando valor almacenado) | (atualizando valor armazenado) |
-| {count} backup selected | {count} sauvegarde sélectionnée | {count} Sicherung ausgewählt | {count} backup seleccionado | {count} backup selecionado |
-| {count} backups selected | {count} sauvegardes sélectionnées | {count} Sicherungen ausgewählt | {count} backups seleccionados | {count} backups selecionados |
-| {count} rows | {count} lignes | {count} Zeilen | {count} filas | {count} linhas |
-| {percent}% complete | {percent}% terminé | {percent}% abgeschlossen | {percent}% completo | {percent}% completo |
-| # | # | # | # | # |
+| % complete | % terminé | % abgeschlossen | % completo | % completo |
 | + New Server | + Nouveau serveur | + Neuer Server | + Nuevo servidor | + Novo servidor |
 | 1 day | 1 jour | 1 Tag | 1 día | 1 dia |
 | 1 hour | 1 heure | 1 Stunde | 1 hora | 1 hora |
@@ -53,7 +40,7 @@
 | Add Server | Ajouter un serveur | Server hinzufügen | Agregar servidor | Adicionar servidor |
 | Add User | Ajouter un utilisateur | Benutzer hinzufügen | Agregar usuario | Adicionar usuário |
 | Add, edit, and manage backup servers | Ajouter, modifier et gérer les serveurs de sauvegarde | Backup-Server hinzufügen, bearbeiten und verwalten | Agregar, editar y administrar servidores de backup | Adicionar, editar e gerenciar servidores de backup |
-| Additional Destinations: | Destinations supplémentaires: | Zusätzliche Ziele: | Destinos adicionales: | Destinos adicionais: |
+| Additional Destinations | Destinations supplémentaires | Zusätzliche Ziele | Destinos adicionales | Destinos adicionais |
 | Additional notes | Notes supplémentaires | Zusätzliche Notizen | Notas adicionales | Notas adicionais |
 | Admin | Admin | Admin | Admin | Admin |
 | Admin user | Utilisateur administrateur | Administratorbenutzer | Usuario administrador | Usuário administrador |
@@ -61,13 +48,12 @@
 | Age | Âge | Alter | Antigüedad | Idade |
 | Alert Type | Type d'alerte | Warntyp | Tipo de alerta | Tipo de Alerta |
 | Alerts | Alertes | Warnungen | Alertas | Alertas |
-| Alias | Alias | Alias | Alias | Apelido |
+| Alias | Alias | Alias | Alias | Alias |
 | Alias of the server (server_name if not set) | Alias du serveur (server_name si non défini) | Alias des Servers (server_name, wenn nicht gesetzt) | Alias del servidor (server_name si no está configurado) | Apelido do servidor (server_name se não definido) |
-| Alias: | Alias: | Alias: | Alias: | Alias: |
 | All | Tous | Alle | Todos | Todos |
 | All actions | Toutes les actions | Alle Aktionen | Todas las acciones | Todas as ações |
 | All available data | Toutes les données disponibles | Alle verfügbaren Daten | Todos los datos disponibles | Todos os dados disponíveis |
-| All Backups | Toutes les sauvegardes | Alle Sicherungen | Todos los backups | Todos os backups |
+| all backups | toutes les sauvegardes | alle Sicherungen | todas las copias de seguridad | todos os backups |
 | All categories | Toutes les catégories | Alle Kategorien | Todas las categorías | Todas as categorias |
 | All Servers & Backups | Tous les serveurs et sauvegardes | Alle Server & Sicherungen | Todos los servidores y copias de seguridad | Todos os servidores e backups |
 | All statuses | Tous les statuts | Alle Status | Todos los estados | Todos os status |
@@ -85,7 +71,7 @@
 | Application Name | Nom de l'application | Anwendungsname | Nombre de la aplicación | Nome do aplicativo |
 | Are you sure you want to logout? | Êtes-vous sûr de vouloir vous déconnecter? | Sind Sie sicher, dass Sie sich abmelden möchten? | ¿Está seguro de que desea cerrar sesión? | Tem certeza de que deseja sair? |
 | Are you sure? | Êtes-vous sûr? | Sind Sie sicher? | ¿Está seguro? | Tem certeza? |
-| At least {min} characters | Au moins {min} caractères | Mindestens {min} Zeichen | Al menos {min} caracteres | Pelo menos {min} caracteres |
+| At least  characters | Au moins  caractères | Mindestens  Zeichen | Al menos  caracteres | Pelo menos  caracteres |
 | At least one lowercase letter | Au moins une lettre minuscule | Mindestens ein Kleinbuchstabe | Al menos una letra minúscula | Pelo menos uma letra minúscula |
 | At least one number | Au moins un chiffre | Mindestens eine Zahl | Al menos un número | Pelo menos um número |
 | At least one special character | Au moins un caractère spécial | Mindestens ein Sonderzeichen | Al menos un carácter especial | Pelo menos um caractere especial |
@@ -98,7 +84,7 @@
 | Authentication Failed | Échec de l'authentification | Authentifizierung fehlgeschlagen | Autenticación fallida | Autenticação falhou |
 | Auto Refresh | Actualisation automatique | Automatische Aktualisierung | Actualización automática | Atualização automática |
 | Auto-generate secure password | Générer automatiquement un mot de passe sécurisé | Sicheres Passwort automatisch generieren | Generar automáticamente contraseña segura | Gerar senha segura automaticamente |
-| Auto-refresh ({interval}) | Actualisation automatique ({interval}) | Automatische Aktualisierung ({interval}) | Actualización automática ({interval}) | Atualização automática ({interval}) |
+| Auto-refresh () | Actualisation automatique () | Automatische Aktualisierung () | Actualización automática () | Atualização automática () |
 | Auto-refresh (disabled) | Actualisation automatique (désactivée) | Automatische Aktualisierung (deaktiviert) | Actualización automática (desactivada) | Atualização automática (desativada) |
 | Auto-refresh (loading) | Actualisation automatique (chargement) | Automatische Aktualisierung (Lädt...) | Actualización automática (cargando) | Atualização automática (carregando) |
 | Auto-refresh Interval | Intervalle de rafraîchissement automatique | Automatische Aktualisierung | Intervalo de actualización automática | Intervalo de atualização automática |
@@ -107,7 +93,7 @@
 | Available Backup Versions | Versions de sauvegarde disponibles | Verfügbare Sicherungsversionen | Versiones de backup disponibles | Versões de backup disponíveis |
 | Available Space | Espace disponible | Verfügbarer Speicherplatz | Espacio disponible | Espaço Disponível |
 | Available Versions | Versions disponibles | Verfügbare Versionen | Versiones disponibles | Versões disponíveis |
-| Available versions at the time of the backup: | Versions disponibles au moment de la sauvegarde: | Verfügbare Versionen zum Zeitpunkt der Sicherung: | Versiones disponibles en el momento del backup: | Versões disponíveis no momento do backup: |
+| Available versions at the time of the backup | Versions disponibles au moment de la sauvegarde | Verfügbare Versionen zum Zeitpunkt der Sicherung | Versiones disponibles en el momento del backup | Versões disponíveis no momento do backup |
 | Average | Moyenne | Durchschnitt | Promedio | Média |
 | Average Duration | Durée moyenne | Durchschnittliche Dauer | Duración promedio | Duração média |
 | Avg. Duration | Durée moy. | Durchschn. Dauer | Duración prom. | Duração méd. |
@@ -127,7 +113,7 @@
 | Backup created | Sauvegarde créée | Sicherung erstellt | Backup creado | Backup criado |
 | Backup Date | Date de sauvegarde | Sicherungsdatum | Fecha del backup | Data do backup |
 | Backup deleted | Sauvegarde supprimée | Sicherung gelöscht | Backup eliminado | Backup excluído |
-| Backup details: | Détails de la sauvegarde: | Sicherungsdetails: | Detalles del backup: | Detalhes do backup: |
+| Backup details | Détails de la sauvegarde | Sicherungsdetails | Detalles del backup | Detalhes do backup |
 | Backup disabled | Sauvegarde désactivée | Sicherung deaktiviert | Backup deshabilitado | Backup desabilitado |
 | Backup downloaded | Sauvegarde téléchargée | Sicherung heruntergeladen | Backup descargado | Backup baixado |
 | Backup duration | Durée de la sauvegarde | Sicherungsdauer | Duración del backup | Duração do backup |
@@ -149,6 +135,7 @@
 | Backup retry started | Nouvelle tentative de sauvegarde | Sicherungswiederholung gestartet | Reintento de backup iniciado | Nova tentativa de backup iniciada |
 | Backup schedule in cron format | Planification de sauvegarde au format cron | Sicherungszeitplan im Cron-Format | Programación de backup en formato cron | Agendamento de backup em formato cron |
 | Backup scheduled | Sauvegarde planifiée | Sicherung geplant | Backup programado | Backup agendado |
+| backup selected | sauvegarde sélectionnée | Sicherung ausgewählt | backup seleccionado | backup selecionado |
 | Backup settings updated | Paramètres de sauvegarde mis à jour | Sicherungseinstellungen aktualisiert | Configuración de backup actualizada | Configurações de backup atualizadas |
 | Backup Size | Taille de sauvegarde | Sicherungsgröße | Tamaño del backup | Tamanho do Backup |
 | Backup started | Sauvegarde démarrée | Sicherung gestartet | Backup iniciado | Backup iniciado |
@@ -161,7 +148,7 @@
 | Backup uploaded | Sauvegarde téléversée | Sicherung hochgeladen | Backup enviado | Backup enviado |
 | Backup verified | Sauvegarde vérifiée | Sicherung überprüft | Backup verificado | Backup verificado |
 | Backups | Sauvegardes | Sicherungen | Backups | Backups |
-| Backups: | Sauvegardes: | Sicherungen: | Backups: | Backups: |
+| backups selected | sauvegardes sélectionnées | Sicherungen ausgewählt | backups seleccionados | backups selecionados |
 | Bad gateway - Service unavailable | Mauvaise passerelle - Service indisponible | Falsches Gateway - Dienst nicht verfügbar | Puerta de enlace incorrecta - Servicio no disponible | Gateway inválido - Serviço indisponível |
 | Bulk Clear | Effacement en masse | Massenlöschung | Limpiar en masa | Limpar em massa |
 | Bulk Edit | Modification en masse | Massenbearbeitung | Edición masiva | Edição em massa |
@@ -184,7 +171,7 @@
 | Chart Time Range | Plage temporelle du graphique | Diagramm-Zeitbereich | Rango de tiempo del gráfico | Intervalo de tempo do gráfico |
 | Check | Vérifier | Prüfen | Verificar | Verificar |
 | Check now | Vérifier maintenant | Jetzt prüfen | Verificar ahora | Verificar agora |
-| Checked: | Vérifié: | Geprüft: | Verificado: | Verificado: |
+| Checked | Vérifié | Geprüft | Verificado | Verificado |
 | Choose a password | Choisissez un mot de passe | Wählen Sie ein Passwort | Elija una contraseña | Escolha uma senha |
 | Choose a server or enter manually below | Choisissez un serveur ou saisissez manuellement ci-dessous | Wählen Sie einen Server aus oder geben Sie manuell unten ein | Elija un servidor o ingrese manualmente a continuación | Escolha um servidor ou insira manualmente abaixo |
 | Choose a username | Choisissez un nom d'utilisateur | Wählen Sie einen Benutzernamen | Elija un nombre de usuario | Escolha um nome de usuário |
@@ -209,7 +196,8 @@
 | Collect backup logs (Right-click for Collect All) | Collecter les journaux de sauvegarde (Clic droit pour tout collecter) | Backup-Protokolle sammeln (Rechtsklick für Alle sammeln) | Recopilar logs de backup (Clic derecho para recopilar todo) | Coletar logs de backup (Clique direito para coletar todos) |
 | Collect Backups | Collecter les sauvegardes | Backups sammeln | Recopilar backups | Coletar backups |
 | Collect backups from all configured servers | Collecter les sauvegardes de tous les serveurs configurés | Backups von allen konfigurierten Servern sammeln | Recopilar copias de seguridad de todos los servidores configurados | Coletar backups de todos os servidores configurados |
-| Collect from {count} Servers | Collecter de {count} serveurs | Von {count} Servern sammeln | Recopilar de {count} servidores | Coletar de {count} servidores |
+| Collect backups logs | Collecter les journaux de sauvegarde | Sicherungsprotokolle sammeln | Recopilar logs de backup | Coletar logs de backup |
+| Collect from  Servers | Collecter de  serveurs | Von  Servern sammeln | Recopilar de  servidores | Coletar de  servidores |
 | Collected | Collecté | Gesammelt | Recopilado | Coletado |
 | Collection Complete! | Collecte terminée! | Sammlung abgeschlossen! | ¡Recopilación completa! | Coleta completa! |
 | Collection Error | Erreur de collecte | Sammlungsfehler | Error de recopilación | Erro de coleta |
@@ -265,7 +253,6 @@
 | Create User | Créer l'utilisateur | Benutzer erstellen | Crear usuario | Criar usuário |
 | Created | Créé | Erstellt | Creado | Criado |
 | Created successfully | Créé avec succès | Erfolgreich erstellt | Creado exitosamente | Criado com sucesso |
-| Created: | Créé: | Erstellt: | Creado: | Criado: |
 | Critical | Critique | Kritisch | Crítico | Crítico |
 | CSV | CSV | CSV | CSV | CSV |
 | CSV file downloaded successfully | Fichier CSV téléchargé avec succès | CSV-Datei erfolgreich heruntergeladen | Archivo CSV descargado exitosamente | Arquivo CSV baixado com sucesso |
@@ -274,7 +261,7 @@
 | Current | Actuel | Aktuell | Actual | Atual |
 | Current Password | Mot de passe actuel | Aktuelles Passwort | Contraseña actual | Senha atual |
 | Current password is incorrect | Le mot de passe actuel est incorrect | Aktuelles Passwort ist falsch | La contraseña actual es incorrecta | A senha atual está incorreta |
-| Current theme: | Thème actuel: | Aktuelles Thema: | Tema actual: | Tema atual: |
+| Current theme | Thème actuel | Aktuelles Thema | Tema actual | Tema atual |
 | Current Uptime | Temps de fonctionnement actuel | Aktuelle Laufzeit | Tiempo de actividad actual | Tempo de Atual Atividade |
 | Custom | Personnalisé | Benutzerdefiniert | Personalizado | Personalizado |
 | Customize notification message templates | Personnaliser les modèles de messages de notification | Benachrichtigungsnachrichtenvorlagen anpassen | Personalizar plantillas de mensajes de notificación | Personalizar modelos de mensagens de notificação |
@@ -292,7 +279,6 @@
 | Database restored successfully | Base de données restaurée avec succès | Datenbank erfolgreich wiederhergestellt | Base de datos restaurada exitosamente | Banco de dados restaurado com sucesso |
 | Date | Date | Datum | Fecha | Data |
 | Date Format | Format de date | Datumsformat | Formato de fecha | Formato de data |
-| Date: | Date: | Datum: | Fecha: | Data: |
 | Date/time of the backup | Date/heure de la sauvegarde | Datum/Zeit der Sicherung | Fecha/hora del backup | Data/hora do backup |
 | Date/time of the last backup | Date/heure de la dernière sauvegarde | Datum/Zeit der letzten Sicherung | Fecha/hora del último backup | Data/hora do último backup |
 | Date/time when the backup was expected | Date/heure à laquelle la sauvegarde était attendue | Datum/Zeit, zu der die Sicherung erwartet wurde | Fecha/hora en que se esperaba el backup | Data/hora em que o backup era esperado |
@@ -335,7 +321,7 @@
 | Download CSV | Télécharger CSV | CSV herunterladen | Descargar CSV | Baixar CSV |
 | Download failed | Échec du téléchargement | Download fehlgeschlagen | Descarga fallida | Download falhou |
 | Download Log | Télécharger le journal | Log herunterladen | Descargar log | Baixar log |
-| Downloaded {filename} | {filename} téléchargé | {filename} heruntergeladen | {filename} descargado | {filename} baixado |
+| Downloaded | téléchargé | heruntergeladen | descargado | baixado |
 | Downloaded successfully | Téléchargé avec succès | Erfolgreich heruntergeladen | Descargado exitosamente | Baixado com sucesso |
 | Duplicate Servers | Serveurs en double | Doppelte Server | Servidores duplicados | Servidores duplicados |
 | Duplicate value | Valeur en double | Doppelter Wert | Valor duplicado | Valor duplicado |
@@ -344,7 +330,6 @@
 | duplistatus | duplistatus | duplistatus | duplistatus | duplistatus |
 | duplistatus-my-notification-topic | duplistatus-mon-sujet-de-notification | duplistatus-mein-benachrichtigungs-thema | duplistatus-mi-tema-de-notificacion | duplistatus-meu-topico-de-notificacao |
 | Duration | Durée | Dauer | Duración | Duração |
-| Duration: | Durée: | Dauer: | Duración: | Duração: |
 | Edit | Modifier | Bearbeiten | Editar | Editar |
 | Edit Server | Modifier le serveur | Server bearbeiten | Editar servidor | Editar servidor |
 | Edit User | Modifier l'utilisateur | Benutzer bearbeiten | Editar usuario | Editar usuário |
@@ -391,17 +376,15 @@
 | Error loading chart data | Erreur lors du chargement des données du graphique | Fehler beim Laden der Diagrammdaten | Error al cargar los datos del gráfico | Erro ao carregar dados do gráfico |
 | Error Message | Message d'erreur | Fehlermeldung | Mensaje de error | Mensagem de erro |
 | Errors | Erreurs | Fehler | Errores | Erros |
-| Errors: | Erreurs: | Fehler: | Errores: | Erros: |
-| Errors: {count} | Erreurs: {count} | Fehler: {count} | Errores: {count} | Erros: {count} |
 | Every day | Chaque jour | Jeden Tag | Todos los días | Todos os dias |
 | Every month | Chaque mois | Jeden Monat | Cada mes | Todo mês |
 | Every week | Chaque semaine | Jede Woche | Cada semana | Toda semana |
 | Exclude Pattern | Motif d'exclusion | Ausschlussmuster | Patrón de exclusión | Padrão de exclusão |
 | Expand sidebar | Développer la barre latérale | Seitenleiste ausklappen | Expandir barra lateral | Expandir barra lateral |
+| Expected | Attendu | Erwartet | Esperado | Esperado |
+| Expected backup | Sauvegarde attendue | Erwartete Sicherung | Backup esperado | Backup esperado |
 | Expected Backup Interval | Intervalle de sauvegarde attendu | Erwartetes Sicherungsintervall | Intervalo de backup esperado | Intervalo de backup esperado |
-| Expected backup: | Sauvegarde attendue: | Erwartete Sicherung: | Backup esperado: | Backup esperado: |
 | Expected Interval | Intervalle attendu | Erwartetes Intervall | Intervalo esperado | Intervalo esperado |
-| Expected: | Attendu: | Erwartet: | Esperado: | Esperado: |
 | Expiration Date | Date d'expiration | Ablaufdatum | Fecha de vencimiento | Data de Expiração |
 | Expired Certificate | Certificat expiré | Zertifikat abgelaufen | Certificado expirado | Certificado expirado |
 | Export | Exporter | Exportieren | Exportar | Exportar |
@@ -453,16 +436,13 @@
 | Failure | Échec | Fehler | Fallo | Falha |
 | Fatal | Fatal | Kritisch | Fatal | Fatal |
 | Feature not implemented | Fonctionnalité non implémentée | Funktion nicht implementiert | Función no implementada | Recurso não implementado |
-| File Count | Nombre de fichiers | Dateianzahl | Cantidad de archivos | Contagem de arquivos |
-| File Count: | Nombre de fichiers: | Dateianzahl: | Cantidad de archivos: | Quantidade de arquivos: |
+| File Count | Nombre de fichiers | Dateianzahl | Cantidad de archivos | Quantidade de arquivos |
 | File patterns to exclude from backup | Motifs de fichiers à exclure de la sauvegarde | Dateimuster, die von der Sicherung ausgeschlossen werden sollen | Patrones de archivos a excluir del backup | Padrões de arquivos a serem excluídos do backup |
-| File Size | Taille du fichier | Dateigröße | Tamaño del archivo | Tamanho do arquivo |
+| File Size | Taille des fichiers | Dateigröße | Tamaño de archivos | Tamanho dos arquivos |
 | File size too large | Taille de fichier trop grande | Dateigröße zu groß | Tamaño de archivo demasiado grande | Tamanho de arquivo muito grande |
-| File Size: | Taille des fichiers: | Dateigröße: | Tamaño de archivos: | Tamanho dos arquivos: |
 | File Version | Version du fichier | Dateiversion | Versión del archivo | Versão do arquivo |
 | Files | Fichiers | Dateien | Archivos | Arquivos |
 | Files Count | Nombre de fichiers | Dateianzahl | Cantidad de archivos | Quantidade de Arquivos |
-| Files: | Fichiers: | Dateien: | Archivos: | Arquivos: |
 | Filter | Filtrer | Filtern | Filtrar | Filtrar |
 | Filter by Backup | Filtrer par sauvegarde | Nach Sicherung filtern | Filtrar por backup | Filtrar por backup |
 | Filter by Date | Filtrer par date | Nach Datum filtern | Filtrar por fecha | Filtrar por data |
@@ -480,15 +460,15 @@
 | Force Backup | Forcer la sauvegarde | Sicherung erzwingen | Forzar backup | Forçar backup |
 | Forgot Password | Mot de passe oublié | Passwort vergessen | ¿Olvidó su contraseña? | Esqueceu a senha |
 | Forgot password? | Mot de passe oublié? | Passwort vergessen? | ¿Olvidó su contraseña? | Esqueceu a senha? |
-| Frequency: | Fréquence: | Häufigkeit: | Frecuencia: | Frequência: |
+| Frequency | Fréquence | Häufigkeit | Frecuencia | Frequência |
 | From Address | Adresse d'expéditeur | Absenderadresse | Dirección de remitente | Endereço do remetente |
 | From address must contain '@' symbol | L'adresse d'expéditeur doit contenir le symbole '@' | Absenderadresse muss das Symbol '@' enthalten | La dirección de remitente debe contener el símbolo '@' | O endereço do remetente deve conter o símbolo '@' |
 | Gateway timeout - Please try again | Délai d'attente de la passerelle dépassé - Veuillez réessayer | Gateway-Timeout - Bitte versuchen Sie es erneut | Tiempo de espera de la puerta de enlace agotado - Por favor inténtelo de nuevo | Tempo limite do gateway - Por favor, tente novamente |
 | General | Général | Allgemein | General | Geral |
 | General Settings | Paramètres généraux | Allgemeine Einstellungen | Configuración general | Configurações gerais |
-| Hello {userName}, | Bonjour {userName}, | Hallo {userName}, | Hola {userName}, | Olá {userName}, |
+| Hello , | Bonjour , | Hallo , | Hola , | Olá , |
 | Help | Aide | Hilfe | Ayuda | Ajuda |
-| Help for {pageName} | Aide pour {pageName} | Hilfe für {pageName} | Ayuda para {pageName} | Ajuda para {pageName} |
+| Help for | Aide pour | Hilfe für | Ayuda para | Ajuda para |
 | Hide | Masquer | Ausblenden | Ocultar | Ocultar |
 | Hide password | Masquer le mot de passe | Passwort ausblenden | Ocultar contraseña | Ocultar senha |
 | High | Élevé | Hoch | Alto | Alto |
@@ -501,16 +481,16 @@
 | https://ntfy.sh/ | https://ntfy.sh/ | https://ntfy.sh/ | https://ntfy.sh/ | https://ntfy.sh/ |
 | https://server:8200 | https://server:8200 | https://server:8200 | https://server:8200 | https://server:8200 |
 | I Understand | Je comprends | Ich verstehe | Entiendo | Eu entendo |
-| ID: | ID: | ID: | ID: | ID: |
+| ID | ID | ID | ID | ID |
 | Import | Importer | Importieren | Importar | Importar |
-| Important: | Important: | Wichtig: | Importante: | Importante: |
+| Important | Important | Wichtig | Importante | Importante |
 | Imported successfully | Importé avec succès | Erfolgreich importiert | Importado exitosamente | Importado com sucesso |
 | Inactive | Inactif | Inaktiv | Inactivo | Inativo |
 | Info | Info | Info | Info | Info |
 | Insert | Insérer | Einfügen | Insertar | Inserir |
 | Integrations | Intégrations | Integrationen | Integraciones | Integrações |
 | Internal server error - Please try again later | Erreur interne du serveur - Veuillez réessayer plus tard | Interner Serverfehler - Bitte versuchen Sie es später erneut | Error interno del servidor - Por favor inténtelo más tarde | Erro interno do servidor - Por favor, tente novamente mais tarde |
-| Interval: | Intervalle: | Intervall: | Intervalo: | Intervalo: |
+| Interval | Intervalle | Intervall | Intervalo | Intervalo |
 | Invalid charset | Jeu de caractères invalide | Ungültiger Zeichensatz | Juego de caracteres inválido | Charset inválido |
 | Invalid color | Couleur invalide | Ungültige Farbe | Color inválido | Cor inválida |
 | Invalid country | Pays invalide | Ungültiges Land | País inválido | País inválido |
@@ -560,13 +540,12 @@
 | Last Backup Size | Taille de la dernière sauvegarde | Größe der letzten Sicherung | Tamaño del último backup | Tamanho do último backup |
 | Last Backup Status | Statut de la dernière sauvegarde | Status der letzten Sicherung | Estado del último backup | Status do último backup |
 | Last Backup Storage Size | Taille de stockage de la dernière sauvegarde | Speichergröße der letzten Sicherung | Tamaño de almacenamiento del último backup | Tamanho de armazenamento do último backup |
-| Last backup: | Dernière sauvegarde: | Letzte Sicherung: | Último backup: | Último backup: |
-| Last checked: | Dernière vérification: | Zuletzt geprüft: | Última verificación: | Última verificação: |
+| Last checked | Dernière vérification | Zuletzt geprüft | Última verificación | Última verificação |
 | Last Hour | Dernière heure | Letzte Stunde | Última hora | Última hora |
 | Last Login | Dernière connexion | Letzte Anmeldung | Último inicio de sesión | Último login |
-| Last modified: | Dernière modification: | Zuletzt geändert: | Última modificación: | Última modificação: |
+| Last modified | Dernière modification | Zuletzt geändert | Última modificación | Última modificação |
 | Last month | Dernier mois | Letzter Monat | Último mes | Último mês |
-| Last notification: | Dernière notification: | Letzte Benachrichtigung: | Última notificación: | Última notificação: |
+| Last notification | Dernière notification | Letzte Benachrichtigung | Última notificación | Última notificação |
 | Last quarter | Dernier trimestre | Letztes Quartal | Último trimestre | Último trimestre |
 | Last Seen | Dernière vue | Zuletzt gesehen | Visto por última vez | Visto pela Última Vez |
 | Last semester | Dernier semestre | Letztes Semester | Último semestre | Último semestre |
@@ -606,7 +585,6 @@
 | Merge Servers | Fusionner les serveurs | Server zusammenführen | Fusionar servidores | Mesclar servidores |
 | Message Template | Modèle de message | Nachrichtenvorlage | Plantilla de mensaje | Modelo de mensagem |
 | Messages | Messages | Nachrichten | Mensajes | Mensagens |
-| Messages: | Messages: | Nachrichten: | Mensajes: | Mensagens: |
 | Method not allowed | Méthode non autorisée | Methode nicht erlaubt | Método no permitido | Método não permitido |
 | Metrics | Métriques | Metriken | Métricas | Métricas |
 | min | min | Min | min | min |
@@ -618,11 +596,11 @@
 | Missing URL & Password | URL et mot de passe manquants | URL & Passwort fehlen | URL y contraseña faltantes | URL e senha ausentes |
 | Monitor your backup servers and systems | Surveillez vos serveurs de sauvegarde et systèmes | Überwachen Sie Ihre Backup-Server und Systeme | Monitoree sus servidores de backup y sistemas | Monitore seus servidores de backup e sistemas |
 | Monitoring Enabled | Surveillance activée | Überwachung aktiviert | Monitoreo habilitado | Monitoramento habilitado |
-| Monitoring interval: | Intervalle de surveillance: | Überwachungsintervall: | Intervalo de monitoreo: | Intervalo de monitoramento: |
+| Monitoring interval | Intervalle de surveillance | Überwachungsintervall | Intervalo de monitoreo | Intervalo de monitoramento |
 | Month(s) | Mois | Monat(e) | Mes(es) | Mês(es) |
 | Moved successfully | Déplacé avec succès | Erfolgreich verschoben | Movido exitosamente | Movido com sucesso |
 | Multi-Server Collection Progress | Progression de la collecte multi-serveurs | Fortschritt der Multi-Server-Sammlung | Progreso de recopilación multi-servidor | Progresso da coleta multi-servidor |
-| Multiple servers detected: | Plusieurs serveurs détectés: | Mehrere Server erkannt: | Múltiples servidores detectados: | Múltiplos servidores detectados: |
+| Multiple servers detected | Plusieurs serveurs détectés | Mehrere Server erkannt | Múltiples servidores detectados | Múltiplos servidores detectados |
 | Must be a BigInt | Doit être un BigInt | Muss ein BigInt sein | Debe ser un BigInt | Deve ser um BigInt |
 | Must be a boolean | Doit être un booléen | Muss ein Boolean sein | Debe ser un booleano | Deve ser um booleano |
 | Must be a date | Doit être une date | Muss ein Datum sein | Debe ser una fecha | Deve ser uma data |
@@ -637,8 +615,8 @@
 | Must be an error object | Doit être un objet d'erreur | Muss ein Fehlerobjekt sein | Debe ser un objeto de error | Deve ser um objeto de erro |
 | Must be an object | Doit être un objet | Muss ein Objekt sein | Debe ser un objeto | Deve ser um objeto |
 | Must be async | Doit être async | Muss async sein | Debe ser async | Deve ser async |
-| Must be at least {min} | Doit être au moins {min} | Mindestens {min} | Debe ser al menos {min} | Deve ser pelo menos {min} |
-| Must be at most {max} | Doit être au plus {max} | Maximal {max} | Debe ser como máximo {max} | Deve ser no máximo {max} |
+| Must be at least | Doit être au moins | Mindestens | Debe ser al menos | Deve ser pelo menos |
+| Must be at most | Doit être au plus | Maximal | Debe ser como máximo | Deve ser no máximo |
 | Must be iterable | Doit être itérable | Muss iterierbar sein | Debe ser iterable | Deve ser iterável |
 | Must Change Password | Doit changer le mot de passe | Passwort muss geändert werden | Debe cambiar la contraseña | Deve alterar a senha |
 | N/A | N/A | N/V | N/A | N/A |
@@ -707,9 +685,8 @@
 | Not set | Non défini | Nicht gesetzt | No establecido | Não definido |
 | Not supported | Non pris en charge | Nicht unterstützt | No compatible | Não suportado |
 | Not unlocked | Non déverrouillé | Nicht entsperrt | No desbloqueado | Não está desbloqueado |
-| Note | Note | Notiz | Nota | Nota |
+| Note | Note | Hinweis | Nota | Nota |
 | Note of the server | Note du serveur | Notiz des Servers | Nota del servidor | Nota do servidor |
-| Note: | Note: | Hinweis: | Nota: | Nota: |
 | Notes about this server | Notes sur ce serveur | Notizen zu diesem Server | Notas sobre este servidor | Notas sobre este servidor |
 | Notification archived successfully | Notification archivée avec succès | Benachrichtigung erfolgreich archiviert | Notificación archivada exitosamente | Notificação arquivada com sucesso |
 | Notification channel updated | Canal de notification mis à jour | Benachrichtigungskanal aktualisiert | Canal de notificación actualizado | Canal de notificação atualizado |
@@ -718,9 +695,9 @@
 | Notification delivered successfully | Notification livrée avec succès | Benachrichtigung erfolgreich zugestellt | Notificación entregada exitosamente | Notificação entregue com sucesso |
 | Notification Events | Événements de notification | Benachrichtigungsereignisse | Eventos de notificación | Eventos de notificação |
 | Notification failed to send | Échec de l'envoi de la notification | Benachrichtigung konnte nicht gesendet werden | Falló enviar notificación | Falha ao enviar notificação |
-| Notification freq: | Fréq. notifications: | Benachrichtigungsfreq: | Frec. notificaciones: | Freq. notificações: |
+| Notification freq | Fréq. notifications | Benachrichtigungsfreq | Frec. notificaciones | Freq. notificações |
+| Notification frequency | Fréquence des notifications | Benachrichtigungshäufigkeit | Frecuencia de notificaciones | Frequência de notificações |
 | Notification frequency updated. | Fréquence des notifications mise à jour. | Benachrichtigungshäufigkeit aktualisiert. | Frecuencia de notificaciones actualizada. | Frequência de notificações atualizada. |
-| Notification frequency: | Fréquence des notifications: | Benachrichtigungshäufigkeit: | Frecuencia de notificaciones: | Frequência de notificações: |
 | Notification marked as read | Notification marquée comme lue | Benachrichtigung als gelesen markiert | Notificación marcada como leída | Notificação marcada como lida |
 | Notification marked as unread | Notification marquée comme non lue | Benachrichtigung als ungelesen markiert | Notificación marcada como no leída | Notificação marcada como não lida |
 | Notification preferences updated | Préférences de notification mises à jour | Benachrichtigungseinstellungen aktualisiert | Preferencias de notificación actualizadas | Preferências de notificação atualizadas |
@@ -764,9 +741,11 @@
 | One time | Une fois | Einmalig | Una vez | Uma vez |
 | Online | En ligne | Online | En línea | Online |
 | Online Servers | Serveurs en ligne | Server online | Servidores en línea | Servidores online |
+| only fill if password changed | remplir uniquement si le mot de passe a changé | nur ausfüllen, wenn Passwort geändert wurde | solo completar si la contraseña cambió | preencher apenas se a senha mudou |
 | Open Duplicati Configuration | Ouvrir la configuration Duplicati | Duplicati-Konfiguration öffnen | Abrir configuración de Duplicati | Abrir configuração do Duplicati |
 | Open Duplicati configuration (Right-click for old UI) | Ouvrir la configuration Duplicati (Clic droit pour l'ancienne UI) | Duplicati-Konfiguration öffnen (Rechtsklick für alte UI) | Abrir configuración de Duplicati (Clic derecho para UI antigua) | Abrir configuração do Duplicati (Clique direito para UI antiga) |
 | Optimize Database | Optimiser la base de données | Datenbank optimieren | Optimizar base de datos | Otimizar banco de dados |
+| optional | optionnel | optional | opcional | opcional |
 | overdue | en retard | überfällig | retrasado | atrasado |
 | Overdue / Next run | En retard / Prochaine exécution | Überfällig / Nächster Lauf | Retrasado / Próxima ejecución | Atrasado / Próxima execução |
 | Overdue Backup | Sauvegarde en retard | Überfällige Sicherung | Backup retrasado | Backup atrasado |
@@ -780,11 +759,11 @@
 | Overdue configuration | Configuration des retards | Überfälligkeitskonfiguration | Configuración de retrasos | Configuração de atrasos |
 | Overdue Details | Détails des retards | Überfälligkeitsdetails | Detalles de retrasos | Detalhes de atrasos |
 | Overdue Monitoring | Surveillance des sauvegardes en retard | Überwachung überfälliger Sicherungen | Monitoreo de backups retrasados | Monitoramento de backups atrasados |
-| Overdue monitoring interval: | Intervalle de surveillance des sauvegardes en retard: | Überwachungsintervall: | Intervalo de monitoreo de backups retrasados: | Intervalo de monitoramento de backups atrasados: |
+| Overdue monitoring interval | Intervalle de surveillance des sauvegardes en retard | Überwachungsintervall | Intervalo de monitoreo de backups retrasados | Intervalo de monitoramento de backups atrasados |
 | Overdue monitoring settings saved successfully | Paramètres de surveillance des sauvegardes en retard enregistrés avec succès | Einstellungen für Überwachung überfälliger Sicherungen erfolgreich gespeichert | Configuración de monitoreo de backups retrasados guardada exitosamente | Configurações de monitoramento de backups atrasados salvas com sucesso |
-| Overdue scheduled backups: | Sauvegardes planifiées en retard: | Überfällige geplante Sicherungen: | Backups programados retrasados: | Backups agendados atrasados: |
+| Overdue scheduled backups | Sauvegardes planifiées en retard | Überfällige geplante Sicherungen | Backups programados retrasados | Backups agendados atrasados |
+| Overdue tolerance | Tolérance de retard | Überfälligkeitstoleranz | Tolerancia de retraso | Tolerância de atraso |
 | Overdue tolerance updated successfully. | Tolérance de retard mise à jour avec succès. | Überfälligkeitstoleranz erfolgreich aktualisiert. | Tolerancia de retraso actualizada exitosamente. | Tolerância de atraso atualizada com sucesso. |
-| Overdue tolerance: | Tolérance de retard: | Überfälligkeitstoleranz: | Tolerancia de retraso: | Tolerância de atraso: |
 | overview | vue d'ensemble | Übersicht | resumen | visão geral |
 | Page | Page | Seite | Página | Página |
 | Passphrase | Phrase de passe | Passphrase | Frase de contraseña | Frase secreta |
@@ -794,7 +773,7 @@
 | Password deleted successfully | Mot de passe supprimé avec succès | Passwort erfolgreich gelöscht | Contraseña eliminada exitosamente | Senha excluída com sucesso |
 | Password is required when not auto-generating | Le mot de passe est requis lorsqu'il n'est pas généré automatiquement | Passwort ist erforderlich, wenn nicht automatisch generiert | La contraseña es obligatoria cuando no se genera automáticamente | Senha é obrigatória quando não está sendo gerada automaticamente |
 | Password missing or lost? | Mot de passe manquant ou perdu? | Passwort fehlt oder verloren? | ¿Contraseña faltante o perdida? | Senha esquecida ou perdida? |
-| Password Requirements: | Exigences du mot de passe: | Passwortanforderungen: | Requisitos de contraseña: | Requisitos de senha: |
+| Password Requirements | Exigences du mot de passe | Passwortanforderungen | Requisitos de contraseña | Requisitos de senha |
 | Password Reset | Réinitialisation du mot de passe | Passwort zurücksetzen | Restablecimiento de contraseña | Redefinição de senha |
 | Password reset successfully | Mot de passe réinitialisé avec succès | Passwort erfolgreich zurückgesetzt | Contraseña restablecida exitosamente | Senha redefinida com sucesso |
 | Password updated successfully | Mot de passe mis à jour avec succès | Passwort erfolgreich aktualisiert | Contraseña actualizada exitosamente | Senha atualizada com sucesso |
@@ -826,11 +805,12 @@
 | Privacy Policy | Politique de confidentialité | Datenschutzerklärung | Política de privacidad | Política de Privacidade |
 | Private Key | Clé privée | Privater Schlüssel | Clave privada | Chave privada |
 | Processed successfully | Traité avec succès | Erfolgreich verarbeitet | Procesado exitosamente | Processado com sucesso |
-| Processed: {count} backups | Traités: {count} sauvegardes | Verarbeitet: {count} Backups | Procesados: {count} backups | Processados: {count} backups |
+| Processed:  backups | Traités:  sauvegardes | Verarbeitet:  Backups | Procesados:  backups | Processados:  backups |
 | Profile | Profil | Profil | Perfil | Perfil |
 | Profile updated successfully | Profil mis à jour avec succès | Profil erfolgreich aktualisiert | Perfil actualizado exitosamente | Perfil atualizado com sucesso |
 | QR Code Generation Failed | Échec de la génération du code QR | QR-Code-Generierung fehlgeschlagen | Error en la generación del código QR | Falha na geração do código QR |
 | Queued successfully | Mis en file d'attente avec succès | Erfolgreich in Warteschlange gestellt | Puesto en cola exitosamente | Enfileirado com sucesso |
+| Range: 30-365 days | Plage: 30-365 jours | Bereich: 30-365 Tage | Rango: 30-365 días | Intervalo: 30-365 dias |
 | Received successfully | Reçu avec succès | Erfolgreich empfangen | Recibido exitosamente | Recebido com sucesso |
 | Recipient Email | E-mail du destinataire | Empfänger-E-Mail | Correo electrónico del destinatario | E-mail do destinatário |
 | Recipient email must contain '@' symbol | L'e-mail du destinataire doit contenir le symbole '@' | Empfänger-E-Mail muss das Symbol '@' enthalten | El correo electrónico del destinatario debe contener el símbolo '@' | O e-mail do destinatário deve conter o símbolo '@' |
@@ -852,6 +832,7 @@
 | Request timeout - Please try again | Délai d'attente dépassé - Veuillez réessayer | Anfrage-Timeout - Bitte versuchen Sie es erneut | Tiempo de espera agotado - Por favor inténtelo de nuevo | Tempo limite da solicitação - Por favor, tente novamente |
 | Require password change on first login | Exiger le changement de mot de passe lors de la première connexion | Passwortänderung bei erster Anmeldung erforderlich | Requerir cambio de contraseña en el primer inicio de sesión | Exigir alteração de senha no primeiro login |
 | Require password change on next login | Exiger le changement de mot de passe lors de la prochaine connexion | Passwortänderung bei nächster Anmeldung erforderlich | Requerir cambio de contraseña en el próximo inicio de sesión | Exigir alteração de senha no próximo login |
+| required | requis | erforderlich | requerido | obrigatório |
 | Resend Code | Renvoyer le code | Code erneut senden | Reenviar código | Reenviar código |
 | Reset | Réinitialiser | Zurücksetzen | Restablecer | Redefinir |
 | Reset link sent successfully | Lien de réinitialisation envoyé avec succès | Reset-Link erfolgreich gesendet | Enlace de restablecimiento enviado exitosamente | Link de redefinição enviado com sucesso |
@@ -867,13 +848,14 @@
 | Restore Failed | Échec de la restauration | Wiederherstellung fehlgeschlagen | Error en la restauración | Falha na restauração |
 | Resume | Reprendre | Fortsetzen | Reanudar | Retomar |
 | Resumed successfully | Repris avec succès | Erfolgreich fortgesetzt | Reanudado exitosamente | Retomado com sucesso |
-| Retention (days): | Rétention (jours): | Aufbewahrung (Tage): | Retención (días): | Retenção (dias): |
+| Retention (days) | Rétention (jours) | Aufbewahrung (Tage) | Retención (días) | Retenção (dias) |
 | Retention days must be between 30 and 365 | Les jours de rétention doivent être entre 30 et 365 | Aufbewahrungstage müssen zwischen 30 und 365 liegen | Los días de retención deben estar entre 30 y 365 | Os dias de retenção devem estar entre 30 e 365 |
 | Retry | Réessayer | Wiederholen | Reintentar | Tentar novamente |
 | Retry Backup | Réessayer la sauvegarde | Sicherung wiederholen | Reintentar backup | Tentar backup novamente |
 | Retry Count | Nombre de tentatives | Wiederholungsversuche | Conteo de reintentos | Contador de Tentativas |
 | Return to Dashboard | Retour au tableau de bord | Zurück zum Dashboard | Volver al Dashboard | Voltar ao Painel |
 | Role | Rôle | Rolle | Rol | Função |
+| rows | lignes | Zeilen | filas | linhas |
 | Save | Enregistrer | Speichern | Guardar | Salvar |
 | Save Changes | Enregistrer les modifications | Änderungen speichern | Guardar cambios | Salvar alterações |
 | Save Failed | Échec de l'enregistrement | Speichern fehlgeschlagen | Error al guardar | Falha ao salvar |
@@ -913,8 +895,9 @@
 | Send Test Notification | Envoyer une notification de test | Testbenachrichtigung senden | Enviar notificación de prueba | Enviar notificação de teste |
 | Sender Name (optional) | Nom de l'expéditeur (optionnel) | Absendername (optional) | Nombre del remitente (opcional) | Nome do remetente (opcional) |
 | Sent successfully | Envoyé avec succès | Erfolgreich gesendet | Enviado exitosamente | Enviado com sucesso |
-| Server "{serverName}" deleted | Serveur "{serverName}" supprimé | Server "{serverName}" gelöscht | Servidor "{serverName}" eliminado | Servidor "{serverName}" excluído |
-| Server {serverName} is offline | Le serveur {serverName} est hors ligne | Server {serverName} ist offline | El servidor {serverName} está fuera de línea | O servidor {serverName} está offline |
+| Server | Serveur | Server | Servidor | Servidor |
+| Server  is offline | Le serveur  est hors ligne | Server  ist offline | El servidor  está fuera de línea | O servidor  está offline |
+| Server "" deleted | Serveur "" supprimé | Server "" gelöscht | Servidor "" eliminado | Servidor "" excluído |
 | Server / Backup | Serveur / Sauvegarde | Server / Sicherung | Servidor / Backup | Servidor / Backup |
 | Server added successfully | Serveur ajouté avec succès | Server erfolgreich hinzugefügt | Servidor agregado exitosamente | Servidor adicionado com sucesso |
 | Server Address | Adresse du serveur | Serveradresse | Dirección del servidor | Endereço do servidor |
@@ -935,7 +918,6 @@
 | Server Management | Gestion des serveurs | Serververwaltung | Gestión de servidores | Gerenciamento de servidores |
 | Server Name | Nom du serveur | Servername | Nombre del servidor | Nome do servidor |
 | Server name (a-z) | Nom du serveur (a-z) | Servername (a-z) | Nombre del servidor (a-z) | Nome do servidor (a-z) |
-| Server Name: | Nom du serveur: | Servername: | Nombre del servidor: | Nome do servidor: |
 | Server notifications updated | Notifications du serveur mises à jour | Serverbenachrichtigungen aktualisiert | Notificaciones del servidor actualizadas | Notificações do servidor atualizadas |
 | Server Offline | Serveur hors ligne | Server offline | Servidor fuera de línea | Servidor offline |
 | Server Offline Alert | Alerte serveur hors ligne | Server-Offline-Warnung | Alerta de servidor fuera de línea | Alerta de Servidor Offline |
@@ -946,8 +928,7 @@
 | Server status updated | Statut du serveur mis à jour | Serverstatus aktualisiert | Estado del servidor actualizado | Status do servidor atualizado |
 | Server Type | Type de serveur | Servertyp | Tipo de servidor | Tipo de servidor |
 | Server updated successfully | Serveur mis à jour avec succès | Server erfolgreich aktualisiert | Servidor actualizado exitosamente | Servidor atualizado com sucesso |
-| Server: | Serveur: | Server: | Servidor: | Servidor: |
-| Servers | Serveurs | Server | Servidores | Servidores |
+| servers | serveurs | Server | servidores | servidores |
 | Servers merged successfully | Serveurs fusionnés avec succès | Server erfolgreich zusammengeführt | Servidores fusionados exitosamente | Servidores mesclados com sucesso |
 | Servers settings | Paramètres des serveurs | Server-Einstellungen | Configuración de servidores | Configurações de servidores |
 | Service temporarily unavailable | Service temporairement indisponible | Dienst vorübergehend nicht verfügbar | Servicio temporalmente no disponible | Serviço temporariamente indisponível |
@@ -972,13 +953,12 @@
 | Show password | Afficher le mot de passe | Passwort anzeigen | Mostrar contraseña | Mostrar senha |
 | Show Pending | Afficher en attente | Ausstehende anzeigen | Mostrar pendientes | Mostrar pendentes |
 | Show Successful | Afficher les réussis | Erfolgreiche anzeigen | Mostrar exitosos | Mostrar bem-sucedidos |
-| Showing all messages ({count}) | Affichage de tous les messages ({count}) | Alle Nachrichten anzeigen ({count}) | Mostrando todos los mensajes ({count}) | Mostrando todas as mensagens ({count}) |
+| Showing all messages () | Affichage de tous les messages () | Alle Nachrichten anzeigen () | Mostrando todos los mensajes () | Mostrando todas as mensagens () |
 | Sign in to your account | Connectez-vous à votre compte | Melden Sie sich bei Ihrem Konto an | Inicie sesión en su cuenta | Entre na sua conta |
 | Size | Taille | Größe | Tamaño | Tamanho |
 | Size of uploaded data | Taille des données téléversées | Größe der hochgeladenen Daten | Tamaño de datos enviados | Tamanho dos dados enviados |
-| Size: | Taille: | Größe: | Tamaño: | Tamanho: |
 | Skip | Ignorer | Überspringen | Omitir | Pular |
-| Skipped: {count} duplicates | Ignorés: {count} doublons | Übersprungen: {count} Duplikate | Omitidos: {count} duplicados | Ignorados: {count} duplicados |
+| Skipped:  duplicates | Ignorés:  doublons | Übersprungen:  Duplikate | Omitidos:  duplicados | Ignorados:  duplicados |
 | SMTP email passwords (in Email Settings) | Mots de passe SMTP (dans les paramètres de messagerie) | SMTP-E-Mail-Passwörter (in E-Mail-Einstellungen) | Contraseñas de correo SMTP (en Configuración de correo) | Senhas de e-mail SMTP (em Configurações de e-mail) |
 | SMTP Encryption | Chiffrement SMTP | SMTP-Verschlüsselung | Cifrado SMTP | Criptografia SMTP |
 | SMTP Host | Hôte SMTP | SMTP-Host | Host SMTP | Host SMTP |
@@ -1004,14 +984,12 @@
 | Status | Statut | Status | Estado | Status |
 | Status (error > warning > success) | Statut (erreur > avertissement > succès) | Status (Fehler > Warnung > Erfolg) | Estado (error > advertencia > éxito) | Status (erro > aviso > sucesso) |
 | Status (error>warnings>success) | Statut (erreur>avertissements>succès) | Status (Fehler>Warnungen>Erfolg) | Estado (error>advertencias>éxito) | Status (erro>avisos>sucesso) |
-| Status: | Statut: | Status: | Estado: | Status: |
 | Stop | Arrêter | Stoppen | Detener | Parar |
 | Stopped successfully | Arrêté avec succès | Erfolgreich gestoppt | Detenido exitosamente | Parado com sucesso |
-| Storage | Stockage | Speicherplatz | Alm. | Armaz. |
-| Storage Size | Taille du stockage | Speichergröße | Tamaño de almacenamiento | Tamanho do armazenamento |
+| Storage | Stockage | Speicherplatz | Almacenamiento | Armazenamento |
+| Storage Size | Taille de stockage | Speichergröße | Tamaño de almacenamiento | Tamanho de armazenamento |
 | Storage size used | Taille de stockage utilisée | Verwendete Speichergröße | Tamaño de almacenamiento usado | Tamanho de armazenamento usado |
-| Storage Size: | Taille de stockage: | Speichergröße: | Tamaño de almacenamiento: | Tamanho de armazenamento: |
-| Storage: | Stockage: | Speicherplatz: | Almacenamiento: | Armazenamento: |
+| stored hostname, change if needed | nom d'hôte stocké, modifier si nécessaire | gespeicherter Hostname, bei Bedarf ändern | nombre de host almacenado, cambiar si es necesario | nome do host armazenado, alterar se necessário |
 | Submit | Soumettre | Absenden | Enviar | Enviar |
 | Success | Succès | Erfolg | Éxito | Sucesso |
 | Success Notification Template | Modèle de notification de succès | Erfolgs-Benachrichtigungsvorlage | Plantilla de notificación de éxito | Modelo de notificação de sucesso |
@@ -1026,7 +1004,6 @@
 | Switch to Table | Passer au tableau | Zur Tabelle wechseln | Cambiar a tabla | Alternar para tabela |
 | System | Système | System | Sistema | Sistema |
 | System Alert | Alerte système | Systemwarnung | Alerta del sistema | Alerta do Sistema |
-| System Alert: {alertType} | Alerte système : {alertType} | Systemwarnung: {alertType} | Alerta del sistema: {alertType} | Alerta do Sistema: {alertType} |
 | Table Page Size | Taille de page du tableau | Tabellenseitengröße | Tamaño de página de tabla | Tamanho da página da tabela |
 | table view | vue tableau | Tabellenansicht | vista de tabla | visualização de tabela |
 | Tags (comma separated) | Tags (séparés par des virgules) | Tags (kommagetrennt) | Etiquetas (separadas por comas) | Tags (separadas por vírgula) |
@@ -1080,7 +1057,7 @@
 | To Addresses | Adresses de destinataires | Empfängeradressen | Direcciones de destinatarios | Endereços de destinatários |
 | Today | Aujourd'hui | Heute | Hoy | Hoje |
 | Toggle Theme | Changer de thème | Thema wechseln | Cambiar tema | Alternar tema |
-| Tolerance: | Tolérance: | Toleranz: | Tolerancia: | Tolerância: |
+| Tolerance | Tolérance | Toleranz | Tolerancia | Tolerância |
 | Tomorrow | Demain | Morgen | Mañana | Amanhã |
 | Total | Total | Gesamt | Total | Total |
 | Total Backup Jobs | Total des tâches de sauvegarde | Backup-Jobs gesamt | Total de trabajos de backup | Total de trabalhos de backup |
@@ -1103,11 +1080,11 @@
 | Unknown Server | Serveur inconnu | Unbekannter Server | Servidor desconocido | Servidor desconhecido |
 | Updated successfully | Mis à jour avec succès | Erfolgreich aktualisiert | Actualizado exitosamente | Atualizado com sucesso |
 | Updating server credentials and collecting backups | Mise à jour des identifiants du serveur et collecte des sauvegardes | Server-Anmeldedaten aktualisieren und Backups sammeln | Actualizando credenciales del servidor y recopilando backups | Atualizando credenciais do servidor e coletando backups |
+| updating stored value | mise à jour de la valeur stockée | gespeicherten Wert aktualisieren | actualizando valor almacenado | atualizando valor armazenado |
 | Upload | Téléverser | Hochladen | Subir | Subir |
-| Uploaded Size | Taille téléversée | Hochgeladene Größe | Tamaño enviado | Tamanho enviado |
-| Uploaded Size: | Taille téléversée: | Hochgeladene Größe: | Tamaño cargado: | Tamanho enviado: |
+| Uploaded | Téléversé | Hochgeladen | Enviado | Enviado |
+| Uploaded Size | Taille téléversée | Hochgeladene Größe | Tamaño cargado | Tamanho enviado |
 | Uploaded successfully | Téléversé avec succès | Erfolgreich hochgeladen | Enviado exitosamente | Enviado com sucesso |
-| Uploaded: | Téléversé: | Hochgeladen: | Enviado: | Enviado: |
 | URL of the Duplicati server | URL du serveur Duplicati | Duplicati-Server-URL | URL del servidor Duplicati | URL do servidor Duplicati |
 | Use Backup Code | Utiliser le code de sauvegarde | Backup-Code verwenden | Usar código de backup | Usar código de backup |
 | User | Utilisateur | Benutzer | Usuario | Usuário |
@@ -1132,7 +1109,7 @@
 | Verify | Vérifier | Bestätigen | Verificar | Verificar |
 | Version | Version | Version | Versión | Versão |
 | Version info not received | Informations de version non reçues | Versionsinformationen nicht erhalten | Información de versión no recibida | Informações de versão não recebidas |
-| Versions: | Versions: | Versionen: | Versiones: | Versões: |
+| Versions | Versions | Versionen | Versiones | Versões |
 | View | Afficher | Anzeigen | Ver | Visualizar |
 | View All | Voir tout | Alle anzeigen | Ver todo | Ver todos |
 | View application audit log entries | Afficher les entrées du journal d'audit de l'application | Anwendungs-Audit-Log-Einträge anzeigen | Ver entradas del log de auditoría de la aplicación | Ver entradas do log de auditoria do aplicativo |
@@ -1147,7 +1124,6 @@
 | Warning/Error Notification Template | Modèle de notification d'avertissement/erreur | Warnung/Fehler-Benachrichtigungsvorlage | Plantilla de notificación de advertencia/error | Modelo de notificação de aviso/erro |
 | Warnings | Avertissements | Warnungen | Advertencias | Avisos |
 | Warnings & Errors | Avertissements & Erreurs | Warnungen & Fehler | Advertencias y Errores | Avisos e Erros |
-| Warnings: | Avertissements: | Warnungen: | Advertencias: | Avisos: |
 | Web Interface Address (URL) | Adresse de l'interface Web (URL) | Web-Interface-Adresse (URL) | Dirección de interfaz web (URL) | Endereço da interface web (URL) |
 | Week(s) | Semaine(s) | Woche(n) | Semana(s) | Semana(s) |
 | When | Quand | Wann | Cuándo | Quando |
@@ -1155,5 +1131,5 @@
 | Yes | Oui | Ja | Sí | Sim |
 | Yesterday | Hier | Gestern | Ayer | Ontem |
 | You will need to log in again. | Vous devrez vous reconnecter. | Sie müssen sich erneut anmelden. | Necesitará iniciar sesión nuevamente. | Você precisará fazer login novamente. |
-| You will need to reconfigure the following: | Vous devrez reconfigurer les éléments suivants: | Sie müssen Folgendes neu konfigurieren: | Deberá reconfigurar lo siguiente: | Você precisará reconfigurar o seguinte: |
+| You will need to reconfigure the following | Vous devrez reconfigurer les éléments suivants | Sie müssen Folgendes neu konfigurieren | Deberá reconfigurar lo siguiente | Você precisará reconfigurar o seguinte |
 | your-email@your-domain.com | votre-email@votre-domaine.com | ihre-email@ihre-domain.com | su-email@su-dominio.com | seu-email@seu-dominio.com |

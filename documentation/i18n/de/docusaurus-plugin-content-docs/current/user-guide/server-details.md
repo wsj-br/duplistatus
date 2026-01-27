@@ -2,7 +2,7 @@
 
 Wenn Sie auf einen Server im Dashboard klicken, wird eine Seite mit einer Liste von Sicherungen für diesen Server geöffnet. Sie können alle Sicherungen anzeigen oder eine bestimmte auswählen, wenn der Server mehrere Sicherungen konfiguriert hat.
 
-![Server Details](/img/screen-server-backup-list.png)
+![Server Details](/assets/screen-server-backup-list.png)
 
 ## Server / Sicherung Statistiken {#serverbackup-statistics}
 
@@ -18,7 +18,7 @@ Dieser Abschnitt zeigt Statistiken für entweder alle Sicherungen auf dem Server
 
 Wenn diese Sicherung oder eine der Sicherungen auf dem Server (wenn `Alle Sicherungen` ausgewählt ist) überfällig ist, wird eine Nachricht unter der Zusammenfassung angezeigt.
 
-![Server Details - Überfällige geplante Sicherungen](/img/screen-server-overdue-message.png)
+![Server Details - Überfällige geplante Sicherungen](/assets/screen-server-overdue-message.png)
 
 Klicken Sie auf die <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Konfigurieren"/> um zu [`Einstellungen → Überwachung überfälliger Sicherungen`](settings/overdue-settings.md) zu gehen. Oder klicken Sie auf die <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> in der Symbolleiste, um die Weboberfläche des Duplicati-Servers zu öffnen und die Protokolle zu prüfen.
 
@@ -28,7 +28,7 @@ Klicken Sie auf die <IconButton icon="lucide:settings" href="settings/overdue-se
 
 Diese Tabelle listet die Sicherungsprotokolle für den ausgewählten Server auf.
 
-![Sicherungsverlauf](/img/screen-backup-history.png)
+![Sicherungsverlauf](/assets/screen-backup-history.png)
 
 - **Sicherungsname**: Der Name der Sicherung im Duplicati-Server.
 - **Datum**: Der Zeitstempel der Sicherung und die verstrichene Zeit seit der letzten Bildschirmaktualisierung.
@@ -56,7 +56,7 @@ Wenn `Alle Sicherungen` ausgewählt ist, zeigt die Liste alle Sicherungen standa
 
 Wenn Sie auf ein Statusabzeichen im Dashboard (Tabellenansicht) oder eine beliebige Zeile in der Sicherungsverlaufstabelle klicken, werden die detaillierten Sicherungsinformationen angezeigt.
 
-![Sicherungsdetails](/img/screen-backup-detail.png)
+![Sicherungsdetails](/assets/screen-backup-detail.png)
 
 - **Serverdetails**: Servername, Alias und Notiz.
 - **Sicherungsinformationen**: Der Zeitstempel der Sicherung und ihre ID.

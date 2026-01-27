@@ -34,23 +34,23 @@ Weitere Informationen finden Sie im [Benutzerhandbuch](user-guide/overview.md) m
 
 ### Dashboard {#dashboard}
 
-![dashboard](/img/screen-main-dashboard-card-mode.png)
+![dashboard](/assets/screen-main-dashboard-card-mode.png)
 
 ### Sicherungsverlauf {#backup-history}
 
-![server-detail](/img/screen-server-backup-list.png)
+![server-detail](/assets/screen-server-backup-list.png)
 
 ### Sicherungsdetails {#backup-details}
 
-![backup-detail](/img/screen-backup-detail.png)
+![backup-detail](/assets/screen-backup-detail.png)
 
 ### Überfällige Sicherungen {#overdue-backups}
 
-![overdue backups](/img/screen-overdue-backup-hover-card.png)
+![overdue backups](/assets/screen-overdue-backup-hover-card.png)
 
 ### Benachrichtigungen für überfällige Sicherungen auf Ihrem Telefon {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/img/screen-overdue-notification.png)
+![ntfy overdue message](/assets/screen-overdue-notification.png)
 
 ## API-Referenz {#api-reference}
 

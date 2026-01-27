@@ -12,6 +12,7 @@ files:
     translation: /i18n/%locale%/docusaurus-plugin-content-docs/current/**/%original_file_name%
     ignore:
       - /docs/**/assets/**/*
+      - /docs/LICENSE.md
     update_option: update_as_unapproved
     languages_mapping:
       locale:

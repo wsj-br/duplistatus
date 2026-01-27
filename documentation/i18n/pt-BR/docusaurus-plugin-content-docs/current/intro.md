@@ -38,23 +38,23 @@ Consulte o [Guia do Usuário](user-guide/overview.md) para instruções detalhad
 
 ### Painel {#dashboard}
 
-![Painel](/img/screen-main-dashboard-card-mode.png)
+![Painel](/assets/screen-main-dashboard-card-mode.png)
 
 ### Histórico de backups {#backup-history}
 
-![server-detail](/img/screen-server-backup-list.png)
+![server-detail](/assets/screen-server-backup-list.png)
 
 ### Detalhes de backup {#backup-details}
 
-![backup-detail](/img/screen-backup-detail.png)
+![backup-detail](/assets/screen-backup-detail.png)
 
 ### Backups atrasados {#overdue-backups}
 
-![Backups atrasados](/img/screen-overdue-backup-hover-card.png)
+![Backups atrasados](/assets/screen-overdue-backup-hover-card.png)
 
 ### Notificações atrasadas no seu telefone {#overdue-notifications-on-your-phone}
 
-![Mensagem NTFY atrasada](/img/screen-overdue-notification.png)
+![Mensagem NTFY atrasada](/assets/screen-overdue-notification.png)
 
 ## Referência de API {#api-reference}
 

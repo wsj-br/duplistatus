@@ -2,7 +2,7 @@
 
 Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 
-![Anzeigeeinstellungen](/img/screen-settings-display.png)
+![Anzeigeeinstellungen](/assets/screen-settings-display.png)
 
 <br/>
 

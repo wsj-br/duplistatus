@@ -27,6 +27,7 @@ gantt
     dateFormat  YYYY-MM-DD HH:mm
     axisFormat %m/%d %H:%M
 
+    ````
     ```
     Last Backup Received    :done, last-backup, 2024-01-01 08:00, 0.5h
     
@@ -40,6 +41,7 @@ gantt
     Check 2 : milestone, deadline, 2024-01-02 08:30, 0h
     Check 3 : milestone, deadline, 2024-01-02 10:00, 0h
     ```
+    ````
 
 ```
 </ZoomMermaid>

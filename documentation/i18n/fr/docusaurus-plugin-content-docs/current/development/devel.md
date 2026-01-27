@@ -1,77 +1,77 @@
-# Most used commands {#most-used-commands}
+# Commandes les plus utilisées {#most-used-commands}
 
-## Run in dev mode {#run-in-dev-mode}
+## Exécuter en mode développement {#run-in-dev-mode}
 
 ```bash
 pnpm dev
 ```
 
-- **JSON File Storage**: All received backup data is stored as JSON files in the `data` directory. These files are named using the timestamp of when they were received, in the format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC time). This feature is only active in development mode and helps with debugging by preserving the raw data received from Duplicati.
+- **Stockage de fichiers JSON** : Toutes les données de sauvegarde reçues sont stockées sous forme de fichiers JSON dans le répertoire `data`. Ces fichiers sont nommés en utilisant l'horodatage du moment où ils ont été reçus, au format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (heure UTC). Cette fonctionnalité n'est active qu'en mode développement et aide au débogage en préservant les données brutes reçues de Duplicati.
 
-- **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.
+- **Journalisation détaillée** : L'application enregistre des informations plus détaillées sur les opérations de base de données et les demandes API quand elle s'exécute en mode développement.
 
-- **Version Update**: The development server automatically updates the version information before starting, ensuring the latest version is displayed in the application.
+- **Mise à jour de version** : Le serveur de développement met automatiquement à jour les informations de version avant de démarrer, en s'assurant que la dernière version est affichée dans l'application.
 
-- **Backup Deletion**: On the server detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
+- **Suppression de sauvegarde** : Sur la page de détails du serveur, un bouton de suppression apparaît dans le tableau des sauvegardes qui vous permet de supprimer des sauvegardes individuelles. Cette fonctionnalité est particulièrement utile pour tester et déboguer la fonctionnalité des sauvegardes en retard.
 
-## Start the production server (in development environment) {#start-the-production-server-in-development-environment}
+## Démarrer le serveur de production (dans l'environnement de développement) {#start-the-production-server-in-development-environment}
 
-First, build the application for local production:
+Tout d'abord, construisez l'application pour la production locale :
 
 ```bash
 pnpm build-local
 ```
 
-Then start the production server:
+Ensuite, démarrez le serveur de production :
 
 ```bash
 pnpm start-local
 ```
 
-## Start a Docker stack (Docker Compose) {#start-a-docker-stack-docker-compose}
+## Démarrer une pile Docker (Docker Compose) {#start-a-docker-stack-docker-compose}
 
 ```bash
 pnpm docker-up
 ```
 
-Or manually:
+Ou manuellement :
 
 ```bash
 docker compose up --build -d
 ```
 
-## Stop a Docker stack (Docker Compose) {#stop-a-docker-stack-docker-compose}
+## Arrêter une pile Docker (Docker Compose) {#stop-a-docker-stack-docker-compose}
 
 ```bash
 pnpm docker-down
 ```
 
-Or manually:
+Ou manuellement :
 
 ```bash
 docker compose down
 ```
 
-## Clean Docker environment {#clean-docker-environment}
+## Nettoyer l'environnement Docker {#clean-docker-environment}
 
 ```bash
 pnpm docker-clean
 ```
 
-Or manually:
+Ou manuellement :
 
 ```bash
 ./scripts/clean-docker.sh
 ```
 
-This script performs a complete Docker cleanup, which is useful for:
+Ce script effectue un nettoyage complet de Docker, ce qui est utile pour :
 
-- Freeing up disk space
-- Removing old/unused Docker artefacts
-- Cleaning up after development or testing sessions
-- Maintaining a clean Docker environment
+- Libérer de l'espace disque
+- Supprimer les anciens artefacts Docker inutilisés
+- Nettoyer après les sessions de développement ou de test
+- Maintenir un environnement Docker propre
 
-## Create a development image (to test locally or with Podman) {#create-a-development-image-to-test-locally-or-with-podman}
+## Créer une image de développement (pour tester localement ou avec Podman) {#create-a-development-image-to-test-locally-or-with-podman}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

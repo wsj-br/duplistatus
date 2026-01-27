@@ -8,7 +8,7 @@
 
 1. Cliquez sur l'icône <IconButton icon="lucide:download" /> `Collecter les journaux de sauvegarde` dans la [Barre d'outils de l'application](overview#application-toolbar).
 
-![Collecter les journaux de sauvegarde Popup](/img/screen-collect-button-popup.png)
+![Collecter les journaux de sauvegarde Popup](/assets/screen-collect-button-popup.png)
 
 2. Sélectionner le serveur
 
@@ -37,7 +37,7 @@ Les boutons <IconButton icon="lucide:download" /> sont disponibles dans `Paramè
 
 _Cliquez avec le bouton droit_ sur le bouton <IconButton icon="lucide:download" /> `Collecter les journaux de sauvegarde` dans la barre d'outils de l'application pour collecter à partir de tous les serveurs configurés.
 
-![Tout collecter Menu Clic droit](/img/screen-collect-button-right-click-popup.png)
+![Tout collecter Menu Clic droit](/assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label="Tout collecter"/> dans les pages `Paramètres → Surveillance des sauvegardes en retard` et `Paramètres → Paramètres du serveur` pour collecter à partir de tous les serveurs configurés.

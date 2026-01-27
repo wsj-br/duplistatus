@@ -1,40 +1,40 @@
-# Audit Logs {#audit-logs}
+# Audit-Logs {#audit-logs}
 
-The audit log provides a comprehensive record of all system changes and user actions in **duplistatus**. This helps track configuration changes, user activities, and system operations for security and troubleshooting purposes.
+Das Audit-Log bietet eine umfassende Aufzeichnung aller Systemänderungen und Benutzeraktionen in **duplistatus**. Dies hilft beim Nachverfolgen von Konfigurationsänderungen, Benutzeraktivitäten und Systemvorgängen für Sicherheits- und Fehlerbehebungszwecke.
 
-![Audit Log](/assets/screen-settings-audit.png)
+![Audit-Log](/assets/screen-settings-audit.png)
 
-## Audit Log Viewer {#audit-log-viewer}
+## Audit-Log-Viewer {#audit-log-viewer}
 
-The audit log viewer displays a chronological list of all logged events with the following information:
+Der Audit-Log-Viewer zeigt eine chronologische Liste aller protokollierten Ereignisse mit den folgenden Informationen an:
 
-- **Timestamp**: When the event occurred
-- **User**: The username who performed the action (or "System" for automated actions)
-- **Action**: The specific action that was performed
-- **Category**: The category of the action (Authentication, User Management, Configuration, Backup Operations, Server Management, System Operations)
-- **Status**: Whether the action succeeded or failed
-- **Target**: The object that was affected (if applicable)
-- **Details**: Additional information about the action
+- **Zeitstempel**: Wann das Ereignis aufgetreten ist
+- **Benutzer**: Der Benutzername, der die Aktion ausgeführt hat (oder "System" für automatisierte Aktionen)
+- **Aktion**: Die spezifische Aktion, die ausgeführt wurde
+- **Kategorie**: Die Kategorie der Aktion (Authentifizierung, Benutzerverwaltung, Konfiguration, Sicherungsvorgänge, Serververwaltung, Systemvorgänge)
+- **Status**: Ob die Aktion erfolgreich war oder fehlgeschlagen ist
+- **Ziel**: Das betroffene Objekt (falls zutreffend)
+- **Details**: Zusätzliche Informationen zur Aktion
 
-### Viewing Log Details {#viewing-log-details}
+### Anzeigen von Protokolldetails {#viewing-log-details}
 
-Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to view detailed information, including:
+Klicken Sie auf das Symbol <IconButton icon="lucide:eye" /> Auge neben einem beliebigen Protokolleintrag, um detaillierte Informationen anzuzeigen, einschließlich:
 
-- Full timestamp
-- User information
-- Complete action details (for example: fields changed, statistics, etc.)
-- IP address and user agent
-- Error messages (if the action failed)
+- Vollständiger Zeitstempel
+- Benutzerinformationen
+- Vollständige Aktionsdetails (z. B.: geänderte Felder, Statistiken usw.)
+- IP-Adresse und User-Agent
+- Fehlermeldungen (falls die Aktion fehlgeschlagen ist)
 
-### Exporting Audit Logs {#exporting-audit-logs}
+### Exportieren von Audit-Logs {#exporting-audit-logs}
 
-You can export filtered audit logs in two formats:
+Sie können gefilterte Audit-Logs in zwei Formaten exportieren:
 
-| Button                                            | Description                                          |
-| :------------------------------------------------ | :--------------------------------------------------- |
-| <IconButton icon="lucide:download" label="CSV"/>  | Export logs as a CSV file for spreadsheet analysis   |
-| <IconButton icon="lucide:download" label="JSON"/> | Export logs as a JSON file for programmatic analysis |
+| Schaltfläche                                      | Beschreibung                                                         |
+| :------------------------------------------------ | :------------------------------------------------------------------- |
+| <IconButton icon="lucide:download" label="CSV"/>  | Protokolle als CSV-Datei für Tabellenkalkulationsanalyse exportieren |
+| <IconButton icon="lucide:download" label="JSON"/> | Protokolle als JSON-Datei für programmgesteuerte Analyse exportieren |
 
 :::note
-Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+Exporte enthalten nur die Protokolle, die derzeit basierend auf Ihren aktiven Filtern sichtbar sind. Um alle Protokolle zu exportieren, löschen Sie zuerst alle Filter.
 :::

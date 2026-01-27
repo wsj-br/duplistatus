@@ -2,7 +2,7 @@
 
 Vous pouvez configurer un nom alternatif (alias) pour vos serveurs, une note pour décrire sa fonction et les adresses Web de vos serveurs Duplicati ici.
 
-![paramètres du serveur](/img/screen-settings-server.png)
+![paramètres du serveur](/assets/screen-settings-server.png)
 
 | Paramètre                                               | Description                                                                                                                                                                                                               |
 | :------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

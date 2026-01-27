@@ -8,7 +8,7 @@
 
 1. Klicken Sie auf das Symbol <IconButton icon="lucide:download" /> `Backup-Protokolle sammeln` in der [Anwendungssymbolleiste](overview#application-toolbar).
 
-![Backup-Protokolle sammeln Popup](/img/screen-collect-button-popup.png)
+![Backup-Protokolle sammeln Popup](/assets/screen-collect-button-popup.png)
 
 2. Server auswählen
 
@@ -36,7 +36,7 @@ _**Hinweise:**_
 
 _Klicken Sie mit der rechten Maustaste_ auf die Schaltfläche <IconButton icon="lucide:download" /> `Backup-Protokolle sammeln` in der Anwendungssymbolleiste, um von allen konfigurierten Servern zu sammeln.
 
-![Alle sammeln Rechtsklick-Menü](/img/screen-collect-button-right-click-popup.png)
+![Alle sammeln Rechtsklick-Menü](/assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle sammeln"/> auf den Seiten `Einstellungen → Überwachung überfälliger Sicherungen` und `Einstellungen → Server-Einstellungen` verwenden, um von allen konfigurierten Servern zu sammeln.

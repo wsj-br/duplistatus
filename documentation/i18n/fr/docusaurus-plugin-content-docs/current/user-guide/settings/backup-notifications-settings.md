@@ -2,7 +2,7 @@
 
 Utilisez ces paramètres pour envoyer des notifications quand un [nouveau journal de sauvegarde est reçu](../../installation/duplicati-server-configuration.md).
 
-![Alertes de sauvegarde](/img/screen-settings-notifications.png)
+![Alertes de sauvegarde](/assets/screen-settings-notifications.png)
 
 Le tableau des notifications de sauvegarde est organisé par serveur. Le format d'affichage dépend du nombre de sauvegardes qu'un serveur possède:
 
@@ -52,7 +52,7 @@ La configuration de destination supplémentaire est indiquée par des icônes co
 
 Si aucune icône n'est affichée, le serveur ou la sauvegarde n'a pas de destinations supplémentaires configurées.
 
-![Destinations supplémentaires au niveau du serveur](/img/screen-settings-notifications-server.png)
+![Destinations supplémentaires au niveau du serveur](/assets/screen-settings-notifications-server.png)
 
 ### Valeurs par défaut au niveau du serveur {#server-level-defaults}
 
@@ -100,7 +100,7 @@ Les sauvegardes individuelles héritent automatiquement des valeurs par défaut 
 
 Vous pouvez modifier les paramètres de destination supplémentaire pour plusieurs sauvegardes à la fois en utilisant la fonction de modification en masse. Ceci est particulièrement utile quand vous devez appliquer les mêmes destinations supplémentaires à de nombreux travaux de sauvegarde.
 
-![Dialogue de modification en masse](/img/screen-settings-notifications-bulk.png)
+![Dialogue de modification en masse](/assets/screen-settings-notifications-bulk.png)
 
 1. Accédez à `Paramètres → Notifications de sauvegarde`.
 2. Utilisez les cases à cocher dans la première colonne pour sélectionner les sauvegardes ou serveurs que vous souhaitez modifier.

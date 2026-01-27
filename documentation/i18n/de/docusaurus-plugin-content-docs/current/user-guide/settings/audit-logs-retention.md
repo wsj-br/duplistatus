@@ -1,15 +1,15 @@
-# Audit Log Retention {#audit-log-retention}
+# Audit-Log-Aufbewahrung {#audit-log-retention}
 
-Configure how long audit logs are retained before automatic cleanup.
+Konfigurieren Sie, wie lange Audit-Logs vor der automatischen Bereinigung aufbewahrt werden.
 
-![Audit Log Retention](/assets/screen-settings-audit-retention.png)
+![Audit-Log-Aufbewahrung](/assets/screen-settings-audit-retention.png)
 
-| Setting                                 | Description                                                   | Default Value |
-| :-------------------------------------- | :------------------------------------------------------------ | :------------ |
-| **Retention (days)** | Number of days to retain audit logs before automatic deletion | `90 days`     |
+| Einstellung                                | Beschreibung                                                                         | Standardwert |
+| :----------------------------------------- | :----------------------------------------------------------------------------------- | :----------- |
+| **Aufbewahrung (Tage)** | Anzahl der Tage, für die Audit-Logs vor der automatischen Löschung aufbewahrt werden | `90 Tage`    |
 
-## Retention Settings {#retention-settings}
+## Aufbewahrungseinstellungen {#retention-settings}
 
-- **Range**: 30 to 365 days
-- **Automatic Cleanup**: Runs daily at 02:00 UTC (not configurable)
-- **Manual Cleanup**: Available via API for administrators (see [Cleanup Audit Logs](../../api-reference/administration-apis.md#cleanup-audit-logs-apiaudit-logcleanup))
+- **Bereich**: 30 bis 365 Tage
+- **Automatische Bereinigung**: Läuft täglich um 02:00 UTC (nicht konfigurierbar)
+- **Manuelle Bereinigung**: Verfügbar über API für Administratoren (siehe [Audit-Logs bereinigen](../../api-reference/administration-apis.md#cleanup-audit-logs-apiaudit-logcleanup))

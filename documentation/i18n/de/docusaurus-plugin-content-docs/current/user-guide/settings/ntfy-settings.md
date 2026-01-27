@@ -2,7 +2,7 @@
 
 NTFY ist ein [Open-Source](https://github.com/binwiederhier/ntfy) einfacher Benachrichtigungsdienst, der Push-Benachrichtigungen auf Ihr Telefon oder Ihren Desktop senden kann. Dieser Abschnitt ermöglicht es Ihnen, Ihre Benachrichtigungsserver-Verbindung und Authentifizierung einzurichten.
 
-![Ntfy-Einstellungen](/img/screen-settings-ntfy.png)
+![Ntfy-Einstellungen](/assets/screen-settings-ntfy.png)
 
 | Einstellung            | Beschreibung                                                                                                                                                                                                    |
 | :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
