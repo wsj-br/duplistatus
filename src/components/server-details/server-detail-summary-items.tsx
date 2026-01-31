@@ -9,9 +9,9 @@ import type { BackupStatus } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Archive, Clock, UploadCloud, Database, History, HardDrive, CalendarX2, Settings, FolderOpen } from "lucide-react";
-import { formatBytes, formatDurationFromMinutes, formatRelativeTime, formatTimeElapsed } from "@/lib/utils";
+import { formatDurationFromMinutes, formatRelativeTime, formatTimeElapsed } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
-import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 import type { Backup } from "@/lib/types";
 
 interface OverdueBackup {
@@ -133,21 +133,21 @@ export function ServerDetailSummaryItems({
       { 
         id: 'lastBackupSize',
         title: content.lastBackupSize.value, 
-        value: getFormattedValue(lastBackupFileSize, (val) => formatBytesLocale(val, locale), "0 Bytes"),
+        value: getFormattedValue(lastBackupFileSize, (val) => formatBytes(val, locale), "0 Bytes"),
         icon: <HardDrive className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "hard drive" 
       },
       { 
         id: 'totalStorageUsed',
         title: content.totalStorageUsed.value, 
-        value: getFormattedValue(lastBackupStorageSize, (val) => formatBytesLocale(val, locale), "0 Bytes"),
+        value: getFormattedValue(lastBackupStorageSize, (val) => formatBytes(val, locale), "0 Bytes"),
         icon: <Database className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "database symbol" 
       },
       { 
         id: 'totalUploaded',
         title: content.totalUploaded.value, 
-        value: getFormattedValue(totalUploadedSize, (val) => formatBytesLocale(val, locale), "0 Bytes"),
+        value: getFormattedValue(totalUploadedSize, (val) => formatBytes(val, locale), "0 Bytes"),
         icon: <UploadCloud className="h-4 w-4 text-blue-600" />, 
         "data-ai-hint": "cloud data" 
       }

@@ -66,9 +66,9 @@ I later used these prompts to adjust and refine the design and behaviour:
 
 After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
 
-![prototype](/assets/screen-prototype.png)
+![prototype](/img/screen-prototype.png)
 
-![prototype-detail](/assets/screen-prototype-detail.png)
+![prototype-detail](/img/screen-prototype-detail.png)
 
 :::note
 One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.

@@ -5,8 +5,7 @@ import type { OverallSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HardDrive, Archive, UploadCloud, Database, FileSearch, AlertTriangle, ChartLine, LayoutDashboard, Sheet, ThumbsUp } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
-import { formatBytes } from "@/lib/utils";
-import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 import { useLocale } from "@/contexts/locale-context";
 import { Button } from "@/components/ui/button";
 import {
@@ -82,21 +81,21 @@ export function DashboardSummaryCards({
     {
       id: 'totalBackupSize',
       title: content.totalBackupSize,
-      value: formatBytesLocale(summary.totalBackupSize, locale),
+      value: formatBytes(summary.totalBackupSize, locale),
       icon: <ColoredIcon icon={FileSearch} color="yellow" size="lg" />,
       "data-ai-hint": "file search",
     },
     {
       id: 'totalStorageUsed',
       title: content.totalStorageUsed,
-      value: formatBytesLocale(summary.totalStorageUsed, locale),
+      value: formatBytes(summary.totalStorageUsed, locale),
       icon: <ColoredIcon icon={Database} color="blue" size="lg" />,
       "data-ai-hint": "database storage",
     },
     {
       id: 'totalUploadedSize',
       title: content.totalUploadedSize,
-      value: formatBytesLocale(summary.totalUploadedSize, locale),
+      value: formatBytes(summary.totalUploadedSize, locale),
       icon: <ColoredIcon icon={UploadCloud} color="blue" size="lg" />,
       "data-ai-hint": "cloud upload",
     },

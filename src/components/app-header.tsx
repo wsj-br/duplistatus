@@ -208,6 +208,7 @@ export function AppHeader() {
                 <Button
                   variant="outline"
                   className="ml-4 flex items-center gap-2 px-3 py-2 h-auto"
+                  data-screenshot-target="user-menu-trigger"
                 >
                   <User className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium">{user.username}</span>

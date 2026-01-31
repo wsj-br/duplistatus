@@ -58,7 +58,7 @@ Consulte o [Guia do Usuário](user-guide/overview.md) para instruções detalhad
 
 ### Notificações atrasadas no seu telefone {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/assets/screen-overdue-notification.png)
+![ntfy overdue message](/img/screen-overdue-notification.png)
 
 ## Referência da API {#api-reference}
 

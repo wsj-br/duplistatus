@@ -2396,7 +2396,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
           {/* Bulk Action Bar */}
           {selectedBackups.size > 0 && (
-            <div className="mb-4 p-3 bg-muted rounded-md border flex items-center justify-between">
+            <div className="mb-4 p-3 bg-muted rounded-md border flex items-center justify-between" data-screenshot-target="settings-notifications-bulk-bar">
               <div className="text-sm font-medium text-muted-foreground">
                 <span className="font-bold">{content.additionalDestinations.value}</span> {selectedBackups.size === 1 
                   ? content.backupsSelected.value.replace('{count}', selectedBackups.size.toString())
@@ -2408,6 +2408,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   size="sm"
                   onClick={handleClearSelection}
                   className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600 transition-none"
+                  data-screenshot-target="settings-notifications-clear-selection"
                 >
                   {content.clearSelection.value}
                 </Button>

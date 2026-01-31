@@ -11,7 +11,7 @@ import {
   Tooltip
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
+import { formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
@@ -23,7 +23,7 @@ import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useLocale } from "@/contexts/locale-context";
 import { formatDateTime, formatDate } from "@/lib/date-format";
-import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -56,17 +56,17 @@ const formatBytesForYAxis = (bytes: number, locale: string = 'en'): string => {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
-  if (i >= sizes.length) return formatBytesLocale(bytes, locale, 1);
+  if (i >= sizes.length) return formatBytes(bytes, locale, 1);
   
   const size = sizes[i];
   
   // Apply specific precision rules for Y-axis labels using the library function
   if (size === 'GB') {
-    return formatBytesLocale(bytes, locale, 1);  // 1 decimal place for GB
+    return formatBytes(bytes, locale, 1);  // 1 decimal place for GB
   } else if (size === 'MB' || size === 'KB' || size === 'B') {
-    return formatBytesLocale(bytes, locale, 0);  // 0 decimal places for MB, KB, B
+    return formatBytes(bytes, locale, 0);  // 0 decimal places for MB, KB, B
   } else {
-    return formatBytesLocale(bytes, locale, 1);  // 1 decimal place for TB+
+    return formatBytes(bytes, locale, 1);  // 1 decimal place for TB+
   }
 };
 
@@ -76,7 +76,7 @@ const getChartMetrics = (content: ReturnType<typeof useIntlayer<'metrics-charts-
   { 
     key: 'uploadedSize', 
     label: content.chartLabelUploadedSize.value, 
-    formatter: (v: number) => formatBytesLocale(v, locale),
+    formatter: (v: number) => formatBytes(v, locale),
     color: "#3b82f6" // Blue
   },
   { 
@@ -94,13 +94,13 @@ const getChartMetrics = (content: ReturnType<typeof useIntlayer<'metrics-charts-
   { 
     key: 'fileSize', 
     label: content.chartLabelFileSize.value, 
-    formatter: (v: number) => formatBytesLocale(v, locale),
+    formatter: (v: number) => formatBytes(v, locale),
     color: "#ef4444" // Red
   },
   { 
     key: 'storageSize', 
     label: content.chartLabelStorageSize.value, 
-    formatter: (v: number) => formatBytesLocale(v, locale),
+    formatter: (v: number) => formatBytes(v, locale),
     color: "#8b5cf6" // Purple
   },
   { 

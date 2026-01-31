@@ -33,6 +33,8 @@ export function OverviewSidePanelToggle({ className }: OverviewSidePanelTogglePr
       )}
       title={titleText}
       aria-label={titleText}
+      data-screenshot-target="overview-side-panel-toggle"
+      data-overview-panel-state={overviewSidePanel}
     >
       {overviewSidePanel === 'status' ? (
 

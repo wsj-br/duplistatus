@@ -74,9 +74,9 @@ en el panel de control resumen poner fecha del último backup antes de estado de
 
 Después de iterar a través de estos indicadores, Firebase generó el prototipo como se muestra en las capturas de pantalla a continuación:
 
-![prototype](/assets/screen-prototype.png)
+![prototype](/img/screen-prototype.png)
 
-![prototype-detail](/assets/screen-prototype-detail.png)
+![prototype-detail](/img/screen-prototype-detail.png)
 
 :::note
 Un punto interesante fue que, desde la primera interacción, Firebase Studio generó datos aleatorios para poblar las páginas/gráficos, haciendo que el prototipo funcionara como una aplicación en vivo.

@@ -59,7 +59,7 @@ See the [User Guide](user-guide/overview.md) for detailed instructions on how to
 
 ### Overdue notifications on your phone {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/assets/screen-overdue-notification.png)
+![ntfy overdue message](/img/screen-overdue-notification.png)
 
 ## API Reference {#api-reference}
 

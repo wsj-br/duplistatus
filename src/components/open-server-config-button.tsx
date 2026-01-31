@@ -249,6 +249,7 @@ export function OpenServerConfigButton() {
           }}
           disabled={isLoading}
           title={content.buttonTitle.value}
+          data-screenshot-target="duplicati-configuration-trigger"
         >
           <ServerIcon className="h-4 w-4" />
         </Button>

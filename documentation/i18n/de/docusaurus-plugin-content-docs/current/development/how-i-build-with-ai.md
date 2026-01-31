@@ -74,9 +74,9 @@ Wann das Datum der letzten Sicherung angezeigt wird, sollte in derselben Zelle i
 
 Nach der Iteration durch diese Eingabeaufforderungen hat Firebase den Prototyp wie in den folgenden Screenshots dargestellt generiert:
 
-![prototype](/assets/screen-prototype.png)
+![prototype](/img/screen-prototype.png)
 
-![prototype-detail](/assets/screen-prototype-detail.png)
+![prototype-detail](/img/screen-prototype-detail.png)
 
 :::note
 Ein interessanter Punkt war, dass Firebase Studio seit der ersten Interaktion zufällige Daten generierte, um die Seiten/Diagramme zu füllen, wodurch der Prototyp wie eine Live-Anwendung funktionierte.

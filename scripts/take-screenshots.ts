@@ -1,3 +1,7 @@
+/**
+ * Take screenshots for documentation.
+ * Options: --locale en[,de,...] (optional); -h/--help for usage.
+ */
 import puppeteer, { type Page } from 'puppeteer';
 import { mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
@@ -11,11 +15,49 @@ const VIEWPORT_WIDTH = 1920;
 const VIEWPORT_HEIGHT = 1080;
 
 const LOCALES = ['en', 'de', 'fr', 'es', 'pt-BR'] as const;
+
 type Locale = (typeof LOCALES)[number];
+
+/** Parse --locale from argv. Returns list of locales to capture; if not passed, returns all. */
+function parseLocaleArg(): Locale[] {
+  const validSet = new Set<string>(LOCALES);
+  for (let i = 0; i < process.argv.length; i++) {
+    const arg = process.argv[i];
+    if (arg === '--locale') {
+      const value = process.argv[i + 1];
+      if (!value || value.startsWith('--')) {
+        logError('--locale requires one or more locales (comma-separated). Example: --locale en,de');
+        process.exit(1);
+      }
+      const requested = value.split(',').map(s => s.trim()).filter(Boolean);
+      const invalid = requested.filter(l => !validSet.has(l));
+      if (invalid.length > 0) {
+        logError(`Invalid locale(s): ${invalid.join(', ')}. Valid: ${LOCALES.join(', ')}`);
+        process.exit(1);
+      }
+      return requested as Locale[];
+    }
+    if (arg.startsWith('--locale=')) {
+      const value = arg.slice('--locale='.length).trim();
+      if (!value) {
+        logError('--locale= requires one or more locales (comma-separated). Example: --locale=en,de');
+        process.exit(1);
+      }
+      const requested = value.split(',').map(s => s.trim()).filter(Boolean);
+      const invalid = requested.filter(l => !validSet.has(l));
+      if (invalid.length > 0) {
+        logError(`Invalid locale(s): ${invalid.join(', ')}. Valid: ${LOCALES.join(', ')}`);
+        process.exit(1);
+      }
+      return requested as Locale[];
+    }
+  }
+  return [...LOCALES];
+}
 
 function getScreenshotDir(locale: Locale): string {
   if (locale === 'en') {
-    return 'documentation/docs/assets';
+    return 'documentation/static/assets';
   }
   return `documentation/i18n/${locale}/docusaurus-plugin-content-docs/current/assets`;
 }
@@ -48,6 +90,40 @@ function showEnvFormat(): void {
   console.log(`ADMIN_PASSWORD="your-admin-password"`);
   console.log(`USER_PASSWORD="your-user-password"`);
   console.log(`${colors.reset}`);
+}
+
+function showHelp(): void {
+  const script = process.argv[1]?.split(/[/\\]/).pop() ?? 'take-screenshots.ts';
+  console.log(`Usage: pnpm ${script} [options]
+       
+Take screenshots of the application for documentation.
+
+Options:
+  --locale <locales>   Comma-separated locales to capture (default: all). 
+                       Valid: ${LOCALES.join(', ')}
+
+                       note: locales are case-sensitive.
+
+  -h, --help           Show this help and exit.
+
+Environment (required unless --help):
+  ADMIN_PASSWORD       Password for admin account.
+  USER_PASSWORD        Password for regular user account.
+
+Requirements:
+  Development server running at ${BASE_URL}
+
+Examples:
+  pnpm ${script}                          # All locales
+  pnpm ${script} --locale pt-BR           # English only
+  pnpm ${script} --locale en,de,pt-BR
+`);
+}
+
+// --help / -h before password check so help works without env
+if (process.argv.some(a => a === '--help' || a === '-h')) {
+  showHelp();
+  process.exit(0);
 }
 
 // Read passwords from environment variables
@@ -310,12 +386,12 @@ async function logout(page: Page, locale: Locale) {
     }, csrfToken);
     
     // Navigate to login page to ensure we're logged out
-    await page.goto(makeUrl(locale, '/login'), { waitUntil: 'networkidle0' });
+    await page.goto(makeUrl(locale, '/login'), { waitUntil: 'domcontentloaded' });
     console.log('Logged out');
   } catch (error) {
     logError('Error during logout: ' + (error instanceof Error ? error.message : String(error)));
     // Try navigating to login page anyway
-    await page.goto(makeUrl(locale, '/login'), { waitUntil: 'networkidle0' });
+    await page.goto(makeUrl(locale, '/login'), { waitUntil: 'domcontentloaded' });
   }
 }
 
@@ -1099,40 +1175,28 @@ async function keepOnlyOneBackup(serverId: string): Promise<boolean> {
 async function captureCollectButtonPopup(
   page: Page,
   locale: Locale,
-  screenshotDir: string
+  screenshotDir: string,
+  skipNavigation?: boolean
 ): Promise<{ popup: boolean; rightClick: boolean }> {
   console.log('-------------------------------------------------------');
   console.log('Capturing collect button popup...');
   try {
-    // Navigate to blank page first to reduce background noise
-    console.log('🌐 Navigating to blank page (/blank)...');
-    await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
-    await delay(1000);
+    if (!skipNavigation) {
+      // Navigate to blank page; use networkidle0 so header (client-rendered) is ready
+      console.log('🌐 Navigating to blank page (/blank)...');
+      await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
+      await page.waitForSelector('[data-screenshot-target="collect-button"]', { timeout: 15000, visible: true });
+    }
     
-    // Find the collect button by looking for button with Download icon
-    const collectButtonFound = await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      for (const btn of buttons) {
-        const svg = btn.querySelector('svg');
-        if (svg) {
-          // Check if this is the Download icon (collect button)
-          const svgPath = svg.querySelector('path');
-          if (svgPath) {
-            const pathData = svgPath.getAttribute('d') || '';
-            // Download icon has specific path data, or we can check by button title
-            const title = btn.getAttribute('title') || '';
-            if (title.includes('Collect') || pathData.includes('M12') && pathData.includes('L12')) {
-              (btn as HTMLButtonElement).click();
-              return true;
-            }
-          }
-        }
-      }
-      return false;
-    });
-    
+    // Find the collect button using locale-stable data attribute
+    const collectButton = await page.$('[data-screenshot-target="collect-button"]');
+    const collectButtonFound = !!collectButton;
+    if (collectButton) {
+      await collectButton.click();
+    }
+
     if (collectButtonFound) {
-      await delay(1500); // Wait for popover to appear
+      await delay(800); // Wait for popover to appear
       
       // Wait for popover to appear
       try {
@@ -1141,7 +1205,6 @@ async function captureCollectButtonPopup(
         // Fallback: wait for any popover
         await page.waitForSelector('[role="dialog"], [data-radix-popper-content-wrapper], [data-radix-popover-content]', { timeout: 2000 });
       }
-      await delay(500);
       
       // Capture the popup
       const popupBounds = await page.evaluate(() => {
@@ -1182,32 +1245,14 @@ async function captureCollectButtonPopup(
       
       // Close popup by clicking outside or pressing Escape
       await page.keyboard.press('Escape');
-      await delay(1000);
+      await delay(300);
       
-      // Right click to show context menu - find button again
-      const rightClickSuccess = await page.evaluate(() => {
-        const buttons = Array.from(document.querySelectorAll('button'));
-        for (const btn of buttons) {
-          const svg = btn.querySelector('svg');
-          if (svg) {
-            const title = btn.getAttribute('title') || '';
-            if (title.includes('Collect')) {
-              const event = new MouseEvent('contextmenu', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-              });
-              btn.dispatchEvent(event);
-              return true;
-            }
-          }
-        }
-        return false;
-      });
-      
+      // Right click to show context menu - use Puppeteer native right-click so React's onContextMenu runs
+      const collectBtnForRightClick = await page.$('[data-screenshot-target="collect-button"]');
       let rightClickPopupSuccess = false;
-      if (rightClickSuccess) {
-        await delay(1500); // Wait for right-click menu to appear
+      if (collectBtnForRightClick) {
+        await collectBtnForRightClick.click({ button: 'right' });
+        await delay(800); // Wait for right-click menu to appear
         
         // Wait for context menu or modal
         try {
@@ -1216,7 +1261,6 @@ async function captureCollectButtonPopup(
           // Fallback: wait for modal/dialog
           await page.waitForSelector('[role="dialog"], .fixed.inset-0', { timeout: 2000 });
         }
-        await delay(500);
         
         // Capture right-click menu
         const menuBounds = await page.evaluate(() => {
@@ -1291,7 +1335,7 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
     if (hoverElement) {
       // Use Puppeteer's hover method
       await hoverElement.hover();
-      await delay(2000); // Wait for tooltip to appear (delayDuration is 1000ms)
+      await delay(1200); // Wait for tooltip to appear (delayDuration is 1000ms)
       
       // Capture the tooltip/card
       const tooltipBounds = await page.evaluate(() => {
@@ -1347,7 +1391,7 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
     // Navigate to dashboard in card mode
     await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
-    await delay(2000);
+    await delay(500);
     
     // Find all backup items
     const backupItems = await page.$$('[data-screenshot-trigger="backup-item"]');
@@ -1475,7 +1519,6 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
         
         // Move mouse away to close tooltip
         await page.mouse.move(0, 0);
-        await delay(500);
         
         return success;
       } else {
@@ -1492,21 +1535,24 @@ async function captureBackupTooltip(page: Page, locale: Locale, screenshotDir: s
   }
 }
 
-async function captureDuplicatiConfiguration(page: Page, locale: Locale, screenshotDir: string): Promise<boolean> {
+async function captureDuplicatiConfiguration(page: Page, locale: Locale, screenshotDir: string, skipNavigation?: boolean): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing Duplicati configuration dropdown...');
   try {
-    // Navigate to blank page first to reduce background noise
-    console.log('🌐 Navigating to blank page (/blank)...');
-    await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
-    await delay(1000);
+    if (!skipNavigation) {
+      // Navigate to blank page; use networkidle0 so header is ready, then wait for trigger
+      console.log('🌐 Navigating to blank page (/blank)...');
+      await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
+      await page.waitForSelector('[data-screenshot-target="duplicati-configuration-trigger"]', { timeout: 15000, visible: true });
+      await delay(500);
+    }
     
-    // Find and click the Duplicati button (button with title "Duplicati configuration")
-    const button = await page.$('button[title="Duplicati configuration"]');
+    // Find and click the Duplicati button using locale-stable data attribute
+    const button = await page.$('[data-screenshot-target="duplicati-configuration-trigger"]');
     
     if (button) {
       await button.click();
-      await delay(1500); // Wait for popover to appear
+      await delay(800); // Wait for popover to appear
       
       // Wait for dropdown to appear
       try {
@@ -1516,7 +1562,6 @@ async function captureDuplicatiConfiguration(page: Page, locale: Locale, screens
         await page.keyboard.press('Escape');
         return false;
       }
-      await delay(500);
       
       // Capture the dropdown using data-screenshot-target
       const dropdownBounds = await page.evaluate(() => {
@@ -1560,37 +1605,38 @@ async function captureDuplicatiConfiguration(page: Page, locale: Locale, screens
   }
 }
 
-async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string, userType: 'admin' | 'user'): Promise<boolean> {
+async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string, userType: 'admin' | 'user', skipNavigation?: boolean): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log(`Capturing user menu dropdown (${userType})...`);
   try {
-    // Navigate to blank page first to reduce background noise
-    console.log('🌐 Navigating to blank page (/blank)...');
-    await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
-    await delay(1000);
-    
-    // Find the user menu button selector
-    const buttonSelector = await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      for (let i = 0; i < buttons.length; i++) {
-        const btn = buttons[i];
-        const userIcon = btn.querySelector('svg.lucide-user');
-        const usernameSpan = btn.querySelector('span.text-sm.font-medium');
-        if (userIcon && usernameSpan) {
-          // Add a temporary id to make it easily selectable
-          btn.setAttribute('data-temp-user-menu-btn', 'true');
-          return '[data-temp-user-menu-btn="true"]';
-        }
-      }
-      return null;
-    });
-    
-    if (!buttonSelector) {
-      logError('Could not find user menu button');
+    if (!skipNavigation) {
+      // Header is client-rendered; user menu trigger appears only after /api/auth/me completes.
+      // Start listening before navigation so we don't miss the response.
+      console.log('🌐 Navigating to blank page (/blank)...');
+      const authMePromise = page.waitForResponse(
+        (res) => res.url().includes('/api/auth/me'),
+        { timeout: 18000 }
+      ).catch(() => null);
+      await page.goto(makeUrl(locale, '/blank'), { waitUntil: 'networkidle0' });
+      await authMePromise;
+      // Allow React to setState and re-render the header with the user trigger
+      await delay(1200);
+    } else {
+      // When reusing same page, ensure any open overlay is closed and trigger is ready
+      await page.keyboard.press('Escape');
+      await page.keyboard.press('Escape');
+      await delay(600);
+    }
+
+    // Wait for user menu trigger (data attribute only present after user is loaded)
+    const buttonSelector = '[data-screenshot-target="user-menu-trigger"]';
+    try {
+      await page.waitForSelector(buttonSelector, { timeout: 15000, visible: true });
+    } catch {
+      logError('Could not find user menu button (wait for selector timed out)');
       return false;
     }
     
-    // Click the button using Puppeteer's click (more reliable than evaluate click)
     const button = await page.$(buttonSelector);
     if (!button) {
       logError('Could not select user menu button element');
@@ -1598,7 +1644,7 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
     }
     
     await button.click();
-    await delay(1500); // Wait for dropdown animation to complete
+    await delay(800); // Wait for dropdown animation to complete
     
     // Wait for the dropdown menu to appear using data-screenshot-target
     try {
@@ -1614,12 +1660,11 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
       }
       return false;
     }
-    await delay(500);
     
     // Capture both the button and dropdown menu with external margins
     const combinedBounds = await page.evaluate(() => {
-      // Find the button
-      const buttonElement = document.querySelector('[data-temp-user-menu-btn="true"]');
+      // Find the button (stable selector; only present when user is loaded)
+      const buttonElement = document.querySelector('[data-screenshot-target="user-menu-trigger"]');
       
       // Find the dropdown menu
       const menuContent = document.querySelector('[data-screenshot-target="user-menu"]');
@@ -1652,23 +1697,11 @@ async function captureUserMenu(page: Page, locale: Locale, screenshotDir: string
       });
       console.log(`Captured user menu dropdown: ${filename}`);
       
-      // Clean up temporary attribute and close dropdown
-      await page.evaluate(() => {
-        const btn = document.querySelector('[data-temp-user-menu-btn="true"]');
-        if (btn) btn.removeAttribute('data-temp-user-menu-btn');
-      });
       await page.keyboard.press('Escape');
-      await delay(500);
       return success;
     } else {
       logError('Could not find user menu button or dropdown bounds');
-      // Clean up temporary attribute and close dropdown anyway
-      await page.evaluate(() => {
-        const btn = document.querySelector('[data-temp-user-menu-btn="true"]');
-        if (btn) btn.removeAttribute('data-temp-user-menu-btn');
-      });
       await page.keyboard.press('Escape');
-      await delay(500);
       return false;
     }
   } catch (error) {
@@ -1684,7 +1717,7 @@ async function captureDashboardSummary(page: Page, locale: Locale, screenshotDir
     // Navigate to dashboard
     await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
-    await delay(2000);
+    await delay(500);
     
     // Wait for the summary card to appear
     try {
@@ -1733,7 +1766,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
     // Navigate to dashboard
     await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
     await waitForDashboardLoad(page);
-    await delay(2000);
+    await delay(500);
     
     // Ensure we're in overview mode (the side panel only appears in overview mode)
     // Check current view mode and switch if needed
@@ -1795,7 +1828,7 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
           }
         }
       });
-      await delay(2000);
+      await delay(500);
     }
     
     // Wait for the side panel to appear
@@ -1805,21 +1838,15 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
       logError('Overview side panel did not appear on the page');
       return { status: false, charts: false };
     }
-    await delay(500);
     
-    // Check current state by looking at the toggle button title
+    // Check current state using locale-stable data attribute on the toggle
     const currentState = await page.evaluate(() => {
       const panel = document.querySelector('[data-screenshot-target="overview-side-panel"]');
       if (!panel) return null;
-      
-      // Find the toggle button inside the panel
-      const toggleButton = panel.querySelector('button[title*="Switch"], button[aria-label*="Switch"]');
+      const toggleButton = panel.querySelector('[data-screenshot-target="overview-side-panel-toggle"]');
       if (toggleButton) {
-        const title = toggleButton.getAttribute('title') || toggleButton.getAttribute('aria-label') || '';
-        // If title says "Switch to chart view", we're in status mode
-        // If title says "Switch to status view", we're in chart mode
-        if (title.includes('chart')) return 'status';
-        if (title.includes('status')) return 'chart';
+        const state = toggleButton.getAttribute('data-overview-panel-state');
+        if (state === 'status' || state === 'chart') return state;
       }
       return null;
     });
@@ -1921,12 +1948,9 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
       
       // Click the toggle button to switch to status mode
       await page.evaluate(() => {
-        const panel = document.querySelector('[data-screenshot-target="overview-side-panel"]');
-        if (panel) {
-          const toggleButton = panel.querySelector('button[title*="Switch"], button[aria-label*="Switch"]');
-          if (toggleButton) {
-            (toggleButton as HTMLButtonElement).click();
-          }
+        const toggleButton = document.querySelector('[data-screenshot-target="overview-side-panel-toggle"]');
+        if (toggleButton) {
+          (toggleButton as HTMLButtonElement).click();
         }
       });
       await delay(1500); // Wait for the state to change
@@ -1963,12 +1987,14 @@ async function captureOverviewSidePanel(page: Page, locale: Locale, screenshotDi
   }
 }
 
-async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotDir: string, serverId: string): Promise<boolean> {
+async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotDir: string, serverId: string, skipNavigation?: boolean): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing backup history table...');
   try {
-    // Navigate to server details page
-    await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+    if (!skipNavigation) {
+      // Navigate to server details page
+      await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+    }
     
     // Wait for content to load (client component fetches data after page load)
     const contentLoaded = await waitForServerDetailContent(page, 15000);
@@ -2111,11 +2137,12 @@ async function captureMetricsChart(page: Page, locale: Locale, screenshotDir: st
     
     // Find the metrics chart section
     const chartBounds = await page.evaluate(() => {
-      // Look for the metrics chart card
+      const chartSelectors = '[class*="chart"], [class*="recharts"], canvas, svg[class*="chart"], svg[class*="recharts"]';
+      // Look for the metrics chart card (last card on detail page is usually the metrics card)
       const cards = Array.from(document.querySelectorAll('[class*="Card"], [class*="card"]'));
       for (const card of cards) {
         const header = card.querySelector('h2, h3, [class*="CardTitle"]');
-        const hasChart = card.querySelector('[class*="chart"], canvas, svg[class*="chart"]');
+        const hasChart = card.querySelector(chartSelectors);
         if (hasChart || (header && (header.textContent || '').includes('Metrics'))) {
           const rect = card.getBoundingClientRect();
           return {
@@ -2126,8 +2153,8 @@ async function captureMetricsChart(page: Page, locale: Locale, screenshotDir: st
           };
         }
       }
-      // Fallback: look for any chart element
-      const chart = document.querySelector('[class*="chart"], canvas, svg[class*="chart"]');
+      // Fallback: look for any chart element (Recharts uses recharts-* classes)
+      const chart = document.querySelector(chartSelectors);
       if (chart) {
         const rect = chart.getBoundingClientRect();
         return {
@@ -2156,12 +2183,14 @@ async function captureMetricsChart(page: Page, locale: Locale, screenshotDir: st
   }
 }
 
-async function captureAvailableBackupsModal(page: Page, locale: Locale, screenshotDir: string, serverId: string): Promise<boolean> {
+async function captureAvailableBackupsModal(page: Page, locale: Locale, screenshotDir: string, serverId: string, skipNavigation?: boolean): Promise<boolean> {
   console.log('-------------------------------------------------------');
   console.log('Capturing AvailableBackupsIcon modal...');
   try {
-    // Navigate to server details page (should already be there, but ensure we're on the right page)
-    await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+    if (!skipNavigation) {
+      // Navigate to server details page (should already be there, but ensure we're on the right page)
+      await page.goto(makeUrl(locale, `/detail/${serverId}`), { waitUntil: 'networkidle0' });
+    }
     
     // Wait for content to load (client component fetches data after page load)
     const contentLoaded = await waitForServerDetailContent(page, 15000);
@@ -2255,13 +2284,11 @@ async function captureAvailableBackupsModal(page: Page, locale: Locale, screensh
       
       // Close dialog
       await page.keyboard.press('Escape');
-      await delay(500);
       return success;
     } else {
       logError('Could not find AvailableBackupsIcon modal bounds');
       // Close dialog anyway
       await page.keyboard.press('Escape');
-      await delay(500);
       return false;
     }
   } catch (error) {
@@ -2269,7 +2296,6 @@ async function captureAvailableBackupsModal(page: Page, locale: Locale, screensh
     // Try to close dialog if it's open
     try {
       await page.keyboard.press('Escape');
-      await delay(500);
     } catch (e) {
       // Ignore
     }
@@ -2315,8 +2341,17 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
     
     console.log(`Found server with overdue backups: ${serverWithOverdue.name} (${serverWithOverdue.id})`);
     
-    // Navigate to the server detail page
-    await page.goto(makeUrl(locale, `/detail/${serverWithOverdue.id}`), { waitUntil: 'networkidle0' });
+    // Navigate to the server detail page of the server that has overdue backups (so the overdue message is shown)
+    const overdueDetailUrl = makeUrl(locale, `/detail/${serverWithOverdue.id}`);
+    console.log(`🌐 Navigating to server-with-overdue detail page: ${overdueDetailUrl}`);
+    await page.goto(overdueDetailUrl, { waitUntil: 'networkidle0' });
+    
+    // Verify we are on the correct server's detail page (URL should contain this server id)
+    const currentUrl = page.url();
+    if (!currentUrl.includes(serverWithOverdue.id)) {
+      logError(`After navigation we are not on server-with-overdue page: current URL ${currentUrl}, expected to contain ${serverWithOverdue.id}`);
+      return false;
+    }
     
     // Wait for content to load (client component fetches data after page load)
     const contentLoaded = await waitForServerDetailContent(page, 15000);
@@ -2324,9 +2359,12 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
       logError('Server detail content did not load in time');
     }
     
-    // Wait for the overdue message to appear
+    // Allow time for client hydration and DetailAutoRefresh to refetch from API (fresh overdue data)
+    await delay(4000);
+    
+    // Wait for the overdue message to appear (longer timeout for client refetch + render)
     try {
-      await page.waitForSelector('[data-screenshot-target="server-overdue-message"]', { timeout: 10000 });
+      await page.waitForSelector('[data-screenshot-target="server-overdue-message"]', { timeout: 15000 });
     } catch (e) {
       logError('Overdue message did not appear on the page');
       return false;
@@ -2365,9 +2403,11 @@ async function captureServerOverdueMessage(page: Page, locale: Locale, screensho
 }
 
 async function main() {
+  const localesToRun = parseLocaleArg();
   console.log(colors.green, '\n');
   console.log('-------------------------------------------------------' );
   console.log('Starting screenshot automation');
+  console.log(`Locales: ${localesToRun.join(', ')}`);
   console.log('-------------------------------------------------------\n',colors.reset);
   
   
@@ -2394,7 +2434,7 @@ async function main() {
   await configureSMTPConfig();
   
   // Ensure screenshot directories exist (per locale)
-  for (const locale of LOCALES) {
+  for (const locale of localesToRun) {
     await ensureDirectoryExists(getScreenshotDir(locale));
   }
   
@@ -2408,7 +2448,24 @@ async function main() {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--disable-gpu'
+      '--disable-gpu',
+      // Additional performance flags:
+      '--disable-extensions',
+      '--disable-background-networking',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-breakpad',
+      '--disable-component-update',
+      '--disable-default-apps',
+      '--disable-hang-monitor',
+      '--disable-ipc-flooding-protection',
+      '--disable-popup-blocking',
+      '--disable-renderer-backgrounding',
+      '--disable-sync',
+      '--disable-translate',
+      '--metrics-recording-only',
+      '--no-first-run',
+      '--safebrowsing-disable-auto-update',
     ]
   });
   
@@ -2419,10 +2476,17 @@ async function main() {
     // Login once (admin) to establish auth cookies; we will switch locales via URL prefix.
     await login(page, 'en', ADMIN_USERNAME, ADMIN_PASSWORD!);
 
+    // Get a server with backups for Phase A metrics screenshot (more data before cleanup)
+    const dbModuleForMetrics = await import('../src/lib/db');
+    await dbModuleForMetrics.ensureDatabaseInitialized();
+    const serversWithBackupsForMetrics = await findServersWithBackups();
+    const metricsServerId = serversWithBackupsForMetrics.length > 0 ? serversWithBackupsForMetrics[0] : null;
+    if (!metricsServerId) console.log('Warning: No server with backups found for Phase A metrics screenshot');
+
     // -------------------------
-    // Phase A (pre-cleanup): capture for all locales
+    // Phase A (pre-cleanup): capture for requested locales
     // -------------------------
-    for (const locale of LOCALES) {
+    for (const locale of localesToRun) {
       const screenshotDir = getScreenshotDir(locale);
 
       console.log('-------------------------------------------------------');
@@ -2461,7 +2525,7 @@ async function main() {
       if (overviewSidePanel.charts) successful.push('screen-overview-side-charts.png');
       else failed.push('screen-overview-side-charts.png');
 
-      // Toolbar elements (blank page)
+      // Toolbar elements (blank page): each capture navigates to /blank for a clean state
       const collectPopups = await captureCollectButtonPopup(page, locale, screenshotDir);
       if (collectPopups.popup) successful.push('screen-collect-button-popup.png');
       else failed.push('screen-collect-button-popup.png');
@@ -2619,7 +2683,7 @@ async function main() {
       let serverToReduce: Server | null = null;
       
       for (const server of availableServers) {
-        // Skip the protected server
+        // Skip the protected server (never reduce its backups; we need it for the overdue message screenshot)
         if (server.id === protectedServerId) {
           continue;
         }
@@ -2716,7 +2780,7 @@ async function main() {
         if (serverToMakeOverdue) {
           const backupsToDelete = Math.min(2, Math.floor(Math.random() * 2) + 1);
           await deleteRecentBackupsToCreateOverdue(serverToMakeOverdue.id, backupsToDelete);
-          await delay(1000);
+          await delay(300);
         }
       } else {
         console.log(`✅ At least one remaining server (${remainingServersWithOverdue[0].name}) has overdue backups`);
@@ -2759,9 +2823,9 @@ async function main() {
     }
     
     // -------------------------
-    // Phase B (post-cleanup): capture for all locales
+    // Phase B (post-cleanup): capture for requested locales
     // -------------------------
-    for (const locale of LOCALES) {
+    for (const locale of localesToRun) {
       const screenshotDir = getScreenshotDir(locale);
 
       console.log('-------------------------------------------------------');
@@ -2771,7 +2835,7 @@ async function main() {
       await page.goto(makeUrl(locale, '/'), { waitUntil: 'networkidle0' });
       await waitForDashboardLoad(page);
       await switchToTableView(page);
-      await delay(2000);
+      await delay(500);
 
       console.log('Taking screenshot of dashboard in table mode...');
       const dashboardTableMode = await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', screenshotDir, { cropBottom: 80 });
@@ -2836,17 +2900,18 @@ async function main() {
       if (serverBackupList) successful.push('screen-server-backup-list.png');
       else failed.push('screen-server-backup-list.png');
 
-      const backupHistory = await captureBackupHistoryTable(page, locale, screenshotDir, firstServer.id);
+      // Reuse current detail page for backup history and available backups modal (no extra navigation)
+      const backupHistory = await captureBackupHistoryTable(page, locale, screenshotDir, firstServer.id, true);
       if (backupHistory) successful.push('screen-backup-history.png');
       else failed.push('screen-backup-history.png');
+
+      const availableBackupsModal = await captureAvailableBackupsModal(page, locale, screenshotDir, firstServer.id, true);
+      if (availableBackupsModal) successful.push('screen-available-backups-modal.png');
+      else failed.push('screen-available-backups-modal.png');
 
       const metricsChart = await captureMetricsChart(page, locale, screenshotDir, firstServer.id);
       if (metricsChart) successful.push('screen-metrics.png');
       else failed.push('screen-metrics.png');
-
-      const availableBackupsModal = await captureAvailableBackupsModal(page, locale, screenshotDir, firstServer.id);
-      if (availableBackupsModal) successful.push('screen-available-backups-modal.png');
-      else failed.push('screen-available-backups-modal.png');
 
       const backupDetails = await page.evaluate(async (serverId) => {
         const res = await fetch(`/api/detail/${serverId}`);
@@ -2873,8 +2938,8 @@ async function main() {
 
       // Settings (admin)
       console.log('🌐 Navigating to settings page (/settings)...');
-      await page.goto(makeUrl(locale, '/settings'), { waitUntil: 'networkidle0' });
-      await delay(2000);
+      await page.goto(makeUrl(locale, '/settings'), { waitUntil: 'domcontentloaded' });
+      await delay(500);
 
       console.log('Taking screenshot of settings page left panel (as admin)...');
       const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', screenshotDir, { isSettingsSidebar: true });
@@ -2905,19 +2970,19 @@ async function main() {
         }
 
         await page.goto(makeUrl(locale, `/settings?tab=${tab}`), { waitUntil: 'networkidle0' });
-        await delay(2000);
+        await delay(500);
 
         if (tab === 'notifications') {
           try {
             await page.waitForSelector('table tbody tr', { timeout: 10000 });
-            await delay(1000);
+            await delay(500);
 
             // Screenshot 1
             const filename1 = 'screen-settings-notifications.png';
             const screenshot1 = await takeScreenshot(page, filename1, screenshotDir, { isSettingsPage: true });
             if (screenshot1) successful.push(filename1);
             else failed.push(filename1);
-            await delay(1000);
+            await delay(300);
 
             // Screenshot 2: Select 2 servers (server-level checkboxes)
             console.log('Taking screenshot 2: After selecting 2 servers...');
@@ -2955,21 +3020,11 @@ async function main() {
               continue;
             }
 
-            await delay(1000);
+            await delay(300);
 
             const filename2 = 'screen-settings-notifications-bulk.png';
             const bulkCardBounds = await page.evaluate(() => {
-              const divs = Array.from(document.querySelectorAll('div'));
-              const bulkBar = divs.find(div => {
-                const text = div.textContent || '';
-                return (
-                  text.includes('Additional Destinations:') &&
-                  text.includes('backup') &&
-                  text.includes('selected') &&
-                  div.classList.contains('bg-muted') &&
-                  div.classList.contains('rounded-md')
-                );
-              });
+              const bulkBar = document.querySelector('[data-screenshot-target="settings-notifications-bulk-bar"]');
               if (bulkBar) {
                 const rect = bulkBar.getBoundingClientRect();
                 return {
@@ -2993,7 +3048,7 @@ async function main() {
               failed.push(filename2);
             }
 
-            await delay(1000);
+            await delay(300);
 
             // Screenshot 3: Expand first server and its first backup row
             console.log('Taking screenshot 3: Expanding server and backup rows...');
@@ -3024,7 +3079,7 @@ async function main() {
               continue;
             }
 
-            await delay(1500);
+            await delay(800);
 
             await page.evaluate(() => {
               const rows = Array.from(document.querySelectorAll('table tbody tr'));
@@ -3045,7 +3100,7 @@ async function main() {
               }
             });
 
-            await delay(1500);
+            await delay(800);
 
             const tableElement = await page.$('table');
             if (tableElement) {
@@ -3097,8 +3152,8 @@ async function main() {
       else failed.push('screen-user-menu-user.png');
 
       console.log('🌐 Navigating to settings page as non-admin (/settings)...');
-      await page.goto(makeUrl(locale, '/settings'), { waitUntil: 'networkidle0' });
-      await delay(2000);
+      await page.goto(makeUrl(locale, '/settings'), { waitUntil: 'domcontentloaded' });
+      await delay(500);
 
       console.log('Taking screenshot of settings page left panel (as non-admin)...');
       const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', screenshotDir, { isSettingsSidebar: true });
@@ -3109,454 +3164,6 @@ async function main() {
       await logout(page, locale);
       await login(page, locale, ADMIN_USERNAME, ADMIN_PASSWORD!);
     }
-    
-    /*
-    // Get the remaining servers from database (more reliable than API)
-    // Note: availableServers should already be set in main(), but we'll get fresh from DB here
-    const remainingDbModule = await import('../src/lib/db');
-    await remainingDbModule.ensureDatabaseInitialized();
-    const remainingAllDbServers = remainingDbModule.dbOps.getAllServers.all() as Array<{ id: string; name: string; server_url: string; alias: string; note: string }>;
-    const remainingServers: Server[] = remainingAllDbServers.map(s => ({
-      id: s.id,
-      name: s.name,
-      alias: s.alias || '',
-      note: s.note || '',
-      server_url: s.server_url || '',
-      backups: []
-    }));
-    
-    if (remainingServers.length === 0) {
-      throw new Error('No servers available for screenshots');
-    }
-    
-    // Find a server with backups by checking the API
-    let firstServer: Server | null = null;
-    for (const server of remainingServers) {
-      try {
-        const serverDetails = await page.evaluate(async (serverId) => {
-          const res = await fetch(`/api/detail/${serverId}`);
-          if (!res.ok) return null;
-          return res.json();
-        }, server.id);
-        
-        if (serverDetails && serverDetails.server && serverDetails.server.backups && serverDetails.server.backups.length > 0) {
-          firstServer = server;
-          break;
-        }
-      } catch (error) {
-        // Continue to next server if this one fails
-        continue;
-      }
-    }
-    
-    // Fallback to first server if none have backups
-    if (!firstServer) {
-      firstServer = remainingServers[0];
-      console.log(`Warning: No server with backups found, using first server: ${firstServer.name}`);
-    }
-    
-    // Navigate to first server's backup list page
-    console.log('-------------------------------------------------------');
-    console.log('Navigating to first server\'s backup list page...');
-    console.log(`Navigating to server backup list: ${firstServer.name} (${firstServer.id})`);
-    console.log(`🌐 Navigating to server detail page (/detail/${firstServer.id})...`);
-    await page.goto(`${BASE_URL}/detail/${firstServer.id}`, { waitUntil: 'networkidle0' });
-    
-    // Wait for content to load (client component fetches data after page load)
-    const contentLoaded = await waitForServerDetailContent(page, 15000);
-    if (!contentLoaded) {
-      logError('Server detail content did not load in time');
-    }
-    const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', { cropBottom: 80 });
-    if (serverBackupList) successful.push('screen-server-backup-list.png');
-    else failed.push('screen-server-backup-list.png');
-    
-    // Capture backup history table
-    const backupHistory = await captureBackupHistoryTable(page, firstServer.id);
-    if (backupHistory) successful.push('screen-backup-history.png');
-    else failed.push('screen-backup-history.png');
-    
-    // Capture metrics chart
-    const metricsChart = await captureMetricsChart(page, firstServer.id);
-    if (metricsChart) successful.push('screen-metrics.png');
-    else failed.push('screen-metrics.png');
-    
-    // Capture AvailableBackupsIcon modal
-    const availableBackupsModal = await captureAvailableBackupsModal(page, firstServer.id);
-    if (availableBackupsModal) successful.push('screen-available-backups-modal.png');
-    else failed.push('screen-available-backups-modal.png');
-    
-    // Get backup details for this server
-    const backupDetails = await page.evaluate(async (serverId) => {
-      const res = await fetch(`/api/detail/${serverId}`);
-      return res.json();
-    }, firstServer.id);
-    
-    // Navigate to a backup detail page if backups exist
-    console.log('-------------------------------------------------------');
-    console.log('Navigating to backup detail page...');
-    let backupDetail = false;
-    if (backupDetails.server && backupDetails.server.backups && backupDetails.server.backups.length > 0) {
-      const firstBackup = backupDetails.server.backups[0];
-      console.log(`Navigating to backup detail: ${firstBackup.id}`);
-      console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
-      await page.goto(`${BASE_URL}/detail/${firstServer.id}/backup/${firstBackup.id}`, { waitUntil: 'networkidle0' });
-      await delay(2000);
-      backupDetail = await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
-    } else {
-      console.log('No backups found for screenshot');
-      // Take screenshot anyway of the empty state
-      backupDetail = await takeScreenshot(page, 'screen-backup-detail.png', { cropBottom: 80 });
-    }
-    if (backupDetail) successful.push('screen-backup-detail.png');
-    else failed.push('screen-backup-detail.png');
-    
-    // Capture server overdue message
-    const serverOverdueMessage = await captureServerOverdueMessage(page);
-    if (serverOverdueMessage) successful.push('screen-server-overdue-message.png');
-    else failed.push('screen-server-overdue-message.png');
-    
-    // Navigate to settings page
-    console.log('-------------------------------------------------------');
-    console.log('Navigating to settings page...');
-    console.log('🌐 Navigating to settings page (/settings)...');
-    await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });
-    await delay(2000);
-    
-    // Take screenshot of settings page left panel (as admin)
-    console.log('-------------------------------------------------------');
-    console.log('Taking screenshot of settings page left panel (as admin)...');
-    const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', { isSettingsSidebar: true });
-    if (settingsLeftPanelAdmin) successful.push('screen-settings-left-panel-admin.png');
-    else failed.push('screen-settings-left-panel-admin.png');
-    
-    // Take screenshots of all available settings options as admin
-    const adminSettingsTabs = [
-      'notifications',
-      'overdue',
-      'server',
-      'ntfy',
-      'email',
-      'templates',
-      'users',
-      'audit',
-      'audit-retention',
-      'display',
-      'database-maintenance',
-      'application-logs'
-    ];
-    
-    for (const tab of adminSettingsTabs) {
-      console.log('-------------------------------------------------------');
-      console.log(`Taking screenshot of settings tab: ${tab}`);
-      
-      // Special handling for audit tab - delete server_deletion entries before screenshot
-      if (tab === 'audit') {
-        await deleteServerDeletionAuditLogs();
-        await delay(1000);
-      }
-      
-      console.log(`🌐 Navigating to settings tab: /settings?tab=${tab}...`);
-      await page.goto(`${BASE_URL}/settings?tab=${tab}`, { waitUntil: 'networkidle0' });
-      await delay(2000);
-      
-      // Special handling for notifications tab - take 3 different screenshots
-      if (tab === 'notifications') {
-        try {
-          // Wait for the table to be rendered
-          await page.waitForSelector('table tbody tr', { timeout: 10000 });
-          await delay(1000);
-          
-          // Screenshot 1: Initial render (no interaction)
-          console.log('Taking screenshot 1: Initial render (no interaction)...');
-          const filename1 = 'screen-settings-notifications.png';
-          const screenshot1 = await takeScreenshot(page, filename1, { isSettingsPage: true });
-          if (screenshot1) successful.push(filename1);
-          else failed.push(filename1);
-          await delay(1000);
-          
-          // Screenshot 2: Select 2 servers (server-level checkboxes)
-          console.log('Taking screenshot 2: After selecting 2 servers...');
-          // Find server header rows - they have pl-4 in the first cell (not pl-12)
-          const allRows = await page.$$('table tbody tr');
-          console.log(`  📍 Found ${allRows.length} total rows in table`);
-          let serverRowsFound = 0;
-          
-          for (let i = 0; i < allRows.length && serverRowsFound < 2; i++) {
-            const row = allRows[i];
-            // Check if this is a server header row by looking at the first cell's classes
-            const firstCell = await row.$('td:first-child');
-            if (firstCell) {
-              const classList = await firstCell.evaluate(el => Array.from(el.classList));
-              // Server rows have pl-4, backup rows have pl-12
-              const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
-              
-              if (isServerRow) {
-                console.log(`  📍 Row ${i + 1} is a server row`);
-                // This is a server header row, click its checkbox
-                const checkbox = await firstCell.$('[role="checkbox"]');
-                if (checkbox) {
-                  await checkbox.click();
-                  serverRowsFound++;
-                  console.log(`  ✅ Selected server ${serverRowsFound}`);
-                  await delay(300);
-                } else {
-                  console.log(`  ⚠️  Row ${i + 1} is a server row but no checkbox found`);
-                }
-              }
-            }
-          }
-          
-          if (serverRowsFound >= 2) {
-            console.log(`  ✅ Selected ${serverRowsFound} servers`);
-            await delay(1000);
-            const filename2 = 'screen-settings-notifications-bulk.png';
-            // Capture only the bulk action bar card with a 4px margin
-            const bulkCardBounds = await page.evaluate(() => {
-              // Find the bulk action bar div (has "Additional Destinations:" text and buttons)
-              const divs = Array.from(document.querySelectorAll('div'));
-              const bulkBar = divs.find(div => {
-                const text = div.textContent || '';
-                return text.includes('Additional Destinations:') && 
-                       text.includes('backup') && 
-                       text.includes('selected') &&
-                       div.classList.contains('bg-muted') &&
-                       div.classList.contains('rounded-md');
-              });
-              if (bulkBar) {
-                const rect = bulkBar.getBoundingClientRect();
-                const margin = 4;
-                return {
-                  x: rect.x - margin,
-                  y: rect.y - margin,
-                  width: rect.width + (margin * 2),
-                  height: rect.height + (margin * 2)
-                };
-              }
-              return null;
-            });
-            
-            if (bulkCardBounds) {
-              const viewportSize = await page.viewport();
-              const pageWidth = viewportSize?.width || VIEWPORT_WIDTH;
-              const pageHeight = viewportSize?.height || VIEWPORT_HEIGHT;
-              
-              // Ensure we don't go outside page bounds
-              const clipX = Math.max(0, Math.round(bulkCardBounds.x));
-              const clipY = Math.max(0, Math.round(bulkCardBounds.y));
-              const clipWidth = Math.min(Math.round(bulkCardBounds.width), pageWidth - clipX);
-              const clipHeight = Math.min(Math.round(bulkCardBounds.height), pageHeight - clipY);
-              
-              const screenshot2 = await takeScreenshot(page, filename2, { 
-                clip: {
-                  x: clipX,
-                  y: clipY,
-                  width: clipWidth,
-                  height: clipHeight
-                }
-              });
-              if (screenshot2) successful.push(filename2);
-              else failed.push(filename2);
-            } else {
-              console.log('  ⚠️  Could not find bulk action bar card');
-              failed.push(filename2);
-            }
-          } else {
-            console.log(`  ⚠️  Warning: Found only ${serverRowsFound} server rows, expected at least 2`);
-            const filename2 = 'screen-settings-notifications-bulk.png';
-            failed.push(filename2);
-          }
-          await delay(1000);
-          
-          // Screenshot 3: Clear selections, expand first server row, expand second backup row
-          console.log('Taking screenshot 3: Expanding server and backup rows...');
-          // Clear any selections first - find button by text using evaluate
-          console.log('  📍 Looking for "Clear Selection" button...');
-          const clearButtonClicked = await page.evaluate(() => {
-            const buttons = Array.from(document.querySelectorAll('button'));
-            const clearButton = buttons.find(btn => btn.textContent?.trim() === 'Clear Selection');
-            if (clearButton) {
-              (clearButton as HTMLButtonElement).click();
-              return true;
-            }
-            return false;
-          });
-          
-          if (clearButtonClicked) {
-            console.log('  ✅ Clicked "Clear Selection" button');
-            await delay(500);
-          } else {
-            console.log('  ⚠️  "Clear Selection" button not found (may not be needed if no selections)');
-          }
-          
-          // Find and expand the first server row
-          console.log('  📍 Looking for first server row to expand...');
-          const allRows2 = await page.$$('table tbody tr');
-          let firstServerExpanded = false;
-          let expandedServerRowIndex = -1;
-          
-          for (let i = 0; i < allRows2.length && !firstServerExpanded; i++) {
-            const row = allRows2[i];
-            const firstCell = await row.$('td:first-child');
-            if (firstCell) {
-              const classList = await firstCell.evaluate(el => Array.from(el.classList));
-              const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
-              
-              if (isServerRow) {
-                console.log(`  📍 Row ${i + 1} is a server row, looking for expansion button...`);
-                // This is a server row, find and click its expansion button
-                const chevronButton = await row.$('td button[class*="h-6"]');
-                if (chevronButton) {
-                  await chevronButton.click();
-                  firstServerExpanded = true;
-                  expandedServerRowIndex = i;
-                  console.log('  ✅ Expanded first server row (index ' + i + ')');
-                  await delay(1000);
-                  break;
-                } else {
-                  console.log(`  ⚠️  Row ${i + 1} is a server row but no expansion button found`);
-                }
-              }
-            }
-          }
-          
-          if (!firstServerExpanded) {
-            console.log('  ⚠️  Could not find or expand first server row');
-          }
-          
-          // Now find and expand the second backup row of the expanded server
-          // Backup rows have pl-12 in the first cell (indented) and appear after their server row
-          console.log('  📍 Looking for second backup row of the expanded server to expand...');
-          // Get all rows again after expansion (backup rows should now be visible)
-          const allRowsAfterExpansion = await page.$$('table tbody tr');
-          let backupRowsFound = 0;
-          
-          // Start looking after the expanded server row
-          for (let i = expandedServerRowIndex + 1; i < allRowsAfterExpansion.length; i++) {
-            const row = allRowsAfterExpansion[i];
-            const firstCell = await row.$('td:first-child');
-            if (firstCell) {
-              const classList = await firstCell.evaluate(el => Array.from(el.classList));
-              // Backup rows have pl-12 (padding-left)
-              const isBackupRow = classList.some(cls => cls === 'pl-12' || cls.includes('pl-12'));
-              
-              // If we hit another server row (pl-4), we've gone past this server's backups
-              const isServerRow = classList.some(cls => cls === 'pl-4' || cls.includes('pl-4'));
-              if (isServerRow) {
-                console.log(`  📍 Reached next server row at index ${i}, stopping search`);
-                break;
-              }
-              
-              if (isBackupRow) {
-                const backupChevron = await row.$('td button[class*="h-6"]');
-                if (backupChevron) {
-                  backupRowsFound++;
-                  console.log(`  📍 Found backup row ${backupRowsFound} of the expanded server (index ${i})`);
-                  // Skip the first backup row, expand the second one
-                  if (backupRowsFound === 2) {
-                    await backupChevron.click();
-                    console.log('  ✅ Expanded second backup row of the expanded server');
-                    await delay(1000);
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          
-          if (backupRowsFound < 2) {
-            console.log(`  ⚠️  Warning: Found only ${backupRowsFound} backup rows for the expanded server, expected at least 2`);
-          }
-          
-          const filename3 = 'screen-settings-notifications-server.png';
-          // Capture only the table with a 4px margin
-          const tableBounds = await page.evaluate(() => {
-            const table = document.querySelector('table');
-            if (table) {
-              const rect = table.getBoundingClientRect();
-              const margin = 4;
-              return {
-                x: rect.x - margin,
-                y: rect.y - margin,
-                width: rect.width + (margin * 2),
-                height: rect.height + (margin * 2)
-              };
-            }
-            return null;
-          });
-          
-          if (tableBounds) {
-            const viewportSize = await page.viewport();
-            const pageWidth = viewportSize?.width || VIEWPORT_WIDTH;
-            const pageHeight = viewportSize?.height || VIEWPORT_HEIGHT;
-            
-            // Ensure we don't go outside page bounds
-            const clipX = Math.max(0, Math.round(tableBounds.x));
-            const clipY = Math.max(0, Math.round(tableBounds.y));
-            const clipWidth = Math.min(Math.round(tableBounds.width), pageWidth - clipX);
-            const clipHeight = Math.min(Math.round(tableBounds.height), pageHeight - clipY);
-            
-            const screenshot3 = await takeScreenshot(page, filename3, { 
-              clip: {
-                x: clipX,
-                y: clipY,
-                width: clipWidth,
-                height: clipHeight
-              }
-            });
-            if (screenshot3) successful.push(filename3);
-            else failed.push(filename3);
-          } else {
-            console.log('  ⚠️  Could not find table element');
-            failed.push(filename3);
-          }
-          
-        } catch (error) {
-          console.log(`  ❌ Warning: Failed to interact with notifications page: ${error instanceof Error ? error.message : String(error)}`);
-          // Only add to failed if not already in successful
-          if (!successful.includes('screen-settings-notifications.png') && !failed.includes('screen-settings-notifications.png')) {
-            failed.push('screen-settings-notifications.png');
-          }
-          if (!successful.includes('screen-settings-notifications-bulk.png') && !failed.includes('screen-settings-notifications-bulk.png')) {
-            failed.push('screen-settings-notifications-bulk.png');
-          }
-          if (!successful.includes('screen-settings-notifications-server.png') && !failed.includes('screen-settings-notifications-server.png')) {
-            failed.push('screen-settings-notifications-server.png');
-          }
-        }
-      } else {
-        // For other tabs, use the standard filename
-        const filename = `screen-settings-${tab}.png`;
-        const settingsTabResult = await takeScreenshot(page, filename, { isSettingsPage: true });
-        if (settingsTabResult) successful.push(filename);
-        else failed.push(filename);
-      }
-    }
-    
-    // Logout and login as non-admin user
-    console.log('-------------------------------------------------------');
-    console.log('Logging out and logging in as non-admin user...');
-    await logout(page);
-    await login(page, USER_USERNAME, USER_PASSWORD!);
-    
-    // Capture user menu dropdown (user)
-    const userMenuUser = await captureUserMenu(page, 'user');
-    if (userMenuUser) successful.push('screen-user-menu-user.png');
-    else failed.push('screen-user-menu-user.png');
-    
-    // Navigate to settings page as non-admin
-    console.log('🌐 Navigating to settings page as non-admin (/settings)...');
-    await page.goto(`${BASE_URL}/settings`, { waitUntil: 'networkidle0' });
-    await delay(2000);
-    
-    // Take screenshot of settings page left panel (as non-admin)
-    console.log('-------------------------------------------------------');
-    console.log('Taking screenshot of settings page left panel (as non-admin)...');
-    const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', { isSettingsSidebar: true });
-    if (settingsLeftPanelNonAdmin) successful.push('screen-settings-left-panel-non-admin.png');
-    else failed.push('screen-settings-left-panel-non-admin.png');
-    
-    */
 
     // Display summary
     console.log('\n\n' + '='.repeat(60));

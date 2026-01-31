@@ -74,9 +74,9 @@ Quand vous présentez la date de la dernière sauvegarde, affichez dans la même
 
 Après avoir itéré à travers ces invites, Firebase a généré le prototype comme indiqué dans les captures d'écran ci-dessous :
 
-![prototype](/assets/screen-prototype.png)
+![prototype](/img/screen-prototype.png)
 
-![prototype-detail](/assets/screen-prototype-detail.png)
+![prototype-detail](/img/screen-prototype-detail.png)
 
 :::note
 Un point intéressant était que, depuis la première interaction, Firebase Studio générait des données aléatoires pour remplir les pages/graphiques, ce qui permettait au prototype de fonctionner comme une application en direct.

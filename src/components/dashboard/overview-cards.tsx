@@ -4,9 +4,9 @@ import { useMemo, memo } from 'react';
 import type { BackupStatus, ServerSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { formatRelativeTime, formatBytes, formatShortTimeAgo } from "@/lib/utils";
+import { formatRelativeTime, formatShortTimeAgo } from "@/lib/utils";
 import { formatDateTime } from "@/lib/date-format";
-import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 import { HardDrive, AlertTriangle, Download, Server, Database, Calendar } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { useRouter } from "next/navigation";
@@ -198,7 +198,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               <span>{content.size}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalFileSize > 0 ? formatBytesLocale(server.totalFileSize, locale) : 'N/A'}
+              {server.totalFileSize > 0 ? formatBytes(server.totalFileSize, locale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
@@ -207,7 +207,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               <span>{content.storage}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalStorageSize > 0 ? formatBytesLocale(server.totalStorageSize, locale) : 'N/A'}
+              {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize, locale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">

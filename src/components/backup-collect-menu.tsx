@@ -950,6 +950,7 @@ export function BackupCollectMenu({
           className={className}
           title={content.buttonTitle.value}
           disabled={disabled}
+          data-screenshot-target="collect-button"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();

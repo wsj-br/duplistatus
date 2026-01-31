@@ -141,11 +141,19 @@ This script automatically takes screenshots of the application for documentation
   - `ADMIN_PASSWORD`: Password for admin account
   - `USER_PASSWORD`: Password for regular user account
 
+**Options:** `--locale` limits screenshots to one or more locales (comma-separated). If omitted, all locales are captured. Valid locales: `en`, `de`, `fr`, `es`, `pt-BR`. Use `-h` or `--help` to print usage.
+
 **Example:**
 ```bash
 export ADMIN_PASSWORD="your-admin-password"
 export USER_PASSWORD="your-user-password"
 tsx scripts/take-screenshots.ts
+# All locales (default):
+tsx scripts/take-screenshots.ts
+# Single locale:
+tsx scripts/take-screenshots.ts --locale en
+# Multiple locales:
+tsx scripts/take-screenshots.ts --locale en,de,pt-BR
 ```
 
 **Generated Screenshots:**

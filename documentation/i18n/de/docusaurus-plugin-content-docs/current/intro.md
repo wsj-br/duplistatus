@@ -57,7 +57,7 @@ Siehe das [Benutzerhandbuch](user-guide/overview.md) für detaillierte Anweisung
 
 ### Überfällige Benachrichtigungen auf Ihrem Telefon {#overdue-notifications-on-your-phone}
 
-![ntfy overdue message](/assets/screen-overdue-notification.png)
+![ntfy overdue message](/img/screen-overdue-notification.png)
 
 ## API-Referenz {#api-reference}
 

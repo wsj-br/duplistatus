@@ -1,4 +1,4 @@
-import { getServerById, getAllServers, getOverdueBackupsForServer, getLastOverdueBackupCheckTime } from "@/lib/db-utils";
+import { getServerById, getAllServers, getOverdueBackupsForServer, getLastOverdueBackupCheckTime, invalidateDataCache, clearRequestCache } from "@/lib/db-utils";
 import { DetailAutoRefresh } from "@/components/server-details/detail-auto-refresh";
 import { notFound } from "next/navigation";
 import type { Server } from "@/lib/types";
@@ -40,6 +40,11 @@ export default async function ServerDetailsPage({
   searchParams,
 }: PageProps) {
   await requireServerAuth();
+
+  // Ensure fresh data on initial load (same as /api/detail/[serverId]); avoids stale
+  // requestCache so overdue message and other data show immediately, not only after auto-refresh.
+  invalidateDataCache();
+  clearRequestCache();
 
   const { serverId } = await params;
   const resolvedSearchParams = await searchParams;

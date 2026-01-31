@@ -74,9 +74,9 @@ Quando apresentar a Data do último backup, mostrar na mesma célula, em uma fon
 
 Após iterar por esses prompts, o Firebase gerou o protótipo conforme mostrado nas capturas de tela abaixo:
 
-![prototype](/assets/screen-prototype.png)
+![prototype](/img/screen-prototype.png)
 
-![prototype-detail](/assets/screen-prototype-detail.png)
+![prototype-detail](/img/screen-prototype-detail.png)
 
 :::note
 Um ponto interessante foi que, desde a primeira interação, o Firebase Studio gerou dados aleatórios para preencher as páginas/gráficos, fazendo o protótipo funcionar como uma aplicação em tempo real.

@@ -99,16 +99,15 @@ const ourWebpack: NextConfig["webpack"] = (config, { isServer, webpack }) => {
       };
     }
 
-    // Suppress react-datepicker critical dependency warnings
-    // These warnings are caused by react-datepicker's internal dynamic imports
-    // (likely for locale loading) and don't affect functionality.
-    // Using ignoreWarnings is more targeted than exprContextCritical = false,
-    // as it only suppresses warnings from react-datepicker while preserving
-    // other potentially important warnings from other modules.
+    // Suppress critical dependency warnings from dependencies that use dynamic requires
     config.ignoreWarnings = [
       ...(config.ignoreWarnings || []),
       {
         module: /react-datepicker/,
+        message: /Critical dependency: the request of a dependency is an expression/,
+      },
+      {
+        module: /@ts-morph\/common/,
         message: /Critical dependency: the request of a dependency is an expression/,
       },
     ];
