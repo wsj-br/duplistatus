@@ -44,7 +44,7 @@ If you are on Linux, don't worry about spinning up helper containers. You can us
 ###### Using Docker or Podman: {#using-docker-or-podman}
 
 ```bash
-# Replace 'duplistatus' with your actual container name if different {#replace-duplistatus-with-your-actual-container-name-if-different}
+# Replace 'duplistatus' with your actual container name if different
 docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).db
 ```
 (If using Podman, simply replace `docker` with `podman` in the command above.)
@@ -85,13 +85,13 @@ The easiest way to restore is to "push" the backup file back into the container'
 ###### Using Docker or Podman: {#using-docker-or-podman}
 
 ```bash
-# stop the container {#stop-the-container}
+# stop the container
 docker stop duplistatus
 
-# Replace 'duplistatus-backup.db' with your actual backup filename {#replace-duplistatus-backupdb-with-your-actual-backup-filename}
+# Replace 'duplistatus-backup.db' with your actual backup filename
 docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
 
-# Restart the container {#restart-the-container}
+# Restart the container
 docker start duplistatus
 ```
 
@@ -112,10 +112,10 @@ Restart the container.
 ###### Option B: Use PowerShell {#option-b-use-powershell}
 
 ```powershell
-# Copy the file from your Desktop back into the container {#copy-the-file-from-your-desktop-back-into-the-container}
+# Copy the file from your Desktop back into the container
 docker cp $HOME\Desktop\duplistatus-backup.db duplistatus:/app/data/backups.db
 
-# Restart the container {#restart-the-container}
+# Restart the container
 docker start duplistatus
 ```
 
@@ -319,9 +319,9 @@ If you restored the file as the `root` user, the application inside the containe
 * **The Fix:** Reset the permissions of the file inside the container to ensure it is accessible.
 
 ```bash
-# Set ownership (usually UID 1000 or the app user) {#set-ownership-usually-uid-1000-or-the-app-user}
+# Set ownership (usually UID 1000 or the app user)
 docker exec -u 0 duplistatus chown 1000:1000 /app/data/backups.db
-# Set read/write permissions {#set-readwrite-permissions}
+# Set read/write permissions
 docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
 ```
 

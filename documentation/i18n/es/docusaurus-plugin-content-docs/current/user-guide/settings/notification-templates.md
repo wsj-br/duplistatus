@@ -1,57 +1,60 @@
-# Templates {#templates}
+---
+translation_last_updated: '2026-01-31T00:51:29.185Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: ce396051346ba380
+translation_language: es
+source_file_path: user-guide/settings/notification-templates.md
+---
+# Plantillas {#templates}
 
-**duplistatus** uses three templates for notification messages. These templates are used for both NTFY and Email notifications:
+**duplistatus** utiliza tres plantillas para mensajes de notificación. Estas plantillas se utilizan tanto para notificaciones NTFY como para Notificaciones por correo electrónico:
 
 ![notification templates](/assets/screen-settings-templates.png)
 
-| Template           | Description                                                         |
-| :----------------- | :------------------------------------------------------------------ |
-| **Success**        | Used when backups complete successfully.            |
-| **Warning/Error**  | Used when backups complete with warnings or errors. |
-| **Overdue Backup** | Used when backups are overdue.                      |
+| Plantilla          | Descripción                                              |
+| :----------------- | :------------------------------------------------------- |
+| **Éxito**          | Se utiliza cuando los backups se completan exitosamente. |
+| **Advertencia/Error** | Se utiliza cuando los backups se completan con advertencias o errores. |
+| **Backup retrasado** | Se utiliza cuando los backups están retrasados.         |
 
 <br/>
 
-## Available Actions {#available-actions}
+## Acciones disponibles {#available-actions}
 
-| Button                                                          | Description                                                                                                                                                                                                                      |
-| :-------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <IconButton label="Save Template Settings" />                   | Saves the settings when changing the template. The button saves the template being displayed (Success, Warning/Error or Overdue Backup).                                      |
-| <IconButton icon="lucide:send" label="Send Test Notification"/> | Checks the template after updating it. The variables will be replaced with their names for the test. For email notifications, the template title becomes the email subject line. |
-| <IconButton icon="lucide:rotate-ccw" label="Reset to Default"/> | Restores the default template for the **selected template**. Remember to save it after resetting.                                                                                                |
+| Botón                                                              | Descripción                                                                                         |
+|:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
+| <IconButton label="Guardar configuración de plantilla" />                      | Guarda la configuración al cambiar la plantilla. El botón guarda la plantilla que se muestra (Éxito, Advertencia/Error o Backup retrasado). |
+| <IconButton icon="lucide:send" label="Enviar notificación de prueba"/>     | Verifica la plantilla después de actualizarla. Las variables se reemplazarán con sus nombres para la prueba. Para notificaciones por correo electrónico, el título de la plantilla se convierte en la línea de asunto del correo electrónico. |
+| <IconButton icon="lucide:rotate-ccw" label="Restablecer a predeterminado"/>     | Restaura la plantilla predeterminada para la **plantilla seleccionada**. Recuerde guardarla después de restablecerla.  |
 
 <br/>
 
 ## Variables {#variables}
 
-All templates support variables that will be replaced with actual values. The following table shows the available variables:
+Todas las plantillas admiten variables que se reemplazarán con valores reales. La siguiente tabla muestra las variables disponibles:
 
-| Variable               | Description                                                                                                  | Available In     |
-| :--------------------- | :----------------------------------------------------------------------------------------------------------- | :--------------- |
-| `{server_name}`        | Name of the server.                                                                          | All templates    |
-| `{server_alias}`       | Alias of the server.                                                                         | All templates    |
-| `{server_note}`        | Note for the server.                                                                         | All templates    |
-| `{server_url}`         | URL of the Duplicati Server web configuration                                                                | All templates    |
-| `{backup_name}`        | Name of the backup.                                                                          | All templates    |
-| `{status}`             | Backup status (Success, Warning, Error, Fatal).                           | Success, Warning |
-| `{backup_date}`        | Date and time of the backup.                                                                 | Success, Warning |
-| `{duration}`           | Duration of the backup.                                                                      | Success, Warning |
-| `{uploaded_size}`      | Amount of data uploaded.                                                                     | Success, Warning |
-| `{storage_size}`       | Storage usage information.                                                                   | Success, Warning |
-| `{available_versions}` | Number of available backup versions.                                                         | Success, Warning |
-| `{file_count}`         | Number of files processed.                                                                   | Success, Warning |
-| `{file_size}`          | Total size of files backed up.                                                               | Success, Warning |
-| `{messages_count}`     | Number of messages.                                                                          | Success, Warning |
-| `{warnings_count}`     | Number of warnings.                                                                          | Success, Warning |
-| `{errors_count}`       | Number of errors.                                                                            | Success, Warning |
-| `{log_text}`           | Log messages (warnings and errors)                                                        | Success, Warning |
-| `{last_backup_date}`   | Date of the last backup.                                                                     | Overdue          |
-| `{last_elapsed}`       | Time elapsed since the last backup.                                                          | Overdue          |
-| `{expected_date}`      | Expected backup date.                                                                        | Overdue          |
-| `{expected_elapsed}`   | Time elapsed since the expected date.                                                        | Overdue          |
-| `{backup_interval}`    | Interval string (e.g., "1D", "2W", "1M"). | Overdue          |
-| `{overdue_tolerance}`  | Overdue tolerance setting.                                                                   | Overdue          |
-
-
-
-
+| Variable               | Descripción                                     | Disponible en   |
+|:-----------------------|:------------------------------------------------|:-----------------|
+| `{server_name}`        | Nombre del servidor.                            | Todas las plantillas    |
+| `{server_alias}`       | Alias del servidor.                            | Todas las plantillas    |
+| `{server_note}`        | Nota para el servidor.                            | Todas las plantillas    |
+| `{server_url}`         | URL del servidor Duplicati de configuración web   | Todas las plantillas    |
+| `{backup_name}`        | Nombre del backup.                             | Todas las plantillas    |
+| `{status}`             | Estado del backup (Éxito, Advertencia, Error, Fatal). | Éxito, Advertencia |
+| `{backup_date}`        | Fecha y hora del backup.                    | Éxito, Advertencia |
+| `{duration}`           | Duración del backup.                         | Éxito, Advertencia |
+| `{uploaded_size}`      | Cantidad de datos enviados.                        | Éxito, Advertencia |
+| `{storage_size}`       | Información de uso de almacenamiento.                      | Éxito, Advertencia |
+| `{available_versions}` | Número de versiones de backup disponibles.            | Éxito, Advertencia |
+| `{file_count}`         | Número de archivos procesados.                      | Éxito, Advertencia |
+| `{file_size}`          | Tamaño total de archivos respaldados.                  | Éxito, Advertencia |
+| `{messages_count}`     | Número de mensajes.                             | Éxito, Advertencia |
+| `{warnings_count}`     | Número de advertencias.                             | Éxito, Advertencia |
+| `{errors_count}`       | Número de errores.                               | Éxito, Advertencia |
+| `{log_text}`           | Mensajes de registro (advertencias y errores)              | Éxito, Advertencia |
+| `{last_backup_date}`   | Fecha del último backup.                        | Retrasado          |
+| `{last_elapsed}`       | Tiempo transcurrido desde el último backup.             | Retrasado          |
+| `{expected_date}`      | Fecha de backup esperada.                           | Retrasado          |
+| `{expected_elapsed}`   | Tiempo transcurrido desde la fecha esperada.           | Retrasado          |
+| `{backup_interval}`    | Cadena de intervalo (p. ej., "1D", "2W", "1M").       | Retrasado          |
+| `{overdue_tolerance}`  | Configuración de tolerancia de retraso.                      | Retrasado          |

@@ -1,0 +1,3 @@
+# Mark SQLite database files as binary to prevent git from trying to diff them
+*.db binary
+.translation-cache/cache.db binary

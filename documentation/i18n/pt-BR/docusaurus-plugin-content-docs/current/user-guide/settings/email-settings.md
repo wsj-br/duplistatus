@@ -1,83 +1,89 @@
-# Email {#email}
+---
+translation_last_updated: '2026-01-31T00:51:30.989Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: 4e8d8de10402b259
+translation_language: pt-BR
+source_file_path: user-guide/settings/email-settings.md
+---
+# E-mail {#email}
 
-**duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
+**duplistatus** suporta o envio de notificações por e-mail via SMTP como uma alternativa ou complemento às notificações NTFY. A configuração de e-mail agora é gerenciada através da interface web com armazenamento criptografado no banco de dados para maior segurança.
 
 ![Email Configuration](/assets/screen-settings-email.png)
 
-| Setting                 | Description                                                                                                                                                                                                                                                                                                                           |
-| :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **SMTP Server Host**    | Your email provider's SMTP server (e.g., `smtp.gmail.com`).                                                                                                                                                                                                        |
-| **SMTP Server Port**    | Port number (typically `25` for Plain SMTP, `587` for STARTTLS, or `465` for Direct SSL/TLS).                                                                                                                                                                                                      |
-| **Connection Type**     | Select between Plain SMTP, STARTTLS, or Direct SSL/TLS. Defaults to Direct SSL/TLS for new configurations.                                                                                                                                                                                            |
-| **SMTP Authentication** | Toggle to enable or disable SMTP authentication. When disabled, username and password fields are not required.                                                                                                                                                                                        |
-| **SMTP Username**       | Your email address or username (required when authentication is enabled).                                                                                                                                                                                                                          |
-| **SMTP Password**       | Your email password or app-specific password (required when authentication is enabled).                                                                                                                                                                                                            |
-| **Sender Name**         | Display name shown as the sender in email notifications (optional, defaults to "duplistatus").                                                                                                                                                                                                     |
-| **From Address**        | Email address shown as the sender. Required for Plain SMTP connections or when authentication is disabled. Defaults to SMTP username when authentication is enabled. Note that some email providers will override the `From Address` with the `SMTP Server Username`. |
-| **Recipient Email**     | The email address to receive notifications. Must be a valid email address format.                                                                                                                                                                                                                     |
+| Configuração                | Descrição                                                      |
+|:------------------------|:-----------------------------------------------------------------|
+| **Host do servidor SMTP**    | Servidor SMTP do seu provedor de e-mail (por exemplo, `smtp.gmail.com`).      |
+| **Porta do servidor SMTP**    | Número da porta (normalmente `25` para SMTP simples, `587` para STARTTLS ou `465` para SSL/TLS direto). |
+| **Tipo de conexão**     | Selecione entre SMTP simples, STARTTLS ou SSL/TLS direto. O padrão é SSL/TLS direto para novas configurações. |
+| **Autenticação SMTP** | Alterne para ativar ou desativar a autenticação SMTP. Quando desabilitada, os campos de nome de usuário e senha não são obrigatórios. |
+| **Nome de usuário SMTP**       | Seu endereço de e-mail ou nome de usuário (obrigatório quando a autenticação está habilitada). |
+| **Senha SMTP**       | Sua senha de e-mail ou senha específica do aplicativo (obrigatória quando a autenticação está habilitada). |
+| **Nome do remetente**         | Nome de exibição mostrado como remetente nas notificações por e-mail (opcional, padrão é "duplistatus"). |
+| **Endereço do remetente**        | Endereço de e-mail mostrado como remetente. Obrigatório para conexões SMTP simples ou quando a autenticação está desabilitada. Padrão é o nome de usuário SMTP quando a autenticação está habilitada. Observe que alguns provedores de e-mail substituirão o `Endereço do remetente` pelo `Nome de usuário do servidor SMTP`. |
+| **E-mail do destinatário**     | O endereço de e-mail para receber notificações. Deve estar em um formato de endereço de e-mail válido. |
 
-A <IIcon2 icon="lucide:mail" color="green"/> green icon next to `Email` in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:mail" color="yellow"/> yellow, your settings are not valid or not configured.
+Um <IIcon2 icon="lucide:mail" color="green"/> ícone verde ao lado de `Email` na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:mail" color="yellow"/> amarelo, suas configurações não são válidas ou não estão configuradas.
 
-The icon shows green when all required fields are set: SMTP Server Host, SMTP Server Port, Recipient Email, and either (SMTP Username + Password when authentication is required) or (From Address when authentication is not required).
+O ícone fica verde quando todos os campos obrigatórios estão preenchidos: Host do servidor SMTP, Porta do servidor SMTP, E-mail do destinatário, e também (Nome de usuário SMTP + Senha quando a autenticação é obrigatória) ou (Endereço do remetente quando a autenticação não é obrigatória).
 
-When the configuration is not fully configured, a yellow alert box is displayed informing you that no emails will be sent until the email settings are filled correctly. The Email checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out and show "(disabled)" labels.
-
-<br/>
-
-## Available Actions {#available-actions}
-
-| Button                                                           | Description                                                                                                                                                                                                                                                                                       |
-| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| <IconButton label="Save Settings" />                             | Save the changes made to the NTFY settings.                                                                                                                                                                                                                                       |
-| <IconButton icon="lucide:mail" label="Send Test Email"/>         | Sends a test email message using the SMTP configuration. The test email displays SMTP server hostname, port, connection type, authentication status, username (if applicable), recipient email, from address, sender name, and test timestamp. |
-| <IconButton icon="lucide:trash-2" label="Delete SMTP Settings"/> | Delete / Clear the SMTP configuration.                                                                                                                                                                                                                                            |
+Quando a configuração não está totalmente configurada, uma caixa de alerta amarela é exibida informando que nenhum e-mail será enviado até que as configurações de e-mail sejam preenchidas corretamente. As caixas de seleção de E-mail na aba [`Notificações de Backup`](backup-notifications-settings.md) também ficarão acinzentadas e exibirão rótulos "(Desabilitado)".
 
 <br/>
 
-:::info[IMPORTANT]
-You must use the <IconButton icon="lucide:mail" label="Send Test Email"/> button to make sure your email setup works before relying on it for notifications.
+## Ações Disponíveis {#available-actions}
 
-Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and everything looks configured, emails may not be sent.
+| Botão                                                            | Descrição                                                |
+|:-----------------------------------------------------------------|:---------------------------------------------------------|
+| <IconButton label="Salvar configurações" />                      | Salva as alterações feitas nas configurações do NTFY.    |
+| <IconButton icon="lucide:mail" label="Enviar e-mail de teste"/>  | Envia uma mensagem de e-mail de teste usando a configuração SMTP. O e-mail de teste exibe nome do host do servidor SMTP, porta, tipo de conexão, status de autenticação, nome de usuário (se aplicável), e-mail do destinatário, endereço do remetente, nome do remetente e data e hora do teste. |
+| <IconButton icon="lucide:trash-2" label="Excluir configurações SMTP"/> | Exclui / Limpa a configuração SMTP.                      |
 
-`duplistatus` only checks if your SMTP settings are filled in, not if emails can actually be delivered.
+<br/>
+
+:::info[Importante]
+  Você deve usar o botão <IconButton icon="lucide:mail" label="Enviar e-mail de teste"/> para garantir que sua configuração de e-mail funcione antes de depender dela para notificações.
+
+ Mesmo que você veja um ícone <IIcon2 icon="lucide:mail" color="green"/> verde e tudo pareça configurado, os e-mails podem não ser enviados.
+ 
+ `duplistatus` apenas verifica se suas configurações de SMTP estão preenchidas, não se os e-mails podem ser realmente entregues.
 :::
 
 <br/>
 
-## Common SMTP Providers {#common-smtp-providers}
+## Provedores SMTP Comuns {#common-smtp-providers}
 
 **Gmail:**
 
 - Host: `smtp.gmail.com`
-- Port: `587` (STARTTLS) or `465` (Direct SSL/TLS)
-- Connection Type: STARTTLS for port 587, Direct SSL/TLS for port 465
-- Username: Your Gmail address
-- Password: Use an App Password (not your regular password). Generate one at https://myaccount.google.com/apppasswords
-- Authentication: Required
+- Porta: `587` (STARTTLS) ou `465` (SSL/TLS direto)
+- Tipo de conexão: STARTTLS para porta 587, SSL/TLS direto para porta 465
+- Nome de usuário: Seu endereço Gmail
+- Senha: Use uma Senha de Aplicativo (não sua senha regular). Gere uma em https://myaccount.google.com/apppasswords
+- Autenticação: Obrigatória
 
 **Outlook/Hotmail:**
 
 - Host: `smtp-mail.outlook.com`
-- Port: `587`
-- Connection Type: STARTTLS
-- Username: Your Outlook email address
-- Password: Your account password
-- Authentication: Required
+- Porta: `587`
+- Tipo de conexão: STARTTLS
+- Nome de usuário: Seu endereço de e-mail do Outlook
+- Senha: Sua senha da conta
+- Autenticação: Obrigatório
 
 **Yahoo Mail:**
 
 - Host: `smtp.mail.yahoo.com`
-- Port: `587`
-- Connection Type: STARTTLS
-- Username: Your Yahoo email address
-- Password: Use an App Password
-- Authentication: Required
+- Porta: `587`
+- Tipo de conexão: STARTTLS
+- Nome de usuário: Seu endereço de e-mail do Yahoo
+- Senha: Use uma Senha de Aplicativo
+- Autenticação: Obrigatória
 
-### Security Best Practices {#security-best-practices}
+### Melhores Práticas de Segurança {#security-best-practices}
 
-- Consider using a dedicated email account for notifications
-- Test your configuration using the "Send Test Email" button
-- Settings are encrypted and stored securely in the database
-- **Use encrypted connections** - STARTTLS and Direct SSL/TLS are recommended for production use
-- Plain SMTP connections (port 25) are available for trusted local networks but are not recommended for production use over untrusted networks
-
+- Considere usar uma conta de e-mail dedicada para notificações
+ - Teste sua configuração usando o botão "Enviar e-mail de teste"
+ - As configurações são criptografadas e armazenadas com segurança no banco de dados
+ - **Use conexões criptografadas** - STARTTLS e SSL/TLS direto são recomendados para uso em produção
+ - Conexões SMTP simples (porta 25) estão disponíveis para redes locais confiáveis, mas não são recomendadas para uso em produção em redes não confiáveis

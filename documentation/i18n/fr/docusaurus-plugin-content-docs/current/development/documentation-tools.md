@@ -1,8 +1,15 @@
-# Documentation Tools {#documentation-tools}
+---
+translation_last_updated: '2026-01-31T00:51:19.867Z'
+source_file_mtime: '2026-01-29T17:58:29.891Z'
+source_file_hash: 48575e653bc418bc
+translation_language: fr
+source_file_path: development/documentation-tools.md
+---
+# Outils de Documentation {#documentation-tools}
 
-The documentation is built using [Docusaurus](https://docusaurus.io/) and is located in the `documentation` folder. The documentation is hosted on [GitHub Pages](https://wsj-br.github.io/duplistatus/) and is no longer included in the Docker container image.
+La documentation est construite à l'aide de [Docusaurus](https://docusaurus.io/) et se trouve dans le dossier `documentation`. La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/) et n'est plus incluse dans l'image du conteneur Docker.
 
-## Folder Structure {#folder-structure}
+## Structure des dossiers {#folder-structure}
 
 ```
 documentation/
@@ -23,132 +30,127 @@ documentation/
 └── package.json       # Dependencies and scripts
 ```
 
-## Common Commands {#common-commands}
+## Commandes courantes {#common-commands}
 
-All commands should be run from the `documentation` directory:
+Toutes les commandes doivent être exécutées à partir du répertoire `documentation` :
 
-### Development {#development}
+### Développement {#development}
 
-Start the development server with hot-reload:
+Démarrer le serveur de développement avec rechargement à chaud :
 
 ```bash
 cd documentation
 pnpm start
 ```
 
-The site will be available at `http://localhost:3000` (or the next available port).
+Le site sera disponible à `http://localhost:3000` (ou au port disponible suivant).
 
 ### Build {#build}
 
-Build the documentation site for production:
+Créer le site de documentation pour la production :
 
 ```bash
 cd documentation
 pnpm build
 ```
 
-This generates static HTML files in the `documentation/build` directory.
+Ceci génère des fichiers HTML statiques dans le répertoire `documentation/build`.
 
-### Serve Production Build {#serve-production-build}
+### Servir la version de production {#serve-production-build}
 
-Preview the production build locally:
+Prévisualisez la version de production localement :
 
 ```bash
 cd documentation
 pnpm serve
 ```
 
-This serves the built site from the `documentation/build` directory.
+Ceci sert à servir le site construit à partir du répertoire `documentation/build`.
 
-### Other Useful Commands {#other-useful-commands}
+### Autres Commandes Utiles {#other-useful-commands}
 
-- `pnpm clear` - Clear Docusaurus cache
-- `pnpm typecheck` - Run TypeScript type checking
-- `pnpm write-heading-ids` - Add heading IDs to markdown files for anchor links
+- `pnpm clear` - Effacer le cache Docusaurus
+- `pnpm typecheck` - Exécuter la vérification des types TypeScript
+- `pnpm write-heading-ids` - Ajouter des identifiants de titre aux fichiers markdown pour les liens d'ancrage
 
-## Generating README.md {#generating-readmemd}
+## Génération de README.md {#generating-readmemd}
 
-The project's `README.md` file is automatically generated from `documentation/docs/intro.md` to keep the GitHub repository README synchronised with the Docusaurus documentation.
+Le fichier `README.md` du projet est généré automatiquement à partir de `documentation/docs/intro.md` pour maintenir la synchronisation du fichier README du référentiel GitHub avec la documentation Docusaurus.
 
-To generate or update the README.md file:
+Pour générer ou mettre à jour le fichier README.md :
 
 ```bash
 ./scripts/generate-readme-from-intro.sh
 ```
 
-This script:
+Ce script :
+- Extrait la version actuelle de `package.json` et ajoute un badge de version
+- Copie le contenu de `documentation/docs/intro.md`
+- Convertit les admonitions Docusaurus (note, tip, warning, etc.) en alertes de style GitHub
+- Convertit tous les liens Docusaurus relatifs en URLs GitHub docs absolues (`https://wsj-br.github.io/duplistatus/...`)
+- Convertit les chemins d'images de `/img/` à `documentation/static/img/` pour la compatibilité GitHub
+- Supprime le bloc IMPORTANT de migration et ajoute une section Informations de migration avec un lien vers la documentation Docusaurus
+- Génère une table des matières à l'aide de `doctoc`
+- Génère `README_dockerhub.md` avec un formatage compatible Docker Hub (convertit les images et les liens en URLs absolues, convertit les alertes GitHub en format basé sur des emojis)
+- Génère les notes de version GitHub (`RELEASE_NOTES_github_VERSION.md`) à partir de `documentation/docs/release-notes/VERSION.md` (convertit les liens et les images en URLs absolues)
 
-- Extracts the current version from `package.json` and adds a version badge
-- Copies content from `documentation/docs/intro.md`
-- Converts Docusaurus admonitions (note, tip, warning, etc.) to GitHub-style alerts
-- Converts all relative Docusaurus links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
-- Converts image paths from `/img/` to `documentation/static/img/` for GitHub compatibility
-- Removes the migration IMPORTANT block and adds a Migration Information section with a link to the Docusaurus docs
-- Generates a table of contents using `doctoc`
-- Generates `README_dockerhub.md` with Docker Hub-compatible formatting (converts images and links to absolute URLs, converts GitHub alerts to emoji-based format)
-- Generates GitHub release notes (`RELEASE_NOTES_github_VERSION.md`) from `documentation/docs/release-notes/VERSION.md` (converts links and images to absolute URLs)
-
-**Note:** You need to have `doctoc` installed globally for the TOC generation:
+**Note :** Vous devez avoir `doctoc` installé globalement pour la génération de la table des matières :
 
 ```bash
 npm install -g doctoc
 ```
 
-## Update README for Docker Hub {#update-readme-for-docker-hub}
+## Mettre à jour le README pour Docker Hub {#update-readme-for-docker-hub}
 
-The `generate-readme-from-intro.sh` script automatically generates `README_dockerhub.md` with Docker Hub-compatible formatting. It:
+Le script `generate-readme-from-intro.sh` génère automatiquement `README_dockerhub.md` avec un formatage compatible avec Docker Hub. Il :
+- Copie `README.md` vers `README_dockerhub.md`
+- Convertit les chemins d'images relatifs en URL GitHub brutes absolues
+- Convertit les liens de documents relatifs en URL GitHub blob absolues
+- Convertit les alertes de style GitHub (`[!NOTE]`, `[!WARNING]`, etc.) en format basé sur les émojis pour une meilleure compatibilité avec Docker Hub
+- Garantit que toutes les images et tous les liens fonctionnent correctement sur Docker Hub
 
-- Copies `README.md` to `README_dockerhub.md`
-- Converts relative image paths to absolute GitHub raw URLs
-- Converts relative document links to absolute GitHub blob URLs
-- Converts GitHub-style alerts (`[!NOTE]`, `[!WARNING]`, etc.) to emoji-based format for better Docker Hub compatibility
-- Ensures all images and links work correctly on Docker Hub
+## Générer les notes de version GitHub {#generate-github-release-notes}
 
-## Generate GitHub Release Notes {#generate-github-release-notes}
+Le script `generate-readme-from-intro.sh` génère automatiquement les notes de version GitHub lors de son exécution. Il :
+- Lit les notes de version depuis `documentation/docs/release-notes/VERSION.md` (où VERSION est extrait de `package.json`)
+- Change le titre de « # Version xxxx » à « # Release Notes - Version xxxxx »
+- Convertit les liens markdown relatifs en URLs absolues de documentation GitHub (`https://wsj-br.github.io/duplistatus/...`)
+- Convertit les chemins d'images en URLs brutes GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) pour un affichage correct dans les descriptions de version
+- Gère les chemins relatifs avec le préfixe `../`
+- Préserve les URLs absolues (http:// et https://) sans modification
+- Crée `RELEASE_NOTES_github_VERSION.md` à la racine du projet
 
-The `generate-readme-from-intro.sh` script automatically generates GitHub release notes when run. It:
-
-- Reads the release notes from `documentation/docs/release-notes/VERSION.md` (where VERSION is extracted from `package.json`)
-- Changes the title from "# Version xxxx" to "# Release Notes - Version xxxxx"
-- Converts relative markdown links to absolute GitHub docs URLs (`https://wsj-br.github.io/duplistatus/...`)
-- Converts image paths to GitHub raw URLs (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) for proper display in release descriptions
-- Handles relative paths with `../` prefix
-- Preserves absolute URLs (http:// and https://) unchanged
-- Creates `RELEASE_NOTES_github_VERSION.md` in the project root
-
-**Example:**
+**Exemple :**
 
 ```bash
-# This will generate both README.md and RELEASE_NOTES_github_VERSION.md {#this-will-generate-both-readmemd-and-release_notes_github_versionmd}
+# This will generate both README.md and RELEASE_NOTES_github_VERSION.md
 ./scripts/generate-readme-from-intro.sh
 ```
 
-The generated release notes file can be copied and pasted directly into the GitHub release description. All links and images will work correctly in the GitHub release context.
+Le fichier de notes de version généré peut être copié et collé directement dans la description de la version GitHub. Tous les liens et images fonctionneront correctement dans le contexte de la version GitHub.
 
-**Note:** The generated file is temporary and can be deleted after creating the GitHub release. It's recommended to add `RELEASE_NOTES_github_*.md` to `.gitignore` if you don't want to commit these files.
+**Note :** Le fichier généré est temporaire et peut être supprimé après la création de la version GitHub. Il est recommandé d'ajouter `RELEASE_NOTES_github_*.md` à `.gitignore` si vous ne souhaitez pas valider ces fichiers.
 
-## Take screenshots for documentation {#take-screenshots-for-documentation}
+## Prendre des captures d'écran pour la documentation {#take-screenshots-for-documentation}
 
 ```bash
 tsx scripts/take-screenshots.ts
 ```
 
-This script automatically takes screenshots of the application for documentation purposes. It:
+Ce script prend automatiquement des captures d'écran de l'application à des fins de documentation. Il :
+- Lance un navigateur sans interface (Puppeteer)
+- Se connecte en tant qu'administrateur et utilisateur régulier
+- Navigue à travers diverses pages (tableau de bord, détails du serveur, paramètres, etc.)
+- Prend des captures d'écran à différentes tailles de fenêtre d'affichage
+- Enregistre les captures d'écran dans `documentation/static/img/`
 
-- Launches a headless browser (Puppeteer)
-- Logs in as admin and regular user
-- Navigates through various pages (dashboard, server details, settings, etc.)
-- Takes screenshots at different viewport sizes
-- Saves screenshots to `documentation/static/img/`
+**Exigences :**
+- Le serveur de développement doit s'exécuter sur `http://localhost:8666`
+- Les variables d'environnement doivent être définies :
+  - `ADMIN_PASSWORD` : Mot de passe du compte Admin
+  - `USER_PASSWORD` : Mot de passe du compte Utilisateur standard
 
-**Requirements:**
-
-- The development server must be running on `http://localhost:8666`
-- Environment variables must be set:
-  - `ADMIN_PASSWORD`: Password for admin account
-  - `USER_PASSWORD`: Password for regular user account
-
-**Example:**
+**Exemple :**
 
 ```bash
 export ADMIN_PASSWORD="your-admin-password"
@@ -156,36 +158,32 @@ export USER_PASSWORD="your-user-password"
 tsx scripts/take-screenshots.ts
 ```
 
-**Generated Screenshots:**
+**Captures d'écran générées :**
 
-The script generates the following screenshots (saved to `documentation/static/img/`):
+Le script génère les captures d'écran suivantes (enregistrées dans `documentation/static/img/`) :
 
-**Dashboard Screenshots:**
+**Captures d'écran du Tableau de bord :**
+- `screen-main-dashboard-card-mode.png` - Tableau de bord en mode carte/vue d'ensemble
+- `screen-main-dashboard-table-mode.png` - Tableau de bord en mode tableau
+- `screen-overdue-backup-hover-card.png` - Carte/infobulle au survol de sauvegarde en retard
+- `screen-backup-tooltip.png` - Infobulle de sauvegarde régulière (survol de la sauvegarde en mode cartes)
 
-- `screen-main-dashboard-card-mode.png` - Dashboard in card/overview mode
-- `screen-main-dashboard-table-mode.png` - Dashboard in table mode
-- `screen-overdue-backup-hover-card.png` - Overdue backup hover card/tooltip
-- `screen-backup-tooltip.png` - Regular backup tooltip (hover over backup in cards view)
+**Captures d'écran des Détails du Serveur :**
+- `screen-server-backup-list.png` - Page de liste des sauvegardes du serveur
+- `screen-backup-history.png` - Section du tableau Historique des sauvegardes
+- `screen-backup-detail.png` - Page de détails de sauvegarde individuelle
+- `screen-metrics.png` - Graphique des Métriques affichant les métriques de sauvegarde au fil du temps
 
-**Server Details Screenshots:**
+**Captures d'écran Collecter/Configuration :**
+- `screen-collect-button-popup.png` - Popup Collecter les journaux de sauvegarde
+- `screen-collect-button-right-click-popup.png` - Menu contextuel Tout collecter
+- `screen-collect-backup-logs.png` - Interface Collecter les journaux de sauvegarde
+- `screen-duplicati-configuration.png` - Menu déroulant Configuration Duplicati
 
-- `screen-server-backup-list.png` - Server backup list page
-- `screen-backup-history.png` - Backup history table section
-- `screen-backup-detail.png` - Individual backup detail page
-- `screen-metrics.png` - Metrics chart showing backup metrics over time
-
-**Collect/Configuration Screenshots:**
-
-- `screen-collect-button-popup.png` - Collect backup logs popup
-- `screen-collect-button-right-click-popup.png` - Collect all right-click menu
-- `screen-collect-backup-logs.png` - Collect backup logs interface
-- `screen-duplicati-configuration.png` - Duplicati configuration dropdown
-
-**Settings Screenshots:**
-
-- `screen-settings-left-panel-admin.png` - Settings sidebar (admin view)
-- `screen-settings-left-panel-non-admin.png` - Settings sidebar (non-admin view)
-- `screen-settings-{tab}.png` - Individual settings pages for each tab:
+**Captures d'écran des Paramètres :**
+- `screen-settings-left-panel-admin.png` - Barre latérale Paramètres (vue Admin)
+- `screen-settings-left-panel-non-admin.png` - Barre latérale Paramètres (vue non-admin)
+- `screen-settings-{tab}.png` - Pages de paramètres individuelles pour chaque onglet :
   - `screen-settings-notifications.png`
   - `screen-settings-overdue.png`
   - `screen-settings-server.png`
@@ -197,32 +195,32 @@ The script generates the following screenshots (saved to `documentation/static/i
   - `screen-settings-audit-retention.png`
   - `screen-settings-display.png`
   - `screen-settings-database-maintenance.png`
-- `screen-settings-ntfy-configure-device-popup.png` - NTFY configure device popup
-- `screen-settings-backup-notifications-detail.png` - Backup notifications detail page
+- `screen-settings-ntfy-configure-device-popup.png` - Fenêtre contextuelle NTFY Configurer l'appareil
+- `screen-settings-backup-notifications-detail.png` - Page de détail Notifications de sauvegarde
 
-## Deploying the Documentation {#deploying-the-documentation}
+## Déploiement de la documentation {#deploying-the-documentation}
 
-To deploy the documentation to GitHub Pages, you will need to generate a GitHub Personal Access Token. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
+Pour déployer la documentation sur GitHub Pages, vous devrez générer un jeton d'accès personnel GitHub. Accédez à [GitHub Personal Access Tokens](https://github.com/settings/tokens) et créez un nouveau jeton avec la portée `repo`.
 
-When you have the token, run the following command to store the token in the Git credential store:
+Quand vous disposez du jeton, exécutez la commande suivante pour stocker le jeton dans le magasin d'identifiants Git :
 
 ```bash
 ./setup-git-credentials.sh
 ```
 
-Then, to deploy the documentation to GitHub Pages, run the following command:
+Ensuite, pour déployer la documentation sur GitHub Pages, exécutez la commande suivante :
 
 ```bash
 pnpm run deploy
 ```
 
-This will build the documentation and push it to the `gh-pages` branch of the repository, and the documentation will be available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
+Ceci construira la documentation et la poussera vers la branche `gh-pages` du référentiel, et la documentation sera disponible à [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
 
-## Working with Documentation {#working-with-documentation}
+## Travailler avec la documentation {#working-with-documentation}
 
-- Documentation files are written in Markdown (`.md`) and located in `documentation/docs/`
-- The sidebar navigation is configured in `documentation/sidebars.ts`
-- Docusaurus configuration is in `documentation/docusaurus.config.ts`
-- Custom React components can be added to `documentation/src/components/`
-- Static assets (images, PDFs, etc.) go in `documentation/static/`
-- The main documentation homepage is `documentation/docs/intro.md`, which is used as the source for generating `README.md`
+- Les fichiers de documentation sont écrits en Markdown (`.md`) et situés dans `documentation/docs/`
+- La navigation de la barre latérale est configurée dans `documentation/sidebars.ts`
+- La configuration de Docusaurus se trouve dans `documentation/docusaurus.config.ts`
+- Les composants React personnalisés peuvent être ajoutés à `documentation/src/components/`
+- Les ressources statiques (images, PDF, etc.) se trouvent dans `documentation/static/`
+- La page d'accueil principale de la documentation est `documentation/docs/intro.md`, qui est utilisée comme source pour générer `README.md`

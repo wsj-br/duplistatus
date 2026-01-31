@@ -76,5 +76,10 @@ Desktop.ini
 .yarn/build-state.yml
 .yarn/install-state.gz
 
-# Crowdin
-crowdin-cli.jar
+# Translation cache
+# Exclude directory by default, but include cache.db for cost savings
+.translation-cache/
+!.translation-cache/cache.db
+# Exclude debug traffic logs (temporary debugging files)
+.translation-cache/debug-traffic-*.log
+

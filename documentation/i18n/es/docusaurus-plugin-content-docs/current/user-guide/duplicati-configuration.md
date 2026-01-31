@@ -1,23 +1,29 @@
-# Duplicati Configuration {#duplicati-configuration}
+---
+translation_last_updated: '2026-01-31T00:51:29.057Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: d909c85d6424418a
+translation_language: es
+source_file_path: user-guide/duplicati-configuration.md
+---
+# Configuración de Duplicati {#duplicati-configuration}
 
-The <SvgButton svgFilename="duplicati_logo.svg" /> button on the [Application Toolbar](overview#application-toolbar) opens the Duplicati server's web interface in a new tab.
+El botón <SvgButton svgFilename="duplicati_logo.svg" /> en la [Barra de herramientas de la aplicación](overview#application-toolbar) abre la interfaz web del Servidor de duplistatus en una pestaña nueva.
 
-You can select a server from the dropdown list. If you have already selected a server (by clicking its card) or are viewing its details, the button will open that specific server's Duplicati configuration directly.
+Puede seleccionar un servidor de la lista desplegable. Si ya ha seleccionado un servidor (haciendo clic en su tarjeta) o está viendo sus detalles, el botón abrirá la Configuración de Duplicati de ese servidor específico directamente.
 
 ![Duplicati configuration](/assets/screen-duplicati-configuration.png)
 
-- The list of servers will show the `server name` or `server alias (server name)`.
-- Server addresses are configured in [`Settings → Server`](settings/server-settings.md).
-- The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collect Backup Logs`](collect-backup-logs.md) feature.
-- Servers will not appear in the server list if their address has not been configured.
+- La lista de servidores mostrará el `nombre del servidor` o `alias del servidor (nombre del servidor)`.
+- Las direcciones de servidores se configuran en [`Configuración → Servidor`](settings/server-settings.md).
+- La aplicación guarda automáticamente la URL de un servidor cuando utiliza la función <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Recopilar Logs de Backup`](collect-backup-logs.md).
+- Los servidores no aparecerán en la lista de servidores si su dirección no ha sido configurada.
 
-## Accessing the Old Duplicati UI {#accessing-the-old-duplicati-ui}
+## Acceso a la interfaz antigua de Duplicati {#accessing-the-old-duplicati-ui}
 
-If you experience login issues with the new Duplicati web interface (`/ngclient/`), you can right-click the <SvgButton svgFilename="duplicati_logo.svg" /> button on or any server item in the server selection popover to open the old Duplicati UI (`/ngax/`) in a new tab.
+Si experimenta problemas al iniciar sesión con la nueva interfaz web de Duplicati (`/ngclient/`), puede hacer clic derecho en el botón <SvgButton svgFilename="duplicati_logo.svg" /> o en cualquier elemento de servidor en el selector emergente de servidores para abrir la interfaz antigua de Duplicati (`/ngax/`) en una pestaña nueva.
 
 <br/><br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+Todos los nombres de productos, marcas registradas y marcas comerciales son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
 :::
-

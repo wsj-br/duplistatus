@@ -80,10 +80,10 @@ If you prefer using the command line, follow these steps:
 Ensure your local `master` branch is up to date:
 
 ```bash
-# Checkout the master branch {#checkout-the-master-branch}
+# Checkout the master branch
 git checkout master
 
-# Pull the latest changes from the remote repository {#pull-the-latest-changes-from-the-remote-repository}
+# Pull the latest changes from the remote repository
 git pull origin master
 ```
 
@@ -92,7 +92,7 @@ git pull origin master
 Merge the `vMAJOR.MINOR.x` branch into `master`:
 
 ```bash
-# Merge the vMAJOR.MINOR.x branch into master {#merge-the-vmajorminorx-branch-into-master}
+# Merge the vMAJOR.MINOR.x branch into master
 git merge vMAJOR.MINOR.x
 ```
 
@@ -106,7 +106,7 @@ If there are **merge conflicts**, resolve them manually:
 Create an annotated tag for the new version:
 
 ```bash
-# Create an annotated tag for the new version {#create-an-annotated-tag-for-the-new-version}
+# Create an annotated tag for the new version
 git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description"
 ```
 
@@ -117,10 +117,10 @@ The `-a` flag creates an annotated tag (recommended for releases), and the `-m` 
 Push both the updated `master` branch and the new tag:
 
 ```bash
-# Push the updated master branch {#push-the-updated-master-branch}
+# Push the updated master branch
 git push origin master
 
-# Push the new tag {#push-the-new-tag}
+# Push the new tag
 git push origin vMAJOR.MINOR.PATCH
 ```
 
@@ -195,7 +195,7 @@ The `generate-readme-from-intro.sh` script automatically generates GitHub releas
 
 **Example:**
 ```bash
-# This will generate README.md, README_dockerhub.md, and RELEASE_NOTES_github_VERSION.md {#this-will-generate-readmemd-readme_dockerhubmd-and-release_notes_github_versionmd}
+# This will generate README.md, README_dockerhub.md, and RELEASE_NOTES_github_VERSION.md
 ./scripts/generate-readme-from-intro.sh
 ```
 

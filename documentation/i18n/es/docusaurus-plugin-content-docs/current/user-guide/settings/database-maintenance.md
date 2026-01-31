@@ -1,71 +1,78 @@
-# Database Maintenance {#database-maintenance}
+---
+translation_last_updated: '2026-01-31T00:51:29.154Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: acb259508545c674
+translation_language: es
+source_file_path: user-guide/settings/database-maintenance.md
+---
+# Mantenimiento de base de datos {#database-maintenance}
 
-Manage your backup data and optimise performance through database maintenance operations.
+Administre sus datos de backup y optimice el rendimiento a través de operaciones de Mantenimiento de base de datos.
 
 ![Database maintenance](/assets/screen-settings-database-maintenance.png)
 
 <br/>
 
-## Database Backup {#database-backup}
+## Backup de base de datos {#database-backup}
 
-Create a backup of your entire database for safekeeping or migration purposes.
+Cree un backup de toda su base de datos para salvaguardia o propósitos de migración.
 
-1. Navigate to `Settings → Database Maintenance`.
-2. In the **Database Backup** section, select a backup format:
-   - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
-   - **SQL Dump (.sql)**: Text format - human-readable SQL statements, can be edited before restore
-3. Click <IconButton icon="lucide:download" label="Download Backup" />.
-4. The backup file will be downloaded to your computer with a timestamped filename.
+1.  Navegue a `Settings → Database Maintenance`.
+2.  En la sección **Database Backup**, seleccione un formato de backup:
+    - **Archivo de base de datos (.db)**: Formato binario - backup más rápido, preserva toda la estructura de la base de datos exactamente
+    - **Volcado SQL (.sql)**: Formato de texto - sentencias SQL legibles, se pueden editar antes de restaurar
+3.  Haga clic en <IconButton icon="lucide:download" label="Descargar backup" />.
+4.  El archivo de backup se descargará en su computadora con un nombre de archivo con marca de tiempo.
 
-**Backup Formats:**
+**Formatos de Backup:**
 
-- **.db format**: Recommended for regular backups. Creates an exact copy of the database file using SQLite's backup API, ensuring consistency even while the database is in use.
-- **.sql format**: Useful for migration, inspection, or when you need to edit the data before restoring. Contains all SQL statements needed to recreate the database.
+- **.db format**: Recomendado para backups regulares. Crea una copia exacta del archivo de base de datos utilizando la API de backup de SQLite, garantizando consistencia incluso mientras la base de datos está en uso.
+- **.sql format**: Útil para migración, inspección, o cuando necesita editar los datos antes de restaurar. Contiene todas las sentencias SQL necesarias para recrear la base de datos.
 
-**Best Practices:**
+**Mejores Prácticas:**
 
-- Create regular backups before major operations (cleanup, merge, etc.)
-- Store backups in a safe location separate from the application
-- Test restore procedures periodically to ensure backups are valid
+- Crear backups regulares antes de operaciones importantes (limpieza, fusión, etc.)
+- Almacenar backups en una ubicación segura separada de la aplicación
+- Probar procedimientos de restauración periódicamente para garantizar que los backups sean válidos
 
 <br/>
 
-## Database Restore {#database-restore}
+## Restauración de base de datos {#database-restore}
 
-Restore your database from a previously created backup file.
+Restaure su base de datos desde un archivo de backup creado anteriormente.
 
-1. Navigate to `Settings → Database Maintenance`.
-2. In the **Database Restore** section, click the file input and select a backup file:
-   - Supported formats: `.db`, `.sql`, `.sqlite`, `.sqlite3`
-   - Maximum file size: 100MB
-3. Click <IconButton icon="lucide:upload" label="Restore Database" />.
-4. Confirm the action in the dialogue box.
+1.  Navegue a `Configuración → Mantenimiento de base de datos`.
+2.  En la sección **Restauración de base de datos**, haga clic en la entrada de archivo y seleccione un archivo de backup:
+    - Formatos compatibles: `.db`, `.sql`, `.sqlite`, `.sqlite3`
+    - Tamaño máximo de archivos: 100MB
+3.  Haga clic en <IconButton icon="lucide:upload" label="Restaurar base de datos" />.
+4.  Confirme la acción en el cuadro de diálogo.
 
-**Restore Process:**
+**Proceso de Restauración:**
 
-- A safety backup of the current database is automatically created before restore
-- The current database is replaced with the backup file
-- All sessions are cleared for security (users must log in again)
-- Database integrity is verified after restore
-- All caches are cleared to ensure fresh data
+- Se crea automáticamente un backup de seguridad de la base de datos actual antes de la restauración
+- La base de datos actual se reemplaza con el archivo de backup
+- Todas las sesiones se cierran por seguridad (los usuarios deben iniciar sesión nuevamente)
+- Se verifica la integridad de la base de datos después de la restauración
+- Todos los cachés se borran para garantizar datos frescos
 
-**Restore Formats:**
+**Formatos de Restauración:**
 
-- **.db files**: The database file is directly replaced. Fastest restore method.
-- **.sql files**: SQL statements are executed to recreate the database. Allows for selective restoration if needed.
+- **Archivos .db**: El archivo de base de datos se reemplaza directamente. Método de restauración más rápido.
+- **Archivos .sql**: Se ejecutan sentencias SQL para recrear la base de datos. Permite restauración selectiva si es necesario.
 
 :::warning
-Restoring a database will **replace all current data**. This action cannot be undone.  
-A safety backup is created automatically, but it's recommended to create your own backup before restoring.
-
-**Important:** After restore, all user sessions are cleared for security. You will need to log in again.
+Restaurar una base de datos **reemplazará todos los datos actuales**. Esta acción no se puede deshacer.  
+Se crea un backup de seguridad automáticamente, pero se recomienda crear su propio backup antes de restaurar.
+ 
+**Importante:** Después de la restauración, todas las sesiones de usuario se cierran por seguridad. Necesitará iniciar sesión nuevamente.
 :::
 
-**Troubleshooting:**
+**Solución de problemas:**
 
-- If restore fails, the original database is automatically restored from the safety backup
-- Ensure the backup file is not corrupted and matches the expected format
-- For large databases, the restore process may take several minutes
+- Si la restauración falla, la base de datos original se restaura automáticamente desde el backup de seguridad
+- Asegúrese de que el archivo de backup no esté corrupto y coincida con el formato esperado
+- Para bases de datos grandes, el proceso de restauración puede tomar varios minutos
 
 <br/>
 
@@ -74,101 +81,101 @@ A safety backup is created automatically, but it's recommended to create your ow
 <br/>
 
 :::note
-This applies to all the maintenance functions below: all statistics on the dashboard, detail pages, and charts are calculated using data from the **duplistatus** database. Deleting old information will impact these calculations.
+Esto se aplica a todas las funciones de mantenimiento que se describen a continuación: todas las estadísticas en el panel de control, páginas de detalle y gráficos se calculan utilizando datos de la base de datos **duplistatus**. Eliminar información antigua afectará estos cálculos.
 
-If you accidentally delete data, you can restore it using the [Collect Backup Logs](../collect-backup-logs.md) feature.
+Si accidentalmente elimina datos, puede restaurarlos utilizando la función [Recopilar logs de backup](../collect-backup-logs.md).
 :::
 
 <br/>
 
-## Data Cleanup Period {#data-cleanup-period}
+## Período de Limpieza de Datos {#data-cleanup-period}
 
-Remove outdated backup records to free up storage space and improve system performance.
+Elimine registros de backup obsoletos para liberar espacio de almacenamiento y mejorar el rendimiento del sistema.
 
-1. Navigate to `Settings → Database Maintenance`.
-2. Choose a retention period:
-   - **6 months**: Retain records from the last 6 months.
-   - **1 year**: Retain records from the last year.
-   - **2 years**: Retain records from the last 2 years (default).
-   - **Delete all data**: Remove all backup records and servers.
-3. Click <IconButton icon="lucide:trash-2" label="Clear Old Records" />.
-4. Confirm the action in the dialogue box.
+1.  Navegue a `Settings → Database Maintenance`.
+2.  Elija un período de retención:
+    - **6 meses**: Retener registros de los últimos 6 meses.
+    - **1 año**: Retener registros del último año.
+    - **2 años**: Retener registros de los últimos 2 años (por defecto).
+    - **Eliminar todos los datos**: Eliminar todos los registros de backup y servidores. 
+3.  Haga clic en <IconButton icon="lucide:trash-2" label="Limpiar logs antiguos" />.
+4.  Confirme la acción en el cuadro de diálogo.
 
-**Cleanup Effects:**
+**Efectos de Limpieza:**
 
-- Deletes backup records older than the selected period
-- Updates all related statistics and metrics
+- Elimina registros de backup más antiguos que el período seleccionado
+- Actualiza todas las Estadísticas y Métricas relacionadas
 
 :::warning
 
-Selecting the "Delete all data" option will **permanently remove all backup records and configuration settings** from the system.
+Seleccionar la opción "Eliminar todos los datos" **eliminará permanentemente todos los registros de backup y la configuración del sistema**.
 
-It is strongly recommended to create a database backup before proceeding with this action.
+Se recomienda encarecidamente crear un backup de base de datos antes de proceder con esta acción.
 
 :::
 
 <br/>
 
-## Delete Backup Job Data {#delete-backup-job-data}
+## Eliminar datos del trabajo de backup {#delete-backup-job-data}
 
-Remove a specific Backup Job (type) data.
+Eliminar datos de un Trabajo de Backup específico (tipo).
 
-1. Navigate to `Settings → Database Maintenance`.
-2. Select a Backup Job from the dropdown list.
-   - The backups will be ordered by server alias or name, then the backup name.
-3. Click <IconButton icon="lucide:folder-open" label="Delete Backup Job" />.
-4. Confirm the action in the dialogue box.
+1.  Navegue a `Settings → Database Maintenance`.
+2.  Seleccione un trabajo de backup de la lista desplegable.
+    - Los backups se ordenarán por alias del servidor o nombre, seguido del nombre de backup.
+3.  Haga clic en <IconButton icon="lucide:folder-open" label="Eliminar trabajo de backup" />.
+4.  Confirme la acción en el cuadro de diálogo.
 
-**Deletion Effects:**
+**Efectos de la Eliminación:**
 
-- Permanently deletes all data associated with this Backup Job / Server.
-- Cleans up associated configuration settings.
-- Updates dashboard statistics accordingly.
-
-<br/>
-
-## Delete Server Data {#delete-server-data}
-
-Remove a specific server and all its associated backup data.
-
-1. Navigate to `Settings → Database Maintenance`.
-2. Select a server from the dropdown list.
-3. Click <IconButton icon="lucide:server" label="Delete Server Data" />.
-4. Confirm the action in the dialogue box.
-
-**Deletion Effects:**
-
-- Permanently deletes the selected server and all its backup records
-- Cleans up associated configuration settings
-- Updates dashboard statistics accordingly
+- Elimina permanentemente todos los datos asociados con este Trabajo de Backup / Servidor.
+- Limpia la configuración asociada.
+- Actualiza las Estadísticas del Panel de control en consecuencia.
 
 <br/>
 
-## Merge Duplicate Servers {#merge-duplicate-servers}
+## Eliminar datos del servidor {#delete-server-data}
 
-Detect and merge duplicate servers that have the same name but different IDs. se this feature to consolidate them into a single server entry.
+Elimine un servidor específico y todos sus datos de backup asociados.
 
-This can occur when Duplicati's `machine-id` changes after an upgrade or reinstall. Duplicate servers are only shown when they exist. If no duplicates are detected, the section will display a message indicating that all servers have unique names.
+1.  Navegue a `Settings → Database Maintenance`.
+2.  Seleccione un servidor de la lista desplegable.
+3.  Haga clic en <IconButton icon="lucide:server" label="Eliminar datos del servidor" />.
+4.  Confirme la acción en el cuadro de diálogo.
 
-1. Navigate to `Settings → Database Maintenance`.
-2. If duplicate servers are detected, a **Merge Duplicate Servers** section will appear.
-3. Review the list of duplicate server groups:
-   - Each group shows servers with the same name but different IDs
-   - The **Target Server** (newest by creation date) is highlighted
-   - **Old Server IDs** that will be merged are listed separately
-4. Select the server groups you want to merge by checking the checkbox next to each group.
-5. Click <IconButton icon="lucide:git-merge" label="Merge Selected Servers" />.
-6. Confirm the action in the dialogue box.
+**Efectos de la Eliminación:**
 
-**Merge Process:**
+- Elimina permanentemente el servidor seleccionado y todos sus registros de backup
+- Limpia la configuración asociada
+- Actualiza las estadísticas del panel de control en consecuencia
 
-- All old server IDs are merged into the target server (newest by creation date)
-- All backup records and configurations are transferred to the target server
-- The old server entries are deleted
-- Dashboard statistics are updated automatically
+<br/>
 
-:::info[IMPORTANT]
-This action cannot be undone. A database backup is recommended before confirming.  
+## Fusionar servidores duplicados {#merge-duplicate-servers}
+
+Detectar y fusionar servidores duplicados que tienen el mismo nombre pero diferentes IDs. Utilice esta función para consolidarlos en una única entrada de servidor.
+
+Esto puede ocurrir cuando el `machine-id` de Duplicati cambia después de una actualización o reinstalación. Los servidores duplicados solo se muestran cuando existen. Si no se detectan duplicados, la sección mostrará un mensaje indicando que todos los servidores tienen nombres únicos.
+
+1.  Navegue a `Configuración → Mantenimiento de base de datos`.
+2.  Si se detectan servidores duplicados, aparecerá una sección **Fusionar servidores duplicados**.
+3.  Revise la lista de grupos de servidores duplicados:
+    - Cada grupo muestra servidores con el mismo nombre pero diferentes IDs
+    - El **Servidor objetivo** (más reciente por fecha de creación) está resaltado
+    - Los **IDs de servidor antiguo** que se fusionarán se enumeran por separado
+4.  Seleccione los grupos de servidores que desea fusionar marcando la casilla de verificación junto a cada grupo.
+5.  Haga clic en <IconButton icon="lucide:git-merge" label="Fusionar servidores seleccionados" />.
+6.  Confirme la acción en el cuadro de diálogo.
+
+**Proceso de Fusión:**
+
+- Todos los ID de servidor antiguos se fusionan en el servidor objetivo (el más reciente por fecha de creación)
+- Todos los registros de backup y configuraciones se transfieren al servidor objetivo
+- Las entradas del servidor antiguo se eliminan
+- Las estadísticas del panel de control se actualizan automáticamente
+
+:::info[Importante]
+Esta acción no se puede deshacer. Se recomienda un backup de base de datos antes de confirmar.  
 :::
 
 <br/>

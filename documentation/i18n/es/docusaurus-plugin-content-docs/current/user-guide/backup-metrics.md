@@ -1,25 +1,26 @@
-# Backup Metrics {#backup-metrics}
+---
+translation_last_updated: '2026-01-31T00:51:29.028Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 338e6488953bc930
+translation_language: es
+source_file_path: user-guide/backup-metrics.md
+---
+# Métricas de Backup {#backup-metrics}
 
-A chart of backup metrics over time is shown on both the dashboard (table view) and the server details page.
+Se muestra un gráfico de métricas de backup a lo largo del tiempo tanto en el panel de control (vista de tabla) como en la página de detalles del servidor.
 
-- **Dashboard**, the chart shows the total number of backups recorded in the **duplistatus** database. If you use the Cards layout, you can select a server to see its consolidated metrics (when side panel is showing metrics).
-- **Server Details** page, the chart shows metrics for the selected server (for all its backups) or for a single, specific backup.
+- **Panel de control**, el gráfico muestra el número total de backups registrados en la base de datos de **duplistatus**. Si utiliza el diseño de tarjetas, puede seleccionar un servidor para ver sus métricas consolidadas (cuando el panel lateral muestra métricas).
+- Página de **Detalles del Servidor**, el gráfico muestra métricas para el servidor seleccionado (para todos sus backups) o para un backup específico individual.
 
 ![Backup Metrics](/assets/screen-metrics.png)
 
-- **Uploaded Size**: Total amount of data uploaded/transmitted during backups from Duplicati server to the destination (local storage, FTP, cloud provider, ...) per day.
-
-- **Duration**: The total duration of all backups received per day in HH:MM.
-
-- **File Count**: The sum of the file count counter received for all backups per day.
-
-- **File Size**: The sum of the file size reported by Duplicati server for all backups received per day.
-
-- **Storage Size**: The sum of the storage size used on the backup destination reported by the Duplicati server per day.
-
-- **Available Versions**: The sum of all available versions for all backups per day.
+- **Tamaño cargado**: Cantidad total de datos enviados/transmitidos durante los backups desde el servidor Duplicati al destino (almacenamiento local, FTP, proveedor de nube, ...) por día.
+- **Duración**: La duración total de todos los backups recibidos por día en HH:MM.
+- **Cantidad de archivos**: La suma del contador de cantidad de archivos recibido para todos los backups por día.
+- **Tamaño de archivos**: La suma del tamaño de archivos reportado por el servidor Duplicati para todos los backups recibidos por día.
+- **Tamaño de almacenamiento**: La suma del tamaño de almacenamiento usado en el destino de backup reportado por el servidor Duplicati por día.
+- **Versiones disponibles**: La suma de todas las versiones disponibles para todos los backups por día.
 
 :::note
-You can use the [Display Settings](settings/display-settings.md) control to configure the time range for the chart.
+Puede utilizar el control de [Configuración de pantalla](settings/display-settings.md) para configurar el rango de tiempo del gráfico.
 :::
-

@@ -1,184 +1,169 @@
-# How I Build this Application using AI tools {#how-i-build-this-application-using-ai-tools}
+---
+translation_last_updated: '2026-01-31T00:51:19.882Z'
+source_file_mtime: '2026-01-31T00:39:06.593Z'
+source_file_hash: 6f3eb23dd0d60ee8
+translation_language: fr
+source_file_path: development/how-i-build-with-ai.md
+---
+# Comment j'ai construit cette application en utilisant des outils d'IA {#how-i-build-this-application-using-ai-tools}
 
 # Motivation {#motivation}
 
-I started using Duplicati as a backup tool for my home servers. I tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with [Homepage](https://gethomepage.dev/), as I use it for my home lab's homepage.
+J'ai commencé à utiliser Duplicati comme outil de sauvegarde pour mes serveurs domestiques. J'ai essayé le [tableau de bord Duplicati](https://app.duplicati.com/) officiel et [Duplicati Monitoring](https://www.duplicati-monitoring.com/), mais j'avais deux exigences principales : (1) auto-hébergé ; et (2) une API exposée pour l'intégration avec [Homepage](https://gethomepage.dev/), car je l'utilise pour la page d'accueil de mon laboratoire domestique.
 
-I also tried connecting directly to each Duplicati server on the network, but the authentication method was not compatible with Homepage (or I was not able to configure it properly).
+J'ai également essayé de me connecter directement à chaque serveur Duplicati sur le réseau, mais la méthode d'authentification n'était pas compatible avec Homepage (ou je n'ai pas pu la configurer correctement).
 
-Since I was also experimenting with AI code tools, I decided to try using AI to build this tool. Here is the process I used...
+Comme j'expérimentais également avec des outils de codage basés sur l'IA, j'ai décidé d'essayer d'utiliser l'IA pour construire cet outil. Voici le processus que j'ai utilisé...
 
-# Tools used {#tools-used}
+# Outils utilisés {#tools-used}
 
-1. For the UI: [Google's Firebase Studio](https://firebase.studio/)
-2. For the implementation: Cursor (https://www.cursor.com/)
+1. Pour l'interface utilisateur : [Google's Firebase Studio](https://firebase.studio/)
+2. Pour l'implémentation : Cursor (https://www.cursor.com/)
 
 :::note
-I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
+J'ai utilisé Firebase pour l'interface utilisateur, mais vous pouvez également utiliser [v0.app](https://v0.app/) ou tout autre outil pour générer le prototype. J'ai utilisé Cursor pour générer l'implémentation, mais vous pouvez utiliser d'autres outils, comme VS Code/Copilot, Windsurf, ...
 :::
 
-# UI {#ui}
+# Interface utilisateur {#ui}
 
-I created a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI" feature:
+J'ai créé un nouveau projet dans [Firebase Studio](https://studio.firebase.google.com/) et j'ai utilisé cette invite dans la fonctionnalité « Prototype an app with AI » :
 
-> A web dashboard application using tailwind/react to consolidate in a sqllite3 database the backup result sent by the duplicati backup solution using the option --send-http-url (json format) of several machines, keep tracking of the status of the backup, size, upload sizes.
->
-> The dashboard first page should have a table with the last backup of each machine in the first page, including the machine name, number of backups stored in the database, the last backup status, duration (hh:mm:ss), number of warnings and errors.
->
-> When clicking a machine line, show a detail page of the select machine with a list of the stored backups (paginated), including the backup name, date and time of the backup, including how long it was ago, the status, number of warnings and errors, number of files, the size of the files, size uploaded and the total size of the storage. Also include in the detail page a chart using Tremor with the evolution of the fields: uploaded size; duration in minutes, number of files examined, size of the files examined. The chart should plot one field at time, with a dropbox to select the desired field to plot. Also the chart has to present all the backups stored in the database, not only the ones showing in the paginated table.
->
-> The application has to expose a api endpoint to receive the post from the duplicati server and other api endpoint to retrieve all the details of the last backup of a machine as a json.
->
-> The design should be modern, responsive and include icons and other visual aids to make it easy to read. The code has to be clean, concise and easy to maintain. Use modern tools like pnpm to deal with dependencies.
->
-> The application has to have a selectable dark and light theme.
->
-> The database should store these fields received by the duplicati json:
+> Une application de tableau de bord web utilisant tailwind/react pour consolider dans une base de données sqllite3 les résultats de sauvegarde envoyés par la solution de sauvegarde duplicati en utilisant l'option --send-http-url (format json) de plusieurs machines, en gardant un suivi du statut de la sauvegarde, de la taille et des tailles téléversées.
+> 
+> La première page du tableau de bord devrait avoir un tableau avec la dernière sauvegarde de chaque machine, incluant le nom de la machine, le nombre de sauvegardes stockées dans la base de données, le statut de la dernière sauvegarde, la durée (hh:mm:ss), le nombre d'avertissements et d'erreurs.
+> 
+> En cliquant sur une ligne de machine, afficher une page de détails de la machine sélectionnée avec une liste des sauvegardes stockées (paginée), incluant le nom de sauvegarde, la date et l'heure de la sauvegarde, incluant depuis combien de temps elle a eu lieu, le statut, le nombre d'avertissements et d'erreurs, le nombre de fichiers, la taille des fichiers, la taille téléversée et la taille totale du stockage. Inclure également dans la page de détails un graphique utilisant Tremor montrant l'évolution des champs suivants : taille téléversée ; durée en minutes, nombre de fichiers examinés, taille des fichiers examinés. Le graphique devrait tracer un champ à la fois, avec une liste déroulante pour sélectionner le champ souhaité à tracer. Le graphique doit également présenter toutes les sauvegardes stockées dans la base de données, pas seulement celles affichées dans le tableau paginé.
+> 
+> L'application doit exposer un point de terminaison api pour recevoir les publications du serveur duplicati et un autre point de terminaison api pour récupérer tous les détails de la dernière sauvegarde d'une machine au format json.
+> 
+> La conception devrait être moderne, réactive et inclure des icônes et autres aides visuelles pour faciliter la lecture. Le code doit être propre, concis et facile à maintenir. Utilisez des outils modernes comme pnpm pour gérer les dépendances.
+> 
+> L'application doit avoir un thème sombre et clair sélectionnable.
+> 
+> La base de données devrait stocker ces champs reçus par le json de duplicati :
 
 ```json
 "{ "Data": { "DeletedFiles": 0, "DeletedFolders": 0, "ModifiedFiles": 0, "ExaminedFiles": 15399, "OpenedFiles": 1861, "AddedFiles": 1861, "SizeOfModifiedFiles": 0, "SizeOfAddedFiles": 13450481, "SizeOfExaminedFiles": 11086692615, "SizeOfOpenedFiles": 13450481, "NotProcessedFiles": 0, "AddedFolders": 419, "TooLargeFiles": 0, "FilesWithError": 0, "ModifiedFolders": 0, "ModifiedSymlinks": 0, "AddedSymlinks": 0, "DeletedSymlinks": 0, "PartialBackup": false, "Dryrun": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "EndTime": "2025-04-21T23:46:38.3568274Z", "BeginTime": "2025-04-21T23:45:46.9712217Z", "Duration": "00:00:51.3856057", "WarningsActualLength": 0, "ErrorsActualLength": 0, "BackendStatistics": { "BytesUploaded": 8290314, "BytesDownloaded": 53550393, "KnownFileSize": 9920312634, "LastBackupDate": "2025-04-22T00:45:46+01:00", "BackupListCount": 6, "ReportedQuotaError": false, "ReportedQuotaWarning": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "BeginTime": "2025-04-21T23:45:46.9712252Z", "Duration": "00:00:00", "WarningsActualLength": 0, "ErrorsActualLength": 0 } }, "Extra": { "OperationName": "Backup", "machine-id": "66f5ffc7ff474a73a3c9cba4ac7bfb65", "machine-name": "WSJ-SER5", "backup-name": "WSJ-SER5 Local files", "backup-id": "DB-2" } } "
 ```
 
-this generated an App Blueprint, which I then modified slightly (as below) before clicking `Prototype this App`:
+ceci a généré un App Blueprint, que j'ai ensuite modifié légèrement (comme ci-dessous) avant de cliquer sur `Prototype this App` :
 
 ![appblueprint](/img/app-blueprint.png)
 
-I later used these prompts to adjust and refine the design and behaviour:
+J'ai ensuite utilisé ces invites pour ajuster et affiner la conception et le comportement :
 
-> remove the button "view details" from the dashboard overview page and the link on the machine name, if the user click anywhere on the row, it will show the detail page.
+> Supprimer le bouton « Voir les détails » de la page de vue d'ensemble du tableau de bord et le lien sur le nom de la machine. Si l'utilisateur clique n'importe où sur la ligne, la page de détails s'affichera.
 
-> when presenting sizes in bytes, use a automatic scale (KB, MB, GB, TB).
+> Quand vous présentez des tailles en octets, utilisez une échelle automatique (KB, MB, GB, TB).
 
-> in the detail page, move the chart after the table. Change the colour of the barchart to some other colour compatible with light and dark themes.
+> sur la page de détail, déplacez le graphique après le tableau. Modifiez la couleur du graphique en barres en une autre couleur compatible avec les thèmes Clair et Sombre.
 
-> in the detail page, reduce the number of rows to present 5 backups per page.
+> dans la page de détail, réduire le nombre de lignes pour présenter 5 Sauvegardes par Page.
 
-> in the dashboard overview, put a summary on top with the number of machines in the database, total number of backups of all machines, the total uploaded size of all backups and total storage used by all machines. Include icons to facilitate the visualisation.
+Dans la vue d'ensemble du Tableau de bord, placer un résumé en haut avec le nombre de machines dans la base de données, le nombre total de sauvegardes de toutes les machines, la Taille totale téléversée de toutes les sauvegardes et le Stockage total utilisé par toutes les machines. Inclure des icônes pour faciliter la visualisation.
 
-> please persist the theme select by the user. also, add some lateral margins and make the UI use 90% of the available width.
+> veuillez conserver le thème sélectionné par l'utilisateur. également, ajouter des marges latérales et faire en sorte que l'interface utilise 90 % de la largeur disponible.
 
-> in the machine detail header card, include a sumary with the total of backups stored for this machine, a statistic of the backup status, the number of warnings and errors of the last backup, the average duration in hh:mm:ss, the total uploaded size of all backups and the storage size used based on the last backup information received.
+> dans la carte d'en-tête de détail de la machine, inclure un résumé avec le total de sauvegardes stockées pour cette machine, une statistique du statut de la sauvegarde, le nombre d'avertissements et d'erreurs de la dernière sauvegarde, la durée moyenne en hh:mm:ss, la taille totale téléversée de toutes les sauvegardes et la taille de stockage utilisée en fonction des informations de la dernière sauvegarde reçues.
 
-> make the summary smaller and more compact to reduce the footprint used.
+> réduisez le résumé pour le rendre plus compact et diminuer l'empreinte utilisée.
 
-> when presenting the last backup date, show in the same cell, in a small gray font, the time ago the backup happened (for instance, x minute ago, x hours ago, x days ago, x weeks ago, x months ago, x years ago).
+Quand vous présentez la date de la dernière sauvegarde, affichez dans la même cellule, en petite police grise, le temps écoulé depuis que la sauvegarde s'est produite (par exemple, il y a x minute, il y a x heures, il y a x jours, il y a x semaines, il y a x mois, il y a x ans).
 
-> in the dashboard overview put last backup date before last backup status
+> dans la vue d'ensemble du tableau de bord, placez la date de la dernière sauvegarde avant le statut de la dernière sauvegarde
 
-After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
+Après avoir itéré à travers ces invites, Firebase a généré le prototype comme indiqué dans les captures d'écran ci-dessous :
 
 ![prototype](/assets/screen-prototype.png)
 
 ![prototype-detail](/assets/screen-prototype-detail.png)
 
 :::note
-One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
+Un point intéressant était que, depuis la première interaction, Firebase Studio générait des données aléatoires pour remplir les pages/graphiques, ce qui permettait au prototype de fonctionner comme une application en direct.
 :::
 
-After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
+Après avoir terminé le prototype initial, j'ai accédé au code source en cliquant sur le bouton `</>` dans l'interface. J'ai ensuite utilisé l'extension Git pour exporter le code et le transférer vers un référentiel privé sur [GitHub](https://www.github.com).
 
 # Backend {#backend}
 
-## Setup {#setup}
+## Configuration {#setup}
 
-I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running Linux) and installed the dependencies Node.js, npm, and pnpm. See more details in [DEVELOPMENT.md](../development/setup.md).
+J'ai téléchargé le code depuis GitHub (en utilisant la commande `git clone`) vers un dossier local (dans mon cas, un Raspberry Pi 5 exécutant Linux) et j'ai installé les dépendances Node.js, npm et pnpm. Voir plus de détails dans [DEVELOPMENT.md](../development/setup.md).
 
-I set up Cursor to access the code folder from my Windows machine using an SSH connection.
+J'ai configuré Cursor pour accéder au dossier de code de ma machine Windows en utilisant une connexion SSH.
 
-I copied a sample of the JSON sent by Duplicati into a file called [`database_values.json`](../api-reference/database_values.json), clearing some unwanted fields.
+J'ai copié un exemple du JSON envoyé par Duplicati dans un fichier (voir le document [exemple de rapport de sauvegarde](../api-reference/database-values)), en supprimant certains champs indésirables.
 
-## Implementation {#implementation}
+## Implémentation {#implementation}
 
-I used an initial prompt to begin the implementation, focusing on persistence, fixes, and new features. It was a long but very interesting process.
+J'ai utilisé une invite initiale pour commencer la mise en œuvre, en mettant l'accent sur la persistance, les corrections et les nouvelles fonctionnalités. C'était un processus long mais très intéressant.
 
-### Using AI to generate the prompt {#using-ai-to-generate-the-prompt}
+### Utiliser l'IA pour générer l'invite {#using-ai-to-generate-the-prompt}
 
-I created a detailed prompt using Cursor Chat (`Manual` mode, `Auto` model):
+J'ai créé une invite détaillée en utilisant Cursor Chat (mode `Manual`, modèle `Auto`) :
 
-> improve this text as a prompt to cursor ai tool to generate the implementation of an applicaiton prototype:
->
-> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyse the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilise SQLite3. Generate the database and populate it using the structure and content found in the @database_values.json file, ensuring every field from the JSON is fully integrated and persisted.
+> améliorer ce texte en tant qu'invite pour l'outil Cursor AI afin de générer l'implémentation d'un prototype d'application :
+> 
+> veuillez créer un plan et générer l'implémentation complète d'un prototype d'application Next.js à partir de cette base de code. Votre implémentation doit analyser minutieusement la base de code fournie pour maintenir l'esthétique visuelle exacte, l'expérience utilisateur et le flux de navigation. Pour le stockage de données, utilisez SQLite3. Générez la base de données et remplissez-la en utilisant la structure et le contenu trouvés dans le document [exemple de rapport de sauvegarde](../api-reference/database-values), en veillant à ce que chaque champ du JSON soit entièrement intégré et persistant.
 
-The AI generated the following prompt:
+L'IA a généré l'invite suivante :
 
-> Create a comprehensive implementation plan for a Next.js application prototype with the following requirements:
+>Créer un plan de mise en œuvre complet pour un prototype d'application Next.js avec les exigences suivantes :
 >
-> 1. Technical Stack:
+>1. Stack technique :
+>   - Next.js 14+ avec App Router
+>   - TypeScript pour la sécurité des types
+>   - SQLite3 pour la persistance des données
+>   - TailwindCSS pour le style
+>   - React Server Components le cas échéant
+>   - Composants clients pour les éléments interactifs
 >
-> - Next.js 14+ with App Router
+>2. Conception de la base de données :
+>   - Analyser le document de rapport de sauvegarde exemple pour créer un schéma SQLite optimal
+>   - Concevoir des tables pour stocker efficacement toutes les données de sauvegarde
+>   - Inclure des index pour les requêtes courantes
+>   - Mettre en œuvre la validation des données et la sécurité des types
 >
-> - TypeScript for type safety
+>3. Structure de l'application :
+>   - Mettre en œuvre l'interface utilisateur/expérience utilisateur exacte de la base de code fournie
+>   - Créer des composants réutilisables pour les éléments courants
+>   - Configurer le routage approprié à l'aide d'App Router
+>   - Mettre en œuvre des mises en page réactives
+>   - Ajouter le support du thème clair/sombre
 >
-> - SQLite3 for data persistence
+>4. Fonctionnalités principales :
+>   - Tableau de bord avec tableau de statut des machines
+>   - Afficher détaillé des machines avec historique des sauvegardes
+>   - Visualisation des données à l'aide de graphiques
+>   - Mises à jour du statut de sauvegarde en temps réel
+>   - Gestion appropriée des erreurs et états de chargement
 >
-> - TailwindCSS for styling
+>5. Gestion des données :
+>   - Créer des routes API pour les opérations de données
+>   - Mettre en œuvre des stratégies de récupération de données efficaces
+>   - Ajouter la validation appropriée des données
+>   - Inclure la gestion des erreurs pour les opérations de base de données
 >
-> - React Server Components where appropriate
->
-> - Client components for interactive elements
->
-> 2. Database Design:
->
-> - Analyse database_values.json to create an optimal SQLite schema
->
-> - Design tables to efficiently store all backup data
->
-> - Include indexes for common queries
->
-> - Implement data validation and type safety
->
-> 3. Application Structure:
->
-> - Implement the exact UI/UX from the provided codebase
->
-> - Create reusable components for common elements
->
-> - Set up proper routing using App Router
->
-> - Implement responsive layouts
->
-> - Add dark/light theme support
->
-> 4. Core Features:
->
-> - Dashboard overview with machine status table
->
-> - Detailed machine view with backup history
->
-> - Data visualisation using charts
->
-> - Real-time backup status updates
->
-> - Proper error handling and loading states
->
-> 5. Data Management:
->
-> - Create API routes for data operations
-> - Implement efficient data fetching strategies
-> - Add proper data validation
-> - Include error handling for database operations
->
-> Please provide a detailed implementation plan that covers all these aspects while maintaining the existing visual design and user experience.
+>Veuillez fournir un plan de mise en œuvre détaillé qui couvre tous ces aspects tout en maintenant la conception visuelle et l'expérience utilisateur existantes.
 
-I copied the generated prompt to the clipboard.
+J'ai copié l'invite générée dans le presse-papiers.
 
-### Start the implementation journey {#start-the-implementation-journey}
+### Démarrer le parcours de mise en œuvre {#start-the-implementation-journey}
 
-I created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
+J'ai créé une nouvelle conversation en cliquant sur le bouton `+`, j'ai basculé en mode `Agent`, et j'ai collé l'invite en utilisant Ctrl+Shift+V (en tant que texte).
 
-After the plan was generated, I typed `please, implement this plan` in the chat to begin the implementation.
+Après la génération du plan, j'ai saisi `please, implement this plan` dans le chat pour commencer la mise en œuvre.
 
 :::note
-I only included the starting point since I didn't record all the prompts used. There were many of them.
+Je n'ai inclus que le point de départ puisque je n'ai pas enregistré tous les invites utilisées. Il y en avait beaucoup.
 :::
 
 # Notes {#notes}
 
-- Some models can get stuck when fixing bugs. "claude-3.5" and "claude-4" are usually better, but sometimes you have to try another model (GPT, Gemini, etc.).
-  For complex bugs or errors, use a prompt to analyse possible causes of the error instead of simply asking to fix it.
-- When making complex modifications, use a prompt to create a plan and then ask the AI agent to implement it. This always works better.
-- Be specific when changing the source code. If possible, select the relevant part of the code in the editor and press Ctrl+L to include it in the chat as context.
-- Also include a reference to the file you are mentioning in the chat to help the AI agent focus on the relevant part of the code and avoid making changes in other parts of the code.
-- I have the tendency to anthropomorphize the AI agent given that it persistently uses 'we', 'our code' and 'would you like me to...'. This is also to improve my odds of survival in case (or [when](https://ai-2027.com/)) Skynet becomes sentient and the Terminator is invented.
-- Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions for the AI agent.
-
+- Certains modèles peuvent se bloquer lors de la correction de bogues. « claude-3.5 » et « claude-4 » sont généralement meilleurs, mais parfois vous devez essayer un autre modèle (GPT, Gemini, etc.).
+Pour les bogues ou erreurs complexes, utilisez une invite pour analyser les causes possibles de l'erreur au lieu de simplement demander de la corriger.
+- Lors de modifications complexes, utilisez une invite pour créer un plan, puis demandez à l'agent IA de l'implémenter. Cela fonctionne toujours mieux.
+- Soyez précis lors de la modification du code source. Si possible, sélectionnez la partie pertinente du code dans l'éditeur et appuyez sur Ctrl+L pour l'inclure dans le chat en tant que contexte.
+- Incluez également une référence au fichier que vous mentionnez dans le chat pour aider l'agent IA à se concentrer sur la partie pertinente du code et éviter de faire des modifications dans d'autres parties du code.
+- J'ai tendance à anthropomorphiser l'agent IA étant donné qu'il utilise persistamment « nous », « notre code » et « aimeriez-vous que je... ». Cela vise également à améliorer mes chances de survie au cas où (ou [quand](https://ai-2027.com/)) Skynet deviendrait conscient et que le Terminator soit inventé.
+- Parfois, utilisez [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... pour générer des invites avec de meilleures instructions pour l'agent IA.

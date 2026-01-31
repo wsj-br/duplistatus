@@ -1,31 +1,37 @@
+---
+translation_last_updated: '2026-01-31T00:51:22.747Z'
+source_file_mtime: '2026-01-29T17:58:29.899Z'
+source_file_hash: 091dcbb5c0bb63c5
+translation_language: fr
+source_file_path: user-guide/admin-recovery.md
+---
 # Récupération du compte Admin {#admin-account-recovery}
 
-Récupérez l'accès administrateur à **duplistatus** quand vous avez perdu votre Mot de passe ou été Verrouillé de votre compte. Ce guide couvre l'utilisation du script de récupération Admin dans les environnements Docker.
+Récupérer l'accès administrateur à **duplistatus** quand vous avez perdu votre mot de passe ou avez été verrouillé de votre compte. Ce guide couvre l'utilisation du script de récupération admin dans les environnements Docker.
 
 ## Utilisation du script dans Docker {#using-the-script-in-docker}
 
 Le Dockerfile inclut le répertoire `scripts` et un wrapper shell pratique.
 
 ```bash
-# Exécuter à l'intérieur du conteneur en cours d'exécution en utilisant le wrapper {#execute-inside-the-running-container-using-the-wrapper}
+# Execute inside the running container using the wrapper
 docker exec -it duplistatus /app/admin-recovery <username> <new-password>
 ```
 
-**Exemple:**
+**Exemple :**
 
 ```bash
-docker exec -it duplistatus /app/admin-recovery Admin NewPassword123
+docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 ```
 
 ## Dépannage {#troubleshooting}
 
-Si vous rencontrez des problèmes avec le script de récupération:
+Si vous rencontrez des problèmes avec le script de récupération :
 
-1. **Vérifier que le conteneur est en cours d'exécution**: Vérifier que le conteneur est en cours d'exécution avec `docker ps`
-2. **Vérifier la disponibilité du script**: Vérifier que le script existe dans le conteneur avec `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Vérifier les journaux du conteneur**: Vérifier les Erreurs avec `docker logs duplistatus`
-4. **Vérifier le Nom d'utilisateur**: Assurez-vous que le Nom d'utilisateur existe dans la base de données
-5. **Vérifier le format du Mot de passe**: Assurez-vous que le Nouveau mot de passe répond à Tous les exigences
+1. **Vérifier que le conteneur est en cours d'exécution** : Vérifier que le conteneur est en cours d'exécution avec `docker ps`
+2. **Vérifier la disponibilité du script** : Vérifier que le script existe dans le conteneur avec `docker exec -it duplistatus ls -la /app/admin-recovery`
+3. **Examiner les journaux du conteneur** : Vérifier les erreurs avec `docker logs duplistatus`
+4. **Vérifier le nom d'utilisateur** : S'assurer que le nom d'utilisateur existe dans la base de données
+5. **Vérifier le format du mot de passe** : S'assurer que le nouveau mot de passe répond à tous les critères
 
-Si les problèmes persistent, consultez le guide [Dépannage](troubleshooting.md) pour plus d'Aide.
-
+Si les problèmes persistent, consultez le guide [Dépannage](troubleshooting.md) pour plus d'aide.

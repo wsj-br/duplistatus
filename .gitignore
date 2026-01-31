@@ -40,6 +40,7 @@ RELEASE_NOTES_github_*.md
 .specstory/**
 *.diff
 *.tmp
+temp-prompts.md
 
 # documentation
 documentation/node_modules

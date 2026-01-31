@@ -1,7 +1,8 @@
+
+
 # Core Operations {#core-operations}
 
 ## Get Dashboard Data (Consolidated) - `/api/dashboard` {#get-dashboard-data-consolidated-apidashboard}
-
 - **Endpoint**: `/api/dashboard`
 - **Method**: GET
 - **Description**: Retrieves all dashboard data in a single consolidated response, including server summaries, overall summary, and chart data.
@@ -64,7 +65,6 @@
   - The `secondsSinceLastBackup` field shows the time in seconds since the last backup across all servers
 
 ## Get All Servers - `/api/servers` {#get-all-servers-apiservers}
-
 - **Endpoint**: `/api/servers`
 - **Method**: GET
 - **Description**: Retrieves a list of all servers with their basic information. Optionally includes backup information.
@@ -107,7 +107,6 @@
   - Includes `hasPassword` field to indicate if server has stored password
 
 ## Get Server Details - `/api/servers/:id` {#get-server-details-apiserversid}
-
 - **Endpoint**: `/api/servers/:id`
 - **Method**: GET
 - **Description**: Retrieves information about a specific server. Can return basic server info or detailed information including backups and chart data.
@@ -173,7 +172,6 @@
   - Optimised for different use cases (settings vs detail views)
 
 ## Update Server - `/api/servers/:id` {#update-server-apiserversid}
-
 - **Endpoint**: `/api/servers/:id`
 - **Method**: PATCH
 - **Description**: Updates server details including alias, note, and server URL.
@@ -208,15 +206,10 @@
   - Empty strings are allowed for all fields
 
 ## Delete Server - `/api/servers/:id` {#delete-server-apiserversid}
-
 - **Endpoint**: `/api/servers/:id`
-
 - **Method**: DELETE
-
 - **Description**: Deletes a server and all its associated backups.
-
 - **Authentication**: Requires valid session and CSRF token
-
 - **Parameters**:
   - `id`: the server identifier
 
@@ -231,26 +224,20 @@
     }
   }
   ```
-
 - **Error Responses**:
   - `401`: Unauthorized - Invalid session or CSRF token
   - `404`: Server not found
   - `500`: Server error during deletion
-
-- **Notes**:
+- **Notes**: 
   - This operation is irreversible
   - All backup data associated with the server will be permanently deleted
   - The server record itself will also be removed
   - Returns count of deleted backups and servers
 
 ## Get Server Data with Overdue Info - `/api/detail/:serverId` {#get-server-data-with-overdue-info-apidetailserverid}
-
 - **Endpoint**: `/api/detail/:serverId`
-
 - **Method**: GET
-
 - **Description**: Retrieves detailed server information including overdue backup status.
-
 - **Parameters**:
   - `serverId`: the server identifier
 
@@ -276,18 +263,15 @@
     "lastOverdueCheck": "2024-03-20T12:00:00Z"
   }
   ```
-
 - **Error Responses**:
   - `404`: Server not found
   - `500`: Server error fetching server details
-
 - **Notes**:
   - Returns server data with overdue backup information
   - Includes overdue backup details and timestamps
   - Used for overdue backup management and monitoring
 
 ## Get Duplicate Servers - `/api/servers/duplicates` {#get-duplicate-servers-apiserversduplicates}
-
 - **Endpoint**: `/api/servers/duplicates`
 - **Method**: GET
 - **Description**: Retrieves a list of duplicate servers based on machine ID. Duplicate servers are servers that share the same machine ID but are stored as separate records in the database.
@@ -328,7 +312,6 @@
   - Includes server details and backup counts for each duplicate
 
 ## Merge Servers - `/api/servers/merge` {#merge-servers-apiserversmerge}
-
 - **Endpoint**: `/api/servers/merge`
 - **Method**: POST
 - **Description**: Merges multiple servers into a target server. All backups from the source servers are transferred to the target server, and the source servers are deleted.

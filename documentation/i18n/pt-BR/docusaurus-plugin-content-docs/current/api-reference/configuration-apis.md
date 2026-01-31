@@ -1,7 +1,8 @@
+
+
 # Configuration Management {#configuration-management}
 
 ## Get Email Configuration - `/api/configuration/email` {#get-email-configuration-apiconfigurationemail}
-
 - **Endpoint**: `/api/configuration/email`
 - **Method**: GET
 - **Description**: Retrieves the current email notification configuration and whether email notifications are enabled/configured.
@@ -40,7 +41,6 @@
   - Handles master key validation errors gracefully
 
 ## Update Email Configuration - `/api/configuration/email` {#update-email-configuration-apiconfigurationemail}
-
 - **Endpoint**: `/api/configuration/email`
 - **Method**: POST
 - **Description**: Updates the SMTP email notification configuration.
@@ -74,7 +74,6 @@
   - Password is managed separately through the password endpoint
 
 ## Delete Email Configuration - `/api/configuration/email` {#delete-email-configuration-apiconfigurationemail}
-
 - **Endpoint**: `/api/configuration/email`
 - **Method**: DELETE
 - **Description**: Deletes the SMTP email notification configuration.
@@ -95,7 +94,6 @@
   - Returns 404 if no configuration exists to delete
 
 ## Update Email Password - `/api/configuration/email/password` {#update-email-password-apiconfigurationemailpassword}
-
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: PATCH
 - **Description**: Updates the email password for SMTP authentication.
@@ -130,7 +128,6 @@
   - Password is stored securely using encryption
 
 ## Get Email Password CSRF Token - `/api/configuration/email/password` {#get-email-password-csrf-token-apiconfigurationemailpassword}
-
 - **Endpoint**: `/api/configuration/email/password`
 - **Method**: GET
 - **Description**: Retrieves a CSRF token for email password operations.
@@ -149,7 +146,6 @@
   - Session must be valid to generate token
 
 ## Get Unified Configuration - `/api/configuration/unified` {#get-unified-configuration-apiconfigurationunified}
-
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
 - **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and servers with backups.
@@ -230,7 +226,6 @@
   - Fetches all data in parallel for better performance
 
 ## Get NTFY Configuration - `/api/configuration/ntfy` {#get-ntfy-configuration-apiconfigurationntfy}
-
 - **Endpoint**: `/api/configuration/ntfy`
 - **Method**: GET
 - **Description**: Retrieves the current NTFY configuration settings.
@@ -254,7 +249,6 @@
   - Requires authentication for accessing configuration data
 
 ## Get Notification Configuration - `/api/configuration/notifications` {#get-notification-configuration-apiconfigurationnotifications}
-
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: GET
 - **Description**: Retrieves the current notification frequency configuration.
@@ -274,7 +268,6 @@
   - Returns one of: `"onetime"`, `"every_day"`, `"every_week"`, `"every_month"`
 
 ## Update Notification Configuration - `/api/configuration/notifications` {#update-notification-configuration-apiconfigurationnotifications}
-
 - **Endpoint**: `/api/configuration/notifications`
 - **Method**: POST
 - **Description**: Updates notification configuration (NTFY settings or notification frequency).
@@ -332,7 +325,6 @@
   - Affects how often overdue notifications are sent
 
 ## Update Backup Settings - `/api/configuration/backup-settings` {#update-backup-settings-apiconfigurationbackup-settings}
-
 - **Endpoint**: `/api/configuration/backup-settings`
 - **Method**: POST
 - **Description**: Updates the backup notification settings for specific servers/backups.
@@ -366,7 +358,6 @@
   - Clears notifications when timeout settings change
 
 ## Update Notification Templates - `/api/configuration/templates` {#update-notification-templates-apiconfigurationtemplates}
-
 - **Endpoint**: `/api/configuration/templates`
 - **Method**: POST
 - **Description**: Updates the notification templates.
@@ -400,7 +391,6 @@
   - Templates support variable substitution
 
 ## Get Overdue Tolerance - `/api/configuration/overdue-tolerance` {#get-overdue-tolerance-apiconfigurationoverdue-tolerance}
-
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: GET
 - **Description**: Retrieves the current overdue tolerance setting.
@@ -417,7 +407,6 @@
   - Used for displaying current configuration
 
 ## Update Overdue Tolerance - `/api/configuration/overdue-tolerance` {#update-overdue-tolerance-apiconfigurationoverdue-tolerance}
-
 - **Endpoint**: `/api/configuration/overdue-tolerance`
 - **Method**: POST
 - **Description**: Updates the overdue tolerance setting.

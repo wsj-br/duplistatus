@@ -1,16 +1,23 @@
-# Zona horaria y Configuración regional {#timezone-and-locale}
+---
+translation_last_updated: '2026-01-31T00:51:26.593Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 67bb94741185f3d9
+translation_language: es
+source_file_path: installation/configure-tz-lang.md
+---
+# Zona horaria e idioma {#timezone-and-locale}
 
-La fecha y hora de la interfaz de usuario de la aplicación se mostrarán de acuerdo con la Configuración del navegador. Sin embargo, para fines de registro y Notificaciones, la aplicación utilizará el valor definido en las variables de entorno `TZ` y `LANG` para utilizar las zonas horarias correctas y para formatear los valores de número, Fecha y hora.
+La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. Sin embargo, para fines de registro y notificaciones, la aplicación utilizará el valor definido en las variables de entorno `TZ` y `LANG` para usar las zonas horarias correctas y para formatear los valores de número, fecha y hora.
 
-Los valores Por defecto son `TZ=Europe/London` y `LANG=en_GB` si estas variables de entorno no están No establecido.
+Los valores por defecto son `TZ=Europe/London` y `LANG=en_GB` si estas variables de entorno no están establecidas.
 
 ## Configuración de la Zona horaria {#configuring-the-timezone}
 
-La fecha y hora de la interfaz de usuario de la aplicación se mostrarán de acuerdo con la Configuración del navegador. Sin embargo, para fines de registro y Notificaciones, la aplicación utilizará el valor definido en la variable de entorno `TZ` para formatear zonas horarias.
+La interfaz de usuario de la aplicación mostrará la fecha y hora según la configuración del navegador. Sin embargo, para propósitos de registro y notificaciones, la aplicación utilizará el valor definido en la variable de entorno `TZ` para formatear zonas horarias.
 
-El valor Por defecto es `TZ=Europe/London` si esta variable de entorno no está No establecido.
+El valor por defecto es `TZ=Europe/London` si esta variable de entorno no está establecida.
 
-Por ejemplo, para cambiar la Zona horaria a São Paulo, Añadir estas líneas al `compose.yml` en el directorio `duplistatus`:
+Por ejemplo, para cambiar la zona horaria a São Paulo, añada estas líneas al archivo `compose.yml` en el directorio `duplistatus`:
 
 ```yaml
 environment:
@@ -23,25 +30,25 @@ o pasar la variable de entorno en la línea de comandos:
   --env TZ=America/Sao_Paulo
 ```
 
-### Usando su Configuración de Linux {#using-your-linux-configuration}
+### Uso de su configuración de Linux {#using-your-linux-configuration}
 
-Para obtener la Configuración del Host de Linux, puede ejecutar:
+Para obtener la configuración de su Host Linux, puede ejecutar:
 
 ```bash
 echo TZ=\"$(</etc/timezone)\"
 ```
 
-### Lista de Zonas horarias {#list-of-timezones}
+### Lista de zonas horarias {#list-of-timezones}
 
-Puede encontrar una lista de Zonas horarias aquí: [Wikipedia: Lista de zonas horarias de la base de datos tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
+Puede encontrar una lista de zonas horarias aquí: [Wikipedia: List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 
-## Configuración de la Configuración regional {#configuring-the-locale}
+## Configuración de la Configuración Regional {#configuring-the-locale}
 
-Las fechas y números de la interfaz de usuario de la aplicación se mostrarán de acuerdo con la Configuración del navegador. Sin embargo, para fines de registro y Notificaciones, la aplicación utilizará el valor definido en la variable de entorno `LANG` para formatear fechas y números.
+La interfaz de usuario de la aplicación mostrará fechas y números de acuerdo con la configuración del navegador. Sin embargo, para fines de registro y notificaciones, la aplicación utilizará el valor definido en la variable de entorno `LANG` para formatear fechas y números.
 
-El valor Por defecto es `LANG=en_GB` si esta variable de entorno no está No establecido.
+El valor por defecto es `LANG=en_GB` si esta variable de entorno no está establecida.
 
-Por ejemplo, para cambiar la Configuración regional a portugués brasileño, Añadir estas líneas al `compose.yml` en el directorio `duplistatus`:
+Por ejemplo, para cambiar la configuración regional al portugués brasileño, añada estas líneas al archivo `compose.yml` en el directorio `duplistatus`:
 
 ```yaml
 environment:
@@ -54,15 +61,14 @@ o pasar la variable de entorno en la línea de comandos:
   --env LANG=pt_BR
 ```
 
-### Usando su Configuración de Linux {#using-your-linux-configuration}
+### Uso de su configuración de Linux {#using-your-linux-configuration}
 
-Para obtener la Configuración del Host de Linux, puede ejecutar:
+Para obtener la configuración de su Host Linux, puede ejecutar:
 
 ```bash
 echo ${LANG%.*}
 ```
 
-### Lista de Configuraciones regionales {#list-of-locales}
+### Lista de configuraciones regionales {#list-of-locales}
 
-Puede encontrar una lista de Configuraciones regionales aquí: [LocalePlanet: Componentes internacionales para Unicode (ICU) Data](https://www.localeplanet.com/icu/)
-
+Puede encontrar una lista de configuraciones regionales aquí: [LocalePlanet: International Components for Unicode (ICU) Data](https://www.localeplanet.com/icu/)

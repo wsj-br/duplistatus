@@ -1,40 +1,46 @@
-# Audit Logs {#audit-logs}
+---
+translation_last_updated: '2026-01-31T00:51:30.944Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 67b8a05c2d43879d
+translation_language: pt-BR
+source_file_path: user-guide/settings/audit-logs-viewer.md
+---
+# Logs de Auditoria {#audit-logs}
 
-The audit log provides a comprehensive record of all system changes and user actions in **duplistatus**. This helps track configuration changes, user activities, and system operations for security and troubleshooting purposes.
+O log de auditoria fornece um registro abrangente de todas as alterações de sistema e ações de usuário no **duplistatus**. Isso ajuda a rastrear alterações de configuração, atividades de usuário e operações de sistema para fins de segurança e resolução de problemas.
 
 ![Audit Log](/assets/screen-settings-audit.png)
 
-## Audit Log Viewer {#audit-log-viewer}
+## Visualizador de log de auditoria {#audit-log-viewer}
 
-The audit log viewer displays a chronological list of all logged events with the following information:
+O Visualizador de log de auditoria exibe uma lista cronológica de todos os eventos registrados com as seguintes informações:
 
-- **Timestamp**: When the event occurred
-- **User**: The username who performed the action (or "System" for automated actions)
-- **Action**: The specific action that was performed
-- **Category**: The category of the action (Authentication, User Management, Configuration, Backup Operations, Server Management, System Operations)
-- **Status**: Whether the action succeeded or failed
-- **Target**: The object that was affected (if applicable)
-- **Details**: Additional information about the action
+- **Data e hora**: Quando o evento ocorreu
+- **Usuário**: O nome de usuário que realizou a ação (ou "Sistema" para ações automatizadas)
+- **Ação**: A ação específica que foi realizada
+- **Categoria**: A categoria da ação (Autenticação, Gerenciamento de usuários, Configuração, Operações de backup, Gerenciamento de servidores, Operações do sistema)
+- **Status**: Se a ação foi bem-sucedida ou falhou
+- **Destino**: O objeto que foi afetado (se aplicável)
+- **Detalhes**: Informações adicionais sobre a ação
 
-### Viewing Log Details {#viewing-log-details}
+### Visualizando Detalhes do Log {#viewing-log-details}
 
-Click the <IconButton icon="lucide:eye" /> eye icon next to any log entry to view detailed information, including:
+Clique no ícone de olho <IconButton icon="lucide:eye" /> ao lado de qualquer entrada de log para visualizar informações detalhadas, incluindo:
+- Data e hora completa
+- Informações do usuário
+- Detalhes completos da ação (por exemplo: campos alterados, estatísticas, etc.)
+- Endereço IP e agente do usuário
+- Mensagens de erro (se a ação falhou)
 
-- Full timestamp
-- User information
-- Complete action details (for example: fields changed, statistics, etc.)
-- IP address and user agent
-- Error messages (if the action failed)
+### Exportando Logs de Auditoria {#exporting-audit-logs}
 
-### Exporting Audit Logs {#exporting-audit-logs}
+Você pode exportar logs de auditoria filtrados em dois formatos:
 
-You can export filtered audit logs in two formats:
-
-| Button                                            | Description                                          |
-| :------------------------------------------------ | :--------------------------------------------------- |
-| <IconButton icon="lucide:download" label="CSV"/>  | Export logs as a CSV file for spreadsheet analysis   |
-| <IconButton icon="lucide:download" label="JSON"/> | Export logs as a JSON file for programmatic analysis |
+| Botão | Descrição |
+|:------|:-----------|
+| <IconButton icon="lucide:download" label="CSV"/> | Exportar logs como um arquivo CSV para análise em planilha |
+| <IconButton icon="lucide:download" label="JSON"/> | Exportar logs como um arquivo JSON para análise programática |
 
 :::note
-Exports include only the logs currently visible based on your active filters. To export all logs, clear all filters first.
+As exportações incluem apenas os logs atualmente visíveis com base nos seus filtros ativos. Para exportar todos os logs, limpe todos os filtros primeiro.
 :::

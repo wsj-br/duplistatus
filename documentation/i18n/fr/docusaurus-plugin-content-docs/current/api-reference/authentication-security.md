@@ -1,3 +1,5 @@
+
+
 # Authentication & Security {#authentication-security}
 
 The API uses a combination of session-based authentication and CSRF protection for all database write operations to prevent unauthorized access and potential denial-of-service attacks. External APIs (used by Duplicati) remain unauthenticated for compatibility.
@@ -7,7 +9,6 @@ The API uses a combination of session-based authentication and CSRF protection f
 Protected endpoints require a valid session cookie and CSRF token. The session system provides secure authentication for all protected operations.
 
 ### Session Management {#session-management}
-
 1. **Create Session**: POST to `/api/session` to create a new session
 2. **Get CSRF Token**: GET `/api/csrf` to obtain a CSRF token for the session
 3. **Include in Requests**: Send session cookie and CSRF token with protected requests
@@ -15,11 +16,9 @@ Protected endpoints require a valid session cookie and CSRF token. The session s
 5. **Delete Session**: DELETE `/api/session` to logout and clear session
 
 ### CSRF Protection {#csrf-protection}
-
 All state-changing operations require a valid CSRF token that matches the current session. The CSRF token must be included in the `X-CSRF-Token` header for protected endpoints.
 
 ### Protected Endpoints {#protected-endpoints}
-
 All endpoints that modify database data require session authentication and CSRF token:
 
 - **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
@@ -33,7 +32,6 @@ All endpoints that modify database data require session authentication and CSRF 
 - **Server Details**: `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
 
 ### Unprotected Endpoints {#unprotected-endpoints}
-
 External APIs remain unauthenticated for Duplicati integration:
 
 - `/api/upload` - Backup data uploads from Duplicati
@@ -43,7 +41,6 @@ External APIs remain unauthenticated for Duplicati integration:
 - `/api/health` - Health check endpoint
 
 ### Usage Example (Session + CSRF) {#usage-example-session-csrf}
-
 ```typescript
 // 1. Create session
 const sessionResponse = await fetch('/api/session', { method: 'POST' });
@@ -73,7 +70,6 @@ const response = await fetch('/api/servers/server-id', {
 ## Authentication Endpoints {#authentication-endpoints}
 
 ### Login - `/api/auth/login` {#login-apiauthlogin}
-
 - **Endpoint**: `/api/auth/login`
 - **Method**: POST
 - **Description**: Authenticates a user and creates a session. Supports account locking after failed attempts and password change requirements.
@@ -109,7 +105,6 @@ const response = await fetch('/api/servers/server-id', {
   - All login attempts (successful and failed) are logged to audit log
 
 ### Logout - `/api/auth/logout` {#logout-apiauthlogout}
-
 - **Endpoint**: `/api/auth/logout`
 - **Method**: POST
 - **Description**: Logs out the current user and destroys their session.
@@ -130,7 +125,6 @@ const response = await fetch('/api/servers/server-id', {
   - Session is immediately invalidated
 
 ### Get Current User - `/api/auth/me` {#get-current-user-apiauthme}
-
 - **Endpoint**: `/api/auth/me`
 - **Method**: GET
 - **Description**: Returns the current authenticated user information, or indicates if no user is logged in.
@@ -161,7 +155,6 @@ const response = await fetch('/api/servers/server-id', {
   - Useful for checking authentication status on page load
 
 ### Change Password - `/api/auth/change-password` {#change-password-apiauthchange-password}
-
 - **Endpoint**: `/api/auth/change-password`
 - **Method**: POST
 - **Description**: Changes the password for the current authenticated user. If `mustChangePassword` is set, current password verification is skipped.
@@ -195,7 +188,6 @@ const response = await fetch('/api/servers/server-id', {
   - New password must be different from current password
 
 ### Check Admin Must Change Password - `/api/auth/admin-must-change-password` {#check-admin-must-change-password-apiauthadmin-must-change-password}
-
 - **Endpoint**: `/api/auth/admin-must-change-password`
 - **Method**: GET
 - **Description**: Checks if the admin user must change their password. This endpoint is public (no authentication required) as it only returns a boolean flag.
@@ -214,7 +206,6 @@ const response = await fetch('/api/servers/server-id', {
   - On error, returns `false` to avoid showing tip if there's a database issue
 
 ### Get Password Policy - `/api/auth/password-policy` {#get-password-policy-apiauthpassword-policy}
-
 - **Endpoint**: `/api/auth/password-policy`
 - **Method**: GET
 - **Description**: Returns the current password policy configuration. This endpoint is public (no authentication required) as it's needed for frontend validation.
@@ -237,14 +228,13 @@ const response = await fetch('/api/servers/server-id', {
   - Default password check (preventing use of default admin password) is always enforced regardless of policy settings
 
 ### Error Responses {#error-responses}
-
 - `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed
 - `403 Forbidden`: CSRF token validation failed or operation not allowed
 
 :::caution
-Don't expose the **duplistatus** server to the public internet. Use it in a secure network
+ Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
 (e.g., local LAN protected by a firewall).
 
 Exposing the **duplistatus** interface to the public
-internet without proper security measures could lead to unauthorized access.
+ internet without proper security measures could lead to unauthorized access.
 :::

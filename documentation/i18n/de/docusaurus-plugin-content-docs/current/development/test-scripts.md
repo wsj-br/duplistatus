@@ -1,206 +1,204 @@
-# Test Scripts {#test-scripts}
+---
+translation_last_updated: '2026-01-31T00:51:23.347Z'
+source_file_mtime: '2026-01-29T17:58:29.895Z'
+source_file_hash: 6f3df4c1ef3576bd
+translation_language: de
+source_file_path: development/test-scripts.md
+---
+# Testskripte {#test-scripts}
 
-The project includes several test scripts to help with development and testing:
+Das Projekt enthält mehrere Testskripte zur Unterstützung bei Entwicklung und Testen:
 
-## Generate Test Data {#generate-test-data}
+## Testdaten generieren {#generate-test-data}
 
 ```bash
 pnpm generate-test-data --servers=N
 ```
 
-This script generates test backup data for multiple servers and backups.
+Dieses Skript generiert Test-Sicherungsdaten für mehrere Server und Sicherungen.
 
-The `--servers=N` parameter is **mandatory** and specifies the number of servers to generate (1-30).
+Der Parameter `--servers=N` ist **erforderlich** und gibt die Anzahl der zu generierenden Server (1–30) an.
 
-Use the option `--upload` to send the generated data to the `/api/upload`
+Verwenden Sie die Option `--upload`, um die generierten Daten an `/api/upload` zu senden
 
 ```bash
 pnpm generate-test-data --servers=N --upload
 ```
 
-**Examples:**
+# Beispiele:
 
 ```bash
-# Generate data for 5 servers {#generate-data-for-5-servers}
+# Generate data for 5 servers
 pnpm generate-test-data --servers=5
 
-# Generate data for 1 server with upload mode {#generate-data-for-1-server-with-upload-mode}
+# Generate data for 1 server with upload mode
 pnpm generate-test-data --upload --servers=1
 
-# Generate data for all 30 servers {#generate-data-for-all-30-servers}
+# Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
 
-> [!CAUTION]
-> This script deletes all previous data in the database and replaces it with test data.
-> Back up your database before running this script.
+>[!CAUTION]
+> Dieses Skript löscht alle vorherigen Daten in der Datenbank und ersetzt sie durch Testdaten.
+> Sichern Sie Ihre Datenbank, bevor Sie dieses Skript ausführen.
 
-## Show the overdue notifications contents (to debug notification system) {#show-the-overdue-notifications-contents-to-debug-notification-system}
+## Einblenden der Inhalte überfälliger Benachrichtigungen (zum Debuggen des Benachrichtigungssystems) {#show-the-overdue-notifications-contents-to-debug-notification-system}
 
 ```bash
 pnpm show-overdue-notifications
 ```
 
-## Run overdue-check at a specific date/time (to debug notification system) {#run-overdue-check-at-a-specific-datetime-to-debug-notification-system}
+## Prüfen auf überfällige Einträge zu einem bestimmten Datum/einer bestimmten Zeit durchführen (zum Debuggen des Benachrichtigungssystems) {#run-overdue-check-at-a-specific-datetime-to-debug-notification-system}
 
 ```bash
 pnpm run-overdue-check "YYYY-MM-DD HH:MM:SS"
-```
+``` 
 
-## Test cron service port connectivity {#test-cron-service-port-connectivity}
+## Testen der Port-Konnektivität des Cron-Dienstes {#test-cron-service-port-connectivity}
 
-To test cron service connectivity, you can:
+Um die Konnektivität des Cron-Dienstes zu testen, können Sie:
 
-1. Check if the cron service is running:
+1. Prüfen Sie, ob der Cron-Dienst ausgeführt wird:
 
 ```bash
 curl http://localhost:8667/health
 ```
 
-2. Or use the cron service API endpoints directly through the main application:
+2. Oder verwenden Sie die Cron-Service-API-Endpunkte direkt über die Hauptanwendung:
 
 ```bash
 curl http://localhost:8666/api/cron/health
 ```
 
-3. Use the test script to verify port connectivity:
+3. Verwenden Sie das Test-Skript, um die Port-Konnektivität zu bestätigen:
 
 ```bash
 pnpm test-cron-port
 ```
 
-This script tests the connectivity to the cron service port and provides detailed information about the connection status.
+Dieses Skript testet die Konnektivität zum Cron-Service-Port und liefert detaillierte Informationen zum Verbindungsstatus.
 
-## Test overdue detection {#test-overdue-detection}
+## Testen der Erkennung überfälliger Elemente {#test-overdue-detection}
 
 ```bash
 pnpm test-overdue-detection
 ```
 
-This script tests the overdue backup detection logic. It verifies:
+Dieses Skript testet die Erkennungslogik für überfällige Sicherungen. Es überprüft:
+- Identifikation überfälliger Sicherungen
+- Auslösung von Benachrichtigungen
+- Datums-/Zeitberechnungen für den Status „überfällig"
 
-- Overdue backup identification
-- Notification triggering
-- Date/time calculations for overdue status
+Nützlich zum Debuggen von Systemen zur Erkennung und Benachrichtigung überfälliger Sicherungen.
 
-Useful for debugging overdue backup detection and notification systems.
-
-## Validate CSV export {#validate-csv-export}
+## CSV-Exportierung validieren {#validate-csv-export}
 
 ```bash
 pnpm validate-csv-export
 ```
 
-This script validates the CSV export functionality. It:
+Dieses Skript validiert die CSV-Exportierungsfunktionalität. Es:
+- Testet die CSV-Exportierungsgenerierung
+- Überprüft das Datenformat und die Struktur
+- Prüft die Datenintegrität in exportierten Dateien
 
-- Tests CSV export generation
-- Verifies data format and structure
-- Checks for data integrity in exported files
+Nützlich, um sicherzustellen, dass CSV-Exporte vor Releases ordnungsgemäß funktionieren.
 
-Useful for ensuring CSV exports work correctly before releases.
-
-## Temporarily block NTFY server (for testing) {#temporarily-block-ntfy-server-for-testing}
+## NTFY-Server vorübergehend blockieren (zum Testen) {#temporarily-block-ntfy-server-for-testing}
 
 ```bash
 sudo ./scripts/temporary_ntfy.sh_block.sh
 ```
 
-This script temporarily blocks outgoing network access to the NTFY server (`ntfy.sh`) to test the notification retry mechanism. It:
+Dieses Skript blockiert vorübergehend den ausgehenden Netzwerkzugriff auf den NTFY-Server (`ntfy.sh`), um den Benachrichtigungswiederhol-Mechanismus zu testen. Es:
+- Löst die IP-Adresse des NTFY-Servers auf
+- Fügt eine iptables-Regel hinzu, um ausgehenden Datenverkehr zu blockieren
+- Blockiert für 10 Sekunden (konfigurierbar)
+- Entfernt die Blockierungsregel beim Beenden automatisch
+- Erfordert Root-Berechtigungen (sudo)
 
-- Resolves the IP address of the NTFY server
-- Adds an iptables rule to block outgoing traffic
-- Blocks for 10 seconds (configurable)
-- Automatically removes the block rule on exit
-- Requires root privileges (sudo)
+>[!CAUTION]
+> Dieses Skript modifiziert iptables-Regeln und erfordert Root-Privilegien. Verwenden Sie es nur zum Testen von Benachrichtigungs-Wiederholungsmechanismen.
 
-> [!CAUTION]
-> This script modifies iptables rules and requires root privileges. Use only for testing notification retry mechanisms.
+## Datenbankmigrationstests {#database-migration-testing}
 
-## Database Migration Testing {#database-migration-testing}
+Das Projekt enthält Skripte zum Testen von Datenbankmigrationen von älteren Versionen zur aktuellen Version. Diese Skripte stellen sicher, dass Datenbankmigrationen ordnungsgemäß funktionieren und die Datenintegrität gewährleistet bleibt.
 
-The project includes scripts to test database migrations from older versions to the current version. These scripts ensure that database migrations work correctly and preserve data integrity.
-
-### Generate Migration Test Data {#generate-migration-test-data}
+### Generieren von Migrationstestdaten {#generate-migration-test-data}
 
 ```bash
 ./scripts/generate-migration-test-data.sh
 ```
 
-This script generates test databases for multiple historical versions of the application. It:
+Dieses Skript generiert Test-Datenbanken für mehrere historische Versionen von der Anwendung. Es:
 
-1. **Stops and removes** any existing Docker container
-2. **For each version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
-   - Removes existing database files
-   - Creates a version tag file
-   - Starts a Docker container with the specific version
-   - Waits for the container to be ready
-   - Generates test data using `pnpm generate-test-data`
-   - Takes a screenshot of the UI with test data
-   - Stops and removes the container
-   - Flushes WAL files and saves the database schema
-   - Copies the database file to `scripts/migration_test_data/`
+1. **Stoppt und entfernt** jeden vorhandenen Docker-Container
+2. **Für jede Version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
+   - Entfernt vorhandene Datenbankdateien
+   - Erstellt eine Versions-Tag-Datei
+   - Startet einen Docker-Container mit der spezifischen Version
+   - Wartet darauf, dass der Container bereit ist
+   - Generiert Testdaten mit `pnpm generate-test-data`
+   - Erstellt einen Screenshot der Benutzeroberfläche mit Testdaten
+   - Stoppt und entfernt den Container
+   - Leert WAL-Dateien und speichert das Datenbankschema
+   - Kopiert die Datenbankdatei nach `scripts/migration_test_data/`
 
-**Requirements:**
+**Anforderungen:**
+- Docker muss installiert und konfiguriert sein
+- Google Chrome (über Puppeteer) muss installiert sein
+- Root-/sudo-Zugriff für Docker-Operationen erforderlich
+- Das Docker-Volume `duplistatus_data` muss vorhanden sein
 
-- Docker must be installed and configured
-- Google Chrome (via Puppeteer) must be installed
-- Root/sudo access for Docker operations
-- The Docker volume `duplistatus_data` must exist
-
-**Output:**
-
-- Database files: `scripts/migration_test_data/backups_<VERSION>.db`
-- Schema files: `scripts/migration_test_data/backups_<VERSION>.schema`
+**Ausgabe:**
+- Datenbankdateien: `scripts/migration_test_data/backups_<VERSION>.db`
+- Schemadateien: `scripts/migration_test_data/backups_<VERSION>.schema`
 - Screenshots: `scripts/migration_test_data/duplistatus_test_data_<VERSION>.png`
 
-**Configuration:**
+**Konfiguration:**
+- Anzahl von Servern: Wird über die Variable `SERVERS` festgelegt (Standard: 3)
+- Datenverzeichnis: `/var/lib/docker/volumes/duplistatus_data/_data`
+- Port: 9666 (Docker-Container-Port)
 
-- Number of servers: Set via `SERVERS` variable (default: 3)
-- Data directory: `/var/lib/docker/volumes/duplistatus_data/_data`
-- Port: 9666 (Docker container port)
+>[!CAUTION]
+> Dieses Skript erfordert Docker und wird vorhandene Container stoppen/entfernen. Es erfordert auch sudo-Zugriff für Docker-Operationen und Dateisystemzugriff. Das Skript `pnpm take-screenshots` muss zuerst ausgeführt werden, um Google Chrome zu installieren, falls noch nicht geschehen.
 
-> [!CAUTION]
-> This script requires Docker and will stop/remove existing containers. It also requires sudo access for Docker operations and file system access. Need to run the `pnpm take-screenshots` script first to install Google Chrome if you haven't already.
+>[!IMPORTANT]
+> Dieses Skript sollte nur einmal ausgeführt werden. Bei neuen Versionen kann der Entwickler die Datenbankdatei und Screenshots direkt in das Verzeichnis `scripts/migration_test_data/` kopieren. Während der Entwicklung führen Sie einfach das Skript `./scripts/test-migrations.sh` aus, um die Migrationen zu testen.
 
-> [!IMPORTANT]
-> This script was supposed to run only once, as new versions the developer can copy the database file and screenshots directly to the `scripts/migration_test_data/` directory. During development, just run the `./scripts/test-migrations.sh` script to test the migrations.
-
-### Test Database Migrations {#test-database-migrations}
+### Testen von Datenbankmigrationen {#test-database-migrations}
 
 ```bash
 ./scripts/test-migrations.sh
 ```
 
-This script tests database migrations from old versions to the current version (4.0). It:
+Dieses Skript testet Datenbankmigrationen von alten Versionen zur aktuellen Version (4.0). Es:
 
-1. **For each version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
-   - Creates a temporary copy of the test database
-   - Runs the migration process using `test-migration.ts`
-   - Validates the migrated database structure
-   - Checks for required tables and columns
-   - Verifies the database version is 4.0
-   - Cleans up temporary files
+1. **Für jede Version** (v0.4.0, v0.5.0, v0.6.1, 0.7.27, 0.8.21):
+   - Erstellt eine temporäre Kopie der Testdatenbank
+   - Führt den Migrationsprozess mit `test-migration.ts` aus
+   - Validiert die Struktur der migrierten Datenbank
+   - Prüft auf erforderliche Tabellen und Spalten
+   - Überprüft, ob die Datenbankversion 4.0 ist
+   - Bereinigt temporäre Dateien
 
-**Requirements:**
+**Anforderungen:**
+- Testdatenbanken müssen in `scripts/migration_test_data/` vorhanden sein
+- Werden durch vorheriges Ausführen von `generate-migration-test-data.sh` generiert
 
-- Test databases must exist in `scripts/migration_test_data/`
-- Generated by running `generate-migration-test-data.sh` first
+**Ausgabe:**
+- Farbcodierte Testergebnisse (grün für bestanden, rot für fehlgeschlagen)
+- Zusammenfassung von bestandenen und fehlgeschlagenen Versionen
+- Detaillierte Fehlermeldungen für fehlgeschlagene Migrationen
+- Exit-Code 0, wenn alle Tests bestanden sind, 1 wenn einer fehlschlägt
 
-**Output:**
+**Was wird validiert:**
+- Datenbankversion ist nach der Migration 4.0
+- Alle erforderlichen Tabellen existieren: `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
+- Erforderliche Spalten existieren in jeder Tabelle
+- Datenbankstruktur ist korrekt
 
-- Color-coded test results (green for pass, red for fail)
-- Summary of passed and failed versions
-- Detailed error messages for failed migrations
-- Exit code 0 if all tests pass, 1 if any fail
-
-**What it validates:**
-
-- Database version is 4.0 after migration
-- All required tables exist: `servers`, `backups`, `configurations`, `users`, `sessions`, `audit_log`, `db_version`
-- Required columns exist in each table
-- Database structure is correct
-
-**Example output:**
+# German Translation
 
 ```
 ==========================================
@@ -232,46 +230,46 @@ Test Summary
 All migration tests passed!
 ```
 
-**Usage:**
+**Verwendung:**
 
 ```bash
-# Run all migration tests {#run-all-migration-tests}
+# Run all migration tests
 ./scripts/test-migrations.sh
 
-# Check exit code {#check-exit-code}
+# Check exit code
 echo $?  # 0 = all passed, 1 = some failed
 ```
 
-> [!NOTE]
-> This script uses the TypeScript migration test script (`test-migration.ts`) internally. The test script validates the database structure after migration and ensures data integrity.
+>[!NOTE]
+> Dieses Skript verwendet intern das TypeScript-Migrationstestskript (`test-migration.ts`). Das Testskript validiert die Datenbankstruktur nach der Migration und gewährleistet die Datenintegrität.
 
-## Set SMTP Test Configuration {#set-smtp-test-configuration}
+## SMTP-Testkonfiguration festlegen {#set-smtp-test-configuration}
 
 ```bash
 pnpm set-smtp-test-config <connectionType>
 ```
 
-This script sets SMTP test configuration from environment variables. It accepts a `connectionType` parameter (`plain`, `starttls`, or `ssl`) and reads corresponding environment variables with prefixes (`PLAIN_`, `STARTTLS_`, `SSL_`) to update the SMTP configuration in the database.
+Dieses Skript legt die SMTP-Testkonfiguration aus Umgebungsvariablen fest. Es akzeptiert einen `connectionType`-Parameter (`plain`, `starttls` oder `ssl`) und liest entsprechende Umgebungsvariablen mit Präfixen (`PLAIN_`, `STARTTLS_`, `SSL_`), um die SMTP-Konfiguration in der Datenbank zu aktualisieren.
 
-For plain connections, the script reads `PLAIN_SMTP_FROM` environment variable to set the required From Address. This facilitates testing different SMTP connection types without manual database updates.
+Bei einfachen Verbindungen liest das Skript die Umgebungsvariable `PLAIN_SMTP_FROM`, um die erforderliche Absenderadresse festzulegen. Dies ermöglicht das Testen verschiedener SMTP-Verbindungstypen ohne manuelle Datenbankaktualisierungen.
 
-**Usage:**
+**Verwendung:**
 
 ```bash
-# Set Plain SMTP configuration {#set-plain-smtp-configuration}
+# Set Plain SMTP configuration
 PLAIN_SMTP_HOST=smtp.example.com \
 PLAIN_SMTP_PORT=25 \
 PLAIN_SMTP_FROM=noreply@example.com \
 pnpm set-smtp-test-config plain
 
-# Set STARTTLS configuration {#set-starttls-configuration}
+# Set STARTTLS configuration
 STARTTLS_SMTP_HOST=smtp.example.com \
 STARTTLS_SMTP_PORT=587 \
 STARTTLS_SMTP_USERNAME=user@example.com \
 STARTTLS_SMTP_PASSWORD=password \
 pnpm set-smtp-test-config starttls
 
-# Set Direct SSL/TLS configuration {#set-direct-ssltls-configuration}
+# Set Direct SSL/TLS configuration
 SSL_SMTP_HOST=smtp.example.com \
 SSL_SMTP_PORT=465 \
 SSL_SMTP_USERNAME=user@example.com \
@@ -279,31 +277,30 @@ SSL_SMTP_PASSWORD=password \
 pnpm set-smtp-test-config ssl
 ```
 
-**Requirements:**
+**Anforderungen:**
+- Die Anwendung muss ausgeführt werden
+- Umgebungsvariablen müssen mit dem entsprechenden Präfix für den Verbindungstyp gesetzt werden
+- Für einfache Verbindungen ist `PLAIN_SMTP_FROM` erforderlich
 
-- The application must be running
-- Environment variables must be set with the appropriate prefix for the connection type
-- For plain connections, `PLAIN_SMTP_FROM` is required
-
-## Test SMTP Connection Type Cross-Compatibility {#test-smtp-connection-type-cross-compatibility}
+## Testen des Verbindungstyps SMTP – Plattformübergreifende Kompatibilität {#test-smtp-connection-type-cross-compatibility}
 
 ```bash
 pnpm test-smtp-connections
 ```
 
-This script performs a comprehensive 3x3 matrix test that validates whether configurations meant for one connection type work correctly with different connection types. For each base configuration type (plain, starttls, ssl), the script:
+Dieses Skript führt einen umfassenden 3x3-Matrix-Test durch, der überprüft, ob Konfigurationen, die für einen Verbindungstyp vorgesehen sind, korrekt mit verschiedenen Verbindungstypen funktionieren. Für jeden Basis-Konfigurationstyp (plain, STARTTLS, ssl) führt das Skript folgende Aktionen durch:
 
-1. Reads environment variables with corresponding prefixes (`PLAIN_*`, `STARTTLS_*`, `SSL_*`)
-2. Tests all three connection types by modifying only the `connectionType` field
-3. Sends test emails via the API
-4. Records results in a matrix format
-5. Displays a summary table
-6. Saves detailed results to `smtp-test-results.json`
+1. Liest Umgebungsvariablen mit entsprechenden Präfixen (`PLAIN_*`, `STARTTLS_*`, `SSL_*`)
+2. Testet alle drei Verbindungstypen durch Änderung nur des `connectionType`-Feldes
+3. Sendet Test-E-Mails über die API
+4. Erfasst Ergebnisse in einem Matrixformat
+5. Zeigt eine Zusammenfassungstabelle an
+6. Speichert detaillierte Ergebnisse in `smtp-test-results.json`
 
-**Usage:**
+**Verwendung:**
 
 ```bash
-# Set environment variables for all three connection types {#set-environment-variables-for-all-three-connection-types}
+# Set environment variables for all three connection types
 PLAIN_SMTP_HOST=smtp.example.com \
 PLAIN_SMTP_PORT=25 \
 PLAIN_SMTP_FROM=noreply@example.com \
@@ -318,65 +315,57 @@ SSL_SMTP_PASSWORD=password \
 pnpm test-smtp-connections
 ```
 
-**Requirements:**
+**Anforderungen:**
+- Die Anwendung muss ausgeführt werden
+- Umgebungsvariablen müssen für alle drei Verbindungstypen festgelegt sein
+- Das Skript validiert die verwendete Konfiguration durch detaillierte Protokollierung
 
-- The application must be running
-- Environment variables must be set for all three connection types
-- The script validates the configuration being used through detailed logging
+**Erwartetes Verhalten:**
+Konfigurationen sollten nur mit ihrem vorgesehenen Verbindungstyp funktionieren (z. B. funktioniert eine einfache Konfiguration mit dem einfachen Verbindungstyp, schlägt aber mit STARTTLS/SSL fehl).
 
-**Expected Behavior:**
-Configurations should only work with their intended connection type (e.g., plain config works with plain connectionType but fails with starttls/ssl).
+**Ausgabe:**
+- Konsolenausgabe mit einer Zusammenfassungstabelle, die Testergebnisse anzeigt
+- `smtp-test-results.json` Datei mit detaillierten Testergebnissen für jede Kombination aus Konfiguration und Verbindungstyp
 
-**Output:**
-
-- Console output with a summary table showing test results
-- `smtp-test-results.json` file with detailed test results for each configuration and connection type combination
-
-## Test Docker Entrypoint Script {#test-docker-entrypoint-script}
+## Testen des Docker-Entrypoint-Skripts {#test-docker-entrypoint-script}
 
 ```bash
 pnpm test-entrypoint
 ```
 
-This script provides a test wrapper for `docker-entrypoint.sh` in local development. It sets up the environment to test the entrypoint logging functionality and ensures logs are written to `data/logs/` so the application can access them.
+Dieses Skript bietet einen Test-Wrapper für `docker-entrypoint.sh` in der lokalen Entwicklung. Es richtet die Umgebung ein, um die Protokollierungsfunktionalität des Entrypoints zu testen, und stellt sicher, dass Protokolle in `data/logs/` geschrieben werden, damit die Anwendung darauf zugreifen kann.
 
-**What it does:**
+**Was es tut:**
 
-1. **Always builds a fresh version**: Automatically runs `pnpm build-local` to create a fresh build before testing (no need to manually build first)
-2. **Builds cron service**: Ensures the cron service is built (`dist/cron-service.cjs`)
-3. **Sets up Docker-like structure**: Creates necessary symlinks and directory structure to mimic the Docker environment
-4. **Runs entrypoint script**: Executes `docker-entrypoint.sh` with proper environment variables
-5. **Cleans up**: Automatically removes temporary files on exit
+1. **Erstellt immer eine neue Version**: Führt automatisch `pnpm build-local` aus, um einen neuen Build vor dem Testen zu erstellen (kein manuelles Bauen erforderlich)
+2. **Erstellt den Cron-Service**: Stellt sicher, dass der Cron-Service erstellt wird (`dist/cron-service.cjs`)
+3. **Richtet Docker-ähnliche Struktur ein**: Erstellt notwendige Symlinks und Verzeichnisstruktur, um die Docker-Umgebung nachzuahmen
+4. **Führt Entrypoint-Skript aus**: Führt `docker-entrypoint.sh` mit entsprechenden Umgebungsvariablen aus
+5. **Räumt auf**: Entfernt automatisch temporäre Dateien beim Beenden
 
-**Usage:**
+**Verwendung:**
 
 ```bash
-# Run the test (builds fresh version automatically) {#run-the-test-builds-fresh-version-automatically}
+# Run the test (builds fresh version automatically)
 pnpm test-entrypoint
 ```
 
-**Environment Variables:**
+**Umgebungsvariablen:**
+- `PORT=8666` - Port für den Next.js-Server (entspricht `start-local`)
+- `CRON_PORT=8667` - Port für den Cron-Service
+- `VERSION` - Wird automatisch im Format `test-YYYYMMDD-HHMMSS` gesetzt
 
-- `PORT=8666` - Port for the Next.js server (matches `start-local`)
-- `CRON_PORT=8667` - Port for the cron service
-- `VERSION` - Automatically set to `test-YYYYMMDD-HHMMSS` format
+**Ausgabe:**
+- Protokolle werden in `data/logs/application.log` geschrieben (zugänglich durch die Anwendung)
+- Die Konsolenausgabe zeigt die Ausführung des Einstiegspunkt-Skripts
+- Drücken Sie Strg+C zum Stoppen und Testen der Protokollpufferung
 
-**Output:**
+**Anforderungen:**
+- Das Skript muss aus dem Stammverzeichnis des Repositorys ausgeführt werden (pnpm handhabt dies automatisch)
+- Das Skript handhabt automatisch alle Voraussetzungen (Build, Cron-Service usw.)
 
-- Logs are written to `data/logs/application.log` (accessible by the application)
-- Console output shows the entrypoint script execution
-- Press Ctrl+C to stop and test log flushing
-
-**Requirements:**
-
-- Script must be run from the repository root directory (pnpm handles this automatically)
-- The script automatically handles all prerequisites (build, cron service, etc.)
-
-**Use Cases:**
-
-- Testing entrypoint script changes locally before Docker deployment
-- Verifying log rotation and logging functionality
-- Testing graceful shutdown and signal handling
-- Debugging entrypoint script behavior in a local environment
-
-
+**Anwendungsfälle:**
+- Lokales Testen von Änderungen am Einstiegspunktskript vor der Docker-Bereitstellung
+- Überprüfung der Protokollrotation und Protokollierungsfunktionalität
+- Testen des ordnungsgemäßen Herunterfahrens und der Signalbehandlung
+- Debugging des Verhaltens des Einstiegspunktskripts in einer lokalen Umgebung

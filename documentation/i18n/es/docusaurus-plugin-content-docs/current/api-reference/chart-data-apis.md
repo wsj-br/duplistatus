@@ -1,7 +1,8 @@
+
+
 # Chart Data {#chart-data}
 
 ## Get Aggregated Chart Data - `/api/chart-data/aggregated` {#get-aggregated-chart-data-apichart-dataaggregated}
-
 - **Endpoint**: `/api/chart-data/aggregated`
 - **Method**: GET
 - **Description**: Retrieves aggregated chart data with optional time range filtering.
@@ -32,7 +33,6 @@
   - Returns aggregated data across all servers
 
 ## Get Server Chart Data - `/api/chart-data/server/:serverId` {#get-server-chart-data-apichart-dataserverserverid}
-
 - **Endpoint**: `/api/chart-data/server/:serverId`
 - **Method**: GET
 - **Description**: Retrieves chart data for a specific server with optional time range filtering.
@@ -65,7 +65,6 @@
   - Returns chart data for specific server
 
 ## Get Server Backup Chart Data - `/api/chart-data/server/:serverId/backup/:backupName` {#get-server-backup-chart-data-apichart-dataserverserveridbackupbackupname}
-
 - **Endpoint**: `/api/chart-data/server/:serverId/backup/:backupName`
 - **Method**: GET
 - **Description**: Retrieves chart data for a specific server and backup with optional time range filtering.

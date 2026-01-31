@@ -1,4 +1,11 @@
-# Configuración HTTPS (opcional) {#https-setup-optional}
+---
+translation_last_updated: '2026-01-31T00:51:26.622Z'
+source_file_mtime: '2026-01-29T17:58:29.895Z'
+source_file_hash: 5182562d16f18184
+translation_language: es
+source_file_path: installation/https-setup.md
+---
+# Configuración HTTPS (Opcional) {#https-setup-optional}
 
 Para implementaciones en producción, se recomienda servir **duplistatus** sobre HTTPS utilizando un proxy inverso. Esta sección proporciona ejemplos de configuración para soluciones populares de proxy inverso.
 
@@ -8,9 +15,9 @@ Para implementaciones en producción, se recomienda servir **duplistatus** sobre
 
 **Requisitos previos:**
 
-- Nombre de dominio apuntando a su Servidor
-- Nginx instalado en su Sistema
-- Certbot instalado para su Sistema operativo
+- Nombre de dominio apuntando a su servidor
+- Nginx instalado en su sistema
+- Certbot instalado para su sistema operativo
 
 **Paso 1: Instalar Nginx y Certbot**
 
@@ -21,7 +28,7 @@ sudo apt update
 sudo apt install nginx certbot python3-certbot-nginx
 ```
 
-**Paso 2: Crear configuración de Nginx**
+**Paso 2: Crear la configuración de Nginx**
 
 Crear `/etc/nginx/sites-available/duplistatus`:
 
@@ -43,16 +50,16 @@ server {
 **Paso 3: Activar el sitio y obtener certificado SSL**
 
 ```bash
-# Activar el sitio {#enable-the-site}
+# Enable the site
 sudo ln -s /etc/nginx/sites-available/duplistatus /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
-# Obtener certificado SSL {#obtain-ssl-certificate}
+# Obtain SSL certificate
 sudo certbot --nginx -d your-domain.com
 ```
 
-Certbot actualizará automáticamente su configuración de Nginx para incluir configuración SSL y redirigir HTTP a HTTPS.
+Certbot actualizará automáticamente su configuración de Nginx para incluir la configuración de SSL y redirigir HTTP a HTTPS.
 
 **Documentación:**
 
@@ -66,16 +73,16 @@ Certbot actualizará automáticamente su configuración de Nginx para incluir co
 
 **Requisitos previos:**
 
-- Nombre de dominio apuntando a su Servidor
-- Caddy instalado en su Sistema
+- Nombre de dominio apuntando a su servidor
+- Caddy instalado en su sistema
 
 **Paso 1: Instalar Caddy**
 
-Siga la [guía de instalación oficial](https://caddyserver.com/docs/install) para su Sistema operativo.
+Siga la [guía oficial de instalación](https://caddyserver.com/docs/install) para su sistema operativo.
 
 **Paso 2: Crear Caddyfile**
 
-Crear un `Caddyfile` con el siguiente contenido:
+Cree un `Caddyfile` con el siguiente contenido:
 
 ```caddy
 your-domain.com {
@@ -89,13 +96,13 @@ your-domain.com {
 sudo caddy run --config Caddyfile
 ```
 
-O úselo como un Servicio del Sistema:
+O úselo como un servicio del sistema:
 
 ```bash
 sudo caddy start --config Caddyfile
 ```
 
-Caddy obtendrá y gestionará automáticamente certificados SSL de Let's Encrypt.
+Caddy obtendrá y administrará automáticamente certificados SSL de Let's Encrypt.
 
 **Documentación:**
 
@@ -104,20 +111,19 @@ Caddy obtendrá y gestionará automáticamente certificados SSL de Let's Encrypt
 
 ### Notas Importantes {#important-notes}
 
-:::info[IMPORTANT]
-Después de configurar HTTPS, recuerde actualizar la configuración de su Servidor Duplicati para usar la URL HTTPS:
-
 ```bash
 --send-http-url=https://your-domain.com/api/upload
 ```
+
+:::info[IMPORTANTE]
+Después de configurar HTTPS, recuerde actualizar la configuración del servidor Duplicati para utilizar la URL HTTPS:
 
 :::
 
 :::tip
 
-- Reemplace `your-domain.com` con su nombre de dominio real
-- Asegúrese de que el registro DNS A de su dominio apunte a la Dirección IP de su Servidor
+- Reemplaza `your-domain.com` con tu nombre de dominio real
+- Asegúrate de que el registro DNS A de tu dominio apunte a la Dirección IP de tu Servidor
 - Ambas soluciones renovarán automáticamente los certificados SSL
-- Considere configurar un firewall para permitir solo tráfico HTTP/HTTPS
-  :::
-
+- Considera configurar un firewall para permitir solo tráfico HTTP/HTTPS
+:::

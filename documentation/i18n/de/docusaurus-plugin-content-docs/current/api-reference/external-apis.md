@@ -1,9 +1,10 @@
+
+
 # External APIs {#external-apis}
 
 These endpoints are designed for use by other applications and integrations, for instance [Homepage](../user-guide/homepage-integration.md).
 
 ## Get Overall Summary - `/api/summary` {#get-overall-summary-apisummary}
-
 - **Endpoint**: `/api/summary`
 - **Method**: GET
 - **Description**: Retrieves a summary of all backup operations across all servers.
@@ -31,7 +32,6 @@ These endpoints are designed for use by other applications and integrations, for
   - **Note**: For internal dashboard use, consider using `/api/dashboard` which includes this data plus additional information
 
 ## Get Latest Backup - `/api/lastbackup/:serverId` {#get-latest-backup-apilastbackupserverid}
-
 - **Endpoint**: `/api/lastbackup/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for a specific server.
@@ -41,7 +41,7 @@ These endpoints are designed for use by other applications and integrations, for
 :::note
 The server identifier has to be URL Encoded.
 :::
-
+  
 - **Response**:
   ```json
   {
@@ -87,7 +87,6 @@ The server identifier has to be URL Encoded.
   - Includes cache control headers to prevent caching
 
 ## Get Latest Backups - `/api/lastbackups/:serverId` {#get-latest-backups-apilastbackupsserverid}
-
 - **Endpoint**: `/api/lastbackups/:serverId`
 - **Method**: GET
 - **Description**: Retrieves the latest backup information for all configured backups (e.g. 'Files', 'Databases') on a specific server.
@@ -97,7 +96,7 @@ The server identifier has to be URL Encoded.
 :::note
 The server identifier has to be URL Encoded.
 :::
-
+  
 - **Response**:
   ```json
   {
@@ -170,13 +169,9 @@ The server identifier has to be URL Encoded.
   - Includes cache control headers to prevent caching
 
 ## Upload Backup Data - `/api/upload` {#upload-backup-data-apiupload}
-
 - **Endpoint**: `/api/upload`
-
 - **Method**: POST
-
 - **Description**: Uploads backup operation data for a server. Supports duplicate backup run detection and sends notifications.
-
 - **Request Body**: JSON sent by Duplicati with the following options:
 
   ```bash
@@ -184,19 +179,17 @@ The server identifier has to be URL Encoded.
   --send-http-result-output-format=Json
   --send-http-log-level=Information
   ```
-
-- **Response**:
+  
+- **Response**: 
   ```json
   {
     "success": true
   }
   ```
-
 - **Error Responses**:
   - `400`: Missing required fields in Extra or Data sections, or invalid MainOperation
   - `409`: Duplicate backup data (ignored)
   - `500`: Server error processing backup data
-
 - **Notes**:
   - Only processes backup operations (MainOperation must be "Backup")
   - Validates required fields in Extra section: machine-id, machine-name, backup-name, backup-id

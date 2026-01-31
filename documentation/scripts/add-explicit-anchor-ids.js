@@ -29,14 +29,26 @@ function processMarkdownFile(filePath) {
   const lines = content.split('\n');
   const modifiedLines = [];
   let changed = false;
+  let inCodeBlock = false;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
+
+    // Track code block boundaries (fenced with ```)
+    if (line.trimStart().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+    }
+
+    // Skip heading processing when inside a code block
+    if (inCodeBlock) {
+      modifiedLines.push(line);
+      continue;
+    }
+
     // Match headings: ## Heading or ### Heading or #### Heading etc.
     // But skip if already has explicit anchor ID: ## Heading {#anchor-id}
     const headingMatch = line.match(/^(#{1,6})\s+(.+?)(?:\s+\{#([^}]+)\})?$/);
-    
+
     if (headingMatch) {
       const level = headingMatch[1];
       const headingText = headingMatch[2].trim();

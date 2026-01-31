@@ -45,12 +45,12 @@ server {
 **Step 3: Enable the site and obtain SSL certificate**
 
 ```bash
-# Enable the site {#enable-the-site}
+# Enable the site
 sudo ln -s /etc/nginx/sites-available/duplistatus /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
-# Obtain SSL certificate {#obtain-ssl-certificate}
+# Obtain SSL certificate
 sudo certbot --nginx -d your-domain.com
 ```
 

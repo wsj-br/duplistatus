@@ -1,10 +1,17 @@
-# Homepage Integration (Optional) {#homepage-integration-optional}
+---
+translation_last_updated: '2026-01-31T00:51:30.870Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 5b8fdae17a34ff83
+translation_language: pt-BR
+source_file_path: user-guide/homepage-integration.md
+---
+# Integração da Página Inicial (Opcional) {#homepage-integration-optional}
 
-[Homepage](https://gethomepage.dev/) is a customisable dashboard application. To integrate **duplistatus** with Homepage, add a widget to your `services.yaml` file using the [Custom API widget type](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) é uma aplicação de painel personalizável. Para integrar **duplistatus** com Homepage, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
-## Summary Widget {#summary-widget}
+## Widget de Resumo {#summary-widget}
 
-This widget displays overall backup statistics on your Homepage dashboard.
+Este widget exibe as estatísticas gerais do backup no seu painel da página inicial.
 
 ```yaml
 - Dashboard:
@@ -40,13 +47,13 @@ This widget displays overall backup statistics on your Homepage dashboard.
           suffix: GB
 ```
 
-**Widget Display:**
+**Exibição do Widget:**
 
 ![Homepage Summary Widget](/img/homepage-summary.png)
 
-## Last Backup Information Widget {#last-backup-information-widget}
+## Widget de Informações da Última Backup {#last-backup-information-widget}
 
-This widget displays the latest backup information for a specific machine.
+Este widget exibe as informações do backup mais recentes para uma máquina específica.
 
 ```yaml
 - Test Machine 1:
@@ -75,14 +82,13 @@ This widget displays the latest backup information for a specific machine.
           label: Versions
 ```
 
-**Widget Display:**
+**Exibição do Widget:**
 
 ![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
 
-## Configuration Notes {#configuration-notes}
+## Notas de Configuração {#configuration-notes}
 
-- Replace `your-server` with your server's IP address or hostname.
-- Adjust the `refreshInterval` as needed (in milliseconds).
-- Replace spaces in machine names with `%20` in the URL (e.g., `Test Machine 1` becomes `Test%20Machine%201`).
-- The `scale` values convert bytes to more readable units (GB, MB).
-
+- Substitua `your-server` pelo Endereço IP ou Nome do host do seu servidor.
+- Ajuste o `refreshInterval` conforme necessário (em milissegundos).
+- Substitua espaços em nomes de máquinas por `%20` na URL (por exemplo, `Test Machine 1` torna-se `Test%20Machine%201`).
+- Os valores de `scale` convertem bytes para unidades mais legíveis (GB, MB).

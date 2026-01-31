@@ -1,78 +1,80 @@
-# Development Reference {#development-reference}
+---
+translation_last_updated: '2026-01-31T00:51:29.292Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 1afab25f18ff213d
+translation_language: pt-BR
+source_file_path: development/development-guidelines.md
+---
+# Referência de Desenvolvimento {#development-reference}
 
-## Code Organisation {#code-organisation}
+## Organização do Código {#code-organisation}
 
-- **Components**: `src/components/` with subdirectories:
-  - `ui/` - shadcn/ui components and reusable UI elements
-  - `dashboard/` - Dashboard-specific components
-  - `settings/` - Settings page components
-  - `server-details/` - Server detail page components
-- **API Routes**: `src/app/api/` with RESTful endpoint structure (see [API Reference](../api-reference/overview))
-- **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`, migrations in `src/lib/db-migrations.ts`
-- **Types**: TypeScript interfaces in `src/lib/types.ts`
-- **Configuration**: Default configs in `src/lib/default-config.ts`
-- **Cron Service**: `src/cron-service/` (runs on port 8667 dev, 9667 prod)
-- **Scripts**: Utility scripts in `scripts/` directory
-- **Security**: CSRF protection in `src/lib/csrf-middleware.ts`, use `withCSRF` middleware for protected endpoints
+- **Componentes**: `src/components/` com subdiretórios:
+  - `ui/` - componentes shadcn/ui e elementos de interface reutilizáveis
+  - `dashboard/` - Componentes específicos do Painel
+  - `settings/` - Componentes da página de Configurações
+  - `server-details/` - Componentes da página de detalhes do Servidor
+- **Rotas de API**: `src/app/api/` com estrutura de endpoint RESTful (veja [Referência de API](../api-reference/overview))
+- **Banco de Dados**: SQLite com better-sqlite3, utilitários em `src/lib/db-utils.ts`, migrações em `src/lib/db-migrations.ts`
+- **Tipos**: Interfaces TypeScript em `src/lib/types.ts`
+- **Configuração**: Configurações padrão em `src/lib/default-config.ts`
+- **Serviço Cron**: `src/cron-service/` (executa na porta 8667 dev, 9667 prod)
+- **Scripts**: Scripts utilitários no diretório `scripts/`
+- **Segurança**: Proteção CSRF em `src/lib/csrf-middleware.ts`, use o middleware `withCSRF` para endpoints protegidos
 
-## Testing & Debugging {#testing-debugging}
+## Testes e Depuração {#testing-debugging}
 
-- Test data generation: `pnpm generate-test-data --servers=N`
-- Notification testing: `/api/notifications/test` endpoint
-- Cron health checks: `curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`
-- Overdue backup testing: `pnpm run-overdue-check`
-- Development mode: verbose logging and JSON file storage
-- Database maintenance: use maintenance menu for cleanup operations
-- Pre-checks: `scripts/pre-checks.sh` for troubleshooting startup issues
+- Geração de dados de teste: `pnpm generate-test-data --servers=N`
+- Teste de notificações: endpoint `/api/notifications/test`
+- Verificações de saúde do Cron: `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
+- Teste de backup atrasado: `pnpm run-overdue-check`
+- Modo de desenvolvimento: registro detalhado e armazenamento em arquivo JSON
+- Manutenção do banco de dados: use o menu de manutenção para operações de limpeza
+- Pré-verificações: `scripts/pre-checks.sh` para solucionar problemas de inicialização
 
-## Development References {#development-references}
+## Referências de Desenvolvimento {#development-references}
 
-- API endpoints: See [API Reference](../api-reference/overview)
-- Database schema: See [Database Schema](database)
-- Follow patterns in `src/lib/db-utils.ts` for database operations
+- Endpoints da API: Consulte [Referência da API](../api-reference/overview)
+- Schema do banco de dados: Consulte [Schema do Banco de Dados](database)
+- Siga os padrões em `src/lib/db-utils.ts` para operações de banco de dados
 
 ## Frameworks & Libraries {#frameworks-libraries}
 
-### Runtime & Package Management {#runtime-package-management}
-
+### Runtime e Gerenciamento de Pacotes {#runtime-package-management}
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.28.0)
 
-### Core Frameworks & Libraries {#core-frameworks-libraries}
-
+### Frameworks e Bibliotecas Principais {#core-frameworks-libraries}
 - Next.js ^16.1.1 (App Router)
 - React ^19.2.3 & React-DOM ^19.2.3
-- Radix UI (@radix-ui/react-\*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
+- Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
 - Tailwind CSS ^4.1.18 + tailwindcss-animate ^1.0.7
 - Better-sqlite3 ^12.6.0
 - Recharts ^3.6.0, react-day-picker ^9.13.0, react-hook-form ^7.70.0, react-datepicker ^9.1.0
 - lucide-react ^0.562.0, clsx ^2.1.1, class-variance-authority ^0.7.1
 - date-fns ^4.1.0, uuid ^13.0.0
-- express ^5.2.1 (cron service), node-cron ^4.2.1
+- express ^5.2.1 (serviço cron), node-cron ^4.2.1
 - nodemailer ^7.0.12, qrcode ^1.5.4
 
-### Type Checking & Linting {#type-checking-linting}
-
+### Verificação de Tipos e Linting {#type-checking-linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.39.2 (via `next lint`)
 
 ### Build & Deployment {#build-deployment}
+- Saída standalone do Next.js (`output: 'standalone'`) com ponto de entrada do container iniciando `server.js`
+- Docker (base node:alpine) com builds multi-arquitetura (AMD64, ARM64)
+- Fluxos de trabalho do GitHub Actions para CI/CD
+- Inkscape para logos e imagens
+- Docusaurus para documentação
+- Greenfish Icon Editor para ícones
 
-- Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
-- Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
-- GitHub Actions workflows for CI/CD
-- Inkscape for logos and pictures
-- Docusaurus for documentation
-- Greenfish Icon Editor for icons
-
-### Project Configuration {#project-configuration}
-
+### Configuração do Projeto {#project-configuration}
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## System Features {#system-features}
+## Recursos do Sistema {#system-features}
 
-- **Cron Service**: Separate service for scheduled tasks, auto-restart via `duplistatus-cron.sh`
-- **Notifications**: ntfy.sh integration and SMTP email (nodemailer), configurable templates
-- **Auto-refresh**: Configurable automatic refresh for dashboard and detail pages
+- **Serviço Cron**: Serviço separado para tarefas agendadas, reinicialização automática via `duplistatus-cron.sh`
+- **Notificações**: integração ntfy.sh e e-mail SMTP (nodemailer), modelos configuráveis
+- **Atualização automática**: Atualização automática configurável para o painel e páginas de detalhes

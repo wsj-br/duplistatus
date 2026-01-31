@@ -1,23 +1,29 @@
+---
+translation_last_updated: '2026-01-31T00:51:22.854Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: d909c85d6424418a
+translation_language: fr
+source_file_path: user-guide/duplicati-configuration.md
+---
 # Configuration Duplicati {#duplicati-configuration}
 
-Le bouton <SvgButton svgFilename="duplicati_logo.svg" /> sur la [Barre d'outils de l'application](overview#application-toolbar) ouvre l'interface web du serveur Duplicati dans un nouvel onglet.
+Le bouton <SvgButton svgFilename="duplicati_logo.svg" /> de la [Barre d'outils de l'application](overview#application-toolbar) ouvre l'interface web du serveur Duplicati dans un nouvel onglet.
 
-Vous pouvez Sélectionner un Serveur dans la liste déroulante. Si vous avez déjà Sélectionné un Serveur (en cliquant sur sa carte) ou que vous Affichage ses Détails, le bouton ouvrira la Configuration Duplicati de ce Serveur spécifique directement.
+Vous pouvez sélectionner un serveur dans la liste déroulante. Si vous avez déjà sélectionné un serveur (en cliquant sur sa carte) ou consultez ses détails, le bouton ouvrira directement la Configuration Duplicati de ce serveur spécifique.
 
-![Configuration Duplicati](/assets/screen-duplicati-configuration.png)
+![Duplicati configuration](/assets/screen-duplicati-configuration.png)
 
-- La liste des Serveurs affichera le `Nom du serveur` ou `Alias du serveur (Nom du serveur)`.
-- Les Adresses des serveurs sont Configurées dans [`Paramètres → Serveur`](settings/server-settings.md).
-- L'application enregistre automatiquement l'URL d'un Serveur Quand vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collecter les journaux de sauvegarde`](collect-backup-logs.md).
-- Les Serveurs n'apparaîtront pas dans la liste des Serveurs si leur adresse n'a pas été Configurée.
+- La liste des serveurs affichera le `nom du serveur` ou `alias du serveur (nom du serveur)`.
+- Les adresses des serveurs sont configurées dans [`Paramètres → Serveur`](settings/server-settings.md).
+- L'application enregistre automatiquement l'URL d'un serveur lorsque vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collecter les journaux de sauvegarde`](collect-backup-logs.md).
+- Les serveurs n'apparaîtront pas dans la liste des serveurs si leur adresse n'a pas été configurée.
 
-## Accès à l'ancienne interface utilisateur Duplicati {#accessing-the-old-duplicati-ui}
+## Accès à l'ancienne interface utilisateur de Duplicati {#accessing-the-old-duplicati-ui}
 
-Si vous rencontrez des problèmes de Connexion avec la nouvelle interface web Duplicati (`/ngclient/`), vous pouvez faire un clic droit sur le bouton <SvgButton svgFilename="duplicati_logo.svg" /> ou sur n'importe quel élément de Serveur dans le popover de sélection des Serveurs pour ouvrir l'ancienne interface utilisateur Duplicati (`/ngax/`) dans un nouvel onglet.
+Si vous rencontrez des problèmes de connexion avec la nouvelle interface web Duplicati (`/ngclient/`), vous pouvez faire un clic droit sur le bouton <SvgButton svgFilename="duplicati_logo.svg" /> ou sur n'importe quel élément de serveur dans le popover de sélection du serveur pour ouvrir l'ancienne interface utilisateur Duplicati (`/ngax/`) dans un nouvel onglet.
 
 <br/><br/>
 
 :::note
-Tous les noms de produits, marques commerciales et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à des fins d'identification uniquement et n'impliquent pas une approbation.
+Tous les noms de produits, marques commerciales et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à titre d'identification uniquement et n'impliquent pas une approbation.
 :::
-

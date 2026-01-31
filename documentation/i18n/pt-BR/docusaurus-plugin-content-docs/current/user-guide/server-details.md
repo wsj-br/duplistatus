@@ -1,71 +1,79 @@
-# Server Details {#server-details}
+---
+translation_last_updated: '2026-01-31T00:51:30.916Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 9f3164f160479a94
+translation_language: pt-BR
+source_file_path: user-guide/server-details.md
+---
+# Detalhes do Servidor {#server-details}
 
-Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
+Clicar em um servidor do Painel abre uma página com uma lista de backups para esse servidor. Você pode visualizar todos os backups ou selecionar um específico se o servidor tiver múltiplos backups configurados.
 
 ![Server Details](/assets/screen-server-backup-list.png)
 
-## Server/Backup Statistics {#serverbackup-statistics}
+## Estatísticas do Servidor/Backup {#serverbackup-statistics}
 
-This section shows statistics for either all backups on the server or a single selected backup.
+Esta seção mostra Estatísticas para todos os backups no Servidor ou um backup único selecionado.
 
-- **TOTAL BACKUP JOBS**: Total number of backup jobs configured on this server.
-- **TOTAL BACKUP RUNS**: Total number of backup runs executed (as reported by the Duplicati server).
-- **AVAILABLE VERSIONS**: Number of available versions (as reported by the Duplicati server).
-- **AVG DURATION**: Average (mean) duration of backups recorded in the **duplistatus** database.
-- **LAST BACKUP SIZE**: Size of the source files from the last backup log received.
-- **TOTAL STORAGE USED**: Storage used on the backup destination, as reported in the last backup log.
-- **TOTAL UPLOADED**: Sum of all uploaded data recorded in the **duplistatus** database.
+- **TOTAL DE TRABALHOS DE BACKUP**: Número total de trabalhos de backup configurados neste servidor.
+- **TOTAL DE EXECUÇÕES DE BACKUP**: Número total de execuções de backup realizadas (conforme relatado pelo servidor Duplicati).
+- **VERSÕES DISPONÍVEIS**: Número de versões disponíveis (conforme relatado pelo servidor Duplicati).
+- **DURAÇÃO MÉDIA**: Duração média (média aritmética) dos backups registrados no banco de dados do **duplistatus**.
+- **TAMANHO DO ÚLTIMO BACKUP**: Tamanho dos arquivos de origem do último log de backup recebido.
+- **ARMAZENAMENTO TOTAL USADO**: Armazenamento utilizado no destino de backup, conforme relatado no último log de backup.
+- **TOTAL ENVIADO**: Soma de todos os dados enviados registrados no banco de dados do **duplistatus**.
 
-If this backup or any of the backups on the server (when `All Backups` is selected) is overdue, a message appears below the summary.
+Se este backup ou qualquer um dos backups no servidor (quando `All Backups` está selecionado) está atrasado, uma mensagem aparece abaixo do resumo.
 
 ![Server Details - Overdue Scheduled Backups](/assets/screen-server-overdue-message.png)
 
-Click the <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configure"/> to go to [`Settings → Overdue Monitoring`](settings/overdue-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
+Clique no <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configurar"/> para ir para [`Configurações → Monitoramento atrasado`](settings/overdue-settings.md). Ou clique no <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> na barra de ferramentas para abrir a interface web do servidor Duplicati e verificar os logs.
 
 <br/>
 
-## Backup History {#backup-history}
+## Histórico de backups {#backup-history}
 
-This table lists the backup logs for the selected server.
+Esta tabela lista os logs de backup para o servidor selecionado.
 
 ![Backup History](/assets/screen-backup-history.png)
 
-- **Backup Name**: The name of the backup in the Duplicati server.
-- **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
-- **Status**: The status of the backup (Success, Warning, Error, Fatal).
-- **Warnings/Errors**: The number of warnings/errors reported in the backup log.
-- **Available Versions**: The number of available backup versions on the backup destination. If the icon is greyed out, detailed information was not received.
-- **File Count, File Size, Uploaded Size, Duration, Storage Size**: Values as reported by the Duplicati server.
+- **Nome do backup**: O nome do backup no servidor Duplicati.
+- **Data**: A data e hora do backup e o tempo decorrido desde a última atualização da tela.
+- **Status**: O status do backup (Sucesso, Aviso, Erro, Fatal).
+- **Avisos/Erros**: O número de avisos/erros relatados no log do backup.
+- **Versões disponíveis**: O número de versões de backup disponíveis no destino do backup. Se o ícone estiver acinzentado, as informações detalhadas não foram recebidas.
+- **Quantidade de arquivos, Tamanho dos arquivos, Tamanho enviado, Duração, Tamanho de armazenamento**: Valores conforme relatado pelo servidor Duplicati.
 
-:::tip Tips
-• Use the dropdown menu in the **Backup History** section to select `All Backups` or a specific backup for this server.
+:::tip Dicas
+• Use o menu suspenso na seção **Histórico de backups** para selecionar `Todos os backups` ou um backup específico para este servidor.
 
-• You can sort any column by clicking its header, click again to reverse the sort order.
+• Você pode ordenar qualquer coluna clicando no seu cabeçalho, clique novamente para inverter a ordem de classificação.
+ 
+• Clique em qualquer lugar de uma linha para visualizar os [Detalhes do backup](#backup-details).
 
-• Click anywhere on a row to view the [Backup Details](#backup-details).
+::: 
 
-:::
-
-When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
+:::note
+Quando `Todos os backups` é selecionado, a lista mostra todos os backups ordenados do mais recente para o mais antigo por padrão.
 :::
 
 <br/>
 
-## Backup Details {#backup-details}
+## Detalhes do backup {#backup-details}
 
-Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
+Clicar em um badge de status no Painel (visualização de tabela) ou em qualquer linha na tabela do Histórico de backups exibe as Informações do backup detalhadas.
 
 ![Backup Details](/assets/screen-backup-detail.png)
 
-- **Server details**: server name, alias and note.
-- **Backup Information**: The timestamp of the backup and its ID.
-- **Backup Statistics**: A summary of reported counters, sizes, and duration.
-- **Log Summary**: The number of reported messages.
-- **Available Versions**: A list of available versions (only displayed if the information was received in the logs).
-- **Messages/Warnings/Errors**: The complete execution logs. The subtitle indicates if the log was truncated by the Duplicati server.
+- **Detalhes do servidor**: nome do servidor, alias e nota.
+- **Informações do backup**: A data e hora do backup e seu ID.
+- **Estatísticas do backup**: Um resumo dos contadores, tamanhos e duração relatados.
+- **Resumo do log**: O número de mensagens relatadas.
+- **Versões disponíveis**: Uma lista de versões disponíveis (exibida apenas se a informação foi recebida nos logs).
+- **Mensagens/Avisos/Erros**: Os logs de execução completos. O subtítulo indica se o log foi truncado pelo servidor Duplicati.
 
 <br/>
 
 :::note
-Refer to the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) to learn how to configure Duplicati server to send complete execution logs and avoid truncation.
+Consulte as [instruções de Configuração do Duplicati](../installation/duplicati-server-configuration.md) para aprender como configurar o servidor Duplicati para enviar logs de execução completos e evitar truncamento.
 :::

@@ -21,13 +21,13 @@ pnpm generate-test-data --servers=N --upload
 
 **Examples:**
 ```bash
-# Generate data for 5 servers {#generate-data-for-5-servers}
+# Generate data for 5 servers
 pnpm generate-test-data --servers=5
 
-# Generate data for 1 server with upload mode {#generate-data-for-1-server-with-upload-mode}
+# Generate data for 1 server with upload mode
 pnpm generate-test-data --upload --servers=1
 
-# Generate data for all 30 servers {#generate-data-for-all-30-servers}
+# Generate data for all 30 servers
 pnpm generate-test-data --servers=30
 ```
 
@@ -221,10 +221,10 @@ All migration tests passed!
 
 **Usage:**
 ```bash
-# Run all migration tests {#run-all-migration-tests}
+# Run all migration tests
 ./scripts/test-migrations.sh
 
-# Check exit code {#check-exit-code}
+# Check exit code
 echo $?  # 0 = all passed, 1 = some failed
 ```
 
@@ -243,20 +243,20 @@ For plain connections, the script reads `PLAIN_SMTP_FROM` environment variable t
 
 **Usage:**
 ```bash
-# Set Plain SMTP configuration {#set-plain-smtp-configuration}
+# Set Plain SMTP configuration
 PLAIN_SMTP_HOST=smtp.example.com \
 PLAIN_SMTP_PORT=25 \
 PLAIN_SMTP_FROM=noreply@example.com \
 pnpm set-smtp-test-config plain
 
-# Set STARTTLS configuration {#set-starttls-configuration}
+# Set STARTTLS configuration
 STARTTLS_SMTP_HOST=smtp.example.com \
 STARTTLS_SMTP_PORT=587 \
 STARTTLS_SMTP_USERNAME=user@example.com \
 STARTTLS_SMTP_PASSWORD=password \
 pnpm set-smtp-test-config starttls
 
-# Set Direct SSL/TLS configuration {#set-direct-ssltls-configuration}
+# Set Direct SSL/TLS configuration
 SSL_SMTP_HOST=smtp.example.com \
 SSL_SMTP_PORT=465 \
 SSL_SMTP_USERNAME=user@example.com \
@@ -286,7 +286,7 @@ This script performs a comprehensive 3x3 matrix test that validates whether conf
 
 **Usage:**
 ```bash
-# Set environment variables for all three connection types {#set-environment-variables-for-all-three-connection-types}
+# Set environment variables for all three connection types
 PLAIN_SMTP_HOST=smtp.example.com \
 PLAIN_SMTP_PORT=25 \
 PLAIN_SMTP_FROM=noreply@example.com \
@@ -331,7 +331,7 @@ This script provides a test wrapper for `docker-entrypoint.sh` in local developm
 
 **Usage:**
 ```bash
-# Run the test (builds fresh version automatically) {#run-the-test-builds-fresh-version-automatically}
+# Run the test (builds fresh version automatically)
 pnpm test-entrypoint
 ```
 

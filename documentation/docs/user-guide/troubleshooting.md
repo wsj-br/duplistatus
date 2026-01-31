@@ -65,7 +65,7 @@ If the manual backup log collection fails:
   Also check for the DNS configuration inside the container (see more at [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
 
-### Upgrade from an earlier version (\<0.9.x) and can't login {#upgrade-from-an-earlier-version-09x-and-cant-login}
+### Upgrade from an earlier version (before 0.9.x) and can't login {#upgrade-from-an-earlier-version-09x-and-cant-login}
 
 **duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version: 
     - username: `admin`

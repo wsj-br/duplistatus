@@ -1,0 +1,8 @@
+# Files to ignre during translations
+
+# keep the license in English
+LICENSE.md
+
+# don't translate the API reference
+api-reference/*
+

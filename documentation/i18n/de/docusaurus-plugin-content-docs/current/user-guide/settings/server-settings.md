@@ -1,56 +1,62 @@
+---
+translation_last_updated: '2026-01-31T00:51:26.347Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: 4ebf820e9494ced0
+translation_language: de
+source_file_path: user-guide/settings/server-settings.md
+---
 # Server {#server}
 
-You can configure an alternative name (alias) for your servers, a note to describe its function and the web addresses of your Duplicati Servers here.
+Sie können hier einen alternativen Namen (Alias) für Ihre Server, einen Hinweis zur Beschreibung seiner Funktion und die Webadressen Ihrer Duplicati-Server konfigurieren.
 
 ![server settings](/assets/screen-settings-server.png)
 
-| Setting                                            | Description                                                                                                                                                                                                                  |
-| :------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Server Name**                                    | Server name configured in the Duplicati server. A <IIcon2 icon="lucide:key-round" color="#42A5F5"/> will appear if a password is set for the server.                                         |
-| **Alias**                                          | A nickname or human-readable name of your server. When hovering over an alias it will show its name; in some cases to make it clear it will display the alias and the name between brackets. |
-| **Note**                                           | Free text to describe the server functionality, installation place, or any other information. When configured, it will be displayed next to the name or alias of the server.                 |
-| **Web Interface Address (URL)** | Configure the URL to access the Duplicati Server's UI. Both `HTTP` and `HTTPS` URLs are supported.                                                                                           |
-| **Status**                                         | Display the test or collect backup logs results                                                                                                                                                                              |
-| **Actions**                                        | You can test, open Duplicati interface, collect logs and set a password, see below for more details.                                                                                                         |
+| Setting                         | Beschreibung                                                                                                                                                                                  |
+|:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Servername**                  | Servername, der im Duplicati-Server konfiguriert ist. Ein <IIcon2 icon="lucide:key-round" color="#42A5F5"/> wird angezeigt, wenn ein Passwort für den Server festgelegt ist.                 |
+| **Alias**                       | Ein Spitzname oder benutzerfreundlicher Name Ihres Servers. Beim Hovern über einen Alias wird sein Name angezeigt; in einigen Fällen wird zur Verdeutlichung der Alias und der Name in Klammern angezeigt. |
+| **Hinweis**                     | Freier Text zur Beschreibung der Serverfunktionalität, des Installationsortes oder anderer Informationen. Wenn konfiguriert, wird er neben dem Namen oder Alias des Servers angezeigt.        |
+| **Web-Interface-Adresse (URL)** | Konfigurieren Sie die URL für den Zugriff auf die Benutzeroberfläche des Duplicati-Servers. Sowohl `HTTP`- als auch `HTTPS`-URLs werden unterstützt.                                        |
+| **Status**                      | Zeigt die Ergebnisse des Tests oder der Backup-Protokolle sammeln an                                                                                                                         |
+| **Aktionen**                    | Sie können testen, die Duplicati-Schnittstelle öffnen, Protokolle sammeln und ein Passwort festlegen. Weitere Details finden Sie unten.                                                     |
 
 <br/>
+
 :::note
-If the Web Interface Address (URL) is not configured, the <SvgIcon svgFilename="duplicati_logo.svg" /> button 
-will be disabled in all pages and the server will not be shown in [`Duplicati Configuration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>  list.
+Wenn die Web-Interface-Adresse (URL) nicht konfiguriert ist, wird die <SvgIcon svgFilename="duplicati_logo.svg" /> Schaltfläche 
+auf allen Seiten deaktiviert und der Server wird nicht in [`Duplicati Configuration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/> Liste angezeigt.
 :::
 
 <br/>
 
-## Available Actions for each server {#available-actions-for-each-server}
+## Verfügbare Aktionen für jeden Server {#available-actions-for-each-server}
 
-| Button                                                                                                                          | Description                                                                             |
-| :------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:play" label="Test"/>                                                                                   | Test the connection to the Duplicati server.                            |
-| <SvgButton svgFilename="duplicati_logo.svg" />                                                                                  | Open the Duplicati server's web interface in a new browser tab.         |
-| <IconButton icon="lucide:download" />                                                                                           | Collect backup logs from the Duplicati server.                          |
-| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; or <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Change or set a password for the Duplicati server to collected backups. |
+| Button                                                                                                      | Beschreibung                                                             |
+|:------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------|
+| <IconButton icon="lucide:play" label="Test"/>                                                               | Testen Sie die Verbindung zum duplistatus-Server.                            |
+| <SvgButton svgFilename="duplicati_logo.svg" />                                                              | Öffnen Sie die Weboberfläche des duplistatus-Servers in einem neuen Browser-Tab.         |
+| <IconButton icon="lucide:download" />                                                                       | Backup-Protokolle vom duplistatus-Server sammeln.                          |
+| <IconButton icon="lucide:rectangle-ellipsis" /> &nbsp; or <IIcon2 icon="lucide:key-round" color="#42A5F5"/> | Ändern oder legen Sie ein Passwort für den duplistatus-Server für gesammelte Sicherungen fest. |
 
 <br/>
 
-:::info\[IMPORTANT]
+:::info[WICHTIG]
 
-To protect your security, you can only perform the following actions:
-
-- Set a password for the server
-- Remove (delete) the password entirely
-
-The password is stored encrypted in the database and is never displayed in the user interface.
+Um Ihre Sicherheit zu schützen, können Sie nur die folgenden Aktionen ausführen:
+- Ein Passwort für den Server festlegen
+- Das Passwort vollständig entfernen (Löschen)
+ 
+Das Passwort wird verschlüsselt in der Datenbank gespeichert und wird nie in der Benutzeroberfläche angezeigt.
 :::
 
 <br/>
 
-## Available Actions for all servers {#available-actions-for-all-servers}
+## Verfügbare Aktionen für alle Server {#available-actions-for-all-servers}
 
-| Button                                                     | Description                                                     |
-| :--------------------------------------------------------- | :-------------------------------------------------------------- |
-| <IconButton label="Save Changes" />                        | Save the changes made to the server settings.   |
-| <IconButton icon="lucide:fast-forward" label="Test All"/>  | Test the connection to all Duplicati servers.   |
-| <IconButton icon="lucide:import" label="Collect All (#)"/> | Collect backup logs from all Duplicati servers. |
+| Button                                                     | Beschreibung                                     |
+|:-----------------------------------------------------------|:------------------------------------------------|
+| <IconButton label="Änderungen speichern" />                        | Speichern Sie die Änderungen an den Server-Einstellungen.   |
+| <IconButton icon="lucide:fast-forward" label="Alle testen"/>  | Testen Sie die Verbindung zu allen Duplicati-Servern.   |
+| <IconButton icon="lucide:import" label="Alle sammeln (#)"/> | Sammeln Sie Backup-Protokolle von allen Duplicati-Servern. |
 
 <br/>
-

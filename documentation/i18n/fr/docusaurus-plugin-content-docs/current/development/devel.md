@@ -1,3 +1,10 @@
+---
+translation_last_updated: '2026-01-31T00:51:19.843Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 4651d154540967f5
+translation_language: fr
+source_file_path: development/devel.md
+---
 # Commandes les plus utilisées {#most-used-commands}
 
 ## Exécuter en mode développement {#run-in-dev-mode}
@@ -6,23 +13,23 @@
 pnpm dev
 ```
 
-- **Stockage de fichiers JSON** : Toutes les données de sauvegarde reçues sont stockées sous forme de fichiers JSON dans le répertoire `data`. Ces fichiers sont nommés en utilisant l'horodatage du moment où ils ont été reçus, au format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (heure UTC). Cette fonctionnalité n'est active qu'en mode développement et aide au débogage en préservant les données brutes reçues de Duplicati.
+- **Stockage de Fichiers JSON** : Toutes les données de sauvegarde reçues sont stockées sous forme de fichiers JSON dans le répertoire `data`. Ces fichiers sont nommés en utilisant l'horodatage du moment où ils ont été reçus, au format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (heure UTC). Cette fonctionnalité n'est active qu'en mode développement et aide au débogage en préservant les données brutes reçues de Duplicati.
 
-- **Journalisation détaillée** : L'application enregistre des informations plus détaillées sur les opérations de base de données et les demandes API quand elle s'exécute en mode développement.
+- **Verbose Logging** : L'application enregistre des informations plus détaillées sur les opérations de base de données et les requêtes API lors de l'exécution en mode développement.
 
-- **Mise à jour de version** : Le serveur de développement met automatiquement à jour les informations de version avant de démarrer, en s'assurant que la dernière version est affichée dans l'application.
+- **Mise à jour de Version** : Le serveur de développement met à jour automatiquement les informations de version avant le démarrage, garantissant que la dernière version est affichée dans l'application.
 
-- **Suppression de sauvegarde** : Sur la page de détails du serveur, un bouton de suppression apparaît dans le tableau des sauvegardes qui vous permet de supprimer des sauvegardes individuelles. Cette fonctionnalité est particulièrement utile pour tester et déboguer la fonctionnalité des sauvegardes en retard.
+- **Suppression de sauvegarde** : Sur la page de détail du serveur, un bouton de suppression apparaît dans le tableau des sauvegardes qui vous permet de supprimer des sauvegardes individuelles. Cette fonctionnalité est particulièrement utile pour tester et déboguer la fonctionnalité des sauvegardes en retard.
 
 ## Démarrer le serveur de production (dans l'environnement de développement) {#start-the-production-server-in-development-environment}
 
-Tout d'abord, construisez l'application pour la production locale :
+Commencez par compiler l'application pour la production locale :
 
 ```bash
 pnpm build-local
 ```
 
-Ensuite, démarrez le serveur de production :
+Démarrez ensuite le serveur de production :
 
 ```bash
 pnpm start-local
@@ -65,7 +72,6 @@ Ou manuellement :
 ```
 
 Ce script effectue un nettoyage complet de Docker, ce qui est utile pour :
-
 - Libérer de l'espace disque
 - Supprimer les anciens artefacts Docker inutilisés
 - Nettoyer après les sessions de développement ou de test

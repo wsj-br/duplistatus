@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 /**
- * Extract terminology from intlayer dictionaries and convert to Crowdin glossary format.
+ * Extract terminology from intlayer dictionaries and convert to glossary format.
  * 
  * This script:
  * - Reads all JSON files from .intlayer/dictionary/
  * - Extracts key terminology (common UI terms + technical terms)
- * - Generates CSV in Crowdin format
+ * - Generates CSV glossary file
  * - Updates markdown glossary table
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Language mapping: intlayer -> Crowdin
+// Language mapping
 const LANG_MAP = {
   'en': 'en',
   'de': 'de',
@@ -50,7 +50,7 @@ const KEY_TIME_TERMS = [
 ];
 
 /**
- * Remove {} placeholders from text (for Crowdin compatibility)
+ * Remove {} placeholders from text
  */
 function removePlaceholders(str) {
   if (!str || typeof str !== 'string') return str;
@@ -58,7 +58,7 @@ function removePlaceholders(str) {
 }
 
 /**
- * Remove parentheses from text (for Crowdin compatibility)
+ * Remove parentheses from text
  * Converts "(Collect backups logs)" to "Collect backups logs"
  */
 function removeParentheses(str) {
@@ -72,7 +72,7 @@ function removeParentheses(str) {
 }
 
 /**
- * Remove trailing colons from text (for Crowdin compatibility)
+ * Remove trailing colons from text
  * Converts "Checked:" to "Checked"
  */
 function removeTrailingColon(str) {
@@ -334,7 +334,7 @@ function removeDuplicates(termMap) {
 }
 
 /**
- * Generate CSV in Crowdin format with comprehensive columns
+ * Generate CSV glossary file with comprehensive columns
  */
 function generateCSV(termMap) {
   const rows = [];

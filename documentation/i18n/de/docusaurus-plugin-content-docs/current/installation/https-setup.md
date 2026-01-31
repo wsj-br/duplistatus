@@ -1,10 +1,17 @@
-# HTTPS-Setup (Optional) {#https-setup-optional}
+---
+translation_last_updated: '2026-01-31T00:51:23.402Z'
+source_file_mtime: '2026-01-29T17:58:29.895Z'
+source_file_hash: 5182562d16f18184
+translation_language: de
+source_file_path: installation/https-setup.md
+---
+# HTTPS-Einrichtung (Optional) {#https-setup-optional}
 
 Für Produktionsbereitstellungen wird empfohlen, **duplistatus** über HTTPS mit einem Reverse Proxy bereitzustellen. Dieser Abschnitt enthält Konfigurationsbeispiele für beliebte Reverse-Proxy-Lösungen.
 
 ### Option 1: Nginx mit Certbot (Let's Encrypt) {#option-1-nginx-with-certbot-lets-encrypt}
 
-[Nginx](https://nginx.org/) ist ein beliebter Webserver, der als Reverse Proxy fungieren kann, und [Certbot](https://certbot.eff.org/) bietet kostenlose SSL-Zertifikate von Let's Encrypt.
+[Nginx](https://nginx.org/) ist ein beliebter Webserver, der als Reverse Proxy fungieren kann, und [Certbot](https://certbot.eff.org/) stellt kostenlose SSL-Zertifikate von Let's Encrypt bereit.
 
 **Voraussetzungen:**
 
@@ -40,15 +47,15 @@ server {
 }
 ```
 
-**Schritt 3: Website aktivieren und SSL-Zertifikat abrufen**
+**Schritt 3: Aktivieren Sie die Website und erhalten Sie ein SSL-Zertifikat**
 
 ```bash
-# Website aktivieren {#enable-the-site}
+# Enable the site
 sudo ln -s /etc/nginx/sites-available/duplistatus /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 
-# SSL-Zertifikat abrufen {#obtain-ssl-certificate}
+# Obtain SSL certificate
 sudo certbot --nginx -d your-domain.com
 ```
 
@@ -62,7 +69,7 @@ Certbot aktualisiert automatisch Ihre Nginx-Konfiguration, um SSL-Einstellungen 
 
 ### Option 2: Caddy {#option-2-caddy}
 
-[Caddy](https://caddyserver.com/) ist ein moderner Webserver mit automatischem HTTPS, der die SSL-Zertifikatverwaltung vereinfacht.
+[Caddy](https://caddyserver.com/) ist ein moderner Webserver mit automatischem HTTPS, der die Verwaltung von SSL-Zertifikaten vereinfacht.
 
 **Voraussetzungen:**
 
@@ -71,7 +78,7 @@ Certbot aktualisiert automatisch Ihre Nginx-Konfiguration, um SSL-Einstellungen 
 
 **Schritt 1: Caddy installieren**
 
-Folgen Sie dem [offiziellen Installationsleitfaden](https://caddyserver.com/docs/install) für Ihr Betriebssystem.
+Folgen Sie der [offiziellen Installationsanleitung](https://caddyserver.com/docs/install) für Ihr Betriebssystem.
 
 **Schritt 2: Caddyfile erstellen**
 
@@ -95,29 +102,28 @@ Oder verwenden Sie es als Systemdienst:
 sudo caddy start --config Caddyfile
 ```
 
-Caddy ruft automatisch SSL-Zertifikate von Let's Encrypt ab und verwaltet diese.
+Caddy wird automatisch SSL-Zertifikate von Let's Encrypt abrufen und verwalten.
 
 **Dokumentation:**
 
 - [Caddy-Dokumentation](https://caddyserver.com/docs/)
-- [Caddy Reverse-Proxy-Leitfaden](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
+- [Caddy-Reverse-Proxy-Anleitung](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
-### Wichtige Notizen {#important-notes}
-
-:::info[IMPORTANT]
-Nach der Einrichtung von HTTPS müssen Sie Ihre Duplicati-Serverkonfiguration aktualisieren, um die HTTPS-URL zu verwenden:
+### Wichtige Hinweise {#important-notes}
 
 ```bash
 --send-http-url=https://your-domain.com/api/upload
 ```
+
+:::info[WICHTIG]
+Nach der Einrichtung von HTTPS müssen Sie die Konfiguration Ihres Duplicati-Servers aktualisieren, um die HTTPS-URL zu verwenden:
 
 :::
 
 :::tip
 
 - Ersetzen Sie `your-domain.com` durch Ihren tatsächlichen Domänennamen
-- Stellen Sie sicher, dass der DNS-A-Datensatz Ihrer Domäne auf die IP-Adresse Ihres Servers verweist
+- Stellen Sie sicher, dass der DNS-A-Eintrag Ihrer Domäne auf die IP-Adresse Ihres Servers verweist
 - Beide Lösungen erneuern SSL-Zertifikate automatisch
-- Erwägen Sie die Einrichtung einer Firewall, um nur HTTP/HTTPS-Datenverkehr zuzulassen
-  :::
-
+- Erwägen Sie, eine Firewall einzurichten, um nur HTTP/HTTPS-Verkehr zuzulassen
+:::

@@ -2,7 +2,7 @@
 
 # Welcome to duplistatus {#welcome-to-duplistatus}
 
-**duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
+**duplistatus** -  Monitor Multiple [Duplicati](https://github.com/duplicati/duplicati) Servers from a Single Dashboard
 
 ## Features {#features}
 

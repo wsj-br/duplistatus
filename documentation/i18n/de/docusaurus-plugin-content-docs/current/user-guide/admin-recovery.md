@@ -1,31 +1,37 @@
-# Admin Account Recovery {#admin-account-recovery}
+---
+translation_last_updated: '2026-01-31T00:51:26.096Z'
+source_file_mtime: '2026-01-29T17:58:29.899Z'
+source_file_hash: 091dcbb5c0bb63c5
+translation_language: de
+source_file_path: user-guide/admin-recovery.md
+---
+# Wiederherstellung des Admin-Kontos {#admin-account-recovery}
 
-Recover administrator access to **duplistatus** when you've lost your password or been locked out of your account. This guide covers using the admin recovery script in Docker environments.
+Stellen Sie den Administrator-Zugriff auf **duplistatus** wieder her, wenn Sie Ihr Passwort verloren haben oder aus Ihrem Konto gesperrt wurden. Diese Anleitung behandelt die Verwendung des Admin-Wiederherstellungsskripts in Docker-Umgebungen.
 
-## Using the Script in Docker {#using-the-script-in-docker}
+## Verwendung des Skripts in Docker {#using-the-script-in-docker}
 
-The Dockerfile includes the `scripts` directory and a convenient shell wrapper.
+Das Dockerfile enthält das Verzeichnis `scripts` und einen praktischen Shell-Wrapper.
 
 ```bash
-# Execute inside the running container using the wrapper {#execute-inside-the-running-container-using-the-wrapper}
+# Execute inside the running container using the wrapper
 docker exec -it duplistatus /app/admin-recovery <username> <new-password>
 ```
 
-**Example:**
+**Beispiel:**
 
 ```bash
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 ```
 
-## Troubleshooting {#troubleshooting}
+## Fehlerbehebung {#troubleshooting}
 
-If you encounter issues with the recovery script:
+Wenn Sie Probleme mit dem Wiederherstellungsskript haben:
 
-1. **Verify Container is Running**: Check that the container is running with `docker ps`
-2. **Check Script Availability**: Verify the script exists in the container with `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Review Container Logs**: Check for errors with `docker logs duplistatus`
-4. **Verify Username**: Ensure the username exists in the database
-5. **Check Password Format**: Ensure the new password meets all requirements
+1. **Container wird ausgeführt überprüfen**: Prüfen Sie, dass der Container mit `docker ps` ausgeführt wird
+2. **Skriptverfügbarkeit prüfen**: Bestätigen Sie, dass das Skript im Container mit `docker exec -it duplistatus ls -la /app/admin-recovery` vorhanden ist
+3. **Container-Protokolle überprüfen**: Prüfen Sie auf Fehler mit `docker logs duplistatus`
+4. **Benutzername bestätigen**: Stellen Sie sicher, dass der Benutzername in der Datenbank vorhanden ist
+5. **Passwortformat prüfen**: Stellen Sie sicher, dass das neue Passwort alle Anforderungen erfüllt
 
-If problems persist, see the [Troubleshooting](troubleshooting.md) guide for more help.
-
+Wenn die Probleme weiterhin bestehen, lesen Sie das [Troubleshooting](troubleshooting.md)-Handbuch für weitere Hilfe.

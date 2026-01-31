@@ -1,77 +1,83 @@
-# Most used commands {#most-used-commands}
+---
+translation_last_updated: '2026-01-31T00:51:29.282Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 4651d154540967f5
+translation_language: pt-BR
+source_file_path: development/devel.md
+---
+# Comandos mais utilizados {#most-used-commands}
 
-## Run in dev mode {#run-in-dev-mode}
+## Executar em modo de desenvolvimento {#run-in-dev-mode}
 
 ```bash
 pnpm dev
 ```
 
-- **JSON File Storage**: All received backup data is stored as JSON files in the `data` directory. These files are named using the timestamp of when they were received, in the format `YYYY-MM-DDTHH-mm-ss-sssZ.json` (UTC time). This feature is only active in development mode and helps with debugging by preserving the raw data received from Duplicati.
+- **Armazenamento de Arquivos JSON**: Todos os dados de backup recebidos são armazenados como arquivos JSON no diretório `data`. Estes arquivos são nomeados usando a data e hora de quando foram recebidos, no formato `YYYY-MM-DDTHH-mm-ss-sssZ.json` (horário UTC). Este recurso está ativo apenas no modo de desenvolvimento e ajuda na depuração ao preservar os dados brutos recebidos do Duplicati.
 
-- **Verbose Logging**: The application logs more detailed information about database operations and API requests when running in development mode.
+- **Verbose Logging**: Os logs da aplicação registram informações mais detalhadas sobre operações de banco de dados e requisições de API quando executado em modo de desenvolvimento.
 
-- **Version Update**: The development server automatically updates the version information before starting, ensuring the latest version is displayed in the application.
+- **Atualização de Versão**: O servidor de desenvolvimento atualiza automaticamente as informações de versão antes de iniciar, garantindo que a versão mais recente seja exibida na aplicação.
 
-- **Backup Deletion**: On the server detail page, a delete button appears in the backups table that allows you to delete individual backups. This feature is especially useful for testing and debugging the overdue backups functionality.
+- **Exclusão de Backup**: Na página de detalhes do Servidor, um botão de exclusão aparece na tabela de backups que permite que você exclua backups individuais. Este recurso é especialmente útil para testar e depurar a funcionalidade de backups atrasados.
 
-## Start the production server (in development environment) {#start-the-production-server-in-development-environment}
+## Iniciar o servidor de produção (em ambiente de desenvolvimento) {#start-the-production-server-in-development-environment}
 
-First, build the application for local production:
+Primeiro, compile a aplicação para produção local:
 
 ```bash
 pnpm build-local
 ```
 
-Then start the production server:
+Depois, inicie o servidor de produção:
 
 ```bash
 pnpm start-local
 ```
 
-## Start a Docker stack (Docker Compose) {#start-a-docker-stack-docker-compose}
+## Iniciar uma pilha Docker (Docker Compose) {#start-a-docker-stack-docker-compose}
 
 ```bash
 pnpm docker-up
 ```
 
-Or manually:
+Ou manualmente:
 
 ```bash
 docker compose up --build -d
 ```
 
-## Stop a Docker stack (Docker Compose) {#stop-a-docker-stack-docker-compose}
+## Parar uma pilha Docker (Docker Compose) {#stop-a-docker-stack-docker-compose}
 
 ```bash
 pnpm docker-down
 ```
 
-Or manually:
+Ou manualmente:
 
 ```bash
 docker compose down
 ```
 
-## Clean Docker environment {#clean-docker-environment}
+## Limpar ambiente Docker {#clean-docker-environment}
 
 ```bash
 pnpm docker-clean
 ```
 
-Or manually:
+Ou manualmente:
 
 ```bash
 ./scripts/clean-docker.sh
 ```
 
-This script performs a complete Docker cleanup, which is useful for:
+Este script realiza uma limpeza completa do Docker, o que é útil para:
+- Liberar espaço em disco
+- Remover artefatos antigos/não utilizados do Docker
+- Limpar após sessões de desenvolvimento ou testes
+- Manter um ambiente Docker limpo
 
-- Freeing up disk space
-- Removing old/unused Docker artefacts
-- Cleaning up after development or testing sessions
-- Maintaining a clean Docker environment
-
-## Create a development image (to test locally or with Podman) {#create-a-development-image-to-test-locally-or-with-podman}
+## Criar uma imagem de desenvolvimento (para testar localmente ou com Podman) {#create-a-development-image-to-test-locally-or-with-podman}
 
 ```bash
 export $(grep -v '^#' .env | xargs) && docker build . -t wsj-br/duplistatus:devel-$VERSION

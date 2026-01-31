@@ -24,7 +24,7 @@ You can create additional users accounts in [Settings > Users](../user-guide/set
 
 
 ::::info[IMPORTANT]
-The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please configure these settings carefully.
+The system enforces a minimum password length and complexity. These requirements can be adjusted using the `PWD_ENFORCE` and `PWD_MIN_LEN` [environment variables](environment-variables.md). Using a password without sufficient complexity or with a short length can compromise security. Please use these settings carefully.
 ::::
 
 
@@ -40,9 +40,9 @@ You can use the images from:
 This is the recommended method for local deployments or when you want to customise the configuration. It uses a `docker compose` file to define and run the container with all its settings.
 
 ```bash	
-# download the compose file {#download-the-compose-file}
+# download the compose file
 wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml -O duplistatus.yml
-# start the container {#start-the-container}
+# start the container
 docker compose -f duplistatus.yml up -d
 ```
 
@@ -55,7 +55,7 @@ Check [Timezone and Locale](./configure-tz-lang.md) section to more details on h
 3. Choose "Build method" as "Web editor".
 4. Copy and paste this in the web editor:
 ```yaml
-# duplistatus production compose.yml {#duplistatus-production-composeyml}
+# duplistatus production compose.yml
 services:
   duplistatus:
     image: ghcr.io/wsj-br/duplistatus:latest
@@ -98,10 +98,10 @@ volumes:
 ### Option 4: Using Docker CLI {#option-4-using-docker-cli}
 
 ```bash
-# Create the volume {#create-the-volume}
+# Create the volume
 docker volume create duplistatus_data
 
-# Start the container {#start-the-container}
+# Start the container
 docker run -d \
   --name duplistatus \
   -p 9666:9666 \
@@ -119,7 +119,7 @@ For basic setups, you can start the container without DNS configuration:
 
 ```bash
 mkdir -p ~/duplistatus_data
-# Start the container (standalone) {#start-the-container-standalone}
+# Start the container (standalone)
 podman run -d \
   --name duplistatus \
   --userns=keep-id \
@@ -156,7 +156,7 @@ If you need custom DNS configuration (e.g., for Tailscale MagicDNS, corporate ne
 
 ```bash
 mkdir -p ~/duplistatus_data
-# Start the container with DNS configuration {#start-the-container-with-dns-configuration}
+# Start the container with DNS configuration
 podman run -d \
   --name duplistatus \
   --userns=keep-id \
@@ -192,10 +192,10 @@ Podman pods allow you to run multiple containers in a shared network namespace. 
 ```bash
 mkdir -p ~/duplistatus_data
 
-# Create the pod {#create-the-pod}
+# Create the pod
 podman pod create --name duplistatus-pod --publish 9666:9666/tcp
 
-# Create the container in the pod {#create-the-container-in-the-pod}
+# Create the container in the pod
 podman create --name duplistatus \
   --pod duplistatus-pod \
   --user root \
@@ -204,7 +204,7 @@ podman create --name duplistatus \
   -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 
-# Start the pod {#start-the-pod}
+# Start the pod
 podman pod start duplistatus-pod
 ```
 
@@ -218,13 +218,13 @@ Use the same methods described in Option 5 to find your DNS servers and search d
 ```bash
 mkdir -p ~/duplistatus_data
 
-# Create the pod with DNS configuration {#create-the-pod-with-dns-configuration}
+# Create the pod with DNS configuration
 podman pod create --name duplistatus-pod \
   --publish 9666:9666/tcp \
   --dns 100.100.100.100 \
   --dns-search example.com
 
-# Create the container in the pod {#create-the-container-in-the-pod}
+# Create the container in the pod
 podman create --name duplistatus \
   --pod duplistatus-pod \
   --user root \
@@ -233,20 +233,20 @@ podman create --name duplistatus \
   -v ~/duplistatus_data:/app/data \
   ghcr.io/wsj-br/duplistatus:latest
 
-# Start the pod {#start-the-pod}
+# Start the pod
 podman pod start duplistatus-pod
 ```
 
 **Managing the pod:**
 
 ```bash
-# Stop the pod (stops all containers in the pod) {#stop-the-pod-stops-all-containers-in-the-pod}
+# Stop the pod (stops all containers in the pod)
 podman pod stop duplistatus-pod
 
-# Start the pod {#start-the-pod}
+# Start the pod
 podman pod start duplistatus-pod
 
-# Remove the pod and all containers {#remove-the-pod-and-all-containers}
+# Remove the pod and all containers
 podman pod rm -f duplistatus-pod
 ```
 

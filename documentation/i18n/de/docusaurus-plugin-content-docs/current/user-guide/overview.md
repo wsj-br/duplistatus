@@ -1,100 +1,107 @@
-# Overview {#overview}
+---
+translation_last_updated: '2026-01-31T00:51:26.184Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 01c00018de62e450
+translation_language: de
+source_file_path: user-guide/overview.md
+---
+# Übersicht {#overview}
 
-Welcome to the duplistatus user guide. This comprehensive document provides detailed instructions for using duplistatus to monitor and manage your Duplicati backup operations across multiple servers.
+Willkommen zum Benutzerhandbuch für duplistatus. Dieses umfassende Dokument bietet detaillierte Anweisungen zur Verwendung von duplistatus zur Überwachung und Verwaltung Ihrer Duplicati-Sicherungsvorgänge auf mehreren Servern.
 
-## What is duplistatus? {#what-is-duplistatus}
+## Was ist duplistatus? {#what-is-duplistatus}
 
-duplistatus is a powerful monitoring dashboard designed specifically for Duplicati backup systems. It provides:
+duplistatus ist ein leistungsstarkes Überwachungs-Dashboard, das speziell für Duplicati-Sicherungssysteme entwickelt wurde. Es bietet:
 
-- Centralised monitoring of multiple Duplicati servers from a single interface
-- Real-time status tracking of all backup operations
-- Automated overdue backup detection with configurable alerts
-- Comprehensive metrics and visualisation of backup performance
-- Flexible notification system via NTFY and email
+- Zentralisierte Überwachung mehrerer Duplicati-Server von einer einzigen Benutzeroberfläche
+- Echtzeit-Statusverfolgung aller Sicherungsvorgänge
+- Automatische Erkennung überfälliger Sicherungen mit konfigurierbaren Warnungen
+- Umfassende Metriken und Visualisierung der Sicherungsleistung
+- Flexibles Benachrichtigungssystem über NTFY und E-Mail
 
 ## Installation {#installation}
 
-For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../installation/installation.md).
+Für Voraussetzungen und detaillierte Installationsanweisungen verweisen wir Sie auf den [Installationsleitfaden](../installation/installation.md).
 
-## Accessing the Dashboard {#accessing-the-dashboard}
+## Zugriff auf das Dashboard {#accessing-the-dashboard}
 
-After successful installation, access the duplistatus web interface by following these steps:
+Nach erfolgreicher Installation greifen Sie auf die duplistatus-Weboberfläche folgendermaßen zu:
 
-1. Open your preferred web browser
-2. Navigate to `http://your-server-ip:9666`
-   - Replace `your-server-ip` with the actual IP address or hostname of your duplistatus server
-   - The default port is `9666`
-3. You will be presented with a login page. Use these credentials for the first usage (or after an upgrade from pre-0.9.x versions):
-   - username: `admin`
-   - password: `Duplistatus09`
-4. After login, the main dashboard will display automatically (with no data on first usage)
+1. Öffnen Sie Ihren bevorzugten Webbrowser
+2. Navigieren Sie zu `http://your-server-ip:9666`
+   - Ersetzen Sie `your-server-ip` durch die tatsächliche IP-Adresse oder den Hostname Ihres duplistatus-Servers
+   - Der Standard-Port ist `9666`
+3. Ihnen wird eine Anmeldungsseite angezeigt. Verwenden Sie diese Anmeldedaten für die erste Verwendung (oder nach einem Upgrade von Versionen vor 0.9.x):
+    - Benutzername: `admin`
+    - Passwort: `Duplistatus09` 
+4. Nach der Anmeldung wird das Haupt-Dashboard automatisch angezeigt (beim ersten Gebrauch ohne Daten)
 
-## User Interface Overview {#user-interface-overview}
+## Benutzeroberflächen-Übersicht {#user-interface-overview}
 
-duplistatus provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
+duplistatus bietet ein intuitives Dashboard zur Überwachung von Duplicati-Sicherungsvorgängen in Ihrer gesamten Infrastruktur.
 
 ![Dashboard Overview](/assets/screen-main-dashboard-card-mode.png)
 
-The user interface is organised into several key sections to provide a clear and comprehensive monitoring experience:
+Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein klares und umfassendes Überwachungserlebnis zu bieten:
 
-1. [Application Toolbar](#application-toolbar): Quick access to essential functions and configurations
-2. [Dashboard Summary](dashboard.md#dashboard-summary): Overview statistics for all monitored servers
-3. Servers Overview: [Cards layout](dashboard.md#cards-layout) or [table layout](dashboard.md#table-layout) showing the latest status of all backups
-4. [Overdue Details](dashboard.md#overdue-details): Visual warnings for overdue backups with detailed information on hover
-5. [Available Backup Versions](dashboard.md#available-backup-versions): Click the blue icon to view backup versions available at the destination
-6. [Backup Metrics](backup-metrics.md): Interactive charts displaying backup performance over time
-7. [Server Details](server-details.md): Comprehensive list of recorded backups for specific servers, including detailed statistics
-8. [Backup Details](server-details.md#backup-details): In-depth information for individual backups, including execution logs, warnings, and errors
+1. [Application Toolbar](#application-toolbar): Schnellzugriff auf wesentliche Funktionen und Konfigurationen
+2. [Dashboard Summary](dashboard.md#dashboard-summary): Übersichtsstatistiken für alle überwachten Server
+3. Servers Overview: [Cards layout](dashboard.md#cards-layout) oder [table layout](dashboard.md#table-layout) zeigt den neuesten Status aller Sicherungen
+4. [Überfälligkeitsdetails](dashboard.md#overdue-details): Visuelle Warnungen für überfällige Sicherungen mit detaillierten Informationen beim Hover
+5. [Verfügbare Sicherungsversionen](dashboard.md#available-backup-versions): Klicken Sie auf das blaue Symbol, um die am Ziel verfügbaren Sicherungsversionen anzuzeigen
+6. [Backup Metrics](backup-metrics.md): Interaktive Diagramme, die die Sicherungsleistung im Zeitverlauf anzeigen
+7. [Server Details](server-details.md): Umfassende Liste der aufgezeichneten Sicherungen für bestimmte Server, einschließlich detaillierter Statistiken
+8. [Sicherungsdetails](server-details.md#backup-details): Ausführliche Informationen für einzelne Sicherungen, einschließlich Ausführungsprotokolle, Warnungen und Fehler
 
-## Application Toolbar {#application-toolbar}
+## Anwendungssymbolleiste {#application-toolbar}
 
-The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
+Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und Einstellungen, die für einen effizienten Arbeitsablauf organisiert sind.
 
 ![application toolbar](/img/duplistatus_toolbar.png)
 
-| Button                                                                                                                                                               | Description                                                                                                                                                                                                                                                                     |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Refresh screen                                                                                    | Execute an immediate manual screen refresh of all data                                                                                                                                                                                                                          |
-| <IconButton label="Auto-refresh" />                                                                                                                                  | Enable or disable automatic refresh functionality. Configure in [Display Settings](settings/display-settings.md) <br/> _Right-click_ to open Display Settings page                                                                                              |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Open NTFY                                                                                            | Access the ntfy.sh website for your configured notification topic. <br/> _Right-click_ to show a QR code to configure your device to receive notifications from duplistatus.                                                    |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab                                                                                                                                |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)                                   | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers                                                                                                                                                            |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server, and notification templates                                                                                                                                                                                                    |
-| <IconButton icon="lucide:user" label="username" />                                                                                                                   | Show the connected user, user type (`Admin`, `User`), click for user menu. See more in [User Management](settings/user-management-settings.md)                                                                                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Opens the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened. |
+| Schaltfläche                                                                                                                                     | Beschreibung                                                                                                                                                                  |
+|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Aktualisieren                                                                                    | Führen Sie eine sofortige manuelle Aktualisierung aller Daten durch                                                                                                                       |
+| <IconButton label="Auto-refresh" />                                                                                                              | Aktivieren oder Deaktivieren der automatischen Aktualisierungsfunktion. Konfigurieren Sie in [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_ zum Öffnen der Seite „Anzeigeeinstellungen"           |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen                                                                                            | Greifen Sie auf die ntfy.sh-Website für Ihr konfiguriertes Benachrichtigungsthema zu. <br/> _Rechtsklick_ zum Anzeigen eines QR-Codes zum Konfigurieren Ihres Geräts zum Empfangen von Benachrichtigungen von duplistatus. |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)       | Öffnen Sie die Weboberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_ zum Öffnen der Duplicati-Benutzeroberfläche (`/ngax`) in einem neuen Tab                                                                                                                           |
+| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md)                                   | Verbinden Sie sich mit Duplicati-Servern und rufen Sie Sicherungsprotokolle ab <br/> _Rechtsklick_ zum Sammeln von Protokollen für alle konfigurierten Server                                                         |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md) | Konfigurieren Sie Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen                                                                                                 |
+| <IconButton icon="lucide:user" label="username" />                                                                                               | Zeigen Sie den verbundenen Benutzer, Benutzertyp (`Admin`, `User`) an, klicken Sie auf das Benutzermenü. Weitere Informationen finden Sie unter [Benutzerverwaltung](settings/user-management-settings.md)                               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch                                                                    | Öffnet das [Benutzerhandbuch](overview.md) im Abschnitt, der für die Seite relevant ist, die Sie gerade anzeigen. Der Tooltip zeigt „Hilfe für [Seitenname]" an, um anzugeben, welche Dokumentation geöffnet wird.                                                                           |
 
-### User Menu {#user-menu}
+### Benutzermenü {#user-menu}
 
-Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
+Durch Klicken auf die Benutzerschaltfläche wird ein Dropdown-Menü mit benutzerspezifischen Optionen geöffnet. Die Menüoptionen unterscheiden sich je nachdem, ob Sie als Administrator oder als normaler Benutzer angemeldet sind.
 
 <table>
-  <tbody><tr>
+  <tr>
     <th>Administrator</th>
-    <th>Regular User</th>
+    <th>Normaler Benutzer</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="Benutzermenü - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="Benutzermenü - Benutzer" /></td>
   </tr>
-</tbody></table>
+</table>
 
-## Essential Configuration {#essential-configuration}
+## Wesentliche Konfiguration {#essential-configuration}
 
-1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
-2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
-3. Configure server settings – set up server aliases and notes in [Settings → Server](settings/server-settings.md) to make your dashboard more informative.
-4. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](settings/ntfy-settings.md).
-5. Configure email settings – set up email notifications in [Settings → Email](settings/email-settings.md).
-6. Configure backup notifications – set up per-backup or per-server notifications in [Settings → Backup Notifications](settings/backup-notifications-settings.md).
+1. Konfigurieren Sie Ihre [Duplicati-Server](../installation/duplicati-server-configuration.md) so, dass sie Backup-Protokollnachrichten an duplistatus senden (erforderlich).
+2. Sammeln Sie erste Backup-Protokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Überwachungsintervalle für überfällige Sicherungen basierend auf der Konfiguration jedes Servers.
+3. Konfigurieren Sie Server-Einstellungen – richten Sie Server-Aliase und Notizen unter [Einstellungen → Server](settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
+4. Konfigurieren Sie NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY unter [Einstellungen → NTFY](settings/ntfy-settings.md) ein.
+5. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen unter [Einstellungen → E-Mail](settings/email-settings.md) ein.
+6. Konfigurieren Sie Backup-Benachrichtigungen – richten Sie Benachrichtigungen pro Sicherung oder pro Server unter [Einstellungen → Backup-Benachrichtigungen](settings/backup-notifications-settings.md) ein.
 
 <br/>
 
-:::info[IMPORTANT]
-Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](../installation/duplicati-server-configuration.md) section.
+:::info[Wichtig]
+Denken Sie daran, die Duplicati-Server so zu konfigurieren, dass sie Sicherungsprotokolle an duplistatus senden, wie im Abschnitt [Duplicati-Konfiguration](../installation/duplicati-server-configuration.md) beschrieben.
 :::
 
 <br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+Alle Produktnamen, Marken und eingetragenen Marken sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
 :::

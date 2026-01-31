@@ -1,75 +1,77 @@
+---
+translation_last_updated: '2026-01-31T00:51:30.885Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: d2b8e17a5e66bb07
+translation_language: pt-BR
+source_file_path: user-guide/overdue-monitoring.md
+---
 import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
-# Overdue Monitoring {#overdue-monitoring}
+# Monitoramento de backups atrasados {#overdue-monitoring}
 
-The overdue monitoring feature allows you to track and alert on backups that are overdue. The notifications can be via NTFY or Email.
+O recurso de Monitoramento de backups atrasados permite que você acompanhe e receba alertas sobre backups que estão atrasados. As Notificações podem ser via NTFY ou E-mail.
 
-In the user interface, the overdue backups are displayed with a warning icon . Hovering over the icon displays the details of the overdue backup, including the last backup time, the expected backup time, the tolerance period and the expected next backup time.
+Na interface do usuário, os backups atrasados são exibidos com um ícone de aviso . Ao passar o mouse sobre o ícone, são exibidos os detalhes do backup atrasado, incluindo a última hora do backup, a hora esperada do backup, o período de tolerância e a hora esperada do próximo backup.
 
-## Overdue Check Process {#overdue-check-process}
+## Processo de Verificação de Atraso {#overdue-check-process}
 
-**How it works:**
+**Como funciona:**
 
-| **Step** | **Value**                  | **Description**                                                                      | **Example**        |
-| :------: | :------------------------- | :----------------------------------------------------------------------------------- | :----------------- |
-|     1    | **Last Backup**            | The timestamp of the last successful backup.                         | `2024-01-01 08:00` |
-|     2    | **Expected Interval**      | The configured backup frequency.                                     | `1 day`            |
-|     3    | **Calculated Next Backup** | `Last Backup` + `Expected Interval`                                                  | `2024-01-02 08:00` |
-|     4    | **Tolerance**              | The configured grace period (extra time allowed). | `1 hour`           |
-|     5    | **Expected Next Backup**   | `Calculated Next Backup` + `Tolerance`                                               | `2024-01-02 09:00` |
+| **Etapa** | **Valor**                  | **Descrição**                                   | **Exemplo**        |
+|:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
+|    1     | **Último backup**            | A data e hora do último backup bem-sucedido.      | `2024-01-01 08:00` |
+|    2     | **Intervalo esperado**      | A frequência de backup configurada.                  | `1 day`            |
+|    3     | **Próximo backup calculado** | `Último backup` + `Intervalo esperado`               | `2024-01-02 08:00` |
+|    4     | **Tolerância**              | O período de carência configurado (tempo extra permitido). | `1 hour`           |
+|    5     | **Próximo backup esperado**   | `Próximo backup calculado` + `Tolerância`            | `2024-01-02 09:00` |
 
-A backup is considered **overdue** if the current time is later than the `Expected Next Backup` time.
+Um backup é considerado **atrasado** se a hora atual é posterior à hora `Expected Next Backup`.
 
 <ZoomMermaid>
+
 ```mermaid
 gantt
     title Backup Schedule Timeline with Tolerance
     dateFormat  YYYY-MM-DD HH:mm
     axisFormat %m/%d %H:%M
 
-    ````
-    ```
     Last Backup Received    :done, last-backup, 2024-01-01 08:00, 0.5h
-    
+
     Interval                :active, interval, 2024-01-01 08:00, 24h
     Calculated Next Backup                :milestone, expected, 2024-01-02 08:00, 0h
     Tolerance Period        :active, tolerance period, 2024-01-02 08:00, 1h
-    
+
     Expected Next Backup               :milestone, adjusted, 2024-01-02 09:00, 0h
-    
+
     Check 1 : milestone, deadline, 2024-01-01 21:00, 0h
     Check 2 : milestone, deadline, 2024-01-02 08:30, 0h
     Check 3 : milestone, deadline, 2024-01-02 10:00, 0h
-    ```
-    ````
 
 ```
+
 </ZoomMermaid>
 
-**Examples based on the timeline above:**
+**Exemplos baseados na linha do tempo acima:**
 
-- At `2024-01-01 21:00` (🔹Check 1), the backup is **on time**.
-- At `2024-01-02 08:30` (🔹Check 2), the backup is **on time**, as it is still within the tolerance period.
-- At `2024-01-02 10:00` (🔹Check 3), the backup is **overdue**, as this is after the `Expected Next Backup` time.
+- Em `2024-01-01 21:00` (🔹Verificação 1), o backup está **no prazo**.
+- Em `2024-01-02 08:30` (🔹Verificação 2), o backup está **no prazo**, pois ainda está dentro do período de tolerância.
+- Em `2024-01-02 10:00` (🔹Verificação 3), o backup está **atrasado**, pois isso é após o tempo de `Próximo Backup Esperado`.
 
-## Periodic Checks {#periodic-checks}
+## Verificações Periódicas {#periodic-checks}
 
-**duplistatus** performs periodic checks for overdue backups at configurable intervals. The default interval is 20 minutes, but you can configure it in [Settings → Overdue Monitoring](settings/overdue-settings.md).
+**duplistatus** realiza verificações periódicas de backups atrasados em intervalos configuráveis. O intervalo padrão é 20 minutos, mas você pode configurá-lo em [Configurações → Monitoramento de backups atrasados](settings/overdue-settings.md).
 
-## Automatic Configuration {#automatic-configuration}
+## Configuração Automática {#automatic-configuration}
 
-When you collect backup logs from a Duplicati server, **duplistatus** automatically:
+Quando você coleta logs de backup de um servidor Duplicati, **duplistatus** automaticamente:
 
-- Extracts the backup schedule from the Duplicati configuration
-- Updates the overdue monitoring intervals to match exactly
-- Synchronises allowed weekdays and scheduled times
-- Preserves your notification preferences
+- Extrai o agendamento de backup da Configuração do Duplicati
+- Atualiza os intervalos de monitoramento de backups atrasados para corresponder exatamente
+- Sincroniza os dias da semana permitidos e os horários agendados
+- Preserva suas preferências de notificação
 
 :::tip
-For best results, collect backup logs after changing backup job intervals in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+Para melhores resultados, colete logs de backup após alterar intervalos de trabalho de backup no seu Servidor Duplicati. Isso garante que **duplistatus** permaneça sincronizado com sua configuração atual.
 :::
 
-Review the [Overdue Settings](settings/overdue-settings.md) section for detailed configuration options.
-
-```
-
+Revise a seção [Configurações de Atraso](settings/overdue-settings.md) para opções de configuração detalhadas.

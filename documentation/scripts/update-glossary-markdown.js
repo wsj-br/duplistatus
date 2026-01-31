@@ -19,29 +19,11 @@ function updateGlossaryMarkdown(contribFile, glossaryTable) {
   
   const newGlossarySection = `## Glossary
 
-> **Note**: This glossary is automatically generated from intlayer dictionaries to ensure consistency between the application and documentation translations. The glossary is also available in Crowdin for translators.
+> **Note**: This glossary is automatically generated from intlayer dictionaries to ensure consistency between the application and documentation translations.
 
-> **To regenerate**: Run \`./scripts/generate-glossary.sh\` from the \`documentation/\` directory. This will update both the CSV file for Crowdin import and this markdown table.
+> **To regenerate**: Run \`./scripts/generate-glossary.sh\` from the \`documentation/\` directory. This will update the glossary CSV file and this markdown table.
 
 ${glossaryTable}
-
-### Importing to Crowdin
-
-The glossary is available as \`glossary.csv\` in the documentation directory. To import it into Crowdin:
-
-1. **Via Web UI**:
-   - Go to your Crowdin project
-   - Navigate to **Glossary** → **Import**
-   - Upload \`glossary.csv\`
-   - Map columns if needed (Crowdin should auto-detect)
-
-2. **Via CLI** (if supported):
-   \`\`\`bash
-   cd documentation
-   crowdin glossary upload --file glossary.csv
-   \`\`\`
-
-Once imported, Crowdin will use this glossary to suggest consistent translations for terminology across all documentation.
 
 `;
   

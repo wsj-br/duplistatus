@@ -1,3 +1,5 @@
+
+
 # API Overview {#api-overview}
 
 This document describes all available API endpoints for the duplistatus application. The API follows RESTful principles and provides comprehensive backup monitoring, notification management, and system administration capabilities.
@@ -7,7 +9,6 @@ This document describes all available API endpoints for the duplistatus applicat
 For a quick reference of all endpoints, see the [API Endpoint List](api-endpoint-list).
 
 The API is organised into logical groups:
-
 - **[External APIs](external-apis)**: Summary data, latest backup status, and backup data uploads from Duplicati
 - **[Core Operations](core-operations)**: Dashboard data, server management, and detailed backup information
 - **[Chart Data](chart-data-apis)**: Aggregated and server-specific time-series data for visualisation and analytics
@@ -40,7 +41,6 @@ All endpoints follow a consistent error handling pattern:
 - **503 Service Unavailable**: Health check failures, database connection issues, or cron service unavailable
 
 Error responses include:
-
 - `error`: Human-readable error message
 - `message`: Technical error details (in development mode)
 - `stack`: Error stack trace (in development mode)
@@ -49,29 +49,25 @@ Error responses include:
 ## Data Type Notes {#data-type-notes}
 
 ### Message Arrays {#message-arrays}
-
 The `messages_array`, `warnings_array`, and `errors_array` fields are stored as JSON strings in the database and returned as arrays in the API responses. These contain the actual log messages, warnings, and errors from Duplicati backup operations.
 
 ### Available Backups {#available-backups}
-
 The `available_backups` field contains an array of backup version timestamps (in ISO format) that are available for restoration. This is extracted from the backup log messages.
 
 ### Duration Fields {#duration-fields}
-
 - `duration`: Human-readable format (e.g., "00:38:31")
 - `duration_seconds`: Raw duration in seconds
 - `durationInMinutes`: Duration converted to minutes for charting purposes
 
 ### File Size Fields {#file-size-fields}
-
 All file size fields are returned in bytes as numbers, not formatted strings. The frontend is responsible for converting these to human-readable formats (KB, MB, GB, etc.).
 
 <br/>
 
 :::caution
-Don't expose the **duplistatus** server to the public internet. Use it in a secure network
+ Don't expose the **duplistatus** server to the public internet. Use it in a secure network 
 (e.g., local LAN protected by a firewall).
 
 Exposing the **duplistatus** interface to the public
-internet without proper security measures could lead to unauthorized access.
+ internet without proper security measures could lead to unauthorized access.
 :::

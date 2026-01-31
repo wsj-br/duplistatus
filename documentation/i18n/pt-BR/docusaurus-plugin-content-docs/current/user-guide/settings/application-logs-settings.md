@@ -1,36 +1,41 @@
-# Application Logs {#application-logs}
+---
+translation_last_updated: '2026-01-31T00:51:30.925Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: c28f44d7440e4fdb
+translation_language: pt-BR
+source_file_path: user-guide/settings/application-logs-settings.md
+---
+# Logs da aplicação {#application-logs}
 
-The Application Logs viewer lets administrators monitor all application logs in one place, with filtering, export, and real-time updates directly from the web interface.
+O Visualizador de logs do aplicativo permite que administradores monitorem todos os logs da aplicação em um único lugar, com filtragem, exportação e atualizações em tempo real diretamente da interface web.
 
 ![Application Log Viewer](/assets/screen-settings-application-logs.png)
 
 <br/>
 
-## Available Actions {#available-actions}
+## Ações Disponíveis {#available-actions}
 
-| Button                                                      | Description                                                                                                                                                                                                                                                                                                   |
-| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| <IconButton icon="lucide:refresh-cw" label="Refresh" />     | Manually reload logs from the selected file. Shows a loading spinner while refreshing and resets tracking for new line detection.                                                                                                                                             |
-| <IconButton icon="lucide:copy" label="Copy to clipboard" /> | Copy all filtered log lines to your clipboard. Respects the current search filter. Useful for quick sharing or pasting into other tools.                                                                                                                      |
-| <IconButton icon="lucide:download" label="Export" />        | Download logs as a text file. Exports from the currently selected file version and applies the current search filter (if any). Filename format: `duplistatus-logs-YYYY-MM-DD.txt` (date in ISO format). |
-| <IconButton icon="lucide:arrow-down-from-line" />           | Quickly jump to the beginning of the displayed logs. Useful when auto-scroll is disabled or when navigating through long log files.                                                                                                                                           |
-| <IconButton icon="lucide:arrow-down-to-line" />             | Quickly jump to the end of the displayed logs. Useful when auto-scroll is disabled or when navigating through long log files.                                                                                                                                                 |
-
-<br/>
-
-## Controls and Filters {#controls-and-filters}
-
-| Control           | Description                                                                                                                                                                                                         |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **File Version**  | Select which log file to view: **Current** (active file) or rotated files (`.1`, `.2`, etc., where higher numbers are older). |
-| **Lines to Show** | Display the most recent **100**, **500**, **1000** (default), **5000**, or **10000** lines from the selected file.                                                               |
-| **Auto-scroll**   | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the `Current` file version.      |
-| **Search**        | Filter log lines by text (case-insensitive). Filters apply to the currently displayed lines.                                                                     |
+| Botão                                                               | Descrição                                                                                         |
+|:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:refresh-cw" label="Atualizar" />            | Recarregue manualmente os logs do arquivo selecionado. Exibe um indicador de carregamento durante a atualização e redefine o rastreamento para detecção de novas linhas. |
+| <IconButton icon="lucide:copy" label="Copiar para área de transferência" />         | Copie todas as linhas de log filtradas para sua área de transferência. Respeita o filtro de pesquisa atual. Útil para compartilhamento rápido ou colagem em outras ferramentas. |
+| <IconButton icon="lucide:download" label="Exportar" />               | Baixe os logs como um arquivo de texto. Exporta da versão de arquivo atualmente selecionada e aplica o filtro de pesquisa atual (se houver). Formato de nome de arquivo: `duplistatus-logs-YYYY-MM-DD.txt` (data em formato ISO). |
+| <IconButton icon="lucide:arrow-down-from-line" />                   | Salte rapidamente para o início dos logs exibidos. Útil quando a rolagem automática está desabilitada ou ao navegar por arquivos de log longos. |
+| <IconButton icon="lucide:arrow-down-to-line" />                    | Salte rapidamente para o final dos logs exibidos. Útil quando a rolagem automática está desabilitada ou ao navegar por arquivos de log longos. |
 
 <br/>
 
-The log display header shows the filtered line count, total lines, file size, and last modified timestamp.
+## Controles e Filtros {#controls-and-filters}
+
+| Controle | Descrição |
+|:--------|:-----------|
+| **Versão do arquivo** | Selecione qual arquivo de log visualizar: **Atual** (arquivo ativo) ou arquivos rotacionados (`.1`, `.2`, etc., onde números maiores são mais antigos). |
+| **Linhas para mostrar** | Exiba as **100**, **500**, **1000** (padrão), **5000** ou **10000** linhas mais recentes do arquivo selecionado. |
+| **Rolagem automática** | Quando habilitado (padrão para arquivo atual), rola automaticamente para novas entradas de log e atualiza a cada 2 segundos. Funciona apenas para a versão de arquivo `Atual`. |
+| **Pesquisar** | Filtre linhas de log por texto (sem distinção de maiúsculas e minúsculas). Os filtros se aplicam às linhas atualmente exibidas. |
 
 <br/>
 
+O cabeçalho de exibição do log mostra a contagem de linhas filtradas, total de linhas, tamanho dos arquivos e data e hora da última modificação.
 
+<br/>

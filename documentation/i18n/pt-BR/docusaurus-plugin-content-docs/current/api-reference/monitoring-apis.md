@@ -1,13 +1,11 @@
+
+
 # Monitoring & Health {#monitoring-health}
 
 ## Health Check - `/api/health` {#health-check-apihealth}
-
 - **Endpoint**: `/api/health`
-
 - **Method**: GET
-
 - **Description**: Checks the health status of the application and database.
-
 - **Response** (healthy):
   ```json
   {
@@ -61,8 +59,7 @@
     "timestamp": "2024-03-20T10:00:00Z"
   }
   ```
-
-- **Notes**:
+- **Notes**: 
   - Returns 200 status for healthy systems
   - Returns 503 status for unhealthy systems or prepared statement failures
   - Includes `preparedStatementsError` field when prepared statements fail

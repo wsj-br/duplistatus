@@ -11,7 +11,7 @@ Recover administrator access to **duplistatus** when you've lost your password o
 The Dockerfile includes the `scripts` directory and a convenient shell wrapper.
 
 ```bash
-# Execute inside the running container using the wrapper {#execute-inside-the-running-container-using-the-wrapper}
+# Execute inside the running container using the wrapper
 docker exec -it duplistatus /app/admin-recovery <username> <new-password>
 ```
 

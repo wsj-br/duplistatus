@@ -84,7 +84,7 @@ I downloaded the code from GitHub (using the `git clone` command) to a local fol
 
 I set up Cursor to access the code folder from my Windows machine using an SSH connection.
 
-I copied a sample of the JSON sent by Duplicati into a file called [`database_values.json`](../api-reference/database_values.json), clearing some unwanted fields.
+I copied a sample of the JSON sent by Duplicati into a file (see the [sample backup report](../api-reference/database-values) document), clearing some unwanted fields.
 
 ## Implementation {#implementation}
 
@@ -96,7 +96,7 @@ I created a detailed prompt using Cursor Chat (`Manual` mode, `Auto` model):
 
 > improve this text as a prompt to cursor ai tool to generate the implementation of an applicaiton prototype:
 > 
-> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyse the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilise SQLite3. Generate the database and populate it using the structure and content found in the @database_values.json file, ensuring every field from the JSON is fully integrated and persisted.
+> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyse the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilise SQLite3. Generate the database and populate it using the structure and content found in the [sample backup report](../api-reference/database-values) document, ensuring every field from the JSON is fully integrated and persisted.
 
 The AI generated the following prompt:
 
@@ -111,7 +111,7 @@ The AI generated the following prompt:
 >   - Client components for interactive elements
 >
 >2. Database Design:
->   - Analyse database_values.json to create an optimal SQLite schema
+>   - Analyse the sample backup report document to create an optimal SQLite schema
 >   - Design tables to efficiently store all backup data
 >   - Include indexes for common queries
 >   - Implement data validation and type safety

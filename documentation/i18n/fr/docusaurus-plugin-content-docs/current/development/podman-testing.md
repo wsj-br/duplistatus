@@ -1,104 +1,110 @@
-# Podman Testing {#podman-testing}
+---
+translation_last_updated: '2026-01-31T00:51:19.902Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 841b30d8ee97e362
+translation_language: fr
+source_file_path: development/podman-testing.md
+---
+# Test Podman {#podman-testing}
 
-Copy and execute the scripts located at `scripts/podman_testing` on the Podman test server.
+Copiez et exécutez les scripts situés à `scripts/podman_testing` sur le Serveur de test Podman.
 
-## Initial Setup and Management {#initial-setup-and-management}
+## Configuration initiale et gestion {#initial-setup-and-management}
 
-1. `copy.docker.duplistatus.local`: Copies the Docker image from the local Docker daemon to Podman (for local testing).
-2. `copy.docker.duplistatus.remote`: Copies the Docker image from a remote development server to Podman (requires SSH access).
-   - Create the image on the development server using: `docker build . -t wsj-br/duplistatus:devel`
-3. `start.duplistatus`: Starts the container in rootless mode.
-4. `pod.testing`: Tests the container inside a Podman pod (with root privileges).
-5. `stop.duplistatus`: Stops the pod and removes the container.
-6. `clean.duplistatus`: Stops containers, removes pods, and cleans up old images.
+1. `copy.docker.duplistatus.local` : Copie l'image Docker du démon Docker local vers Podman (pour les tests locaux).
+2. `copy.docker.duplistatus.remote` : Copie l'image Docker d'un Serveur de développement distant vers Podman (nécessite un accès SSH).
+   - Créez l'image sur le Serveur de développement en utilisant : `docker build . -t wsj-br/duplistatus:devel`
+3. `start.duplistatus` : Démarre le conteneur en mode rootless.
+4. `pod.testing` : Teste le conteneur à l'intérieur d'un pod Podman (avec les privilèges root).
+5. `stop.duplistatus` : Arrête le pod et supprime le conteneur.
+6. `clean.duplistatus` : Arrête les conteneurs, supprime les pods et nettoie les anciennes images.
 
-## DNS Configuration {#dns-configuration}
+## Configuration DNS {#dns-configuration}
 
-The scripts automatically detect and configure DNS settings from the host system:
+Les scripts détectent et configurent automatiquement les paramètres DNS à partir du système hôte :
 
-- **Automatic Detection**: Uses `resolvectl status` (systemd-resolved) to extract DNS servers and search domains
-- **Fallback Support**: Falls back to parsing `/etc/resolv.conf` on non-systemd systems
-- **Smart Filtering**: Automatically filters out localhost addresses and IPv6 nameservers
-- **Works with**:
+- **Détection Automatique** : Utilise `resolvectl status` (systemd-resolved) pour extraire les serveurs DNS et les domaines de recherche
+- **Support de Secours** : Bascule vers l'analyse de `/etc/resolv.conf` sur les systèmes non-systemd
+- **Filtrage Intelligent** : Filtre automatiquement les adresses localhost et les serveurs de noms IPv6
+- **Fonctionne avec** :
   - Tailscale MagicDNS (100.100.100.100)
-  - Corporate DNS servers
-  - Standard network configurations
-  - Custom DNS setups
+  - Les serveurs DNS d'entreprise
+  - Les configurations réseau standard
+  - Les configurations DNS personnalisées
 
-No manual DNS configuration is needed - the scripts handle it automatically!
+Non, aucune configuration DNS manuelle n'est nécessaire - les scripts la gèrent automatiquement !
 
-## Monitoring and Health Checks {#monitoring-and-health-checks}
+## Surveillance et vérifications de santé {#monitoring-and-health-checks}
 
-- `check.duplistatus`: Checks the logs, connectivity, and application health.
+- `check.duplistatus`: Vérifie les journaux, la connectivité et l'état de santé de l'application.
 
-## Debugging Commands {#debugging-commands}
+## Commandes de débogage {#debugging-commands}
 
-- `logs.duplistatus`: Shows the logs of the pod.
-- `exec.shell.duplistatus`: Opens a shell in the container.
-- `restart.duplistatus`: Stops the pod, removes the container, copies the image, creates the container, and starts the pod.
+- `logs.duplistatus`: Affiche les journaux de la capsule.
+- `exec.shell.duplistatus`: Ouvre un shell dans le conteneur.
+- `restart.duplistatus`: Arrête la capsule, supprime le conteneur, copie l'image, crée le conteneur et démarre la capsule.
 
-## Usage Workflow {#usage-workflow}
+## Flux de travail d'utilisation {#usage-workflow}
 
-### Development Server {#development-server}
+### Serveur de développement {#development-server}
 
-Create the Docker image on the development server:
+Créer l'image Docker sur le serveur de développement :
 
 ```bash
 docker build . -t wsj-br/duplistatus:devel
 ```
 
-### Podman Server {#podman-server}
+### Serveur Podman {#podman-server}
 
-1. Transfer the Docker image:
-   - Use `./copy.docker.duplistatus.local` if Docker and Podman are on the same machine
-   - Use `./copy.docker.duplistatus.remote` if copying from a remote development server (requires `.env` file with `REMOTE_USER` and `REMOTE_HOST`)
-2. Start the container with `./start.duplistatus` (standalone, rootless)
-   - Or use `./pod.testing` to test in pod mode (with root)
-3. Monitor with `./check.duplistatus` and `./logs.duplistatus`
-4. Stop with `./stop.duplistatus` when done
-5. Use `./restart.duplistatus` for a complete restart cycle (stop, copy image, start)
-   - **Note**: This script currently references `copy.docker.duplistatus` which should be replaced with either `.local` or `.remote` variant
-6. Use `./clean.duplistatus` to remove containers, pods, and old images
+1. Transférer l'image Docker :
+   - Utilisez `./copy.docker.duplistatus.local` si Docker et Podman se trouvent sur la même machine
+   - Utilisez `./copy.docker.duplistatus.remote` si vous copiez à partir d'un serveur de développement distant (nécessite un fichier `.env` avec `REMOTE_USER` et `REMOTE_HOST`)
+2. Démarrer le conteneur avec `./start.duplistatus` (autonome, sans privilèges root)
+   - Ou utilisez `./pod.testing` pour tester en mode pod (avec root)
+3. Surveiller avec `./check.duplistatus` et `./logs.duplistatus`
+4. Arrêter avec `./stop.duplistatus` une fois terminé
+5. Utilisez `./restart.duplistatus` pour un cycle de redémarrage complet (arrêt, copie de l'image, démarrage)
+   - **Note** : Ce script référence actuellement `copy.docker.duplistatus` qui devrait être remplacé par la variante `.local` ou `.remote`
+6. Utilisez `./clean.duplistatus` pour supprimer les conteneurs, les pods et les anciennes images
 
-# Testing the Application {#testing-the-application}
+# Test de l'application {#testing-the-application}
 
-If you are running the Podman server on the same machine, use `http://localhost:9666`.
+Si vous exécutez le serveur Podman sur la même machine, utilisez `http://localhost:9666`.
 
-If you are on another server, get the URL with:
+Si vous êtes sur un autre serveur, obtenez l'URL avec :
 
 ```bash
 echo "http://$(hostname -I | awk '{print $1}'):9666"
 ```
 
-## Important Notes {#important-notes}
+## Notes Importantes {#important-notes}
 
-### Podman Pod Networking {#podman-pod-networking}
+### Mise en réseau des pods Podman {#podman-pod-networking}
 
-When running in Podman pods, the application requires:
+Quand l'application s'exécute dans des pods Podman, elle nécessite :
+- Une configuration DNS explicite (gérée automatiquement par le script `pod.testing`)
+- Une liaison de port à toutes les interfaces (`0.0.0.0:9666`)
 
-- Explicit DNS configuration (automatically handled by `pod.testing` script)
-- Port binding to all interfaces (`0.0.0.0:9666`)
+Les scripts gèrent automatiquement ces exigences - aucune configuration manuelle n'est nécessaire.
 
-The scripts handle these requirements automatically - no manual configuration needed.
+### Mode sans root vs Mode root {#rootless-vs-root-mode}
 
-### Rootless vs Root Mode {#rootless-vs-root-mode}
+- **Mode autonome** (`start.duplistatus`) : S'exécute sans privilèges root avec `--userns=keep-id`
+- **Mode pod** (`pod.testing`) : S'exécute en tant que root à l'intérieur du pod à des fins de test
 
-- **Standalone mode** (`start.duplistatus`): Runs rootless with `--userns=keep-id`
-- **Pod mode** (`pod.testing`): Runs as root inside the pod for testing purposes
+Les deux modes fonctionnent correctement avec la détection DNS automatique.
 
-Both modes work correctly with the automatic DNS detection.
+## Configuration de l'environnement {#environment-configuration}
 
-## Environment Configuration {#environment-configuration}
+Les deux `copy.docker.duplistatus.local` et `copy.docker.duplistatus.remote` nécessitent un fichier `.env` dans le répertoire `scripts/podman_testing` :
 
-Both `copy.docker.duplistatus.local` and `copy.docker.duplistatus.remote` require a `.env` file in the `scripts/podman_testing` directory:
-
-**For local copying** (`copy.docker.duplistatus.local`):
+**Pour la copie locale** (`copy.docker.duplistatus.local`) :
 
 ```
 IMAGE=wsj-br/duplistatus:devel
 ```
 
-**For remote copying** (`copy.docker.duplistatus.remote`):
+**Pour la copie à distance** (`copy.docker.duplistatus.remote`) :
 
 ```
 IMAGE=wsj-br/duplistatus:devel
@@ -106,10 +112,10 @@ REMOTE_USER=your_username
 REMOTE_HOST=your_hostname
 ```
 
-The `start.duplistatus` script requires a `.env` file with at least the `IMAGE` variable:
+Le script `start.duplistatus` nécessite un fichier `.env` contenant au minimum la variable `IMAGE` :
 
 ```
 IMAGE=wsj-br/duplistatus:devel
 ```
 
-**Note**: The script's error message mentions `REMOTE_USER` and `REMOTE_HOST`, but these are not actually used by `start.duplistatus`—only `IMAGE` is required.
+**Note** : Le message d'erreur du script mentionne `REMOTE_USER` et `REMOTE_HOST`, mais ceux-ci ne sont pas réellement utilisés par `start.duplistatus`—seul `IMAGE` est requis.

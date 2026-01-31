@@ -1,184 +1,169 @@
-# How I Build this Application using AI tools {#how-i-build-this-application-using-ai-tools}
+---
+translation_last_updated: '2026-01-31T00:51:29.324Z'
+source_file_mtime: '2026-01-31T00:39:06.593Z'
+source_file_hash: 6f3eb23dd0d60ee8
+translation_language: pt-BR
+source_file_path: development/how-i-build-with-ai.md
+---
+# Como Construí esta Aplicação Usando Ferramentas de IA {#how-i-build-this-application-using-ai-tools}
 
-# Motivation {#motivation}
+# Motivação {#motivation}
 
-I started using Duplicati as a backup tool for my home servers. I tried the official [Duplicati dashboard](https://app.duplicati.com/) and [Duplicati Monitoring](https://www.duplicati-monitoring.com/), but I had two main requirements: (1) self-hosted; and (2) an API exposed for integration with [Homepage](https://gethomepage.dev/), as I use it for my home lab's homepage.
+Comecei a usar Duplicati como ferramenta de backup para meus servidores domésticos. Testei o [Painel oficial do Duplicati](https://app.duplicati.com/) e [Duplicati Monitoring](https://www.duplicati-monitoring.com/), mas tinha dois requisitos principais: (1) auto-hospedado; e (2) uma API exposta para integração com [Homepage](https://gethomepage.dev/), pois a utilizo para a página inicial do meu laboratório doméstico.
 
-I also tried connecting directly to each Duplicati server on the network, but the authentication method was not compatible with Homepage (or I was not able to configure it properly).
+Também tentei conectar diretamente a cada servidor Duplicati na rede, mas o método de autenticação não era compatível com Homepage (ou não consegui configurá-lo adequadamente).
 
-Since I was also experimenting with AI code tools, I decided to try using AI to build this tool. Here is the process I used...
+Como também estava experimentando com ferramentas de código com IA, decidi tentar usar IA para construir esta ferramenta. Aqui está o processo que usei...
 
-# Tools used {#tools-used}
+# Ferramentas utilizadas {#tools-used}
 
-1. For the UI: [Google's Firebase Studio](https://firebase.studio/)
-2. For the implementation: Cursor (https://www.cursor.com/)
+1. Para a interface: [Google's Firebase Studio](https://firebase.studio/)
+2. Para a implementação: Cursor (https://www.cursor.com/)
 
 :::note
-I used Firebase for the UI, but you can also use [v0.app](https://v0.app/) or any other tool to generate the prototype. I used Cursor to generate the implementation, but you can use other tools, like VS Code/Copilot, Windsurf, ...
+Usei Firebase para a interface de usuário, mas você também pode usar [v0.app](https://v0.app/) ou qualquer outra ferramenta para gerar o protótipo. Usei Cursor para gerar a implementação, mas você pode usar outras ferramentas, como VS Code/Copilot, Windsurf, ...
 :::
 
-# UI {#ui}
+# IU {#ui}
 
-I created a new project in [Firebase Studio](https://studio.firebase.google.com/) and used this prompt in the "Prototype an app with AI" feature:
+Criei um novo projeto no [Firebase Studio](https://studio.firebase.google.com/) e usei este prompt no recurso "Prototype an app with AI":
 
-> A web dashboard application using tailwind/react to consolidate in a sqllite3 database the backup result sent by the duplicati backup solution using the option --send-http-url (json format) of several machines, keep tracking of the status of the backup, size, upload sizes.
->
-> The dashboard first page should have a table with the last backup of each machine in the first page, including the machine name, number of backups stored in the database, the last backup status, duration (hh:mm:ss), number of warnings and errors.
->
-> When clicking a machine line, show a detail page of the select machine with a list of the stored backups (paginated), including the backup name, date and time of the backup, including how long it was ago, the status, number of warnings and errors, number of files, the size of the files, size uploaded and the total size of the storage. Also include in the detail page a chart using Tremor with the evolution of the fields: uploaded size; duration in minutes, number of files examined, size of the files examined. The chart should plot one field at time, with a dropbox to select the desired field to plot. Also the chart has to present all the backups stored in the database, not only the ones showing in the paginated table.
->
-> The application has to expose a api endpoint to receive the post from the duplicati server and other api endpoint to retrieve all the details of the last backup of a machine as a json.
->
-> The design should be modern, responsive and include icons and other visual aids to make it easy to read. The code has to be clean, concise and easy to maintain. Use modern tools like pnpm to deal with dependencies.
->
-> The application has to have a selectable dark and light theme.
->
-> The database should store these fields received by the duplicati json:
+> Uma aplicação web de painel usando tailwind/react para consolidar em um banco de dados sqllite3 os resultados de backup enviados pela solução de backup duplicati usando a opção --send-http-url (formato json) de várias máquinas, mantendo o rastreamento do status do backup, tamanho, tamanhos enviados.
+> 
+> A primeira página do painel deve ter uma tabela com o último backup de cada máquina, incluindo o nome da máquina, número de backups armazenados no banco de dados, o status do último backup, duração (hh:mm:ss), número de avisos e erros.
+> 
+> Ao clicar em uma linha de máquina, mostrar uma página de detalhes da máquina selecionada com uma lista dos backups armazenados (paginada), incluindo o nome do backup, data e hora do backup, incluindo há quanto tempo foi, o status, número de avisos e erros, número de arquivos, o tamanho dos arquivos, tamanho enviado e o tamanho total do armazenamento. Também incluir na página de detalhes um gráfico usando Tremor com a evolução dos campos: tamanho enviado; duração em minutos, número de arquivos examinados, tamanho dos arquivos examinados. O gráfico deve plotar um campo por vez, com uma caixa de seleção para escolher o campo desejado para plotar. Além disso, o gráfico deve apresentar todos os backups armazenados no banco de dados, não apenas os mostrados na tabela paginada.
+> 
+> A aplicação deve expor um endpoint de api para receber o post do servidor duplicati e outro endpoint de api para recuperar todos os detalhes do último backup de uma máquina como um json.
+> 
+> O design deve ser moderno, responsivo e incluir ícones e outros recursos visuais para facilitar a leitura. O código deve ser limpo, conciso e fácil de manter. Use ferramentas modernas como pnpm para lidar com dependências.
+> 
+> A aplicação deve ter um tema escuro e claro selecionável.
+> 
+> O banco de dados deve armazenar estes campos recebidos pelo json do duplicati:
 
 ```json
 "{ "Data": { "DeletedFiles": 0, "DeletedFolders": 0, "ModifiedFiles": 0, "ExaminedFiles": 15399, "OpenedFiles": 1861, "AddedFiles": 1861, "SizeOfModifiedFiles": 0, "SizeOfAddedFiles": 13450481, "SizeOfExaminedFiles": 11086692615, "SizeOfOpenedFiles": 13450481, "NotProcessedFiles": 0, "AddedFolders": 419, "TooLargeFiles": 0, "FilesWithError": 0, "ModifiedFolders": 0, "ModifiedSymlinks": 0, "AddedSymlinks": 0, "DeletedSymlinks": 0, "PartialBackup": false, "Dryrun": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "EndTime": "2025-04-21T23:46:38.3568274Z", "BeginTime": "2025-04-21T23:45:46.9712217Z", "Duration": "00:00:51.3856057", "WarningsActualLength": 0, "ErrorsActualLength": 0, "BackendStatistics": { "BytesUploaded": 8290314, "BytesDownloaded": 53550393, "KnownFileSize": 9920312634, "LastBackupDate": "2025-04-22T00:45:46+01:00", "BackupListCount": 6, "ReportedQuotaError": false, "ReportedQuotaWarning": false, "MainOperation": "Backup", "ParsedResult": "Success", "Interrupted": false, "Version": "2.1.0.5 (2.1.0.5_stable_2025-03-04)", "BeginTime": "2025-04-21T23:45:46.9712252Z", "Duration": "00:00:00", "WarningsActualLength": 0, "ErrorsActualLength": 0 } }, "Extra": { "OperationName": "Backup", "machine-id": "66f5ffc7ff474a73a3c9cba4ac7bfb65", "machine-name": "WSJ-SER5", "backup-name": "WSJ-SER5 Local files", "backup-id": "DB-2" } } "
 ```
 
-this generated an App Blueprint, which I then modified slightly (as below) before clicking `Prototype this App`:
+este gerou um App Blueprint, que depois modifiquei ligeiramente (conforme abaixo) antes de clicar em `Prototype this App`:
 
 ![appblueprint](/img/app-blueprint.png)
 
-I later used these prompts to adjust and refine the design and behaviour:
+Posteriormente, utilizei esses prompts para ajustar e refinar o design e o comportamento:
 
-> remove the button "view details" from the dashboard overview page and the link on the machine name, if the user click anywhere on the row, it will show the detail page.
+Remova o botão "Ver detalhes" da página de visão geral do Painel e o link no nome da máquina. Se o usuário clicar em qualquer lugar na linha, a página de detalhes será exibida.
 
-> when presenting sizes in bytes, use a automatic scale (KB, MB, GB, TB).
+> Quando apresentar tamanhos em bytes, utilize uma escala automática (KB, MB, GB, TB).
 
-> in the detail page, move the chart after the table. Change the colour of the barchart to some other colour compatible with light and dark themes.
+Na página de detalhes, mova o gráfico após a tabela. Altere a cor do gráfico de barras para outra cor compatível com os temas Claro e Escuro.
 
-> in the detail page, reduce the number of rows to present 5 backups per page.
+Na página de detalhes, reduza o número de linhas para apresentar 5 backups por página.
 
-> in the dashboard overview, put a summary on top with the number of machines in the database, total number of backups of all machines, the total uploaded size of all backups and total storage used by all machines. Include icons to facilitate the visualisation.
+No painel de visão geral, coloque um resumo no topo com o número de máquinas no banco de dados, número total de backups de todas as máquinas, o tamanho total enviado de todos os backups e armazenamento total usado por todas as máquinas. Inclua ícones para facilitar a visualização.
 
-> please persist the theme select by the user. also, add some lateral margins and make the UI use 90% of the available width.
+Persista a seleção de tema do usuário. Além disso, adicione algumas margens laterais e faça a interface usar 90% da largura disponível.
 
-> in the machine detail header card, include a sumary with the total of backups stored for this machine, a statistic of the backup status, the number of warnings and errors of the last backup, the average duration in hh:mm:ss, the total uploaded size of all backups and the storage size used based on the last backup information received.
+no cartão de cabeçalho de detalhes da máquina, inclua um resumo com o total de backups armazenados para esta máquina, uma estatística do Status do backup, o número de avisos e Erros do último backup, a Duração média em hh:mm:ss, o Tamanho total enviado de todos os backups e o Tamanho de armazenamento usado com base nas Informações do backup mais recentes recebidas.
 
-> make the summary smaller and more compact to reduce the footprint used.
+torne o resumo menor e mais compacto para reduzir o espaço utilizado.
 
-> when presenting the last backup date, show in the same cell, in a small gray font, the time ago the backup happened (for instance, x minute ago, x hours ago, x days ago, x weeks ago, x months ago, x years ago).
+Quando apresentar a Data do último backup, mostrar na mesma célula, em uma fonte pequena e cinza, o tempo decorrido desde que o backup aconteceu (por exemplo, x minuto atrás, x horas atrás, x dias atrás, x semanas atrás, x meses atrás, x anos atrás).
 
-> in the dashboard overview put last backup date before last backup status
+> no painel de visão geral, coloque a Data do último backup antes do Status do último backup
 
-After iterating through these prompts, Firebase generated the prototype as shown in the screenshots below:
+Após iterar por esses prompts, o Firebase gerou o protótipo conforme mostrado nas capturas de tela abaixo:
 
 ![prototype](/assets/screen-prototype.png)
 
 ![prototype-detail](/assets/screen-prototype-detail.png)
 
 :::note
-One interesting point was that, since the first interaction, Firebase Studio generated random data to populate the pages/charts, making the prototype function like a live application.
+Um ponto interessante foi que, desde a primeira interação, o Firebase Studio gerou dados aleatórios para preencher as páginas/gráficos, fazendo o protótipo funcionar como uma aplicação em tempo real.
 :::
 
-After completing the initial prototype, I accessed the source code by clicking the `</>` button in the interface. I then used the Git extension to export the code and push it to a private repository on [GitHub](https://www.github.com).
+Após concluir o protótipo inicial, acessei o código-fonte clicando no botão `</>` na interface. Em seguida, usei a extensão Git para exportar o código e enviá-lo para um repositório privado no [GitHub](https://www.github.com).
 
 # Backend {#backend}
 
-## Setup {#setup}
+## Configuração {#setup}
 
-I downloaded the code from GitHub (using the `git clone` command) to a local folder (in my case, a Raspberry Pi 5 running Linux) and installed the dependencies Node.js, npm, and pnpm. See more details in [DEVELOPMENT.md](../development/setup.md).
+Baixei o código do GitHub (usando o comando `git clone`) para uma pasta local (no meu caso, um Raspberry Pi 5 executando Linux) e instalei as dependências Node.js, npm e pnpm. Veja mais detalhes em [DEVELOPMENT.md](../development/setup.md).
 
-I set up Cursor to access the code folder from my Windows machine using an SSH connection.
+Configurei o Cursor para acessar a pasta de código da minha máquina Windows usando uma conexão SSH.
 
-I copied a sample of the JSON sent by Duplicati into a file called [`database_values.json`](../api-reference/database_values.json), clearing some unwanted fields.
+Copiei uma amostra do JSON enviado pelo Duplicati para um arquivo (consulte o documento [relatório de backup de exemplo](../api-reference/database-values)), limpando alguns campos indesejados.
 
-## Implementation {#implementation}
+## Implementação {#implementation}
 
-I used an initial prompt to begin the implementation, focusing on persistence, fixes, and new features. It was a long but very interesting process.
+Utilizei um prompt inicial para começar a implementação, focando em persistência, correções e novos recursos. Foi um processo longo, mas muito interessante.
 
-### Using AI to generate the prompt {#using-ai-to-generate-the-prompt}
+### Usando IA para gerar o prompt {#using-ai-to-generate-the-prompt}
 
-I created a detailed prompt using Cursor Chat (`Manual` mode, `Auto` model):
+Criei um prompt detalhado usando Cursor Chat (modo `Manual`, modelo `Auto`):
 
-> improve this text as a prompt to cursor ai tool to generate the implementation of an applicaiton prototype:
->
-> please create a plan generate the full implementation of a Next.js application prototype from this codebase. Your implementation should thoroughly analyse the provided codebase to maintain the exact visual aesthetics, user experience, and navigation flow. For data storage, utilise SQLite3. Generate the database and populate it using the structure and content found in the @database_values.json file, ensuring every field from the JSON is fully integrated and persisted.
+> melhore este texto como um prompt para a ferramenta Cursor AI gerar a implementação de um protótipo de aplicação:
+> 
+> por favor, crie um plano e gere a implementação completa de um protótipo de aplicação Next.js a partir desta base de código. Sua implementação deve analisar minuciosamente a base de código fornecida para manter a estética visual exata, experiência de usuário e fluxo de navegação. Para armazenamento de dados, utilize SQLite3. Gere o banco de dados e popule-o utilizando a estrutura e conteúdo encontrados no documento [relatório de backup de exemplo](../api-reference/database-values), garantindo que cada campo do JSON seja totalmente integrado e persistido.
 
-The AI generated the following prompt:
+A IA gerou o seguinte prompt:
 
-> Create a comprehensive implementation plan for a Next.js application prototype with the following requirements:
+>Crie um plano de implementação abrangente para um protótipo de aplicação Next.js com os seguintes requisitos:
 >
-> 1. Technical Stack:
+>1. Stack Técnico:
+>   - Next.js 14+ com App Router
+>   - TypeScript para segurança de tipos
+>   - SQLite3 para persistência de dados
+>   - TailwindCSS para estilo
+>   - React Server Components onde apropriado
+>   - Componentes cliente para elementos interativos
 >
-> - Next.js 14+ with App Router
+>2. Design de Banco de Dados:
+>   - Analise o documento de relatório de backup de exemplo para criar um schema SQLite ideal
+>   - Projete tabelas para armazenar eficientemente todos os dados de backup
+>   - Inclua índices para consultas comuns
+>   - Implemente validação de dados e segurança de tipos
 >
-> - TypeScript for type safety
+>3. Estrutura da Aplicação:
+>   - Implemente a UI/UX exata da base de código fornecida
+>   - Crie componentes reutilizáveis para elementos comuns
+>   - Configure roteamento adequado usando App Router
+>   - Implemente layouts responsivos
+>   - Adicione suporte a tema claro/escuro
 >
-> - SQLite3 for data persistence
+>4. Funcionalidades Principais:
+>   - Painel com visão geral da tabela de status de máquinas
+>   - Visualizar detalhado de máquina com Histórico de backups
+>   - Visualização de dados usando gráficos
+>   - Atualizações de status de backup em tempo real
+>   - Tratamento adequado de erros e estados de carregamento
 >
-> - TailwindCSS for styling
+>5. Gerenciamento de Dados:
+>   - Crie rotas de API para operações de dados
+>   - Implemente estratégias eficientes de busca de dados
+>   - Adicione validação adequada de dados
+>   - Inclua tratamento de erros para operações de banco de dados
 >
-> - React Server Components where appropriate
->
-> - Client components for interactive elements
->
-> 2. Database Design:
->
-> - Analyse database_values.json to create an optimal SQLite schema
->
-> - Design tables to efficiently store all backup data
->
-> - Include indexes for common queries
->
-> - Implement data validation and type safety
->
-> 3. Application Structure:
->
-> - Implement the exact UI/UX from the provided codebase
->
-> - Create reusable components for common elements
->
-> - Set up proper routing using App Router
->
-> - Implement responsive layouts
->
-> - Add dark/light theme support
->
-> 4. Core Features:
->
-> - Dashboard overview with machine status table
->
-> - Detailed machine view with backup history
->
-> - Data visualisation using charts
->
-> - Real-time backup status updates
->
-> - Proper error handling and loading states
->
-> 5. Data Management:
->
-> - Create API routes for data operations
-> - Implement efficient data fetching strategies
-> - Add proper data validation
-> - Include error handling for database operations
->
-> Please provide a detailed implementation plan that covers all these aspects while maintaining the existing visual design and user experience.
+>Forneça um plano de implementação detalhado que cubra todos esses aspectos mantendo o design visual existente e a experiência do usuário.
 
-I copied the generated prompt to the clipboard.
+Copiei o prompt gerado para a área de transferência.
 
-### Start the implementation journey {#start-the-implementation-journey}
+### Iniciar a jornada de implementação {#start-the-implementation-journey}
 
-I created a new chat by clicking the `+` button, switched to `Agent` mode, and pasted the prompt using Ctrl+Shift+V (as text).
+Criei um novo chat clicando no botão `+`, alternei para o modo `Agent` e colei o prompt usando Ctrl+Shift+V (como texto).
 
-After the plan was generated, I typed `please, implement this plan` in the chat to begin the implementation.
+Após o plano ser gerado, digitei `please, implement this plan` no chat para iniciar a implementação.
 
 :::note
-I only included the starting point since I didn't record all the prompts used. There were many of them.
+Incluí apenas o ponto de partida, pois não registrei todos os prompts utilizados. Havia muitos deles.
 :::
 
-# Notes {#notes}
+# Notas {#notes}
 
-- Some models can get stuck when fixing bugs. "claude-3.5" and "claude-4" are usually better, but sometimes you have to try another model (GPT, Gemini, etc.).
-  For complex bugs or errors, use a prompt to analyse possible causes of the error instead of simply asking to fix it.
-- When making complex modifications, use a prompt to create a plan and then ask the AI agent to implement it. This always works better.
-- Be specific when changing the source code. If possible, select the relevant part of the code in the editor and press Ctrl+L to include it in the chat as context.
-- Also include a reference to the file you are mentioning in the chat to help the AI agent focus on the relevant part of the code and avoid making changes in other parts of the code.
-- I have the tendency to anthropomorphize the AI agent given that it persistently uses 'we', 'our code' and 'would you like me to...'. This is also to improve my odds of survival in case (or [when](https://ai-2027.com/)) Skynet becomes sentient and the Terminator is invented.
-- Sometimes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... to generate prompts with better instructions for the AI agent.
-
+- Alguns modelos podem ficar presos ao corrigir bugs. "claude-3.5" e "claude-4" geralmente são melhores, mas às vezes você tem que tentar outro modelo (GPT, Gemini, etc.).
+Para erros ou problemas complexos, use um prompt para analisar possíveis causas do erro em vez de simplesmente pedir para corrigi-lo.
+- Ao fazer modificações complexas, use um prompt para criar um plano e depois peça ao agente de IA para implementá-lo. Isso sempre funciona melhor.
+- Seja específico ao alterar o código-fonte. Se possível, selecione a parte relevante do código no editor e pressione Ctrl+L para incluí-lo no chat como contexto.
+- Também inclua uma referência ao arquivo que você está mencionando no chat para ajudar o agente de IA a se concentrar na parte relevante do código e evitar fazer alterações em outras partes do código.
+- Tenho a tendência de antropomorfizar o agente de IA dado que ele persistentemente usa 'nós', 'nosso código' e 'gostaria que eu...'. Isso também é para melhorar minhas chances de sobrevivência caso (ou [quando](https://ai-2027.com/)) Skynet se torne consciente e o Exterminador seja inventado.
+- Às vezes, use [Gemini](https://gemini.google.com/app), [Deepseek](https://chat.deepseek.com/), [ChatGPT](https://chat.openai.com/), [Manus](https://manus.im/app),... para gerar prompts com instruções melhores para o agente de IA.

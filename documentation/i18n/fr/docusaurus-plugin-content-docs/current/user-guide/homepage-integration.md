@@ -1,10 +1,17 @@
-# Intégration Homepage (optionnel) {#homepage-integration-optional}
+---
+translation_last_updated: '2026-01-31T00:51:22.872Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 5b8fdae17a34ff83
+translation_language: fr
+source_file_path: user-guide/homepage-integration.md
+---
+# Intégration à la page d'accueil (Optionnel) {#homepage-integration-optional}
 
-[Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget API personnalisé](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget API personnalisée](https://gethomepage.dev/widgets/services/customapi/).
 
 ## Widget Résumé {#summary-widget}
 
-Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de bord Homepage.
+Ce widget affiche les statistiques globales de sauvegarde sur votre tableau de bord de la page d'accueil.
 
 ```yaml
 - Dashboard:
@@ -17,36 +24,36 @@ Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de b
       refreshInterval: 60000
       mappings:
         - field: totalServers
-          label: Serveurs
+          label: Servers
         - field: totalBackups
-          label: Sauvegardes reçues
+          label: Backups received
         - field: secondsSinceLastBackup
-          label: Dernière sauvegarde
+          label: Last backup
           format: duration
         - field: totalBackupSize
-          label: Taille sauvegardée
+          label: Backed up size
           format: number
           scale: 0.000000001
           suffix: GB
         - field: totalStorageUsed
-          label: Stockage utilisé
+          label: Storage used
           format: number
           scale: 0.000000001
           suffix: GB
         - field: totalUploadedSize
-          label: Taille téléversée
+          label: Uploaded size
           format: number
           scale: 0.000000001
           suffix: GB
 ```
 
-**Affichage du widget:**
+**Affichage du widget :**
 
 ![Homepage Summary Widget](/img/homepage-summary.png)
 
-## Widget Informations de Dernière Sauvegarde {#last-backup-information-widget}
+## Dernière Informations de sauvegarde Widget {#last-backup-information-widget}
 
-Ce widget affiche les informations de sauvegarde les plus récentes pour une machine spécifique.
+Ce widget affiche les dernières informations de sauvegarde pour une machine spécifique.
 
 ```yaml
 - Test Machine 1:
@@ -58,16 +65,16 @@ Ce widget affiche les informations de sauvegarde les plus récentes pour une mac
       refreshInterval: 60000
       mappings:
         - field: latest_backup.name
-          label: Nom de sauvegarde
+          label: Backup name
         - field: latest_backup.status
-          label: Résultat
+          label: Result
         - field: latest_backup.date
           label: Date
           format: relativeDate
         - field: latest_backup.duration
-          label: Durée
+          label: Duration
         - field: latest_backup.uploadedSize
-          label: Octets téléversés
+          label: Bytes Uploaded
           format: number
           scale: 0.000001
           suffix: MB
@@ -75,7 +82,7 @@ Ce widget affiche les informations de sauvegarde les plus récentes pour une mac
           label: Versions
 ```
 
-**Affichage du widget:**
+**Affichage du widget :**
 
 ![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
 
@@ -84,5 +91,4 @@ Ce widget affiche les informations de sauvegarde les plus récentes pour une mac
 - Remplacez `your-server` par l'adresse IP ou le nom d'hôte de votre serveur.
 - Ajustez le `refreshInterval` selon vos besoins (en millisecondes).
 - Remplacez les espaces dans les noms de machines par `%20` dans l'URL (par exemple, `Test Machine 1` devient `Test%20Machine%201`).
-- Les valeurs `scale` convertissent les octets en unités plus lisibles (GB, MB).
-
+- Les valeurs `scale` convertissent les octets en unités plus lisibles (Go, Mo).

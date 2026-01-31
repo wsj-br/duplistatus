@@ -1,178 +1,175 @@
-# Workspace Admin Scripts & Commands {#workspace-admin-scripts-commands}
+---
+translation_last_updated: '2026-01-31T00:51:23.359Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 581bc6778a772b4e
+translation_language: de
+source_file_path: development/workspace-admin-scripts-commands.md
+---
+# Workspace-Admin-Skripte und -Befehle {#workspace-admin-scripts-commands}
 
-## Clean Database {#clean-database}
+## Datenbank bereinigen {#clean-database}
 
 ```bash
 ./scripts/clean-db.sh
 ```
 
-Cleans the database by removing all data while preserving the database schema and structure.
+Bereinigt die Datenbank durch Entfernen aller Daten, während das Datenbankschema und die Struktur erhalten bleiben.
 
-> [!CAUTION]
-> Use with caution as this will delete all existing data.
+>[!CAUTION]
+> Mit Vorsicht verwenden, da dies alle vorhandenen Daten löscht.
 
-## Clean build artefacts and dependencies {#clean-build-artefacts-and-dependencies}
+## Bereinigung von Build-Artefakten und Abhängigkeiten {#clean-build-artefacts-and-dependencies}
 
 ```bash
 scripts/clean-workspace.sh
 ```
 
-Removes all build artefacts, node_modules directory, and other generated files to ensure a clean state. This is useful when you need to perform a fresh installation or resolve dependency issues. The command will delete:
+Entfernt alle Build-Artefakte, das Verzeichnis node_modules und andere generierte Dateien, um einen sauberen Zustand zu gewährleisten. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
+- `node_modules/` Verzeichnis
+- `.next/` Build-Verzeichnis
+- `dist/` Verzeichnis
+- Alle Docker-Build-Caches und führt einen Docker-Systemprune durch
+- pnpm Store-Cache
+- Ungenutzte Docker-Systemressourcen (Images, Netzwerke, Volumes)
+- Alle anderen Build-Cache-Dateien
 
-- `node_modules/` directory
-- `.next/` build directory
-- `dist/` directory
-- All Docker build cache and perform a Docker system prune
-- pnpm store cache
-- Unused Docker system resources (images, networks, volumes)
-- Any other build cache files
-
-## Clean Docker Compose and Docker environment {#clean-docker-compose-and-docker-environment}
+## Docker Compose und Docker-Umgebung bereinigen {#clean-docker-compose-and-docker-environment}
 
 ```bash
 scripts/clean-docker.sh
 ```
 
-Perform a complete Docker cleanup, which is useful for:
+Führen Sie eine vollständige Docker-Bereinigung durch, die nützlich ist für:
+- Freigabe von Speicherplatz
+- Entfernung alter/ungenutzter Docker-Artefakte
+- Bereinigung nach Entwicklungs- oder Testsitzungen
+- Wartung einer sauberen Docker-Umgebung
 
-- Freeing up disk space
-- Removing old/unused Docker artefacts
-- Cleaning up after development or testing sessions
-- Maintaining a clean Docker environment
+## Aktualisieren Sie die Pakete auf die neueste Version {#update-the-packages-to-the-latest-version}
 
-## Update the packages to the latest version {#update-the-packages-to-the-latest-version}
-
-You can update packages manually using:
+Sie können Pakete manuell aktualisieren mit:
 
 ```bash
 ncu --upgrade
 pnpm update
 ```
 
-Or use the automated script:
+Oder verwenden Sie das automatisierte Skript:
 
 ```bash
 ./scripts/upgrade-dependencies.sh
 ```
 
-The `upgrade-dependencies.sh` script automates the entire dependency upgrade process:
+Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Abhängigkeitsupgrade-Prozess:
+- Aktualisiert `package.json` mit den neuesten Versionen mithilfe von `npm-check-updates`
+- Aktualisiert die pnpm-Sperrdatei und installiert aktualisierte Abhängigkeiten
+- Aktualisiert die browserslist-Datenbank
+- Prüft auf Sicherheitslücken mithilfe von `pnpm audit`
+- Behebt Sicherheitslücken automatisch mithilfe von `pnpm audit fix`
+- Prüft nach der Behebung erneut auf Sicherheitslücken, um die Behebungen zu bestätigen
 
-- Updates `package.json` with latest versions using `npm-check-updates`
-- Updates the pnpm lockfile and installs updated dependencies
-- Updates the browserslist database
-- Checks for vulnerabilities using `pnpm audit`
-- Automatically fixes vulnerabilities using `pnpm audit fix`
-- Re-checks for vulnerabilities after fixing to verify the fixes
+Dieses Skript bietet einen vollständigen Workflow zur Aktualisierung von Abhängigkeiten und zur Gewährleistung ihrer Sicherheit.
 
-This script provides a complete workflow for keeping dependencies up to date and secure.
-
-## Check for unused packages {#check-for-unused-packages}
+## Prüfen auf ungenutzte Pakete {#check-for-unused-packages}
 
 ```bash
 pnpm depcheck
 ```
 
-## Update version information {#update-version-information}
+## Versionsinformationen aktualisieren {#update-version-information}
 
 ```bash
 ./scripts/update-version.sh
 ```
 
-This script automatically updates version information across multiple files to keep them synchronized. It:
+Dieses Skript aktualisiert automatisch Versionsinformationen über mehrere Dateien hinweg, um diese synchronisiert zu halten. Es:
+- Extrahiert die Version aus `package.json`
+- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (erstellt diese, falls sie nicht vorhanden ist)
+- Aktualisiert die `Dockerfile` mit der `VERSION`-Variable (falls vorhanden)
+- Aktualisiert das Versionierungsfeld in `documentation/package.json` (falls vorhanden)
+- Aktualisiert nur, wenn sich die Version geändert hat
+- Bietet Rückmeldung zu jeder Operation
 
-- Extracts the version from `package.json`
-- Updates the `.env` file with the `VERSION` variable (creates it if it doesn't exist)
-- Updates the `Dockerfile` with the `VERSION` variable (if it exists)
-- Updates the `documentation/package.json` version field (if it exists)
-- Only updates if the version has changed
-- Provides feedback on each operation
-
-## Pre-checks script {#pre-checks-script}
+## Pre-checks-Skript {#pre-checks-script}
 
 ```bash
 ./scripts/pre-checks.sh
 ```
 
-This script runs pre-checks before starting the development server, building, or starting the production server. It:
+Dieses Skript führt Vorabprüfungen durch, bevor der Entwicklungsserver gestartet, erstellt oder der Produktionsserver gestartet wird. Es:
+- Stellt sicher, dass die Datei `.duplistatus.key` vorhanden ist (über `ensure-key-file.sh`)
+- Aktualisiert die Versionsinformationen (über `update-version.sh`)
 
-- Ensures the `.duplistatus.key` file exists (via `ensure-key-file.sh`)
-- Updates the version information (via `update-version.sh`)
+Dieses Skript wird automatisch durch `pnpm dev`, `pnpm build` und `pnpm start-local` aufgerufen.
 
-This script is automatically called by `pnpm dev`, `pnpm build`, and `pnpm start-local`.
-
-## Ensure key file exists {#ensure-key-file-exists}
+## Sicherstellen, dass die Schlüsseldatei vorhanden ist {#ensure-key-file-exists}
 
 ```bash
 ./scripts/ensure-key-file.sh
 ```
 
-This script ensures the `.duplistatus.key` file exists in the `data` directory. It:
+Dieses Skript stellt sicher, dass die Datei `.duplistatus.key` im Verzeichnis `data` vorhanden ist. Es:
+- Erstellt das Verzeichnis `data`, falls es nicht vorhanden ist
+- Generiert eine neue 32-Byte-Zufallsschlüsseldatei, falls diese fehlt
+- Setzt die Dateiberechtigungen auf 0400 (Lesezugriff nur für Eigentümer)
+- Behebt Berechtigungen, falls diese fehlerhaft sind
 
-- Creates the `data` directory if it doesn't exist
-- Generates a new 32-byte random key file if missing
-- Sets file permissions to 0400 (read-only for owner)
-- Fixes permissions if they are incorrect
+Die Schlüsseldatei wird für kryptografische Operationen in der Anwendung verwendet.
 
-The key file is used for cryptographic operations in the application.
-
-## Admin account recovery {#admin-account-recovery}
+## Wiederherstellung des Admin-Kontos {#admin-account-recovery}
 
 ```bash
 ./admin-recovery <username> <new-password>
 ```
 
-This script allows recovery of admin accounts if locked out or password forgotten. It:
+Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten bei Sperrung oder vergessenem Passwort. Es:
+- Setzt das Passwort für den angegebenen Benutzer zurück
+- Entsperrt das Konto, falls es gesperrt war
+- Setzt den Zähler für fehlgeschlagene Anmeldeversuche zurück
+- Löscht das Flag „Passwort muss geändert werden"
+- Validiert, dass das Passwort die Sicherheitsanforderungen erfüllt
+- Protokolliert die Aktion im Audit-Log
 
-- Resets the password for the specified user
-- Unlocks the account if it was locked
-- Resets failed login attempts counter
-- Clears the "must change password" flag
-- Validates password meets security requirements
-- Logs the action to the audit log
-
-**Example:**
+**Beispiel:**
 
 ```bash
 ./admin-recovery admin NewPassword123
 ```
 
-> [!CAUTION]
-> This script directly modifies the database. Use only when necessary for account recovery.
+>[!CAUTION]
+> Dieses Skript modifiziert die Datenbank direkt. Verwenden Sie es nur bei Bedarf zur Kontowiederherstellung.
 
-## Copy images {#copy-images}
+## Bilder kopieren {#copy-images}
 
 ```bash
 ./scripts/copy-images.sh
 ```
 
-Copies image files from `docs/static/img` to their appropriate locations in the application:
+Kopiert Bilddateien von `docs/static/img` an ihre entsprechenden Positionen in der Anwendung:
+- Kopiert `favicon.ico` zu `src/app/`
+- Kopiert `duplistatus_logo.png` zu `public/images/`
+- Kopiert `duplistatus_banner.png` zu `public/images/`
 
-- Copies `favicon.ico` to `src/app/`
-- Copies `duplistatus_logo.png` to `public/images/`
-- Copies `duplistatus_banner.png` to `public/images/`
+Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
 
-Useful for keeping application images synchronized with documentation images.
-
-## Compare versions between development and Docker {#compare-versions-between-development-and-docker}
+## Versionen zwischen Entwicklung und Docker vergleichen {#compare-versions-between-development-and-docker}
 
 ```bash
 ./scripts/compare-versions.sh
 ```
 
-This script compares versions between your development environment and a running Docker container. It:
+Dieses Skript vergleicht Versionen zwischen Ihrer Entwicklungsumgebung und einem laufenden Docker-Container. Es:
+- Vergleicht SQLite-Versionen nur nach Hauptversion (z. B. werden 3.45.1 und 3.51.1 als kompatibel betrachtet, angezeigt als "✅ (major)")
+- Vergleicht Node-, npm- und Duplistatus-Versionen exakt (müssen genau übereinstimmen)
+- Zeigt eine formatierte Tabelle mit allen Versionsvergleichen an
+- Bietet eine Zusammenfassung mit farbcodierten Ergebnissen (✅ für Übereinstimmungen, ❌ für Abweichungen)
+- Beendet sich mit Code 0, wenn alle Versionen übereinstimmen, mit Code 1 bei Abweichungen
 
-- Compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible, shown as "✅ (major)")
-- Compares Node, npm, and Duplistatus versions exactly (must match exactly)
-- Displays a formatted table showing all version comparisons
-- Provides a summary with color-coded results (✅ for matches, ❌ for mismatches)
-- Exits with code 0 if all versions match, 1 if there are mismatches
+**Anforderungen:**
+- Docker-Container mit dem Namen `duplistatus` muss ausgeführt werden
+- Das Skript liest Versionsinformationen aus den Docker-Container-Protokollen
 
-**Requirements:**
-
-- Docker container named `duplistatus` must be running
-- The script reads version information from Docker container logs
-
-**Example output:**
+# German Translation
 
 ```
 ┌─────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────┐
@@ -185,9 +182,9 @@ This script compares versions between your development environment and a running
 └─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
 ```
 
-**Note:** SQLite versions are compared by major version only because different patch versions within the same major version are generally compatible. The script will indicate if SQLite versions match at the major level but differ in patch versions.
+**Hinweis:** SQLite-Versionen werden nur nach der Hauptversion verglichen, da verschiedene Patch-Versionen innerhalb derselben Hauptversion im Allgemeinen kompatibel sind. Das Skript zeigt an, wenn SQLite-Versionen auf der Hauptebene übereinstimmen, aber in den Patch-Versionen unterschiedlich sind.
 
-## Viewing the configurations in the database {#viewing-the-configurations-in-the-database}
+## Anzeigen der Konfigurationen in der Datenbank {#viewing-the-configurations-in-the-database}
 
 ```bash
 sqlite3 data/backups.db "SELECT key, value FROM configurations;" | awk -F'|' '
@@ -203,27 +200,27 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## SQL Scripts for Debugging and Maintenance {#sql-scripts-for-debugging-and-maintenance}
+## SQL-Skripte zum Debuggen und Warten {#sql-scripts-for-debugging-and-maintenance}
 
-The project includes SQL scripts for database maintenance:
+Das Projekt enthält SQL-Skripte für die Datenbankwartung:
 
-### Delete Backup Settings {#delete-backup-settings}
+### Sicherungseinstellungen löschen {#delete-backup-settings}
 
 ```bash
 sqlite3 data/backups.db < scripts/delete-backup-settings.sql
 ```
 
-This script removes all backup settings from the configurations table. Use with caution as this will reset all backup notification configurations.
+Dieses Skript entfernt alle Sicherungseinstellungen aus der Konfigurationstabelle. Verwenden Sie dieses mit Vorsicht, da alle Sicherungsmitteilungskonfigurationen zurückgesetzt werden.
 
-### Delete Last Backup {#delete-last-backup}
+### Letzte Sicherung löschen {#delete-last-backup}
 
 ```bash
 sqlite3 data/backups.db < scripts/delete-last-backup.sql
 ```
 
-This script removes the most recent backup record for each server. By default, it deletes the last backup for ALL servers. The script includes commented examples for targeting specific servers by name. Useful for testing and debugging purposes.
+Dieses Skript entfernt den neuesten Sicherungsdatensatz für jeden Server. Standardmäßig löscht es die letzte Sicherung für ALLE Server. Das Skript enthält kommentierte Beispiele zum Ausrichten auf bestimmte Server nach Name. Nützlich für Test- und Debugging-Zwecke.
 
-**Note**: The script has been updated to work with the current database schema (uses `servers` table and `server_id` column).
+**Hinweis**: Das Skript wurde aktualisiert, um mit dem aktuellen Datenbankschema zu funktionieren (verwendet die Tabelle `servers` und die Spalte `server_id`).
 
-> [!CAUTION]
-> These SQL scripts directly modify the database. Always backup your database before running these scripts.
+>[!CAUTION]
+> Diese SQL-Skripte ändern die Datenbank direkt. Erstellen Sie immer eine Sicherung Ihrer Datenbank, bevor Sie diese Skripte ausführen.

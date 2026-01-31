@@ -1,37 +1,43 @@
-# Cron Service {#cron-service}
+---
+translation_last_updated: '2026-01-31T00:51:29.260Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: a4aa296b36d4dd44
+translation_language: pt-BR
+source_file_path: development/cron-service.md
+---
+# Serviço Cron {#cron-service}
 
-The application includes a separate cron service for handling scheduled tasks:
+O aplicativo inclui um serviço cron separado para lidar com tarefas agendadas:
 
-## Start cron service in development mode {#start-cron-service-in-development-mode}
+## Iniciar serviço cron em modo de desenvolvimento {#start-cron-service-in-development-mode}
 
 ```bash
 pnpm cron:dev
 ```
 
-## Start cron service in production mode {#start-cron-service-in-production-mode}
+## Iniciar serviço cron em modo de produção {#start-cron-service-in-production-mode}
 
 ```bash
 pnpm cron:start
 ```
 
-## Start cron service locally (for testing) {#start-cron-service-locally-for-testing}
+## Iniciar serviço cron localmente (para testes) {#start-cron-service-locally-for-testing}
 
 ```bash
 pnpm cron:start-local
 ```
 
-The cron service runs on a separate port (8667 in development, 9667 in production) and handles scheduled tasks like overdue backup notifications. The port can be configured using the `CRON_PORT` environment variable.
+O serviço cron é executado em uma porta separada (8667 em desenvolvimento, 9667 em produção) e gerencia tarefas agendadas, como notificações de backup atrasado. A porta pode ser configurada usando a variável de ambiente `CRON_PORT`.
 
-The cron service includes:
-
-- **Health check endpoint**: `/health` - Returns service status and active tasks
-- **Manual task triggering**: `POST /trigger/:taskName` - Manually execute scheduled tasks
-- **Task management**: `POST /start/:taskName` and `POST /stop/:taskName` - Control individual tasks
-- **Configuration reload**: `POST /reload-config` - Reload configuration from database
-- **Automatic restart**: The service automatically restarts if it crashes (managed by `duplistatus-cron.sh`)
-- **Watch mode**: Development mode includes file watching for automatic restarts on code changes
-- **Overdue backup monitoring**: Automated checking and notification of overdue backups (runs every 5 minutes by default)
-- **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)
-- **Flexible scheduling**: Configurable cron expressions for different tasks
-- **Database integration**: Shares the same SQLite database with the main application
-- **RESTful API**: Complete API for service management and monitoring
+O serviço cron inclui:
+- **Endpoint de verificação de saúde**: `/health` - Retorna o status do serviço e tarefas ativas
+- **Acionamento manual de tarefas**: `POST /trigger/:taskName` - Execute manualmente tarefas agendadas
+- **Gerenciamento de tarefas**: `POST /start/:taskName` e `POST /stop/:taskName` - Controle tarefas individuais
+- **Recarga de configuração**: `POST /reload-config` - Recarregue a configuração do banco de dados
+- **Reinicialização automática**: O serviço reinicia automaticamente se falhar (gerenciado por `duplistatus-cron.sh`)
+- **Modo de observação**: O modo de desenvolvimento inclui observação de arquivos para reinicializações automáticas em alterações de código
+- **Monitoramento de backups atrasados**: Verificação automatizada e notificação de backups atrasados (executado a cada 5 minutos por padrão)
+- **Limpeza de Log de Auditoria**: Limpeza automatizada de entradas antigas do Log de Auditoria (executado diariamente às 2 AM UTC)
+- **Agendamento flexível**: Expressões cron configuráveis para diferentes tarefas
+- **Integração de banco de dados**: Compartilha o mesmo banco de dados SQLite com a aplicação principal
+- **API RESTful**: API completa para gerenciamento e monitoramento do serviço

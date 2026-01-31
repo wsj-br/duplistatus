@@ -1,97 +1,108 @@
-# Overview {#overview}
+---
+translation_last_updated: '2026-01-31T00:51:26.333Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: de0fa34e2062bf57
+translation_language: de
+source_file_path: user-guide/settings/overview.md
+---
+# Übersicht {#overview}
 
-The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> `Settings` button in the [Application Toolbar](../overview#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
+Die Seite „Einstellungen" bietet eine einheitliche Schnittstelle zur Konfiguration aller Aspekte von **duplistatus**. Sie können darauf zugreifen, indem Sie die Schaltfläche <IconButton icon="lucide:settings" /> `Einstellungen` in der [Anwendungssymbolleiste](../overview#application-toolbar) anklicken. Beachten Sie, dass reguläre Benutzer ein vereinfachtes Menü mit weniger Optionen im Vergleich zu Administratoren sehen.
 
-## Administrator View {#administrator-view}
+## Administratoranzeige {#administrator-view}
 
-Administrators see all available settings.
+Administratoren sehen alle verfügbaren Einstellungen.
 
 <table>
-  <tbody><tr>
+  <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
+      <img src="/assets/screen-settings-left-panel-admin.png" alt="Einstellungen Seitenleiste - Admin-Ansicht" />
     </td>
     <td>
       <ul>
-        <li><strong>Notifications</strong>
+        <li>
+          <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup Notifications</a>: Configure per-backup notification settings</li>
-            <li><a href="overdue-settings.md">Overdue Monitoring</a>: Configure overdue backup detection and alerts</li>
-            <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
+            <li><a href="backup-notifications-settings.md">Sicherungsbenachrichtigungen</a>: Konfigurieren Sie Benachrichtigungseinstellungen pro Sicherung</li>
+            <li><a href="overdue-settings.md">Überfällige Überwachung</a>: Konfigurieren Sie die Erkennung und Warnungen für überfällige Sicherungen</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Passen Sie Benachrichtigungsmeldungsvorlagen an</li>
           </ul>
         </li><br/>
-        <li><strong>Integrations</strong>
+        <li>
+          <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: Configure NTFY push notification service</li>
-            <li><a href="email-settings.md">Email</a>: Configure SMTP email notifications</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: Konfigurieren Sie den NTFY-Push-Benachrichtigungsdienst</li>
+            <li><a href="email-settings.md">E-Mail</a>: Konfigurieren Sie SMTP-E-Mail-Benachrichtigungen</li>
           </ul>
         </li><br/>
-        <li><strong id="system">System</strong>
+        <li>
+          <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Servers</a>: Manage Duplicati server configurations</li>
-            <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
-            <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
-            <li><a href="user-management-settings.md">Users</a>: Manage user accounts (admin only)</li>
-            <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs</li>
-            <li><a href="audit-logs-retention.md">Audit Log Retention</a>: Configure audit log retention (admin only)</li>
-            <li><a href="application-logs-settings.md">Application Logs</a>: View and export application logs (admin only)</li>
+            <li><a href="server-settings.md">Server</a>: Verwalten Sie Duplicati-Serverkonfigurationen</li>
+            <li><a href="display-settings.md">Anzeige</a>: Konfigurieren Sie Anzeigeeinstellungen</li>
+            <li><a href="database-maintenance.md">Datenbankwartung</a>: Führen Sie Datenbankbereinigung durch (nur Admin)</li>
+            <li><a href="user-management-settings.md">Benutzer</a>: Verwalten Sie Benutzerkonten (nur Admin)</li>
+            <li><a href="audit-logs-viewer.md">Audit-Log</a>: Zeigen Sie System-Audit-Protokolle an</li>
+            <li><a href="audit-logs-retention.md">Audit-Log-Aufbewahrung</a>: Konfigurieren Sie die Audit-Log-Aufbewahrung (nur Admin)</li>
+            <li><a href="application-logs-settings.md">Anwendungsprotokolle</a>: Zeigen Sie Anwendungsprotokolle an und exportieren Sie diese (nur Admin)</li>
           </ul>
         </li>
       </ul>
     </td>
   </tr>
-</tbody></table>
+</table>
 
-## Non-Administrator View {#non-administrator-view}
+## Ansicht für Nicht-Administratoren {#non-administrator-view}
 
-Regular users see a limited set of settings.
+Reguläre Benutzer sehen einen begrenzten Satz von Einstellungen.
 
 <table>
-  <tbody><tr>
+  <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Settings Sidebar - Non-Admin View" />
+      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Einstellungen Seitenleiste - Nicht-Admin-Ansicht" />
     </td>
     <td>
       <ul>
-        <li><strong>Notifications</strong>
+        <li>
+          <strong>Benachrichtigungen</strong>
           <ul>
-            <li><a href="backup-notifications-settings.md">Backup Notifications</a>: View per-backup notification settings (read-only)</li>
-            <li><a href="overdue-settings.md">Overdue Monitoring</a>: View overdue backup settings (read-only)</li>
-            <li><a href="notification-templates.md">Templates</a>: View notification templates (read-only)</li>
+            <li><a href="backup-notifications-settings.md">Sicherungsbenachrichtigungen</a>: Benachrichtigungseinstellungen pro Sicherung anzeigen (schreibgeschützt)</li>
+            <li><a href="overdue-settings.md">Überfällige Überwachung</a>: Einstellungen für überfällige Sicherungen anzeigen (schreibgeschützt)</li>
+            <li><a href="notification-templates.md">Vorlagen</a>: Benachrichtigungsvorlagen anzeigen (schreibgeschützt)</li>
           </ul>
         </li><br/>
-        <li><strong>Integrations</strong>
+        <li>
+          <strong>Integrationen</strong>
           <ul>
-            <li><a href="ntfy-settings.md">NTFY</a>: View NTFY settings (read-only)</li>
-            <li><a href="email-settings.md">Email</a>: View email settings (read-only)</li>
+            <li><a href="ntfy-settings.md">NTFY</a>: NTFY-Einstellungen anzeigen (schreibgeschützt)</li>
+            <li><a href="email-settings.md">E-Mail</a>: E-Mail-Einstellungen anzeigen (schreibgeschützt)</li>
           </ul>
         </li><br/>
-        <li><strong id="system">System</strong>
+        <li>
+          <strong id="system">System</strong>
           <ul>
-            <li><a href="server-settings.md">Servers</a>: View server configurations (read-only)</li>
-            <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
-            <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs (read-only)</li>
+            <li><a href="server-settings.md">Server</a>: Serverkonfigurationen anzeigen (schreibgeschützt)</li>
+            <li><a href="display-settings.md">Anzeige</a>: Anzeigeeinstellungen konfigurieren</li>
+            <li><a href="audit-logs-viewer.md">Audit-Protokoll</a>: System-Audit-Protokolle anzeigen (schreibgeschützt)</li>
           </ul>
         </li>
       </ul>
     </td>
   </tr>
-</tbody></table>
+</table>
 
-## Status Icons {#status-icons}
+## Status-Symbole {#status-icons}
 
-The sidebar displays status icons next to the **NTFY** and **Email** integration settings:
+Die Seitenleiste zeigt Statussymbole neben den **NTFY**- und **E-Mail**-Integrationseinstellungen an:
+- <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Grünes Symbol**: Ihre Einstellungen sind gültig und korrekt konfiguriert
+- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Gelbes Symbol**: Ihre Einstellungen sind ungültig oder nicht konfiguriert
 
-- <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Green icon**: Your settings are valid and configured correctly
-- <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Yellow icon**: Your settings are not valid or not configured
-
-When the configuration is invalid, the corresponding checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will be greyed out and disabled. For more details, see the [NTFY Settings](ntfy-settings.md) and [Email Settings](email-settings.md) pages.
+Wenn die Konfiguration ungültig ist, werden die entsprechenden Kontrollkästchen auf der Registerkarte [`Backup-Benachrichtigungen`](backup-notifications-settings.md) ausgegraut und deaktiviert. Weitere Details finden Sie auf den Seiten [NTFY-Einstellungen](ntfy-settings.md) und [E-Mail-Einstellungen](email-settings.md).
 
 <br/>
 
 :::important
-A green icon does not necessarily mean that notifications are functioning correctly. Always use the available test features to confirm your notifications are working before relying on them.
+Ein grünes Symbol bedeutet nicht zwangsläufig, dass Benachrichtigungen ordnungsgemäß funktionieren. Verwenden Sie immer die verfügbaren Testfunktionen, um zu bestätigen, dass Ihre Benachrichtigungen funktionieren, bevor Sie sich auf diese verlassen.
 :::
 
 <br/>
-

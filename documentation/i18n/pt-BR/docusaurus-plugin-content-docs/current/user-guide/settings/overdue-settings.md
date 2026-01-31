@@ -1,47 +1,52 @@
-# Overdue Notifications {#overdue-notifications}
+---
+translation_last_updated: '2026-01-31T00:51:31.025Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: bc396f3559d5e9a0
+translation_language: pt-BR
+source_file_path: user-guide/settings/overdue-settings.md
+---
+# Notificações Atrasadas {#overdue-notifications}
 
 ![Backup alerts](/assets/screen-settings-overdue.png)
 
-## Configure Per-Backup Overdue Settings {#configure-per-backup-overdue-settings}
+## Configurar Configurações de Backup Atrasado por Backup {#configure-per-backup-overdue-settings}
 
-- **Server Name**: The name of the server to monitor for overdue backups.
-  - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
-  - Click <IIcon2 icon="lucide:download" height="18"/> to collect backup logs from this server.
-- **Backup Name**: The name of the backup to monitor for overdue backups.
-- **Next Run**: The next scheduled backup time displayed in green if scheduled in the future, or in red if overdue. Hovering over the "Next Run" value displays a tooltip showing the last backup timestamp from the database, formatted with full date/time and relative time.
-- **Overdue Backup Monitoring**: Enable or disable overdue monitoring for this backup.
-- **Expected Backup Interval**: The expected backup interval.
-- **Unit**: The unit of the expected interval.
-- **Allowed Days**: The allowed weekdays for the backup.
+-  **Nome do servidor**: O nome do servidor a monitorar para backups atrasados. 
+   - Clique em <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> para abrir a interface web do servidor Duplicati
+   - Clique em <IIcon2 icon="lucide:download" height="18"/> para coletar logs de backup deste servidor.
+- **Nome do backup**: O nome do backup a monitorar para backups atrasados.
+- **Próxima execução**: O próximo horário de backup agendado exibido em verde se agendado no futuro, ou em vermelho se atrasado. Ao passar o mouse sobre o valor "Próxima execução", um tooltip é exibido mostrando o timestamp do último backup do banco de dados, formatado com data/hora completa e tempo relativo.
+- **Monitoramento de backups atrasados**: Ativar ou desativar o monitoramento de backups atrasados para este backup.
+- **Intervalo de backup esperado**: O intervalo de backup esperado.
+- **Unidade**: A unidade do intervalo esperado.
+- **Dias permitidos**: Os dias da semana permitidos para o backup.
 
-If the icons on the side of the server name are greyed out, the server is not configured in the [`Settings → Server Settings`](server-settings.md).
+Se os ícones ao lado do nome do servidor estiverem acinzentados, o servidor não está configurado em [`Configurações → Configurações do Servidor`](server-settings.md).
 
 :::note
-When you collect backup logs from a Duplicati server, **duplistatus** automatically updates the overdue monitoring intervals and configurations.
+Quando você coleta logs de backup de um servidor Duplicati, **duplistatus** atualiza automaticamente os intervalos de monitoramento de backups atrasados e as configurações.
 :::
 
 :::tip
-For best results, collect backup logs after changing backup job intervals configuration in your Duplicati server. This ensures **duplistatus** stays synchronised with your current configuration.
+Para melhores resultados, colete logs de backup após alterar a configuração de intervalos de trabalho de backup no seu Servidor Duplicati. Isso garante que **duplistatus** permaneça sincronizado com sua configuração atual.
 :::
 
-## Global Configurations {#global-configurations}
+## Configurações Globais {#global-configurations}
 
-These settings apply to all backups:
+Estas configurações se aplicam a todos os backups:
 
-| Setting                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| :------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Overdue Tolerance**           | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is `1 hour`.                                                                                                                                                                                                                                                                                                                             |
-| **Overdue Monitoring Interval** | How often the system checks for overdue backups. The default is `5 minutes`.                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Notification Frequency**      | How often to send overdue notifications: <br/> `One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month`: Send **monthly** notifications while overdue. |
+| Configuração                         | Descrição                                                                                                                                                                                                                                                                                           |
+|:--------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Tolerância de atraso**           | O período de carência (tempo extra permitido) adicionado ao tempo de backup esperado antes de marcar como atrasado. O padrão é `1 hora`.                                                                                                                                                                           |
+| **Intervalo de monitoramento de backups atrasados** | Com que frequência o sistema verifica se há backups atrasados. O padrão é `5 minutos`.                                                                                                                                                                                                                          |
+| **Frequência de notificações**      | Com que frequência enviar notificações de backups atrasados: <br/> `Uma vez`: Enviar **apenas uma** notificação quando o backup ficar atrasado. <br/> `Todos os dias`: Enviar notificações **diárias** enquanto atrasado (padrão). <br/> `Todas as semanas`: Enviar notificações **semanais** enquanto atrasado. <br/> `Todos os meses`: Enviar notificações **mensais** enquanto atrasado. |
 
-## Available Actions {#available-actions}
+## Ações Disponíveis {#available-actions}
 
-| Button                                                              | Description                                                                                                                                                                           |
-| :------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| <IconButton label="Save Overdue Monitoring Settings" />             | Saves the settings, clears timers for any disabled backups, and runs an overdue check.                                                                                |
-| <IconButton icon="lucide:import" label="Collect All (#)"/>          | Collect backup logs from all configured servers, in brackets the number of servers to collect from.                                                                   |
-| <IconButton icon="lucide:download" label="Download CSV"/>           | Downloads a CSV file containing all overdue monitoring settings and the "Last Backup Timestamp (DB)" from the database.                            |
-| <IconButton icon="lucide:refresh-cw" label="Check now"/>            | Runs the overdue backup check immediately. This is useful after changing configurations. It also triggers a "Next Run" recalculation. |
-| <IconButton icon="lucide:timer-reset" label="Reset notifications"/> | Resets the last overdue notification sent for all backups.                                                                                                            |
-
-
+| Botão                                                              | Descrição                                                                                         |
+|:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
+| <IconButton label="Salvar configurações de monitoramento de backups atrasados" />             | Salva as configurações, limpa temporizadores para qualquer backup desabilitado e executa uma verificação de backup atrasado.              |
+| <IconButton icon="lucide:import" label="Coletar todos (#)"/>          | Coletar logs de backup de todos os servidores configurados, entre parênteses o número de servidores para coletar. |
+| <IconButton icon="lucide:download" label="Baixar CSV"/>            | Baixa um arquivo CSV contendo todas as configurações de monitoramento de backups atrasados e o "Data e hora do último backup (BD)" do banco de dados. |
+| <IconButton icon="lucide:refresh-cw" label="Verificar agora"/>            | Executa a verificação de backup atrasado imediatamente. Isto é útil após alterar configurações. Também dispara um recálculo de "Próxima execução". |
+| <IconButton icon="lucide:timer-reset" label="Redefinir notificações"/> | Redefine a última notificação de backup atrasado enviada para todos os backups.                                          |

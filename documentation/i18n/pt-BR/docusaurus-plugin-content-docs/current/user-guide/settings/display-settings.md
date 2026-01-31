@@ -1,22 +1,28 @@
-# Display {#display}
+---
+translation_last_updated: '2026-01-31T00:51:30.981Z'
+source_file_mtime: '2026-01-27T14:22:06.838Z'
+source_file_hash: 7fd2a7943ef2234b
+translation_language: pt-BR
+source_file_path: user-guide/settings/display-settings.md
+---
+# Exibição {#display}
 
-Configure user interface and display preferences.
+Configurar preferências de interface do usuário e exibição.
 
 ![Display Settings](/assets/screen-settings-display.png)
 
 <br/>
 
-| Setting                   | Description                                                         | Default Value       |
-| :------------------------ | :------------------------------------------------------------------ | :------------------ |
-| **Table Size**            | Number of rows per page on the server details page. | 5 rows              |
-| **Chart Time Range**      | Time interval shown in the charts.                  | All available data  |
-| **Auto-refresh Interval** | How often pages refresh automatically.              | 1 minute            |
-| **Cards Sort Order**      | How cards are sorted on the dashboard.              | `Server name (a-z)` |
-| **Theme**                 | Select the light or dark theme.                     | Dark                |
+| Configuração                    | Descrição                                                    | Valor Padrão        |
+| :------------------------------ | :----------------------------------------------------------- | :------------------ |
+| **Tamanho da Tabela**           | Número de linhas por página na página de detalhes do servidor. | 5 linhas            |
+| **Intervalo de tempo do gráfico** | Intervalo de tempo mostrado nos gráficos.                    | Todos os dados disponíveis |
+| **Intervalo de atualização automática** | Com que frequência as páginas são atualizadas automaticamente. | 1 minuto            |
+| **Ordem de classificação dos cartões** | Como os cartões são classificados no painel.                 | `Nome do servidor (a-z)` |
+| **Tema**                        | Selecione o tema claro ou escuro.                            | Escuro              |
 
 <br/>
 
 :::tip
-**Quick Access**: You can quickly access this page by right-clicking on the auto-refresh button in the application toolbar.
+**Acesso Rápido**: Você pode acessar rapidamente esta página clicando com o botão direito no botão de atualização automática na barra de ferramentas da aplicação.
 :::
-

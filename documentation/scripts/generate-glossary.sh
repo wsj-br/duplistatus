@@ -1,5 +1,5 @@
-cd #!/bin/bash
-# Generate glossary from intlayer dictionaries for Crowdin import
+#!/bin/bash
+# Generate glossary from intlayer dictionaries
 # This script extracts terminology and updates the documentation glossary
 
 set -e
@@ -64,11 +64,8 @@ echo ""
 echo "=== Glossary Generation Complete ==="
 echo ""
 echo "Generated files:"
-echo "  - CSV for Crowdin: $CSV_OUTPUT"
+echo "  - CSV glossary: $CSV_OUTPUT"
 echo "  - Markdown table: $MARKDOWN_OUTPUT"
 echo ""
-echo "Next steps:"
-echo "  1. Review the generated glossary.csv"
-echo "  2. Import to Crowdin: Project → Glossary → Import → Upload glossary.csv"
-echo "  3. Or use CLI: crowdin glossary upload --file glossary.csv (if supported)"
+echo "The glossary has been updated in CONTRIBUTING-TRANSLATIONS.md"
 echo ""

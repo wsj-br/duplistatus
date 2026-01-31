@@ -24,7 +24,18 @@
     "serve:all": "docusaurus serve --dir build",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "translate": "tsx scripts/translate/index.ts",
+    "translate:fr": "tsx scripts/translate/index.ts --locale fr",
+    "translate:de": "tsx scripts/translate/index.ts --locale de",
+    "translate:es": "tsx scripts/translate/index.ts --locale es",
+    "translate:pt-br": "tsx scripts/translate/index.ts --locale pt-BR",
+    "translate:dry-run": "tsx scripts/translate/index.ts --dry-run --verbose",
+    "translate:stats": "tsx scripts/translate/index.ts --stats",
+    "translate:clear-cache": "tsx scripts/translate/index.ts --clear-cache",
+    "translate:clean-frontmatter": "tsx scripts/translate/clean-frontmatter-cache.ts",
+    "translate:status": "tsx scripts/translate/check-status.ts",
+    "translate:test-cost": "tsx scripts/translate/test-cost.ts"
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^2.0.1",
@@ -46,8 +57,16 @@
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/tsconfig": "3.9.2",
     "@docusaurus/types": "3.9.2",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/papaparse": "^5.3.15",
+    "better-sqlite3": "^11.7.0",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.0.1",
+    "gray-matter": "^4.0.3",
+    "papaparse": "^5.5.2",
+    "tsx": "^4.19.0",
     "typescript": "~5.9.3"
   },
   "browserslist": {

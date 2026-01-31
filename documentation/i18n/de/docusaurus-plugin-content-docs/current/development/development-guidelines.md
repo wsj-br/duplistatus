@@ -1,48 +1,53 @@
-# Development Reference {#development-reference}
+---
+translation_last_updated: '2026-01-31T00:51:23.229Z'
+source_file_mtime: '2026-01-27T14:22:06.830Z'
+source_file_hash: 1afab25f18ff213d
+translation_language: de
+source_file_path: development/development-guidelines.md
+---
+# Entwicklungsreferenz {#development-reference}
 
-## Code Organisation {#code-organisation}
+## Code-Organisation {#code-organisation}
 
-- **Components**: `src/components/` with subdirectories:
-  - `ui/` - shadcn/ui components and reusable UI elements
-  - `dashboard/` - Dashboard-specific components
-  - `settings/` - Settings page components
-  - `server-details/` - Server detail page components
-- **API Routes**: `src/app/api/` with RESTful endpoint structure (see [API Reference](../api-reference/overview))
-- **Database**: SQLite with better-sqlite3, utilities in `src/lib/db-utils.ts`, migrations in `src/lib/db-migrations.ts`
-- **Types**: TypeScript interfaces in `src/lib/types.ts`
-- **Configuration**: Default configs in `src/lib/default-config.ts`
-- **Cron Service**: `src/cron-service/` (runs on port 8667 dev, 9667 prod)
-- **Scripts**: Utility scripts in `scripts/` directory
-- **Security**: CSRF protection in `src/lib/csrf-middleware.ts`, use `withCSRF` middleware for protected endpoints
+- **Komponenten**: `src/components/` mit Unterverzeichnissen:
+  - `ui/` - shadcn/ui-Komponenten und wiederverwendbare UI-Elemente
+  - `dashboard/` - Dashboard-spezifische Komponenten
+  - `settings/` - Einstellungen-Seiten-Komponenten
+  - `server-details/` - Server-Details-Seiten-Komponenten
+- **API-Routen**: `src/app/api/` mit RESTful-Endpunkt-Struktur (siehe [API-Referenz](../api-reference/overview))
+- **Datenbank**: SQLite mit better-sqlite3, Dienstprogramme in `src/lib/db-utils.ts`, Migrationen in `src/lib/db-migrations.ts`
+- **Typen**: TypeScript-Schnittstellen in `src/lib/types.ts`
+- **Konfiguration**: Standardkonfigurationen in `src/lib/default-config.ts`
+- **Cron-Dienst**: `src/cron-service/` (läuft auf Port 8667 Dev, 9667 Prod)
+- **Skripte**: Dienstprogramm-Skripte im Verzeichnis `scripts/`
+- **Sicherheit**: CSRF-Schutz in `src/lib/csrf-middleware.ts`, verwenden Sie die `withCSRF`-Middleware für geschützte Endpunkte
 
-## Testing & Debugging {#testing-debugging}
+## Testen und Debuggen {#testing-debugging}
 
-- Test data generation: `pnpm generate-test-data --servers=N`
-- Notification testing: `/api/notifications/test` endpoint
-- Cron health checks: `curl http://localhost:8667/health` or `curl http://localhost:8666/api/cron/health`
-- Overdue backup testing: `pnpm run-overdue-check`
-- Development mode: verbose logging and JSON file storage
-- Database maintenance: use maintenance menu for cleanup operations
-- Pre-checks: `scripts/pre-checks.sh` for troubleshooting startup issues
+- Testdatengenerierung: `pnpm generate-test-data --servers=N`
+- Benachrichtigungstests: `/api/notifications/test` Endpunkt
+- Cron-Integritätsprüfungen: `curl http://localhost:8667/health` oder `curl http://localhost:8666/api/cron/health`
+- Überfällige Sicherungstests: `pnpm run-overdue-check`
+- Entwicklungsmodus: ausführliches Logging und JSON-Dateispeicherung
+- Datenbankwartung: Verwenden Sie das Wartungsmenü für Bereinigungsvorgänge
+- Vorabprüfungen: `scripts/pre-checks.sh` zur Fehlerbehebung bei Startproblemen
 
-## Development References {#development-references}
+## Entwicklungsreferenzen {#development-references}
 
-- API endpoints: See [API Reference](../api-reference/overview)
-- Database schema: See [Database Schema](database)
-- Follow patterns in `src/lib/db-utils.ts` for database operations
+- API-Endpunkte: Siehe [API-Referenz](../api-reference/overview)
+- Datenbankschema: Siehe [Datenbankschema](database)
+- Befolgen Sie die Muster in `src/lib/db-utils.ts` für Datenbankoperationen
 
-## Frameworks & Libraries {#frameworks-libraries}
+## Frameworks & Bibliotheken {#frameworks-libraries}
 
-### Runtime & Package Management {#runtime-package-management}
-
+### Laufzeit & Paketverwaltung {#runtime-package-management}
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.28.0)
 
 ### Core Frameworks & Libraries {#core-frameworks-libraries}
-
 - Next.js ^16.1.1 (App Router)
 - React ^19.2.3 & React-DOM ^19.2.3
-- Radix UI (@radix-ui/react-\*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
+- Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
 - Tailwind CSS ^4.1.18 + tailwindcss-animate ^1.0.7
 - Better-sqlite3 ^12.6.0
 - Recharts ^3.6.0, react-day-picker ^9.13.0, react-hook-form ^7.70.0, react-datepicker ^9.1.0
@@ -51,28 +56,25 @@
 - express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^7.0.12, qrcode ^1.5.4
 
-### Type Checking & Linting {#type-checking-linting}
-
+### Typüberprüfung und Linting {#type-checking-linting}
 - TypeScript ^5.9.3
 - TSX ^4.21.0
 - ESLint ^9.39.2 (via `next lint`)
 
 ### Build & Deployment {#build-deployment}
+- Next.js Standalone-Ausgabe (`output: 'standalone'`) mit Container-Einstiegspunkt, der `server.js` startet
+- Docker (node:alpine Basis) mit Multi-Architektur-Builds (AMD64, ARM64)
+- GitHub Actions-Workflows für CI/CD
+- Inkscape für Logos und Bilder
+- Docusaurus für Dokumentation
+- Greenfish Icon Editor für Symbole
 
-- Next.js standalone output (`output: 'standalone'`) with container entrypoint starting `server.js`
-- Docker (node:alpine base) with multi-architecture builds (AMD64, ARM64)
-- GitHub Actions workflows for CI/CD
-- Inkscape for logos and pictures
-- Docusaurus for documentation
-- Greenfish Icon Editor for icons
-
-### Project Configuration {#project-configuration}
-
+### Projektkonfiguration {#project-configuration}
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## System Features {#system-features}
+## Systemfunktionen {#system-features}
 
-- **Cron Service**: Separate service for scheduled tasks, auto-restart via `duplistatus-cron.sh`
-- **Notifications**: ntfy.sh integration and SMTP email (nodemailer), configurable templates
-- **Auto-refresh**: Configurable automatic refresh for dashboard and detail pages
+- **Cron Service**: Separater Service für geplante Aufgaben, automatischer Neustart über `duplistatus-cron.sh`
+- **Benachrichtigungen**: ntfy.sh-Integration und SMTP-E-Mail (nodemailer), konfigurierbare Vorlagen
+- **Automatische Aktualisierung**: Konfigurierbare automatische Aktualisierung für Dashboard und Detailseiten

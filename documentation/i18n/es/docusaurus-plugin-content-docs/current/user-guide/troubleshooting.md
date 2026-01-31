@@ -1,62 +1,66 @@
-# Troubleshooting {#troubleshooting}
+---
+translation_last_updated: '2026-01-31T00:51:29.250Z'
+source_file_mtime: '2026-01-31T00:23:03.813Z'
+source_file_hash: ccb921e081ad2c50
+translation_language: es
+source_file_path: user-guide/troubleshooting.md
+---
+# Solución de problemas {#troubleshooting}
 
-### Dashboard Not Loading {#dashboard-not-loading}
-
-- Check if the container is running: `docker ps`
-- Verify port 9666 is accessible
-- Check container logs: `docker logs duplistatus`
+### Panel de control no se carga {#dashboard-not-loading}
+- Verificar si el contenedor se está ejecutando: `docker ps`
+- Verificar que el puerto 9666 sea accesible
+- Verificar los logs del contenedor: `docker logs duplistatus`
 
 ### No Backup Data {#no-backup-data}
+- Verificar la configuración del servidor Duplicati
+- Verificar la conectividad de red entre servidores
+- Revisar los logs de duplistatus para errores
+- Asegurar que los trabajos de backup se estén ejecutando
 
-- Verify Duplicati server configuration
-- Check network connectivity between servers
-- Review duplistatus logs for errors
-- Ensure backup jobs are running
+### Notificaciones no funcionan {#notifications-not-working}
+- Verificar la configuración de notificaciones
+- Verificar la conectividad del servidor NTFY (si utiliza NTFY)
+- Probar la configuración de notificaciones
+- Verificar los logs de notificaciones
 
-### Notifications Not Working {#notifications-not-working}
+### Nuevos Backups No Se Muestran {#new-backups-not-showing}
 
-- Check notification configuration
-- Verify NTFY server connectivity (if using NTFY)
-- Test notification settings
-- Check notification logs
+Si ve advertencias del servidor Duplicati como `HTTP Response request failed for:` y `Failed to send message: System.Net.Http.HttpRequestException:`, y los nuevos backups no aparecen en el panel de control o en el historial de backups:
 
-### New Backups Not Showing {#new-backups-not-showing}
+- **Verificar Configuración de Duplicati**: Confirmar que Duplicati esté configurado correctamente para enviar datos a **duplistatus**. Verificar la configuración de URL HTTP en Duplicati.
+- **Verificar Conectividad de Red**: Asegurar que el servidor Duplicati pueda conectarse al servidor **duplistatus**. Confirmar que el puerto sea correcto (por defecto: `9666`).
+- **Revisar Logs de Duplicati**: Verificar errores de solicitud HTTP en los logs de Duplicati.
 
-If you see Duplicati server warnings like `HTTP Response request failed for:` and `Failed to send message: System.Net.Http.HttpRequestException:`, and new backups do not appear in the dashboard or backup history:
+### Notificaciones No Funcionan (Detallado) {#notifications-not-working-detailed}
 
-- **Check Duplicati Configuration**: Confirm that Duplicati is configured correctly to send data to **duplistatus**. Verify the HTTP URL settings in Duplicati.
-- **Check Network Connectivity**: Ensure the Duplicati server can connect to the **duplistatus** server. Confirm the port is correct (default: `9666`).
-- **Review Duplicati Logs**: Check for HTTP request errors in the Duplicati logs.
+Si las notificaciones no se están enviando ni recibiendo:
 
-### Notifications Not Working (Detailed) {#notifications-not-working-detailed}
+- **Verificar Configuración NTFY**: Asegúrese de que la URL NTFY y el tema sean correctos. Utilice el botón `Enviar notificación de prueba` para probar.
+- **Verificar conectividad de red**: Verifique que **duplistatus** pueda alcanzar su servidor NTFY. Revise la configuración del firewall si es aplicable.
+- **Verificar Configuración de notificaciones**: Confirme que las notificaciones estén habilitadas para los backups relevantes.
 
-If notifications are not being sent or received:
+### Versiones disponibles que no aparecen {#available-versions-not-appearing}
 
-- **Check NTFY Configuration**: Ensure the NTFY URL and topic are correct. Use the `Send Test Notification` button to test.
-- **Check Network Connectivity**: Verify that **duplistatus** can reach your NTFY server. Review firewall settings if applicable.
-- **Check Notification Settings**: Confirm that notifications are enabled for the relevant backups.
+Si las versiones de backup no se muestran en el panel de control o en la página de detalles:
 
-### Available Versions Not Appearing {#available-versions-not-appearing}
+- **Verificar Configuración de Duplicati**: Asegúrese de que `send-http-log-level=Information` y `send-http-max-log-lines=0` estén configurados en las opciones avanzadas de Duplicati.
 
-If backup versions are not shown on the dashboard or details page:
+### Alertas de Backup Retrasado No Funcionan {#overdue-backup-alerts-not-working}
 
-- **Check Duplicati Configuration**: Ensure `send-http-log-level=Information` and `send-http-max-log-lines=0` are configured in Duplicati's advanced options.
+Si las notificaciones de backup retrasado no se están enviando:
 
-### Overdue Backup Alerts Not Working {#overdue-backup-alerts-not-working}
+- **Verificar Configuración de retrasos**: Confirmar que el monitoreo de backups retrasados esté habilitado para el backup. Verificar la configuración del intervalo esperado y la tolerancia.
+- **Verificar Frecuencia de notificaciones**: Si se establece en `One time`, las alertas se envían solo una vez por evento de backup retrasado.
+- **Verificar Servicio Cron**: Asegurar que el servicio cron que monitorea los backups retrasados se esté ejecutando correctamente. Verificar los logs de aplicación para errores. Verificar que el servicio cron sea accesible en el puerto configurado (por defecto: `8667`).
 
-If overdue backup notifications are not being sent:
+### Recopilar logs de backup no funciona {#collect-backup-logs-not-working}
 
-- **Check Overdue Configuration**: Confirm that overdue monitoring is enabled for the backup. Verify the expected interval and tolerance settings.
-- **Check Notification Frequency**: If set to `One time`, alerts are only sent once per overdue event.
-- **Check Cron Service**: Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors. Verify the cron service is accessible at the configured port (default: `8667`).
+Si la recopilación manual del registro de backup falla:
 
-### Collect Backup Logs Not Working {#collect-backup-logs-not-working}
-
-If the manual backup log collection fails:
-
-- **Check Duplicati Server Access**: Verify the Duplicati server hostname and port are correct. Confirm remote access is enabled in Duplicati. Ensure the authentication password is correct.
-- **Check Network Connectivity**: Test connectivity from **duplistatus** to the Duplicati server. Confirm the Duplicati server port is accessible (default: `8200`).
-  For example, if you are using Docker, you can use `docker exec -it <container-name> /bin/sh` to access the container's command line and run network tools like `ping` and `curl`.
+- **Verificar el acceso al servidor Duplicati**: Verifique que el nombre de host y el puerto del servidor Duplicati sean correctos. Confirme que el acceso remoto esté habilitado en Duplicati. Asegúrese de que la contraseña de autenticación sea correcta.
+- **Verificar la conectividad de red**: Pruebe la conectividad desde **duplistatus** al servidor Duplicati. Confirme que el puerto del servidor Duplicati sea accesible (por defecto: `8200`).
+  Por ejemplo, si está utilizando Docker, puede usar `docker exec -it <container-name> /bin/sh` para acceder a la línea de comandos del contenedor y ejecutar herramientas de red como `ping` y `curl`.
 
     ```bash
     docker exec -it duplistatus /bin/sh
@@ -64,58 +68,55 @@ If the manual backup log collection fails:
     curl -I http://duplicati-server.local:8200
     ```
 
-  Also check for the DNS configuration inside the container (see more at [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
+Verificar también la configuración de DNS dentro del contenedor (consulte más en [DNS Configuration for Podman Containers](../installation/installation.md#configuring-dns-for-podman-containers))
 
-### Upgrade from an earlier version (\<0.9.x) and can't login {#upgrade-from-an-earlier-version-09x-and-cant-login}
+### Actualizar desde una versión anterior (anterior a 0.9.x) y no puedo iniciar sesión {#upgrade-from-an-earlier-version-09x-and-cant-login}
 
-**duplistatus** since version 0.9.x requires user authentication. A default `admin` account is created automatically when installing the application for the first time or upgrading from an earlier version:
-\- username: `admin`
-\- password: `Duplistatus09`
+**duplistatus** desde la versión 0.9.x requiere autenticación de usuario. Una cuenta `admin` por defecto se crea automáticamente al instalar la aplicación por primera vez o al actualizar desde una versión anterior:
+    - Nombre de usuario: `admin`
+    - Contraseña: `Duplistatus09`
 
-You can create additional users accounts in [Settings > Users](settings/user-management-settings.md) after the first login.
+Puede crear cuentas de usuario adicionales en [Configuración > Usuarios](settings/user-management-settings.md) después del primer inicio de sesión.
 
-### Lost Admin Password or Locked Out {#lost-admin-password-or-locked-out}
+### Contraseña de Admin Perdida o Bloqueado {#lost-admin-password-or-locked-out}
 
-If you've lost your administrator password or been locked out of your account:
+Si ha perdido su contraseña de administrador o ha sido bloqueado de su cuenta:
 
-- **Use Admin Recovery Script**: See the [Admin Account Recovery](admin-recovery.md) guide for instructions on recovering administrator access in Docker environments.
-- **Verify Container Access**: Ensure you have Docker exec access to the container to run the recovery script.
+- **Usar Script de Recuperación de Admin**: Consulte la guía [Recuperación de Cuenta de Admin](admin-recovery.md) para obtener instrucciones sobre cómo recuperar el acceso de administrador en entornos Docker.
+- **Verificar Acceso al Contenedor**: Asegúrese de tener acceso a Docker exec al contenedor para ejecutar el script de recuperación.
 
-### Database Backup and Migration {#database-backup-and-migration}
+### Backup de base de datos y migración {#database-backup-and-migration}
 
-When migrating from previous versions or creating a database backup:
+Cuando migre desde versiones anteriores o cree un backup de base de datos:
 
-**If you're running version 1.2.1 or later:**
+**Si está ejecutando la versión 1.2.1 o posterior:**
+- Utilice la función de backup de base de datos integrada en `Configuración → Mantenimiento de base de datos`
+- Seleccione su formato preferido (.db o .sql) y haga clic en `Descargar Backup`
+- El archivo de backup será descargado a su computadora
+- Consulte [Mantenimiento de base de datos](settings/database-maintenance.md#database-backup) para obtener instrucciones detalladas
 
-- Use the built-in database backup function in `Settings → Database Maintenance`
-- Select your preferred format (.db or .sql) and click `Download Backup`
-- The backup file will be downloaded to your computer
-- See [Database Maintenance](settings/database-maintenance.md#database-backup) for detailed instructions
+**Si está ejecutando una versión anterior a 1.2.1:**
+- Deberá realizar un backup manual. Consulte la [Guía de Migración](../migration/version_upgrade.md#backing-up-your-database-before-migration) para obtener más información.
 
-**If you're running a version before 1.2.1:**
+Si aún experimenta problemas, intente los siguientes pasos:
 
-- You'll need to manually backup.  see the [Migration Guide](../migration/version_upgrade.md#backing-up-your-database-before-migration) for more information.
-
-If you still experience issues, try the following steps:
-
-1. **Inspect Application Logs**: If using Docker, run `docker logs <container-name>` to review detailed error information.
-2. **Validate Configuration**: Double-check all configuration settings in your container management tool (Docker, Portainer, Podman, etc.) including ports, network, and permissions.
-3. **Verify Network Connectivity**: Confirm all network connections are stable.
-4. **Check Cron Service**: Ensure the cron service is running alongside the main application. Check logs for both services.
-5. **Consult Documentation**: Refer to the Installation Guide and README for more information.
-6. **Report Issues**: If the problem persists, please submit a detailed issue on the [duplistatus GitHub repository](https://github.com/wsj-br/duplistatus/issues).
+1.  **Inspeccionar Logs de aplicación**: Si utiliza Docker, ejecute `docker logs <container-name>` para revisar información detallada de errores.
+2.  **Validar Configuración**: Verifique nuevamente todos los parámetros de configuración en su herramienta de gestión de contenedores (Docker, Portainer, Podman, etc.) incluyendo puertos, red y permisos.
+3.  **Verificar Conectividad de Red**: Confirme que todas las conexiones de red sean estables.
+4.  **Verificar Servicio Cron**: Asegúrese de que el servicio cron se esté ejecutando junto con la aplicación principal. Verifique los logs de ambos servicios.
+5.  **Consultar Documentación**: Consulte la Guía de Instalación y el README para obtener más información.
+6.  **Reportar Problemas**: Si el problema persiste, envíe un problema detallado en el [repositorio de GitHub de duplistatus](https://github.com/wsj-br/duplistatus/issues).
 
 <br/>
 
-# Additional Resources {#additional-resources}
+# Recursos Adicionales {#additional-resources}
 
-- **Installation Guide**: [Installation Guide](../installation/installation.md)
-- **Duplicati Documentation**: [docs.duplicati.com](https://docs.duplicati.com)
-- **API Documentation**: [API Reference](../api-reference/overview.md)
-- **GitHub Repository**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
-- **Development Guide**: [Development Guide](../development/setup.md)
-- **Database Schema**: [Database Documentation](../development/database)
+- **Guía de Instalación**: [Guía de Instalación](../installation/installation.md)
+- **Documentación de Duplicati**: [docs.duplicati.com](https://docs.duplicati.com)
+- **Documentación de API**: [Referencia de API](../api-reference/overview.md)
+- **Repositorio de GitHub**: [wsj-br/duplistatus](https://github.com/wsj-br/duplistatus)
+- **Guía de Desarrollo**: [Guía de Desarrollo](../development/setup.md)
+- **Esquema de Base de Datos**: [Documentación de Base de Datos](../development/database)
 
-### Support {#support}
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/wsj-br/duplistatus/issues)
+### Soporte {#support}
+- **GitHub Issues**: [Reportar errores o solicitar funcionalidades](https://github.com/wsj-br/duplistatus/issues)

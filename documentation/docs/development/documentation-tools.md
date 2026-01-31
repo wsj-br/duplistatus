@@ -114,7 +114,7 @@ The `generate-readme-from-intro.sh` script automatically generates GitHub releas
 
 **Example:**
 ```bash
-# This will generate both README.md and RELEASE_NOTES_github_VERSION.md {#this-will-generate-both-readmemd-and-release_notes_github_versionmd}
+# This will generate both README.md and RELEASE_NOTES_github_VERSION.md
 ./scripts/generate-readme-from-intro.sh
 ```
 

@@ -1,129 +1,135 @@
-# Dashboard {#dashboard}
+---
+translation_last_updated: '2026-01-31T00:51:29.046Z'
+source_file_mtime: '2026-01-27T14:22:06.834Z'
+source_file_hash: 0381dde985922ed1
+translation_language: es
+source_file_path: user-guide/dashboard.md
+---
+# Panel de control {#dashboard}
 
 :::tip
-**Quick Access to Display Settings**: Right-click on the auto-refresh button in the application toolbar to quickly open the [Display Settings](settings/display-settings.md) page.
+**Acceso rápido a Configuración de pantalla**: Haga clic con el botón derecho en el botón de actualización automática en la barra de herramientas de la aplicación para abrir rápidamente la página [Configuración de pantalla](settings/display-settings.md).
 :::
 
-## Dashboard Summary {#dashboard-summary}
+## Resumen del Panel de Control {#dashboard-summary}
 
-This section displays aggregated statistics for all backups.
+Esta sección muestra estadísticas agregadas para todas las copias de seguridad.
 
-![Dashboard summary - overview](/assets/screen-dashboard-summary.png)
-![Dashboard summary - table](/assets/screen-dashboard-summary-table.png)
+![Panel de control resumen - resumen](/assets/screen-dashboard-summary.png)
+![Panel de control resumen - tabla](/assets/screen-dashboard-summary-table.png)
 
-- **Total Servers**: The number of servers being monitored.                                                                                                             |
-- **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                |
-- **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.                                                                   |
-- **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.                                                                    |
-- **Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs. |
-- **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).                         |
-- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                             |
-- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                  |
+- **Servidores totales**: El número de servidores siendo monitoreados.
+- **Total de trabajos de backup**: El número total de trabajos de backup (tipos) configurados para todos los servidores.
+- **Total de ejecuciones de backup**: El número total de logs de backup de ejecuciones recibidas o recopiladas para todos los servidores.
+- **Tamaño total de backups**: El tamaño combinado de todos los datos de origen, basado en los últimos logs de backup recibidos.
+- **Almacenamiento utilizado**: El espacio total de almacenamiento utilizado por los backups en el destino de backup (por ejemplo, almacenamiento en la nube, servidor FTP, unidad local), basado en los últimos logs de backup.
+- **Tamaño cargado**: La cantidad total de datos enviados desde el servidor Duplicati al destino (por ejemplo, almacenamiento local, FTP, proveedor de nube).
+- **Backups retrasados** (tabla): El número de backups que están retrasados. Consulte [Configuración de Notificaciones de backup](settings/backup-notifications-settings.md)
+- **Alternancia de diseño**: Cambia entre el diseño de Tarjetas (por defecto) y el diseño de Tabla.
 
-## Cards Layout {#cards-layout}
+## Diseño de Tarjetas {#cards-layout}
 
-The cards layout shows the status of the most recent backup log received for each backup.
+El diseño de tarjetas muestra el estado del registro de backup más reciente recibido para cada backup.
 
 ![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
-- **Server Name**: Name of the Duplicati server (or the alias)
-  - Hovering over the **Server Name** will show the server name and note
-- **Overall Status**: The status of the server. Overdue backups will show as a `Warning` status
-- **Summary information**: The consolidated number of files, size and storage used for all backups of this server. Also shows the elapsed time of the most recent backup received (hover over to show the timestamp)
-- **Backups list**: A table with all the backups configured for this server, with 3 columns:
-  - **Backup Name**: Name of the backup in the Duplicati server
-  - **Status history**: Status of the last 10 backups received.
-  - **Last backup received**: The elapsed time since the current time of the last log received. It will show a warning icon if the backup is overdue.
-    - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for years.
+- **Nombre del servidor**: Nombre del servidor Duplicati (o el alias)
+  - Al pasar el cursor sobre el **Nombre del servidor** se mostrará el nombre del servidor y la nota
+- **Estado general**: El estado del servidor. Los backups retrasados se mostrarán con un estado de `Advertencia`
+- **Información de resumen**: El número consolidado de archivos, tamaño y almacenamiento utilizado para todas las copias de seguridad de este servidor. También muestra el tiempo transcurrido del backup más reciente recibido (pase el cursor para mostrar la marca de tiempo)
+- **Lista de backups**: Una tabla con todos los backups configurados para este servidor, con 3 columnas:
+  - **Nombre de backup**: Nombre del backup en el servidor Duplicati
+  - **Historial de estado**: Estado de los últimos 10 backups recibidos.
+  - **Último backup recibido**: El tiempo transcurrido desde la hora actual del último registro recibido. Mostrará un icono de advertencia si el backup está retrasado.
+    - El tiempo se muestra en formato abreviado: `m` para minutos, `h` para horas, `d` para días, `w` para semanas, `mo` para meses, `y` para años.
 
 :::note
-You can use the [Display Settings](settings/display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
+Puede utilizar la [Configuración de pantalla](settings/display-settings.md) para configurar el orden de clasificación de las tarjetas. Las opciones disponibles son `Server name (a-z)`, `Status (error > warning > success)` y `Last backup received (new > old)`.
 :::
 
-You can toggle the top right button on the side panel to change the panel view:
+Puede alternar el botón en la esquina superior derecha del panel lateral para cambiar la vista del panel:
 
-- Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status.
+- Estado: Mostrar estadísticas de los trabajos de backup por estado, con una lista de backups retrasados y trabajos de backup con estado de advertencias/errores.
 
 ![status panel](/assets/screen-overview-side-status.png)
 
-- Metrics: Show charts with duration, file size and storage size over time for the aggregated or selected server.
+- Métricas: Mostrar gráficos con duración, tamaño de archivos y tamaño de almacenamiento a lo largo del tiempo para el servidor agregado o seleccionado.
 
 ![charts panel](/assets/screen-overview-side-charts.png)
 
-### Backup Details {#backup-details}
+### Detalles del backup {#backup-details}
 
-Hovering over a backup in the list displays details of the last backup log received and any overdue information.
+Al pasar el cursor sobre un backup en la lista, se muestran los detalles del último registro de backup recibido y cualquier información de retrasos.
 
 ![Overdue details](/assets/screen-backup-tooltip.png)
 
-- **Server Name : Backup**: The name or alias of the Duplicati server and backup, will also show the server name and note.
-  - The alias and note can be configured at `Settings → Server Settings`.
-- **Notification**: An icon showing the [configured notification](#notifications-icons) setting for new backup logs.
-- **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
-- **Status**: The status of the last backup received (Success, Warning, Error, Fatal).
-- **Duration, File Count, File Size, Storage Size, Uploaded Size**: Values as reported by the Duplicati server.
-- **Available Versions**: The number of backup versions stored on the backup destination at the time of the backup.
+- **Nombre del servidor : Backup**: El nombre o alias del servidor Duplicati y backup, también mostrará el nombre del servidor y la nota.
+  - El alias y la nota se pueden configurar en `Configuración → Configuración del servidor`.
+- **Notificaciones**: Un icono que muestra la configuración de [notificación configurada](#notifications-icons) para nuevos logs de backup.
+- **Fecha**: La marca de tiempo del backup y el tiempo transcurrido desde la última actualización de pantalla.
+- **Estado**: El estado del último backup recibido (Éxito, Advertencia, Error, Fatal).
+- **Duración, Cantidad de archivos, Tamaño de archivos, Tamaño de almacenamiento, Tamaño cargado**: Valores reportados por el servidor Duplicati.
+- **Versiones disponibles**: El número de versiones de backup almacenadas en el destino de backup en el momento del backup.
 
-If this backup is overdue, the tooltip also shows:
+Si este backup está retrasado, la información sobre herramientas también muestra:
 
-- **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
+- **Backup esperado**: La hora en que se esperaba el backup, incluyendo el período de gracia configurado (tiempo adicional permitido antes de marcar como retrasado).
 
-You can also click the buttons at the bottom to open `Settings → Backup Notifications` to configure overdue settings or open the Duplicati server's web interface.
+Puede hacer clic en los botones en la parte inferior para abrir `Configuración → Notificaciones de Backup` para configurar los ajustes retrasados o abrir la interfaz web del Servidor Duplicati.
 
-## Table Layout {#table-layout}
+## Diseño de tabla {#table-layout}
 
-The table layout lists the most recent backup logs received for all servers and backups.
+El diseño de la tabla enumera los logs de backup más recientes recibidos para todos los servidores y backups.
 
 ![Dashboard Table Mode](/assets/screen-main-dashboard-table-mode.png)
 
-- **Server Name**: The name of the Duplicati server (or alias)
-  - Under the name is the server note
-- **Backup Name**: The name of the backup in the Duplicati server.
-- **Available Versions**: The number of backup versions stored on the backup destination. If the icon is greyed out, detailed information was not received in the log. See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
-- **Backup Count**: The number of backups reported by the Duplicati server.
-- **Last Backup Date**: The timestamp of the last backup log received and the elapsed time since the last screen refresh.
-- **Last Backup Status**: The status of the last backup received (Success, Warning, Error, Fatal).
-- **Duration**: The duration of the backup in HH:MM:SS.
-- **Warnings/Errors**: The number of warnings/errors reported in the backup log.
-- **Settings**:
-  - **Notification**: An icon showing the configured notification setting for new backup logs.
-  - **Duplicati configuration**: A button to open the Duplicati server's web interface
+- **Nombre del servidor**: El nombre del servidor Duplicati (o alias)
+  - Bajo el nombre se encuentra la nota del servidor
+- **Nombre de backup**: El nombre del backup en el servidor Duplicati.
+- **Versiones disponibles**: El número de versiones de backup almacenadas en el destino del backup. Si el icono está atenuado, la información detallada no se recibió en el log. Consulte las [instrucciones de Configuración de Duplicati](../installation/duplicati-server-configuration.md) para más detalles.
+- **Cantidad de backups**: El número de backups reportados por el servidor Duplicati.
+- **Fecha del último backup**: La marca de tiempo del último log de backup recibido y el tiempo transcurrido desde la última actualización de pantalla.
+- **Estado del último backup**: El estado del último backup recibido (Éxito, Advertencia, Error, Fatal).
+- **Duración**: La duración del backup en HH:MM:SS.
+- **Advertencias/Errores**: El número de advertencias/errores reportados en el log del backup.
+- **Configuración**:
+  - **Notificación**: Un icono que muestra la configuración de notificación configurada para nuevos logs de backup.
+  - **Configuración de Duplicati**: Un botón para abrir la interfaz web del servidor Duplicati
 
-### Notifications Icons {#notifications-icons}
+### Iconos de Notificaciones {#notifications-icons}
 
-| Icon                                                                                                                                                                                                                                        | Notification Option | Description                                                                                                         |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Off                 | No notifications will be sent when a new backup log is received                                                     |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
+| Icon                                                                                                                                    | Opción de Notificación | Descripción                                                                                         |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />     | Desactivado                 | No se enviarán notificaciones cuando se reciba un nuevo log de backup                                     |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} />     | Todos                 | Se enviarán notificaciones para cada nuevo log de backup, independientemente de su estado.                      |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} />    | Advertencias            | Se enviarán notificaciones solo para logs de backup con un estado de Advertencia, Desconocido, Error o Fatal. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} />    | Errores              | Se enviarán notificaciones solo para logs de backup con un estado de Error o Fatal.                    |
 
 :::note
-This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.
+Esta configuración de notificación solo se aplica cuando **duplistatus** recibe un nuevo registro de backup de un Servidor Duplicati. Las notificaciones de retraso se configuran por separado y se enviarán independientemente de esta configuración.
 :::
 
-### Overdue Details {#overdue-details}
+### Detalles de retrasos {#overdue-details}
 
-Hovering over the overdue warning icon displays details about the overdue backup.
+Pasar el cursor sobre el icono de advertencia de backup retrasado muestra detalles sobre el backup retrasado.
 
 ![Overdue details](/assets/screen-overdue-backup-hover-card.png)
 
-- **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](settings/backup-notifications-settings.md).
-- **Last Backup**: When the last backup log was received.
-- **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
-- **Last Notification**: When the last overdue notification was sent.
+- **Verificado**: Cuándo se realizó la última verificación de retraso. Configure la frecuencia en [Notificaciones de backup Configuración](settings/backup-notifications-settings.md).
+- **Último backup**: Cuándo se recibió el último registro de backup.
+- **Backup esperado**: La hora en que se esperaba el backup, incluido el período de gracia configurado (tiempo adicional permitido antes de marcar como retrasado).
+- **Última notificación**: Cuándo se envió la última notificación de retraso.
 
-### Available Backup Versions {#available-backup-versions}
+### Versiones de backup disponibles {#available-backup-versions}
 
-Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
+Al hacer clic en el icono de reloj azul, se abre una lista de versiones de backup disponibles en el momento del backup, según lo reportado por el servidor de Duplicati.
 
 ![Available versions](/assets/screen-available-backups-modal.png)
 
-- **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
-- **Version Details**: Shows the version number, creation date, and age.
+- **Detalles del backup**: Muestra el nombre del servidor y alias, nota del servidor, nombre de backup y cuándo se ejecutó el backup.
+- **Detalles de versión**: Muestra el número de versión, fecha de creación y antigüedad.
 
 :::note
-If the icon is greyed out, it means that no detailed information was received in the message logs.
-See the [Duplicati Configuration instructions](../installation/duplicati-server-configuration.md) for details.
+Si el icono está atenuado, significa que no se recibió información detallada en los logs de mensajes.
+Consulte las [instrucciones de Configuración de Duplicati](../installation/duplicati-server-configuration.md) para obtener más detalles.
 :::
-
