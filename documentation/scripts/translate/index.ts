@@ -1,0 +1,655 @@
+import { Command } from "commander";
+import fs from "fs";
+import path from "path";
+import chalk from "chalk";
+import matter from "gray-matter";
+import { Glossary } from "./glossary";
+import { TranslationCache } from "./cache";
+import { DocumentSplitter } from "./splitter";
+import { Translator } from "./translator";
+import { loadConfig, validateConfig } from "./config";
+import { validateTranslation } from "./validator";
+import { TranslationConfig, TranslationStats, Segment } from "./types";
+
+const program = new Command();
+
+function getOutputPath(
+  sourcePath: string,
+  locale: string,
+  config: TranslationConfig
+): string {
+  const relativePath = path.relative(config.paths.docs, sourcePath);
+  return path.join(
+    config.paths.i18n,
+    locale,
+    "docusaurus-plugin-content-docs",
+    "current",
+    relativePath
+  );
+}
+
+/**
+ * Normalize locale code to match expected format
+ * Handles case-insensitive input and normalizes to expected format:
+ * - Simple locales: "fr", "de", "es" -> lowercase
+ * - Hyphenated locales: "pt-br", "PT-BR", "Pt-Br" -> "pt-BR" (lowercase language, uppercase region)
+ */
+function normalizeLocale(locale: string): string {
+  const normalized = locale.trim();
+  
+  // Handle hyphenated locales (e.g., pt-BR, pt-br, PT-BR)
+  if (normalized.includes("-")) {
+    const parts = normalized.split("-");
+    if (parts.length === 2) {
+      // Language code lowercase, region code uppercase
+      return `${parts[0].toLowerCase()}-${parts[1].toUpperCase()}`;
+    }
+  }
+  
+  // Simple locales: convert to lowercase
+  return normalized.toLowerCase();
+}
+
+function getAllDocFiles(docsDir: string): string[] {
+  const files: string[] = [];
+
+  function walk(dir: string) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (entry.name.endsWith(".md") || entry.name.endsWith(".mdx")) {
+        files.push(fullPath);
+      }
+    }
+  }
+
+  walk(docsDir);
+  return files.sort();
+}
+
+/**
+ * Clean translated content to remove prompt artifacts
+ * Removes common instruction patterns that LLMs sometimes include in output
+ */
+function cleanTranslatedContent(content: string): string {
+  let cleaned = content;
+  
+  // Remove instruction sections that appear at the end (common artifact)
+  // Pattern: "## IMPORTANT:" or "## IMPORTANTE:" followed by instruction text
+  cleaned = cleaned.replace(
+    /\n##\s*IMPORTANTE?:\s*\n.*?(?:Retorne|Return|Output|Do NOT|Não inclua).*?$/s,
+    ''
+  );
+  
+  // Remove standalone instruction lines at the end
+  cleaned = cleaned.replace(
+    /\n(?:Retorne APENAS|Retorne SOMENTE|Output ONLY|Return ONLY).*?(?:explicações|explanations|notes|notas).*?$/s,
+    ''
+  );
+  
+  // Remove trailing separator lines that are artifacts
+  cleaned = cleaned.replace(/\n---\s*$/m, '');
+  
+  // Clean up excessive whitespace
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+  
+  return cleaned.trim();
+}
+
+/**
+ * Add translation metadata to frontmatter
+ * Preserves existing frontmatter and adds/updates translation tracking fields
+ */
+function addTranslationMetadata(
+  content: string,
+  sourceFileMtime: string,
+  sourceFileHash: string,
+  locale: string,
+  relativePath: string
+): string {
+  const { data: frontMatter, content: body } = matter(content);
+  
+  // Add/update translation tracking metadata
+  frontMatter.translation_last_updated = new Date().toISOString();
+  frontMatter.source_file_mtime = sourceFileMtime;
+  frontMatter.source_file_hash = sourceFileHash;
+  frontMatter.translation_language = locale;
+  frontMatter.source_file_path = relativePath;
+  
+  // Reconstruct document with updated frontmatter
+  return matter.stringify(body, frontMatter);
+}
+
+async function translateFile(
+  filepath: string,
+  locale: string,
+  config: TranslationConfig,
+  glossary: Glossary,
+  cache: TranslationCache,
+  translator: Translator,
+  splitter: DocumentSplitter,
+  stats: TranslationStats,
+  dryRun: boolean,
+  verbose: boolean,
+  force: boolean = false,
+  totalFilesCount: number = 1
+): Promise<void> {
+  const fileStartTime = Date.now();
+  const content = fs.readFileSync(filepath, "utf-8");
+  const fileHash = TranslationCache.computeHash(content);
+  const relativePath = path.relative(config.paths.docs, filepath);
+  const outputPath = getOutputPath(filepath, locale, config);
+
+  // Get source file modification time
+  const sourceStats = fs.statSync(filepath);
+  const sourceFileMtime = sourceStats.mtime.toISOString();
+
+  // Clear file cache if --force flag is set
+  if (force) {
+    cache.clearFile(relativePath, locale);
+    if (verbose) {
+      console.log(chalk.yellow(`  🔄 Force mode: cleared cache for ${relativePath}`));
+    }
+  }
+
+  // Check file-level cache
+  const cachedFileHash = cache.getFileStatus(relativePath, locale);
+  const outputFileExists = fs.existsSync(outputPath);
+  
+  // Skip only if cache matches AND output file exists AND not forcing
+  if (!force && cachedFileHash === fileHash && outputFileExists) {
+    stats.filesSkipped++;
+    if (verbose) {
+      console.log(chalk.gray(`  ⏭️  Skipped (unchanged): ${relativePath}`));
+    }
+    return;
+  }
+  
+  // If output file is missing, recreate it even if cache says it's up-to-date
+  if (!outputFileExists && cachedFileHash === fileHash && !force) {
+    if (verbose) {
+      console.log(chalk.gray(`  🔄 Recreating missing file: ${relativePath}`));
+    }
+  }
+
+  stats.filesProcessed++;
+  const segments = splitter.split(content);
+  const totalSegments = segments.length;
+  const translatableSegments = segments.filter(s => s.translatable).length;
+  const translatedSegments: Segment[] = [];
+  let fileSegmentsCached = 0;
+  let fileSegmentsTranslated = 0;
+  let currentSegmentIndex = 0;
+  let fileCost = 0; // Track cost for this file only
+
+  // Display file start
+  console.log(chalk.cyan(`\n  📄 ${relativePath}`));
+  console.log(chalk.gray(`     Total segments: ${totalSegments} (${translatableSegments} translatable)`));
+
+  /**
+   * Format elapsed time as mm:ss
+   */
+  const formatElapsedTime = (ms: number): string => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  /**
+   * Update progress line with current status
+   */
+  const updateProgress = (status: string) => {
+    const elapsedMs = Date.now() - fileStartTime;
+    const elapsedTime = formatElapsedTime(elapsedMs);
+    const percentage = Math.round((currentSegmentIndex / totalSegments) * 100);
+    const fileCostStr = fileCost > 0 ? `$${fileCost.toFixed(4)}` : '$0.0000';
+    const totalCostStr = stats.totalCost > 0 ? `$${stats.totalCost.toFixed(4)}` : '$0.0000';
+    
+    // Build progress line
+    let progressLine = `\r     [${currentSegmentIndex}/${totalSegments}] ${percentage}% | ${elapsedTime} | ${fileCostStr}`;
+    
+    // Add total cost if multiple files
+    if (stats.filesProcessed > 1 || fileSegmentsTranslated > 0) {
+      progressLine += ` | total: ${totalCostStr}`;
+    }
+    
+    progressLine += ` | ${status}`;
+    
+    process.stdout.write(progressLine.padEnd(100));
+  };
+
+  for (const segment of segments) {
+    currentSegmentIndex++;
+    if (!segment.translatable) {
+      translatedSegments.push(segment);
+      continue;
+    }
+
+    // Check segment cache
+    const cachedTranslation = cache.getSegment(segment.hash, locale);
+    if (cachedTranslation) {
+      fileSegmentsCached++;
+      stats.segmentsCached++;
+      // Clean cached content to remove any prompt artifacts
+      const cleanedCachedContent = cleanTranslatedContent(cachedTranslation);
+      translatedSegments.push({
+        ...segment,
+        content: cleanedCachedContent,
+      });
+      
+      // Update progress for cached segments
+      updateProgress('cache');
+      continue;
+    }
+
+    if (dryRun) {
+      fileSegmentsTranslated++;
+      stats.segmentsTranslated++;
+      translatedSegments.push(segment);
+      continue;
+    }
+
+    // Find glossary terms and translate
+    const glossaryHints = glossary.findTermsInText(segment.content, locale);
+
+    // Update progress before translating
+    updateProgress('translating');
+
+    try {
+      const segmentStartTime = Date.now();
+      const result = await translator.translate(
+        segment.content,
+        locale,
+        glossaryHints
+      );
+      const segmentTime = Date.now() - segmentStartTime;
+
+      fileSegmentsTranslated++;
+      stats.segmentsTranslated++;
+      stats.totalTokens += result.usage.totalTokens;
+      
+      // Accumulate actual cost from API
+      if (result.cost !== undefined && result.cost !== null && !isNaN(result.cost)) {
+        if (result.cost > 0) {
+          stats.totalCost += result.cost;
+          fileCost += result.cost;
+        }
+      }
+
+      // Cache the translation
+      cache.setSegment(
+        segment.hash,
+        locale,
+        segment.content,
+        result.content,
+        result.model
+      );
+
+      // Clean the translated content to remove prompt artifacts
+      const cleanedContent = cleanTranslatedContent(result.content);
+      
+      translatedSegments.push({
+        ...segment,
+        content: cleanedContent,
+      });
+
+      // Update progress after translation
+      updateProgress('translating');
+
+      // Small delay to avoid rate limiting
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    } catch (error) {
+      console.error(
+        chalk.red(`\n  ❌ Failed to translate segment ${currentSegmentIndex} in ${relativePath}: ${error}`)
+      );
+      translatedSegments.push(segment); // Keep original on failure
+    }
+  }
+  
+  // Clear progress line
+  process.stdout.write('\r' + ' '.repeat(100) + '\r');
+
+  // Validate translation
+  const validation = validateTranslation(segments, translatedSegments);
+  if (!validation.valid) {
+    console.warn(
+      chalk.yellow(`  ⚠️  Validation issues in ${relativePath}:`)
+    );
+    validation.issues.forEach((issue) => console.warn(chalk.yellow(`     - ${issue}`)));
+  }
+
+  // Reassemble and add translation metadata
+  let translatedContent = splitter.reassemble(translatedSegments);
+  
+  // Add translation metadata to frontmatter
+  if (!dryRun) {
+    translatedContent = addTranslationMetadata(
+      translatedContent,
+      sourceFileMtime,
+      fileHash,
+      locale,
+      relativePath
+    );
+  }
+
+  if (!dryRun) {
+    const outputDir = path.dirname(outputPath);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    fs.writeFileSync(outputPath, translatedContent);
+
+    // Update file tracking
+    cache.setFileStatus(relativePath, locale, fileHash);
+  }
+
+  const fileTime = Date.now() - fileStartTime;
+  stats.totalTimeMs += fileTime;
+  stats.fileTimes.push(fileTime);
+  
+  const fileTimeSec = (fileTime / 1000).toFixed(2);
+  const fileTimeFormatted = formatElapsedTime(fileTime);
+  const cachedCount = fileSegmentsCached;
+  const translatedCount = fileSegmentsTranslated;
+  const fileCostStr = fileCost > 0 ? `$${fileCost.toFixed(4)}` : '$0.0000';
+  
+  // Debug timing if enabled
+  if (process.env.DEBUG_COST === "true") {
+    console.log(chalk.gray(`     [DEBUG] File time: ${fileTime}ms, Total time so far: ${stats.totalTimeMs}ms`));
+  }
+  
+  console.log(
+    chalk.green(
+      `  ✅ ${relativePath} → ${locale} (${cachedCount} cached, ${translatedCount} new) - ${fileTimeFormatted} - ${fileCostStr}`
+    )
+  );
+}
+
+async function main() {
+  program
+    .name("translate")
+    .description("Translate Docusaurus documentation using OpenRouter LLM API")
+    .option("-l, --locale <locale>", "Translate to specific locale only")
+    .option("-f, --file <path>", "Translate specific file or directory (recursively processes all .md/.mdx files in directory)")
+    .option("--dry-run", "Show what would be translated without making changes")
+    .option("--no-cache", "Ignore cache and re-translate everything")
+    .option("--force", "Force re-translation by clearing file cache")
+    .option("-v, --verbose", "Show detailed output")
+    .option("--stats", "Show cache statistics and exit")
+    .option("--clear-cache [locale]", "Clear translation cache")
+    .option("--debug-traffic [path]", "Log OpenRouter request/response to a file for debugging (default: .translation-cache/debug-traffic-<timestamp>.log)")
+    .option("-c, --config <path>", "Path to config file")
+    .parse(process.argv);
+
+  const options = program.opts();
+
+  try {
+    const config = loadConfig(options.config);
+
+    // Handle --stats (before validating API key)
+    if (options.stats) {
+      const cache = new TranslationCache(config.paths.cache);
+      const cacheStats = cache.getStats();
+      console.log(chalk.bold("\n📊 Cache Statistics:"));
+      console.log(`   Cached segments: ${cacheStats.totalSegments}`);
+      console.log(`   Tracked files: ${cacheStats.totalFiles}`);
+      console.log(`   By locale:`);
+      for (const [locale, count] of Object.entries(cacheStats.byLocale)) {
+        console.log(`     - ${locale}: ${count} segments`);
+      }
+      cache.close();
+      return;
+    }
+
+    // Handle --clear-cache
+    if (options.clearCache !== undefined) {
+      const cache = new TranslationCache(config.paths.cache);
+      let locale: string | undefined;
+      if (typeof options.clearCache === "string") {
+        locale = normalizeLocale(options.clearCache);
+        // Validate that provided locale exists in config
+        if (!config.locales.targets.includes(locale)) {
+          console.error(
+            chalk.red(
+              `\n❌ Error: Locale "${locale}" not found in configuration.\n` +
+              `   Available locales: ${config.locales.targets.join(", ")}`
+            )
+          );
+          cache.close();
+          process.exit(1);
+        }
+      }
+      cache.clear(locale);
+      console.log(
+        chalk.green(`✅ Cache cleared${locale ? ` for ${locale}` : ""}`)
+      );
+      cache.close();
+      return;
+    }
+
+    // Validate config (requires API key for translation)
+    validateConfig(config);
+
+    // Initialize components
+    const cache = options.cache === false
+      ? new TranslationCache(":memory:")
+      : new TranslationCache(config.paths.cache);
+    const glossary = new Glossary(config.paths.glossary);
+    const splitter = new DocumentSplitter();
+
+    let debugTrafficPath: string | undefined;
+    if (options.debugTraffic) {
+      debugTrafficPath =
+        options.debugTraffic === true
+          ? path.join(
+              config.paths.cache,
+              `debug-traffic-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.log`
+            )
+          : String(options.debugTraffic);
+      const dir = path.dirname(debugTrafficPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    }
+    const translator = new Translator(config, debugTrafficPath ?? null);
+
+    // Determine locales to process (normalize locale if provided)
+    const locales = options.locale ? [normalizeLocale(options.locale)] : config.locales.targets;
+    
+    // Validate that provided locale exists in config
+    if (options.locale) {
+      const normalizedLocale = normalizeLocale(options.locale);
+      if (!config.locales.targets.includes(normalizedLocale)) {
+        console.error(
+          chalk.red(
+            `\n❌ Error: Locale "${normalizedLocale}" not found in configuration.\n` +
+            `   Available locales: ${config.locales.targets.join(", ")}`
+          )
+        );
+        process.exit(1);
+      }
+    }
+
+    // Determine files to process
+    let files: string[];
+    if (options.path) {
+      const resolvedPath = path.resolve(options.path);
+      if (!fs.existsSync(resolvedPath)) {
+        console.error(
+          chalk.red(`\n❌ Error: Path not found: ${resolvedPath}`)
+        );
+        process.exit(1);
+      }
+      const stats = fs.statSync(resolvedPath);
+      if (stats.isDirectory()) {
+        // If it's a directory, get all markdown files in it
+        files = getAllDocFiles(resolvedPath);
+        if (files.length === 0) {
+          console.warn(
+            chalk.yellow(`\n⚠️  Warning: No markdown files found in directory: ${resolvedPath}`)
+          );
+        }
+      } else {
+        // If it's a file, use it directly
+        files = [resolvedPath];
+      }
+    } else {
+      files = getAllDocFiles(config.paths.docs);
+    }
+
+    console.log(
+      chalk.bold(
+        `\n🌐 Translating ${files.length} files to ${locales.length} locale(s)\n`
+      )
+    );
+    console.log(chalk.gray(`   Model: ${config.openrouter.defaultModel}`));
+    console.log(chalk.gray(`   Glossary terms: ${glossary.size}`));
+    if (debugTrafficPath) {
+      console.log(chalk.gray(`   Debug traffic log: ${debugTrafficPath}`));
+    }
+    console.log("");
+
+    if (options.dryRun) {
+      console.log(chalk.yellow("⚠️  Dry run mode - no changes will be made\n"));
+    }
+
+    const totalStats: TranslationStats = {
+      filesProcessed: 0,
+      filesSkipped: 0,
+      segmentsCached: 0,
+      segmentsTranslated: 0,
+      totalTokens: 0,
+      totalCost: 0,
+      totalTimeMs: 0,
+      fileTimes: [],
+    };
+
+    for (const locale of locales) {
+      console.log(chalk.bold.blue(`\n📝 Translating to ${locale}:`));
+
+      const localeStats: TranslationStats = {
+        filesProcessed: 0,
+        filesSkipped: 0,
+        segmentsCached: 0,
+        segmentsTranslated: 0,
+        totalTokens: 0,
+        totalCost: 0,
+        totalTimeMs: 0,
+        fileTimes: [],
+      };
+
+      for (const filepath of files) {
+        await translateFile(
+          filepath,
+          locale,
+          config,
+          glossary,
+          cache,
+          translator,
+          splitter,
+          localeStats,
+          options.dryRun || false,
+          options.verbose || false,
+          options.force || false,
+          files.length // Pass total file count for progress display
+        );
+      }
+
+      // Aggregate stats
+      totalStats.filesProcessed += localeStats.filesProcessed;
+      totalStats.filesSkipped += localeStats.filesSkipped;
+      totalStats.segmentsCached += localeStats.segmentsCached;
+      totalStats.segmentsTranslated += localeStats.segmentsTranslated;
+      totalStats.totalTokens += localeStats.totalTokens;
+      totalStats.totalCost += localeStats.totalCost;
+      totalStats.totalTimeMs += localeStats.totalTimeMs;
+      totalStats.fileTimes.push(...localeStats.fileTimes);
+
+      const localeTimeSec = (localeStats.totalTimeMs / 1000).toFixed(2);
+      console.log(
+        chalk.gray(
+          `   Files: ${localeStats.filesProcessed} processed, ${localeStats.filesSkipped} skipped`
+        )
+      );
+      console.log(
+        chalk.gray(
+          `   Segments: ${localeStats.segmentsCached} cached, ${localeStats.segmentsTranslated} translated`
+        )
+      );
+      if (localeStats.totalTimeMs > 0) {
+        console.log(
+          chalk.gray(
+            `   Time for ${locale}: ${localeTimeSec}s`
+          )
+        );
+      }
+    }
+
+    // Final summary
+    console.log(chalk.bold.green("\n✅ Translation complete!\n"));
+    console.log(chalk.bold("📊 Summary:"));
+    console.log(`   Total files processed: ${totalStats.filesProcessed}`);
+    console.log(`   Total files skipped: ${totalStats.filesSkipped}`);
+    console.log(`   Segments from cache: ${totalStats.segmentsCached}`);
+    console.log(`   Segments translated: ${totalStats.segmentsTranslated}`);
+    console.log(`   Total tokens used: ${totalStats.totalTokens.toLocaleString()}`);
+    
+    // Display actual cost from OpenRouter API
+    if (totalStats.segmentsTranslated > 0) {
+      if (totalStats.totalCost > 0) {
+        console.log(`   Total cost: $${totalStats.totalCost.toFixed(6)}`);
+      } else {
+        console.log(`   Total cost: $0.00 (cost data not available from API)`);
+        if (process.env.DEBUG_COST === "true") {
+          console.log(chalk.yellow(`   [DEBUG] Segments translated: ${totalStats.segmentsTranslated}, but cost is 0`));
+        }
+      }
+    } else {
+      console.log(`   Total cost: $0.00 (all segments from cache)`);
+    }
+    
+    // Display timing information
+    if (totalStats.totalTimeMs > 0) {
+      // Format total time as hh:mm:ss
+      const formatTotalTime = (ms: number): string => {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        
+        if (hours > 0) {
+          return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+          return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+      };
+      
+      const totalTimeFormatted = formatTotalTime(totalStats.totalTimeMs);
+      console.log(`   Total time: ${totalTimeFormatted}`);
+      
+      if (totalStats.fileTimes.length > 0) {
+        const avgTimeMs = totalStats.totalTimeMs / totalStats.fileTimes.length;
+        const avgTimeFormatted = formatTotalTime(avgTimeMs);
+        const avgCost = totalStats.totalCost / totalStats.fileTimes.length;
+        const avgCostStr = avgCost > 0 ? `$${avgCost.toFixed(6)}` : '$0.000000';
+        console.log(`   Average time per file: ${avgTimeFormatted}`);
+        console.log(`   Average cost per file: ${avgCostStr}`);
+      }
+    } else {
+      console.log(`   Total time: Not measured (files may have been skipped)`);
+      if (process.env.DEBUG_COST === "true") {
+        console.log(chalk.yellow(`   [DEBUG] totalTimeMs: ${totalStats.totalTimeMs}, fileTimes.length: ${totalStats.fileTimes.length}`));
+      }
+    }
+
+    cache.close();
+  } catch (error) {
+    console.error(chalk.red(`\n❌ Error: ${error}`));
+    process.exit(1);
+  }
+}
+
+main();
