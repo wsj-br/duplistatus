@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Notification frequency options (one time, every day/week/month)
 
 ### Fixed
+- **take-screenshots**: Screenshot file path is now resolved with `path.resolve(process.cwd(), ...)` so files are always written under the project root, fixing cases where `screen-main-dashboard-table-mode.png` (and others) were reported as saved but missing on disk when the script ran with a different effective cwd.
+- **take-screenshots**: `screen-metrics.png` is now captured on the dashboard page in table mode, immediately after the dashboard table mode screenshot, with no navigation (the metrics chart panel is below the table on the same page).
+- **take-screenshots**: Script now measures the time to take each screenshot. The summary list shows the duration next to each screenshot (e.g. `(2.3s)`), and at the end it prints total time and average per screenshot.
+- **take-screenshots**: Timing for each screenshot now runs from when the start message is shown (e.g. "Capturing user menu dropdown (user)...") until the file is written. `timedCapture` logs the start message first, then starts the timer, then runs the capture.
 - **upgrade-dependencies.sh**: Script now sources nvm (`$NVM_DIR/nvm.sh`) at startup so `nvm install --lts` and `nvm use --lts` work when the script is run directly. nvm is a shell function and is not available in non-interactive script subshells otherwise. Also adds `PNPM_HOME` to PATH when present so pnpm is found when installed via the standalone installer (profile-only PATH).
 - **Build**: Components that imported `formatBytes` from `@/lib/utils` now import from `@/lib/number-format` (formatBytes was removed from utils). Updated: `dashboard-summary-cards.tsx`, `overview-cards.tsx`, `metrics-charts-panel.tsx`, `server-detail-summary-items.tsx`.
 - **Build**: Suppressed webpack "Critical dependency: the request of a dependency is an expression" warning for `@ts-morph/common` (pulled in by next-intlayer) via `next.config.ts` ignoreWarnings.
