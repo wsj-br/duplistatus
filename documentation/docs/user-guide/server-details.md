@@ -4,7 +4,7 @@
 
 Clicking on a server from the dashboard opens a page with a list of backups for that server. You can view all backups or select a specific one if the server has multiple backups configured.
 
-![Server Details](/assets/screen-server-backup-list.png)
+![Server Details](../assets/screen-server-backup-list.png)
 
 ## Server/Backup Statistics {#serverbackup-statistics}
 
@@ -21,7 +21,7 @@ This section shows statistics for either all backups on the server or a single s
 
 If this backup or any of the backups on the server (when `All Backups` is selected) is overdue, a message appears below the summary. 
 
-![Server Details - Overdue Scheduled Backups](/assets/screen-server-overdue-message.png)
+![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
 
 Click the <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configure"/> to go to [`Settings → Overdue Monitoring`](settings/overdue-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
 
@@ -31,7 +31,7 @@ Click the <IconButton icon="lucide:settings" href="settings/overdue-settings" la
 
 This table lists the backup logs for the selected server.
 
-![Backup History](/assets/screen-backup-history.png)
+![Backup History](../assets/screen-backup-history.png)
 
 - **Backup Name**: The name of the backup in the Duplicati server.
 - **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
@@ -59,7 +59,7 @@ When `All Backups` is selected, the list shows all backups ordered from newest t
 
 Clicking on a status badge in the dashboard (table view) or any row in the backup history table displays the detailed backup information.
 
-![Backup Details](/assets/screen-backup-detail.png)
+![Backup Details](../assets/screen-backup-detail.png)
 
 - **Server details**: server name, alias and note.
 - **Backup Information**: The timestamp of the backup and its ID.

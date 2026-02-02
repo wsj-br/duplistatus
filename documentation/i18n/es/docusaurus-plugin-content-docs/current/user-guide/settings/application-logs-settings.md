@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/application-logs-settings.md
 
 El Visor de Logs de aplicación permite a los administradores monitorear todos los Logs de aplicación en un solo lugar, con filtrado, Exportar y actualizaciones en tiempo real directamente desde la interfaz web.
 
-![Application Log Viewer](/assets/screen-settings-application-logs.png)
+![Application Log Viewer](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

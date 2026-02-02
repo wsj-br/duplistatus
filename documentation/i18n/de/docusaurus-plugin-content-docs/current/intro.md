@@ -41,19 +41,19 @@ Siehe das [Benutzerhandbuch](user-guide/overview.md) für detaillierte Anweisung
 
 ### Dashboard {#dashboard}
 
-![dashboard](/assets/screen-main-dashboard-card-mode.png)
+![dashboard](assets/screen-main-dashboard-card-mode.png)
 
 ### Sicherungsverlauf {#backup-history}
 
-![server-detail](/assets/screen-server-backup-list.png)
+![server-detail](assets/screen-server-backup-list.png)
 
 ### Sicherungsdetails {#backup-details}
 
-![backup-detail](/assets/screen-backup-detail.png)
+![backup-detail](assets/screen-backup-detail.png)
 
 ### Überfällige Sicherungen {#overdue-backups}
 
-![overdue backups](/assets/screen-overdue-backup-hover-card.png)
+![overdue backups](assets/screen-overdue-backup-hover-card.png)
 
 ### Überfällige Benachrichtigungen auf Ihrem Telefon {#overdue-notifications-on-your-phone}
 

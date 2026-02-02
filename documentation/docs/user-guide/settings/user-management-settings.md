@@ -4,7 +4,7 @@
 
 Manage user accounts, permissions, and access control for **duplistatus**. This section allows administrators to create, modify, and delete user accounts.
 
-![User Management](/assets/screen-settings-users.png)
+![User Management](../../assets/screen-settings-users.png)
 
 >[!TIP] 
 >The default `admin` account can be deleted. To do so, first create a new admin user, log in with that account, 

@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/audit-logs-retention.md
 
 Configurar por quanto tempo os logs de auditoria são retidos antes da limpeza automática.
 
-![Audit Log Retention](/assets/screen-settings-audit-retention.png)
+![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
 
 | Setting | Descrição | Valor Padrão |
 |:-------|:-----------|:-------------|

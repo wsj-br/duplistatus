@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/user-management-settings.md
 
 Gerencie contas de usuários, permissões e controle de acesso para **duplistatus**. Esta seção permite que administradores criem, modifiquem e excluam contas de usuários.
 
-![User Management](/assets/screen-settings-users.png)
+![User Management](../../assets/screen-settings-users.png)
 
 >[!TIP] 
 >A conta `admin` padrão pode ser excluída. Para fazer isso, primeiro crie um novo usuário administrador, entre com essa conta e, em seguida, exclua a conta `admin`.

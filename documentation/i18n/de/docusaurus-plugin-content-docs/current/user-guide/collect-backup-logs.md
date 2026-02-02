@@ -15,7 +15,7 @@ source_file_path: user-guide/collect-backup-logs.md
 
 1.  Klicken Sie auf das Symbol <IconButton icon="lucide:download" /> `Collect Backup Logs` in der [Anwendungssymbolleiste](overview#application-toolbar).
 
-![Collect Backup Logs Popup](/assets/screen-collect-button-popup.png)
+![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
 2.  Server auswählen
 
@@ -42,7 +42,7 @@ Wenn Sie Server-Adressen in `Settings → Server Settings` konfiguriert haben, w
 
 _Rechtsklick_ auf die <IconButton icon="lucide:download" /> `Sammeln Sicherungs-Protokolle`-Schaltfläche in der Anwendungssymbolleiste, um Daten von allen konfigurierten Servern zu sammeln.
 
-![Collect All Right-Click Menu](/assets/screen-collect-button-right-click-popup.png)
+![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 Sie können auch die <IconButton icon="lucide:import" label="Alle sammeln"/> Schaltfläche auf den Seiten `Einstellungen → Überfällige Überwachung` und `Einstellungen → Server-Einstellungen` verwenden, um von allen konfigurierten Servern zu sammeln.

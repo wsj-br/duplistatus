@@ -15,7 +15,7 @@ source_file_path: user-guide/collect-backup-logs.md
 
 1.  Cliquez sur l'icône <IconButton icon="lucide:download" /> `Collect Backup Logs` dans la [Barre d'outils de l'application](overview#application-toolbar).
 
-![Collect Backup Logs Popup](/assets/screen-collect-button-popup.png)
+![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
 2.  Sélectionner le serveur
 
@@ -42,7 +42,7 @@ Si vous avez des adresses des serveurs configurées dans `Paramètres → Param�
 
 _Clic droit_ sur le bouton <IconButton icon="lucide:download" /> `Collecter les journaux de sauvegarde` dans la barre d'outils de l'application pour collecter à partir de tous les serveurs configurés.
 
-![Collect All Right-Click Menu](/assets/screen-collect-button-right-click-popup.png)
+![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 Vous pouvez également utiliser le bouton <IconButton icon="lucide:import" label="Tout collecter"/> dans les pages `Paramètres → Surveillance en retard` et `Paramètres → Paramètres du serveur` pour collecter à partir de tous les serveurs configurés.

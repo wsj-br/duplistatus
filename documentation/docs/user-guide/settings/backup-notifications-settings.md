@@ -5,7 +5,7 @@
 
 Use this settings to send notifications when a [new backup log is received](../../installation/duplicati-server-configuration.md).
 
-![Backup alerts](/assets/screen-settings-notifications.png)
+![Backup alerts](../../assets/screen-settings-notifications.png)
 
 The backup notifications table is organised by server. The display format depends on how many backups a server has:
 - **Multiple backups**: Shows a server header row with individual backup rows below it. Click the server header to expand or collapse the backup list.
@@ -57,7 +57,7 @@ Additional destination configuration is indicated by contextual icons next to se
 If no icon is displayed, the server or backup does not have additional destinations configured.
 
 
-![Server-level additional destinations](/assets/screen-settings-notifications-server.png)
+![Server-level additional destinations](../../assets/screen-settings-notifications-server.png)
 
 
 ### Server-Level Defaults {#server-level-defaults}
@@ -110,7 +110,7 @@ Individual backups automatically inherit the server defaults, but you can overri
 
 You can edit additional destination settings for multiple backups at once using the bulk edit feature. This is particularly useful when you need to apply the same additional destinations to many backup jobs.
 
-![Bulk edit dialog](/assets/screen-settings-notifications-bulk.png)
+![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
 
 1. Navigate to `Settings → Backup Notifications`.
 2. Use the checkboxes in the first column to select the backups or servers you want to edit.

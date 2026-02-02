@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/server-settings.md
 
 Sie können hier einen alternativen Namen (Alias) für Ihre Server, einen Hinweis zur Beschreibung seiner Funktion und die Webadressen Ihrer Duplicati-Server konfigurieren.
 
-![server settings](/assets/screen-settings-server.png)
+![server settings](../../assets/screen-settings-server.png)
 
 | Setting                         | Beschreibung                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

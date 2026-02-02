@@ -16,7 +16,7 @@ Administradores veem todas as configurações disponíveis.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-admin.png" alt="Barra lateral de Configurações - Visualização Admin" />
+      <img src="../../assets/screen-settings-left-panel-admin.png" alt="Barra lateral de Configurações - Visualização Admin" />
     </td>
     <td>
       <ul>
@@ -59,7 +59,7 @@ Usuários regulares veem um conjunto limitado de configurações.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Barra lateral de Configurações - Visualização não-Admin" />
+      <img src="../../assets/screen-settings-left-panel-non-admin.png" alt="Barra lateral de Configurações - Visualização não-Admin" />
     </td>
     <td>
       <ul>

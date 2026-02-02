@@ -3,7 +3,7 @@
 
 The audit log provides a comprehensive record of all system changes and user actions in **duplistatus**. This helps track configuration changes, user activities, and system operations for security and troubleshooting purposes.
 
-![Audit Log](/assets/screen-settings-audit.png)
+![Audit Log](../../assets/screen-settings-audit.png)
 
 ## Audit Log Viewer {#audit-log-viewer}
 

@@ -9,7 +9,7 @@ source_file_path: user-guide/server-details.md
 
 Clicar em um servidor do Painel abre uma página com uma lista de backups para esse servidor. Você pode visualizar todos os backups ou selecionar um específico se o servidor tiver múltiplos backups configurados.
 
-![Server Details](/assets/screen-server-backup-list.png)
+![Server Details](../assets/screen-server-backup-list.png)
 
 ## Estatísticas do Servidor/Backup {#serverbackup-statistics}
 
@@ -25,7 +25,7 @@ Esta seção mostra Estatísticas para todos os backups no Servidor ou um backup
 
 Se este backup ou qualquer um dos backups no servidor (quando `All Backups` está selecionado) está atrasado, uma mensagem aparece abaixo do resumo.
 
-![Server Details - Overdue Scheduled Backups](/assets/screen-server-overdue-message.png)
+![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
 
 Clique no <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configurar"/> para ir para [`Configurações → Monitoramento atrasado`](settings/overdue-settings.md). Ou clique no <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> na barra de ferramentas para abrir a interface web do servidor Duplicati e verificar os logs.
 
@@ -35,7 +35,7 @@ Clique no <IconButton icon="lucide:settings" href="settings/overdue-settings" la
 
 Esta tabela lista os logs de backup para o servidor selecionado.
 
-![Backup History](/assets/screen-backup-history.png)
+![Backup History](../assets/screen-backup-history.png)
 
 - **Nome do backup**: O nome do backup no servidor Duplicati.
 - **Data**: A data e hora do backup e o tempo decorrido desde a última atualização da tela.
@@ -63,7 +63,7 @@ Quando `Todos os backups` é selecionado, a lista mostra todos os backups ordena
 
 Clicar em um badge de status no Painel (visualização de tabela) ou em qualquer linha na tabela do Histórico de backups exibe as Informações do backup detalhadas.
 
-![Backup Details](/assets/screen-backup-detail.png)
+![Backup Details](../assets/screen-backup-detail.png)
 
 - **Detalhes do servidor**: nome do servidor, alias e nota.
 - **Informações do backup**: A data e hora do backup e seu ID.

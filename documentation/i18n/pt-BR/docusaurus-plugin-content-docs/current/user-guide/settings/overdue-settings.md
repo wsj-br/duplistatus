@@ -7,7 +7,7 @@ source_file_path: user-guide/settings/overdue-settings.md
 ---
 # Notificações Atrasadas {#overdue-notifications}
 
-![Backup alerts](/assets/screen-settings-overdue.png)
+![Backup alerts](../../assets/screen-settings-overdue.png)
 
 ## Configurar Configurações de Backup Atrasado por Backup {#configure-per-backup-overdue-settings}
 

@@ -7,7 +7,7 @@ source_file_path: user-guide/settings/overdue-settings.md
 ---
 # Überfällige Benachrichtigungen {#overdue-notifications}
 
-![Backup alerts](/assets/screen-settings-overdue.png)
+![Backup alerts](../../assets/screen-settings-overdue.png)
 
 ## Konfigurieren Sie die Einstellungen für Sicherung überfällig pro Sicherung {#configure-per-backup-overdue-settings}
 

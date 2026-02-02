@@ -15,8 +15,8 @@ source_file_path: user-guide/dashboard.md
 
 Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 
-![Tableau de bord résumé - vue d'ensemble](/assets/screen-dashboard-summary.png)
-![Tableau de bord résumé - tableau](/assets/screen-dashboard-summary-table.png)
+![Tableau de bord résumé - vue d'ensemble](../assets/screen-dashboard-summary.png)
+![Tableau de bord résumé - tableau](../assets/screen-dashboard-summary-table.png)
 
 - **Total des serveurs** : Le nombre de serveurs en cours de surveillance.                                                                                                             |
 - **Total des tâches de sauvegarde** : Le nombre total de tâches de sauvegarde (types) configurées pour tous les serveurs.                                                                                |
@@ -51,17 +51,17 @@ Vous pouvez basculer le bouton en haut à droite du panneau latéral pour modifi
 
 - Statut : Afficher les statistiques des travaux de sauvegarde par statut, avec une liste des sauvegardes en retard et des travaux de sauvegarde avec un statut d'avertissements/erreurs.
 
-![status panel](/assets/screen-overview-side-status.png)
+![status panel](../assets/screen-overview-side-status.png)
 
 - Métriques : Afficher des graphiques avec la durée, la taille des fichiers et la taille de stockage au fil du temps pour le serveur agrégé ou sélectionné.
 
-![charts panel](/assets/screen-overview-side-charts.png)
+![charts panel](../assets/screen-overview-side-charts.png)
 
 ### Détails de la sauvegarde {#backup-details}
 
 Le survol d'une sauvegarde dans la liste affiche les détails du dernier journal de sauvegarde reçu et toute information en retard.
 
-![Overdue details](/assets/screen-backup-tooltip.png)
+![Overdue details](../assets/screen-backup-tooltip.png)
 
 - **Nom du serveur : Sauvegarde** : Le nom ou l'alias du serveur Duplicati et de la sauvegarde, affichera également le nom du serveur et la note.
   - L'alias et la note peuvent être configurés à `Paramètres → Paramètres du serveur`.
@@ -81,7 +81,7 @@ Vous pouvez également cliquer sur les boutons en bas pour ouvrir `Paramètres �
 
 La disposition du tableau énumère les journaux de sauvegarde les plus récents reçus pour tous les serveurs et sauvegardes.
 
-![Dashboard Table Mode](/assets/screen-main-dashboard-table-mode.png)
+![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
 
 - **Nom du serveur** : Le nom du serveur Duplicati (ou alias)
   - Sous le nom se trouve la note du serveur
@@ -113,7 +113,7 @@ Ce paramètre de notification s'applique uniquement quand **duplistatus** reçoi
 
 Le survol de l'icône d'avertissement en retard affiche les détails concernant la sauvegarde en retard.
 
-![Overdue details](/assets/screen-overdue-backup-hover-card.png)
+![Overdue details](../assets/screen-overdue-backup-hover-card.png)
 
 - **Vérifié** : Quand la dernière vérification en retard a été effectuée. Configurez la fréquence dans [Paramètres des notifications de sauvegarde](settings/backup-notifications-settings.md).
 - **Dernière sauvegarde** : Quand le dernier journal de sauvegarde a été reçu.
@@ -124,7 +124,7 @@ Le survol de l'icône d'avertissement en retard affiche les détails concernant 
 
 En cliquant sur l'icône d'horloge bleue, vous ouvrez une liste des versions de sauvegarde disponibles au moment de la sauvegarde, telles que signalées par le serveur Duplicati.
 
-![Available versions](/assets/screen-available-backups-modal.png)
+![Available versions](../assets/screen-available-backups-modal.png)
 
 - **Détails de la sauvegarde** : Affiche le nom du serveur et l'alias, la note du serveur, le nom de sauvegarde, et quand la sauvegarde a été exécutée.
 - **Détails de la version** : Affiche le numéro de version, la date de création et l'âge.

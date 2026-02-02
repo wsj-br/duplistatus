@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/notification-templates.md
 
 **duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet:
 
-![notification templates](/assets/screen-settings-templates.png)
+![notification templates](../../assets/screen-settings-templates.png)
 
 | Template           | Beschreibung                                         |
 | :----------------- | :-------------------------------------------------- |

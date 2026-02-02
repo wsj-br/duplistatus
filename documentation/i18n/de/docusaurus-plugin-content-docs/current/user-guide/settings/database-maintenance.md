@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/database-maintenance.md
 
 Verwalten Sie Ihre Sicherungsdaten und optimieren Sie die Leistung durch Datenbankwartungsvorgänge.
 
-![Database maintenance](/assets/screen-settings-database-maintenance.png)
+![Database maintenance](../../assets/screen-settings-database-maintenance.png)
 
 <br/>
 

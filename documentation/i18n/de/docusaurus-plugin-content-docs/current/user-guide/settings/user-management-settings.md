@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/user-management-settings.md
 
 Verwalten Sie Benutzerkonten, Berechtigungen und Zugriffskontrolle für **duplistatus**. Dieser Abschnitt ermöglicht es Administratoren, Benutzerkonten zu erstellen, zu ändern und zu löschen.
 
-![User Management](/assets/screen-settings-users.png)
+![User Management](../../assets/screen-settings-users.png)
 
 >[!TIP] 
 >Das Standard-Konto `admin` kann gelöscht werden. Erstellen Sie dazu zunächst einen neuen Administratorbenutzer, melden Sie sich mit diesem Konto an, 

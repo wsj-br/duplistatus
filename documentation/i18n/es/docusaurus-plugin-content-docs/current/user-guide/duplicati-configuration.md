@@ -11,7 +11,7 @@ El botón <SvgButton svgFilename="duplicati_logo.svg" /> en la [Barra de herrami
 
 Puede seleccionar un servidor de la lista desplegable. Si ya ha seleccionado un servidor (haciendo clic en su tarjeta) o está viendo sus detalles, el botón abrirá la Configuración de Duplicati de ese servidor específico directamente.
 
-![Duplicati configuration](/assets/screen-duplicati-configuration.png)
+![Duplicati configuration](../assets/screen-duplicati-configuration.png)
 
 - La lista de servidores mostrará el `nombre del servidor` o `alias del servidor (nombre del servidor)`.
 - Las direcciones de servidores se configuran en [`Configuración → Servidor`](settings/server-settings.md).

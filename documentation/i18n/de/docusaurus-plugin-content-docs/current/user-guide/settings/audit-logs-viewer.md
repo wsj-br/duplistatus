@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/audit-logs-viewer.md
 
 Das Audit-Log bietet einen umfassenden Überblick über alle Systemänderungen und Benutzeraktionen in **duplistatus**. Dies hilft dabei, Konfigurationsänderungen, Benutzeraktivitäten und Systemoperationen für Sicherheits- und Fehlerbehebungszwecke nachzuverfolgbar zu machen.
 
-![Audit Log](/assets/screen-settings-audit.png)
+![Audit Log](../../assets/screen-settings-audit.png)
 
 ## Audit-Log-Viewer {#audit-log-viewer}
 

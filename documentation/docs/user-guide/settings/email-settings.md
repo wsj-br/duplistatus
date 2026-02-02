@@ -4,7 +4,7 @@
 
 **duplistatus** supports sending email notifications via SMTP as an alternative or complement to NTFY notifications. Email configuration is now managed through the web interface with encrypted storage in the database for enhanced security.
 
-![Email Configuration](/assets/screen-settings-email.png)
+![Email Configuration](../../assets/screen-settings-email.png)
 
 | Setting                 | Description                                                      |
 |:------------------------|:-----------------------------------------------------------------|

@@ -16,7 +16,7 @@ Les administrateurs voient tous les paramètres disponibles.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-admin.png" alt="Barre latérale Paramètres - Vue Admin" />
+      <img src="../../assets/screen-settings-left-panel-admin.png" alt="Barre latérale Paramètres - Vue Admin" />
     </td>
     <td>
       <ul>
@@ -59,7 +59,7 @@ Les utilisateurs réguliers voient un ensemble limité de paramètres.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Barre latérale des paramètres - Vue non-admin" />
+      <img src="../../assets/screen-settings-left-panel-non-admin.png" alt="Barre latérale des paramètres - Vue non-admin" />
     </td>
     <td>
       <ul>

@@ -12,7 +12,7 @@ Se muestra un gráfico de métricas de backup a lo largo del tiempo tanto en el 
 - **Panel de control**, el gráfico muestra el número total de backups registrados en la base de datos de **duplistatus**. Si utiliza el diseño de tarjetas, puede seleccionar un servidor para ver sus métricas consolidadas (cuando el panel lateral muestra métricas).
 - Página de **Detalles del Servidor**, el gráfico muestra métricas para el servidor seleccionado (para todos sus backups) o para un backup específico individual.
 
-![Backup Metrics](/assets/screen-metrics.png)
+![Backup Metrics](../assets/screen-metrics.png)
 
 - **Tamaño cargado**: Cantidad total de datos enviados/transmitidos durante los backups desde el servidor Duplicati al destino (almacenamiento local, FTP, proveedor de nube, ...) por día.
 - **Duración**: La duración total de todos los backups recibidos por día en HH:MM.

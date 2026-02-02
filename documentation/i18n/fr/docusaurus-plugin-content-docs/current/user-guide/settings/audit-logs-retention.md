@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/audit-logs-retention.md
 
 Configurer la durée de rétention des journaux d'audit avant le nettoyage automatique.
 
-![Audit Log Retention](/assets/screen-settings-audit-retention.png)
+![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
 
 | Setting | Description | Par défaut |
 |:-------|:-----------|:-------------|

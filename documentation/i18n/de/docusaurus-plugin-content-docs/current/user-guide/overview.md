@@ -40,7 +40,7 @@ Nach erfolgreicher Installation greifen Sie auf die duplistatus-Weboberfläche f
 
 duplistatus bietet ein intuitives Dashboard zur Überwachung von Duplicati-Sicherungsvorgängen in Ihrer gesamten Infrastruktur.
 
-![Dashboard Overview](/assets/screen-main-dashboard-card-mode.png)
+![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
 
 Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein klares und umfassendes Überwachungserlebnis zu bieten:
 
@@ -80,8 +80,8 @@ Durch Klicken auf die Benutzerschaltfläche wird ein Dropdown-Menü mit benutzer
     <th>Normaler Benutzer</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="Benutzermenü - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="Benutzermenü - Benutzer" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="../assets/screen-user-menu-admin.png" alt="Benutzermenü - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="../assets/screen-user-menu-user.png" alt="Benutzermenü - Benutzer" /></td>
   </tr>
 </table>
 

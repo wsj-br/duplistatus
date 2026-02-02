@@ -3,7 +3,7 @@
 
 Manage your backup data and optimise performance through database maintenance operations.
 
-![Database maintenance](/assets/screen-settings-database-maintenance.png)
+![Database maintenance](../../assets/screen-settings-database-maintenance.png)
 
 
 <br/>

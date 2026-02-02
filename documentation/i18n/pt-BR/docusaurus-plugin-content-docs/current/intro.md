@@ -42,19 +42,19 @@ Consulte o [Guia do Usuário](user-guide/overview.md) para instruções detalhad
 
 ### Painel {#dashboard}
 
-![dashboard](/assets/screen-main-dashboard-card-mode.png)
+![dashboard](assets/screen-main-dashboard-card-mode.png)
 
 ### Histórico de backups {#backup-history}
 
-![server-detail](/assets/screen-server-backup-list.png)
+![server-detail](assets/screen-server-backup-list.png)
 
 ### Detalhes do backup {#backup-details}
 
-![backup-detail](/assets/screen-backup-detail.png)
+![backup-detail](assets/screen-backup-detail.png)
 
 ### Backups atrasados {#overdue-backups}
 
-![overdue backups](/assets/screen-overdue-backup-hover-card.png)
+![overdue backups](assets/screen-overdue-backup-hover-card.png)
 
 ### Notificações atrasadas no seu telefone {#overdue-notifications-on-your-phone}
 

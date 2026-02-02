@@ -15,7 +15,7 @@ source_file_path: user-guide/collect-backup-logs.md
 
 1.  Clique no ícone <IconButton icon="lucide:download" /> `Coletar Logs de Backup` na [Barra de Ferramentas da Aplicação](overview#application-toolbar).
 
-![Collect Backup Logs Popup](/assets/screen-collect-button-popup.png)
+![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
 2.  Selecionar servidor
 
@@ -42,7 +42,7 @@ Se você tem Endereços de servidores configurados em `Settings → Server Setti
 
 _Clique com o botão direito_ no botão <IconButton icon="lucide:download" /> `Coletar Logs de Backup` na barra de ferramentas da aplicação para coletar de todos os servidores configurados.
 
-![Collect All Right-Click Menu](/assets/screen-collect-button-right-click-popup.png)
+![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 Você também pode usar o botão <IconButton icon="lucide:import" label="Coletar todos"/> nas páginas `Settings → Overdue Monitoring` e `Settings → Server Settings` para coletar de todos os servidores configurados.

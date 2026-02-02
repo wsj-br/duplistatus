@@ -15,8 +15,8 @@ source_file_path: user-guide/dashboard.md
 
 Esta sección muestra estadísticas agregadas para todas las copias de seguridad.
 
-![Panel de control resumen - resumen](/assets/screen-dashboard-summary.png)
-![Panel de control resumen - tabla](/assets/screen-dashboard-summary-table.png)
+![Panel de control resumen - resumen](../assets/screen-dashboard-summary.png)
+![Panel de control resumen - tabla](../assets/screen-dashboard-summary-table.png)
 
 - **Servidores totales**: El número de servidores siendo monitoreados.
 - **Total de trabajos de backup**: El número total de trabajos de backup (tipos) configurados para todos los servidores.
@@ -51,17 +51,17 @@ Puede alternar el botón en la esquina superior derecha del panel lateral para c
 
 - Estado: Mostrar estadísticas de los trabajos de backup por estado, con una lista de backups retrasados y trabajos de backup con estado de advertencias/errores.
 
-![status panel](/assets/screen-overview-side-status.png)
+![status panel](../assets/screen-overview-side-status.png)
 
 - Métricas: Mostrar gráficos con duración, tamaño de archivos y tamaño de almacenamiento a lo largo del tiempo para el servidor agregado o seleccionado.
 
-![charts panel](/assets/screen-overview-side-charts.png)
+![charts panel](../assets/screen-overview-side-charts.png)
 
 ### Detalles del backup {#backup-details}
 
 Al pasar el cursor sobre un backup en la lista, se muestran los detalles del último registro de backup recibido y cualquier información de retrasos.
 
-![Overdue details](/assets/screen-backup-tooltip.png)
+![Overdue details](../assets/screen-backup-tooltip.png)
 
 - **Nombre del servidor : Backup**: El nombre o alias del servidor Duplicati y backup, también mostrará el nombre del servidor y la nota.
   - El alias y la nota se pueden configurar en `Configuración → Configuración del servidor`.
@@ -81,7 +81,7 @@ Puede hacer clic en los botones en la parte inferior para abrir `Configuración 
 
 El diseño de la tabla enumera los logs de backup más recientes recibidos para todos los servidores y backups.
 
-![Dashboard Table Mode](/assets/screen-main-dashboard-table-mode.png)
+![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
 
 - **Nombre del servidor**: El nombre del servidor Duplicati (o alias)
   - Bajo el nombre se encuentra la nota del servidor
@@ -113,7 +113,7 @@ Esta configuración de notificación solo se aplica cuando **duplistatus** recib
 
 Pasar el cursor sobre el icono de advertencia de backup retrasado muestra detalles sobre el backup retrasado.
 
-![Overdue details](/assets/screen-overdue-backup-hover-card.png)
+![Overdue details](../assets/screen-overdue-backup-hover-card.png)
 
 - **Verificado**: Cuándo se realizó la última verificación de retraso. Configure la frecuencia en [Notificaciones de backup Configuración](settings/backup-notifications-settings.md).
 - **Último backup**: Cuándo se recibió el último registro de backup.
@@ -124,7 +124,7 @@ Pasar el cursor sobre el icono de advertencia de backup retrasado muestra detall
 
 Al hacer clic en el icono de reloj azul, se abre una lista de versiones de backup disponibles en el momento del backup, según lo reportado por el servidor de Duplicati.
 
-![Available versions](/assets/screen-available-backups-modal.png)
+![Available versions](../assets/screen-available-backups-modal.png)
 
 - **Detalles del backup**: Muestra el nombre del servidor y alias, nota del servidor, nombre de backup y cuándo se ejecutó el backup.
 - **Detalles de versión**: Muestra el número de versión, fecha de creación y antigüedad.

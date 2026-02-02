@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/display-settings.md
 
 Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 
-![Display Settings](/assets/screen-settings-display.png)
+![Display Settings](../../assets/screen-settings-display.png)
 
 <br/>
 

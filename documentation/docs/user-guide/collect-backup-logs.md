@@ -12,7 +12,7 @@
 
 1.  Click the <IconButton icon="lucide:download" /> `Collect Backup Logs` icon on the [Application Toolbar](overview#application-toolbar).
 
-![Collect Backup Logs Popup](/assets/screen-collect-button-popup.png)
+![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
 2.  Select Server
 
@@ -42,7 +42,7 @@
 
 _Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
 
-![Collect All Right-Click Menu](/assets/screen-collect-button-right-click-popup.png)
+![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
 You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.

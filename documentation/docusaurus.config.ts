@@ -52,7 +52,7 @@ const config: Config = {
       en: {
         label: 'English',
         direction: 'ltr',
-        htmlLang: 'en-US',
+        htmlLang: 'en-GB',
         calendar: 'gregory',
       },
       fr: {

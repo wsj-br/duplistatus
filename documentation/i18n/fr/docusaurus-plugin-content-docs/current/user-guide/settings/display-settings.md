@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/display-settings.md
 
 Configurer les préférences d'interface utilisateur et d'affichage.
 
-![Display Settings](/assets/screen-settings-display.png)
+![Display Settings](../../assets/screen-settings-display.png)
 
 <br/>
 

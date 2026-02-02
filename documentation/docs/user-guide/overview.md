@@ -35,7 +35,7 @@ After successful installation, access the duplistatus web interface by following
 
 duplistatus provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
 
-![Dashboard Overview](/assets/screen-main-dashboard-card-mode.png)
+![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
 
 
 The user interface is organised into several key sections to provide a clear and comprehensive monitoring experience:
@@ -76,8 +76,8 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
     <th>Regular User</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="../assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="../assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
   </tr>
 </table>
 

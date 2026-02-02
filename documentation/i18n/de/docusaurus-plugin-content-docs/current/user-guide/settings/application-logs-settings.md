@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/application-logs-settings.md
 
 Der Anwendungsprotokoll-Viewer ermöglicht Administratoren, alle Anwendungsprotokolle an einem zentralen Ort zu überwachen, mit Filterung, Exportieren und Echtzeit-Updates direkt über die Weboberfläche.
 
-![Application Log Viewer](/assets/screen-settings-application-logs.png)
+![Application Log Viewer](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

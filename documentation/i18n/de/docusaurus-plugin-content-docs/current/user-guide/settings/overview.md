@@ -16,7 +16,7 @@ Administratoren sehen alle verfügbaren Einstellungen.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-admin.png" alt="Einstellungen Seitenleiste - Admin-Ansicht" />
+      <img src="../../assets/screen-settings-left-panel-admin.png" alt="Einstellungen Seitenleiste - Admin-Ansicht" />
     </td>
     <td>
       <ul>
@@ -59,7 +59,7 @@ Reguläre Benutzer sehen einen begrenzten Satz von Einstellungen.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Einstellungen Seitenleiste - Nicht-Admin-Ansicht" />
+      <img src="../../assets/screen-settings-left-panel-non-admin.png" alt="Einstellungen Seitenleiste - Nicht-Admin-Ansicht" />
     </td>
     <td>
       <ul>

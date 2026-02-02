@@ -5,7 +5,7 @@
 **duplistatus** uses three templates for notification messages. These templates are used for both NTFY and Email notifications:
 
 
-![notification templates](/assets/screen-settings-templates.png)
+![notification templates](../../assets/screen-settings-templates.png)
 
 
 | Template           | Description                                         |

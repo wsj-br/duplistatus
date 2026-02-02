@@ -43,19 +43,19 @@ See the [User Guide](user-guide/overview.md) for detailed instructions on how to
 
 ### Dashboard {#dashboard}
 
-![dashboard](/assets/screen-main-dashboard-card-mode.png)
+![dashboard](assets/screen-main-dashboard-card-mode.png)
 
 ### Backup History {#backup-history}
 
-![server-detail](/assets/screen-server-backup-list.png)
+![server-detail](assets/screen-server-backup-list.png)
 
 ### Backup Details {#backup-details}
 
-![backup-detail](/assets/screen-backup-detail.png)
+![backup-detail](assets/screen-backup-detail.png)
 
 ### Overdue Backups {#overdue-backups}
 
-![overdue backups](/assets/screen-overdue-backup-hover-card.png)
+![overdue backups](assets/screen-overdue-backup-hover-card.png)
 
 ### Overdue notifications on your phone {#overdue-notifications-on-your-phone}
 

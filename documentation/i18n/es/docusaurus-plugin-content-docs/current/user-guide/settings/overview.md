@@ -16,7 +16,7 @@ Los administradores ven toda la configuración disponible.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
+      <img src="../../assets/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
     </td>
     <td>
       <ul>
@@ -59,7 +59,7 @@ Los usuarios normales ven un conjunto limitado de configuración.
 <table>
   <tr>
     <td>
-      <img src="/assets/screen-settings-left-panel-non-admin.png" alt="Barra lateral de configuración - Vista de no administrador" />
+      <img src="../../assets/screen-settings-left-panel-non-admin.png" alt="Barra lateral de configuración - Vista de no administrador" />
     </td>
     <td>
       <ul>

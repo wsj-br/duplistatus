@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/email-settings.md
 
 **duplistatus** admite el envío de notificaciones por correo electrónico a través de SMTP como alternativa o complemento a las notificaciones NTFY. La configuración de correo electrónico se gestiona ahora a través de la interfaz web con almacenamiento cifrado en la base de datos para mayor seguridad.
 
-![Email Configuration](/assets/screen-settings-email.png)
+![Email Configuration](../../assets/screen-settings-email.png)
 
 | Configuración           | Descripción                                                      |
 |:------------------------|:-----------------------------------------------------------------|

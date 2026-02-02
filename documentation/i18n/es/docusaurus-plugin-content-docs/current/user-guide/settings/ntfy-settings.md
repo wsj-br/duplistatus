@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/ntfy-settings.md
 
 NTFY es un [servicio de notificaciones](https://github.com/binwiederhier/ntfy) de [código abierto](https://github.com/binwiederhier/ntfy) simple que puede enviar notificaciones push a su teléfono o escritorio. Esta sección le permite configurar la conexión del servidor de notificaciones y la autenticación.
 
-![Ntfy settings](/assets/screen-settings-ntfy.png)
+![Ntfy settings](../../assets/screen-settings-ntfy.png)
 
 | Configuración         | Descripción                                                                                                                                   |
 |:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|

@@ -10,8 +10,8 @@
 
 This section displays aggregated statistics for all backups.
 
-![Dashboard summary - overview](/assets/screen-dashboard-summary.png)
-![Dashboard summary - table](/assets/screen-dashboard-summary-table.png)
+![Dashboard summary - overview](../assets/screen-dashboard-summary.png)
+![Dashboard summary - table](../assets/screen-dashboard-summary-table.png)
 
 - **Total Servers**: The number of servers being monitored.                                                                                                             |
 - **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                |
@@ -46,17 +46,17 @@ You can toggle the top right button on the side panel to change the panel view:
 
 - Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status.
 
-![status panel](/assets/screen-overview-side-status.png)
+![status panel](../assets/screen-overview-side-status.png)
 
 - Metrics: Show charts with duration, file size and storage size over time for the aggregated or selected server.
 
-![charts panel](/assets/screen-overview-side-charts.png)
+![charts panel](../assets/screen-overview-side-charts.png)
 
 ### Backup Details {#backup-details}
 
 Hovering over a backup in the list displays details of the last backup log received and any overdue information.
 
-![Overdue details](/assets/screen-backup-tooltip.png)
+![Overdue details](../assets/screen-backup-tooltip.png)
 
 - **Server Name : Backup**: The name or alias of the Duplicati server and backup, will also show the server name and note.
   - The alias and note can be configured at `Settings → Server Settings`.
@@ -76,7 +76,7 @@ You can also click the buttons at the bottom to open `Settings → Backup Notifi
 
 The table layout lists the most recent backup logs received for all servers and backups.
 
-![Dashboard Table Mode](/assets/screen-main-dashboard-table-mode.png)
+![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
 
 - **Server Name**: The name of the Duplicati server (or alias)
   - Under the name is the server note
@@ -108,7 +108,7 @@ This notification setting only applies when **duplistatus** receives a new backu
 
 Hovering over the overdue warning icon displays details about the overdue backup.
 
-![Overdue details](/assets/screen-overdue-backup-hover-card.png)
+![Overdue details](../assets/screen-overdue-backup-hover-card.png)
 
 - **Checked**: When the last overdue check was performed. Configure the frequency in [Backup Notifications Settings](settings/backup-notifications-settings.md).
 - **Last Backup**: When the last backup log was received.
@@ -119,7 +119,7 @@ Hovering over the overdue warning icon displays details about the overdue backup
 
 Clicking the blue clock icon opens a list of available backup versions at the time of the backup, as reported by the Duplicati server.
 
-![Available versions](/assets/screen-available-backups-modal.png)
+![Available versions](../assets/screen-available-backups-modal.png)
 
 - **Backup Details**: Shows the server name and alias, server note, backup name, and when the backup was executed.
 - **Version Details**: Shows the version number, creation date, and age.

@@ -4,7 +4,7 @@
 
 You can configure an alternative name (alias) for your servers, a note to describe its function and the web addresses of your Duplicati Servers here.
 
-![server settings](/assets/screen-settings-server.png)
+![server settings](../../assets/screen-settings-server.png)
 
 | Setting                         | Description                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

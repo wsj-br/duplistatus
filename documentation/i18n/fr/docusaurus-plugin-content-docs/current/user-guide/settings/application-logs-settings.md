@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/application-logs-settings.md
 
 Le Visualiseur de journaux d'application permet aux administrateurs de surveiller tous les journaux d'application au même endroit, avec filtrage, export et mises à jour en temps réel directement depuis l'interface web.
 
-![Application Log Viewer](/assets/screen-settings-application-logs.png)
+![Application Log Viewer](../../assets/screen-settings-application-logs.png)
 
 <br/>
 

@@ -40,7 +40,7 @@ Después de la instalación exitosa, acceda a la interfaz web de duplistatus sig
 
 duplistatus proporciona un panel de control intuitivo para monitorear operaciones de backup de Duplicati en toda su infraestructura.
 
-![Dashboard Overview](/assets/screen-main-dashboard-card-mode.png)
+![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
 
 La interfaz de usuario está organizada en varias secciones clave para proporcionar una experiencia de monitoreo clara y completa:
 
@@ -80,8 +80,8 @@ Al hacer clic en el botón de usuario se abre un menú desplegable con opciones 
     <th>Usuario Regular</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="../assets/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
+    <td style={{verticalAlign: 'top'}}><img src="../assets/screen-user-menu-user.png" alt="User Menu - User" /></td>
   </tr>
 </table>
 

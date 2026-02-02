@@ -12,7 +12,7 @@ Ein Diagramm der Sicherungsmetriken im Zeitverlauf wird sowohl im Dashboard (Tab
 - **Dashboard**, das Diagramm zeigt die Gesamtzahl der in der **duplistatus**-Datenbank aufgezeichneten Sicherungen an. Wenn Sie das Cards-Layout verwenden, können Sie einen Server auswählen, um seine konsolidierten Metriken anzuzeigen (wenn das Seitenpanel Metriken anzeigt).
 - **Server Details**-Seite, das Diagramm zeigt Metriken für den ausgewählten Server (für alle seine Sicherungen) oder für eine einzelne, spezifische Sicherung an.
 
-![Backup Metrics](/assets/screen-metrics.png)
+![Backup Metrics](../assets/screen-metrics.png)
 
 - **Hochgeladene Größe**: Gesamtmenge der während Sicherungen vom Duplicati-Server zum Ziel (lokaler Speicher, FTP, Cloud-Anbieter, ...) pro Tag hochgeladenen/übertragenen Daten.
 - **Dauer**: Die Gesamtdauer aller pro Tag empfangenen Sicherungen in HH:MM.

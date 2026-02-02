@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/audit-logs-viewer.md
 
 O log de auditoria fornece um registro abrangente de todas as alterações de sistema e ações de usuário no **duplistatus**. Isso ajuda a rastrear alterações de configuração, atividades de usuário e operações de sistema para fins de segurança e resolução de problemas.
 
-![Audit Log](/assets/screen-settings-audit.png)
+![Audit Log](../../assets/screen-settings-audit.png)
 
 ## Visualizador de log de auditoria {#audit-log-viewer}
 

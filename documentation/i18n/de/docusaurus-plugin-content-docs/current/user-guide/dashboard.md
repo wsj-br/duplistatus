@@ -15,8 +15,8 @@ source_file_path: user-guide/dashboard.md
 
 Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 
-![Dashboard summary - Übersicht](/assets/screen-dashboard-summary.png)
-![Dashboard summary - Tabelle](/assets/screen-dashboard-summary-table.png)
+![Dashboard summary - Übersicht](../assets/screen-dashboard-summary.png)
+![Dashboard summary - Tabelle](../assets/screen-dashboard-summary-table.png)
 
 - **Gesamtserver**: Die Anzahl der überwachten Server.                                                                                                             |
 - **Backup-Jobs gesamt**: Die Gesamtzahl der für alle Server konfigurierten Sicherungsaufträge (Typen).                                                                                |
@@ -51,17 +51,17 @@ Sie können die Schaltfläche oben rechts im Seitenpanel umschalten, um die Pane
 
 - Status: Einblenden von Statistiken der Sicherungsaufträge pro Status mit einer Liste von überfälligen Sicherungen und Sicherungsaufträgen mit Warnungen/Fehler-Status.
 
-![status panel](/assets/screen-overview-side-status.png)
+![status panel](../assets/screen-overview-side-status.png)
 
 - Metriken: Einblenden von Diagrammen mit Dauer, Dateigröße und Speichergröße im Zeitverlauf für den aggregierten oder ausgewählten Server.
 
-![charts panel](/assets/screen-overview-side-charts.png)
+![charts panel](../assets/screen-overview-side-charts.png)
 
 ### Sicherungsdetails {#backup-details}
 
 Wenn Sie den Mauszeiger über eine Sicherung in der Liste bewegen, werden Details des letzten empfangenen Sicherungsprotokolls und alle Informationen zu überfälligen Sicherungen angezeigt.
 
-![Overdue details](/assets/screen-backup-tooltip.png)
+![Overdue details](../assets/screen-backup-tooltip.png)
 
 - **Servername : Sicherung**: Der Name oder Alias des duplistatus-Servers und der Sicherung, zeigt auch den Servernamen und den Hinweis an.
   - Der Alias und der Hinweis können unter `Einstellungen → Servereinstellungen` konfiguriert werden.
@@ -81,7 +81,7 @@ Sie können auch auf die Schaltflächen am unteren Rand klicken, um `Einstellung
 
 Das Tabellenlayout listet die neuesten Sicherungsprotokolle auf, die für alle Server und Sicherungen empfangen wurden.
 
-![Dashboard Table Mode](/assets/screen-main-dashboard-table-mode.png)
+![Dashboard Table Mode](../assets/screen-main-dashboard-table-mode.png)
 
 - **Servername**: Der Name des Duplicati-Servers (oder Alias)
   - Unter dem Namen befindet sich die Servernotiz
@@ -113,7 +113,7 @@ Diese Benachrichtigungseinstellung gilt nur, wenn **duplistatus** ein neues Sich
 
 Wenn Sie den Mauszeiger über das Warnungssymbol für überfällige Sicherungen bewegen, werden Details zur überfälligen Sicherung angezeigt.
 
-![Overdue details](/assets/screen-overdue-backup-hover-card.png)
+![Overdue details](../assets/screen-overdue-backup-hover-card.png)
 
 - **Geprüft**: Wann die letzte Prüfung auf Überfälligkeit durchgeführt wurde. Konfigurieren Sie die Häufigkeit in [Backup-Benachrichtigungen Einstellungen](settings/backup-notifications-settings.md).
 - **Letzte Sicherung**: Wann das letzte Sicherungsprotokoll empfangen wurde.
@@ -124,7 +124,7 @@ Wenn Sie den Mauszeiger über das Warnungssymbol für überfällige Sicherungen 
 
 Durch Klicken auf das blaue Uhrsymbol wird eine Liste der verfügbaren Sicherungsversionen zum Zeitpunkt der Sicherung geöffnet, wie vom duplistatus-Server gemeldet.
 
-![Available versions](/assets/screen-available-backups-modal.png)
+![Available versions](../assets/screen-available-backups-modal.png)
 
 - **Sicherungsdetails**: Zeigt den Servernamen und Alias, Serverhinweis, Sicherungsnamen und wann die Sicherung ausgeführt wurde.
 - **Versionsdetails**: Zeigt die Versionsnummer, das Erstellungsdatum und das Alter.

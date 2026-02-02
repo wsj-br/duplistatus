@@ -1092,6 +1092,8 @@
   }
 
   /* Flag emojis for locale dropdown */
+  /* English: default locale has no /en/ in URL; use lang attribute (e.g. en-US) */
+  .dropdown__menu .dropdown__link[lang^="en"]::before,
   .dropdown__menu .dropdown__link[href*="/en/"]::before,
   .dropdown__menu .dropdown__link[href*="/en"]::before {
     content: "🇬🇧";
@@ -1116,6 +1118,8 @@
     font-size: 1.2em;
   }
 
+  .dropdown__menu .dropdown__link[href*="/pt-BR/"]::before,
+  .dropdown__menu .dropdown__link[href*="/pt-BR"]::before,
   .dropdown__menu .dropdown__link[href*="/pt-br/"]::before,
   .dropdown__menu .dropdown__link[href*="/pt-br"]::before {
     content: "🇧🇷";

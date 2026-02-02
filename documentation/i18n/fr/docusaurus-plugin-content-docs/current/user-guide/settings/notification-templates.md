@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/notification-templates.md
 
 **duplistatus** utilise trois modèles pour les messages de notification. Ces modèles sont utilisés pour les notifications NTFY et les notifications par e-mail :
 
-![notification templates](/assets/screen-settings-templates.png)
+![notification templates](../../assets/screen-settings-templates.png)
 
 | Template           | Description                                         |
 | :----------------- | :-------------------------------------------------- |

@@ -11,7 +11,7 @@ Die <SvgButton svgFilename="duplicati_logo.svg" /> Schaltfläche in der [Anwendu
 
 Sie können einen Server aus der Dropdown-Liste auswählen. Wenn Sie bereits einen Server ausgewählt haben (durch Klicken auf seine Karte) oder seine Details anzeigen, wird die Schaltfläche die Duplicati-Konfiguration dieses spezifischen Servers direkt öffnen.
 
-![Duplicati configuration](/assets/screen-duplicati-configuration.png)
+![Duplicati configuration](../assets/screen-duplicati-configuration.png)
 
 - Die Liste der Server zeigt den `Servernamen` oder `Alias (Servername)` an.
 - Server-Adressen werden in [`Einstellungen → Server`](settings/server-settings.md) konfiguriert.

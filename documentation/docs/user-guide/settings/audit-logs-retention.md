@@ -3,7 +3,7 @@
 
 Configure how long audit logs are retained before automatic cleanup.
 
-![Audit Log Retention](/assets/screen-settings-audit-retention.png)
+![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
 
 | Setting | Description | Default Value |
 |:-------|:-----------|:-------------|

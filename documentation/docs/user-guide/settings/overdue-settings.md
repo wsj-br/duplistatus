@@ -2,7 +2,7 @@
 
 # Overdue Notifications {#overdue-notifications}
 
-![Backup alerts](/assets/screen-settings-overdue.png)
+![Backup alerts](../../assets/screen-settings-overdue.png)
 
 ## Configure Per-Backup Overdue Settings {#configure-per-backup-overdue-settings}
 

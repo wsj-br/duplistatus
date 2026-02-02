@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/audit-logs-retention.md
 
 Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung beibehalten werden.
 
-![Audit Log Retention](/assets/screen-settings-audit-retention.png)
+![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
 
 | Einstellung | Beschreibung | Standardwert |
 |:-------|:-----------|:-------------|

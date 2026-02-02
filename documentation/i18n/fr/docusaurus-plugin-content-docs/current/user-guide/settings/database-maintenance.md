@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/database-maintenance.md
 
 Gérez vos données de sauvegarde et optimisez les performances grâce aux opérations de maintenance de la base de données.
 
-![Database maintenance](/assets/screen-settings-database-maintenance.png)
+![Database maintenance](../../assets/screen-settings-database-maintenance.png)
 
 <br/>
 

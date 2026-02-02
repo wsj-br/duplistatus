@@ -41,19 +41,19 @@ Consultez le [Guide de l'utilisateur](user-guide/overview.md) pour des instructi
 
 ### Tableau de bord {#dashboard}
 
-![dashboard](/assets/screen-main-dashboard-card-mode.png)
+![dashboard](assets/screen-main-dashboard-card-mode.png)
 
 ### Historique des sauvegardes {#backup-history}
 
-![server-detail](/assets/screen-server-backup-list.png)
+![server-detail](assets/screen-server-backup-list.png)
 
 ### Détails de la sauvegarde {#backup-details}
 
-![backup-detail](/assets/screen-backup-detail.png)
+![backup-detail](assets/screen-backup-detail.png)
 
 ### Sauvegardes en retard {#overdue-backups}
 
-![overdue backups](/assets/screen-overdue-backup-hover-card.png)
+![overdue backups](assets/screen-overdue-backup-hover-card.png)
 
 ### Notifications en retard sur votre téléphone {#overdue-notifications-on-your-phone}
 
