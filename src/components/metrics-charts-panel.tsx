@@ -701,7 +701,7 @@ export const MetricsChartsPanel = ({
   const content = useIntlayer('metrics-charts-panel');
   
   return (
-    <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden">
+    <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden" data-screenshot-target="metrics-chart">
       {/* Header with independent refresh time display */}
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">

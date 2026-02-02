@@ -144,6 +144,7 @@ export function DashboardSummaryCards({
                   // className="h-8 w-8 p-0 hover:bg-transparent "
                   className="h-8 w-8 p-6  [&_svg]:!h-8 [&_svg]:!w-8 text-blue-600 hover:text-foreground bg-black-100 backdrop-blur-sm border-white-500 text-blue-600 shadow-lg hover:bg-blue-900 hover:border-blue-600 transition-all duration-200"
                   onClick={handleViewModeToggle}
+                  data-screenshot-target="dashboard-view-mode-toggle"
                 >
                   {viewMode === 'table' ? (
                     <Sheet className="h-8 w-8" />

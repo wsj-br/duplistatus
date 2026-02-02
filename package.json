@@ -26,7 +26,7 @@
     "show-overdue-notifications": "tsx scripts/show-overdue-notifications.ts",
     "run-overdue-check": "tsx scripts/run-overdue-check.ts",
     "test-cron-port": "tsx scripts/test-cron-port.ts",
-    "take-screenshots": "tsx --env-file=.env scripts/take-screenshots.ts",
+    "take-screenshots": "sh -c 'tsx --env-file=.env scripts/take-screenshots.ts \"$@\" 2>&1 | tee take-screenshots.log' _",
     "set-smtp-test-config": "tsx --env-file=.env scripts/set-smtp-test-config.ts",
     "test-smtp-connections": "tsx --env-file=.env scripts/test-smtp-connections.ts",
     "docker-up": "./scripts/pre-checks.sh && docker compose up --build -d",

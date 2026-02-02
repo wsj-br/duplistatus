@@ -14,6 +14,9 @@ const USER_USERNAME = 'user';
 const VIEWPORT_WIDTH = 1920;
 const VIEWPORT_HEIGHT = 1080;
 
+/** Timeout (ms) for waiting for data-screenshot-target elements to appear. */
+const SCREENSHOT_TARGET_TIMEOUT = 15000;
+
 const LOCALES = ['en', 'de', 'fr', 'es', 'pt-BR'] as const;
 
 type Locale = (typeof LOCALES)[number];
@@ -238,6 +241,30 @@ async function ensureDirectoryExists(dir: string) {
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Wait for an element with data-screenshot-target to appear.
+ * @param page - Puppeteer page
+ * @param targetId - Value of data-screenshot-target attribute (e.g. "dashboard-main")
+ * @param timeoutMs - Max wait time in ms (default: SCREENSHOT_TARGET_TIMEOUT)
+ * @returns true if element appeared, false if timeout
+ */
+async function waitForScreenshotTarget(
+  page: Page,
+  targetId: string,
+  timeoutMs: number = SCREENSHOT_TARGET_TIMEOUT
+): Promise<boolean> {
+  try {
+    await page.waitForSelector(`[data-screenshot-target="${targetId}"]`, {
+      timeout: timeoutMs,
+      visible: true
+    });
+    return true;
+  } catch {
+    console.log(colors.yellow, `  ⚠ data-screenshot-target="${targetId}" not found within ${timeoutMs}ms`, colors.reset);
+    return false;
+  }
 }
 
 // Helper function to wait for server detail page content to load
@@ -589,6 +616,8 @@ async function takeScreenshot(
   isSettingsSidebar?: boolean;
   cropBottom?: number;
   clip?: { x: number; y: number; width: number; height: number };
+  /** Wait for this data-screenshot-target before capturing (robust wait with timeout). */
+  screenshotTarget?: string;
   }
 ): Promise<boolean> {
   const waitTime = options?.waitTime ?? 2000;
@@ -596,8 +625,13 @@ async function takeScreenshot(
   const isSettingsSidebar = options?.isSettingsSidebar ?? false;
   const cropBottom = options?.cropBottom ?? 0;
   const clip = options?.clip;
+  const screenshotTarget = options?.screenshotTarget;
   
   console.log(colors.cyan, ` 📸 Taking screenshot: ${filename}...`, colors.reset);
+  if (screenshotTarget) {
+    await waitForScreenshotTarget(page, screenshotTarget);
+    await delay(500); // Brief pause after target appears
+  }
   await delay(waitTime);
 
   // Resolve to absolute path so the file is always written under project root (avoids cwd issues)
@@ -803,11 +837,10 @@ async function takeScreenshot(
 }
 
 async function waitForDashboardLoad(page: Page) {
-  // Wait for dashboard content to load
-  try {
-    await page.waitForSelector('[data-testid="dashboard"], .dashboard, main', { timeout: 10000 });
-  } catch (error) {
-    console.log(colors.yellow, 'Dashboard selector not found, continuing anyway...', colors.reset);
+  // Wait for dashboard content to load via data-screenshot-target
+  const found = await waitForScreenshotTarget(page, 'dashboard-main', 10000);
+  if (!found) {
+    console.log(colors.yellow, 'Dashboard data-screenshot-target not found, continuing anyway...', colors.reset);
   }
   await delay(2000); // Additional wait for animations
 }
@@ -871,38 +904,20 @@ async function switchToTableView(page: Page) {
     // If we're in overview mode, click once to get to table mode
     // If we're already in table mode, we don't need to click
     if (currentViewMode !== 'table') {
-      // Try the evaluate method first (more reliable)
+      // Use data-screenshot-target for reliable element selection
       try {
-        const clicked = await page.evaluate(() => {
-          const buttons = Array.from(document.querySelectorAll('button'));
-          for (const btn of buttons) {
-            const svg = btn.querySelector('svg');
-            if (svg) {
-              const svgClasses = svg.className.baseVal || svg.className;
-              if (svgClasses.includes('LayoutDashboard') || svgClasses.includes('layout-dashboard')) {
-                (btn as HTMLButtonElement).click();
-                return true;
-              }
-            }
-          }
-          return false;
-        });
-        
-        if (clicked) {
+        const found = await waitForScreenshotTarget(page, 'dashboard-view-mode-toggle', 5000);
+        if (found) {
+          await page.click('[data-screenshot-target="dashboard-view-mode-toggle"]');
           await delay(2000);
           
           // Verify we're in table view now
           const newViewMode = await page.evaluate((uid) => {
             if (uid) {
-              // Try user-specific key first
               const userKey = `dashboard-view-mode:user-${uid}`;
               const value = localStorage.getItem(userKey);
-              if (value) {
-                return value;
-              }
+              if (value) return value;
             }
-            
-            // Fallback: search all keys
             const keys = Object.keys(localStorage);
             for (const key of keys) {
               if (key.includes('dashboard-view-mode')) {
@@ -914,34 +929,14 @@ async function switchToTableView(page: Page) {
           
           if (newViewMode !== 'table') {
             // Click again if we're still not in table view
-            await page.evaluate(() => {
-              const buttons = Array.from(document.querySelectorAll('button'));
-              for (const btn of buttons) {
-                const svg = btn.querySelector('svg');
-                if (svg) {
-                  const svgClasses = svg.className.baseVal || svg.className;
-                  if (svgClasses.includes('LayoutDashboard') || svgClasses.includes('layout-dashboard')) {
-                    (btn as HTMLButtonElement).click();
-                    return;
-                  }
-                }
-              }
-            });
+            await page.click('[data-screenshot-target="dashboard-view-mode-toggle"]');
             await delay(2000);
           }
         } else {
-          throw new Error('Button not found in evaluate method');
+          throw new Error('dashboard-view-mode-toggle not found');
         }
       } catch (error) {
-        console.log(colors.yellow, 'Could not click view mode button using evaluate method, trying CSS selector...', colors.reset);
-        // Fallback: try CSS selector approach
-        try {
-          await page.waitForSelector('button:has(svg[class*="LayoutDashboard"]), button:has(svg[class*="Sheet"])', { timeout: 5000 });
-          await page.click('button:has(svg[class*="LayoutDashboard"]), button:has(svg[class*="Sheet"])');
-          await delay(2000);
-        } catch (selectorError) {
-          console.log(colors.red, 'Could not click view mode button using CSS selector either', colors.reset);
-        }
+        console.log(colors.yellow, 'Could not click view mode button: ' + (error instanceof Error ? error.message : String(error)), colors.reset);
       }
     }
   } catch (error) {
@@ -1417,7 +1412,6 @@ const OVERDUE_HOVER_RETRY_DELAY_MS = 1500;
 const OVERDUE_HOVER_WAIT_SELECTOR_MS = 5000;
 
 async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string): Promise<boolean> {
-  const selector = '[data-screenshot-target="overdue-backup-item"]';
   let lastError = '';
 
   for (let attempt = 1; attempt <= OVERDUE_HOVER_MAX_ATTEMPTS; attempt++) {
@@ -1427,8 +1421,23 @@ async function captureOverdueBackupHoverCard(page: Page, screenshotDir: string):
         await delay(OVERDUE_HOVER_RETRY_DELAY_MS);
       }
 
+      // Overdue items are only shown when the overview side panel is in "status" mode
+      // (OverviewStatusPanel). If it's in "chart" mode, the panel state is persisted in
+      // localStorage per user, so DE (or any locale after EN) may load with "chart" and
+      // overdue-backup-item won't exist in the DOM. Switch to status if needed.
+      await waitForScreenshotTarget(page, 'overview-side-panel-toggle', 5000);
+      const panelState = await page.evaluate(() => {
+        const toggle = document.querySelector('[data-screenshot-target="overview-side-panel-toggle"]');
+        return toggle?.getAttribute('data-overview-panel-state') ?? null;
+      });
+      if (panelState === 'chart') {
+        await page.click('[data-screenshot-target="overview-side-panel-toggle"]');
+        await delay(800); // Allow panel to switch and re-render
+      }
+
       // Wait for overdue item to be present (handles late render/expansion)
-      const hoverElement = await page.waitForSelector(selector, { timeout: OVERDUE_HOVER_WAIT_SELECTOR_MS }).catch(() => null);
+      const found = await waitForScreenshotTarget(page, 'overdue-backup-item', OVERDUE_HOVER_WAIT_SELECTOR_MS);
+      const hoverElement = found ? await page.$('[data-screenshot-target="overdue-backup-item"]') : null;
 
       if (!hoverElement) {
         lastError = 'Could not find overdue backup item to hover';
@@ -2222,6 +2231,18 @@ async function captureBackupHistoryTable(page: Page, locale: Locale, screenshotD
 /** Find metrics chart bounds on the current page (dashboard table view or server detail). */
 async function findMetricsChartBounds(page: Page): Promise<{ x: number; y: number; width: number; height: number } | null> {
   return page.evaluate(() => {
+    // Prefer data-screenshot-target for robustness
+    const target = document.querySelector('[data-screenshot-target="metrics-chart"]');
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      return {
+        x: Math.max(0, rect.x - 10),
+        y: Math.max(0, rect.y - 10),
+        width: rect.width + 20,
+        height: rect.height + 20
+      };
+    }
+    // Fallback: search by card + chart content
     const chartSelectors = '[class*="chart"], [class*="recharts"], canvas, svg[class*="chart"], svg[class*="recharts"]';
     const cards = Array.from(document.querySelectorAll('[class*="Card"], [class*="card"]'));
     for (const card of cards) {
@@ -2254,6 +2275,7 @@ async function findMetricsChartBounds(page: Page): Promise<{ x: number; y: numbe
 /** Capture the metrics chart on the current page (no navigation). Used on dashboard table view. */
 async function captureMetricsChartOnCurrentPage(page: Page, screenshotDir: string): Promise<boolean> {
   try {
+    await waitForScreenshotTarget(page, 'metrics-chart');
     const chartBounds = await findMetricsChartBounds(page);
     if (chartBounds) {
       const success = await takeScreenshot(page, 'screen-metrics.png', screenshotDir, {
@@ -2279,6 +2301,7 @@ async function captureMetricsChart(page: Page, locale: Locale, screenshotDir: st
         logError('Server detail content did not load in time');
       }
     }
+    await waitForScreenshotTarget(page, 'metrics-chart');
     const chartBounds = await findMetricsChartBounds(page);
     if (chartBounds) {
       const success = await takeScreenshot(page, 'screen-metrics.png', screenshotDir, {
@@ -2308,74 +2331,29 @@ async function captureAvailableBackupsModal(page: Page, locale: Locale, screensh
       logError('Server detail content did not load in time');
     }
     
-    // Find and click the AvailableBackupsIcon button (button with History icon)
-    const buttonFound = await page.evaluate(() => {
-      // Find all buttons with History icon (lucide-react History icon)
-      const buttons = Array.from(document.querySelectorAll('button'));
-      for (const btn of buttons) {
-        const svg = btn.querySelector('svg');
-        if (svg) {
-          // Check if button has the blue color class (text-blue-600) which indicates it's clickable
-          const hasBlueClass = btn.classList.contains('text-blue-600') || 
-                              btn.className.includes('text-blue-600');
-          
-          // Check if the button is inside a div that contains "Available Versions" label
-          // Look in parent elements up to 5 levels
-          let current: HTMLElement | null = btn.parentElement;
-          let hasAvailableVersionsLabel = false;
-          let levels = 0;
-          while (current && levels < 5) {
-            if (current.textContent?.includes('Available Versions')) {
-              hasAvailableVersionsLabel = true;
-              break;
-            }
-            current = current.parentElement;
-            levels++;
-          }
-          
-          if (hasBlueClass && hasAvailableVersionsLabel) {
-            (btn as HTMLButtonElement).click();
-            return true;
-          }
-        }
-      }
-      return false;
-    });
-    
-    if (!buttonFound) {
-      logError('Could not find AvailableBackupsIcon button');
+    // Find and click the first AvailableBackupsIcon button (data-screenshot-target)
+    const triggerFound = await waitForScreenshotTarget(page, 'available-backups-trigger', 5000);
+    if (!triggerFound) {
+      logError('Could not find available-backups-trigger button');
       return false;
     }
+    await page.click('[data-screenshot-target="available-backups-trigger"]');
     
     await delay(1500); // Wait for modal to appear
     
-    // Wait for dialog to appear
-    try {
-      await page.waitForSelector('[role="dialog"]', { timeout: 3000 });
-    } catch (e) {
-      logError('Dialog did not appear after clicking AvailableBackupsIcon');
+    // Wait for modal to appear via data-screenshot-target
+    const modalFound = await waitForScreenshotTarget(page, 'available-backups-modal', 5000);
+    if (!modalFound) {
+      logError('Available backups modal did not appear');
       return false;
     }
     await delay(500);
     
-    // Capture the dialog/modal
+    // Capture the dialog/modal using data-screenshot-target
     const dialogBounds = await page.evaluate(() => {
-      // Find the DialogContent (the actual modal content)
-      const dialog = document.querySelector('[role="dialog"]');
-      if (dialog) {
-        // Find the DialogContent inside the dialog
-        const dialogContent = dialog.querySelector('[class*="DialogContent"], [class*="dialog-content"]');
-        if (dialogContent) {
-          const rect = dialogContent.getBoundingClientRect();
-          return {
-            x: Math.max(0, rect.x - 10),
-            y: Math.max(0, rect.y - 10),
-            width: rect.width + 20,
-            height: rect.height + 20
-          };
-        }
-        // Fallback: use the dialog itself
-        const rect = dialog.getBoundingClientRect();
+      const modal = document.querySelector('[data-screenshot-target="available-backups-modal"]');
+      if (modal) {
+        const rect = modal.getBoundingClientRect();
         return {
           x: Math.max(0, rect.x - 10),
           y: Math.max(0, rect.y - 10),
@@ -2632,7 +2610,7 @@ async function main() {
       // Dashboard (card/overview) screenshot
       console.log('-------------------------------------------------------');
       console.log('Taking screenshot of dashboard in card mode (overview mode)...');
-      const dashboardCardMode = await takeScreenshot(page, 'screen-main-dashboard-card-mode.png', screenshotDir, { cropBottom: 80 });
+      const dashboardCardMode = await takeScreenshot(page, 'screen-main-dashboard-card-mode.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'dashboard-overview' });
       if (dashboardCardMode) successful.push('screen-main-dashboard-card-mode.png');
       else failed.push('screen-main-dashboard-card-mode.png');
 
@@ -2990,7 +2968,7 @@ async function main() {
 
       console.log('-------------------------------------------------------');
       console.log('Taking screenshot of dashboard in table mode...');
-      const dashboardTableMode = await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', screenshotDir, { cropBottom: 80 });
+      const dashboardTableMode = await takeScreenshot(page, 'screen-main-dashboard-table-mode.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'dashboard-table-view' });
       if (dashboardTableMode) successful.push('screen-main-dashboard-table-mode.png');
       else failed.push('screen-main-dashboard-table-mode.png');
 
@@ -3059,7 +3037,7 @@ async function main() {
 
       console.log('-------------------------------------------------------');
       console.log('Capturing server backup list...');
-      const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', screenshotDir, { cropBottom: 80 });
+      const serverBackupList = await takeScreenshot(page, 'screen-server-backup-list.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'server-detail-content' });
       if (serverBackupList) successful.push('screen-server-backup-list.png');
       else failed.push('screen-server-backup-list.png');
 
@@ -3089,10 +3067,9 @@ async function main() {
           const firstBackup = backupDetails.server.backups[0];
           console.log(`🌐 Navigating to backup detail page (/detail/${firstServer.id}/backup/${firstBackup.id})...`);
           await page.goto(makeUrl(locale, `/detail/${firstServer.id}/backup/${firstBackup.id}`), { waitUntil: 'networkidle0' });
-          await delay(2000);
-          return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80 });
+          return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
         }
-        return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80 });
+        return takeScreenshot(page, 'screen-backup-detail.png', screenshotDir, { cropBottom: 80, screenshotTarget: 'backup-detail' });
       })();
       if (backupDetail) successful.push('screen-backup-detail.png');
       else failed.push('screen-backup-detail.png');
@@ -3110,7 +3087,7 @@ async function main() {
 
       console.log('-------------------------------------------------------');
       console.log('Taking screenshot of settings page left panel (as admin)...');
-      const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', screenshotDir, { isSettingsSidebar: true });
+      const settingsLeftPanelAdmin = await takeScreenshot(page, 'screen-settings-left-panel-admin.png', screenshotDir, { isSettingsSidebar: true, screenshotTarget: 'settings-left-panel' });
       if (settingsLeftPanelAdmin) successful.push('screen-settings-left-panel-admin.png');
       else failed.push('screen-settings-left-panel-admin.png');
 
@@ -3147,7 +3124,7 @@ async function main() {
             const filename1 = 'screen-settings-notifications.png';
             console.log('-------------------------------------------------------');
             console.log(`Taking screenshot of settings tab: ${tab}...`);
-            const screenshot1 = await takeScreenshot(page, filename1, screenshotDir, { isSettingsPage: true });
+            const screenshot1 = await takeScreenshot(page, filename1, screenshotDir, { isSettingsPage: true, screenshotTarget: 'settings-content-card' });
             if (screenshot1) successful.push(filename1);
             else failed.push(filename1);
             await delay(300);
@@ -3211,7 +3188,8 @@ async function main() {
               console.log('-------------------------------------------------------');
               console.log('Taking screenshot 2: After selecting 2 servers...');
               const screenshot2 = await takeScreenshot(page, filename2, screenshotDir, {
-                clip: bulkCardBounds
+                clip: bulkCardBounds,
+                screenshotTarget: 'settings-notifications-bulk-bar'
               });
               if (screenshot2) successful.push(filename2);
               else failed.push(filename2);
@@ -3313,7 +3291,7 @@ async function main() {
           const filename = `screen-settings-${tab}.png`;
           console.log('-------------------------------------------------------');
           console.log(`Taking screenshot of settings tab: ${tab}...`);
-          const settingsTabResult = await takeScreenshot(page, filename, screenshotDir, { isSettingsPage: true });
+          const settingsTabResult = await takeScreenshot(page, filename, screenshotDir, { isSettingsPage: true, screenshotTarget: 'settings-content-card' });
           if (settingsTabResult) successful.push(filename);
           else failed.push(filename);
         }
@@ -3336,7 +3314,7 @@ async function main() {
 
       console.log('-------------------------------------------------------');
       console.log('Taking screenshot of settings page left panel (as non-admin)...');
-      const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', screenshotDir, { isSettingsSidebar: true });
+      const settingsLeftPanelNonAdmin = await takeScreenshot(page, 'screen-settings-left-panel-non-admin.png', screenshotDir, { isSettingsSidebar: true, screenshotTarget: 'settings-left-panel' });
       if (settingsLeftPanelNonAdmin) successful.push('screen-settings-left-panel-non-admin.png');
       else failed.push('screen-settings-left-panel-non-admin.png');
 

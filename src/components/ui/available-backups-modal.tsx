@@ -111,6 +111,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
         <DialogContent 
           className="max-w-2xl tooltip-hover-glow"
           style={getAnimationStyles}
+          data-screenshot-target="available-backups-modal"
         >
           <DialogHeader className="pb-3 leading-8">
             <DialogTitle>
@@ -265,6 +266,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
                   onIconClick(availableBackups, currentBackupDate, serverName, serverAlias || '', serverNote || '', backupName, event);
                 }}
                 className="text-blue-600 hover:text-blue-800 transition-colors"
+                data-screenshot-target="available-backups-trigger"
               >
                 <History className="h-4 w-4" />
               </button>

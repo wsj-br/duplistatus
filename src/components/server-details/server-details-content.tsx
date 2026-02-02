@@ -101,7 +101,7 @@ export function ServerDetailsContent({ server, overdueBackups, lastOverdueCheck,
   // this page is always show in the table view
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8" data-screenshot-target="server-detail-content">
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-3xl flex justify-between items-center">

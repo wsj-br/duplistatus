@@ -273,7 +273,7 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   };
 
   return (
-    <div className="w-[95%] mx-auto py-6 space-y-6">
+    <div className="w-[95%] mx-auto py-6 space-y-6" data-screenshot-target="backup-detail">
       <div className="flex items-center gap-4">
         <BackButton />
         <h1 className="text-2xl font-bold">{content.backupDetails.value}

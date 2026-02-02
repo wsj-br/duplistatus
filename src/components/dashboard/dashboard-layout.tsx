@@ -156,7 +156,7 @@ export function DashboardLayout({
           : useContentBasedHeight 
             ? 'min-h-screen' // Allow content-based height when screen is narrow
             : 'h-[calc(100vh-4rem)] overflow-hidden' // Fit exactly into viewport in cards view
-      }`}>
+      }`} data-screenshot-target="dashboard-main">
       {/* Top Row: Summary Cards - auto height */}
       <div>
         <DashboardSummaryCards 
@@ -169,7 +169,7 @@ export function DashboardLayout({
       {viewMode === 'overview' ? (
         <div className={`flex flex-col md:flex-row gap-3 mt-2 mb-4 flex-1 min-h-0 ${
           useContentBasedHeight ? 'min-h-fit' : 'h-full'
-        }`}>
+        }`} data-screenshot-target="dashboard-overview">
           {/* Left Panel: Overview Cards - 80% width */}
           <div className={`${useContentBasedHeight ? 'w-full md:w-[80%]' : 'w-[80%]'} ${
             useContentBasedHeight ? 'min-h-[400px]' : 'h-full'
@@ -205,7 +205,7 @@ export function DashboardLayout({
           </div>
         </div>
       ) : (
-        <>
+        <div data-screenshot-target="dashboard-table-view">
           {/* Table View - Server Overview Panel - auto height */}
           <div className="mt-2 mb-2">
             <Card className="shadow-lg border-2 border-border">
@@ -241,7 +241,7 @@ export function DashboardLayout({
               </CardContent>
             </Card>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
