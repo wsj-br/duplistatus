@@ -418,6 +418,7 @@ export class TranslationCache {
   listTranslations(filters?: {
     filename?: string;
     locale?: string;
+    model?: string;
     source_hash?: string;
     source_text?: string;
     translated_text?: string;
@@ -431,24 +432,28 @@ export class TranslationCache {
     const params: (string | number)[] = [];
 
     if (filters?.filename?.trim()) {
-      conditions.push("filepath LIKE ?");
-      params.push(`%${filters.filename.trim()}%`);
+      conditions.push("LOWER(filepath) LIKE ?");
+      params.push(`%${filters.filename.trim().toLowerCase()}%`);
     }
     if (filters?.locale?.trim()) {
       conditions.push("locale = ?");
       params.push(filters.locale.trim());
     }
+    if (filters?.model?.trim()) {
+      conditions.push("model = ?");
+      params.push(filters.model.trim());
+    }
     if (filters?.source_hash?.trim()) {
-      conditions.push("source_hash LIKE ?");
-      params.push(`%${filters.source_hash.trim()}%`);
+      conditions.push("LOWER(source_hash) LIKE ?");
+      params.push(`%${filters.source_hash.trim().toLowerCase()}%`);
     }
     if (filters?.source_text?.trim()) {
-      conditions.push("source_text LIKE ?");
-      params.push(`%${filters.source_text.trim()}%`);
+      conditions.push("LOWER(source_text) LIKE ?");
+      params.push(`%${filters.source_text.trim().toLowerCase()}%`);
     }
     if (filters?.translated_text?.trim()) {
-      conditions.push("translated_text LIKE ?");
-      params.push(`%${filters.translated_text.trim()}%`);
+      conditions.push("LOWER(translated_text) LIKE ?");
+      params.push(`%${filters.translated_text.trim().toLowerCase()}%`);
     }
     if (filters?.last_hit_at_null === true) {
       conditions.push("last_hit_at IS NULL");
@@ -463,7 +468,7 @@ export class TranslationCache {
     const selectStmt = this.db.prepare(
       `SELECT source_hash, locale, source_text, translated_text, model, filepath, created_at, last_hit_at, start_line
        FROM translations ${whereClause}
-       ORDER BY filepath, locale, source_hash
+       ORDER BY filepath, locale, CASE WHEN start_line IS NULL THEN 1 ELSE 0 END, start_line, source_hash
        LIMIT ? OFFSET ?`
     );
     const rows = selectStmt.all(...params, limit, offset) as TranslationRow[];
@@ -498,6 +503,7 @@ export class TranslationCache {
   deleteByFilters(filters?: {
     filename?: string;
     locale?: string;
+    model?: string;
     source_hash?: string;
     source_text?: string;
     translated_text?: string;
@@ -507,24 +513,28 @@ export class TranslationCache {
     const params: (string | number)[] = [];
 
     if (filters?.filename?.trim()) {
-      conditions.push("filepath LIKE ?");
-      params.push(`%${filters.filename.trim()}%`);
+      conditions.push("LOWER(filepath) LIKE ?");
+      params.push(`%${filters.filename.trim().toLowerCase()}%`);
     }
     if (filters?.locale?.trim()) {
       conditions.push("locale = ?");
       params.push(filters.locale.trim());
     }
+    if (filters?.model?.trim()) {
+      conditions.push("model = ?");
+      params.push(filters.model.trim());
+    }
     if (filters?.source_hash?.trim()) {
-      conditions.push("source_hash LIKE ?");
-      params.push(`%${filters.source_hash.trim()}%`);
+      conditions.push("LOWER(source_hash) LIKE ?");
+      params.push(`%${filters.source_hash.trim().toLowerCase()}%`);
     }
     if (filters?.source_text?.trim()) {
-      conditions.push("source_text LIKE ?");
-      params.push(`%${filters.source_text.trim()}%`);
+      conditions.push("LOWER(source_text) LIKE ?");
+      params.push(`%${filters.source_text.trim().toLowerCase()}%`);
     }
     if (filters?.translated_text?.trim()) {
-      conditions.push("translated_text LIKE ?");
-      params.push(`%${filters.translated_text.trim()}%`);
+      conditions.push("LOWER(translated_text) LIKE ?");
+      params.push(`%${filters.translated_text.trim().toLowerCase()}%`);
     }
     if (filters?.last_hit_at_null === true) {
       conditions.push("last_hit_at IS NULL");
@@ -573,6 +583,16 @@ export class TranslationCache {
       )
       .all() as { filepath: string }[];
     return rows.map((r) => r.filepath);
+  }
+
+  /**
+   * Get distinct models for the model filter dropdown.
+   */
+  getUniqueModels(): string[] {
+    const rows = this.db
+      .prepare(`SELECT DISTINCT model FROM translations WHERE model IS NOT NULL AND model != '' ORDER BY model`)
+      .all() as { model: string }[];
+    return rows.map((r) => r.model);
   }
 
   /**

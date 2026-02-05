@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:21:06.016Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: e6941d903557a190
+translation_last_updated: '2026-02-05T19:08:53.968Z'
+source_file_mtime: '2026-02-05T18:10:24.682Z'
+source_file_hash: 80ddd16f55e0e65c
 translation_language: es
 source_file_path: user-guide/duplicati-configuration.md
 ---
@@ -25,5 +25,5 @@ Si experimenta problemas al iniciar sesión con la nueva interfaz web de Duplica
 <br/><br/>
 
 :::note
-Todos los nombres de productos, marcas registradas y marcas comerciales registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
+Todos los nombres de productos, logotipos y marcas registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
 :::

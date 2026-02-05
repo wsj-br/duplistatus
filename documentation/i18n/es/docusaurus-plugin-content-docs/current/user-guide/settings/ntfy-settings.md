@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:21:06.983Z'
-source_file_mtime: '2026-02-04T15:01:50.784Z'
-source_file_hash: 90299e4d1d2967b9
+translation_last_updated: '2026-02-05T19:08:54.951Z'
+source_file_mtime: '2026-02-05T16:22:14.739Z'
+source_file_hash: e4822ed3bdf643fb
 translation_language: es
 source_file_path: user-guide/settings/ntfy-settings.md
 ---
@@ -54,5 +54,5 @@ Para mejorar la seguridad, considere usar [autenticación de token de acceso](ht
 <br/>
 
 :::note
-Todos los nombres de productos, marcas registradas y marcas comerciales registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
+Todos los nombres de productos, logotipos y marcas registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
 :::

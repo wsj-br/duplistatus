@@ -107,7 +107,7 @@ function hasSvgFilesInPath(targetPath: string): boolean {
 }
 
 /**
- * Copy ignored paths (per .translate.ignore) into each target locale's
+ * Copy ignored paths (per .translate-ignore) into each target locale's
  * current folder so the structure and content exist there untranslated.
  * Copies all files under ignored paths (including .json, images, etc.), not just .md/.mdx.
  */
@@ -642,9 +642,40 @@ async function main() {
     .option("--no-export-png", "Skip Inkscape PNG export after SVG translation")
     .option("--no-batch", "Use single-segment translation instead of batch (one API call per segment)")
     .option("-c, --config <path>", "Path to config file")
-    .parse(process.argv);
+    .configureHelp({
+      helpWidth: 100,
+    })
+    .exitOverride((err) => {
+      // Handle unknown options or usage errors
+      if (err.code === "commander.unknownOption" || err.code === "commander.unknownCommand" || err.code === "commander.missingArgument") {
+        console.error(chalk.red(`\n❌ ${err.message}\n`));
+        program.outputHelp();
+        process.exit(1);
+      }
+      throw err;
+    });
 
-  const options = program.opts();
+  let options: ReturnType<typeof program.opts>;
+  try {
+    program.parse(process.argv);
+    options = program.opts();
+  } catch (error: unknown) {
+    // Handle parsing errors
+    if (error instanceof Error) {
+      const errorMsg = error.message.toLowerCase();
+      if (
+        errorMsg.includes("unknown option") ||
+        errorMsg.includes("unexpected argument") ||
+        errorMsg.includes("error") ||
+        errorMsg.includes("invalid")
+      ) {
+        console.error(chalk.red(`\n❌ ${error.message}\n`));
+        program.outputHelp();
+        process.exit(1);
+      }
+    }
+    throw error;
+  }
 
   const cacheDir = path.resolve(process.cwd(), ".translation-cache");
   const { logPath } = setupLogOutput({ cacheDir, prefix: "translate" });
@@ -711,7 +742,7 @@ async function main() {
         cache.close();
       }
     };
-    const glossary = new Glossary(config.paths.glossary);
+    const glossary = new Glossary(config.paths.glossary, config.paths.glossaryUser);
     const splitter = new DocumentSplitter();
 
     let debugTrafficPath: string | undefined;
@@ -778,7 +809,7 @@ async function main() {
     }
 
     if (ignoreMatcher && options.verbose) {
-      console.log(chalk.gray(`   Ignore file: ${path.join(process.cwd(), ".translate.ignore")}`));
+      console.log(chalk.gray(`   Ignore file: ${path.join(process.cwd(), ".translate-ignore")}`));
     }
 
     const segmentHitKeys = new Set<string>();

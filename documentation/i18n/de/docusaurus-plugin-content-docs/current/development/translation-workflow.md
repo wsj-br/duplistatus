@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:20:56.088Z'
-source_file_mtime: '2026-02-04T21:12:31.724Z'
-source_file_hash: f568b098bf1d9861
+translation_last_updated: '2026-02-05T19:08:36.000Z'
+source_file_mtime: '2026-02-05T19:05:51.758Z'
+source_file_hash: c84ad8472108cfb5
 translation_language: de
 source_file_path: development/translation-workflow.md
 ---
@@ -15,13 +15,13 @@ Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Gebietssch
 
 ## Wann sich die englische Dokumentation ändert
 
-1. **Quelldateien aktualisieren** in `docs/`
-2. **Extraktion ausführen** (falls sich Docusaurus-UI-Strings geändert haben): `pnpm write-translations`
-3. **Glossar aktualisieren** (falls sich Intlayer-Übersetzungen geändert haben): `./scripts/generate-glossary.sh` (von `documentation/` aus ausführen)
+1. **Quelldateien** in `docs/` aktualisieren
+2. **Extraktion durchführen** (wenn Docusaurus-UI-Zeichenfolgen geändert wurden): `pnpm write-translations`
+3. **Glossar aktualisieren** (wenn intlayer-Übersetzungen geändert wurden): `pnpm run translate:glossary-ui`
 4. **KI-Übersetzung ausführen**: `pnpm run translate` (übersetzt Dokumente und SVGs; verwenden Sie `--no-svg` nur für Dokumente)
-5. **UI-Strings** (falls sich Docusaurus-UI geändert hat): `pnpm write-translations` extrahiert neue Schlüssel; Dokumente und SVGs werden durch die obigen KI-Skripte übersetzt
-6. **Test-Builds**: `pnpm build` (erstellt alle Locales)
-7. **Bereitstellung**: Verwenden Sie Ihren Bereitstellungsprozess (z. B. `pnpm deploy` für GitHub Pages)
+5. **UI-Zeichenfolgen** (wenn Docusaurus-UI geändert wurde): `pnpm write-translations` extrahiert neue Schlüssel; Dokumente und SVGs werden durch die obigen KI-Skripte übersetzt
+6. **Build-Tests**: `pnpm build` (erstellt alle Gebietsschemas)
+7. **Bereitstellen**: Verwenden Sie Ihren Bereitstellungsprozess (z.B. `pnpm deploy` für GitHub Pages)
 
 ## Neue Sprachen hinzufügen
 
@@ -34,8 +34,7 @@ Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Gebietssch
 
 ## Dateien ignorieren
 
-- **`.translate.ignore`**: Gitignore-ähnliche Muster für Dokumentationsdateien, die während der KI-Übersetzung übersprungen werden sollen. Pfade sind relativ zu `docs/`. Beispiel: `api-reference/*`, `LICENSE.md`
-- **`.translate-svg.ignore`**: Muster für SVG-Dateien in `static/img/`, die während `translate:svg` übersprungen werden sollen. Beispiel: `duplistatus_logo.svg`
+- **`.translate-ignore`**: Gitignore-ähnliche Muster für Dateien, die während der KI-Übersetzung übersprungen werden. Umfasst sowohl Dokumentationsdateien (Pfade relativ zu `docs/`) als auch SVG-Dateien (Dateinamen in `static/img/`). Beispiele: `api-reference/*`, `LICENSE.md`, `duplistatus_logo.svg`
 
 ## Glossarverwaltung
 
@@ -45,21 +44,25 @@ Das Terminologie-Glossar wird automatisch aus intlayer-Wörterbüchern generiert
 
 ```bash
 cd documentation
-./scripts/generate-glossary.sh
+pnpm run translate:glossary-ui
 ```
 
 Dieses Skript:
 
-- Führt `pnpm intlayer build` im Projektstammverzeichnis aus, um Wörterbücher zu generieren
-- Extrahiert Terminologie aus `.intlayer/dictionary/*.json` Dateien
-- Generiert `glossary.csv` und `scripts/glossary-table.md`
-- Aktualisiert die Glossartabelle in `CONTRIBUTING-TRANSLATIONS.md` (falls diese Datei vorhanden ist)
+- Führt `pnpm intlayer build` im Projekthauptverzeichnis aus, um Wörterbücher zu generieren
+- Extrahiert Terminologie aus `.intlayer/dictionary/*.json`-Dateien
+- Generiert `glossary-ui.csv`
+- Aktualisiert die Glossartabelle in `CONTRIBUTING-TRANSLATIONS.md` (falls diese Datei existiert)
 
 ### Wann neu generieren
 
 - Nach der Aktualisierung von intlayer-Übersetzungen in der Anwendung
 - Wann neue technische Begriffe zur Anwendung hinzugefügt werden
 - Vor umfangreichen Übersetzungsarbeiten, um Konsistenz zu gewährleisten
+
+### Benutzer-Glossar-Überschreibungen
+
+`glossary-user.csv` ermöglicht das Überschreiben oder Hinzufügen von Begriffen, ohne das generierte UI-Glossar zu modifizieren. Format: `en`, `Gebietsschema`, `Übersetzung` (eine Zeile pro Begriff pro Gebietsschema). Einträge haben Vorrang vor `glossary-ui.csv`.
 
 ## KI-gestützte Übersetzung
 
@@ -146,11 +149,11 @@ pnpm run translate:status
 
 Dies generiert eine Tabelle, die den Übersetzungsstatus für alle Dokumentationsdateien anzeigt:
 
-- `✓` = Übersetzt und aktuell (Quellhash stimmt überein)
+- `✓` = Übersetzt und aktuell (Quell-Hash stimmt überein)
 - `-` = Noch nicht übersetzt
-- `●` = Übersetzt aber veraltet (Quelldatei geändert)
+- `●` = Übersetzt, aber veraltet (Quelldatei geändert)
 - `□` = Verwaist (existiert im Übersetzungsordner, aber nicht in der Quelle)
-- `i` = Ignoriert (übersprungen durch `.translate.ignore`)
+- `i` = Ignoriert (durch `.translate-ignore` übersprungen)
 
 Das Skript vergleicht `source_file_hash` in den Metadaten der übersetzten Datei mit dem berechneten Hash der Quelldatei, um veraltete Übersetzungen zu erkennen.
 
@@ -214,15 +217,15 @@ pnpm run translate --no-svg
 pnpm run translate:svg
 ```
 
-Optionen: `--locale`, `--path`, `--dry-run`, `--no-cache`, `--force`, `--no-export-png`. Verwendet `.translate-svg.ignore` für Ausschlüsse. Exportiert optional PNG über Inkscape CLI.
+Optionen: `--locale`, `--path`, `--dry-run`, `--no-cache`, `--force`, `--no-export-png`. Verwendet `.translate-ignore` für Ausschlüsse. Exportiert optional PNG über Inkscape CLI.
 
 ### Arbeitsablauf mit KI-Übersetzung
 
-1. **Englische Dokumentation aktualisieren** in `docs/`
-2. **Glossar aktualisieren** (falls erforderlich): `./scripts/generate-glossary.sh`
+1. **Englische Dokumentation** in `docs/` aktualisieren
+2. **Glossar aktualisieren** (falls erforderlich): `pnpm run translate:glossary-ui`
 3. **KI-Übersetzung ausführen**: `pnpm run translate` (übersetzt Dokumente und SVGs)
-4. **Übersetzungen bestätigen** in `i18n/{locale}/docusaurus-plugin-content-docs/current/` (optional)
-5. **Builds testen**: `pnpm build`
+4. **Übersetzungen** in `i18n/{locale}/docusaurus-plugin-content-docs/current/` bestätigen (optional)
+5. **Build-Tests**: `pnpm build`
 6. **Bereitstellen** mit Ihrem Bereitstellungsprozess
 
 ### Modellauswahl und Kostenoptimierung
@@ -251,8 +254,8 @@ Die Standardkonfiguration verwendet `anthropic/claude-haiku-4.5`. Sie können `t
 
 **Probleme mit der Übersetzungsqualität**
 
-- Probieren Sie verschiedene Modelle in `translate.config.json` aus
-- Hinzufügen Sie weitere Begriffe zu `glossary.csv`
+- Anderes Modell in `translate.config.json` versuchen
+- Weitere Begriffe zu `glossary-ui.csv` hinzufügen oder Überschreibungen in `glossary-user.csv` einfügen (en, Gebietsschema, Übersetzung)
 
 **Cache-Beschädigung**
 

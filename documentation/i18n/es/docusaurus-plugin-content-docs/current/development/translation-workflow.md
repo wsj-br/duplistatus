@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:21:02.752Z'
-source_file_mtime: '2026-02-04T21:12:31.724Z'
-source_file_hash: f568b098bf1d9861
+translation_last_updated: '2026-02-05T19:08:50.752Z'
+source_file_mtime: '2026-02-05T19:05:51.758Z'
+source_file_hash: c84ad8472108cfb5
 translation_language: es
 source_file_path: development/translation-workflow.md
 ---
@@ -15,13 +15,13 @@ La documentación utiliza Docusaurus i18n con inglés como la configuración reg
 
 ## Cuándo la Documentación en Inglés Cambia
 
-1. **Actualizar archivos fuente** en `docs/`
-2. **Ejecutar extracción** (si las cadenas de interfaz de usuario de Docusaurus cambiaron): `pnpm write-translations`
-3. **Actualizar glosario** (si las traducciones de intlayer cambiaron): `./scripts/generate-glossary.sh` (ejecutar desde `documentation/`)
-4. **Ejecutar traducción de IA**: `pnpm run translate` (traduce documentos y SVG; use `--no-svg` solo para documentos)
-5. **Cadenas de interfaz de usuario** (si la interfaz de usuario de Docusaurus cambió): `pnpm write-translations` extrae nuevas claves; los documentos y SVG se traducen mediante los scripts de IA anteriores
-6. **Probar compilaciones**: `pnpm build` (compila todos los idiomas)
-7. **Desplegar**: Use su proceso de implementación (p. ej. `pnpm deploy` para GitHub Pages)
+1. **Actualizar archivos de origen** en `docs/`
+2. **Ejecutar extracción** (si cambian las cadenas de la interfaz de Docusaurus): `pnpm write-translations`
+3. **Actualizar glosario** (si cambian las traducciones de intlayer): `pnpm run translate:glossary-ui`
+4. **Ejecutar traducción con IA**: `pnpm run translate` (traduce documentos y SVG; use `--no-svg` solo para documentos)
+5. **Cadenas de interfaz de usuario** (si cambia Docusaurus): `pnpm write-translations` extrae nuevas claves; los documentos y SVG son traducidos por los scripts de IA anteriores
+6. **Probar compilaciones**: `pnpm build` (compila todos los locales)
+7. **Implementar**: Use su proceso de implementación (por ejemplo, `pnpm deploy` para GitHub Pages)
 
 ## Agregar nuevos idiomas
 
@@ -34,8 +34,7 @@ La documentación utiliza Docusaurus i18n con inglés como la configuración reg
 
 ## Ignorar Archivos
 
-- **`.translate.ignore`**: Patrones de estilo Gitignore para archivos de documentación que se deben omitir durante la traducción con IA. Las rutas son relativas a `docs/`. Ejemplo: `api-reference/*`, `LICENSE.md`
-- **`.translate-svg.ignore`**: Patrones para archivos SVG en `static/img/` que se deben omitir durante `translate:svg`. Ejemplo: `duplistatus_logo.svg`
+- **`.translate-ignore`**: Patrones al estilo Gitignore para archivos a omitir durante la traducción con IA. Incluye tanto archivos de documentación (rutas relativas a `docs/`) como archivos SVG (nombres base en `static/img/`). Ejemplos: `api-reference/*`, `LICENSE.md`, `duplistatus_logo.svg`
 
 ## Gestión de Glosario
 
@@ -45,14 +44,14 @@ El glosario de terminología se genera automáticamente a partir de los dicciona
 
 ```bash
 cd documentation
-./scripts/generate-glossary.sh
+pnpm run translate:glossary-ui
 ```
 
 Este script:
 
 - Ejecuta `pnpm intlayer build` en la raíz del proyecto para generar diccionarios
-- Extrae terminología de los archivos `.intlayer/dictionary/*.json`
-- Genera `glossary.csv` y `scripts/glossary-table.md`
+- Extrae terminología de archivos `.intlayer/dictionary/*.json`
+- Genera `glossary-ui.csv`
 - Actualiza la tabla de glosario en `CONTRIBUTING-TRANSLATIONS.md` (si ese archivo existe)
 
 ### Cuándo Regenerar
@@ -60,6 +59,10 @@ Este script:
 - Después de actualizar las traducciones de intlayer en la aplicación
 - Cuándo se agregan nuevos términos técnicos a la aplicación
 - Antes del trabajo de traducción importante para garantizar la coherencia
+
+### Anulaciones de Glosario de Usuario
+
+`glossary-user.csv` le permite anular o añadir términos sin modificar el glosario de interfaz generado. Formato: `en`, `locale`, `translation` (una fila por término por configuración regional). Las entradas tienen prioridad sobre `glossary-ui.csv`.
 
 ## Traducción Impulsada por IA
 
@@ -146,11 +149,11 @@ pnpm run translate:status
 
 Esto genera una tabla que muestra el estado de traducción de todos los archivos de documentación:
 
-- `✓` = Traducido y actualizado (el hash de origen coincide)
-- `-` = No traducido aún
-- `●` = Traducido pero desactualizado (el archivo de origen cambió)
-- `□` = Huérfano (existe en la carpeta de traducción pero no en el origen)
-- `i` = Ignorado (omitido por `.translate.ignore`)
+- `✓` = Traducido y actualizado (el hash de la fuente coincide)
+- `-` = Aún no traducido
+- `●` = Traducido pero desactualizado (el archivo fuente cambió)
+- `□` = Huérfano (existe en la carpeta de traducción pero no en la fuente)
+- `i` = Ignorado (omitido por `.translate-ignore`)
 
 El script compara `source_file_hash` en la portada del archivo traducido con el hash calculado del archivo fuente para detectar traducciones desactualizadas.
 
@@ -214,13 +217,13 @@ pnpm run translate --no-svg
 pnpm run translate:svg
 ```
 
-Opciones: `--locale`, `--path`, `--dry-run`, `--no-cache`, `--force`, `--no-export-png`. Utiliza `.translate-svg.ignore` para exclusiones. Opcionalmente exporta PNG a través de la CLI de Inkscape.
+Opciones: `--locale`, `--path`, `--dry-run`, `--no-cache`, `--force`, `--no-export-png`. Utiliza `.translate-ignore` para exclusiones. Opcionalmente exporta PNG a través de Inkscape CLI.
 
 ### Flujo de trabajo con traducción de IA
 
 1. **Actualizar documentación en inglés** en `docs/`
-2. **Actualizar glosario** (si es necesario): `./scripts/generate-glossary.sh`
-3. **Ejecutar traducción de IA**: `pnpm run translate` (traduce documentos y SVG)
+2. **Actualizar glosario** (si es necesario): `pnpm run translate:glossary-ui`
+3. **Ejecutar traducción con IA**: `pnpm run translate` (traduce documentos y SVG)
 4. **Verificar** traducciones en `i18n/{locale}/docusaurus-plugin-content-docs/current/` (opcional)
 5. **Probar compilaciones**: `pnpm build`
 6. **Implementar** usando su proceso de implementación
@@ -251,8 +254,8 @@ La configuración por defecto utiliza `anthropic/claude-haiku-4.5`. Puede modifi
 
 **Problemas de calidad de traducción**
 
-- Pruebe diferentes modelos en `translate.config.json`
-- Añadir más términos a `glossary.csv`
+- Probar un modelo diferente en `translate.config.json`
+- Añadir más términos a `glossary-ui.csv` o añadir anulaciones a `glossary-user.csv` (en, configuración regional, traducción)
 
 **Corrupción de caché**
 

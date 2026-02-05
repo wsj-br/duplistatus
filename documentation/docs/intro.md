@@ -2,7 +2,7 @@
 
 # Welcome to duplistatus {#welcome-to-duplistatus}
 
-**duplistatus** -  Monitor Multiple [Duplicati](https://github.com/duplicati/duplicati) Servers from a Single Dashboard
+**duplistatus** -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers from a Single Dashboard
 
 ## Features {#features}
 
@@ -82,7 +82,8 @@ This project was mainly built with AI help. To learn how, see [How I Built this 
 - GitHub SVG icon from https://github.com/logos
 
 >[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+> All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+
 
 ## License {#license}
 

@@ -7,8 +7,8 @@ const DEFAULT_CONFIG: TranslationConfig = {
   maxBatchChars: 5000,
   openrouter: {
     baseUrl: "https://openrouter.ai/api/v1",
-    defaultModel: "deepseek/deepseek-chat",
-    fallbackModel: "anthropic/claude-3-haiku",
+    defaultModel: "anthropic/claude-haiku-4.5",
+    fallbackModel: "nvidia/nemotron-nano-12b-v2-vl:free",
     maxTokens: 8192,
     temperature: 0.2,
   },
@@ -20,7 +20,8 @@ const DEFAULT_CONFIG: TranslationConfig = {
     docs: "./docs",
     i18n: "./i18n",
     cache: "./.translation-cache",
-    glossary: "./glossary.csv",
+    glossary: "./glossary-ui.csv",
+    glossaryUser: "./glossary-user.csv",
     staticImg: "./static/img",
   },
   cache: {
@@ -66,5 +67,8 @@ export function validateConfig(config: TranslationConfig): void {
 
   if (!fs.existsSync(config.paths.glossary)) {
     console.warn(`Glossary file not found: ${config.paths.glossary}`);
+  }
+  if (config.paths.glossaryUser && !fs.existsSync(config.paths.glossaryUser)) {
+    console.warn(`User glossary file not found: ${config.paths.glossaryUser}`);
   }
 }

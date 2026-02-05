@@ -8,6 +8,7 @@
   const filters = {
     filename: "",
     locale: "",
+    model: "",
     source_hash: "",
     source_text: "",
     translated_text: "",
@@ -18,6 +19,7 @@
     return {
       filename: document.getElementById("filter-filename").value.trim(),
       locale: document.getElementById("filter-locale").value.trim(),
+      model: document.getElementById("filter-model").value.trim(),
       source_hash: document.getElementById("filter-source-hash").value.trim(),
       source_text: document.getElementById("filter-source-text").value.trim(),
       translated_text: document.getElementById("filter-translated-text").value.trim(),
@@ -31,6 +33,7 @@
     params.set("pageSize", String(pageSize));
     if (filters.filename) params.set("filename", filters.filename);
     if (filters.locale) params.set("locale", filters.locale);
+    if (filters.model) params.set("model", filters.model);
     if (filters.source_hash) params.set("source_hash", filters.source_hash);
     if (filters.source_text) params.set("source_text", filters.source_text);
     if (filters.translated_text) params.set("translated_text", filters.translated_text);
@@ -138,6 +141,13 @@
       updatePagination(data);
     } catch (err) {
       alert("Error loading data: " + err.message);
+    } finally {
+      // Reset button text after loading completes
+      const applyBtn = document.getElementById("btn-apply");
+      if (applyBtn) {
+        applyBtn.textContent = "Apply";
+        applyBtn.disabled = false;
+      }
     }
   }
 
@@ -240,6 +250,7 @@
       const params = new URLSearchParams();
       if (filters.filename) params.set("filename", filters.filename);
       if (filters.locale) params.set("locale", filters.locale);
+      if (filters.model) params.set("model", filters.model);
       if (filters.source_hash) params.set("source_hash", filters.source_hash);
       if (filters.source_text) params.set("source_text", filters.source_text);
       if (filters.translated_text) params.set("translated_text", filters.translated_text);
@@ -255,6 +266,7 @@
       await loadData();
       await loadFilepaths();
       await loadLocales();
+      await loadModels();
     } catch (err) {
       alert("Error deleting: " + err.message);
     }
@@ -307,14 +319,41 @@
     }
   }
 
+  async function loadModels() {
+    try {
+      const res = await fetch("/api/models");
+      if (!res.ok) return;
+      const data = await res.json();
+      const select = document.getElementById("filter-model");
+      select.innerHTML = '<option value="">All models</option>';
+      for (const model of data.models) {
+        const opt = document.createElement("option");
+        opt.value = model;
+        opt.textContent = model;
+        select.appendChild(opt);
+      }
+    } catch (err) {
+      console.error("Error loading models:", err);
+    }
+  }
+
   function applyFilters() {
     filters.filename = document.getElementById("filter-filename").value.trim();
     filters.locale = document.getElementById("filter-locale").value.trim();
+    filters.model = document.getElementById("filter-model").value.trim();
     filters.source_hash = document.getElementById("filter-source-hash").value.trim();
     filters.source_text = document.getElementById("filter-source-text").value.trim();
     filters.translated_text = document.getElementById("filter-translated-text").value.trim();
     filters.last_hit_at_null = document.getElementById("filter-stale-only").checked;
     currentPage = 1;
+    
+    // Show loading state on button
+    const applyBtn = document.getElementById("btn-apply");
+    if (applyBtn) {
+      applyBtn.textContent = "Loading...";
+      applyBtn.disabled = true;
+    }
+    
     loadData();
   }
 
@@ -336,6 +375,7 @@
     });
 
     document.getElementById("filter-locale").addEventListener("change", applyFilters);
+    document.getElementById("filter-model").addEventListener("change", applyFilters);
 
     document.getElementById("select-filepath").addEventListener("change", (e) => {
       document.getElementById("btn-delete-filepath").disabled = !e.target.value;
@@ -384,6 +424,7 @@
     loadData();
     loadFilepaths();
     loadLocales();
+    loadModels();
   }
 
   init();

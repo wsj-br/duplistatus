@@ -2,24 +2,24 @@ import fs from "fs";
 import Papa from "papaparse";
 import { GlossaryTerm } from "./types";
 
+/** Expected locale columns in glossary CSV (header = locale only) */
+const GLOSSARY_LOCALES = ["en", "fr", "de", "pt-BR", "es"] as const;
+
 export class Glossary {
   private terms: Map<string, GlossaryTerm> = new Map();
-  private localeColumnMap: Record<string, string> = {
-    fr: "Term [fr]",
-    de: "Term [de]",
-    es: "Term [es-ES]",
-    "pt-BR": "Term [pt-BR]",
-  };
 
-  constructor(glossaryPath: string) {
-    if (fs.existsSync(glossaryPath)) {
-      this.loadGlossary(glossaryPath);
+  constructor(glossaryUiPath: string, glossaryUserPath?: string) {
+    if (fs.existsSync(glossaryUiPath)) {
+      this.loadGlossaryUi(glossaryUiPath);
     } else {
-      console.warn(`Glossary file not found: ${glossaryPath}`);
+      console.warn(`Glossary file not found: ${glossaryUiPath}`);
+    }
+    if (glossaryUserPath && fs.existsSync(glossaryUserPath)) {
+      this.loadGlossaryUser(glossaryUserPath);
     }
   }
 
-  private loadGlossary(filepath: string): void {
+  private loadGlossaryUi(filepath: string): void {
     const content = fs.readFileSync(filepath, "utf-8");
     const { data } = Papa.parse<Record<string, string>>(content, {
       header: true,
@@ -27,27 +27,63 @@ export class Glossary {
     });
 
     for (const row of data) {
-      const english = row["Term [en]"]?.trim();
+      const english = row["en"]?.trim();
       if (!english) continue;
 
       const term: GlossaryTerm = {
         english,
         translations: {},
-        partOfSpeech: row["Part of Speech [en]"] || "unknown",
+        partOfSpeech: "unknown",
       };
 
-      for (const [locale, column] of Object.entries(this.localeColumnMap)) {
-        const translation = row[column]?.trim();
+      for (const locale of GLOSSARY_LOCALES) {
+        if (locale === "en") continue; // English is the source
+        const translation = row[locale]?.trim();
         if (translation) {
           term.translations[locale] = translation;
         }
       }
 
-      // Index by lowercase for case-insensitive matching
       this.terms.set(english.toLowerCase(), term);
     }
 
-    console.log(`✓ Loaded ${this.terms.size} glossary terms`);
+    console.log(`✓ Loaded ${this.terms.size} glossary terms from UI`);
+  }
+
+  /**
+   * Load user glossary (en, locale, translation) - overrides UI glossary entries
+   */
+  private loadGlossaryUser(filepath: string): void {
+    const content = fs.readFileSync(filepath, "utf-8");
+    const { data } = Papa.parse<Record<string, string>>(content, {
+      header: true,
+      skipEmptyLines: true,
+    });
+
+    let count = 0;
+    for (const row of data) {
+      const english = row["en"]?.trim();
+      const locale = row["locale"]?.trim();
+      const translation = row["translation"]?.trim();
+      if (!english || !locale || !translation) continue;
+
+      const key = english.toLowerCase();
+      let term = this.terms.get(key);
+      if (!term) {
+        term = {
+          english,
+          translations: {},
+          partOfSpeech: "unknown",
+        };
+        this.terms.set(key, term);
+      }
+      term.translations[locale] = translation;
+      count++;
+    }
+
+    if (count > 0) {
+      console.log(`✓ Loaded ${count} user glossary overrides`);
+    }
   }
 
   /**

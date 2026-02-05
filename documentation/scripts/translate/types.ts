@@ -17,6 +17,8 @@ export interface TranslationConfig {
     i18n: string;
     cache: string;
     glossary: string;
+    /** Optional: user glossary (en, locale, translation) - overrides glossary-ui */
+    glossaryUser?: string;
     /** Optional: path to static img (SVG source). Default: ./static/img */
     staticImg?: string;
   };

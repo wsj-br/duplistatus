@@ -3,7 +3,7 @@
 
 # **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
 
-![version](https://img.shields.io/badge/version-1.3.0-blue)
+![version](https://img.shields.io/badge/version-1.3.1-blue)
 
 <br/>
 
@@ -77,23 +77,23 @@ See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) f
 
 ### Dashboard
 
-![dashboard](documentation/static/img/screen-main-dashboard-card-mode.png)
+![dashboard](documentation/docs/assets/screen-main-dashboard-card-mode.png)
 
 ### Backup History
 
-![server-detail](documentation/static/img/screen-server-backup-list.png)
+![server-detail](documentation/docs/assets/screen-server-backup-list.png)
 
 ### Backup Details
 
-![backup-detail](documentation/static/img/screen-backup-detail.png)
+![backup-detail](documentation/docs/assets/screen-backup-detail.png)
 
 ### Overdue Backups
 
-![overdue backups](documentation/static/img/screen-overdue-backup-hover-card.png)
+![overdue backups](documentation/docs/assets/screen-overdue-backup-hover-card.png)
 
 ### Overdue notifications on your phone
 
-![ntfy overdue message](documentation/static/img/screen-overdue-notification.png)
+![ntfy overdue message](documentation/docs/assets/screen-overdue-notification.png)
 
 ## API Reference
 
@@ -116,7 +116,8 @@ This project was mainly built with AI help. To learn how, see [How I Built this 
 - GitHub SVG icon from https://github.com/logos
 
 >[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+> All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+
 
 
 <br/>

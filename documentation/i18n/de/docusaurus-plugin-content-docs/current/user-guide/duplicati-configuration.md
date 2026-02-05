@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:20:59.351Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: e6941d903557a190
+translation_last_updated: '2026-02-05T19:08:39.260Z'
+source_file_mtime: '2026-02-05T18:10:24.682Z'
+source_file_hash: 80ddd16f55e0e65c
 translation_language: de
 source_file_path: user-guide/duplicati-configuration.md
 ---
@@ -25,5 +25,5 @@ Wenn Sie Probleme beim Anmelden mit der neuen Duplicati-Weboberfläche (`/ngclie
 <br/><br/>
 
 :::note
-Alle Produktnamen, Marken und eingetragenen Marken sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
+Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Eigentümer. Symbole und Namen werden ausschließlich zu Identifikationszwecken verwendet und implizieren keine Billigung.
 :::

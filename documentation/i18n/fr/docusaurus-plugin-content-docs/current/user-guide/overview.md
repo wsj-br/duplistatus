@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:20:52.856Z'
-source_file_mtime: '2026-02-03T18:36:19.218Z'
-source_file_hash: f0a138fc11b99aeb
+translation_last_updated: '2026-02-05T19:08:24.052Z'
+source_file_mtime: '2026-02-05T17:53:15.519Z'
+source_file_hash: 707f5c41ecb6e26f
 translation_language: fr
 source_file_path: user-guide/overview.md
 ---
@@ -103,5 +103,5 @@ N'oubliez pas de configurer les serveurs Duplicati pour envoyer les journaux de 
 <br/>
 
 :::note
-Tous les noms de produits, marques commerciales et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à titre d'identification uniquement et n'impliquent pas une approbation.
+Tous les noms de produits, logos et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés uniquement à des fins d'identification et n'impliquent aucune approbation.
 :::

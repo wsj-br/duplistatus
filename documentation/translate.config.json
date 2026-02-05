@@ -3,20 +3,31 @@
   "maxBatchChars": 5000,
   "openrouter": {
     "baseUrl": "https://openrouter.ai/api/v1",
-    "defaultModel": "anthropic/claude-haiku-4.5",
-    "fallbackModel": "anthropic/claude-3-haiku",
+    "defaultModel-1": "anthropic/claude-haiku-4.5",
+    "defaultModel-3": "nvidia/nemotron-nano-12b-v2-vl:free",
+    "defaultModel-5": "stepfun/step-3.5-flash:free",
+    "defaultModel-7": "anthropic/claude-3.5-haiku",
+    "defaultModel": "anthropic/claude-3.5-haiku",
+    "fallbackModel-1": "anthropic/claude-3.5-haiku",
+    "fallbackModel": "anthropic/claude-haiku-4.5",
     "maxTokens": 8192,
     "temperature": 0.2
   },
   "locales": {
     "source": "en",
-    "targets": ["fr", "de", "es", "pt-BR"]
+    "targets": [
+      "fr",
+      "de",
+      "es",
+      "pt-BR"
+    ]
   },
   "paths": {
     "docs": "./docs",
     "i18n": "./i18n",
     "cache": "./.translation-cache",
-    "glossary": "./glossary.csv"
+    "glossary": "./glossary-ui.csv",
+    "glossaryUser": "./glossary-user.csv"
   },
   "cache": {
     "enabled": true,

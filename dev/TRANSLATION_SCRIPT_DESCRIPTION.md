@@ -37,7 +37,7 @@ The translation system consists of several TypeScript scripts under `documentati
 - **Segment-level caching**: Each translatable segment is cached by content hash. Unchanged segments are reused across runs.
 - **File-level skip**: If a file's content hash matches the cache and the output file exists, the entire file is skipped.
 - **Placeholder protection**: URLs and admonition syntax are replaced with placeholders before translation to prevent the LLM from modifying them.
-- **Glossary support**: A CSV glossary provides preferred translations. The glossary can be generated from intlayer dictionaries for consistency with the application UI.
+- **Glossary support**: CSV glossaries provide preferred translations. `glossary-ui.csv` is generated from intlayer dictionaries; `glossary-user.csv` (en, locale, translation) supplies optional overrides that take precedence.
 
 ---
 
@@ -49,7 +49,7 @@ flowchart TB
     subgraph Main["Main Translation Flow"]
         direction TB
         docs["docs/*.md"]
-        ignore[".translate.ignore (skip certain paths)"]
+        ignore[".translate-ignore (skip certain paths)"]
         splitter["DocumentSplitter"]
         glossary["Glossary.findTermsInText() (hints for LLM)"]
         segments["Segments"]
@@ -87,7 +87,8 @@ Configuration is loaded from `translate.config.json` (or a custom path via `-c`)
 | `docs`      | `./docs`               | Source markdown directory               |
 | `i18n`      | `./i18n`               | Output directory for translated content |
 | `cache`     | `./.translation-cache` | SQLite cache and logs                   |
-| `glossary`  | `./glossary.csv`       | CSV file with term translations         |
+| `glossary`  | `./glossary-ui.csv`    | CSV file with term translations (UI, from intlayer) |
+| `glossaryUser` | `./glossary-user.csv` | Optional: user overrides (en, locale, translation) |
 | `staticImg` | `./static/img`         | SVG source directory (optional)         |
 
 **Locales** (`config.locales`):
@@ -126,11 +127,11 @@ Configuration is loaded from `translate.config.json` (or a custom path via `-c`)
    - Tee stdout/stderr to a log file in `.translation-cache/`
 
 2. **Copy ignored files**
-   - Files matching `.translate.ignore` are copied verbatim into each locale's `current/` folder (no translation). All files under ignored paths are copied (including `.json`, images, etc.), not just `.md`/`.mdx`.
+   - Files matching `.translate-ignore` are copied verbatim into each locale's `current/` folder (no translation). All files under ignored paths are copied (including `.json`, images, etc.), not just `.md`/`.mdx`.
 
 3. **File discovery**
    - Recursively find all `.md` and `.mdx` in `docs/`
-   - Exclude paths matching `.translate.ignore`
+   - Exclude paths matching `.translate-ignore`
    - Optionally filter by `-p <path>` (file or directory) or `-l <locale>`
    - Locale codes are normalized (e.g. `pt-br` → `pt-BR`)
 
@@ -256,7 +257,7 @@ Used by default for multiple segments in one API call:
 
 ### Glossary Hints
 
-- CSV columns: `Term [en]`, `Term [fr]`, `Term [de]`, `Term [es-ES]`, `Term [pt-BR]`
+- CSV columns: `en`, `fr`, `de`, `pt-BR`, `es` (locale headers only)
 - `Glossary.findTermsInText(text, locale)` returns lines like `- "backup" → "sauvegarde"` for inclusion in prompt
 - Omitted when no terms found in segment
 
@@ -323,7 +324,7 @@ SVG translation is handled by `translate-svg.ts` and `svg-splitter.ts`.
 ### Scope
 
 - Only files in `static/img/` whose basename starts with `duplistatus`
-- Can be excluded via `.translate-svg.ignore` (gitignore-style patterns)
+- Can be excluded via `.translate-ignore` (gitignore-style patterns)
 
 ### Splitting (`SvgSplitter`)
 
@@ -356,20 +357,17 @@ The glossary can be generated from intlayer dictionaries to ensure consistency b
 ### `extract-glossary-from-intlayer.js`
 
 - **Input**: `.intlayer/dictionary/*.json` (from `pnpm intlayer build`)
-- **Output**: `glossary.csv` (and optionally a markdown table)
-- **Process**: Extracts terminology from nested translation objects; filters by technical keywords, common sections (navigation, status, UI actions, time terms); cleans placeholders, parentheses, trailing colons; deduplicates; outputs CSV with columns `Term [en]`, `Term [fr]`, `Term [de]`, `Term [pt-BR]`, `Term [es-ES]`, plus Description, Part of Speech, Status, Type, Gender, Note per language
+- **Output**: `glossary-ui.csv`
+- **Process**: Extracts terminology from nested translation objects; filters by technical keywords, common sections (navigation, status, UI actions, time terms); cleans placeholders, parentheses, trailing colons; deduplicates; outputs CSV with locale columns only (`en`, `fr`, `de`, `pt-BR`, `es`)
 
 ### `generate-glossary.sh`
 
 - Runs `pnpm intlayer build` to generate dictionaries
-- Calls `extract-glossary-from-intlayer.js` with output paths
-- Updates `CONTRIBUTING-TRANSLATIONS.md` via `update-glossary-markdown.js`
+- Calls `extract-glossary-from-intlayer.js` to produce `glossary-ui.csv`
 
-### `update-glossary-markdown.js`
+**Usage**: Run `pnpm translate:glossary-ui` from the `documentation/` directory.
 
-- Replaces the glossary table section in `CONTRIBUTING-TRANSLATIONS.md` with the generated markdown table
-
-**Usage**: Run `./scripts/generate-glossary.sh` from the `documentation/` directory.
+**User overrides**: Entries in `glossary-user.csv` (columns: en, locale, translation) take precedence over `glossary-ui.csv`.
 
 ---
 
@@ -411,12 +409,12 @@ All translate commands are run from the `documentation/` directory.
 - Express server (default port 4000)
 - Serves a static SPA from `edit-cache-app/`
 - **API**:
-  - `GET /api/translations` – list with filters (filename, locale, source_hash, etc.)
+  - `GET /api/translations` – list with filters (filename, locale, model, source_hash, source_text, translated_text, last_hit_at_null)
   - `PATCH /api/translations` – update `translated_text`
   - `DELETE /api/translations/:sourceHash/:locale` – delete single row
   - `DELETE /api/translations/by-filters` – delete by filters
   - `DELETE /api/translations/by-filepath` – delete all for a filepath
-  - `GET /api/locales`, `GET /api/filepaths` – dropdown data
+  - `GET /api/locales`, `GET /api/models`, `GET /api/filepaths` – dropdown data
   - `POST /api/log-links` – log file URLs for terminal clickable links
 
 ---
@@ -426,9 +424,9 @@ All translate commands are run from the `documentation/` directory.
 ```
 documentation/
 ├── translate.config.json       # User config (optional)
-├── .translate.ignore           # Gitignore-style patterns for docs
-├── .translate-svg.ignore       # Gitignore-style patterns for SVGs
-├── glossary.csv                # Term [en], Term [fr], Term [de], Term [pt-BR], Term [es-ES], etc.
+├── .translate-ignore           # Gitignore-style patterns for docs and SVGs
+├── glossary-ui.csv             # Locale columns: en, fr, de, pt-BR, es (from intlayer)
+├── glossary-user.csv           # Optional overrides: en, locale, translation
 ├── docs/                       # Source markdown
 ├── i18n/                       # Translated output
 │   └── <locale>/
@@ -445,8 +443,7 @@ documentation/
 
 documentation/scripts/
 ├── extract-glossary-from-intlayer.js  # Extract terms from .intlayer/dictionary
-├── generate-glossary.sh               # Build intlayer, extract, update CONTRIBUTING
-├── update-glossary-markdown.js        # Update glossary table in CONTRIBUTING-TRANSLATIONS.md
+├── generate-glossary.sh               # Build intlayer, extract to glossary-ui.csv
 └── translate/
     ├── index.ts                       # Main entry
     ├── config.ts                      # Config loading
@@ -456,7 +453,7 @@ documentation/scripts/
     ├── svg-splitter.ts                # SvgSplitter
     ├── translator.ts                  # OpenRouter API client (batch + single)
     ├── glossary.ts                    # Glossary loader
-    ├── ignore.ts                      # .translate.ignore parsing
+    ├── ignore.ts                      # .translate-ignore parsing
     ├── file-utils.ts                  # File discovery, snapshot
     ├── url-placeholders.ts            # URL protection
     ├── admonition-placeholders.ts     # Admonition protection

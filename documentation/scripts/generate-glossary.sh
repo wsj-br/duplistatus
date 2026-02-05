@@ -32,40 +32,13 @@ if ! command -v node &> /dev/null; then
 fi
 
 # Output files
-CSV_OUTPUT="$DOC_DIR/glossary.csv"
-MARKDOWN_OUTPUT="$DOC_DIR/scripts/glossary-table.md"
+CSV_OUTPUT="$DOC_DIR/glossary-ui.csv"
 
 echo "2. Extracting terms from intlayer dictionaries..."
-node "$SCRIPT_DIR/extract-glossary-from-intlayer.js" "$CSV_OUTPUT" "$MARKDOWN_OUTPUT" "$DICT_DIR"
-
-echo ""
-echo "3. Updating CONTRIBUTING-TRANSLATIONS.md..."
-
-# Update the glossary section in CONTRIBUTING-TRANSLATIONS.md
-CONTRIB_FILE="$DOC_DIR/CONTRIBUTING-TRANSLATIONS.md"
-
-if [ -f "$MARKDOWN_OUTPUT" ] && [ -f "$CONTRIB_FILE" ]; then
-  node "$SCRIPT_DIR/update-glossary-markdown.js" "$CONTRIB_FILE" "$MARKDOWN_OUTPUT"
-  if [ $? -eq 0 ]; then
-    echo "   ✓ Updated glossary in CONTRIBUTING-TRANSLATIONS.md"
-  else
-    echo "   ⚠ Warning: Failed to update CONTRIBUTING-TRANSLATIONS.md"
-  fi
-else
-  if [ ! -f "$MARKDOWN_OUTPUT" ]; then
-    echo "   ⚠ Warning: Markdown table not generated"
-  fi
-  if [ ! -f "$CONTRIB_FILE" ]; then
-    echo "   ⚠ Warning: CONTRIBUTING-TRANSLATIONS.md not found"
-  fi
-fi
+node "$SCRIPT_DIR/extract-glossary-from-intlayer.js" "$CSV_OUTPUT" "$DICT_DIR"
 
 echo ""
 echo "=== Glossary Generation Complete ==="
 echo ""
-echo "Generated files:"
-echo "  - CSV glossary: $CSV_OUTPUT"
-echo "  - Markdown table: $MARKDOWN_OUTPUT"
-echo ""
-echo "The glossary has been updated in CONTRIBUTING-TRANSLATIONS.md"
+echo "Generated: $CSV_OUTPUT"
 echo ""

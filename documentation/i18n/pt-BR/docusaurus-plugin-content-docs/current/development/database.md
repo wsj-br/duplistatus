@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-02-05T00:21:07.761Z'
+translation_last_updated: '2026-02-05T19:08:55.704Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 9571c4c3bcae527c
 translation_language: pt-BR
@@ -221,7 +221,7 @@ Armazena dados de sessão do usuário para autenticação e segurança.
 
 ### Log de Auditoria {#audit-log-table}
 
-Armazena trilha de auditoria de ações de usuário e eventos de sistema.
+Armazena a trilha de auditoria de ações do usuário e eventos do sistema.
 
 #### Campos {#fields}
 

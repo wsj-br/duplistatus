@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:21:06.244Z'
-source_file_mtime: '2026-02-03T18:36:19.218Z'
-source_file_hash: f0a138fc11b99aeb
+translation_last_updated: '2026-02-05T19:08:54.202Z'
+source_file_mtime: '2026-02-05T17:53:15.519Z'
+source_file_hash: 707f5c41ecb6e26f
 translation_language: es
 source_file_path: user-guide/overview.md
 ---
@@ -103,5 +103,5 @@ Recuerde configurar los servidores Duplicati para enviar logs de backup a duplis
 <br/>
 
 :::note
-Todos los nombres de productos, marcas registradas y marcas comerciales registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
+Todos los nombres de productos, logotipos y marcas registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
 :::

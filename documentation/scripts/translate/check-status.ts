@@ -347,7 +347,7 @@ function main() {
     console.log(chalk.gray(`  ${STATUS_NOT_TRANSLATED}`) + " = Not translated");
     console.log(chalk.yellow(`  ${STATUS_OUTDATED}`) + " = Translated but outdated (source changed)");
     console.log(chalk.red(`  ${STATUS_ORPHANED}`) + " = Orphaned (exists in translation but not in source)");
-    console.log(chalk.gray(`  ${STATUS_IGNORED}`) + " = Ignored (skipped by .translate.ignore)");
+    console.log(chalk.gray(`  ${STATUS_IGNORED}`) + " = Ignored (skipped by .translate-ignore)");
 
     // Print summary table
     console.log(chalk.bold("\nSummary:"));

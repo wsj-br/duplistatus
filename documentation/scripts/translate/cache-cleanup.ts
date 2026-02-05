@@ -156,6 +156,13 @@ async function main() {
     }
   }
 
+  const cacheDbPath = path.join(cachePath, "cache.db");
+  if (!dryRun && fs.existsSync(cacheDbPath)) {
+    const backupPath = path.join(cachePath, `cache-${timestampForLogfile()}.db`);
+    fs.copyFileSync(cacheDbPath, backupPath);
+    console.log(chalk.green(`\n   🚨 Backup created: ${backupPath}`));
+  }
+
   const logFilename = `cleanup_${timestampForLogfile()}.log`;
   const logPath = path.join(cachePath, logFilename);
   const logLines: string[] = [];
@@ -174,7 +181,6 @@ async function main() {
 
   const cache = new TranslationCache(cachePath);
   const statsBefore = cache.getStats();
-  const cacheDbPath = path.join(cachePath, "cache.db");
   const cacheSizeBytes = fs.existsSync(cacheDbPath)
     ? fs.statSync(cacheDbPath).size
     : 0;
@@ -271,7 +277,7 @@ async function main() {
   const summary = dryRun
     ? `Would delete ${orphanedDeleted} orphaned cache rows, would update ${orphanedUpdated}; would delete ${staleResult.count} stale; would delete ${orphanedFilesResult.deleted} orphaned files. (dry-run, no changes made)`
     : `Orphaned cache: ${orphanedDeleted} deleted, ${orphanedUpdated} updated; Stale: ${staleResult.count} deleted; Orphaned files: ${orphanedFilesResult.deleted} deleted.`;
-  console.log(chalk.green(`\n✅ ${summary}`));
+  console.log(chalk.green(`\n✅ ${summary}\n`));
 }
 
 main().catch((err) => {

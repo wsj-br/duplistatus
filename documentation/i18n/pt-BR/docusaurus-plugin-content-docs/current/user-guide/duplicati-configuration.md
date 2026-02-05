@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:21:12.877Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: e6941d903557a190
+translation_last_updated: '2026-02-05T19:09:07.531Z'
+source_file_mtime: '2026-02-05T18:10:24.682Z'
+source_file_hash: 80ddd16f55e0e65c
 translation_language: pt-BR
 source_file_path: user-guide/duplicati-configuration.md
 ---
@@ -25,5 +25,5 @@ Se você tiver problemas de login com a nova interface web do Duplicati (`/ngcli
 <br/><br/>
 
 :::note
-Todos os nomes de produtos, marcas registradas e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
+Todos os nomes de produtos, logotipos e marcas registradas são de propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
 :::

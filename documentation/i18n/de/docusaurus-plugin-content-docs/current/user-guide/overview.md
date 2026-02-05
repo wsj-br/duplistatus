@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:20:59.588Z'
-source_file_mtime: '2026-02-03T18:36:19.218Z'
-source_file_hash: f0a138fc11b99aeb
+translation_last_updated: '2026-02-05T19:08:39.502Z'
+source_file_mtime: '2026-02-05T17:53:15.519Z'
+source_file_hash: 707f5c41ecb6e26f
 translation_language: de
 source_file_path: user-guide/overview.md
 ---
@@ -103,5 +103,5 @@ Denken Sie daran, die Duplicati-Server so zu konfigurieren, dass sie Sicherungsp
 <br/>
 
 :::note
-Alle Produktnamen, Marken und eingetragenen Marken sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
+Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Eigentümer. Symbole und Namen werden ausschließlich zu Identifikationszwecken verwendet und implizieren keine Billigung.
 :::

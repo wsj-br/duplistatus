@@ -8,6 +8,7 @@ import http from "http";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { Command } from "commander";
+import { exec } from "child_process";
 import { loadConfig } from "./config";
 import { TranslationCache } from "./cache";
 
@@ -66,6 +67,7 @@ async function main() {
       const { rows, total } = cache.listTranslations({
         filename: req.query.filename as string | undefined,
         locale: req.query.locale as string | undefined,
+        model: req.query.model as string | undefined,
         source_hash: req.query.source_hash as string | undefined,
         source_text: req.query.source_text as string | undefined,
         translated_text: req.query.translated_text as string | undefined,
@@ -116,6 +118,7 @@ async function main() {
       const filters = {
         filename: req.query.filename as string | undefined,
         locale: req.query.locale as string | undefined,
+        model: req.query.model as string | undefined,
         source_hash: req.query.source_hash as string | undefined,
         source_text: req.query.source_text as string | undefined,
         translated_text: req.query.translated_text as string | undefined,
@@ -150,6 +153,17 @@ async function main() {
     try {
       const locales = cache.getUniqueLocales();
       res.json({ locales });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: String(err) });
+    }
+  });
+
+  // API: List unique models
+  app.get("/api/models", (_req, res) => {
+    try {
+      const models = cache.getUniqueModels();
+      res.json({ models });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: String(err) });
@@ -230,7 +244,18 @@ async function main() {
 
   const port = await findAvailablePort(4000);
   app.listen(port, () => {
-    console.log(`\nTranslation cache editor: http://localhost:${port}\n`);
+    const url = `http://localhost:${port}`;
+    console.log(`\nTranslation cache editor: ${url}\n`);
+    
+    // Open browser using $BROWSER environment variable
+    const browser = process.env.BROWSER;
+    if (browser) {
+      exec(`${browser} ${url}`, (error) => {
+        if (error) {
+          console.error(`Failed to open browser: ${error.message}`);
+        }
+      });
+    }
   });
 }
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:21:13.109Z'
-source_file_mtime: '2026-02-03T18:36:19.218Z'
-source_file_hash: f0a138fc11b99aeb
+translation_last_updated: '2026-02-05T19:09:07.768Z'
+source_file_mtime: '2026-02-05T17:53:15.519Z'
+source_file_hash: 707f5c41ecb6e26f
 translation_language: pt-BR
 source_file_path: user-guide/overview.md
 ---
@@ -103,5 +103,5 @@ Lembre-se de configurar os servidores Duplicati para enviar logs de backup para 
 <br/>
 
 :::note
-Todos os nomes de produtos, marcas registradas e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
+Todos os nomes de produtos, logotipos e marcas registradas são de propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
 :::

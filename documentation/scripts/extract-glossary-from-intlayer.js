@@ -6,7 +6,6 @@
  * - Reads all JSON files from .intlayer/dictionary/
  * - Extracts key terminology (common UI terms + technical terms)
  * - Generates CSV glossary file
- * - Updates markdown glossary table
  */
 
 const fs = require('fs');
@@ -48,6 +47,17 @@ const KEY_UI_ACTIONS = [
 const KEY_TIME_TERMS = [
   'today', 'yesterday', 'tomorrow', 'now', 'enabled', 'disabled'
 ];
+
+// Common prepositions to omit from glossary (single-word terms only)
+const PREPOSITIONS = new Set([
+  'a', 'aboard', 'about', 'above', 'across', 'after', 'against', 'along', 'amid',
+  'among', 'around', 'as', 'at', 'before', 'behind', 'below', 'beneath', 'beside',
+  'besides', 'between', 'beyond', 'but', 'by', 'concerning', 'despite', 'down',
+  'during', 'except', 'for', 'from', 'in', 'inside', 'into', 'like', 'near', 'of',
+  'off', 'on', 'onto', 'out', 'over', 'past', 'per', 'regarding', 'round', 'since',
+  'than', 'through', 'throughout', 'till', 'to', 'toward', 'towards', 'under',
+  'underneath', 'until', 'up', 'upon', 'via', 'with', 'within', 'without'
+]);
 
 /**
  * Remove {} placeholders from text
@@ -125,6 +135,10 @@ function shouldIncludeTerm(str, key) {
   // Skip strings that are clearly long sentences/descriptions (contain multiple periods or question marks)
   const sentenceIndicators = (trimmed.match(/[.!?]/g) || []).length;
   if (sentenceIndicators > 1) return false; // Multiple sentences = description, not terminology
+  
+  // Omit single-word prepositions
+  const words = trimmed.split(/\s+/);
+  if (words.length === 1 && PREPOSITIONS.has(words[0].toLowerCase())) return false;
   
   // Include everything else - table headers, sidebar items, buttons, labels, etc.
   return true;
@@ -333,155 +347,37 @@ function removeDuplicates(termMap) {
   return uniqueMap;
 }
 
+/** Locale columns for simplified glossary format (header = locale only) */
+const GLOSSARY_LOCALES = ['en', 'fr', 'de', 'pt-BR', 'es'];
+
 /**
- * Generate CSV glossary file with comprehensive columns
+ * Generate CSV glossary file with locale columns only
  */
 function generateCSV(termMap) {
   const rows = [];
   
-  // Header with all required columns
-  const header = [
-    'Term [en]', 'Description [en]', 'Part of Speech [en]', 'Status [en]', 'Type [en]', 'Gender [en]', 'Note [en]',
-    'Term [fr]', 'Description [fr]', 'Part of Speech [fr]', 'Status [fr]', 'Type [fr]', 'Gender [fr]', 'Note [fr]',
-    'Term [de]', 'Description [de]', 'Part of Speech [de]', 'Status [de]', 'Type [de]', 'Gender [de]', 'Note [de]',
-    'Term [pt-BR]', 'Description [pt-BR]', 'Part of Speech [pt-BR]', 'Status [pt-BR]', 'Type [pt-BR]', 'Gender [pt-BR]', 'Note [pt-BR]',
-    'Term [es-ES]', 'Description [es-ES]', 'Part of Speech [es-ES]', 'Status [es-ES]', 'Type [es-ES]', 'Gender [es-ES]', 'Note [es-ES]',
-    'Translatable'
-  ];
-  
-  rows.push(header.map(h => `"${h}"`).join(','));
-  
-  // Sort terms alphabetically
-  const sortedTerms = Array.from(termMap.entries()).sort((a, b) => 
-    a[0].localeCompare(b[0])
-  );
-  
-  // Escape CSV values
+  // Header: locale names only
   const escapeCSV = (val) => {
     if (!val || val === '') return '';
-    // Always quote values that might contain special characters
     return `"${String(val).replace(/"/g, '""')}"`;
   };
   
-  for (const [termKey, translations] of sortedTerms) {
-    // Clean all terms - remove {} placeholders and parentheses
-    const enTerm = cleanText(translations.en || '');
-    const frTerm = cleanText(translations.fr || '');
-    const deTerm = cleanText(translations.de || '');
-    const ptTerm = cleanText(translations['pt-BR'] || '');
-    const esTerm = cleanText(translations.es || ''); // Map to es-ES
-    
-    // Skip entries where all terms are just "#" or empty
-    const allTerms = [enTerm, frTerm, deTerm, ptTerm, esTerm];
-    if (allTerms.every(t => t.trim() === '#' || t.trim() === '')) {
-      continue;
-    }
-    
-    // Get part of speech for each language (use English as base)
-    const posEn = getPartOfSpeech(enTerm);
-    const posFr = posEn; // Could be enhanced with language-specific detection
-    const posDe = posEn;
-    const posPt = posEn;
-    const posEs = posEn;
-    
-    // Status: preferred for all
-    const status = 'preferred';
-    
-    // Type: empty (could be: acronym, full form, abbreviation, phrase, variant)
-    const type = '';
-    
-    // Gender: empty (could be: masculine, feminine, neuter)
-    const gender = '';
-    
-    // Description and Note: empty for now
-    const description = '';
-    const note = '';
-    
-    // Translatable: Yes for all terms
-    const translatable = 'Yes';
-    
-    // Build row with all columns
-    const row = [
-      // English columns
-      escapeCSV(enTerm),
-      escapeCSV(description),
-      escapeCSV(posEn),
-      escapeCSV(status),
-      escapeCSV(type),
-      escapeCSV(gender),
-      escapeCSV(note),
-      // French columns
-      escapeCSV(frTerm),
-      escapeCSV(description),
-      escapeCSV(posFr),
-      escapeCSV(status),
-      escapeCSV(type),
-      escapeCSV(gender),
-      escapeCSV(note),
-      // German columns
-      escapeCSV(deTerm),
-      escapeCSV(description),
-      escapeCSV(posDe),
-      escapeCSV(status),
-      escapeCSV(type),
-      escapeCSV(gender),
-      escapeCSV(note),
-      // Portuguese (pt-BR) columns
-      escapeCSV(ptTerm),
-      escapeCSV(description),
-      escapeCSV(posPt),
-      escapeCSV(status),
-      escapeCSV(type),
-      escapeCSV(gender),
-      escapeCSV(note),
-      // Spanish (es-ES) columns
-      escapeCSV(esTerm),
-      escapeCSV(description),
-      escapeCSV(posEs),
-      escapeCSV(status),
-      escapeCSV(type),
-      escapeCSV(gender),
-      escapeCSV(note),
-      // Translatable
-      escapeCSV(translatable)
-    ];
-    
-    rows.push(row.join(','));
-  }
+  rows.push(GLOSSARY_LOCALES.map(l => escapeCSV(l)).join(','));
   
-  return rows.join('\n');
-}
-
-/**
- * Generate markdown glossary table
- */
-function generateMarkdownTable(termMap) {
-  const rows = [];
-  
-  // Header
-  rows.push('| English | French | German | Spanish | Portuguese |');
-  rows.push('|---------|--------|--------|---------|------------|');
-  
-  // Sort terms alphabetically
+  // Sort terms alphabetically by English
   const sortedTerms = Array.from(termMap.entries()).sort((a, b) => 
-    a[0].localeCompare(b[0])
+    (a[1].en || a[0]).localeCompare(b[1].en || b[0])
   );
   
   for (const [termKey, translations] of sortedTerms) {
-    // Clean all terms - remove {} placeholders and parentheses
-    const enTerm = cleanText(translations.en || '');
-    const frTerm = cleanText(translations.fr || '');
-    const deTerm = cleanText(translations.de || '');
-    const esTerm = cleanText(translations.es || '');
-    const ptTerm = cleanText(translations['pt-BR'] || '');
+    const terms = GLOSSARY_LOCALES.map(locale => cleanText(translations[locale] || ''));
     
     // Skip entries where all terms are just "#" or empty
-    const allTerms = [enTerm, frTerm, deTerm, esTerm, ptTerm];
-    if (allTerms.every(t => t.trim() === '#' || t.trim() === '')) {
+    if (terms.every(t => t.trim() === '#' || t.trim() === '')) {
       continue;
     }
     
-    rows.push(`| ${enTerm} | ${frTerm} | ${deTerm} | ${esTerm} | ${ptTerm} |`);
+    rows.push(terms.map(t => escapeCSV(t)).join(','));
   }
   
   return rows.join('\n');
@@ -492,9 +388,8 @@ function generateMarkdownTable(termMap) {
  */
 function main() {
   const args = process.argv.slice(2);
-  const outputCSV = args[0] || 'glossary.csv';
-  const outputMarkdown = args[1] || null;
-  const dictDir = args[2] || path.join(__dirname, '../../.intlayer/dictionary');
+  const outputCSV = args[0] || 'glossary-ui.csv';
+  const dictDir = args[1] || path.join(__dirname, '../../.intlayer/dictionary');
   
   // Check if dictionary directory exists
   if (!fs.existsSync(dictDir)) {
@@ -516,19 +411,11 @@ function main() {
   fs.writeFileSync(outputCSV, csv, 'utf8');
   console.log(`✓ CSV generated: ${termMap.size} terms`);
   
-  // Generate markdown if requested
-  if (outputMarkdown) {
-    console.log(`Generating markdown table...`);
-    const markdown = generateMarkdownTable(termMap);
-    fs.writeFileSync(outputMarkdown, markdown, 'utf8');
-    console.log(`✓ Markdown table generated`);
-  }
-  
-  return { termMap, csv, markdown: outputMarkdown ? generateMarkdownTable(termMap) : null };
+  return { termMap, csv };
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { main, extractAllTerms, generateCSV, generateMarkdownTable };
+module.exports = { main, extractAllTerms, generateCSV };

@@ -1,3 +1,12 @@
+# Files to ignore during translations
+
+# Documentation files
+# Keep the license in English
+LICENSE.md
+
+# Don't translate the API reference
+api-reference/*
+
 # SVG files not used in documentation (duplistatus*.svg converted to PNG)
 # These are ignored by translate:svg to avoid translating unused assets.
 

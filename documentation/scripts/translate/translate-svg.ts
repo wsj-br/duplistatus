@@ -390,9 +390,40 @@ async function main() {
     .option("--no-export-png", "Skip Inkscape PNG export after translation")
     .option("--stats", "Show cache statistics and exit")
     .option("-c, --config <path>", "Path to config file")
-    .parse(process.argv);
+    .configureHelp({
+      helpWidth: 100,
+    })
+    .exitOverride((err) => {
+      // Handle unknown options or usage errors
+      if (err.code === "commander.unknownOption" || err.code === "commander.unknownCommand" || err.code === "commander.missingArgument") {
+        console.error(chalk.red(`\n❌ ${err.message}\n`));
+        program.outputHelp();
+        process.exit(1);
+      }
+      throw err;
+    });
 
-  const options = program.opts();
+  let options: ReturnType<typeof program.opts>;
+  try {
+    program.parse(process.argv);
+    options = program.opts();
+  } catch (error: unknown) {
+    // Handle parsing errors
+    if (error instanceof Error) {
+      const errorMsg = error.message.toLowerCase();
+      if (
+        errorMsg.includes("unknown option") ||
+        errorMsg.includes("unexpected argument") ||
+        errorMsg.includes("error") ||
+        errorMsg.includes("invalid")
+      ) {
+        console.error(chalk.red(`\n❌ ${error.message}\n`));
+        program.outputHelp();
+        process.exit(1);
+      }
+    }
+    throw error;
+  }
 
   const config = loadConfig(options.config);
   const cacheDir = path.resolve(config.paths.cache);
@@ -429,7 +460,7 @@ async function main() {
     const cache = new TranslationCache(path.resolve(config.paths.cache));
     console.log(chalk.gray(`   Output log: ${logPath}`));
     try {
-      await runSvgTranslation(config, cache, new Glossary(config.paths.glossary), options.dryRun ? null : new Translator(config, null), {
+      await runSvgTranslation(config, cache, new Glossary(config.paths.glossary, config.paths.glossaryUser), options.dryRun ? null : new Translator(config, null), {
         dryRun: options.dryRun || false,
         verbose: options.verbose || false,
         force: options.force || false,

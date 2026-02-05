@@ -9,7 +9,13 @@
 | `pnpm run translate:status`     | Check translation status (✓ up-to-date, ● outdated, etc.) |
 | `pnpm run translate:cleanup`    | Remove orphaned and stale cache entries                   |
 | `pnpm run translate:edit-cache` | Web UI to browse/edit translation cache (port 4000)       |
+| `pnpm run translate:glossary-ui`| Generate glossary-ui.csv from intlayer dictionaries; use glossary-user.csv for overrides |
 | `pnpm run translate:help`       | Show this summary                                         |
+
+## Glossary
+
+- **glossary-ui.csv** – Auto-generated from intlayer dictionaries (run `translate:glossary-ui` after UI translation changes)
+- **glossary-user.csv** – Optional overrides; columns: `en`, `locale`, `translation`; entries take precedence over glossary-ui.csv
 
 ## Translate script options
 

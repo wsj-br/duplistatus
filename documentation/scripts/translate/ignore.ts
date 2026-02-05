@@ -49,7 +49,7 @@ function globToRegExp(pattern: string): RegExp {
 }
 
 export function loadTranslateIgnoreFile(cwd: string): IgnoreMatcher | null {
-  const ignorePath = path.join(cwd, ".translate.ignore");
+  const ignorePath = path.join(cwd, ".translate-ignore");
   if (!fs.existsSync(ignorePath)) return null;
 
   const raw = fs.readFileSync(ignorePath, "utf-8");
@@ -83,12 +83,12 @@ export function loadTranslateIgnoreFile(cwd: string): IgnoreMatcher | null {
 }
 
 /**
- * Load .translate-svg.ignore from cwd (e.g. documentation/).
+ * Load SVG ignore patterns from .translate-ignore in cwd (e.g. documentation/).
  * Returns a function that returns true if the SVG basename should be ignored.
- * Uses same gitignore-style patterns as .translate.ignore.
+ * Uses same gitignore-style patterns as .translate-ignore.
  */
 export function loadTranslateSvgIgnoreFile(cwd: string): ((basename: string) => boolean) | null {
-  const ignorePath = path.join(cwd, ".translate-svg.ignore");
+  const ignorePath = path.join(cwd, ".translate-ignore");
   if (!fs.existsSync(ignorePath)) return null;
 
   const raw = fs.readFileSync(ignorePath, "utf-8");

@@ -53,5 +53,5 @@ For improved security, consider using [access token authentication](https://docs
 <br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 :::

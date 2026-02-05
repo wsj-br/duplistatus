@@ -21,7 +21,7 @@ function updateGlossaryMarkdown(contribFile, glossaryTable) {
 
 > **Note**: This glossary is automatically generated from intlayer dictionaries to ensure consistency between the application and documentation translations.
 
-> **To regenerate**: Run \`./scripts/generate-glossary.sh\` from the \`documentation/\` directory. This will update the glossary CSV file and this markdown table.
+> **To regenerate**: Run \`pnpm run translate:glossary-ui\` from the \`documentation/\` directory. This will update the glossary CSV file and this markdown table.
 
 ${glossaryTable}
 

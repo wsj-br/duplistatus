@@ -70,54 +70,51 @@ EOF
 # First, skip header lines: empty lines (1-2), "# Welcome to duplistatus" (3), empty line (4), subtitle line (5)
 # Convert Docusaurus Admonitions to GitHub-style Alerts, then process links
 sed '1,5d' "$INTRO_FILE" | \
-# Convert Docusaurus Admonitions to GitHub-style Alerts using awk
+# Convert Docusaurus Admonitions (:::note, :::tip, :::warning, etc.) to GitHub-style Alerts
 awk '
 BEGIN { in_admonition = 0; admonition_type = ""; }
-/^:::$/ {
-    # End of admonition block (check this first, before general ::: pattern)
+# Closing: ::: or "    :::" or "::: " (optional leading/trailing whitespace)
+$0 ~ /^[[:space:]]*:::[[:space:]]*$/ {
     if (in_admonition) {
         in_admonition = 0;
         admonition_type = "";
     }
     next;
 }
-/^:::/ {
-    # Check if this is an admonition start (not the closing :::)
-    if ($0 != ":::") {
-        # Start of admonition block
-        in_admonition = 1;
-        if ($0 ~ /^:::info/) { admonition_type = "NOTE"; }
-        else if ($0 ~ /^:::note/) { admonition_type = "NOTE"; }
-        else if ($0 ~ /^:::tip/) { admonition_type = "TIP"; }
-        else if ($0 ~ /^:::warning/) { admonition_type = "WARNING"; }
-        else if ($0 ~ /^:::danger/) { admonition_type = "DANGER"; }
-        else if ($0 ~ /^:::important/) { admonition_type = "IMPORTANT"; }
-        else if ($0 ~ /^:::caution/) { admonition_type = "CAUTION"; }
-        else {
-            # Not a recognized admonition type, pass through
-            in_admonition = 0;
-            print;
-            next;
-        }
-        print "> [!" admonition_type "]";
+# Opening: :::type or :::type Title or :::type[Title] (optional leading whitespace)
+$0 ~ /^[[:space:]]*:::[a-zA-Z]/ {
+    in_admonition = 1;
+    if ($0 ~ /^[[:space:]]*:::info/) { admonition_type = "NOTE"; }
+    else if ($0 ~ /^[[:space:]]*:::note/) { admonition_type = "NOTE"; }
+    else if ($0 ~ /^[[:space:]]*:::tip/) { admonition_type = "TIP"; }
+    else if ($0 ~ /^[[:space:]]*:::warning/) { admonition_type = "WARNING"; }
+    else if ($0 ~ /^[[:space:]]*:::danger/) { admonition_type = "DANGER"; }
+    else if ($0 ~ /^[[:space:]]*:::important/) { admonition_type = "IMPORTANT"; }
+    else if ($0 ~ /^[[:space:]]*:::caution/) { admonition_type = "CAUTION"; }
+    else {
+        in_admonition = 0;
+        print;
         next;
     }
+    print "> [!" admonition_type "]";
+    next;
 }
+# Content
 {
     if (in_admonition) {
-        # Inside admonition - prefix lines with "> "
         if (length($0) == 0) {
             print ">";
         } else {
             print "> " $0;
         }
     } else {
-        # Normal line - pass through
         print;
     }
 }
 ' | \
 sed '/^>\[!IMPORTANT\]/,/^$/d' | \
+# Remove Docusaurus section ID tags {#xxxxx} - GitHub auto-generates IDs from heading text
+sed 's/ {#[^}]*}//g' | \
 # Convert relative markdown links to absolute GitHub docs URLs
 # Special case: Docusaurus routes files with same name as parent directory to just the directory
 # e.g., installation/installation.md -> /installation (not /installation/installation)
@@ -126,8 +123,9 @@ sed 's|(\([^/]*\)/\1\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 # Handle paths with or without ./ prefix, normalize them, convert to absolute URL, and remove .md extension
 sed 's|(\./\([^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 sed 's|(\([^/][^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
-# Convert image paths from /img/ to documentation/static/img/
+# Convert image paths: /img/ -> documentation/static/img/, assets/ -> documentation/docs/assets/
 sed 's|(/img/|(documentation/static/img/|g' | \
+sed 's|(assets/|(documentation/docs/assets/|g' | \
 # Fix specific development links that don't have .md extension
 sed 's|(development/setup)|(https://wsj-br.github.io/duplistatus/development/setup)|g' | \
 sed 's|(development/how-i-build-with-ai)|(https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai)|g' >> "$TEMP_FILE"
@@ -171,6 +169,7 @@ cp README.md README_dockerhub.md
 # Update image references from relative paths to GitHub raw URLs
 sed -i 's|documentation/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/img/|g' README_dockerhub.md
 sed -i 's|documentation/static/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' README_dockerhub.md
+sed -i 's|documentation/docs/assets/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/docs/assets/|g' README_dockerhub.md
 
 # Update document references from relative paths to GitHub blob URLs
 # Only replace docs/ that are NOT already part of a full URL
@@ -190,10 +189,13 @@ sed -i 's|> *\[!IMPORTANT\]|> ⚠️ **IMPORTANT**<br/>|ig' README_dockerhub.md
 sed -i 's|> *\[!WARNING\]|> 🚨 **WARNING**<br/>|ig' README_dockerhub.md
 # Convert [!CAUTION] blocks (case-insensitive, with optional space between > and [)
 sed -i 's|> *\[!CAUTION\]|> ⛔ **CAUTION**<br/>|ig' README_dockerhub.md
+# Convert [!DANGER] blocks (case-insensitive, with optional space between > and [)
+sed -i 's|> *\[!DANGER\]|> 🔴 **DANGER**<br/>|ig' README_dockerhub.md
 
 # Clean up any double replacements that might have occurred
 sed -i 's|https://raw.githubusercontent.com/wsj-br/duplistatus/master/https://raw.githubusercontent.com/wsj-br/duplistatus/master/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/|g' README_dockerhub.md
 sed -i 's|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' README_dockerhub.md
+sed -i 's|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/docs/assets/https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/docs/assets/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/docs/assets/|g' README_dockerhub.md
 sed -i 's|https://github.com/wsj-br/duplistatus/blob/master/https://github.com/wsj-br/duplistatus/blob/master/|https://github.com/wsj-br/duplistatus/blob/master/|g' README_dockerhub.md
 
 echo "✅ README_dockerhub.md generated successfully"
@@ -220,6 +222,35 @@ RELEASE_TEMP_FILE=$(mktemp)
 cat "$RELEASE_NOTES_FILE" | \
 # Change title from "# Version xxxx" to "# Release Notes - Version xxxxx"
 sed 's|^# Version |# Release Notes - Version |' | \
+# Remove Docusaurus section ID tags {#xxxxx}
+sed 's/ {#[^}]*}//g' | \
+# Convert Docusaurus Admonitions to GitHub-style Alerts
+awk '
+BEGIN { in_admonition = 0; admonition_type = ""; }
+$0 ~ /^[[:space:]]*:::[[:space:]]*$/ {
+    if (in_admonition) { in_admonition = 0; admonition_type = ""; }
+    next;
+}
+$0 ~ /^[[:space:]]*:::[a-zA-Z]/ {
+    in_admonition = 1;
+    if ($0 ~ /^[[:space:]]*:::info/) { admonition_type = "NOTE"; }
+    else if ($0 ~ /^[[:space:]]*:::note/) { admonition_type = "NOTE"; }
+    else if ($0 ~ /^[[:space:]]*:::tip/) { admonition_type = "TIP"; }
+    else if ($0 ~ /^[[:space:]]*:::warning/) { admonition_type = "WARNING"; }
+    else if ($0 ~ /^[[:space:]]*:::danger/) { admonition_type = "DANGER"; }
+    else if ($0 ~ /^[[:space:]]*:::important/) { admonition_type = "IMPORTANT"; }
+    else if ($0 ~ /^[[:space:]]*:::caution/) { admonition_type = "CAUTION"; }
+    else { in_admonition = 0; print; next; }
+    print "> [!" admonition_type "]";
+    next;
+}
+{
+    if (in_admonition) {
+        if (length($0) == 0) { print ">"; }
+        else { print "> " $0; }
+    } else { print; }
+}
+' | \
 # Convert relative markdown links to absolute GitHub docs URLs
 # Special case: Docusaurus routes files with same name as parent directory
 # e.g., installation/installation.md -> /installation (not /installation/installation)

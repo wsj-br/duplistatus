@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T00:20:52.621Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: e6941d903557a190
+translation_last_updated: '2026-02-05T19:08:23.808Z'
+source_file_mtime: '2026-02-05T18:10:24.682Z'
+source_file_hash: 80ddd16f55e0e65c
 translation_language: fr
 source_file_path: user-guide/duplicati-configuration.md
 ---
@@ -25,5 +25,5 @@ Si vous rencontrez des problèmes de connexion avec la nouvelle interface web Du
 <br/><br/>
 
 :::note
-Tous les noms de produits, marques commerciales et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à titre d'identification uniquement et n'impliquent pas une approbation.
+Tous les noms de produits, logos et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés uniquement à des fins d'identification et n'impliquent aucune approbation.
 :::

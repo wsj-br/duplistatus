@@ -19,6 +19,6 @@ If you experience login issues with the new Duplicati web interface (`/ngclient/
 <br/><br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 :::
 
