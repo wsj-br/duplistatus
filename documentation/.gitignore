@@ -77,9 +77,8 @@ Desktop.ini
 .yarn/install-state.gz
 
 # Translation cache
-# Exclude directory by default, but include cache.db for cost savings
-.translation-cache/
+# Exclude contents by default, but include cache.db for cost savings
+.translation-cache/*
 !.translation-cache/cache.db
-# Exclude debug traffic logs (temporary debugging files)
-.translation-cache/debug-traffic-*.log
+
 
