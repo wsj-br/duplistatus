@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.854Z'
-source_file_mtime: '2026-01-27T14:22:06.834Z'
-source_file_hash: d909c85d6424418a
+translation_last_updated: '2026-02-05T00:20:52.621Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: e6941d903557a190
 translation_language: fr
 source_file_path: user-guide/duplicati-configuration.md
 ---
 # Configuration Duplicati {#duplicati-configuration}
 
-Le bouton <SvgButton svgFilename="duplicati_logo.svg" /> de la [Barre d'outils de l'application](overview#application-toolbar) ouvre l'interface web du serveur Duplicati dans un nouvel onglet.
+Le bouton <SvgButton svgFilename="duplicati_logo.svg" /> de la [Barre d'outils de l'application](overview#application-toolbar) ouvre l'interface web du Serveur Duplicati dans un nouvel onglet.
 
 Vous pouvez sélectionner un serveur dans la liste déroulante. Si vous avez déjà sélectionné un serveur (en cliquant sur sa carte) ou consultez ses détails, le bouton ouvrira directement la Configuration Duplicati de ce serveur spécifique.
 
@@ -15,12 +15,12 @@ Vous pouvez sélectionner un serveur dans la liste déroulante. Si vous avez dé
 
 - La liste des serveurs affichera le `nom du serveur` ou `alias du serveur (nom du serveur)`.
 - Les adresses des serveurs sont configurées dans [`Paramètres → Serveur`](settings/server-settings.md).
-- L'application enregistre automatiquement l'URL d'un serveur lorsque vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collecter les journaux de sauvegarde`](collect-backup-logs.md).
+- L'application enregistre automatiquement l'URL d'un serveur quand vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collecter les journaux de sauvegarde`](collect-backup-logs.md).
 - Les serveurs n'apparaîtront pas dans la liste des serveurs si leur adresse n'a pas été configurée.
 
 ## Accès à l'ancienne interface utilisateur de Duplicati {#accessing-the-old-duplicati-ui}
 
-Si vous rencontrez des problèmes de connexion avec la nouvelle interface web Duplicati (`/ngclient/`), vous pouvez faire un clic droit sur le bouton <SvgButton svgFilename="duplicati_logo.svg" /> ou sur n'importe quel élément de serveur dans le popover de sélection du serveur pour ouvrir l'ancienne interface utilisateur Duplicati (`/ngax/`) dans un nouvel onglet.
+Si vous rencontrez des problèmes de connexion avec la nouvelle interface web Duplicati (`/ngclient/`), vous pouvez faire un clic droit sur le bouton <SvgButton svgFilename="duplicati_logo.svg" /> ou sur n'importe quel élément serveur dans le popover de sélection du serveur pour ouvrir l'ancienne interface utilisateur Duplicati (`/ngax/`) dans un nouvel onglet.
 
 <br/><br/>
 

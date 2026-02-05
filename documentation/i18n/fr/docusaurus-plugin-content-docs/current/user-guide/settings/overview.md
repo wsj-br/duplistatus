@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:23.117Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: de0fa34e2062bf57
+translation_last_updated: '2026-02-05T00:20:53.719Z'
+source_file_mtime: '2026-02-03T17:47:50.542Z'
+source_file_hash: 6810bf2e7dc0121a
 translation_language: fr
 source_file_path: user-guide/settings/overview.md
 ---
@@ -9,14 +9,14 @@ source_file_path: user-guide/settings/overview.md
 
 La page Paramètres offre une interface unifiée pour configurer tous les aspects de **duplistatus**. Vous pouvez y accéder en cliquant sur le bouton <IconButton icon="lucide:settings" /> `Paramètres` dans la [Barre d'outils de l'application](../overview#application-toolbar). Notez que les utilisateurs ordinaires verront un menu simplifié avec moins d'options par rapport aux administrateurs.
 
-## Affichage Administrateur {#administrator-view}
+## Afficher Administrateur {#administrator-view}
 
 Les administrateurs voient tous les paramètres disponibles.
 
 <table>
   <tr>
     <td>
-      <img src="../../assets/screen-settings-left-panel-admin.png" alt="Barre latérale Paramètres - Vue Admin" />
+      ![Barre latérale des paramètres - Vue Admin](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -59,7 +59,7 @@ Les utilisateurs réguliers voient un ensemble limité de paramètres.
 <table>
   <tr>
     <td>
-      <img src="../../assets/screen-settings-left-panel-non-admin.png" alt="Barre latérale des paramètres - Vue non-admin" />
+      ![Barre latérale Paramètres - Vue non-Admin](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>
@@ -97,12 +97,12 @@ La barre latérale affiche des icônes de statut à côté des paramètres d'int
 - <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Icône verte** : Vos paramètres sont valides et configurés correctement
 - <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Icône jaune** : Vos paramètres ne sont pas valides ou ne sont pas configurés
 
-Quand la configuration n'est pas valide, les cases à cocher correspondantes dans l'onglet [`Notifications de sauvegarde`](backup-notifications-settings.md) seront grisées et désactivées. Pour plus de détails, consultez les pages [Paramètres NTFY](ntfy-settings.md) et [Paramètres e-mail](email-settings.md).
+Quand la configuration est invalide, les cases à cocher correspondantes dans l'onglet [`Notifications de sauvegarde`](backup-notifications-settings.md) seront grisées et désactivées. Pour plus de détails, consultez les pages [Paramètres NTFY](ntfy-settings.md) et [Paramètres e-mail](email-settings.md).
 
 <br/>
 
 :::important
-Une icône verte ne signifie pas nécessairement que les Notifications fonctionnent correctement. Utilisez toujours les fonctionnalités de test disponibles pour confirmer que vos Notifications fonctionnent avant de vous y fier.
+Une icône verte ne signifie pas nécessairement que les notifications fonctionnent correctement. Utilisez toujours les fonctionnalités de test disponibles pour confirmer que vos notifications fonctionnent avant de vous y fier.
 :::
 
 <br/>

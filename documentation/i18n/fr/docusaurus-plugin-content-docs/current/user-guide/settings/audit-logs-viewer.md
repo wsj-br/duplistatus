@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.991Z'
-source_file_mtime: '2026-01-27T14:22:06.834Z'
-source_file_hash: 67b8a05c2d43879d
+translation_last_updated: '2026-02-05T00:20:53.052Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 2d1dbdbd08ce54ad
 translation_language: fr
 source_file_path: user-guide/settings/audit-logs-viewer.md
 ---
@@ -25,21 +25,21 @@ Le visualiseur de journal d'audit affiche une liste chronologique de tous les é
 
 ### Affichage des détails du journal {#viewing-log-details}
 
-Cliquez sur l'icône <IconButton icon="lucide:eye" /> en forme d'œil à côté de n'importe quelle entrée de journal pour afficher des informations détaillées, notamment :
+Cliquez sur l'icône <IconButton icon="lucide:eye" /> en regard de toute entrée de journal pour afficher des informations détaillées, notamment :
 - Horodatage complet
-- Informations sur l'utilisateur
+- Informations utilisateur
 - Détails complets de l'action (par exemple : champs modifiés, statistiques, etc.)
 - Adresse IP et agent utilisateur
 - Messages d'erreur (si l'action a échoué)
 
-### Exportation des journaux d'audit {#exporting-audit-logs}
+### Exportation des Journaux d'audit {#exporting-audit-logs}
 
 Vous pouvez exporter les journaux d'audit filtrés dans deux formats :
 
 | Bouton | Description |
 |:------|:-----------|
-| <IconButton icon="lucide:download" label="CSV"/> | Exporter les journaux sous forme de fichier CSV pour une analyse dans un tableur |
-| <IconButton icon="lucide:download" label="JSON"/> | Exporter les journaux sous forme de fichier JSON pour une analyse programmatique |
+| <IconButton icon="lucide:download" label="CSV"/> | Exporter les journaux en tant que fichier CSV pour l'analyse de feuille de calcul |
+| <IconButton icon="lucide:download" label="JSON"/> | Exporter les journaux en tant que fichier JSON pour l'analyse programmatique |
 
 :::note
 Les exports incluent uniquement les journaux actuellement visibles en fonction de vos filtres actifs. Pour exporter tous les journaux, effacez d'abord tous les filtres.

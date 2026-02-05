@@ -1,19 +1,19 @@
 ---
-translation_last_updated: '2026-01-31T00:51:19.853Z'
+translation_last_updated: '2026-02-05T00:20:47.749Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 1afab25f18ff213d
 translation_language: fr
 source_file_path: development/development-guidelines.md
 ---
-# Référence de développement {#development-reference}
+# Référence de Développement {#development-reference}
 
 ## Organisation du code {#code-organisation}
 
 - **Composants** : `src/components/` avec sous-répertoires :
-  - `ui/` - Composants shadcn/ui et éléments d'interface utilisateur réutilisables
+  - `ui/` - composants shadcn/ui et éléments d'interface utilisateur réutilisables
   - `dashboard/` - Composants spécifiques au Tableau de bord
   - `settings/` - Composants de la page Paramètres
-  - `server-details/` - Composants de la page de détails du Serveur
+  - `server-details/` - Composants de la page Détails du Serveur
 - **Routes API** : `src/app/api/` avec structure de points de terminaison RESTful (voir [Référence API](../api-reference/overview))
 - **Base de données** : SQLite avec better-sqlite3, utilitaires dans `src/lib/db-utils.ts`, migrations dans `src/lib/db-migrations.ts`
 - **Types** : Interfaces TypeScript dans `src/lib/types.ts`
@@ -22,14 +22,14 @@ source_file_path: development/development-guidelines.md
 - **Scripts** : Scripts utilitaires dans le répertoire `scripts/`
 - **Sécurité** : Protection CSRF dans `src/lib/csrf-middleware.ts`, utilisez le middleware `withCSRF` pour les points de terminaison protégés
 
-## Test et débogage {#testing-debugging}
+## Tests et débogage {#testing-debugging}
 
 - Génération de données de test : `pnpm generate-test-data --servers=N`
-- Test de notifications : endpoint `/api/notifications/test`
-- Contrôles de santé Cron : `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
-- Test de sauvegarde en retard : `pnpm run-overdue-check`
+- Tester les notifications : endpoint `/api/notifications/test`
+- Vérifications de santé Cron : `curl http://localhost:8667/health` ou `curl http://localhost:8666/api/cron/health`
+- Tester la sauvegarde en retard : `pnpm run-overdue-check`
 - Mode développement : journalisation détaillée et stockage de fichiers JSON
-- Maintenance de la base de données : utilisez le menu de maintenance pour les opérations de nettoyage
+- Maintenance de la base de données : utiliser le menu de maintenance pour les opérations de nettoyage
 - Pré-vérifications : `scripts/pre-checks.sh` pour dépanner les problèmes de démarrage
 
 ## Références de développement {#development-references}
@@ -38,9 +38,9 @@ source_file_path: development/development-guidelines.md
 - Schéma de base de données : Voir [Schéma de base de données](database)
 - Suivez les modèles dans `src/lib/db-utils.ts` pour les opérations de base de données
 
-## Frameworks et bibliothèques {#frameworks-libraries}
+## Frameworks et Bibliothèques {#frameworks-libraries}
 
-### Runtime et gestion des paquets {#runtime-package-management}
+### Exécution & Gestion des paquets {#runtime-package-management}
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.28.0)
 
@@ -53,7 +53,7 @@ source_file_path: development/development-guidelines.md
 - Recharts ^3.6.0, react-day-picker ^9.13.0, react-hook-form ^7.70.0, react-datepicker ^9.1.0
 - lucide-react ^0.562.0, clsx ^2.1.1, class-variance-authority ^0.7.1
 - date-fns ^4.1.0, uuid ^13.0.0
-- express ^5.2.1 (service cron), node-cron ^4.2.1
+- express ^5.2.1 (cron service), node-cron ^4.2.1
 - nodemailer ^7.0.12, qrcode ^1.5.4
 
 ### Vérification des types et linting {#type-checking-linting}
@@ -61,9 +61,9 @@ source_file_path: development/development-guidelines.md
 - TSX ^4.21.0
 - ESLint ^9.39.2 (via `next lint`)
 
-### Build & Déploiement {#build-deployment}
-- Sortie autonome Next.js (`output: 'standalone'`) avec point d'entrée conteneur démarrant `server.js`
-- Docker (base node:alpine) avec builds multi-architecture (AMD64, ARM64)
+### Compilation et déploiement {#build-deployment}
+- Sortie autonome Next.js (`output: 'standalone'`) avec point d'entrée de conteneur démarrant `server.js`
+- Docker (base node:alpine) avec compilations multi-architectures (AMD64, ARM64)
 - Workflows GitHub Actions pour CI/CD
 - Inkscape pour les logos et les images
 - Docusaurus pour la documentation
@@ -73,8 +73,8 @@ source_file_path: development/development-guidelines.md
 - `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
 - `pnpm-workspace.yaml`, `components.json` (shadcn/ui)
 
-## Fonctionnalités du Système {#system-features}
+## Caractéristiques du Système {#system-features}
 
 - **Service Cron** : Service distinct pour les tâches planifiées, redémarrage automatique via `duplistatus-cron.sh`
-- **Notifications** : Intégration ntfy.sh et e-mail SMTP (nodemailer), modèles configurables
+- **Notifications** : Intégration NTFY et e-mail SMTP (nodemailer), modèles configurables
 - **Actualisation automatique** : Actualisation automatique configurable pour le tableau de bord et les pages de détail

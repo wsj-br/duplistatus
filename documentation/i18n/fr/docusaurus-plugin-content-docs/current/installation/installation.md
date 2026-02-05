@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.545Z'
+translation_last_updated: '2026-02-05T00:20:50.096Z'
 source_file_mtime: '2026-01-31T00:51:08.107Z'
 source_file_hash: 31f0b5f50ece70d4
 translation_language: fr
@@ -7,11 +7,11 @@ source_file_path: installation/installation.md
 ---
 # Guide d'Installation {#installation-guide}
 
-L'application peut être déployée à l'aide de Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le FUSEAU HORAIRE et la LANGUE, comme décrit dans la section [Configurer le fuseau horaire et la langue](./configure-tz-lang.md) et vous devrez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).
+L'application peut être déployée à l'aide de Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le TIMEZONE et la LANGUAGE, comme décrit dans la section [Configurer le fuseau horaire et la langue](./configure-tz-lang.md) et vous devez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).
 
 ## Conditions préalables {#prerequisites}
 
-Assurez-vous que vous disposez des éléments suivants installés :
+Assurez-vous que vous avez les éléments suivants installés :
 
 - Docker Engine - [Guide d'installation Debian](https://docs.docker.com/engine/install/debian/)
 - Docker Compose - [Guide d'installation Linux](https://docs.docker.com/compose/install/linux/)
@@ -20,14 +20,14 @@ Assurez-vous que vous disposez des éléments suivants installés :
 
 ## Authentification {#authentication}
 
-**duplistatus** depuis la version 0.9.x nécessite une authentification utilisateur. Un compte `admin` par défaut est créé automatiquement lors de l'installation de l'application pour la première fois ou lors de la mise à niveau à partir d'une version antérieure :
+**duplistatus** depuis la version 0.9.x nécessite une authentification utilisateur. Un compte `admin` par défaut est créé automatiquement lors de la première installation de l'application ou lors de la mise à niveau à partir d'une version antérieure :
     - Nom d'utilisateur : `admin`
     - Mot de passe : `Duplistatus09`
 
 Vous pouvez créer des comptes utilisateurs supplémentaires dans [Paramètres > Utilisateurs](../user-guide/settings/user-management-settings.md) après la première connexion.
 
 ::::info[IMPORTANT]
-Le système applique une longueur minimale et une complexité du mot de passe. Ces exigences peuvent être ajustées à l'aide des [variables d'environnement](environment-variables.md) `PWD_ENFORCE` et `PWD_MIN_LEN`. L'utilisation d'un mot de passe sans complexité suffisante ou avec une longueur courte peut compromettre la sécurité. Veuillez utiliser ces paramètres avec prudence.
+Le système applique une longueur minimale et une complexité du mot de passe. Ces exigences peuvent être ajustées à l'aide des variables d'environnement `PWD_ENFORCE` et `PWD_MIN_LEN` [environment variables](environment-variables.md). L'utilisation d'un mot de passe sans complexité suffisante ou avec une longueur courte peut compromettre la sécurité. Veuillez utiliser ces paramètres avec prudence.
 ::::
 
 ### Images de conteneur {#container-images}
@@ -37,7 +37,7 @@ Vous pouvez utiliser les images de :
 - **Docker Hub** : `docker.io/wsjbr/duplistatus:latest`
 - **GitHub Container Registry** : `ghcr.io/wsj-br/duplistatus:latest`
 
-### Option 1 : Utilisation de Docker Compose {#option-1-using-docker-compose}
+### Option 1 : Utiliser Docker Compose {#option-1-using-docker-compose}
 
 Ceci est la méthode recommandée pour les déploiements locaux ou lorsque vous souhaitez personnaliser la configuration. Elle utilise un fichier `docker compose` pour définir et exécuter le conteneur avec tous ses paramètres.
 
@@ -48,11 +48,11 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Vérifiez la section [Fuseau horaire et Locale](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+Vérifier la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
 
-### Option 2 : Utilisation des piles Portainer (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
+### Option 2 : Utilisation des Stacks Portainer (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
-1. Allez dans « Stacks » sur votre serveur [Portainer](https://docs.portainer.io/user/docker/stacks) et cliquez sur « Ajouter stack ».
+1. Allez à « Stacks » dans votre serveur [Portainer](https://docs.portainer.io/user/docker/stacks) et cliquez sur « Ajouter stack ».
 2. Nommez votre stack (par exemple, « duplistatus »).
 3. Choisissez « Build method » comme « Web editor ».
 4. Copiez et collez ceci dans l'éditeur web :
@@ -86,7 +86,7 @@ volumes:
 ``` 
 
 5. Vérifier la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
-6. Cliquer sur « Déployer la pile ».
+6. Cliquez sur « Déployer la pile ».
 
 ### Option 3 : Utilisation des piles Portainer (référentiel GitHub) {#option-3-using-portainer-stacks-github-repository}
 
@@ -95,8 +95,8 @@ volumes:
 3. Choisissez « Build method » comme « Repository ».
 4. Entrez l'URL du référentiel : `https://github.com/wsj-br/duplistatus.git`
 5. Dans le champ « Compose path », entrez : `production.yml`
-6. (optionnel) Définissez les variables d'environnement `TZ`, `LANG`, `PWD_ENFORCE` et `PWD_MIN_LEN` dans la section « Environment variables ». Consultez la section [Timezone and Locale](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
-7. Cliquez sur « Deploy the stack ».
+6. (optionnel) Définissez les variables d'environnement `TZ`, `LANG`, `PWD_ENFORCE` et `PWD_MIN_LEN` dans la section « Environment variables ». Vérifiez la section [Timezone and Locale](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+6. Cliquez sur « Deploy the stack ».
 
 ### Option 4 : Utilisation de Docker CLI {#option-4-using-docker-cli}
 
@@ -114,7 +114,7 @@ docker run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-- Le volume `duplistatus_data` est utilisé pour le Stockage persistant. L'image de conteneur utilise `Europe/London` comme Fuseau horaire par défaut et `en_GB` comme Langue par défaut.
+- Le volume `duplistatus_data` est utilisé pour le stockage persistant. L'image de conteneur utilise `Europe/London` comme fuseau horaire par défaut et `en_GB` comme langue par défaut.
 
 ### Option 5 : Utilisation de Podman (CLI) `rootless` {#option-5-using-podman-cli-rootless}
 
@@ -133,7 +133,7 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-#### Configuration DNS pour les conteneurs Podman {#configuring-dns-for-podman-containers}
+#### Configuration de DNS pour les conteneurs Podman {#configuring-dns-for-podman-containers}
 
 Si vous avez besoin d'une configuration DNS personnalisée (par exemple, pour Tailscale MagicDNS, les réseaux d'entreprise ou les configurations DNS personnalisées), vous pouvez configurer manuellement les serveurs DNS et les domaines de recherche.
 
@@ -186,15 +186,15 @@ Vous pouvez spécifier plusieurs domaines de recherche en ajoutant plusieurs dra
 --dns-search example.com --dns-search internal.local
 ```
 
-**Note** : Ignorez les adresses IPv6 (contenant `:`) et les adresses localhost (comme `127.0.0.53`) lors de la configuration des serveurs DNS.
+**Note** : Ignorer les adresses IPv6 (contenant `:`) et les adresses localhost (comme `127.0.0.53`) lors de la configuration des serveurs DNS.
 
-Vérifiez la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+Vérifier la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
 
 ### Option 6 : Utilisation des pods Podman {#option-6-using-podman-pods}
 
-Les pods Podman vous permettent d'exécuter plusieurs conteneurs dans un espace de noms réseau partagé. Ceci est utile pour les tests ou quand vous devez exécuter duplistatus aux côtés d'autres conteneurs.
+Les pods Podman vous permettent d'exécuter plusieurs conteneurs dans un espace de noms réseau partagé. Ceci est utile pour les tests ou quand vous avez besoin d'exécuter duplistatus aux côtés d'autres conteneurs.
 
-**Configuration de pod basique :**
+**Configuration de base du pod :**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -215,7 +215,7 @@ podman create --name duplistatus \
 podman pod start duplistatus-pod
 ```
 
-#### Configuration du DNS pour les pods Podman {#configuring-dns-for-podman-pods}
+#### Configuration de DNS pour les pods Podman {#configuring-dns-for-podman-pods}
 
 Quand vous utilisez des pods, la configuration DNS doit être définie au niveau du pod, et non au niveau du conteneur.
 Utilisez les mêmes méthodes décrites dans l'Option 5 pour trouver vos serveurs DNS et domaines de recherche.
@@ -257,10 +257,10 @@ podman pod start duplistatus-pod
 podman pod rm -f duplistatus-pod
 ```
 
-## Configuration essentielle {#essential-configuration}
+## Configuration Essentielle {#essential-configuration}
 
 1. Configurez vos [serveurs Duplicati](duplicati-server-configuration.md) pour envoyer les messages de journaux de sauvegarde à duplistatus (requis).
-2. Connectez-vous à duplistatus – consultez les instructions du [Guide de l'utilisateur](../user-guide/overview.md#accessing-the-dashboard).
+2. Connectez-vous à duplistatus – consultez les instructions du [Guide utilisateur](../user-guide/overview.md#accessing-the-dashboard).
 3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en retard en fonction de la configuration de chaque serveur.
 4. Configurez les paramètres du serveur – configurez les alias de serveur et les notes dans [Paramètres → Serveur](../user-guide/settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
 5. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](../user-guide/settings/ntfy-settings.md).

@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.334Z'
+translation_last_updated: '2026-02-05T00:21:08.629Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 841b30d8ee97e362
 translation_language: pt-BR
 source_file_path: development/podman-testing.md
 ---
-# Testes com Podman {#podman-testing}
+# Testes do Podman {#podman-testing}
 
-Copiar e executar os scripts localizados em `scripts/podman_testing` no Servidor de teste Podman.
+Copiar e executar os scripts localizados em `scripts/podman_testing` no servidor de teste Podman.
 
 ## Configuração Inicial e Gerenciamento {#initial-setup-and-management}
 
@@ -24,7 +24,7 @@ Copiar e executar os scripts localizados em `scripts/podman_testing` no Servidor
 Os scripts detectam e configuram automaticamente as configurações de DNS do sistema host:
 
 - **Detecção Automática**: Usa `resolvectl status` (systemd-resolved) para extrair servidores DNS e domínios de pesquisa
-- **Suporte a Fallback**: Volta a analisar `/etc/resolv.conf` em sistemas não-systemd
+- **Suporte de Fallback**: Retorna à análise de `/etc/resolv.conf` em sistemas não-systemd
 - **Filtragem Inteligente**: Filtra automaticamente endereços localhost e nameservers IPv6
 - **Funciona com**:
   - Tailscale MagicDNS (100.100.100.100)
@@ -44,11 +44,11 @@ Nenhuma configuração manual de DNS é necessária - os scripts lidam com isso 
 - `exec.shell.duplistatus`: Abre um shell no container.
 - `restart.duplistatus`: Para o pod, remove o container, copia a imagem, cria o container e inicia o pod.
 
-## Fluxo de Trabalho de Uso {#usage-workflow}
+## Fluxo de Uso {#usage-workflow}
 
 ### Servidor de Desenvolvimento {#development-server}
 
-Criar a imagem Docker no servidor de desenvolvimento:
+Criar a imagem do Docker no servidor de desenvolvimento:
 
 ```bash
 docker build . -t wsj-br/duplistatus:devel
@@ -59,17 +59,17 @@ docker build . -t wsj-br/duplistatus:devel
 1. Transferir a imagem Docker:
    - Use `./copy.docker.duplistatus.local` se Docker e Podman estiverem na mesma máquina
    - Use `./copy.docker.duplistatus.remote` se copiar de um servidor de desenvolvimento remoto (requer arquivo `.env` com `REMOTE_USER` e `REMOTE_HOST`)
-2. Iniciar o contêiner com `./start.duplistatus` (autossuficiente, sem privilégios de root)
+2. Inicie o container com `./start.duplistatus` (independente, sem privilégios de root)
    - Ou use `./pod.testing` para testar em modo pod (com root)
-3. Monitorar com `./check.duplistatus` e `./logs.duplistatus`
-4. Parar com `./stop.duplistatus` quando terminar
+3. Monitore com `./check.duplistatus` e `./logs.duplistatus`
+4. Pare com `./stop.duplistatus` quando terminar
 5. Use `./restart.duplistatus` para um ciclo de reinicialização completo (parar, copiar imagem, iniciar)
    - **Nota**: Este script atualmente referencia `copy.docker.duplistatus` que deve ser substituído por uma das variantes `.local` ou `.remote`
-6. Use `./clean.duplistatus` para remover contêineres, pods e imagens antigas
+6. Use `./clean.duplistatus` para remover containers, pods e imagens antigas
 
 # Testando a Aplicação {#testing-the-application}
 
-Se você está executando o servidor Podman na mesma máquina, use `http://localhost:9666`.
+Se você estiver executando o servidor Podman na mesma máquina, use `http://localhost:9666`.
 
 Se você estiver em outro servidor, obtenha a URL com:
 
@@ -79,7 +79,7 @@ echo "http://$(hostname -I | awk '{print $1}'):9666"
 
 ## Notas Importantes {#important-notes}
 
-### Rede de Pod Podman {#podman-pod-networking}
+### Rede de Pod do Podman {#podman-pod-networking}
 
 Quando executado em pods Podman, a aplicação requer:
 - Configuração explícita de DNS (manipulada automaticamente pelo script `pod.testing`)
@@ -87,9 +87,9 @@ Quando executado em pods Podman, a aplicação requer:
 
 Os scripts lidam com esses requisitos automaticamente - nenhuma configuração manual necessária.
 
-### Modo sem privilégios vs Modo com privilégios {#rootless-vs-root-mode}
+### Modo sem Root vs Modo Root {#rootless-vs-root-mode}
 
-- **Modo autônomo** (`start.duplistatus`): Executa sem privilégios de root com `--userns=keep-id`
+- **Modo autônomo** (`start.duplistatus`): Executa sem privilégios com `--userns=keep-id`
 - **Modo pod** (`pod.testing`): Executa como root dentro do pod para fins de teste
 
 Ambos os modos funcionam corretamente com a detecção automática de DNS.

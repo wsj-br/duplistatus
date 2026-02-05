@@ -119,6 +119,7 @@ const sidebars: SidebarsConfig = {
         'development/devel',
         'development/database',
         'development/documentation-tools',
+        'development/translation-workflow',
         'development/podman-testing',
         'development/release-management',
         'development/test-scripts',

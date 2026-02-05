@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:28.828Z'
+translation_last_updated: '2026-02-05T00:21:03.523Z'
 source_file_mtime: '2026-01-31T00:51:08.107Z'
 source_file_hash: 31f0b5f50ece70d4
 translation_language: es
@@ -7,7 +7,7 @@ source_file_path: installation/installation.md
 ---
 # Guía de Instalación {#installation-guide}
 
-La aplicación puede implementarse utilizando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA e IDIOMA, tal como se describe en la sección [Configurar Zona horaria e Idioma](./configure-tz-lang.md) y necesita configurar los servidores de Duplicati para enviar logs de backup a **duplistatus**, tal como se describe en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
+La aplicación puede implementarse utilizando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA e IDIOMA, tal como se describe en la sección [Configurar Zona horaria e Idioma](./configure-tz-lang.md) y necesita configurar los servidores Duplicati para enviar logs de backup a **duplistatus**, tal como se describe en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
 
 ## Requisitos previos {#prerequisites}
 
@@ -48,12 +48,12 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de números/fechas/horas.
+Verificar la sección [Zona horaria e idioma](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 
-### Opción 2: Uso de Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
+### Opción 2: Usar Pilas de Portainer (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
 1. Vaya a "Stacks" en su servidor [Portainer](https://docs.portainer.io/user/docker/stacks) y haga clic en "Añadir stack".
-2. Nombre su stack (por ejemplo, "duplistatus").
+2. Asigne un nombre a su stack (p. ej., "duplistatus").
 3. Elija "Build method" como "Web editor".
 4. Copie y pegue esto en el editor web:
 
@@ -85,18 +85,18 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de números/fecha/hora.
+5. Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 6. Haga clic en "Implementar la pila".
 
-### Opción 3: Usar Portainer Stacks (Repositorio de GitHub) {#option-3-using-portainer-stacks-github-repository}
+### Opción 3: Uso de Portainer Stacks (Repositorio de GitHub) {#option-3-using-portainer-stacks-github-repository}
 
 1. En [Portainer](https://docs.portainer.io/user/docker/stacks), vaya a "Stacks" y haga clic en "Add stack".
-2. Asigne un nombre a su stack (por ejemplo, "duplistatus").
+2. Nombre su stack (por ejemplo, "duplistatus").
 3. Elija "Build method" como "Repository".
 4. Ingrese la URL del repositorio: `https://github.com/wsj-br/duplistatus.git`
 5. En el campo "Compose path", ingrese: `production.yml`
-6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Environment variables". Consulte la sección [Timezone and Locale](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
-7. Haga clic en "Deploy the stack".
+6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Environment variables". Verifique la sección [Timezone and Locale](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
+6. Haga clic en "Deploy the stack".
 
 ### Opción 4: Usar Docker CLI {#option-4-using-docker-cli}
 
@@ -114,7 +114,7 @@ docker run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-- El volumen `duplistatus_data` se utiliza para el almacenamiento persistente. La imagen del contenedor utiliza `Europe/London` como la zona horaria por defecto e `en_GB` como la configuración regional por defecto (idioma).
+- El volumen `duplistatus_data` se utiliza para almacenamiento persistente. La imagen del contenedor utiliza `Europe/London` como zona horaria por defecto e `en_GB` como idioma por defecto.
 
 ### Opción 5: Usar Podman (CLI) `rootless` {#option-5-using-podman-cli-rootless}
 
@@ -135,9 +135,9 @@ podman run -d \
 
 #### Configuración de DNS para contenedores Podman {#configuring-dns-for-podman-containers}
 
-Si necesita una configuración personalizada de DNS (por ejemplo, para Tailscale MagicDNS, redes corporativas o configuraciones de DNS personalizadas), puede configurar manualmente los servidores DNS y los dominios de búsqueda.
+Si necesita una configuración de DNS personalizada (por ejemplo, para Tailscale MagicDNS, redes corporativas o configuraciones de DNS personalizadas), puede configurar manualmente los servidores DNS y los dominios de búsqueda.
 
-**Búsqueda de su configuración de DNS:**
+**Encontrar tu configuración de DNS:**
 
 1. **Para sistemas con systemd-resolved** (la mayoría de distribuciones Linux modernas):
 
@@ -155,9 +155,9 @@ Si necesita una configuración personalizada de DNS (por ejemplo, para Tailscale
    cat /run/systemd/resolve/resolv.conf 2>/dev/null || cat /etc/resolv.conf
    ```
 
-Busque líneas que comiencen con `nameserver` (para servidores DNS) y `search` (para dominios de búsqueda). Si no está seguro de su Configuración de DNS o dominios de búsqueda de red, consulte con su administrador de red para obtener esta información.
+Busque líneas que comiencen con `nameserver` (para servidores DNS) y `search` (para dominios de búsqueda). Si no está seguro de su configuración de DNS o dominios de búsqueda de red, consulte a su administrador de red para obtener esta información.
 
-# Ejemplo con configuración de DNS:
+**Ejemplo con configuración DNS:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -174,25 +174,25 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-Puede especificar múltiples servidores DNS añadiendo múltiples indicadores `--dns`:
+Puede especificar múltiples servidores DNS añadiendo múltiples banderas `--dns`:
 
 ```bash
 --dns 8.8.8.8 --dns 1.1.1.1
 ```
 
-Puede especificar múltiples dominios de búsqueda agregando múltiples indicadores `--dns-search`:
+Puede especificar múltiples dominios de búsqueda añadiendo múltiples banderas `--dns-search`:
 
 ```bash
 --dns-search example.com --dns-search internal.local
 ```
 
-**Nota**: Omita las direcciones IPv6 (que contienen `:`) y las direcciones localhost (como `127.0.0.53`) al configurar servidores DNS.
+**Nota**: Omitir direcciones IPv6 (que contienen `:`) y direcciones localhost (como `127.0.0.53`) al configurar servidores DNS.
 
-Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de números/fechas/horas.
+Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 
 ### Opción 6: Uso de Pods de Podman {#option-6-using-podman-pods}
 
-Los pods de Podman le permiten ejecutar múltiples contenedores en un espacio de nombres de red compartido. Esto es útil para pruebas o cuando necesita ejecutar duplistatus junto con otros contenedores.
+Los pods de Podman le permiten ejecutar múltiples contenedores en un espacio de nombres de red compartido. Esto es útil para pruebas o cuándo necesita ejecutar duplistatus junto con otros contenedores.
 
 **Configuración básica del pod:**
 
@@ -217,10 +217,10 @@ podman pod start duplistatus-pod
 
 #### Configuración de DNS para Pods de Podman {#configuring-dns-for-podman-pods}
 
-Cuándo se utilizan pods, la configuración de DNS debe establecerse a nivel de pod, no a nivel de contenedor.
-Utilice los mismos métodos descritos en la Opción 5 para encontrar sus servidores de DNS y dominios de búsqueda.
+Cuando se utilizan pods, la configuración de DNS debe establecerse a nivel de pod, no a nivel de contenedor.
+Utilice los mismos métodos descritos en la Opción 5 para encontrar sus servidores DNS y dominios de búsqueda.
 
-# Ejemplo con configuración de DNS:
+**Ejemplo con configuración DNS:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -259,12 +259,12 @@ podman pod rm -f duplistatus-pod
 
 ## Configuración Esencial {#essential-configuration}
 
-1. Configura tus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de logs de backup a duplistatus (requerido).
-2. Inicia sesión en duplistatus – consulta las instrucciones en la [Guía del usuario](../user-guide/overview.md#accessing-the-dashboard).
-3. Recopila logs de backup iniciales – utiliza la función [Recopilar logs de backup](../user-guide/collect-backup-logs.md) para completar la base de datos con datos históricos de backup de todos tus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backups retrasados según la configuración de cada servidor.
-4. Configura ajustes del servidor – establece alias de servidor y notas en [Configuración → Servidor](../user-guide/settings/server-settings.md) para que tu panel de control sea más informativo.
-5. Configura ajustes de NTFY – establece notificaciones a través de NTFY en [Configuración → NTFY](../user-guide/settings/ntfy-settings.md).
-6. Configura ajustes de correo electrónico – establece notificaciones por correo electrónico en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
-7. Configura notificaciones de backup – establece notificaciones por backup o por servidor en [Configuración → Notificaciones de backup](../user-guide/settings/backup-notifications-settings.md).
+1. Configure sus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de logs de backup a duplistatus (requerido).
+2. Inicie sesión en duplistatus – consulte las instrucciones en la [Guía del Usuario](../user-guide/overview.md#accessing-the-dashboard).
+3. Recopile logs de backup iniciales – utilice la función [Recopilar logs de backup](../user-guide/collect-backup-logs.md) para completar la base de datos con datos históricos de backup de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backups retrasados según la configuración de cada servidor.
+4. Configure los ajustes del servidor – configure alias de servidor y notas en [Configuración → Servidor](../user-guide/settings/server-settings.md) para hacer su panel de control más informativo.
+5. Configure los ajustes de NTFY – configure notificaciones a través de NTFY en [Configuración → NTFY](../user-guide/settings/ntfy-settings.md).
+6. Configure los ajustes de correo electrónico – configure notificaciones por correo electrónico en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
+7. Configure las notificaciones de backup – configure notificaciones por backup o por servidor en [Configuración → Notificaciones de backup](../user-guide/settings/backup-notifications-settings.md).
 
-Consulte las siguientes secciones para configurar ajustes opcionales como zona horaria, formato de números e HTTPS.
+Consulte las siguientes secciones para configurar la configuración opcional como zona horaria, formato de números e HTTPS.

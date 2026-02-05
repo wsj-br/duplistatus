@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:19.867Z'
-source_file_mtime: '2026-01-29T17:58:29.891Z'
-source_file_hash: 48575e653bc418bc
+translation_last_updated: '2026-02-05T00:20:47.997Z'
+source_file_mtime: '2026-02-04T21:12:31.888Z'
+source_file_hash: 95f791c2d9fb0329
 translation_language: fr
 source_file_path: development/documentation-tools.md
 ---
@@ -43,18 +43,18 @@ cd documentation
 pnpm start
 ```
 
-Le site sera disponible à `http://localhost:3000` (ou au port disponible suivant).
+Le site sera disponible à `http://localhost:3000` (ou au prochain port disponible).
 
-### Build {#build}
+### Construire {#build}
 
-Créer le site de documentation pour la production :
+Construire le site de documentation pour la production :
 
 ```bash
 cd documentation
 pnpm build
 ```
 
-Ceci génère des fichiers HTML statiques dans le répertoire `documentation/build`.
+Cela génère des fichiers HTML statiques dans le répertoire `documentation/build`.
 
 ### Servir la version de production {#serve-production-build}
 
@@ -65,7 +65,7 @@ cd documentation
 pnpm serve
 ```
 
-Ceci sert à servir le site construit à partir du répertoire `documentation/build`.
+Cela sert le site construit à partir du répertoire `documentation/build`.
 
 ### Autres Commandes Utiles {#other-useful-commands}
 
@@ -104,9 +104,9 @@ npm install -g doctoc
 
 Le script `generate-readme-from-intro.sh` génère automatiquement `README_dockerhub.md` avec un formatage compatible avec Docker Hub. Il :
 - Copie `README.md` vers `README_dockerhub.md`
-- Convertit les chemins d'images relatifs en URL GitHub brutes absolues
-- Convertit les liens de documents relatifs en URL GitHub blob absolues
-- Convertit les alertes de style GitHub (`[!NOTE]`, `[!WARNING]`, etc.) en format basé sur les émojis pour une meilleure compatibilité avec Docker Hub
+- Convertit les chemins d'images relatifs en URLs GitHub brutes absolues
+- Convertit les liens de documents relatifs en URLs GitHub blob absolues
+- Convertit les alertes de style GitHub (`[!NOTE]`, `[!WARNING]`, etc.) en format basé sur les emojis pour une meilleure compatibilité avec Docker Hub
 - Garantit que toutes les images et tous les liens fonctionnent correctement sur Docker Hub
 
 ## Générer les notes de version GitHub {#generate-github-release-notes}
@@ -117,7 +117,7 @@ Le script `generate-readme-from-intro.sh` génère automatiquement les notes de 
 - Convertit les liens markdown relatifs en URLs absolues de documentation GitHub (`https://wsj-br.github.io/duplistatus/...`)
 - Convertit les chemins d'images en URLs brutes GitHub (`https://raw.githubusercontent.com/wsj-br/duplistatus/main/documentation/static/img/...`) pour un affichage correct dans les descriptions de version
 - Gère les chemins relatifs avec le préfixe `../`
-- Préserve les URLs absolues (http:// et https://) sans modification
+- Préserve les URLs absolues (http:// et https://) inchangées
 - Crée `RELEASE_NOTES_github_VERSION.md` à la racine du projet
 
 **Exemple :**
@@ -139,16 +139,18 @@ tsx scripts/take-screenshots.ts
 
 Ce script prend automatiquement des captures d'écran de l'application à des fins de documentation. Il :
 - Lance un navigateur sans interface (Puppeteer)
-- Se connecte en tant qu'administrateur et utilisateur régulier
-- Navigue à travers diverses pages (tableau de bord, détails du serveur, paramètres, etc.)
+- Se connecte en tant qu'admin et utilisateur régulier
+- Navigue à travers diverses pages (Tableau de bord, Détails du serveur, Paramètres, etc.)
 - Prend des captures d'écran à différentes tailles de fenêtre d'affichage
 - Enregistre les captures d'écran dans `documentation/static/img/`
 
 **Exigences :**
 - Le serveur de développement doit s'exécuter sur `http://localhost:8666`
 - Les variables d'environnement doivent être définies :
-  - `ADMIN_PASSWORD` : Mot de passe du compte Admin
-  - `USER_PASSWORD` : Mot de passe du compte Utilisateur standard
+  - `ADMIN_PASSWORD` : Mot de passe du compte admin
+  - `USER_PASSWORD` : Mot de passe du compte utilisateur régulier
+
+**Options :** `--locale` limite les captures d'écran à une ou plusieurs locales (séparées par des virgules). Si omis, toutes les locales sont capturées. Locales valides : `en`, `de`, `fr`, `es`, `pt-BR`. Utilisez `-h` ou `--help` pour afficher l'utilisation.
 
 **Exemple :**
 
@@ -156,34 +158,40 @@ Ce script prend automatiquement des captures d'écran de l'application à des fi
 export ADMIN_PASSWORD="your-admin-password"
 export USER_PASSWORD="your-user-password"
 tsx scripts/take-screenshots.ts
+# All locales (default):
+tsx scripts/take-screenshots.ts
+# Single locale:
+tsx scripts/take-screenshots.ts --locale en
+# Multiple locales:
+tsx scripts/take-screenshots.ts --locale en,de,pt-BR
 ```
 
 **Captures d'écran générées :**
 
 Le script génère les captures d'écran suivantes (enregistrées dans `documentation/static/img/`) :
 
-**Captures d'écran du Tableau de bord :**
+**Captures d'écran du tableau de bord :**
 - `screen-main-dashboard-card-mode.png` - Tableau de bord en mode carte/vue d'ensemble
 - `screen-main-dashboard-table-mode.png` - Tableau de bord en mode tableau
-- `screen-overdue-backup-hover-card.png` - Carte/infobulle au survol de sauvegarde en retard
-- `screen-backup-tooltip.png` - Infobulle de sauvegarde régulière (survol de la sauvegarde en mode cartes)
+- `screen-overdue-backup-hover-card.png` - Carte/infobulle de sauvegarde en retard au survol
+- `screen-backup-tooltip.png` - Infobulle de sauvegarde standard (survol de la sauvegarde en vue carte)
 
-**Captures d'écran des Détails du Serveur :**
+**Détails du serveur - Captures d'écran :**
 - `screen-server-backup-list.png` - Page de liste des sauvegardes du serveur
 - `screen-backup-history.png` - Section du tableau Historique des sauvegardes
 - `screen-backup-detail.png` - Page de détails de sauvegarde individuelle
 - `screen-metrics.png` - Graphique des Métriques affichant les métriques de sauvegarde au fil du temps
 
-**Captures d'écran Collecter/Configuration :**
-- `screen-collect-button-popup.png` - Popup Collecter les journaux de sauvegarde
-- `screen-collect-button-right-click-popup.png` - Menu contextuel Tout collecter
-- `screen-collect-backup-logs.png` - Interface Collecter les journaux de sauvegarde
-- `screen-duplicati-configuration.png` - Menu déroulant Configuration Duplicati
+**Collecter/Configuration Captures d'écran :**
+- `screen-collect-button-popup.png` - Popup de collecte des journaux de sauvegarde
+- `screen-collect-button-right-click-popup.png` - Menu Tout collecter au clic droit
+- `screen-collect-backup-logs.png` - Interface de collecte des journaux de sauvegarde
+- `screen-duplicati-configuration.png` - Dropdown Configuration Duplicati
 
 **Captures d'écran des Paramètres :**
-- `screen-settings-left-panel-admin.png` - Barre latérale Paramètres (vue Admin)
-- `screen-settings-left-panel-non-admin.png` - Barre latérale Paramètres (vue non-admin)
-- `screen-settings-{tab}.png` - Pages de paramètres individuelles pour chaque onglet :
+- `screen-settings-left-panel-admin.png` - Barre latérale des Paramètres (affichage Admin)
+- `screen-settings-left-panel-non-admin.png` - Barre latérale des Paramètres (affichage non-Admin)
+- `screen-settings-{tab}.png` - Pages de Paramètres individuelles pour chaque onglet :
   - `screen-settings-notifications.png`
   - `screen-settings-overdue.png`
   - `screen-settings-server.png`
@@ -196,13 +204,29 @@ Le script génère les captures d'écran suivantes (enregistrées dans `document
   - `screen-settings-display.png`
   - `screen-settings-database-maintenance.png`
 - `screen-settings-ntfy-configure-device-popup.png` - Fenêtre contextuelle NTFY Configurer l'appareil
-- `screen-settings-backup-notifications-detail.png` - Page de détail Notifications de sauvegarde
+- `screen-settings-backup-notifications-detail.png` - Page de détail des Notifications de sauvegarde
+
+## Traduire les fichiers SVG {#translate-svg-files}
+
+La traduction SVG est incluse dans `pnpm run translate` par défaut (s'exécute après les documents). Le script `translate:svg` est destiné aux exécutions SVG uniquement (par exemple, quand seuls les SVG ont changé). Les deux traduisent le texte à l'intérieur des fichiers SVG (par exemple, les diagrammes de barre d'outils et de Tableau de bord) dans chaque locale, puis les exportent en PNG à l'aide d'Inkscape.
+
+**Prérequis :** Interface de ligne de commande Inkscape (voir [Configuration du développement](setup#prerequisites)) ; `OPENROUTER_API_KEY` pour la traduction basée sur l'API (non requis pour `--dry-run` ou `--stats`).
+
+**Utilisation rapide :**
+
+```bash
+cd documentation
+pnpm translate:svg          # SVG-only
+pnpm run translate          # Docs + SVGs (use --no-svg for docs only)
+```
+
+Pour le flux de travail de traduction complet (glossaire, traduction IA, cache, options, dépannage), voir [Translation Workflow](translation-workflow.md).
 
 ## Déploiement de la documentation {#deploying-the-documentation}
 
-Pour déployer la documentation sur GitHub Pages, vous devrez générer un jeton d'accès personnel GitHub. Accédez à [GitHub Personal Access Tokens](https://github.com/settings/tokens) et créez un nouveau jeton avec la portée `repo`.
+Pour déployer la documentation sur GitHub Pages, vous devrez générer un jeton d'accès personnel GitHub. Allez à [GitHub Personal Access Tokens](https://github.com/settings/tokens) et créez un nouveau jeton avec la portée `repo`.
 
-Quand vous disposez du jeton, exécutez la commande suivante pour stocker le jeton dans le magasin d'identifiants Git :
+Quand vous avez le token, exécutez la commande suivante pour stocker le token dans le magasin d'identifiants Git :
 
 ```bash
 ./setup-git-credentials.sh
@@ -214,13 +238,15 @@ Ensuite, pour déployer la documentation sur GitHub Pages, exécutez la commande
 pnpm run deploy
 ```
 
-Ceci construira la documentation et la poussera vers la branche `gh-pages` du référentiel, et la documentation sera disponible à [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
+Cela construira la documentation et la poussera vers la branche `gh-pages` du référentiel, et la documentation sera disponible à l'adresse [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
 
 ## Travailler avec la documentation {#working-with-documentation}
+
+Pour le flux de travail de traduction (glossaire, traduction IA, gestion du cache), voir [Flux de travail de traduction](translation-workflow.md).
 
 - Les fichiers de documentation sont écrits en Markdown (`.md`) et situés dans `documentation/docs/`
 - La navigation de la barre latérale est configurée dans `documentation/sidebars.ts`
 - La configuration de Docusaurus se trouve dans `documentation/docusaurus.config.ts`
 - Les composants React personnalisés peuvent être ajoutés à `documentation/src/components/`
-- Les ressources statiques (images, PDF, etc.) se trouvent dans `documentation/static/`
+- Les ressources statiques (images, PDF, etc.) vont dans `documentation/static/`
 - La page d'accueil principale de la documentation est `documentation/docs/intro.md`, qui est utilisée comme source pour générer `README.md`

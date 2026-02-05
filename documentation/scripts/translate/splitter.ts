@@ -19,13 +19,19 @@ export class DocumentSplitter {
         id: `seg-${segmentIndex++}`,
         type: "frontmatter",
         content: frontMatterStr,
-        hash: TranslationCache.computeHash(JSON.stringify(frontMatter)),
+        hash: TranslationCache.computeHash(frontMatterStr),
         translatable: true,
+        startLine: 1,
       });
     }
 
+    // Compute 1-based line number where body starts in the file
+    const bodyStartLine =
+      1 +
+      (content.substring(0, content.indexOf(body)).match(/\n/g) || []).length;
+
     // Split body into segments
-    const bodySegments = this.splitBody(body);
+    const bodySegments = this.splitBody(body, bodyStartLine);
     for (const seg of bodySegments) {
       segments.push({
         id: `seg-${segmentIndex++}`,
@@ -37,26 +43,35 @@ export class DocumentSplitter {
     return segments;
   }
 
-  private splitBody(body: string): Omit<Segment, "id" | "hash">[] {
+  private splitBody(
+    body: string,
+    bodyStartLine: number
+  ): Omit<Segment, "id" | "hash">[] {
     const segments: Omit<Segment, "id" | "hash">[] = [];
     const lines = body.split("\n");
     let currentSegment: string[] = [];
+    let currentSegmentStartLine = 0;
     let inCodeBlock = false;
     let inAdmonition = false;
     let codeBlockContent: string[] = [];
+    let codeBlockStartLine = 0;
     let admonitionContent: string[] = [];
+    let admonitionStartLine = 0;
 
     const flushCurrentSegment = () => {
       if (currentSegment.length > 0) {
         const content = currentSegment.join("\n").trim();
         if (content) {
-          segments.push(this.classifySegment(content));
+          segments.push(
+            this.classifySegment(content, bodyStartLine + currentSegmentStartLine)
+          );
         }
         currentSegment = [];
       }
     };
 
-    for (const line of lines) {
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+      const line = lines[lineIndex];
       // Handle code blocks (allow optional leading whitespace so indented fences are recognized)
       if (/^\s*```/.test(line)) {
         if (inCodeBlock) {
@@ -66,6 +81,7 @@ export class DocumentSplitter {
             type: "code",
             content: codeBlockContent.join("\n"),
             translatable: false,
+            startLine: bodyStartLine + codeBlockStartLine,
           });
           codeBlockContent = [];
           inCodeBlock = false;
@@ -73,6 +89,7 @@ export class DocumentSplitter {
           // Start of code block
           flushCurrentSegment();
           codeBlockContent.push(line);
+          codeBlockStartLine = lineIndex;
           inCodeBlock = true;
         }
         continue;
@@ -87,6 +104,7 @@ export class DocumentSplitter {
       if (line.match(/^:::\w+/)) {
         flushCurrentSegment();
         admonitionContent.push(line);
+        admonitionStartLine = lineIndex;
         inAdmonition = true;
         continue;
       }
@@ -97,6 +115,7 @@ export class DocumentSplitter {
           type: "admonition",
           content: admonitionContent.join("\n"),
           translatable: true,
+          startLine: bodyStartLine + admonitionStartLine,
         });
         admonitionContent = [];
         inAdmonition = false;
@@ -114,6 +133,9 @@ export class DocumentSplitter {
         continue;
       }
 
+      if (currentSegment.length === 0) {
+        currentSegmentStartLine = lineIndex;
+      }
       currentSegment.push(line);
     }
 
@@ -125,6 +147,7 @@ export class DocumentSplitter {
         type: "code",
         content: codeBlockContent.join("\n"),
         translatable: false,
+        startLine: bodyStartLine + codeBlockStartLine,
       });
     }
 
@@ -133,25 +156,29 @@ export class DocumentSplitter {
         type: "admonition",
         content: admonitionContent.join("\n"),
         translatable: true,
+        startLine: bodyStartLine + admonitionStartLine,
       });
     }
 
     return segments;
   }
 
-  private classifySegment(content: string): Omit<Segment, "id" | "hash"> {
+  private classifySegment(
+    content: string,
+    startLine: number
+  ): Omit<Segment, "id" | "hash"> {
     const trimmed = content.trim();
     const isSingleLine = !trimmed.includes("\n");
 
     // HTML-only structural elements (not translatable)
     // Common in our docs: <br/> used as spacing.
     if (/^<br\s*\/?>$/i.test(trimmed)) {
-      return { type: "other", content, translatable: false };
+      return { type: "other", content, translatable: false, startLine };
     }
 
     // Markdown thematic break / horizontal rule (not translatable)
     if (/^---+$/.test(trimmed)) {
-      return { type: "other", content, translatable: false };
+      return { type: "other", content, translatable: false, startLine };
     }
 
     // Generic: single-line segments with no real text should not be translated.
@@ -173,27 +200,27 @@ export class DocumentSplitter {
 
       // If nothing substantial remains (no letters or digits), treat as non-translatable.
       if (!/[A-Za-z0-9]/.test(textOnly)) {
-        return { type: "other", content, translatable: false };
+        return { type: "other", content, translatable: false, startLine };
       }
     }
 
     // Heading
     if (content.match(/^#{1,6}\s/)) {
-      return { type: "heading", content, translatable: true };
+      return { type: "heading", content, translatable: true, startLine };
     }
 
     // Image only
     if (content.match(/^!\[.*\]\(.*\)$/)) {
-      return { type: "other", content, translatable: false };
+      return { type: "other", content, translatable: false, startLine };
     }
 
     // Import statement or MDX/JSX component (opening or closing tag; use trimmed so indented lines are caught)
     if (content.startsWith("import ") || /^<[A-Z]/.test(trimmed) || /^<\/\w+>$/.test(trimmed)) {
-      return { type: "other", content, translatable: false };
+      return { type: "other", content, translatable: false, startLine };
     }
 
     // Default to paragraph
-    return { type: "paragraph", content, translatable: true };
+    return { type: "paragraph", content, translatable: true, startLine };
   }
 
   /**

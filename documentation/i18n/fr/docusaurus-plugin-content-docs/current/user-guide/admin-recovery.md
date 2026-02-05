@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.747Z'
+translation_last_updated: '2026-02-05T00:20:52.319Z'
 source_file_mtime: '2026-01-29T17:58:29.899Z'
 source_file_hash: 091dcbb5c0bb63c5
 translation_language: fr
@@ -28,10 +28,10 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 Si vous rencontrez des problèmes avec le script de récupération :
 
-1. **Vérifier que le conteneur est en cours d'exécution** : Vérifier que le conteneur est en cours d'exécution avec `docker ps`
-2. **Vérifier la disponibilité du script** : Vérifier que le script existe dans le conteneur avec `docker exec -it duplistatus ls -la /app/admin-recovery`
-3. **Examiner les journaux du conteneur** : Vérifier les erreurs avec `docker logs duplistatus`
-4. **Vérifier le nom d'utilisateur** : S'assurer que le nom d'utilisateur existe dans la base de données
-5. **Vérifier le format du mot de passe** : S'assurer que le nouveau mot de passe répond à tous les critères
+1. **Vérifier que le conteneur est en cours d'exécution** : Vérifiez que le conteneur s'exécute avec `docker ps`
+2. **Vérifier la disponibilité du script** : Vérifiez que le script existe dans le conteneur avec `docker exec -it duplistatus ls -la /app/admin-recovery`
+3. **Examiner les journaux du conteneur** : Vérifiez les erreurs avec `docker logs duplistatus`
+4. **Vérifier le nom d'utilisateur** : Assurez-vous que le nom d'utilisateur existe dans la base de données
+5. **Vérifier le format du mot de passe** : Assurez-vous que le nouveau mot de passe répond à tous les critères
 
-Si les problèmes persistent, consultez le guide [Dépannage](troubleshooting.md) pour plus d'aide.
+Si les problèmes persistent, consultez le guide [Troubleshooting](troubleshooting.md) pour plus d'aide.

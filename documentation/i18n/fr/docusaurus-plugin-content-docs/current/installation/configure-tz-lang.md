@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-01-31T00:51:20.002Z'
+translation_last_updated: '2026-02-05T00:20:49.684Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 67bb94741185f3d9
 translation_language: fr
 source_file_path: installation/configure-tz-lang.md
 ---
-# Fuseau horaire et Paramètres régionaux {#timezone-and-locale}
+# Fuseau horaire et Locale {#timezone-and-locale}
 
 L'interface utilisateur de l'application affichera la date et l'heure selon les paramètres du navigateur. Cependant, à des fins de journalisation et de notification, l'application utilisera la valeur définie dans les variables d'environnement `TZ` et `LANG` pour utiliser les fuseaux horaires corrects et pour formater les valeurs numériques, de date et d'heure.
 
@@ -13,18 +13,18 @@ Les valeurs par défaut sont `TZ=Europe/London` et `LANG=en_GB` si ces variables
 
 ## Configuration du fuseau horaire {#configuring-the-timezone}
 
-L'interface utilisateur de l'application affichera la date et l'heure en fonction des paramètres du navigateur. Cependant, à des fins de journalisation et de notification, l'application utilisera la valeur définie dans la variable d'environnement `TZ` pour formater les fuseaux horaires.
+L'interface utilisateur de l'application affichera la date et l'heure selon les paramètres du navigateur. Cependant, à des fins de journalisation et de notification, l'application utilisera la valeur définie dans la variable d'environnement `TZ` pour formater les fuseaux horaires.
 
 La valeur par défaut est `TZ=Europe/London` si cette variable d'environnement n'est pas définie.
 
-Par exemple, pour modifier le fuseau horaire en São Paulo, ajoutez ces lignes au fichier `compose.yml` dans le répertoire `duplistatus` :
+Par exemple, pour changer le fuseau horaire en São Paulo, ajoutez ces lignes au fichier `compose.yml` dans le répertoire `duplistatus` :
 
 ```yaml
 environment:
   - TZ=America/Sao_Paulo
 ```
 
-ou transmettez la variable d'environnement en ligne de commande :
+ou passez la variable d'environnement en ligne de commande :
 
 ```bash
   --env TZ=America/Sao_Paulo
@@ -55,7 +55,7 @@ environment:
   - LANG=pt_BR
 ```
 
-ou transmettez la variable d'environnement en ligne de commande :
+ou passez la variable d'environnement en ligne de commande :
 
 ```bash
   --env LANG=pt_BR

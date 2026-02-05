@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:20.063Z'
+translation_last_updated: '2026-02-05T00:20:49.903Z'
 source_file_mtime: '2026-01-29T17:58:29.895Z'
 source_file_hash: 5182562d16f18184
 translation_language: fr
@@ -11,12 +11,12 @@ Pour les déploiements en production, il est recommandé de servir **duplistatus
 
 ### Option 1 : Nginx avec Certbot (Let's Encrypt) {#option-1-nginx-with-certbot-lets-encrypt}
 
-[Nginx](https://nginx.org/) est un serveur web populaire qui peut agir comme un proxy inverse, et [Certbot](https://certbot.eff.org/) fournit des certificats SSL gratuits de Let's Encrypt.
+[Nginx](https://nginx.org/) est un serveur web populaire qui peut agir en tant que proxy inverse, et [Certbot](https://certbot.eff.org/) fournit des certificats SSL gratuits de Let's Encrypt.
 
 **Conditions préalables :**
 
-- Nom de domaine pointant vers votre Serveur
-- Nginx installé sur votre Système
+- Nom de domaine pointant vers votre serveur
+- Nginx installé sur votre système
 - Certbot installé pour votre système d'exploitation
 
 **Étape 1 : Installer Nginx et Certbot**
@@ -30,7 +30,7 @@ sudo apt install nginx certbot python3-certbot-nginx
 
 **Étape 2 : Créer la configuration Nginx**
 
-Créez `/etc/nginx/sites-available/duplistatus` :
+Créer `/etc/nginx/sites-available/duplistatus` :
 
 ```nginx
 server {
@@ -47,7 +47,7 @@ server {
 }
 ```
 
-**Étape 3 : Activer le site et obtenir le certificat SSL**
+**Étape 3 : Activer le site et obtenir un certificat SSL**
 
 ```bash
 # Enable the site
@@ -61,7 +61,7 @@ sudo certbot --nginx -d your-domain.com
 
 Certbot mettra automatiquement à jour votre configuration Nginx pour inclure les paramètres SSL et rediriger HTTP vers HTTPS.
 
-# Traduction du document
+**Documentation :**
 
 - [Documentation Nginx](https://nginx.org/en/docs/)
 - [Documentation Certbot](https://certbot.eff.org/instructions)
@@ -69,14 +69,16 @@ Certbot mettra automatiquement à jour votre configuration Nginx pour inclure le
 
 ### Option 2 : Caddy {#option-2-caddy}
 
-[Caddy](https://caddyserver.com/) est un Serveur web moderne avec HTTPS automatique qui simplifie la gestion des certificats SSL.
+[Caddy](https://caddyserver.com/) est un serveur web moderne avec HTTPS automatique qui simplifie la gestion des certificats SSL.
 
 **Conditions préalables :**
 
 - Nom de domaine pointant vers votre serveur
 - Caddy installé sur votre système
 
+
 **Étape 1 : Installer Caddy**
+
 
 Suivez le [guide d'installation officiel](https://caddyserver.com/docs/install) pour votre système d'exploitation.
 
@@ -96,7 +98,7 @@ your-domain.com {
 sudo caddy run --config Caddyfile
 ```
 
-Ou utilisez-le en tant que service système :
+Ou l'utiliser comme service système :
 
 ```bash
 sudo caddy start --config Caddyfile
@@ -104,12 +106,12 @@ sudo caddy start --config Caddyfile
 
 Caddy obtiendra et gérera automatiquement les certificats SSL auprès de Let's Encrypt.
 
-# Traduction du document
+**Documentation :**
 
 - [Documentation Caddy](https://caddyserver.com/docs/)
 - [Guide Caddy Reverse Proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
-### Notes importantes {#important-notes}
+### Notes Importantes {#important-notes}
 
 ```bash
 --send-http-url=https://your-domain.com/api/upload
@@ -122,8 +124,8 @@ Après avoir configuré HTTPS, n'oubliez pas de mettre à jour la configuration 
 
 :::tip
 
-- Remplacez `your-domain.com` par le nom de domaine réel
+- Remplacez `your-domain.com` par votre nom de domaine réel
 - Assurez-vous que l'enregistrement DNS A de votre domaine pointe vers l'adresse IP de votre serveur
-- Les deux solutions renouvellent automatiquement les certificats SSL
+- Les deux solutions renouvelleront automatiquement les certificats SSL
 - Envisagez de configurer un pare-feu pour autoriser uniquement le trafic HTTP/HTTPS
 :::

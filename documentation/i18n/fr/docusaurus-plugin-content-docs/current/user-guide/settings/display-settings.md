@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:23.039Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: 7fd2a7943ef2234b
+translation_last_updated: '2026-02-05T00:20:53.424Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 796675225958a465
 translation_language: fr
 source_file_path: user-guide/settings/display-settings.md
 ---
@@ -13,11 +13,11 @@ Configurer les préférences d'interface utilisateur et d'affichage.
 
 <br/>
 
-| Paramètre                     | Description                                                    | Valeur par défaut       |
+| Paramètre                      | Description                                                    | Valeur par défaut       |
 | :---------------------------- | :------------------------------------------------------------- | :---------------------- |
-| **Taille du tableau**          | Nombre de lignes par page sur la page des détails du serveur. | 5 lignes                |
+| **Taille du tableau**          | Nombre de lignes par page sur la page de détails du serveur.   | 5 lignes                |
 | **Plage temporelle du graphique** | Intervalle de temps affiché dans les graphiques.              | Toutes les données disponibles |
-| **Intervalle de rafraîchissement automatique** | Fréquence d'actualisation automatique des pages.              | 1 minute                |
+| **Intervalle de rafraîchissement automatique** | Fréquence d'actualisation automatique des pages. | 1 minute                |
 | **Ordre de tri des cartes**    | Mode de tri des cartes sur le tableau de bord.                | `Nom du serveur (a-z)` |
 | **Thème**                      | Sélectionner le thème clair ou sombre.                         | Sombre                  |
 

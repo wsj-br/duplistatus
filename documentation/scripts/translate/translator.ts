@@ -1,9 +1,22 @@
 import fs from "fs";
-import { TranslationConfig, TranslationResult } from "./types";
+import {
+  BatchTranslationError,
+  BatchTranslationResult,
+  Segment,
+  TranslationConfig,
+  TranslationResult,
+} from "./types";
+
+/** Message content with cache_control for context caching (OpenRouter). */
+interface OpenRouterContentBlock {
+  type: "text";
+  text: string;
+  cache_control?: { type: "ephemeral"; ttl?: string };
+}
 
 interface OpenRouterMessage {
   role: "user" | "assistant" | "system";
-  content: string;
+  content: string | OpenRouterContentBlock[];
 }
 
 interface OpenRouterResponse {
@@ -32,6 +45,20 @@ interface OpenRouterRequestPayload {
   temperature: number;
   messages: OpenRouterMessage[];
 }
+
+const LOCALE_NAMES: Record<string, string> = {
+  fr: "French",
+  de: "German",
+  es: "Spanish",
+  "pt-BR": "Brazilian Portuguese",
+};
+
+const LOCALE_GUIDANCE: Record<string, string> = {
+  fr: 'Formal "vous", French quotes « »',
+  de: "Formal register, compound nouns",
+  es: 'Formal "usted", Latin American',
+  "pt-BR": 'Brazilian Portuguese, "você"',
+};
 
 export class Translator {
   private apiKey: string;
@@ -73,22 +100,174 @@ export class Translator {
     targetLocale: string,
     glossaryHints: string[]
   ): Promise<TranslationResult> {
-    const prompt = this.buildPrompt(content, targetLocale, glossaryHints);
+    const { systemPrompt, userContent } = this.buildPrompt(content, targetLocale, glossaryHints);
+
+    const call = async (model: string) => {
+      const res = await this.callApi(model, systemPrompt, userContent);
+      return { ...res, content: this.stripTranslateTags(res.content) };
+    };
 
     try {
-      return await this.callApi(this.model, prompt);
+      return await call(this.model);
     } catch (error) {
       console.warn(`Primary model failed, trying fallback: ${this.fallbackModel}`);
-      return await this.callApi(this.fallbackModel, prompt);
+      return await call(this.fallbackModel);
     }
   }
 
-  private async callApi(model: string, prompt: string): Promise<TranslationResult> {
+  /** Remove stray <translate>...</translate> wrapper if LLM echoes it back. */
+  private stripTranslateTags(content: string): string {
+    return content
+      .replace(/^\s*<translate>\s*/i, "")
+      .replace(/\s*<\/translate>\s*$/i, "")
+      .trim();
+  }
+
+  /**
+   * Translate multiple segments in a single API call. Returns translations plus usage/cost for stats.
+   * @throws BatchTranslationError if the number of returned tags doesn't match the input (caller can fall back to single-segment mode).
+   */
+  async translateBatch(
+    segments: Segment[],
+    locale: string,
+    glossaryHints: string[] = []
+  ): Promise<BatchTranslationResult> {
+    if (segments.length === 0) {
+      return {
+        translations: new Map<number, string>(),
+        model: this.model,
+        usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+      };
+    }
+
+    const { systemPrompt, userContent } = this.buildBatchPrompt(segments, locale, glossaryHints);
+
+    const call = async (model: string) => {
+      const result = await this.callApi(model, systemPrompt, userContent);
+      const translations = this.parseBatchResponse(
+        result.content,
+        segments,
+        result.content
+      );
+      return {
+        translations,
+        model: result.model,
+        usage: result.usage,
+        cost: result.cost,
+      };
+    };
+
+    try {
+      return await call(this.model);
+    } catch (error) {
+      if (error instanceof BatchTranslationError) {
+        throw error;
+      }
+      console.warn(`Primary model failed, trying fallback: ${this.fallbackModel}`);
+      return await call(this.fallbackModel);
+    }
+  }
+
+  private escapeXml(text: string): string {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /** Reverse escapeXml so output renders correctly in markdown. Must unescape &amp; last. */
+  private unescapeXml(text: string): string {
+    return text
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&");
+  }
+
+  private buildBatchPrompt(
+    segments: Segment[],
+    targetLocale: string,
+    glossaryHints: string[]
+  ): { systemPrompt: string; userContent: string } {
+    const targetLanguage = LOCALE_NAMES[targetLocale] || targetLocale;
+    const guidance = LOCALE_GUIDANCE[targetLocale] || "";
+
+    let glossarySection = "";
+    if (glossaryHints.length > 0) {
+      glossarySection = `\n<glossary>\n${glossaryHints.join("\n")}\n</glossary>\n`;
+    }
+
+    const segBlocks = segments
+      .map((s, i) => `<seg id="${i}">${this.escapeXml(s.content)}</seg>`)
+      .join("\n");
+
+    const systemPrompt = `Translate from English (UK) to ${targetLanguage}. ${guidance}
+
+Rules: Keep headers (###), code, variables, URLs, placeholders {{X}} unchanged. Preserve {{ADM_OPEN_N}} and {{ADM_END_N}} placeholders exactly - do not translate or modify them. Translate only title/description in front matter. Prefer glossary terms.
+
+Reply with ONLY <t id="N">translation</t> blocks, one per segment, in order. No other text.${glossarySection}`;
+
+    const userContent = `<segments>
+${segBlocks}
+</segments>`;
+
+    return { systemPrompt, userContent };
+  }
+
+  private parseBatchResponse(
+    response: string,
+    segments: Segment[],
+    rawResponse: string
+  ): Map<number, string> {
+    // Non-greedy capture; \s* handles newlines/whitespace the LLM may add inside tags
+    const regex = /<t\s+id="(\d+)"[^>]*>\s*([\s\S]*?)\s*<\/t>/g;
+    const byIndex = new Map<number, string>();
+    let match;
+
+    while ((match = regex.exec(response)) !== null) {
+      const id = parseInt(match[1], 10);
+      const rawContent = match[2].trim();
+      const content = this.unescapeXml(rawContent);
+      byIndex.set(id, content);
+    }
+
+    if (byIndex.size !== segments.length) {
+      throw new BatchTranslationError(segments.length, byIndex.size, rawResponse);
+    }
+
+    for (let i = 0; i < segments.length; i++) {
+      if (byIndex.get(i) === undefined) {
+        throw new BatchTranslationError(segments.length, byIndex.size, rawResponse);
+      }
+    }
+    return byIndex;
+  }
+
+  private async callApi(
+    model: string,
+    systemPrompt: string,
+    userContent: string
+  ): Promise<TranslationResult> {
+    const messages: OpenRouterMessage[] = [
+      {
+        role: "system",
+        content: [
+          {
+            type: "text",
+            text: systemPrompt,
+            cache_control: { type: "ephemeral" },
+          },
+        ],
+      },
+      { role: "user", content: userContent },
+    ];
+
     const requestPayload: OpenRouterRequestPayload = {
       model,
       max_tokens: this.maxTokens,
       temperature: this.temperature,
-      messages: [{ role: "user", content: prompt }],
+      messages,
     };
 
     if (this.debugTrafficFilePath) {
@@ -154,73 +333,35 @@ export class Translator {
     content: string,
     targetLocale: string,
     glossaryHints: string[]
-  ): string {
-    const localeNames: Record<string, string> = {
-      fr: "French",
-      de: "German",
-      es: "Spanish",
-      "pt-BR": "Brazilian Portuguese",
-    };
-
-    const localeGuidance: Record<string, string> = {
-      fr: 'Use formal "vous" register. Use French quotation marks « » where appropriate.',
-      de: "Use formal register. Handle compound nouns appropriately.",
-      es: 'Use formal "usted" register. Use neutral Latin American Spanish.',
-      "pt-BR": 'Use Brazilian Portuguese conventions with "você" for formal address.',
-    };
-
-    const targetLanguage = localeNames[targetLocale] || targetLocale;
-    const guidance = localeGuidance[targetLocale] || "";
+  ): { systemPrompt: string; userContent: string } {
+    const targetLanguage = LOCALE_NAMES[targetLocale] || targetLocale;
+    const guidance = LOCALE_GUIDANCE[targetLocale] || "";
 
     let glossarySection = "";
     if (glossaryHints.length > 0) {
-      glossarySection = `
-## GLOSSARY - USE THESE EXACT TRANSLATIONS:
-${glossaryHints.join("\n")}
-`;
+      glossarySection = `\n<glossary>\n${glossaryHints.join("\n")}\n</glossary>\n`;
     }
 
-    return `
-    
-You are a professional technical documentation translator. 
-Translate the content inside <translate> tags from English (UK) to ${targetLanguage}:
+    const systemPrompt = `Translate from English (UK) to ${targetLanguage}. ${guidance}
 
-<translate>
+Rules: Keep headers (###), code, variables, URLs, placeholders {{X}} unchanged. Preserve {{ADM_OPEN_N}} and {{ADM_END_N}} placeholders exactly - do not translate or modify them. Translate only title/description in front matter. Prefer glossary terms.
+
+Example:
+Input:
+### Configure Backup
+Set \`BACKUP_PATH\` in <config>. Visit {{URL_PLACEHOLDER_1}}.
+
+Output (${targetLanguage}):
+### Configurer la sauvegarde
+Définissez \`BACKUP_PATH\` dans <config>. Visitez {{URL_PLACEHOLDER_1}}.
+
+---
+Translate the content inside the <translate> tags below. Output ONLY the translated text - do NOT include <translate> or </translate> tags in your response. No explanations or extra markup.${glossarySection}`;
+
+    const userContent = `<translate>
 ${content}
-</translate>
+</translate>`;
 
-
-Output ONLY the translated content. Do not add horizontal rules, extra newlines, or any text not present in the source.
-Do not include any explanations or notes.
-
-## CRITICAL RULES:
-
-1. **Preserve Formatting**:
-   - Keep ALL Markdown syntax exactly as-is (headers, links, bold, italic, lists)
-   - **Heading levels must stay identical**: if the source has ### (three hashes), the translation must also start with ###; do not change # to ## or ### to #.
-   - Keep code blocks and inline code unchanged
-   - **Preserve indentation**: keep the exact leading spaces of every line. Code blocks (including fenced blocks like \`\`\`bash) and list continuations often use 2 or 4 spaces; do not remove or change this indentation.
-   - Preserve link URLs and image paths
-   - Keep MDX/JSX component names unchanged
-   - Preserve admonition syntax (:::note, :::warning, etc.)
-
-2. **Front Matter Rules**:
-   - Translate ONLY "title" and "description" fields
-   - Keep all other fields unchanged (sidebar_position, slug, translation_last_updated, source_file_mtime, source_file_hash, translation_language, source_file_path, etc.)
-
-3. **Style Guidelines**:
-   - Use formal/professional documentation tone
-   - ${guidance}
-
-4. **Do NOT translate**:
-   - Code snippets
-   - Variable names
-   - File paths
-   - URLs
-   - Product name "duplistatus"
-   - Technical terms in code context
-${glossarySection}
-
-`;
+    return { systemPrompt, userContent };
   }
 }

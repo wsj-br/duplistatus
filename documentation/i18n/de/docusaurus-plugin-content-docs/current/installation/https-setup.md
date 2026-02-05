@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-01-31T00:51:23.402Z'
+translation_last_updated: '2026-02-05T00:20:56.639Z'
 source_file_mtime: '2026-01-29T17:58:29.895Z'
 source_file_hash: 5182562d16f18184
 translation_language: de
 source_file_path: installation/https-setup.md
 ---
-# HTTPS-Einrichtung (Optional) {#https-setup-optional}
+# HTTPS-Setup (Optional) {#https-setup-optional}
 
 Für Produktionsbereitstellungen wird empfohlen, **duplistatus** über HTTPS mit einem Reverse Proxy bereitzustellen. Dieser Abschnitt enthält Konfigurationsbeispiele für beliebte Reverse-Proxy-Lösungen.
 
@@ -47,7 +47,7 @@ server {
 }
 ```
 
-**Schritt 3: Aktivieren Sie die Website und erhalten Sie ein SSL-Zertifikat**
+**Schritt 3: Website aktivieren und SSL-Zertifikat abrufen**
 
 ```bash
 # Enable the site
@@ -69,7 +69,7 @@ Certbot aktualisiert automatisch Ihre Nginx-Konfiguration, um SSL-Einstellungen 
 
 ### Option 2: Caddy {#option-2-caddy}
 
-[Caddy](https://caddyserver.com/) ist ein moderner Webserver mit automatischem HTTPS, der die Verwaltung von SSL-Zertifikaten vereinfacht.
+[Caddy](https://caddyserver.com/) ist ein moderner Webserver mit automatischem HTTPS, der die SSL-Zertifikatverwaltung vereinfacht.
 
 **Voraussetzungen:**
 
@@ -102,12 +102,12 @@ Oder verwenden Sie es als Systemdienst:
 sudo caddy start --config Caddyfile
 ```
 
-Caddy wird automatisch SSL-Zertifikate von Let's Encrypt abrufen und verwalten.
+Caddy wird SSL-Zertifikate von Let's Encrypt automatisch abrufen und verwalten.
 
 **Dokumentation:**
 
 - [Caddy-Dokumentation](https://caddyserver.com/docs/)
-- [Caddy-Reverse-Proxy-Anleitung](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
+- [Caddy-Anleitung für Reverse Proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
 ### Wichtige Hinweise {#important-notes}
 
@@ -125,5 +125,5 @@ Nach der Einrichtung von HTTPS müssen Sie die Konfiguration Ihres Duplicati-Ser
 - Ersetzen Sie `your-domain.com` durch Ihren tatsächlichen Domänennamen
 - Stellen Sie sicher, dass der DNS-A-Eintrag Ihrer Domäne auf die IP-Adresse Ihres Servers verweist
 - Beide Lösungen erneuern SSL-Zertifikate automatisch
-- Erwägen Sie, eine Firewall einzurichten, um nur HTTP/HTTPS-Verkehr zuzulassen
+- Erwägen Sie, eine Firewall einzurichten, um nur HTTP/HTTPS-Datenverkehr zuzulassen
 :::

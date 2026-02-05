@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.557Z'
-source_file_mtime: '2026-01-28T15:01:51.247Z'
-source_file_hash: d9d6e23762c8524f
+translation_last_updated: '2026-02-05T00:20:50.237Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 853222a91e36f6f6
 translation_language: fr
 source_file_path: intro.md
 ---

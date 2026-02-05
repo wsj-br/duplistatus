@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.292Z'
+translation_last_updated: '2026-02-05T00:21:07.915Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 1afab25f18ff213d
 translation_language: pt-BR
@@ -13,8 +13,8 @@ source_file_path: development/development-guidelines.md
   - `ui/` - componentes shadcn/ui e elementos de interface reutilizáveis
   - `dashboard/` - Componentes específicos do Painel
   - `settings/` - Componentes da página de Configurações
-  - `server-details/` - Componentes da página de detalhes do Servidor
-- **Rotas de API**: `src/app/api/` com estrutura de endpoint RESTful (veja [Referência de API](../api-reference/overview))
+  - `server-details/` - Componentes da página de Detalhes do Servidor
+- **Rotas de API**: `src/app/api/` com estrutura de endpoints RESTful (veja [Referência de API](../api-reference/overview))
 - **Banco de Dados**: SQLite com better-sqlite3, utilitários em `src/lib/db-utils.ts`, migrações em `src/lib/db-migrations.ts`
 - **Tipos**: Interfaces TypeScript em `src/lib/types.ts`
 - **Configuração**: Configurações padrão em `src/lib/default-config.ts`
@@ -34,17 +34,17 @@ source_file_path: development/development-guidelines.md
 
 ## Referências de Desenvolvimento {#development-references}
 
-- Endpoints da API: Consulte [Referência da API](../api-reference/overview)
+- Endpoints de API: Consulte [Referência de API](../api-reference/overview)
 - Schema do banco de dados: Consulte [Schema do Banco de Dados](database)
 - Siga os padrões em `src/lib/db-utils.ts` para operações de banco de dados
 
-## Frameworks & Libraries {#frameworks-libraries}
+## Frameworks e Bibliotecas {#frameworks-libraries}
 
-### Runtime e Gerenciamento de Pacotes {#runtime-package-management}
+### Runtime & Gerenciamento de Pacotes {#runtime-package-management}
 - Node.js >=24.12.0
 - pnpm >=10.24.0 (packageManager: pnpm@10.28.0)
 
-### Frameworks e Bibliotecas Principais {#core-frameworks-libraries}
+### Estruturas e Bibliotecas Principais {#core-frameworks-libraries}
 - Next.js ^16.1.1 (App Router)
 - React ^19.2.3 & React-DOM ^19.2.3
 - Radix UI (@radix-ui/react-*): ^1.1.8 - ^2.2.6 (accordion ^1.2.12, alert-dialog ^1.1.15, avatar ^1.1.11, checkbox ^1.3.3, dialog ^1.1.15, dropdown-menu ^2.1.16, label ^2.1.8, menubar ^1.1.16, popover ^1.1.15, progress ^1.1.8, radio-group ^1.3.8, scroll-area ^1.2.10, select ^2.2.6, separator ^1.1.8, slider ^1.3.6, slot ^1.2.4, switch ^1.2.6, tabs ^1.1.13, toast ^1.2.15, tooltip ^1.2.8)
@@ -61,11 +61,11 @@ source_file_path: development/development-guidelines.md
 - TSX ^4.21.0
 - ESLint ^9.39.2 (via `next lint`)
 
-### Build & Deployment {#build-deployment}
+### Compilação e Implantação {#build-deployment}
 - Saída standalone do Next.js (`output: 'standalone'`) com ponto de entrada do container iniciando `server.js`
-- Docker (base node:alpine) com builds multi-arquitetura (AMD64, ARM64)
+- Docker (base node:alpine) com compilações multi-arquitetura (AMD64, ARM64)
 - Fluxos de trabalho do GitHub Actions para CI/CD
-- Inkscape para logos e imagens
+- Inkscape para logotipos e imagens
 - Docusaurus para documentação
 - Greenfish Icon Editor para ícones
 
@@ -77,4 +77,4 @@ source_file_path: development/development-guidelines.md
 
 - **Serviço Cron**: Serviço separado para tarefas agendadas, reinicialização automática via `duplistatus-cron.sh`
 - **Notificações**: integração ntfy.sh e e-mail SMTP (nodemailer), modelos configuráveis
-- **Atualização automática**: Atualização automática configurável para o painel e páginas de detalhes
+- **Atualizar automaticamente**: Atualização automática configurável para o painel e páginas de detalhes

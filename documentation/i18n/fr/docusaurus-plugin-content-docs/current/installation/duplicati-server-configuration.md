@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:20.035Z'
+translation_last_updated: '2026-02-05T00:20:49.752Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: da5148730ecb385b
 translation_language: fr
@@ -21,7 +21,7 @@ Appliquez cette configuration à chacun de vos serveurs Duplicati :
     sans mesures de sécurité appropriées pourrait entraîner un accès non autorisé.
     :::
 
-2. **Configurer la notification des résultats de sauvegarde :** Sur la page Configuration Duplicati, sélectionnez `Settings` et, dans la section `Default Options`, incluez les options suivantes. Remplacez « my.local.server » par le nom de votre serveur ou l'adresse IP où **duplistatus** est en cours d'exécution.
+2. **Configurer la création de rapports de résultats de sauvegarde :** Sur la page Configuration Duplicati, sélectionnez `Settings` et, dans la section `Default Options`, incluez les options suivantes. Remplacez « my.local.server » par le nom de votre serveur ou l'adresse IP où **duplistatus** est en cours d'exécution.
 
 | Option avancée                   | Valeur                                   |
     | -------------------------------- | ---------------------------------------- |
@@ -30,7 +30,7 @@ Appliquez cette configuration à chacun de vos serveurs Duplicati :
     | `send-http-log-level`            | `Information`                            |
     | `send-http-max-log-lines`        | `0`                                      |
 
-Alternativement, vous pouvez cliquer sur `Edit as text` et copier les lignes ci-dessous, en remplaçant `my.local.server` par votre **Adresse du serveur** réelle.
+Vous pouvez également cliquer sur `Edit as text` et copier les lignes ci-dessous, en remplaçant `my.local.server` par l'adresse réelle de votre serveur.
 
 ```bash
 --send-http-url=http://my.local.server:9666/api/upload
@@ -43,9 +43,9 @@ Alternativement, vous pouvez cliquer sur `Edit as text` et copier les lignes ci-
 
 **Notes importantes sur les messages envoyés par Duplicati :**
 
-- Si vous omettez `--send-http-log-level=Information`, aucun message de journal ne sera envoyé à **duplistatus**, uniquement les statistiques. Cela empêchera la fonctionnalité des versions disponibles de fonctionner.
+- Si vous omettez `--send-http-log-level=Information`, aucun message de journal ne sera envoyé à **duplistatus**, uniquement les statistiques. Cela empêchera la fonctionnalité Versions disponibles de fonctionner.
 - La configuration recommandée est `--send-http-max-log-lines=0` pour les messages illimités, car la valeur par défaut de Duplicati de 100 messages peut empêcher la réception des versions disponibles dans le journal.
-- Si vous limitez le nombre de messages, les messages de journal requis pour obtenir les versions de sauvegarde disponibles pourraient ne pas être reçus. Cela empêchera l'affichage de ces versions pour cette exécution de sauvegarde.
+- Si vous limitez le nombre de messages, les messages de journal requis pour obtenir les versions de sauvegarde disponibles peuvent ne pas être reçus. Cela empêchera l'affichage de ces versions pour cette exécution de sauvegarde.
 
 :::tip
 Après avoir configuré le serveur **duplistatus**, collectez les journaux de sauvegarde pour tous vos serveurs Duplicati en utilisant [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md).

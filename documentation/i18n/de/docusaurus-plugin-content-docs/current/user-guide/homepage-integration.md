@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:26.157Z'
+translation_last_updated: '2026-02-05T00:20:59.404Z'
 source_file_mtime: '2026-01-27T14:22:06.834Z'
 source_file_hash: 5b8fdae17a34ff83
 translation_language: de
@@ -9,7 +9,7 @@ source_file_path: user-guide/homepage-integration.md
 
 [Homepage](https://gethomepage.dev/) ist eine anpassbare Dashboard-Anwendung. Um **duplistatus** mit Homepage zu integrieren, fügen Sie ein Widget zu Ihrer `services.yaml`-Datei hinzu, indem Sie den [Benutzerdefinierten API-Widget-Typ](https://gethomepage.dev/widgets/services/customapi/) verwenden.
 
-## Summary Widget {#summary-widget}
+## Zusammenfassungs-Widget {#summary-widget}
 
 Dieses Widget zeigt die Gesamtsicherungsstatistiken auf Ihrem Homepage-Dashboard an.
 

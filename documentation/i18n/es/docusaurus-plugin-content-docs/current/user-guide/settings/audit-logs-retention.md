@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.121Z'
-source_file_mtime: '2026-01-27T14:22:06.834Z'
-source_file_hash: 94eead26e2126982
+translation_last_updated: '2026-02-05T00:21:06.380Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: cf92c351f5e4592a
 translation_language: es
 source_file_path: user-guide/settings/audit-logs-retention.md
 ---

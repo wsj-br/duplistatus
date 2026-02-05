@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.857Z'
-source_file_mtime: '2026-01-27T14:22:06.834Z'
-source_file_hash: d909c85d6424418a
+translation_last_updated: '2026-02-05T00:21:12.877Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: e6941d903557a190
 translation_language: pt-BR
 source_file_path: user-guide/duplicati-configuration.md
 ---
 # Configuração do Duplicati {#duplicati-configuration}
 
-O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas da Aplicação](overview#application-toolbar) abre a interface web do servidor Duplicati em uma nova aba.
+O botão <SvgButton svgFilename="duplicati_logo.svg" /> na [Barra de Ferramentas da Aplicação](overview#application-toolbar) abre a interface web do Servidor Duplicati em uma nova aba.
 
 Você pode selecionar um servidor na lista suspensa. Se você já tiver selecionado um servidor (clicando em seu cartão) ou estiver visualizando seus detalhes, o botão abrirá a Configuração do Duplicati desse servidor específico diretamente.
 
@@ -20,10 +20,10 @@ Você pode selecionar um servidor na lista suspensa. Se você já tiver selecion
 
 ## Acessando a Interface Antiga do Duplicati {#accessing-the-old-duplicati-ui}
 
-Se você tiver problemas de login com a nova interface web do Duplicati (`/ngclient/`), você pode clicar com o botão direito do mouse no botão <SvgButton svgFilename="duplicati_logo.svg" /> ou em qualquer item do servidor no popover de seleção de servidor para abrir a interface antiga do Duplicati (`/ngax/`) em uma nova aba.
+Se você tiver problemas de login com a nova interface web do Duplicati (`/ngclient/`), você pode clicar com o botão direito no botão <SvgButton svgFilename="duplicati_logo.svg" /> ou em qualquer item de servidor no popover de seleção de servidor para abrir a interface antiga do Duplicati (`/ngax/`) em uma nova aba.
 
 <br/><br/>
 
 :::note
-Todos os nomes de produtos, marcas registradas e marcas comerciais são propriedade de seus respectivos proprietários. Ícones e nomes são utilizados apenas para fins de identificação e não implicam endosso.
+Todos os nomes de produtos, marcas registradas e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
 :::

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.998Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: ce396051346ba380
+translation_last_updated: '2026-02-05T00:21:13.796Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 3eab3fe85d0db77a
 translation_language: pt-BR
 source_file_path: user-guide/settings/notification-templates.md
 ---
@@ -11,11 +11,11 @@ source_file_path: user-guide/settings/notification-templates.md
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
-| Template           | Descrição                                         |
+| Template           | Descrição                                           |
 | :----------------- | :-------------------------------------------------- |
-| **Sucesso**        | Utilizado quando os backups são concluídos com sucesso.            |
-| **Aviso/Erro**  | Utilizado quando os backups são concluídos com avisos ou erros. |
-| **Backup atrasado** | Utilizado quando os backups estão atrasados.                      |
+| **Sucesso**        | Usado quando os backups são concluídos com sucesso. |
+| **Aviso/Erro**     | Usado quando os backups são concluídos com avisos ou erros. |
+| **Backup atrasado** | Usado quando os backups estão atrasados.            |
 
 <br/>
 
@@ -33,28 +33,28 @@ source_file_path: user-guide/settings/notification-templates.md
 
 Todos os modelos suportam variáveis que serão substituídas por valores reais. A tabela a seguir mostra as variáveis disponíveis:
 
-| Variável               | Descrição                                     | Disponível em     |
+| Variável              | Descrição                                       | Disponível em    |
 |:-----------------------|:------------------------------------------------|:-----------------|
-| `{server_name}`        | Nome do servidor.                             | Todos os modelos    |
-| `{server_alias}`       | Alias do servidor.                            | Todos os modelos    |
-| `{server_note}`        | Nota para o servidor.                            | Todos os modelos    |
-| `{server_url}`         | URL do servidor Duplicati de configuração web   | Todos os modelos    |
-| `{backup_name}`        | Nome do backup.                             | Todos os modelos    |
-| `{status}`             | Status do backup (Sucesso, Aviso, Erro, Fatal). | Sucesso, Aviso |
-| `{backup_date}`        | Data e hora do backup.                    | Sucesso, Aviso |
-| `{duration}`           | Duração do backup.                         | Sucesso, Aviso |
-| `{uploaded_size}`      | Quantidade de dados enviados.                        | Sucesso, Aviso |
-| `{storage_size}`       | Informações de uso de armazenamento.                      | Sucesso, Aviso |
-| `{available_versions}` | Número de versões de backup disponíveis.            | Sucesso, Aviso |
-| `{file_count}`         | Número de arquivos processados.                      | Sucesso, Aviso |
-| `{file_size}`          | Tamanho total de arquivos com backup.                  | Sucesso, Aviso |
-| `{messages_count}`     | Número de mensagens.                             | Sucesso, Aviso |
-| `{warnings_count}`     | Número de avisos.                             | Sucesso, Aviso |
-| `{errors_count}`       | Número de erros.                               | Sucesso, Aviso |
-| `{log_text}`           | Mensagens de log (avisos e erros)              | Sucesso, Aviso |
-| `{last_backup_date}`   | Data do último backup.                        | Atrasado          |
-| `{last_elapsed}`       | Tempo decorrido desde o último backup.             | Atrasado          |
-| `{expected_date}`      | Data de backup esperada.                           | Atrasado          |
-| `{expected_elapsed}`   | Tempo decorrido desde a data esperada.           | Atrasado          |
-| `{backup_interval}`    | Cadeia de intervalo (por exemplo, "1D", "2W", "1M").       | Atrasado          |
-| `{overdue_tolerance}`  | Configuração de tolerância de atraso.                      | Atrasado          |
+| `{server_name}`        | Nome do servidor.                               | Todos os modelos |
+| `{server_alias}`       | Alias do servidor.                              | Todos os modelos |
+| `{server_note}`        | Nota do servidor.                               | Todos os modelos |
+| `{server_url}`         | URL da configuração web do servidor Duplicati   | Todos os modelos |
+| `{backup_name}`        | Nome do backup.                                 | Todos os modelos |
+| `{status}`             | Status do backup (Sucesso, Aviso, Erro, Fatal). | Sucesso, Aviso   |
+| `{backup_date}`        | Data e hora do backup.                          | Sucesso, Aviso   |
+| `{duration}`           | Duração do backup.                              | Sucesso, Aviso   |
+| `{uploaded_size}`      | Quantidade de dados enviados.                   | Sucesso, Aviso   |
+| `{storage_size}`       | Informações de uso de armazenamento.            | Sucesso, Aviso   |
+| `{available_versions}` | Número de versões de backup disponíveis.        | Sucesso, Aviso   |
+| `{file_count}`         | Número de arquivos processados.                 | Sucesso, Aviso   |
+| `{file_size}`          | Tamanho total dos arquivos com backup.          | Sucesso, Aviso   |
+| `{messages_count}`     | Número de mensagens.                            | Sucesso, Aviso   |
+| `{warnings_count}`     | Número de avisos.                               | Sucesso, Aviso   |
+| `{errors_count}`       | Número de erros.                                | Sucesso, Aviso   |
+| `{log_text}`           | Mensagens de log (avisos e erros)               | Sucesso, Aviso   |
+| `{last_backup_date}`   | Data do último backup.                          | Atrasado         |
+| `{last_elapsed}`       | Tempo decorrido desde o último backup.          | Atrasado         |
+| `{expected_date}`      | Data esperada do backup.                        | Atrasado         |
+| `{expected_elapsed}`   | Tempo decorrido desde a data esperada.          | Atrasado         |
+| `{backup_interval}`    | String de intervalo (ex: "1D", "2W", "1M").     | Atrasado         |
+| `{overdue_tolerance}`  | Configuração de tolerância de atraso.           | Atrasado         |

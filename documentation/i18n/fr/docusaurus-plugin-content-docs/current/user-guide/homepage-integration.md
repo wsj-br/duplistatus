@@ -1,17 +1,17 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.872Z'
+translation_last_updated: '2026-02-05T00:20:52.673Z'
 source_file_mtime: '2026-01-27T14:22:06.834Z'
 source_file_hash: 5b8fdae17a34ff83
 translation_language: fr
 source_file_path: user-guide/homepage-integration.md
 ---
-# Intégration à la page d'accueil (Optionnel) {#homepage-integration-optional}
+# Intégration de la page d'accueil (Optionnel) {#homepage-integration-optional}
 
-[Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget API personnalisée](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) est une application de tableau de bord personnalisable. Pour intégrer **duplistatus** avec Homepage, ajoutez un widget à votre fichier `services.yaml` en utilisant le [type de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
 ## Widget Résumé {#summary-widget}
 
-Ce widget affiche les statistiques globales de sauvegarde sur votre tableau de bord de la page d'accueil.
+Ce widget affiche les statistiques de sauvegarde globales sur votre tableau de bord Homepage.
 
 ```yaml
 - Dashboard:
@@ -51,7 +51,7 @@ Ce widget affiche les statistiques globales de sauvegarde sur votre tableau de b
 
 ![Homepage Summary Widget](/img/homepage-summary.png)
 
-## Dernière Informations de sauvegarde Widget {#last-backup-information-widget}
+## Widget Informations de dernière sauvegarde {#last-backup-information-widget}
 
 Ce widget affiche les dernières informations de sauvegarde pour une machine spécifique.
 
@@ -89,6 +89,6 @@ Ce widget affiche les dernières informations de sauvegarde pour une machine sp�
 ## Notes de Configuration {#configuration-notes}
 
 - Remplacez `your-server` par l'adresse IP ou le nom d'hôte de votre serveur.
-- Ajustez le `refreshInterval` selon vos besoins (en millisecondes).
+- Ajustez l'intervalle `refreshInterval` selon vos besoins (en millisecondes).
 - Remplacez les espaces dans les noms de machines par `%20` dans l'URL (par exemple, `Test Machine 1` devient `Test%20Machine%201`).
 - Les valeurs `scale` convertissent les octets en unités plus lisibles (Go, Mo).

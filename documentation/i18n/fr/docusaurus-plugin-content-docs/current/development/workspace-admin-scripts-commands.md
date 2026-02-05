@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-01-31T00:51:19.985Z'
+translation_last_updated: '2026-02-05T00:20:49.584Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 581bc6778a772b4e
 translation_language: fr
 source_file_path: development/workspace-admin-scripts-commands.md
 ---
-# Scripts et commandes Admin d'espace de travail {#workspace-admin-scripts-commands}
+# Scripts et Commandes Admin de l'Espace de Travail {#workspace-admin-scripts-commands}
 
 ## Nettoyer la base de données {#clean-database}
 
@@ -16,7 +16,7 @@ source_file_path: development/workspace-admin-scripts-commands.md
 Nettoie la base de données en supprimant toutes les données tout en préservant le schéma et la structure de la base de données.
 
 >[!CAUTION]
-> Utilisez avec prudence car cela supprimera toutes les données existantes.
+> À utiliser avec prudence car cela supprimera toutes les données existantes.
 
 ## Nettoyer les artefacts de compilation et les dépendances {#clean-build-artefacts-and-dependencies}
 
@@ -24,14 +24,14 @@ Nettoie la base de données en supprimant toutes les données tout en préservan
 scripts/clean-workspace.sh
 ```
 
-Supprime tous les artefacts de compilation, le répertoire node_modules et les autres fichiers générés pour assurer un état propre. Ceci est utile quand vous devez effectuer une installation nouvelle ou résoudre des problèmes de dépendances. La commande supprimera :
-- Le répertoire `node_modules/`
-- Le répertoire de compilation `.next/`
-- Le répertoire `dist/`
-- Tous les caches de compilation Docker et effectuera un nettoyage du système Docker
-- Le cache du magasin pnpm
-- Les ressources système Docker inutilisées (images, réseaux, volumes)
-- Tous les autres fichiers de cache de compilation
+Supprime tous les artefacts de build, le répertoire node_modules et les autres fichiers générés pour assurer un état propre. Ceci est utile quand vous devez effectuer une installation nouvelle ou résoudre des problèmes de dépendances. La commande supprimera :
+- Répertoire `node_modules/`
+- Répertoire de build `.next/`
+- Répertoire `dist/`
+- Tous les caches de build Docker et effectuera un nettoyage du système Docker
+- Cache du magasin pnpm
+- Ressources système Docker inutilisées (images, réseaux, volumes)
+- Tous les autres fichiers de cache de build
 
 ## Nettoyer Docker Compose et l'environnement Docker {#clean-docker-compose-and-docker-environment}
 
@@ -66,7 +66,7 @@ Le script `upgrade-dependencies.sh` automatise l'ensemble du processus de mise �
 - Met à jour la base de données browserslist
 - Vérifie les vulnérabilités en utilisant `pnpm audit`
 - Corrige automatiquement les vulnérabilités en utilisant `pnpm audit fix`
-- Vérifie à nouveau les vulnérabilités après la correction pour vérifier que les correctifs ont été appliqués
+- Vérifie à nouveau les vulnérabilités après la correction pour valider les correctifs
 
 Ce script fournit un flux de travail complet pour maintenir les dépendances à jour et sécurisées.
 
@@ -96,11 +96,11 @@ Ce script met à jour automatiquement les informations de version dans plusieurs
 ./scripts/pre-checks.sh
 ```
 
-Ce script exécute des vérifications préalables avant de démarrer le serveur de développement, de construire ou de démarrer le serveur de production. Il :
+Ce script exécute des vérifications préalables avant de démarrer le serveur de développement, de générer la version ou de démarrer le serveur de production. Il :
 - Vérifie que le fichier `.duplistatus.key` existe (via `ensure-key-file.sh`)
 - Met à jour les informations de version (via `update-version.sh`)
 
-Ce script est appelé automatiquement par `pnpm dev`, `pnpm build` et `pnpm start-local`.
+Ce script est automatiquement appelé par `pnpm dev`, `pnpm build` et `pnpm start-local`.
 
 ## Assurer l'existence du fichier clé {#ensure-key-file-exists}
 
@@ -114,7 +114,7 @@ Ce script garantit que le fichier `.duplistatus.key` existe dans le répertoire 
 - Définit les permissions du fichier à 0400 (lecture seule pour le propriétaire)
 - Corrige les permissions si elles sont incorrectes
 
-Le fichier clé est utilisé pour les opérations cryptographiques dans l'application.
+Le fichier de clé est utilisé pour les opérations cryptographiques dans l'application.
 
 ## Récupération du compte Admin {#admin-account-recovery}
 
@@ -122,7 +122,7 @@ Le fichier clé est utilisé pour les opérations cryptographiques dans l'applic
 ./admin-recovery <username> <new-password>
 ```
 
-Ce script permet la récupération de comptes Admin en cas de verrouillage ou d'oubli de mot de passe. Il :
+Ce script permet la récupération des comptes admin en cas de verrouillage ou d'oubli de mot de passe. Il :
 - Réinitialise le mot de passe pour l'utilisateur spécifié
 - Déverrouille le compte s'il était verrouillé
 - Réinitialise le compteur de tentatives de connexion échouées
@@ -159,15 +159,15 @@ Utile pour maintenir les images d'application synchronisées avec les images de 
 ```
 
 Ce script compare les versions entre votre environnement de développement et un conteneur Docker en cours d'exécution. Il :
-- Compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 et 3.51.1 sont considérées comme compatibles, affichées comme « ✅ (major) »)
-- Compare exactement les versions de Node, npm et Duplistatus (doivent correspondre exactement)
+- Compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 par rapport à 3.51.1 sont considérées comme compatibles, affichées comme « ✅ (major) »)
+- Compare les versions Node, npm et duplistatus exactement (doivent correspondre exactement)
 - Affiche un tableau formaté montrant toutes les comparaisons de versions
 - Fournit un résumé avec des résultats codés par couleur (✅ pour les correspondances, ❌ pour les non-correspondances)
 - Quitte avec le code 0 si toutes les versions correspondent, 1 s'il y a des non-correspondances
 
 **Exigences :**
-- Un conteneur Docker nommé `duplistatus` doit être en cours d'exécution
-- Le script lit les informations de Version à partir des journaux du conteneur Docker
+- Le conteneur Docker nommé `duplistatus` doit être en cours d'exécution
+- Le script lit les informations de version à partir des journaux du conteneur Docker
 
 **Exemple de sortie :**
 
@@ -182,7 +182,7 @@ Ce script compare les versions entre votre environnement de développement et un
 └─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
 ```
 
-**Note :** Les versions de SQLite sont comparées uniquement par version majeure, car les différentes versions de correctif au sein d'une même version majeure sont généralement compatibles. Le script indiquera si les versions de SQLite correspondent au niveau majeur mais diffèrent dans les versions de correctif.
+**Note :** Les versions de SQLite sont comparées par version majeure uniquement, car les différentes versions de correctif au sein de la même version majeure sont généralement compatibles. Le script indiquera si les versions de SQLite correspondent au niveau majeur mais diffèrent dans les versions de correctif.
 
 ## Affichage des configurations dans la base de données {#viewing-the-configurations-in-the-database}
 
@@ -210,9 +210,9 @@ Le projet inclut des scripts SQL pour la maintenance de la base de données :
 sqlite3 data/backups.db < scripts/delete-backup-settings.sql
 ```
 
-Ce script supprime tous les Paramètres de sauvegarde de la table de configurations. À utiliser avec prudence, car cela réinitialisera toutes les configurations de notifications de sauvegarde.
+Ce script supprime tous les paramètres de sauvegarde de la table des configurations. À utiliser avec prudence car cela réinitialisera toutes les configurations de notification de sauvegarde.
 
-### Supprimer la Dernière sauvegarde {#delete-last-backup}
+### Supprimer Dernière sauvegarde {#delete-last-backup}
 
 ```bash
 sqlite3 data/backups.db < scripts/delete-last-backup.sql

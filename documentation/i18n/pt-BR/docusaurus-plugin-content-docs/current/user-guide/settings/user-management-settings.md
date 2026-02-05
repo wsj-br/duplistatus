@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:31.053Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: ece7b76b8fa36b8d
+translation_last_updated: '2026-02-05T00:21:14.096Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 761ce0264d6bb8c1
 translation_language: pt-BR
 source_file_path: user-guide/settings/user-management-settings.md
 ---
@@ -12,28 +12,29 @@ Gerencie contas de usuários, permissões e controle de acesso para **duplistatu
 ![User Management](../../assets/screen-settings-users.png)
 
 >[!TIP] 
->A conta `admin` padrão pode ser excluída. Para fazer isso, primeiro crie um novo usuário administrador, entre com essa conta e, em seguida, exclua a conta `admin`.
+>A conta `admin` padrão pode ser excluída. Para fazer isso, primeiro crie um novo usuário administrador, entre com essa conta 
+> e depois exclua a conta `admin`.
 >
 > A senha padrão para a conta `admin` é `Duplistatus09`. Você será obrigado a alterá-la no primeiro login.
 
-## Acessando o Gerenciamento de usuários {#accessing-user-management}
+## Gerenciamento de usuários {#accessing-user-management}
 
 Você pode acessar a seção Gerenciamento de usuários de duas formas:
 
-1. **No Menu do Usuário**: Clique no <IconButton icon="lucide:user" label="username" />   na [Barra de Ferramentas da Aplicação](../overview.md#application-toolbar) e selecione "Admin Usuários".
+1. **No Menu do Usuário**: Clique no <IconButton icon="lucide:user" label="nome de usuário" />   na [Barra de Ferramentas da Aplicação](../overview.md#application-toolbar) e selecione "Usuários Admin".
 
-2. **Das Configurações**: Clique em <IconButton icon="lucide:settings"/> e `Users` na barra lateral de configurações
+2. **A partir de Configurações**: Clique em <IconButton icon="lucide:settings"/> e `Users` na barra lateral de configurações
 
 ## Criando um Novo Usuário {#creating-a-new-user}
 
 1. Clique no botão <IconButton icon="lucide:plus" label="Adicionar usuário"/>
 2. Digite os detalhes do usuário:
    - **Nome de usuário**: Deve ter 3-50 caracteres, ser único e não diferenciar maiúsculas de minúsculas
-   - **Admin**: Marque para conceder privilégios de administrador
-   - **Exigir alteração de senha**: Marque para forçar a alteração de senha no primeiro login
+   - **Admin**: Verificar para conceder privilégios de administrador
+   - **Exigir alteração de senha**: Verificar para forçar a alteração de senha no primeiro login
    - **Senha**: 
-     - Opção 1: Marque "Gerar senha automaticamente" para criar uma senha temporária segura
-     - Opção 2: Desmarque e digite uma senha personalizada
+     - Opção 1: Verificar "Gerar senha automaticamente" para criar uma senha temporária segura
+     - Opção 2: Desmarcar e digitar uma senha personalizada
 3. Clique em <IconButton icon="lucide:user-plus" label="Criar usuário" />.
 
 ## Editando um Usuário {#editing-a-user}
@@ -42,19 +43,19 @@ Você pode acessar a seção Gerenciamento de usuários de duas formas:
 2. Modifique qualquer um dos seguintes:
    - **Nome de usuário**: Altere o nome de usuário (deve ser único)
    - **Admin**: Alterne os privilégios de administrador
-   - **Exigir Alteração de Senha**: Alterne a exigência de alteração de senha
+   - **Exigir Alteração de Senha**: Alterne o requisito de alteração de senha
 3. Clique em <IconButton icon="lucide:check" label="Salvar alterações" />.
 
 ## Redefinindo uma Senha de Usuário {#resetting-a-user-password}
 
 1. Clique no ícone <IconButton icon="lucide:key-round" /> de chave ao lado do usuário
-2. Confirme a redefinição de senha
+2. Confirmar a redefinição de senha
 3. Uma nova senha temporária será gerada e exibida
 4. Copie a senha e forneça-a ao usuário com segurança
 
 ## Deletando um Usuário {#deleting-a-user}
 
-1. Clique no ícone de exclusão <IconButton icon="lucide:trash-2" /> ao lado do usuário
+1. Clique no ícone <IconButton icon="lucide:trash-2" /> de exclusão ao lado do usuário
 2. Confirmar a exclusão na caixa de diálogo. **A exclusão do usuário é permanente e não pode ser desfeita.**
 
 ## Bloqueio de Conta {#account-lockout}
@@ -66,4 +67,4 @@ As contas são automaticamente bloqueadas após múltiplas tentativas de login f
 
 ## Recuperando Acesso de Admin {#recovering-admin-access}
 
-Se você perdeu sua Senha de admin ou foi bloqueado de sua conta, você pode recuperar o acesso usando o script de recuperação de admin. Consulte o guia [Recuperação de Conta Admin](../admin-recovery.md) para instruções detalhadas sobre como recuperar o acesso de administrador em ambientes Docker.
+Se você perdeu sua senha de admin ou foi bloqueado de sua conta, você pode recuperar o acesso usando o script de recuperação de admin. Consulte o guia [Admin Account Recovery](../admin-recovery.md) para instruções detalhadas sobre como recuperar o acesso de administrador em ambientes Docker.

@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.870Z'
+translation_last_updated: '2026-02-05T00:21:12.927Z'
 source_file_mtime: '2026-01-27T14:22:06.834Z'
 source_file_hash: 5b8fdae17a34ff83
 translation_language: pt-BR
@@ -7,11 +7,11 @@ source_file_path: user-guide/homepage-integration.md
 ---
 # Integração da Página Inicial (Opcional) {#homepage-integration-optional}
 
-[Homepage](https://gethomepage.dev/) é uma aplicação de painel personalizável. Para integrar **duplistatus** com Homepage, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) é um aplicativo de painel personalizável. Para integrar **duplistatus** com Homepage, adicione um widget ao seu arquivo `services.yaml` usando o [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
 ## Widget de Resumo {#summary-widget}
 
-Este widget exibe as estatísticas gerais do backup no seu painel da página inicial.
+Este widget exibe as estatísticas gerais do backup no painel da sua página inicial.
 
 ```yaml
 - Dashboard:
@@ -53,7 +53,7 @@ Este widget exibe as estatísticas gerais do backup no seu painel da página ini
 
 ## Widget de Informações da Última Backup {#last-backup-information-widget}
 
-Este widget exibe as informações do backup mais recentes para uma máquina específica.
+Este widget exibe as informações de backup mais recentes para uma máquina específica.
 
 ```yaml
 - Test Machine 1:
@@ -88,7 +88,7 @@ Este widget exibe as informações do backup mais recentes para uma máquina esp
 
 ## Notas de Configuração {#configuration-notes}
 
-- Substitua `your-server` pelo Endereço IP ou Nome do host do seu servidor.
+- Substitua `your-server` pelo endereço IP ou nome do host do seu servidor.
 - Ajuste o `refreshInterval` conforme necessário (em milissegundos).
 - Substitua espaços em nomes de máquinas por `%20` na URL (por exemplo, `Test Machine 1` torna-se `Test%20Machine%201`).
 - Os valores de `scale` convertem bytes para unidades mais legíveis (GB, MB).

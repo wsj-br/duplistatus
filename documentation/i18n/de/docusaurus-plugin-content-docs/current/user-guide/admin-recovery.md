@@ -1,17 +1,17 @@
 ---
-translation_last_updated: '2026-01-31T00:51:26.096Z'
+translation_last_updated: '2026-02-05T00:20:59.051Z'
 source_file_mtime: '2026-01-29T17:58:29.899Z'
 source_file_hash: 091dcbb5c0bb63c5
 translation_language: de
 source_file_path: user-guide/admin-recovery.md
 ---
-# Wiederherstellung des Admin-Kontos {#admin-account-recovery}
+# Admin-Kontowiederherstellung {#admin-account-recovery}
 
-Stellen Sie den Administrator-Zugriff auf **duplistatus** wieder her, wenn Sie Ihr Passwort verloren haben oder aus Ihrem Konto gesperrt wurden. Diese Anleitung behandelt die Verwendung des Admin-Wiederherstellungsskripts in Docker-Umgebungen.
+Stellen Sie den Administrator-Zugriff auf **duplistatus** wieder her, wenn Sie Ihr Passwort vergessen haben oder aus Ihrem Konto gesperrt wurden. Diese Anleitung behandelt die Verwendung des Admin-Wiederherstellungsskripts in Docker-Umgebungen.
 
 ## Verwendung des Skripts in Docker {#using-the-script-in-docker}
 
-Das Dockerfile enthält das Verzeichnis `scripts` und einen praktischen Shell-Wrapper.
+Die Dockerfile enthält das Verzeichnis `scripts` und einen praktischen Shell-Wrapper.
 
 ```bash
 # Execute inside the running container using the wrapper
@@ -26,12 +26,12 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 ## Fehlerbehebung {#troubleshooting}
 
-Wenn Sie Probleme mit dem Wiederherstellungsskript haben:
+Wenn Sie auf Probleme mit dem Wiederherstellungsskript stoßen:
 
-1. **Container wird ausgeführt überprüfen**: Prüfen Sie, dass der Container mit `docker ps` ausgeführt wird
+1. **Container-Ausführung bestätigen**: Prüfen Sie, dass der Container mit `docker ps` ausgeführt wird
 2. **Skriptverfügbarkeit prüfen**: Bestätigen Sie, dass das Skript im Container mit `docker exec -it duplistatus ls -la /app/admin-recovery` vorhanden ist
 3. **Container-Protokolle überprüfen**: Prüfen Sie auf Fehler mit `docker logs duplistatus`
 4. **Benutzername bestätigen**: Stellen Sie sicher, dass der Benutzername in der Datenbank vorhanden ist
 5. **Passwortformat prüfen**: Stellen Sie sicher, dass das neue Passwort alle Anforderungen erfüllt
 
-Wenn die Probleme weiterhin bestehen, lesen Sie das [Troubleshooting](troubleshooting.md)-Handbuch für weitere Hilfe.
+Wenn Probleme weiterhin bestehen, lesen Sie die [Troubleshooting](troubleshooting.md)-Anleitung für weitere Hilfe.

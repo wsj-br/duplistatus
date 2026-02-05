@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:19.928Z'
+translation_last_updated: '2026-02-05T00:20:48.641Z'
 source_file_mtime: '2026-01-29T17:58:29.895Z'
 source_file_hash: fae6b911d504b61b
 translation_language: fr
@@ -9,29 +9,29 @@ source_file_path: development/release-management.md
 
 ## Versioning (Semantic Versioning) {#versioning-semantic-versioning}
 
-Le projet suit le versioning sémantique (SemVer) avec le format `MAJOR.MINOR.PATCH` :
+Le projet suit le Versioning Sémantique (SemVer) avec le format `MAJOR.MINOR.PATCH` :
 
-- **MAJOR** version (x.0.0) : Quand vous apportez des modifications incompatibles à l'API
-- **MINOR** version (0.x.0) : Quand vous ajoutez des fonctionnalités de manière rétrocompatible
-- **PATCH** version (0.0.x) : Quand vous apportez des corrections de bogues rétrocompatibles
+- **Version MAJEURE** (x.0.0) : Quand vous apportez des modifications d'API incompatibles
+- **Version MINEURE** (0.x.0) : Quand vous ajoutez des fonctionnalités de manière rétrocompatible
+- **Version CORRECTIF** (0.0.x) : Quand vous apportez des corrections de bogues rétrocompatibles
 
-## Liste de vérification pré-lancement {#pre-release-checklist}
+## Liste de contrôle de pré-lancement {#pre-release-checklist}
 
 Avant de publier une nouvelle version, assurez-vous d'avoir terminé les éléments suivants :
 
 - [ ] Tous les changements sont validés et poussés vers la branche `vMAJOR.MINOR.x`.
 - [ ] Le numéro de version est mis à jour dans `package.json` (utilisez `scripts/update-version.sh` pour le synchroniser dans tous les fichiers).
 - [ ] Tous les tests réussissent (en mode développement, local, docker et podman).
-- [ ] Démarrez un conteneur Docker avec `pnpm docker-up` et exécutez `scripts/compare-versions.sh` pour vérifier la cohérence des versions entre l'environnement de développement et le conteneur Docker (le conteneur Docker doit être en cours d'exécution). Ce script compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 et 3.51.1 sont considérées comme compatibles) et compare exactement les versions Node, npm et Duplistatus.
+- [ ] Démarrer un conteneur Docker avec `pnpm docker-up` et exécuter `scripts/compare-versions.sh` pour vérifier la cohérence des versions entre l'environnement de développement et le conteneur Docker (nécessite que le conteneur Docker soit en cours d'exécution). Ce script compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 et 3.51.1 sont considérées comme compatibles) et compare exactement les versions de Node, npm et duplistatus.
 - [ ] La documentation est à jour, mettez à jour les captures d'écran (utilisez `pnpm take-screenshots`)
 - [ ] Les notes de version sont préparées dans `documentation/docs/release-notes/VERSION.md`.
-- [ ] Exécutez `scripts/generate-readme-from-intro.sh` pour mettre à jour `README.md` avec la nouvelle version et les modifications apportées à `documentation/docs/intro.md`. Ce script génère également automatiquement `README_dockerhub.md` et `RELEASE_NOTES_github_VERSION.md`.
+- [ ] Exécutez `scripts/generate-readme-from-intro.sh` pour mettre à jour `README.md` avec la nouvelle version et les modifications de `documentation/docs/intro.md`. Ce script génère également automatiquement `README_dockerhub.md` et `RELEASE_NOTES_github_VERSION.md`.
 
 ## Vue d'ensemble du processus de publication {#release-process-overview}
 
-Le processus de publication recommandé utilise les **demandes de tirage GitHub et les versions** (voir ci-dessous). Cela offre une meilleure visibilité, des capacités d'examen et déclenche automatiquement les compilations d'images Docker. La méthode en ligne de commande est disponible comme alternative.
+Le processus de publication recommandé utilise **GitHub Pull Requests and Releases** (voir ci-dessous). Cela offre une meilleure visibilité, des capacités d'examen et déclenche automatiquement les compilations d'images Docker. La méthode en ligne de commande est disponible comme alternative.
 
-## Méthode 1 : Demande de tirage GitHub et publication (Recommandée) {#method-1-github-pull-request-and-release-recommended}
+## Méthode 1 : Demande de tirage GitHub et publication (Recommandé) {#method-1-github-pull-request-and-release-recommended}
 
 Ceci est la méthode préférée car elle offre une meilleure traçabilité et déclenche automatiquement les compilations Docker.
 
@@ -41,17 +41,17 @@ Ceci est la méthode préférée car elle offre une meilleure traçabilité et d
 2. Cliquez sur l'onglet **« Pull requests »**.
 3. Cliquez sur **« New pull request »**.
 4. Définissez la **branche de base** sur `master` et la **branche de comparaison** sur `vMAJOR.MINOR.x`.
-5. Examinez l'aperçu des modifications pour vous assurer que tout est correct.
+5. Vérifiez l'aperçu des modifications pour vous assurer que tout semble correct.
 6. Cliquez sur **« Create pull request »**.
 7. Ajouter un titre descriptif (par exemple, « Release v1.2.0 ») et une description résumant les modifications.
 8. Cliquez à nouveau sur **« Create pull request »**.
 
-### Étape 2 : Fusionner la demande de tirage {#step-2-merge-the-pull-request}
+### Étape 2 : Fusionner la demande d'extraction {#step-2-merge-the-pull-request}
 
-Après examen de la demande de tirage :
+Après examen de la demande de fusion :
 
-1. S'il n'y a pas de conflits, cliquez sur le bouton vert **« Merge pull request »**.
-2. Choisissez votre stratégie de fusion (généralement « Create a merge commit »).
+1. S'il n'y a pas de conflits, cliquez sur le bouton vert **« Fusionner la demande de tirage »**.
+2. Choisissez votre stratégie de fusion (généralement « Créer un commit de fusion »).
 3. Confirmez la fusion.
 
 ### Étape 3 : Créer une version GitHub {#step-3-create-github-release}
@@ -63,8 +63,8 @@ Une fois la fusion terminée, créez une version GitHub :
 3. Cliquez sur **« Draft a new release »**.
 4. Dans le champ **« Choose a tag »**, saisissez votre nouveau numéro de version au format `vMAJOR.MINOR.PATCH` (par exemple, `v1.2.0`). Cela créera une nouvelle étiquette.
 5. Sélectionnez `master` comme branche cible.
-6. Ajoutez un **titre de version** (par exemple, « Release v1.2.0 »).
-7. Ajoutez une **description** documentant les modifications de cette version. Vous pouvez :
+6. Ajouter un **titre de version** (par exemple, « Release v1.2.0 »).
+7. Ajouter une **description** documentant les modifications de cette version. Vous pouvez :
    - Copier le contenu de `RELEASE_NOTES_github_VERSION.md` (généré par `scripts/generate-readme-from-intro.sh`)
    - Ou référencer les notes de version de `documentation/docs/release-notes/` (notez que les liens relatifs ne fonctionneront pas dans les versions GitHub)
 8. Cliquez sur **« Publish release »**.
@@ -74,8 +74,8 @@ Une fois la fusion terminée, créez une version GitHub :
 - Le workflow « Build and Publish Docker Image » est déclenché
 - Les images Docker sont construites pour les architectures AMD64 et ARM64
 - Les images sont envoyées vers :
-  - Docker Hub : `wsjbr/duplistatus:VERSION` et `wsjbr/duplistatus:latest` (si ceci est la dernière version)
-  - GitHub Container Registry : `ghcr.io/wsj-br/duplistatus:VERSION` et `ghcr.io/wsj-br/duplistatus:latest` (si ceci est la dernière version)
+  - Docker Hub : `wsjbr/duplistatus:VERSION` et `wsjbr/duplistatus:latest` (si c'est la dernière version)
+  - GitHub Container Registry : `ghcr.io/wsj-br/duplistatus:VERSION` et `ghcr.io/wsj-br/duplistatus:latest` (si c'est la dernière version)
 
 ## Méthode 2 : Ligne de commande (Alternative) {#method-2-command-line-alternative}
 
@@ -102,10 +102,10 @@ Fusionner la branche `vMAJOR.MINOR.x` dans `master` :
 git merge vMAJOR.MINOR.x
 ```
 
-Si des **conflits de fusion** se produisent, résolvez-les manuellement :
-1. Modifier les fichiers en conflit
-2. Indexer les fichiers résolus : `git add <file>`
-3. Terminer la fusion : `git commit`
+S'il y a des **conflits de fusion**, résolvez-les manuellement :
+1. Modifiez les fichiers en conflit
+2. Indexez les fichiers résolus : `git add <file>`
+3. Complétez la fusion : `git commit`
 
 ### Étape 3 : Étiqueter la version {#step-3-tag-the-release}
 
@@ -116,9 +116,9 @@ Créer une étiquette annotée pour la nouvelle version :
 git tag -a vMAJOR.MINOR.PATCH -m "Release vMAJOR.MINOR.PATCH - Brief description"
 ```
 
-Le drapeau `-a` crée une étiquette annotée (recommandé pour les versions), et le drapeau `-m` ajoute un message.
+L'indicateur `-a` crée une balise annotée (recommandée pour les versions), et l'indicateur `-m` ajoute un message.
 
-### Étape 4 : Envoyer vers GitHub {#step-4-push-to-github}
+### Étape 4 : Pousser vers GitHub {#step-4-push-to-github}
 
 Poussez à la fois la branche `master` mise à jour et la nouvelle étiquette :
 
@@ -136,9 +136,9 @@ Vous pouvez également envoyer tous les tags à la fois : `git push --tags`
 
 Après avoir poussé l'étiquette, créez une version GitHub (voir Méthode 1, Étape 3) pour déclencher le flux de travail de construction Docker.
 
-## Construction manuelle d'une image Docker {#manual-docker-image-build}
+## Construction manuelle d'image Docker {#manual-docker-image-build}
 
-Pour déclencher manuellement le flux de travail de création d'image Docker sans créer de version :
+Pour déclencher manuellement le workflow de construction de l'image Docker sans créer de version :
 
 1. Accédez au [référentiel duplistatus](https://github.com/wsj-br/duplistatus) sur GitHub.
 2. Cliquez sur l'onglet **« Actions »**.
@@ -153,9 +153,9 @@ Pour déclencher manuellement le flux de travail de création d'image Docker san
 
 La documentation est hébergée sur [GitHub Pages](https://wsj-br.github.io/duplistatus/) et est déployée séparément de la version de l'application. Suivez ces étapes pour publier la documentation mise à jour :
 
-### Prérequis {#prerequisites}
+### Conditions préalables {#prerequisites}
 
-1. Assurez-vous de disposer d'un jeton d'accès personnel GitHub avec la portée `repo`.
+1. Assurez-vous que vous disposez d'un jeton d'accès personnel GitHub avec la portée `repo`.
 2. Configurez les identifiants Git (configuration unique) :
 
 ```bash
@@ -163,7 +163,7 @@ cd documentation
 ./setup-git-credentials.sh
 ```
 
-Ceci vous demandera votre jeton d'accès personnel GitHub et le stockera de manière sécurisée.
+Cela vous demandera votre jeton d'accès personnel GitHub et le stockera de manière sécurisée.
 
 ### Déployer la Documentation {#deploy-documentation}
 
@@ -175,7 +175,7 @@ cd documentation
 
 2. Assurez-vous que tous les changements de documentation sont validés et poussés vers le référentiel.
 
-3. Construire et déployer la documentation :
+3. Créer et déployer la documentation :
 
 ```bash
 pnpm run deploy
@@ -183,14 +183,14 @@ pnpm run deploy
 
 Cette commande va :
 - Construire le site de documentation Docusaurus
-- Pousser le site construit vers la branche `gh-pages`
+- Envoyer le site construit vers la branche `gh-pages`
 - Rendre la documentation disponible à [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/)
 
-### Quand déployer la documentation {#when-to-deploy-documentation}
+### Quand Déployer la Documentation {#when-to-deploy-documentation}
 
 Déployer les mises à jour de la documentation :
 - Après la fusion des modifications de documentation vers `master`
-- Quand vous publiez une nouvelle version (si la documentation a été mise à jour)
+- Lors de la publication d'une nouvelle version (si la documentation a été mise à jour)
 - Après des améliorations significatives de la documentation
 
 **Note :** Le déploiement de la documentation est indépendant des versions de l'application. Vous pouvez déployer la documentation plusieurs fois entre les versions de l'application.
@@ -219,7 +219,7 @@ Si vous avez apporté des modifications à `documentation/docs/intro.md`, régé
 ```
 
 Ce script :
-- Extrait la Version de `package.json`
+- Extrait la version de `package.json`
 - Génère `README.md` à partir de `documentation/docs/intro.md` (convertit les admonitions Docusaurus en alertes de style GitHub, convertit les liens et les images)
 - Crée `README_dockerhub.md` pour Docker Hub (avec un formatage compatible Docker Hub)
 - Génère `RELEASE_NOTES_github_VERSION.md` à partir de `documentation/docs/release-notes/VERSION.md` (convertit les liens et les images en URL absolues)

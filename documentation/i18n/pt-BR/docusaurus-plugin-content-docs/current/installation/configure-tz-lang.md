@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.400Z'
+translation_last_updated: '2026-02-05T00:21:09.884Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 67bb94741185f3d9
 translation_language: pt-BR
@@ -7,7 +7,7 @@ source_file_path: installation/configure-tz-lang.md
 ---
 # Fuso horário e Localidade {#timezone-and-locale}
 
-A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. Porém, para fins de registro e notificações, a aplicação utilizará o valor definido nas variáveis de ambiente `TZ` e `LANG` para usar os fusos horários corretos e para formatar valores de número, data e hora.
+A interface do usuário da aplicação exibirá data e hora de acordo com as configurações do navegador. No entanto, para fins de registro e notificações, a aplicação utilizará o valor definido nas variáveis de ambiente `TZ` e `LANG` para usar os fusos horários corretos e para formatar valores de número, data e hora.
 
 Os valores padrão são `TZ=Europe/London` e `LANG=en_GB` se estas variáveis de ambiente não estiverem definidas.
 
@@ -44,7 +44,7 @@ Você pode encontrar uma lista de fusos horários aqui: [Wikipedia: List of tz d
 
 ## Configurando a Localidade {#configuring-the-locale}
 
-A interface do usuário da aplicação exibirá datas e números de acordo com as configurações do navegador. No entanto, para fins de registro e notificações, a aplicação utilizará o valor definido na variável de ambiente `LANG` para formatar datas e números.
+A interface do usuário da aplicação exibirá datas e números de acordo com as configurações do navegador. Porém, para fins de registro e notificações, a aplicação utilizará o valor definido na variável de ambiente `LANG` para formatar datas e números.
 
 O valor padrão é `LANG=en_GB` se esta variável de ambiente não estiver definida.
 

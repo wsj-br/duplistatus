@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.068Z'
+translation_last_updated: '2026-02-05T00:21:06.063Z'
 source_file_mtime: '2026-01-27T14:22:06.834Z'
 source_file_hash: 5b8fdae17a34ff83
 translation_language: es
@@ -7,11 +7,11 @@ source_file_path: user-guide/homepage-integration.md
 ---
 # Integración de la Página de Inicio (Opcional) {#homepage-integration-optional}
 
-[Homepage](https://gethomepage.dev/) es una aplicación de panel de control personalizable. Para integrar **duplistatus** con Homepage, añada un widget a su archivo `services.yaml` utilizando el [tipo de widget de API personalizada](https://gethomepage.dev/widgets/services/customapi/).
+[Homepage](https://gethomepage.dev/) es una aplicación de panel de control personalizable. Para integrar **duplistatus** con Homepage, añada un widget a su archivo `services.yaml` utilizando el [tipo de widget Custom API](https://gethomepage.dev/widgets/services/customapi/).
 
 ## Widget de Resumen {#summary-widget}
 
-Este widget muestra las estadísticas generales del backup en el panel de control de su página de inicio.
+Este widget muestra las estadísticas generales del backup en tu panel de control de la página de inicio.
 
 ```yaml
 - Dashboard:
@@ -51,7 +51,7 @@ Este widget muestra las estadísticas generales del backup en el panel de contro
 
 ![Homepage Summary Widget](/img/homepage-summary.png)
 
-## Widget de Información del Última Backup {#last-backup-information-widget}
+## Widget de Información de Última Copia de Seguridad {#last-backup-information-widget}
 
 Este widget muestra la información del backup más reciente para una máquina específica.
 
@@ -89,6 +89,6 @@ Este widget muestra la información del backup más reciente para una máquina e
 ## Notas de Configuración {#configuration-notes}
 
 - Reemplace `your-server` con la dirección IP o nombre de host de su servidor.
-- Ajuste `refreshInterval` según sea necesario (en milisegundos).
+- Ajuste el `refreshInterval` según sea necesario (en milisegundos).
 - Reemplace espacios en nombres de máquinas con `%20` en la URL (por ejemplo, `Test Machine 1` se convierte en `Test%20Machine%201`).
 - Los valores de `scale` convierten bytes a unidades más legibles (GB, MB).

@@ -13,7 +13,7 @@ Administrators see all available settings.
 <table>
   <tr>
     <td>
-      <img src="../../assets/screen-settings-left-panel-admin.png" alt="Settings Sidebar - Admin View" />
+      ![Settings Sidebar - Admin View](../../assets/screen-settings-left-panel-admin.png)
     </td>
     <td>
       <ul>
@@ -56,7 +56,7 @@ Regular users see a limited set of settings.
 <table>
   <tr>
     <td>
-      <img src="../../assets/screen-settings-left-panel-non-admin.png" alt="Settings Sidebar - Non-Admin View" />
+      ![Settings Sidebar - Non-Admin View](../../assets/screen-settings-left-panel-non-admin.png)
     </td>
     <td>
       <ul>

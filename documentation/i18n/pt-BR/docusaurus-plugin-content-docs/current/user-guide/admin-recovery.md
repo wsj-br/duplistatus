@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.798Z'
+translation_last_updated: '2026-02-05T00:21:12.587Z'
 source_file_mtime: '2026-01-29T17:58:29.899Z'
 source_file_hash: 091dcbb5c0bb63c5
 translation_language: pt-BR
@@ -18,7 +18,7 @@ O Dockerfile inclui o diretório `scripts` e um wrapper de shell conveniente.
 docker exec -it duplistatus /app/admin-recovery <username> <new-password>
 ```
 
-# Tradução do Documento
+**Exemplo:**
 
 ```bash
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
@@ -31,7 +31,7 @@ Se você encontrar problemas com o script de recuperação:
 1. **Verificar se o Container está em Execução**: Verifique se o container está em execução com `docker ps`
 2. **Verificar Disponibilidade do Script**: Verifique se o script existe no container com `docker exec -it duplistatus ls -la /app/admin-recovery`
 3. **Revisar Logs do Container**: Verifique se há erros com `docker logs duplistatus`
-4. **Verificar Nome de usuário**: Certifique-se de que o nome de usuário existe no banco de dados
+4. **Verificar Nome de Usuário**: Certifique-se de que o nome de usuário existe no banco de dados
 5. **Verificar Formato da Senha**: Certifique-se de que a nova senha atende a todos os requisitos
 
-Se os problemas persistirem, consulte o guia de [Resolução de Problemas](troubleshooting.md) para mais ajuda.
+Se os problemas persistirem, consulte o guia [Troubleshooting](troubleshooting.md) para obter mais ajuda.

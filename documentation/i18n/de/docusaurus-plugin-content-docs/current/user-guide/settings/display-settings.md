@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:26.272Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: 7fd2a7943ef2234b
+translation_last_updated: '2026-02-05T00:21:00.146Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 796675225958a465
 translation_language: de
 source_file_path: user-guide/settings/display-settings.md
 ---
@@ -15,14 +15,14 @@ Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 
 | Einstellung                   | Beschreibung                                         | Standardwert       |
 | :------------------------ | :-------------------------------------------------- | :------------------ |
-| **Tabellengröße**            | Anzahl der Zeilen pro Seite auf der Server-Detailseite. | 5 Zeilen              |
-| **Diagramm-Zeitbereich**      | Zeitintervall, das in den Diagrammen angezeigt wird.                  | Alle verfügbaren Daten  |
+| **Tabellengröße**            | Anzahl der Zeilen pro Seite auf der Server-Details-Seite. | 5 Zeilen              |
+| **Diagramm-Zeitbereich**      | Zeitintervall in den Diagrammen.                  | Alle verfügbaren Daten  |
 | **Automatische Aktualisierung** | Wie oft Seiten automatisch aktualisiert werden.              | 1 Minute            |
-| **Kartensortierung**      | Wie Karten im Dashboard sortiert werden.              | `Servername (a-z)` |
-| **Thema**                 | Wählen Sie das helle oder dunkle Thema aus.                     | Dunkel                |
+| **Kartensortierung**      | Wie Karten auf dem Dashboard sortiert werden.              | `Servername (a-z)` |
+| **Thema**                 | Auswählen des hellen oder dunklen Themas.                     | Dunkel                |
 
 <br/>
 
 :::tip
-**Schnellzugriff**: Sie können schnell auf diese Seite zugreifen, indem Sie mit der rechten Maustaste auf die Schaltfläche zum automatischen Aktualisieren in der Anwendungssymbolleiste klicken.
+**Schnellzugriff**: Sie können schnell auf diese Seite zugreifen, indem Sie mit der rechten Maustaste auf die Schaltfläche „Aktualisieren" in der Anwendungssymbolleiste klicken.
 :::

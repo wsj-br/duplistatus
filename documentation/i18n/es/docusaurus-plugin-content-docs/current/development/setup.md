@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:26.534Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 722ad34b5346ffbb
+translation_last_updated: '2026-02-05T00:21:02.159Z'
+source_file_mtime: '2026-02-04T21:14:03.774Z'
+source_file_hash: eeffa736b6dc0250
 translation_language: es
 source_file_path: development/setup.md
 ---
@@ -13,10 +13,12 @@ source_file_path: development/setup.md
 - Node.js >=24.12.0
 - pnpm >=10.24.0
 - SQLite3
+- Inkscape (para la traducción de SVG de documentación y exportación de PNG; requerido solo si ejecuta `translate` o `translate:svg`)
+- bat/batcat (para mostrar una versión elegante de `translate:help`)
 
 ## Pasos {#steps}
 
-1. Clone el repositorio:
+1. Clona el repositorio:
 
 ```bash
 git clone https://github.com/wsj-br/duplistatus.git
@@ -27,7 +29,7 @@ cd duplistatus
 
 ```bash
 sudo apt update
-sudo apt install sqlite3 git -y
+sudo apt install sqlite3 git inkscape bat -y
 ```
 
 3. Eliminar instalaciones antiguas de Node.js (si ya lo tenía instalado)
@@ -48,7 +50,7 @@ sudo rm -rf /usr/local/include/node*
 sudo rm -rf /usr/local/bin/node*
 ```
 
-4. Instale Node.js y pnpm:
+4. Instala Node.js y pnpm:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -68,26 +70,26 @@ pnpm dev
 
 ## Scripts Disponibles {#available-scripts}
 
-El proyecto incluye varios scripts de npm para diferentes tareas de desarrollo:
+El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 
 ### Scripts de Desarrollo {#development-scripts}
 - `pnpm dev` - Iniciar servidor de desarrollo en el puerto 8666 (incluye verificaciones previas)
 - `pnpm build` - Compilar la aplicación para producción (incluye verificaciones previas)
 - `pnpm lint` - Ejecutar ESLint para verificar la calidad del código
 - `pnpm typecheck` - Ejecutar verificación de tipos de TypeScript
-- `scripts/upgrade-dependencies.sh` - Actualizar todos los paquetes a la última versión, verificar vulnerabilidades y corregirlas automáticamente
+- `scripts/upgrade-dependencies.sh` - Actualizar todos los paquetes a la versión más reciente, verificar vulnerabilidades y repararlas automáticamente
 - `scripts/clean-workspace.sh` - Limpiar el espacio de trabajo
 
 **Nota:** El script `preinstall` aplica automáticamente pnpm como gestor de paquetes.
 
 ### Scripts de Producción {#production-scripts}
 - `pnpm build-local` - Compilar y preparar para producción local (incluye verificaciones previas, copia archivos estáticos al directorio independiente)
-- `pnpm start-local` - Iniciar Servidor de producción localmente (Puerto 8666, incluye verificaciones previas). **Nota:** Ejecute `pnpm build-local` primero.
-- `pnpm start` - Iniciar Servidor de producción (Puerto 9666)
+- `pnpm start-local` - Iniciar servidor de producción localmente (puerto 8666, incluye verificaciones previas). **Nota:** Ejecute `pnpm build-local` primero.
+- `pnpm start` - Iniciar servidor de producción (puerto 9666)
 
 ### Scripts de Docker {#docker-scripts}
-- `pnpm docker-up` - Iniciar stack de Docker Compose
-- `pnpm docker-down` - Detener stack de Docker Compose
+- `pnpm docker-up` - Iniciar la pila de Docker Compose
+- `pnpm docker-down` - Detener la pila de Docker Compose
 - `pnpm docker-clean` - Limpiar el entorno de Docker y la caché
 - `pnpm docker-devel` - Construir una imagen de Docker de desarrollo etiquetada como `wsj-br/duplistatus:devel`
 
@@ -103,7 +105,7 @@ El proyecto incluye varios scripts de npm para diferentes tareas de desarrollo:
 - `pnpm test-cron-port` - Probar conectividad del puerto del servicio cron
 - `pnpm test-overdue-detection` - Probar lógica de detección de backup retrasado
 - `pnpm validate-csv-export` - Validar funcionalidad de exportación CSV
-- `pnpm set-smtp-test-config` - Establecer configuración de prueba SMTP desde variables de entorno (ver [Scripts de Prueba](test-scripts))
-- `pnpm test-smtp-connections` - Probar compatibilidad cruzada de tipo de conexión SMTP (ver [Scripts de Prueba](test-scripts))
-- `pnpm test-entrypoint` - Probar script de punto de entrada Docker en desarrollo local (ver [Scripts de Prueba](test-scripts))
-- `pnpm take-screenshots` - Tomar capturas de pantalla para documentación (ver [Herramientas de Documentación](documentation-tools))
+- `pnpm set-smtp-test-config` - Establecer configuración de prueba SMTP desde variables de entorno (véase [Scripts de Prueba](test-scripts))
+- `pnpm test-smtp-connections` - Probar compatibilidad cruzada de tipos de conexión SMTP (véase [Scripts de Prueba](test-scripts))
+- `pnpm test-entrypoint` - Probar script de punto de entrada Docker en desarrollo local (véase [Scripts de Prueba](test-scripts))
+- `pnpm take-screenshots` - Tomar capturas de pantalla para documentación (véase [Herramientas de Documentación](documentation-tools))

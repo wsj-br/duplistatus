@@ -3,10 +3,12 @@ import path from "path";
 import { TranslationConfig } from "./types";
 
 const DEFAULT_CONFIG: TranslationConfig = {
+  batchSize: 20,
+  maxBatchChars: 5000,
   openrouter: {
     baseUrl: "https://openrouter.ai/api/v1",
-    defaultModel: "anthropic/claude-haiku-4.5",
-    fallbackModel: "google/gemma-3-27b-it",
+    defaultModel: "deepseek/deepseek-chat",
+    fallbackModel: "anthropic/claude-3-haiku",
     maxTokens: 8192,
     temperature: 0.2,
   },
@@ -19,6 +21,7 @@ const DEFAULT_CONFIG: TranslationConfig = {
     i18n: "./i18n",
     cache: "./.translation-cache",
     glossary: "./glossary.csv",
+    staticImg: "./static/img",
   },
   cache: {
     enabled: true,
@@ -40,6 +43,8 @@ export function loadConfig(configPath?: string): TranslationConfig {
 
     // Deep merge with defaults
     return {
+      batchSize: userConfig.batchSize ?? DEFAULT_CONFIG.batchSize,
+      maxBatchChars: userConfig.maxBatchChars ?? DEFAULT_CONFIG.maxBatchChars,
       openrouter: { ...DEFAULT_CONFIG.openrouter, ...userConfig.openrouter },
       locales: { ...DEFAULT_CONFIG.locales, ...userConfig.locales },
       paths: { ...DEFAULT_CONFIG.paths, ...userConfig.paths },

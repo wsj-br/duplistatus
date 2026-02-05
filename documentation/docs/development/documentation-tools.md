@@ -196,6 +196,21 @@ The script generates the following screenshots (saved to `documentation/static/i
 - `screen-settings-ntfy-configure-device-popup.png` - NTFY configure device popup
 - `screen-settings-backup-notifications-detail.png` - Backup notifications detail page
 
+## Translate SVG files {#translate-svg-files}
+
+SVG translation is included in `pnpm run translate` by default (runs after docs). The `translate:svg` script is for SVG-only runs (e.g. when only SVGs changed). Both translate text inside SVG files (e.g. toolbar and dashboard diagrams) to each locale, then export them to PNG using Inkscape.
+
+**Prerequisites:** Inkscape CLI (see [Development Setup](setup#prerequisites)); `OPENROUTER_API_KEY` for API-based translation (not required for `--dry-run` or `--stats`).
+
+**Quick usage:**
+```bash
+cd documentation
+pnpm translate:svg          # SVG-only
+pnpm run translate          # Docs + SVGs (use --no-svg for docs only)
+```
+
+For full translation workflow (glossary, AI translation, cache, options, troubleshooting), see [Translation Workflow](translation-workflow.md).
+
 ## Deploying the Documentation {#deploying-the-documentation}
 
 
@@ -215,6 +230,8 @@ pnpm run deploy
 This will build the documentation and push it to the `gh-pages` branch of the repository, and the documentation will be available at [https://wsj-br.github.io/duplistatus/](https://wsj-br.github.io/duplistatus/).
 
 ## Working with Documentation {#working-with-documentation}
+
+For translation workflow (glossary, AI translation, cache management), see [Translation Workflow](translation-workflow.md).
 
 - Documentation files are written in Markdown (`.md`) and located in `documentation/docs/`
 - The sidebar navigation is configured in `documentation/sidebars.ts`

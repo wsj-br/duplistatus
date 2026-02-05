@@ -9,8 +9,21 @@ import { DocumentSplitter } from "./splitter";
 import { Translator } from "./translator";
 import { loadConfig, validateConfig } from "./config";
 import { validateTranslation } from "./validator";
-import { TranslationConfig, TranslationStats, Segment } from "./types";
+import {
+  BatchTranslationError,
+  TranslationConfig,
+  TranslationStats,
+  Segment,
+} from "./types";
 import { isIgnoredDocFile, loadTranslateIgnoreFile } from "./ignore";
+import { getAllDocFiles, toPosixPath } from "./file-utils";
+import { protectMarkdownUrls, restoreMarkdownUrls } from "./url-placeholders";
+import {
+  protectAdmonitionSyntax,
+  restoreAdmonitionSyntax,
+} from "./admonition-placeholders";
+import { runSvgTranslation } from "./translate-svg";
+import { setupLogOutput } from "./log-output";
 
 const program = new Command();
 
@@ -51,28 +64,6 @@ function normalizeLocale(locale: string): string {
   return normalized.toLowerCase();
 }
 
-function getAllDocFiles(docsDir: string, ig?: ReturnType<typeof loadTranslateIgnoreFile> | null): string[] {
-  const files: string[] = [];
-
-  function walk(dir: string) {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        walk(fullPath);
-      } else if (entry.name.endsWith(".md") || entry.name.endsWith(".mdx")) {
-        files.push(fullPath);
-      }
-    }
-  }
-
-  walk(docsDir);
-  const sorted = files.sort();
-  if (!ig) return sorted;
-
-  return sorted.filter((filepath) => !isIgnoredDocFile(filepath, docsDir, ig));
-}
-
 /** Get all files under docs (any extension), for copying ignored paths. */
 function getAllFilesUnderDocs(docsDir: string): string[] {
   const files: string[] = [];
@@ -90,6 +81,29 @@ function getAllFilesUnderDocs(docsDir: string): string[] {
   }
   walk(docsDir);
   return files.sort();
+}
+
+/** Returns true if the path contains any .svg file (file path or directory). */
+function hasSvgFilesInPath(targetPath: string): boolean {
+  const resolved = path.resolve(targetPath);
+  if (!fs.existsSync(resolved)) return false;
+  const stats = fs.statSync(resolved);
+  if (stats.isFile()) {
+    return resolved.toLowerCase().endsWith(".svg");
+  }
+  function hasSvg(dir: string): boolean {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (hasSvg(fullPath)) return true;
+      } else if (entry.name.toLowerCase().endsWith(".svg")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return hasSvg(resolved);
 }
 
 /**
@@ -182,12 +196,15 @@ async function translateFile(
   force: boolean = false,
   totalFilesCount: number = 1,
   debugTrafficPath?: string,
-  noCacheRead: boolean = false
+  noCacheRead: boolean = false,
+  segmentHitKeys?: Set<string>,
+  noBatch: boolean = false
 ): Promise<void> {
   const fileStartTime = Date.now();
   const content = fs.readFileSync(filepath, "utf-8");
   const fileHash = TranslationCache.computeHash(content);
   const relativePath = path.relative(config.paths.docs, filepath);
+  const cachePath = toPosixPath(relativePath);
   const outputPath = getOutputPath(filepath, locale, config);
 
   // Get source file modification time
@@ -196,14 +213,14 @@ async function translateFile(
 
   // Clear file cache if --force flag is set
   if (force) {
-    cache.clearFile(relativePath, locale);
+    cache.clearFile(cachePath, locale);
     if (verbose) {
       console.log(chalk.yellow(`  🔄 Force mode: cleared cache for ${relativePath}`));
     }
   }
 
   // Check file-level cache
-  const cachedFileHash = cache.getFileStatus(relativePath, locale);
+  const cachedFileHash = cache.getFileStatus(cachePath, locale);
   const outputFileExists = fs.existsSync(outputPath);
   
   // Skip only if cache matches AND output file exists AND not forcing
@@ -226,11 +243,27 @@ async function translateFile(
   const segments = splitter.split(content);
   const totalSegments = segments.length;
   const translatableSegments = segments.filter(s => s.translatable).length;
-  const translatedSegments: Segment[] = [];
+  /** Result array: index matches segment order. Filled as we process. */
+  const result: Segment[] = segments.map((s) => ({ ...s })); // Copy; we'll overwrite content
   let fileSegmentsCached = 0;
   let fileSegmentsTranslated = 0;
   let currentSegmentIndex = 0;
   let fileCost = 0; // Track cost for this file only
+
+  const batchSize = config.batchSize ?? 20;
+  const maxBatchChars = config.maxBatchChars ?? 2000;
+
+  interface BatchItem {
+    segmentIndex: number;
+    segment: Segment;
+    protectedContent: string;
+    urlMap: string[];
+    openMap: string[];
+    endMap: string[];
+    glossaryHints: string[];
+  }
+  const batchQueue: BatchItem[] = [];
+  let batchChars = 0;
 
   // Display file start
   console.log(chalk.cyan(`\n  📄 ${relativePath}`));
@@ -269,42 +302,150 @@ async function translateFile(
     process.stdout.write(progressLine.padEnd(100));
   };
 
-  for (const segment of segments) {
+  const flushBatch = async (items: BatchItem[]) => {
+    if (items.length === 0) return;
+
+    const segmentsForApi = items.map((b) => ({
+      ...b.segment,
+      content: b.protectedContent,
+    }));
+    const mergedGlossary = [...new Set(items.flatMap((b) => b.glossaryHints))];
+
+    try {
+      const batchResult = await translator.translateBatch(
+        segmentsForApi,
+        locale,
+        mergedGlossary
+      );
+
+      stats.totalTokens += batchResult.usage.totalTokens;
+      if (batchResult.cost !== undefined && batchResult.cost !== null && !isNaN(batchResult.cost) && batchResult.cost > 0) {
+        stats.totalCost += batchResult.cost;
+        fileCost += batchResult.cost;
+      }
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const rawTranslation = batchResult.translations.get(i);
+        if (rawTranslation === undefined) continue;
+        const admonitionRestored = restoreAdmonitionSyntax(
+          rawTranslation,
+          item.openMap,
+          item.endMap
+        );
+        const restoredContent = restoreMarkdownUrls(admonitionRestored, item.urlMap);
+
+        fileSegmentsTranslated++;
+        stats.segmentsTranslated++;
+
+        cache.setSegment(
+          item.segment.hash,
+          locale,
+          item.segment.content,
+          restoredContent,
+          batchResult.model,
+          cachePath,
+          item.segment.startLine
+        );
+        segmentHitKeys?.add(`${item.segment.hash}|${locale}`);
+        result[item.segmentIndex] = { ...item.segment, content: restoredContent };
+      }
+    } catch (error) {
+      if (error instanceof BatchTranslationError) {
+        if (verbose) {
+          console.warn(
+            chalk.yellow(`\n⚠️  Batch failed (${error.expected} segments), falling back to single-segment mode`)
+          );
+        }
+        for (const item of items) {
+          try {
+            updateProgress("translating");
+            const trResult = await translator.translate(
+              item.protectedContent,
+              locale,
+              item.glossaryHints
+            );
+            const admonitionRestored = restoreAdmonitionSyntax(
+              trResult.content,
+              item.openMap,
+              item.endMap
+            );
+            const restoredContent = restoreMarkdownUrls(admonitionRestored, item.urlMap);
+
+            fileSegmentsTranslated++;
+            stats.segmentsTranslated++;
+            stats.totalTokens += trResult.usage.totalTokens;
+            if (trResult.cost !== undefined && trResult.cost !== null && !isNaN(trResult.cost)) {
+              if (trResult.cost > 0) {
+                stats.totalCost += trResult.cost;
+                fileCost += trResult.cost;
+              }
+            }
+
+            cache.setSegment(
+              item.segment.hash,
+              locale,
+              item.segment.content,
+              restoredContent,
+              trResult.model,
+              cachePath,
+              item.segment.startLine
+            );
+            segmentHitKeys?.add(`${item.segment.hash}|${locale}`);
+            result[item.segmentIndex] = { ...item.segment, content: restoredContent };
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          } catch (singleError) {
+            console.error(
+              chalk.red(
+                `\n  ❌ Failed to translate segment in ${relativePath}: ${singleError}`
+              )
+            );
+            result[item.segmentIndex] = item.segment;
+          }
+        }
+      } else {
+        throw error;
+      }
+    }
+  };
+
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
     currentSegmentIndex++;
     if (!segment.translatable) {
-      translatedSegments.push(segment);
+      // result[i] already has the segment; no translation needed
+      updateProgress("cache");
       continue;
     }
 
     // Check segment cache
-    const cachedTranslation = cache.getSegment(segment.hash, locale);
+    const cachedTranslation = noCacheRead
+      ? null
+      : cache.getSegment(segment.hash, locale, cachePath, segment.startLine);
     if (cachedTranslation) {
       fileSegmentsCached++;
       stats.segmentsCached++;
-      translatedSegments.push({
-        ...segment,
-        content: cachedTranslation,
-      });
-      
-      // Update progress for cached segments
-      updateProgress('cache');
+      segmentHitKeys?.add(`${segment.hash}|${locale}`);
+      result[i] = { ...segment, content: cachedTranslation };
+      updateProgress("cache");
       continue;
     }
 
     if (dryRun) {
       fileSegmentsTranslated++;
       stats.segmentsTranslated++;
-      translatedSegments.push(segment);
+      // result[i] already has the segment
       continue;
     }
 
-    // Find glossary terms and translate
     const glossaryHints = glossary.findTermsInText(segment.content, locale);
+    const { protected: urlProtected, urlMap } = protectMarkdownUrls(segment.content);
+    const {
+      protected: protectedContent,
+      openMap,
+      endMap,
+    } = protectAdmonitionSyntax(urlProtected);
 
-    // Update progress before translating
-    updateProgress('translating');
-
-    // Write segment metadata to debug log before the API request (when --debug-traffic is set)
     if (debugTrafficPath) {
       try {
         const segmentIndex0 = currentSegmentIndex - 1;
@@ -313,7 +454,7 @@ async function translateFile(
           `segment number: ${segmentIndex0}`,
           `segment source_hash: ${segment.hash}`,
           "text to be translated:",
-          segment.content,
+          protectedContent,
           "",
         ].join("\n");
         fs.appendFileSync(debugTrafficPath, meta, "utf-8");
@@ -322,53 +463,76 @@ async function translateFile(
       }
     }
 
-    try {
-      const segmentStartTime = Date.now();
-      const result = await translator.translate(
-        segment.content,
-        locale,
-        glossaryHints
-      );
-      const segmentTime = Date.now() - segmentStartTime;
+    if (noBatch) {
+      // Single-segment mode: translate immediately
+      try {
+        updateProgress("translating");
+        const trResult = await translator.translate(protectedContent, locale, glossaryHints);
+        const admonitionRestored = restoreAdmonitionSyntax(
+          trResult.content,
+          openMap,
+          endMap
+        );
+        const restoredContent = restoreMarkdownUrls(admonitionRestored, urlMap);
 
-      fileSegmentsTranslated++;
-      stats.segmentsTranslated++;
-      stats.totalTokens += result.usage.totalTokens;
-      
-      // Accumulate actual cost from API
-      if (result.cost !== undefined && result.cost !== null && !isNaN(result.cost)) {
-        if (result.cost > 0) {
-          stats.totalCost += result.cost;
-          fileCost += result.cost;
+        fileSegmentsTranslated++;
+        stats.segmentsTranslated++;
+        stats.totalTokens += trResult.usage.totalTokens;
+        if (trResult.cost !== undefined && trResult.cost !== null && !isNaN(trResult.cost) && trResult.cost > 0) {
+          stats.totalCost += trResult.cost;
+          fileCost += trResult.cost;
         }
+
+        cache.setSegment(
+          segment.hash,
+          locale,
+          segment.content,
+          restoredContent,
+          trResult.model,
+          cachePath,
+          segment.startLine
+        );
+        segmentHitKeys?.add(`${segment.hash}|${locale}`);
+        result[i] = { ...segment, content: restoredContent };
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } catch (error) {
+        console.error(
+          chalk.red(`\n  ❌ Failed to translate segment ${currentSegmentIndex} in ${relativePath}: ${error}`)
+        );
+        result[i] = segment;
       }
-
-      // Cache and use the raw API response (no cleanup; LLM responses are trusted)
-      cache.setSegment(
-        segment.hash,
-        locale,
-        segment.content,
-        result.content,
-        result.model
-      );
-      
-      translatedSegments.push({
-        ...segment,
-        content: result.content,
+    } else {
+      // Batch mode: accumulate and flush when full
+      batchQueue.push({
+        segmentIndex: i,
+        segment,
+        protectedContent,
+        urlMap,
+        openMap,
+        endMap,
+        glossaryHints,
       });
+      batchChars += protectedContent.length;
 
-      // Update progress after translation
-      updateProgress('translating');
-
-      // Small delay to avoid rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    } catch (error) {
-      console.error(
-        chalk.red(`\n  ❌ Failed to translate segment ${currentSegmentIndex} in ${relativePath}: ${error}`)
-      );
-      translatedSegments.push(segment); // Keep original on failure
+      if (batchQueue.length >= batchSize || batchChars >= maxBatchChars) {
+        updateProgress("translating");
+        const toFlush = [...batchQueue];
+        batchQueue.length = 0;
+        batchChars = 0;
+        await flushBatch(toFlush);
+      }
     }
   }
+
+  // Flush remaining batch items (only when using batch mode)
+  if (!noBatch && batchQueue.length > 0) {
+    updateProgress("translating");
+    const toFlush = [...batchQueue];
+    batchQueue.length = 0;
+    await flushBatch(toFlush);
+  }
+
+  const translatedSegments = result;
   
   // Clear progress line
   process.stdout.write('\r' + ' '.repeat(100) + '\r');
@@ -423,7 +587,7 @@ async function translateFile(
       sourceFileMtime,
       fileHash,
       locale,
-      relativePath
+      cachePath
     );
   }
 
@@ -435,7 +599,7 @@ async function translateFile(
     fs.writeFileSync(outputPath, translatedContent);
 
     // Update file tracking
-    cache.setFileStatus(relativePath, locale, fileHash);
+    cache.setFileStatus(cachePath, locale, fileHash);
   }
 
   const fileTime = Date.now() - fileStartTime;
@@ -472,11 +636,18 @@ async function main() {
     .option("-v, --verbose", "Show detailed output")
     .option("--stats", "Show cache statistics and exit")
     .option("--clear-cache [locale]", "Clear translation cache")
-    .option("--debug-traffic [path]", "Log OpenRouter request/response to a file (only when API is called; use --no-cache to force API calls)")
+    .option("--debug-traffic [path]", "Log OpenRouter request/response to a file (on by default; pass path to use custom filename)", true)
+    .option("--no-debug-traffic", "Disable debug traffic logging")
+    .option("--no-svg", "Skip SVG translation (docs only)")
+    .option("--no-export-png", "Skip Inkscape PNG export after SVG translation")
+    .option("--no-batch", "Use single-segment translation instead of batch (one API call per segment)")
     .option("-c, --config <path>", "Path to config file")
     .parse(process.argv);
 
   const options = program.opts();
+
+  const cacheDir = path.resolve(process.cwd(), ".translation-cache");
+  const { logPath } = setupLogOutput({ cacheDir, prefix: "translate" });
 
   try {
     const config = loadConfig(options.config);
@@ -544,14 +715,12 @@ async function main() {
     const splitter = new DocumentSplitter();
 
     let debugTrafficPath: string | undefined;
-    if (options.debugTraffic) {
-      debugTrafficPath =
-        options.debugTraffic === true
-          ? path.join(
-              config.paths.cache,
-              `debug-traffic-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.log`
-            )
-          : String(options.debugTraffic);
+    if (options.debugTraffic !== false) {
+      const defaultPath = path.join(
+        config.paths.cache,
+        `debug-traffic-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.log`
+      );
+      debugTrafficPath = typeof options.debugTraffic === "string" ? options.debugTraffic : defaultPath;
       const dir = path.dirname(debugTrafficPath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -612,6 +781,8 @@ async function main() {
       console.log(chalk.gray(`   Ignore file: ${path.join(process.cwd(), ".translate.ignore")}`));
     }
 
+    const segmentHitKeys = new Set<string>();
+
     console.log(
       chalk.bold(
         `\n🌐 Translating ${files.length} files to ${locales.length} locale(s)\n`
@@ -619,6 +790,7 @@ async function main() {
     );
     console.log(chalk.gray(`   Model: ${config.openrouter.defaultModel}`));
     console.log(chalk.gray(`   Glossary terms: ${glossary.size}`));
+    console.log(chalk.gray(`   Output log: ${logPath}`));
     if (debugTrafficPath) {
       console.log(chalk.gray(`   Debug traffic log: ${debugTrafficPath}`));
     }
@@ -626,6 +798,9 @@ async function main() {
 
     if (options.dryRun) {
       console.log(chalk.yellow("⚠️  Dry run mode - no changes will be made\n"));
+    }
+    if (options.batch === false) {
+      console.log(chalk.yellow("⚠️  Single-segment mode (--no-batch) - one API call per segment\n"));
     }
 
     // Copy ignored files into each locale's current folder (untranslated)
@@ -681,7 +856,9 @@ async function main() {
           options.force || false,
           files.length, // Pass total file count for progress display
           debugTrafficPath,
-          noCacheRead
+          noCacheRead,
+          segmentHitKeys,
+          options.batch === false
         );
       }
 
@@ -714,6 +891,21 @@ async function main() {
         );
       }
     }
+
+    
+    // Run SVG translation at the end (unless --no-svg or --path targets docs with no .svg files)
+    const skipSvg = options.svg === false || (options.path && !hasSvgFilesInPath(options.path));
+    if (!skipSvg) {
+      await runSvgTranslation(config, cache, glossary, translator, {
+        dryRun: options.dryRun || false,
+        verbose: options.verbose || false,
+        force: options.force || false,
+        noCacheRead,
+        exportPng: options.exportPng !== false,
+        locale: options.locale,
+      });
+    }
+
 
     // Final summary
     console.log(chalk.bold.green("\n✅ Translation complete!\n"));
@@ -791,6 +983,13 @@ async function main() {
     console.log(chalk.gray("\n   Cache segments by locale:"));
     for (const [loc, count] of Object.entries(cacheStats.byLocale)) {
       console.log(chalk.gray(`     - ${loc}: ${count}`));
+    }
+
+    // Reset last_hit_at only for segments we didn't hit this run (so cleanup can remove them later).
+    // Done at end to avoid a window where all segments have last_hit_at=NULL.
+    const resetCount = cache.resetLastHitAtForUnhitMarkdown(segmentHitKeys);
+    if (resetCount > 0 && options.verbose) {
+      console.log(chalk.gray(`   Reset last_hit_at for ${resetCount} unhit markdown cache row(s)`));
     }
 
     } finally {

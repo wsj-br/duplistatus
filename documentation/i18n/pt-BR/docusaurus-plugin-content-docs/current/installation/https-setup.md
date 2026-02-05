@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.434Z'
+translation_last_updated: '2026-02-05T00:21:10.096Z'
 source_file_mtime: '2026-01-29T17:58:29.895Z'
 source_file_hash: 5182562d16f18184
 translation_language: pt-BR
@@ -7,7 +7,7 @@ source_file_path: installation/https-setup.md
 ---
 # Configuração HTTPS (Opcional) {#https-setup-optional}
 
-Para implantações em produção, é recomendado servir o **duplistatus** via HTTPS usando um proxy reverso. Esta seção fornece exemplos de configuração para soluções populares de proxy reverso.
+Para implantações em produção, é recomendado servir **duplistatus** via HTTPS usando um proxy reverso. Esta seção fornece exemplos de configuração para soluções populares de proxy reverso.
 
 ### Opção 1: Nginx com Certbot (Let's Encrypt) {#option-1-nginx-with-certbot-lets-encrypt}
 
@@ -59,7 +59,7 @@ sudo systemctl reload nginx
 sudo certbot --nginx -d your-domain.com
 ```
 
-O Certbot atualizará automaticamente sua configuração do Nginx para incluir as configurações de SSL e redirecionar HTTP para HTTPS.
+O Certbot atualizará automaticamente sua configuração do Nginx para incluir configurações de SSL e redirecionar HTTP para HTTPS.
 
 **Documentação:**
 
@@ -69,7 +69,7 @@ O Certbot atualizará automaticamente sua configuração do Nginx para incluir a
 
 ### Opção 2: Caddy {#option-2-caddy}
 
-[Caddy](https://caddyserver.com/) é um Servidor web moderno com HTTPS automático que simplifica o gerenciamento de certificados SSL.
+[Caddy](https://caddyserver.com/) é um servidor web moderno com HTTPS automático que simplifica o gerenciamento de certificados SSL.
 
 **Pré-requisitos:**
 
@@ -102,7 +102,7 @@ Ou use-o como um serviço do sistema:
 sudo caddy start --config Caddyfile
 ```
 
-Caddy obterá e gerenciará automaticamente certificados SSL do Let's Encrypt.
+O Caddy obterá e gerenciará automaticamente certificados SSL do Let's Encrypt.
 
 **Documentação:**
 
@@ -122,8 +122,8 @@ Após configurar HTTPS, lembre-se de atualizar a configuração do seu servidor 
 
 :::tip
 
-- Substitua `your-domain.com` pelo nome de domínio real
-- Certifique-se de que o registro DNS A do seu domínio aponta para o Endereço IP do seu servidor
+- Substitua `your-domain.com` pelo seu nome de domínio real
+- Certifique-se de que o registro DNS A do seu domínio aponta para o endereço IP do seu servidor
 - Ambas as soluções renovarão automaticamente os certificados SSL
 - Considere configurar um firewall para permitir apenas tráfego HTTP/HTTPS
 :::

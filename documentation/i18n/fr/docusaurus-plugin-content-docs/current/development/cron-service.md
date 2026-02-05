@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:19.795Z'
+translation_last_updated: '2026-02-05T00:20:47.254Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: a4aa296b36d4dd44
 translation_language: fr
@@ -27,7 +27,7 @@ pnpm cron:start
 pnpm cron:start-local
 ```
 
-Le service cron s'exécute sur un port distinct (8667 en développement, 9667 en production) et gère les tâches planifiées comme les notifications de sauvegarde en retard. Le port peut être configuré à l'aide de la variable d'environnement `CRON_PORT`.
+Le service cron s'exécute sur un port séparé (8667 en développement, 9667 en production) et gère les tâches planifiées comme les notifications de sauvegarde en retard. Le port peut être configuré à l'aide de la variable d'environnement `CRON_PORT`.
 
 Le service cron inclut :
 - **Point de terminaison de vérification de santé** : `/health` - Retourne le statut du service et les tâches actives
@@ -35,7 +35,7 @@ Le service cron inclut :
 - **Gestion des tâches** : `POST /start/:taskName` et `POST /stop/:taskName` - Contrôle les tâches individuelles
 - **Rechargement de la configuration** : `POST /reload-config` - Recharge la configuration depuis la base de données
 - **Redémarrage automatique** : Le service redémarre automatiquement en cas de panne (géré par `duplistatus-cron.sh`)
-- **Mode veille** : Le mode développement inclut la surveillance des fichiers pour les redémarrages automatiques lors de modifications du code
+- **Mode surveillance** : Le mode développement inclut la surveillance des fichiers pour les redémarrages automatiques lors de modifications du code
 - **Surveillance des sauvegardes en retard** : Vérification automatisée et notification des sauvegardes en retard (s'exécute toutes les 5 minutes par défaut)
 - **Nettoyage du journal d'audit** : Nettoyage automatisé des anciennes entrées du journal d'audit (s'exécute quotidiennement à 2 h UTC)
 - **Planification flexible** : Expressions cron configurables pour différentes tâches

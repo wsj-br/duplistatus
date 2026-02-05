@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.601Z'
+translation_last_updated: '2026-02-05T00:20:50.901Z'
 source_file_mtime: '2026-01-29T17:58:29.899Z'
 source_file_hash: 7cff43133e2a1c9a
 translation_language: fr
@@ -9,35 +9,35 @@ source_file_path: migration/version_upgrade.md
 
 Ce guide explique comment effectuer une mise à niveau entre les versions de duplistatus. Les migrations sont automatiques : le schéma de la base de données se met à jour automatiquement quand vous démarrez une nouvelle version.
 
-Les étapes manuelles ne sont requises que si vous avez personnalisé les Modèles de notification (la version 0.8.x a modifié les variables de modèle) ou les Intégrations d'API externes qui nécessitent une mise à jour (la version 0.7.x a modifié les noms de champs API, la version 0.9.x nécessite une authentification).
+Les étapes manuelles ne sont requises que si vous avez personnalisé les modèles de notification (la version 0.8.x a modifié les variables de modèle) ou les intégrations d'API externes qui nécessitent une mise à jour (la version 0.7.x a modifié les noms de champs API, la version 0.9.x nécessite une authentification).
 
 ## Vue d'ensemble {#overview}
 
 duplistatus migre automatiquement votre schéma de base de données lors de la mise à niveau. Le système :
 
-1. Crée une sauvegarde de votre base de données avant d'effectuer des modifications
+1. Crée une sauvegarde de votre base de données avant d'apporter des modifications
 2. Met à jour le schéma de la base de données vers la dernière version
-3. Préserve toutes les données existantes (serveurs, sauvegardes, configuration)
+3. Préserve tous les données existantes (serveurs, sauvegardes, configuration)
 4. Vérifie que la migration s'est terminée avec succès
 
-## Sauvegarder votre base de données avant la migration {#backing-up-your-database-before-migration}
+## Sauvegarde de votre base de données avant la migration {#backing-up-your-database-before-migration}
 
-Avant de procéder à la mise à niveau vers une nouvelle version, il est recommandé de créer une sauvegarde de votre base de données. Cela vous permet de restaurer vos données en cas de problème lors du processus de migration.
+Avant de mettre à niveau vers une nouvelle version, il est recommandé de créer une sauvegarde de votre base de données. Cela vous permet de restaurer vos données en cas de problème lors du processus de migration.
 
 ### Si vous exécutez la Version 1.2.1 ou ultérieure {#if-youre-running-version-121-or-later}
 
 Utilisez la fonction de sauvegarde de la base de données intégrée :
 
-1. Accédez à `Paramètres → Maintenance de la base de données` dans l'interface web
+1. Accédez à `Settings → Database Maintenance` dans l'interface web
 2. Dans la section **Sauvegarde de la base de données**, sélectionnez un format de sauvegarde :
    - **Fichier de base de données (.db)** : Format binaire - sauvegarde la plus rapide, préserve exactement toute la structure de la base de données
    - **Dump SQL (.sql)** : Format texte - instructions SQL lisibles par l'homme
-3. Cliquez sur `Télécharger la sauvegarde`
+3. Cliquez sur `Download Backup`
 4. Le fichier de sauvegarde sera téléchargé sur votre ordinateur avec un nom de fichier horodaté
 
-Pour plus de détails, consultez la documentation [Maintenance de la base de données](../user-guide/settings/database-maintenance.md#database-backup).
+Pour plus de détails, voir la documentation [Maintenance de la base de données](../user-guide/settings/database-maintenance.md#database-backup).
 
-### Si vous exécutez une Version antérieure à 1.2.1 {#if-youre-running-a-version-before-121}
+### Si vous exécutez une version antérieure à 1.2.1 {#if-youre-running-a-version-before-121}
 
 #### Sauvegarde {#backup}
 
@@ -56,11 +56,11 @@ docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).
 (Si vous utilisez Podman, remplacez simplement `docker` par `podman` dans la commande ci-dessus.)
 
 ##### Pour les utilisateurs Windows {#for-windows-users}
-Si vous exécutez Docker Desktop sur Windows, vous disposez de deux moyens simples de gérer cela sans utiliser la ligne de commande :
+Si vous exécutez Docker Desktop sur Windows, vous disposez de deux moyens simples pour gérer cela sans utiliser la ligne de commande :
 
 ###### Option A : Utiliser Docker Desktop (Le plus simple) {#option-a-use-docker-desktop-easiest}
 1. Ouvrez le Tableau de bord Docker Desktop.
-2. Accédez à l'onglet Containers et cliquez sur votre conteneur duplistatus.
+2. Allez à l'onglet Conteneurs et cliquez sur votre conteneur duplistatus.
 3. Cliquez sur l'onglet Fichiers.
 4. Accédez à `/app/data/`.
 5. Cliquez avec le bouton droit sur `backups.db` et sélectionnez **Enregistrer sous...** pour le télécharger dans vos dossiers Windows.
@@ -73,9 +73,9 @@ docker cp duplistatus:/app/data/backups.db $HOME\Desktop\duplistatus-backup.db
 ```
 
 ##### Si vous utilisez des montages de liaison {#if-you-use-bind-mounts}
-Si vous avez initialement configuré votre conteneur à l'aide d'un montage de liaison (par exemple, vous avez mappé un dossier local comme `/opt/duplistatus` au conteneur), vous n'avez pas besoin de commandes Docker du tout. Il vous suffit de copier le fichier à l'aide de votre gestionnaire de fichiers :
+Si vous avez initialement configuré votre conteneur à l'aide d'un montage de liaison (par exemple, vous avez mappé un dossier local comme `/opt/duplistatus` au conteneur), vous n'avez besoin d'aucune commande Docker. Copiez simplement le fichier à l'aide de votre gestionnaire de fichiers :
 - Linux : `cp /path/to/your/folder/backups.db ~/backups.db`
-- Windows : Il vous suffit de copier le fichier dans l'**Explorateur de fichiers** à partir du dossier que vous avez désigné lors de la configuration.
+- Windows : Copiez simplement le fichier dans l'**Explorateur de fichiers** à partir du dossier que vous avez désigné lors de la configuration.
 
 #### Restauration de vos données {#restoring-your-data}
 Si vous devez restaurer votre base de données à partir d'une sauvegarde précédente, suivez les étapes ci-dessous en fonction de votre système d'exploitation.
@@ -103,9 +103,9 @@ docker start duplistatus
 ##### Pour les utilisateurs Windows {#for-windows-users}
 Si vous utilisez Docker Desktop, vous pouvez effectuer la restauration via l'interface graphique ou PowerShell.
 
-###### Option A : Utiliser Docker Desktop (interface graphique) {#option-a-use-docker-desktop-gui}
-1. Assurez-vous que le conteneur duplistatus est en cours d'exécution (Docker Desktop nécessite que le conteneur soit actif pour téléverser des fichiers via l'interface graphique).
-2. Accédez à l'onglet Fichiers dans les paramètres de votre conteneur.
+###### Option A : Utiliser Docker Desktop (GUI) {#option-a-use-docker-desktop-gui}
+1. Assurez-vous que le conteneur duplistatus est Actif (Docker Desktop nécessite que le conteneur soit actif pour téléverser des fichiers via l'interface graphique).
+2. Allez à l'onglet Fichiers dans les paramètres de votre conteneur.
 3. Naviguez vers `/app/data/`.
 4. Cliquez avec le bouton droit sur le fichier backups.db existant et sélectionnez Supprimer.
 5. Cliquez sur le bouton Importer (ou cliquez avec le bouton droit dans la zone du dossier) et sélectionnez votre fichier de sauvegarde depuis votre ordinateur.
@@ -127,10 +127,10 @@ docker start duplistatus
 ##### Si vous utilisez des montages de liaison {#if-you-use-bind-mounts}
 Si vous utilisez un dossier local mappé au conteneur, vous n'avez besoin d'aucune commande spéciale.
 
-1. Arrêtez le conteneur.
-2. Copiez manuellement votre fichier de sauvegarde dans votre dossier mappé (par exemple, `/opt/duplistatus` ou `C:\duplistatus_data`).
-3. Assurez-vous que le fichier est nommé exactement `backups.db`.
-4. Démarrez le conteneur.
+1. Arrêter le conteneur.
+2. Copier manuellement votre fichier de sauvegarde dans votre dossier mappé (par exemple, `/opt/duplistatus` ou `C:\duplistatus_data`).
+3. Vérifier que le fichier est nommé exactement `backups.db`.
+4. Démarrer le conteneur.
 
 ```bash
 docker logs <container-name>
@@ -139,7 +139,7 @@ docker logs <container-name>
 :::note
 Si vous restaurez la base de données manuellement, vous pouvez rencontrer des erreurs de permissions. 
 
-Vérifier les journaux du conteneur et ajuster les permissions si nécessaire. Consultez la section [Dépannage](#troubleshooting-your-restore--rollback) ci-dessous pour plus d'informations.
+Vérifiez les journaux du conteneur et ajustez les permissions si nécessaire. Consultez la section [Troubleshooting](#troubleshooting-your-restore--rollback) ci-dessous pour plus d'informations.
 ::: 
 
 ## Processus de migration automatique {#automatic-migration-process}
@@ -148,32 +148,33 @@ Quand vous démarrez une nouvelle version, les migrations s'exécutent automatiq
 
 1. **Création de sauvegarde** : Une sauvegarde horodatée est créée dans votre répertoire de données
 2. **Mise à jour du schéma** : Les tables et champs de la base de données sont mis à jour selon les besoins
-3. **Migration des données** : Toutes les données existantes sont préservées et migrées
+3. **Migration des données** : Tous les données existantes sont préservées et migrées
 4. **Vérification** : Le succès de la migration est enregistré
 
 ### Surveillance de la migration {#monitoring-migration}
 
-Vérifier les journaux Docker pour surveiller la progression de la migration :
+Vérifiez les journaux Docker pour surveiller la progression de la migration :
 
-Recherchez les messages comme :
-- `"Found X pending migrations"`
-- `"Running consolidated migration X.0..."`
-- `"Migration X.0 completed successfully"`
-- `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
-- `"All migrations completed successfully"`
+
+Recherchez des messages comme :
+- `« Found X pending migrations »`
+- `« Running consolidated migration X.0... »`
+- `« Migration X.0 completed successfully »`
+- `« Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db »`
+- `« All migrations completed successfully »`
 
 ## Notes de migration spécifiques à la version {#version-specific-migration-notes}
 
 ### Mise à niveau vers la version 0.9.x ou ultérieure (schéma v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
 
 :::warning
-**L'authentification est désormais requise.** Tous les utilisateurs doivent se connecter après la mise à niveau.
+**L'authentification est maintenant requise.** Tous les utilisateurs doivent se connecter après la mise à niveau.
 :::
 
-#### Ce qui change automatiquement {#what-changes-automatically}
+#### Qu'est-ce qui change automatiquement {#what-changes-automatically}
 
-- Database schema migrates from v3.1 to v4.0
-- New tables created: `users`, `sessions`, `audit_log`
+- Le schéma de base de données migre de v3.1 à v4.0
+- Nouvelles tables créées : `users`, `sessions`, `audit_log`
 - Compte admin par défaut créé automatiquement
 - Tous les sessions existantes invalidées
 
@@ -182,14 +183,14 @@ Recherchez les messages comme :
 1. **Se connecter** avec les identifiants admin par défaut :
    - Nom d'utilisateur : `admin`
    - Mot de passe : `Duplistatus09`
-2. **Modifier le mot de passe** quand vous y êtes invité (requis à la première connexion)
-3. **Créer des comptes utilisateur** pour les autres utilisateurs (Paramètres → Utilisateurs)
+2. **Changer le mot de passe** quand vous y êtes invité (requis à la première connexion)
+3. **Créer l'utilisateur** pour les autres utilisateurs (Paramètres → Utilisateurs)
 4. **Mettre à jour les intégrations API externes** pour inclure l'authentification (voir [API Breaking Changes](api-changes.md))
 5. **Configurer la rétention du journal d'audit** si nécessaire (Paramètres → Journal d'Audit)
 
 #### Si vous êtes verrouillé {#if-youre-locked-out}
 
-Utilisez l'outil de récupération admin :
+Utilisez l'outil de récupération Admin :
 
 ```bash
 docker exec -it duplistatus /app/admin-recovery admin NewPassword123
@@ -199,7 +200,7 @@ Consultez le [Guide de récupération Admin](../user-guide/admin-recovery.md) po
 
 ### Mise à niveau vers la Version 0.8.x {#upgrading-to-version-08x}
 
-#### Ce qui change automatiquement {#what-changes-automatically}
+#### Qu'est-ce qui change automatiquement {#what-changes-automatically}
 
 - Schéma de base de données mis à jour vers v3.1
 - Clé maître générée pour le chiffrement (stockée dans `.duplistatus.key`)
@@ -219,7 +220,7 @@ Consultez le [Guide de récupération Admin](../user-guide/admin-recovery.md) po
 
 ### Mise à niveau vers la Version 0.7.x {#upgrading-to-version-07x}
 
-#### Ce qui change automatiquement {#what-changes-automatically}
+#### Qu'est-ce qui change automatiquement {#what-changes-automatically}
 
 - table `machines` renommée en `servers`
 - champs `machine_id` renommés en `server_id`
@@ -227,29 +228,29 @@ Consultez le [Guide de récupération Admin](../user-guide/admin-recovery.md) po
 
 #### Ce que vous devez faire {#what-you-must-do}
 
-1. **Mettre à jour les intégrations API externes** :
+1. **Mettre à jour les intégrations d'API externes** :
    - Remplacer `totalMachines` → `totalServers` dans `/api/summary`
    - Remplacer `machine` → `server` dans les objets de réponse API
    - Remplacer `backup_types_count` → `backup_jobs_count` dans `/api/lastbackups/{serverId}`
-   - Mettre à jour les chemins des points de terminaison de `/api/machines/...` à `/api/servers/...`
-2. **Mettre à jour les Modèles de notification** :
+   - Mettre à jour les chemins d'accès des points de terminaison de `/api/machines/...` à `/api/servers/...`
+2. **Mettre à jour les modèles de notification** :
    - Remplacer `{machine_name}` par `{server_name}`
 
-Consultez [API Breaking Changes](api-changes.md) pour les étapes détaillées de migration de l'API.
+Consultez [API Breaking Changes](api-changes.md) pour connaître les étapes détaillées de migration de l'API.
 
 ## Liste de contrôle post-migration {#post-migration-checklist}
 
-Après la mise à niveau, vérifiez :
+Après la mise à niveau, vérifier :
 
-- [ ] Tous les serveurs apparaissent correctement dans le Tableau de bord
-- [ ] L'Historique des sauvegardes est complet et accessible
-- [ ] Les Notifications fonctionnent (tester NTFY/e-mail)
+- [ ] Tous les serveurs apparaissent correctement dans le tableau de bord
+- [ ] L'historique des sauvegardes est complet et accessible
+- [ ] Les notifications fonctionnent (tester NTFY/e-mail)
 - [ ] Les intégrations d'API externes fonctionnent (le cas échéant)
-- [ ] Les Paramètres sont accessibles et corrects
-- [ ] La Surveillance des sauvegardes en retard fonctionne correctement
-- [ ] Connexion réussie (0.9.x+)
+- [ ] Les paramètres sont accessibles et corrects
+- [ ] La surveillance des sauvegardes en retard fonctionne correctement
+- [ ] Connecté avec succès (0.9.x+)
 - [ ] Mot de passe admin par défaut modifié (0.9.x+)
-- [ ] Comptes Utilisateur créés pour d'autres utilisateurs (0.9.x+)
+- [ ] Comptes utilisateur créés pour d'autres utilisateurs (0.9.x+)
 - [ ] Intégrations d'API externes mises à jour avec authentification (0.9.x+)
 
 ## Dépannage {#troubleshooting}
@@ -259,7 +260,7 @@ Après la mise à niveau, vérifiez :
 1. Vérifier l'espace disque (la sauvegarde nécessite de l'espace)
 2. Vérifier les permissions d'écriture sur le répertoire de données
 3. Examiner les journaux du conteneur pour les erreurs spécifiques
-4. Restaurer à partir d'une sauvegarde si nécessaire (voir Restauration ci-dessous)
+4. Restaurer à partir de la sauvegarde si nécessaire (voir Rollback ci-dessous)
 
 ### Données manquantes après la migration {#data-missing-after-migration}
 
@@ -271,27 +272,27 @@ Après la mise à niveau, vérifiez :
 
 1. Vérifier que le compte admin par défaut existe (vérifier les journaux)
 2. Essayer les identifiants par défaut : `admin` / `Duplistatus09`
-3. Utiliser l'outil de récupération admin s'il est verrouillé
+3. Utiliser l'outil de récupération admin si verrouillé
 4. Vérifier que la table `users` existe dans la base de données
 
 ### Erreurs API {#api-errors}
 
-1. Consultez [Modifications importantes de l'API](api-changes.md) pour les mises à jour des points de terminaison
+1. Consultez [API Breaking Changes](api-changes.md) pour les mises à jour des points de terminaison
 2. Mettez à jour les intégrations externes avec les nouveaux noms de champs
-3. Ajoutez l'authentification aux demandes d'API (0.9.x+)
-4. Testez les points de terminaison de l'API après la migration
+3. Ajoutez l'authentification aux demandes API (0.9.x+)
+4. Testez les points de terminaison API après la migration
 
 ### Problèmes de clé maître (0.8.x+) {#master-key-issues-08x}
 
 1. Assurez-vous que le fichier `.duplistatus.key` est accessible
-2. Vérifiez que les permissions du fichier sont 0400
-3. Vérifiez les journaux du conteneur pour les erreurs de génération de clé
+2. Vérifier que les permissions du fichier sont 0400
+3. Vérifier les journaux du conteneur pour les erreurs de génération de clé
 
 ### Configuration DNS de Podman {#podman-dns-configuration}
 
-Si vous utilisez Podman et rencontrez des problèmes de connectivité réseau après une mise à jour, vous devrez peut-être configurer les paramètres DNS pour votre conteneur. Consultez la [section de configuration DNS](../installation/installation.md#configuring-dns-for-podman-containers) du guide d'installation pour plus de détails.
+Si vous utilisez Podman et rencontrez des problèmes de connectivité réseau après une mise à niveau, vous devrez peut-être configurer les paramètres DNS pour votre conteneur. Consultez la [section Configuration DNS](../installation/installation.md#configuring-dns-for-podman-containers) du guide d'installation pour plus de détails.
 
-## Procédure de restauration {#rollback-procedure}
+## Procédure de Restauration {#rollback-procedure}
 
 Si vous devez revenir à une version précédente :
 
@@ -304,22 +305,22 @@ Si vous devez revenir à une version précédente :
    - **Pour les sauvegardes de l'interface web (version 1.2.1+)** : Utilisez la fonction de restauration dans `Paramètres → Maintenance de la base de données` (voir [Maintenance de la base de données](../user-guide/settings/database-maintenance.md#database-restore))
    - **Pour les sauvegardes manuelles** : Remplacez `backups.db` dans votre répertoire de données/volume par le fichier de sauvegarde
 4. **Utiliser la version d'image précédente** : Récupérez et exécutez l'image de conteneur précédente
-5. **Démarrer le conteneur** : Démarrer avec la version précédente
+5. **Démarrer le conteneur** : Démarrez avec la version précédente
 
 :::warning
-L'annulation des modifications peut entraîner une perte de données si le schéma plus récent est incompatible avec la version antérieure. Assurez-vous toujours de disposer d'une sauvegarde récente avant de tenter une annulation des modifications.
+La restauration à une version antérieure peut entraîner une perte de données si le schéma plus récent est incompatible avec la version antérieure. Assurez-vous toujours de disposer d'une sauvegarde récente avant de tenter une restauration.
 :::
 
 ### Dépannage de votre restauration / restauration antérieure {#troubleshooting-your-restore--rollback}
 
-Si l'application ne démarre pas ou que vos données n'apparaissent pas après une restauration ou un retour en arrière, vérifiez les problèmes courants suivants :
+Si l'application ne démarre pas ou que vos données n'apparaissent pas après une restauration ou une restauration antérieure, vérifiez les problèmes courants suivants :
 
 #### 1. Autorisations des fichiers de base de données (Linux/Podman) {#1-database-file-permissions-linuxpodman}
 
 Si vous avez restauré le fichier en tant qu'utilisateur `root`, l'application à l'intérieur du conteneur pourrait ne pas avoir la permission de le lire ou d'y écrire.
 
-* **Le Symptôme :** Les journaux affichent « Permission Denied » ou « Read-only database ».
-* **La Solution :** Réinitialisez les permissions du fichier à l'intérieur du conteneur pour vous assurer qu'il est accessible.
+* **Le symptôme :** Les journaux affichent « Permission Denied » ou « Read-only database ».
+* **La solution :** Réinitialisez les permissions du fichier à l'intérieur du conteneur pour assurer son accessibilité.
 
 ```bash
 # Set ownership (usually UID 1000 or the app user)
@@ -333,11 +334,11 @@ docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
 L'application recherche spécifiquement un fichier nommé `backups.db`.
 
 * **Le symptôme :** L'application démarre mais semble « vide » (comme une nouvelle installation).
-* **La solution :** Vérifier le répertoire `/app/data/`. Si votre fichier s'appelle `duplistatus-backup-2024.db` ou a une extension `.sqlite`, l'application l'ignorera. Utilisez la commande `mv` ou l'interface graphique Docker Desktop pour le renommer exactement en `backups.db`.
+* **La solution :** Vérifier le répertoire `/app/data/`. Si votre fichier s'appelle `duplistatus-backup-2024.db` ou possède une extension `.sqlite`, l'application l'ignorera. Utilisez la commande `mv` ou l'interface graphique de Docker Desktop pour le renommer exactement en `backups.db`.
 
 #### 3. Conteneur non redémarré {#3-container-not-restarted}
 
-Sur certains systèmes, l'utilisation de `docker cp` alors que le conteneur est en cours d'exécution peut ne pas « actualiser » immédiatement la connexion de l'application à la base de données.
+Sur certains systèmes, l'utilisation de `docker cp` alors que le conteneur est en cours d'exécution peut ne pas actualiser immédiatement la connexion de l'application à la base de données.
 
 * **La Solution :** Effectuez toujours un redémarrage complet après une restauration :
 
@@ -360,15 +361,15 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 | Version de l'application | Version du schéma | Modifications clés                                        |
 |----------------------------|----------------|----------------------------------------------------|
 | 0.6.x et antérieures          | v1.0           | Schéma initial                                     |
-| 0.7.x                      | v2.0, v3.0     | Configurations ajoutées, serveurs renommés (machines → serveurs)   |
+| 0.7.x                      | v2.0, v3.0     | Ajout de configurations, machines renommées → serveurs   |
 | 0.8.x                      | v3.1           | Champs de sauvegarde améliorés, support du chiffrement         |
 | 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0           | Contrôle d'accès utilisateur, authentification, journalisation d'audit |
 
-## Obtenir de l'aide {#getting-help}
+## Aide {#getting-help}
 
 - **Documentation** : [Guide de l'utilisateur](../user-guide/overview.md)
-- **Référence API** : [Documentation API](../api-reference/overview.md)
-- **Modifications API** : [Modifications incompatibles de l'API](api-changes.md)
-- **Notes de version** : Vérifier les notes de version spécifiques à chaque version pour les modifications détaillées
-- **Communauté** : [Discussions GitHub](https://github.com/wsj-br/duplistatus/discussions)
-- **Problèmes** : [Problèmes GitHub](https://github.com/wsj-br/duplistatus/issues)
+- **API Reference** : [Documentation API](../api-reference/overview.md)
+- **API Changes** : [Modifications importantes de l'API](api-changes.md)
+- **Release Notes** : Vérifier les notes de version spécifiques pour les modifications détaillées
+- **Community** : [Discussions GitHub](https://github.com/wsj-br/duplistatus/discussions)
+- **Issues** : [Problèmes GitHub](https://github.com/wsj-br/duplistatus/issues)

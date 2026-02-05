@@ -82,6 +82,36 @@ export function loadTranslateIgnoreFile(cwd: string): IgnoreMatcher | null {
   };
 }
 
+/**
+ * Load .translate-svg.ignore from cwd (e.g. documentation/).
+ * Returns a function that returns true if the SVG basename should be ignored.
+ * Uses same gitignore-style patterns as .translate.ignore.
+ */
+export function loadTranslateSvgIgnoreFile(cwd: string): ((basename: string) => boolean) | null {
+  const ignorePath = path.join(cwd, ".translate-svg.ignore");
+  if (!fs.existsSync(ignorePath)) return null;
+
+  const raw = fs.readFileSync(ignorePath, "utf-8");
+  const patterns = raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith("#"));
+
+  if (patterns.length === 0) return null;
+
+  const rules = patterns.map((p) => {
+    const normalized = p.replace(/\\/g, "/");
+    return { re: globToRegExp(normalized) };
+  });
+
+  return (basename: string) => {
+    for (const rule of rules) {
+      if (rule.re.test(basename)) return true;
+    }
+    return false;
+  };
+}
+
 export function isIgnoredDocFile(filepath: string, docsDir: string, ig: IgnoreMatcher): boolean {
   const relativeToDocs = path.relative(docsDir, filepath);
   const isInsideDocs =

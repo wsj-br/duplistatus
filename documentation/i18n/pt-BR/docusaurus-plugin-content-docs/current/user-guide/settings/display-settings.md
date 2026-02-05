@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.981Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: 7fd2a7943ef2234b
+translation_last_updated: '2026-02-05T00:21:13.668Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 796675225958a465
 translation_language: pt-BR
 source_file_path: user-guide/settings/display-settings.md
 ---
@@ -13,13 +13,13 @@ Configurar preferências de interface do usuário e exibição.
 
 <br/>
 
-| Configuração                    | Descrição                                                    | Valor Padrão        |
-| :------------------------------ | :----------------------------------------------------------- | :------------------ |
-| **Tamanho da Tabela**           | Número de linhas por página na página de detalhes do servidor. | 5 linhas            |
-| **Intervalo de tempo do gráfico** | Intervalo de tempo mostrado nos gráficos.                    | Todos os dados disponíveis |
+| Configuração                    | Descrição                                           | Valor padrão        |
+| :------------------------------ | :-------------------------------------------------- | :------------------ |
+| **Tamanho da tabela**           | Número de linhas por página na página de detalhes do servidor. | 5 linhas            |
+| **Intervalo de tempo do gráfico** | Intervalo de tempo mostrado nos gráficos.          | Todos os dados disponíveis |
 | **Intervalo de atualização automática** | Com que frequência as páginas são atualizadas automaticamente. | 1 minuto            |
-| **Ordem de classificação dos cartões** | Como os cartões são classificados no painel.                 | `Nome do servidor (a-z)` |
-| **Tema**                        | Selecione o tema claro ou escuro.                            | Escuro              |
+| **Ordem de classificação dos cartões** | Como os cartões são classificados no painel.       | `Nome do servidor (a-z)` |
+| **Tema**                        | Selecionar o tema claro ou escuro.                  | Escuro              |
 
 <br/>
 

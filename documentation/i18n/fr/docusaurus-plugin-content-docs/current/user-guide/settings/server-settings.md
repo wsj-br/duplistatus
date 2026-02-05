@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:23.133Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: 4ebf820e9494ced0
+translation_last_updated: '2026-02-05T00:20:53.768Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: d5a3cd822d80561c
 translation_language: fr
 source_file_path: user-guide/settings/server-settings.md
 ---
@@ -11,20 +11,20 @@ Vous pouvez configurer un nom alternatif (alias) pour vos serveurs, une note pou
 
 ![server settings](../../assets/screen-settings-server.png)
 
-| Setting                         | Description                                                                                                                                                                                  |
+| Paramètre                       | Description                                                                                                                                                                                  |
 |:--------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Nom du serveur**                 | Nom du serveur configuré dans le serveur Duplicati. Une <IIcon2 icon="lucide:key-round" color="#42A5F5"/> apparaîtra si un mot de passe est défini pour le serveur.                                         |
-| **Alias**                       | Un surnom ou un nom lisible de votre serveur. Lorsque vous survolez un alias, il affichera son nom ; dans certains cas, pour clarifier, il affichera l'alias et le nom entre crochets. |
-| **Note**                        | Texte libre pour décrire la fonctionnalité du serveur, le lieu d'installation ou toute autre information. Une fois configurée, elle s'affichera à côté du nom ou de l'alias du serveur.                 |
+| **Alias**                       | Un surnom ou un nom lisible de votre serveur. Quand vous survolez un alias, il affichera son nom ; dans certains cas, pour clarifier, il affichera l'alias et le nom entre crochets. |
+| **Note**                        | Texte libre pour décrire la fonctionnalité du serveur, le lieu d'installation ou toute autre information. Quand configurée, elle s'affichera à côté du nom ou de l'alias du serveur.                 |
 | **Adresse de l'interface Web (URL)** | Configurez l'URL pour accéder à l'interface utilisateur du serveur Duplicati. Les URL `HTTP` et `HTTPS` sont toutes deux prises en charge.                                                                                           |
-| **Statut**                      | Affiche les résultats du test ou de la collecte des journaux de sauvegarde                                                                                                                                              |
+| **Statut**                      | Affiche les résultats des journaux de sauvegarde de test ou de collecte                                                                                                                                              |
 | **Actions**                     | Vous pouvez tester, ouvrir l'interface Duplicati, collecter les journaux et définir un mot de passe, voir ci-dessous pour plus de détails.                                                                                         |
 
 <br/>
 
 :::note
 Si l'Adresse de l'interface Web (URL) n'est pas configurée, le bouton <SvgIcon svgFilename="duplicati_logo.svg" /> 
-sera Désactivé sur toutes les pages et le Serveur ne s'affichera pas dans la liste [`Duplicati Configuration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
+sera Désactivé sur toutes les pages et le Serveur ne s'affichera pas dans la liste [`Configuration Duplicati`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
 :::
 
 <br/>
@@ -42,18 +42,18 @@ sera Désactivé sur toutes les pages et le Serveur ne s'affichera pas dans la l
 
 :::info[IMPORTANT]
 
-Pour protéger votre sécurité, vous ne pouvez effectuer que les actions suivantes :
+Pour protéger votre sécurité, vous pouvez uniquement effectuer les actions suivantes :
 - Définir un mot de passe pour le serveur
-- Supprimer entièrement le mot de passe
+- Supprimer (supprimer) le mot de passe entièrement
  
-Le mot de passe est stocké de manière chiffrée dans la base de données et n'est jamais affiché dans l'interface utilisateur.
+Le mot de passe est stocké chiffré dans la base de données et n'est jamais affiché dans l'interface utilisateur.
 :::
 
 <br/>
 
 ## Actions disponibles pour tous les serveurs {#available-actions-for-all-servers}
 
-| Button                                                     | Description                                     |
+| Bouton                                                     | Description                                     |
 |:-----------------------------------------------------------|:------------------------------------------------|
 | <IconButton label="Enregistrer les modifications" />                        | Enregistrer les modifications apportées aux paramètres du serveur.   |
 | <IconButton icon="lucide:fast-forward" label="Tout tester"/>  | Tester la connexion à tous les serveurs Duplicati.   |

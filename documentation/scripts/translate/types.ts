@@ -1,4 +1,6 @@
 export interface TranslationConfig {
+  batchSize?: number;
+  maxBatchChars?: number;
   openrouter: {
     baseUrl: string;
     defaultModel: string;
@@ -15,6 +17,8 @@ export interface TranslationConfig {
     i18n: string;
     cache: string;
     glossary: string;
+    /** Optional: path to static img (SVG source). Default: ./static/img */
+    staticImg?: string;
   };
   cache: {
     enabled: boolean;
@@ -34,6 +38,8 @@ export interface Segment {
   content: string;
   hash: string;
   translatable: boolean;
+  /** 1-based line number in the markdown file where this segment started. */
+  startLine?: number;
 }
 
 export interface TranslationResult {
@@ -72,4 +78,27 @@ export interface FileTranslationPlan {
   totalSegments: number;
   cachedSegments: number;
   needsTranslation: boolean;
+}
+
+/** Result from translateBatch, including usage and cost for stats. */
+export interface BatchTranslationResult {
+  /** Index in batch (0, 1, 2, ...) -> translated content. Use index, not hash, to preserve order when segments share the same hash. */
+  translations: Map<number, string>;
+  model: string;
+  usage: { inputTokens: number; outputTokens: number; totalTokens: number };
+  cost?: number;
+}
+
+/** Thrown when batch translation returns a different number of segments than requested. */
+export class BatchTranslationError extends Error {
+  constructor(
+    public readonly expected: number,
+    public readonly received: number,
+    public readonly rawResponse: string
+  ) {
+    super(
+      `Batch translation mismatch: expected ${expected} translated segments, got ${received}. Fall back to single-segment mode.`
+    );
+    this.name = "BatchTranslationError";
+  }
 }

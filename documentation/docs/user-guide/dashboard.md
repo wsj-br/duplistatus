@@ -13,20 +13,20 @@ This section displays aggregated statistics for all backups.
 ![Dashboard summary - overview](../assets/screen-dashboard-summary.png)
 ![Dashboard summary - table](../assets/screen-dashboard-summary-table.png)
 
-- **Total Servers**: The number of servers being monitored.                                                                                                             |
-- **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                |
-- **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.                                                                   |
-- **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.                                                                    |
-- **Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs. |
-- **Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).                         |
-- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                             |
-- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                  |
+- **Total Servers**: The number of servers being monitored.                                                                                                             
+- **Total Backup Jobs**: The total number of backup jobs (types) configured for all servers.                                                                                
+- **Total Backup Runs**: The total number of backup logs from runs received or collected for all servers.                                                                   
+- **Total Backup Size**: The combined size of all source data, based on the latest backup logs received.                                                                    
+- **Total Storage Used**: The total storage space used by backups on the backup destination (e.g., cloud storage, FTP server, local drive), based on the latest backup logs. 
+- **Total Uploaded Size**: The total amount of data uploaded from the Duplicati server to the destination (e.g., local storage, FTP, cloud provider).                       
+- **Overdue Backups** (table): The number of backups that are overdue. See [Backup Notifications Settings](settings/backup-notifications-settings.md)                          
+- **Layout Toggle**: Switches between the Cards layout (default) and the Table layout.                                                                                  
 
 ## Cards Layout {#cards-layout}
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
-![Dashboard Overview](/img/duplistatus_dash-cards.png)
+![Dashboard Overview](../assets/duplistatus_dash-cards.png)
 
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note

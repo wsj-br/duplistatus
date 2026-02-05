@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.631Z'
+translation_last_updated: '2026-02-05T00:21:10.296Z'
 source_file_mtime: '2026-01-31T00:51:08.107Z'
 source_file_hash: 31f0b5f50ece70d4
 translation_language: pt-BR
@@ -7,22 +7,22 @@ source_file_path: installation/installation.md
 ---
 # Guia de Instalação {#installation-guide}
 
-A aplicação pode ser implantada usando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Após a instalação, você pode querer configurar o TIMEZONE e LANGUAGE, conforme descrito em [Configurar Fuso horário e Idioma](./configure-tz-lang.md) e precisará configurar os servidores Duplicati para enviar logs de backup para **duplistatus**, conforme descrito na seção [Configuração do Duplicati](./duplicati-server-configuration.md).
+A aplicação pode ser implantada usando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Após a instalação, você pode querer configurar o TIMEZONE e LANGUAGE, conforme descrito em [Configurar Fuso horário e Idioma](./configure-tz-lang.md) e precisa configurar os servidores Duplicati para enviar logs de backup para **duplistatus**, conforme descrito na seção [Configuração do Duplicati](./duplicati-server-configuration.md).
 
 ## Pré-requisitos {#prerequisites}
 
 Certifique-se de que você tem o seguinte instalado:
 
-- Docker Engine - [Guia de instalação Debian](https://docs.docker.com/engine/install/debian/)
-- Docker Compose - [Guia de instalação Linux](https://docs.docker.com/compose/install/linux/)
-- Portainer (opcional) - [Guia de instalação Docker](https://docs.portainer.io/start/install-ce/server/docker/linux)
+- Docker Engine - [Guia de instalação para Debian](https://docs.docker.com/engine/install/debian/)
+- Docker Compose - [Guia de instalação para Linux](https://docs.docker.com/compose/install/linux/)
+- Portainer (opcional) - [Guia de instalação para Docker](https://docs.portainer.io/start/install-ce/server/docker/linux)
 - Podman (opcional) - [Guia de instalação](http://podman.io/docs/installation#debian)
 
 ## Autenticação {#authentication}
 
-**duplistatus** a partir da versão 0.9.x requer autenticação de usuário. Uma conta `admin` padrão é criada automaticamente ao instalar a aplicação pela primeira vez ou ao atualizar de uma versão anterior:
-    - Nome de usuário: `admin`
-    - Senha: `Duplistatus09`
+**duplistatus** desde a versão 0.9.x requer autenticação de usuário. Uma conta `admin` padrão é criada automaticamente ao instalar a aplicação pela primeira vez ou ao atualizar de uma versão anterior:
+    - nome de usuário: `admin`
+    - senha: `Duplistatus09`
 
 Você pode criar contas de usuários adicionais em [Configurações > Usuários](../user-guide/settings/user-management-settings.md) após o primeiro login.
 
@@ -48,12 +48,12 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Verifique a seção [Fuso horário e Localidade](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+Verificar a seção [Fuso horário e Idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
 
 ### Opção 2: Usando Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
 1. Acesse "Stacks" no seu servidor [Portainer](https://docs.portainer.io/user/docker/stacks) e clique em "Adicionar stack".
-2. Nomeie seu stack (por exemplo, "duplistatus").
+2. Nomeie sua stack (por exemplo, "duplistatus").
 3. Escolha "Build method" como "Web editor".
 4. Copie e cole isto no editor web:
 
@@ -85,17 +85,17 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Verifique a seção [Fuso horário e idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
-6. Clique em "Deploy the stack".
+5. Verifique a seção [Fuso horário e Idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+6. Clique em "Implantar a pilha".
 
 ### Opção 3: Usando Portainer Stacks (Repositório GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. Em [Portainer](https://docs.portainer.io/user/docker/stacks), vá para "Stacks" e clique em "Add stack".
+1. Em [Portainer](https://docs.portainer.io/user/docker/stacks), acesse "Stacks" e clique em "Add stack".
 2. Nomeie sua stack (por exemplo, "duplistatus").
 3. Escolha "Build method" como "Repository".
 4. Digite a URL do repositório: `https://github.com/wsj-br/duplistatus.git`
 5. No campo "Compose path", digite: `production.yml`
-6. (opcional) Defina as variáveis de ambiente `TZ`, `LANG`, `PWD_ENFORCE` e `PWD_MIN_LEN` na seção "Environment variables". Verifique a seção [Timezone and Locale](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora. 
+6. (opcional) Defina as variáveis de ambiente `TZ`, `LANG`, `PWD_ENFORCE` e `PWD_MIN_LEN` na seção "Environment variables". Verifique a seção [Timezone and Locale](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
 6. Clique em "Deploy the stack".
 
 ### Opção 4: Usando Docker CLI {#option-4-using-docker-cli}
@@ -114,7 +114,7 @@ docker run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-- O volume `duplistatus_data` é utilizado para Armazenamento persistente. A imagem do container utiliza `Europe/London` como o Fuso horário padrão e `en_GB` como a localidade padrão (Idioma).
+- O volume `duplistatus_data` é usado para armazenamento persistente. A imagem do container usa `Europe/London` como fuso horário padrão e `en_GB` como idioma padrão.
 
 ### Opção 5: Usando Podman (CLI) `rootless` {#option-5-using-podman-cli-rootless}
 
@@ -157,7 +157,7 @@ Se você precisar de configuração de DNS personalizada (por exemplo, para Tail
 
 Procure por linhas que começam com `nameserver` (para servidores DNS) e `search` (para domínios de pesquisa). Se você não tiver certeza sobre suas configurações de DNS ou domínios de pesquisa de rede, consulte seu administrador de rede para obter essas informações.
 
-# Exemplo com configuração de DNS:
+**Exemplo com configuração de DNS:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -174,13 +174,13 @@ podman run -d \
   ghcr.io/wsj-br/duplistatus:latest
 ```
 
-Você pode especificar múltiplos servidores DNS adicionando múltiplas flags `--dns`:
+Você pode especificar múltiplos servidores DNS adicionando múltiplos sinalizadores `--dns`:
 
 ```bash
 --dns 8.8.8.8 --dns 1.1.1.1
 ```
 
-Você pode especificar múltiplos domínios de pesquisa adicionando múltiplas flags `--dns-search`:
+Você pode especificar múltiplos domínios de pesquisa adicionando múltiplos sinalizadores `--dns-search`:
 
 ```bash
 --dns-search example.com --dns-search internal.local
@@ -188,11 +188,11 @@ Você pode especificar múltiplos domínios de pesquisa adicionando múltiplas f
 
 **Nota**: Pule endereços IPv6 (contendo `:`) e endereços localhost (como `127.0.0.53`) ao configurar servidores DNS.
 
-Verifique a seção [Fuso horário e Localidade](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+Verifique a seção [Fuso horário e Idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
 
 ### Opção 6: Usando Pods do Podman {#option-6-using-podman-pods}
 
-Os pods do Podman permitem que você execute múltiplos contêineres em um namespace de rede compartilhado. Isto é útil para testes ou quando você precisa executar duplistatus junto com outros contêineres.
+Os pods do Podman permitem que você execute múltiplos contêineres em um namespace de rede compartilhado. Isso é útil para testes ou quando você precisa executar duplistatus junto com outros contêineres.
 
 **Configuração básica do pod:**
 
@@ -217,10 +217,10 @@ podman pod start duplistatus-pod
 
 #### Configurando DNS para Pods do Podman {#configuring-dns-for-podman-pods}
 
-Quando usar pods, a configuração de DNS deve ser definida no nível do pod, não no nível do contêiner.
+Quando usar pods, a configuração de DNS deve ser definida no nível do pod, não no nível do container.
 Use os mesmos métodos descritos na Opção 5 para encontrar seus servidores DNS e domínios de pesquisa.
 
-# Exemplo com configuração de DNS:
+**Exemplo com configuração de DNS:**
 
 ```bash
 mkdir -p ~/duplistatus_data
@@ -263,8 +263,8 @@ podman pod rm -f duplistatus-pod
 2. Entre no duplistatus – consulte as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
 3. Colete logs de backup iniciais – use o recurso [Coletar logs de backup](../user-guide/collect-backup-logs.md) para popular o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backups atrasados com base na configuração de cada servidor.
 4. Configure as configurações do servidor – configure aliases e notas do servidor em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
-5. Configure as configurações do NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
+5. Configure as configurações de NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configure as configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
-7. Configure as notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de backup](../user-guide/settings/backup-notifications-settings.md).
+7. Configure notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de backup](../user-guide/settings/backup-notifications-settings.md).
 
-Consulte as seções a seguir para Configurar configurações opcionais, como Fuso horário, Formato de números e HTTPS.
+Consulte as seções a seguir para configurar as configurações opcionais, como fuso horário, formato de números e HTTPS.

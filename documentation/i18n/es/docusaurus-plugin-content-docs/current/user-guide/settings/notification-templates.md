@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.185Z'
-source_file_mtime: '2026-01-27T14:22:06.838Z'
-source_file_hash: ce396051346ba380
+translation_last_updated: '2026-02-05T00:21:06.932Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 3eab3fe85d0db77a
 translation_language: es
 source_file_path: user-guide/settings/notification-templates.md
 ---
 # Plantillas {#templates}
 
-**duplistatus** utiliza tres plantillas para mensajes de notificación. Estas plantillas se utilizan tanto para notificaciones NTFY como para Notificaciones por correo electrónico:
+**duplistatus** utiliza tres plantillas para mensajes de notificación. Estas plantillas se utilizan tanto para notificaciones NTFY como para notificaciones por correo electrónico:
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -15,17 +15,17 @@ source_file_path: user-guide/settings/notification-templates.md
 | :----------------- | :------------------------------------------------------- |
 | **Éxito**          | Se utiliza cuando los backups se completan exitosamente. |
 | **Advertencia/Error** | Se utiliza cuando los backups se completan con advertencias o errores. |
-| **Backup retrasado** | Se utiliza cuando los backups están retrasados.         |
+| **Backup retrasado** | Se utiliza cuando los backups están retrasados.          |
 
 <br/>
 
 ## Acciones disponibles {#available-actions}
 
-| Botón                                                              | Descripción                                                                                         |
+| Botón                                                               | Descripción                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Guardar configuración de plantilla" />                      | Guarda la configuración al cambiar la plantilla. El botón guarda la plantilla que se muestra (Éxito, Advertencia/Error o Backup retrasado). |
-| <IconButton icon="lucide:send" label="Enviar notificación de prueba"/>     | Verifica la plantilla después de actualizarla. Las variables se reemplazarán con sus nombres para la prueba. Para notificaciones por correo electrónico, el título de la plantilla se convierte en la línea de asunto del correo electrónico. |
-| <IconButton icon="lucide:rotate-ccw" label="Restablecer a predeterminado"/>     | Restaura la plantilla predeterminada para la **plantilla seleccionada**. Recuerde guardarla después de restablecerla.  |
+| <IconButton label="Guardar configuración de plantilla" />                      | Guarda la configuración al cambiar la plantilla. El botón guarda la plantilla que se está mostrando (Éxito, Advertencia/Error o Backup retrasado). |
+| <IconButton icon="lucide:send" label="Enviar notificación de prueba"/>     | Comprueba la plantilla después de actualizarla. Las variables se reemplazarán con sus nombres para la prueba. Para notificaciones por correo electrónico, el título de la plantilla se convierte en la línea de asunto del correo electrónico. |
+| <IconButton icon="lucide:rotate-ccw" label="Restablecer a predeterminado"/>     | Restaura la plantilla por defecto para la **plantilla seleccionada**. Recuerde guardarla después de restablecerla.  |
 
 <br/>
 
@@ -37,8 +37,8 @@ Todas las plantillas admiten variables que se reemplazarán con valores reales. 
 |:-----------------------|:------------------------------------------------|:-----------------|
 | `{server_name}`        | Nombre del servidor.                            | Todas las plantillas    |
 | `{server_alias}`       | Alias del servidor.                            | Todas las plantillas    |
-| `{server_note}`        | Nota para el servidor.                            | Todas las plantillas    |
-| `{server_url}`         | URL del servidor Duplicati de configuración web   | Todas las plantillas    |
+| `{server_note}`        | Nota del servidor.                            | Todas las plantillas    |
+| `{server_url}`         | URL de la configuración web del servidor Duplicati   | Todas las plantillas    |
 | `{backup_name}`        | Nombre del backup.                             | Todas las plantillas    |
 | `{status}`             | Estado del backup (Éxito, Advertencia, Error, Fatal). | Éxito, Advertencia |
 | `{backup_date}`        | Fecha y hora del backup.                    | Éxito, Advertencia |

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.113Z'
-source_file_mtime: '2026-01-27T14:22:06.834Z'
-source_file_hash: c28f44d7440e4fdb
+translation_last_updated: '2026-02-05T00:21:06.351Z'
+source_file_mtime: '2026-02-02T19:14:50.094Z'
+source_file_hash: 351747b781a00331
 translation_language: es
 source_file_path: user-guide/settings/application-logs-settings.md
 ---
@@ -29,10 +29,10 @@ El Visor de Logs de aplicación permite a los administradores monitorear todos l
 
 | Control | Descripción |
 |:--------|:-----------|
-| **Versión del archivo** | Seleccione qué archivo de registro ver: **Actual** (archivo activo) o archivos rotados (`.1`, `.2`, etc., donde los números más altos son más antiguos). |
-| **Líneas a mostrar** | Muestre las **100**, **500**, **1000** (por defecto), **5000**, o **10000** líneas más recientes del archivo seleccionado. |
+| **Versión del archivo** | Seleccionar qué archivo de registro ver: **Actual** (archivo activo) o archivos rotados (`.1`, `.2`, etc., donde los números más altos son más antiguos). |
+| **Líneas a mostrar** | Mostrar las **100**, **500**, **1000** (por defecto), **5000**, o **10000** líneas más recientes del archivo seleccionado. |
 | **Desplazamiento automático** | Cuando está habilitado (por defecto para el archivo actual), se desplaza automáticamente a las nuevas entradas de registro y se actualiza cada 2 segundos. Solo funciona para la versión de archivo `Actual`. |
-| **Buscar** | Filtre líneas de registro por texto (sin distinción de mayúsculas y minúsculas). Los filtros se aplican a las líneas actualmente mostradas. |
+| **Buscar** | Filtrar líneas de registro por texto (sin distinción de mayúsculas y minúsculas). Los filtros se aplican a las líneas actualmente mostradas. |
 
 <br/>
 

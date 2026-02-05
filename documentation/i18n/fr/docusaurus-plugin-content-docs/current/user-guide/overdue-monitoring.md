@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:22.897Z'
+translation_last_updated: '2026-02-05T00:20:52.748Z'
 source_file_mtime: '2026-01-27T14:22:06.834Z'
 source_file_hash: d2b8e17a5e66bb07
 translation_language: fr
@@ -9,23 +9,23 @@ import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
 # Surveillance des sauvegardes en retard {#overdue-monitoring}
 
-La fonctionnalité de surveillance des sauvegardes en retard vous permet de suivre et d'alerter sur les sauvegardes en retard. Les notifications peuvent être envoyées via NTFY ou E-mail.
+La fonctionnalité de surveillance des sauvegardes en retard vous permet de suivre et d'alerter sur les sauvegardes en retard. Les notifications peuvent être via NTFY ou E-mail.
 
-Dans l'interface utilisateur, les sauvegardes en retard sont affichées avec une icône d'avertissement . Le survol de l'icône affiche les détails de la sauvegarde en retard, notamment l'heure de la dernière sauvegarde, l'heure de sauvegarde attendue, la période de tolérance et l'heure de la prochaine sauvegarde attendue.
+Dans l'interface utilisateur, les sauvegardes en retard sont affichées avec une icône d'avertissement . Le survol de l'icône affiche les détails de la sauvegarde en retard, notamment la dernière heure de sauvegarde, l'heure de sauvegarde attendue, la période de tolérance et l'heure de la prochaine sauvegarde attendue.
 
-## Processus de vérification en retard {#overdue-check-process}
+## Processus de Vérification en Retard {#overdue-check-process}
 
 **Fonctionnement :**
 
 | **Étape** | **Valeur**                  | **Description**                                   | **Exemple**        |
 |:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
-|    1     | **Dernière sauvegarde**    | L'horodatage de la dernière sauvegarde réussie.   | `2024-01-01 08:00` |
-|    2     | **Intervalle attendu**     | La fréquence de sauvegarde configurée.            | `1 day`            |
+|    1     | **Dernière sauvegarde**            | L'horodatage de la dernière sauvegarde réussie.      | `2024-01-01 08:00` |
+|    2     | **Intervalle attendu**      | La fréquence de sauvegarde configurée.                  | `1 day`            |
 |    3     | **Prochaine sauvegarde calculée** | `Dernière sauvegarde` + `Intervalle attendu`               | `2024-01-02 08:00` |
 |    4     | **Tolérance**              | La période de grâce configurée (temps supplémentaire autorisé). | `1 hour`           |
 |    5     | **Prochaine sauvegarde attendue**   | `Prochaine sauvegarde calculée` + `Tolérance`            | `2024-01-02 09:00` |
 
-Une sauvegarde est considérée comme **en retard** si l'heure actuelle est ultérieure à l'heure du `Expected Next Backup`.
+Une sauvegarde est considérée comme **en retard** si l'heure actuelle est ultérieure à l'heure de la `Sauvegarde Suivante Attendue`.
 
 <ZoomMermaid>
 
@@ -55,7 +55,7 @@ gantt
 
 - À `2024-01-01 21:00` (🔹Vérification 1), la sauvegarde est **à l'heure**.
 - À `2024-01-02 08:30` (🔹Vérification 2), la sauvegarde est **à l'heure**, car elle se situe toujours dans la période de tolérance.
-- À `2024-01-02 10:00` (🔹Vérification 3), la sauvegarde est **en retard**, car cela dépasse l'heure de la `Sauvegarde Suivante Prévue`.
+- À `2024-01-02 10:00` (🔹Vérification 3), la sauvegarde est **en retard**, car cela dépasse l'heure de la `Sauvegarde Suivante Attendue`.
 
 ## Vérifications Périodiques {#periodic-checks}
 
@@ -66,12 +66,12 @@ gantt
 Quand vous collectez les journaux de sauvegarde à partir d'un serveur Duplicati, **duplistatus** effectue automatiquement :
 
 - Extrait la planification de sauvegarde de la Configuration Duplicati
-- Met à jour les intervalles de surveillance des sauvegardes en retard pour correspondre exactement
-- Synchronise les jours de la semaine autorisés et les heures planifiées
+- Met à jour les intervalles de Surveillance des sauvegardes en retard pour correspondre exactement
+- Synchronise les Jours de la semaine autorisés et les heures planifiées
 - Préserve vos préférences de notification
 
 :::tip
-Pour de meilleurs résultats, collectez les journaux de sauvegarde après avoir modifié les intervalles des tâches de sauvegarde sur votre Serveur Duplicati. Cela garantit que **duplistatus** reste synchronisé avec votre configuration actuelle.
+Pour obtenir les meilleurs résultats, collectez les journaux de sauvegarde après avoir modifié les intervalles de travaux de sauvegarde dans votre serveur Duplicati. Cela garantit que **duplistatus** reste synchronisé avec votre configuration actuelle.
 :::
 
 Consultez la section [Paramètres en retard](settings/overdue-settings.md) pour connaître les options de configuration détaillées.

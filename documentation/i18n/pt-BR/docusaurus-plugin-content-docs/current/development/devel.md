@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:29.282Z'
+translation_last_updated: '2026-02-05T00:21:07.841Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 4651d154540967f5
 translation_language: pt-BR
@@ -13,13 +13,13 @@ source_file_path: development/devel.md
 pnpm dev
 ```
 
-- **Armazenamento de Arquivos JSON**: Todos os dados de backup recebidos são armazenados como arquivos JSON no diretório `data`. Estes arquivos são nomeados usando a data e hora de quando foram recebidos, no formato `YYYY-MM-DDTHH-mm-ss-sssZ.json` (horário UTC). Este recurso está ativo apenas no modo de desenvolvimento e ajuda na depuração ao preservar os dados brutos recebidos do Duplicati.
+- **Armazenamento de Arquivos JSON**: Todos os dados de backup recebidos são armazenados como arquivos JSON no diretório `data`. Esses arquivos são nomeados usando a data e hora de quando foram recebidos, no formato `YYYY-MM-DDTHH-mm-ss-sssZ.json` (horário UTC). Este recurso está ativo apenas em modo de desenvolvimento e ajuda na depuração ao preservar os dados brutos recebidos do Duplicati.
 
-- **Verbose Logging**: Os logs da aplicação registram informações mais detalhadas sobre operações de banco de dados e requisições de API quando executado em modo de desenvolvimento.
+- **Verbose Logging**: A aplicação registra informações mais detalhadas sobre operações de banco de dados e requisições de API quando executada em modo de desenvolvimento.
 
-- **Atualização de Versão**: O servidor de desenvolvimento atualiza automaticamente as informações de versão antes de iniciar, garantindo que a versão mais recente seja exibida na aplicação.
+- **Atualização de Versão**: O servidor de desenvolvimento atualiza automaticamente as informações de versão antes de iniciar, garantindo que a versão mais recente seja exibida no aplicativo.
 
-- **Exclusão de Backup**: Na página de detalhes do Servidor, um botão de exclusão aparece na tabela de backups que permite que você exclua backups individuais. Este recurso é especialmente útil para testar e depurar a funcionalidade de backups atrasados.
+- **Exclusão de Backup**: Na página de detalhes do servidor, um botão de exclusão aparece na tabela de backups que permite excluir backups individuais. Este recurso é especialmente útil para testar e depurar a funcionalidade de backups atrasados.
 
 ## Iniciar o servidor de produção (em ambiente de desenvolvimento) {#start-the-production-server-in-development-environment}
 
@@ -29,7 +29,7 @@ Primeiro, compile a aplicação para produção local:
 pnpm build-local
 ```
 
-Depois, inicie o servidor de produção:
+Em seguida, inicie o servidor de produção:
 
 ```bash
 pnpm start-local
@@ -71,7 +71,7 @@ Ou manualmente:
 ./scripts/clean-docker.sh
 ```
 
-Este script realiza uma limpeza completa do Docker, o que é útil para:
+Este script realiza uma limpeza completa do Docker, que é útil para:
 - Liberar espaço em disco
 - Remover artefatos antigos/não utilizados do Docker
 - Limpar após sessões de desenvolvimento ou testes

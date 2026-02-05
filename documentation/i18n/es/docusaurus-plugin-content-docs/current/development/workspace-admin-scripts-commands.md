@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-01-31T00:51:26.575Z'
+translation_last_updated: '2026-02-05T00:21:02.948Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 581bc6778a772b4e
 translation_language: es
 source_file_path: development/workspace-admin-scripts-commands.md
 ---
-# Scripts y Comandos de Admin del Espacio de Trabajo {#workspace-admin-scripts-commands}
+# Scripts y Comandos de Admin del Workspace {#workspace-admin-scripts-commands}
 
 ## Limpiar Base de Datos {#clean-database}
 
@@ -13,10 +13,10 @@ source_file_path: development/workspace-admin-scripts-commands.md
 ./scripts/clean-db.sh
 ```
 
-Limpia la base de datos eliminando todos los datos mientras se preservan el esquema y la estructura de la base de datos.
+Limpia la base de datos eliminando todos los datos mientras preserva el esquema y la estructura de la base de datos.
 
 >[!CAUTION]
-> Utilice con precaución, ya que esto eliminará todos los datos existentes.
+> Utilice con precaución ya que esto eliminará todos los datos existentes.
 
 ## Limpiar artefactos de compilación y dependencias {#clean-build-artefacts-and-dependencies}
 
@@ -29,7 +29,7 @@ Elimina todos los artefactos de compilación, el directorio node_modules y otros
 - Directorio de compilación `.next/`
 - Directorio `dist/`
 - Todos los cachés de compilación de Docker y realizará una limpieza del sistema Docker
-- Caché del almacén de pnpm
+- Caché del almacén pnpm
 - Recursos del sistema Docker no utilizados (imágenes, redes, volúmenes)
 - Cualquier otro archivo de caché de compilación
 
@@ -54,19 +54,19 @@ ncu --upgrade
 pnpm update
 ```
 
-O utilice el script automatizado:
+O utiliza el script automatizado:
 
 ```bash
 ./scripts/upgrade-dependencies.sh
 ```
 
 El script `upgrade-dependencies.sh` automatiza todo el proceso de actualización de dependencias:
-- Actualiza `package.json` con las versiones más recientes utilizando `npm-check-updates`
+- Actualiza `package.json` con las últimas versiones utilizando `npm-check-updates`
 - Actualiza el archivo de bloqueo de pnpm e instala las dependencias actualizadas
 - Actualiza la base de datos de browserslist
 - Verifica vulnerabilidades utilizando `pnpm audit`
 - Corrige automáticamente las vulnerabilidades utilizando `pnpm audit fix`
-- Verifica nuevamente las vulnerabilidades después de corregirlas para verificar que las correcciones sean efectivas
+- Verifica nuevamente las vulnerabilidades después de la corrección para verificar que las correcciones funcionan
 
 Este script proporciona un flujo de trabajo completo para mantener las dependencias actualizadas y seguras.
 
@@ -96,11 +96,11 @@ Este script actualiza automáticamente la información de versión en múltiples
 ./scripts/pre-checks.sh
 ```
 
-Este script ejecuta verificaciones previas antes de iniciar el servidor de desarrollo, compilar o iniciar el servidor de producción. Lo siguiente:
-- Asegura que el archivo `.duplistatus.key` exista (a través de `ensure-key-file.sh`)
-- Actualiza la información de versión (a través de `update-version.sh`)
+Este script ejecuta verificaciones previas antes de iniciar el servidor de desarrollo, compilar o iniciar el servidor de producción. Realiza lo siguiente:
+- Garantiza que el archivo `.duplistatus.key` exista (mediante `ensure-key-file.sh`)
+- Actualiza la información de versión (mediante `update-version.sh`)
 
-Este script se llama automáticamente mediante `pnpm dev`, `pnpm build` e `pnpm start-local`.
+Este script se llama automáticamente mediante `pnpm dev`, `pnpm build` y `pnpm start-local`.
 
 ## Asegurar que el archivo de clave existe {#ensure-key-file-exists}
 
@@ -108,7 +108,7 @@ Este script se llama automáticamente mediante `pnpm dev`, `pnpm build` e `pnpm 
 ./scripts/ensure-key-file.sh
 ```
 
-Este script garantiza que el archivo `.duplistatus.key` exista en el directorio `data`. Realiza las siguientes acciones:
+Este script garantiza que el archivo `.duplistatus.key` exista en el directorio `data`. Realiza lo siguiente:
 - Crea el directorio `data` si no existe
 - Genera un nuevo archivo de clave aleatoria de 32 bytes si falta
 - Establece los permisos del archivo en 0400 (solo lectura para el propietario)
@@ -122,10 +122,10 @@ El archivo de clave se utiliza para operaciones criptográficas en la aplicació
 ./admin-recovery <username> <new-password>
 ```
 
-Este script permite la recuperación de cuentas de Admin si está bloqueado o se olvida la contraseña. Realiza lo siguiente:
+Este script permite la recuperación de cuentas de admin si están bloqueadas u olvida la contraseña. Realiza lo siguiente:
 - Restablece la contraseña del usuario especificado
 - Desbloquea la cuenta si estaba bloqueada
-- Restablece el contador de intentos de inicio de sesión fallidos
+- Restablece el contador de intentos de iniciar sesión fallidos
 - Borra la bandera "Debe cambiar la contraseña"
 - Valida que la contraseña cumpla con los requisitos de seguridad
 - Registra la acción en el Log de Auditoría
@@ -145,7 +145,7 @@ Este script permite la recuperación de cuentas de Admin si está bloqueado o se
 ./scripts/copy-images.sh
 ```
 
-Copia archivos de imagen desde `docs/static/img` a sus ubicaciones apropiadas en la aplicación:
+Copia archivos de imagen de `docs/static/img` a sus ubicaciones apropiadas en la aplicación:
 - Copia `favicon.ico` a `src/app/`
 - Copia `duplistatus_logo.png` a `public/images/`
 - Copia `duplistatus_banner.png` a `public/images/`
@@ -167,7 +167,7 @@ Este script compara versiones entre su entorno de desarrollo y un contenedor Doc
 
 **Requisitos:**
 - El contenedor Docker denominado `duplistatus` debe estar en ejecución
-- El script lee la información de versión de los logs del contenedor Docker
+- El script lee información de versión desde los logs del contenedor Docker
 
 **Salida de ejemplo:**
 
@@ -182,7 +182,7 @@ Este script compara versiones entre su entorno de desarrollo y un contenedor Doc
 └─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
 ```
 
-**Nota:** Las versiones de SQLite se comparan solo por versión principal porque diferentes versiones de parche dentro de la misma versión principal generalmente son compatibles. El script indicará si las versiones de SQLite coinciden a nivel principal pero difieren en versiones de parche.
+**Nota:** Las versiones de SQLite se comparan solo por versión principal porque las diferentes versiones de parche dentro de la misma versión principal generalmente son compatibles. El script indicará si las versiones de SQLite coinciden a nivel principal pero difieren en versiones de parche.
 
 ## Visualización de las configuraciones en la base de datos {#viewing-the-configurations-in-the-database}
 
@@ -200,7 +200,7 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## Scripts SQL para depuración y mantenimiento {#sql-scripts-for-debugging-and-maintenance}
+## Scripts SQL para Depuración y Mantenimiento {#sql-scripts-for-debugging-and-maintenance}
 
 El proyecto incluye scripts SQL para mantenimiento de base de datos:
 
@@ -210,7 +210,7 @@ El proyecto incluye scripts SQL para mantenimiento de base de datos:
 sqlite3 data/backups.db < scripts/delete-backup-settings.sql
 ```
 
-Este script elimina toda la Configuración de backup de la tabla de configuraciones. Utilice con precaución ya que esto restablecerá todas las configuraciones de notificación de backup.
+Este script elimina toda la configuración de backup de la tabla de configuraciones. Úselo con precaución ya que esto restablecerá todas las configuraciones de notificación de backup.
 
 ### Eliminar Último backup {#delete-last-backup}
 
@@ -223,4 +223,4 @@ Este script elimina el registro de backup más reciente para cada servidor. Por 
 **Nota**: El script ha sido actualizado para funcionar con el esquema de base de datos actual (utiliza la tabla `servers` y la columna `server_id`).
 
 >[!CAUTION]
-> Estos scripts SQL modifican directamente la base de datos. Siempre realice un backup de su base de datos antes de ejecutar estos scripts.
+> Estos scripts SQL modifican directamente la base de datos. Siempre realice una copia de seguridad de su base de datos antes de ejecutar estos scripts.

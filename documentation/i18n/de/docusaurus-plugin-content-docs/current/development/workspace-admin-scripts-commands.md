@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:23.359Z'
+translation_last_updated: '2026-02-05T00:20:56.335Z'
 source_file_mtime: '2026-01-27T14:22:06.830Z'
 source_file_hash: 581bc6778a772b4e
 translation_language: de
@@ -13,22 +13,22 @@ source_file_path: development/workspace-admin-scripts-commands.md
 ./scripts/clean-db.sh
 ```
 
-Bereinigt die Datenbank durch Entfernen aller Daten, während das Datenbankschema und die Struktur erhalten bleiben.
+Bereinigt die Datenbank, indem alle Daten entfernt werden, während das Datenbankschema und die Struktur erhalten bleiben.
 
 >[!CAUTION]
 > Mit Vorsicht verwenden, da dies alle vorhandenen Daten löscht.
 
-## Bereinigung von Build-Artefakten und Abhängigkeiten {#clean-build-artefacts-and-dependencies}
+## Build-Artefakte und Abhängigkeiten bereinigen {#clean-build-artefacts-and-dependencies}
 
 ```bash
 scripts/clean-workspace.sh
 ```
 
-Entfernt alle Build-Artefakte, das Verzeichnis node_modules und andere generierte Dateien, um einen sauberen Zustand zu gewährleisten. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
+Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generierte Dateien, um einen sauberen Zustand zu gewährleisten. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
 - `node_modules/` Verzeichnis
 - `.next/` Build-Verzeichnis
 - `dist/` Verzeichnis
-- Alle Docker-Build-Caches und führt einen Docker-Systemprune durch
+- Alle Docker-Build-Caches und führt einen Docker-System-Prune durch
 - pnpm Store-Cache
 - Ungenutzte Docker-Systemressourcen (Images, Netzwerke, Volumes)
 - Alle anderen Build-Cache-Dateien
@@ -60,15 +60,15 @@ Oder verwenden Sie das automatisierte Skript:
 ./scripts/upgrade-dependencies.sh
 ```
 
-Das `upgrade-dependencies.sh`-Skript automatisiert den gesamten Abhängigkeitsupgrade-Prozess:
+Das Skript `upgrade-dependencies.sh` automatisiert den gesamten Abhängigkeits-Upgrade-Prozess:
 - Aktualisiert `package.json` mit den neuesten Versionen mithilfe von `npm-check-updates`
 - Aktualisiert die pnpm-Sperrdatei und installiert aktualisierte Abhängigkeiten
 - Aktualisiert die browserslist-Datenbank
 - Prüft auf Sicherheitslücken mithilfe von `pnpm audit`
 - Behebt Sicherheitslücken automatisch mithilfe von `pnpm audit fix`
-- Prüft nach der Behebung erneut auf Sicherheitslücken, um die Behebungen zu bestätigen
+- Prüft erneut auf Sicherheitslücken nach der Behebung, um die Fixes zu bestätigen
 
-Dieses Skript bietet einen vollständigen Workflow zur Aktualisierung von Abhängigkeiten und zur Gewährleistung ihrer Sicherheit.
+Dieses Skript bietet einen vollständigen Workflow zum Aktualisieren und Sichern von Abhängigkeiten.
 
 ## Prüfen auf ungenutzte Pakete {#check-for-unused-packages}
 
@@ -82,13 +82,13 @@ pnpm depcheck
 ./scripts/update-version.sh
 ```
 
-Dieses Skript aktualisiert automatisch Versionsinformationen über mehrere Dateien hinweg, um diese synchronisiert zu halten. Es:
+Dieses Skript aktualisiert automatisch Versionsinformationen über mehrere Dateien hinweg, um sie synchron zu halten. Es:
 - Extrahiert die Version aus `package.json`
-- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (erstellt diese, falls sie nicht vorhanden ist)
+- Aktualisiert die `.env`-Datei mit der `VERSION`-Variable (erstellt sie, falls sie nicht vorhanden ist)
 - Aktualisiert die `Dockerfile` mit der `VERSION`-Variable (falls vorhanden)
-- Aktualisiert das Versionierungsfeld in `documentation/package.json` (falls vorhanden)
+- Aktualisiert das Versionfeld in `documentation/package.json` (falls vorhanden)
 - Aktualisiert nur, wenn sich die Version geändert hat
-- Bietet Rückmeldung zu jeder Operation
+- Gibt Rückmeldung zu jeder Operation
 
 ## Pre-checks-Skript {#pre-checks-script}
 
@@ -96,7 +96,7 @@ Dieses Skript aktualisiert automatisch Versionsinformationen über mehrere Datei
 ./scripts/pre-checks.sh
 ```
 
-Dieses Skript führt Vorabprüfungen durch, bevor der Entwicklungsserver gestartet, erstellt oder der Produktionsserver gestartet wird. Es:
+Dieses Skript führt Vorprüfungen durch, bevor der Entwicklungsserver gestartet, erstellt oder der Produktionsserver gestartet wird. Es:
 - Stellt sicher, dass die Datei `.duplistatus.key` vorhanden ist (über `ensure-key-file.sh`)
 - Aktualisiert die Versionsinformationen (über `update-version.sh`)
 
@@ -109,20 +109,20 @@ Dieses Skript wird automatisch durch `pnpm dev`, `pnpm build` und `pnpm start-lo
 ```
 
 Dieses Skript stellt sicher, dass die Datei `.duplistatus.key` im Verzeichnis `data` vorhanden ist. Es:
-- Erstellt das Verzeichnis `data`, falls es nicht vorhanden ist
+- Erstellt das Verzeichnis `data`, falls es nicht existiert
 - Generiert eine neue 32-Byte-Zufallsschlüsseldatei, falls diese fehlt
-- Setzt die Dateiberechtigungen auf 0400 (Lesezugriff nur für Eigentümer)
+- Setzt die Dateiberechtigungen auf 0400 (Lesezugriff nur für Besitzer)
 - Behebt Berechtigungen, falls diese fehlerhaft sind
 
 Die Schlüsseldatei wird für kryptografische Operationen in der Anwendung verwendet.
 
-## Wiederherstellung des Admin-Kontos {#admin-account-recovery}
+## Admin-Kontowiederherstellung {#admin-account-recovery}
 
 ```bash
 ./admin-recovery <username> <new-password>
 ```
 
-Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten bei Sperrung oder vergessenem Passwort. Es:
+Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten, falls diese gesperrt oder das Passwort vergessen wurde. Es:
 - Setzt das Passwort für den angegebenen Benutzer zurück
 - Entsperrt das Konto, falls es gesperrt war
 - Setzt den Zähler für fehlgeschlagene Anmeldeversuche zurück
@@ -145,10 +145,10 @@ Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten bei Sperrung od
 ./scripts/copy-images.sh
 ```
 
-Kopiert Bilddateien von `docs/static/img` an ihre entsprechenden Positionen in der Anwendung:
-- Kopiert `favicon.ico` zu `src/app/`
-- Kopiert `duplistatus_logo.png` zu `public/images/`
-- Kopiert `duplistatus_banner.png` zu `public/images/`
+Kopiert Bilddateien von `docs/static/img` an ihre entsprechenden Speicherorte in der Anwendung:
+- Kopiert `favicon.ico` nach `src/app/`
+- Kopiert `duplistatus_logo.png` nach `public/images/`
+- Kopiert `duplistatus_banner.png` nach `public/images/`
 
 Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
 
@@ -159,8 +159,8 @@ Nützlich zum Synchronisieren von Anwendungsbildern mit Dokumentationsbildern.
 ```
 
 Dieses Skript vergleicht Versionen zwischen Ihrer Entwicklungsumgebung und einem laufenden Docker-Container. Es:
-- Vergleicht SQLite-Versionen nur nach Hauptversion (z. B. werden 3.45.1 und 3.51.1 als kompatibel betrachtet, angezeigt als "✅ (major)")
-- Vergleicht Node-, npm- und Duplistatus-Versionen exakt (müssen genau übereinstimmen)
+- Vergleicht SQLite-Versionen nur nach Hauptversion (z. B. 3.45.1 vs 3.51.1 werden als kompatibel betrachtet, angezeigt als "✅ (major)")
+- Vergleicht Node-, npm- und duplistatus-Versionen exakt (müssen genau übereinstimmen)
 - Zeigt eine formatierte Tabelle mit allen Versionsvergleichen an
 - Bietet eine Zusammenfassung mit farbcodierten Ergebnissen (✅ für Übereinstimmungen, ❌ für Abweichungen)
 - Beendet sich mit Code 0, wenn alle Versionen übereinstimmen, mit Code 1 bei Abweichungen
@@ -169,7 +169,7 @@ Dieses Skript vergleicht Versionen zwischen Ihrer Entwicklungsumgebung und einem
 - Docker-Container mit dem Namen `duplistatus` muss ausgeführt werden
 - Das Skript liest Versionsinformationen aus den Docker-Container-Protokollen
 
-# German Translation
+**Beispielausgabe:**
 
 ```
 ┌─────────────────────────┬──────────────────────────────┬──────────────────────────────┬──────────────┐
@@ -182,7 +182,7 @@ Dieses Skript vergleicht Versionen zwischen Ihrer Entwicklungsumgebung und einem
 └─────────────────────────┴──────────────────────────────┴──────────────────────────────┴──────────────┘
 ```
 
-**Hinweis:** SQLite-Versionen werden nur nach der Hauptversion verglichen, da verschiedene Patch-Versionen innerhalb derselben Hauptversion im Allgemeinen kompatibel sind. Das Skript zeigt an, wenn SQLite-Versionen auf der Hauptebene übereinstimmen, aber in den Patch-Versionen unterschiedlich sind.
+**Hinweis:** SQLite-Versionen werden nur nach der Hauptversion verglichen, da verschiedene Patch-Versionen innerhalb derselben Hauptversion in der Regel kompatibel sind. Das Skript zeigt an, wenn SQLite-Versionen auf der Hauptebene übereinstimmen, aber in den Patch-Versionen unterschiedlich sind.
 
 ## Anzeigen der Konfigurationen in der Datenbank {#viewing-the-configurations-in-the-database}
 
@@ -200,7 +200,7 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## SQL-Skripte zum Debuggen und Warten {#sql-scripts-for-debugging-and-maintenance}
+## SQL-Skripte zum Debuggen und zur Wartung {#sql-scripts-for-debugging-and-maintenance}
 
 Das Projekt enthält SQL-Skripte für die Datenbankwartung:
 
@@ -210,7 +210,7 @@ Das Projekt enthält SQL-Skripte für die Datenbankwartung:
 sqlite3 data/backups.db < scripts/delete-backup-settings.sql
 ```
 
-Dieses Skript entfernt alle Sicherungseinstellungen aus der Konfigurationstabelle. Verwenden Sie dieses mit Vorsicht, da alle Sicherungsmitteilungskonfigurationen zurückgesetzt werden.
+Dieses Skript entfernt alle Sicherungseinstellungen aus der Konfigurationstabelle. Verwenden Sie es mit Vorsicht, da dies alle Sicherungsmitteilungskonfigurationen zurücksetzen wird.
 
 ### Letzte Sicherung löschen {#delete-last-backup}
 
@@ -218,7 +218,7 @@ Dieses Skript entfernt alle Sicherungseinstellungen aus der Konfigurationstabell
 sqlite3 data/backups.db < scripts/delete-last-backup.sql
 ```
 
-Dieses Skript entfernt den neuesten Sicherungsdatensatz für jeden Server. Standardmäßig löscht es die letzte Sicherung für ALLE Server. Das Skript enthält kommentierte Beispiele zum Ausrichten auf bestimmte Server nach Name. Nützlich für Test- und Debugging-Zwecke.
+Dieses Skript entfernt den letzten Sicherungsdatensatz für jeden Server. Standardmäßig löscht es die letzte Sicherung für ALLE Server. Das Skript enthält kommentierte Beispiele zum Ausrichten auf bestimmte Server nach Name. Nützlich für Test- und Debugging-Zwecke.
 
 **Hinweis**: Das Skript wurde aktualisiert, um mit dem aktuellen Datenbankschema zu funktionieren (verwendet die Tabelle `servers` und die Spalte `server_id`).
 

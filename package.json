@@ -73,7 +73,7 @@
     "next": "^16.1.6",
     "next-intlayer": "^8.0.2",
     "node-cron": "^4.2.1",
-    "nodemailer": "^7.0.13",
+    "nodemailer": "^8.0.0",
     "qrcode": "^1.5.4",
     "react": "^19.2.4",
     "react-datepicker": "^9.1.0",
@@ -92,23 +92,24 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.1.0",
+    "@types/node": "^25.2.0",
     "@types/node-cron": "^3.0.11",
-    "@types/react": "19.2.10",
+    "@types/react": "19.2.11",
     "@types/string-template": "^1.0.7",
     "baseline-browser-mapping": "latest",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.6",
     "puppeteer": "^24.36.1",
     "tsx": "^4.21.0",
-    "webpack": "^5.104.1"
+    "webpack": "^5.105.0"
   },
   "pnpm": {
     "overrides": {
       "qs": ">=6.14.1",
       "preact": ">=10.28.2",
       "lodash": ">=4.17.23",
-      "lodash-es": ">=4.17.23"
+      "lodash-es": ">=4.17.23",
+      "@isaacs/brace-expansion": ">=5.0.1"
     }
   }
 }

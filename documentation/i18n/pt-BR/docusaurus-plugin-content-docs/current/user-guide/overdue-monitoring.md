@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-01-31T00:51:30.885Z'
+translation_last_updated: '2026-02-05T00:21:12.996Z'
 source_file_mtime: '2026-01-27T14:22:06.834Z'
 source_file_hash: d2b8e17a5e66bb07
 translation_language: pt-BR
@@ -9,9 +9,9 @@ import { ZoomMermaid } from '@site/src/components/ZoomMermaid';
 
 # Monitoramento de backups atrasados {#overdue-monitoring}
 
-O recurso de Monitoramento de backups atrasados permite que você acompanhe e receba alertas sobre backups que estão atrasados. As Notificações podem ser via NTFY ou E-mail.
+O recurso de monitoramento de backups atrasados permite rastrear e alertar sobre backups que estão atrasados. As notificações podem ser via NTFY ou E-mail.
 
-Na interface do usuário, os backups atrasados são exibidos com um ícone de aviso . Ao passar o mouse sobre o ícone, são exibidos os detalhes do backup atrasado, incluindo a última hora do backup, a hora esperada do backup, o período de tolerância e a hora esperada do próximo backup.
+Na interface do usuário, os backups atrasados são exibidos com um ícone de aviso . Passar o mouse sobre o ícone exibe os detalhes do backup atrasado, incluindo a última hora do backup, a hora esperada do backup, o período de tolerância e a hora esperada do próximo backup.
 
 ## Processo de Verificação de Atraso {#overdue-check-process}
 
@@ -19,13 +19,13 @@ Na interface do usuário, os backups atrasados são exibidos com um ícone de av
 
 | **Etapa** | **Valor**                  | **Descrição**                                   | **Exemplo**        |
 |:--------:|:---------------------------|:--------------------------------------------------|:-------------------|
-|    1     | **Último backup**            | A data e hora do último backup bem-sucedido.      | `2024-01-01 08:00` |
+|    1     | **Última Backup**            | A data e hora do último backup bem-sucedido.      | `2024-01-01 08:00` |
 |    2     | **Intervalo esperado**      | A frequência de backup configurada.                  | `1 day`            |
-|    3     | **Próximo backup calculado** | `Último backup` + `Intervalo esperado`               | `2024-01-02 08:00` |
-|    4     | **Tolerância**              | O período de carência configurado (tempo extra permitido). | `1 hour`           |
-|    5     | **Próximo backup esperado**   | `Próximo backup calculado` + `Tolerância`            | `2024-01-02 09:00` |
+|    3     | **Próximo Backup Calculado** | `Última Backup` + `Intervalo esperado`               | `2024-01-02 08:00` |
+|    4     | **Tolerância**              | O período de tolerância configurado (tempo extra permitido). | `1 hour`           |
+|    5     | **Próximo Backup Esperado**   | `Próximo Backup Calculado` + `Tolerância`            | `2024-01-02 09:00` |
 
-Um backup é considerado **atrasado** se a hora atual é posterior à hora `Expected Next Backup`.
+Um backup é considerado **atrasado** se a hora atual é posterior à hora do `Próximo Backup Esperado`.
 
 <ZoomMermaid>
 
@@ -54,7 +54,7 @@ gantt
 **Exemplos baseados na linha do tempo acima:**
 
 - Em `2024-01-01 21:00` (🔹Verificação 1), o backup está **no prazo**.
-- Em `2024-01-02 08:30` (🔹Verificação 2), o backup está **no prazo**, pois ainda está dentro do período de tolerância.
+- Em `2024-01-02 08:30` (🔹Verificação 2), o backup está **no prazo**, pois ainda está dentro do período de Tolerância.
 - Em `2024-01-02 10:00` (🔹Verificação 3), o backup está **atrasado**, pois isso é após o tempo de `Próximo Backup Esperado`.
 
 ## Verificações Periódicas {#periodic-checks}
@@ -66,12 +66,12 @@ gantt
 Quando você coleta logs de backup de um servidor Duplicati, **duplistatus** automaticamente:
 
 - Extrai o agendamento de backup da Configuração do Duplicati
-- Atualiza os intervalos de monitoramento de backups atrasados para corresponder exatamente
-- Sincroniza os dias da semana permitidos e os horários agendados
+- Atualiza os intervalos de Monitoramento de backups atrasados para corresponder exatamente
+- Sincroniza os Dias da semana permitidos e os horários agendados
 - Preserva suas preferências de notificação
 
 :::tip
-Para melhores resultados, colete logs de backup após alterar intervalos de trabalho de backup no seu Servidor Duplicati. Isso garante que **duplistatus** permaneça sincronizado com sua configuração atual.
+Para obter os melhores resultados, colete logs de backup após alterar os intervalos de trabalho de backup no seu servidor Duplicati. Isso garante que **duplistatus** permaneça sincronizado com sua configuração atual.
 :::
 
-Revise a seção [Configurações de Atraso](settings/overdue-settings.md) para opções de configuração detalhadas.
+Revise a seção [Configurações de Atrasado](settings/overdue-settings.md) para opções de configuração detalhadas.
