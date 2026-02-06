@@ -10,12 +10,44 @@ export default {
       es: 'Plantillas de notificación', 
       'pt-BR': 'Modelos de notificação' 
     }),
-    description: t({ 
-      en: 'Customize notification message templates', 
-      de: 'Benachrichtigungsnachrichtenvorlagen anpassen', 
-      fr: 'Personnaliser les modèles de messages de notification', 
-      es: 'Personalizar plantillas de mensajes de notificación', 
-      'pt-BR': 'Personalizar modelos de mensagens de notificação' 
+    description: t({
+      en: 'Customize notification message templates',
+      de: 'Benachrichtigungsnachrichtenvorlagen anpassen',
+      fr: 'Personnaliser les modèles de messages de notification',
+      es: 'Personalizar plantillas de mensajes de notificación',
+      'pt-BR': 'Personalizar modelos de mensagens de notificação'
+    }),
+    // Template Language Settings
+    templateLanguage: {
+      label: t({
+        en: 'Template Language',
+        de: 'Vorlagensprache',
+        fr: 'Langue des modèles',
+        es: 'Idioma de las plantillas',
+        'pt-BR': 'Idioma dos Modelos',
+      }),
+      description: t({
+        en: 'Language for default notification templates. Changing this does not affect already customized templates. If you are changing languages, you need to use the reset buttons to load the new language defaults.',
+        de: 'Sprache für Standard-Benachrichtigungsvorlagen. Dies wirkt sich nicht auf bereits angepasste Vorlagen aus. Wenn Sie die Sprache ändern, müssen Sie die Reset-Schaltflächen verwenden, um die neuen Sprachstandards zu laden.',
+        fr: 'Langue pour les modèles de notification par défaut. Cela n\'affecte pas les modèles déjà personnalisés. Si vous changez de langue, vous devez utiliser les boutons de réinitialisation pour charger les nouveaux paramètres linguistiques.',
+        es: 'Idioma para las plantillas de notificación predeterminadas. Esto no afecta las plantillas ya personalizadas. Si cambia de idioma, debe usar los botones de restablecimiento para cargar los nuevos valores predeterminados del idioma.',
+        'pt-BR': 'Idioma para os modelos de notificação padrão. Alterar isso não afeta modelos já personalizados. Se você está mudando de idioma, precisa usar os botões de reset para carregar os novos padrões do idioma.',
+      }),
+      options: {
+        en: t({ en: 'English', de: 'Englisch', fr: 'Anglais', es: 'Inglés', 'pt-BR': 'Inglês' }),
+        de: t({ en: 'German', de: 'Deutsch', fr: 'Allemand', es: 'Alemán', 'pt-BR': 'Alemão' }),
+        fr: t({ en: 'French', de: 'Französisch', fr: 'Français', es: 'Francés', 'pt-BR': 'Francês' }),
+        es: t({ en: 'Spanish', de: 'Spanisch', fr: 'Espagnol', es: 'Español', 'pt-BR': 'Espanhol' }),
+        'pt-BR': t({ en: 'Portuguese (Brazil)', de: 'Portugiesisch (Brasilien)', fr: 'Portugais (Brésil)', es: 'Portugués (Brasil)', 'pt-BR': 'Português (Brasil)' }),
+      },
+    },
+    // Reset Confirmation
+    resetConfirm: t({
+      en: 'Reset template to default? This will use the {language} default template.',
+      de: 'Vorlage auf Standard zurücksetzen? Dies verwendet die {language} Standardvorlage.',
+      fr: 'Réinitialiser le modèle par défaut ? Cela utilisera le modèle par défaut en {language}.',
+      es: '¿Restablecer plantilla a predeterminada? Se usará la plantilla predeterminada en {language}.',
+      'pt-BR': 'Restaurar modelo para o padrão? Será usado o modelo padrão em {language}.',
     }),
     // Tab labels
     successTab: t({ 
@@ -226,12 +258,19 @@ export default {
       es: 'Enviando...', 
       'pt-BR': 'Enviando...' 
     }),
-    resetToDefault: t({ 
-      en: 'Reset to Default', 
-      de: 'Auf Standard zurücksetzen', 
-      fr: 'Réinitialiser aux valeurs par défaut', 
-      es: 'Restablecer a predeterminado', 
-      'pt-BR': 'Redefinir para padrão' 
+    resetToDefault: t({
+      en: 'Reset this template to default',
+      de: 'Diese Vorlage auf Standard zurücksetzen',
+      fr: 'Réinitialiser ce modèle à la valeur par défaut',
+      es: 'Restablecer esta plantilla a predeterminada',
+      'pt-BR': 'Redefinir este modelo para o padrão'
+    }),
+    resetAllToDefault: t({
+      en: 'Reset all to default',
+      de: 'Alle auf Standard zurücksetzen',
+      fr: 'Tout réinitialiser aux valeurs par défaut',
+      es: 'Restablecer todo a predeterminado',
+      'pt-BR': 'Redefinir tudo para o padrão'
     }),
     reset: t({ 
       en: 'Reset', 
@@ -239,6 +278,34 @@ export default {
       fr: 'Réinitialiser', 
       es: 'Restablecer', 
       'pt-BR': 'Redefinir' 
+    }),
+    resetAllConfirm: t({
+      en: 'Reset all templates to default in {language}? This will replace all template messages and titles with the {language} defaults.',
+      de: 'Alle Vorlagen auf Standard in {language} zurücksetzen? Dies ersetzt alle Vorlagennachrichten und -titel durch die {language}-Standards.',
+      fr: 'Réinitialiser tous les modèles aux valeurs par défaut en {language} ? Cela remplacera tous les messages et titres des modèles par les valeurs par défaut {language}.',
+      es: '¿Restablecer todas las plantillas a predeterminado en {language}? Esto reemplazará todos los mensajes y títulos de las plantillas con los valores predeterminados de {language}.',
+      'pt-BR': 'Redefinir todos os modelos para o padrão em {language}? Isso substituirá todas as mensagens e títulos dos modelos pelos padrões em {language}.'
+    }),
+    allTemplatesResetToDefault: t({
+      en: 'All templates have been reset to {language} defaults',
+      de: 'Alle Vorlagen wurden auf {language}-Standards zurückgesetzt',
+      fr: 'Tous les modèles ont été réinitialisés aux valeurs par défaut {language}',
+      es: 'Todas las plantillas han sido restablecidas a los valores predeterminados de {language}',
+      'pt-BR': 'Todos os modelos foram redefinidos para os padrões {language}'
+    }),
+    failedToResetTemplate: t({
+      en: 'Failed to reset template',
+      de: 'Fehler beim Zurücksetzen der Vorlage',
+      fr: 'Échec de la réinitialisation du modèle',
+      es: 'Error al restablecer la plantilla',
+      'pt-BR': 'Falha ao redefinir o modelo'
+    }),
+    failedToResetAllTemplates: t({
+      en: 'Failed to reset all templates',
+      de: 'Fehler beim Zurücksetzen aller Vorlagen',
+      fr: 'Échec de la réinitialisation de tous les modèles',
+      es: 'Error al restablecer todas las plantillas',
+      'pt-BR': 'Falha ao redefinir todos os modelos'
     }),
     // Toast messages
     templateSettingsSavedSuccessfully: t({ 

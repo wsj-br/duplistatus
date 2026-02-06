@@ -336,10 +336,10 @@ export async function POST(request: NextRequest) {
         errors_count: backup.errors,
         duration: backup.duration,
         file_count: backup.fileCount,
-        file_size: formatBytes(backup.fileSize, 'en'), // API route uses default locale
-        uploaded_size: formatBytes(backup.uploadedSize, 'en'), // API route uses default locale
-        storage_size: formatBytes(backup.knownFileSize, 'en'), // API route uses default locale
-        available_versions: backup.backup_list_count,
+        file_size: backup.fileSize, // pass raw number, will be formatted with locale in notification
+        uploaded_size: backup.uploadedSize, // pass raw number
+        storage_size: backup.knownFileSize, // pass raw number
+        available_versions: backup.backup_list_count || 0,
         log_text: extractLogText(backup),
       };
 

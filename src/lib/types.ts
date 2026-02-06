@@ -146,6 +146,22 @@ export interface NotificationTemplate {
   message: string;
 }
 
+/**
+ * Supported languages for notification templates.
+ */
+export type SupportedTemplateLanguage = 'en' | 'de' | 'fr' | 'es' | 'pt-BR';
+
+/**
+ * List of all supported template languages
+ */
+export const SUPPORTED_TEMPLATE_LANGUAGES: SupportedTemplateLanguage[] = [
+  'en',
+  'de',
+  'fr',
+  'es',
+  'pt-BR',
+];
+
 // Deprecated: NotificationConfig has been replaced by separate keys and unified response shape
 
 export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';

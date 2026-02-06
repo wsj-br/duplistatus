@@ -1089,7 +1089,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                                     <>
                                       {formatDateTime(lastBackupTimestamp, locale)}
                                       <br />
-                                      {formatRelativeTime(lastBackupTimestamp)}
+                                      {formatRelativeTime(lastBackupTimestamp, undefined, locale)}
                                     </>
                                   );
                                 }
@@ -1265,7 +1265,7 @@ export function OverdueMonitoringForm({ backupSettings }: OverdueMonitoringFormP
                                     <>
                                       {formatDateTime(lastBackupTimestamp, locale)}
                                       <br />
-                                      {formatRelativeTime(lastBackupTimestamp)}
+                                      {formatRelativeTime(lastBackupTimestamp, undefined, locale)}
                                     </>
                                   );
                                 }

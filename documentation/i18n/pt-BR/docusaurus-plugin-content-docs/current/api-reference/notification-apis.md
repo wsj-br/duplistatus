@@ -89,7 +89,7 @@
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
 - **Description**: Manually triggers the overdue backup check and sends notifications.
-- **Authentication**: Requires valid session and CSRF token
+- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
 - **Response**:
   ```json
   {
@@ -103,7 +103,6 @@
   }
   ```
 - **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to check for overdue backups
 - **Notes**:
   - Manually triggers overdue backup check
@@ -114,7 +113,7 @@
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST
 - **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.
-- **Authentication**: Requires valid session and CSRF token
+- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
 - **Response**:
   ```json
   {
@@ -122,7 +121,6 @@
   }
   ```
 - **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Failed to clear overdue backup timestamps
 - **Notes**:
   - Clears all overdue backup notification timestamps

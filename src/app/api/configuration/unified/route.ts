@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getConfigBackupSettings, getOverdueToleranceConfig, getNtfyConfig, getAllServerAddresses, getCronConfig, getNotificationFrequencyConfig, getSMTPConfig, clearRequestCache, getNotificationTemplates } from '@/lib/db-utils';
-import type { NtfyConfig, EmailConfig, NotificationTemplate } from '@/lib/types';
+import type { NtfyConfig, EmailConfig, NotificationTemplate, SupportedTemplateLanguage } from '@/lib/types';
 import { dbUtils } from '@/lib/db-utils';
 import { withCSRF } from '@/lib/csrf-middleware';
 
@@ -24,7 +24,12 @@ export const GET = withCSRF(async () => {
     // Build base response fields
     const base: {
       ntfy: NtfyConfig;
-      templates: { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+      templates: {
+        language: SupportedTemplateLanguage;
+        success: NotificationTemplate;
+        warning: NotificationTemplate;
+        overdueBackup: NotificationTemplate;
+      };
       email?: EmailConfig;
     } = {
       ntfy: ntfyConfig,

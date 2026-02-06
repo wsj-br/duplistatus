@@ -1,9 +1,12 @@
 import format from 'string-template';
 import nodemailer from 'nodemailer';
 import { getConfigBackupSettings, getNtfyConfig, getServerInfoById, getSMTPConfig, getNotificationTemplates } from './db-utils';
-import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType } from './types';
+import { NotificationTemplate, Backup, BackupStatus, BackupKey, SMTPConnectionType, SupportedTemplateLanguage } from './types';
 import { defaultNotificationTemplates } from './default-config';
 import { isDevelopmentMode } from './utils';
+import { formatDateTime } from './date-format';
+import { formatInteger, formatBytes as formatBytesLocale } from './number-format';
+import { translateStatus } from './status-translations';
 
 // Ensure this runs in Node.js runtime, not Edge Runtime
 export const runtime = 'nodejs';
@@ -46,7 +49,12 @@ export interface OverdueBackupContext {
 
 async function getNotificationConfig(): Promise<{
   ntfy: { url: string; topic: string; accessToken?: string };
-  templates: { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
+  templates: { 
+    language: SupportedTemplateLanguage;
+    success: NotificationTemplate; 
+    warning: NotificationTemplate; 
+    overdueBackup: NotificationTemplate 
+  };
   backupSettings: Record<BackupKey, import('./types').BackupNotificationConfig>;
 } | null> {
   try {
@@ -576,28 +584,20 @@ export function convertTextToHtml(text: string): string {
     .replace(/\*(.*?)\*/g, '<em>$1</em>');
 }
 
-// Helper function to format date strings using toLocaleString()
-function formatDateString(dateString: string): string {
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      // If the date is invalid, return the original string
-      return dateString;
-    }
-    return date.toLocaleString();
-  } catch {
-    // If there's any error parsing the date, return the original string
-    return dateString;
-  }
-}
+// Helper function to format date strings using locale-aware formatting
+// Removed - now using formatDateTime from date-format.ts
 
-function processTemplate(template: NotificationTemplate, context: NotificationContext | OverdueBackupContext): {
+function processTemplate(
+  template: NotificationTemplate,
+  context: NotificationContext | OverdueBackupContext,
+  locale: string = 'en'
+): {
   title: string;
   message: string;
   priority: string;
   tags: string;
 } {
-   // Create a copy of the context with formatted dates
+   // Create a copy of the context with formatted dates and numbers
   const formattedContext = { ...context } as Record<string, unknown>;
 
   // Add additional server variables to context 
@@ -612,15 +612,44 @@ function processTemplate(template: NotificationTemplate, context: NotificationCo
   formattedContext.backup_interval_value = 'backup_interval' in context ? context.backup_interval : '';
   formattedContext.backup_interval_type = ""; 
 
-  // Format date fields if they exist in the context
+  // Format date fields using locale-aware formatting
   if ('backup_date' in formattedContext) {
-    formattedContext.backup_date = formatDateString(formattedContext.backup_date as string);
+    formattedContext.backup_date = formatDateTime(formattedContext.backup_date as string, locale);
   }
   if ('last_backup_date' in formattedContext) {
-    formattedContext.last_backup_date = formatDateString(formattedContext.last_backup_date as string);
+    formattedContext.last_backup_date = formatDateTime(formattedContext.last_backup_date as string, locale);
   }
   if ('expected_date' in formattedContext) {
-    formattedContext.expected_date = formatDateString(formattedContext.expected_date as string);
+    formattedContext.expected_date = formatDateTime(formattedContext.expected_date as string, locale);
+  }
+
+  // Format numeric fields using locale-aware integer formatting
+  const numericFields = ['messages_count', 'warnings_count', 'errors_count', 'file_count', 'available_versions'] as const;
+  for (const field of numericFields) {
+    if (formattedContext[field] !== undefined && formattedContext[field] !== null) {
+      const value = Number(formattedContext[field]);
+      if (!isNaN(value)) {
+        formattedContext[field] = formatInteger(value, locale);
+      }
+    }
+  }
+
+  // Format bytes fields using locale-aware byte formatting
+  const bytesFields = ['file_size', 'uploaded_size', 'storage_size'] as const;
+  for (const field of bytesFields) {
+    if (formattedContext[field] !== undefined && formattedContext[field] !== null) {
+      // These might be numbers or already-formatted strings from the API
+      const value = Number(formattedContext[field]);
+      if (!isNaN(value)) {
+        formattedContext[field] = formatBytesLocale(value, locale);
+      }
+      // If it's already a string, we could try to parse it but better to rely on the API to pass numbers
+    }
+  }
+
+  // Translate status if present
+  if ('status' in formattedContext && formattedContext.status !== null) {
+    formattedContext.status = translateStatus(formattedContext.status as BackupStatus | string, locale);
   }
 
   return {
@@ -711,7 +740,8 @@ export async function sendBackupNotification(
 
   let processedTemplate;
   try {
-    processedTemplate = processTemplate(template, context);
+    const locale = config.templates?.language || 'en';
+    processedTemplate = processTemplate(template, context, locale);
   } catch (error) {
     console.error(`Failed to process notification template for backup ${backup.name} on server ${serverName}:`, error instanceof Error ? error.message : String(error));
     throw error;
@@ -1089,7 +1119,8 @@ export async function sendOverdueBackupNotification(
   }
 
   try {
-    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context);
+    const locale = notificationConfig.templates?.language || 'en';
+    const processedTemplate = processTemplate(notificationConfig.templates?.overdueBackup || defaultNotificationTemplates.overdueBackup, context, locale);
     
     // Send notifications based on backup configuration
     const notifications: Promise<void>[] = [];

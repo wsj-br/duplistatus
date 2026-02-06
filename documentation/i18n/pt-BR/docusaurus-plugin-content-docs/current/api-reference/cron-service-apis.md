@@ -6,6 +6,7 @@
 - **Endpoint**: `/api/cron-config`
 - **Method**: GET
 - **Description**: Retrieves the current cron service configuration.
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -24,7 +25,7 @@
 - **Endpoint**: `/api/cron-config`
 - **Method**: POST
 - **Description**: Updates the cron service configuration.
-- **Authentication**: Requires valid session and CSRF token
+- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
 - **Request Body**:
   ```json
   {
@@ -39,7 +40,6 @@
   ```
 - **Available Intervals**: `"disabled"`, `"1min"`, `"5min"`, `"10min"`, `"15min"`, `"20min"`, `"30min"`, `"1hour"`, `"2hours"`
 - **Error Responses**:
-  - `401`: Unauthorized - Invalid session or CSRF token
   - `400`: Interval is required
   - `500`: Failed to update cron configuration
 - **Notes**:
@@ -51,6 +51,7 @@
 - **Endpoint**: `/api/cron/*`
 - **Method**: GET, POST
 - **Description**: Proxies requests to the cron service. This endpoint forwards all requests to the cron service running on a separate port.
+- **Authentication**: Requires valid session and CSRF token
 - **Parameters**:
   - `*`: Any path that will be forwarded to the cron service
 - **Response**: Depends on the cron service endpoint being accessed
@@ -65,3 +66,4 @@
   - Proxies requests to the cron service
   - Returns 503 if cron service is not available
   - Supports both GET and POST methods
+  - Used for cron service management from the web interface

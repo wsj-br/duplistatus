@@ -205,5 +205,63 @@ export default {
       es: 'Error al enviar notificación de prueba', 
       'pt-BR': 'Falha ao enviar notificação de teste' 
     }),
+
+    // Split descriptions for links
+    cardDescLearnMore: t({ 
+      en: 'Learn more about NTFY at', 
+      de: 'Erfahren Sie mehr über NTFY unter', 
+      fr: 'En savoir plus sur NTFY sur', 
+      es: 'Obtenga más información sobre NTFY en', 
+      'pt-BR': 'Saiba mais sobre NTFY em' 
+    }),
+    cardDescAnd: t({ 
+      en: 'and', 
+      de: 'und', 
+      fr: 'et', 
+      es: 'y', 
+      'pt-BR': 'e' 
+    }),
+    cardDescHere: t({ 
+      en: 'here', 
+      de: 'hier', 
+      fr: 'ici', 
+      es: 'aquí', 
+      'pt-BR': 'aqui' 
+    }),
+    cardDescSubscribe: t({ 
+      en: 'to subscribe to your topic in your phone.', 
+      de: 'um sich für Ihr Thema auf Ihrem Telefon anzumelden.', 
+      fr: 'pour vous abonner à votre sujet sur votre téléphone.', 
+      es: 'para suscribirse a su tema en su teléfono.', 
+      'pt-BR': 'para se inscrever no seu tópico no seu telefone.' 
+    }),
+    ntfyUrlDescPrefix: t({ 
+      en: 'The URL of your NTFY server. Defaults to', 
+      de: 'Die URL Ihres NTFY-Servers. Standardmäßig', 
+      fr: 'L\'URL de votre serveur NTFY. Par défaut', 
+      es: 'La URL de su servidor NTFY. Por defecto', 
+      'pt-BR': 'A URL do seu servidor NTFY. Padrão' 
+    }),
+    ntfyAccessTokenDescPrefix: t({ 
+      en: 'If your NTFY server requires authentication, please enter your access token. For more details, refer to the', 
+      de: 'Wenn Ihr NTFY-Server eine Authentifizierung erfordert, geben Sie bitte Ihr Zugriffstoken ein. Weitere Details finden Sie in der', 
+      fr: 'Si votre serveur NTFY nécessite une authentification, veuillez entrer votre jeton d\'accès. Pour plus de détails, consultez la', 
+      es: 'Si su servidor NTFY requiere autenticación, ingrese su token de acceso. Para más detalles, consulte la', 
+      'pt-BR': 'Se o servidor NTFY exigir autenticação, insira seu token de acesso. Para mais detalhes, consulte a' 
+    }),
+    ntfyAccessTokenDescLink: t({ 
+      en: 'NTFY authentication', 
+      de: 'NTFY-Authentifizierungs', 
+      fr: 'documentation d\'authentification NTFY', 
+      es: 'documentación de autenticación NTFY', 
+      'pt-BR': 'documentação de autenticação NTFY' 
+    }),
+    ntfyAccessTokenDescSuffix: t({ 
+      en: 'documentation.', 
+      de: '-Dokumentation.', 
+      fr: '.', 
+      es: '.', 
+      'pt-BR': '.' 
+    }),
   },
 } satisfies Dictionary;

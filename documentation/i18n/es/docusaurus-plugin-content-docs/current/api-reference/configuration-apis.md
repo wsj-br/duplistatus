@@ -14,9 +14,12 @@
     "config": {
       "host": "smtp.example.com",
       "port": 465,
-      "secure": true,
+      "connectionType": "ssl",
       "username": "user@example.com",
       "mailto": "admin@example.com",
+      "senderName": "duplistatus",
+      "fromAddress": "user@example.com",
+      "requireAuth": true,
       "hasPassword": true
     },
     "message": "Email is configured and ready to use."
@@ -37,6 +40,7 @@
 - **Notes**:
   - Returns configuration without password for security
   - Includes `hasPassword` field to indicate if password is set
+  - Includes `connectionType` (plain|starttls|ssl), `senderName`, `fromAddress`, and `requireAuth` fields
   - Indicates if email notifications are available for test and production use
   - Handles master key validation errors gracefully
 
@@ -149,6 +153,7 @@
 - **Endpoint**: `/api/configuration/unified`
 - **Method**: GET
 - **Description**: Retrieves a unified configuration object containing all configuration data including cron settings, notification frequency, and servers with backups.
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -157,24 +162,8 @@
       "topic": "duplistatus-notifications",
       "accessToken": ""
     },
-    "email": {
-      "host": "smtp.example.com",
-      "port": 465,
-      "secure": true,
-      "username": "user@example.com",
-      "mailto": "admin@example.com",
-      "enabled": true,
-      "hasPassword": true
-    },
-    "backupSettings": {
-      "Server Name:Backup Name": {
-        "notificationEvent": "all",
-        "expectedInterval": 24,
-        "overdueBackupCheckEnabled": true,
-        "intervalUnit": "hours"
-      }
-    },
     "templates": {
+      "language": "en",
       "success": {
         "title": "✅ {status} - {backup_name} @ {server_name}",
         "message": "Backup {backup_name} on {server_name} completed with status '{status}' at {backup_date} in {duration}.",
@@ -194,11 +183,32 @@
         "tags": "duplicati, duplistatus, overdue"
       }
     },
+    "email": {
+      "host": "smtp.example.com",
+      "port": 465,
+      "connectionType": "ssl",
+      "username": "user@example.com",
+      "mailto": "admin@example.com",
+      "senderName": "duplistatus",
+      "fromAddress": "user@example.com",
+      "requireAuth": true,
+      "hasPassword": true
+    },
     "overdue_tolerance": "1h",
+    "backup_settings": {
+      "server1:backup1": {
+        "notificationEvent": "all",
+        "expectedInterval": 24,
+        "overdueBackupCheckEnabled": true,
+        "intervalUnit": "hours",
+        "expectedBackupDate": "2025-02-07T00:00:00.000Z",
+        "lastBackupDate": "2025-02-06T00:00:00.000Z"
+      }
+    },
     "serverAddresses": [
       {
-        "id": "server-id",
-        "name": "Server Name",
+        "id": "server1",
+        "name": "Server 1",
         "server_url": "http://localhost:8200"
       }
     ],
@@ -209,10 +219,15 @@
     "notificationFrequency": "every_day",
     "serversWithBackups": [
       {
-        "id": "server-id",
-        "name": "Server Name",
-        "backupName": "Backup Name",
-        "server_url": "http://localhost:8200"
+        "id": "server1",
+        "name": "Server 1",
+        "backupName": "backup1",
+        "server_url": "http://localhost:8200",
+        "alias": "My Server",
+        "note": "Primary backup server",
+        "hasPassword": true,
+        "expectedBackupDate": "2025-02-07T00:00:00.000Z",
+        "lastBackupDate": "2025-02-06T00:00:00.000Z"
       }
     ]
   }
@@ -224,6 +239,7 @@
   - Includes cron settings, notification frequency, and servers with backups
   - Email configuration includes `hasPassword` field but not the actual password
   - Fetches all data in parallel for better performance
+
 
 ## Get NTFY Configuration - `/api/configuration/ntfy` {#get-ntfy-configuration-apiconfigurationntfy}
 - **Endpoint**: `/api/configuration/ntfy`

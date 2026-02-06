@@ -23,13 +23,26 @@ All endpoints that modify database data require session authentication and CSRF 
 
 - **Server Management**: `/api/servers/:id` (PATCH, DELETE), `/api/servers/:id/server-url` (PATCH), `/api/servers/:id/password` (PATCH, GET)
 - **Configuration Management**: `/api/configuration/email` (GET, POST, DELETE), `/api/configuration/unified` (GET), `/api/configuration/ntfy` (GET), `/api/configuration/notifications` (GET, POST), `/api/configuration/backup-settings` (POST), `/api/configuration/templates` (POST), `/api/configuration/overdue-tolerance` (GET, POST)
-- **Backup Management**: `/api/backups/*` (DELETE, POST)
-- **Notification System**: `/api/notifications/*` (POST)
-- **Cron Configuration**: `/api/cron-config` (POST)
+- **Notification System**: `/api/notifications/test` (POST)
+- **Cron Configuration**: `/api/cron-config` (GET, POST)
+- **Cron Proxy**: `/api/cron/*` (GET, POST) - proxies requests to the cron service
 - **Session Management**: `/api/session` (POST, GET, DELETE), `/api/csrf` (GET)
 - **Chart Data**: `/api/chart-data/*` (GET)
 - **Dashboard**: `/api/dashboard` (GET)
 - **Server Details**: `/api/servers` (GET), `/api/servers/:id` (GET), `/api/detail/:serverId` (GET)
+- **Audit Log**: `/api/audit-log` (GET), `/api/audit-log/download` (GET), `/api/audit-log/filters` (GET), `/api/audit-log/retention` (PATCH), `/api/audit-log/cleanup` (POST) - admin required for write operations
+- **User Management**: `/api/users` (GET, POST, PATCH, DELETE) - admin required
+- **Database Management**: `/api/database/backup` (GET), `/api/database/restore` (POST) - admin required
+- **Application Logs**: `/api/application-logs` (GET), `/api/application-logs/export` (GET) - admin required
+
+### Optional Authentication Endpoints {#optional-auth-endpoints}
+These endpoints accept authentication if provided, but also work without authentication for automation and integration purposes:
+
+- **Backup Collection**: `/api/backups/collect` (POST) - can use stored credentials or provide new ones; optional session for audit logging
+- **Backup Schedule Sync**: `/api/backups/sync-schedule` (POST) - similar to collect endpoint
+- **Cron Configuration Update**: `/api/cron-config` (POST) - optional session for audit logging
+- **Overdue Check**: `/api/notifications/check-overdue` (POST) - optional session for audit logging
+- **Clear Overdue Timestamps**: `/api/notifications/clear-overdue-timestamps` (POST) - optional session for audit logging
 
 ### Unprotected Endpoints {#unprotected-endpoints}
 External APIs remain unauthenticated for Duplicati integration:

@@ -82,14 +82,14 @@ Configuration is loaded from `translate.config.json` (or a custom path via `-c`)
 
 **Paths** (`config.paths`):
 
-| Key         | Default                | Description                             |
-|-------------|------------------------|-----------------------------------------|
-| `docs`      | `./docs`               | Source markdown directory               |
-| `i18n`      | `./i18n`               | Output directory for translated content |
-| `cache`     | `./.translation-cache` | SQLite cache and logs                   |
-| `glossary`  | `./glossary-ui.csv`    | CSV file with term translations (UI, from intlayer) |
-| `glossaryUser` | `./glossary-user.csv` | Optional: user overrides (en, locale, translation) |
-| `staticImg` | `./static/img`         | SVG source directory (optional)         |
+| Key            | Default                | Description                                         |
+|----------------|------------------------|-----------------------------------------------------|
+| `docs`         | `./docs`               | Source markdown directory                           |
+| `i18n`         | `./i18n`               | Output directory for translated content             |
+| `cache`        | `./.translation-cache` | SQLite cache and logs                               |
+| `glossary`     | `./glossary-ui.csv`    | CSV file with term translations (UI, from intlayer) |
+| `glossaryUser` | `./glossary-user.csv`  | Optional: user overrides (en, locale, translation)  |
+| `staticImg`    | `./static/img`         | SVG source directory (optional)                     |
 
 **Locales** (`config.locales`):
 
@@ -124,7 +124,7 @@ Configuration is loaded from `translate.config.json` (or a custom path via `-c`)
 1. **Setup**
    - Load config, glossary, ignore rules
    - Initialize `TranslationCache`, `DocumentSplitter`, `Translator`
-   - Tee stdout/stderr to a log file in `.translation-cache/`
+   - All console output is automatically written to log files: `.translation-cache/translate_<timestamp>.log` for markdown translation and `.translation-cache/translate-svg_<timestamp>.log` for SVG translation, via the `log-output.ts` utility.
 
 2. **Copy ignored files**
    - Files matching `.translate-ignore` are copied verbatim into each locale's `current/` folder (no translation). All files under ignored paths are copied (including `.json`, images, etc.), not just `.md`/`.mdx`.
@@ -144,18 +144,18 @@ Configuration is loaded from `translate.config.json` (or a custom path via `-c`)
      - **Segment cache check**: `cache.getSegment(hash, locale, filepath, startLine)`
      - If hit: use cached translation, update `last_hit_at`
      - If miss: add to batch queue (or translate immediately with `--no-batch`)
-     - **Batch mode**: When queue reaches `batchSize` or `maxBatchChars`, call `Translator.translateBatch()`. On `BatchTranslationError`, fall back to single-segment `translate()` for each item.
+     - **Batch mode**: Accumulate cache-miss segments into a batch queue. When the queue reaches `batchSize` (default 20) segments or `maxBatchChars` (default 5000) total characters, flush by calling `Translator.translateBatch()`. On `BatchTranslationError`, fall back to single-segment `translate()` for each item in the batch.
    - Reassemble segments, add translation metadata to frontmatter (`translation_last_updated`, `source_file_mtime`, `source_file_hash`, `translation_language`, `source_file_path`)
    - Write to `i18n/<locale>/docusaurus-plugin-content-docs/current/<relativePath>`
    - Update `file_tracking` with new hash
-   - Progress display: segment count, percentage, elapsed time, file cost, total cost
+   - Progress display: segment count, number cached vs translated, percentage, elapsed time, cost per file and cumulative total
 
 5. **SVG translation** (unless `--no-svg`)
    - Process SVGs in `static/img/` (see [SVG Translation](#svg-translation))
    - Skipped when `-p` targets a docs path with no SVG files
 
 6. **Post-run**
-   - `cache.resetLastHitAtForUnhitMarkdown(segmentHitKeys)`: Set `last_hit_at = NULL` for markdown segments not hit this run (enables cleanup to remove stale entries later)
+   - `cache.resetLastHitAtForUnhitMarkdown(segmentHitKeys)`: Set `last_hit_at = NULL` for markdown segments not hit this run (enables cleanup to remove stale entries later). Segments from files that were skipped (file-level cache hit) are considered hit and are not reset.
    - Summary: files processed/skipped, segments cached/translated, total tokens, total cost (from OpenRouter API), total time
 
 ---
@@ -198,6 +198,8 @@ Each segment's `hash` is computed via `TranslationCache.computeHash(content)`:
 - SHA-256 digest, first 16 hex chars
 
 This hash is the cache key for segment-level lookups.
+
+**Note**: For frontmatter segments, the hash is computed from the actual frontmatter string (`frontMatterStr`), not from `JSON.stringify(frontMatter)`. This ensures consistent hashing regardless of key ordering in the YAML/JSON object.
 
 ---
 
@@ -255,6 +257,8 @@ Used by default for multiple segments in one API call:
 - **Parsing**: Regex extracts `<t id="N">...</t>`; throws `BatchTranslationError` if count mismatches
 - **XML escaping**: Content is escaped (`&`, `<`, `>`, `"`) before sending; unescaped on parse
 
+**Fallback**: If `translateBatch()` throws `BatchTranslationError`, the translator falls back to single-segment `translate()` for each item in the failed batch, ensuring translation continues without data loss.
+
 ### Glossary Hints
 
 - CSV columns: `en`, `fr`, `de`, `pt-BR`, `es` (locale headers only)
@@ -269,7 +273,7 @@ Used by default for multiple segments in one API call:
 
 ### Debug Traffic
 
-When `--debug-traffic` is enabled (default), request and response payloads are appended to a log file in `.translation-cache/` for inspection.
+`--debug-traffic` is enabled by default. Request and response payloads (without the API key) are appended to a log file in `.translation-cache/` for inspection. Use `--debug-traffic <path>` for a custom log filename, or `--no-debug-traffic` to disable.
 
 ---
 
@@ -304,8 +308,8 @@ The cache is a SQLite database at `.translation-cache/cache.db`.
 
 ### Cache Lifecycle
 
-1. **Read**: `getSegment(hash, locale, filepath?, startLine?)` – returns `translated_text` or null; on hit, updates `last_hit_at`, backfills `filepath`/`start_line` if null
-2. **Write**: `setSegment(...)` – INSERT or UPDATE on conflict
+1. **Read**: `getSegment(hash, locale, filepath?, startLine?)` – returns `translated_text` or null; on hit, updates `last_hit_at`, backfills `filepath`/`start_line` if null. Filepaths are normalized to POSIX format (forward slashes) to ensure consistent cache lookups across platforms (Windows backslash vs Unix forward slash).
+2. **Write**: `setSegment(...)` – INSERT or UPDATE on conflict using `ON CONFLICT DO UPDATE` to preserve `created_at` when updating existing rows
 3. **File status**: `getFileStatus(filepath, locale)` / `setFileStatus(...)` for file-level skip
 4. **Cleanup**: `cache-cleanup.ts` removes orphaned and stale entries (see [Supporting Scripts](#supporting-scripts))
 
@@ -348,6 +352,10 @@ SVG translation is handled by `translate-svg.ts` and `svg-splitter.ts`.
 - Same SQLite cache as markdown; `filepath` is `static/img/<filename>`
 - `resetLastHitAtForSvg()` clears `last_hit_at` for SVG rows at the start of an SVG run so only hit segments retain timestamps
 
+### Lowercase Transformation
+
+Translated text in SVG files is forced to lowercase. This ensures consistency in SVG text rendering and is applied to both newly translated segments and cached translations (when retrieved from cache).
+
 ---
 
 ## Glossary Generation
@@ -368,6 +376,26 @@ The glossary can be generated from intlayer dictionaries to ensure consistency b
 **Usage**: Run `pnpm translate:glossary-ui` from the `documentation/` directory.
 
 **User overrides**: Entries in `glossary-user.csv` (columns: en, locale, translation) take precedence over `glossary-ui.csv`.
+
+### `update-glossary-markdown.js`
+
+- Regenerates glossary-ui.csv using `pnpm run translate:glossary-ui` instead of the old shell script.
+- This script is the recommended way to update the glossary after intlayer changes.
+- Run from the `documentation/` directory: `pnpm exec node scripts/update-glossary-markdown.js`
+
+### `remove-code-block-anchors.ts`
+
+- Removes incorrectly added Docusaurus heading anchors (`{#anchor-id}`) from lines inside fenced code blocks in Markdown files under `documentation/docs/`.
+- Headings outside code blocks are preserved.
+- Supports `--dry-run` to preview changes.
+- Run with `pnpm exec tsx scripts/remove-code-block-anchors.ts` from the `documentation/` directory.
+
+### `fix-i18n-asset-paths.js`
+
+- Fixes image paths in Markdown files for proper localized asset resolution.
+- Converts absolute paths (`/assets/...`) to relative paths (`assets/`, `../assets/`, `../../assets/`) so Docusaurus resolves them per locale.
+- Run without arguments to process translated docs in `i18n/`; use `--docs` to process source docs in `docs/`.
+- Run with `pnpm exec node scripts/fix-i18n-asset-paths.js [--docs]` from the `documentation/` directory.
 
 ---
 
@@ -391,6 +419,8 @@ All translate commands are run from the `documentation/` directory.
 3. **Orphaned translation files**: Delete `.md`/`.mdx` in `i18n/<locale>/` that have no corresponding source in `docs/`
 
 **Important**: Run `pnpm translate --force` before cleanup to refresh `last_hit_at`; otherwise valid entries may be deleted.
+
+**Pre-run alert**: The script displays an alert reminding you to run `pnpm translate --force` first. When run without `--dry-run`, it prompts for confirmation before proceeding with deletions.
 
 **Options**: `-c <config>`, `--dry-run`
 
@@ -444,6 +474,9 @@ documentation/
 documentation/scripts/
 ├── extract-glossary-from-intlayer.js  # Extract terms from .intlayer/dictionary
 ├── generate-glossary.sh               # Build intlayer, extract to glossary-ui.csv
+├── update-glossary-markdown.js        # Update glossary-ui.csv via pnpm translate:glossary-ui
+├── remove-code-block-anchors.ts       # Remove heading anchors from code blocks
+├── fix-i18n-asset-paths.js            # Fix image paths for i18n assets
 └── translate/
     ├── index.ts                       # Main entry
     ├── config.ts                      # Config loading
@@ -458,7 +491,7 @@ documentation/scripts/
     ├── url-placeholders.ts            # URL protection
     ├── admonition-placeholders.ts     # Admonition protection
     ├── validator.ts                   # Post-translation validation
-    ├── log-output.ts                  # Tee to log file
+    ├── log-output.ts                  # Write console output to timestamped log files
     ├── cache-cleanup.ts               # Cleanup script
     ├── check-status.ts                # Status script
     ├── edit-cache-server.ts           # Web UI server
@@ -482,6 +515,7 @@ After reassembly, `validateTranslation(sourceSegments, translatedSegments)` chec
 - Heading levels preserved
 - Length ratio (warning if >3x or <0.2x)
 - Front matter structure preserved
+- Line count preserved (warning if source and translated segment line counts differ)
 
 Issues are logged; translation is not aborted. Use `--no-cache` to re-translate segments with validation problems.
 
@@ -489,19 +523,19 @@ Issues are logged; translation is not aborted. Use `--no-cache` to re-translate 
 
 ## CLI Options Summary
 
-| Option                   | Description                                                    |
-|--------------------------|----------------------------------------------------------------|
-| `-l, --locale <locale>`  | Translate to one locale only                                   |
-| `-p, --path <path>`      | Limit to file or directory (recursively processes .md/.mdx)    |
-| `--dry-run`              | No writes, no API calls                                        |
-| `--no-cache`             | Skip cache reads (still write new translations)                |
-| `--force`                | Clear file cache, re-translate                                 |
-| `-v, --verbose`          | More output                                                    |
-| `--stats`                | Show cache stats and exit                                      |
-| `--clear-cache [locale]` | Clear cache (optionally per locale)                            |
-| `--debug-traffic [path]` | Log API traffic (on by default; pass path for custom filename) |
-| `--no-debug-traffic`     | Disable traffic logging                                        |
-| `--no-svg`               | Skip SVG translation                                           |
-| `--no-export-png`        | Skip Inkscape PNG export after SVG translation                 |
-| `--no-batch`             | Use single-segment translation (one API call per segment)      |
-| `-c, --config <path>`    | Config file path                                               |
+| Option                   | Description                                                                      |
+|--------------------------|----------------------------------------------------------------------------------|
+| `-l, --locale <locale>`  | Translate to one locale only                                                     |
+| `-p, --path <path>`      | Limit to file or directory (recursively processes .md/.mdx)                      |
+| `--dry-run`              | No writes, no API calls                                                          |
+| `--no-cache`             | Skip cache reads; always translate fresh (still write new translations to cache) |
+| `--force`                | Clear file cache (file_tracking), re-translate all files                         |
+| `-v, --verbose`          | More output; when validation issues occur, prints segment content                |
+| `--stats`                | Show cache stats and exit                                                        |
+| `--clear-cache [locale]` | Clear cache (optionally per locale)                                              |
+| `--debug-traffic [path]` | Log API traffic (on by default; pass path for custom filename)                   |
+| `--no-debug-traffic`     | Disable traffic logging                                                          |
+| `--no-svg`               | Skip SVG translation                                                             |
+| `--no-export-png`        | Skip Inkscape PNG export after SVG translation                                   |
+| `--no-batch`             | Use single-segment translation (one API call per segment)                        |
+| `-c, --config <path>`    | Config file path                                                                 |

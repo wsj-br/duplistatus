@@ -135,30 +135,10 @@
     "note": "Additional notes about the server",
     "server_url": "http://localhost:8200",
     "backups": [
-      {
-        "id": "backup-id",
-        "name": "Backup Name",
-        "date": "2024-03-20T10:00:00Z",
-        "status": "Success",
-        "warnings": 0,
-        "errors": 0,
-        "fileCount": 1500,
-        "fileSize": 2048000,
-        "uploadedSize": 1024000,
-        "duration": "00:45:30"
-      }
+      { ... }
     ],
     "chartData": [
-      {
-        "date": "20/03/2024",
-        "isoDate": "2024-03-20T10:00:00Z",
-        "uploadedSize": 1024000,
-        "duration": 45,
-        "fileCount": 1500,
-        "fileSize": 2048000,
-        "storageSize": 3072000,
-        "backupVersions": 5
-      }
+      { ... }
     ]
   }
   ```
@@ -167,9 +147,9 @@
   - `404`: Server not found
   - `500`: Server error fetching server details
 - **Notes**:
-  - Returns basic server information by default for better performance
-  - Use query parameters to include additional data when needed
-  - Optimised for different use cases (settings vs detail views)
+  - Returns basic server information when no query parameters are provided
+  - Setting either `includeBackups` or `includeChartData` to `true` returns full server data including backups and chartData
+  - Used for server settings and detail views
 
 ## Update Server - `/api/servers/:id` {#update-server-apiserversid}
 - **Endpoint**: `/api/servers/:id`

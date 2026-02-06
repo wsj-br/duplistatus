@@ -6,7 +6,7 @@
 - **Endpoint**: `/api/backups/collect`
 - **Method**: POST
 - **Description**: Collects backup data directly from a Duplicati server via its API. This endpoint automatically detects the best connection protocol (HTTPS with SSL validation, HTTPS with self-signed certificates, or HTTP as fallback) and connects to the Duplicati server to retrieve backup information and process it into the local database.
-- **Authentication**: Requires valid session and CSRF token
+- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
 - **Request Body**:
   ```json
   {
@@ -35,7 +35,6 @@
   ```
 - **Error Responses**:
   - `400`: Invalid request parameters or connection failed
-  - `401`: Unauthorized - Invalid session or CSRF token
   - `500`: Server error during backup collection
 - **Notes**: 
   - The endpoint automatically detects the optimal connection protocol (HTTPS → HTTPS with self-signed → HTTP)
@@ -127,7 +126,7 @@
 - **Endpoint**: `/api/backups/sync-schedule`
 - **Method**: POST
 - **Description**: Synchronizes backup schedule information from a Duplicati server. This endpoint connects to the server, retrieves schedule information for all backups, and updates the local backup settings with schedule details including repeat intervals, allowed week days, and schedule times.
-- **Authentication**: Requires valid session and CSRF token (optional authentication)
+- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
 - **Request Body**:
   ```json
   {

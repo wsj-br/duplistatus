@@ -364,8 +364,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     autoSave(newSettings);
     
     toast({
-      title: "Synced to Server Defaults",
-      description: `All ${group.backups.length} backup${group.backups.length === 1 ? '' : 's'} now inherit from server defaults`,
+      title: content.syncedToServerDefaults.value,
+      description: content.syncedToServerDefaultsDesc.value.replace('{count}', group.backups.length.toString()),
       duration: 3000,
     });
   };
@@ -460,8 +460,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     autoSave(newSettings);
     
     toast({
-      title: "Clear Complete",
-      description: `Cleared all additional destinations for server and ${group.backups.length} backup${group.backups.length === 1 ? '' : 's'}.`,
+      title: content.clearComplete.value,
+      description: content.clearCompleteDesc.value.replace('{count}', group.backups.length.toString()),
       duration: 3000,
     });
   };
@@ -656,11 +656,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         
         if (!response.ok) {
           if (response.status === 403) {
-            throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+            throw new Error(content.noPermissionToModify.value);
           }
           const errorText = await response.text();
           console.error('Auto-save response error:', response.status, errorText);
-          throw new Error(`Failed to auto-save backup settings: ${response.status} ${errorText}`);
+          throw new Error(content.failedToAutoSaveBackupSettings.value.replace('{details}', `${response.status} ${errorText}`));
         }
         
         // Refresh the configuration cache silently
@@ -687,8 +687,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       } catch (error) {
         console.error('Error auto-saving settings:', error instanceof Error ? error.message : String(error));
         toast({
-          title: "Auto-save Error",
-          description: `Failed to save backup notification settings: ${error instanceof Error ? error.message : String(error)}`,
+          title: content.autoSaveError.value,
+          description: content.failedToSaveBackupNotificationSettings.value.replace('{error}', error instanceof Error ? error.message : String(error)),
           variant: "destructive",
           duration: 5000,
         });
@@ -868,11 +868,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         
         if (!response.ok) {
           if (response.status === 403) {
-            throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+            throw new Error(content.noPermissionToModify.value);
           }
           const errorText = await response.text();
           console.error('Auto-save response error:', response.status, errorText);
-          throw new Error(`Failed to auto-save backup settings: ${response.status} ${errorText}`);
+          throw new Error(content.failedToAutoSaveBackupSettings.value.replace('{details}', `${response.status} ${errorText}`));
         }
         
         // Refresh the configuration cache silently
@@ -896,8 +896,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       } catch (error) {
         console.error('Error auto-saving settings:', error instanceof Error ? error.message : String(error));
         toast({
-          title: "Auto-save Error",
-          description: `Failed to save backup notification settings: ${error instanceof Error ? error.message : String(error)}`,
+          title: content.autoSaveError.value,
+          description: content.failedToSaveBackupNotificationSettings.value.replace('{error}', error instanceof Error ? error.message : String(error)),
           variant: "destructive",
           duration: 5000,
         });
@@ -1013,11 +1013,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         
         if (!response.ok) {
           if (response.status === 403) {
-            throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+            throw new Error(content.noPermissionToModify.value);
           }
           const errorText = await response.text();
           console.error('Auto-save response error:', response.status, errorText);
-          throw new Error(`Failed to auto-save backup settings: ${response.status} ${errorText}`);
+          throw new Error(content.failedToAutoSaveBackupSettings.value.replace('{details}', `${response.status} ${errorText}`));
         }
         
         // Refresh the configuration cache silently
@@ -1041,8 +1041,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
       } catch (error) {
         console.error('Error auto-saving settings:', error instanceof Error ? error.message : String(error));
         toast({
-          title: "Auto-save Error",
-          description: `Failed to save backup notification settings: ${error instanceof Error ? error.message : String(error)}`,
+          title: content.autoSaveError.value,
+          description: content.failedToSaveBackupNotificationSettings.value.replace('{error}', error instanceof Error ? error.message : String(error)),
           variant: "destructive",
           duration: 5000,
         });
@@ -1646,8 +1646,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     // Prevent concurrent auto-save operations during bulk update
     if (isAutoSaveInProgressRef.current) {
       toast({
-        title: "Update In Progress",
-        description: "Please wait for the current save operation to complete.",
+        title: content.updateInProgress.value,
+        description: content.pleaseWaitForSave.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1750,11 +1750,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         
         if (!response.ok) {
           if (response.status === 403) {
-            throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+            throw new Error(content.noPermissionToModify.value);
           }
           const errorText = await response.text();
           console.error('Bulk remove response error:', response.status, errorText);
-          throw new Error(`Failed to save backup settings: ${response.status} ${errorText}`);
+          throw new Error(content.failedToSaveBackupSettings.value.replace('{details}', `${response.status} ${errorText}`));
         }
         
         // Refresh the configuration cache silently
@@ -1782,15 +1782,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         handleClearSelection();
         
         toast({
-          title: "Additional Destinations Cleared",
-          description: `Cleared all additional destinations from ${selectedCount} backup${selectedCount === 1 ? '' : 's'}. Inheritance maintained.`,
+          title: content.additionalDestinationsCleared.value,
+          description: content.additionalDestinationsClearedDesc.value.replace('{count}', selectedCount.toString()),
           duration: 3000,
         });
       } catch (error) {
         console.error('Error saving bulk remove:', error instanceof Error ? error.message : String(error));
         toast({
-          title: "Remove Error",
-          description: `Failed to remove additional destinations: ${error instanceof Error ? error.message : String(error)}`,
+          title: content.removeError.value,
+          description: content.failedToRemoveAdditionalDestinations.value.replace('{error}', error instanceof Error ? error.message : String(error)),
           variant: "destructive",
           duration: 5000,
         });
@@ -1812,8 +1812,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const handleTestEmail = async (backupKey: BackupKey, emails: string) => {
     if (!emails || !emails.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter email addresses before testing",
+        title: content.validationError.value,
+        description: content.pleaseEnterEmailAddressesBeforeTesting.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1825,8 +1825,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     const invalidEmails = emailList.filter(e => !e.includes('@'));
     if (invalidEmails.length > 0) {
       toast({
-        title: "Validation Error",
-        description: `Invalid email addresses: ${invalidEmails.join(', ')}`,
+        title: content.validationError.value,
+        description: content.invalidEmailAddresses.value.replace('{emails}', invalidEmails.join(', ')),
         variant: "destructive",
         duration: 3000,
       });
@@ -1847,20 +1847,20 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to send test email');
+          throw new Error(errorData.error || content.failedToSendTestEmail.value);
         }
       }
 
       toast({
-        title: "Test Email Sent",
-        description: `Test email sent to ${emailList.length} address${emailList.length === 1 ? '' : 'es'}`,
+        title: content.testEmailSent.value,
+        description: content.testEmailSentToAddresses.value.replace('{count}', emailList.length.toString()),
         duration: 3000,
       });
     } catch (error) {
       console.error('Error sending test email:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Test Email Failed",
-        description: error instanceof Error ? error.message : 'Failed to send test email',
+        title: content.testEmailFailed.value,
+        description: error instanceof Error ? error.message : content.failedToSendTestEmail.value,
         variant: "destructive",
         duration: 5000,
       });
@@ -1873,8 +1873,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const handleTestNtfy = async (backupKey: BackupKey, topic: string) => {
     if (!topic || !topic.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter a topic before testing",
+        title: content.validationError.value,
+        description: content.pleaseEnterTopicBeforeTesting.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1883,8 +1883,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
     if (!config?.ntfy?.url) {
       toast({
-        title: "Configuration Error",
-        description: "NTFY is not configured. Please configure NTFY settings first.",
+        title: content.configurationError.value,
+        description: content.ntfyNotConfigured.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1907,19 +1907,19 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send test notification');
+        throw new Error(errorData.error || content.failedToSendTestNotification.value);
       }
 
       toast({
-        title: "Test Notification Sent",
-        description: `Test notification sent to topic: ${topic.trim()}`,
+        title: content.testNotificationSent.value,
+        description: content.testNotificationSentToTopic.value.replace('{topic}', topic.trim()),
         duration: 3000,
       });
     } catch (error) {
       console.error('Error sending test NTFY notification:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Test Notification Failed",
-        description: error instanceof Error ? error.message : 'Failed to send test notification',
+        title: content.testNotificationFailed.value,
+        description: error instanceof Error ? error.message : content.failedToSendTestNotification.value,
         variant: "destructive",
         duration: 5000,
       });
@@ -1932,8 +1932,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const handleGenerateQrCode = async (topic: string) => {
     if (!topic || !topic.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter a topic before generating QR code",
+        title: content.validationError.value,
+        description: content.pleaseEnterTopicBeforeGeneratingQr.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1942,8 +1942,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
     if (!config?.ntfy?.url) {
       toast({
-        title: "Configuration Error",
-        description: "NTFY is not configured. Please configure NTFY settings first.",
+        title: content.configurationError.value,
+        description: content.ntfyNotConfigured.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1979,8 +1979,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     } catch (error) {
       console.error('Error generating QR code:', error);
       toast({
-        title: "QR Code Generation Failed",
-        description: "Failed to generate QR code. Please try again.",
+        title: content.qrCodeGenerationFailed.value,
+        description: content.failedToGenerateQrCode.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -1991,8 +1991,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const handleBulkTestEmail = async () => {
     if (!bulkEditAdditionalEmails || !bulkEditAdditionalEmails.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter email addresses before testing",
+        title: content.validationError.value,
+        description: content.pleaseEnterEmailAddressesBeforeTesting.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -2004,8 +2004,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     const invalidEmails = emailList.filter(e => !e.includes('@'));
     if (invalidEmails.length > 0) {
       toast({
-        title: "Validation Error",
-        description: `Invalid email addresses: ${invalidEmails.join(', ')}`,
+        title: content.validationError.value,
+        description: content.invalidEmailAddresses.value.replace('{emails}', invalidEmails.join(', ')),
         variant: "destructive",
         duration: 3000,
       });
@@ -2026,20 +2026,20 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to send test email');
+          throw new Error(errorData.error || content.failedToSendTestEmail.value);
         }
       }
 
       toast({
-        title: "Test Email Sent",
-        description: `Test email sent to ${emailList.length} address${emailList.length === 1 ? '' : 'es'}`,
+        title: content.testEmailSent.value,
+        description: content.testEmailSentToAddresses.value.replace('{count}', emailList.length.toString()),
         duration: 3000,
       });
     } catch (error) {
       console.error('Error sending test email:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Test Email Failed",
-        description: error instanceof Error ? error.message : 'Failed to send test email',
+        title: content.testEmailFailed.value,
+        description: error instanceof Error ? error.message : content.failedToSendTestEmail.value,
         variant: "destructive",
         duration: 5000,
       });
@@ -2052,8 +2052,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
   const handleBulkTestNtfy = async () => {
     if (!bulkEditAdditionalNtfyTopic || !bulkEditAdditionalNtfyTopic.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter a topic before testing",
+        title: content.validationError.value,
+        description: content.pleaseEnterTopicBeforeTesting.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -2062,8 +2062,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
     if (!config?.ntfy?.url) {
       toast({
-        title: "Configuration Error",
-        description: "NTFY is not configured. Please configure NTFY settings first.",
+        title: content.configurationError.value,
+        description: content.ntfyNotConfigured.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -2086,19 +2086,19 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send test notification');
+        throw new Error(errorData.error || content.failedToSendTestNotification.value);
       }
 
       toast({
-        title: "Test Notification Sent",
-        description: `Test notification sent to topic: ${bulkEditAdditionalNtfyTopic.trim()}`,
+        title: content.testNotificationSent.value,
+        description: content.testNotificationSentToTopic.value.replace('{topic}', bulkEditAdditionalNtfyTopic.trim()),
         duration: 3000,
       });
     } catch (error) {
       console.error('Error sending test NTFY notification:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Test Notification Failed",
-        description: error instanceof Error ? error.message : 'Failed to send test notification',
+        title: content.testNotificationFailed.value,
+        description: error instanceof Error ? error.message : content.failedToSendTestNotification.value,
         variant: "destructive",
         duration: 5000,
       });
@@ -2120,8 +2120,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
     // Prevent concurrent auto-save operations during bulk update
     if (isAutoSaveInProgressRef.current) {
       toast({
-        title: "Update In Progress",
-        description: "Please wait for the current save operation to complete.",
+        title: content.updateInProgress.value,
+        description: content.pleaseWaitForSave.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -2283,11 +2283,11 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         
         if (!response.ok) {
           if (response.status === 403) {
-            throw new Error('You do not have permission to modify this setting. Only administrators can change configurations.');
+            throw new Error(content.noPermissionToModify.value);
           }
           const errorText = await response.text();
           console.error('Bulk update response error:', response.status, errorText);
-          throw new Error(`Failed to save backup settings: ${response.status} ${errorText}`);
+          throw new Error(content.failedToSaveBackupSettings.value.replace('{details}', `${response.status} ${errorText}`));
         }
         
         // Refresh the configuration cache silently
@@ -2315,25 +2315,27 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         // Build success message
         let successMessage = '';
         if (totalServersUpdated > 0) {
-          successMessage = `Applied to ${totalServersUpdated} server default${totalServersUpdated === 1 ? '' : 's'} (${totalBackupsUpdated} backup${totalBackupsUpdated === 1 ? '' : 's'} will inherit)`;
+          successMessage = content.appliedToServerDefaults.value
+            .replace('{servers}', totalServersUpdated.toString())
+            .replace('{backups}', totalBackupsUpdated.toString());
           if (totalBackupsUpdated < selectedBackups.size) {
             const individualCount = selectedBackups.size - totalBackupsUpdated;
-            successMessage += ` and ${individualCount} individual backup${individualCount === 1 ? '' : 's'}`;
+            successMessage += ' ' + content.andIndividualBackups.value.replace('{count}', individualCount.toString());
           }
         } else {
-          successMessage = `Updated ${totalBackupsUpdated} backup${totalBackupsUpdated === 1 ? '' : 's'}`;
+          successMessage = content.updatedBackups.value.replace('{count}', totalBackupsUpdated.toString());
         }
         
         toast({
-          title: "Bulk Update Successful",
+          title: content.bulkUpdateSuccessful.value,
           description: successMessage,
           duration: 3000,
         });
       } catch (error) {
         console.error('Error saving bulk update:', error instanceof Error ? error.message : String(error));
         toast({
-          title: "Bulk Update Error",
-          description: `Failed to update backups: ${error instanceof Error ? error.message : String(error)}`,
+          title: content.bulkUpdateError.value,
+          description: content.failedToUpdateBackups.value.replace('{error}', error instanceof Error ? error.message : String(error)),
           variant: "destructive",
           duration: 5000,
         });
@@ -2381,7 +2383,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     type="button"
                     onClick={() => setServerNameFilter('')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Clear filter"
+                    aria-label={content.clearFilterAria.value}
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -2445,7 +2447,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   <Checkbox
                     checked={allFilteredSelected}
                     onCheckedChange={handleSelectAll}
-                    title={someFilteredSelected && !allFilteredSelected ? "Some backups selected - click to select all visible" : "Select all visible backups"}
+                    title={someFilteredSelected && !allFilteredSelected ? content.someBackupsSelectedClickToSelectAllVisible.value : content.selectAllVisibleBackups.value}
                   />
                 </th>
                 <SortableTableHead 
@@ -2469,10 +2471,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     <Checkbox
                       checked={allNtfySelected}
                       onCheckedChange={handleSelectAllNtfy}
-                      title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                      title={isNtfyConfigured ? content.selectAllNtfyNotifications.value : content.ntfyNotConfiguredBulk.value}
                       className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
-                    <span className={isNtfyConfigured ? "" : "text-gray-500"} title={isNtfyConfigured ? undefined : "not configured"}>
+                    <span className={isNtfyConfigured ? "" : "text-gray-500"} title={isNtfyConfigured ? undefined : content.notConfigured.value}>
                       {content.ntfyNotifications}{!isNtfyConfigured ? ` (${common.disabled})` : ""}
                     </span>
                   </div>
@@ -2482,10 +2484,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     <Checkbox
                       checked={allEmailSelected}
                       onCheckedChange={handleSelectAllEmail}
-                      title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
+                      title={isEmailConfigured ? content.selectAllEmailNotifications.value : content.smtpNotConfiguredBulk.value}
                       className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                     />
-                    <span className={isEmailConfigured ? "" : "text-gray-500"} title={isEmailConfigured ? undefined : "not configured"}>
+                    <span className={isEmailConfigured ? "" : "text-gray-500"} title={isEmailConfigured ? undefined : content.notConfigured.value}>
                       {!isEmailConfigured ? content.emailNotificationsDisabled : content.emailNotifications}
                     </span>
                   </div>
@@ -2552,7 +2554,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <Checkbox
                             checked={selectedBackups.has(backupKey)}
                             onCheckedChange={() => handleToggleSelection(backupKey)}
-                            title="Select this backup"
+                            title={content.selectBackup.value}
                           />
                         </TableCell>
                         <TableCell className="pl-1" colSpan={1}>
@@ -2574,7 +2576,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             </Button>
                             <div className="flex flex-col">
                               <div className="flex items-center gap-2">
-                                <span className="font-medium text-sm" title={`ServerID: ${group.serverId}`}>
+                                <span className="font-medium text-sm" title={content.serverIdLabel.value.replace('{value}', group.serverId)}>
                                   {combinedName}
                                 </span>
                                 {(hasBackupOverridesOrValues || (hasServerDefaults && !hasBackupOverridesOrValues && hasServerAdditionalDestinations(serverDefaults))) && (
@@ -2593,8 +2595,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       <TooltipContent>
                                         <p>
                                           {hasBackupOverridesOrValues 
-                                            ? 'Custom additional destinations configured'
-                                            : 'Using server default destinations'}
+                                            ? content.customDestinationsConfigured.value
+                                            : content.usingServerDefaultDestinations.value}
                                         </p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -2635,7 +2637,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(backup.id, backup.backupName, 'ntfyEnabled', checked)
                             }
-                            title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                            title={isNtfyConfigured ? content.enableNtfyNotificationsAria.value : content.ntfyNotConfiguredBulk.value}
                             className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
                         </TableCell>
@@ -2646,22 +2648,22 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                             }
-                            title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                            title={isEmailConfigured ? content.enableEmailNotificationsAria.value : content.smtpNotConfiguredBulk.value}
                             className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
                         </TableCell>
                       </TableRow>
                       
-                      {/* Expanded Additional Destinations for Merged Row */}
+                      {/* Expanded {content.additionalDestinationsHeading.value} for Merged Row */}
                       {isExpanded && (
                         <TableRow>
                           <TableCell colSpan={5} className="bg-muted/30 pl-12 border-l border-l-border/50 ml-6">
                             <div className="py-0 px-2">
                               <div className="font-medium text-sm mb-3 flex items-center gap-2">
-                                Additional Destinations
+                                {content.additionalDestinationsHeading.value}
                                 {(effectiveNotificationEvent.isInherited || effectiveEmails.isInherited || effectiveNtfyTopic.isInherited) && (
                                   <span className="text-xs text-muted-foreground font-normal">
-                                    (Some values inherited from server defaults)
+                                    {content.someValuesInheritedFromServerDefaultsParens.value}
                                   </span>
                                 )}
                               </div>
@@ -2669,9 +2671,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               <div className="grid grid-cols-[auto_1fr_1fr] gap-4 items-start">
                                 <div className="space-y-1 max-w-[160px]">
                                   <div className="flex items-center gap-2">
-                                    <Label className="text-xs font-medium">Notification event</Label>
+                                    <Label className="text-xs font-medium">{content.notificationEventLabel.value}</Label>
                                     {!hasNotificationEventOverride && hasServerDefaults && (
-                                      <span title="Inheriting from server defaults">
+                                      <span title={content.inheritingFromServerDefaultsTitle.value}>
                                         <LinkIcon className="h-3 w-3 text-blue-500" />
                                       </span>
                                     )}
@@ -2682,13 +2684,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             type="button"
                                             onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNotificationEvent')}
                                             className="cursor-pointer hover:text-blue-500 transition-colors"
-                                            title="Override (not inheriting)"
+                                            title={content.overrideNotInheritingAria.value}
                                           >
                                             <Link2Off className="h-3 w-3 text-blue-500" />
                                           </button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                          <p>Click to inherit from server defaults</p>
+                                          <p>{content.clickToInheritFromServerDefaults.value}</p>
                                         </TooltipContent>
                                       </Tooltip>
                                     )}
@@ -2711,16 +2713,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   </Select>
                                   <p className="text-xs text-muted-foreground">
                                     {effectiveNotificationEvent.isInherited 
-                                      ? "Inheriting from server defaults. Change to override."
-                                      : "Notification events to be sent to the additional email address and topic"}
+                                      ? content.inheritingFromServerDefaults.value
+                                      : content.notificationEventDescription.value}
                                   </p>
                                 </div>
                                 
                                 <div className="space-y-1">
                                   <div className="flex items-center gap-2">
-                                    <Label className="text-xs font-medium">Additional Emails</Label>
+                                    <Label className="text-xs font-medium">{content.additionalEmailsLabel.value}</Label>
                                     {!hasEmailOverride && hasServerDefaults && (
-                                      <span title="Inheriting from server defaults">
+                                      <span title={content.inheritingFromServerDefaultsTitle.value}>
                                         <LinkIcon className="h-3 w-3 text-blue-500" />
                                       </span>
                                     )}
@@ -2731,13 +2733,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             type="button"
                                             onClick={() => clearOverride(backup.id, backup.backupName, 'additionalEmails')}
                                             className="cursor-pointer hover:text-blue-500 transition-colors"
-                                            title="Override (not inheriting)"
+                                            title={content.overrideNotInheritingAria.value}
                                           >
                                             <Link2Off className="h-3 w-3 text-blue-500" />
                                           </button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                          <p>Click to inherit from server defaults</p>
+                                          <p>{content.clickToInheritFromServerDefaults.value}</p>
                                         </TooltipContent>
                                       </Tooltip>
                                     )}
@@ -2752,7 +2754,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }
                                       }}
                                       type="text"
-                                      placeholder={effectiveEmails.isInherited ? `Inheriting: ${effectiveEmails.value || 'Server Default'}` : "e.g. user1@example.com, user2@example.com"}
+                                      placeholder={effectiveEmails.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveEmails.value || content.serverDefault.value) : content.additionalEmailsPlaceholder.value}
                                       defaultValue={effectiveEmails.value}
                                       disabled={effectiveNotificationEvent.value === 'off'}
                                       onChange={(e) => {
@@ -2774,7 +2776,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }}
                                       readOnly={(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off'}
                                       className={`text-xs pr-10 ${(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasEmailOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                      title={effectiveEmails.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                      title={effectiveEmails.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                       onFocus={(e) => {
                                         if (effectiveEmails.isInherited && !hasEmailOverride) {
                                           updateBackupSettingById(backup.id, backup.backupName, 'additionalEmails', effectiveEmails.value);
@@ -2800,8 +2802,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }}
                                       disabled={testingEmail === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalEmails`, effectiveEmails.value) || effectiveNotificationEvent.value === 'off'}
                                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                      aria-label="Send test email"
-                                      title="Send test email"
+                                      aria-label={content.sendTestEmailAria.value}
+                                      title={content.sendTestEmail.value}
                                     >
                                       {testingEmail === backupKey ? (
                                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -2812,16 +2814,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   </div>
                                   <p className="text-xs text-muted-foreground">
                                     {effectiveEmails.isInherited 
-                                      ? "Inheriting from server defaults. Click to override."
-                                      : "Notifications for this backup will be sent to these addresses in addition to the global recipient."}
+                                      ? content.inheritingFromServerDefaultsClick.value
+                                      : content.additionalEmailsDescription.value}
                                   </p>
                                 </div>
                                 
                                 <div className="space-y-1">
                                   <div className="flex items-center gap-2">
-                                    <Label className="text-xs font-medium">Additional NTFY Topic</Label>
+                                    <Label className="text-xs font-medium">{content.additionalNtfyTopicLabel.value}</Label>
                                     {!hasNtfyOverride && hasServerDefaults && (
-                                      <span title="Inheriting from server defaults">
+                                      <span title={content.inheritingFromServerDefaultsTitle.value}>
                                         <LinkIcon className="h-3 w-3 text-blue-500" />
                                       </span>
                                     )}
@@ -2832,13 +2834,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             type="button"
                                             onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNtfyTopic')}
                                             className="cursor-pointer hover:text-blue-500 transition-colors"
-                                            title="Override (not inheriting)"
+                                            title={content.overrideNotInheritingAria.value}
                                           >
                                             <Link2Off className="h-3 w-3 text-blue-500" />
                                           </button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                          <p>Click to inherit from server defaults</p>
+                                          <p>{content.clickToInheritFromServerDefaults.value}</p>
                                         </TooltipContent>
                                       </Tooltip>
                                     )}
@@ -2853,7 +2855,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }
                                       }}
                                       type="text"
-                                      placeholder={effectiveNtfyTopic.isInherited ? `Inheriting: ${effectiveNtfyTopic.value || 'Server Default'}` : "e.g. duplistatus-user-backup-alerts"}
+                                      placeholder={effectiveNtfyTopic.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveNtfyTopic.value || content.serverDefault.value) : content.additionalNtfyTopicPlaceholder.value}
                                       defaultValue={effectiveNtfyTopic.value}
                                       disabled={effectiveNotificationEvent.value === 'off'}
                                       onChange={(e) => {
@@ -2875,7 +2877,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }}
                                       readOnly={(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off'}
                                       className={`text-xs pr-20 ${(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasNtfyOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                      title={effectiveNtfyTopic.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                      title={effectiveNtfyTopic.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                       onFocus={(e) => {
                                         if (effectiveNtfyTopic.isInherited && !hasNtfyOverride) {
                                           updateBackupSettingById(backup.id, backup.backupName, 'additionalNtfyTopic', effectiveNtfyTopic.value);
@@ -2902,8 +2904,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }}
                                         disabled={testingNtfy === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalNtfyTopic`, effectiveNtfyTopic.value) || effectiveNotificationEvent.value === 'off'}
                                         className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        aria-label="Send test notification"
-                                        title="Send test notification"
+                                        aria-label={content.sendTestNotificationAria.value}
+                                        title={content.sendTestNotification.value}
                                       >
                                         {testingNtfy === backupKey ? (
                                           <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -2920,8 +2922,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }}
                                         disabled={!effectiveNtfyTopic.value || effectiveNotificationEvent.value === 'off'}
                                         className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        aria-label="Show QR code"
-                                        title="Show QR code"
+                                        aria-label={content.showQrCodeAria.value}
+                                        title={content.showQrCode.value}
                                       >
                                         <QrCode className="h-4 w-4" />
                                       </button>
@@ -2929,8 +2931,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   </div>
                                   <p className="text-xs text-muted-foreground">
                                     {effectiveNtfyTopic.isInherited 
-                                      ? "Inheriting from server defaults. Click to override."
-                                      : "Notifications will be published to this topic in addition to the default topic."}
+                                      ? content.inheritingFromServerDefaultsClick.value
+                                      : content.additionalNtfyTopicDescription.value}
                                   </p>
                                 </div>
                               </div>
@@ -2961,7 +2963,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         <Checkbox
                           checked={isServerSelected || isServerPartially}
                           onCheckedChange={(checked) => handleSelectServer(group.serverId, checked as boolean)}
-                          title={isServerPartially ? "Some backups selected - click to select all" : "Select all backups for this server"}
+                          title={isServerPartially ? content.someBackupsSelectedClickToSelectAllVisible.value : content.selectAllBackupsForThisServer.value}
                         />
                       </TableCell>
                       <TableCell colSpan={4} className="pl-1">
@@ -2983,7 +2985,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           </Button>
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <span className="font-semibold text-sm" title={`ServerID: ${group.serverId}`} >
+                              <span className="font-semibold text-sm" title={content.serverIdLabel.value.replace('{value}', group.serverId)} >
                                 {group.serverAlias ? (
                                   <>
                                     {group.serverAlias} ({group.serverName})
@@ -2999,7 +3001,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       <Settings2 className="w-3.5 h-3.5" />
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>Default additional destinations configured</p>
+                                      <p>{content.defaultAdditionalDestinationsConfigured.value}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
@@ -3024,32 +3026,32 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         <TableCell colSpan={5} className="bg-blue-500/5">
                           <div className="py-2 px-2">
                             <div className="flex items-center justify-between mb-3">
-                              <div className="font-medium text-sm">Default Additional Destinations for this Server</div>
+                              <div className="font-medium text-sm">{content.defaultAdditionalDestinationsForServer.value}</div>
                               <div className="flex items-center gap-2">
                                 <Button
                                   variant="gradient"
                                   size="sm"
                                   className="h-7 px-3 text-xs"
                                   onClick={() => syncAllToServerDefaults(group.serverId)}
-                                  title="Sync all backups to inherit from server defaults"
+                                  title={content.syncToAllTitle.value}
                                 >
-                                  Sync to All
+                                  {content.syncToAll.value}
                                 </Button>
                                 <Button
                                   variant="outline"
                                   size="sm"
                                   className="h-7 px-3 text-xs hover:bg-accent text-yellow-500 hover:text-yellow-500"
                                   onClick={() => clearAllAdditionalDestinations(group.serverId)}
-                                  title="Clear all additional destinations from server and all backups"
+                                  title={content.clearAllTitle.value}
                                 >
-                                  Clear All
+                                  {content.clearAll.value}
                                 </Button>
                               </div>
                             </div>
                             
                             <div className="grid grid-cols-[auto_1fr_1fr] gap-4 items-start">
                               <div className="space-y-1 max-w-[160px]">
-                                <Label className="text-xs font-medium">Notification event</Label>
+                                <Label className="text-xs font-medium">{content.notificationEventLabel.value}</Label>
                                 <Select
                                   value={serverDefaultAdditionalEvent}
                                   onValueChange={(value: NotificationEvent) => 
@@ -3067,12 +3069,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   </SelectContent>
                                 </Select>
                                 <p className="text-xs text-muted-foreground">
-                                  Default notification events for additional destinations
+                                  {content.defaultNotificationEventsDescription.value}
                                 </p>
                               </div>
                               
                               <div className="space-y-1">
-                                <Label className="text-xs font-medium">Default Additional Emails</Label>
+                                <Label className="text-xs font-medium">{content.defaultAdditionalEmails.value}</Label>
                                 <div className="relative">
                                   <Input
                                 key={`${serverDefaultKey}:additionalEmails:${serverDefaults ? 'exists' : 'cleared'}`}
@@ -3083,7 +3085,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   // The input maintains its value through re-renders
                                 }}
                                     type="text"
-                                    placeholder="e.g. user1@example.com, user2@example.com"
+                                    placeholder={content.additionalEmailsPlaceholder.value}
                                     defaultValue={serverDefaults?.additionalEmails ?? ''}
                                     disabled={serverDefaultAdditionalEvent === 'off'}
                                     onChange={(e) => {
@@ -3127,8 +3129,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     }}
                                     disabled={testingEmail === serverDefaultKey || serverDefaultAdditionalEvent === 'off'}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    aria-label="Send test email"
-                                    title="Send test email"
+                                    aria-label={content.sendTestEmailAria.value}
+                                    title={content.sendTestEmailAria.value}
                                   >
                                     {testingEmail === serverDefaultKey ? (
                                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -3138,12 +3140,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   </button>
                                 </div>
                                 <p className="text-xs text-muted-foreground">
-                                  Default email addresses inherited by all backups on this server
+                                  {content.defaultEmailInherited.value}
                                 </p>
                               </div>
                               
                               <div className="space-y-1">
-                                <Label className="text-xs font-medium">Default Additional NTFY Topic</Label>
+                                <Label className="text-xs font-medium">{content.defaultAdditionalNtfyTopic.value}</Label>
                                 <div className="relative">
                                   <Input
                                     key={`${serverDefaultKey}:additionalNtfyTopic:${serverDefaults ? 'exists' : 'cleared'}`}
@@ -3154,7 +3156,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       // The input maintains its value through re-renders
                                     }}
                                     type="text"
-                                    placeholder="e.g. duplistatus-user-backup-alerts"
+                                    placeholder={content.additionalNtfyTopicPlaceholder.value}
                                     defaultValue={serverDefaults?.additionalNtfyTopic ?? ''}
                                     disabled={serverDefaultAdditionalEvent === 'off'}
                                     onChange={(e) => {
@@ -3199,8 +3201,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }}
                                       disabled={testingNtfy === serverDefaultKey || serverDefaultAdditionalEvent === 'off'}
                                       className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                      aria-label="Send test notification"
-                                      title="Send test notification"
+                                      aria-label={content.sendTestNotificationAria.value}
+                                      title={content.sendTestNotificationAria.value}
                                     >
                                       {testingNtfy === serverDefaultKey ? (
                                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -3217,15 +3219,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }}
                                       disabled={!serverDefaults?.additionalNtfyTopic || serverDefaultAdditionalEvent === 'off'}
                                       className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                      aria-label="Show QR code"
-                                      title="Show QR code"
+                                      aria-label={content.showQrCodeAria.value}
+                                      title={content.showQrCodeAria.value}
                                     >
                                       <QrCode className="h-4 w-4" />
                                     </button>
                                   </div>
                                 </div>
                                 <p className="text-xs text-muted-foreground">
-                                  Default NTFY topic inherited by all backups on this server
+                                  {content.defaultNtfyInherited.value}
                                 </p>
                               </div>
                             </div>
@@ -3283,7 +3285,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               <Checkbox
                                 checked={selectedBackups.has(backupKey)}
                                 onCheckedChange={() => handleToggleSelection(backupKey)}
-                                title="Select this backup"
+                                title={content.selectBackup.value}
                               />
                             </TableCell>
                             <TableCell className="pl-1" colSpan={1}>
@@ -3324,8 +3326,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           <TooltipContent>
                                             <p>
                                               {hasBackupOverridesOrValues 
-                                                ? 'Custom additional destinations configured'
-                                                : 'Using server default destinations'}
+                                                ? content.customDestinationsConfigured.value
+                                                : content.usingServerDefaultDestinations.value}
                                             </p>
                                           </TooltipContent>
                                         </Tooltip>
@@ -3361,7 +3363,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 onCheckedChange={(checked: boolean) => 
                                   updateBackupSettingById(backup.id, backup.backupName, 'ntfyEnabled', checked)
                                 }
-                                title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                                title={isNtfyConfigured ? content.enableNtfyNotificationsAria.value : content.ntfyNotConfiguredBulk.value}
                                 className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                               />
                             </TableCell>
@@ -3372,7 +3374,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 onCheckedChange={(checked: boolean) => 
                                   updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                                 }
-                                title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                                title={isEmailConfigured ? content.enableEmailNotificationsAria.value : content.smtpNotConfiguredBulk.value}
                                 className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                               />
                             </TableCell>
@@ -3382,10 +3384,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               <TableCell colSpan={5} className="bg-muted/30 pl-12 border-l border-l-border/50 ml-6">
                                 <div className="py-0 px-2">
                                   <div className="font-medium text-sm mb-3 flex items-center gap-2">
-                                    Additional Destinations
+                                    {content.additionalDestinationsHeading.value}
                                     {(effectiveNotificationEvent.isInherited || effectiveEmails.isInherited || effectiveNtfyTopic.isInherited) && (
                                       <span className="text-xs text-muted-foreground font-normal">
-                                        (Some values inherited from server defaults)
+                                        {content.someValuesInheritedFromServerDefaultsParens.value}
                                       </span>
                                     )}
                                   </div>
@@ -3393,9 +3395,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   <div className="grid grid-cols-[auto_1fr_1fr] gap-4 items-start">
                                     <div className="space-y-1 max-w-[160px]">
                                       <div className="flex items-center gap-2">
-                                        <Label className="text-xs font-medium">Notification event</Label>
+                                        <Label className="text-xs font-medium">{content.notificationEventLabel.value}</Label>
                                         {!hasNotificationEventOverride && hasServerDefaults && (
-                                          <span title="Inheriting from server defaults">
+                                          <span title={content.inheritingFromServerDefaultsTitle.value}>
                                             <LinkIcon className="h-3 w-3 text-blue-500" />
                                           </span>
                                         )}
@@ -3406,13 +3408,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                                 type="button"
                                                 onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNotificationEvent')}
                                                 className="cursor-pointer hover:text-blue-500 transition-colors"
-                                                title="Override (not inheriting)"
+                                                title={content.overrideNotInheritingAria.value}
                                               >
                                                 <Link2Off className="h-3 w-3 text-blue-500" />
                                               </button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                              <p>Click to inherit from server defaults</p>
+                                              <p>{content.clickToInheritFromServerDefaults.value}</p>
                                             </TooltipContent>
                                           </Tooltip>
                                         )}
@@ -3435,16 +3437,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       </Select>
                                       <p className="text-xs text-muted-foreground">
                                         {effectiveNotificationEvent.isInherited 
-                                          ? "Inheriting from server defaults. Change to override."
-                                          : "Notification events to be sent to the additional email address and topic"}
+                                          ? content.inheritingFromServerDefaults.value
+                                          : content.notificationEventDescription.value}
                                       </p>
                                     </div>
                                     
                                     <div className="space-y-1">
                                       <div className="flex items-center gap-2">
-                                        <Label className="text-xs font-medium">Additional Emails</Label>
+                                        <Label className="text-xs font-medium">{content.additionalEmailsLabel.value}</Label>
                                         {!hasEmailOverride && hasServerDefaults && (
-                                          <span title="Inheriting from server defaults">
+                                          <span title={content.inheritingFromServerDefaultsTitle.value}>
                                             <LinkIcon className="h-3 w-3 text-blue-500" />
                                           </span>
                                         )}
@@ -3455,13 +3457,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                                 type="button"
                                                 onClick={() => clearOverride(backup.id, backup.backupName, 'additionalEmails')}
                                                 className="cursor-pointer hover:text-blue-500 transition-colors"
-                                                title="Override (not inheriting)"
+                                                title={content.overrideNotInheritingAria.value}
                                               >
                                                 <Link2Off className="h-3 w-3 text-blue-500" />
                                               </button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                              <p>Click to inherit from server defaults</p>
+                                              <p>{content.clickToInheritFromServerDefaults.value}</p>
                                             </TooltipContent>
                                           </Tooltip>
                                         )}
@@ -3477,7 +3479,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             }
                                           }}
                                           type="text"
-                                          placeholder={effectiveEmails.isInherited ? `Inheriting: ${effectiveEmails.value || 'Server Default'}` : "e.g. user1@example.com, user2@example.com"}
+                                          placeholder={effectiveEmails.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveEmails.value || content.serverDefault.value) : content.additionalEmailsPlaceholder.value}
                                           defaultValue={effectiveEmails.value}
                                           disabled={effectiveNotificationEvent.value === 'off'}
                                           onChange={(e) => {
@@ -3507,7 +3509,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           }}
                                           readOnly={(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off'}
                                           className={`text-xs pr-10 ${(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasEmailOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                          title={effectiveEmails.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                          title={effectiveEmails.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                           onFocus={(e) => {
                                             if (effectiveEmails.isInherited && !hasEmailOverride) {
                                               // Create override by setting the value (user can now edit)
@@ -3537,8 +3539,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           }}
                                           disabled={testingEmail === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalEmails`, effectiveEmails.value) || effectiveNotificationEvent.value === 'off'}
                                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                          aria-label="Send test email"
-                                          title="Send test email"
+                                          aria-label={content.sendTestEmailAria.value}
+                                          title={content.sendTestEmail.value}
                                         >
                                           {testingEmail === backupKey ? (
                                             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -3549,16 +3551,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       </div>
                                       <p className="text-xs text-muted-foreground">
                                         {effectiveEmails.isInherited 
-                                          ? "Inheriting from server defaults. Click to override."
-                                          : "Notifications for this backup will be sent to these addresses in addition to the global recipient."}
+                                          ? content.inheritingFromServerDefaultsClick.value
+                                          : content.additionalEmailsDescription.value}
                                       </p>
                                     </div>
                                     
                                     <div className="space-y-1">
                                       <div className="flex items-center gap-2">
-                                        <Label className="text-xs font-medium">Additional NTFY Topic</Label>
+                                        <Label className="text-xs font-medium">{content.additionalNtfyTopicLabel.value}</Label>
                                         {!hasNtfyOverride && hasServerDefaults && (
-                                          <span title="Inheriting from server defaults">
+                                          <span title={content.inheritingFromServerDefaultsTitle.value}>
                                             <LinkIcon className="h-3 w-3 text-blue-500" />
                                           </span>
                                         )}
@@ -3569,13 +3571,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                                 type="button"
                                                 onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNtfyTopic')}
                                                 className="cursor-pointer hover:text-blue-500 transition-colors"
-                                                title="Override (not inheriting)"
+                                                title={content.overrideNotInheritingAria.value}
                                               >
                                                 <Link2Off className="h-3 w-3 text-blue-500" />
                                               </button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                              <p>Click to inherit from server defaults</p>
+                                              <p>{content.clickToInheritFromServerDefaults.value}</p>
                                             </TooltipContent>
                                           </Tooltip>
                                         )}
@@ -3591,7 +3593,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             }
                                           }}
                                           type="text"
-                                          placeholder={effectiveNtfyTopic.isInherited ? `Inheriting: ${effectiveNtfyTopic.value || 'Server Default'}` : "e.g. duplistatus-user-backup-alerts"}
+                                          placeholder={effectiveNtfyTopic.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveNtfyTopic.value || content.serverDefault.value) : content.additionalNtfyTopicPlaceholder.value}
                                           defaultValue={effectiveNtfyTopic.value}
                                           disabled={effectiveNotificationEvent.value === 'off'}
                                           onChange={(e) => {
@@ -3621,7 +3623,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           }}
                                           readOnly={(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off'}
                                           className={`text-xs pr-20 ${(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasNtfyOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                          title={effectiveNtfyTopic.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                          title={effectiveNtfyTopic.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                           onFocus={(e) => {
                                             if (effectiveNtfyTopic.isInherited && !hasNtfyOverride) {
                                               // Create override by setting the value (user can now edit)
@@ -3652,8 +3654,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             }}
                                             disabled={testingNtfy === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalNtfyTopic`, effectiveNtfyTopic.value) || effectiveNotificationEvent.value === 'off'}
                                             className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                            aria-label="Send test notification"
-                                            title="Send test notification"
+                                            aria-label={content.sendTestNotificationAria.value}
+                                            title={content.sendTestNotification.value}
                                           >
                                             {testingNtfy === backupKey ? (
                                               <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -3670,8 +3672,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             }}
                                             disabled={!effectiveNtfyTopic.value || effectiveNotificationEvent.value === 'off'}
                                             className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                            aria-label="Show QR code"
-                                            title="Show QR code"
+                                            aria-label={content.showQrCodeAria.value}
+                                            title={content.showQrCode.value}
                                           >
                                             <QrCode className="h-4 w-4" />
                                           </button>
@@ -3679,8 +3681,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       </div>
                                       <p className="text-xs text-muted-foreground">
                                         {effectiveNtfyTopic.isInherited 
-                                          ? "Inheriting from server defaults. Click to override."
-                                          : "Notifications will be published to this topic in addition to the default topic."}
+                                          ? content.inheritingFromServerDefaultsClick.value
+                                          : content.additionalNtfyTopicDescription.value}
                                       </p>
                                     </div>
                                   </div>
@@ -3738,10 +3740,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <Checkbox
                             checked={selectedBackups.has(backupKey)}
                             onCheckedChange={() => handleToggleSelection(backupKey)}
-                            title="Select this backup"
+                            title={content.selectBackup.value}
                           />
                           <div>
-                            <div className="font-medium text-sm" title={`ServerID: ${group.serverId}`}>
+                            <div className="font-medium text-sm" title={content.serverIdLabel.value.replace('{value}', group.serverId)}>
                               {combinedName}
                             </div>
                             {group.serverNote && (
@@ -3777,7 +3779,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       {/* Notification Channels */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <Label className="text-xs font-medium">Notification Channels</Label>
+                          <Label className="text-xs font-medium">{content.notificationChannels.value}</Label>
                         </div>
                         <div className="flex gap-6">
                           <div className="flex items-center space-x-2">
@@ -3786,10 +3788,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               onCheckedChange={(checked: boolean) => 
                                 updateBackupSettingById(backup.id, backup.backupName, 'ntfyEnabled', checked)
                               }
-                              title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                              title={isNtfyConfigured ? content.enableNtfyNotificationsAria.value : content.ntfyNotConfiguredBulk.value}
                               className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>NTFY{!isNtfyConfigured ? " (disabled)" : ""}</Label>
+                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>{isNtfyConfigured ? content.ntfyNotifications.value : content.ntfyDisabled.value}</Label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <Checkbox
@@ -3797,22 +3799,22 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               onCheckedChange={(checked: boolean) => 
                                 updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                               }
-                              title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                              title={isEmailConfigured ? content.enableEmailNotificationsAria.value : content.smtpNotConfiguredBulk.value}
                               className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>Email{!isEmailConfigured ? " (disabled)" : ""}</Label>
+                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>{isEmailConfigured ? content.emailNotifications.value : content.emailDisabled.value}</Label>
                           </div>
                         </div>
                       </div>
                       
-                      {/* Additional Destinations */}
+                      {/* {content.additionalDestinationsHeading.value} */}
                       <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value={`additional-${backupKey}`} className="border-none">
                           <AccordionTrigger className="text-xs font-medium py-2">
                             <div className="flex items-center gap-2">
-                              Additional Destinations
+                              {content.additionalDestinationsHeading.value}
                               {(effectiveNotificationEvent.isInherited || effectiveEmails.isInherited || effectiveNtfyTopic.isInherited) && (
-                                <span title="Some values inherited from server defaults">
+                                <span title={content.someValuesInheritedFromServerDefaults.value}>
                                   <LinkIcon className="h-3 w-3 text-blue-500" />
                                 </span>
                               )}
@@ -3822,9 +3824,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             <div className="space-y-4 pt-2">
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
-                                  <Label className="text-xs font-medium">Notification event</Label>
+                                  <Label className="text-xs font-medium">{content.notificationEventLabel.value}</Label>
                                   {!hasNotificationEventOverride && hasServerDefaults && (
-                                    <span title="Inheriting from server defaults">
+                                    <span title={content.inheritingFromServerDefaultsTitle.value}>
                                       <LinkIcon className="h-3 w-3 text-blue-500" />
                                     </span>
                                   )}
@@ -3835,13 +3837,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           type="button"
                                           onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNotificationEvent')}
                                           className="cursor-pointer hover:text-blue-500 transition-colors"
-                                          title="Override (not inheriting)"
+                                          title={content.overrideNotInheritingAria.value}
                                         >
                                           <Link2Off className="h-3 w-3 text-blue-500" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Click to inherit from server defaults</p>
+                                        <p>{content.clickToInheritFromServerDefaults.value}</p>
                                       </TooltipContent>
                                     </Tooltip>
                                   )}
@@ -3864,16 +3866,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 </Select>
                                 <p className="text-xs text-muted-foreground">
                                   {effectiveNotificationEvent.isInherited 
-                                    ? "Inheriting from server defaults. Change to override."
-                                    : "Notification events to be sent to the additional email address and topic"}
+                                    ? content.inheritingFromServerDefaults.value
+                                    : content.notificationEventDescription.value}
                                 </p>
                               </div>
                               
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
-                                  <Label className="text-xs font-medium">Additional Emails</Label>
+                                  <Label className="text-xs font-medium">{content.additionalEmailsLabel.value}</Label>
                                   {!hasEmailOverride && hasServerDefaults && (
-                                    <span title="Inheriting from server defaults">
+                                    <span title={content.inheritingFromServerDefaultsTitle.value}>
                                       <LinkIcon className="h-3 w-3 text-blue-500" />
                                     </span>
                                   )}
@@ -3884,13 +3886,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           type="button"
                                           onClick={() => clearOverride(backup.id, backup.backupName, 'additionalEmails')}
                                           className="cursor-pointer hover:text-blue-500 transition-colors"
-                                          title="Override (not inheriting)"
+                                          title={content.overrideNotInheritingAria.value}
                                         >
                                           <Link2Off className="h-3 w-3 text-blue-500" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Click to inherit from server defaults</p>
+                                        <p>{content.clickToInheritFromServerDefaults.value}</p>
                                       </TooltipContent>
                                     </Tooltip>
                                   )}
@@ -3905,7 +3907,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }
                                     }}
                                     type="text"
-                                    placeholder={effectiveEmails.isInherited ? `Inheriting: ${effectiveEmails.value || 'Server Default'}` : "e.g. user1@example.com, user2@example.com"}
+                                    placeholder={effectiveEmails.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveEmails.value || content.serverDefault.value) : content.additionalEmailsPlaceholder.value}
                                     defaultValue={effectiveEmails.value}
                                     disabled={effectiveNotificationEvent.value === 'off'}
                                     onChange={(e) => {
@@ -3927,7 +3929,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     }}
                                     readOnly={(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off'}
                                     className={`text-xs pr-10 ${(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasEmailOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                    title={effectiveEmails.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                    title={effectiveEmails.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                     onFocus={(e) => {
                                       if (effectiveEmails.isInherited && !hasEmailOverride) {
                                         updateBackupSettingById(backup.id, backup.backupName, 'additionalEmails', effectiveEmails.value);
@@ -3952,8 +3954,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     }}
                                     disabled={testingEmail === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalEmails`, effectiveEmails.value) || effectiveNotificationEvent.value === 'off'}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    aria-label="Send test email"
-                                    title="Send test email"
+                                    aria-label={content.sendTestEmailAria.value}
+                                    title={content.sendTestEmailAria.value}
                                   >
                                     {testingEmail === backupKey ? (
                                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -3964,16 +3966,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                   {effectiveEmails.isInherited 
-                                    ? "Inheriting from server defaults. Click to override."
-                                    : "Notifications for this backup will be sent to these addresses in addition to the global recipient."}
+                                    ? content.inheritingFromServerDefaultsClick.value
+                                    : content.additionalEmailsDescription.value}
                                 </p>
                               </div>
                               
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
-                                  <Label className="text-xs font-medium">Additional NTFY Topic</Label>
+                                  <Label className="text-xs font-medium">{content.additionalNtfyTopicLabel.value}</Label>
                                   {!hasNtfyOverride && hasServerDefaults && (
-                                    <span title="Inheriting from server defaults">
+                                    <span title={content.inheritingFromServerDefaultsTitle.value}>
                                       <LinkIcon className="h-3 w-3 text-blue-500" />
                                     </span>
                                   )}
@@ -3984,13 +3986,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           type="button"
                                           onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNtfyTopic')}
                                           className="cursor-pointer hover:text-blue-500 transition-colors"
-                                          title="Override (not inheriting)"
+                                          title={content.overrideNotInheritingAria.value}
                                         >
                                           <Link2Off className="h-3 w-3 text-blue-500" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        <p>Click to inherit from server defaults</p>
+                                        <p>{content.clickToInheritFromServerDefaults.value}</p>
                                       </TooltipContent>
                                     </Tooltip>
                                   )}
@@ -4005,7 +4007,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }
                                     }}
                                     type="text"
-                                    placeholder={effectiveNtfyTopic.isInherited ? `Inheriting: ${effectiveNtfyTopic.value || 'Server Default'}` : "e.g. duplistatus-user-backup-alerts"}
+                                    placeholder={effectiveNtfyTopic.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveNtfyTopic.value || content.serverDefault.value) : content.additionalNtfyTopicPlaceholder.value}
                                     defaultValue={effectiveNtfyTopic.value}
                                     disabled={effectiveNotificationEvent.value === 'off'}
                                     onChange={(e) => {
@@ -4027,7 +4029,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     }}
                                     readOnly={(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off'}
                                     className={`text-xs pr-20 ${(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasNtfyOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                    title={effectiveNtfyTopic.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                    title={effectiveNtfyTopic.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                     onFocus={(e) => {
                                       if (effectiveNtfyTopic.isInherited && !hasNtfyOverride) {
                                         updateBackupSettingById(backup.id, backup.backupName, 'additionalNtfyTopic', effectiveNtfyTopic.value);
@@ -4053,8 +4055,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       }}
                                       disabled={testingNtfy === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalNtfyTopic`, effectiveNtfyTopic.value) || effectiveNotificationEvent.value === 'off'}
                                       className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                      aria-label="Send test notification"
-                                      title="Send test notification"
+                                      aria-label={content.sendTestNotificationAria.value}
+                                      title={content.sendTestNotificationAria.value}
                                     >
                                       {testingNtfy === backupKey ? (
                                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4067,8 +4069,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       onClick={() => handleGenerateQrCode(effectiveNtfyTopic.value)}
                                       disabled={!effectiveNtfyTopic.value || effectiveNotificationEvent.value === 'off'}
                                       className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                      aria-label="Show QR code"
-                                      title="Show QR code"
+                                      aria-label={content.showQrCodeAria.value}
+                                      title={content.showQrCodeAria.value}
                                     >
                                       <QrCode className="h-4 w-4" />
                                     </button>
@@ -4076,8 +4078,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 </div>
                                 <p className="text-xs text-muted-foreground">
                                   {effectiveNtfyTopic.isInherited 
-                                    ? "Inheriting from server defaults. Click to override."
-                                    : "Notifications will be published to this topic in addition to the default topic."}
+                                    ? content.inheritingFromServerDefaultsClick.value
+                                    : content.additionalNtfyTopicDescription.value}
                                 </p>
                               </div>
                             </div>
@@ -4100,7 +4102,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           <Checkbox
                             checked={isServerFullySelected(group.serverId) || isServerPartiallySelected(group.serverId)}
                             onCheckedChange={(checked) => handleSelectServer(group.serverId, checked as boolean)}
-                            title={isServerPartiallySelected(group.serverId) ? "Some backups selected - click to select all" : "Select all backups for this server"}
+                            title={isServerPartiallySelected(group.serverId) ? content.someBackupsSelectedClickToSelectAllVisible.value : content.selectAllBackupsForThisServer.value}
                           />
                           <Button
                             variant="ghost"
@@ -4116,7 +4118,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           </Button>
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <div className="font-semibold text-sm" title={`ServerID: ${group.serverId}`}>
+                              <div className="font-semibold text-sm" title={content.serverIdLabel.value.replace('{value}', group.serverId)}>
                                 {group.serverAlias ? (
                                   <>
                                     {group.serverAlias} ({group.serverName})
@@ -4132,7 +4134,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                       <Settings2 className="w-3.5 h-3.5" />
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      <p>Default additional destinations configured</p>
+                                      <p>{content.defaultAdditionalDestinationsConfigured.value}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
@@ -4154,31 +4156,31 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       {isServerHeaderExpanded && (
                         <div className="pt-3 border-t space-y-3 bg-blue-500/5 -mx-4 px-4 pb-3">
                           <div className="flex items-center justify-between">
-                            <div className="font-medium text-sm">Default Additional Destinations for this Server</div>
+                            <div className="font-medium text-sm">{content.defaultAdditionalDestinationsForServer.value}</div>
                             <div className="flex items-center gap-2">
                               <Button
                                 variant="gradient"
                                 size="sm"
                                 className="h-7 px-3 text-xs"
                                 onClick={() => syncAllToServerDefaults(group.serverId)}
-                                title="Sync all backups to inherit from server defaults"
+                                title={content.syncToAllTitle.value}
                               >
-                                Sync to All
+                                {content.syncToAll.value}
                               </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 className="h-7 px-3 text-xs text-yellow-500 hover:text-yellow-500"
                                 onClick={() => clearAllAdditionalDestinations(group.serverId)}
-                                title="Clear all additional destinations from server and all backups"
+                                title={content.clearAllTitle.value}
                               >
-                                Clear All
+                                {content.clearAll.value}
                               </Button>
                             </div>
                           </div>
                           
                           <div className="space-y-1">
-                            <Label className="text-xs font-medium">Notification event</Label>
+                            <Label className="text-xs font-medium">{content.notificationEventLabel.value}</Label>
                             <Select
                               value={serverDefaultAdditionalEvent}
                               onValueChange={(value: NotificationEvent) => 
@@ -4198,7 +4200,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           </div>
                           
                           <div className="space-y-1">
-                            <Label className="text-xs font-medium">Default Additional Emails</Label>
+                            <Label className="text-xs font-medium">{content.defaultAdditionalEmails.value}</Label>
                             <div className="relative">
                               <Input
                                 ref={(el) => {
@@ -4210,7 +4212,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   }
                                 }}
                                 type="text"
-                                placeholder="e.g. user1@example.com, user2@example.com"
+                                placeholder={content.additionalEmailsPlaceholder.value}
                                 defaultValue={serverDefaults?.additionalEmails ?? ''}
                                 disabled={serverDefaultAdditionalEvent === 'off'}
                                 onChange={(e) => {
@@ -4247,8 +4249,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 }}
                                 disabled={testingEmail === serverDefaultKey || serverDefaultAdditionalEvent === 'off'}
                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                aria-label="Send test email"
-                                title="Send test email"
+                                aria-label={content.sendTestEmailAria.value}
+                                title={content.sendTestEmailAria.value}
                               >
                                 {testingEmail === serverDefaultKey ? (
                                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4263,7 +4265,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           </div>
                           
                           <div className="space-y-1">
-                            <Label className="text-xs font-medium">Default Additional NTFY Topic</Label>
+                            <Label className="text-xs font-medium">{content.defaultAdditionalNtfyTopic.value}</Label>
                             <div className="relative">
                               <Input
                                 ref={(el) => {
@@ -4275,7 +4277,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   }
                                 }}
                                 type="text"
-                                placeholder="e.g. duplistatus-user-backup-alerts"
+                                placeholder={content.additionalNtfyTopicPlaceholder.value}
                                 defaultValue={serverDefaults?.additionalNtfyTopic ?? ''}
                                 disabled={serverDefaultAdditionalEvent === 'off'}
                                 onChange={(e) => {
@@ -4313,8 +4315,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   }}
                                   disabled={testingNtfy === serverDefaultKey || serverDefaultAdditionalEvent === 'off'}
                                   className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                  aria-label="Send test notification"
-                                  title="Send test notification"
+                                  aria-label={content.sendTestNotificationAria.value}
+                                  title={content.sendTestNotificationAria.value}
                                 >
                                   {testingNtfy === serverDefaultKey ? (
                                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4327,8 +4329,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   onClick={() => handleGenerateQrCode(serverDefaults?.additionalNtfyTopic ?? '')}
                                   disabled={!serverDefaults?.additionalNtfyTopic || serverDefaultAdditionalEvent === 'off'}
                                   className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                  aria-label="Show QR code"
-                                  title="Show QR code"
+                                  aria-label={content.showQrCodeAria.value}
+                                  title={content.showQrCodeAria.value}
                                 >
                                   <QrCode className="h-4 w-4" />
                                 </button>
@@ -4368,7 +4370,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                               <Checkbox
                                 checked={selectedBackups.has(backupKey)}
                                 onCheckedChange={() => handleToggleSelection(backupKey)}
-                                title="Select this backup"
+                                title={content.selectBackup.value}
                               />
                               <div>
                                 <div className="font-medium text-sm">
@@ -4402,25 +4404,25 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     {/* Notification Channels */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-xs font-medium">Notification Channels</Label>
+                        <Label className="text-xs font-medium">{content.notificationChannels.value}</Label>
                         <div className="flex gap-4">
                           <div className="flex items-center space-x-1">
                             <Checkbox
                               checked={allNtfySelected}
                               onCheckedChange={handleSelectAllNtfy}
-                              title={isNtfyConfigured ? "Select all NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                              title={isNtfyConfigured ? content.selectAllNtfyNotifications.value : content.ntfyNotConfiguredBulk.value}
                               className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All NTFY{!isNtfyConfigured ? " (disabled)" : ""}</Label>
+                            <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : "text-muted-foreground"}`}>{isNtfyConfigured ? content.allNtfy.value : content.ntfyDisabled.value}</Label>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Checkbox
                               checked={allEmailSelected}
                               onCheckedChange={handleSelectAllEmail}
-                              title={isEmailConfigured ? "Select all Email notifications" : "SMTP not configured - notifications will not be sent"}
+                              title={isEmailConfigured ? content.selectAllEmailNotifications.value : content.smtpNotConfiguredBulk.value}
                               className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                             />
-                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : "text-muted-foreground"}`}>All Email{!isEmailConfigured ? " (disabled)" : ""}</Label>
+                            <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : "text-muted-foreground"}`}>{isEmailConfigured ? content.allEmail.value : content.emailDisabled.value}</Label>
                           </div>
                         </div>
                       </div>
@@ -4431,10 +4433,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(backup.id, backup.backupName, 'ntfyEnabled', checked)
                             }
-                            title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                            title={isNtfyConfigured ? content.enableNtfyNotificationsAria.value : content.ntfyNotConfiguredBulk.value}
                             className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
-                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>NTFY{!isNtfyConfigured ? " (disabled)" : ""}</Label>
+                          <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>{isNtfyConfigured ? content.ntfyNotifications.value : content.ntfyDisabled.value}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -4442,10 +4444,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                             onCheckedChange={(checked: boolean) => 
                               updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                             }
-                            title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                            title={isEmailConfigured ? content.enableEmailNotificationsAria.value : content.smtpNotConfiguredBulk.value}
                             className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                           />
-                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>Email{!isEmailConfigured ? " (disabled)" : ""}</Label>
+                          <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>{isEmailConfigured ? content.emailNotifications.value : content.emailDisabled.value}</Label>
                         </div>
                       </div>
                     </div>
@@ -4474,7 +4476,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                           {/* Notification Channels */}
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <Label className="text-xs font-medium">Notification Channels</Label>
+                              <Label className="text-xs font-medium">{content.notificationChannels.value}</Label>
                             </div>
                             <div className="flex gap-6">
                               <div className="flex items-center space-x-2">
@@ -4483,10 +4485,10 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   onCheckedChange={(checked: boolean) => 
                                     updateBackupSettingById(backup.id, backup.backupName, 'ntfyEnabled', checked)
                                   }
-                                  title={isNtfyConfigured ? "Enable NTFY notifications" : "NTFY not configured - notifications will not be sent"}
+                                  title={isNtfyConfigured ? content.enableNtfyNotificationsAria.value : content.ntfyNotConfiguredBulk.value}
                                   className={!isNtfyConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                                 />
-                                <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>NTFY{!isNtfyConfigured ? " (disabled)" : ""}</Label>
+                                <Label className={`text-xs ${!isNtfyConfigured ? "text-gray-400" : ""}`}>{isNtfyConfigured ? content.ntfyNotifications.value : content.ntfyDisabled.value}</Label>
                               </div>
                               <div className="flex items-center space-x-2">
                                 <Checkbox
@@ -4494,22 +4496,22 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                   onCheckedChange={(checked: boolean) => 
                                     updateBackupSettingById(backup.id, backup.backupName, 'emailEnabled', checked)
                                   }
-                                  title={isEmailConfigured ? "Enable Email notifications" : "SMTP not configured - notifications will not be sent"}
+                                  title={isEmailConfigured ? content.enableEmailNotificationsAria.value : content.smtpNotConfiguredBulk.value}
                                   className={!isEmailConfigured ? "opacity-100 border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-black" : ""}
                                 />
-                                <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>Email{!isEmailConfigured ? " (disabled)" : ""}</Label>
+                                <Label className={`text-xs ${!isEmailConfigured ? "text-gray-400" : ""}`}>{isEmailConfigured ? content.emailNotifications.value : content.emailDisabled.value}</Label>
                               </div>
                             </div>
                           </div>
                           
-                          {/* Additional Destinations */}
+                          {/* {content.additionalDestinationsHeading.value} */}
                           <Accordion type="single" collapsible className="w-full">
                             <AccordionItem value={`additional-${backupKey}`} className="border-none">
                               <AccordionTrigger className="text-xs font-medium py-2">
                                 <div className="flex items-center gap-2">
-                                  Additional Destinations
+                                  {content.additionalDestinationsHeading.value}
                                   {(effectiveEmails.isInherited || effectiveNtfyTopic.isInherited) && (
-                                    <span title="Some values inherited from server defaults">
+                                    <span title={content.someValuesInheritedFromServerDefaults.value}>
                                       <LinkIcon className="h-3 w-3 text-blue-500" />
                                     </span>
                                   )}
@@ -4519,9 +4521,9 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                 <div className="space-y-4 pt-2">
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                      <Label className="text-xs font-medium">Notification event</Label>
+                                      <Label className="text-xs font-medium">{content.notificationEventLabel.value}</Label>
                                       {!hasNotificationEventOverride && hasServerDefaults && (
-                                        <span title="Inheriting from server defaults">
+                                        <span title={content.inheritingFromServerDefaultsTitle.value}>
                                           <LinkIcon className="h-3 w-3 text-blue-500" />
                                         </span>
                                       )}
@@ -4532,13 +4534,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                               type="button"
                                               onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNotificationEvent')}
                                               className="cursor-pointer hover:text-blue-500 transition-colors"
-                                              title="Override (not inheriting)"
+                                              title={content.overrideNotInheritingAria.value}
                                             >
                                               <Link2Off className="h-3 w-3 text-blue-500" />
                                             </button>
                                           </TooltipTrigger>
                                           <TooltipContent>
-                                            <p>Click to inherit from server defaults</p>
+                                            <p>{content.clickToInheritFromServerDefaults.value}</p>
                                           </TooltipContent>
                                         </Tooltip>
                                       )}
@@ -4561,16 +4563,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     </Select>
                                     <p className="text-xs text-muted-foreground">
                                       {effectiveNotificationEvent.isInherited 
-                                        ? "Inheriting from server defaults. Change to override."
-                                        : "Notification events to be sent to the additional email address and topic"}
+                                        ? content.inheritingFromServerDefaults.value
+                                        : content.notificationEventDescription.value}
                                     </p>
                                   </div>
                                   
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                      <Label className="text-xs font-medium">Additional Emails</Label>
+                                      <Label className="text-xs font-medium">{content.additionalEmailsLabel.value}</Label>
                                       {!hasEmailOverride && hasServerDefaults && (
-                                        <span title="Inheriting from server defaults">
+                                        <span title={content.inheritingFromServerDefaultsTitle.value}>
                                           <LinkIcon className="h-3 w-3 text-blue-500" />
                                         </span>
                                       )}
@@ -4581,13 +4583,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                               type="button"
                                               onClick={() => clearOverride(backup.id, backup.backupName, 'additionalEmails')}
                                               className="cursor-pointer hover:text-blue-500 transition-colors"
-                                              title="Override (not inheriting)"
+                                              title={content.overrideNotInheritingAria.value}
                                             >
                                               <Link2Off className="h-3 w-3 text-blue-500" />
                                             </button>
                                           </TooltipTrigger>
                                           <TooltipContent>
-                                            <p>Click to inherit from server defaults</p>
+                                            <p>{content.clickToInheritFromServerDefaults.value}</p>
                                           </TooltipContent>
                                         </Tooltip>
                                       )}
@@ -4603,7 +4605,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           }
                                         }}
                                         type="text"
-                                        placeholder={effectiveEmails.isInherited ? `Inheriting: ${effectiveEmails.value || 'Server Default'}` : "e.g. user1@example.com, user2@example.com"}
+                                        placeholder={effectiveEmails.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveEmails.value || content.serverDefault.value) : content.additionalEmailsPlaceholder.value}
                                         defaultValue={effectiveEmails.value}
                                         disabled={effectiveNotificationEvent.value === 'off'}
                                         onChange={(e) => {
@@ -4633,7 +4635,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }}
                                         readOnly={(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off'}
                                         className={`text-xs pr-10 ${(effectiveEmails.isInherited && !hasEmailOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasEmailOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                        title={effectiveEmails.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                        title={effectiveEmails.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                         onFocus={(e) => {
                                           if (effectiveEmails.isInherited && !hasEmailOverride) {
                                             // Create override by setting the value (user can now edit)
@@ -4662,8 +4664,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }}
                                           disabled={testingEmail === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalEmails`, effectiveEmails.value) || effectiveNotificationEvent.value === 'off'}
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                        aria-label="Send test email"
-                                        title="Send test email"
+                                        aria-label={content.sendTestEmailAria.value}
+                                        title={content.sendTestEmail.value}
                                       >
                                         {testingEmail === backupKey ? (
                                           <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4674,16 +4676,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     </div>
                                     <p className="text-xs text-muted-foreground">
                                       {effectiveEmails.isInherited 
-                                        ? "Inheriting from server defaults. Click to override."
-                                        : "Notifications for this backup will be sent to these addresses in addition to the global recipient."}
+                                        ? content.inheritingFromServerDefaultsClick.value
+                                        : content.additionalEmailsDescription.value}
                                     </p>
                                   </div>
                                   
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                      <Label className="text-xs font-medium">Additional NTFY Topic</Label>
+                                      <Label className="text-xs font-medium">{content.additionalNtfyTopicLabel.value}</Label>
                                       {!hasNtfyOverride && hasServerDefaults && (
-                                        <span title="Inheriting from server defaults">
+                                        <span title={content.inheritingFromServerDefaultsTitle.value}>
                                           <LinkIcon className="h-3 w-3 text-blue-500" />
                                         </span>
                                       )}
@@ -4694,13 +4696,13 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                               type="button"
                                               onClick={() => clearOverride(backup.id, backup.backupName, 'additionalNtfyTopic')}
                                               className="cursor-pointer hover:text-blue-500 transition-colors"
-                                              title="Override (not inheriting)"
+                                              title={content.overrideNotInheritingAria.value}
                                             >
                                               <Link2Off className="h-3 w-3 text-blue-500" />
                                             </button>
                                           </TooltipTrigger>
                                           <TooltipContent>
-                                            <p>Click to inherit from server defaults</p>
+                                            <p>{content.clickToInheritFromServerDefaults.value}</p>
                                           </TooltipContent>
                                         </Tooltip>
                                       )}
@@ -4716,7 +4718,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           }
                                         }}
                                         type="text"
-                                        placeholder={effectiveNtfyTopic.isInherited ? `Inheriting: ${effectiveNtfyTopic.value || 'Server Default'}` : "e.g. duplistatus-user-backup-alerts"}
+                                        placeholder={effectiveNtfyTopic.isInherited ? content.inheritingPlaceholder.value.replace('{value}', effectiveNtfyTopic.value || content.serverDefault.value) : content.additionalNtfyTopicPlaceholder.value}
                                         defaultValue={effectiveNtfyTopic.value}
                                         disabled={effectiveNotificationEvent.value === 'off'}
                                         onChange={(e) => {
@@ -4746,7 +4748,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                         }}
                                         readOnly={(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off'}
                                         className={`text-xs pr-20 ${(effectiveNtfyTopic.isInherited && !hasNtfyOverride) || effectiveNotificationEvent.value === 'off' ? 'bg-muted/40 text-muted-foreground cursor-not-allowed' : hasNtfyOverride ? 'bg-background border-blue-500/50' : ''}`}
-                                        title={effectiveNtfyTopic.isInherited ? "Inheriting from server defaults. Click to override." : undefined}
+                                        title={effectiveNtfyTopic.isInherited ? content.inheritingFromServerDefaultsClick.value : undefined}
                                         onFocus={(e) => {
                                           if (effectiveNtfyTopic.isInherited && !hasNtfyOverride) {
                                             // Create override by setting the value (user can now edit)
@@ -4776,8 +4778,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                             }}
                                           disabled={testingNtfy === backupKey || !getCurrentTextInputValue(`${backupKey}:additionalNtfyTopic`, effectiveNtfyTopic.value) || effectiveNotificationEvent.value === 'off'}
                                           className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                          aria-label="Send test notification"
-                                          title="Send test notification"
+                                          aria-label={content.sendTestNotificationAria.value}
+                                          title={content.sendTestNotification.value}
                                         >
                                           {testingNtfy === backupKey ? (
                                             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4790,8 +4792,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                           onClick={() => handleGenerateQrCode(effectiveNtfyTopic.value)}
                                           disabled={!effectiveNtfyTopic.value || effectiveNotificationEvent.value === 'off'}
                                           className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                          aria-label="Show QR code"
-                                          title="Show QR code"
+                                          aria-label={content.showQrCodeAria.value}
+                                          title={content.showQrCode.value}
                                         >
                                           <QrCode className="h-4 w-4" />
                                         </button>
@@ -4799,8 +4801,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                                     </div>
                                     <p className="text-xs text-muted-foreground">
                                       {effectiveNtfyTopic.isInherited 
-                                        ? "Inheriting from server defaults. Click to override."
-                                        : "Notifications will be published to this topic in addition to the default topic."}
+                                        ? content.inheritingFromServerDefaultsClick.value
+                                        : content.additionalNtfyTopicDescription.value}
                                     </p>
                                   </div>
                                 </div>
@@ -4820,7 +4822,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           <AlertDialog open={isBulkClearConfirmOpen} onOpenChange={setIsBulkClearConfirmOpen}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Clear Additional Destinations</AlertDialogTitle>
+                <AlertDialogTitle>{content.clearAdditionalDestinations.value}</AlertDialogTitle>
                 <AlertDialogDescription>
                   {(() => {
                     // Calculate unique server IDs from selected backups
@@ -4846,12 +4848,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{common.ui.cancel.value}</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleBulkRemoveAdditionalDestinationsConfirmed}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
-                  Clear
+                  {content.clear.value}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -4861,15 +4863,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
           <Dialog open={isBulkEditModalOpen} onOpenChange={setIsBulkEditModalOpen}>
             <DialogContent className="sm:max-w-[600px]">
               <DialogHeader>
-                <DialogTitle>Set Additional Destinations</DialogTitle>
+                <DialogTitle>{content.setAdditionalDestinations.value}</DialogTitle>
                 <DialogDescription>
-                  Update additional destination settings for {selectedBackups.size} selected backup{selectedBackups.size === 1 ? '' : 's'}.
+                  {content.bulkEditDialogDescription.value.replace('{count}', selectedBackups.size.toString())}
                 </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-4 py-4">
                 <div className="space-y-1">
-                  <Label className="text-sm font-medium">Notification Event</Label>
+                  <Label className="text-sm font-medium">{content.notificationEventLabel.value}</Label>
                   <Select
                     value={bulkEditNotificationEvent}
                     onValueChange={(value: NotificationEvent) => setBulkEditNotificationEvent(value)}
@@ -4885,16 +4887,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    Notification events to be sent to the additional email address and topic
+                    {content.notificationEventDescription.value}
                   </p>
                 </div>
                 
                 <div className="space-y-1">
-                  <Label className="text-sm font-medium">Additional Emails</Label>
+                  <Label className="text-sm font-medium">{content.additionalEmailsLabel.value}</Label>
                   <div className="relative">
                     <Input
                       type="text"
-                      placeholder="e.g. user1@example.com, user2@example.com"
+                      placeholder={content.additionalEmailsPlaceholder.value}
                       value={bulkEditAdditionalEmails}
                       onChange={(e) => setBulkEditAdditionalEmails(e.target.value)}
                       className="pr-10"
@@ -4904,8 +4906,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                       onClick={handleBulkTestEmail}
                       disabled={testingBulkEmail}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      aria-label="Send test email"
-                      title="Send test email"
+                      aria-label={content.sendTestEmailAria.value}
+                      title={content.sendTestEmailAria.value}
                     >
                       {testingBulkEmail ? (
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4915,16 +4917,16 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                     </button>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Notifications for these backups will be sent to these addresses in addition to the global recipient.
+                    {content.additionalEmailsDescriptionPlural.value}
                   </p>
                 </div>
                 
                 <div className="space-y-1">
-                  <Label className="text-sm font-medium">Additional NTFY Topic</Label>
+                  <Label className="text-sm font-medium">{content.additionalNtfyTopicLabel.value}</Label>
                   <div className="relative">
                     <Input
                       type="text"
-                      placeholder="e.g. duplistatus-user-backup-alerts"
+                      placeholder={content.additionalNtfyTopicPlaceholder.value}
                       value={bulkEditAdditionalNtfyTopic}
                       onChange={(e) => setBulkEditAdditionalNtfyTopic(e.target.value)}
                       className="pr-20"
@@ -4935,8 +4937,8 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         onClick={handleBulkTestNtfy}
                         disabled={testingBulkNtfy}
                         className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        aria-label="Send test notification"
-                        title="Send test notification"
+                        aria-label={content.sendTestNotificationAria.value}
+                        title={content.sendTestNotificationAria.value}
                       >
                         {testingBulkNtfy ? (
                           <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -4948,15 +4950,15 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                         type="button"
                         onClick={() => handleGenerateQrCode(bulkEditAdditionalNtfyTopic)}
                         className="text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label="Show QR code"
-                        title="Show QR code"
+                        aria-label={content.showQrCodeAria.value}
+                        title={content.showQrCodeAria.value}
                       >
                         <QrCode className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Notifications will be published to this topic in addition to the default topic.
+                    {content.additionalNtfyTopicDescription.value}
                   </p>
                 </div>
               </div>
@@ -4966,12 +4968,12 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
                   variant="outline"
                   onClick={() => setIsBulkEditModalOpen(false)}
                 >
-                  Cancel
+                  {common.ui.cancel.value}
                 </Button>
                 <Button
                   onClick={handleBulkUpdate}
                 >
-                  Save
+                  {common.ui.save.value}
                 </Button>
               </DialogFooter>
             </DialogContent>

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { NotificationTemplate, NtfyConfig } from '@/lib/types';
 import { sendEmailNotification, convertTextToHtml } from '@/lib/notifications';
 import { getSMTPConfig, clearRequestCache } from '@/lib/db-utils';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import { isDevelopmentMode } from '@/lib/utils';
@@ -57,7 +57,7 @@ async function sendNtfyNotificationDirect(config: NtfyConfig, message: string, t
   }
 }
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAuth(async (request: NextRequest, authContext) => {
   let testType: 'simple' | 'template' | 'email' | 'unknown' = 'unknown';
   
   try {
