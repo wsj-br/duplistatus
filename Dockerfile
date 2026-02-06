@@ -71,9 +71,8 @@ ENV VERSION=1.3.1 \
     PORT=9666 \
     HOSTNAME=0.0.0.0 \
     CRON_PORT=9667 \
-    TZ=Europe/London \
-    LANG=en_GB 
-
+    TZ=Europe/London
+    
 WORKDIR /app
 
 # Use the existing 'node' user from base image (UID 1000) for compatibility with existing volumes

@@ -1,13 +1,15 @@
 ---
-translation_last_updated: '2026-02-05T19:09:08.455Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: 3eab3fe85d0db77a
+translation_last_updated: '2026-02-06T22:33:44.177Z'
+source_file_mtime: '2026-02-06T21:16:20.551Z'
+source_file_hash: 473175db710f3df5
 translation_language: pt-BR
 source_file_path: user-guide/settings/notification-templates.md
 ---
 # Modelos {#templates}
 
-**duplistatus** usa três modelos para mensagens de notificação. Estes modelos são usados tanto para notificações NTFY quanto para Notificações por e-mail:
+**duplistatus** usa três modelos para mensagens de notificação. Esses modelos são usados tanto para notificações NTFY quanto para notificações por e-mail.
+
+A página inclui um seletor de **Idioma do Modelo** que define a localidade para modelos padrão. Alterar o idioma atualiza a localidade para novos padrões, mas não altera o texto de modelos existentes. Para aplicar um novo idioma aos seus modelos, você pode editá-los manualmente ou usar **Redefinir este modelo para o padrão** (para a guia atual) ou **Redefinir todos para o padrão** (para os três modelos).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -19,13 +21,20 @@ source_file_path: user-guide/settings/notification-templates.md
 
 <br/>
 
+## Idioma do Modelo {#template-language}
+
+Um seletor de **Idioma do Modelo** no topo da página permite escolher o idioma para modelos padrão (Inglês, Alemão, Francês, Espanhol, Português (Brasil)). Alterar o idioma atualiza a localidade para padrões, mas modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
+
+<br/>
+
 ## Ações Disponíveis {#available-actions}
 
 | Botão                                                              | Descrição                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Salvar configurações do modelo" />                      | Salva as configurações ao alterar o modelo. O botão salva o modelo sendo exibido (Sucesso, Aviso/Erro ou Backup atrasado). |
-| <IconButton icon="lucide:send" label="Enviar notificação de teste"/>     | Verifica o modelo após atualizá-lo. As variáveis serão substituídas pelos seus nomes para o teste. Para notificações por e-mail, o título do modelo se torna a linha de assunto do e-mail. |
-| <IconButton icon="lucide:rotate-ccw" label="Redefinir para padrão"/>     | Restaura o modelo padrão para o **modelo selecionado**. Lembre-se de salvá-lo após redefinir.  |
+| <IconButton label="Salvar configurações do modelo" />                      | Salva as configurações ao alterar o modelo. O botão salva o modelo sendo exibido (Sucesso, Aviso/Erro ou Backup Atrasado). |
+| <IconButton icon="lucide:send" label="Enviar notificação de teste"/>     | Verifica o modelo após atualizá-lo. As variáveis serão substituídas por seus nomes para o teste. Para notificações por e-mail, o título do modelo se torna a linha de assunto do e-mail. |
+| <IconButton icon="lucide:rotate-ccw" label="Redefinir este modelo para o padrão"/> | Restaura o modelo padrão para o **modelo selecionado** (a guia atual). Lembre-se de salvar após redefinir. |
+| <IconButton icon="lucide:rotate-ccw" label="Redefinir todos para o padrão"/> | Restaura os três modelos (Sucesso, Aviso/Erro, Backup Atrasado) para os padrões do Idioma do Modelo selecionado. Lembre-se de salvar após redefinir. |
 
 <br/>
 

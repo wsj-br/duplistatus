@@ -29,7 +29,7 @@ The cron service includes:
 - **Manual task triggering**: `POST /trigger/:taskName` - Manually execute scheduled tasks
 - **Task management**: `POST /start/:taskName` and `POST /stop/:taskName` - Control individual tasks
 - **Configuration reload**: `POST /reload-config` - Reload configuration from database
-- **Automatic restart**: The service automatically restarts if it crashes (managed by `duplistatus-cron.sh`)
+- **Automatic restart**: The service automatically restarts if it crashes (managed by `docker-entrypoint.sh` in Docker deployments)
 - **Watch mode**: Development mode includes file watching for automatic restarts on code changes
 - **Overdue backup monitoring**: Automated checking and notification of overdue backups (runs every 5 minutes by default)
 - **Audit log cleanup**: Automated cleanup of old audit log entries (runs daily at 2 AM UTC)

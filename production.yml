@@ -6,7 +6,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/London
-      - LANG=en_GB
       - PWD_ENFORCE=true
       - PWD_MIN_LEN=8
     ports:

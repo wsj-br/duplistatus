@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:12.060Z'
-source_file_mtime: '2026-02-04T21:14:03.774Z'
-source_file_hash: eeffa736b6dc0250
+translation_last_updated: '2026-02-06T22:33:25.967Z'
+source_file_mtime: '2026-02-06T22:10:19.145Z'
+source_file_hash: ae2bbcffdb897dd2
 translation_language: fr
 source_file_path: development/setup.md
 ---
@@ -15,58 +15,107 @@ source_file_path: development/setup.md
 - SQLite3
 - Inkscape (pour la traduction SVG de la documentation et l'export PNG ; requis uniquement si vous exécutez `translate` ou `translate:svg`)
 - bat/batcat (pour afficher une version élégante de `translate:help`)
+- direnv (pour charger automatiquement les fichiers `.env*`)
 
 ## Étapes {#steps}
 
 1. Clonez le référentiel :
 
-```bash
-git clone https://github.com/wsj-br/duplistatus.git
-cd duplistatus
-```
+    ```bash
+    git clone https://github.com/wsj-br/duplistatus.git
+    cd duplistatus
+    ```
 
 2. Installer les dépendances (Debian/Ubuntu) :
 
-```bash
-sudo apt update
-sudo apt install sqlite3 git inkscape bat -y
-```
+    ```bash
+    sudo apt update
+    sudo apt install sqlite3 git inkscape bat -y
+    ```
 
-3. Supprimer les anciennes installations de Node.js (si vous l'aviez déjà installé)
+3. Supprimer les anciennes installations de Node.js (si vous les avez déjà installées)
 
-```bash
-sudo apt-get purge nodejs npm -y
-sudo apt-get autoremove -y
-sudo rm -rf /usr/local/bin/npm 
-sudo rm -rf /usr/local/share/man/man1/node* 
-sudo rm -rf /usr/local/lib/dtrace/node.d
-rm -rf ~/.npm
-rm -rf ~/.node-gyp
-sudo rm -rf /opt/local/bin/node
-sudo rm -rf /opt/local/include/node
-sudo rm -rf /opt/local/lib/node_modules
-sudo rm -rf /usr/local/lib/node*
-sudo rm -rf /usr/local/include/node*
-sudo rm -rf /usr/local/bin/node*
-```
+    ```bash
+    sudo apt-get purge nodejs npm -y
+    sudo apt-get autoremove -y
+    sudo rm -rf /usr/local/bin/npm 
+    sudo rm -rf /usr/local/share/man/man1/node* 
+    sudo rm -rf /usr/local/lib/dtrace/node.d
+    rm -rf ~/.npm
+    rm -rf ~/.node-gyp
+    sudo rm -rf /opt/local/bin/node
+    sudo rm -rf /opt/local/include/node
+    sudo rm -rf /opt/local/lib/node_modules
+    sudo rm -rf /usr/local/lib/node*
+    sudo rm -rf /usr/local/include/node*
+    sudo rm -rf /usr/local/bin/node*
+    ```
 
 4. Installez Node.js et pnpm :
 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-nvm use --lts
-npm install -g pnpm npm-check-updates doctoc
-```
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    source ~/.bashrc
+    nvm install --lts
+    nvm use --lts
+    npm install -g pnpm npm-check-updates doctoc
+    ```
 
-5. Démarrer le serveur de développement :
+5. Configurer le support de direnv
 
-Pour le port TCP par défaut (8666) :
+- Ajouter ces lignes à votre fichier `~/.bashrc`
 
-```bash
-pnpm dev
-```
+    ```bash 
+    # direnv support (apt install direnv)
+    eval "$(direnv hook bash)"
+    ```
+
+avec cette commande :
+
+    ```bash 
+    (echo "# direnv support (apt install direnv)"; echo 'eval "$(direnv hook bash)') >> ~/.bashrc
+    ```
+
+dans le répertoire de base du dépôt, exécuter :
+
+    ```bash
+    direnv allow
+    ```
+
+- Ajouter ces lignes à votre fichier `~/.profile`
+
+    ```bash 
+    # export the Bash environment (needed for Cursor's agents to load it).
+    export BASH_ENV="$HOME/.bashrc"
+    ```
+
+avec cette commande :
+
+    ```bash 
+    (echo "# export the Bash environment (needed for Cursor's agents to load it)."; echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
+    ```
+
+:::note
+Vous devez rouvrir le terminal ou fermer/rouvrir l'application Cursor pour que ces modifications prennent effet.
+:::
+
+6. Créer le fichier .env dans le répertoire de base du dépôt avec ces variables.
+
+- Vous pouvez utiliser n'importe quelle valeur pour `VERSION` ; elle sera automatiquement mise à jour lors de l'utilisation des scripts de développement.
+- Utilisez des mots de passe aléatoires pour `ADMIN_PASSWORD` et `USER_PASSWORD` ; ces mots de passe seront utilisés dans le script `pnpm take-screenshots`.
+- Vous pouvez obtenir la `OPENROUTER_API_KEY` depuis [openrouter.ai](https://openrouter.ai).
+
+    ```
+    VERSION=x.x.x
+
+    # Development user passwords
+    ADMIN_PASSWORD="admin_secret"
+    USER_PASSWORD="user_secret"
+
+
+    # Openrouter.ai API key for translation scripts in documentation 
+    OPENROUTER_API_KEY=sk-or-v1-your-key-for-translate-files
+    ```
 
 ## Scripts Disponibles {#available-scripts}
 
@@ -98,14 +147,14 @@ Le projet inclut plusieurs scripts npm pour différentes tâches de développeme
 - `pnpm cron:dev` - Démarrer le service cron en mode développement avec surveillance des fichiers (port 8667)
 - `pnpm cron:start-local` - Démarrer le service cron localement pour les tests (port 8667)
 
-### Scripts de test {#test-scripts}
-- `pnpm generate-test-data` - Générer des données de sauvegarde de test (nécessite le paramètre --servers=N)
+### Scripts de Test {#test-scripts}
+- `pnpm generate-test-data` - Générer des données de test de sauvegarde (nécessite le paramètre --servers=N)
 - `pnpm show-overdue-notifications` - Afficher le contenu des notifications en retard
-- `pnpm run-overdue-check` - Exécuter la vérification en retard à une date/heure spécifique
+- `pnpm run-overdue-check` - Exécuter la vérification des retards à une date/heure spécifique
 - `pnpm test-cron-port` - Tester la connectivité du port du service cron
-- `pnpm test-overdue-detection` - Tester la logique de détection de sauvegarde en retard
-- `pnpm validate-csv-export` - Valider la fonctionnalité d'export CSV
-- `pnpm set-smtp-test-config` - Définir la configuration de test SMTP à partir des variables d'environnement (voir [Scripts de test](test-scripts))
-- `pnpm test-smtp-connections` - Tester la compatibilité croisée du type de connexion SMTP (voir [Scripts de test](test-scripts))
-- `pnpm test-entrypoint` - Tester le script de point d'entrée Docker en développement local (voir [Scripts de test](test-scripts))
-- `pnpm take-screenshots` - Prendre des captures d'écran pour la documentation (voir [Outils de documentation](documentation-tools))
+- `pnpm test-overdue-detection` - Tester la logique de détection des sauvegardes en retard
+- `pnpm validate-csv-export` - Valider la fonctionnalité d'exportation CSV
+- `pnpm set-smtp-test-config` - Définir la configuration de test SMTP à partir des variables d'environnement (voir [Scripts de Test](test-scripts))
+- `pnpm test-smtp-connections` - Tester la compatibilité croisée des types de connexion SMTP (voir [Scripts de Test](test-scripts))
+- `pnpm test-entrypoint` - Tester le script de point d'entrée Docker en développement local (voir [Scripts de Test](test-scripts))
+- `pnpm take-screenshots` - Prendre des captures d'écran pour la documentation (voir [Outils de Documentation](documentation-tools))

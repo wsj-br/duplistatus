@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:09:08.757Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
+translation_last_updated: '2026-02-06T22:33:44.394Z'
+source_file_mtime: '2026-02-02T01:09:34.945Z'
 source_file_hash: 761ce0264d6bb8c1
 translation_language: pt-BR
 source_file_path: user-guide/settings/user-management-settings.md

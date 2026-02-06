@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:21.084Z'
-source_file_mtime: '2026-01-29T17:58:29.895Z'
+translation_last_updated: '2026-02-06T22:33:26.713Z'
+source_file_mtime: '2026-02-01T03:16:19.469Z'
 source_file_hash: 5182562d16f18184
 translation_language: fr
 source_file_path: installation/https-setup.md

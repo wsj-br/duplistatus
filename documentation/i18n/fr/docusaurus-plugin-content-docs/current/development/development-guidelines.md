@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:11.100Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 1afab25f18ff213d
+translation_last_updated: '2026-02-06T22:33:25.282Z'
+source_file_mtime: '2026-02-06T21:19:17.893Z'
+source_file_hash: 3f368762bd212362
 translation_language: fr
 source_file_path: development/development-guidelines.md
 ---
@@ -75,6 +75,6 @@ source_file_path: development/development-guidelines.md
 
 ## Caractéristiques du Système {#system-features}
 
-- **Service Cron** : Service distinct pour les tâches planifiées, redémarrage automatique via `duplistatus-cron.sh`
-- **Notifications** : Intégration NTFY et e-mail SMTP (nodemailer), modèles configurables
-- **Actualisation automatique** : Actualisation automatique configurable pour le tableau de bord et les pages de détail
+- **Service Cron** : Service distinct pour les tâches planifiées, démarré par `docker-entrypoint.sh` dans les déploiements Docker
+- **Notifications** : Intégration ntfy.sh et e-mail SMTP (nodemailer), modèles configurables
+- **Actualisation automatique** : Actualisation automatique configurable pour le tableau de bord et les pages de détails

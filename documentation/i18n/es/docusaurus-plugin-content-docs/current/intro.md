@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:14:54.224Z'
-source_file_mtime: '2026-02-05T19:14:29.160Z'
-source_file_hash: 4c9d44bf0a2b2656
+translation_last_updated: '2026-02-06T22:33:36.742Z'
+source_file_mtime: '2026-02-06T22:18:56.325Z'
+source_file_hash: 260a67f2593d936a
 translation_language: es
 source_file_path: intro.md
 ---
@@ -11,7 +11,15 @@ source_file_path: intro.md
 
 ## Características {#features}
 
-- **Configuración rápida**: Despliegue en contenedores simplificado, con imágenes disponibles en Docker Hub y GitHub. - **Panel de control unificado**: Ver estado de backups, historial y detalles de todos los servidores en un solo lugar. - **Monitoreo de backups retrasados**: Verificación y alertas automáticas para backups programados vencidos. - **Visualización de datos & Logs**: Gráficos interactivos y recopilación automática de logs desde servidores de Duplicati. - **Notificaciones & Alertas**: Soporte integrado para NTFY y correo SMTP para alertas de backups, incluyendo notificaciones de backups vencidos. - **Control de acceso y seguridad**: Sistema de autenticación seguro con control de acceso basado en roles (Admin/Usuario), políticas de contraseña configurables, protección contra bloqueo de cuentas y gestión completa de usuarios. - **Registro de auditoría**: Historial completo de todos los cambios del sistema y acciones de usuarios con filtrado avanzado, exportación y períodos de retención configurables. - **Visor de Logs de aplicación**: Interfaz exclusiva para administradores para ver, buscar y exportar logs de aplicación directamente desde la interfaz web con monitoreo en tiempo real.
+- **Configuración rápida**: Despliegue simple en contenedores, con imágenes disponibles en Docker Hub y GitHub.
+- **Panel de control unificado**: Vea el estado, historial y detalles de backups de todos los servidores en un solo lugar.
+- **Monitoreo de backups retrasados**: Verificación y alertas automáticas para backups programados retrasados.
+- **Visualización de datos y Logs**: Gráficos interactivos y recopilación automática de logs desde servidores Duplicati.
+- **Notificaciones y Alertas**: Soporte integrado de NTFY y correo electrónico SMTP para alertas de backup, incluyendo notificaciones de backups retrasados.
+- **Control de acceso de usuarios y Seguridad**: Sistema de autenticación seguro con control de acceso basado en roles (roles Admin/Usuario), políticas de contraseña configurables, protección de bloqueo de cuenta y gestión de usuarios completa.
+- **Registro de auditoría**: Registro de auditoría completo de todos los cambios del sistema y acciones de usuario con filtrado avanzado, capacidades de exportación y períodos de retención configurables.
+- **Visor de Logs de aplicación**: Interfaz solo para administradores para ver, buscar y exportar logs de aplicación directamente desde la interfaz web con capacidades de monitoreo en tiempo real.
+- **Soporte multilenguaje**: Interfaz y documentación disponibles en inglés, francés, alemán, español y portugués brasileño.
 
 ## Instalación {#installation}
 
@@ -59,7 +67,7 @@ Consulte la [Documentación de puntos de conexión de la API](api-reference/over
 
 Para obtener instrucciones sobre cómo descargar, modificar o ejecutar el código, consulte [Configuración de Desarrollo](development/setup.md).
 
-Este proyecto fue desarrollado principalmente con la ayuda de inteligencia artificial. Para aprender cómo, consulte [Cómo construí esta aplicación utilizando herramientas de inteligencia artificial](development/how-i-build-with-ai).
+Este proyecto fue construido principalmente con ayuda de IA. Para aprender cómo, consulte [Cómo construí esta aplicación usando herramientas de IA](development/how-i-build-with-ai).
 
 ## Créditos {#creditos}
 
@@ -67,12 +75,17 @@ Este proyecto fue desarrollado principalmente con la ayuda de inteligencia artif
 
 💙 Si encuentra [Duplicati](https://www.duplicati.com) útil, por favor considere apoyar al desarrollador. Más detalles están disponibles en su sitio web o página de GitHub.
 
-- Icono SVG de Duplicati desde https://dashboardicons.com/icons/duplicati - Icono SVG de Notify desde https://dashboardicons.com/icons/ntfy - Icono SVG de GitHub desde https://github.com/logos
+- Ícono SVG de Duplicati de https://dashboardicons.com/icons/duplicati
+- Ícono SVG de ntfy de https://dashboardicons.com/icons/ntfy
+- Ícono SVG de GitHub de https://github.com/logos
 
->[!NOTE] > Todos los nombres de productos, logos y marcas registradas son propiedad de sus respectivos dueños. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
+:::note
+ Todos los nombres de productos, logotipos y marcas comerciales son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan solo con fines de identificación y no implican respaldo.
+ :::
 
-## Licencia {#licencia}
 
-El proyecto está licenciado bajo la [Licencia Apache 2.0](LICENSE.md).
+## Licencia {#license}
+
+El proyecto está licenciado bajo la [Licencia Apache 2.0](LICENSE.md).   
 
 **Derechos de autor © 2025 Waldemar Scudeller Jr.**

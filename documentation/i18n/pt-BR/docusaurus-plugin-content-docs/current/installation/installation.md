@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-05T19:09:05.000Z'
-source_file_mtime: '2026-01-31T00:51:08.107Z'
-source_file_hash: 31f0b5f50ece70d4
+translation_last_updated: '2026-02-06T22:33:41.546Z'
+source_file_mtime: '2026-02-06T21:13:37.635Z'
+source_file_hash: badfc81088d24eed
 translation_language: pt-BR
 source_file_path: installation/installation.md
 ---
 # Guia de Instalação {#installation-guide}
 
-A aplicação pode ser implantada usando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Após a instalação, você pode querer configurar o TIMEZONE e LANGUAGE, conforme descrito em [Configurar Fuso horário e Idioma](./configure-tz-lang.md) e precisa configurar os servidores Duplicati para enviar logs de backup para **duplistatus**, conforme descrito na seção [Configuração do Duplicati](./duplicati-server-configuration.md).
+O aplicativo pode ser implantado usando Docker, [Pilhas do Portainer](https://docs.portainer.io/user/docker/stacks), ou Podman. Após a instalação, você pode querer configurar o FUSO HORÁRIO e o IDIOMA, conforme descrito em [Configurar Fuso Horário](./configure-tz.md) e precisa configurar os servidores Duplicati para enviar logs de backup para **duplistatus**, conforme descrito na seção [Configuração do Duplicati](./duplicati-server-configuration.md).
 
 ## Pré-requisitos {#prerequisites}
 
@@ -48,7 +48,7 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Verificar a seção [Fuso horário e Idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+Verifique a seção [Fuso Horário](./configure-tz.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
 
 ### Opção 2: Usando Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
@@ -85,18 +85,18 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Verifique a seção [Fuso horário e Idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+5. Verifique a seção [Fuso Horário](./configure-tz.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
 6. Clique em "Implantar a pilha".
 
 ### Opção 3: Usando Portainer Stacks (Repositório GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. Em [Portainer](https://docs.portainer.io/user/docker/stacks), acesse "Stacks" e clique em "Add stack".
-2. Nomeie sua stack (por exemplo, "duplistatus").
-3. Escolha "Build method" como "Repository".
+1. No [Portainer](https://docs.portainer.io/user/docker/stacks), vá para "Pilhas" e clique em "Adicionar pilha".
+2. Nomeie sua pilha (por exemplo, "duplistatus").
+3. Escolha "Método de construção" como "Repositório".
 4. Digite a URL do repositório: `https://github.com/wsj-br/duplistatus.git`
-5. No campo "Compose path", digite: `production.yml`
-6. (opcional) Defina as variáveis de ambiente `TZ`, `LANG`, `PWD_ENFORCE` e `PWD_MIN_LEN` na seção "Environment variables". Verifique a seção [Timezone and Locale](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
-6. Clique em "Deploy the stack".
+5. No campo "Caminho do Compose", digite: `production.yml`
+6. (opcional) Defina as variáveis de ambiente `TZ`, `LANG`, `PWD_ENFORCE` e `PWD_MIN_LEN` na seção "Variáveis de ambiente". Verifique a seção [Fuso Horário](./configure-tz.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+6. Clique em "Implantar a pilha".
 
 ### Opção 4: Usando Docker CLI {#option-4-using-docker-cli}
 
@@ -188,7 +188,7 @@ Você pode especificar múltiplos domínios de pesquisa adicionando múltiplos s
 
 **Nota**: Pule endereços IPv6 (contendo `:`) e endereços localhost (como `127.0.0.53`) ao configurar servidores DNS.
 
-Verifique a seção [Fuso horário e Idioma](./configure-tz-lang.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
+Verifique a seção [Fuso Horário](./configure-tz.md) para mais detalhes sobre como ajustar o fuso horário e o formato de número/data/hora.
 
 ### Opção 6: Usando Pods do Podman {#option-6-using-podman-pods}
 

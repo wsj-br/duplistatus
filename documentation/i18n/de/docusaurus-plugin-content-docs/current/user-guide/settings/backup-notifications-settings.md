@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:39.853Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
+translation_last_updated: '2026-02-06T22:33:34.130Z'
+source_file_mtime: '2026-02-02T01:09:34.944Z'
 source_file_hash: 3916dd789d9d4bf2
 translation_language: de
 source_file_path: user-guide/settings/backup-notifications-settings.md

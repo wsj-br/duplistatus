@@ -25,7 +25,7 @@
 - **Endpoint**: `/api/cron-config`
 - **Method**: POST
 - **Description**: Updates the cron service configuration.
-- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
+- **Authentication**: Requires valid session and CSRF token
 - **Request Body**:
   ```json
   {

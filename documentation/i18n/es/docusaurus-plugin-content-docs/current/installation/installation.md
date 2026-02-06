@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-05T19:08:51.464Z'
-source_file_mtime: '2026-01-31T00:51:08.107Z'
-source_file_hash: 31f0b5f50ece70d4
+translation_last_updated: '2026-02-06T22:33:36.654Z'
+source_file_mtime: '2026-02-06T21:13:37.635Z'
+source_file_hash: badfc81088d24eed
 translation_language: es
 source_file_path: installation/installation.md
 ---
 # Guía de Instalación {#installation-guide}
 
-La aplicación puede implementarse utilizando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA e IDIOMA, tal como se describe en la sección [Configurar Zona horaria e Idioma](./configure-tz-lang.md) y necesita configurar los servidores Duplicati para enviar logs de backup a **duplistatus**, tal como se describe en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
+La aplicación se puede implementar utilizando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA y el IDIOMA, como se describe en [Configurar Zona horaria](./configure-tz.md) y necesita configurar los servidores de Duplicati para enviar logs de backup a **duplistatus**, como se detalla en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
 
 ## Requisitos previos {#prerequisites}
 
@@ -48,7 +48,7 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Verificar la sección [Zona horaria e idioma](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
+Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 
 ### Opción 2: Usar Pilas de Portainer (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
@@ -85,18 +85,18 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
-6. Haga clic en "Implementar la pila".
+5. Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
+6. Haga clic en "Implementar el stack".
 
 ### Opción 3: Uso de Portainer Stacks (Repositorio de GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. En [Portainer](https://docs.portainer.io/user/docker/stacks), vaya a "Stacks" y haga clic en "Add stack".
-2. Nombre su stack (por ejemplo, "duplistatus").
-3. Elija "Build method" como "Repository".
-4. Ingrese la URL del repositorio: `https://github.com/wsj-br/duplistatus.git`
-5. En el campo "Compose path", ingrese: `production.yml`
-6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Environment variables". Verifique la sección [Timezone and Locale](./configure-tz-lang.md) para más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
-6. Haga clic en "Deploy the stack".
+1. En [Portainer](https://docs.portainer.io/user/docker/stacks), vaya a "Stacks" y haga clic en "Añadir stack".
+2. Asigne un nombre a su stack (por ejemplo, "duplistatus").
+3. Elija "Método de compilación" como "Repositorio".
+4. Introduzca la URL del repositorio: `https://github.com/wsj-br/duplistatus.git`
+5. En el campo "Ruta de composición", introduzca: `production.yml`
+6. (opcional) Establezca las variables de entorno `TZ`, `LANG`, `PWD_ENFORCE` y `PWD_MIN_LEN` en la sección "Variables de entorno". Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
+6. Haga clic en "Implementar el stack".
 
 ### Opción 4: Usar Docker CLI {#option-4-using-docker-cli}
 
@@ -188,7 +188,7 @@ Puede especificar múltiples dominios de búsqueda añadiendo múltiples bandera
 
 **Nota**: Omitir direcciones IPv6 (que contienen `:`) y direcciones localhost (como `127.0.0.53`) al configurar servidores DNS.
 
-Verifique la sección [Zona horaria e idioma](./configure-tz-lang.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
+Consulte la sección [Zona horaria](./configure-tz.md) para obtener más detalles sobre cómo ajustar la zona horaria y el formato de número/fecha/hora.
 
 ### Opción 6: Uso de Pods de Podman {#option-6-using-podman-pods}
 

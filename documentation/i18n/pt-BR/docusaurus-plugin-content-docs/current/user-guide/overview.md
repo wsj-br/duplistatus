@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:09:07.768Z'
-source_file_mtime: '2026-02-05T17:53:15.519Z'
-source_file_hash: 707f5c41ecb6e26f
+translation_last_updated: '2026-02-06T22:33:43.646Z'
+source_file_mtime: '2026-02-06T21:11:29.339Z'
+source_file_hash: 570227cbd4e2d113
 translation_language: pt-BR
 source_file_path: user-guide/overview.md
 ---
@@ -14,10 +14,11 @@ Bem-vindo ao guia do usuário duplistatus. Este documento abrangente fornece ins
 duplistatus é um poderoso painel de monitoramento projetado especificamente para sistemas de backup Duplicati. Ele fornece:
 
 - Monitoramento centralizado de múltiplos servidores Duplicati a partir de uma única interface
-- Rastreamento de status em tempo real de todas as operações de backup
+- Rastreamento em tempo real do status de todas as operações de backup
 - Detecção automatizada de backup atrasado com alertas configuráveis
 - Métricas abrangentes e visualização do desempenho de backup
 - Sistema de notificação flexível via NTFY e e-mail
+- Suporte multilíngue (Inglês, Francês, Alemão, Espanhol e Português Brasileiro).
 
 ## Instalação {#installation}
 
@@ -28,10 +29,11 @@ Para pré-requisitos e instruções detalhadas de instalação, consulte o [Guia
 Após a instalação bem-sucedida, acesse a interface web do duplistatus seguindo estas etapas:
 
 1. Abra seu navegador web preferido
-2. Navegue para `http://your-server-ip:9666`
-   - Substitua `your-server-ip` pelo endereço IP real ou nome do host do seu servidor duplistatus
+2. Navegue para `http://seu-endereço-ip-do-servidor:9666`
+   - Substitua `seu-endereço-ip-do-servidor` pelo endereço IP ou nome do host real do seu servidor duplistatus
    - A porta padrão é `9666`
-3. Você será apresentado com uma página de login. Use estas credenciais para o primeiro uso (ou após uma atualização de versões anteriores a 0.9.x):
+3. Você será direcionado para uma página de login. Você pode selecionar o idioma da interface no canto superior direito da página de login, ou quando estiver conectado, através do menu do usuário (clique no seu nome de usuário → Idioma).
+   Use estas credenciais para o primeiro uso (ou após uma atualização de versões pré-0.9.x):
     - nome de usuário: `admin`
     - senha: `Duplistatus09` 
 4. Após o login, o painel principal será exibido automaticamente (sem dados no primeiro uso)
@@ -57,22 +59,22 @@ A interface do usuário é organizada em várias seções principais para propor
 
 A barra de ferramentas da aplicação fornece acesso conveniente às funções e configurações principais, organizada para um fluxo de trabalho eficiente.
 
-![application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
-| Botão                                                                                                                                        | Descrição                                                                                                                                                                  |
-|----------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Atualizar tela                                                                                    | Executar uma atualização manual imediata da tela com todos os dados                                                                                                                       |
-| <IconButton label="Auto-refresh" />                                                                                                              | Ativar ou desativar a funcionalidade de atualização automática. Configure em [Configurações de exibição](settings/display-settings.md) <br/> _Clique com o botão direito_ para abrir a página de Configurações de exibição           |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Abrir NTFY                                                                                            | Acesse o site ntfy.sh para seu tópico de notificação configurado. <br/> _Clique com o botão direito_ para mostrar um código QR para configurar seu dispositivo a receber notificações do duplistatus. |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuração do Duplicati](duplicati-configuration.md)       | Abra a interface web do servidor Duplicati selecionado <br/> _Clique com o botão direito_ para abrir a interface legada do Duplicati (`/ngax`) em uma nova aba                                                                                                                           |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Coletar logs](collect-backup-logs.md)                                   | Conecte aos servidores Duplicati e recupere logs de backup <br/> _Clique com o botão direito_ para coletar logs de todos os servidores configurados                                                                                                                         |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Configurações](settings/backup-notifications-settings.md) | Configure notificações, monitoramento, servidor SMTP e modelos de notificação                                                                                                 |
-| <IconButton icon="lucide:user" label="username" />                                                                                               | Mostrar o usuário conectado, tipo de usuário (`Admin`, `Usuário`), clique para menu de usuário. Veja mais em [Gerenciamento de usuários](settings/user-management-settings.md)                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guia do usuário                                                                    | Abre o [Guia do usuário](overview.md) para a seção relevante da página que você está visualizando. A dica de ferramenta mostra "Ajuda para [Nome da página]" para indicar qual documentação será aberta.                                                                           |
+| Botão                                                                                                                                           | Descrição                                                                                                                                                                  |
+|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Atualizar tela                                                                                    | Executar uma atualização manual imediata de todos os dados                                                                                                                       |
+| <IconButton label="Atualização automática" />                                                                                                              | Ativar ou desativar a funcionalidade de atualização automática. Configurar em [Configurações de Exibição](settings/display-settings.md) <br/> _Clique com o botão direito_ para abrir a página de Configurações de Exibição           |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Abrir NTFY                                                                                            | Acessar o site ntfy.sh para o tópico de notificação configurado. <br/> _Clique com o botão direito_ para mostrar um código QR para configurar seu dispositivo para receber notificações do duplistatus. |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuração do Duplicati](duplicati-configuration.md)       | Abrir a interface web do servidor Duplicati selecionado <br/> _Clique com o botão direito_ para abrir a UI legada do Duplicati (`/ngax`) em uma nova aba                                                                                                                           |
+| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Coletar logs](collect-backup-logs.md)                                   | Conectar-se aos servidores Duplicati e recuperar logs de backup <br/> _Clique com o botão direito_ para coletar logs para todos os servidores configurados                                                         |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Configurações](settings/backup-notifications-settings.md) | Configurar notificações, monitoramento, servidor SMTP e modelos de notificação                                                                                                 |
+| <IconButton icon="lucide:user" label="nome de usuário" />                                                                                               | Mostrar o usuário conectado, tipo de usuário (`Admin`, `Usuário`), clique para abrir o menu do usuário (inclui seleção de idioma). Veja mais em [Gerenciamento de Usuários](settings/user-management-settings.md)                               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guia do Usuário                                                                    | Abrir o [Guia do Usuário](overview.md) para a seção relevante à página que você está visualizando. A dica de ferramenta mostra "Ajuda para [Nome da Página]" para indicar qual documentação será aberta.                                                                           |
 
 ### Menu do Usuário {#user-menu}
 
-Clicar no botão de usuário abre um menu suspenso com opções específicas do usuário. As opções do menu diferem dependendo se você está conectado como administrador ou como um usuário comum.
+Clicar no botão de usuário abre um menu suspenso com opções específicas do usuário. As opções do menu diferem dependendo se você está conectado como administrador ou usuário comum. Ambos os perfis podem alterar o idioma da interface através do submenu **Idioma**. Idiomas suportados: Inglês, Francês, Alemão, Espanhol e Português Brasileiro.
 
 <table>
   <tr>

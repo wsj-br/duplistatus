@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:56.076Z'
-source_file_mtime: '2026-02-04T21:12:31.888Z'
-source_file_hash: 95f791c2d9fb0329
+translation_last_updated: '2026-02-06T22:33:40.160Z'
+source_file_mtime: '2026-02-06T21:19:26.573Z'
+source_file_hash: bb3c3536a92b19fc
 translation_language: pt-BR
 source_file_path: development/documentation-tools.md
 ---
@@ -136,15 +136,17 @@ O arquivo de notas de lançamento gerado pode ser copiado e colado diretamente n
 ## Capturar capturas de tela para documentação {#take-screenshots-for-documentation}
 
 ```bash
-tsx scripts/take-screenshots.ts
+pnpm take-screenshots
 ```
 
-Este script captura automaticamente screenshots da aplicação para fins de documentação. Ele:
+Ou execute diretamente: `tsx scripts/take-screenshots.ts` (use `--env-file=.env` se precisar de variáveis de ambiente).
+
+Este script tira automaticamente screenshots do aplicativo para fins de documentação. Ele:
 - Inicia um navegador headless (Puppeteer)
 - Faz login como admin e usuário regular
-- Navega por várias páginas (Painel, Detalhes de Servidor, Configurações, etc.)
-- Captura screenshots em diferentes tamanhos de viewport
-- Salva screenshots em `documentation/static/img/`
+- Navega por várias páginas (painel, detalhes do servidor, configurações, etc.)
+- Tira screenshots em diferentes tamanhos de viewport
+- Salva screenshots em `documentation/static/assets/` (Inglês) ou `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (outros idiomas)
 
 **Requisitos:**
 - O servidor de desenvolvimento deve estar em execução em `http://localhost:8666`
@@ -170,31 +172,38 @@ tsx scripts/take-screenshots.ts --locale en,de,pt-BR
 
 **Screenshots Gerados:**
 
-O script gera as seguintes capturas de tela (salvas em `documentation/static/img/`):
+O script gera os seguintes screenshots (salvos em `documentation/static/assets/` para Inglês, ou `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` para outros idiomas):
 
-**Capturas de tela do Painel:**
+**Screenshots do Painel:**
 - `screen-main-dashboard-card-mode.png` - Painel em modo de cartão/visão geral
 - `screen-main-dashboard-table-mode.png` - Painel em modo de tabela
-- `screen-overdue-backup-hover-card.png` - Cartão/dica de ferramenta de backup atrasado
-- `screen-backup-tooltip.png` - Dica de ferramenta de backup regular (passar o mouse sobre backup na visualização de cartões)
+- `screen-overdue-backup-hover-card.png` - Cartão/tooltip de backup atrasado
+- `screen-backup-tooltip.png` - Tooltip de backup regular (passar o mouse sobre backup na visualização de cartões)
+- `screen-dashboard-summary.png` - Seção de resumo do painel
+- `screen-dashboard-summary-table.png` - Tabela de resumo do painel
+- `screen-overview-side-status.png` - Painel lateral de status
+- `screen-overview-side-charts.png` - Gráficos laterais
 
-**Capturas de tela dos detalhes do servidor:**
+**Screenshots de Detalhes do Servidor:**
 - `screen-server-backup-list.png` - Página de lista de backups do servidor
-- `screen-backup-history.png` - Seção de tabela do Histórico de backups
-- `screen-backup-detail.png` - Página de Detalhes do backup individual
-- `screen-metrics.png` - Gráfico de Métricas mostrando métricas de backup ao longo do tempo
+- `screen-backup-history.png` - Seção de tabela do histórico de backups
+- `screen-backup-detail.png` - Página de detalhes de backup individual
+- `screen-metrics.png` - Gráfico de métricas mostrando métricas de backup ao longo do tempo
+- `screen-available-backups-modal.png` - Modal de backups disponíveis
+- `screen-server-overdue-message.png` - Mensagem de servidor atrasado
 
-**Capturas de tela de Coleta/Configuração:**
+**Screenshots de Coleta/Configuração:**
 - `screen-collect-button-popup.png` - Popup de coleta de logs de backup
-- `screen-collect-button-right-click-popup.png` - Menu de clique direito Coletar todos
-- `screen-collect-backup-logs.png` - Interface de coleta de logs de backup
-- `screen-duplicati-configuration.png` - Dropdown de Configuração do Duplicati
+- `screen-collect-button-right-click-popup.png` - Menu de clique com o botão direito para coletar todos
+- `screen-duplicati-configuration.png` - Dropdown de configuração do Duplicati
 
-**Capturas de tela de Configurações:**
-- `screen-settings-left-panel-admin.png` - Barra lateral de Configurações (visualização de admin)
-- `screen-settings-left-panel-non-admin.png` - Barra lateral de Configurações (visualização de não-admin)
+**Screenshots de Configurações:**
+- `screen-settings-left-panel-admin.png` - Barra lateral de configurações (visualização de admin)
+- `screen-settings-left-panel-non-admin.png` - Barra lateral de configurações (visualização de não admin)
 - `screen-settings-{tab}.png` - Páginas de configurações individuais para cada aba:
   - `screen-settings-notifications.png`
+  - `screen-settings-notifications-bulk.png`
+  - `screen-settings-notifications-server.png`
   - `screen-settings-overdue.png`
   - `screen-settings-server.png`
   - `screen-settings-ntfy.png`
@@ -205,8 +214,11 @@ O script gera as seguintes capturas de tela (salvas em `documentation/static/img
   - `screen-settings-audit-retention.png`
   - `screen-settings-display.png`
   - `screen-settings-database-maintenance.png`
-- `screen-settings-ntfy-configure-device-popup.png` - Pop-up Configurar dispositivo NTFY
-- `screen-settings-backup-notifications-detail.png` - Página de detalhes de Notificações de backup
+  - `screen-settings-application-logs.png`
+
+**Screenshots do Menu de Usuário:**
+- `screen-user-menu-admin.png` - Menu de usuário (visualização de admin)
+- `screen-user-menu-user.png` - Menu de usuário (visualização de usuário regular)
 
 ## Traduzir arquivos SVG {#translate-svg-files}
 
@@ -228,13 +240,9 @@ Para o fluxo de trabalho de tradução completo (glossário, tradução com IA, 
 
 Para implantar a documentação no GitHub Pages, você precisará gerar um Token de Acesso Pessoal do GitHub. Acesse [GitHub Personal Access Tokens](https://github.com/settings/tokens) e crie um novo token com o escopo `repo`.
 
-Quando você tiver o token, execute o seguinte comando para armazenar o token no armazenamento de credenciais do Git:
+Quando tiver o token, armazene-o no repositório de credenciais do Git (por exemplo, usando `git config credential.helper store` ou o gerenciador de credenciais do seu sistema).
 
-```bash
-./setup-git-credentials.sh
-```
-
-Então, para implantar a documentação no GitHub Pages, execute o seguinte comando:
+Então, para implantar a documentação no GitHub Pages, execute o seguinte comando a partir do diretório `documentation`:
 
 ```bash
 pnpm run deploy

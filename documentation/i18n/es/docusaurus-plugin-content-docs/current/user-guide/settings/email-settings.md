@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:54.852Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
+translation_last_updated: '2026-02-06T22:33:39.268Z'
+source_file_mtime: '2026-02-02T01:09:34.944Z'
 source_file_hash: 4f0c83e8848eb7e7
 translation_language: es
 source_file_path: user-guide/settings/email-settings.md

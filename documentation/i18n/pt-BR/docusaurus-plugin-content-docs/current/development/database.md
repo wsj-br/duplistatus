@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:55.704Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 9571c4c3bcae527c
+translation_last_updated: '2026-02-06T22:33:39.885Z'
+source_file_mtime: '2026-02-06T21:19:17.347Z'
+source_file_hash: 21d21cb01acea43b
 translation_language: pt-BR
 source_file_path: development/database.md
 ---
@@ -30,7 +30,7 @@ As seguintes são versões históricas de migração que trouxeram o banco de da
 - **Schema v3.1** (Aplicação v0.8.x): Campos de dados de backup aprimorados, adicionada coluna server_password
 - **Schema v4.0** (Aplicação v0.9.x / v1.0.x): Adicionado Controle de Acesso de Usuários (tabelas de usuários, sessões e audit_log)
 
-Versão atual da aplicação (v1.1.0) usa **Schema v4.0** como a versão mais recente do esquema de banco de dados.
+Versão atual da aplicação (v1.3.x) usa **Schema v4.0** como a versão mais recente do esquema de banco de dados.
 
 ### Processo de Migração {#migration-process}
 

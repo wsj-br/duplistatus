@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:41.172Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 1afab25f18ff213d
+translation_last_updated: '2026-02-06T22:33:35.088Z'
+source_file_mtime: '2026-02-06T21:19:17.893Z'
+source_file_hash: 3f368762bd212362
 translation_language: es
 source_file_path: development/development-guidelines.md
 ---
@@ -75,6 +75,6 @@ source_file_path: development/development-guidelines.md
 
 ## Características del Sistema {#system-features}
 
-- **Servicio Cron**: Servicio separado para tareas programadas, reinicio automático mediante `duplistatus-cron.sh`
-- **Notificaciones**: integración de ntfy.sh y correo electrónico SMTP (nodemailer), plantillas configurables
-- **Actualización automática**: actualización automática configurable para el panel de control y páginas de detalle
+- **Servicio Cron**: Servicio separado para tareas programadas, iniciado por `docker-entrypoint.sh` en implementaciones de Docker
+- **Notificaciones**: Integración de ntfy.sh y correo electrónico SMTP (nodemailer), plantillas configurables
+- **Actualización automática**: Actualización automática configurable para el panel de control y páginas de detalles

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:56.276Z'
-source_file_mtime: '2026-01-31T14:13:57.767Z'
+translation_last_updated: '2026-02-06T22:33:40.297Z'
+source_file_mtime: '2026-02-01T03:16:19.468Z'
 source_file_hash: 429afe0fb4559ab7
 translation_language: pt-BR
 source_file_path: development/how-i-build-with-ai.md

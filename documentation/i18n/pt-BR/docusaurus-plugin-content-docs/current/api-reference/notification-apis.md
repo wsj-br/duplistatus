@@ -89,7 +89,7 @@
 - **Endpoint**: `/api/notifications/check-overdue`
 - **Method**: POST
 - **Description**: Manually triggers the overdue backup check and sends notifications.
-- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {
@@ -113,7 +113,7 @@
 - **Endpoint**: `/api/notifications/clear-overdue-timestamps`
 - **Method**: POST
 - **Description**: Clears all overdue backup notification timestamps, allowing notifications to be sent again.
-- **Authentication**: Optional session authentication - accepts authenticated requests for audit logging but also works without authentication
+- **Authentication**: Requires valid session and CSRF token
 - **Response**:
   ```json
   {

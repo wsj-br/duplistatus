@@ -1,13 +1,15 @@
 ---
-translation_last_updated: '2026-02-05T19:08:24.748Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: 3eab3fe85d0db77a
+translation_last_updated: '2026-02-06T22:33:29.546Z'
+source_file_mtime: '2026-02-06T21:16:20.551Z'
+source_file_hash: 473175db710f3df5
 translation_language: fr
 source_file_path: user-guide/settings/notification-templates.md
 ---
 # Modèles {#templates}
 
-**duplistatus** utilise trois modèles pour les messages de notification. Ces modèles sont utilisés pour les notifications NTFY et les notifications par e-mail :
+**duplistatus** utilise trois modèles pour les messages de notification. Ces modèles sont utilisés à la fois pour les notifications NTFY et par e-mail.
+
+La page comprend un sélecteur de **Langue du modèle** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux modèles par défaut, mais ne modifie pas le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, vous pouvez soit les modifier manuellement, soit utiliser **Réinitialiser ce modèle par défaut** (pour l'onglet actuel) ou **Réinitialiser tous les modèles par défaut** (pour les trois modèles).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -19,13 +21,20 @@ source_file_path: user-guide/settings/notification-templates.md
 
 <br/>
 
+## Langue du modèle {#template-language}
+
+Un sélecteur de **Langue du modèle** en haut de la page vous permet de choisir la langue des modèles par défaut (anglais, allemand, français, espagnol, portugais (Brésil)). Changer la langue met à jour la locale des modèles par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
+
+<br/>
+
 ## Actions disponibles {#available-actions}
 
-| Bouton                                                              | Description                                                                                         |
+| Bouton | Description |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Enregistrer les paramètres du modèle" />                      | Enregistre les paramètres lors du changement de modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur ou Sauvegarde en retard). |
-| <IconButton icon="lucide:send" label="Envoyer une notification de test"/>     | Vérifie le modèle après sa mise à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par e-mail, le titre du modèle devient la ligne d'objet de l'e-mail. |
-| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser aux valeurs par défaut"/>     | Restaure le modèle par défaut pour le **modèle sélectionné**. N'oubliez pas de l'enregistrer après la réinitialisation.  |
+| <IconButton label="Enregistrer les paramètres du modèle" /> | Enregistre les paramètres lors de la modification du modèle. Le bouton enregistre le modèle affiché (Succès, Avertissement/Erreur ou Sauvegarde en retard). |
+| <IconButton icon="lucide:send" label="Envoyer une notification de test"/> | Vérifie le modèle après sa mise à jour. Les variables seront remplacées par leurs noms pour le test. Pour les notifications par e-mail, le titre du modèle devient la ligne d'objet de l'e-mail. |
+| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser ce modèle par défaut"/> | Restaure le modèle par défaut pour le **modèle sélectionné** (l'onglet actuel). N'oubliez pas d'enregistrer après la réinitialisation. |
+| <IconButton icon="lucide:rotate-ccw" label="Réinitialiser tous les modèles par défaut"/> | Restaure les trois modèles (Succès, Avertissement/Erreur, Sauvegarde en retard) aux valeurs par défaut pour la Langue du modèle sélectionnée. N'oubliez pas d'enregistrer après la réinitialisation. |
 
 <br/>
 

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:39.611Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
+translation_last_updated: '2026-02-06T22:33:33.959Z'
+source_file_mtime: '2026-02-02T01:09:34.944Z'
 source_file_hash: 351747b781a00331
 translation_language: de
 source_file_path: user-guide/settings/application-logs-settings.md

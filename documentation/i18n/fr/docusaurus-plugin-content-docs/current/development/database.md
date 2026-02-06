@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:10.941Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 9571c4c3bcae527c
+translation_last_updated: '2026-02-06T22:33:25.174Z'
+source_file_mtime: '2026-02-06T21:19:17.347Z'
+source_file_hash: 21d21cb01acea43b
 translation_language: fr
 source_file_path: development/database.md
 ---
@@ -30,7 +30,7 @@ Les versions de migration historiques suivantes ont amené la base de données �
 - **Schema v3.1** (Application v0.8.x) : Amélioration des champs de données de sauvegarde, ajout de la colonne server_password
 - **Schema v4.0** (Application v0.9.x / v1.0.x) : Ajout du contrôle d'accès utilisateur (tables utilisateurs, sessions, audit_log)
 
-La version actuelle de l'application (v1.1.0) utilise **Schema v4.0** comme dernière version du schéma de base de données.
+La version actuelle de l'application (v1.3.x) utilise **Schema v4.0** comme dernière version du schéma de base de données.
 
 ### Processus de Migration {#migration-process}
 

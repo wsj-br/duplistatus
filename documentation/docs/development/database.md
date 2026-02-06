@@ -25,7 +25,7 @@ The following are historical migration versions that brought the database to its
 - **Schema v3.1** (Application v0.8.x): Enhanced backup data fields, added server_password column
 - **Schema v4.0** (Application v0.9.x / v1.0.x): Added User Access Control (users, sessions, audit_log tables)
 
-Current application version (v1.1.0) uses **Schema v4.0** as the latest database schema version.
+Current application version (v1.3.x) uses **Schema v4.0** as the latest database schema version.
 
 ### Migration Process {#migration-process}
 

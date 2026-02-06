@@ -125,15 +125,17 @@ The generated release notes file can be copied and pasted directly into the GitH
 ## Take screenshots for documentation {#take-screenshots-for-documentation}
 
 ```bash
-tsx scripts/take-screenshots.ts
+pnpm take-screenshots
 ```
+
+Or run directly: `tsx scripts/take-screenshots.ts` (use `--env-file=.env` if needed for environment variables).
 
 This script automatically takes screenshots of the application for documentation purposes. It:
 - Launches a headless browser (Puppeteer)
 - Logs in as admin and regular user
 - Navigates through various pages (dashboard, server details, settings, etc.)
 - Takes screenshots at different viewport sizes
-- Saves screenshots to `documentation/static/img/`
+- Saves screenshots to `documentation/static/assets/` (English) or `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (other locales)
 
 **Requirements:**
 - The development server must be running on `http://localhost:8666`
@@ -158,24 +160,29 @@ tsx scripts/take-screenshots.ts --locale en,de,pt-BR
 
 **Generated Screenshots:**
 
-The script generates the following screenshots (saved to `documentation/static/img/`):
+The script generates the following screenshots (saved to `documentation/static/assets/` for English, or `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` for other locales):
 
 **Dashboard Screenshots:**
 - `screen-main-dashboard-card-mode.png` - Dashboard in card/overview mode
 - `screen-main-dashboard-table-mode.png` - Dashboard in table mode
 - `screen-overdue-backup-hover-card.png` - Overdue backup hover card/tooltip
 - `screen-backup-tooltip.png` - Regular backup tooltip (hover over backup in cards view)
+- `screen-dashboard-summary.png` - Dashboard summary section
+- `screen-dashboard-summary-table.png` - Dashboard summary table mode
+- `screen-overview-side-status.png` - Overview side status panel
+- `screen-overview-side-charts.png` - Overview side charts
 
 **Server Details Screenshots:**
 - `screen-server-backup-list.png` - Server backup list page
 - `screen-backup-history.png` - Backup history table section
 - `screen-backup-detail.png` - Individual backup detail page
 - `screen-metrics.png` - Metrics chart showing backup metrics over time
+- `screen-available-backups-modal.png` - Available backups modal
+- `screen-server-overdue-message.png` - Server overdue message
 
 **Collect/Configuration Screenshots:**
 - `screen-collect-button-popup.png` - Collect backup logs popup
 - `screen-collect-button-right-click-popup.png` - Collect all right-click menu
-- `screen-collect-backup-logs.png` - Collect backup logs interface
 - `screen-duplicati-configuration.png` - Duplicati configuration dropdown
 
 **Settings Screenshots:**
@@ -183,6 +190,8 @@ The script generates the following screenshots (saved to `documentation/static/i
 - `screen-settings-left-panel-non-admin.png` - Settings sidebar (non-admin view)
 - `screen-settings-{tab}.png` - Individual settings pages for each tab:
   - `screen-settings-notifications.png`
+  - `screen-settings-notifications-bulk.png`
+  - `screen-settings-notifications-server.png`
   - `screen-settings-overdue.png`
   - `screen-settings-server.png`
   - `screen-settings-ntfy.png`
@@ -193,8 +202,11 @@ The script generates the following screenshots (saved to `documentation/static/i
   - `screen-settings-audit-retention.png`
   - `screen-settings-display.png`
   - `screen-settings-database-maintenance.png`
-- `screen-settings-ntfy-configure-device-popup.png` - NTFY configure device popup
-- `screen-settings-backup-notifications-detail.png` - Backup notifications detail page
+  - `screen-settings-application-logs.png`
+
+**User Menu Screenshots:**
+- `screen-user-menu-admin.png` - User menu (admin view)
+- `screen-user-menu-user.png` - User menu (regular user view)
 
 ## Translate SVG files {#translate-svg-files}
 
@@ -216,12 +228,9 @@ For full translation workflow (glossary, AI translation, cache, options, trouble
 
 To deploy the documentation to GitHub Pages, you will need to generate a GitHub Personal Access Token. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens) and create a new token with the `repo` scope.
 
-When you have the token, run the following command to store the token in the Git credential store:
-```bash
-./setup-git-credentials.sh
-```
+When you have the token, store it in the Git credential store (e.g. using `git config credential.helper store` or your system's credential manager).
 
-Then, to deploy the documentation to GitHub Pages, run the following command:
+Then, to deploy the documentation to GitHub Pages, run the following command from the `documentation` directory:
 
 ```bash
 pnpm run deploy

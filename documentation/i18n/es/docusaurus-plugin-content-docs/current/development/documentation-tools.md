@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:41.396Z'
-source_file_mtime: '2026-02-04T21:12:31.888Z'
-source_file_hash: 95f791c2d9fb0329
+translation_last_updated: '2026-02-06T22:33:35.267Z'
+source_file_mtime: '2026-02-06T21:19:26.573Z'
+source_file_hash: bb3c3536a92b19fc
 translation_language: es
 source_file_path: development/documentation-tools.md
 ---
@@ -134,15 +134,17 @@ El archivo de notas de lanzamiento generado se puede copiar y pegar directamente
 ## Tomar capturas de pantalla para la documentación {#take-screenshots-for-documentation}
 
 ```bash
-tsx scripts/take-screenshots.ts
+pnpm take-screenshots
 ```
 
-Este script toma automáticamente capturas de pantalla de la aplicación con fines de documentación. Realiza lo siguiente:
-- Inicia un navegador sin interfaz gráfica (Puppeteer)
+O ejecute directamente: `tsx scripts/take-screenshots.ts` (use `--env-file=.env` si es necesario para variables de entorno).
+
+Este script toma automáticamente capturas de pantalla de la aplicación para documentación. Hace lo siguiente:
+- Inicia un navegador sin interfaz (Puppeteer)
 - Inicia sesión como admin y usuario regular
-- Navega a través de varias páginas (Panel de control, Detalles de servidor, Configuración, etc.)
+- Navega por diferentes páginas (panel de control, detalles del servidor, configuración, etc.)
 - Toma capturas de pantalla en diferentes tamaños de ventana gráfica
-- Guarda las capturas de pantalla en `documentation/static/img/`
+- Guarda las capturas de pantalla en `documentation/static/assets/` (inglés) o `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (otros idiomas)
 
 **Requisitos:**
 - El servidor de desarrollo debe ejecutarse en `http://localhost:8666`
@@ -168,31 +170,38 @@ tsx scripts/take-screenshots.ts --locale en,de,pt-BR
 
 **Capturas de pantalla generadas:**
 
-El script genera las siguientes capturas de pantalla (guardadas en `documentation/static/img/`):
+El script genera las siguientes capturas de pantalla (guardadas en `documentation/static/assets/` para inglés, o `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` para otros idiomas):
 
 **Capturas de pantalla del Panel de control:**
 - `screen-main-dashboard-card-mode.png` - Panel de control en modo tarjeta/resumen
 - `screen-main-dashboard-table-mode.png` - Panel de control en modo tabla
-- `screen-overdue-backup-hover-card.png` - Tarjeta/información emergente de backup retrasado
-- `screen-backup-tooltip.png` - Información emergente de backup regular (pasar el cursor sobre el backup en la vista de tarjetas)
+- `screen-overdue-backup-hover-card.png` - Tarjeta emergente de backup retrasado
+- `screen-backup-tooltip.png` - Tooltip de backup normal (pasar el ratón sobre backup en vista de tarjetas)
+- `screen-dashboard-summary.png` - Sección de resumen del panel de control
+- `screen-dashboard-summary-table.png` - Tabla de resumen del panel de control
+- `screen-overview-side-status.png` - Panel lateral de estado del resumen
+- `screen-overview-side-charts.png` - Gráficos laterales del resumen
 
-**Detalles del Servidor - Capturas de pantalla:**
+**Capturas de pantalla de Detalles del servidor:**
 - `screen-server-backup-list.png` - Página de lista de backups del servidor
-- `screen-backup-history.png` - Sección de tabla de Historial de backups
-- `screen-backup-detail.png` - Página de Detalles de backup individual
-- `screen-metrics.png` - Gráfico de Métricas mostrando métricas de backup a lo largo del tiempo
+- `screen-backup-history.png` - Sección de tabla de historial de backups
+- `screen-backup-detail.png` - Página de detalles de backup individual
+- `screen-metrics.png` - Gráfico de métricas que muestra métricas de backup en el tiempo
+- `screen-available-backups-modal.png` - Modal de backups disponibles
+- `screen-server-overdue-message.png` - Mensaje de backup retrasado del servidor
 
 **Capturas de pantalla de Recopilación/Configuración:**
-- `screen-collect-button-popup.png` - Ventana emergente de Recopilar logs de backup
-- `screen-collect-button-right-click-popup.png` - Menú contextual de Recopilar todo
-- `screen-collect-backup-logs.png` - Interfaz de Recopilar logs de backup
-- `screen-duplicati-configuration.png` - Menú desplegable de Configuración de Duplicati
+- `screen-collect-button-popup.png` - Popup de recopilación de logs de backup
+- `screen-collect-button-right-click-popup.png` - Menú de clic derecho para recopilar todo
+- `screen-duplicati-configuration.png` - Menú desplegable de configuración de Duplicati
 
 **Capturas de pantalla de Configuración:**
-- `screen-settings-left-panel-admin.png` - Barra lateral de Configuración (vista admin)
-- `screen-settings-left-panel-non-admin.png` - Barra lateral de Configuración (vista no admin)
-- `screen-settings-{tab}.png` - Páginas de Configuración individuales para cada pestaña:
+- `screen-settings-left-panel-admin.png` - Barra lateral de configuración (vista de admin)
+- `screen-settings-left-panel-non-admin.png` - Barra lateral de configuración (vista de no admin)
+- `screen-settings-{tab}.png` - Páginas de configuración individuales para cada pestaña:
   - `screen-settings-notifications.png`
+  - `screen-settings-notifications-bulk.png`
+  - `screen-settings-notifications-server.png`
   - `screen-settings-overdue.png`
   - `screen-settings-server.png`
   - `screen-settings-ntfy.png`
@@ -203,8 +212,11 @@ El script genera las siguientes capturas de pantalla (guardadas en `documentatio
   - `screen-settings-audit-retention.png`
   - `screen-settings-display.png`
   - `screen-settings-database-maintenance.png`
-- `screen-settings-ntfy-configure-device-popup.png` - Ventana emergente de Configurar dispositivo de NTFY
-- `screen-settings-backup-notifications-detail.png` - Página de detalle de Notificaciones de backup
+  - `screen-settings-application-logs.png`
+
+**Capturas de pantalla del Menú de usuario:**
+- `screen-user-menu-admin.png` - Menú de usuario (vista de admin)
+- `screen-user-menu-user.png` - Menú de usuario (vista de usuario regular)
 
 ## Traducir archivos SVG {#translate-svg-files}
 
@@ -226,13 +238,9 @@ Para el flujo de trabajo de traducción completo (glosario, traducción de IA, c
 
 Para implementar la documentación en GitHub Pages, necesitarás generar un Token de Acceso Personal de GitHub. Ve a [GitHub Personal Access Tokens](https://github.com/settings/tokens) y crea un nuevo token con el alcance `repo`.
 
-Cuando tengas el token, ejecuta el siguiente comando para almacenar el token en el almacén de credenciales de Git:
+Cuando tenga el token, guárdelo en el almacén de credenciales de Git (por ejemplo, usando `git config credential.helper store` o el administrador de credenciales de su sistema).
 
-```bash
-./setup-git-credentials.sh
-```
-
-Luego, para implementar la documentación en GitHub Pages, ejecute el siguiente comando:
+Luego, para implementar la documentación en GitHub Pages, ejecute el siguiente comando desde el directorio `documentation`:
 
 ```bash
 pnpm run deploy

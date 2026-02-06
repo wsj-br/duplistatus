@@ -2,7 +2,7 @@ import { withCSRF } from '@/lib/csrf-middleware';
 import { NextResponse, NextRequest } from 'next/server';
 import { getCronConfig, setCronInterval, getCurrentCronInterval } from '@/lib/db-utils';
 import { CronInterval } from '@/lib/types';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import { cronIntervalMap } from '@/lib/cron-interval-map';
@@ -29,7 +29,7 @@ export const GET = withCSRF(async () => {
   }
 });
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAuth(async (request: NextRequest, authContext) => {
   try {
     
     const { interval } = await request.json() as { interval: CronInterval };
@@ -48,23 +48,21 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     setCronInterval(interval);
     
     // Log audit event
-    if (authContext) {
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      const newIntervalLabel = cronIntervalMap[interval]?.label || interval;
-      await AuditLogger.logConfigChange(
-        'overdue_monitoring_interval_updated',
-        authContext.userId,
-        authContext.username,
-        'cron_interval',
-        {
-          oldInterval: oldIntervalLabel,
-          newInterval: newIntervalLabel,
-        },
-        ipAddress,
-        userAgent
-      );
-    }
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const newIntervalLabel = cronIntervalMap[interval]?.label || interval;
+    await AuditLogger.logConfigChange(
+      'overdue_monitoring_interval_updated',
+      authContext.userId,
+      authContext.username,
+      'cron_interval',
+      {
+        oldInterval: oldIntervalLabel,
+        newInterval: newIntervalLabel,
+      },
+      ipAddress,
+      userAgent
+    );
     
     return NextResponse.json({ success: true });
   } catch (error) {

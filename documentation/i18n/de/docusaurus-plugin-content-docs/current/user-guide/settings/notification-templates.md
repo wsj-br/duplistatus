@@ -1,13 +1,15 @@
 ---
-translation_last_updated: '2026-02-05T19:08:40.191Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: 3eab3fe85d0db77a
+translation_last_updated: '2026-02-06T22:33:34.389Z'
+source_file_mtime: '2026-02-06T21:16:20.551Z'
+source_file_hash: 473175db710f3df5
 translation_language: de
 source_file_path: user-guide/settings/notification-templates.md
 ---
 # Vorlagen {#templates}
 
-**duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet:
+**duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet.
+
+Die Seite enthält einen **Vorlagen-Sprachauswahl**, der das Gebietsschema für Standardvorlagen festlegt. Das Ändern der Sprache aktualisiert das Gebietsschema für neue Standardwerte, ändert jedoch nicht den Text vorhandener Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie sie entweder manuell oder verwenden Sie **Diese Vorlage auf Standard zurücksetzen** (für den aktuellen Tab) oder **Alle auf Standard zurücksetzen** (für alle drei Vorlagen).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -19,13 +21,20 @@ source_file_path: user-guide/settings/notification-templates.md
 
 <br/>
 
+## Vorlagen-Sprache {#template-language}
+
+Ein **Vorlagen-Sprachauswahl** am oberen Seitenrand ermöglicht es Ihnen, die Sprache für Standardvorlagen auszuwählen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch (Brasilien)). Das Ändern der Sprache aktualisiert das Gebietsschema für Standardwerte, aber benutzerdefinierte Vorlagen behalten ihren aktuellen Text bei, bis Sie sie aktualisieren oder eine der Zurücksetzen-Schaltflächen verwenden.
+
+<br/>
+
 ## Verfügbare Aktionen {#available-actions}
 
-| Schaltfläche                                                      | Beschreibung                                                                                         |
+| Schaltfläche | Beschreibung |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Vorlageneinstellungen speichern" />                      | Speichert die Einstellungen beim Ändern der Vorlage. Die Schaltfläche speichert die angezeigte Vorlage (Erfolg, Warnung/Fehler oder Überfällige Sicherung). |
-| <IconButton icon="lucide:send" label="Testbenachrichtigung senden"/>     | Überprüft die Vorlage nach der Aktualisierung. Die Variablen werden für den Test durch ihre Namen ersetzt. Bei E-Mail-Benachrichtigungen wird der Vorlagentitel zur Betreffzeile der E-Mail. |
-| <IconButton icon="lucide:rotate-ccw" label="Auf Standard zurücksetzen"/>     | Stellt die Standardvorlage für die **ausgewählte Vorlage** wieder her. Denken Sie daran, sie nach dem Zurücksetzen zu speichern.  |
+| <IconButton label="Vorlageneinstellungen speichern" /> | Speichert die Einstellungen beim Ändern der Vorlage. Die Schaltfläche speichert die angezeigte Vorlage (Erfolg, Warnung/Fehler oder überfällige Sicherung). |
+| <IconButton icon="lucide:send" label="Testbenachrichtigung senden"/> | Überprüft die Vorlage nach der Aktualisierung. Die Variablen werden für den Test durch ihre Namen ersetzt. Bei E-Mail-Benachrichtigungen wird der Vorlagentitel zur E-Mail-Betreffzeile. |
+| <IconButton icon="lucide:rotate-ccw" label="Diese Vorlage auf Standard zurücksetzen"/> | Stellt die Standardvorlage für die **ausgewählte Vorlage** (aktueller Tab) wieder her. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
+| <IconButton icon="lucide:rotate-ccw" label="Alle auf Standard zurücksetzen"/> | Stellt alle drei Vorlagen (Erfolg, Warnung/Fehler, überfällige Sicherung) auf die Standardwerte für die ausgewählte Vorlagensprache zurück. Denken Sie daran, nach dem Zurücksetzen zu speichern. |
 
 <br/>
 

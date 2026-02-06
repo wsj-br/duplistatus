@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:50.973Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 581bc6778a772b4e
+translation_last_updated: '2026-02-06T22:33:36.315Z'
+source_file_mtime: '2026-02-06T21:19:15.606Z'
+source_file_hash: a8ff236072ebae34
 translation_language: es
 source_file_path: development/workspace-admin-scripts-commands.md
 ---
@@ -24,14 +24,20 @@ Limpia la base de datos eliminando todos los datos mientras preserva el esquema 
 scripts/clean-workspace.sh
 ```
 
-Elimina todos los artefactos de compilación, el directorio node_modules y otros archivos generados para garantizar un estado limpio. Esto es útil cuando necesita realizar una instalación nueva o resolver problemas de dependencias. El comando eliminará:
+Elimina todos los artefactos de compilación, el directorio node_modules y otros archivos generados para garantizar un estado limpio. Esto es útil cuando necesita realizar una instalación desde cero o resolver problemas de dependencias. El comando eliminará:
 - Directorio `node_modules/`
 - Directorio de compilación `.next/`
 - Directorio `dist/`
-- Todos los cachés de compilación de Docker y realizará una limpieza del sistema Docker
-- Caché del almacén pnpm
-- Recursos del sistema Docker no utilizados (imágenes, redes, volúmenes)
-- Cualquier otro archivo de caché de compilación
+- Directorio `out/`
+- Directorio `.turbo/`
+- `pnpm-lock.yaml`
+- `data/*.json` (archivos de backup JSON de desarrollo)
+- `public/documentation`
+- `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
+- Directorio `.genkit/`
+- Archivos `*.tsbuildinfo`
+- Caché de almacén de pnpm (mediante `pnpm store prune`)
+- Caché de compilación de Docker y limpieza del sistema (imágenes, redes, volúmenes)
 
 ## Limpiar Docker Compose y el entorno Docker {#clean-docker-compose-and-docker-environment}
 
@@ -145,7 +151,7 @@ Este script permite la recuperación de cuentas de admin si están bloqueadas u 
 ./scripts/copy-images.sh
 ```
 
-Copia archivos de imagen de `docs/static/img` a sus ubicaciones apropiadas en la aplicación:
+Copia archivos de imagen de `documentation/static/img` a sus ubicaciones correspondientes en la aplicación:
 - Copia `favicon.ico` a `src/app/`
 - Copia `duplistatus_logo.png` a `public/images/`
 - Copia `duplistatus_banner.png` a `public/images/`
@@ -200,27 +206,10 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## Scripts SQL para Depuración y Mantenimiento {#sql-scripts-for-debugging-and-maintenance}
-
-El proyecto incluye scripts SQL para mantenimiento de base de datos:
-
-### Eliminar Configuración de Backup {#delete-backup-settings}
+## Mostrar configuración de backup
 
 ```bash
-sqlite3 data/backups.db < scripts/delete-backup-settings.sql
+./scripts/show-backup-settings.sh [database_path]
 ```
 
-Este script elimina toda la configuración de backup de la tabla de configuraciones. Úselo con precaución ya que esto restablecerá todas las configuraciones de notificación de backup.
-
-### Eliminar Último backup {#delete-last-backup}
-
-```bash
-sqlite3 data/backups.db < scripts/delete-last-backup.sql
-```
-
-Este script elimina el registro de backup más reciente para cada servidor. Por defecto, elimina el último backup para TODOS los servidores. El script incluye ejemplos comentados para dirigirse a servidores específicos por nombre. Útil para propósitos de prueba y depuración.
-
-**Nota**: El script ha sido actualizado para funcionar con el esquema de base de datos actual (utiliza la tabla `servers` y la columna `server_id`).
-
->[!CAUTION]
-> Estos scripts SQL modifican directamente la base de datos. Siempre realice una copia de seguridad de su base de datos antes de ejecutar estos scripts.
+Muestra el contenido del valor `backup_settings` en la tabla de configuraciones en un formato de tabla. Útil para depurar configuraciones de notificaciones. Ruta predeterminada de la base de datos: `data/backups.db`.

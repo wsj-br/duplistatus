@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:55.851Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 1afab25f18ff213d
+translation_last_updated: '2026-02-06T22:33:39.995Z'
+source_file_mtime: '2026-02-06T21:19:17.893Z'
+source_file_hash: 3f368762bd212362
 translation_language: pt-BR
 source_file_path: development/development-guidelines.md
 ---
@@ -75,6 +75,6 @@ source_file_path: development/development-guidelines.md
 
 ## Recursos do Sistema {#system-features}
 
-- **Serviço Cron**: Serviço separado para tarefas agendadas, reinicialização automática via `duplistatus-cron.sh`
-- **Notificações**: integração ntfy.sh e e-mail SMTP (nodemailer), modelos configuráveis
-- **Atualizar automaticamente**: Atualização automática configurável para o painel e páginas de detalhes
+- **Serviço Cron**: Serviço separado para tarefas agendadas, iniciado por `docker-entrypoint.sh` em implantações Docker
+- **Notificações**: Integração com ntfy.sh e E-mail SMTP (nodemailer), modelos configuráveis
+- **Atualização automática**: Atualização automática configurável para o painel e páginas de detalhes

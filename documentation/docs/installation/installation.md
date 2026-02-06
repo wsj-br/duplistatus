@@ -2,7 +2,7 @@
 
 # Installation Guide {#installation-guide}
 
-The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. After the installation, you may want to configure the TIMEZONE and LANGUAGE, as described in the [Configure Timezone and Language](./configure-tz-lang.md) and need to configure the Duplicati servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](./duplicati-server-configuration.md) section.
+The application can be deployed using Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), or Podman. After the installation, you may want to configure the TIMEZONE and LANGUAGE, as described in the [Configure Timezone](./configure-tz.md) and need to configure the Duplicati servers to send backup logs to **duplistatus**, as outlined in the [Duplicati Configuration](./duplicati-server-configuration.md) section.
 
 ## Prerequisites {#prerequisites}
 
@@ -46,7 +46,7 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Check [Timezone and Locale](./configure-tz-lang.md) section to more details on how to adjust timezone and number/date/time format.
+Check [Timezone](./configure-tz.md) section to more details on how to adjust timezone and number/date/time format.
 
 ### Option 2: Using Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
@@ -82,7 +82,7 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Check the [Timezone and Locale](./configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format.
+5. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format.
 6. Click "Deploy the stack".
 
 ### Option 3: Using Portainer Stacks (GitHub Repository) {#option-3-using-portainer-stacks-github-repository}
@@ -92,7 +92,7 @@ volumes:
 3. Choose "Build method" as "Repository".
 4. Enter the repository URL: `https://github.com/wsj-br/duplistatus.git`
 5. In the "Compose path" field, enter: `production.yml`
-6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone and Locale](./configure-tz-lang.md) section to more details on how to adjust the timezone and number/date/time format. 
+6. (optional) Set the `TZ`, `LANG`, `PWD_ENFORCE` and `PWD_MIN_LEN` environment variables in the "Environment variables" section. Check the [Timezone](./configure-tz.md) section to more details on how to adjust the timezone and number/date/time format. 
 6. Click "Deploy the stack".
 
 ### Option 4: Using Docker CLI {#option-4-using-docker-cli}
@@ -181,7 +181,7 @@ You can specify multiple search domains by adding multiple `--dns-search` flags:
 
 **Note**: Skip IPv6 addresses (containing `:`) and localhost addresses (like `127.0.0.53`) when configuring DNS servers.
 
-Check the [Timezone and Locale](./configure-tz-lang.md) section for more details on how to adjust the timezone and number/date/time format.
+Check the [Timezone](./configure-tz.md) section for more details on how to adjust the timezone and number/date/time format.
 
 ### Option 6: Using Podman Pods {#option-6-using-podman-pods}
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:41.015Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 9571c4c3bcae527c
+translation_last_updated: '2026-02-06T22:33:34.972Z'
+source_file_mtime: '2026-02-06T21:19:17.347Z'
+source_file_hash: 21d21cb01acea43b
 translation_language: es
 source_file_path: development/database.md
 ---
@@ -30,7 +30,7 @@ Las siguientes son versiones históricas de migración que llevaron la base de d
 - **Schema v3.1** (Aplicación v0.8.x): Se mejoraron los campos de datos de backup, se añadió columna server_password
 - **Schema v4.0** (Aplicación v0.9.x / v1.0.x): Se añadió Control de Acceso de Usuarios (tablas users, sessions, audit_log)
 
-La versión actual de la aplicación (v1.1.0) utiliza **Schema v4.0** como la última versión del esquema de base de datos.
+La versión actual de la aplicación (v1.3.x) utiliza **Schema v4.0** como la última versión del esquema de base de datos.
 
 ### Proceso de Migración {#migration-process}
 

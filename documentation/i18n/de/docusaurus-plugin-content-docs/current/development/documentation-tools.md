@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:25.974Z'
-source_file_mtime: '2026-02-04T21:12:31.888Z'
-source_file_hash: 95f791c2d9fb0329
+translation_last_updated: '2026-02-06T22:33:30.409Z'
+source_file_mtime: '2026-02-06T21:19:26.573Z'
+source_file_hash: bb3c3536a92b19fc
 translation_language: de
 source_file_path: development/documentation-tools.md
 ---
@@ -134,15 +134,17 @@ Die generierte Release-Notes-Datei kann direkt in die GitHub-Release-Beschreibun
 ## Screenshots für die Dokumentation aufnehmen {#take-screenshots-for-documentation}
 
 ```bash
-tsx scripts/take-screenshots.ts
+pnpm take-screenshots
 ```
+
+Oder direkt ausführen: `tsx scripts/take-screenshots.ts` (verwenden Sie `--env-file=.env`, falls Umgebungsvariablen benötigt werden).
 
 Dieses Skript erstellt automatisch Screenshots der Anwendung für Dokumentationszwecke. Es:
 - Startet einen Headless-Browser (Puppeteer)
 - Meldet sich als Admin und regulärer Benutzer an
-- Navigiert durch verschiedene Seiten (Dashboard, Server-Details, Einstellungen usw.)
-- Erstellt Screenshots bei verschiedenen Viewport-Größen
-- Speichert Screenshots in `documentation/static/img/`
+- Navigiert durch verschiedene Seiten (Dashboard, Serverdetails, Einstellungen usw.)
+- Macht Screenshots in verschiedenen Viewport-Größen
+- Speichert Screenshots in `documentation/static/assets/` (Englisch) oder `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` (andere Sprachen)
 
 **Anforderungen:**
 - Der Entwicklungsserver muss auf `http://localhost:8666` ausgeführt werden
@@ -168,31 +170,38 @@ tsx scripts/take-screenshots.ts --locale en,de,pt-BR
 
 **Generierte Screenshots:**
 
-Das Skript generiert die folgenden Screenshots (gespeichert in `documentation/static/img/`):
+Das Skript generiert die folgenden Screenshots (gespeichert in `documentation/static/assets/` für Englisch oder `documentation/i18n/{locale}/docusaurus-plugin-content-docs/current/assets` für andere Sprachen):
 
 **Dashboard-Screenshots:**
 - `screen-main-dashboard-card-mode.png` - Dashboard im Karten-/Übersichtsmodus
 - `screen-main-dashboard-table-mode.png` - Dashboard im Tabellenmodus
 - `screen-overdue-backup-hover-card.png` - Hover-Karte/Tooltip für überfällige Sicherung
-- `screen-backup-tooltip.png` - Reguläres Sicherungs-Tooltip (Hover über Sicherung in Kartenansicht)
+- `screen-backup-tooltip.png` - Regulärer Backup-Tooltip (Hover über Sicherung in Kartenansicht)
+- `screen-dashboard-summary.png` - Dashboard-Zusammenfassungsabschnitt
+- `screen-dashboard-summary-table.png` - Dashboard-Zusammenfassungstabelle
+- `screen-overview-side-status.png` - Seitliche Statusleiste der Übersicht
+- `screen-overview-side-charts.png` - Seitliche Diagramme der Übersicht
 
-**Server Details Screenshots:**
-- `screen-server-backup-list.png` - Server-Sicherungsliste Seite
-- `screen-backup-history.png` - Sicherungsverlauf Tabellenbereich
-- `screen-backup-detail.png` - Einzelne Sicherungs-Details Seite
-- `screen-metrics.png` - Metriken-Diagramm mit Sicherungsmetriken über Zeit
+**Server-Details-Screenshots:**
+- `screen-server-backup-list.png` - Server-Sicherungsliste
+- `screen-backup-history.png` - Sicherungsverlauf-Tabellenabschnitt
+- `screen-backup-detail.png` - Einzelne Sicherungsdetailseite
+- `screen-metrics.png` - Metrik-Diagramm mit Sicherungsmetriken im Zeitverlauf
+- `screen-available-backups-modal.png` - Modal für verfügbare Sicherungen
+- `screen-server-overdue-message.png` - Überfällige Servernachricht
 
-**Collect/Configuration Screenshots:**
-- `screen-collect-button-popup.png` - Popup zum Sammeln von Sicherungsprotokollen
-- `screen-collect-button-right-click-popup.png` - Kontextmenü „Alle sammeln"
-- `screen-collect-backup-logs.png` - Oberfläche zum Sammeln von Sicherungsprotokollen
-- `screen-duplicati-configuration.png` - Duplicati-Konfiguration Dropdown
+**Sammeln/Konfiguration-Screenshots:**
+- `screen-collect-button-popup.png` - Popup zum Sammeln von Backup-Protokollen
+- `screen-collect-button-right-click-popup.png` - Kontextmenü "Alle sammeln"
+- `screen-duplicati-configuration.png` - Duplicati-Konfigurationsmenü
 
-**Einstellungen Screenshots:**
-- `screen-settings-left-panel-admin.png` - Einstellungen Seitenleiste (Admin-Anzeigen)
-- `screen-settings-left-panel-non-admin.png` - Einstellungen Seitenleiste (Nicht-Admin-Anzeigen)
-- `screen-settings-{tab}.png` - Einzelne Einstellungsseiten für jeden Reiter:
+**Einstellungen-Screenshots:**
+- `screen-settings-left-panel-admin.png` - Einstellungsseitenleiste (Admin-Ansicht)
+- `screen-settings-left-panel-non-admin.png` - Einstellungsseitenleiste (Nicht-Admin-Ansicht)
+- `screen-settings-{tab}.png` - Einzelne Einstellungsseiten für jeden Tab:
   - `screen-settings-notifications.png`
+  - `screen-settings-notifications-bulk.png`
+  - `screen-settings-notifications-server.png`
   - `screen-settings-overdue.png`
   - `screen-settings-server.png`
   - `screen-settings-ntfy.png`
@@ -203,8 +212,11 @@ Das Skript generiert die folgenden Screenshots (gespeichert in `documentation/st
   - `screen-settings-audit-retention.png`
   - `screen-settings-display.png`
   - `screen-settings-database-maintenance.png`
-- `screen-settings-ntfy-configure-device-popup.png` - NTFY Gerät konfigurieren Popup
-- `screen-settings-backup-notifications-detail.png` - Backup-Benachrichtigungen Detailseite
+  - `screen-settings-application-logs.png`
+
+**Benutzermenü-Screenshots:**
+- `screen-user-menu-admin.png` - Benutzermenü (Admin-Ansicht)
+- `screen-user-menu-user.png` - Benutzermenü (Reguläre Benutzeransicht)
 
 ## SVG-Dateien übersetzen {#translate-svg-files}
 
@@ -226,13 +238,9 @@ Für den vollständigen Übersetzungs-Workflow (Glossar, KI-Übersetzung, Cache,
 
 Um die Dokumentation auf GitHub Pages bereitzustellen, müssen Sie ein GitHub Personal Access Token generieren. Gehen Sie zu [GitHub Personal Access Tokens](https://github.com/settings/tokens) und erstellen Sie ein neues Token mit dem `repo`-Bereich.
 
-Wenn Sie das Token haben, führen Sie den folgenden Befehl aus, um das Token im Git-Anmeldeinformationsspeicher zu speichern:
+Wenn Sie das Token haben, speichern Sie es im Git-Anmeldeinformationsspeicher (z.B. mit `git config credential.helper store` oder dem Anmeldeinformationsmanager Ihres Systems).
 
-```bash
-./setup-git-credentials.sh
-```
-
-Dann führen Sie den folgenden Befehl aus, um die Dokumentation auf GitHub Pages bereitzustellen:
+Um die Dokumentation dann auf GitHub Pages zu veröffentlichen, führen Sie den folgenden Befehl aus dem Verzeichnis `documentation` aus:
 
 ```bash
 pnpm run deploy

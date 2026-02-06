@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:14:54.079Z'
-source_file_mtime: '2026-02-05T19:14:29.160Z'
-source_file_hash: 4c9d44bf0a2b2656
+translation_last_updated: '2026-02-06T22:33:31.857Z'
+source_file_mtime: '2026-02-06T22:18:56.325Z'
+source_file_hash: 260a67f2593d936a
 translation_language: de
 source_file_path: intro.md
 ---
@@ -11,7 +11,15 @@ source_file_path: intro.md
 
 ## Funktionen {#features}
 
-- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung mit verfügbaren Images auf Docker Hub und GitHub. - **Einheitliches Dashboard**: Überwache den Backup-Status, die Geschichte und Details aller Server an einem Ort. - **Überwachung überfälliger Sicherungen**: Automatische Überprüfung und Benachrichtigung für überfällige geplante Backups. - **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollsammlung von Duplicati-Servern. - **Benachrichtigungen & Warnungen**: Integrierte NTFY und SMTP-E-Mail-Unterstützung für Backup-Benachrichtigungen, einschließlich überfälliger Backup-Benachrichtigungen. - **Benutzerzugriffssteuerung & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffssteuerung (Admin/Benutzer-Rollen), konfigurierbaren Passwortrichtlinien, Konto-Sperrschutz und umfassende Benutzerverwaltung. - **Audit-Protokollierung**: Vollständige Aufzeichnung aller Systemänderungen und Benutzeraktionen mit erweiterter Filterung, Exportfunktionen und konfigurierbaren Retentionsperioden. - **Anwendungsprotokoll-Viewer**: Admin-only-Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Webschnittstelle mit Echtzeitüberwachungsfähigkeiten.
+- **Schnelleinrichtung**: Einfache containerisierte Bereitstellung mit Images auf Docker Hub und GitHub.
+- **Einheitliches Dashboard**: Sicherungsstatus, -verlauf und -details für alle Server an einem Ort anzeigen.
+- **Überwachung überfälliger Sicherungen**: Automatische Überprüfung und Warnungen für überfällige geplante Sicherungen.
+- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollsammlung von Duplicati-Servern.
+- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Warnungen, einschließlich Benachrichtigungen über überfällige Sicherungen.
+- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffssteuerung (Admin-/Benutzerrollen), konfigurierbaren Passwortrichtlinien, Kontosperrungsschutz und umfassender Benutzerverwaltung.
+- **Audit-Protokollierung**: Vollständiger Audit-Trail aller Systemänderungen und Benutzeraktionen mit erweiterten Filtermöglichkeiten, Exportfunktionen und konfigurierbaren Aufbewahrungsfristen.
+- **Anwendungsprotokoll-Viewer**: Nur für Administratoren zugängliche Schnittstelle zum Anzeigen, Durchsuchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeit-Überwachungsfunktionen.
+- **Mehrsprachige Unterstützung**: Benutzeroberfläche und Dokumentation verfügbar auf Englisch, Französisch, Deutsch, Spanisch und Brasilianischem Portugiesisch.
 
 ## Installation {#installation}
 
@@ -59,7 +67,7 @@ Siehe die [API-Endpunktsdokumentation](api-reference/overview.md) für Details z
 
 Für Anweisungen zum Herunterladen, Ändern oder Ausführen des Codes, siehe [Entwicklungseinrichtung](development/setup.md).
 
-Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahren, wie, siehe [Wie ich diese Anwendung mit KI-Tools erstellt habe](development/how-i-build-with-ai).
+Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahren wie, lesen Sie [Wie ich diese Anwendung mit KI-Tools entwickelt habe](development/how-i-build-with-ai).
 
 ## Credits {#credits}
 
@@ -67,12 +75,17 @@ Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahr
 
 💙 Wenn Sie [Duplicati](https://www.duplicati.com) nützlich finden, bitten wir Sie, den Entwickler zu unterstützen. Weitere Details sind auf ihrer Website oder GitHub-Seite verfügbar.
 
-- Duplicati SVG-Icon von https://dashboardicons.com/icons/duplicati - NTFY SVG-Icon von https://dashboardicons.com/icons/ntfy - GitHub SVG-Icon von https://github.com/logos
+- Duplicati SVG-Icon von https://dashboardicons.com/icons/duplicati
+- ntfy SVG-Icon von https://dashboardicons.com/icons/ntfy
+- GitHub SVG-Icon von https://github.com/logos
 
->[!HINWEIS] > Alle Produktnamen, Logos und Marken sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden ausschließlich für Identifikationszwecke verwendet und implizieren keine Zustimmung.
+:::note
+ Alle Produktnamen, Logos und Markenzeichen sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zur Identifikation verwendet und implizieren keine Billigung.
+ :::
+
 
 ## Lizenz {#license}
 
-Das Projekt ist unter der [Apache License 2.0](LICENSE.md) lizenziert.
+Das Projekt ist unter der [Apache-Lizenz 2.0](LICENSE.md) lizenziert.   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Urheberrecht © 2025 Waldemar Scudeller Jr.**

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:09:08.507Z'
-source_file_mtime: '2026-02-05T16:22:14.739Z'
+translation_last_updated: '2026-02-06T22:33:44.219Z'
+source_file_mtime: '2026-02-06T20:21:18.353Z'
 source_file_hash: e4822ed3bdf643fb
 translation_language: pt-BR
 source_file_path: user-guide/settings/ntfy-settings.md

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:55.780Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
+translation_last_updated: '2026-02-06T22:33:39.940Z'
+source_file_mtime: '2026-01-25T02:45:42.744Z'
 source_file_hash: 4651d154540967f5
 translation_language: pt-BR
 source_file_path: development/devel.md

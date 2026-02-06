@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:25.597Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 9571c4c3bcae527c
+translation_last_updated: '2026-02-06T22:33:30.133Z'
+source_file_mtime: '2026-02-06T21:19:17.347Z'
+source_file_hash: 21d21cb01acea43b
 translation_language: de
 source_file_path: development/database.md
 ---
@@ -30,7 +30,7 @@ Die folgenden sind historische Migrationsversionenen, die die Datenbank in ihren
 - **Schema v3.1** (Application v0.8.x): Sicherungsdatenfelder erweitert, Spalte „server_password" hinzugefügt
 - **Schema v4.0** (Application v0.9.x / v1.0.x): Benutzerzugriffskontrolle hinzugefügt (Tabellen „users", „sessions", „audit_log")
 
-Die aktuelle Anwendungsversion (v1.1.0) verwendet **Schema v4.0** als die neueste Datenbankschemaversion.
+Die aktuelle Anwendungsversion (v1.3.x) verwendet **Schema v4.0** als neueste Datenbankschema-Version.
 
 ### Migrationsprozess {#migration-process}
 

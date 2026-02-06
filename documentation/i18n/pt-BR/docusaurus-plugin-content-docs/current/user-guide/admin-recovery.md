@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:09:07.239Z'
-source_file_mtime: '2026-01-29T17:58:29.899Z'
+translation_last_updated: '2026-02-06T22:33:43.269Z'
+source_file_mtime: '2026-02-01T03:16:19.470Z'
 source_file_hash: 091dcbb5c0bb63c5
 translation_language: pt-BR
 source_file_path: user-guide/admin-recovery.md

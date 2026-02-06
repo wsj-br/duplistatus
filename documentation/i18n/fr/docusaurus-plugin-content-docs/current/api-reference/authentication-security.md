@@ -34,15 +34,10 @@ All endpoints that modify database data require session authentication and CSRF 
 - **User Management**: `/api/users` (GET, POST, PATCH, DELETE) - admin required
 - **Database Management**: `/api/database/backup` (GET), `/api/database/restore` (POST) - admin required
 - **Application Logs**: `/api/application-logs` (GET), `/api/application-logs/export` (GET) - admin required
-
-### Optional Authentication Endpoints {#optional-auth-endpoints}
-These endpoints accept authentication if provided, but also work without authentication for automation and integration purposes:
-
-- **Backup Collection**: `/api/backups/collect` (POST) - can use stored credentials or provide new ones; optional session for audit logging
-- **Backup Schedule Sync**: `/api/backups/sync-schedule` (POST) - similar to collect endpoint
-- **Cron Configuration Update**: `/api/cron-config` (POST) - optional session for audit logging
-- **Overdue Check**: `/api/notifications/check-overdue` (POST) - optional session for audit logging
-- **Clear Overdue Timestamps**: `/api/notifications/clear-overdue-timestamps` (POST) - optional session for audit logging
+- **Backup Collection**: `/api/backups/collect` (POST) - requires session and CSRF token
+- **Backup Schedule Sync**: `/api/backups/sync-schedule` (POST) - requires session and CSRF token
+- **Overdue Check**: `/api/notifications/check-overdue` (POST) - requires session and CSRF token
+- **Clear Overdue Timestamps**: `/api/notifications/clear-overdue-timestamps` (POST) - requires session and CSRF token
 
 ### Unprotected Endpoints {#unprotected-endpoints}
 External APIs remain unauthenticated for Duplicati integration:

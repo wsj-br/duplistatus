@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-05T19:08:36.740Z'
-source_file_mtime: '2026-01-31T00:51:08.107Z'
-source_file_hash: 31f0b5f50ece70d4
+translation_last_updated: '2026-02-06T22:33:31.771Z'
+source_file_mtime: '2026-02-06T21:13:37.635Z'
+source_file_hash: badfc81088d24eed
 translation_language: de
 source_file_path: installation/installation.md
 ---
 # Installationsleitfaden {#installation-guide}
 
-Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die TIMEZONE und LANGUAGE konfigurieren, wie in [Konfigurieren von Zeitzone und Sprache](./configure-tz-lang.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass sie Sicherungsprotokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) dargelegt.
+Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die ZEITZONE und SPRACHE konfigurieren, wie in [Zeitzone konfigurieren](./configure-tz.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass Sicherungsprotokolle an **duplistatus** gesendet werden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) beschrieben.
 
 ## Voraussetzungen {#prerequisites}
 
@@ -48,7 +48,7 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Prüfen Sie den Abschnitt [Zeitzone und Sprache](./configure-tz-lang.md) für weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats.
+Prüfen Sie den [Zeitzone](./configure-tz.md)-Abschnitt für weitere Details zur Anpassung von Zeitzone sowie Zahlen-, Datums- und Uhrzeitformat.
 
 ### Option 2: Verwendung von Portainer Stacks (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
@@ -85,18 +85,18 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Prüfen Sie den Abschnitt [Zeitzone und Sprache](./configure-tz-lang.md) für weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats.
-6. Klicken Sie auf „Stack bereitstellen".
+5. Prüfen Sie den [Zeitzone](./configure-tz.md)-Abschnitt für weitere Details zur Anpassung der Zeitzone und des Zahlen-, Datums- und Uhrzeitformats.
+6. Klicken Sie auf "Stack bereitstellen".
 
 ### Option 3: Verwendung von Portainer Stacks (GitHub Repository) {#option-3-using-portainer-stacks-github-repository}
 
-1. Gehen Sie in [Portainer](https://docs.portainer.io/user/docker/stacks) zu „Stacks" und klicken Sie auf „Stack hinzufügen".
-2. Benennen Sie Ihren Stack (z. B. „duplistatus").
-3. Wählen Sie „Build method" als „Repository".
+1. Gehen Sie in [Portainer](https://docs.portainer.io/user/docker/stacks) zu "Stacks" und klicken Sie auf "Stack hinzufügen".
+2. Benennen Sie Ihren Stack (z.B. "duplistatus").
+3. Wählen Sie "Build-Methode" als "Repository".
 4. Geben Sie die Repository-URL ein: `https://github.com/wsj-br/duplistatus.git`
-5. Geben Sie im Feld „Compose path" ein: `production.yml`
-6. (optional) Legen Sie die Umgebungsvariablen `TZ`, `LANG`, `PWD_ENFORCE` und `PWD_MIN_LEN` im Abschnitt „Environment variables" fest. Prüfen Sie den Abschnitt [Zeitzone und Gebietsschema](./configure-tz-lang.md) für weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats.
-6. Klicken Sie auf „Deploy the stack".
+5. Geben Sie im Feld "Compose-Pfad" ein: `production.yml`
+6. (optional) Legen Sie die Umgebungsvariablen `TZ`, `LANG`, `PWD_ENFORCE` und `PWD_MIN_LEN` im Abschnitt "Umgebungsvariablen" fest. Prüfen Sie den [Zeitzone](./configure-tz.md)-Abschnitt für weitere Details zur Anpassung der Zeitzone und des Zahlen-, Datums- und Uhrzeitformats.
+6. Klicken Sie auf "Stack bereitstellen".
 
 ### Option 4: Verwendung der Docker CLI {#option-4-using-docker-cli}
 
@@ -188,7 +188,7 @@ Sie können mehrere Suchdomänen angeben, indem Sie mehrere `--dns-search`-Flags
 
 **Hinweis**: Überspringen Sie IPv6-Adressen (mit `:`) und Localhost-Adressen (wie `127.0.0.53`) beim Konfigurieren von DNS-Servern.
 
-Prüfen Sie den Abschnitt [Zeitzone und Sprache](./configure-tz-lang.md) für weitere Details zur Anpassung der Zeitzone und des Zahlen-/Datums-/Uhrzeitformats.
+Prüfen Sie den [Zeitzone](./configure-tz.md)-Abschnitt für weitere Details zur Anpassung der Zeitzone und des Zahlen-, Datums- und Uhrzeitformats.
 
 ### Option 6: Verwendung von Podman Pods {#option-6-using-podman-pods}
 

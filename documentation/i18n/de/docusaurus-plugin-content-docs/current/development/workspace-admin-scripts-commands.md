@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:36.213Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 581bc6778a772b4e
+translation_last_updated: '2026-02-06T22:33:31.454Z'
+source_file_mtime: '2026-02-06T21:19:15.606Z'
+source_file_hash: a8ff236072ebae34
 translation_language: de
 source_file_path: development/workspace-admin-scripts-commands.md
 ---
@@ -24,14 +24,20 @@ Bereinigt die Datenbank, indem alle Daten entfernt werden, während das Datenban
 scripts/clean-workspace.sh
 ```
 
-Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generierte Dateien, um einen sauberen Zustand zu gewährleisten. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl löscht:
-- `node_modules/` Verzeichnis
-- `.next/` Build-Verzeichnis
-- `dist/` Verzeichnis
-- Alle Docker-Build-Caches und führt einen Docker-System-Prune durch
-- pnpm Store-Cache
-- Ungenutzte Docker-Systemressourcen (Images, Netzwerke, Volumes)
-- Alle anderen Build-Cache-Dateien
+Entfernt alle Build-Artefakte, das node_modules-Verzeichnis und andere generierte Dateien, um einen sauberen Zustand zu gewährleisten. Dies ist nützlich, wenn Sie eine Neuinstallation durchführen oder Abhängigkeitsprobleme beheben müssen. Der Befehl wird Folgendes löschen:
+- `node_modules/`-Verzeichnis
+- `.next/`-Build-Verzeichnis
+- `dist/`-Verzeichnis
+- `out/`-Verzeichnis
+- `.turbo/`-Verzeichnis
+- `pnpm-lock.yaml`
+- `data/*.json` (Entwicklungs-JSON-Sicherungsdateien)
+- `public/documentation`
+- `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
+- `.genkit/`-Verzeichnis
+- `*.tsbuildinfo`-Dateien
+- pnpm Store-Cache (über `pnpm store prune`)
+- Docker-Build-Cache und Systembereinigung (Images, Netzwerke, Volumes)
 
 ## Docker Compose und Docker-Umgebung bereinigen {#clean-docker-compose-and-docker-environment}
 
@@ -145,7 +151,7 @@ Dieses Skript ermöglicht die Wiederherstellung von Admin-Konten, falls diese ge
 ./scripts/copy-images.sh
 ```
 
-Kopiert Bilddateien von `docs/static/img` an ihre entsprechenden Speicherorte in der Anwendung:
+Kopiert Bilddateien von `documentation/static/img` an ihre entsprechenden Speicherorte in der Anwendung:
 - Kopiert `favicon.ico` nach `src/app/`
 - Kopiert `duplistatus_logo.png` nach `public/images/`
 - Kopiert `duplistatus_banner.png` nach `public/images/`
@@ -200,27 +206,10 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## SQL-Skripte zum Debuggen und zur Wartung {#sql-scripts-for-debugging-and-maintenance}
-
-Das Projekt enthält SQL-Skripte für die Datenbankwartung:
-
-### Sicherungseinstellungen löschen {#delete-backup-settings}
+## Sicherungseinstellungen einblenden {#show-backup-settings}
 
 ```bash
-sqlite3 data/backups.db < scripts/delete-backup-settings.sql
+./scripts/show-backup-settings.sh [database_path]
 ```
 
-Dieses Skript entfernt alle Sicherungseinstellungen aus der Konfigurationstabelle. Verwenden Sie es mit Vorsicht, da dies alle Sicherungsmitteilungskonfigurationen zurücksetzen wird.
-
-### Letzte Sicherung löschen {#delete-last-backup}
-
-```bash
-sqlite3 data/backups.db < scripts/delete-last-backup.sql
-```
-
-Dieses Skript entfernt den letzten Sicherungsdatensatz für jeden Server. Standardmäßig löscht es die letzte Sicherung für ALLE Server. Das Skript enthält kommentierte Beispiele zum Ausrichten auf bestimmte Server nach Name. Nützlich für Test- und Debugging-Zwecke.
-
-**Hinweis**: Das Skript wurde aktualisiert, um mit dem aktuellen Datenbankschema zu funktionieren (verwendet die Tabelle `servers` und die Spalte `server_id`).
-
->[!CAUTION]
-> Diese SQL-Skripte ändern die Datenbank direkt. Erstellen Sie immer eine Sicherung Ihrer Datenbank, bevor Sie diese Skripte ausführen.
+Zeigt den Inhalt des `backup_settings`-Wertes in der Konfigurationstabelle in einer formatierten Tabelle an. Nützlich zum Debuggen von Benachrichtigungskonfigurationen. Standard-Datenbankpfad: `data/backups.db`.

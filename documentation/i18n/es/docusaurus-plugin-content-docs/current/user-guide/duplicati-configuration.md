@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:53.968Z'
-source_file_mtime: '2026-02-05T18:10:24.682Z'
+translation_last_updated: '2026-02-06T22:33:38.628Z'
+source_file_mtime: '2026-02-06T20:21:18.353Z'
 source_file_hash: 80ddd16f55e0e65c
 translation_language: es
 source_file_path: user-guide/duplicati-configuration.md

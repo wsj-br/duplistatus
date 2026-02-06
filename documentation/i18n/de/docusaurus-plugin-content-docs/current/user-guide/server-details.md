@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:39.572Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
+translation_last_updated: '2026-02-06T22:33:33.930Z'
+source_file_mtime: '2026-02-02T01:09:34.944Z'
 source_file_hash: f469b5229723b21f
 translation_language: de
 source_file_path: user-guide/server-details.md

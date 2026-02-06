@@ -69,6 +69,6 @@
 
 ## System Features {#system-features}
 
-- **Cron Service**: Separate service for scheduled tasks, auto-restart via `duplistatus-cron.sh`
+- **Cron Service**: Separate service for scheduled tasks, started by `docker-entrypoint.sh` in Docker deployments
 - **Notifications**: ntfy.sh integration and SMTP email (nodemailer), configurable templates
 - **Auto-refresh**: Configurable automatic refresh for dashboard and detail pages

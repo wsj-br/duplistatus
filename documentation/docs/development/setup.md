@@ -10,59 +10,112 @@
 - SQLite3
 - Inkscape (for documentation SVG translation and PNG export; required only if you run `translate` or `translate:svg`)
 - bat/batcat (to show a pretty version of the `translate:help`)
+- direnv (to automatically load the `.env*` files)
 
 
 
 ## Steps {#steps}
 
 1. Clone the repository:
-```bash
-git clone https://github.com/wsj-br/duplistatus.git
-cd duplistatus
-```
+    ```bash
+    git clone https://github.com/wsj-br/duplistatus.git
+    cd duplistatus
+    ```
 
 
 2. Install dependencies (Debian/Ubuntu):
-```bash
-sudo apt update
-sudo apt install sqlite3 git inkscape bat -y
-```
+    ```bash
+    sudo apt update
+    sudo apt install sqlite3 git inkscape bat -y
+    ```
 
-3. Remove old Node.js installations (if you already had it installed)
+3. Remove old Node.js installations (if you already have it installed)
 
-```bash
-sudo apt-get purge nodejs npm -y
-sudo apt-get autoremove -y
-sudo rm -rf /usr/local/bin/npm 
-sudo rm -rf /usr/local/share/man/man1/node* 
-sudo rm -rf /usr/local/lib/dtrace/node.d
-rm -rf ~/.npm
-rm -rf ~/.node-gyp
-sudo rm -rf /opt/local/bin/node
-sudo rm -rf /opt/local/include/node
-sudo rm -rf /opt/local/lib/node_modules
-sudo rm -rf /usr/local/lib/node*
-sudo rm -rf /usr/local/include/node*
-sudo rm -rf /usr/local/bin/node*
-```
+    ```bash
+    sudo apt-get purge nodejs npm -y
+    sudo apt-get autoremove -y
+    sudo rm -rf /usr/local/bin/npm 
+    sudo rm -rf /usr/local/share/man/man1/node* 
+    sudo rm -rf /usr/local/lib/dtrace/node.d
+    rm -rf ~/.npm
+    rm -rf ~/.node-gyp
+    sudo rm -rf /opt/local/bin/node
+    sudo rm -rf /opt/local/include/node
+    sudo rm -rf /opt/local/lib/node_modules
+    sudo rm -rf /usr/local/lib/node*
+    sudo rm -rf /usr/local/include/node*
+    sudo rm -rf /usr/local/bin/node*
+    ```
 
 4. Install Node.js and pnpm:
 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-nvm use --lts
-npm install -g pnpm npm-check-updates doctoc
-```
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    source ~/.bashrc
+    nvm install --lts
+    nvm use --lts
+    npm install -g pnpm npm-check-updates doctoc
+    ```
+
+5. Set up direnv support
+
+- Add these lines to your `~/.bashrc` file
+
+    ```bash 
+    # direnv support (apt install direnv)
+    eval "$(direnv hook bash)"
+    ```
+
+    with this command:
+
+    ```bash 
+    (echo "# direnv support (apt install direnv)"; echo 'eval "$(direnv hook bash)') >> ~/.bashrc
+    ```
+
+    in the repository basedir, run:
+
+    ```bash
+    direnv allow
+    ```
+
+- Add these lines to your `~/.profile` file
+
+    ```bash 
+    # export the Bash environment (needed for Cursor's agents to load it).
+    export BASH_ENV="$HOME/.bashrc"
+    ```
+
+    with this command:
+
+    ```bash 
+    (echo "# export the Bash environment (needed for Cursor's agents to load it)."; echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
+    ```
 
 
-5. Start the development server:
 
-For the default TCP port (8666):
-```bash
-pnpm dev
-```
+:::note
+You need to reopen the terminal or close/reopen the Cursor application for these changes to take effect.
+:::
+
+6. Create the .env file at the repository basedir with these variables. 
+
+- You can use any value for `VERSION`; it will be automatically updated when using the development scripts.
+- Use random passwords for the `ADMIN_PASSWORD` and `USER_PASSWORD`; these passwords will be used in the `pnpm take-screenshots` script.
+- You can get the `OPENROUTER_API_KEY` from [openrouter.ai](https://openrouter.ai). 
+
+
+    ```
+    VERSION=x.x.x
+
+    # Development user passwords
+    ADMIN_PASSWORD="admin_secret"
+    USER_PASSWORD="user_secret"
+
+
+    # Openrouter.ai API key for translation scripts in documentation 
+    OPENROUTER_API_KEY=sk-or-v1-your-key-for-translate-files
+    ```
+
 
 ## Available Scripts {#available-scripts}
 
@@ -98,7 +151,7 @@ The project includes several npm scripts for different development tasks:
 ### Test Scripts {#test-scripts}
 - `pnpm generate-test-data` - Generate test backup data (requires --servers=N parameter)
 - `pnpm show-overdue-notifications` - Show overdue notification contents
-- `pnpm run-overdue-check` - Run overdue check at specific date/time
+- `pnpm run-overdue-check` - Run overdue check at a specific date/time
 - `pnpm test-cron-port` - Test cron service port connectivity
 - `pnpm test-overdue-detection` - Test overdue backup detection logic
 - `pnpm validate-csv-export` - Validate CSV export functionality

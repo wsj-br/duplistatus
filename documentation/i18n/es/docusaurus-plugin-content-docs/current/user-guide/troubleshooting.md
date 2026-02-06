@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:55.347Z'
-source_file_mtime: '2026-01-31T00:23:03.813Z'
+translation_last_updated: '2026-02-06T22:33:39.627Z'
+source_file_mtime: '2026-02-01T03:16:19.470Z'
 source_file_hash: ccb921e081ad2c50
 translation_language: es
 source_file_path: user-guide/troubleshooting.md

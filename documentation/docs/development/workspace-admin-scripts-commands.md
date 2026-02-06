@@ -21,10 +21,16 @@ Removes all build artefacts, node_modules directory, and other generated files t
 - `node_modules/` directory
 - `.next/` build directory
 - `dist/` directory
-- All Docker build cache and perform a Docker system prune
-- pnpm store cache
-- Unused Docker system resources (images, networks, volumes)
-- Any other build cache files
+- `out/` directory
+- `.turbo/` directory
+- `pnpm-lock.yaml`
+- `data/*.json` (development JSON backup files)
+- `public/documentation`
+- `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
+- `.genkit/` directory
+- `*.tsbuildinfo` files
+- pnpm store cache (via `pnpm store prune`)
+- Docker build cache and system prune (images, networks, volumes)
 
 ## Clean Docker Compose and Docker environment {#clean-docker-compose-and-docker-environment}
 
@@ -134,7 +140,7 @@ This script allows recovery of admin accounts if locked out or password forgotte
 ./scripts/copy-images.sh
 ```
 
-Copies image files from `docs/static/img` to their appropriate locations in the application:
+Copies image files from `documentation/static/img` to their appropriate locations in the application:
 - Copies `favicon.ico` to `src/app/`
 - Copies `duplistatus_logo.png` to `public/images/`
 - Copies `duplistatus_banner.png` to `public/images/`
@@ -188,25 +194,10 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## SQL Scripts for Debugging and Maintenance {#sql-scripts-for-debugging-and-maintenance}
-
-The project includes SQL scripts for database maintenance:
-
-### Delete Backup Settings {#delete-backup-settings}
+## Show backup settings {#show-backup-settings}
 
 ```bash
-sqlite3 data/backups.db < scripts/delete-backup-settings.sql
+./scripts/show-backup-settings.sh [database_path]
 ```
-This script removes all backup settings from the configurations table. Use with caution as this will reset all backup notification configurations.
 
-### Delete Last Backup {#delete-last-backup}
-
-```bash
-sqlite3 data/backups.db < scripts/delete-last-backup.sql
-```
-This script removes the most recent backup record for each server. By default, it deletes the last backup for ALL servers. The script includes commented examples for targeting specific servers by name. Useful for testing and debugging purposes.
-
-**Note**: The script has been updated to work with the current database schema (uses `servers` table and `server_id` column).
-
->[!CAUTION]
-> These SQL scripts directly modify the database. Always backup your database before running these scripts.
+Displays the contents of the `backup_settings` value in the configurations table in a formatted table. Useful for debugging notification configurations. Default database path: `data/backups.db`.

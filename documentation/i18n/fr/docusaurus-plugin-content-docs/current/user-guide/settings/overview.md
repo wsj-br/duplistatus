@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:24.924Z'
-source_file_mtime: '2026-02-03T17:47:50.542Z'
+translation_last_updated: '2026-02-06T22:33:29.658Z'
+source_file_mtime: '2026-02-06T20:21:18.353Z'
 source_file_hash: 6810bf2e7dc0121a
 translation_language: fr
 source_file_path: user-guide/settings/overview.md

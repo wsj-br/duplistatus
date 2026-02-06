@@ -1,13 +1,15 @@
 ---
-translation_last_updated: '2026-02-05T19:08:54.896Z'
-source_file_mtime: '2026-02-02T19:14:50.094Z'
-source_file_hash: 3eab3fe85d0db77a
+translation_last_updated: '2026-02-06T22:33:39.306Z'
+source_file_mtime: '2026-02-06T21:16:20.551Z'
+source_file_hash: 473175db710f3df5
 translation_language: es
 source_file_path: user-guide/settings/notification-templates.md
 ---
 # Plantillas {#templates}
 
-**duplistatus** utiliza tres plantillas para mensajes de notificación. Estas plantillas se utilizan tanto para notificaciones NTFY como para notificaciones por correo electrónico:
+**duplistatus** utiliza tres plantillas para mensajes de notificación. Estas plantillas se utilizan tanto para notificaciones NTFY como para notificaciones por correo electrónico.
+
+La página incluye un selector de **Idioma de Plantilla** que establece la configuración regional para las plantillas predeterminadas. Cambiar el idioma actualiza la configuración regional para los nuevos valores predeterminados, pero NO cambia el texto de las plantillas existentes. Para aplicar un nuevo idioma a sus plantillas, puede editarlas manualmente o usar **Restablecer esta plantilla a valores predeterminados** (para la pestaña actual) o **Restablecer todo a valores predeterminados** (para las tres plantillas).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -19,13 +21,20 @@ source_file_path: user-guide/settings/notification-templates.md
 
 <br/>
 
+## Idioma de Plantilla {#template-language}
+
+Un selector de **Idioma de Plantilla** en la parte superior de la página le permite elegir el idioma para las plantillas predeterminadas (inglés, alemán, francés, español, portugués de Brasil). Cambiar el idioma actualiza la configuración regional para los valores predeterminados, pero las plantillas personalizadas existentes mantienen su texto actual hasta que las actualice o use uno de los botones de restablecimiento.
+
+<br/>
+
 ## Acciones disponibles {#available-actions}
 
-| Botón                                                               | Descripción                                                                                         |
+| Botón | Descripción |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
-| <IconButton label="Guardar configuración de plantilla" />                      | Guarda la configuración al cambiar la plantilla. El botón guarda la plantilla que se está mostrando (Éxito, Advertencia/Error o Backup retrasado). |
-| <IconButton icon="lucide:send" label="Enviar notificación de prueba"/>     | Comprueba la plantilla después de actualizarla. Las variables se reemplazarán con sus nombres para la prueba. Para notificaciones por correo electrónico, el título de la plantilla se convierte en la línea de asunto del correo electrónico. |
-| <IconButton icon="lucide:rotate-ccw" label="Restablecer a predeterminado"/>     | Restaura la plantilla por defecto para la **plantilla seleccionada**. Recuerde guardarla después de restablecerla.  |
+| <IconButton label="Guardar configuración de plantilla" /> | Guarda la configuración al cambiar la plantilla. El botón guarda la plantilla que se está mostrando (Éxito, Advertencia/Error o Backup retrasado). |
+| <IconButton icon="lucide:send" label="Enviar notificación de prueba"/> | Comprueba la plantilla después de actualizarla. Las variables se reemplazarán con sus nombres para la prueba. Para notificaciones por correo electrónico, el título de la plantilla se convierte en la línea de asunto del correo electrónico. |
+| <IconButton icon="lucide:rotate-ccw" label="Restablecer esta plantilla a valores predeterminados"/> | Restaura la plantilla predeterminada para la **plantilla seleccionada** (la pestaña actual). Recuerde guardar después de restablecer. |
+| <IconButton icon="lucide:rotate-ccw" label="Restablecer todo a valores predeterminados"/> | Restaura las tres plantillas (Éxito, Advertencia/Error, Backup retrasado) a los valores predeterminados para el Idioma de Plantilla seleccionado. Recuerde guardar después de restablecer. |
 
 <br/>
 

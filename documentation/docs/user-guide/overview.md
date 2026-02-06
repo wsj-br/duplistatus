@@ -13,6 +13,7 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 - Automated overdue backup detection with configurable alerts
 - Comprehensive metrics and visualisation of backup performance
 - Flexible notification system via NTFY and email
+- Multi-language support (English, French, German, Spanish, and Brazilian Portuguese).
 
 ## Installation {#installation}
 
@@ -26,7 +27,8 @@ After successful installation, access the duplistatus web interface by following
 2. Navigate to `http://your-server-ip:9666`
    - Replace `your-server-ip` with the actual IP address or hostname of your duplistatus server
    - The default port is `9666`
-3. You will be presented with a login page. Use these credentials for the first usage (or after an upgrade from pre-0.9.x versions):
+3. You will be presented with a login page. You can select the interface language in the top right corner on the login page, or when logged in, via the user menu (click your username → Language).
+   Use these credentials for first use (or after an upgrade from pre-0.9.x versions):
     - username: `admin`
     - password: `Duplistatus09` 
 4. After login, the main dashboard will display automatically (with no data on first usage)
@@ -53,7 +55,7 @@ The user interface is organised into several key sections to provide a clear and
 
 The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
-![application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Button                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -63,12 +65,12 @@ The application toolbar provides convenient access to key functions and settings
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab                                                                                                                           |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)                                   | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers                                                         |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server, and notification templates                                                                                                 |
-| <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu. See more in [User Management](settings/user-management-settings.md)                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Opens the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened.                                                                           |
+| <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu (includes language selection). See more in [User Management](settings/user-management-settings.md)                               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Open the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened.                                                                           |
 
 ### User Menu {#user-menu}
 
-Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
+Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user. Both roles can change the interface language via the **Language** submenu. Supported languages: English, French, German, Spanish, and Brazilian Portuguese.
 
 <table>
   <tr>

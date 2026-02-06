@@ -24,7 +24,7 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'installation/installation',
-        'installation/configure-tz-lang',
+        'installation/configure-tz',
         'installation/environment-variables',
         'installation/duplicati-server-configuration',
         'installation/https-setup',
@@ -137,6 +137,7 @@ const sidebars: SidebarsConfig = {
         icon: 'history',
       },
       items: [
+        'release-notes/1.3.1',
         'release-notes/1.3.0',
         'release-notes/1.2.1',
         'release-notes/1.1.x',

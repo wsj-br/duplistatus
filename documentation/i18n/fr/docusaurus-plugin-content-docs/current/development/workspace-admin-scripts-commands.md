@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:20.767Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 581bc6778a772b4e
+translation_last_updated: '2026-02-06T22:33:26.522Z'
+source_file_mtime: '2026-02-06T21:19:15.606Z'
+source_file_hash: a8ff236072ebae34
 translation_language: fr
 source_file_path: development/workspace-admin-scripts-commands.md
 ---
@@ -24,14 +24,20 @@ Nettoie la base de données en supprimant toutes les données tout en préservan
 scripts/clean-workspace.sh
 ```
 
-Supprime tous les artefacts de build, le répertoire node_modules et les autres fichiers générés pour assurer un état propre. Ceci est utile quand vous devez effectuer une installation nouvelle ou résoudre des problèmes de dépendances. La commande supprimera :
+Supprime tous les artefacts de build, le répertoire node_modules et d'autres fichiers générés pour garantir un état propre. Cette commande est utile quand vous devez effectuer une installation fraîche ou résoudre des problèmes de dépendances. La commande supprimera :
 - Répertoire `node_modules/`
 - Répertoire de build `.next/`
 - Répertoire `dist/`
-- Tous les caches de build Docker et effectuera un nettoyage du système Docker
-- Cache du magasin pnpm
-- Ressources système Docker inutilisées (images, réseaux, volumes)
-- Tous les autres fichiers de cache de build
+- Répertoire `out/`
+- Répertoire `.turbo/`
+- `pnpm-lock.yaml`
+- `data/*.json` (fichiers de sauvegarde JSON de développement)
+- `public/documentation`
+- `documentation/.docusaurus`, `.cache`, `.cache-*`, `build`, `node_modules`, `pnpm-lock.yaml`
+- Répertoire `.genkit/`
+- Fichiers `*.tsbuildinfo`
+- Cache de stockage pnpm (via `pnpm store prune`)
+- Cache de build Docker et nettoyage système (images, réseaux, volumes)
 
 ## Nettoyer Docker Compose et l'environnement Docker {#clean-docker-compose-and-docker-environment}
 
@@ -145,7 +151,7 @@ Ce script permet la récupération des comptes admin en cas de verrouillage ou d
 ./scripts/copy-images.sh
 ```
 
-Copie les fichiers image de `docs/static/img` vers leurs emplacements appropriés dans l'application :
+Copie les fichiers image de `documentation/static/img` vers leurs emplacements appropriés dans l'application :
 - Copie `favicon.ico` vers `src/app/`
 - Copie `duplistatus_logo.png` vers `public/images/`
 - Copie `duplistatus_banner.png` vers `public/images/`
@@ -200,27 +206,10 @@ sqlite3 /var/lib/docker/volumes/duplistatus_data/_data/backups.db "SELECT key, v
    else {print $2;}}' | less -R
 ```
 
-## Scripts SQL pour le débogage et la maintenance {#sql-scripts-for-debugging-and-maintenance}
-
-Le projet inclut des scripts SQL pour la maintenance de la base de données :
-
-### Supprimer les paramètres de sauvegarde {#delete-backup-settings}
+## Afficher les paramètres de sauvegarde {#show-backup-settings}
 
 ```bash
-sqlite3 data/backups.db < scripts/delete-backup-settings.sql
+./scripts/show-backup-settings.sh [database_path]
 ```
 
-Ce script supprime tous les paramètres de sauvegarde de la table des configurations. À utiliser avec prudence car cela réinitialisera toutes les configurations de notification de sauvegarde.
-
-### Supprimer Dernière sauvegarde {#delete-last-backup}
-
-```bash
-sqlite3 data/backups.db < scripts/delete-last-backup.sql
-```
-
-Ce script supprime l'enregistrement de sauvegarde le plus récent pour chaque serveur. Par défaut, il supprime la dernière sauvegarde pour TOUS les serveurs. Le script inclut des exemples commentés pour cibler des serveurs spécifiques par nom. Utile à des fins de test et de débogage.
-
-**Note** : Le script a été mis à jour pour fonctionner avec le schéma de base de données actuel (utilise la table `servers` et la colonne `server_id`).
-
->[!CAUTION]
-> Ces scripts SQL modifient directement la base de données. Effectuez toujours une sauvegarde de votre base de données avant d'exécuter ces scripts.
+Affiche le contenu de la valeur `backup_settings` dans la table de configurations sous forme de tableau formaté. Utile pour le débogage des configurations de notifications. Chemin de base de données par défaut : `data/backups.db`.

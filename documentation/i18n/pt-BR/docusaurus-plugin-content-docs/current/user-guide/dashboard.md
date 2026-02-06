@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:09:07.488Z'
-source_file_mtime: '2026-02-04T22:30:29.557Z'
+translation_last_updated: '2026-02-06T22:33:43.456Z'
+source_file_mtime: '2026-02-06T20:21:18.352Z'
 source_file_hash: 99734fe309fbff0d
 translation_language: pt-BR
 source_file_path: user-guide/dashboard.md
@@ -57,7 +57,7 @@ Você pode alternar o botão no canto superior direito do painel lateral para mu
 
 ![charts panel](../assets/screen-overview-side-charts.png)
 
-### Detalhes do Backup {#backup-details}
+### Detalhes do backup {#backup-details}
 
 Passar o mouse sobre um backup na lista exibe detalhes do último log de backup recebido e qualquer informação de atraso.
 

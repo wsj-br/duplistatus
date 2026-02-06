@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:25.748Z'
-source_file_mtime: '2026-01-27T14:22:06.830Z'
-source_file_hash: 1afab25f18ff213d
+translation_last_updated: '2026-02-06T22:33:30.243Z'
+source_file_mtime: '2026-02-06T21:19:17.893Z'
+source_file_hash: 3f368762bd212362
 translation_language: de
 source_file_path: development/development-guidelines.md
 ---
@@ -75,6 +75,6 @@ source_file_path: development/development-guidelines.md
 
 ## Systemfunktionen {#system-features}
 
-- **Cron Service**: Separater Service für geplante Aufgaben, automatischer Neustart über `duplistatus-cron.sh`
-- **Benachrichtigungen**: NTFY.sh-Integration und SMTP-E-Mail (nodemailer), konfigurierbare Vorlagen
-- **Automatisches Aktualisieren**: Konfigurierbare automatische Aktualisierung für Dashboard und Detailseiten
+- **Cron-Dienst**: Separater Dienst für geplante Aufgaben, gestartet durch `docker-entrypoint.sh` bei Docker-Bereitstellungen
+- **Benachrichtigungen**: ntfy.sh-Integration und SMTP-E-Mail (nodemailer), konfigurierbare Vorlagen
+- **Automatische Aktualisierung**: Konfigurierbare automatische Aktualisierung für Dashboard und Detailseiten

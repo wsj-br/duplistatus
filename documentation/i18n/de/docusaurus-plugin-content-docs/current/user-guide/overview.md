@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:39.502Z'
-source_file_mtime: '2026-02-05T17:53:15.519Z'
-source_file_hash: 707f5c41ecb6e26f
+translation_last_updated: '2026-02-06T22:33:33.876Z'
+source_file_mtime: '2026-02-06T21:11:29.339Z'
+source_file_hash: 570227cbd4e2d113
 translation_language: de
 source_file_path: user-guide/overview.md
 ---
@@ -13,11 +13,12 @@ Willkommen zum duplistatus-Benutzerhandbuch. Dieses umfassende Dokument bietet d
 
 duplistatus ist ein leistungsstarkes Monitoring-Dashboard, das speziell für Duplicati-Sicherungssysteme entwickelt wurde. Es bietet:
 
-- Zentralisierte Überwachung mehrerer Duplicati-Server von einer einzigen Schnittstelle
-- Echtzeit-Status-Verfolgung aller Sicherungsvorgänge
+- Zentralisierte Überwachung mehrerer Duplicati-Server über eine einzige Benutzeroberfläche
+- Echtzeit-Statusverfolgung aller Sicherungsoperationen
 - Automatische Erkennung überfälliger Sicherungen mit konfigurierbaren Warnungen
 - Umfassende Metriken und Visualisierung der Sicherungsleistung
 - Flexibles Benachrichtigungssystem über NTFY und E-Mail
+- Mehrsprachige Unterstützung (Englisch, Französisch, Deutsch, Spanisch und Brasilianisches Portugiesisch).
 
 ## Installation {#installation}
 
@@ -28,13 +29,14 @@ Für Voraussetzungen und detaillierte Installationsanweisungen verweisen wir Sie
 Nach erfolgreicher Installation greifen Sie auf die duplistatus-Weboberfläche folgendermaßen zu:
 
 1. Öffnen Sie Ihren bevorzugten Webbrowser
-2. Navigieren Sie zu `http://your-server-ip:9666`
-   - Ersetzen Sie `your-server-ip` durch die tatsächliche IP-Adresse oder den Hostname Ihres duplistatus-Servers
-   - Der Standard-Port ist `9666`
-3. Ihnen wird eine Anmeldungsseite angezeigt. Verwenden Sie diese Anmeldedaten für die erste Verwendung (oder nach einem Upgrade von Versionen vor 0.9.x):
+2. Navigieren Sie zu `http://ihre-server-ip:9666`
+   - Ersetzen Sie `ihre-server-ip` durch die tatsächliche IP-Adresse oder den Hostnamen Ihres duplistatus-Servers
+   - Der Standardport ist `9666`
+3. Sie gelangen auf eine Anmeldeseite. Sie können die Schnittstellensprache in der oberen rechten Ecke der Anmeldeseite oder nach der Anmeldung über das Benutzermenü auswählen (klicken Sie auf Ihren Benutzernamen → Sprache).
+   Verwenden Sie diese Anmeldedaten für die erste Verwendung (oder nach einem Upgrade von Versionen vor 0.9.x):
     - Benutzername: `admin`
     - Passwort: `Duplistatus09` 
-4. Nach der Anmeldung wird das Haupt-Dashboard automatisch angezeigt (bei der ersten Verwendung ohne Daten)
+4. Nach der Anmeldung wird automatisch das Hauptdashboard angezeigt (beim ersten Aufruf ohne Daten)
 
 ## Benutzer-Oberfläche Übersicht {#user-interface-overview}
 
@@ -57,22 +59,22 @@ Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein kla
 
 Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und Einstellungen, organisiert für einen effizienten Arbeitsablauf.
 
-![application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
-| Schaltfläche                                                                                                                                  | Beschreibung                                                                                                                                                                  |
+| Schaltfläche | Beschreibung |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Bildschirm aktualisieren                                                                                    | Führen Sie eine sofortige manuelle Aktualisierung aller Daten durch                                                                                                                       |
-| <IconButton label="Auto-refresh" />                                                                                                              | Aktivieren oder Deaktivieren Sie die automatische Aktualisierungsfunktion. Konfigurieren Sie in [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_ zum Öffnen der Seite Anzeigeeinstellungen           |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen                                                                                            | Greifen Sie auf die ntfy.sh-Website für Ihr konfiguriertes Benachrichtigungsthema zu. <br/> _Rechtsklick_ zum Anzeigen eines QR-Codes zum Konfigurieren Ihres Geräts zum Empfangen von Benachrichtigungen von duplistatus. |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md)       | Öffnen Sie die Weboberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_ zum Öffnen der Duplicati-Legacy-Benutzeroberfläche (`/ngax`) in einem neuen Tab                                                                                                                           |
-| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md)                                   | Verbinden Sie sich mit Duplicati-Servern und rufen Sie Sicherungsprotokolle ab <br/> _Rechtsklick_ zum Sammeln von Protokollen für alle konfigurierten Server                                                                                                                         |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md) | Konfigurieren Sie Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen                                                                                                 |
-| <IconButton icon="lucide:user" label="username" />                                                                                               | Zeigen Sie den verbundenen Benutzer, Benutzertyp (`Admin`, `User`), klicken Sie auf das Benutzermenü. Weitere Informationen finden Sie unter [Benutzerverwaltung](settings/user-management-settings.md)                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch                                                                    | Öffnet das [Benutzerhandbuch](overview.md) im Abschnitt, der für die Seite relevant ist, die Sie gerade anzeigen. Der Tooltip zeigt „Hilfe für [Seitenname]" an, um anzugeben, welche Dokumentation geöffnet wird.                                                                           |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Bildschirm aktualisieren | Sofortige manuelle Aktualisierung aller Daten |
+| <IconButton label="Auto-Aktualisierung" /> | Automatische Aktualisierungsfunktion aktivieren oder deaktivieren. Konfigurieren in [Anzeigeeinstellungen](settings/display-settings.md) <br/> _Rechtsklick_ zum Öffnen der Anzeigeeinstellungsseite |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; NTFY öffnen | Zugriff auf die ntfy.sh-Website für Ihr konfiguriertes Benachrichtigungsthema. <br/> _Rechtsklick_ zum Anzeigen eines QR-Codes zur Gerätekonfiguration für Benachrichtigungen von duplistatus. |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati-Konfiguration](duplicati-configuration.md) | Öffnen der Weboberfläche des ausgewählten Duplicati-Servers <br/> _Rechtsklick_ zum Öffnen der Duplicati-Legacy-UI (`/ngax`) in einem neuen Tab |
+| <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Protokolle sammeln](collect-backup-logs.md) | Verbindung zu Duplicati-Servern und Abrufen von Sicherungsprotokollen <br/> _Rechtsklick_ zum Sammeln von Protokollen für alle konfigurierten Server |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Einstellungen](settings/backup-notifications-settings.md) | Benachrichtigungen, Überwachung, SMTP-Server und Benachrichtigungsvorlagen konfigurieren |
+| <IconButton icon="lucide:user" label="Benutzername" /> | Zeigt den verbundenen Benutzer, Benutzertyp (`Admin`, `Benutzer`), Klicken für Benutzermenü (einschließlich Sprachauswahl). Weitere Informationen in [Benutzerverwaltung](settings/user-management-settings.md) |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Benutzerhandbuch | Öffnet das [Benutzerhandbuch](overview.md) zum Abschnitt, der der aktuell angezeigten Seite entspricht. Der Tooltip zeigt „Hilfe für [Seitenname]" an, um anzuzeigen, welche Dokumentation geöffnet wird. |
 
 ### Benutzermenü {#user-menu}
 
-Durch Klicken auf die Benutzerschaltfläche wird ein Dropdown-Menü mit benutzerspezifischen Optionen geöffnet. Die Menüoptionen unterscheiden sich je nachdem, ob Sie als Administrator oder als normaler Benutzer angemeldet sind.
+Durch Klicken auf die Benutzerschaltfläche wird ein Dropdown-Menü mit benutzerspezifischen Optionen geöffnet. Die Menüoptionen unterscheiden sich je nachdem, ob Sie als Administrator oder als normaler Benutzer angemeldet sind. Beide Rollen können die Schnittstellensprache über das Untermenü **Sprache** ändern. Unterstützte Sprachen: Englisch, Französisch, Deutsch, Spanisch und Brasilianisches Portugiesisch.
 
 <table>
   <tr>

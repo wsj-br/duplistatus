@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-05T19:08:21.292Z'
-source_file_mtime: '2026-01-31T00:51:08.107Z'
-source_file_hash: 31f0b5f50ece70d4
+translation_last_updated: '2026-02-06T22:33:26.853Z'
+source_file_mtime: '2026-02-06T21:13:37.635Z'
+source_file_hash: badfc81088d24eed
 translation_language: fr
 source_file_path: installation/installation.md
 ---
 # Guide d'Installation {#installation-guide}
 
-L'application peut être déployée à l'aide de Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le TIMEZONE et la LANGUAGE, comme décrit dans la section [Configurer le fuseau horaire et la langue](./configure-tz-lang.md) et vous devez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).
+L'application peut être déployée à l'aide de Docker, [Piles Portainer](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le FUSEAU HORAIRE et la LANGUE, comme décrit dans [Configurer le fuseau horaire](./configure-tz.md) et devrez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).
 
 ## Conditions préalables {#prerequisites}
 
@@ -48,7 +48,7 @@ wget https://github.com/wsj-br/duplistatus/raw/refs/heads/master/production.yml 
 docker compose -f duplistatus.yml up -d
 ```
 
-Vérifier la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+Consultez la section [Fuseau horaire](./configure-tz.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
 
 ### Option 2 : Utilisation des Stacks Portainer (Docker Compose) {#option-2-using-portainer-stacks-docker-compose}
 
@@ -85,18 +85,18 @@ volumes:
     name: duplistatus_data
 ``` 
 
-5. Vérifier la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+5. Consultez la section [Fuseau horaire](./configure-tz.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
 6. Cliquez sur « Déployer la pile ».
 
 ### Option 3 : Utilisation des piles Portainer (référentiel GitHub) {#option-3-using-portainer-stacks-github-repository}
 
-1. Dans [Portainer](https://docs.portainer.io/user/docker/stacks), allez à « Stacks » et cliquez sur « Add stack ».
-2. Nommez votre stack (par exemple, « duplistatus »).
-3. Choisissez « Build method » comme « Repository ».
-4. Entrez l'URL du référentiel : `https://github.com/wsj-br/duplistatus.git`
-5. Dans le champ « Compose path », entrez : `production.yml`
-6. (optionnel) Définissez les variables d'environnement `TZ`, `LANG`, `PWD_ENFORCE` et `PWD_MIN_LEN` dans la section « Environment variables ». Vérifiez la section [Timezone and Locale](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
-6. Cliquez sur « Deploy the stack ».
+1. Dans [Portainer](https://docs.portainer.io/user/docker/stacks), accédez à « Piles » et cliquez sur « Ajouter une pile ».
+2. Nommez votre pile (par exemple, « duplistatus »).
+3. Choisissez « Méthode de construction » comme « Dépôt ».
+4. Entrez l'URL du dépôt : `https://github.com/wsj-br/duplistatus.git`
+5. Dans le champ « Chemin du compose », entrez : `production.yml`
+6. (optionnel) Définissez les variables d'environnement `TZ`, `LANG`, `PWD_ENFORCE` et `PWD_MIN_LEN` dans la section « Variables d'environnement ». Consultez la section [Fuseau horaire](./configure-tz.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+6. Cliquez sur « Déployer la pile ».
 
 ### Option 4 : Utilisation de Docker CLI {#option-4-using-docker-cli}
 
@@ -188,7 +188,7 @@ Vous pouvez spécifier plusieurs domaines de recherche en ajoutant plusieurs dra
 
 **Note** : Ignorer les adresses IPv6 (contenant `:`) et les adresses localhost (comme `127.0.0.53`) lors de la configuration des serveurs DNS.
 
-Vérifier la section [Fuseau horaire et Langue](./configure-tz-lang.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
+Consultez la section [Fuseau horaire](./configure-tz.md) pour plus de détails sur la façon d'ajuster le fuseau horaire et le format des nombres/dates/heures.
 
 ### Option 6 : Utilisation des pods Podman {#option-6-using-podman-pods}
 

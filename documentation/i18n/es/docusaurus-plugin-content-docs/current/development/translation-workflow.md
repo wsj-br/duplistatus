@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:50.752Z'
-source_file_mtime: '2026-02-05T19:05:51.758Z'
+translation_last_updated: '2026-02-06T22:33:36.202Z'
+source_file_mtime: '2026-02-06T20:21:18.352Z'
 source_file_hash: c84ad8472108cfb5
 translation_language: es
 source_file_path: development/translation-workflow.md

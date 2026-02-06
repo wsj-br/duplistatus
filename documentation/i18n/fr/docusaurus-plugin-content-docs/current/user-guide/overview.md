@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:24.052Z'
-source_file_mtime: '2026-02-05T17:53:15.519Z'
-source_file_hash: 707f5c41ecb6e26f
+translation_last_updated: '2026-02-06T22:33:29.034Z'
+source_file_mtime: '2026-02-06T21:11:29.339Z'
+source_file_hash: 570227cbd4e2d113
 translation_language: fr
 source_file_path: user-guide/overview.md
 ---
@@ -13,11 +13,12 @@ Bienvenue dans le guide utilisateur duplistatus. Ce document complet fournit des
 
 duplistatus est un puissant tableau de bord de surveillance conçu spécifiquement pour les systèmes de sauvegarde Duplicati. Il fournit :
 
-- Surveillance centralisée de plusieurs serveurs Duplicati à partir d'une seule interface
-- Suivi du statut en temps réel de toutes les opérations de sauvegarde
-- Détection automatisée des sauvegardes en retard avec alertes configurables
-- Métriques complètes et visualisation de la performance de sauvegarde
+- Surveillance centralisée de plusieurs serveurs Duplicati depuis une interface unique
+- Suivi en temps réel du statut de toutes les opérations de sauvegarde
+- Détection automatique des sauvegardes en retard avec des alertes configurables
+- Métriques complètes et visualisation des performances de sauvegarde
 - Système de notification flexible via NTFY et e-mail
+- Support multilingue (anglais, français, allemand, espagnol et portugais brésilien).
 
 ## Installation {#installation}
 
@@ -28,13 +29,14 @@ Pour les prérequis et les instructions d'installation détaillées, veuillez co
 Après une installation réussie, accédez à l'interface web duplistatus en suivant ces étapes :
 
 1. Ouvrez votre navigateur web préféré
-2. Accédez à `http://your-server-ip:9666`
-   - Remplacez `your-server-ip` par l'Adresse IP réelle ou le Nom d'hôte de votre serveur duplistatus
-   - Le Port par défaut est `9666`
-3. Une Page de Connexion s'affichera. Utilisez ces identifiants pour la première utilisation (ou après une mise à niveau à partir de Versions antérieures à 0.9.x) :
-    - Nom d'utilisateur : `admin`
-    - Mot de passe : `Duplistatus09` 
-4. Après la Connexion, le Tableau de bord principal s'affichera automatiquement (sans données lors de la première utilisation)
+2. Accédez à `http://votre-adresse-ip-serveur:9666`
+   - Remplacez `votre-adresse-ip-serveur` par l'adresse IP ou le nom d'hôte réel de votre serveur duplistatus
+   - Le port par défaut est `9666`
+3. Une page de connexion s'affichera. Vous pouvez sélectionner la langue de l'interface dans le coin supérieur droit de la page de connexion, ou une fois connecté, via le menu utilisateur (cliquez sur votre nom d'utilisateur → Langue).
+   Utilisez ces identifiants pour la première utilisation (ou après une mise à niveau à partir de versions pré-0.9.x) :
+    - nom d'utilisateur : `admin`
+    - mot de passe : `Duplistatus09` 
+4. Après la connexion, le tableau de bord principal s'affichera automatiquement (sans données lors de la première utilisation)
 
 ## Vue d'ensemble de l'interface utilisateur {#user-interface-overview}
 
@@ -57,22 +59,22 @@ L'interface utilisateur est organisée en plusieurs sections clés pour offrir u
 
 La barre d'outils de l'application fournit un accès pratique aux fonctions et paramètres clés, organisés pour un flux de travail efficace.
 
-![application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
-| Bouton                                                                                                                                       | Description                                                                                                                                                                  |
+| Bouton                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                    | Exécuter une actualisation manuelle immédiate de l'écran de toutes les données                                                                                                                       |
-| <IconButton label="Actualisation automatique" />                                                                                                              | Activer ou désactiver la fonctionnalité d'actualisation automatique. Configurer dans [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page Paramètres d'affichage           |
-| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accéder au site web ntfy.sh pour votre rubrique de notification configurée. <br/> _Clic droit_ pour afficher un code QR afin de configurer votre appareil pour recevoir les notifications de duplistatus. |
-| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration Duplicati](duplicati-configuration.md)       | Ouvrir l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface héritée Duplicati (`/ngax`) dans un nouvel onglet                                                                                                           |
+| <IconButton icon="lucide:rotate-ccw" /> &nbsp; Actualiser l'écran                                                                                    | Exécuter une actualisation manuelle immédiate de toutes les données                                                                                                                       |
+| <IconButton label="Actualisation auto" />                                                                                                              | Activer ou désactiver la fonctionnalité d'actualisation automatique. Configurer dans [Paramètres d'affichage](settings/display-settings.md) <br/> _Clic droit_ pour ouvrir la page des paramètres d'affichage           |
+| <SvgButton svgFilename="ntfy.svg" /> &nbsp; Ouvrir NTFY                                                                                            | Accéder au site web ntfy.sh pour votre sujet de notification configuré. <br/> _Clic droit_ pour afficher un code QR permettant de configurer votre appareil pour recevoir des notifications de duplistatus. |
+| <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Configuration Duplicati](duplicati-configuration.md)       | Ouvrir l'interface web du serveur Duplicati sélectionné <br/> _Clic droit_ pour ouvrir l'interface utilisateur Duplicati legacy (`/ngax`) dans un nouvel onglet                                                                                                                           |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collecter les journaux](collect-backup-logs.md)                                   | Se connecter aux serveurs Duplicati et récupérer les journaux de sauvegarde <br/> _Clic droit_ pour collecter les journaux de tous les serveurs configurés                                                         |
-| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md) | Configurer les notifications, la surveillance, le serveur SMTP et les modèles de notification                                                                                                 |
-| <IconButton icon="lucide:user" label="username" />                                                                                               | Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `Utilisateur`), cliquer pour le menu utilisateur. Voir plus dans [Gestion des utilisateurs](settings/user-management-settings.md)                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide de l'utilisateur                                                                    | Ouvre le [Guide de l'utilisateur](overview.md) à la section pertinente de la page que vous consultez actuellement. L'infobulle affiche « Aide pour [Nom de la page] » pour indiquer quelle documentation s'ouvrira.                                                                           |
+| <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Paramètres](settings/backup-notifications-settings.md) | Configurer les notifications, la surveillance, le serveur SMTP et les modèles de notification                                                                                 |
+| <IconButton icon="lucide:user" label="nom d'utilisateur" />                                                                                               | Afficher l'utilisateur connecté, le type d'utilisateur (`Admin`, `Utilisateur`), cliquer pour ouvrir le menu utilisateur (inclut la sélection de langue). Plus d'informations dans [Gestion des utilisateurs](settings/user-management-settings.md)                               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; Guide utilisateur                                                                    | Ouvrir le [Guide utilisateur](overview.md) à la section pertinente pour la page actuellement consultée. L'info-bulle affiche « Aide pour [Nom de la page] » pour indiquer quelle documentation sera ouverte.                                                                           |
 
 ### Menu Utilisateur {#user-menu}
 
-Cliquer sur le bouton utilisateur ouvre un menu déroulant avec des options spécifiques à l'utilisateur. Les options du menu diffèrent selon que vous êtes connecté en tant qu'administrateur ou utilisateur ordinaire.
+Cliquer sur le bouton utilisateur ouvre un menu déroulant avec des options spécifiques à l'utilisateur. Les options de menu diffèrent selon que vous êtes connecté en tant qu'administrateur ou utilisateur standard. Les deux rôles peuvent changer la langue de l'interface via le sous-menu **Langue**. Langues prises en charge : anglais, français, allemand, espagnol et portugais brésilien.
 
 <table>
   <tr>

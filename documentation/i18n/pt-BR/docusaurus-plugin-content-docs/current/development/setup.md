@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-05T19:08:56.763Z'
-source_file_mtime: '2026-02-04T21:14:03.774Z'
-source_file_hash: eeffa736b6dc0250
+translation_last_updated: '2026-02-06T22:33:40.674Z'
+source_file_mtime: '2026-02-06T22:10:19.145Z'
+source_file_hash: ae2bbcffdb897dd2
 translation_language: pt-BR
 source_file_path: development/setup.md
 ---
@@ -14,59 +14,108 @@ source_file_path: development/setup.md
 - pnpm >=10.24.0
 - SQLite3
 - Inkscape (para tradução de SVG de documentação e exportação de PNG; obrigatório apenas se você executar `translate` ou `translate:svg`)
-- bat/batcat (para mostrar uma versão formatada de `translate:help`)
+- bat/batcat (para mostrar uma versão bonita do `translate:help`)
+- direnv (para carregar automaticamente os arquivos `.env*`)
 
 ## Etapas {#steps}
 
 1. Clone o repositório:
 
-```bash
-git clone https://github.com/wsj-br/duplistatus.git
-cd duplistatus
-```
+    ```bash
+    git clone https://github.com/wsj-br/duplistatus.git
+    cd duplistatus
+    ```
 
 2. Instalar dependências (Debian/Ubuntu):
 
-```bash
-sudo apt update
-sudo apt install sqlite3 git inkscape bat -y
-```
+    ```bash
+    sudo apt update
+    sudo apt install sqlite3 git inkscape bat -y
+    ```
 
-3. Remova instalações antigas do Node.js (se você já o tinha instalado)
+3. Remova instalações antigas do Node.js (se já estiver instalado)
 
-```bash
-sudo apt-get purge nodejs npm -y
-sudo apt-get autoremove -y
-sudo rm -rf /usr/local/bin/npm 
-sudo rm -rf /usr/local/share/man/man1/node* 
-sudo rm -rf /usr/local/lib/dtrace/node.d
-rm -rf ~/.npm
-rm -rf ~/.node-gyp
-sudo rm -rf /opt/local/bin/node
-sudo rm -rf /opt/local/include/node
-sudo rm -rf /opt/local/lib/node_modules
-sudo rm -rf /usr/local/lib/node*
-sudo rm -rf /usr/local/include/node*
-sudo rm -rf /usr/local/bin/node*
-```
+    ```bash
+    sudo apt-get purge nodejs npm -y
+    sudo apt-get autoremove -y
+    sudo rm -rf /usr/local/bin/npm 
+    sudo rm -rf /usr/local/share/man/man1/node* 
+    sudo rm -rf /usr/local/lib/dtrace/node.d
+    rm -rf ~/.npm
+    rm -rf ~/.node-gyp
+    sudo rm -rf /opt/local/bin/node
+    sudo rm -rf /opt/local/include/node
+    sudo rm -rf /opt/local/lib/node_modules
+    sudo rm -rf /usr/local/lib/node*
+    sudo rm -rf /usr/local/include/node*
+    sudo rm -rf /usr/local/bin/node*
+    ```
 
 4. Instale Node.js e pnpm:
 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-nvm use --lts
-npm install -g pnpm npm-check-updates doctoc
-```
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    source ~/.bashrc
+    nvm install --lts
+    nvm use --lts
+    npm install -g pnpm npm-check-updates doctoc
+    ```
 
-5. Iniciar o servidor de desenvolvimento:
+5. Configurar suporte do direnv
 
-Para a porta TCP padrão (8666):
+- Adicione estas linhas ao seu arquivo `~/.bashrc`
 
-```bash
-pnpm dev
-```
+    ```bash 
+    # direnv support (apt install direnv)
+    eval "$(direnv hook bash)"
+    ```
+
+com este comando:
+
+    ```bash 
+    (echo "# direnv support (apt install direnv)"; echo 'eval "$(direnv hook bash)') >> ~/.bashrc
+    ```
+
+no diretório base do repositório, execute:
+
+    ```bash
+    direnv allow
+    ```
+
+- Adicione estas linhas ao seu arquivo `~/.profile`
+
+    ```bash 
+    # export the Bash environment (needed for Cursor's agents to load it).
+    export BASH_ENV="$HOME/.bashrc"
+    ```
+
+com este comando:
+
+    ```bash 
+    (echo "# export the Bash environment (needed for Cursor's agents to load it)."; echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
+    ```
+
+:::note
+Você precisa reabrir o terminal ou fechar/reabrir o aplicativo Cursor para que essas alterações entrem em vigor.
+:::
+
+6. Crie o arquivo .env no diretório base do repositório com estas variáveis.
+
+- Você pode usar qualquer valor para `VERSION`; ele será atualizado automaticamente ao usar os scripts de desenvolvimento.
+- Use senhas aleatórias para `ADMIN_PASSWORD` e `USER_PASSWORD`; essas senhas serão usadas no script `pnpm take-screenshots`.
+- Você pode obter a `OPENROUTER_API_KEY` em [openrouter.ai](https://openrouter.ai).
+
+    ```
+    VERSION=x.x.x
+
+    # Development user passwords
+    ADMIN_PASSWORD="admin_secret"
+    USER_PASSWORD="user_secret"
+
+
+    # Openrouter.ai API key for translation scripts in documentation 
+    OPENROUTER_API_KEY=sk-or-v1-your-key-for-translate-files
+    ```
 
 ## Scripts Disponíveis {#available-scripts}
 
@@ -101,11 +150,11 @@ O projeto inclui vários scripts npm para diferentes tarefas de desenvolvimento:
 ### Scripts de Teste {#test-scripts}
 - `pnpm generate-test-data` - Gerar dados de backup de teste (requer parâmetro --servers=N)
 - `pnpm show-overdue-notifications` - Mostrar conteúdo de notificações atrasadas
-- `pnpm run-overdue-check` - Executar verificação de atraso em data/hora específica
-- `pnpm test-cron-port` - Testar conectividade da porta do serviço cron
+- `pnpm run-overdue-check` - Executar verificação de atraso em uma data/hora específica
+- `pnpm test-cron-port` - Testar conectividade da porta de serviço cron
 - `pnpm test-overdue-detection` - Testar lógica de detecção de backup atrasado
 - `pnpm validate-csv-export` - Validar funcionalidade de exportação CSV
-- `pnpm set-smtp-test-config` - Definir configuração de teste SMTP a partir de variáveis de ambiente (consulte [Scripts de Teste](test-scripts))
-- `pnpm test-smtp-connections` - Testar compatibilidade cruzada de tipo de conexão SMTP (consulte [Scripts de Teste](test-scripts))
-- `pnpm test-entrypoint` - Testar script de entrypoint do Docker em desenvolvimento local (consulte [Scripts de Teste](test-scripts))
-- `pnpm take-screenshots` - Capturar capturas de tela para documentação (consulte [Ferramentas de Documentação](documentation-tools))
+- `pnpm set-smtp-test-config` - Definir configuração de teste SMTP a partir de variáveis de ambiente (ver [Scripts de Teste](test-scripts))
+- `pnpm test-smtp-connections` - Testar compatibilidade cruzada de tipo de conexão SMTP (ver [Scripts de Teste](test-scripts))
+- `pnpm test-entrypoint` - Testar script de entrypoint do Docker no desenvolvimento local (ver [Scripts de Teste](test-scripts))
+- `pnpm take-screenshots` - Capturar screenshots para documentação (ver [Ferramentas de Documentação](documentation-tools))

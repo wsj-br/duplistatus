@@ -3,7 +3,7 @@ import { getConfigBackupSettings, getServerInfoById, setConfiguration } from '@/
 import { defaultAPIConfig } from '@/lib/default-config';
 import { getServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 import https from 'https';
@@ -294,7 +294,7 @@ async function updateBackupSettingsWithSchedule(
   await updatePromise;
 }
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAuth(async (request: NextRequest, authContext) => {
   // Store server info for error logging
   let providedServerId: string | undefined;
   let serverNameForError: string | undefined;
@@ -593,31 +593,29 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     }
 
     // Log audit event
-    if (authContext) {
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      const finalServerId = providedServerId || detectedServerId || detectedServerName;
-      const hasErrors = errorCount > 0;
-      const status = hasErrors ? 'error' : 'success';
-      
-      await AuditLogger.log({
-        userId: authContext.userId,
-        username: authContext.username,
-        action: 'backup_schedule_synced',
-        category: 'backup',
-        targetType: 'backup',
-        targetId: finalServerId,
-        details: {
-          serverName: detectedServerName,
-          processed: processedCount,
-          errors: errorCount,
-        },
-        ipAddress,
-        userAgent,
-        status,
-        errorMessage: hasErrors ? `Schedule sync completed with ${errorCount} error(s)` : undefined,
-      });
-    }
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const finalServerId = providedServerId || detectedServerId || detectedServerName;
+    const hasErrors = errorCount > 0;
+    const status = hasErrors ? 'error' : 'success';
+    
+    await AuditLogger.log({
+      userId: authContext.userId,
+      username: authContext.username,
+      action: 'backup_schedule_synced',
+      category: 'backup',
+      targetType: 'backup',
+      targetId: finalServerId,
+      details: {
+        serverName: detectedServerName,
+        processed: processedCount,
+        errors: errorCount,
+      },
+      ipAddress,
+      userAgent,
+      status,
+      errorMessage: hasErrors ? `Schedule sync completed with ${errorCount} error(s)` : undefined,
+    });
 
     return NextResponse.json(responseData);
 
@@ -625,30 +623,28 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     console.error('Error syncing backup schedules:', error instanceof Error ? error.message : String(error));
     
     // Log audit event for sync failure
-    if (authContext) {
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      const errorMessage = error instanceof Error ? error.message : 'Failed to sync backup schedules';
-      const finalServerId = providedServerId || 'unknown';
-      const finalServerName = serverNameForError || 'unknown';
-      
-      await AuditLogger.log({
-        userId: authContext.userId,
-        username: authContext.username,
-        action: 'backup_schedule_synced',
-        category: 'backup',
-        targetType: 'backup',
-        targetId: finalServerId,
-        details: {
-          serverName: finalServerName,
-          error: errorMessage,
-        },
-        ipAddress,
-        userAgent,
-        status: 'error',
-        errorMessage,
-      });
-    }
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const errorMessage = error instanceof Error ? error.message : 'Failed to sync backup schedules';
+    const finalServerId = providedServerId || 'unknown';
+    const finalServerName = serverNameForError || 'unknown';
+    
+    await AuditLogger.log({
+      userId: authContext.userId,
+      username: authContext.username,
+      action: 'backup_schedule_synced',
+      category: 'backup',
+      targetType: 'backup',
+      targetId: finalServerId,
+      details: {
+        serverName: finalServerName,
+        error: errorMessage,
+      },
+      ipAddress,
+      userAgent,
+      status: 'error',
+      errorMessage,
+    });
     
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to sync backup schedules' },

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-05T19:08:12.337Z'
-source_file_mtime: '2026-01-29T17:58:29.895Z'
+translation_last_updated: '2026-02-06T22:33:26.172Z'
+source_file_mtime: '2026-02-01T03:16:19.469Z'
 source_file_hash: 6f3df4c1ef3576bd
 translation_language: fr
 source_file_path: development/test-scripts.md
