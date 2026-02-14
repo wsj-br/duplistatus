@@ -9,12 +9,12 @@ const OPEN_SUFFIX = "}}";
 const END_PREFIX = "{{ADM_END_";
 const END_SUFFIX = "}}";
 
-/** Docusaurus admonition directive names */
+/** Docusaurus admonition directive names (allows optional leading whitespace) */
 const ADMONITION_DIRECTIVES =
-  /^(:::(?:note|tip|info|warning|danger|caution|important)(?:\[[^\]]*\])?(?:\s+[^\n]*)?)\s*$/;
+  /^\s*(:::(?:note|tip|info|warning|danger|caution|important)(?:\[[^\]]*\])?(?:\s+[^\n]*)?)\s*$/;
 
-/** Closing marker: ::: or nested ::::, :::::, etc. */
-const ADMONITION_CLOSING = /^(:::+)\s*$/;
+/** Closing marker: ::: or nested ::::, :::::, etc. (allows optional leading whitespace) */
+const ADMONITION_CLOSING = /^\s*(:::+)\s*$/;
 
 export interface AdmonitionProtectedResult {
   protected: string;

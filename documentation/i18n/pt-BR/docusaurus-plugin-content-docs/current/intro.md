@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-02-06T22:33:41.647Z'
+translation_last_updated: '2026-02-14T04:57:49.754Z'
 source_file_mtime: '2026-02-06T22:18:56.325Z'
 source_file_hash: 260a67f2593d936a
 translation_language: pt-BR
@@ -88,4 +88,4 @@ Este projeto foi construído principalmente com ajuda de IA. Para aprender como,
 
 O projeto é licenciado sob a [Apache License 2.0](LICENSE.md).   
 
-**Direitos autorais © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2025 Waldemar Scudeller Jr.**

@@ -14,10 +14,11 @@ This document provides a detailed technical explanation of the documentation tra
 6. [Placeholder Protection](#placeholder-protection)
 7. [Translation API](#translation-api)
 8. [Caching System](#caching-system)
-9. [SVG Translation](#svg-translation)
-10. [Glossary Generation](#glossary-generation)
-11. [Supporting Scripts](#supporting-scripts)
-12. [File Structure](#file-structure)
+9. [JSON Translation](#json-translation)
+10. [SVG Translation](#svg-translation)
+11. [Glossary Generation](#glossary-generation)
+12. [Supporting Scripts](#supporting-scripts)
+13. [File Structure](#file-structure)
 
 ---
 
@@ -29,6 +30,7 @@ The translation system consists of several TypeScript scripts under `documentati
 - Splits documents into translatable segments
 - Translates segments via OpenRouter LLM API (batch mode by default, or single-segment with `--no-batch`)
 - Writes translated output to `i18n/<locale>/docusaurus-plugin-content-docs/current/`
+- Translates JSON UI string files from `i18n/en/` to all target locales (enabled by default, disable with `--no-json`)
 - Optionally translates SVG files in `static/img/` (files prefixed with `duplistatus`)
 
 **Key design decisions:**
@@ -37,7 +39,7 @@ The translation system consists of several TypeScript scripts under `documentati
 - **Segment-level caching**: Each translatable segment is cached by content hash. Unchanged segments are reused across runs.
 - **File-level skip**: If a file's content hash matches the cache and the output file exists, the entire file is skipped.
 - **Placeholder protection**: URLs and admonition syntax are replaced with placeholders before translation to prevent the LLM from modifying them.
-- **Glossary support**: CSV glossaries provide preferred translations. `glossary-ui.csv` is generated from intlayer dictionaries; `glossary-user.csv` (en, locale, translation) supplies optional overrides that take precedence.
+- **Glossary support**: CSV glossaries provide preferred translations. `glossary-ui.csv` is generated from intlayer dictionaries; `glossary-user.csv` (en, locale, translation) supplies optional overrides that take precedence. Use `*` as the locale to apply a term to all configured locales.
 
 ---
 
@@ -88,7 +90,7 @@ Configuration is loaded from `translate.config.json` (or a custom path via `-c`)
 | `i18n`         | `./i18n`               | Output directory for translated content             |
 | `cache`        | `./.translation-cache` | SQLite cache and logs                               |
 | `glossary`     | `./glossary-ui.csv`    | CSV file with term translations (UI, from intlayer) |
-| `glossaryUser` | `./glossary-user.csv`  | Optional: user overrides (en, locale, translation)  |
+| `glossaryUser` | `./glossary-user.csv`  | Optional: user overrides (en, locale, translation; use `*` for locale to apply to all)  |
 | `staticImg`    | `./static/img`         | SVG source directory (optional)                     |
 
 **Locales** (`config.locales`):
@@ -321,6 +323,41 @@ The cache is a SQLite database at `.translation-cache/cache.db`.
 
 ---
 
+|
+|---
+|
+## JSON Translation
+
+JSON translation handles Docusaurus UI string files (e.g., `code.json`, `navbar.json`, `footer.json`) by translating the `message` fields while preserving `description` fields as developer documentation.
+
+### Scope
+
+- All JSON files in `i18n/en/` (source locale) discovered recursively
+- Can be excluded via `.translate-ignore` (gitignore-style patterns) using paths relative to `i18n/en/`
+- Output written to `i18n/<locale>/` preserving directory structure
+
+### Splitting (`JsonSplitter`)
+
+- Parses JSON with structure: `{"key": {"message": "text", "description": "context"}}`
+- Each `message` field becomes one `Segment` with `type: "json"`
+- The `description` field is kept for context but **not translated**
+- `jsonKey` stores the full key path (e.g., `theme.ErrorPageContent.title`)
+- `jsonDescription` stores the description for glossary hints
+
+### Reassembly
+
+- Reconstructs the original JSON structure after translation
+- Preserves all keys and non-translatable fields exactly as in source
+- Writes pretty-printed JSON with 2-space indentation (matching Docusaurus style)
+
+### Cache
+
+- Same SQLite cache as markdown; `filepath` is relative to `i18n/en/` (e.g., `code.json`, `docusaurus-theme-classic/navbar.json`)
+- `start_line` is always `null` (JSON doesn't have line numbers like markdown)
+- Segment hash based on message content only
+
+---
+
 ## SVG Translation
 
 SVG translation is handled by `translate-svg.ts` and `svg-splitter.ts`.
@@ -375,7 +412,7 @@ The glossary can be generated from intlayer dictionaries to ensure consistency b
 
 **Usage**: Run `pnpm translate:glossary-ui` from the `documentation/` directory.
 
-**User overrides**: Entries in `glossary-user.csv` (columns: en, locale, translation) take precedence over `glossary-ui.csv`.
+**User overrides**: Entries in `glossary-user.csv` (columns: en, locale, translation) take precedence over `glossary-ui.csv`. Use `*` as the locale to apply a term to all configured locales.
 
 ### `update-glossary-markdown.js`
 
@@ -538,4 +575,5 @@ Issues are logged; translation is not aborted. Use `--no-cache` to re-translate 
 | `--no-svg`               | Skip SVG translation                                                             |
 | `--no-export-png`        | Skip Inkscape PNG export after SVG translation                                   |
 | `--no-batch`             | Use single-segment translation (one API call per segment)                        |
+| `--no-json`              | Skip JSON translation (i18n UI strings) [default: false]                        |
 | `-c, --config <path>`    | Config file path                                                                 |

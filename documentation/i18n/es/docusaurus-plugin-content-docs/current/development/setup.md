@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-06T22:33:35.772Z'
-source_file_mtime: '2026-02-06T22:10:19.145Z'
-source_file_hash: ae2bbcffdb897dd2
+translation_last_updated: '2026-02-14T04:57:44.690Z'
+source_file_mtime: '2026-02-14T03:28:17.279Z'
+source_file_hash: 34cb441ca91355e0
 translation_language: es
 source_file_path: development/setup.md
 ---
@@ -19,21 +19,21 @@ source_file_path: development/setup.md
 
 ## Pasos {#steps}
 
-1. Clona el repositorio:
+### 1. Clonar el repositorio: {#1-clone-the-repository}
 
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
-2. Instalar dependencias (Debian/Ubuntu):
+### 2. Instalar dependencias (Debian/Ubuntu): {#2-install-dependencies-debianubuntu}
 
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
     ```
 
-3. Eliminar instalaciones antiguas de Node.js (si ya lo tiene instalado)
+### 3. Eliminar instalaciones antiguas de Node.js (si ya lo tiene instalado) {#3-remove-old-nodejs-installations-if-you-already-have-it-installed}
 
     ```bash
     sudo apt-get purge nodejs npm -y
@@ -51,7 +51,7 @@ source_file_path: development/setup.md
     sudo rm -rf /usr/local/bin/node*
     ```
 
-4. Instala Node.js y pnpm:
+### 4. Instalar Node.js y pnpm: {#4-install-nodejs-and-pnpm}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -61,9 +61,9 @@ source_file_path: development/setup.md
     npm install -g pnpm npm-check-updates doctoc
     ```
 
-5. Configurar soporte de direnv
+### 5. Configurar soporte de direnv {#5-set-up-direnv-support}
 
-- Añadir estas líneas a su archivo `~/.bashrc`
+Añadir estas líneas a su archivo `~/.bashrc`
 
     ```bash 
     # direnv support (apt install direnv)
@@ -82,30 +82,32 @@ en el directorio base del repositorio, ejecute:
     direnv allow
     ```
 
-- Añadir estas líneas a su archivo `~/.profile`
+Añadir estas líneas a su archivo `~/.profile`
 
     ```bash 
-    # export the Bash environment (needed for Cursor's agents to load it).
+    # export the Bash environment (needed for code editor or AI Agents to load it).
     export BASH_ENV="$HOME/.bashrc"
     ```
 
 con este comando:
 
     ```bash 
-    (echo "# export the Bash environment (needed for Cursor's agents to load it)."; echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
+    (echo "# export the Bash environment (needed for code editor or AI Agents to load it)."; \
+     echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
     ```
 
-:::note
-Necesita volver a abrir el terminal o cerrar/reabrir la aplicación Cursor para que estos cambios surtan efecto.
+:::info
+  Necesita volver a abrir el terminal o es posible que deba cerrar/volver a abrir el editor de código IDE (Visual Studio Code, 
+  Cursor, Lingma, Antigravity, Zed, ...) para que estos cambios surtan efecto.
 :::
 
-6. Crear el archivo .env en el directorio base del repositorio con estas variables.
+### 6. Crear el archivo `.env` en el directorio base del repositorio con estas variables. {#6-create-the-env-file-at-the-repository-basedir-with-these-variables}
 
 - Puede usar cualquier valor para `VERSION`; se actualizará automáticamente al usar los scripts de desarrollo.
 - Use contraseñas aleatorias para `ADMIN_PASSWORD` y `USER_PASSWORD`; estas contraseñas se utilizarán en el script `pnpm take-screenshots`.
 - Puede obtener la `OPENROUTER_API_KEY` desde [openrouter.ai](https://openrouter.ai).
 
-    ```
+    ```bash
     VERSION=x.x.x
 
     # Development user passwords
@@ -130,6 +132,23 @@ El proyecto incluye varios scripts npm para diferentes tareas de desarrollo:
 - `scripts/clean-workspace.sh` - Limpiar el espacio de trabajo
 
 **Nota:** El script `preinstall` aplica automáticamente pnpm como gestor de paquetes.
+
+### Scripts de Documentación {#documentation-scripts}
+
+Estos scripts deben ejecutarse desde el directorio `documentation/`:
+
+- `pnpm start` - Compilar y servir el sitio de documentación en modo de producción (puerto 3000 por defecto)
+- `pnpm start:en` - Iniciar servidor de desarrollo de documentación en inglés (recarga en caliente habilitada)
+- `pnpm start:fr` - Iniciar servidor de desarrollo de documentación en francés (recarga en caliente habilitada)
+- `pnpm start:de` - Iniciar servidor de desarrollo de documentación en alemán (recarga en caliente habilitada)
+- `pnpm start:es` - Iniciar servidor de desarrollo de documentación en español (recarga en caliente habilitada)
+- `pnpm start:pt-br` - Iniciar servidor de desarrollo de documentación en portugués (Brasil) (recarga en caliente habilitada)
+- `pnpm build` - Compilar el sitio de documentación para producción
+- `pnpm write-translations` - Extraer cadenas traducibles de la documentación
+- `pnpm translate` - Traducir archivos de documentación usando IA (ver [Flujo de Trabajo de Traducción](translation-workflow))
+- `pnpm lint` - Ejecutar ESLint en archivos de origen de documentación
+
+Los servidores de desarrollo (`start:*`) proporcionan reemplazo de módulos en caliente para un desarrollo rápido. El puerto por defecto es 3000.
 
 ### Scripts de Producción {#production-scripts}
 - `pnpm build-local` - Compilar y preparar para producción local (incluye verificaciones previas, copia archivos estáticos al directorio independiente)

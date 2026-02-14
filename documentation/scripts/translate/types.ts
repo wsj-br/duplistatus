@@ -21,6 +21,8 @@ export interface TranslationConfig {
     glossaryUser?: string;
     /** Optional: path to static img (SVG source). Default: ./static/img */
     staticImg?: string;
+    /** Optional: path to JSON source files (i18n source). Default: ./i18n/en */
+    jsonSource?: string;
   };
   cache: {
     enabled: boolean;
@@ -36,12 +38,16 @@ export interface GlossaryTerm {
 
 export interface Segment {
   id: string;
-  type: "frontmatter" | "heading" | "paragraph" | "code" | "admonition" | "other";
+  type: "frontmatter" | "heading" | "paragraph" | "code" | "admonition" | "other" | "json";
   content: string;
   hash: string;
   translatable: boolean;
   /** 1-based line number in the markdown file where this segment started. */
   startLine?: number;
+  /** For JSON segments: the full key path (e.g., "theme.ErrorPageContent.title") */
+  jsonKey?: string;
+  /** For JSON segments: the description field (for context, not translated) */
+  jsonDescription?: string;
 }
 
 export interface TranslationResult {

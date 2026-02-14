@@ -4,9 +4,11 @@ import {
   loadTranslateIgnoreFile,
   loadTranslateSvgIgnoreFile,
   isIgnoredDocFile,
+  isIgnoredJsonFile,
 } from "./ignore";
 import { DocumentSplitter } from "./splitter";
 import { SvgSplitter } from "./svg-splitter";
+import { JsonSplitter } from "./json-splitter";
 import { TranslationConfig } from "./types";
 
 const SVG_PREFIX = "duplistatus";
@@ -60,6 +62,37 @@ export function getAllSvgFiles(
   return files.sort();
 }
 
+/**
+ * Get all JSON translation files from the source i18n directory (e.g., i18n/en/)
+ * These are Docusaurus-generated UI string files that need translation.
+ */
+export function getAllJsonFiles(
+  jsonSourceDir: string,
+  ignoreMatcher: ReturnType<typeof loadTranslateIgnoreFile> | null
+): string[] {
+  if (!fs.existsSync(jsonSourceDir)) return [];
+  const files: string[] = [];
+
+  function walk(dir: string) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (entry.name.endsWith(".json")) {
+        // Check if this file should be ignored
+        if (ignoreMatcher && isIgnoredJsonFile(fullPath, jsonSourceDir, ignoreMatcher)) {
+          continue;
+        }
+        files.push(fullPath);
+      }
+    }
+  }
+
+  walk(jsonSourceDir);
+  return files.sort();
+}
+
 export interface ExistingSegmentsSnapshot {
   existingFilepaths: Set<string>;
   hashToFilepath: Map<string, string>;
@@ -77,12 +110,15 @@ export function buildExistingSegmentsSnapshot(
     cwd,
     config.paths.staticImg ?? "./static/img"
   );
+  const jsonSourceDir = path.resolve(cwd, config.paths.jsonSource);
 
   const docIgnore = loadTranslateIgnoreFile(cwd);
   const svgIgnore = loadTranslateSvgIgnoreFile(cwd);
+  const jsonIgnore = docIgnore; // Use same ignore patterns for JSON
 
   const docSplitter = new DocumentSplitter();
   const svgSplitter = new SvgSplitter();
+  const jsonSplitter = new JsonSplitter();
 
   // Walk docs
   const docFiles = getAllDocFiles(docsDir, docIgnore);
@@ -109,6 +145,22 @@ export function buildExistingSegmentsSnapshot(
 
     const content = fs.readFileSync(filepath, "utf-8");
     const segments = svgSplitter.split(content);
+    for (const segment of segments) {
+      if (!segment.translatable) continue;
+      if (!hashToFilepath.has(segment.hash)) {
+        hashToFilepath.set(segment.hash, relativePath);
+      }
+    }
+  }
+
+  // Walk JSON files
+  const jsonFiles = getAllJsonFiles(jsonSourceDir, jsonIgnore);
+  for (const filepath of jsonFiles) {
+    const relativePath = toPosixPath(path.relative(jsonSourceDir, filepath));
+    existingFilepaths.add(relativePath);
+
+    const content = fs.readFileSync(filepath, "utf-8");
+    const segments = jsonSplitter.split(filepath, content);
     for (const segment of segments) {
       if (!segment.translatable) continue;
       if (!hashToFilepath.has(segment.hash)) {

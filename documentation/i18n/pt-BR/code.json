@@ -16,7 +16,7 @@
     "description": "The page & hero description of the blog archive page"
   },
   "theme.blog.paginator.navAriaLabel": {
-    "message": "Navegação da página de lista de blog",
+    "message": "Navegação da lista de blogs",
     "description": "The ARIA label for the blog pagination"
   },
   "theme.blog.paginator.newerEntries": {
@@ -40,11 +40,11 @@
     "description": "The blog post button label to navigate to the older/next post"
   },
   "theme.tags.tagsPageLink": {
-    "message": "Ver todos",
+    "message": "Ver todas as tags",
     "description": "The label of the link targeting the tag list page"
   },
   "theme.colorToggle.ariaLabel.mode.system": {
-    "message": "modo de sistema",
+    "message": "modo do sistema",
     "description": "The name for the system color mode"
   },
   "theme.colorToggle.ariaLabel.mode.light": {
@@ -60,7 +60,7 @@
     "description": "The ARIA label for the color mode toggle"
   },
   "theme.docs.breadcrumbs.navAriaLabel": {
-    "message": "Breadcrumbs",
+    "message": "Migalhas de pão",
     "description": "The ARIA label for the breadcrumbs"
   },
   "theme.docs.DocCard.categoryDescription.plurals": {
@@ -91,15 +91,15 @@
     "message": "Versão: {versionLabel}"
   },
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "Esta é documentação não lançada para {siteTitle} versão {versionLabel}.",
+    "message": "Esta é a documentação não lançada para {siteTitle} versão {versionLabel}.",
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
-    "message": "Esta é documentação para {siteTitle} {versionLabel}, que não é mais mantida ativamente.",
+    "message": "Esta é a documentação para {siteTitle} {versionLabel}, que não é mais mantida ativamente.",
     "description": "The label used to tell the user that he's browsing an unmaintained doc version"
   },
   "theme.docs.versions.latestVersionSuggestionLabel": {
-    "message": "Para documentação atualizada, consulte {latestVersionLink} ({versionLabel}).",
+    "message": "Para documentação atualizada, consulte a {latestVersionLink} ({versionLabel}).",
     "description": "The label used to tell the user to check the latest version"
   },
   "theme.docs.versions.latestVersionLinkLabel": {
@@ -107,7 +107,7 @@
     "description": "The label used for the latest version suggestion link label"
   },
   "theme.common.editThisPage": {
-    "message": "Editar esta Página",
+    "message": "Editar esta página",
     "description": "The link label to edit the current page"
   },
   "theme.common.headingLinkTitle": {
@@ -115,11 +115,11 @@
     "description": "Title for link to heading"
   },
   "theme.lastUpdated.atDate": {
-    "message": " em {date}",
+    "message": "em {date}",
     "description": "The words used to describe on which date a page has been last updated"
   },
   "theme.lastUpdated.byUser": {
-    "message": " por {user}",
+    "message": "por {user}",
     "description": "The words used to describe by who the page has been last updated"
   },
   "theme.lastUpdated.lastUpdatedAtBy": {
@@ -163,11 +163,11 @@
     "description": "The default label used for the Tip admonition (:::tip)"
   },
   "theme.admonition.warning": {
-    "message": "aviso",
+    "message": "Aviso",
     "description": "The default label used for the Warning admonition (:::warning)"
   },
   "theme.blog.sidebar.navAriaLabel": {
-    "message": "Navegação de postagens recentes do blog",
+    "message": "Navegação de posts recentes do blog",
     "description": "The ARIA label for recent posts in the blog sidebar"
   },
   "theme.DocSidebarItem.expandCategoryAriaLabel": {
@@ -191,7 +191,7 @@
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "Entre em contato com o proprietário do site que o vinculou à URL original e avise-o de que o link está quebrado.",
+    "message": "Por favor, entre em contato com o proprietário do site que o direcionou para o URL original e informe que o link está quebrado.",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.navbar.mobileLanguageDropdown.label": {
@@ -211,7 +211,7 @@
     "description": "The ARIA label for the link to full blog posts from excerpts"
   },
   "theme.blog.post.readingTime.plurals": {
-    "message": "Um minuto de leitura|{readingTime} minutos de leitura",
+    "message": "Um min de leitura|{readingTime} min de leitura",
     "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.CodeBlock.copy": {
@@ -223,7 +223,7 @@
     "description": "The copied button label on code blocks"
   },
   "theme.CodeBlock.copyButtonAriaLabel": {
-    "message": "Copiar código para a área de transferência",
+    "message": "Copiar código para área de transferência",
     "description": "The ARIA label for copy code blocks button"
   },
   "theme.CodeBlock.wordWrapToggle": {
@@ -243,7 +243,7 @@
     "description": "The title attribute for collapse button of doc sidebar"
   },
   "theme.docs.sidebar.navAriaLabel": {
-    "message": "Barra lateral de documentação",
+    "message": "Barra lateral de documentos",
     "description": "The ARIA label for the sidebar navigation"
   },
   "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
@@ -274,32 +274,12 @@
     "message": "Expandir barra lateral",
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
-  "cmfcmf/d-s-l.searchBar.placeholder": {
-    "message": "Pesquisar...",
-    "description": "Placeholder shown in the searchbar"
-  },
-  "cmfcmf/d-s-l.searchBar.clearButtonTitle": {
-    "message": "Limpar",
-    "description": "Title of the button to clear the current search input"
-  },
-  "cmfcmf/d-s-l.searchBar.detachedCancelButtonText": {
-    "message": "Cancelar",
-    "description": "Text of the button to close the detached search window"
-  },
-  "cmfcmf/d-s-l.searchBar.submitButtonTitle": {
-    "message": "Enviar",
-    "description": "Title of the button to submit a new search"
-  },
-  "cmfcmf/d-s-l.searchBar.noResults": {
-    "message": "Nenhum resultado encontrado.",
-    "description": "message shown if no results are found"
-  },
   "theme.blog.post.plurals": {
-    "message": "Uma postagem|{count} postagens",
+    "message": "Uma publicação|{count} publicações",
     "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.blog.tagTitle": {
-    "message": "{nPosts} marcado com \"{tagName}\"",
+    "message": "{nPosts} marcadas com \"{tagName}\"",
     "description": "The title of the page for a blog tag"
   },
   "theme.blog.author.pageTitle": {
@@ -311,11 +291,11 @@
     "description": "The title of the authors page"
   },
   "theme.blog.authorsList.viewAll": {
-    "message": "Ver todos",
+    "message": "Ver todos os autores",
     "description": "The label of the link targeting the blog authors page"
   },
   "theme.blog.author.noPosts": {
-    "message": "Este autor ainda não escreveu nenhuma postagem.",
+    "message": "Este autor ainda não escreveu nenhuma publicação.",
     "description": "The text for authors with 0 blog post"
   },
   "theme.contentVisibility.unlistedBanner.title": {
@@ -323,7 +303,7 @@
     "description": "The unlisted content banner title"
   },
   "theme.contentVisibility.unlistedBanner.message": {
-    "message": "Esta página não está listada. Os mecanismos de pesquisa não a indexarão, e apenas usuários com um link direto podem acessá-la.",
+    "message": "Esta página não está listada. Mecanismos de busca não irão indexá-la, e apenas usuários com um link direto podem acessá-la.",
     "description": "The unlisted content banner message"
   },
   "theme.contentVisibility.draftBanner.title": {
@@ -331,7 +311,7 @@
     "description": "The draft content banner title"
   },
   "theme.contentVisibility.draftBanner.message": {
-    "message": "Esta página é um rascunho. Será visível apenas em dev e será excluída da compilação de produção.",
+    "message": "Esta página é um rascunho. Será visível apenas em desenvolvimento e será excluída da compilação de produção.",
     "description": "The draft content banner message"
   },
   "theme.ErrorPageContent.tryAgain": {
@@ -345,5 +325,40 @@
   "theme.tags.tagsPageTitle": {
     "message": "Tags",
     "description": "The title of the tag list page"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "Nenhum resultado"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "Ver todos os resultados fora de \"{context}\""
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "Ver todos os resultados dentro de \"{context}\""
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "Ver todos os resultados"
+  },
+  "theme.SearchBar.label": {
+    "message": "Pesquisar",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "Resultados da pesquisa para \"{query}\"",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Pesquisar na documentação",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "Em todos os lugares"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "1 documento encontrado|{count} documentos encontrados",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "Nenhum documento foi encontrado",
+    "description": "The paragraph for empty search result"
   }
 }

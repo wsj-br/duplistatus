@@ -274,26 +274,6 @@
     "message": "Expand sidebar",
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
-  "cmfcmf/d-s-l.searchBar.placeholder": {
-    "message": "Search...",
-    "description": "Placeholder shown in the searchbar"
-  },
-  "cmfcmf/d-s-l.searchBar.clearButtonTitle": {
-    "message": "Clear",
-    "description": "Title of the button to clear the current search input"
-  },
-  "cmfcmf/d-s-l.searchBar.detachedCancelButtonText": {
-    "message": "Cancel",
-    "description": "Text of the button to close the detached search window"
-  },
-  "cmfcmf/d-s-l.searchBar.submitButtonTitle": {
-    "message": "Submit",
-    "description": "Title of the button to submit a new search"
-  },
-  "cmfcmf/d-s-l.searchBar.noResults": {
-    "message": "No results found.",
-    "description": "message shown if no results are found"
-  },
   "theme.blog.post.plurals": {
     "message": "One post|{count} posts",
     "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
@@ -345,5 +325,40 @@
   "theme.tags.tagsPageTitle": {
     "message": "Tags",
     "description": "The title of the tag list page"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "No results"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "See all results outside \"{context}\""
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "See all results within \"{context}\""
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "See all results"
+  },
+  "theme.SearchBar.label": {
+    "message": "Search",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "Search results for \"{query}\"",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Search the documentation",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "Everywhere"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "1 document found|{count} documents found",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "No documents were found",
+    "description": "The paragraph for empty search result"
   }
 }

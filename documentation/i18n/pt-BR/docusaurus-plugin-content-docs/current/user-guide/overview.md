@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-02-06T22:33:43.646Z'
+translation_last_updated: '2026-02-14T04:57:51.321Z'
 source_file_mtime: '2026-02-06T21:11:29.339Z'
 source_file_hash: 570227cbd4e2d113
 translation_language: pt-BR
 source_file_path: user-guide/overview.md
 ---
-# Visão geral {#overview}
+# Visão Geral {#overview}
 
 Bem-vindo ao guia do usuário duplistatus. Este documento abrangente fornece instruções detalhadas para usar duplistatus a fim de monitorar e gerenciar suas operações de backup do Duplicati em múltiplos servidores.
 

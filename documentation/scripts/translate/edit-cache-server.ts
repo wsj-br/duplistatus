@@ -6,7 +6,7 @@
 import express from "express";
 import http from "http";
 import path from "path";
-import { fileURLToPath, pathToFileURL } from "url";
+import { fileURLToPath } from "url";
 import { Command } from "commander";
 import { exec } from "child_process";
 import { loadConfig } from "./config";
@@ -195,6 +195,7 @@ async function main() {
 
       const isSvg =
         filepath.includes("static/img/") || filepath.endsWith(".svg");
+      const isJson = filepath.endsWith(".json");
 
       let sourcePath: string;
       let translatedPath: string;
@@ -211,6 +212,9 @@ async function main() {
           "assets",
           basename
         );
+      } else if (isJson) {
+        sourcePath = path.resolve(cwd, config.paths.jsonSource, filepath);
+        translatedPath = path.resolve(cwd, config.paths.i18n, locale, filepath);
       } else {
         sourcePath = path.resolve(cwd, config.paths.docs, filepath);
         translatedPath = path.join(
@@ -223,8 +227,15 @@ async function main() {
         );
       }
 
-      const sourceUrl = pathToFileURL(sourcePath).href + lineSuffix;
-      const translatedUrl = pathToFileURL(translatedPath).href;
+      // Use the project root as the base for relative links in the terminal
+      // Workspace root is one level up from the 'documentation' folder
+      const projectRoot = path.resolve(cwd, "..");
+      const relativeSourcePath = path.relative(projectRoot, sourcePath);
+      const relativeTranslatedPath = path.relative(projectRoot, translatedPath);
+
+      // VS Code terminal links work best with :line suffix. Default to :1 if no line suffix.
+      const sourceUrl = `${relativeSourcePath}${lineSuffix || ":1"}`;
+      const translatedUrl = `${relativeTranslatedPath}${lineSuffix || ":1"}`;
 
       console.log(`[edit-cache] Source: ${sourceUrl}`);
       console.log(`[edit-cache] Translated: ${translatedUrl}`);

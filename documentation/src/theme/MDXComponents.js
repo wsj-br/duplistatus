@@ -11,7 +11,7 @@ import SvgIcon from '@site/src/components/SvgIcon.js';
 import IIcon2 from '@site/src/components/IIcon2.js'; 
 
 
-export default {
+const MDXMapping = {
   // Re-use the default mapping
   ...MDXComponents,
   IIcon: Icon, // Make the iconify Icon component available in MDX as <icon />.
@@ -20,3 +20,5 @@ export default {
   SvgIcon: SvgIcon, // same as IconButton component but with an SVG image
   IIcon2: IIcon2, // same as SvgIcon but uses Iconify Icon instead of SVG
 };
+
+export default MDXMapping;

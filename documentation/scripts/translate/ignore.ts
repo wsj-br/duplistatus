@@ -115,14 +115,66 @@ export function loadTranslateSvgIgnoreFile(cwd: string): ((basename: string) => 
 export function isIgnoredDocFile(filepath: string, docsDir: string, ig: IgnoreMatcher): boolean {
   const relativeToDocs = path.relative(docsDir, filepath);
   const isInsideDocs =
-    !!relativeToDocs && !relativeToDocs.startsWith("..") && !path.isAbsolute(relativeToDocs);
+    relativeToDocs !== undefined &&
+    !relativeToDocs.startsWith("..") &&
+    !path.isAbsolute(relativeToDocs);
 
   if (isInsideDocs) {
     // Use gitignore-style relative matching against docs root
-    return ig.ignores(toPosixPath(relativeToDocs));
+    // Empty string means file is at docs root, use basename
+    const posixPath = relativeToDocs === "" ? path.basename(filepath) : toPosixPath(relativeToDocs);
+    return ig.ignores(posixPath);
   }
 
   // If the file is outside docs root, fall back to basename-only matching
+  return ig.ignores(path.basename(filepath));
+}
+
+/**
+ * Check if a JSON source file should be ignored.
+ * Similar to isIgnoredDocFile but uses jsonSourceDir as the base.
+ */
+export function isIgnoredJsonFile(filepath: string, jsonSourceDir: string, ig: IgnoreMatcher): boolean {
+  const relativeToJson = path.relative(jsonSourceDir, filepath);
+  const isInsideJsonSource =
+    relativeToJson !== undefined &&
+    !relativeToJson.startsWith("..") &&
+    !path.isAbsolute(relativeToJson);
+
+  if (isInsideJsonSource) {
+    // Use gitignore-style relative matching against jsonSource root
+    // Empty string means file is at jsonSource root, use basename
+    const posixPath = relativeToJson === "" ? path.basename(filepath) : toPosixPath(relativeToJson);
+    return ig.ignores(posixPath);
+  }
+
+  // If the file is outside jsonSource root, fall back to basename-only matching
+  return ig.ignores(path.basename(filepath));
+}
+
+/**
+ * Check if an SVG file should be ignored.
+ * SVG files are in static/img/ and matched by basename (same as .translate-ignore patterns).
+ */
+export function isIgnoredSvgFile(filepath: string, staticImgDir: string, ig: IgnoreMatcher): boolean {
+  // For SVG files in static/img/, we want to check using basename only,
+  // because .translate-ignore patterns for SVGs typically use basename matching.
+  // However, we could also support relative paths if someone wants to ignore a subdirectory.
+  const relativeToImg = path.relative(staticImgDir, filepath);
+  const isInsideImg =
+    relativeToImg !== undefined &&
+    !relativeToImg.startsWith("..") &&
+    !path.isAbsolute(relativeToImg);
+
+  if (isInsideImg && relativeToImg !== "") {
+    // Try relative path matching first (allows ignoring subdirectories)
+    if (ig.ignores(toPosixPath(relativeToImg))) {
+      return true;
+    }
+  }
+
+  // Always check basename as well (for patterns like "duplistatus_logo.svg")
+  // Empty relativeToImg also falls through to basename matching
   return ig.ignores(path.basename(filepath));
 }
 

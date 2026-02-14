@@ -1,74 +1,47 @@
 ---
-translation_last_updated: '2026-02-06T22:33:31.325Z'
-source_file_mtime: '2026-02-06T20:21:18.352Z'
-source_file_hash: c84ad8472108cfb5
+translation_last_updated: '2026-02-14T04:57:40.834Z'
+source_file_mtime: '2026-02-14T04:30:33.209Z'
+source_file_hash: c60228989cb5422d
 translation_language: de
 source_file_path: development/translation-workflow.md
 ---
-# Workflow zur Verwaltung von Übersetzungen
+# Workflow zur Übersetzungswartung {#translation-maintenance-workflow}
 
 Für allgemeine Dokumentationsbefehle (Build, Deploy, Screenshots, README-Generierung) siehe [Documentation Tools](documentation-tools.md).
 
-## Übersicht
+## Übersicht {#overview}
 
 Die Dokumentation verwendet Docusaurus i18n mit Englisch als Standard-Gebietsschema. Die Quelldokumentation befindet sich in `docs/`; Übersetzungen werden in `i18n/{locale}/docusaurus-plugin-content-docs/current/` geschrieben. Unterstützte Gebietsschemas: en (Standard), fr, de, es, pt-BR.
 
-## Wann sich die englische Dokumentation ändert
+## Wann sich die englische Dokumentation ändert {#when-english-documentation-changes}
 
-1. **Quelldateien** in `docs/` aktualisieren
-2. **Extraktion durchführen** (wenn Docusaurus-UI-Zeichenfolgen geändert wurden): `pnpm write-translations`
-3. **Glossar aktualisieren** (wenn intlayer-Übersetzungen geändert wurden): `pnpm run translate:glossary-ui`
-4. **KI-Übersetzung ausführen**: `pnpm run translate` (übersetzt Dokumente und SVGs; verwenden Sie `--no-svg` nur für Dokumente)
-5. **UI-Zeichenfolgen** (wenn Docusaurus-UI geändert wurde): `pnpm write-translations` extrahiert neue Schlüssel; Dokumente und SVGs werden durch die obigen KI-Skripte übersetzt
-6. **Build-Tests**: `pnpm build` (erstellt alle Gebietsschemas)
-7. **Bereitstellen**: Verwenden Sie Ihren Bereitstellungsprozess (z.B. `pnpm deploy` für GitHub Pages)
+1. **Quelldateien aktualisieren** in `docs/`
+2. **Extraktion durchführen** (wenn Docusaurus-UI-Strings geändert wurden): `pnpm write-translations`
+3. **Glossar aktualisieren** (wenn intlayer-Übersetzungen geändert wurden): `pnpm translate:glossary-ui`
+4. **Überschrift-IDs hinzufügen**: `pnpm heading-ids`
+5. **KI-Übersetzung ausführen**: `pnpm translate` (übersetzt Dokumente, JSON-UI-Strings und SVGs; verwenden Sie `--no-svg` nur für Dokumente, `--no-json` zum Überspringen von UI-Strings)
+6. **UI-Strings** (wenn Docusaurus-UI geändert wurde): `pnpm write-translations` extrahiert neue Schlüssel; Dokumente, JSON-UI-Strings und SVGs werden von den obigen KI-Skripten übersetzt
+7. **Build-Tests**: `pnpm build` (erstellt alle Gebietsschemas)
+8. **Bereitstellen**: Verwenden Sie Ihren Bereitstellungsprozess (z.B. `pnpm deploy` für GitHub Pages)
 
-## Neue Sprachen hinzufügen
+<br/>
 
-1. Fügen Sie die Sprache zu `docusaurus.config.ts` im Array `i18n.locales` hinzu
-2. Fügen Sie die Sprachkonfiguration im Objekt `localeConfigs` hinzu
-3. Aktualisieren Sie das Suchen-Plugin-Array `language` (verwenden Sie den entsprechenden Sprachcode, z. B. `pt` für pt-BR)
-4. Fügen Sie die Sprache zu `translate.config.json` in `locales.targets` hinzu (für KI-Übersetzung)
-5. Führen Sie die KI-Übersetzung aus: `pnpm run translate` (übersetzt Dokumente und SVGs)
-6. Erstellen Sie UI-Übersetzungsdateien: `pnpm write-translations` (generiert Struktur); übersetzen Sie Dokumente und SVGs mit `pnpm run translate`
+## Neue Sprachen hinzufügen {#adding-new-languages}
 
-## Dateien ignorieren
+1. Gebietsschema in `docusaurus.config.ts` im `i18n.locales`-Array hinzufügen
+2. Gebietsschema-Konfiguration im `localeConfigs`-Objekt hinzufügen
+3. Suchplugin-`language`-Array aktualisieren (entsprechenden Sprachcode verwenden, z. B. `pt` für pt-BR)
+4. Gebietsschema in `translate.config.json` in `locales.targets` hinzufügen (für KI-Übersetzung)
+5. KI-Übersetzung ausführen: `pnpm translate` (übersetzt Dokumente, JSON-UI-Zeichenfolgen und SVGs)
+6. UI-Übersetzungsdateien erstellen: `pnpm write-translations` (generiert Struktur); Dokumente, JSON-UI-Zeichenfolgen und SVGs mit `pnpm translate` übersetzen
 
-- **`.translate-ignore`**: Gitignore-ähnliche Muster für Dateien, die während der KI-Übersetzung übersprungen werden. Umfasst sowohl Dokumentationsdateien (Pfade relativ zu `docs/`) als auch SVG-Dateien (Dateinamen in `static/img/`). Beispiele: `api-reference/*`, `LICENSE.md`, `duplistatus_logo.svg`
+<br/>
 
-## Glossarverwaltung
-
-Das Terminologie-Glossar wird automatisch aus intlayer-Wörterbüchern generiert, um die Konsistenz zwischen der Anwendungsbenutzeroberfläche und den Dokumentationsübersetzungen zu gewährleisten.
-
-### Glossar erstellen
-
-```bash
-cd documentation
-pnpm run translate:glossary-ui
-```
-
-Dieses Skript:
-
-- Führt `pnpm intlayer build` im Projekthauptverzeichnis aus, um Wörterbücher zu generieren
-- Extrahiert Terminologie aus `.intlayer/dictionary/*.json`-Dateien
-- Generiert `glossary-ui.csv`
-- Aktualisiert die Glossartabelle in `CONTRIBUTING-TRANSLATIONS.md` (falls diese Datei existiert)
-
-### Wann neu generieren
-
-- Nach der Aktualisierung von intlayer-Übersetzungen in der Anwendung
-- Wann neue technische Begriffe zur Anwendung hinzugefügt werden
-- Vor umfangreichen Übersetzungsarbeiten, um Konsistenz zu gewährleisten
-
-### Benutzer-Glossar-Überschreibungen
-
-`glossary-user.csv` ermöglicht das Überschreiben oder Hinzufügen von Begriffen, ohne das generierte UI-Glossar zu modifizieren. Format: `en`, `Gebietsschema`, `Übersetzung` (eine Zeile pro Begriff pro Gebietsschema). Einträge haben Vorrang vor `glossary-ui.csv`.
-
-## KI-gestützte Übersetzung
+## KI-gestützte Übersetzung {#ai-powered-translation}
 
 Das Projekt umfasst ein automatisiertes Übersetzungssystem mit der OpenRouter API, das Dokumentationen ins Französische, Deutsche, Spanische und Brasilianische Portugiesische übersetzen kann, mit intelligenter Zwischenspeicherung und Glossardurchsetzung.
 
-### Voraussetzungen
+### Voraussetzungen {#prerequisites}
 
 1. **OpenRouter API-Schlüssel**: Setzen Sie die Umgebungsvariable `OPENROUTER_API_KEY`:
 
@@ -85,196 +58,289 @@ Das Projekt umfasst ein automatisiertes Übersetzungssystem mit der OpenRouter A
 
 3. **Konfiguration**: Die Datei `translate.config.json` enthält Standardeinstellungen. Sie können Modelle, Gebietsschemas und Pfade nach Bedarf anpassen.
 
-### Schnellhilfe
-
 Um eine Zusammenfassung aller Übersetzungsbefehle und der Optionen des Übersetzungsskripts anzuzeigen:
 
-```bash
-pnpm run help
-# or
-pnpm run translate:help
-```
+   ```bash
+   pnpm help
+   # or
+   pnpm translate:help
+   ```
 
-Dies zeigt `TRANSLATION-HELP.md` an.
-
-### Grundlegende Verwendung
+### Grundlegende Nutzung {#basic-usage}
 
 **Alle Dokumentation in alle Sprachen übersetzen:**
 
-```bash
-cd documentation
-pnpm run translate
-```
+      ```bash
+      cd documentation
+      pnpm translate
+      ```
 
 **In ein bestimmtes Gebietsschema übersetzen:**
 
-```bash
-pnpm run translate --locale fr    # French
-pnpm run translate --locale de    # German
-pnpm run translate --locale es    # Spanish
-pnpm run translate --locale pt-br # Brazilian Portuguese
-```
+      ```bash
+      pnpm translate --locale fr    # French
+      pnpm translate --locale de    # German
+      pnpm translate --locale es    # Spanish
+      pnpm translate --locale pt-br # Brazilian Portuguese
+      ```
 
 **Eine bestimmte Datei oder ein Verzeichnis übersetzen:**
 
-```bash
-pnpm translate --path docs/intro.md
-pnpm translate --path docs/development/
-```
+      ```bash
+      pnpm translate --path docs/intro.md
+      pnpm translate --path docs/development/
+      ```
 
 **Vorschau ohne Änderungen vornehmen (Testlauf):**
 
-```bash
-pnpm run translate:dry-run
-```
+      ```bash
+      pnpm translate --dry-run
+      ```
 
-### Ausgabeprotokolle
+### Modellkonfiguration {#model-configuration}
 
-Sowohl `translate` als auch `translate:svg` schreiben alle Konsolenausgaben in Protokolldateien in `.translation-cache/`:
+Das Übersetzungssystem verwendet Modelle, die in `translate.config.json` konfiguriert sind, ein primäres und ein Fallback-Modell.
 
-- `translate_<timestamp>.log` – vollständige Ausgabe von `pnpm run translate`
-- `translate-svg_<timestamp>.log` – vollständige Ausgabe von `pnpm run translate:svg` (eigenständig)
+| Konfiguration | Hinweise                                | Standardmodell                |
+|---------------|----------------------------------------|-------------------------------|
+| defaultModel  | Hauptmodell für Übersetzungen          | `anthropic/claude-3.5-haiku` |
+| fallbackModel | Fallback, wenn primäres Modell ausfällt | `anthropic/claude-haiku-4.5` |
 
-Der Protokollpfad wird zu Beginn jedes Durchlaufs ausgegeben. Protokolle werden in Echtzeit angefügt.
+Überprüfen Sie die Liste aller verfügbaren Modelle und deren Kosten auf der [Openrouter.ai-Seite](https://openrouter.ai/models)
 
-### Cache-Verwaltung
+### Qualität der Übersetzung testen {#testing-the-quality-of-the-translation}
 
-Das Übersetzungssystem verwendet einen zweistufigen Cache (Datei-Ebene und Segment-Ebene), der in `.translation-cache/cache.db` gespeichert ist, um API-Kosten zu minimieren:
-
-**Prüfen Sie den Übersetzungsstatus:**
-
-```bash
-pnpm run translate:status
-```
-
-Dies generiert eine Tabelle, die den Übersetzungsstatus für alle Dokumentationsdateien anzeigt:
-
-- `✓` = Übersetzt und aktuell (Quell-Hash stimmt überein)
-- `-` = Noch nicht übersetzt
-- `●` = Übersetzt, aber veraltet (Quelldatei geändert)
-- `□` = Verwaist (existiert im Übersetzungsordner, aber nicht in der Quelle)
-- `i` = Ignoriert (durch `.translate-ignore` übersprungen)
-
-Das Skript vergleicht `source_file_hash` in den Metadaten der übersetzten Datei mit dem berechneten Hash der Quelldatei, um veraltete Übersetzungen zu erkennen.
-
-**Alle Cache löschen:**
+Um die Qualität eines neuen Modells zu testen, ändern Sie das `defaultModel` in der `translate.config.json` und führen Sie die Übersetzung für eine Datei durch, zum Beispiel:
 
 ```bash
-pnpm translate --clear-cache
+pnpm translate --force --path docs/intro.md --no-cache --locale pt-BR
 ```
 
-**Cache für bestimmtes Gebietsschema löschen:**
+und prüfen Sie die übersetzte Datei in `i18n/pt-BR/docusaurus-plugin-content-docs/current/intro.md`
+
+### Dateien ignorieren {#ignore-files}
+
+Fügen Sie die Dateien, die während der KI-Übersetzung übersprungen werden sollen, in die `.translate-ignore`-Datei ein (ähnlich wie `.gitignore`).
+
+Beispiel:
 
 ```bash
-pnpm translate --clear-cache fr
+# Documentation files
+# Keep the license in English
+LICENSE.md
+
+# Don't translate the API reference
+api-reference/*
+
+# Dashboard/table diagram - not referenced in docs
+duplistatus_dash-table.svg
 ```
 
-**Neuübersetzung erzwingen (Datei-Cache löschen, nicht den Übersetzungs-Cache):**
+### Glossarverwaltung {#glossary-management}
+
+Das Terminologie-Glossar wird automatisch aus intlayer-Wörterbüchern generiert, um die Konsistenz zwischen der Anwendungsbenutzeroberfläche und den Dokumentationsübersetzungen zu gewährleisten.
+
+#### Glossar generieren {#generating-the-glossary}
+
+```bash
+cd documentation
+pnpm translate:glossary-ui
+```
+
+Dieses Skript:
+
+- Führt `pnpm intlayer build` im Projekthauptverzeichnis aus, um Wörterbücher zu generieren
+- Extrahiert Terminologie aus `.intlayer/dictionary/*.json`-Dateien
+- Generiert `glossary-ui.csv`
+- Aktualisiert die Glossartabelle in `CONTRIBUTING-TRANSLATIONS.md` (falls diese Datei existiert)
+
+#### Wann neu generieren {#when-to-regenerate}
+
+- Nach der Aktualisierung von intlayer-Übersetzungen in der Anwendung
+- Wann neue technische Begriffe zur Anwendung hinzugefügt werden
+- Vor umfangreichen Übersetzungsarbeiten, um Konsistenz zu gewährleisten
+
+#### Benutzerdefinierte Glossar-Überschreibungen {#user-glossary-overrides}
+
+`glossary-user.csv` ermöglicht das Überschreiben oder Hinzufügen von Begriffen, ohne die generierte UI-Glossar-Datei zu ändern. Format: `en`, `Gebietsschema`, `Übersetzung` (eine Zeile pro Begriff pro Gebietsschema). Verwenden Sie `*` als Gebietsschema, um einen Begriff auf alle konfigurierten Gebietsschemata anzuwenden. Einträge haben Vorrang vor `glossary-ui.csv`.
+
+### Cacheverwaltung {#cache-management}
+
+Das Übersetzungssystem verwendet einen zweistufigen Cache (Datei-Ebene und Segment-Ebene), der in `.translation-cache/cache.db` gespeichert ist, um die API-Kosten zu minimieren. Diese Datei ist im Git-Repository enthalten, um zukünftige Übersetzungskosten zu reduzieren.
+
+Cache-Verwaltungsbefehle:
+
+| Befehl                                  | Beschreibung                                                           |
+|-----------------------------------------|-----------------------------------------------------------------------|
+| `pnpm translate --clear-cache <locale>` | Cache für bestimmte Sprache löschen                                    |
+| `pnpm translate --clear-cache`          | **Gesamten** Cache löschen (Datei- und Segmentcache)                   |
+| `pnpm translate --force`                | Neuübersetzung erzwingen (Dateicache löschen, Segmentcache beibehalten) |
+| `pnpm translate --no-cache`             | Cache vollständig umgehen (API-Aufrufe erzwingen, neue Übersetzungen speichern) |
+| `pnpm translate:edit-cache`             | Manueller Überblick, Löschen oder Bearbeiten von Cacheeinträgen        |
+
+### Verwaiste und veraltete Cacheeinträge entfernen {#remove-orphaned-and-stale-cache}
+
+Wenn Änderungen an vorhandenen Dokumenten vorgenommen werden, können Cache-Einträge verwaist oder veraltet werden. Verwenden Sie die Befehle, um Einträge zu löschen, die nicht mehr benötigt werden, und reduzieren Sie so die Größe des Übersetzungs-Caches.
 
 ```bash
 pnpm translate --force
+pnpm translate:cleanup
 ```
 
-**Cache ignorieren (API-Aufrufe erzwingen, aber neue Übersetzungen trotzdem speichern):**
+:::warning
+Stellen Sie vor dem Ausführen des Bereinigungsskripts sicher, dass Sie `pnpm translate --force` ausgeführt haben. Dieser Schritt ist entscheidend, um zu vermeiden, dass gültige Einträge versehentlich als veraltet gelöscht werden.
+
+Das Skript erstellt automatisch eine Sicherung im `.translation-cache`-Ordner, sodass Sie gelöschte Daten bei Bedarf wiederherstellen können.
+:::
+
+<br/>
+
+### Manueller Überblick des Caches {#manual-review-of-the-cache}
+
+Verwenden Sie beim Überprüfen von Übersetzungen das webbasierte Cache-Bearbeitungstool, um Übersetzungen bestimmter Begriffe anzuzeigen, Cache-Einträge zu löschen, Einträge mit den verfügbaren Filtern zu löschen oder bestimmte Dateien zu löschen. Dies ermöglicht es Ihnen, nur die gewünschten Texte oder Dateien neu zu übersetzen.
+
+Wenn ein Modell beispielsweise einen Begriff falsch übersetzt hat, können Sie alle Einträge für diesen Begriff filtern, das Modell in der `translate.config.json`-Datei ändern und nur die Zeilen mit diesen Begriffen mithilfe des neuen Modells neu übersetzen.
 
 ```bash
-pnpm translate --no-cache
+pnpm translate:edit-cache
 ```
 
-**Cache bereinigen (verwaiste und veraltete Einträge entfernen):**
+Dies öffnet eine Web-Benutzeroberfläche zum manuellen Durchsuchen und Bearbeiten des Caches (Port 4000 oder 4000+), sodass Sie:
+   - Tabellenansicht mit Filtermöglichkeiten
+   - Inline-Bearbeitung des übersetzten Texts
+   - Einzelnen Eintrag, Übersetzungen für eine bestimmte Datei oder gefilterte Einträge löschen
+   - Quell- und übersetzte Dateipfade im Terminal ausgeben für schnellen Editor-Zugriff
+
+![Translate Edit-Cache App](/img/screenshot-translate-edit-cache.png)
+
+<br/>
+
+### Überschrift-IDs und Anker {#heading-ids-and-anchors}
+
+Konsistente Ankerlinks (IDs) sind entscheidend für Querverweise, Inhaltsverzeichnisse und Deep-Links. Wenn Inhalte übersetzt werden, ändert sich der Überschriftentext, was normalerweise dazu führt, dass automatisch generierte Anker-IDs zwischen Sprachen variieren.
+
+```markdown
+ ## This is a Heading {#this-is-a-heading}
+```
+
+Führen Sie dies nach dem Aktualisieren oder Erstellen einer neuen englischen Quelldatei aus, um explizite IDs sicherzustellen:
 
 ```bash
-pnpm run translate:cleanup
+cd documentation
+pnpm heading-ids   # Adds {#id} to all headings without explicit IDs
 ```
 
-oder
+:::note
+Verwenden Sie immer die generierte ID beim Querverweisen von Dokumentationsabschnitten.
+:::
 
-```bash
-pnpm run translate:clean
-```
+<br/>
 
-**Cache in einer Web-UI bearbeiten:**
+### SVG-Übersetzung {#svg-translation}
 
-```bash
-pnpm run translate:edit-cache
-```
-
-Dies stellt eine Web-App auf Port 4000 (oder dem nächsten verfügbaren Port) zum Durchsuchen und Bearbeiten des Übersetzungs-Caches bereit. Funktionen: Tabellenansicht mit Filtern (Dateiname, Gebietsschema, source_hash, Quelltext, übersetzter Text), Inline-Bearbeitung von übersetztem Text, Löschen eines einzelnen Eintrags, Löschen aller Übersetzungen für einen Dateipfad, Pagination, dunkles Thema. Ein Symbol zum Einblenden von Links gibt die Quell- und übersetzten Dateipfade im Terminal aus, damit Sie diese in Ihrem Editor öffnen können. Führen Sie den Befehl aus `documentation/` aus.
-
-### SVG-Übersetzung
-
-Die SVG-Übersetzung ist in `pnpm run translate` standardmäßig enthalten (wird nach docs ausgeführt). SVG-Dateien in `static/img/`, deren Namen mit `duplistatus` beginnen, werden übersetzt.
+SVG-Übersetzung ist standardmäßig in `pnpm translate` enthalten (wird nach Dokumenten ausgeführt). SVG-Dateien in `static/img/`, deren Namen mit `duplistatus` beginnen, werden übersetzt.
 
 **SVG überspringen** (nur Dokumentation):
 
 ```bash
-pnpm run translate --no-svg
+pnpm translate --no-svg
 ```
 
 **Nur SVG** (eigenständiges Skript):
 
 ```bash
-pnpm run translate:svg
+pnpm translate:svg
 ```
 
-Optionen: `--locale`, `--path`, `--dry-run`, `--no-cache`, `--force`, `--no-export-png`. Verwendet `.translate-ignore` für Ausschlüsse. Exportiert optional PNG über Inkscape CLI.
+Optionen: `--locale`, `--path`, `--dry-run`, `--no-cache`, `--force`, `--no-export-png`. Verwendet `.translate-ignore` für Ausschlüsse.
 
-### Arbeitsablauf mit KI-Übersetzung
+<br/>
+
+### Übersetzung von Benutzeroberflächen-Zeichenfolgen (JSON) {#ui-strings-translation-json}
+
+Docusaurus-UI-Zeichenfolgen und benutzerdefinierte Komponentenbeschriftungen werden in JSON-Übersetzungsdateien gespeichert. Diese werden automatisch von `pnpm write-translations` generiert und dann vom KI-System übersetzt.
+
+**Funktionsweise:**
+
+1. **Extraktion**: `pnpm write-translations` scannt Docusaurus-Theme-Dateien und benutzerdefinierte React-Komponenten nach übersetzbaren Zeichenfolgen (wie „Weiter", „Vorherige", „Suchen", Schaltflächenbeschriftungen) und schreibt sie als JSON-Dateien in `i18n/en/`. Jede Datei entspricht einem Docusaurus-Plugin oder -Theme.
+2. **Übersetzung**: `pnpm translate` (mit aktivierter JSON-Unterstützung) übersetzt diese JSON-Dateien in alle Zielgebietsschemas mithilfe des KI-Modells unter Berücksichtigung des Glossars.
+3. **Verwendung**: Docusaurus lädt automatisch die JSON-Dateien des entsprechenden Gebietsschemas zur Laufzeit, um die Benutzeroberfläche in der ausgewählten Sprache anzuzeigen.
+
+**Wichtige JSON-Dateien** (alle in `i18n/{Gebietsschema}/`):
+- `docusaurus-plugin-content-docs/current.json` - Dokumentations-UI-Zeichenfolgen (Suche, Navigation, Inhaltsverzeichnis)
+- `docusaurus-theme-classic/navbar.json` - Navigationsleistenelemente
+- `docusaurus-theme-classic/footer.json` - Fußzeilenelemente
+- `code.json` - Code-Block-Beschriftungen (Kopieren, Reduzieren, Erweitern)
+- Andere plugin-spezifische JSON-Dateien
+
+**JSON-Übersetzung überspringen** (nur Dokumente):
+
+```bash
+pnpm translate --no-json
+```
+
+**Wichtig**: UI-Zeichenfolgen sind normalerweise stabil, aber wenn Sie neue benutzerdefinierte Komponenten mit übersetzbaren Texten hinzufügen, müssen Sie `pnpm write-translations` ausführen, um diese neuen Zeichenfolgen zu extrahieren, bevor Sie `pnpm translate` ausführen. Andernfalls erscheinen die neuen Zeichenfolgen für alle Gebietsschemas nur auf Englisch.
+
+<br/>
+
+Der `translate`-Befehl protokolliert alle Konsolenausgaben und API-Verkehr in Dateien im `.translation-cache/`-Verzeichnis. Die Protokolle umfassen:
+
+- `translate_<timestamp>.log`: Ein umfassendes Protokoll der Ausgabe des `pnpm translate`-Befehls.
+- `debug-traffic-<timestamp>.log`: Ein Protokoll des gesamten Verkehrs, der an das KI-Modell gesendet und von ihm empfangen wurde.
+
+Beachten Sie, dass API-Verkehr nur protokolliert wird, wenn Segmente an die API gesendet werden. 
+   Wenn alle Segmente aus dem Cache abgerufen werden (zum Beispiel bei Verwendung der `--force`-Option, die den Dateicache überschreibt, aber nicht den Segmentcache), werden keine API-Aufrufe durchgeführt, und 
+   das Protokoll enthält nur eine Kopfzeile und eine Notiz.
+
+Um API-Aufrufe zu erzwingen und Anfrage-/Antwortverkehr zu erfassen, 
+   verwenden Sie die `--no-cache`-Option.
+
+<br/>
+
+## Arbeitsablauf mit KI-Übersetzung {#workflow-with-ai-translation}
 
 1. **Englische Dokumentation** in `docs/` aktualisieren
-2. **Glossar aktualisieren** (falls erforderlich): `pnpm run translate:glossary-ui`
-3. **KI-Übersetzung ausführen**: `pnpm run translate` (übersetzt Dokumente und SVGs)
-4. **Übersetzungen** in `i18n/{locale}/docusaurus-plugin-content-docs/current/` bestätigen (optional)
-5. **Build-Tests**: `pnpm build`
-6. **Bereitstellen** mit Ihrem Bereitstellungsprozess
+2. **Glossar aktualisieren** (falls erforderlich): `pnpm translate:glossary-ui` und `glossary-user.csv`.
+3. **Überschrift-IDs aktualisieren**: `pnpm headings-ids`
+4. **KI-Übersetzung ausführen**: `pnpm translate` (übersetzt Dokumente, JSON und SVGs)
+5. **Übersetzungen überprüfen** in `i18n/{locale}/docusaurus-plugin-content-docs/current/` (optional)
+6. **Builds testen**: `pnpm build`
+7. **Bereitstellen** über Ihren Bereitstellungsprozess
 
-### Modellauswahl und Kostenoptimierung
+<br/>
 
-Die Standardkonfiguration verwendet `anthropic/claude-haiku-4.5`. Sie können `translate.config.json` ändern, um verschiedene Modelle zu verwenden:
-
-- **Standard**: `anthropic/claude-haiku-4.5`
-- **Fallback**: `google/gemma-3-27b-it`
-- **Hoch quality**: `anthropic/claude-sonnet-4`
-- **Cost-effective**: `openai/gpt-4o-mini`
-
-**Kostensparmaßnahmen-Strategie:**
-
-1. Erster Durchgang: Verwenden Sie das günstigere Modell (`gpt-4o-mini`) für die erste Übersetzung
-2. Qualitätsprüfung: Übersetzen Sie problematische Dateien bei Bedarf erneut mit `claude-sonnet-4`
-
-### Fehlerbehebung
+## Fehlerbehebung {#troubleshooting}
 
 **"OPENROUTER_API_KEY nicht gesetzt"**
 
 - Exportieren Sie die Umgebungsvariable oder fügen Sie sie zu `.env.local` hinzu
 
-**Ratenbegrenzungsfehler**
-
-- Das System enthält automatische Verzögerungen, aber möglicherweise müssen Sie parallele Anfragen reduzieren
-
 **Probleme mit der Übersetzungsqualität**
 
-- Anderes Modell in `translate.config.json` versuchen
-- Weitere Begriffe zu `glossary-ui.csv` hinzufügen oder Überschreibungen in `glossary-user.csv` einfügen (en, Gebietsschema, Übersetzung)
+- Anderes Modell in `translate.config.json` ausprobieren
+- Einträge im Cache löschen und ein anderes Modell verwenden
+- Englisches Dokument überprüfen und umschreiben, um die Übersetzung zu verbessern
+- Weitere Begriffe zu `glossary-ui.csv` hinzufügen oder Überschreibungen in `glossary-user.csv` (en, Gebietsschema, Übersetzung) hinzufügen
 
 **Cache-Beschädigung**
 
-- Führen Sie `pnpm translate --clear-cache` aus, um zurückzusetzen
-- Führen Sie `pnpm run translate:cleanup` aus, um verwaiste Einträge zu entfernen
-- Verwenden Sie `pnpm run translate:edit-cache`, um einzelne zwischengespeicherte Übersetzungen zu bearbeiten, ohne neu zu übersetzen
+- `pnpm translate --clear-cache` ausführen, um zurückzusetzen
+- `pnpm translate:cleanup` ausführen, um verwaiste Einträge zu entfernen
+- `pnpm translate:edit-cache` verwenden, um einzelne zwischengespeicherte Übersetzungen zu korrigieren oder zu löschen, ohne das gesamte Dokument neu zu übersetzen
 
 **Debugging OpenRouter-Datenverkehr**
 
-- Debug-Verkehrsprotokollierung ist **standardmäßig aktiviert**. Protokolle werden in `.translation-cache/debug-traffic-<timestamp>.log` geschrieben. Verwenden Sie `--debug-traffic <path>`, um einen benutzerdefinierten Dateinamen anzugeben, oder `--no-debug-traffic` zum Deaktivieren. API-Schlüssel werden nie geschrieben.
-- Der Verkehr wird **nur protokolliert, wenn Segmente an die API gesendet werden**. Wenn alle Segmente aus dem Cache bereitgestellt werden (z. B. bei Verwendung von `--force`, das den Datei-Cache löscht, aber nicht den Segment-Cache), werden keine API-Aufrufe durchgeführt und das Protokoll enthält nur einen Header und einen Hinweis. Verwenden Sie `--no-cache`, um API-Aufrufe zu erzwingen und Request/Response-Verkehr zu erfassen. Neue Übersetzungen aus einem `--no-cache`-Lauf werden weiterhin im Cache für zukünftige Läufe geschrieben.
-- Beispiel: `pnpm run translate -- --locale pt-BR --debug-traffic my-debug.log --no-cache`
+- Protokolle werden in `.translation-cache/debug-traffic-<timestamp>.log` geschrieben. 
+- Verwenden Sie dieses Protokoll, um zu prüfen, ob das Übersetzungsproblem mit dem Skript, den verwendeten Prompts oder dem Modell zusammenhängt.
 
-## Verfolgung des Übersetzungsstatus
+## Verfolgung des Übersetzungsstatus {#translation-status-tracking}
 
 Verfolgung des Übersetzungsfortschritts mit:
 
 ```bash
-pnpm run translate:status
+pnpm translate:status
 ```
 
-Dies gibt eine Tabelle und eine Zusammenfassung für alle Dokumentationsdateien aus.
+Dies generiert eine Tabelle, die den Übersetzungsstatus für alle Dokumentationsdateien anzeigt. Zum Beispiel:
+
+![Translate Status](/img/screenshot-translate-status.png)

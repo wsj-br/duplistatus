@@ -163,7 +163,7 @@
   /* Style Documentation link to match sidebar first-level items */
   [data-theme='dark'] .navbar__link {
     color: #e5e7eb !important;
-    font-size: 1.4rem !important;
+    font-size: 1rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.02em !important;
   }
@@ -180,7 +180,7 @@
   /* Light Mode Navbar Styling */
   :root:not([data-theme='dark']) .navbar__link {
     color: #374151 !important;
-    font-size: 1.4rem !important;
+    font-size: 1rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.02em !important;
   }
@@ -912,6 +912,43 @@
   [data-theme='dark'] .navbar__search-input::placeholder {
     color: #6b7280;
   }
+
+  /* ============================================
+     SEARCH MODAL DARK THEME
+     ============================================ */
+
+  /* Override search modal colors for dark mode */
+  [data-theme='dark'] {
+    --search-local-modal-background: #1a1f2e;
+    --search-local-modal-shadow: inset 1px 1px 0 0 #2c2e40, 0 3px 8px 0 #000309;
+    --search-local-hit-background: var(--ifm-color-emphasis-100);
+    --search-local-hit-shadow: none;
+    --search-local-hit-color: var(--ifm-font-color-base);
+    --search-local-highlight-color: #3b82f6; /* Blue highlight */
+    --search-local-hit-active-color: #ffffff; /* White text on blue */
+    --search-local-muted-color: var(--ifm-color-secondary-darkest);
+    --search-local-input-active-border-color: var(--ifm-color-primary);
+  }
+
+  /* Light mode search modal variables (explicit) */
+  :root:not([data-theme='dark']) {
+    --search-local-modal-background: #f5f6f7;
+    --search-local-modal-shadow: inset 1px 1px 0 0 hsla(0, 0%, 100%, 0.5), 0 3px 8px 0 #555a64;
+    --search-local-hit-background: #fff;
+    --search-local-hit-shadow: 0 1px 3px 0 #d4d9e1;
+    --search-local-hit-color: #374151;
+    --search-local-highlight-color: #3b82f6; /* Light blue for highlights */
+    --search-local-hit-active-color: #ffffff; /* White text on blue background */
+    --search-local-muted-color: #6b7280;
+    --search-local-input-active-border-color: #3b82f6;
+  }
+
+  /* For the "See All Results" search page highlights */
+/* Search page highlight overrides (mark.js uses plain <mark> tags, no inline styles) */
+mark {
+  background-color: rgba(59, 130, 246, 0.4) !important;
+  color: inherit !important;
+}
   
   /* ============================================
      GITHUB ALERTS STYLING
@@ -1075,20 +1112,40 @@
     opacity: 0.8;
   }
 
+  .dropdown__menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  [data-theme='dark'] .dropdown__menu {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .dropdown__menu .dropdown__link {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 0.5rem 1rem;
     transition: all 0.2s ease-in-out;
+    background-color: var(--ifm-background-color);
+    color: var(--ifm-font-color-base);
   }
 
   .dropdown__menu .dropdown__link:hover {
     background-color: rgba(59, 130, 246, 0.1);
+    color: var(--ifm-color-primary);
+  }
+
+  [data-theme='dark'] .dropdown__menu .dropdown__link {
+    background-color: rgba(20, 24, 36, 0.95);
+    color: #e5e7eb;
   }
 
   [data-theme='dark'] .dropdown__menu .dropdown__link:hover {
     background-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
   }
 
   /* Flag emojis for locale dropdown */

@@ -16,20 +16,20 @@
 
 ## Steps {#steps}
 
-1. Clone the repository:
+### 1. Clone the repository: {#1-clone-the-repository}
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
 
-2. Install dependencies (Debian/Ubuntu):
+### 2. Install dependencies (Debian/Ubuntu): {#2-install-dependencies-debianubuntu}
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
     ```
 
-3. Remove old Node.js installations (if you already have it installed)
+### 3. Remove old Node.js installations (if you already have it installed) {#3-remove-old-nodejs-installations-if-you-already-have-it-installed}
 
     ```bash
     sudo apt-get purge nodejs npm -y
@@ -47,7 +47,7 @@
     sudo rm -rf /usr/local/bin/node*
     ```
 
-4. Install Node.js and pnpm:
+### 4. Install Node.js and pnpm: {#4-install-nodejs-and-pnpm}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -57,9 +57,9 @@
     npm install -g pnpm npm-check-updates doctoc
     ```
 
-5. Set up direnv support
+### 5. Set up direnv support {#5-set-up-direnv-support}
 
-- Add these lines to your `~/.bashrc` file
+Add these lines to your `~/.bashrc` file
 
     ```bash 
     # direnv support (apt install direnv)
@@ -78,33 +78,34 @@
     direnv allow
     ```
 
-- Add these lines to your `~/.profile` file
+Add these lines to your `~/.profile` file
 
     ```bash 
-    # export the Bash environment (needed for Cursor's agents to load it).
+    # export the Bash environment (needed for code editor or AI Agents to load it).
     export BASH_ENV="$HOME/.bashrc"
     ```
 
     with this command:
 
     ```bash 
-    (echo "# export the Bash environment (needed for Cursor's agents to load it)."; echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
+    (echo "# export the Bash environment (needed for code editor or AI Agents to load it)."; \
+     echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
     ```
 
 
+  :::info
+  You need to reopen the terminal or may need to close/reopen the code editor IDE (Visual Studio Code, 
+  Cursor, Lingma, Antigravity, Zed, ...) for these changes to take effect.
+  :::
 
-:::note
-You need to reopen the terminal or close/reopen the Cursor application for these changes to take effect.
-:::
-
-6. Create the .env file at the repository basedir with these variables. 
+### 6. Create the `.env` file at the repository basedir with these variables. {#6-create-the-env-file-at-the-repository-basedir-with-these-variables}
 
 - You can use any value for `VERSION`; it will be automatically updated when using the development scripts.
 - Use random passwords for the `ADMIN_PASSWORD` and `USER_PASSWORD`; these passwords will be used in the `pnpm take-screenshots` script.
 - You can get the `OPENROUTER_API_KEY` from [openrouter.ai](https://openrouter.ai). 
 
 
-    ```
+    ```bash
     VERSION=x.x.x
 
     # Development user passwords
@@ -130,6 +131,23 @@ The project includes several npm scripts for different development tasks:
 - `scripts/clean-workspace.sh` - Clean the workspace
 
 **Note:** The `preinstall` script automatically enforces pnpm as the package manager.
+
+### Documentation Scripts {#documentation-scripts}
+
+These scripts must be run from the `documentation/` directory:
+
+- `pnpm start` - Build and serve the documentation site in production mode (port 3000 by default)
+- `pnpm start:en` - Start documentation development server in English (hot reloading enabled)
+- `pnpm start:fr` - Start documentation development server in French locale (hot reloading enabled)
+- `pnpm start:de` - Start documentation development server in German locale (hot reloading enabled)
+- `pnpm start:es` - Start documentation development server in Spanish locale (hot reloading enabled)
+- `pnpm start:pt-br` - Start documentation development server in Portuguese (Brazil) locale (hot reloading enabled)
+- `pnpm build` - Build the documentation site for production
+- `pnpm write-translations` - Extract translatable strings from the documentation
+- `pnpm translate` - Translate documentation files using AI (see [Translation Workflow](translation-workflow))
+- `pnpm lint` - Run ESLint on documentation source files
+
+The development servers (`start:*`) provide hot module replacement for rapid development. The default port is 3000.
 
 
 ### Production Scripts {#production-scripts}

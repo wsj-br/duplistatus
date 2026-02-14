@@ -27,7 +27,9 @@
     "i18n": "./i18n",
     "cache": "./.translation-cache",
     "glossary": "./glossary-ui.csv",
-    "glossaryUser": "./glossary-user.csv"
+    "glossaryUser": "./glossary-user.csv",
+    "staticImg": "./static/img",
+    "jsonSource": "./i18n/en"
   },
   "cache": {
     "enabled": true,

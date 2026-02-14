@@ -4,7 +4,7 @@
     "description": "The title in the navbar"
   },
   "logo.alt": {
-    "message": "Logo duplistatus",
+    "message": "Logo do duplistatus",
     "description": "The alt text of navbar logo"
   },
   "item.label.Documentation": {

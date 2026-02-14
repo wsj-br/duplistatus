@@ -13,23 +13,23 @@
   },
   "link.item.label.Installation": {
     "message": "Instalación",
-    "description": "The label of footer link with label=Installation linking to /en/installation/"
+    "description": "The label of footer link with label=Installation linking to /installation"
   },
   "link.item.label.User Guide": {
     "message": "Guía del Usuario",
-    "description": "The label of footer link with label=User Guide linking to /en/user-guide/overview"
+    "description": "The label of footer link with label=User Guide linking to /user-guide/overview"
   },
   "link.item.label.Migration": {
     "message": "Migración",
-    "description": "The label of footer link with label=Migration linking to /en/migration/version_upgrade"
+    "description": "The label of footer link with label=Migration linking to /migration/version_upgrade"
   },
   "link.item.label.Development Setup": {
     "message": "Configuración de Desarrollo",
-    "description": "The label of footer link with label=Development Setup linking to /en/development/setup"
+    "description": "The label of footer link with label=Development Setup linking to /development/setup"
   },
   "link.item.label.API Reference": {
     "message": "Referencia de API",
-    "description": "The label of footer link with label=API Reference linking to /en/api-reference/overview"
+    "description": "The label of footer link with label=API Reference linking to /api-reference/overview"
   },
   "copyright": {
     "message": "Copyright © Waldemar Scudeller Jr.",

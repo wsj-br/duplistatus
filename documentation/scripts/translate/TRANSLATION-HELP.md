@@ -2,20 +2,20 @@
 
 ## Commands (run from documentation/)
 
-| Command                         | Description                                               |
-|---------------------------------|-----------------------------------------------------------|
-| `pnpm run translate`            | Translate docs and SVGs to all locales (main script)      |
-| `pnpm run translate:svg`        | SVG-only translation (standalone)                         |
-| `pnpm run translate:status`     | Check translation status (✓ up-to-date, ● outdated, etc.) |
-| `pnpm run translate:cleanup`    | Remove orphaned and stale cache entries                   |
-| `pnpm run translate:edit-cache` | Web UI to browse/edit translation cache (port 4000)       |
-| `pnpm run translate:glossary-ui`| Generate glossary-ui.csv from intlayer dictionaries; use glossary-user.csv for overrides |
-| `pnpm run translate:help`       | Show this summary                                         |
+| Command                          | Description                                               |
+|----------------------------------|-----------------------------------------------------------|
+| `pnpm run translate`             | Translate docs, JSON UI strings, and SVGs to all locales  |
+| `pnpm run translate:svg`         | SVG-only translation (standalone)                         |
+| `pnpm run translate:status`      | Check translation status (✓ up-to-date, ● outdated, etc.) |
+| `pnpm run translate:help`        | Show this summary                                         |
+| `pnpm run translate:glossary-ui` | Generate glossary-ui.csv from intlayer dictionaries       |
+| `pnpm run translate:edit-cache`  | Web UI to browse/edit translation cache (port 4000)       |
+| `pnpm run translate:cleanup`     | Remove orphaned and stale cache entries                   |
 
 ## Glossary
 
 - **glossary-ui.csv** – Auto-generated from intlayer dictionaries (run `translate:glossary-ui` after UI translation changes)
-- **glossary-user.csv** – Optional overrides; columns: `en`, `locale`, `translation`; entries take precedence over glossary-ui.csv
+- **glossary-user.csv** – Optional overrides; columns: `en`, `locale`, `translation`; use `*` for locale to apply to all locales; entries take precedence over glossary-ui.csv
 
 ## Translate script options
 
@@ -43,6 +43,7 @@ Options:
   --no-export-png         Skip Inkscape PNG export after SVG translation
   --no-batch              Use single-segment translation instead of batch (one
                           API call per segment)
+  --no-json               Skip JSON translation (i18n UI strings) [default: false]
   -c, --config <path>     Path to config file
   -h, --help              Display help for command
 ```

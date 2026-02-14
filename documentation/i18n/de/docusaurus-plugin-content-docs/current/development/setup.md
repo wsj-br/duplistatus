@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-06T22:33:30.905Z'
-source_file_mtime: '2026-02-06T22:10:19.145Z'
-source_file_hash: ae2bbcffdb897dd2
+translation_last_updated: '2026-02-14T04:57:40.454Z'
+source_file_mtime: '2026-02-14T03:28:17.279Z'
+source_file_hash: 34cb441ca91355e0
 translation_language: de
 source_file_path: development/setup.md
 ---
@@ -19,21 +19,21 @@ source_file_path: development/setup.md
 
 ## Schritte {#steps}
 
-1. Repository klonen:
+### 1. Repository klonen: {#1-clone-the-repository}
 
     ```bash
     git clone https://github.com/wsj-br/duplistatus.git
     cd duplistatus
     ```
 
-2. Abhängigkeiten installieren (Debian/Ubuntu):
+### 2. Abhängigkeiten installieren (Debian/Ubuntu): {#2-install-dependencies-debianubuntu}
 
     ```bash
     sudo apt update
     sudo apt install sqlite3 git inkscape bat -y
     ```
 
-3. Alte Node.js-Installationen entfernen (falls bereits installiert)
+### 3. Alte Node.js-Installationen entfernen (falls bereits installiert) {#3-remove-old-nodejs-installations-if-you-already-have-it-installed}
 
     ```bash
     sudo apt-get purge nodejs npm -y
@@ -51,7 +51,7 @@ source_file_path: development/setup.md
     sudo rm -rf /usr/local/bin/node*
     ```
 
-4. Installieren Sie Node.js und pnpm:
+### 4. Node.js und pnpm installieren: {#4-install-nodejs-and-pnpm}
 
     ```bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
@@ -61,9 +61,9 @@ source_file_path: development/setup.md
     npm install -g pnpm npm-check-updates doctoc
     ```
 
-5. Direnv-Unterstützung einrichten
+### 5. Direnv-Unterstützung einrichten {#5-set-up-direnv-support}
 
-- Diese Zeilen zur `~/.bashrc`-Datei hinzufügen
+Fügen Sie diese Zeilen zu Ihrer `~/.bashrc`-Datei hinzu
 
     ```bash 
     # direnv support (apt install direnv)
@@ -82,30 +82,32 @@ im Repository-Basisverzeichnis ausführen:
     direnv allow
     ```
 
-- Diese Zeilen zur `~/.profile`-Datei hinzufügen
+Fügen Sie diese Zeilen zu Ihrer `~/.profile`-Datei hinzu
 
     ```bash 
-    # export the Bash environment (needed for Cursor's agents to load it).
+    # export the Bash environment (needed for code editor or AI Agents to load it).
     export BASH_ENV="$HOME/.bashrc"
     ```
 
 mit diesem Befehl:
 
     ```bash 
-    (echo "# export the Bash environment (needed for Cursor's agents to load it)."; echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
+    (echo "# export the Bash environment (needed for code editor or AI Agents to load it)."; \
+     echo 'export BASH_ENV="$HOME/.bashrc"') >> ~/.profile
     ```
 
-:::note
-Sie müssen das Terminal neu öffnen oder die Cursor-Anwendung schließen und wieder öffnen, damit diese Änderungen wirksam werden.
+:::info
+  Sie müssen das Terminal neu öffnen oder möglicherweise die Code-Editor-IDE (Visual Studio Code, 
+  Cursor, Lingma, Antigravity, Zed, ...) schließen und wieder öffnen, damit diese Änderungen wirksam werden.
 :::
 
-6. Die .env-Datei im Repository-Basisverzeichnis mit diesen Variablen erstellen.
+### 6. `.env`-Datei im Repository-Basisverzeichnis mit diesen Variablen erstellen. {#6-create-the-env-file-at-the-repository-basedir-with-these-variables}
 
 - Sie können einen beliebigen Wert für `VERSION` verwenden; dieser wird automatisch aktualisiert, wenn die Entwicklungsskripte verwendet werden.
 - Verwenden Sie zufällige Passwörter für `ADMIN_PASSWORD` und `USER_PASSWORD`; diese Passwörter werden im `pnpm take-screenshots`-Skript verwendet.
 - Sie können den `OPENROUTER_API_KEY` von [openrouter.ai](https://openrouter.ai) abrufen.
 
-    ```
+    ```bash
     VERSION=x.x.x
 
     # Development user passwords
@@ -130,6 +132,23 @@ Das Projekt enthält mehrere npm-Skripte für verschiedene Entwicklungsaufgaben:
 - `scripts/clean-workspace.sh` - Bereinigen Sie den Arbeitsbereich
 
 **Hinweis:** Das `preinstall`-Skript erzwingt automatisch pnpm als Paketmanager.
+
+### Dokumentationsskripte {#documentation-scripts}
+
+Diese Skripte müssen aus dem `documentation/`-Verzeichnis ausgeführt werden:
+
+- `pnpm start` - Dokumentationsseite im Produktionsmodus erstellen und bereitstellen (Port 3000 standardmäßig)
+- `pnpm start:en` - Dokumentations-Entwicklungsserver in Englisch starten (Hot-Reloading aktiviert)
+- `pnpm start:fr` - Dokumentations-Entwicklungsserver in Französisch starten (Hot-Reloading aktiviert)
+- `pnpm start:de` - Dokumentations-Entwicklungsserver in Deutsch starten (Hot-Reloading aktiviert)
+- `pnpm start:es` - Dokumentations-Entwicklungsserver in Spanisch starten (Hot-Reloading aktiviert)
+- `pnpm start:pt-br` - Dokumentations-Entwicklungsserver in Portugiesisch (Brasilien) starten (Hot-Reloading aktiviert)
+- `pnpm build` - Dokumentationsseite für Produktion erstellen
+- `pnpm write-translations` - Übersetzbare Zeichenfolgen aus der Dokumentation extrahieren
+- `pnpm translate` - Dokumentationsdateien mit KI übersetzen (siehe [Übersetzungs-Workflow](translation-workflow))
+- `pnpm lint` - ESLint auf Dokumentationsquelldateien ausführen
+
+Die Entwicklungsserver (`start:*`) bieten Hot-Module-Replacement für schnelle Entwicklung. Der Standardport ist 3000.
 
 ### Produktionsskripte {#production-scripts}
 - `pnpm build-local` - Erstellen und für lokale Produktion vorbereiten (einschließlich Vor-Checks, kopiert statische Dateien in das Standalone-Verzeichnis)

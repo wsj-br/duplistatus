@@ -23,6 +23,7 @@ const DEFAULT_CONFIG: TranslationConfig = {
     glossary: "./glossary-ui.csv",
     glossaryUser: "./glossary-user.csv",
     staticImg: "./static/img",
+    jsonSource: "./i18n/en",
   },
   cache: {
     enabled: true,
@@ -63,6 +64,10 @@ export function validateConfig(config: TranslationConfig): void {
 
   if (!fs.existsSync(config.paths.docs)) {
     throw new Error(`Docs directory not found: ${config.paths.docs}`);
+  }
+
+  if (!fs.existsSync(config.paths.jsonSource)) {
+    throw new Error(`JSON source directory not found: ${config.paths.jsonSource}`);
   }
 
   if (!fs.existsSync(config.paths.glossary)) {

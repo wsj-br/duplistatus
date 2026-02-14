@@ -28,7 +28,7 @@
     "description": "The label for category 'Development' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Release Notes": {
-    "message": "Notas de la Versión",
+    "message": "Notas de Lanzamiento",
     "description": "The label for category 'Release Notes' in sidebar 'mainSidebar'"
   }
 }

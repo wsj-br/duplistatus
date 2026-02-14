@@ -8,7 +8,7 @@
     "description": "The label for category 'Installation' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.User Guide": {
-    "message": "Guide Utilisateur",
+    "message": "Guide de l'utilisateur",
     "description": "The label for category 'User Guide' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Settings": {
@@ -28,7 +28,7 @@
     "description": "The label for category 'Development' in sidebar 'mainSidebar'"
   },
   "sidebar.mainSidebar.category.Release Notes": {
-    "message": "Notes de Version",
+    "message": "Notes de version",
     "description": "The label for category 'Release Notes' in sidebar 'mainSidebar'"
   }
 }

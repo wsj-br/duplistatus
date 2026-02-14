@@ -2,7 +2,7 @@
  * Clean up translation cache and orphaned translation files:
  * 1. Orphaned cache entries: remove rows for source files that no longer exist
  * 2. Stale cache entries: remove rows where last_hit_at IS NULL or filepath IS NULL
- * 3. Orphaned translation files: delete i18n files whose source was removed from docs/
+ * 3. Orphaned translation files: delete i18n files (docs, JSON UI strings, SVGs) whose source was removed
  *
  * Run from documentation/: pnpm exec tsx scripts/translate/cache-cleanup.ts [-c config-path] [--dry-run]
  *
@@ -20,6 +20,7 @@ import { TranslationCache } from "./cache";
 import {
   buildExistingSegmentsSnapshot,
   getAllDocFiles,
+  getAllJsonFiles,
   toPosixPath,
 } from "./file-utils";
 import { TranslationConfig } from "./types";
@@ -58,6 +59,7 @@ function timestampForLogfile(): string {
 
 /**
  * Get all translation file paths for a locale (relative path -> full path)
+ * Includes: .md, .mdx, and .json files (JSON for Docusaurus UI strings)
  */
 function getAllTranslationFiles(
   i18nDir: string,
@@ -81,7 +83,11 @@ function getAllTranslationFiles(
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(fullPath, baseDir);
-      } else if (entry.name.endsWith(".md") || entry.name.endsWith(".mdx")) {
+      } else if (
+        entry.name.endsWith(".md") ||
+        entry.name.endsWith(".mdx") ||
+        entry.name.endsWith(".json")
+      ) {
         const relativePath = toPosixPath(path.relative(baseDir, fullPath));
         files.set(relativePath, fullPath);
       }
@@ -102,14 +108,23 @@ function cleanupOrphanedTranslationFiles(
   log: (msg: string) => void
 ): { deleted: number; paths: string[] } {
   const docsDir = path.resolve(cwd, config.paths.docs);
+  const jsonSourceDir = path.resolve(cwd, config.paths.jsonSource);
   const i18nDir = path.resolve(cwd, config.paths.i18n);
 
   // Use null ignore so we include ALL source files (including ignored).
   // Orphaned = translation exists but source was deleted. Ignored files still have sources.
   const docFiles = getAllDocFiles(docsDir, null);
+  const jsonFiles = getAllJsonFiles(jsonSourceDir, null);
   const sourceRelativePaths = new Set<string>();
+
+  // Add doc files (relative to docsDir)
   for (const fullPath of docFiles) {
     sourceRelativePaths.add(toPosixPath(path.relative(docsDir, fullPath)));
+  }
+
+  // Add JSON files (relative to jsonSourceDir)
+  for (const fullPath of jsonFiles) {
+    sourceRelativePaths.add(toPosixPath(path.relative(jsonSourceDir, fullPath)));
   }
 
   const deletedPaths: string[] = [];

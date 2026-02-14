@@ -88,20 +88,19 @@ const config: Config = {
   ],
 
   themes: [
-    [
-      '@cmfcmf/docusaurus-search-local',
+      [
+      '@easyops-cn/docusaurus-search-local',
       {
         // Options for the search plugin
+        hashed: true,
         indexDocs: true,
         indexBlog: false,
         indexPages: false,
         language: ['en', 'fr', 'de', 'es', 'pt'],
-        style: undefined,
-        maxSearchResults: 8,
-        lunr: {
-          // Support multiple languages for search results
-          tokenizerSeparator: /[\s\-]+/,
-        },
+        docsRouteBasePath: '/',
+        searchResultLimits: 10,
+        searchBarShortcut: false,
+        searchBarShortcutHint: false
       },
     ],
   ],

@@ -52,6 +52,7 @@ export class Glossary {
 
   /**
    * Load user glossary (en, locale, translation) - overrides UI glossary entries
+   * When locale is "*", the term is added for all configured locales.
    */
   private loadGlossaryUser(filepath: string): void {
     const content = fs.readFileSync(filepath, "utf-8");
@@ -77,7 +78,17 @@ export class Glossary {
         };
         this.terms.set(key, term);
       }
-      term.translations[locale] = translation;
+
+      if (locale === "*") {
+        // Add for all configured locales (except "en" which is the source)
+        for (const targetLocale of GLOSSARY_LOCALES) {
+          if (targetLocale !== "en") {
+            term.translations[targetLocale] = translation;
+          }
+        }
+      } else {
+        term.translations[locale] = translation;
+      }
       count++;
     }
 

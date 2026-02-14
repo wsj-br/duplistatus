@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-02-06T22:33:31.857Z'
+translation_last_updated: '2026-02-14T04:57:41.277Z'
 source_file_mtime: '2026-02-06T22:18:56.325Z'
 source_file_hash: 260a67f2593d936a
 translation_language: de
@@ -80,7 +80,7 @@ Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahr
 - GitHub SVG-Icon von https://github.com/logos
 
 :::note
- Alle Produktnamen, Logos und Markenzeichen sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zur Identifikation verwendet und implizieren keine Billigung.
+ Alle Produktnamen, Logos und Warenzeichen sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zur Identifikation verwendet und implizieren keine Billigung.
  :::
 
 
@@ -88,4 +88,4 @@ Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahr
 
 Das Projekt ist unter der [Apache-Lizenz 2.0](LICENSE.md) lizenziert.   
 
-**Urheberrecht © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2025 Waldemar Scudeller Jr.**
