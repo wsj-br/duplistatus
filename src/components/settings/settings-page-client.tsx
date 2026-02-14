@@ -9,7 +9,7 @@ import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { NtfyForm } from '@/components/settings/ntfy-form';
 import { BackupNotificationsForm } from '@/components/settings/backup-notifications-form';
-import { OverdueMonitoringForm } from '@/components/settings/overdue-monitoring-form';
+import { BackupMonitoringForm } from '@/components/settings/backup-monitoring-form';
 import { NotificationTemplatesForm } from '@/components/settings/notification-templates-form';
 import { ServerSettingsForm } from '@/components/settings/server-settings-form';
 import { EmailConfigurationForm } from '@/components/settings/email-configuration-form';
@@ -83,26 +83,27 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
     if (!config || loading) return;
 
     const currentServerListHash = createServerListHash(config.serversWithBackups || []);
-    
+
     // If this is the first load, store the hash and don't refresh
     if (lastServerListHash === '') {
       setLastServerListHash(currentServerListHash);
       return;
     }
 
-      // If the server list has changed, refresh only the server list data
-      if (currentServerListHash !== lastServerListHash) {
-        refreshServerListOnly().then(() => {
-          setLastServerListHash(currentServerListHash);
-          toast({
-            title: content.toasts.serverListUpdated,
-            description: content.toasts.serverListUpdatedDescription,
-            duration: 3000
-          });
-        }).catch((error) => {
-          console.error('Failed to refresh server list:', error);
+    // If the server list has changed, refresh only the server list data
+    if (currentServerListHash !== lastServerListHash) {
+      refreshServerListOnly().then(() => {
+        setLastServerListHash(currentServerListHash);
+        toast({
+          title: content.toasts.serverListUpdated.value,
+          description: content.toasts.serverListUpdatedDescription.value,
+          duration: 3000
         });
-      }
+      }).catch((error) => {
+        console.error('Failed to refresh server list:', error);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, loading, lastServerListHash, refreshServerListOnly, toast]);
 
   // Check for server list changes when user navigates back to the settings page
@@ -125,8 +126,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
             await refreshServerListOnly();
             setLastServerListHash(freshServerListHash);
             toast({
-              title: content.toasts.serverListUpdated,
-              description: content.toasts.serverListUpdatedDescription,
+              title: content.toasts.serverListUpdated.value,
+              description: content.toasts.serverListUpdatedDescription.value,
               duration: 3000
             });
           }
@@ -154,8 +155,8 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
           await refreshServerListOnly();
           setLastServerListHash(freshServerListHash);
           toast({
-            title: content.toasts.serverListUpdated,
-            description: content.toasts.serverListUpdatedDescription,
+            title: content.toasts.serverListUpdated.value,
+            description: content.toasts.serverListUpdatedDescription.value,
             duration: 3000
           });
         }
@@ -170,12 +171,13 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleFocus);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, loading, lastServerListHash, refreshServerListOnly, toast]);
 
   useEffect(() => {
     // Check for section parameter in URL first
     const sectionParam = searchParams.get('tab') || searchParams.get('section');
-    const validSections = ['notifications', 'overdue', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'database-maintenance', 'application-logs'];
+    const validSections = ['notifications', 'monitoring', 'server', 'ntfy', 'email', 'templates', 'users', 'audit', 'audit-retention', 'display', 'database-maintenance', 'application-logs'];
     const adminOnlySections = ['users', 'database-maintenance', 'audit-retention', 'application-logs'];
     
     // Redirect non-admin users away from admin-only sections
@@ -370,16 +372,16 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                     <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'notifications' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.backupNotifications}</span>
                   </button>
                   <button
-                    onClick={() => handleSectionChange('overdue')}
+                    onClick={() => handleSectionChange('monitoring')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors min-h-[36px] ${shouldCenterItems ? 'justify-center px-2' : ''} ${
-                      activeSection === 'overdue'
+                      activeSection === 'monitoring'
                         ? 'bg-accent text-accent-foreground'
                         : 'hover:bg-accent/50'
                     }`}
-                    title={isSidebarCollapsed ? content.sidebar.items.overdueMonitoring.value : undefined}
+                    title={isSidebarCollapsed ? content.sidebar.items.backupMonitoring.value : undefined}
                   >
                     <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'overdue' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.overdueMonitoring}</span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${activeSection === 'monitoring' ? 'font-medium' : ''} ${isSidebarCollapsed ? 'max-w-0 opacity-0' : 'max-w-[240px] opacity-100'}`}>{content.sidebar.items.backupMonitoring}</span>
                   </button>
                   <button
                     onClick={() => handleSectionChange('templates')}
@@ -549,9 +551,9 @@ export function SettingsPageClient({ currentUser }: SettingsPageClientProps) {
                 />
               )}
 
-              {/* Overdue Monitoring Section */}
-              {activeSection === 'overdue' && (
-                <OverdueMonitoringForm 
+              {/* Backup Monitoring Section */}
+              {activeSection === 'monitoring' && (
+                <BackupMonitoringForm 
                   backupSettings={config.backupSettings || {}}
                 />
               )}

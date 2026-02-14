@@ -159,7 +159,7 @@ export function ServerDetailSummaryItems({
   const summaryItems = getSummaryItems();
 
   const handleSettingsClick = () => {
-    router.push(`/${locale}/settings?tab=overdue`);
+    router.push(`/${locale}/settings?tab=monitoring`);
   };
 
   return (

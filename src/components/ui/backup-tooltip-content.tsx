@@ -217,7 +217,7 @@ export function BackupTooltipContent({
             className="text-xs flex items-center gap-1 hover:text-blue-500 transition-colors px-2 py-1 rounded"
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/${locale}/settings?tab=overdue`);
+              router.push(`/${locale}/settings?tab=monitoring`);
             }}
           >
             <Settings className="h-3 w-3" />

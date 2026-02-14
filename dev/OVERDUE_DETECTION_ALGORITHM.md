@@ -391,7 +391,7 @@ To test the overdue detection algorithm:
    ```
 
 2. **Check overdue backups**:
-   - Navigate to `/settings?tab=overdue`
+   - Navigate to `/settings?tab=monitoring`
    - Review the "Next Run" column
    - Check color coding (green = future, red = overdue)
 

@@ -3093,7 +3093,7 @@ async function main() {
 
       const adminSettingsTabs = [
         'notifications',
-        'overdue',
+        'monitoring',
         'server',
         'ntfy',
         'email',
