@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.185Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: a4bbad9704b474dc
+translation_last_updated: '2026-02-15T20:57:33.654Z'
+source_file_mtime: '2026-02-14T22:10:59.908Z'
+source_file_hash: 462b7eda950bd23d
 translation_language: fr
 source_file_path: user-guide/settings/database-maintenance.md
 ---
@@ -17,7 +17,7 @@ Gérez vos données de sauvegarde et optimisez les performances grâce aux opér
 
 Créez une sauvegarde de l'intégralité de votre base de données à titre de précaution ou pour des besoins de migration.
 
-1.  Accédez à `Paramètres → Maintenance de la base de données`.
+1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Dans la section **Sauvegarde de la base de données**, sélectionnez un format de sauvegarde :
     - **Fichier de base de données (.db)** : Format binaire - sauvegarde la plus rapide, préserve exactement toute la structure de la base de données
     - **Dump SQL (.sql)** : Format texte - instructions SQL lisibles par l'homme, peuvent être modifiées avant la restauration
@@ -41,7 +41,7 @@ Créez une sauvegarde de l'intégralité de votre base de données à titre de p
 
 Restaurez votre base de données à partir d'un fichier de sauvegarde créé précédemment.
 
-1.  Accédez à `Paramètres → Maintenance de la base de données`.
+1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Dans la section **Restauration de la base de données**, cliquez sur l'entrée de fichier et sélectionnez un fichier de sauvegarde :
     - Formats pris en charge : `.db`, `.sql`, `.sqlite`, `.sqlite3`
     - Taille maximale des fichiers : 100 Mo
@@ -92,12 +92,12 @@ Si vous supprimez accidentellement des données, vous pouvez les restaurer à l'
 
 Supprimez les enregistrements de sauvegarde obsolètes pour libérer de l'espace de stockage et améliorer les performances du système.
 
-1.  Accédez à `Paramètres → Maintenance de la base de données`.
+1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Choisissez une période de rétention :
     - **6 mois** : Conserver les enregistrements des 6 derniers mois.
     - **1 an** : Conserver les enregistrements de l'année dernière.
     - **2 ans** : Conserver les enregistrements des 2 dernières années (par défaut).
-    - **Supprimer toutes les données** : Supprimer tous les enregistrements de sauvegarde et les serveurs. 
+    - **Supprimer toutes les données** : Supprimer tous les enregistrements de sauvegarde et les serveurs.
 3.  Cliquez sur <IconButton icon="lucide:trash-2" label="Effacer les anciens enregistrements" />.
 4.  Confirmez l'action dans la boîte de dialogue.
 
@@ -120,9 +120,9 @@ Il est fortement recommandé de créer une sauvegarde de la base de données ava
 
 Supprimer les données d'une tâche de sauvegarde spécifique (type).
 
-1.  Accédez à `Paramètres → Maintenance de la base de données`.
+1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Sélectionnez un travail de sauvegarde dans la liste déroulante.
-    - Les sauvegardes seront triées par alias du serveur ou nom, puis par nom de sauvegarde.
+    - Les sauvegardes seront classées par alias du serveur ou nom, puis par nom de sauvegarde.
 3.  Cliquez sur <IconButton icon="lucide:folder-open" label="Supprimer le travail de sauvegarde" />.
 4.  Confirmez l'action dans la boîte de dialogue.
 
@@ -138,7 +138,7 @@ Supprimer les données d'une tâche de sauvegarde spécifique (type).
 
 Supprimer un Serveur spécifique et toutes ses données de sauvegarde associées.
 
-1.  Accédez à `Paramètres → Maintenance de la base de données`.
+1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Sélectionnez un serveur dans la liste déroulante.
 3.  Cliquez sur <IconButton icon="lucide:server" label="Supprimer les données du serveur" />.
 4.  Confirmez l'action dans la boîte de dialogue.
@@ -157,12 +157,12 @@ Détecter et fusionner les serveurs en double qui ont le même nom mais des ID d
 
 Cela peut se produire quand l'`machine-id` de Duplicati change après une mise à niveau ou une réinstallation. Les serveurs en double ne s'affichent que s'ils existent. Si aucun doublon n'est détecté, la section affichera un message indiquant que tous les serveurs ont des noms uniques.
 
-1.  Accédez à `Paramètres → Maintenance de la base de données`.
+1.  Accédez à [Paramètres → Maintenance de la base de données](database-maintenance.md).
 2.  Si des serveurs en double sont détectés, une section **Fusionner les serveurs en double** apparaîtra.
 3.  Examinez la liste des groupes de serveurs en double :
-    - Chaque groupe affiche les serveurs portant le même nom mais avec des ID différents
+    - Chaque groupe affiche les serveurs portant le même nom mais avec des identifiants différents
     - Le **Serveur cible** (le plus récent par date de création) est mis en évidence
-    - Les **anciens ID de serveur** qui seront fusionnés sont listés séparément
+    - Les **anciens identifiants de serveur** qui seront fusionnés sont listés séparément
 4.  Sélectionnez les groupes de serveurs que vous souhaitez fusionner en cochant la case à côté de chaque groupe.
 5.  Cliquez sur <IconButton icon="lucide:git-merge" label="Fusionner les serveurs sélectionnés" />.
 6.  Confirmez l'action dans la boîte de dialogue.

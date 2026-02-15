@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.201Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 796675225958a465
+translation_last_updated: '2026-02-15T20:57:33.675Z'
+source_file_mtime: '2026-02-15T20:21:44.757Z'
+source_file_hash: 1451600f02405243
 translation_language: fr
 source_file_path: user-guide/settings/display-settings.md
 ---
@@ -13,13 +13,14 @@ Configurer les préférences d'interface utilisateur et d'affichage.
 
 <br/>
 
-| Paramètre                      | Description                                                    | Valeur par défaut       |
-| :---------------------------- | :------------------------------------------------------------- | :---------------------- |
-| **Taille du tableau**          | Nombre de lignes par page sur la page de détails du serveur.   | 5 lignes                |
+| Paramètre                        | Description                                                    | Valeur par défaut      |
+|:--------------------------------|:---------------------------------------------------------------|:-----------------------|
+| **Taille du tableau**           | Nombre de lignes par page sur la page des détails du serveur.  | 5 lignes               |
 | **Plage temporelle du graphique** | Intervalle de temps affiché dans les graphiques.              | Toutes les données disponibles |
-| **Intervalle de rafraîchissement automatique** | Fréquence d'actualisation automatique des pages. | 1 minute                |
-| **Ordre de tri des cartes**    | Mode de tri des cartes sur le tableau de bord.                | `Nom du serveur (a-z)` |
-| **Thème**                      | Sélectionner le thème clair ou sombre.                         | Sombre                  |
+| **Intervalle de rafraîchissement automatique** | Fréquence d'actualisation automatique des pages. | 1 minute               |
+| **Ordre de tri des cartes**     | Comment les cartes sont triées sur le tableau de bord.         | Nom du serveur (a-z)   |
+| **Début de la semaine**         | Configurer quand la semaine commence.                          | Basé sur la locale     |
+| **Thème**                       | Sélectionner le thème clair ou sombre.                         | Sombre                 |
 
 <br/>
 

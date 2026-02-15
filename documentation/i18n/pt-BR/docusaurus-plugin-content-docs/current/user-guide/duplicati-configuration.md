@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.187Z'
-source_file_mtime: '2026-02-06T20:21:18.353Z'
-source_file_hash: 80ddd16f55e0e65c
+translation_last_updated: '2026-02-15T20:57:46.226Z'
+source_file_mtime: '2026-02-14T22:05:58.894Z'
+source_file_hash: 7e6c92db0c087a07
 translation_language: pt-BR
 source_file_path: user-guide/duplicati-configuration.md
 ---
@@ -13,9 +13,9 @@ Você pode selecionar um servidor na lista suspensa. Se você já tiver selecion
 
 ![Duplicati configuration](../assets/screen-duplicati-configuration.png)
 
-- A lista de servidores mostrará o `nome do servidor` ou `alias do servidor (nome do servidor)`.
-- Os endereços de servidores são configurados em [`Configurações → Servidor`](settings/server-settings.md).
-- A aplicação salva automaticamente a URL de um servidor quando você usa o recurso <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Coletar Logs de Backup`](collect-backup-logs.md).
+- A lista de servidores mostrará o `Nome do servidor` ou `Alias (Nome do servidor)`.
+- Os Endereços de servidores são configurados em [Configurações → Servidor](settings/server-settings.md).
+- A aplicação salva automaticamente a URL de um servidor quando você usa o recurso <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [Coletar logs de backup](collect-backup-logs.md).
 - Os servidores não aparecerão na lista de servidores se seu endereço não tiver sido configurado.
 
 ## Acessando a Interface Antiga do Duplicati {#accessing-the-old-duplicati-ui}

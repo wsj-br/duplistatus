@@ -218,8 +218,11 @@ export default async function BackupLogPage({ params }: BackupLogPageProps) {
   
   const { locale, serverId, backupId } = await params;
   
-  // Get translations
-  const content = useIntlayer('backup-detail-page', locale);
+  // Get translations - useIntlayer from next-intlayer/server works in async server components
+  // Map short locale (en, de, fr, es, pt-BR) to intlayer format (en-GB for English)
+  const intlayerLocale = locale === 'en' ? 'en-GB' : locale;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const content = useIntlayer('backup-detail-page', intlayerLocale);
   
   // Add error handling for database operations
   let server;

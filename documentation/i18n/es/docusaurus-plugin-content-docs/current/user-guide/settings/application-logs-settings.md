@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.402Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 351747b781a00331
+translation_last_updated: '2026-02-15T20:57:42.075Z'
+source_file_mtime: '2026-02-14T22:20:47.045Z'
+source_file_hash: 4bde5224faa7c371
 translation_language: es
 source_file_path: user-guide/settings/application-logs-settings.md
 ---
@@ -31,7 +31,7 @@ El Visor de Logs de aplicación permite a los administradores monitorear todos l
 |:--------|:-----------|
 | **Versión del archivo** | Seleccionar qué archivo de registro ver: **Actual** (archivo activo) o archivos rotados (`.1`, `.2`, etc., donde los números más altos son más antiguos). |
 | **Líneas a mostrar** | Mostrar las **100**, **500**, **1000** (por defecto), **5000**, o **10000** líneas más recientes del archivo seleccionado. |
-| **Desplazamiento automático** | Cuando está habilitado (por defecto para el archivo actual), se desplaza automáticamente a las nuevas entradas de registro y se actualiza cada 2 segundos. Solo funciona para la versión de archivo `Actual`. |
+| **Desplazamiento automático** | Cuando está habilitado (por defecto para el archivo actual), se desplaza automáticamente a las nuevas entradas de registro y se actualiza cada 2 segundos. Solo funciona para la versión de archivo **Actual**. |
 | **Buscar** | Filtrar líneas de registro por texto (sin distinción de mayúsculas y minúsculas). Los filtros se aplican a las líneas actualmente mostradas. |
 
 <br/>

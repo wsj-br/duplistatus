@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.974Z'
-source_file_mtime: '2026-02-02T01:09:34.945Z'
-source_file_hash: 761ce0264d6bb8c1
+translation_last_updated: '2026-02-15T20:57:42.635Z'
+source_file_mtime: '2026-02-14T22:22:55.979Z'
+source_file_hash: 024e5533adc1b9d9
 translation_language: es
 source_file_path: user-guide/settings/user-management-settings.md
 ---
@@ -23,7 +23,7 @@ Puede acceder a la sección Gestión de usuarios de dos formas:
 
 1. **Desde el Menú de Usuario**: Haga clic en <IconButton icon="lucide:user" label="nombre de usuario" />   en la [Barra de herramientas de la aplicación](../overview.md#application-toolbar) y seleccione "Usuarios Admin".
 
-2. **Desde Configuración**: Haz clic en <IconButton icon="lucide:settings"/> y `Users` en la barra lateral de configuración
+2. **Desde Configuración**: Haga clic en <IconButton icon="lucide:settings"/> y **Usuarios** en la barra lateral de configuración
 
 ## Crear un Nuevo Usuario {#creating-a-new-user}
 

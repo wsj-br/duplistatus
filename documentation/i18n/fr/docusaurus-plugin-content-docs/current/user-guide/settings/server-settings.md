@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.412Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: d5a3cd822d80561c
+translation_last_updated: '2026-02-15T20:57:33.888Z'
+source_file_mtime: '2026-02-14T22:23:43.397Z'
+source_file_hash: d44a1138f5ac3300
 translation_language: fr
 source_file_path: user-guide/settings/server-settings.md
 ---
@@ -24,7 +24,7 @@ Vous pouvez configurer un nom alternatif (alias) pour vos serveurs, une note pou
 
 :::note
 Si l'Adresse de l'interface Web (URL) n'est pas configurée, le bouton <SvgIcon svgFilename="duplicati_logo.svg" /> 
-sera Désactivé sur toutes les pages et le Serveur ne s'affichera pas dans la liste [`Configuration Duplicati`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
+sera désactivé sur toutes les pages et le serveur ne s'affichera pas dans la liste [Configuration Duplicati](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
 :::
 
 <br/>

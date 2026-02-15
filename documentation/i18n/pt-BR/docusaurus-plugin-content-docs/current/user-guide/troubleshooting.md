@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.974Z'
-source_file_mtime: '2026-02-01T03:16:19.470Z'
-source_file_hash: ccb921e081ad2c50
+translation_last_updated: '2026-02-15T20:57:47.106Z'
+source_file_mtime: '2026-02-14T22:26:39.674Z'
+source_file_hash: e98421b0542e0de6
 translation_language: pt-BR
 source_file_path: user-guide/troubleshooting.md
 ---
@@ -36,7 +36,7 @@ Se você vir avisos do servidor Duplicati como `HTTP Response request failed for
 
 Se as notificações não estão sendo enviadas ou recebidas:
 
-- **Verificar Configuração NTFY**: Certifique-se de que a URL NTFY e o tópico estão corretos. Use o botão `Send Test Notification` para testar.
+- **Verificar Configuração NTFY**: Certifique-se de que a URL NTFY e o tópico estão corretos. Use o botão **Enviar notificação de teste** para testar.
 - **Verificar Conectividade de Rede**: Verifique se **duplistatus** consegue alcançar seu servidor NTFY. Revise as configurações de firewall, se aplicável.
 - **Verificar Configurações de Notificação**: Confirme que as notificações estão habilitadas para os backups relevantes.
 
@@ -50,9 +50,9 @@ Se as versões de backup não forem exibidas no Painel ou na página de Detalhes
 
 Se as notificações de backup atrasado não estão sendo enviadas:
 
-- **Verificar Configuração de Atrasos**: Confirmar que o monitoramento de backups atrasados está habilitado para o backup. Verificar o intervalo esperado e as configurações de tolerância.
-- **Verificar Frequência de Notificações**: Se definido como `One time`, alertas são enviados apenas uma vez por evento de atraso.
-- **Verificar Serviço Cron**: Garantir que o serviço cron que monitora backups atrasados está funcionando corretamente. Verificar os logs da aplicação para erros. Verificar se o serviço cron está acessível na porta configurada (padrão: `8667`).
+- **Verificar Configuração de atrasos**: Confirme que o monitoramento de backup está habilitado para o backup. Verifique o intervalo esperado e as configurações de tolerância.
+- **Verificar Frequência de notificações**: Se definida como **Uma vez**, os alertas são enviados apenas uma vez por evento atrasado.
+- **Verificar Serviço Cron**: Certifique-se de que o serviço cron que monitora backups atrasados está funcionando corretamente. Verifique os logs da aplicação para erros. Verifique se o serviço cron está acessível na porta configurada (padrão: `8667`).
 
 ### Coletar logs de backup não está funcionando {#collect-backup-logs-not-working}
 
@@ -90,8 +90,8 @@ Se você perdeu sua senha de administrador ou foi bloqueado de sua conta:
 Quando migrar de versões anteriores ou criar um backup do banco de dados:
 
 **Se você está executando a versão 1.2.1 ou posterior:**
-- Use a função de backup do banco de dados integrada em `Configurações → Manutenção do banco de dados`
-- Selecione seu formato preferido (.db ou .sql) e clique em `Download Backup`
+- Use a função de backup do banco de dados integrada em [Configurações → Manutenção do banco de dados](user-guide/settings/database-maintenance.md)
+- Selecione seu formato preferido (.db ou .sql) e clique em **Baixar backup**
 - O arquivo de backup será baixado para seu computador
 - Consulte [Manutenção do banco de dados](settings/database-maintenance.md#database-backup) para instruções detalhadas
 

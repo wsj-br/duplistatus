@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.784Z'
-source_file_mtime: '2026-02-06T21:16:20.551Z'
-source_file_hash: 473175db710f3df5
+translation_last_updated: '2026-02-15T20:57:42.484Z'
+source_file_mtime: '2026-02-15T19:21:45.771Z'
+source_file_hash: 28dda7829d88467c
 translation_language: es
 source_file_path: user-guide/settings/notification-templates.md
 ---
@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/notification-templates.md
 
 **duplistatus** utiliza tres plantillas para mensajes de notificación. Estas plantillas se utilizan tanto para notificaciones NTFY como para notificaciones por correo electrónico.
 
-La página incluye un selector de **Idioma de Plantilla** que establece la configuración regional para las plantillas predeterminadas. Cambiar el idioma actualiza la configuración regional para los nuevos valores predeterminados, pero NO cambia el texto de las plantillas existentes. Para aplicar un nuevo idioma a sus plantillas, puede editarlas manualmente o usar **Restablecer esta plantilla a valores predeterminados** (para la pestaña actual) o **Restablecer todo a valores predeterminados** (para las tres plantillas).
+La página incluye un selector de **Idioma de las plantillas** que establece la configuración regional para las plantillas por defecto. Cambiar el idioma actualiza la configuración regional para los nuevos valores por defecto, pero **no** cambia el texto de las plantillas existentes. Para aplicar un nuevo idioma a sus plantillas, edítelas manualmente o utilice **Restablecer esta plantilla a predeterminada** (para la pestaña actual) o **Restablecer todo a predeterminado** (para las tres plantillas).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -23,7 +23,7 @@ La página incluye un selector de **Idioma de Plantilla** que establece la confi
 
 ## Idioma de Plantilla {#template-language}
 
-Un selector de **Idioma de Plantilla** en la parte superior de la página le permite elegir el idioma para las plantillas predeterminadas (inglés, alemán, francés, español, portugués de Brasil). Cambiar el idioma actualiza la configuración regional para los valores predeterminados, pero las plantillas personalizadas existentes mantienen su texto actual hasta que las actualice o use uno de los botones de restablecimiento.
+Un selector de **Idioma de las plantillas** en la parte superior de la página le permite elegir el idioma para las plantillas por defecto (Inglés, Alemán, Francés, Español, Portugués). Cambiar el idioma actualiza la configuración regional para los valores por defecto, pero las plantillas personalizadas existentes mantienen su texto actual hasta que las actualice o utilice uno de los botones de restablecimiento.
 
 <br/>
 

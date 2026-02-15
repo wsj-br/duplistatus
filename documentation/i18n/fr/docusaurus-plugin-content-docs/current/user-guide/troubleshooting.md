@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.548Z'
-source_file_mtime: '2026-02-01T03:16:19.470Z'
-source_file_hash: ccb921e081ad2c50
+translation_last_updated: '2026-02-15T20:57:34.047Z'
+source_file_mtime: '2026-02-14T22:26:39.674Z'
+source_file_hash: e98421b0542e0de6
 translation_language: fr
 source_file_path: user-guide/troubleshooting.md
 ---
@@ -36,8 +36,8 @@ Si vous voyez des avertissements du serveur Duplicati comme « HTTP Response req
 
 Si les notifications ne sont pas envoyées ou reçues :
 
-- **Vérifier la configuration NTFY** : Assurez-vous que l'URL NTFY et le sujet sont corrects. Utilisez le bouton `Envoyer une notification de test` pour tester.
-- **Vérifier la connectivité réseau** : Vérifiez que **duplistatus** peut atteindre votre serveur NTFY. Examinez les paramètres du pare-feu le cas échéant.
+- **Vérifier la configuration NTFY** : Assurez-vous que l'URL NTFY et le sujet sont corrects. Utilisez le bouton **Envoyer une notification de test** pour tester.
+- **Vérifier la connectivité réseau** : Vérifiez que **duplistatus** peut atteindre votre serveur NTFY. Vérifiez les paramètres du pare-feu le cas échéant.
 - **Vérifier les paramètres de notification** : Confirmez que les notifications sont activées pour les sauvegardes pertinentes.
 
 ### Versions disponibles non affichées {#available-versions-not-appearing}
@@ -50,9 +50,9 @@ Si les versions de sauvegarde ne s'affichent pas sur le tableau de bord ou la pa
 
 Si les notifications de sauvegarde en retard ne sont pas envoyées :
 
-- **Vérifier la Configuration des retards** : Confirmer que la Surveillance des sauvegardes en retard est activée pour la sauvegarde. Vérifier l'Intervalle attendu et les paramètres de Tolérance.
-- **Vérifier la Fréquence des notifications** : Si défini sur `One time`, les Alertes sont envoyées une seule fois par événement en retard.
-- **Vérifier le service Cron** : S'assurer que le service cron qui surveille les Sauvegardes en retard fonctionne correctement. Vérifier les Journaux d'application pour les Erreurs. Vérifier que le service cron est accessible au Port configuré (Par défaut : `8667`).
+- **Vérifier la configuration des retards** : Confirmez que la surveillance des sauvegardes est activée pour la sauvegarde. Vérifiez les paramètres d'intervalle attendu et de tolérance.
+- **Vérifier la fréquence des notifications** : Si elle est définie sur **Une fois**, les alertes ne sont envoyées qu'une seule fois par événement en retard.
+- **Vérifier le service Cron** : Assurez-vous que le service cron qui surveille les sauvegardes en retard fonctionne correctement. Vérifiez les journaux d'application pour les erreurs. Vérifiez que le service cron est accessible au port configuré (par défaut : `8667`).
 
 ### Collecter les journaux de sauvegarde Non fonctionnel {#collect-backup-logs-not-working}
 
@@ -90,8 +90,8 @@ Si vous avez perdu votre mot de passe administrateur ou êtes verrouillé de vot
 Lors de la migration à partir de versions précédentes ou de la création d'une sauvegarde de la base de données :
 
 **Si vous exécutez la version 1.2.1 ou ultérieure :**
-- Utilisez la fonction de sauvegarde de base de données intégrée dans `Paramètres → Maintenance de la base de données`
-- Sélectionnez votre format préféré (.db ou .sql) et cliquez sur `Télécharger la sauvegarde`
+- Utilisez la fonction de sauvegarde de base de données intégrée dans [Paramètres → Maintenance de la base de données](user-guide/settings/database-maintenance.md)
+- Sélectionnez votre format préféré (.db ou .sql) et cliquez sur **Télécharger la sauvegarde**
 - Le fichier de sauvegarde sera téléchargé sur votre ordinateur
 - Consultez [Maintenance de la base de données](settings/database-maintenance.md#database-backup) pour des instructions détaillées
 

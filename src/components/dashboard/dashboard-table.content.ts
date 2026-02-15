@@ -393,19 +393,12 @@ export default {
       es: 'Última notificación:', 
       'pt-BR': 'Última notificação:' 
     }),
-    overdueConfiguration: t({ 
-      en: 'Overdue configuration', 
-      de: 'Überfälligkeitskonfiguration', 
-      fr: 'Configuration des retards', 
-      es: 'Configuración de retrasos', 
-      'pt-BR': 'Configuração de atrasos' 
-    }),
-    overdueConfig: t({ 
-      en: 'Overdue Config', 
-      de: 'Überfälligkeits-Konfig', 
-      fr: 'Config des retards', 
-      es: 'Config de retrasos', 
-      'pt-BR': 'Config de atrasos' 
+    backupConfiguration: t({ 
+      en: 'Monitoring configuration',
+      de: 'Überwachungskonfiguration', 
+      fr: 'Configuration de surveillance', 
+      es: 'Configuración de monitoreo', 
+      'pt-BR': 'Configuração de monitoramento' 
     }),
     overdueDetails: t({ 
       en: 'Overdue Details', 

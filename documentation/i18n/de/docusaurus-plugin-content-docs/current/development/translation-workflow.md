@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:40.834Z'
-source_file_mtime: '2026-02-14T04:30:33.209Z'
-source_file_hash: c60228989cb5422d
+translation_last_updated: '2026-02-15T20:57:35.391Z'
+source_file_mtime: '2026-02-15T19:32:35.362Z'
+source_file_hash: f6b2901b63a4b18c
 translation_language: de
 source_file_path: development/translation-workflow.md
 ---
@@ -170,13 +170,13 @@ Das Übersetzungssystem verwendet einen zweistufigen Cache (Datei-Ebene und Segm
 
 Cache-Verwaltungsbefehle:
 
-| Befehl                                  | Beschreibung                                                           |
+| Befehl                                  | Beschreibung                                                          |
 |-----------------------------------------|-----------------------------------------------------------------------|
-| `pnpm translate --clear-cache <locale>` | Cache für bestimmte Sprache löschen                                    |
-| `pnpm translate --clear-cache`          | **Gesamten** Cache löschen (Datei- und Segmentcache)                   |
-| `pnpm translate --force`                | Neuübersetzung erzwingen (Dateicache löschen, Segmentcache beibehalten) |
-| `pnpm translate --no-cache`             | Cache vollständig umgehen (API-Aufrufe erzwingen, neue Übersetzungen speichern) |
-| `pnpm translate:edit-cache`             | Manueller Überblick, Löschen oder Bearbeiten von Cacheeinträgen        |
+| `pnpm translate --clear-cache <locale>` | Löschen des Caches für bestimmte Sprache                              |
+| `pnpm translate --clear-cache`          | Löschen des **gesamten** Caches (Datei- und Segment-Cache)            |
+| `pnpm translate --force`                | Erzwungene Neuübersetzung (löscht Datei-Cache, behält Segment-Cache)  |
+| `pnpm translate --no-cache`             | Cache vollständig umgehen (erzwingt API-Aufrufe, speichert neue Übersetzungen) |
+| `pnpm translate:editor`             | Manuelle Überprüfung, Löschen oder Bearbeitung von Cache-Einträgen    |
 
 ### Verwaiste und veraltete Cacheeinträge entfernen {#remove-orphaned-and-stale-cache}
 
@@ -202,7 +202,7 @@ Verwenden Sie beim Überprüfen von Übersetzungen das webbasierte Cache-Bearbei
 Wenn ein Modell beispielsweise einen Begriff falsch übersetzt hat, können Sie alle Einträge für diesen Begriff filtern, das Modell in der `translate.config.json`-Datei ändern und nur die Zeilen mit diesen Begriffen mithilfe des neuen Modells neu übersetzen.
 
 ```bash
-pnpm translate:edit-cache
+pnpm translate:editor
 ```
 
 Dies öffnet eine Web-Benutzeroberfläche zum manuellen Durchsuchen und Bearbeiten des Caches (Port 4000 oder 4000+), sodass Sie:
@@ -324,9 +324,9 @@ Um API-Aufrufe zu erzwingen und Anfrage-/Antwortverkehr zu erfassen,
 
 **Cache-Beschädigung**
 
-- `pnpm translate --clear-cache` ausführen, um zurückzusetzen
-- `pnpm translate:cleanup` ausführen, um verwaiste Einträge zu entfernen
-- `pnpm translate:edit-cache` verwenden, um einzelne zwischengespeicherte Übersetzungen zu korrigieren oder zu löschen, ohne das gesamte Dokument neu zu übersetzen
+- Führen Sie `pnpm translate --clear-cache` aus, um zurückzusetzen
+- Führen Sie `pnpm translate:cleanup` aus, um verwaiste Einträge zu entfernen
+- Verwenden Sie `pnpm translate:editor`, um einzelne zwischengespeicherte Übersetzungen zu korrigieren/löschen, ohne das gesamte Dokument neu zu übersetzen
 
 **Debugging OpenRouter-Datenverkehr**
 

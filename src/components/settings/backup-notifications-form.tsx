@@ -701,7 +701,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         autoSaveTimeoutRef.current = null;
       }
     }, 500); // 500ms debounce
-  }, [refreshConfigSilently, refreshOverdueTolerance, toast, isAutoSaving]);
+  }, [refreshConfigSilently, refreshOverdueTolerance, toast, content.noPermissionToModify.value, content.failedToAutoSaveBackupSettings.value, content.autoSaveError.value, content.failedToSaveBackupNotificationSettings.value, isAutoSaving]);
 
   // Build settings object by reading values directly from input elements
   // This is simpler and more reliable than trying to keep state/refs in sync
@@ -1055,7 +1055,7 @@ export function BackupNotificationsForm({ backupSettings }: BackupNotificationsF
         autoSaveTextInputTimeoutRef.current = null;
       }
     }, 5000); // 5 second timeout - only saves if user stops typing for 5 seconds
-  }, [refreshConfigSilently, refreshOverdueTolerance, toast, buildSettingsFromInputs]);
+  }, [refreshConfigSilently, refreshOverdueTolerance, toast, buildSettingsFromInputs, content.noPermissionToModify.value, content.failedToAutoSaveBackupSettings.value, content.autoSaveError.value, content.failedToSaveBackupNotificationSettings.value]);
   
   // Store autoSaveTextInput in ref so updateTextInputToMainState can call it without circular dependency
   autoSaveTextInputRef.current = autoSaveTextInput;

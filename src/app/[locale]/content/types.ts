@@ -637,18 +637,18 @@ export interface NotificationTemplatesFormContent {
   variableOverdueTolerance: string;
 }
 
-export interface OverdueMonitoringFormContent {
+export interface BackupMonitoringFormContent {
   title: string;
   description: string;
-  overdueMonitoring: string;
+  backupMonitoring: string;
   noServersWithBackups: string;
   noServersRegisteredYet: string;
-  configureOverdueMonitoring: string;
-  configureOverdueMonitoringDescription: string;
+  configureBackupMonitoring: string;
+  configureBackupMonitoringDescription: string;
   serverName: string;
   backupName: string;
   nextRun: string;
-  overdueBackupMonitoring: string;
+  backupMonitoringEnabled: string;
   expectedBackupInterval: string;
   unit: string;
   allowedDays: string;
@@ -656,7 +656,7 @@ export interface OverdueMonitoringFormContent {
   notSet: string;
   customIntervalPlaceholder: string;
   lastBackup: string;
-  saveOverdueMonitoringSettings: string;
+  saveBackupMonitoringSettings: string;
   saving: string;
   downloadCSV: string;
   csv: string;
@@ -665,9 +665,9 @@ export interface OverdueMonitoringFormContent {
   checking: string;
   resetNotifications: string;
   resetting: string;
-  overdueTolerance: string;
+  backupTolerance: string;
   tolerance: string;
-  overdueMonitoringInterval: string;
+  backupMonitoringInterval: string;
   monitoringInterval: string;
   interval: string;
   notificationFrequency: string;
@@ -687,20 +687,20 @@ export interface OverdueMonitoringFormContent {
   everyDay: string;
   everyWeek: string;
   everyMonth: string;
-  overdueBackupCheckComplete: string;
-  checkedBackupsFoundOverdue: string;
-  failedToRunOverdueBackupCheck: string;
-  overdueBackupCheckIntervalUpdated: string;
+  backupCheckComplete: string;
+  checkedBackupsFoundNeedingAttention: string;
+  failedToRunBackupCheck: string;
+  backupCheckIntervalUpdated: string;
   configurationSavedCronNotRunning: string;
-  failedToUpdateOverdueBackupCheckInterval: string;
-  overdueMonitoringSettingsSaved: string;
-  failedToSaveOverdueMonitoringSettings: string;
-  overdueBackupNotificationsReset: string;
-  failedToResetOverdueBackupNotifications: string;
+  failedToUpdateBackupCheckInterval: string;
+  backupMonitoringSettingsSaved: string;
+  failedToSaveBackupMonitoringSettings: string;
+  backupNotificationsReset: string;
+  failedToResetBackupNotifications: string;
   csvFileDownloadedSuccessfully: string;
   failedToGenerateCsvFile: string;
-  overdueToleranceUpdatedSuccessfully: string;
-  failedToUpdateOverdueTolerance: string;
+  backupToleranceUpdatedSuccessfully: string;
+  failedToUpdateBackupTolerance: string;
   notificationFrequencyUpdated: string;
   failedToUpdateNotificationFrequency: string;
   startingCollection: string;
@@ -716,12 +716,12 @@ export interface OverdueMonitoringFormContent {
   csvLastBackupDb: string;
   csvNextRun: string;
   csvNextRunWeekday: string;
-  csvIsOverdue: string;
+  csvNeedsAttention: string;
   csvMonitoringEnabled: string;
   csvExpectedInterval: string;
   csvAllowedWeekdays: string;
   noPermissionToModifySetting: string;
-  noPermissionToRunOverdueBackupChecks: string;
+  noPermissionToRunBackupChecks: string;
   selectTolerance: string;
   loading: string;
   downloadBackupMonitoringDataAsCsv: string;
@@ -1812,9 +1812,9 @@ export interface ContentTypes {
   'server-settings-form': ServerSettingsFormContent;
   'email-configuration-form': EmailConfigurationFormContent;
   'ntfy-form': NtfyFormContent;
-  'notification-templates-form': NotificationTemplatesFormContent;
-  'overdue-monitoring-form': OverdueMonitoringFormContent;
-  'user-management-form': UserManagementFormContent;
+    'notification-templates-form': NotificationTemplatesFormContent;
+    'backup-monitoring-form': BackupMonitoringFormContent;
+    'user-management-form': UserManagementFormContent;
   'audit-log-viewer': AuditLogViewerContent;
   'database-maintenance-form': DatabaseMaintenanceFormContent;
   'backup-tooltip-content': BackupTooltipContentContent;
@@ -1845,9 +1845,9 @@ export const contentKeys = [
   'server-settings-form',
   'email-configuration-form',
   'ntfy-form',
-  'notification-templates-form',
-  'overdue-monitoring-form',
-  'user-management-form',
+    'notification-templates-form',
+    'backup-monitoring-form',
+    'user-management-form',
   'audit-log-viewer',
   'database-maintenance-form',
   'backup-tooltip-content',

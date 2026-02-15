@@ -20,7 +20,7 @@ You can access the User Management section in two ways:
 1. **From the User Menu**: Click the <IconButton icon="lucide:user" label="username" />   in the [Application Toolbar](../overview.md#application-toolbar) and select "Admin Users".
 
 
-2. **From Settings**: Click on <IconButton icon="lucide:settings"/> and `Users` in the settings sidebar
+2. **From Settings**: Click on <IconButton icon="lucide:settings"/> and **Users** in the settings sidebar
 
 
 ## Creating a New User {#creating-a-new-user}

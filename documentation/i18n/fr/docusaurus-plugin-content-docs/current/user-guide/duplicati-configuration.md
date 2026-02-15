@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:38.720Z'
-source_file_mtime: '2026-02-06T20:21:18.353Z'
-source_file_hash: 80ddd16f55e0e65c
+translation_last_updated: '2026-02-15T20:57:33.171Z'
+source_file_mtime: '2026-02-14T22:05:58.894Z'
+source_file_hash: 7e6c92db0c087a07
 translation_language: fr
 source_file_path: user-guide/duplicati-configuration.md
 ---
@@ -14,8 +14,8 @@ Vous pouvez sélectionner un serveur dans la liste déroulante. Si vous avez dé
 ![Duplicati configuration](../assets/screen-duplicati-configuration.png)
 
 - La liste des serveurs affichera le `nom du serveur` ou `alias du serveur (nom du serveur)`.
-- Les adresses des serveurs sont configurées dans [`Paramètres → Serveur`](settings/server-settings.md).
-- L'application enregistre automatiquement l'URL d'un serveur quand vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collecter les journaux de sauvegarde`](collect-backup-logs.md).
+- Les adresses des serveurs sont configurées dans [Paramètres → Serveur](settings/server-settings.md).
+- L'application enregistre automatiquement l'URL d'un serveur lorsque vous utilisez la fonctionnalité <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [Collecter les journaux de sauvegarde](collect-backup-logs.md).
 - Les serveurs n'apparaîtront pas dans la liste des serveurs si leur adresse n'a pas été configurée.
 
 ## Accès à l'ancienne interface utilisateur de Duplicati {#accessing-the-old-duplicati-ui}

@@ -23,11 +23,11 @@ Before upgrading to a new version, it's recommended to create a backup of your d
 
 Use the built-in database backup function:
 
-1. Navigate to `Settings → Database Maintenance` in the web interface
+1. Navigate to [Settings → Database Maintenance](../user-guide/settings/database-maintenance.md) in the web interface
 2. In the **Database Backup** section, select a backup format:
    - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
    - **SQL Dump (.sql)**: Text format - human-readable SQL statements
-3. Click `Download Backup`
+3. Click **Download Backup**
 4. The backup file will be downloaded to your computer with a timestamped filename
 
 For more details, see the [Database Maintenance](../user-guide/settings/database-maintenance.md#database-backup) documentation.
@@ -181,7 +181,7 @@ Look for messages like:
    - Password: `Duplistatus09`
 2. **Change the password** when prompted (required on first login)
 3. **Create user accounts** for other users (Settings → Users)
-4. **Update external API integrations** to include authentication (see [API Breaking Changes](api-changes.md))
+4. **Update external API integrations** to include authentication (see [Backward-incompatible API changes](api-changes.md))
 5. **Configure audit log retention** if needed (Settings → Audit Log)
 
 #### If You're Locked Out {#if-youre-locked-out}
@@ -232,7 +232,7 @@ See [Admin Recovery Guide](../user-guide/admin-recovery.md) for details.
 2. **Update notification templates**:
    - Replace `{machine_name}` with `{server_name}`
 
-See [API Breaking Changes](api-changes.md) for detailed API migration steps.
+See [Backward-incompatible API changes](api-changes.md) for detailed API migration steps.
 
 ## Post-Migration Checklist {#post-migration-checklist}
 
@@ -243,7 +243,7 @@ After upgrading, verify:
 - [ ] Notifications work (test NTFY/email)
 - [ ] External API integrations work (if applicable)
 - [ ] Settings are accessible and correct
-- [ ] Overdue monitoring works correctly
+- [ ] Backup monitoring works correctly
 - [ ] Logged in successfully (0.9.x+)
 - [ ] Changed default admin password (0.9.x+)
 - [ ] Created user accounts for other users (0.9.x+)
@@ -273,7 +273,7 @@ After upgrading, verify:
 
 ### API Errors {#api-errors}
 
-1. Review [API Breaking Changes](api-changes.md) for endpoint updates
+1. Review [Backward-incompatible API changes](api-changes.md) for endpoint updates
 2. Update external integrations with new field names
 3. Add authentication to API requests (0.9.x+)
 4. Test API endpoints after migration
@@ -368,7 +368,7 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 
 - **Documentation**: [User Guide](../user-guide/overview.md)
 - **API Reference**: [API Documentation](../api-reference/overview.md)
-- **API Changes**: [API Breaking Changes](api-changes.md)
+- **API Changes**: [Backward-incompatible API changes](api-changes.md)
 - **Release Notes**: Check version-specific release notes for detailed changes
 - **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
 - **Issues**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

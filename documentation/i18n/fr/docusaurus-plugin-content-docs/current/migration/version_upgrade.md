@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:37.583Z'
-source_file_mtime: '2026-02-01T03:16:19.469Z'
-source_file_hash: 7cff43133e2a1c9a
+translation_last_updated: '2026-02-15T20:57:31.926Z'
+source_file_mtime: '2026-02-15T20:27:35.979Z'
+source_file_hash: f18ae0bd1263eac9
 translation_language: fr
 source_file_path: migration/version_upgrade.md
 ---
@@ -28,11 +28,11 @@ Avant de mettre à niveau vers une nouvelle version, il est recommandé de crée
 
 Utilisez la fonction de sauvegarde de la base de données intégrée :
 
-1. Accédez à `Settings → Database Maintenance` dans l'interface web
+1. Accédez à [Paramètres → Maintenance de la base de données](../user-guide/settings/database-maintenance.md) dans l'interface web
 2. Dans la section **Sauvegarde de la base de données**, sélectionnez un format de sauvegarde :
    - **Fichier de base de données (.db)** : Format binaire - sauvegarde la plus rapide, préserve exactement toute la structure de la base de données
    - **Dump SQL (.sql)** : Format texte - instructions SQL lisibles par l'homme
-3. Cliquez sur `Download Backup`
+3. Cliquez sur **Télécharger la sauvegarde**
 4. Le fichier de sauvegarde sera téléchargé sur votre ordinateur avec un nom de fichier horodaté
 
 Pour plus de détails, voir la documentation [Maintenance de la base de données](../user-guide/settings/database-maintenance.md#database-backup).
@@ -183,9 +183,9 @@ Recherchez des messages comme :
 1. **Se connecter** avec les identifiants admin par défaut :
    - Nom d'utilisateur : `admin`
    - Mot de passe : `Duplistatus09`
-2. **Changer le mot de passe** quand vous y êtes invité (requis à la première connexion)
-3. **Créer l'utilisateur** pour les autres utilisateurs (Paramètres → Utilisateurs)
-4. **Mettre à jour les intégrations API externes** pour inclure l'authentification (voir [API Breaking Changes](api-changes.md))
+2. **Modifier le mot de passe** quand vous y êtes invité (requis à la première connexion)
+3. **Créer des comptes utilisateur** pour les autres utilisateurs (Paramètres → Utilisateurs)
+4. **Mettre à jour les intégrations API externes** pour inclure l'authentification (voir [Modifications incompatibles avec les versions antérieures de l'API](api-changes.md))
 5. **Configurer la rétention du journal d'audit** si nécessaire (Paramètres → Journal d'Audit)
 
 #### Si vous êtes verrouillé {#if-youre-locked-out}
@@ -236,18 +236,18 @@ Consultez le [Guide de récupération Admin](../user-guide/admin-recovery.md) po
 2. **Mettre à jour les modèles de notification** :
    - Remplacer `{machine_name}` par `{server_name}`
 
-Consultez [API Breaking Changes](api-changes.md) pour connaître les étapes détaillées de migration de l'API.
+Voir [Modifications incompatibles avec les versions antérieures de l'API](api-changes.md) pour les étapes détaillées de migration de l'API.
 
 ## Liste de contrôle post-migration {#post-migration-checklist}
 
 Après la mise à niveau, vérifier :
 
-- [ ] Tous les serveurs apparaissent correctement dans le tableau de bord
+- [ ] Tous les serveurs s'affichent correctement dans le tableau de bord
 - [ ] L'historique des sauvegardes est complet et accessible
-- [ ] Les notifications fonctionnent (tester NTFY/e-mail)
+- [ ] Les notifications fonctionnent (tester NTFY/E-mail)
 - [ ] Les intégrations d'API externes fonctionnent (le cas échéant)
 - [ ] Les paramètres sont accessibles et corrects
-- [ ] La surveillance des sauvegardes en retard fonctionne correctement
+- [ ] La surveillance des sauvegardes fonctionne correctement
 - [ ] Connecté avec succès (0.9.x+)
 - [ ] Mot de passe admin par défaut modifié (0.9.x+)
 - [ ] Comptes utilisateur créés pour d'autres utilisateurs (0.9.x+)
@@ -277,9 +277,9 @@ Après la mise à niveau, vérifier :
 
 ### Erreurs API {#api-errors}
 
-1. Consultez [API Breaking Changes](api-changes.md) pour les mises à jour des points de terminaison
+1. Examinez [Modifications incompatibles avec les versions antérieures de l'API](api-changes.md) pour les mises à jour des points de terminaison
 2. Mettez à jour les intégrations externes avec les nouveaux noms de champs
-3. Ajoutez l'authentification aux demandes API (0.9.x+)
+3. Ajoutez l'authentification aux requêtes API (0.9.x+)
 4. Testez les points de terminaison API après la migration
 
 ### Problèmes de clé maître (0.8.x+) {#master-key-issues-08x}
@@ -368,8 +368,8 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 ## Aide {#getting-help}
 
 - **Documentation** : [Guide de l'utilisateur](../user-guide/overview.md)
-- **API Reference** : [Documentation API](../api-reference/overview.md)
-- **API Changes** : [Modifications importantes de l'API](api-changes.md)
-- **Release Notes** : Vérifier les notes de version spécifiques pour les modifications détaillées
-- **Community** : [Discussions GitHub](https://github.com/wsj-br/duplistatus/discussions)
-- **Issues** : [Problèmes GitHub](https://github.com/wsj-br/duplistatus/issues)
+- **Référence API** : [Documentation API](../api-reference/overview.md)
+- **Modifications API** : [Modifications incompatibles avec les versions antérieures de l'API](api-changes.md)
+- **Notes de version** : Consultez les notes de version spécifiques à chaque version pour les modifications détaillées
+- **Communauté** : [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
+- **Problèmes** : [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

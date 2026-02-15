@@ -1,15 +1,11 @@
 ---
-translation_last_updated: '2026-02-14T04:57:42.826Z'
-source_file_mtime: '2026-02-06T20:21:18.352Z'
-source_file_hash: 99734fe309fbff0d
+translation_last_updated: '2026-02-15T20:57:37.559Z'
+source_file_mtime: '2026-02-15T19:53:12.345Z'
+source_file_hash: be758d204cdf9a84
 translation_language: de
 source_file_path: user-guide/dashboard.md
 ---
 # Dashboard {#dashboard}
-
-:::tip
-**Schnellzugriff auf Anzeigeeinstellungen**: Klicken Sie mit der rechten Maustaste auf die Schaltfläche zum automatischen Aktualisieren in der Anwendungssymbolleiste, um die Seite [Anzeigeeinstellungen](settings/display-settings.md) schnell zu öffnen.
-:::
 
 ## Dashboard-Zusammenfassung {#dashboard-summary}
 
@@ -31,23 +27,21 @@ Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 
 Das Kartenlayout zeigt den Status des zuletzt empfangenen Sicherungsprotokolls für jede Sicherung.
 
-![Dashboard Overview](../assets/duplistatus_dash-cards.png)
+![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
-- **Servername**: Name des Duplicati-Servers (oder der Alias)
-  - Wenn Sie den Mauszeiger über den **Servernamen** bewegen, werden der Servername und der Hinweis angezeigt
-- **Gesamtstatus**: Der Status des Servers. Überfällige Sicherungen werden als `Warnung`-Status angezeigt
-- **Zusammenfassende Informationen**: Die konsolidierte Anzahl von Dateien, Größe und Speicherplatz, der für alle Sicherungen dieses Servers verwendet wird. Zeigt auch die verstrichene Zeit der zuletzt empfangenen Sicherung an (Mauszeiger darüber bewegen, um den Zeitstempel anzuzeigen)
+- **Servername**: Name des Duplicati-Servers (oder des Alias)
+  - Wenn Sie mit der Maus über den **Servernamen** fahren, werden der Servername und der Hinweis angezeigt
+- **Gesamtstatus**: Der Status des Servers. Überfällige Sicherungen werden als **Warnung**-Status angezeigt
+- **Zusammenfassende Informationen**: Die konsolidierte Anzahl von Dateien, Größe und Speicherplatz, der für alle Sicherungen dieses Servers verwendet wird. Zeigt auch die verstrichene Zeit der zuletzt empfangenen Sicherung an (Hover über den Zeitstempel)
 - **Sicherungsliste**: Eine Tabelle mit allen für diesen Server konfigurierten Sicherungen mit 3 Spalten:
-  - **Sicherungsname**: Name der Sicherung auf dem Duplicati-Server
+  - **Sicherungsname**: Name der Sicherung im Duplicati-Server
   - **Statusverlauf**: Status der letzten 10 empfangenen Sicherungen.
-  - **Letzte empfangene Sicherung**: Die verstrichene Zeit seit der aktuellen Zeit des zuletzt empfangenen Protokolls. Es wird ein Warnsymbol angezeigt, wenn die Sicherung überfällig ist.
-    - Die Zeit wird in Kurzform angezeigt: `m` für Minuten, `h` für Stunden, `d` für Tage, `w` für Wochen, `mo` für Monate, `y` für Jahre.
+  - **Letzte Sicherung empfangen**: Die verstrichene Zeit seit der aktuellen Zeit des zuletzt empfangenen Protokolls. Es wird ein Warnsymbol angezeigt, wenn die Sicherung überfällig ist.
+    - Die Zeit wird in abgekürzter Form angezeigt: `m` für Minuten, `h` für Stunden, `d` für Tage, `w` für Wochen, `mo` für Monate, `y` für Jahre.
 
-:::note
-Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, um die Kartensortierreihenfolge zu konfigurieren. Die verfügbaren Optionen sind `Server name (a-z)`, `Status (error > warning > success)` und `Last backup received (new > old)`.
-:::
+Die Kartensortierreihenfolge und andere Konfigurationen können in den [Anzeigeeinstellungen](settings/display-settings.md) festgelegt werden.
 
-Sie können die Schaltfläche oben rechts im Seitenpanel umschalten, um die Panelansicht zu ändern:
+Die Panelansicht bietet zwei Informationsanzeigen, auf die durch Klicken auf die Schaltfläche oben rechts im Seitenpanel zugegriffen werden kann:
 
 - Status: Einblenden von Statistiken der Sicherungsaufträge pro Status, mit einer Liste von überfälligen Sicherungen und Sicherungsaufträgen mit Warnungen/Fehler-Status.
 
@@ -64,8 +58,8 @@ Wenn Sie den Mauszeiger über eine Sicherung in der Liste bewegen, werden Detail
 ![Overdue details](../assets/screen-backup-tooltip.png)
 
 - **Servername : Sicherung**: Der Name oder Alias des Duplicati-Servers und der Sicherung, zeigt auch den Servernamen und den Hinweis an.
-  - Der Alias und der Hinweis können unter `Settings → Server Settings` konfiguriert werden.
-- **Benachrichtigungen**: Ein Symbol, das die [konfigurierte Benachrichtigungseinstellung](#notifications-icons) für neue Sicherungsprotokolle anzeigt.
+  - Der Alias und der Hinweis können unter [Einstellungen → Servereinstellungen](settings/server-settings.md) konfiguriert werden.
+- **Benachrichtigung**: Ein Symbol, das die [konfigurierte Benachrichtigungseinstellung](#notifications-icons) für neue Sicherungsprotokolle anzeigt.
 - **Datum**: Der Zeitstempel der Sicherung und die verstrichene Zeit seit der letzten Bildschirmaktualisierung.
 - **Status**: Der Status der zuletzt empfangenen Sicherung (Erfolg, Warnung, Fehler, Kritisch).
 - **Dauer, Dateianzahl, Dateigröße, Speichergröße, Hochgeladene Größe**: Werte wie vom Duplicati-Server gemeldet.
@@ -75,7 +69,7 @@ Wenn diese Sicherung überfällig ist, zeigt der Tooltip auch:
 
 - **Erwartete Sicherung**: Der Zeitpunkt, zu dem die Sicherung erwartet wurde, einschließlich der konfigurierten Kulanzfrist (zusätzliche Zeit, bevor sie als überfällig markiert wird).
 
-Sie können auch auf die Schaltflächen am unteren Rand klicken, um `Einstellungen → Sicherungsmitteilungen` zu öffnen und die Einstellungen für überfällige Sicherungen zu konfigurieren, oder öffnen Sie die Weboberfläche des Duplicati-Servers.
+Sie können auch auf die Schaltflächen unten klicken, um [Einstellungen → Backup-Benachrichtigungen](settings/backup-notifications-settings.md) zu öffnen und die Überwachungseinstellungen zu konfigurieren oder die Weboberfläche des Duplicati-Servers zu öffnen.
 
 ## Tabellenlayout {#table-layout}
 
@@ -96,14 +90,16 @@ Die Tabellenlayout listet die neuesten empfangenen Sicherungsprotokolle für all
   - **Benachrichtigung**: Ein Symbol, das die konfigurierte Benachrichtigungseinstellung für neue Sicherungsprotokolle anzeigt.
   - **Duplicati-Konfiguration**: Eine Schaltfläche zum Öffnen der Weboberfläche des Duplicati-Servers
 
+Sie können die [Anzeigeeinstellungen](settings/display-settings.md) verwenden, um die Tabellengröße und andere Konfigurationen zu konfigurieren.
+
 ### Benachrichtigungssymbole {#notifications-icons}
 
-| Icon                                                                                                                                    | Benachrichtigungsoption | Beschreibung                                                                                         |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />     | Aus                 | Nein Benachrichtigungen werden gesendet, wenn ein neues Sicherungsprotokoll empfangen wird                                     |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} />     | Alle                 | Benachrichtigungen werden für jedes neue Sicherungsprotokoll gesendet, unabhängig von seinem Status.                      |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} />    | Warnungen            | Benachrichtigungen werden nur für Sicherungsprotokolle mit dem Status Warnung, Unbekannt, Fehler oder Kritisch gesendet. |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} />    | Fehler              | Benachrichtigungen werden nur für Sicherungsprotokolle mit dem Status Fehler oder Kritisch gesendet.                    |
+| Symbol                                                                                                                               | Benachrichtigungsoption | Beschreibung                                                                                         |
+|------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Aus                 | Es werden keine Benachrichtigungen gesendet, wenn ein neues Sicherungsprotokoll empfangen wird                                     |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | Alle                 | Benachrichtigungen werden für jedes neue Sicherungsprotokoll gesendet, unabhängig von seinem Status.                      |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Warnungen            | Benachrichtigungen werden nur für Sicherungsprotokolle mit dem Status Warnung, Unbekannt, Fehler oder Kritisch gesendet. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Fehler              | Benachrichtigungen werden nur für Sicherungsprotokolle mit dem Status Fehler oder Kritisch gesendet.                    |
 
 :::note
 Diese Benachrichtigungseinstellung gilt nur, wenn **duplistatus** ein neues Sicherungsprotokoll von einem Duplicati-Server erhält. Benachrichtigungen für überfällige Sicherungen werden separat konfiguriert und werden unabhängig von dieser Einstellung gesendet.

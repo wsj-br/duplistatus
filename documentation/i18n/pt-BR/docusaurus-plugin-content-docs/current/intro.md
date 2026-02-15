@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:49.754Z'
-source_file_mtime: '2026-02-06T22:18:56.325Z'
-source_file_hash: 260a67f2593d936a
+translation_last_updated: '2026-02-15T20:57:44.595Z'
+source_file_mtime: '2026-02-15T18:34:41.602Z'
+source_file_hash: 65a8594207f730f7
 translation_language: pt-BR
 source_file_path: intro.md
 ---
@@ -11,15 +11,15 @@ source_file_path: intro.md
 
 ## Recursos {#features}
 
-- **Configuração Rápida**: Implantação simples em contêineres, com imagens disponíveis no Docker Hub e GitHub.
-- **Painel Unificado**: Visualize o status, histórico e detalhes de backup de todos os servidores em um só lugar.
-- **Monitoramento de backups atrasados**: Verificação automatizada e alertas para backups agendados atrasados.
-- **Visualização de Dados e Logs**: Gráficos interativos e coleta automática de logs de servidores Duplicati.
-- **Notificações e Alertas**: Suporte integrado NTFY e SMTP/e-mail para alertas de backup, incluindo notificações de backup atrasado.
-- **Controle de Acesso do Usuário e Segurança**: Sistema de autenticação seguro com controle de acesso baseado em funções (funções Admin/Usuário), políticas de senha configuráveis, proteção contra bloqueio de conta e gerenciamento abrangente de usuários.
-- **Logs de Auditoria**: Trilha de auditoria completa de todas as alterações do sistema e ações do usuário com filtragem avançada, recursos de exportação e períodos de retenção configuráveis.
-- **Visualizador de logs do aplicativo**: Interface exclusiva para administradores visualizar, pesquisar e exportar logs do aplicativo diretamente da interface web com recursos de monitoramento em tempo real.
-- **Suporte a Múltiplos Idiomas**: Interface e documentação disponíveis em inglês, francês, alemão, espanhol e português do Brasil.
+- **Configuração rápida**: Implantação simples em contêiner, com imagens disponíveis no Docker Hub e GitHub.
+- **Painel unificado**: Visualize o status do backup, histórico e detalhes de todos os servidores em um único lugar.
+- **Monitoramento de backup**: Verificação automatizada e alertas para backups agendados atrasados.
+- **Visualização de dados e logs**: Gráficos interativos e coleta automática de logs de servidores Duplicati.
+- **Notificações e alertas**: Suporte integrado a NTFY e e-mail SMTP para alertas de backup, incluindo notificações de backups atrasados.
+- **Controle de acesso do usuário e segurança**: Sistema de autenticação seguro com controle de acesso baseado em função (funções Admin/Usuário), políticas de senha configuráveis, proteção contra bloqueio de conta e gerenciamento abrangente de usuários.
+- **Auditoria de logs**: Trilha de auditoria completa de todas as alterações do sistema e ações do usuário com filtragem avançada, recursos de exportação e períodos de retenção configuráveis.
+- **Visualizador de logs do aplicativo**: Interface exclusiva para administradores para visualizar, pesquisar e exportar logs da aplicação diretamente da interface web com recursos de monitoramento em tempo real.
+- **Suporte multilíngue**: Interface e documentação disponíveis em inglês, francês, alemão, espanhol e português brasileiro.
 
 ## Instalação {#installation}
 
@@ -80,12 +80,12 @@ Este projeto foi construído principalmente com ajuda de IA. Para aprender como,
 - Ícone SVG do Duplicati de https://dashboardicons.com/icons/duplicati - Ícone SVG do ntfy de https://dashboardicons.com/icons/ntfy - Ícone SVG do GitHub de https://github.com/logos
 
 :::note
- Todos os nomes de produtos, logotipos e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
- :::
+ Todos os nomes de produtos, logos e marcas registradas são propriedade de seus respectivos proprietários. Ícones e nomes são usados apenas para fins de identificação e não implicam endosso.
+:::
 
 
 ## Licença {#license}
 
-O projeto é licenciado sob a [Apache License 2.0](LICENSE.md).   
+O projeto está licenciado sob a [Apache License 2.0](LICENSE.md).   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**

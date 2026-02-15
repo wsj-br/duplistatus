@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.250Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 4f0c83e8848eb7e7
+translation_last_updated: '2026-02-15T20:57:33.729Z'
+source_file_mtime: '2026-02-14T22:23:43.397Z'
+source_file_hash: c7c041a3840aa396
 translation_language: fr
 source_file_path: user-guide/settings/email-settings.md
 ---
@@ -23,11 +23,11 @@ source_file_path: user-guide/settings/email-settings.md
 | **Adresse d'expéditeur**        | Adresse e-mail affichée comme expéditeur. Requise pour les connexions SMTP simple ou quand l'authentification est désactivée. Par défaut le nom d'utilisateur SMTP quand l'authentification est activée. Notez que certains fournisseurs de messagerie remplaceront l'« Adresse d'expéditeur » par le « Nom d'utilisateur du serveur SMTP ». |
 | **E-mail du destinataire**     | L'adresse e-mail pour recevoir les notifications. Doit être une adresse e-mail au format valide. |
 
-Une <IIcon2 icon="lucide:mail" color="green"/> icône verte à côté de `Email` dans la barre latérale signifie que vos paramètres sont valides. Si l'icône est <IIcon2 icon="lucide:mail" color="yellow"/> jaune, vos paramètres ne sont pas valides ou ne sont pas configurés.
+Une icône <IIcon2 icon="lucide:mail" color="green"/> verte à côté d'**E-mail** dans la barre latérale signifie que vos paramètres sont valides. Si l'icône est <IIcon2 icon="lucide:mail" color="yellow"/> jaune, vos paramètres ne sont pas valides ou ne sont pas configurés.
 
 L'icône s'affiche en vert quand tous les champs requis sont définis : SMTP Server Host, Port du serveur SMTP, E-mail du destinataire, et soit (Nom d'utilisateur SMTP + Mot de passe quand l'authentification est requise) soit (Adresse d'expéditeur quand l'authentification n'est pas requise).
 
-Quand la configuration n'est pas entièrement configurée, une boîte d'alerte jaune s'affiche vous informant qu'aucun e-mail ne sera envoyé jusqu'à ce que les paramètres e-mail soient remplis correctement. Les cases à cocher E-mail dans l'onglet [`Paramètres de notifications de sauvegarde`](backup-notifications-settings.md) seront également grisées et afficheront les étiquettes « (Désactivé) ».
+Lorsque la configuration n'est pas entièrement configurée, une boîte d'alerte jaune s'affiche vous informant qu'aucun e-mail ne sera envoyé tant que les paramètres e-mail ne seront pas remplis correctement. Les cases à cocher E-mail dans l'onglet [Notifications de sauvegarde](backup-notifications-settings.md) seront également grisées et afficheront des étiquettes « (Désactivé) ».
 
 <br/>
 
@@ -42,11 +42,11 @@ Quand la configuration n'est pas entièrement configurée, une boîte d'alerte j
 <br/>
 
 :::info[IMPORTANT]
-  Vous devez utiliser le bouton <IconButton icon="lucide:mail" label="Envoyer un e-mail de test"/> pour vous assurer que votre configuration d'e-mail fonctionne avant de vous y fier pour les notifications.
+  Vous devez utiliser le bouton <IconButton icon="lucide:mail" label="Envoyer un e-mail de test"/> pour vous assurer que votre configuration e-mail fonctionne avant de vous y fier pour les notifications.
 
  Même si vous voyez une icône verte <IIcon2 icon="lucide:mail" color="green"/> et que tout semble configuré, les e-mails peuvent ne pas être envoyés.
  
- `duplistatus` vérifie uniquement si vos paramètres SMTP sont remplis, pas si les e-mails peuvent réellement être livrés.
+ **duplistatus** vérifie uniquement si vos paramètres SMTP sont remplis, pas si les e-mails peuvent réellement être livrés.
 :::
 
 <br/>

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:45.210Z'
-source_file_mtime: '2026-02-06T21:13:34.856Z'
-source_file_hash: d6bdf0e9f9ddb899
+translation_last_updated: '2026-02-15T20:57:39.939Z'
+source_file_mtime: '2026-02-15T19:17:43.632Z'
+source_file_hash: 2ddcfddd1763c2b6
 translation_language: es
 source_file_path: installation/configure-tz.md
 ---
@@ -12,7 +12,7 @@ La interfaz de usuario de la aplicación mostrará la fecha y hora según la con
 El valor por defecto es `TZ=Europe/London` si esta variable de entorno no está establecida.
 
 :::note
-La configuración regional (formato de número y fecha) para las notificaciones se configura en [Configuración → Plantillas de notificación](../user-guide/settings/notification-templates.md).
+La configuración de idioma y configuración regional (formatos de número y fecha) para notificaciones se puede configurar en [Configuración → Plantillas](../user-guide/settings/notification-templates.md).
 :::
 
 ## Configuración de la Zona horaria {#configuring-the-timezone}
@@ -28,7 +28,7 @@ environment:
   - TZ=America/Sao_Paulo
 ```
 
-o pasar la variable de entorno en la línea de comandos:
+o pasar la variable de entorno en la línea de comandos (Docker o Podman):
 
 ```bash
   --env TZ=America/Sao_Paulo

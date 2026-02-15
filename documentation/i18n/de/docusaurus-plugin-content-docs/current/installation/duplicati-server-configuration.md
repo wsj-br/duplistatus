@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-14T04:57:41.004Z'
-source_file_mtime: '2026-01-25T02:45:42.745Z'
+translation_last_updated: '2026-02-15T20:57:35.564Z'
+source_file_mtime: '2026-02-14T22:17:03.416Z'
 source_file_hash: da5148730ecb385b
 translation_language: de
 source_file_path: installation/duplicati-server-configuration.md

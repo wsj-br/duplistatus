@@ -19,11 +19,11 @@ This section shows statistics for either all backups on the server or a single s
 - **TOTAL UPLOADED**: Sum of all uploaded data recorded in the **duplistatus** database.
 
 
-If this backup or any of the backups on the server (when `All Backups` is selected) is overdue, a message appears below the summary. 
+If this backup or any of the backups on the server (when **All Backups** is selected) is overdue, a message appears below the summary. 
 
 ![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
 
-Click the <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configure"/> to go to [`Settings → Overdue Monitoring`](settings/overdue-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
+Click the <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Configure"/> to go to [Settings → Backup Monitoring](settings/backup-monitoring-settings.md). Or click the <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> on the toolbar to open the Duplicati server's web interface and check the logs.
 
 <br/>
 
@@ -41,7 +41,7 @@ This table lists the backup logs for the selected server.
 - **File Count, File Size, Uploaded Size, Duration, Storage Size**: Values as reported by the Duplicati server.
 
 :::tip Tips
-• Use the dropdown menu in the **Backup History** section to select `All Backups` or a specific backup for this server.
+• Use the dropdown menu in the **Backup History** section to select **All Backups** or a specific backup for this server.
 
 • You can sort any column by clicking its header, click again to reverse the sort order.
  
@@ -50,7 +50,7 @@ This table lists the backup logs for the selected server.
 ::: 
 
 :::note
-When `All Backups` is selected, the list shows all backups ordered from newest to oldest by default.
+When **All Backups** is selected, the list shows all backups ordered from newest to oldest by default.
 :::
 
 <br/>

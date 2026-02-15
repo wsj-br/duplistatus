@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.735Z'
-source_file_mtime: '2026-02-06T20:21:18.353Z'
-source_file_hash: e4822ed3bdf643fb
+translation_last_updated: '2026-02-15T20:57:46.895Z'
+source_file_mtime: '2026-02-14T22:22:22.802Z'
+source_file_hash: faafdd8670f3c3f8
 translation_language: pt-BR
 source_file_path: user-guide/settings/ntfy-settings.md
 ---
@@ -19,7 +19,7 @@ source_file_path: user-guide/settings/ntfy-settings.md
 
 <br/>
 
-Um ícone <IIcon2 icon="lucide:message-square" color="green"/> verde ao lado de `NTFY` na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:message-square" color="yellow"/> amarelo, suas configurações não são válidas.
+Um ícone <IIcon2 icon="lucide:message-square" color="green"/> verde ao lado de **NTFY** na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:message-square" color="yellow"/> amarelo, suas configurações não são válidas.
 Quando a configuração não é válida, as caixas de seleção NTFY na aba [`Notificações de Backup`](backup-notifications-settings.md) também ficarão desativadas.
 
 ## Ações Disponíveis {#available-actions}
@@ -39,15 +39,13 @@ Você deve instalar o aplicativo NTFY em seu dispositivo antes de configurá-lo 
 <br/>
 
 :::caution
-Se você usar o servidor público `ntfy.sh` sem um token de acesso, qualquer pessoa com o nome do seu tópico pode visualizar suas
-notificações. 
- 
-Para fornecer um grau de privacidade, um tópico aleatório de 12 caracteres é gerado, oferecendo mais de
-3 sextilhões (3.000.000.000.000.000.000.000) de combinações possíveis, tornando difícil adivinhar.
+Se você usar o servidor público **ntfy.sh** sem um token de acesso, qualquer pessoa com o nome do seu tópico poderá visualizar suas notificações.
+
+Para fornecer um grau de privacidade, um tópico aleatório de 12 caracteres é gerado, oferecendo mais de 3 sextilhões (3.000.000.000.000.000.000.000) de combinações possíveis, dificultando a adivinhação.
 
 Para melhor segurança, considere usar [autenticação por token de acesso](https://docs.ntfy.sh/config/#access-tokens) e [listas de controle de acesso](https://docs.ntfy.sh/config/#access-control-list-acl) para proteger seus tópicos, ou [auto-hospedar NTFY](https://docs.ntfy.sh/install/#docker) para controle total.
 
-⚠️ **Você é responsável por proteger seus tópicos NTFY. Por favor, use este serviço por sua conta e risco.**
+⚠️ **Você é responsável por proteger seus tópicos NTFY. Use este serviço por sua conta e risco.**
 :::
 
 <br/>

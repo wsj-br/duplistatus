@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:49.684Z'
-source_file_mtime: '2026-02-06T21:13:37.635Z'
-source_file_hash: badfc81088d24eed
+translation_last_updated: '2026-02-15T20:57:44.515Z'
+source_file_mtime: '2026-02-15T16:25:07.956Z'
+source_file_hash: 4f631551c203abfa
 translation_language: pt-BR
 source_file_path: installation/installation.md
 ---
@@ -66,7 +66,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/London
-      - LANG=en_GB
       - PWD_ENFORCE=true
       - PWD_MIN_LEN=8
     ports:
@@ -260,11 +259,11 @@ podman pod rm -f duplistatus-pod
 ## Configuração Essencial {#essential-configuration}
 
 1. Configure seus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensagens de log de backup para duplistatus (obrigatório).
-2. Entre no duplistatus – consulte as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
-3. Colete logs de backup iniciais – use o recurso [Coletar logs de backup](../user-guide/collect-backup-logs.md) para popular o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backups atrasados com base na configuração de cada servidor.
-4. Configure as configurações do servidor – configure aliases e notas do servidor em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
-5. Configure as configurações de NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
-6. Configure as configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
-7. Configure notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de backup](../user-guide/settings/backup-notifications-settings.md).
+2. Entrar no duplistatus – veja as instruções no [Guia do Usuário](../user-guide/overview.md#accessing-the-dashboard).
+3. Coletar logs de backup iniciais – use o recurso [Coletar logs de backup](../user-guide/collect-backup-logs.md) para preencher o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
+4. Configurar configurações do servidor – configure aliases de servidor e notas em [Configurações → Servidor](../user-guide/settings/server-settings.md) para tornar seu painel mais informativo.
+5. Configurar configurações de NTFY – configure notificações via NTFY em [Configurações → NTFY](../user-guide/settings/ntfy-settings.md).
+6. Configurar configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](../user-guide/settings/email-settings.md).
+7. Configurar notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de backup](../user-guide/settings/backup-notifications-settings.md).
 
 Consulte as seções a seguir para configurar as configurações opcionais, como fuso horário, formato de números e HTTPS.

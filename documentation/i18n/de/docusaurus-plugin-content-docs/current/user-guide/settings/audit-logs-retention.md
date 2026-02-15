@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.079Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: cf92c351f5e4592a
+translation_last_updated: '2026-02-15T20:57:37.780Z'
+source_file_mtime: '2026-02-14T22:20:51.153Z'
+source_file_hash: f21e4b84808c8bcb
 translation_language: de
 source_file_path: user-guide/settings/audit-logs-retention.md
 ---
@@ -13,7 +13,7 @@ Konfigurieren Sie, wie lange Audit-Protokolle vor der automatischen Bereinigung 
 
 | Einstellung | Beschreibung | Standardwert |
 |:-------|:-----------|:-------------|
-| **Aufbewahrung (Tage)** | Anzahl der Tage zur Aufbewahrung von Audit-Protokollen vor automatischem Löschen | `90 Tage` |
+| **Aufbewahrung (Tage)** | Anzahl der Tage zur Aufbewahrung von Audit-Protokollen vor automatischer Löschung | **90 Tage** |
 
 ## Aufbewahrungseinstellungen {#retention-settings}
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:41.694Z'
-source_file_mtime: '2026-02-01T03:16:19.469Z'
-source_file_hash: 7cff43133e2a1c9a
+translation_last_updated: '2026-02-15T20:57:36.256Z'
+source_file_mtime: '2026-02-15T20:27:35.979Z'
+source_file_hash: f18ae0bd1263eac9
 translation_language: de
 source_file_path: migration/version_upgrade.md
 ---
@@ -28,12 +28,12 @@ Vor dem Upgrade auf eine neue Version wird empfohlen, eine Sicherung von Ihrer D
 
 Verwenden Sie die integrierte Datenbanksicherungsfunktion:
 
-1. Navigieren Sie zu `Settings → Database Maintenance` in der Weboberfläche
-2. Wählen Sie im Bereich **Datenbanksicherung** ein Sicherungsformat aus:
-   - **Datenbankdatei (.db)**: Binärformat – schnellste Sicherung, erhält alle Datenbankstrukturen exakt
+1. Navigieren Sie zu [Einstellungen → Datenbankwartung](../user-guide/settings/database-maintenance.md) in der Weboberfläche
+2. Wählen Sie im Abschnitt **Datenbanksicherung** ein Sicherungsformat aus:
+   - **Datenbankdatei (.db)**: Binärformat – schnellste Sicherung, behält alle Datenbankstrukturen exakt bei
    - **SQL-Dump (.sql)**: Textformat – lesbare SQL-Anweisungen
-3. Klicken Sie auf `Download Backup`
-4. Die Sicherungsdatei wird mit einem Zeitstempel-Dateinamen auf Ihren Computer heruntergeladen
+3. Klicken Sie auf **Sicherung herunterladen**
+4. Die Sicherungsdatei wird auf Ihren Computer mit einem Zeitstempel-Dateinamen heruntergeladen
 
 Weitere Details finden Sie in der Dokumentation zur [Datenbankwartung](../user-guide/settings/database-maintenance.md#database-backup).
 
@@ -183,10 +183,10 @@ Suchen Sie nach Nachrichten wie:
 1. **Anmelden** mit Standard-Admin-Anmeldedaten:
    - Benutzername: `admin`
    - Passwort: `Duplistatus09`
-2. **Passwort ändern** wenn dazu aufgefordert (erforderlich beim ersten Anmelden)
+2. **Passwort ändern** wenn aufgefordert (erforderlich bei der ersten Anmeldung)
 3. **Benutzerkonten erstellen** für andere Benutzer (Einstellungen → Benutzer)
-4. **Externe API-Integrationen aktualisieren** um Authentifizierung einzubeziehen (siehe [API Breaking Changes](api-changes.md))
-5. **Audit-Log-Aufbewahrung konfigurieren** falls erforderlich (Einstellungen → Audit-Log)
+4. **Externe API-Integrationen aktualisieren**, um Authentifizierung einzubeziehen (siehe [Rückwärts inkompatible API-Änderungen](api-changes.md))
+5. **Audit-Log-Aufbewahrung konfigurieren**, falls erforderlich (Einstellungen → Audit-Log)
 
 #### Wenn Sie gesperrt sind {#if-youre-locked-out}
 
@@ -236,7 +236,7 @@ Weitere Informationen finden Sie im [Admin Recovery Guide](../user-guide/admin-r
 2. **Benachrichtigungsvorlagen aktualisieren**:
    - `{machine_name}` durch `{server_name}` ersetzen
 
-Siehe [API Breaking Changes](api-changes.md) für detaillierte Schritte zur API-Migration.
+Siehe [Rückwärts inkompatible API-Änderungen](api-changes.md) für detaillierte API-Migrationschritte.
 
 ## Checkliste nach der Migration {#post-migration-checklist}
 
@@ -247,7 +247,7 @@ Nach dem Upgrade bestätigen:
 - [ ] Benachrichtigungen funktionieren (NTFY/E-Mail testen)
 - [ ] Externe API-Integrationen funktionieren (falls zutreffend)
 - [ ] Einstellungen sind zugänglich und korrekt
-- [ ] Überwachung überfälliger Sicherungen funktioniert korrekt
+- [ ] Sicherungsüberwachung funktioniert korrekt
 - [ ] Erfolgreich angemeldet (0.9.x+)
 - [ ] Standard-Admin-Passwort geändert (0.9.x+)
 - [ ] Benutzerkonten für andere Benutzer erstellt (0.9.x+)
@@ -277,9 +277,9 @@ Nach dem Upgrade bestätigen:
 
 ### API-Fehler {#api-errors}
 
-1. Überprüfen Sie [API Breaking Changes](api-changes.md) auf Endpunkt-Updates
+1. Überprüfen Sie [Rückwärts inkompatible API-Änderungen](api-changes.md) auf Endpunkt-Updates
 2. Aktualisieren Sie externe Integrationen mit neuen Feldnamen
-3. Hinzufügen von Authentifizierung zu API-Anfragen (0.9.x+)
+3. Fügen Sie Authentifizierung zu API-Anfragen hinzu (0.9.x+)
 4. Testen Sie API-Endpunkte nach der Migration
 
 ### Probleme mit Master Key (0.8.x+) {#master-key-issues-08x}
@@ -369,7 +369,7 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 
 - **Dokumentation**: [Benutzerhandbuch](../user-guide/overview.md)
 - **API-Referenz**: [API-Dokumentation](../api-reference/overview.md)
-- **API-Änderungen**: [API Breaking Changes](api-changes.md)
-- **Versionshinweise**: Prüfen Sie versionsspezifische Versionshinweise für detaillierte Änderungen
+- **API-Änderungen**: [Rückwärts inkompatible API-Änderungen](api-changes.md)
+- **Versionshinweise**: Prüfen Sie versionsspezifische Versionshinweise auf detaillierte Änderungen
 - **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
 - **Probleme**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

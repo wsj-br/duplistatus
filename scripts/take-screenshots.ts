@@ -45,7 +45,7 @@ const ORDERED_SCREENSHOT_FILENAMES: string[] = [
   'screen-settings-notifications.png',
   'screen-settings-notifications-bulk.png',
   'screen-settings-notifications-server.png',
-  'screen-settings-backup-monitoring.png',
+  'screen-settings-monitoring.png',
   'screen-settings-server.png',
   'screen-settings-ntfy.png',
   'screen-settings-email.png',

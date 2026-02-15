@@ -8,8 +8,8 @@ You can select a server from the dropdown list. If you have already selected a s
 ![Duplicati configuration](../assets/screen-duplicati-configuration.png)
 
 - The list of servers will show the `server name` or `server alias (server name)`.
-- Server addresses are configured in [`Settings → Server`](settings/server-settings.md).
-- The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [`Collect Backup Logs`](collect-backup-logs.md) feature.
+- Server addresses are configured in [Settings → Server](settings/server-settings.md).
+- The application automatically saves a server's URL when you use the <IconButton icon="lucide:download" height="16" href="collect-backup-logs" /> [Collect Backup Logs](collect-backup-logs.md) feature.
 - Servers will not appear in the server list if their address has not been configured.
 
 ## Accessing the Old Duplicati UI {#accessing-the-old-duplicati-ui}

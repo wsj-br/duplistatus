@@ -7,7 +7,7 @@ The application user interface date and time will be displayed according to the 
 The default value is `TZ=Europe/London` if this environment variable is not set.
 
 :::note
-Locale (number and date format) for notifications is configured in [Settings → Notification Templates](../user-guide/settings/notification-templates.md).
+The language and locale settings (number and date formats) for notifications can be configured in the [Settings → Templates](../user-guide/settings/notification-templates.md).
 :::
 
 ## Configuring the Timezone {#configuring-the-timezone}
@@ -23,7 +23,7 @@ environment:
   - TZ=America/Sao_Paulo
 ```
 
-or pass the environment variable in the command line:
+or pass the environment variable in the command line (Docker or Podman):
 
 ```bash
   --env TZ=America/Sao_Paulo

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.342Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 796675225958a465
+translation_last_updated: '2026-02-15T20:57:38.084Z'
+source_file_mtime: '2026-02-15T20:21:44.757Z'
+source_file_hash: 1451600f02405243
 translation_language: de
 source_file_path: user-guide/settings/display-settings.md
 ---
@@ -13,13 +13,14 @@ Konfigurieren Sie die Benutzeroberfläche und Anzeigeeinstellungen.
 
 <br/>
 
-| Einstellung                   | Beschreibung                                         | Standardwert       |
-| :------------------------ | :-------------------------------------------------- | :------------------ |
-| **Tabellengröße**            | Anzahl der Zeilen pro Seite auf der Server-Details-Seite. | 5 Zeilen              |
-| **Diagramm-Zeitbereich**      | Zeitintervall in den Diagrammen.                  | Alle verfügbaren Daten  |
-| **Automatische Aktualisierung** | Wie oft Seiten automatisch aktualisiert werden.              | 1 Minute            |
-| **Kartensortierung**      | Wie Karten auf dem Dashboard sortiert werden.              | `Servername (a-z)` |
-| **Thema**                 | Auswählen des hellen oder dunklen Themas.                     | Dunkel                |
+| Einstellung                   | Beschreibung                                         | Standardwert      |
+|:--------------------------|:----------------------------------------------------|:-------------------|
+| **Tabellengröße**            | Anzahl der Zeilen pro Seite auf der Serverdetailseite. | 5 Zeilen             |
+| **Diagramm-Zeitbereich**      | Zeitintervall in den Diagrammen.                  | Alle verfügbaren Daten |
+| **Automatische Aktualisierung** | Wie oft Seiten automatisch aktualisiert werden.              | 1 Minute           |
+| **Kartensortierung**      | Wie Karten im Dashboard sortiert werden.              | Servername (a-z)  |
+| **Wochenbeginn**         | Konfigurieren Sie, wann die Woche beginnt.                     | Nach Locale    |
+| **Thema**                 | Wählen Sie das helle oder dunkle Thema.                     | Dunkel               |
 
 <br/>
 

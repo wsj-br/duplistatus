@@ -1,4 +1,4 @@
-import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig, SupportedTemplateLanguage } from './types';
+import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig, SupportedTemplateLanguage, StartOfWeek } from './types';
 import { defaultNotificationTemplatesEn } from './default-notifications-en';
 import { defaultNotificationTemplatesDe } from './default-notifications-de';
 import { defaultNotificationTemplatesFr } from './default-notifications-fr';
@@ -128,7 +128,8 @@ export const defaultUIConfig = {
   tablePageSize: 5 as const,
   chartTimeRange: 'All data' as const,
   autoRefreshInterval: 1 as const,
-  dashboardCardsSortOrder: 'Server name (a-z)' as const
+  dashboardCardsSortOrder: 'Server name (a-z)' as const,
+  startOfWeek: 'locale' as const // Default to locale-based (en-US = Sunday, en-GB = Monday)
 };
 
 // Default API configuration

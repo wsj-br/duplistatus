@@ -2,7 +2,7 @@
 
 # Overview {#overview}
 
-The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> `Settings` button in the [Application Toolbar](../overview#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
+The Settings page offers a unified interface for configuring all aspects of **duplistatus**. You can access it by clicking the <IconButton icon="lucide:settings" /> **Settings** button in the [Application Toolbar](../overview#application-toolbar). Note that regular users will see a simplified menu with fewer options compared to administrators.
 
 
 
@@ -21,7 +21,7 @@ Administrators see all available settings.
           <strong>Notifications</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: Configure per-backup notification settings</li>
-            <li><a href="overdue-settings.md">Overdue Monitoring</a>: Configure overdue backup detection and alerts</li>
+            <li><a href="backup-monitoring-settings.md">Backup Monitoring</a>: Configure overdue backup detection and alerts</li>
             <li><a href="notification-templates.md">Templates</a>: Customise notification message templates</li>
           </ul>
         </li><br/>
@@ -36,7 +36,7 @@ Administrators see all available settings.
           <strong id="system">System</strong>
           <ul>
             <li><a href="server-settings.md">Servers</a>: Manage Duplicati server configurations</li>
-            <li><a href="display-settings.md">Display</a>: Configure display preferences</li>
+            <li><a href="display-settings.md">Display Settings</a>: Configure display preferences</li>
             <li><a href="database-maintenance.md">Database Maintenance</a>: Perform database cleanup (admin only)</li>
             <li><a href="user-management-settings.md">Users</a>: Manage user accounts (admin only)</li>
             <li><a href="audit-logs-viewer.md">Audit Log</a>: View system audit logs</li>
@@ -64,7 +64,7 @@ Regular users see a limited set of settings.
           <strong>Notifications</strong>
           <ul>
             <li><a href="backup-notifications-settings.md">Backup Notifications</a>: View per-backup notification settings (read-only)</li>
-            <li><a href="overdue-settings.md">Overdue Monitoring</a>: View overdue backup settings (read-only)</li>
+            <li><a href="backup-monitoring-settings.md">Backup monitoring</a>: View overdue backup settings (read-only)</li>
             <li><a href="notification-templates.md">Templates</a>: View notification templates (read-only)</li>
           </ul>
         </li><br/>
@@ -94,7 +94,7 @@ The sidebar displays status icons next to the **NTFY** and **Email** integration
 - <IIcon2 icon="lucide:message-square" color="green"/> <IIcon2 icon="lucide:mail" color="green"/> **Green icon**: Your settings are valid and configured correctly
 - <IIcon2 icon="lucide:message-square" color="yellow"/> <IIcon2 icon="lucide:mail" color="yellow"/> **Yellow icon**: Your settings are not valid or not configured
 
-When the configuration is invalid, the corresponding checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will be greyed out and disabled. For more details, see the [NTFY Settings](ntfy-settings.md) and [Email Settings](email-settings.md) pages.
+When the configuration is invalid, the corresponding checkboxes in the [Backup Notifications](backup-notifications-settings.md) tab will be greyed out and disabled. For more details, see the [NTFY Settings](ntfy-settings.md) and [Email Settings](email-settings.md) pages.
 
 <br/>
 

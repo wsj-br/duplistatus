@@ -27,10 +27,15 @@ After successful installation, access the duplistatus web interface by following
 2. Navigate to `http://your-server-ip:9666`
    - Replace `your-server-ip` with the actual IP address or hostname of your duplistatus server
    - The default port is `9666`
-3. You will be presented with a login page. You can select the interface language in the top right corner on the login page, or when logged in, via the user menu (click your username → Language).
+3. You will be presented with a login page. 
+
    Use these credentials for first use (or after an upgrade from pre-0.9.x versions):
     - username: `admin`
     - password: `Duplistatus09` 
+     
+   Select the user interface language in the top right corner <IconButton icon="lucide:languages" label="Language" />, or in <IconButton icon="lucide:user" label="username" /> after login (see below).
+   
+
 4. After login, the main dashboard will display automatically (with no data on first usage)
 
 ## User Interface Overview {#user-interface-overview}
@@ -55,7 +60,7 @@ The user interface is organised into several key sections to provide a clear and
 
 The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](/img/duplistatus_toolbar.png)
 
 | Button                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -86,7 +91,7 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
 ## Essential Configuration {#essential-configuration}
 
 1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
-2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
+2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the backup monitoring intervals based on each server’s configuration.
 3. Configure server settings – set up server aliases and notes in [Settings → Server](settings/server-settings.md) to make your dashboard more informative.
 4. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](settings/ntfy-settings.md).
 5. Configure email settings – set up email notifications in [Settings → Email](settings/email-settings.md).

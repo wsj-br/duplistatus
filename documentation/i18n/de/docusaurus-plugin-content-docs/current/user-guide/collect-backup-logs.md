@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:42.744Z'
-source_file_mtime: '2026-02-02T01:09:34.943Z'
-source_file_hash: d64b8fe2f60fa81e
+translation_last_updated: '2026-02-15T20:57:37.462Z'
+source_file_mtime: '2026-02-14T22:26:39.674Z'
+source_file_hash: f960ed5694a25582
 translation_language: de
 source_file_path: user-guide/collect-backup-logs.md
 ---
@@ -13,46 +13,46 @@ source_file_path: user-guide/collect-backup-logs.md
 
 ### Manuelle Erfassung {#manual-collection}
 
-1.  Klicken Sie auf das Symbol <IconButton icon="lucide:download" /> `Collect Backup Logs` in der [Anwendungssymbolleiste](overview#application-toolbar).
+1.  Klicken Sie auf das Symbol <IconButton icon="lucide:download" /> **Backup-Protokolle sammeln** in der [Anwendungssymbolleiste](overview#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
 2.  Server auswählen
 
-Wenn Sie Server-Adressen in `Settings → Server Settings` konfiguriert haben, wählen Sie einen aus der Dropdown-Liste für sofortige Erfassung aus. Wenn Sie keine Server konfiguriert haben, können Sie die Duplicati-Server-Details manuell eingeben.
+Wenn Sie Server-Adressen in [Einstellungen → Server-Einstellungen](settings/server-settings.md) konfiguriert haben, wählen Sie eine aus der Dropdown-Liste für sofortige Erfassung aus. Wenn Sie keine Server konfiguriert haben, können Sie die Duplicati-Server-Details manuell eingeben.
 
-3.  Geben Sie die Details des Duplicati-Servers ein:
+3.  Geben Sie die Duplicati-Server-Details ein:
     - **Hostname**: Der Hostname oder die IP-Adresse des Duplicati-Servers. Sie können mehrere Hostnamen durch Kommas getrennt eingeben, z. B. `192.168.1.23,someserver.local,192.168.1.89`
     - **Port**: Die vom Duplicati-Server verwendete Portnummer (Standard: `8200`).
     - **Passwort**: Geben Sie das Authentifizierungspasswort ein, falls erforderlich.
     - **Gesammelte JSON-Daten herunterladen**: Aktivieren Sie diese Option, um die von duplistatus gesammelten Daten herunterzuladen.
-4.  Klicken Sie auf `Collect Backups`.
+4.  Klicken Sie auf **Backups sammeln**.
 
 ***Hinweise:***
 - Wenn Sie mehrere Hostnamen eingeben, wird die Erfassung mit demselben Port und Passwort für alle Server durchgeführt.
 - **duplistatus** erkennt automatisch das beste Verbindungsprotokoll (HTTPS oder HTTP). Es versucht zuerst HTTPS (mit ordnungsgemäßer SSL-Validierung), dann HTTPS mit selbstsigniertem Zertifikat und schließlich HTTP als Fallback.
 
 :::tip
-<IconButton icon="lucide:download" /> Schaltflächen zum Herunterladen sind in `Einstellungen → Überfällige Überwachung` und `Einstellungen → Server-Einstellungen` für die Erfassung auf einem einzelnen Server verfügbar.
+<IconButton icon="lucide:download" /> Schaltflächen sind in [Einstellungen → Sicherungsüberwachung](settings/backup-monitoring-settings.md) und [Einstellungen → Server-Einstellungen](settings/server-settings.md) für die Erfassung einzelner Server verfügbar.
 :::
 
 <br/>
 
 ### Massenerfassung {#bulk-collection}
 
-_Klicken Sie mit der rechten Maustaste_ auf die Schaltfläche <IconButton icon="lucide:download" /> `Sammeln von Sicherungsprotokollen` in der Anwendungssymbolleiste, um Daten von allen konfigurierten Servern zu sammeln.
+_Klicken Sie mit der rechten Maustaste_ auf die Schaltfläche <IconButton icon="lucide:download" /> **Backup-Protokolle sammeln** in der Anwendungssymbolleiste, um von allen konfigurierten Servern zu sammeln.
 
 ![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
-Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle sammeln"/> auf den Seiten `Einstellungen → Überfällige Überwachung` und `Einstellungen → Server-Einstellungen` verwenden, um von allen konfigurierten Servern zu sammeln.
+Sie können auch die Schaltfläche <IconButton icon="lucide:import" label="Alle sammeln"/> auf den Seiten [Einstellungen → Sicherungsüberwachung](settings/backup-monitoring-settings.md) und [Einstellungen → Server-Einstellungen](settings/server-settings.md) verwenden, um von allen konfigurierten Servern zu sammeln.
 :::
 
 ## Wie der Erfassungsprozess funktioniert {#how-the-collection-process-works}
 
 - **duplistatus** erkennt automatisch das beste Verbindungsprotokoll und verbindet sich mit dem angegebenen Duplicati-Server.
-- Es ruft den Sicherungsverlauf, Protokollinformationen und Sicherungseinstellungen ab (für die Überwachung überfälliger Sicherungen).
-- Alle Protokolle, die bereits in der **duplistatus**-Datenbank vorhanden sind, werden übersprungen.
+- Es ruft Sicherungsverlauf, Protokollinformationen und Sicherungseinstellungen (für die Sicherungsüberwachung) ab.
+- Alle bereits in der **duplistatus**-Datenbank vorhandenen Protokolle werden übersprungen.
 - Neue Daten werden verarbeitet und in der lokalen Datenbank gespeichert.
 - Die verwendete URL (mit dem erkannten Protokoll) wird in der lokalen Datenbank gespeichert oder aktualisiert.
 - Wenn die Download-Option ausgewählt ist, werden die gesammelten JSON-Daten heruntergeladen. Der Dateiname hat folgendes Format: `[serverName]_collected_[Zeitstempel].json`. Der Zeitstempel verwendet das ISO-8601-Datumsformat (YYYY-MM-DDTHH:MM:SS).

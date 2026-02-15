@@ -2,10 +2,6 @@
 
 # Dashboard {#dashboard}
 
-:::tip
-**Quick Access to Display Settings**: Right-click on the auto-refresh button in the application toolbar to quickly open the [Display Settings](settings/display-settings.md) page.
-:::
-
 ## Dashboard Summary {#dashboard-summary}
 
 This section displays aggregated statistics for all backups.
@@ -26,11 +22,11 @@ This section displays aggregated statistics for all backups.
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
-![Dashboard Overview](../assets/duplistatus_dash-cards.png)
+![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note
-- **Overall Status**: The status of the server. Overdue backups will show as a `Warning` status
+- **Overall Status**: The status of the server. Overdue backups will show as a **Warning** status
 - **Summary information**: The consolidated number of files, size and storage used for all backups of this server. Also shows the elapsed time of the most recent backup received (hover over to show the timestamp)
 - **Backups list**: A table with all the backups configured for this server, with 3 columns:
   - **Backup Name**: Name of the backup in the Duplicati server
@@ -38,11 +34,10 @@ The cards layout shows the status of the most recent backup log received for eac
   - **Last backup received**: The elapsed time since the current time of the last log received. It will show a warning icon if the backup is overdue.
     - Time is shown in abbreviated format: `m` for minutes, `h` for hours, `d` for days, `w` for weeks, `mo` for months, `y` for years.
 
-:::note
-You can use the [Display Settings](settings/display-settings.md) to configure the card sort order. The available options are `Server name (a-z)`, `Status (error > warning > success)`, and `Last backup received (new > old)`.
-:::
+The card sort order and other configurations can be set in the [Display Settings](settings/display-settings.md).
 
-You can toggle the top right button on the side panel to change the panel view:
+
+The panel view offers two informational displays, accessible by clicking the top right button on the side panel:
 
 - Status: Show statistics of the backup jobs per status, with a list of overdue backups and backup jobs with warnings/errors status.
 
@@ -59,7 +54,7 @@ Hovering over a backup in the list displays details of the last backup log recei
 ![Overdue details](../assets/screen-backup-tooltip.png)
 
 - **Server Name : Backup**: The name or alias of the Duplicati server and backup, will also show the server name and note.
-  - The alias and note can be configured at `Settings → Server Settings`.
+  - The alias and note can be configured at [Settings → Server Settings](settings/server-settings.md).
 - **Notification**: An icon showing the [configured notification](#notifications-icons) setting for new backup logs.
 - **Date**: The timestamp of the backup and the elapsed time since the last screen refresh.
 - **Status**: The status of the last backup received (Success, Warning, Error, Fatal).
@@ -70,7 +65,7 @@ If this backup is overdue, the tooltip also shows:
 
 - **Expected Backup**: The time the backup was expected, including the configured grace period (extra time allowed before marking as overdue).
 
-You can also click the buttons at the bottom to open `Settings → Backup Notifications` to configure overdue settings or open the Duplicati server's web interface.
+You can also click the buttons at the bottom to open [Settings → Backup Notifications](settings/backup-notifications-settings.md) to configure monitoring settings or open the Duplicati server's web interface.
 
 ## Table Layout {#table-layout}
 
@@ -91,14 +86,17 @@ The table layout lists the most recent backup logs received for all servers and 
   - **Notification**: An icon showing the configured notification setting for new backup logs.
   - **Duplicati configuration**: A button to open the Duplicati server's web interface
 
+You can use the [Display Settings](settings/display-settings.md) to configure the table size and other configurations.
+
+
 ### Notifications Icons {#notifications-icons}
 
-| Icon                                                                                                                                    | Notification Option | Description                                                                                         |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />     | Off                 | No notifications will be sent when a new backup log is received                                     |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} />     | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} />    | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} />    | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
+| Icon                                                                                                                               | Notification Option | Description                                                                                         |
+|------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Off                 | No notifications will be sent when a new backup log is received                                     |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | All                 | Notifications will be sent for every new backup log, regardless of its status.                      |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Warnings            | Notifications will be sent only for backup logs with a status of Warning, Unknown, Error, or Fatal. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Errors              | Notifications will be sent only for backup logs with a status of Error or Fatal.                    |
 
 :::note
 This notification setting only applies when **duplistatus** receives a new backup log from a Duplicati server. Overdue notifications are configured separately and will be sent regardless of this setting.

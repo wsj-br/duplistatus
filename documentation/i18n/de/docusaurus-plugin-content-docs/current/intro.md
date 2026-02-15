@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:41.277Z'
-source_file_mtime: '2026-02-06T22:18:56.325Z'
-source_file_hash: 260a67f2593d936a
+translation_last_updated: '2026-02-15T20:57:35.864Z'
+source_file_mtime: '2026-02-15T18:34:41.602Z'
+source_file_hash: 65a8594207f730f7
 translation_language: de
 source_file_path: intro.md
 ---
@@ -11,15 +11,15 @@ source_file_path: intro.md
 
 ## Funktionen {#features}
 
-- **Schnelleinrichtung**: Einfache containerisierte Bereitstellung mit Images auf Docker Hub und GitHub.
-- **Einheitliches Dashboard**: Sicherungsstatus, -verlauf und -details für alle Server an einem Ort anzeigen.
-- **Überwachung überfälliger Sicherungen**: Automatische Überprüfung und Warnungen für überfällige geplante Sicherungen.
-- **Datenvisualisierung & Protokolle**: Interaktive Diagramme und automatische Protokollsammlung von Duplicati-Servern.
-- **Benachrichtigungen & Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Backup-Warnungen, einschließlich Benachrichtigungen über überfällige Sicherungen.
-- **Benutzerzugriffskontrolle & Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffssteuerung (Admin-/Benutzerrollen), konfigurierbaren Passwortrichtlinien, Kontosperrungsschutz und umfassender Benutzerverwaltung.
-- **Audit-Protokollierung**: Vollständiger Audit-Trail aller Systemänderungen und Benutzeraktionen mit erweiterten Filtermöglichkeiten, Exportfunktionen und konfigurierbaren Aufbewahrungsfristen.
-- **Anwendungsprotokoll-Viewer**: Nur für Administratoren zugängliche Schnittstelle zum Anzeigen, Durchsuchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeit-Überwachungsfunktionen.
-- **Mehrsprachige Unterstützung**: Benutzeroberfläche und Dokumentation verfügbar auf Englisch, Französisch, Deutsch, Spanisch und Brasilianischem Portugiesisch.
+- **Schnelle Einrichtung**: Einfache containerisierte Bereitstellung mit Images auf Docker Hub und GitHub.
+- **Einheitliches Dashboard**: Sicherungsstatus, Verlauf und Details für alle Server an einem Ort anzeigen.
+- **Sicherungsüberwachung**: Automatische Überprüfung und Benachrichtigungen für überfällige geplante Sicherungen.
+- **Datenvisualisierung und Protokolle**: Interaktive Diagramme und automatische Protokollerfassung von Duplicati-Servern.
+- **Benachrichtigungen und Warnungen**: Integrierte NTFY- und SMTP-E-Mail-Unterstützung für Sicherungswarnungen, einschließlich Benachrichtigungen für überfällige Sicherungen.
+- **Benutzerzugriffskontrolle und Sicherheit**: Sicheres Authentifizierungssystem mit rollenbasierter Zugriffskontrolle (Admin-/Benutzerrollen), konfigurierbare Passwortrichtlinien, Kontosperrschutz und umfassende Benutzerverwaltung.
+- **Audit-Protokollierung**: Vollständige Audit-Spur aller Systemänderungen und Benutzeraktionen mit erweiterten Filterungs-, Export- und konfigurierbaren Aufbewahrungszeiträumen.
+- **Anwendungsprotokoll-Viewer**: Nur für Administratoren verfügbare Schnittstelle zum Anzeigen, Suchen und Exportieren von Anwendungsprotokollen direkt über die Weboberfläche mit Echtzeitüberwachungsfunktionen.
+- **Mehrsprachige Unterstützung**: Benutzeroberfläche und Dokumentation in Englisch, Französisch, Deutsch, Spanisch und Brasilianisches Portugiesisch verfügbar.
 
 ## Installation {#installation}
 
@@ -80,12 +80,12 @@ Dieses Projekt wurde hauptsächlich mit KI-Unterstützung erstellt. Um zu erfahr
 - GitHub SVG-Icon von https://github.com/logos
 
 :::note
- Alle Produktnamen, Logos und Warenzeichen sind Eigentum ihrer jeweiligen Inhaber. Icons und Namen werden nur zur Identifikation verwendet und implizieren keine Billigung.
- :::
+ Alle Produktnamen, Logos und Markenzeichen sind Eigentum ihrer jeweiligen Inhaber. Symbole und Namen werden nur zu Identifikationszwecken verwendet und implizieren keine Billigung.
+:::
 
 
 ## Lizenz {#license}
 
-Das Projekt ist unter der [Apache-Lizenz 2.0](LICENSE.md) lizenziert.   
+Das Projekt ist unter der [Apache License 2.0](LICENSE.md) lizenziert.   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**

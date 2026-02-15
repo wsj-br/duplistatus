@@ -24,9 +24,9 @@
     "translate:help": "batcat --style=header,grid -P scripts/translate/TRANSLATION-HELP.md",
     "translate:status": "tsx scripts/translate/check-status.ts",
     "translate:svg": "tsx scripts/translate/translate-svg.ts",
-    "translate:clean": "tsx scripts/translate/cache-cleanup.ts",
-    "translate:cleanup": "tsx scripts/translate/cache-cleanup.ts",
-    "translate:edit-cache": "tsx scripts/translate/edit-cache-server.ts",
+    "translate:clean": "tsx scripts/translate/index.ts --force && tsx scripts/translate/cache-cleanup.ts",
+    "translate:cleanup": "tsx scripts/translate/index.ts --force && tsx scripts/translate/cache-cleanup.ts",
+    "translate:editor": "tsx scripts/translate/edit-cache-server.ts",
     "translate:glossary-ui": "./scripts/generate-glossary.sh"
   },
   "dependencies": {

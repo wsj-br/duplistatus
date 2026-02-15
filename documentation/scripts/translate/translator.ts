@@ -204,7 +204,7 @@ export class Translator {
 
     const systemPrompt = `Translate from English (UK) to ${targetLanguage}. ${guidance}
 
-Rules: Keep headers (###), code, variables, URLs, line breaks, markdown formatting, placeholders {{X}} unchanged. Preserve {{ADM_OPEN_N}} and {{ADM_END_N}} placeholders exactly - do not translate or modify them. Translate only title/description in front matter. Prefer glossary terms.
+Rules: Keep headers (###), code, variables, URLs, line breaks, markdown formatting, placeholders {{X}} unchanged. Preserve {{ADM_OPEN_N}} and {{ADM_END_N}} placeholders exactly - do not translate or modify them. Translate only title/description in front matter. Prefer glossary terms. Maintain coherence on the translated terminology.
 
 Reply with ONLY <t id="N">translation</t> blocks, one per segment, in order. No other text.${glossarySection}`;
 
@@ -344,7 +344,7 @@ ${segBlocks}
 
     const systemPrompt = `Translate from English (UK) to ${targetLanguage}. ${guidance}
 
-Rules: Keep headers (###), code, variables, URLs, line breaks, markdown formatting, placeholders {{X}} unchanged. Preserve {{ADM_OPEN_N}} and {{ADM_END_N}} placeholders exactly - do not translate or modify them. Translate only title/description in front matter. Prefer glossary terms.
+Rules: Keep headers (###), code, variables, URLs, line breaks, markdown formatting, placeholders {{X}} unchanged. Preserve {{ADM_OPEN_N}} and {{ADM_END_N}} placeholders exactly - do not translate or modify them. Translate only title/description in front matter. Prefer glossary terms. Maintain coherence on the translated terminology.
 
 Example:
 Input:

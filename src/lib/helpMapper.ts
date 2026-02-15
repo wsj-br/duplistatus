@@ -29,9 +29,9 @@ const HELP_MAP: Record<string, HelpMapping> = {
     url: 'user-guide/settings/backup-notifications-settings',
     pageName: 'Backup Notifications',
   },
-  'settings:overdue': {
-    url: 'user-guide/settings/overdue-settings',
-    pageName: 'Overdue Monitoring',
+  'settings:monitoring': {
+    url: 'user-guide/settings/backup-monitoring-settings',
+    pageName: 'Backup Monitoring',
   },
   'settings:templates': {
     url: 'user-guide/settings/notification-templates',
@@ -89,14 +89,22 @@ const HELP_MAP: Record<string, HelpMapping> = {
  * Gets the help URL and page name for a given route
  * @param pathname - The current pathname (e.g., '/', '/settings', '/detail/123')
  * @param searchParams - Optional search params string (e.g., 'tab=notifications')
+ * @param locale - Optional locale code (e.g., 'en', 'pt-BR') to include in the documentation URL
  * @returns Object with full documentation URL and page name for tooltip
  */
 export function getHelpUrl(
   pathname: string,
-  searchParams?: string
+  searchParams?: string,
+  locale?: string
 ): { url: string; pageName: string } {
   // Normalize: strip optional locale prefix (e.g. /en, /de) for routing logic
   const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(-[A-Za-z0-9]+)?/, "") || "/";
+
+  // Helper function to build documentation URL with locale
+  const buildDocUrl = (docPath: string): string => {
+    const localePrefix = locale && locale !== 'en' ? `${locale}/` : '';
+    return `${DOCS_BASE_URL}${localePrefix}${docPath}`;
+  };
 
   // Handle settings routes with query parameters (/settings or /en/settings etc.)
   if (pathWithoutLocale === "/settings" || pathWithoutLocale.startsWith("/settings?")) {
@@ -108,7 +116,7 @@ export function getHelpUrl(
         const mapping = HELP_MAP[settingsKey];
         if (mapping) {
           return {
-            url: `${DOCS_BASE_URL}${mapping.url}`,
+            url: buildDocUrl(mapping.url),
             pageName: mapping.pageName,
           };
         }
@@ -117,7 +125,7 @@ export function getHelpUrl(
     // Settings page without tab or unknown tab
     const settingsMapping = HELP_MAP['/settings'];
     return {
-      url: `${DOCS_BASE_URL}${settingsMapping.url}`,
+      url: buildDocUrl(settingsMapping.url),
       pageName: settingsMapping.pageName,
     };
   }
@@ -126,13 +134,13 @@ export function getHelpUrl(
   if (pathWithoutLocale.startsWith("/detail/")) {
     if (/^\/detail\/[^/]+\/backup\/[^/]+$/.test(pathWithoutLocale)) {
       return {
-        url: `${DOCS_BASE_URL}user-guide/server-details#backup-details`,
+        url: buildDocUrl('user-guide/server-details#backup-details'),
         pageName: "Backup Details",
       };
     }
     if (/^\/detail\/[^/]+$/.test(pathWithoutLocale)) {
       return {
-        url: `${DOCS_BASE_URL}user-guide/server-details`,
+        url: buildDocUrl('user-guide/server-details'),
         pageName: "Server Details",
       };
     }
@@ -142,7 +150,7 @@ export function getHelpUrl(
   const exactMatch = HELP_MAP[pathWithoutLocale];
   if (exactMatch) {
     return {
-      url: `${DOCS_BASE_URL}${exactMatch.url}`,
+      url: buildDocUrl(exactMatch.url),
       pageName: exactMatch.pageName,
     };
   }
@@ -150,7 +158,7 @@ export function getHelpUrl(
   // Fallback to default
   const defaultMapping = HELP_MAP['default'];
   return {
-    url: `${DOCS_BASE_URL}${defaultMapping.url}`,
+    url: buildDocUrl(defaultMapping.url),
     pageName: defaultMapping.pageName,
   };
 }

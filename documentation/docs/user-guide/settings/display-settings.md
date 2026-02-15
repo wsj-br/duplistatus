@@ -7,13 +7,14 @@ Configure user interface and display preferences.
 
 <br/>
 
-| Setting                   | Description                                         | Default Value       |
-| :------------------------ | :-------------------------------------------------- | :------------------ |
-| **Table Size**            | Number of rows per page on the server details page. | 5 rows              |
-| **Chart Time Range**      | Time interval shown in the charts.                  | All available data  |
-| **Auto-refresh Interval** | How often pages refresh automatically.              | 1 minute            |
-| **Cards Sort Order**      | How cards are sorted on the dashboard.              | `Server name (a-z)` |
-| **Theme**                 | Select the light or dark theme.                     | Dark                |
+| Setting                   | Description                                         | Default Value      |
+|:--------------------------|:----------------------------------------------------|:-------------------|
+| **Table Size**            | Number of rows per page on the server details page. | 5 rows             |
+| **Chart Time Range**      | Time interval shown in the charts.                  | All available data |
+| **Auto-refresh Interval** | How often pages refresh automatically.              | 1 minute           |
+| **Cards Sort Order**      | How cards are sorted on the dashboard.              | Server name (a-z)  |
+| **Start of Week**         | Configure when the week starts.                     | Based on locale    |
+| **Theme**                 | Select the light or dark theme.                     | Dark               |
 
 <br/>
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.705Z'
-source_file_mtime: '2026-02-06T21:16:20.551Z'
-source_file_hash: 473175db710f3df5
+translation_last_updated: '2026-02-15T20:57:46.858Z'
+source_file_mtime: '2026-02-15T19:21:45.771Z'
+source_file_hash: 28dda7829d88467c
 translation_language: pt-BR
 source_file_path: user-guide/settings/notification-templates.md
 ---
@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/notification-templates.md
 
 **duplistatus** usa três modelos para mensagens de notificação. Esses modelos são usados tanto para notificações NTFY quanto para notificações por e-mail.
 
-A página inclui um seletor de **Idioma do Modelo** que define a localidade para modelos padrão. Alterar o idioma atualiza a localidade para novos padrões, mas não altera o texto de modelos existentes. Para aplicar um novo idioma aos seus modelos, você pode editá-los manualmente ou usar **Redefinir este modelo para o padrão** (para a guia atual) ou **Redefinir todos para o padrão** (para os três modelos).
+A página inclui um seletor de **Idioma dos Modelos** que define a localidade para os modelos padrão. Alterar o idioma atualiza a localidade para novos padrões, mas **não** altera o texto dos modelos existentes. Para aplicar um novo idioma aos seus modelos, edite-os manualmente ou use **Redefinir este modelo para o padrão** (para a aba atual) ou **Redefinir tudo para o padrão** (para todos os três modelos).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -23,7 +23,7 @@ A página inclui um seletor de **Idioma do Modelo** que define a localidade para
 
 ## Idioma do Modelo {#template-language}
 
-Um seletor de **Idioma do Modelo** no topo da página permite escolher o idioma para modelos padrão (Inglês, Alemão, Francês, Espanhol, Português (Brasil)). Alterar o idioma atualiza a localidade para padrões, mas modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
+Um seletor de **Idioma dos Modelos** no topo da página permite que você escolha o idioma para os modelos padrão (Inglês, Alemão, Francês, Espanhol, Português). Alterar o idioma atualiza a localidade dos padrões, mas os modelos personalizados existentes mantêm seu texto atual até que você os atualize ou use um dos botões de redefinição.
 
 <br/>
 

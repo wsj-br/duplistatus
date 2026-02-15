@@ -47,7 +47,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
       };
       loadRetention();
     }
-  }, [isAdmin, toast]);
+  }, [isAdmin, toast, common.status.error, content.failedToLoad]);
 
   // Save retention configuration
   const saveRetention = async () => {

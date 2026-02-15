@@ -170,7 +170,7 @@ Cache Management Commands:
 | `pnpm translate --clear-cache`          | Clear **all** cache (both file and segment)                           |
 | `pnpm translate --force`                | Force re-translation (clears file cache, keeps segment cache)         |
 | `pnpm translate --no-cache`             | Bypass cache entirely (force API calls, still saves new translations) |
-| `pnpm translate:edit-cache`             | Manual review, delete or edit cache entries                           |
+| `pnpm translate:editor`             | Manual review, delete or edit cache entries                           |
 
 ### Remove orphaned and stale cache {#remove-orphaned-and-stale-cache}
 
@@ -197,7 +197,7 @@ When reviewing translations, use the web-based cache editing tool to view transl
 For example, if a model has translated a term incorrectly, you can filter all entries for that term, change the model in the `translate.config.json` file, and retranslate only the lines containing those terms using the new model.
 
 ```bash
-pnpm translate:edit-cache
+pnpm translate:editor
 ```
 
 
@@ -328,7 +328,7 @@ The `translate` command logs all console output and API traffic to files in the 
 
 - Run `pnpm translate --clear-cache` to reset
 - Run `pnpm translate:cleanup` to remove orphaned entries
-- Use `pnpm translate:edit-cache` to fix/delete individual cached translations without re-translating the whole document
+- Use `pnpm translate:editor` to fix/delete individual cached translations without re-translating the whole document
 
 **Debugging OpenRouter traffic**
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.378Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: f469b5229723b21f
+translation_last_updated: '2026-02-15T20:57:42.050Z'
+source_file_mtime: '2026-02-14T22:20:00.667Z'
+source_file_hash: 93fdbf4e891439e9
 translation_language: es
 source_file_path: user-guide/server-details.md
 ---
@@ -23,11 +23,11 @@ Esta sección muestra estadísticas para todas las copias de seguridad en el ser
 - **ALMACENAMIENTO TOTAL USADO**: Almacenamiento usado en el destino de backup, según lo reportado en el último registro de backup.
 - **TOTAL ENVIADO**: Suma de todos los datos enviados registrados en la base de datos **duplistatus**.
 
-Si este backup o cualquiera de los backups en el servidor (cuando `All Backups` está seleccionado) está retrasado, aparece un mensaje debajo del resumen.
+Si este backup o cualquiera de los backups en el servidor (cuando **Todas las copias de seguridad** está seleccionado) está retrasado, aparece un mensaje debajo del resumen.
 
 ![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
 
-Haga clic en <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configurar"/> para ir a [`Configuración → Monitoreo de Retrasados`](settings/overdue-settings.md). O haga clic en <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> en la barra de herramientas para abrir la interfaz web del servidor Duplicati y verificar los logs.
+Haga clic en el <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Configurar"/> para ir a [Configuración → Supervisión de backups](settings/backup-monitoring-settings.md). O haga clic en el <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> en la barra de herramientas para abrir la interfaz web del servidor Duplicati y verificar los logs.
 
 <br/>
 
@@ -44,17 +44,17 @@ Esta tabla enumera los logs de backup para el servidor seleccionado.
 - **Versiones disponibles**: El número de versiones de backup disponibles en el destino del backup. Si el icono está deshabilitado, no se recibió información detallada.
 - **Cantidad de archivos, Tamaño de archivos, Tamaño cargado, Duración, Tamaño de almacenamiento**: Valores según lo reportado por el servidor Duplicati.
 
-:::tip Consejos
-• Utilice el menú desplegable en la sección **Historial de backups** para seleccionar `todas las copias de seguridad` o un backup específico para este servidor.
+:::tip Tips
+• Utilice el menú desplegable en la sección **Historial de backups** para seleccionar **Todas las copias de seguridad** o un backup específico para este servidor.
 
-• Puede ordenar cualquier columna haciendo clic en su encabezado; haga clic nuevamente para invertir el orden de clasificación.
+• Puede ordenar cualquier columna haciendo clic en su encabezado; haga clic de nuevo para invertir el orden de clasificación.
  
 • Haga clic en cualquier lugar de una fila para ver los [Detalles del backup](#backup-details).
 
-::: 
+:::
 
 :::note
-Cuándo se selecciona `todas las copias de seguridad`, la lista muestra todos los backups ordenados de más reciente a más antiguo por defecto.
+Cuando **Todas las copias de seguridad** está seleccionado, la lista muestra todos los backups ordenados de más reciente a más antiguo por defecto.
 :::
 
 <br/>

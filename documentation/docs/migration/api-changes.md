@@ -1,6 +1,6 @@
 
 
-# API Breaking Changes {#api-breaking-changes}
+# Backward-incompatible API changes {#api-breaking-changes}
 
 This document outlines breaking changes to external API endpoints across different versions of duplistatus. External API endpoints are those designed for use by other applications and integrations (e.g., Homepage integration).
 

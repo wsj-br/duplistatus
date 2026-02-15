@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.750Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 4f0c83e8848eb7e7
+translation_last_updated: '2026-02-15T20:57:42.452Z'
+source_file_mtime: '2026-02-14T22:23:43.397Z'
+source_file_hash: c7c041a3840aa396
 translation_language: es
 source_file_path: user-guide/settings/email-settings.md
 ---
@@ -23,11 +23,11 @@ source_file_path: user-guide/settings/email-settings.md
 | **Dirección de remitente** | Dirección de correo electrónico mostrada como remitente. Requerida para conexiones SMTP simple o cuando la autenticación está deshabilitada. Por defecto, el nombre de usuario SMTP cuando la autenticación está habilitada. Tenga en cuenta que algunos proveedores de correo electrónico anularán la `Dirección de remitente` con el `Nombre de usuario del servidor SMTP`. |
 | **Correo electrónico del destinatario** | La dirección de correo electrónico para recibir notificaciones. Debe ser un formato de dirección de correo electrónico válido. |
 
-Un <IIcon2 icon="lucide:mail" color="green"/> icono verde junto a `Email` en la barra lateral significa que su configuración es válida. Si el icono es <IIcon2 icon="lucide:mail" color="yellow"/> amarillo, su configuración no es válida o no está configurada.
+Un icono <IIcon2 icon="lucide:mail" color="green"/> verde junto a **Correo electrónico** en la barra lateral significa que su configuración es válida. Si el icono es <IIcon2 icon="lucide:mail" color="yellow"/> amarillo, su configuración no es válida o no está configurada.
 
 El icono se muestra en verde cuando todos los campos requeridos están configurados: Host del servidor SMTP, Puerto del servidor SMTP, Correo electrónico del destinatario, y ya sea (Nombre de usuario SMTP + Contraseña cuando la autenticación es requerida) o (Dirección de remitente cuando la autenticación no es requerida).
 
-Cuando la configuración no está completamente configurada, se muestra un cuadro de alerta amarillo informándole que no se enviarán correos electrónicos hasta que la Configuración de correo electrónico se complete correctamente. Las casillas de verificación de Correo electrónico en la pestaña [`Backup Notifications`](backup-notifications-settings.md) también estarán deshabilitadas y mostrarán etiquetas "(Deshabilitado)".
+Cuando la configuración no está completamente configurada, se muestra un cuadro de alerta amarillo informándole que no se enviarán correos electrónicos hasta que la Configuración de correo electrónico se complete correctamente. Las casillas de verificación de Correo electrónico en la pestaña [Notificaciones de backup](backup-notifications-settings.md) también estarán deshabilitadas y mostrarán etiquetas "(Deshabilitado)".
 
 <br/>
 
@@ -41,12 +41,12 @@ Cuando la configuración no está completamente configurada, se muestra un cuadr
 
 <br/>
 
-:::info[IMPORTANTE]
+:::info[IMPORTANT]
   Debe utilizar el botón <IconButton icon="lucide:mail" label="Enviar correo de prueba"/> para asegurarse de que su configuración de correo electrónico funciona antes de depender de ella para las notificaciones.
 
- Incluso si ve un icono <IIcon2 icon="lucide:mail" color="green"/> verde y todo parece estar configurado, es posible que los correos electrónicos no se envíen.
+ Incluso si ve un icono <IIcon2 icon="lucide:mail" color="green"/> verde y todo parece estar configurado, es posible que no se envíen correos electrónicos.
  
- `duplistatus` solo verifica si su configuración SMTP está completa, no si los correos electrónicos se pueden entregar realmente.
+ **duplistatus** solo verifica si su configuración SMTP está completa, no si los correos electrónicos se pueden entregar realmente.
 :::
 
 <br/>

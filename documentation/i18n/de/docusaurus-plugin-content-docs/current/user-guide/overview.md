@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:42.989Z'
-source_file_mtime: '2026-02-06T21:11:29.339Z'
-source_file_hash: 570227cbd4e2d113
+translation_last_updated: '2026-02-15T20:57:37.693Z'
+source_file_mtime: '2026-02-15T18:43:06.194Z'
+source_file_hash: 35e757492e15c229
 translation_language: de
 source_file_path: user-guide/overview.md
 ---
@@ -29,14 +29,18 @@ Für Voraussetzungen und detaillierte Installationsanweisungen verweisen wir Sie
 Nach erfolgreicher Installation greifen Sie auf die duplistatus-Weboberfläche folgendermaßen zu:
 
 1. Öffnen Sie Ihren bevorzugten Webbrowser
-2. Navigieren Sie zu `http://ihre-server-ip:9666`
-   - Ersetzen Sie `ihre-server-ip` durch die tatsächliche IP-Adresse oder den Hostnamen Ihres duplistatus-Servers
-   - Der Standardport ist `9666`
-3. Sie gelangen auf eine Anmeldeseite. Sie können die Schnittstellensprache in der oberen rechten Ecke der Anmeldeseite oder nach der Anmeldung über das Benutzermenü auswählen (klicken Sie auf Ihren Benutzernamen → Sprache).
-   Verwenden Sie diese Anmeldedaten für die erste Verwendung (oder nach einem Upgrade von Versionen vor 0.9.x):
+2. Navigieren Sie zu `http://your-server-ip:9666`
+   - Ersetzen Sie `your-server-ip` durch die tatsächliche IP-Adresse oder den Hostname Ihres duplistatus-Servers
+   - Der Standard-Port ist `9666`
+3. Es wird eine Anmeldenseite angezeigt.
+
+Verwenden Sie diese Anmeldedaten für die erste Verwendung (oder nach einem Upgrade von Versionen vor 0.9.x):
     - Benutzername: `admin`
-    - Passwort: `Duplistatus09` 
-4. Nach der Anmeldung wird automatisch das Hauptdashboard angezeigt (beim ersten Aufruf ohne Daten)
+    - Passwort: `Duplistatus09`
+
+Wählen Sie die Sprache der Benutzeroberfläche in der oberen rechten Ecke <IconButton icon="lucide:languages" label="Sprache" /> oder in <IconButton icon="lucide:user" label="Benutzername" /> nach dem Anmelden (siehe unten).
+
+4. Nach dem Anmelden wird das Haupt-Dashboard automatisch angezeigt (beim ersten Gebrauch ohne Daten)
 
 ## Benutzer-Oberfläche Übersicht {#user-interface-overview}
 
@@ -59,7 +63,7 @@ Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein kla
 
 Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und Einstellungen, organisiert für einen effizienten Arbeitsablauf.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](/img/duplistatus_toolbar.png)
 
 | Schaltfläche | Beschreibung |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -89,12 +93,12 @@ Durch Klicken auf die Benutzerschaltfläche wird ein Dropdown-Menü mit benutzer
 
 ## Wesentliche Konfiguration {#essential-configuration}
 
-1. Konfigurieren Sie Ihre [Duplicati-Server](../installation/duplicati-server-configuration.md) so, dass sie Sicherungsprotokolle an duplistatus senden (erforderlich).
-2. Sammeln Sie erste Sicherungsprotokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Überwachungsintervalle überfälliger Sicherungen basierend auf der Konfiguration jedes Servers.
-3. Konfigurieren Sie Server-Einstellungen – richten Sie Server-Aliase und Notizen in [Einstellungen → Server](settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
-4. Konfigurieren Sie NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY in [Einstellungen → NTFY](settings/ntfy-settings.md) ein.
-5. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen in [Einstellungen → E-Mail](settings/email-settings.md) ein.
-6. Konfigurieren Sie Backup-Benachrichtigungen – richten Sie Benachrichtigungen pro Sicherung oder pro Server in [Einstellungen → Backup-Benachrichtigungen](settings/backup-notifications-settings.md) ein.
+1. Konfigurieren Sie Ihre [Duplicati-Server](../installation/duplicati-server-configuration.md) so, dass sie Sicherungsprotokoll-Nachrichten an duplistatus senden (erforderlich).
+2. Sammeln Sie anfängliche Sicherungsprotokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Sicherungsüberwachungsintervalle basierend auf der Konfiguration jedes Servers.
+3. Konfigurieren Sie Server-Einstellungen – richten Sie Server-Aliase und Notizen unter [Einstellungen → Server](settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
+4. Konfigurieren Sie NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY unter [Einstellungen → NTFY](settings/ntfy-settings.md) ein.
+5. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen unter [Einstellungen → E-Mail](settings/email-settings.md) ein.
+6. Konfigurieren Sie Backup-Benachrichtigungen – richten Sie Pro-Sicherungs- oder Pro-Server-Benachrichtigungen unter [Einstellungen → Backup-Benachrichtigungen](settings/backup-notifications-settings.md) ein.
 
 <br/>
 

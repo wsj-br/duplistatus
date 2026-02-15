@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.555Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 3916dd789d9d4bf2
+translation_last_updated: '2026-02-15T20:57:42.267Z'
+source_file_mtime: '2026-02-14T22:21:33.554Z'
+source_file_hash: 175a9e765f355f43
 translation_language: es
 source_file_path: user-guide/settings/backup-notifications-settings.md
 ---
@@ -29,18 +29,18 @@ Utilice el campo **Filtrar por nombre del servidor** en la parte superior de la 
 
 ## Configurar la configuración de notificaciones por backup {#configure-per-backup-notification-settings}
 
-| Configuración                 | Descripción                                                    | Valor por defecto |
+| Configuración                       | Descripción                                               | Valor por defecto |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
-| **Eventos de notificación**       | Configurar cuándo enviar notificaciones para nuevos logs de backup. | `Advertencias`    |
-| **NTFY**                      | Activar o desactivar notificaciones NTFY para este backup.     | `Activado`     |
-| **Correo electrónico**                     | Activar o desactivar notificaciones por correo electrónico para este backup.    | `Activado`    |
+| **Eventos de notificación**       | Configurar cuándo enviar notificaciones para nuevos logs de backup. | **Advertencias**    |
+| **NTFY**                      | Activar o desactivar notificaciones NTFY para este backup.     | **Habilitado**     |
+| **Correo electrónico**                     | Activar o desactivar notificaciones por correo electrónico para este backup.    | **Habilitado**    |
 
 **Opciones de Eventos de notificación:**
 
-- `all`: Enviar notificaciones para todos los eventos de backup.
-- `warnings`: Enviar notificaciones solo para advertencias y errores (por defecto).
-- `errors`: Enviar notificaciones solo para errores.
-- `off`: Desactivar notificaciones para nuevos logs de backup para este backup.
+- **todos**: Enviar notificaciones para todos los eventos de backup.
+- **advertencias**: Enviar notificaciones solo para advertencias y errores (por defecto).
+- **errores**: Enviar notificaciones solo para errores.
+- **desactivado**: Desactivar notificaciones para nuevos logs de backup para este backup.
 
 <br/>
 
@@ -64,14 +64,14 @@ Si no se muestra ningún icono, el servidor o backup no tiene destinos adicional
 
 Puede configurar destinos adicionales por defecto a nivel de servidor que todas las copias de seguridad en ese servidor heredarán automáticamente.
 
-1. Vaya a `Configuración → Notificaciones de Backup`.
+1. Navegue a [Configuración → Notificaciones de backup](backup-notifications-settings.md).
 2. La tabla se agrupa por servidor, con filas de encabezado de servidor distintas que muestran el nombre del servidor, alias y cantidad de backups.
    - **Nota**: Para servidores con solo un backup, se muestra una fila combinada en lugar de un encabezado de servidor separado. Los valores por defecto a nivel de servidor no se pueden configurar directamente desde filas combinadas. Si necesita configurar valores por defecto del servidor para un servidor con un solo backup, puede hacerlo agregando temporalmente otro backup a ese servidor, o los Destinos adicionales del backup heredarán automáticamente de cualquier valor por defecto del servidor existente.
-3. Haga clic en cualquier lugar de una fila de servidor para expandir la sección **Destinos adicionales por defecto para este servidor**.
+3. Haga clic en cualquier lugar en una fila de servidor para expandir la sección **Destinos adicionales por defecto para este servidor**.
 4. Configure los siguientes valores por defecto:
-   - **Evento de notificación**: Elija qué eventos desencadenan notificaciones a los destinos adicionales (`todos`, `advertencias`, `errores` u `off`).
-   - **Correos electrónicos adicionales**: Ingrese una o más direcciones de correo electrónico (separadas por comas) que recibirán notificaciones para todas las copias de seguridad en este servidor. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar un correo electrónico de prueba a las direcciones en el campo.
-   - **Tema NTFY adicional**: Ingrese un nombre de tema NTFY personalizado donde se publicarán las notificaciones para todas las copias de seguridad en este servidor. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar una notificación de prueba al tema, o haga clic en el botón de icono <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para mostrar un código QR del tema para configurar su dispositivo a fin de recibir notificaciones.
+   - **Evento de notificación**: Elija qué eventos desencadenan notificaciones a los destinos adicionales (**todos**, **advertencias**, **errores**, o **desactivado**).
+   - **Correos electrónicos adicionales**: Ingrese una o más direcciones de correo electrónico (separadas por comas) que recibirán notificaciones para todos los backups en este servidor. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar un correo electrónico de prueba a las direcciones en el campo.
+   - **Tema NTFY adicional**: Ingrese un nombre de tema NTFY personalizado donde se publicarán las notificaciones para todos los backups en este servidor. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar una notificación de prueba al tema, o haga clic en el botón de icono <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para mostrar un código QR del tema para configurar su dispositivo para recibir notificaciones.
 
 **Gestión de Servidor Por Defecto:**
 
@@ -82,11 +82,11 @@ Puede configurar destinos adicionales por defecto a nivel de servidor que todas 
 
 Las copias de seguridad individuales heredan automáticamente los valores predeterminados del servidor, pero puede anularlos para trabajos de backup específicos.
 
-1. Haga clic en cualquier lugar de una fila de backup para expandir su sección **Destinos adicionales**.
-2. Configure la siguiente configuración:
-   - **Evento de notificación**: Elija qué eventos desencadenan notificaciones a los destinos adicionales (`all`, `warnings`, `errors`, u `off`).
+1. Haga clic en cualquier lugar en una fila de backup para expandir su sección **Destinos adicionales**.
+2. Configure los siguientes valores:
+   - **Evento de notificación**: Elija qué eventos desencadenan notificaciones a los destinos adicionales (**todos**, **advertencias**, **errores**, o **desactivado**).
    - **Correos electrónicos adicionales**: Ingrese una o más direcciones de correo electrónico (separadas por comas) que recibirán notificaciones además del destinatario global. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar un correo electrónico de prueba a las direcciones en el campo.
-   - **Tema NTFY adicional**: Ingrese un nombre de tema NTFY personalizado donde se publicarán notificaciones además del tema por defecto. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar una notificación de prueba al tema, o haga clic en el botón de icono <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para mostrar un código QR del tema para configurar su dispositivo a fin de recibir notificaciones.
+   - **Tema NTFY adicional**: Ingrese un nombre de tema NTFY personalizado donde se publicarán las notificaciones además del tema por defecto. Haga clic en el botón de icono <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para enviar una notificación de prueba al tema, o haga clic en el botón de icono <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> para mostrar un código QR del tema para configurar su dispositivo para recibir notificaciones.
 
 **Indicadores de Herencia:**
 
@@ -97,8 +97,8 @@ Las copias de seguridad individuales heredan automáticamente los valores predet
 
 - Las notificaciones se envían tanto a la configuración global como a los destinos adicionales cuando están configurados.
 - La configuración del evento de notificación para destinos adicionales es independiente de la configuración del evento de notificación principal.
-- Si los destinos adicionales están configurados en `off`, no se enviarán notificaciones a esos destinos, pero las notificaciones principales seguirán funcionando de acuerdo con la configuración principal.
-- Cuándo un backup hereda de los valores predeterminados del servidor, cualquier cambio en los valores predeterminados del servidor se aplicará automáticamente a ese backup (a menos que haya sido anulado).
+- Si los destinos adicionales están configurados en **desactivado**, no se enviarán notificaciones a esos destinos, pero las notificaciones principales seguirán funcionando de acuerdo con la configuración principal.
+- Cuando un backup hereda de los valores por defecto del servidor, cualquier cambio en los valores por defecto del servidor se aplicará automáticamente a ese backup (a menos que haya sido anulado).
 
 <br/>
 
@@ -108,26 +108,26 @@ Puede editar la configuración de destinos adicionales para múltiples backups a
 
 ![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
 
-1. Navegue a `Configuración → Notificaciones de Backup`.
+1. Navegue a [Configuración → Notificaciones de backup](backup-notifications-settings.md).
 2. Utilice las casillas de verificación en la primera columna para seleccionar los backups o servidores que desea editar.
    - Utilice la casilla de verificación en la fila de encabezado para seleccionar o deseleccionar todos los backups visibles.
    - Puede utilizar el filtro para reducir la lista antes de seleccionar.
-3. Una vez que se seleccionen los backups, aparecerá una barra de acción masiva que muestra el número de backups seleccionados.
-4. Haga clic en `Edición masiva` para abrir el diálogo de edición.
-5. Configure los ajustes de destino adicionales:
+3. Una vez que se seleccionen los backups, aparecerá una barra de acciones masivas que muestra el número de backups seleccionados.
+4. Haga clic en **Edición masiva** para abrir el diálogo de edición.
+5. Configure los valores de destino adicional:
    - **Evento de notificación**: Establezca el evento de notificación para todos los backups seleccionados.
    - **Correos electrónicos adicionales**: Ingrese direcciones de correo electrónico (separadas por comas) para aplicar a todos los backups seleccionados.
    - **Tema NTFY adicional**: Ingrese un nombre de tema NTFY para aplicar a todos los backups seleccionados.
    - Los botones de prueba están disponibles en el diálogo de edición masiva para verificar direcciones de correo electrónico y temas NTFY antes de aplicar a múltiples backups.
-6. Haga clic en `Guardar` para aplicar los ajustes a todos los backups seleccionados.
+6. Haga clic en **Guardar** para aplicar la configuración a todos los backups seleccionados.
 
 **Limpiar en masa:**
 
 Para eliminar toda la configuración de destino adicional de los backups seleccionados:
 
-1. Seleccionar los backups que desea limpiar.
-2. Haga clic en `Bulk Clear` en la barra de acciones en lote.
-3. Confirmar la acción en el cuadro de diálogo.
+1. Seleccione los backups que desea limpiar.
+2. Haga clic en **Limpiar en masa** en la barra de acciones en masa.
+3. Confirme la acción en el cuadro de diálogo.
 
 Esto eliminará todos los correos electrónicos adicionales, temas de NTFY y eventos de notificación para los Backups seleccionados. Después de limpiar, los Backups revertirán a heredar de los valores predeterminados del Servidor (si hay alguno configurado).
 

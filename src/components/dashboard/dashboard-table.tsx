@@ -366,7 +366,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                                   }}
                                 >
                                   <Settings className="h-3 w-3" />
-                                  <span>{content.overdueConfiguration.value}</span>
+                                  <span>{content.backupConfiguration.value}</span>
                                 </button>
                                 <ServerConfigurationButton 
                                   className="text-xs !p-1" 
@@ -642,7 +642,7 @@ export function DashboardTable({ servers }: DashboardTableProps) {
                         className="flex-1"
                       >
                         <Settings className="h-3 w-3 mr-1" />
-                        {content.overdueConfig.value}
+                        {content.backupConfiguration.value}
                       </Button>
                     </div>
                   </div>

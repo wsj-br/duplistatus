@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-02-14T04:57:37.365Z'
-source_file_mtime: '2026-01-25T02:45:42.746Z'
-source_file_hash: 42ca049a94e01f4c
+translation_last_updated: '2026-02-15T20:57:31.693Z'
+source_file_mtime: '2026-02-15T20:27:31.910Z'
+source_file_hash: 7de89d625f466245
 translation_language: fr
 source_file_path: migration/api-changes.md
 ---
-# Modifications incompatibles de l'API {#api-breaking-changes}
+# Modifications incompatibles avec les versions antérieures de l'API {#api-breaking-changes}
 
 Ce document décrit les modifications majeures apportées aux points de terminaison d'API externes dans différentes versions de duplistatus. Les points de terminaison d'API externes sont ceux conçus pour être utilisés par d'autres applications et intégrations (par exemple, l'intégration Homepage).
 

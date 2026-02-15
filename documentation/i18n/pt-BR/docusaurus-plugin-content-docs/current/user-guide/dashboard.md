@@ -1,15 +1,11 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.162Z'
-source_file_mtime: '2026-02-06T20:21:18.352Z'
-source_file_hash: 99734fe309fbff0d
+translation_last_updated: '2026-02-15T20:57:46.196Z'
+source_file_mtime: '2026-02-15T19:53:12.345Z'
+source_file_hash: be758d204cdf9a84
 translation_language: pt-BR
 source_file_path: user-guide/dashboard.md
 ---
 # Painel {#dashboard}
-
-:::tip
-**Acesso rápido às Configurações de exibição**: Clique com o botão direito no botão de atualização automática na barra de ferramentas da aplicação para abrir rapidamente a página [Configurações de exibição](settings/display-settings.md).
-:::
 
 ## Painel Resumido {#dashboard-summary}
 
@@ -31,23 +27,21 @@ Esta seção exibe estatísticas agregadas para todos os backups.
 
 O layout de cards mostra o status do log de backup mais recente recebido para cada backup.
 
-![Dashboard Overview](../assets/duplistatus_dash-cards.png)
+![Dashboard Overview](/img/duplistatus_dash-cards.png)
 
 - **Nome do servidor**: Nome do servidor Duplicati (ou o alias)
   - Passar o mouse sobre o **Nome do servidor** mostrará o nome do servidor e a nota
-- **Status geral**: O status do servidor. Backups atrasados serão exibidos com status `Aviso`
-- **Informações resumidas**: O número consolidado de arquivos, tamanho e armazenamento utilizado para todos os backups deste servidor. Também mostra o tempo decorrido do backup mais recente recebido (passe o mouse para mostrar a data e hora)
+- **Status geral**: O status do servidor. Backups atrasados serão exibidos com status de **Aviso**
+- **Informações resumidas**: O número consolidado de arquivos, tamanho e armazenamento usado para todos os backups deste servidor. Também mostra o tempo decorrido do backup mais recente recebido (passe o mouse para ver a data e hora)
 - **Lista de backups**: Uma tabela com todos os backups configurados para este servidor, com 3 colunas:
   - **Nome do backup**: Nome do backup no servidor Duplicati
   - **Histórico de status**: Status dos últimos 10 backups recebidos.
   - **Último backup recebido**: O tempo decorrido desde a hora atual do último log recebido. Mostrará um ícone de aviso se o backup estiver atrasado.
-    - O tempo é exibido em formato abreviado: `m` para minutos, `h` para horas, `d` para dias, `w` para semanas, `mo` para meses, `y` para anos.
+    - O tempo é mostrado em formato abreviado: `m` para minutos, `h` para horas, `d` para dias, `w` para semanas, `mo` para meses, `y` para anos.
 
-:::note
-Você pode usar as [Configurações de exibição](settings/display-settings.md) para configurar a ordem de classificação dos cartões. As opções disponíveis são `Server name (a-z)`, `Status (error > warning > success)` e `Last backup received (new > old)`.
-:::
+A ordem de classificação dos cartões e outras configurações podem ser definidas em [Configurações de exibição](settings/display-settings.md).
 
-Você pode alternar o botão no canto superior direito do painel lateral para mudar a visualização do painel:
+A visualização do painel oferece duas exibições informacionais, acessíveis clicando no botão superior direito no painel lateral:
 
 - Status: Mostrar Estatísticas dos trabalhos de backup por Status, com uma lista de Backups atrasados e trabalhos de backup com status de Avisos/Erros.
 
@@ -63,19 +57,19 @@ Passar o mouse sobre um backup na lista exibe detalhes do último log de backup 
 
 ![Overdue details](../assets/screen-backup-tooltip.png)
 
-- **Nome do servidor : Backup**: O nome ou alias do servidor Duplicati e backup, também mostrará o nome do servidor e a nota.
-  - O alias e a nota podem ser configurados em `Configurações → Configurações do servidor`.
-- **Notificações**: Um ícone mostrando a configuração de [notificação configurada](#notifications-icons) para novos logs de backup.
+- **Nome do servidor : Backup**: O nome ou alias do servidor Duplicati e do backup, também mostrará o nome do servidor e a nota.
+  - O alias e a nota podem ser configurados em [Configurações → Configurações do servidor](settings/server-settings.md).
+- **Notificação**: Um ícone mostrando a configuração de [notificação configurada](#notifications-icons) para novos logs de backup.
 - **Data**: A data e hora do backup e o tempo decorrido desde a última atualização da tela.
 - **Status**: O status do último backup recebido (Sucesso, Aviso, Erro, Fatal).
 - **Duração, Quantidade de arquivos, Tamanho dos arquivos, Tamanho de armazenamento, Tamanho enviado**: Valores conforme relatado pelo servidor Duplicati.
-- **Versões disponíveis**: O número de versões de backup armazenadas no destino do backup no momento do backup.
+- **Versões disponíveis**: O número de versões de backup armazenadas no destino de backup no momento do backup.
 
 Se este backup está atrasado, a dica de ferramenta também mostra:
 
 - **Backup Esperado**: A hora em que o backup era esperado, incluindo o período de tolerância configurado (tempo extra permitido antes de marcar como atrasado).
 
-Você também pode clicar nos botões na parte inferior para abrir `Configurações → Notificações de Backup` para configurar as definições de atraso ou abrir a interface web do servidor Duplicati.
+Você também pode clicar nos botões na parte inferior para abrir [Configurações → Notificações de backup](settings/backup-notifications-settings.md) para configurar as configurações de monitoramento ou abrir a interface web do servidor Duplicati.
 
 ## Layout de Tabela {#table-layout}
 
@@ -96,14 +90,16 @@ O layout da tabela lista os logs de backup mais recentes recebidos para todos os
   - **Notificação**: Um ícone mostrando a configuração de notificação definida para novos logs de backup.
   - **Configuração do Duplicati**: Um botão para abrir a interface web do servidor Duplicati
 
+Você pode usar [Configurações de exibição](settings/display-settings.md) para configurar o tamanho da tabela e outras configurações.
+
 ### Ícones de Notificações {#notifications-icons}
 
-| Icon                                                                                                                                    | Opção de Notificação | Descrição                                                                                         |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />     | Desativado                 | Nenhuma notificação será enviada quando um novo log de backup for recebido                                     |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} />     | Todos                 | Notificações serão enviadas para cada novo log de backup, independentemente do seu status.                      |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} />    | Avisos            | Notificações serão enviadas apenas para logs de backup com status de Aviso, Desconhecido, Erro ou Fatal. |
-| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} />    | Erros              | Notificações serão enviadas apenas para logs de backup com status de Erro ou Fatal.                    |
+| Ícone                                                                                                                               | Opção de notificação | Descrição                                                                                         |
+|------------------------------------------------------------------------------------------------------------------------------------|---------------------|-----------------------------------------------------------------------------------------------------|
+| <IconButton icon="lucide:message-square-off" style={{border: 'none', padding: 0, color: '#9ca3af', background: 'transparent'}} />  | Desativado                 | Nenhuma notificação será enviada quando um novo log de backup for recebido                                     |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#60a5fa', background: 'transparent'}} /> | Todos                 | Notificações serão enviadas para cada novo log de backup, independentemente do seu status.                      |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#fbbf24', background: 'transparent'}} /> | Avisos            | Notificações serão enviadas apenas para logs de backup com status de Aviso, Desconhecido, Erro ou Fatal. |
+| <IconButton icon="lucide:message-square-more" style={{border: 'none', padding: 0, color: '#f87171', background: 'transparent'}} /> | Erros              | Notificações serão enviadas apenas para logs de backup com status de Erro ou Fatal.                    |
 
 :::note
 Esta configuração de notificação se aplica apenas quando **duplistatus** recebe um novo log de backup de um servidor Duplicati. As notificações de atraso são configuradas separadamente e serão enviadas independentemente desta configuração.

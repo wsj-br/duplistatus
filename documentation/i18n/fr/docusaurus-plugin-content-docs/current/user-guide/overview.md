@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:38.872Z'
-source_file_mtime: '2026-02-06T21:11:29.339Z'
-source_file_hash: 570227cbd4e2d113
+translation_last_updated: '2026-02-15T20:57:33.274Z'
+source_file_mtime: '2026-02-15T18:43:06.194Z'
+source_file_hash: 35e757492e15c229
 translation_language: fr
 source_file_path: user-guide/overview.md
 ---
@@ -29,13 +29,17 @@ Pour les prérequis et les instructions d'installation détaillées, veuillez co
 Après une installation réussie, accédez à l'interface web duplistatus en suivant ces étapes :
 
 1. Ouvrez votre navigateur web préféré
-2. Accédez à `http://votre-adresse-ip-serveur:9666`
-   - Remplacez `votre-adresse-ip-serveur` par l'adresse IP ou le nom d'hôte réel de votre serveur duplistatus
+2. Accédez à `http://your-server-ip:9666`
+   - Remplacez `your-server-ip` par l'adresse IP réelle ou le nom d'hôte de votre serveur duplistatus
    - Le port par défaut est `9666`
-3. Une page de connexion s'affichera. Vous pouvez sélectionner la langue de l'interface dans le coin supérieur droit de la page de connexion, ou une fois connecté, via le menu utilisateur (cliquez sur votre nom d'utilisateur → Langue).
-   Utilisez ces identifiants pour la première utilisation (ou après une mise à niveau à partir de versions pré-0.9.x) :
+3. Une page de connexion vous sera présentée.
+
+Utilisez ces identifiants pour la première utilisation (ou après une mise à niveau à partir de versions antérieures à 0.9.x) :
     - nom d'utilisateur : `admin`
-    - mot de passe : `Duplistatus09` 
+    - mot de passe : `Duplistatus09`
+
+Sélectionnez la langue de l'interface utilisateur dans le coin supérieur droit <IconButton icon="lucide:languages" label="Langue" />, ou dans <IconButton icon="lucide:user" label="nom d'utilisateur" /> après la connexion (voir ci-dessous).
+
 4. Après la connexion, le tableau de bord principal s'affichera automatiquement (sans données lors de la première utilisation)
 
 ## Vue d'ensemble de l'interface utilisateur {#user-interface-overview}
@@ -59,7 +63,7 @@ L'interface utilisateur est organisée en plusieurs sections clés pour offrir u
 
 La barre d'outils de l'application fournit un accès pratique aux fonctions et paramètres clés, organisés pour un flux de travail efficace.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](/img/duplistatus_toolbar.png)
 
 | Bouton                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -90,7 +94,7 @@ Cliquer sur le bouton utilisateur ouvre un menu déroulant avec des options spé
 ## Configuration Essentielle {#essential-configuration}
 
 1. Configurez vos [serveurs Duplicati](../installation/duplicati-server-configuration.md) pour envoyer les messages de journaux de sauvegarde à duplistatus (requis).
-2. Collecter les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](collect-backup-logs.md) pour remplir la base de données avec les données historiques de sauvegarde de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en retard en fonction de la configuration de chaque serveur.
+2. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance de sauvegarde en fonction de la configuration de chaque serveur.
 3. Configurez les paramètres du serveur – configurez les alias de serveur et les notes dans [Paramètres → Serveur](settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
 4. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](settings/ntfy-settings.md).
 5. Configurez les paramètres e-mail – configurez les notifications par e-mail dans [Paramètres → E-mail](settings/email-settings.md).

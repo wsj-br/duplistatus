@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, isValid } from 'date-fns';
-import type { BackupStatus, NotificationEvent, OverdueTolerance } from './types';
+import type { BackupStatus, NotificationEvent, OverdueTolerance, StartOfWeek } from './types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -9,14 +9,14 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Get the browser's locale for number formatting
- * Falls back to 'en-US' if not available (e.g., in SSR)
+ * Falls back to 'en-GB' if not available (e.g., in SSR)
  */
 function getBrowserLocale(): string {
   if (typeof window === 'undefined') {
-    return 'en-US'; // Default for SSR
+    return 'en-GB'; // Default for SSR
   }
   // Use navigator.language or navigator.languages[0] if available
-  return navigator.language || navigator.languages?.[0] || 'en-US';
+  return navigator.language || navigator.languages?.[0] || 'en-GB';
 }
 
 export function formatDurationFromMinutes(totalMinutes: unknown): string {
@@ -733,79 +733,57 @@ export interface LocaleWeekDay {
   fullName: string; // Full name (e.g., "Monday", "Tuesday")
 }
 
-export function getLocaleWeekDays(locale?: string): LocaleWeekDay[] {
+export function getLocaleWeekDays(locale?: string, startOfWeekOverride?: StartOfWeek): LocaleWeekDay[] {
   const browserLocale = locale || getBrowserLocale();
-  
+
   // Create a date for a known Sunday (January 7, 2024 was a Sunday)
   const baseDate = new Date(2024, 0, 7); // January 7, 2024 (Sunday)
-  
+
   // Get all 7 weekdays starting from Sunday
   const weekDays: LocaleWeekDay[] = [];
   for (let i = 0; i < 7; i++) {
     const date = new Date(baseDate);
     date.setDate(baseDate.getDate() + i);
     const dayNumber = date.getDay(); // 0=Sunday, 1=Monday, etc.
-    
+
     const shortFormatter = new Intl.DateTimeFormat(browserLocale, { weekday: 'short' });
     const fullFormatter = new Intl.DateTimeFormat(browserLocale, { weekday: 'long' });
-    
+
     weekDays.push({
       dayNumber,
       shortName: shortFormatter.format(date),
       fullName: fullFormatter.format(date),
     });
   }
-  
-  // Determine the first day of the week for this locale
-  // We'll check which day the locale considers as the start of the week
-  // by looking at the calendar week numbering
-  let firstDayOfWeek = 0; // Default to Sunday
-  
-  try {
-    // Try to get the first day of the week from Intl
-    // Create a date in the middle of a week and check formatting
-    const testDate = new Date(2024, 0, 10); // Wednesday, January 10, 2024
-    const formatter = new Intl.DateTimeFormat(browserLocale, { 
-      weekday: 'long',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric'
-    });
-    
-    // For most European locales, Monday is day 1
-    // For US/Brazil locales, Sunday is day 0
-    // We can determine this by checking locale patterns
-    const localeLower = browserLocale.toLowerCase();
-    
-    // Common Monday-first locales
-    const mondayFirstLocales = [
-      'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt', 
-      'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
-      'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
-    ];
-    
-    // Check if locale starts with any Monday-first locale prefix
-    const isMondayFirst = mondayFirstLocales.some(prefix => 
-      localeLower.startsWith(prefix)
-    );
-    
-    if (isMondayFirst) {
-      firstDayOfWeek = 1; // Monday
-    } else {
-      firstDayOfWeek = 0; // Sunday (default for US, Brazil, etc.)
+
+  // Determine the first day of the week
+  let firstDayOfWeek: number;
+
+  if (startOfWeekOverride && startOfWeekOverride !== 'locale') {
+    // Use user's explicit preference
+    firstDayOfWeek = startOfWeekOverride === 'monday' ? 1 : 0;
+  } else {
+    // Auto-detect from locale
+    try {
+      const localeLower = browserLocale.toLowerCase();
+      const mondayFirstLocales = [
+        'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt',
+        'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
+        'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
+      ];
+      const isMondayFirst = mondayFirstLocales.some(prefix => localeLower.startsWith(prefix));
+      firstDayOfWeek = isMondayFirst ? 1 : 0;
+    } catch {
+      firstDayOfWeek = 0;
     }
-  } catch {
-    // Fallback to Sunday if detection fails
-    firstDayOfWeek = 0;
   }
-  
+
   // Reorder weekdays based on first day of week
   if (firstDayOfWeek === 0) {
-    // Sunday first (US, Brazil) - already in correct order
+    // Sunday first - already in correct order
     return weekDays;
   } else {
-    // Monday first (UK, France, most of Europe)
-    // Reorder: Monday (1) through Sunday (0)
+    // Monday first - reorder: Monday (1) through Sunday (0)
     const mondayFirst = weekDays.slice(1).concat(weekDays.slice(0, 1));
     return mondayFirst;
   }

@@ -1,5 +1,5 @@
 ---
-translation_last_updated: '2026-02-14T04:57:36.439Z'
+translation_last_updated: '2026-02-15T20:57:30.665Z'
 source_file_mtime: '2026-02-14T03:28:17.279Z'
 source_file_hash: 34cb441ca91355e0
 translation_language: fr

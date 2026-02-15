@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:45.561Z'
-source_file_mtime: '2026-02-06T22:18:56.325Z'
-source_file_hash: 260a67f2593d936a
+translation_last_updated: '2026-02-15T20:57:40.298Z'
+source_file_mtime: '2026-02-15T18:34:41.602Z'
+source_file_hash: 65a8594207f730f7
 translation_language: es
 source_file_path: intro.md
 ---
@@ -11,15 +11,15 @@ source_file_path: intro.md
 
 ## Características {#features}
 
-- **Configuración rápida**: Despliegue simple en contenedores, con imágenes disponibles en Docker Hub y GitHub.
-- **Panel de control unificado**: Vea el estado, historial y detalles de backups de todos los servidores en un solo lugar.
-- **Monitoreo de backups retrasados**: Verificación y alertas automáticas para backups programados retrasados.
+- **Configuración rápida**: Implementación sencilla en contenedores, con imágenes disponibles en Docker Hub y GitHub.
+- **Panel de control unificado**: Vea el estado del backup, historial y detalles de todos los servidores en un solo lugar.
+- **Monitoreo de backups**: Verificación automatizada y alertas para backups programados retrasados.
 - **Visualización de datos y Logs**: Gráficos interactivos y recopilación automática de logs desde servidores Duplicati.
-- **Notificaciones y Alertas**: Soporte integrado de NTFY y correo electrónico SMTP para alertas de backup, incluyendo notificaciones de backups retrasados.
-- **Control de acceso de usuarios y Seguridad**: Sistema de autenticación seguro con control de acceso basado en roles (roles Admin/Usuario), políticas de contraseña configurables, protección de bloqueo de cuenta y gestión de usuarios completa.
-- **Registro de auditoría**: Registro de auditoría completo de todos los cambios del sistema y acciones de usuario con filtrado avanzado, capacidades de exportación y períodos de retención configurables.
+- **Notificaciones y Alertas**: Soporte integrado de NTFY y correo electrónico SMTP para alertas de backup, incluidas notificaciones de backups retrasados.
+- **Control de acceso de usuarios y Seguridad**: Sistema de autenticación seguro con control de acceso basado en roles (roles Admin/Usuario), políticas de contraseña configurables, protección de bloqueo de cuenta y gestión completa de usuarios.
+- **Registro de auditoría**: Registro de auditoría completo de todos los cambios del sistema y acciones de usuarios con filtrado avanzado, capacidades de exportación y períodos de retención configurables.
 - **Visor de Logs de aplicación**: Interfaz solo para administradores para ver, buscar y exportar logs de aplicación directamente desde la interfaz web con capacidades de monitoreo en tiempo real.
-- **Soporte multilenguaje**: Interfaz y documentación disponibles en inglés, francés, alemán, español y portugués brasileño.
+- **Soporte multiidioma**: Interfaz y documentación disponibles en inglés, francés, alemán, español y portugués brasileño.
 
 ## Instalación {#installation}
 
@@ -80,12 +80,12 @@ Este proyecto fue construido principalmente con ayuda de IA. Para aprender cómo
 - Ícono SVG de GitHub de https://github.com/logos
 
 :::note
- Todos los nombres de productos, logotipos y marcas comerciales son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
- :::
+ Todos los nombres de productos, logotipos y marcas registradas son propiedad de sus respectivos propietarios. Los iconos y nombres se utilizan únicamente con fines de identificación y no implican respaldo.
+:::
 
 
 ## Licencia {#license}
 
 El proyecto está licenciado bajo la [Licencia Apache 2.0](LICENSE.md).   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**

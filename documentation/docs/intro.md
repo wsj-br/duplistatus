@@ -8,7 +8,7 @@
 
 - **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
 - **Unified Dashboard**: View backup status, history, and details for all servers in one place.
-- **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
+- **Backup Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
@@ -91,5 +91,5 @@ This project was mainly built with AI help. To learn how, see [How I Build this 
 
 The project is licensed under the [Apache License 2.0](LICENSE.md).   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**
 

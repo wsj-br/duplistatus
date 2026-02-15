@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:36.917Z'
-source_file_mtime: '2026-02-06T21:13:34.856Z'
-source_file_hash: d6bdf0e9f9ddb899
+translation_last_updated: '2026-02-15T20:57:31.210Z'
+source_file_mtime: '2026-02-15T19:17:43.632Z'
+source_file_hash: 2ddcfddd1763c2b6
 translation_language: fr
 source_file_path: installation/configure-tz.md
 ---
@@ -12,7 +12,7 @@ L'interface utilisateur de l'application affichera la date et l'heure selon les 
 La valeur par défaut est `TZ=Europe/London` si cette variable d'environnement n'est pas définie.
 
 :::note
-Les paramètres régionaux (format des nombres et des dates) pour les notifications sont configurés dans [Paramètres → Modèles de notification](../user-guide/settings/notification-templates.md).
+Les paramètres de langue et de locale (formats des nombres et des dates) pour les Notifications peuvent être configurés dans [Paramètres → Modèles](../user-guide/settings/notification-templates.md).
 :::
 
 ## Configuration du fuseau horaire {#configuring-the-timezone}
@@ -28,7 +28,7 @@ environment:
   - TZ=America/Sao_Paulo
 ```
 
-ou passez la variable d'environnement en ligne de commande :
+ou transmettez la variable d'environnement en ligne de commande (Docker ou Podman) :
 
 ```bash
   --env TZ=America/Sao_Paulo

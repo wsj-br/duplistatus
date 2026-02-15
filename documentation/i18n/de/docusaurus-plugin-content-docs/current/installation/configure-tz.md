@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:40.971Z'
-source_file_mtime: '2026-02-06T21:13:34.856Z'
-source_file_hash: d6bdf0e9f9ddb899
+translation_last_updated: '2026-02-15T20:57:35.527Z'
+source_file_mtime: '2026-02-15T19:17:43.632Z'
+source_file_hash: 2ddcfddd1763c2b6
 translation_language: de
 source_file_path: installation/configure-tz.md
 ---
@@ -12,7 +12,7 @@ Die Benutzeroberfläche der Anwendung zeigt Datum und Uhrzeit gemäß den Browse
 Der Standardwert ist `TZ=Europe/London`, wenn diese Umgebungsvariable nicht gesetzt ist.
 
 :::note
-Das Gebietsschema (Zahlen- und Datumsformat) für Benachrichtigungen wird in [Einstellungen → Benachrichtigungsvorlagen](../user-guide/settings/notification-templates.md) konfiguriert.
+Die Sprache und Gebietsschema-Einstellungen (Zahlen- und Datumsformate) für Benachrichtigungen können in [Einstellungen → Vorlagen](../user-guide/settings/notification-templates.md) konfiguriert werden.
 :::
 
 ## Konfigurieren der Zeitzone {#configuring-the-timezone}
@@ -28,7 +28,7 @@ environment:
   - TZ=America/Sao_Paulo
 ```
 
-oder übergeben Sie die Umgebungsvariable in der Befehlszeile:
+oder übergeben Sie die Umgebungsvariable in der Befehlszeile (Docker oder Podman):
 
 ```bash
   --env TZ=America/Sao_Paulo

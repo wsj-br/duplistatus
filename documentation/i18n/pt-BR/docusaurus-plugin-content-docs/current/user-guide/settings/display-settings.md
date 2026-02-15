@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.629Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 796675225958a465
+translation_last_updated: '2026-02-15T20:57:46.761Z'
+source_file_mtime: '2026-02-15T20:21:44.757Z'
+source_file_hash: 1451600f02405243
 translation_language: pt-BR
 source_file_path: user-guide/settings/display-settings.md
 ---
@@ -13,13 +13,14 @@ Configurar preferências de interface do usuário e exibição.
 
 <br/>
 
-| Configuração                    | Descrição                                           | Valor padrão        |
-| :------------------------------ | :-------------------------------------------------- | :------------------ |
-| **Tamanho da tabela**           | Número de linhas por página na página de detalhes do servidor. | 5 linhas            |
+| Configuração              | Descrição                                                    | Valor Padrão       |
+|:--------------------------|:-------------------------------------------------------------|:-------------------|
+| **Tamanho da tabela**     | Número de linhas por página na página de detalhes do servidor. | 5 linhas           |
 | **Intervalo de tempo do gráfico** | Intervalo de tempo mostrado nos gráficos.          | Todos os dados disponíveis |
-| **Intervalo de atualização automática** | Com que frequência as páginas são atualizadas automaticamente. | 1 minuto            |
-| **Ordem de classificação dos cartões** | Como os cartões são classificados no painel.       | `Nome do servidor (a-z)` |
-| **Tema**                        | Selecionar o tema claro ou escuro.                  | Escuro              |
+| **Intervalo de atualização automática** | Com que frequência as páginas são atualizadas automaticamente. | 1 minuto           |
+| **Ordem de classificação dos cartões** | Como os cartões são classificados no painel.       | Nome do servidor (a-z) |
+| **Início da semana**      | Configurar quando a semana começa.                           | Baseado na localização |
+| **Tema**                  | Selecionar o tema claro ou escuro.                           | Escuro             |
 
 <br/>
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.282Z'
-source_file_mtime: '2026-02-06T21:16:20.551Z'
-source_file_hash: 473175db710f3df5
+translation_last_updated: '2026-02-15T20:57:33.769Z'
+source_file_mtime: '2026-02-15T19:21:45.771Z'
+source_file_hash: 28dda7829d88467c
 translation_language: fr
 source_file_path: user-guide/settings/notification-templates.md
 ---
@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/notification-templates.md
 
 **duplistatus** utilise trois modèles pour les messages de notification. Ces modèles sont utilisés à la fois pour les notifications NTFY et par e-mail.
 
-La page comprend un sélecteur de **Langue du modèle** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux modèles par défaut, mais ne modifie pas le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, vous pouvez soit les modifier manuellement, soit utiliser **Réinitialiser ce modèle par défaut** (pour l'onglet actuel) ou **Réinitialiser tous les modèles par défaut** (pour les trois modèles).
+La page inclut un sélecteur **Langue des modèles** qui définit la locale pour les modèles par défaut. Changer la langue met à jour la locale pour les nouveaux modèles par défaut, mais cela ne change **pas** le texte des modèles existants. Pour appliquer une nouvelle langue à vos modèles, modifiez-les manuellement ou utilisez **Réinitialiser ce modèle à la valeur par défaut** (pour l'onglet actuel) ou **Tout réinitialiser aux valeurs par défaut** (pour les trois modèles).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -23,7 +23,7 @@ La page comprend un sélecteur de **Langue du modèle** qui définit la locale p
 
 ## Langue du modèle {#template-language}
 
-Un sélecteur de **Langue du modèle** en haut de la page vous permet de choisir la langue des modèles par défaut (anglais, allemand, français, espagnol, portugais (Brésil)). Changer la langue met à jour la locale des modèles par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
+Un sélecteur de **Langue des modèles** en haut de la page vous permet de choisir la langue pour les modèles par défaut (Anglais, Allemand, Français, Espagnol, Portugais). Le changement de langue met à jour les paramètres régionaux pour les valeurs par défaut, mais les modèles personnalisés existants conservent leur texte actuel jusqu'à ce que vous les mettiez à jour ou utilisiez l'un des boutons de réinitialisation.
 
 <br/>
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:49.325Z'
-source_file_mtime: '2026-02-14T04:30:33.209Z'
-source_file_hash: c60228989cb5422d
+translation_last_updated: '2026-02-15T20:57:44.125Z'
+source_file_mtime: '2026-02-15T19:32:35.362Z'
+source_file_hash: f6b2901b63a4b18c
 translation_language: pt-BR
 source_file_path: development/translation-workflow.md
 ---
@@ -172,11 +172,11 @@ Comandos de Gerenciamento de Cache:
 
 | Comando                                 | Descrição                                                           |
 |-----------------------------------------|-----------------------------------------------------------------------|
-| `pnpm translate --clear-cache <locale>` | Limpar cache para localidade específica                                       |
+| `pnpm translate --clear-cache <locale>` | Limpar cache para locale específico                                       |
 | `pnpm translate --clear-cache`          | Limpar cache **todos** (arquivo e segmento)                           |
-| `pnpm translate --force`                | Forçar retradução (limpa cache de arquivo, mantém cache de segmento)         |
+| `pnpm translate --force`                | Forçar re-tradução (limpa cache de arquivo, mantém cache de segmento)         |
 | `pnpm translate --no-cache`             | Ignorar cache completamente (forçar chamadas de API, ainda salva novas traduções) |
-| `pnpm translate:edit-cache`             | Revisão manual, excluir ou editar entradas de cache                           |
+| `pnpm translate:editor`             | Revisão manual, excluir ou editar entradas de cache                           |
 
 ### Remover cache órfão e obsoleto {#remove-orphaned-and-stale-cache}
 
@@ -202,7 +202,7 @@ Ao revisar traduções, use a ferramenta de edição de cache baseada na web par
 Por exemplo, se um modelo traduziu incorretamente um termo, você pode filtrar todas as entradas para esse termo, alterar o modelo no arquivo `translate.config.json` e retraduzir apenas as linhas que contêm esses termos usando o novo modelo.
 
 ```bash
-pnpm translate:edit-cache
+pnpm translate:editor
 ```
 
 Isso abrirá uma interface do usuário da web para navegar e editar o cache manualmente (porta 4000 ou 4000+), para que você possa:
@@ -327,7 +327,7 @@ Para forçar chamadas de API e capturar o tráfego de solicitação/resposta,
 
 - Execute `pnpm translate --clear-cache` para redefinir
 - Execute `pnpm translate:cleanup` para remover entradas órfãs
-- Use `pnpm translate:edit-cache` para corrigir/excluir traduções em cache individuais sem retraduzir todo o documento
+- Use `pnpm translate:editor` para corrigir/excluir traduções em cache individuais sem re-traduzir o documento inteiro
 
 **Depuração do tráfego OpenRouter**
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.812Z'
-source_file_mtime: '2026-02-06T20:21:18.353Z'
-source_file_hash: e4822ed3bdf643fb
+translation_last_updated: '2026-02-15T20:57:42.517Z'
+source_file_mtime: '2026-02-14T22:22:22.802Z'
+source_file_hash: faafdd8670f3c3f8
 translation_language: es
 source_file_path: user-guide/settings/ntfy-settings.md
 ---
@@ -19,7 +19,7 @@ source_file_path: user-guide/settings/ntfy-settings.md
 
 <br/>
 
-Un icono <IIcon2 icon="lucide:message-square" color="green"/> verde junto a `NTFY` en la barra lateral significa que su configuración es válida. Si el icono es <IIcon2 icon="lucide:message-square" color="yellow"/> amarillo, su configuración no es válida.
+Un icono <IIcon2 icon="lucide:message-square" color="green"/> verde junto a **NTFY** en la barra lateral significa que su configuración es válida. Si el icono es <IIcon2 icon="lucide:message-square" color="yellow"/> amarillo, su configuración no es válida.
 Cuando la configuración no es válida, las casillas de verificación de NTFY en la pestaña [`Notificaciones de backup`](backup-notifications-settings.md) también estarán deshabilitadas.
 
 ## Acciones disponibles {#available-actions}
@@ -39,15 +39,13 @@ Debe instalar la aplicación NTFY en su dispositivo antes de configurarlo ([cons
 <br/>
 
 :::caution
-Si utiliza el servidor público `ntfy.sh` sin un token de acceso, cualquiera que conozca el nombre de su tema puede ver sus
-notificaciones. 
- 
-Para proporcionar un grado de privacidad, se genera un tema aleatorio de 12 caracteres, ofreciendo más de
-3 sextillones (3.000.000.000.000.000.000.000) de combinaciones posibles, lo que dificulta su adivinanza.
+Si utiliza el servidor público **ntfy.sh** sin un token de acceso, cualquier persona que conozca el nombre de su tema puede ver sus notificaciones.
 
-Para mejorar la seguridad, considere usar [autenticación de token de acceso](https://docs.ntfy.sh/config/#access-tokens) y [listas de control de acceso](https://docs.ntfy.sh/config/#access-control-list-acl) para proteger sus temas, u [alojar NTFY usted mismo](https://docs.ntfy.sh/install/#docker) para tener control total.
+Para proporcionar un grado de privacidad, se genera un tema aleatorio de 12 caracteres, ofreciendo más de 3 sextillones (3.000.000.000.000.000.000.000) de combinaciones posibles, lo que dificulta su adivinación.
 
-⚠️ **Usted es responsable de asegurar sus temas NTFY. Por favor, utilice este servicio bajo su propio criterio.**
+Para mejorar la seguridad, considere utilizar [autenticación por token de acceso](https://docs.ntfy.sh/config/#access-tokens) y [listas de control de acceso](https://docs.ntfy.sh/config/#access-control-list-acl) para proteger sus temas, u [alojar NTFY por su cuenta](https://docs.ntfy.sh/install/#docker) para tener control total.
+
+⚠️ **Usted es responsable de asegurar sus temas de NTFY. Por favor, utilice este servicio bajo su propio criterio.**
 :::
 
 <br/>

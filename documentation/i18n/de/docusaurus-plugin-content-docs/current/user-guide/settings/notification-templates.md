@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.428Z'
-source_file_mtime: '2026-02-06T21:16:20.551Z'
-source_file_hash: 473175db710f3df5
+translation_last_updated: '2026-02-15T20:57:38.178Z'
+source_file_mtime: '2026-02-15T19:21:45.771Z'
+source_file_hash: 28dda7829d88467c
 translation_language: de
 source_file_path: user-guide/settings/notification-templates.md
 ---
@@ -9,7 +9,7 @@ source_file_path: user-guide/settings/notification-templates.md
 
 **duplistatus** verwendet drei Vorlagen für Benachrichtigungsnachrichten. Diese Vorlagen werden sowohl für NTFY- als auch für E-Mail-Benachrichtigungen verwendet.
 
-Die Seite enthält einen **Vorlagen-Sprachauswahl**, der das Gebietsschema für Standardvorlagen festlegt. Das Ändern der Sprache aktualisiert das Gebietsschema für neue Standardwerte, ändert jedoch nicht den Text vorhandener Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie sie entweder manuell oder verwenden Sie **Diese Vorlage auf Standard zurücksetzen** (für den aktuellen Tab) oder **Alle auf Standard zurücksetzen** (für alle drei Vorlagen).
+Die Seite enthält einen **Vorlagensprache**-Selektor, der das Gebietsschema für Standard-Vorlagen festlegt. Das Ändern der Sprache aktualisiert das Gebietsschema für neue Standards, ändert aber **nicht** den Text vorhandener Vorlagen. Um eine neue Sprache auf Ihre Vorlagen anzuwenden, bearbeiten Sie diese entweder manuell oder verwenden Sie **Diese Vorlage auf Standard zurücksetzen** (für die aktuelle Registerkarte) oder **Alle auf Standard zurücksetzen** (für alle drei Vorlagen).
 
 ![notification templates](../../assets/screen-settings-templates.png)
 
@@ -23,7 +23,7 @@ Die Seite enthält einen **Vorlagen-Sprachauswahl**, der das Gebietsschema für 
 
 ## Vorlagen-Sprache {#template-language}
 
-Ein **Vorlagen-Sprachauswahl** am oberen Seitenrand ermöglicht es Ihnen, die Sprache für Standardvorlagen auszuwählen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch (Brasilien)). Das Ändern der Sprache aktualisiert das Gebietsschema für Standardwerte, aber benutzerdefinierte Vorlagen behalten ihren aktuellen Text bei, bis Sie sie aktualisieren oder eine der Zurücksetzen-Schaltflächen verwenden.
+Ein **Vorlagensprache**-Wähler oben auf der Seite ermöglicht es Ihnen, die Sprache für Standard-Vorlagen (Englisch, Deutsch, Französisch, Spanisch, Portugiesisch) auszuwählen. Das Ändern der Sprache aktualisiert das Gebietsschema für Standards, aber vorhandene angepasste Vorlagen behalten ihren aktuellen Text bei, bis Sie diese aktualisieren oder eine der Schaltflächen zum Zurücksetzen verwenden.
 
 <br/>
 

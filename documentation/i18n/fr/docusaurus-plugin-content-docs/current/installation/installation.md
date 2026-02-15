@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:37.148Z'
-source_file_mtime: '2026-02-06T21:13:37.635Z'
-source_file_hash: badfc81088d24eed
+translation_last_updated: '2026-02-15T20:57:31.454Z'
+source_file_mtime: '2026-02-15T16:25:07.956Z'
+source_file_hash: 4f631551c203abfa
 translation_language: fr
 source_file_path: installation/installation.md
 ---
@@ -66,7 +66,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/London
-      - LANG=en_GB
       - PWD_ENFORCE=true
       - PWD_MIN_LEN=8
     ports:
@@ -260,8 +259,8 @@ podman pod rm -f duplistatus-pod
 ## Configuration Essentielle {#essential-configuration}
 
 1. Configurez vos [serveurs Duplicati](duplicati-server-configuration.md) pour envoyer les messages de journaux de sauvegarde à duplistatus (requis).
-2. Connectez-vous à duplistatus – consultez les instructions du [Guide utilisateur](../user-guide/overview.md#accessing-the-dashboard).
-3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance des sauvegardes en retard en fonction de la configuration de chaque serveur.
+2. Connectez-vous à duplistatus – consultez les instructions dans le [Guide de l'utilisateur](../user-guide/overview.md#accessing-the-dashboard).
+3. Collectez les journaux de sauvegarde initiaux – utilisez la fonctionnalité [Collecter les journaux de sauvegarde](../user-guide/collect-backup-logs.md) pour remplir la base de données avec les données de sauvegarde historiques de tous vos serveurs Duplicati. Cela met également à jour automatiquement les intervalles de surveillance de sauvegarde en fonction de la configuration de chaque serveur.
 4. Configurez les paramètres du serveur – configurez les alias de serveur et les notes dans [Paramètres → Serveur](../user-guide/settings/server-settings.md) pour rendre votre tableau de bord plus informatif.
 5. Configurez les paramètres NTFY – configurez les notifications via NTFY dans [Paramètres → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configurez les paramètres e-mail – configurez les notifications par e-mail dans [Paramètres → E-mail](../user-guide/settings/email-settings.md).

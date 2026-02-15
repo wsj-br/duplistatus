@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:45.079Z'
-source_file_mtime: '2026-02-14T04:30:33.209Z'
-source_file_hash: c60228989cb5422d
+translation_last_updated: '2026-02-15T20:57:39.800Z'
+source_file_mtime: '2026-02-15T19:32:35.362Z'
+source_file_hash: f6b2901b63a4b18c
 translation_language: es
 source_file_path: development/translation-workflow.md
 ---
@@ -172,11 +172,11 @@ Comandos de Gestión de Caché:
 
 | Comando                                 | Descripción                                                           |
 |-----------------------------------------|-----------------------------------------------------------------------|
-| `pnpm translate --clear-cache <locale>` | Limpiar caché para una configuración regional específica                |
-| `pnpm translate --clear-cache`          | Limpiar **toda** la caché (archivos y segmentos)                       |
-| `pnpm translate --force`                | Forzar re-traducción (limpia caché de archivos, mantiene caché de segmentos) |
-| `pnpm translate --no-cache`             | Omitir caché completamente (forzar llamadas API, guardar nuevas traducciones) |
-| `pnpm translate:edit-cache`             | Revisión manual, eliminar o editar entradas de caché                  |
+| `pnpm translate --clear-cache <locale>` | Borrar caché para una locale específica                                       |
+| `pnpm translate --clear-cache`          | Borrar **todos** los cachés (archivo y segmento)                           |
+| `pnpm translate --force`                | Forzar re-traducción (borra caché de archivo, mantiene caché de segmento)         |
+| `pnpm translate --no-cache`             | Omitir caché completamente (forzar llamadas API, aún guarda nuevas traducciones) |
+| `pnpm translate:editor`             | Revisión manual, eliminar o editar entradas de caché                           |
 
 ### Eliminar caché huérfana y obsoleta {#remove-orphaned-and-stale-cache}
 
@@ -202,7 +202,7 @@ Al revisar traducciones, use la herramienta de edición de caché basada en web 
 Por ejemplo, si un modelo ha traducido un término incorrectamente, puede filtrar todas las entradas para ese término, cambiar el modelo en el archivo `translate.config.json` y volver a traducir solo las líneas que contienen esos términos utilizando el nuevo modelo.
 
 ```bash
-pnpm translate:edit-cache
+pnpm translate:editor
 ```
 
 Esto abrirá una interfaz web para navegar y editar la caché manualmente (puerto 4000 o 4000+), para que pueda:
@@ -325,9 +325,9 @@ Para forzar llamadas API y capturar el tráfico de solicitud/respuesta,
 
 **Corrupción de caché**
 
-- Ejecutar `pnpm translate --clear-cache` para restablecer
-- Ejecutar `pnpm translate:cleanup` para eliminar entradas huérfanas
-- Usar `pnpm translate:edit-cache` para corregir/eliminar traducciones individuales en caché sin retraduccir todo el documento
+- Ejecute `pnpm translate --clear-cache` para restablecer
+- Ejecute `pnpm translate:cleanup` para eliminar entradas huérfanas
+- Use `pnpm translate:editor` para corregir/eliminar traducciones en caché individuales sin re-traducir el documento completo
 
 **Depuración del tráfico de OpenRouter**
 

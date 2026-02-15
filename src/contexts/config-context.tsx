@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { defaultUIConfig, defaultOverdueTolerance } from '@/lib/default-config';
-import type { OverdueTolerance } from '@/lib/types';
+import type { OverdueTolerance, StartOfWeek } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { getUserLocalStorageItem, setUserLocalStorageItem, removeUserLocalStorageItem } from '@/lib/user-local-storage';
 import { useCurrentUser } from '@/hooks/use-current-user';
@@ -27,6 +27,8 @@ interface ConfigContextProps {
   setAutoRefreshEnabled: (enabled: boolean) => void;
   dashboardCardsSortOrder: DashboardCardsSortOrder;
   setDashboardCardsSortOrder: (order: DashboardCardsSortOrder) => void;
+  startOfWeek: StartOfWeek;
+  setStartOfWeek: (start: StartOfWeek) => void;
   overdueTolerance: OverdueTolerance;
   refreshOverdueTolerance: () => Promise<void>;
   cleanupDatabase: () => Promise<void>;
@@ -42,6 +44,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const [autoRefreshInterval, setAutoRefreshInterval] = useState<AutoRefreshInterval>(defaultUIConfig.autoRefreshInterval);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState<boolean>(true);
   const [dashboardCardsSortOrder, setDashboardCardsSortOrder] = useState<DashboardCardsSortOrder>(defaultUIConfig.dashboardCardsSortOrder);
+  const [startOfWeek, setStartOfWeek] = useState<StartOfWeek>(defaultUIConfig.startOfWeek);
   const [overdueTolerance, setOverdueTolerance] = useState<OverdueTolerance>(defaultOverdueTolerance);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
@@ -73,6 +76,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         if (config.autoRefreshInterval) setAutoRefreshInterval(config.autoRefreshInterval);
         if (config.autoRefreshEnabled !== undefined) setAutoRefreshEnabled(config.autoRefreshEnabled);
         if (config.dashboardCardsSortOrder) setDashboardCardsSortOrder(config.dashboardCardsSortOrder);
+        if (config.startOfWeek) setStartOfWeek(config.startOfWeek);
       } catch (error) {
         console.error('Failed to parse saved config from localStorage:', error);
         // Clear the invalid config from localStorage
@@ -113,9 +117,10 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         autoRefreshInterval,
         autoRefreshEnabled,
         dashboardCardsSortOrder,
+        startOfWeek,
       }));
     }
-  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, currentUser]);
+  }, [databaseCleanupPeriod, tablePageSize, chartTimeRange, autoRefreshInterval, autoRefreshEnabled, dashboardCardsSortOrder, startOfWeek, currentUser]);
 
   const cleanupDatabase = async () => {
     try {
@@ -184,6 +189,8 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
         setAutoRefreshEnabled,
         dashboardCardsSortOrder,
         setDashboardCardsSortOrder,
+        startOfWeek,
+        setStartOfWeek,
         overdueTolerance,
         refreshOverdueTolerance,
         cleanupDatabase,

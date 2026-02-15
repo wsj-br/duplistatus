@@ -21,11 +21,11 @@
 
 
 
- A <IIcon2 icon="lucide:mail" color="green"/> green icon next to `Email` in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:mail" color="yellow"/> yellow, your settings are not valid or not configured.
+ A <IIcon2 icon="lucide:mail" color="green"/> green icon next to **Email** in the sidebar means your settings are valid. If the icon is <IIcon2 icon="lucide:mail" color="yellow"/> yellow, your settings are not valid or not configured.
  
  The icon shows green when all required fields are set: SMTP Server Host, SMTP Server Port, Recipient Email, and either (SMTP Username + Password when authentication is required) or (From Address when authentication is not required).
  
- When the configuration is not fully configured, a yellow alert box is displayed informing you that no emails will be sent until the email settings are filled correctly. The Email checkboxes in the [`Backup Notifications`](backup-notifications-settings.md) tab will also be greyed out and show "(disabled)" labels.
+ When the configuration is not fully configured, a yellow alert box is displayed informing you that no emails will be sent until the email settings are filled correctly. The Email checkboxes in the [Backup Notifications](backup-notifications-settings.md) tab will also be greyed out and show "(disabled)" labels.
 
 <br/>
 
@@ -47,7 +47,7 @@
 
  Even if you see a green <IIcon2 icon="lucide:mail" color="green"/> icon and everything looks configured, emails may not be sent.
  
- `duplistatus` only checks if your SMTP settings are filled in, not if emails can actually be delivered.
+ **duplistatus** only checks if your SMTP settings are filled in, not if emails can actually be delivered.
 :::
 
 <br/>

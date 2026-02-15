@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.420Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: cf92c351f5e4592a
+translation_last_updated: '2026-02-15T20:57:42.094Z'
+source_file_mtime: '2026-02-14T22:20:51.153Z'
+source_file_hash: f21e4b84808c8bcb
 translation_language: es
 source_file_path: user-guide/settings/audit-logs-retention.md
 ---
@@ -11,9 +11,9 @@ Configurar cuánto tiempo se retienen los logs de auditoría antes de la limpiez
 
 ![Audit Log Retention](../../assets/screen-settings-audit-retention.png)
 
-| Setting | Descripción | Valor por defecto |
+| Configuración | Descripción | Valor por defecto |
 |:-------|:-----------|:-------------|
-| **Retención (días)** | Número de días para retener logs de auditoría antes de la eliminación automática | `90 días` |
+| **Retención (días)** | Número de días para retener logs de auditoría antes de la eliminación automática | **90 días** |
 
 ## Configuración de Retención {#retention-settings}
 

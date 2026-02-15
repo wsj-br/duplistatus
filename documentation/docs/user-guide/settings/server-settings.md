@@ -18,7 +18,7 @@ You can configure an alternative name (alias) for your servers, a note to descri
 <br/>
 :::note
 If the Web Interface Address (URL) is not configured, the <SvgIcon svgFilename="duplicati_logo.svg" /> button 
-will be disabled in all pages and the server will not be shown in [`Duplicati Configuration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>  list.
+will be disabled in all pages and the server will not be shown in [Duplicati Configuration](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>  list.
 :::
 
 <br/>

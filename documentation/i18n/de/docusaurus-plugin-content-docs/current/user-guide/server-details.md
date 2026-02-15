@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.036Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: f469b5229723b21f
+translation_last_updated: '2026-02-15T20:57:37.739Z'
+source_file_mtime: '2026-02-14T22:20:00.667Z'
+source_file_hash: 93fdbf4e891439e9
 translation_language: de
 source_file_path: user-guide/server-details.md
 ---
@@ -23,11 +23,11 @@ Dieser Abschnitt zeigt Statistiken für alle Sicherungen auf dem Server oder ein
 - **GESAMTER SPEICHERPLATZ VERWENDET**: Speicherplatz, der am Sicherungsziel verwendet wird, wie im letzten Sicherungsprotokoll gemeldet.
 - **GESAMT HOCHGELADEN**: Summe aller hochgeladenen Daten, die in der **duplistatus**-Datenbank aufgezeichnet sind.
 
-Wenn diese Sicherung oder eine der Sicherungen auf dem Server (wenn `All Backups` ausgewählt ist) überfällig ist, wird eine Meldung unter der Zusammenfassung angezeigt.
+Wenn diese Sicherung oder eine der Sicherungen auf dem Server (wenn **Alle Sicherungen** ausgewählt ist) überfällig ist, wird eine Meldung unter der Zusammenfassung angezeigt.
 
 ![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
 
-Klicken Sie auf <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Konfigurieren"/>, um zu [`Einstellungen → Überfällige Überwachung`](settings/overdue-settings.md) zu gelangen. Oder klicken Sie auf <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> in der Symbolleiste, um die Weboberfläche des Duplicati-Servers zu öffnen und die Protokolle zu prüfen.
+Klicken Sie auf <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Konfigurieren"/>, um zu [Einstellungen → Sicherungsüberwachung](settings/backup-monitoring-settings.md) zu wechseln. Oder klicken Sie auf <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> in der Symbolleiste, um die Weboberfläche des Duplicati-Servers zu öffnen und die Protokolle zu prüfen.
 
 <br/>
 
@@ -44,17 +44,17 @@ Diese Tabelle listet die Sicherungsprotokolle für den ausgewählten Server auf.
 - **Verfügbare Versionen**: Anzahl der verfügbaren Sicherungsversionen am Sicherungsziel. Wenn das Symbol ausgegraut ist, wurden detaillierte Informationen nicht empfangen.
 - **Dateianzahl, Dateigröße, Hochgeladene Größe, Dauer, Speichergröße**: Werte wie vom Duplicati-Server gemeldet.
 
-:::tip Tipps
-• Verwenden Sie das Dropdown-Menü im Abschnitt **Sicherungsverlauf**, um `alle Sicherungen` oder eine bestimmte Sicherung für diesen Server auszuwählen.
+:::tip Tips
+• Verwenden Sie das Dropdown-Menü im Abschnitt **Sicherungsverlauf**, um **Alle Sicherungen** oder eine bestimmte Sicherung für diesen Server auszuwählen.
 
 • Sie können jede Spalte sortieren, indem Sie auf ihre Kopfzeile klicken. Klicken Sie erneut, um die Sortierreihenfolge umzukehren.
  
 • Klicken Sie auf eine beliebige Stelle in einer Zeile, um die [Sicherungsdetails](#backup-details) anzuzeigen.
 
-::: 
+:::
 
 :::note
-Wann `alle Sicherungen` ausgewählt ist, zeigt die Liste alle Sicherungen, die standardmäßig von der neuesten zur ältesten sortiert sind.
+Wenn **Alle Sicherungen** ausgewählt ist, zeigt die Liste alle Sicherungen standardmäßig von neuesten zu ältesten geordnet an.
 :::
 
 <br/>

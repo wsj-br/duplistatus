@@ -16,7 +16,7 @@ The page includes a **Template Language** selector that sets the locale for defa
 
 ## Template Language {#template-language}
 
-A **Template Language** selector at the top of the page lets you choose the language for default templates (English, German, French, Spanish, Portuguese (Brazil)). Changing the language updates the locale for defaults, but existing customized templates keep their current text until you update them or use one of the reset buttons.
+A **Template Language** selector at the top of the page lets you choose the language for default templates (English, German, French, Spanish, Portuguese). Changing the language updates the locale for defaults, but existing customized templates keep their current text until you update them or use one of the reset buttons.
 
 <br/>
 

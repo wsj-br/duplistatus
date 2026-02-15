@@ -10,20 +10,20 @@
 
 ### Manual Collection {#manual-collection}
 
-1.  Click the <IconButton icon="lucide:download" /> `Collect Backup Logs` icon on the [Application Toolbar](overview#application-toolbar).
+1.  Click the <IconButton icon="lucide:download" /> **Collect Backup Logs** icon on the [Application Toolbar](overview#application-toolbar).
 
 ![Collect Backup Logs Popup](../assets/screen-collect-button-popup.png)
 
 2.  Select Server
 
-    If you have server addresses configured in `Settings → Server Settings`, select one from the dropdown list for instant collection. If you don't have any servers configured, you can enter the Duplicati server details manually.
+    If you have server addresses configured in [Settings → Server Settings](settings/server-settings.md), select one from the dropdown list for instant collection. If you don't have any servers configured, you can enter the Duplicati server details manually.
 
 3.  Enter the Duplicati server details:
     - **Hostname**: The hostname or IP address of the Duplicati server. You can enter multiple hostnames separated by commas, for example `192.168.1.23,someserver.local,192.168.1.89`
     - **Port**: The port number used by the Duplicati server (default: `8200`).
     - **Password**: Enter the authentication password if required.
     - **Download collected JSON data**: Enable this option to download the data collected by duplistatus.
-4.  Click `Collect Backups`.
+4.  Click **Collect Backups**.
 
 ***Notes:***
 - If you enter multiple hostnames, the collection will be performed using the same port and password for all servers.
@@ -31,7 +31,7 @@
 
 
 :::tip
-<IconButton icon="lucide:download" /> buttons are available in `Settings → Overdue Monitoring` and `Settings → Server Settings` for single-server collection.
+<IconButton icon="lucide:download" /> buttons are available in [Settings → Backup Monitoring](settings/backup-monitoring-settings.md) and [Settings → Server Settings](settings/server-settings.md) for single-server collection.
 :::
 
 
@@ -40,19 +40,19 @@
 
 ### Bulk Collection {#bulk-collection}
 
-_Right-click_ the <IconButton icon="lucide:download" /> `Collect Backup Logs` button in the application toolbar to collect from all configured servers.
+_Right-click_ the <IconButton icon="lucide:download" /> **Collect Backup Logs** button in the application toolbar to collect from all configured servers.
 
 ![Collect All Right-Click Menu](../assets/screen-collect-button-right-click-popup.png)
 
 :::tip
-You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the `Settings → Overdue Monitoring` and `Settings → Server Settings` pages to collect from all configured servers.
+You can also use the <IconButton icon="lucide:import" label="Collect All"/> button in the [Settings → Backup Monitoring](settings/backup-monitoring-settings.md) and [Settings → Server Settings](settings/server-settings.md) pages to collect from all configured servers.
 :::
 
 
 ## How the Collection Process Works {#how-the-collection-process-works}
 
 - **duplistatus** automatically detects the best connection protocol and connects to the specified Duplicati server.
-- It retrieves backup history, log information, and backup settings (for overdue monitoring).
+- It retrieves backup history, log information, and backup settings (for backup monitoring).
 - Any logs already present in the **duplistatus** database are skipped.
 - New data is processed and stored in the local database.
 - The URL used (with the detected protocol) will be stored or updated in the local database.

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:45.476Z'
-source_file_mtime: '2026-02-06T21:13:37.635Z'
-source_file_hash: badfc81088d24eed
+translation_last_updated: '2026-02-15T20:57:40.219Z'
+source_file_mtime: '2026-02-15T16:25:07.956Z'
+source_file_hash: 4f631551c203abfa
 translation_language: es
 source_file_path: installation/installation.md
 ---
@@ -66,7 +66,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/London
-      - LANG=en_GB
       - PWD_ENFORCE=true
       - PWD_MIN_LEN=8
     ports:
@@ -260,9 +259,9 @@ podman pod rm -f duplistatus-pod
 ## Configuración Esencial {#essential-configuration}
 
 1. Configure sus [servidores Duplicati](duplicati-server-configuration.md) para enviar mensajes de logs de backup a duplistatus (requerido).
-2. Inicie sesión en duplistatus – consulte las instrucciones en la [Guía del Usuario](../user-guide/overview.md#accessing-the-dashboard).
-3. Recopile logs de backup iniciales – utilice la función [Recopilar logs de backup](../user-guide/collect-backup-logs.md) para completar la base de datos con datos históricos de backup de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backups retrasados según la configuración de cada servidor.
-4. Configure los ajustes del servidor – configure alias de servidor y notas en [Configuración → Servidor](../user-guide/settings/server-settings.md) para hacer su panel de control más informativo.
+2. Inicie sesión en duplistatus – consulte las instrucciones en la [Guía del usuario](../user-guide/overview.md#accessing-the-dashboard).
+3. Recopile logs de backup iniciales – utilice la función [Recopilar logs de backup](../user-guide/collect-backup-logs.md) para completar la base de datos con datos históricos de backup de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backup según la configuración de cada servidor.
+4. Configure los ajustes del servidor – establezca alias de servidor y notas en [Configuración → Servidor](../user-guide/settings/server-settings.md) para que su panel de control sea más informativo.
 5. Configure los ajustes de NTFY – configure notificaciones a través de NTFY en [Configuración → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configure los ajustes de correo electrónico – configure notificaciones por correo electrónico en [Configuración → Correo electrónico](../user-guide/settings/email-settings.md).
 7. Configure las notificaciones de backup – configure notificaciones por backup o por servidor en [Configuración → Notificaciones de backup](../user-guide/settings/backup-notifications-settings.md).

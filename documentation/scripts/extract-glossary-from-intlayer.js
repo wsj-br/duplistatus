@@ -13,7 +13,7 @@ const path = require('path');
 
 // Language mapping
 const LANG_MAP = {
-  'en': 'en',
+  'en': 'en-GB',
   'de': 'de',
   'fr': 'fr',
   'es': 'es',
@@ -259,7 +259,7 @@ function extractAllTerms(dictionaries) {
     const translations = dict.content?.translation || {};
     
     // Extract terms from English first to get the structure
-    const enTerms = extractTerms(translations.en || {});
+    const enTerms = extractTerms(translations['en-GB'] || {});
     
     for (const [key, enValue] of Object.entries(enTerms)) {
       // Check if we should include this term (now includes ALL UI elements)

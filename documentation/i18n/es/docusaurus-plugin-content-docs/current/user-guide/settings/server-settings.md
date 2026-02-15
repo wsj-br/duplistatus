@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.915Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: d5a3cd822d80561c
+translation_last_updated: '2026-02-15T20:57:42.579Z'
+source_file_mtime: '2026-02-14T22:23:43.397Z'
+source_file_hash: d44a1138f5ac3300
 translation_language: es
 source_file_path: user-guide/settings/server-settings.md
 ---
@@ -24,7 +24,7 @@ Puede configurar un nombre alternativo (alias) para sus servidores, una nota par
 
 :::note
 Si la Dirección de interfaz web (URL) no está configurada, el botón <SvgIcon svgFilename="duplicati_logo.svg" /> 
-estará deshabilitado en todas las páginas y el servidor no se mostrará en la lista [`Duplicati Configuration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
+estará deshabilitado en todas las páginas y el servidor no se mostrará en la lista de [Configuración de Duplicati](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/>.
 :::
 
 <br/>

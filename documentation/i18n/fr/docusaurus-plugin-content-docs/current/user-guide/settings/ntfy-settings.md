@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.314Z'
-source_file_mtime: '2026-02-06T20:21:18.353Z'
-source_file_hash: e4822ed3bdf643fb
+translation_last_updated: '2026-02-15T20:57:33.807Z'
+source_file_mtime: '2026-02-14T22:22:22.802Z'
+source_file_hash: faafdd8670f3c3f8
 translation_language: fr
 source_file_path: user-guide/settings/ntfy-settings.md
 ---
@@ -19,8 +19,8 @@ source_file_path: user-guide/settings/ntfy-settings.md
 
 <br/>
 
-Une icône <IIcon2 icon="lucide:message-square" color="green"/> verte à côté de « NTFY » dans la barre latérale signifie que vos paramètres sont valides. Si l'icône est <IIcon2 icon="lucide:message-square" color="yellow"/> jaune, vos paramètres ne sont pas valides.
-Quand la configuration n'est pas valide, les cases à cocher NTFY dans l'onglet [`Notifications de sauvegarde`](backup-notifications-settings.md) seront également grisées.
+Une icône <IIcon2 icon="lucide:message-square" color="green"/> verte à côté de **NTFY** dans la barre latérale signifie que vos paramètres sont valides. Si l'icône est <IIcon2 icon="lucide:message-square" color="yellow"/> jaune, vos paramètres ne sont pas valides.
+Quand la configuration n'est pas valide, les cases à cocher NTFY dans l'onglet [`Notifications de sauvegarde`](backup-notifications-settings.md) seront également désactivées.
 
 ## Actions disponibles {#available-actions}
 
@@ -39,13 +39,11 @@ Vous devez installer l'application NTFY sur votre appareil avant de le configure
 <br/>
 
 :::caution
-Si vous utilisez le serveur public `ntfy.sh` sans jeton d'accès, toute personne connaissant le nom de votre sujet peut afficher vos
-notifications. 
- 
-Pour offrir un certain degré de confidentialité, un sujet aléatoire de 12 caractères est généré, offrant plus de
-3 sextillions (3 000 000 000 000 000 000 000) de combinaisons possibles, ce qui rend difficile la devinette.
+Si vous utilisez le serveur public **ntfy.sh** sans jeton d'accès, quiconque connaissant le nom de votre sujet peut afficher vos notifications.
 
-Pour une sécurité améliorée, envisagez d'utiliser [l'authentification par jeton d'accès](https://docs.ntfy.sh/config/#access-tokens) et [les listes de contrôle d'accès](https://docs.ntfy.sh/config/#access-control-list-acl) pour protéger vos sujets, ou [d'auto-héberger NTFY](https://docs.ntfy.sh/install/#docker) pour un contrôle total.
+Pour offrir un certain degré de confidentialité, un sujet aléatoire de 12 caractères est généré, offrant plus de 3 sextillions (3 000 000 000 000 000 000 000) de combinaisons possibles, ce qui rend difficile la devinette.
+
+Pour une sécurité améliorée, envisagez d'utiliser [l'authentification par jeton d'accès](https://docs.ntfy.sh/config/#access-tokens) et [les listes de contrôle d'accès](https://docs.ntfy.sh/config/#access-control-list-acl) pour protéger vos sujets, ou [auto-héberger NTFY](https://docs.ntfy.sh/install/#docker) pour un contrôle total.
 
 ⚠️ **Vous êtes responsable de la sécurisation de vos sujets NTFY. Veuillez utiliser ce service à votre discrétion.**
 :::

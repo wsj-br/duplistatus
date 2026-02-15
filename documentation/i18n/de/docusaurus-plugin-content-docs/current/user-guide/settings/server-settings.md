@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.571Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: d5a3cd822d80561c
+translation_last_updated: '2026-02-15T20:57:38.287Z'
+source_file_mtime: '2026-02-14T22:23:43.397Z'
+source_file_hash: d44a1138f5ac3300
 translation_language: de
 source_file_path: user-guide/settings/server-settings.md
 ---
@@ -23,7 +23,7 @@ Sie können hier einen alternativen Namen (Alias) für Ihre Server, einen Hinwei
 <br/>
 
 :::note
-Wenn die Web-Interface-Adresse (URL) nicht konfiguriert ist, wird die <SvgIcon svgFilename="duplicati_logo.svg" /> Schaltfläche auf allen Seiten deaktiviert und der Server wird nicht in der [`Duplicati-Konfiguration`](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/> Liste angezeigt.
+Wenn die Web-Interface-Adresse (URL) nicht konfiguriert ist, wird die Schaltfläche <SvgIcon svgFilename="duplicati_logo.svg" /> auf allen Seiten deaktiviert und der Server wird nicht in der Liste [Duplicati-Konfiguration](../duplicati-configuration.md) <SvgButton svgFilename="duplicati_logo.svg" href="../duplicati-configuration"/> angezeigt.
 :::
 
 <br/>

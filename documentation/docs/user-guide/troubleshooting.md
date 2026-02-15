@@ -31,7 +31,7 @@ If you see Duplicati server warnings like `HTTP Response request failed for:` an
 
 If notifications are not being sent or received:
 
-- **Check NTFY Configuration**: Ensure the NTFY URL and topic are correct. Use the `Send Test Notification` button to test.
+- **Check NTFY Configuration**: Ensure the NTFY URL and topic are correct. Use the **Send Test Notification** button to test.
 - **Check Network Connectivity**: Verify that **duplistatus** can reach your NTFY server. Review firewall settings if applicable.
 - **Check Notification Settings**: Confirm that notifications are enabled for the relevant backups.
 
@@ -45,8 +45,8 @@ If backup versions are not shown on the dashboard or details page:
 
 If overdue backup notifications are not being sent:
 
-- **Check Overdue Configuration**: Confirm that overdue monitoring is enabled for the backup. Verify the expected interval and tolerance settings.
-- **Check Notification Frequency**: If set to `One time`, alerts are only sent once per overdue event.
+- **Check Overdue Configuration**: Confirm that backup monitoring is enabled for the backup. Verify the expected interval and tolerance settings.
+- **Check Notification Frequency**: If set to **One time**, alerts are only sent once per overdue event.
 - **Check Cron Service**: Ensure the cron service that monitors for overdue backups is running correctly. Check the application logs for errors. Verify the cron service is accessible at the configured port (default: `8667`).
 
 ### Collect Backup Logs Not Working {#collect-backup-logs-not-working}
@@ -86,8 +86,8 @@ If you've lost your administrator password or been locked out of your account:
 When migrating from previous versions or creating a database backup:
 
 **If you're running version 1.2.1 or later:**
-- Use the built-in database backup function in `Settings → Database Maintenance`
-- Select your preferred format (.db or .sql) and click `Download Backup`
+- Use the built-in database backup function in [Settings → Database Maintenance](user-guide/settings/database-maintenance.md)
+- Select your preferred format (.db or .sql) and click **Download Backup**
 - The backup file will be downloaded to your computer
 - See [Database Maintenance](settings/database-maintenance.md#database-backup) for detailed instructions
 

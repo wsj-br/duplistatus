@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-02-14T04:57:49.903Z'
-source_file_mtime: '2026-01-25T02:45:42.746Z'
-source_file_hash: 42ca049a94e01f4c
+translation_last_updated: '2026-02-15T20:57:44.756Z'
+source_file_mtime: '2026-02-15T20:27:31.910Z'
+source_file_hash: 7de89d625f466245
 translation_language: pt-BR
 source_file_path: migration/api-changes.md
 ---
-# Mudanças Quebradas da API {#api-breaking-changes}
+# Mudanças de API incompatíveis com versões anteriores {#api-breaking-changes}
 
 Este documento descreve mudanças significativas nos endpoints da API externa em diferentes versões do duplistatus. Os endpoints da API externa são aqueles projetados para uso por outras aplicações e integrações (por exemplo, integração de Homepage).
 

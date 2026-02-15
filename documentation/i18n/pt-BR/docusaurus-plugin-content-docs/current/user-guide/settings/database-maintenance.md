@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.614Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: a4bbad9704b474dc
+translation_last_updated: '2026-02-15T20:57:46.741Z'
+source_file_mtime: '2026-02-14T22:10:59.908Z'
+source_file_hash: 462b7eda950bd23d
 translation_language: pt-BR
 source_file_path: user-guide/settings/database-maintenance.md
 ---
@@ -17,12 +17,12 @@ Gerencie seus dados de backup e otimize o desempenho através de operações de 
 
 Crie um backup de todo o seu banco de dados para salvaguarda ou fins de migração.
 
-1.  Navegue para `Settings → Database Maintenance`.
+1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
 2.  Na seção **Backup do banco de dados**, selecione um formato de backup:
     - **Arquivo de banco de dados (.db)**: Formato binário - backup mais rápido, preserva exatamente toda a estrutura do banco de dados
     - **Dump SQL (.sql)**: Formato de texto - instruções SQL legíveis por humanos, podem ser editadas antes da restauração
 3.  Clique em <IconButton icon="lucide:download" label="Baixar backup" />.
-4.  O arquivo de backup será baixado no seu computador com um nome de arquivo com timestamp.
+4.  O arquivo de backup será baixado para seu computador com um nome de arquivo com timestamp.
 
 **Formatos de Backup:**
 
@@ -41,10 +41,10 @@ Crie um backup de todo o seu banco de dados para salvaguarda ou fins de migraç�
 
 Restaure seu banco de dados a partir de um arquivo de backup criado anteriormente.
 
-1.  Navegue até `Settings → Database Maintenance`.
+1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
 2.  Na seção **Restauração do banco de dados**, clique na entrada de arquivo e selecione um arquivo de backup:
     - Formatos suportados: `.db`, `.sql`, `.sqlite`, `.sqlite3`
-    - Tamanho máximo dos arquivos: 100MB
+    - Tamanho máximo de arquivo: 100MB
 3.  Clique em <IconButton icon="lucide:upload" label="Restaurar banco de dados" />.
 4.  Confirme a ação na caixa de diálogo.
 
@@ -92,7 +92,7 @@ Se você excluir dados acidentalmente, poderá restaurá-los usando o recurso [C
 
 Remova registros de backup desatualizados para liberar espaço de armazenamento e melhorar o desempenho do sistema.
 
-1.  Navegue até `Configurações → Manutenção de banco de dados`.
+1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
 2.  Escolha um período de retenção:
     - **6 meses**: Reter registros dos últimos 6 meses.
     - **1 ano**: Reter registros do último ano.
@@ -120,8 +120,8 @@ Selecionar a opção "Excluir todos os dados" irá **remover permanentemente tod
 
 Remover dados de um Backup Job (tipo) específico.
 
-1.  Navegue até `Settings → Database Maintenance`.
-2.  Selecione um Trabalho de Backup na lista suspensa.
+1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
+2.  Selecione um trabalho de backup na lista suspensa.
     - Os backups serão ordenados por apelido do servidor ou nome, depois pelo nome do backup.
 3.  Clique em <IconButton icon="lucide:folder-open" label="Excluir trabalho de backup" />.
 4.  Confirme a ação na caixa de diálogo.
@@ -138,7 +138,7 @@ Remover dados de um Backup Job (tipo) específico.
 
 Remover um servidor específico e todos os seus dados de backup associados.
 
-1.  Navegue para `Settings → Database Maintenance`.
+1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
 2.  Selecione um servidor na lista suspensa.
 3.  Clique em <IconButton icon="lucide:server" label="Excluir dados do servidor" />.
 4.  Confirme a ação na caixa de diálogo.
@@ -157,12 +157,12 @@ Detectar e mesclar servidores duplicados que têm o mesmo nome, mas IDs diferent
 
 Isso pode ocorrer quando o `machine-id` do Duplicati muda após uma atualização ou reinstalação. Servidores duplicados são exibidos apenas quando existem. Se nenhum duplicado for detectado, a seção exibirá uma mensagem indicando que todos os servidores têm nomes únicos.
 
-1.  Navegue até `Settings → Database Maintenance`.
-2.  Se servidores duplicados forem detectados, uma seção **Mesclar servidores duplicados** será exibida.
+1.  Navegue para [Configurações → Manutenção do banco de dados](database-maintenance.md).
+2.  Se servidores duplicados forem detectados, uma seção **Mesclar servidores duplicados** aparecerá.
 3.  Revise a lista de grupos de servidores duplicados:
     - Cada grupo mostra servidores com o mesmo nome, mas IDs diferentes
-    - O **Servidor de Destino** (mais recente pela data de criação) é destacado
-    - **IDs de Servidores Antigos** que serão mesclados são listados separadamente
+    - O **Servidor de destino** (mais recente pela data de criação) é destacado
+    - **IDs de servidores antigos** que serão mesclados são listados separadamente
 4.  Selecione os grupos de servidores que deseja mesclar marcando a caixa de seleção ao lado de cada grupo.
 5.  Clique em <IconButton icon="lucide:git-merge" label="Mesclar servidores selecionados" />.
 6.  Confirme a ação na caixa de diálogo.

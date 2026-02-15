@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:37.216Z'
-source_file_mtime: '2026-02-06T22:18:56.325Z'
-source_file_hash: 260a67f2593d936a
+translation_last_updated: '2026-02-15T20:57:31.533Z'
+source_file_mtime: '2026-02-15T18:34:41.602Z'
+source_file_hash: 65a8594207f730f7
 translation_language: fr
 source_file_path: intro.md
 ---
@@ -11,15 +11,15 @@ source_file_path: intro.md
 
 ## Fonctionnalités {#features}
 
-- **Configuration Rapide** : Déploiement conteneurisé simple, avec des images disponibles sur Docker Hub et GitHub.
-- **Tableau de bord Unifié** : Visualisez le statut, l'historique et les détails des sauvegardes pour tous les serveurs en un seul endroit.
-- **Surveillance des Sauvegardes en Retard** : Vérification et alerte automatiques pour les sauvegardes planifiées en retard.
-- **Visualisation de Données et Journaux** : Graphiques interactifs et collecte automatique des journaux à partir des serveurs Duplicati.
-- **Notifications et Alertes** : Prise en charge intégrée de NTFY et des e-mails SMTP pour les alertes de sauvegarde, y compris les notifications de sauvegardes en retard.
-- **Contrôle d'Accès et Sécurité des Utilisateurs** : Système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (rôles Admin/Utilisateur), politiques de mot de passe configurables, protection contre le verrouillage de compte et gestion complète des utilisateurs.
-- **Journalisation d'Audit** : Piste d'audit complète de tous les changements système et actions utilisateur avec filtrage avancé, capacités d'exportation et périodes de conservation configurables.
-- **Visualiseur de Journaux d'Application** : Interface réservée à l'admin pour visualiser, rechercher et exporter les journaux d'application directement depuis l'interface web avec des capacités de surveillance en temps réel.
-- **Support Multilingue** : Interface et documentation disponibles en anglais, français, allemand, espagnol et portugais brésilien.
+- **Configuration rapide** : Déploiement simple en conteneur, avec des images disponibles sur Docker Hub et GitHub.
+- **Tableau de bord unifié** : Affichage du statut de sauvegarde, de l'historique et des détails pour tous les serveurs en un seul endroit.
+- **Surveillance des sauvegardes** : Vérification automatisée et alertes pour les sauvegardes planifiées en retard.
+- **Visualisation des données et journaux** : Graphiques interactifs et collecte automatique des journaux à partir des serveurs Duplicati.
+- **Notifications et alertes** : Support intégré de NTFY et SMTP pour les alertes de sauvegarde, y compris les notifications de sauvegardes en retard.
+- **Contrôle d'accès utilisateur et sécurité** : Système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (rôles Admin/Utilisateur), politiques de mot de passe configurables, protection contre le verrouillage de compte et gestion complète des utilisateurs.
+- **Journalisation d'audit** : Piste d'audit complète de tous les changements système et actions utilisateur avec filtrage avancé, capacités d'export et périodes de rétention configurables.
+- **Visualiseur de journaux d'application** : Interface réservée aux administrateurs pour afficher, rechercher et exporter les journaux d'application directement depuis l'interface web avec capacités de surveillance en temps réel.
+- **Support multilingue** : Interface et documentation disponibles en anglais, français, allemand, espagnol et portugais brésilien.
 
 ## Installation {#installation}
 
@@ -80,12 +80,12 @@ Ce projet a été principalement développé avec l'aide de l'IA. Pour en savoir
 - Icône SVG GitHub de https://github.com/logos
 
 :::note
- Tous les noms de produits, logos et marques déposées sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à des fins d'identification uniquement et n'impliquent pas d'approbation.
- :::
+ Tous les noms de produits, logos et marques commerciales sont la propriété de leurs propriétaires respectifs. Les icônes et les noms sont utilisés à des fins d'identification uniquement et n'impliquent pas une approbation.
+:::
 
 
 ## Licence {#license}
 
 Le projet est sous licence [Apache License 2.0](LICENSE.md).   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**

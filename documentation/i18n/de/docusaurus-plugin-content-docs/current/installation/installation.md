@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:41.203Z'
-source_file_mtime: '2026-02-06T21:13:37.635Z'
-source_file_hash: badfc81088d24eed
+translation_last_updated: '2026-02-15T20:57:35.781Z'
+source_file_mtime: '2026-02-15T16:25:07.956Z'
+source_file_hash: 4f631551c203abfa
 translation_language: de
 source_file_path: installation/installation.md
 ---
@@ -66,7 +66,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/London
-      - LANG=en_GB
       - PWD_ENFORCE=true
       - PWD_MIN_LEN=8
     ports:
@@ -259,9 +258,9 @@ podman pod rm -f duplistatus-pod
 
 ## Wesentliche Konfiguration {#essential-configuration}
 
-1. Konfigurieren Sie Ihre [Duplicati-Server](duplicati-server-configuration.md) so, dass Sicherungsprotokolle an duplistatus gesendet werden (erforderlich).
+1. Konfigurieren Sie Ihre [Duplicati-Server](duplicati-server-configuration.md), um Backup-Protokollnachrichten an duplistatus zu senden (erforderlich).
 2. Melden Sie sich bei duplistatus an – siehe Anweisungen im [Benutzerhandbuch](../user-guide/overview.md#accessing-the-dashboard).
-3. Sammeln Sie erste Sicherungsprotokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](../user-guide/collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Überwachungsintervalle überfälliger Sicherungen basierend auf der Konfiguration jedes Servers.
+3. Sammeln Sie erste Backup-Protokolle – verwenden Sie die Funktion [Backup-Protokolle sammeln](../user-guide/collect-backup-logs.md), um die Datenbank mit historischen Sicherungsdaten von allen Ihren Duplicati-Servern zu füllen. Dies aktualisiert auch automatisch die Backup-Überwachungsintervalle basierend auf der Konfiguration jedes Servers.
 4. Konfigurieren Sie Server-Einstellungen – richten Sie Server-Aliase und Notizen in [Einstellungen → Server](../user-guide/settings/server-settings.md) ein, um Ihr Dashboard informativer zu gestalten.
 5. Konfigurieren Sie NTFY-Einstellungen – richten Sie Benachrichtigungen über NTFY in [Einstellungen → NTFY](../user-guide/settings/ntfy-settings.md) ein.
 6. Konfigurieren Sie E-Mail-Einstellungen – richten Sie E-Mail-Benachrichtigungen in [Einstellungen → E-Mail](../user-guide/settings/email-settings.md) ein.

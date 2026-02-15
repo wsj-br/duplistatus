@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.624Z'
-source_file_mtime: '2026-02-02T01:09:34.945Z'
-source_file_hash: 761ce0264d6bb8c1
+translation_last_updated: '2026-02-15T20:57:38.342Z'
+source_file_mtime: '2026-02-14T22:22:55.979Z'
+source_file_hash: 024e5533adc1b9d9
 translation_language: de
 source_file_path: user-guide/settings/user-management-settings.md
 ---
@@ -23,7 +23,7 @@ Sie können auf den Bereich Benutzerverwaltung auf zwei Arten zugreifen:
 
 1. **Aus dem Benutzermenü**: Klicken Sie auf <IconButton icon="lucide:user" label="Benutzername" />   in der [Anwendungssymbolleiste](../overview.md#application-toolbar) und wählen Sie "Admin-Benutzer" aus.
 
-2. **Aus Einstellungen**: Klicken Sie auf <IconButton icon="lucide:settings"/> und `Users` in der Seitenleiste der Einstellungen
+2. **Aus Einstellungen**: Klicken Sie auf <IconButton icon="lucide:settings"/> und **Benutzer** in der Einstellungen-Seitenleiste
 
 ## Erstellen eines neuen Benutzers {#creating-a-new-user}
 

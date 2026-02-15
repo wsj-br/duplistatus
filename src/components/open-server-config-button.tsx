@@ -90,7 +90,7 @@ export function OpenServerConfigButton() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, pathname]);
+  }, [toast, pathname, common.ui.error.value, api.errors.failedToLoadServerConnections.value]);
 
   // Fetch server connections when popover opens
   useEffect(() => {

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:47.330Z'
-source_file_mtime: '2026-02-06T21:11:29.339Z'
-source_file_hash: 570227cbd4e2d113
+translation_last_updated: '2026-02-15T20:57:42.003Z'
+source_file_mtime: '2026-02-15T18:43:06.194Z'
+source_file_hash: 35e757492e15c229
 translation_language: es
 source_file_path: user-guide/overview.md
 ---
@@ -29,13 +29,17 @@ Para requisitos previos e instrucciones detalladas de instalación, consulte la 
 Después de la instalación exitosa, acceda a la interfaz web de duplistatus siguiendo estos pasos:
 
 1. Abra su navegador web preferido
-2. Navegue a `http://su-dirección-ip-del-servidor:9666`
-   - Reemplace `su-dirección-ip-del-servidor` con la dirección IP o nombre de host real de su servidor duplistatus
-   - El puerto predeterminado es `9666`
-3. Se le presentará una página de inicio de sesión. Puede seleccionar el idioma de la interfaz en la esquina superior derecha de la página de inicio de sesión, o cuando haya iniciado sesión, a través del menú de usuario (haga clic en su nombre de usuario → Idioma).
-   Use estas credenciales para el primer uso (o después de una actualización de versiones pre-0.9.x):
+2. Navegue a `http://your-server-ip:9666`
+   - Reemplace `your-server-ip` con la dirección IP real o el nombre de host de su servidor duplistatus
+   - El puerto por defecto es `9666`
+3. Se le presentará una página de inicio de sesión.
+
+Utilice estas credenciales para el primer uso (o después de una actualización desde versiones anteriores a 0.9.x):
     - nombre de usuario: `admin`
-    - contraseña: `Duplistatus09` 
+    - contraseña: `Duplistatus09`
+
+Seleccione el idioma de la interfaz de usuario en la esquina superior derecha <IconButton icon="lucide:languages" label="Idioma" />, o en <IconButton icon="lucide:user" label="nombre de usuario" /> después de iniciar sesión (véase más abajo).
+
 4. Después de iniciar sesión, el panel de control principal se mostrará automáticamente (sin datos en el primer uso)
 
 ## Resumen de la Interfaz de Usuario {#user-interface-overview}
@@ -59,7 +63,7 @@ La interfaz de usuario está organizada en varias secciones clave para proporcio
 
 La barra de herramientas de la aplicación proporciona acceso conveniente a funciones y configuración clave, organizada para un flujo de trabajo eficiente.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](/img/duplistatus_toolbar.png)
 
 | Botón | Descripción |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -90,7 +94,7 @@ Al hacer clic en el botón de usuario se abre un menú desplegable con opciones 
 ## Configuración Esencial {#essential-configuration}
 
 1. Configurar sus [servidores Duplicati](../installation/duplicati-server-configuration.md) para enviar mensajes de logs de backup a duplistatus (requerido).
-2. Recopilar logs de backup iniciales – utilice la función [Recopilar logs de backup](collect-backup-logs.md) para rellenar la base de datos con datos históricos de backup de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backups retrasados según la configuración de cada servidor.
+2. Recopilar logs de backup iniciales – utilice la función [Recopilar logs de backup](collect-backup-logs.md) para rellenar la base de datos con datos históricos de backup de todos sus servidores Duplicati. Esto también actualiza automáticamente los intervalos de monitoreo de backup según la configuración de cada servidor.
 3. Configurar ajustes del servidor – configure alias de servidor y notas en [Configuración → Servidor](settings/server-settings.md) para que su panel de control sea más informativo.
 4. Configurar ajustes de NTFY – configure notificaciones a través de NTFY en [Configuración → NTFY](settings/ntfy-settings.md).
 5. Configurar ajustes de correo electrónico – configure notificaciones por correo electrónico en [Configuración → Correo electrónico](settings/email-settings.md).

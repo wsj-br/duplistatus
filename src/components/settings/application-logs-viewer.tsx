@@ -206,7 +206,7 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         setLoading(false);
       }
     }
-  }, [selectedFile, tail, toast, autoScroll, baseLogFileName, isCurrentFile]);
+  }, [selectedFile, tail, toast, autoScroll, baseLogFileName, isCurrentFile, common.status.error, content.fileMismatch]);
 
   // Initial load and when filters change
   useEffect(() => {

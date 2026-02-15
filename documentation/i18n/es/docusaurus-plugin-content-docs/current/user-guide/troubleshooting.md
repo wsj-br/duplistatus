@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:48.089Z'
-source_file_mtime: '2026-02-01T03:16:19.470Z'
-source_file_hash: ccb921e081ad2c50
+translation_last_updated: '2026-02-15T20:57:42.723Z'
+source_file_mtime: '2026-02-14T22:26:39.674Z'
+source_file_hash: e98421b0542e0de6
 translation_language: es
 source_file_path: user-guide/troubleshooting.md
 ---
@@ -36,9 +36,9 @@ Si ve advertencias del servidor Duplicati como `HTTP Response request failed for
 
 Si las notificaciones no se están enviando o recibiendo:
 
-- **Verificar Configuración NTFY**: Asegúrese de que la URL NTFY y el tema sean correctos. Utilice el botón `Enviar notificación de prueba` para probar.
-- **Verificar Conectividad de Red**: Verifique que **duplistatus** pueda alcanzar su servidor NTFY. Revise la configuración del firewall si es aplicable.
-- **Verificar Configuración de notificaciones**: Confirme que las notificaciones estén habilitadas para los backups relevantes.
+- **Verificar configuración NTFY**: Asegúrese de que la URL NTFY y el tema sean correctos. Utilice el botón **Enviar notificación de prueba** para probar.
+- **Verificar conectividad de red**: Verifique que **duplistatus** pueda alcanzar su servidor NTFY. Revise la configuración del firewall si es aplicable.
+- **Verificar configuración de notificaciones**: Confirme que las notificaciones estén habilitadas para los backups relevantes.
 
 ### Versiones disponibles no aparecen {#available-versions-not-appearing}
 
@@ -50,9 +50,9 @@ Si las versiones de backup no se muestran en el panel de control o en la página
 
 Si las notificaciones de backup retrasado no se están enviando:
 
-- **Verificar Configuración de retrasos**: Confirmar que el Monitoreo de backups retrasados esté Habilitado para el backup. Verificar el Intervalo esperado y la configuración de Tolerancia.
-- **Verificar Frecuencia de notificaciones**: Si se establece en `One time`, las Alertas se envían solo una vez por evento retrasado.
-- **Verificar Cron Service**: Asegurar que el cron service que monitorea los Backups retrasados se está ejecutando correctamente. Verificar los Logs de aplicación para Errores. Verificar que el cron service sea accesible en el Puerto configurado (Por defecto: `8667`).
+- **Verificar configuración de retrasos**: Confirme que la supervisión de backups esté habilitada para el backup. Verifique la configuración del intervalo esperado y la tolerancia.
+- **Verificar frecuencia de notificaciones**: Si está configurado como **Una vez**, las alertas se envían solo una vez por evento retrasado.
+- **Verificar servicio cron**: Asegúrese de que el servicio cron que supervisa los backups retrasados se esté ejecutando correctamente. Verifique los logs de aplicación para detectar errores. Verifique que el servicio cron sea accesible en el puerto configurado (por defecto: `8667`).
 
 ### Recopilar logs de backup No Funciona {#collect-backup-logs-not-working}
 
@@ -90,9 +90,9 @@ Si ha perdido su contraseña de administrador o ha sido bloqueado de su cuenta:
 Cuándo migrar desde versiones anteriores o crear un backup de base de datos:
 
 **Si está ejecutando la versión 1.2.1 o posterior:**
-- Utilice la función de backup de base de datos integrada en `Configuración → Mantenimiento de base de datos`
-- Seleccione su formato preferido (.db o .sql) y haga clic en `Descargar Backup`
-- El archivo de backup será descargado a su equipo
+- Utilice la función de backup de base de datos integrada en [Configuración → Mantenimiento de base de datos](user-guide/settings/database-maintenance.md)
+- Seleccione su formato preferido (.db o .sql) y haga clic en **Descargar backup**
+- El archivo de backup se descargará en su computadora
 - Consulte [Mantenimiento de base de datos](settings/database-maintenance.md#database-backup) para obtener instrucciones detalladas
 
 **Si está ejecutando una versión anterior a 1.2.1:**

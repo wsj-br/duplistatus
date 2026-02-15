@@ -56,14 +56,14 @@ export default {
           es: 'Notificaciones de backup', 
           'pt-BR': 'Notificações de backup' 
         }),
-        overdueMonitoring: t({ 
-          en: 'Overdue Monitoring',
-          de: 'Überfälligkeitsüberwachung',
-          fr: 'Suivi des retards', 
-          es: 'Monitor de atrasos', 
-          'pt-BR': 'Monitoramento de atrasos' 
+        backupMonitoring: t({ 
+          en: "Backup Monitoring", 
+          de: "Backup-Überwachung", 
+          fr: "Surveillance des sauvegardes", 
+          es: "Monitoreo de backups", 
+          "pt-BR": "Monitoramento de backups"
         }),
-        templates: t({ 
+        templates: t({
           en: 'Templates', 
           de: 'Vorlagen', 
           fr: 'Modèles', 

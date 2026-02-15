@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.321Z'
-source_file_mtime: '2026-02-06T21:11:29.339Z'
-source_file_hash: 570227cbd4e2d113
+translation_last_updated: '2026-02-15T20:57:46.348Z'
+source_file_mtime: '2026-02-15T18:43:06.194Z'
+source_file_hash: 35e757492e15c229
 translation_language: pt-BR
 source_file_path: user-guide/overview.md
 ---
@@ -28,14 +28,18 @@ Para pré-requisitos e instruções detalhadas de instalação, consulte o [Guia
 
 Após a instalação bem-sucedida, acesse a interface web do duplistatus seguindo estas etapas:
 
-1. Abra seu navegador web preferido
-2. Navegue para `http://seu-endereço-ip-do-servidor:9666`
-   - Substitua `seu-endereço-ip-do-servidor` pelo endereço IP ou nome do host real do seu servidor duplistatus
+1. Abra seu navegador da web preferido
+2. Navegue para `http://your-server-ip:9666`
+   - Substitua `your-server-ip` pelo endereço IP ou nome do host real do seu servidor duplistatus
    - A porta padrão é `9666`
-3. Você será direcionado para uma página de login. Você pode selecionar o idioma da interface no canto superior direito da página de login, ou quando estiver conectado, através do menu do usuário (clique no seu nome de usuário → Idioma).
-   Use estas credenciais para o primeiro uso (ou após uma atualização de versões pré-0.9.x):
+3. Você será apresentado com uma página de login.
+
+Use estas credenciais para o primeiro uso (ou após uma atualização de versões anteriores a 0.9.x):
     - nome de usuário: `admin`
-    - senha: `Duplistatus09` 
+    - senha: `Duplistatus09`
+
+Selecione o idioma da interface do usuário no canto superior direito <IconButton icon="lucide:languages" label="Idioma" />, ou em <IconButton icon="lucide:user" label="nome de usuário" /> após o login (veja abaixo).
+
 4. Após o login, o painel principal será exibido automaticamente (sem dados no primeiro uso)
 
 ## Visão Geral da Interface do Usuário {#user-interface-overview}
@@ -59,7 +63,7 @@ A interface do usuário é organizada em várias seções principais para propor
 
 A barra de ferramentas da aplicação fornece acesso conveniente às funções e configurações principais, organizada para um fluxo de trabalho eficiente.
 
-![Application toolbar](../assets/duplistatus_toolbar.png)
+![Application toolbar](/img/duplistatus_toolbar.png)
 
 | Botão                                                                                                                                           | Descrição                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -90,9 +94,9 @@ Clicar no botão de usuário abre um menu suspenso com opções específicas do 
 ## Configuração Essencial {#essential-configuration}
 
 1. Configure seus [servidores Duplicati](../installation/duplicati-server-configuration.md) para enviar mensagens de log de backup para duplistatus (obrigatório).
-2. Coletar logs de backup iniciais – use o recurso [Coletar logs de backup](collect-backup-logs.md) para popular o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backups atrasados com base na configuração de cada servidor.
-3. Configurar configurações do servidor – configure aliases de servidor e notas em [Configurações → Servidor](settings/server-settings.md) para tornar seu painel mais informativo.
-4. Configurar configurações de NTFY – configure notificações via NTFY em [Configurações → NTFY](settings/ntfy-settings.md).
+2. Coletar logs de backup iniciais – use o recurso [Coletar logs de backup](collect-backup-logs.md) para popular o banco de dados com dados históricos de backup de todos os seus servidores Duplicati. Isso também atualiza automaticamente os intervalos de monitoramento de backup com base na configuração de cada servidor.
+3. Configurar configurações do servidor – configure aliases e notas do servidor em [Configurações → Servidor](settings/server-settings.md) para tornar seu painel mais informativo.
+4. Configurar configurações do NTFY – configure notificações via NTFY em [Configurações → NTFY](settings/ntfy-settings.md).
 5. Configurar configurações de e-mail – configure notificações por e-mail em [Configurações → E-mail](settings/email-settings.md).
 6. Configurar notificações de backup – configure notificações por backup ou por servidor em [Configurações → Notificações de backup](settings/backup-notifications-settings.md).
 

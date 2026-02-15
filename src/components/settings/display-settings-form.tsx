@@ -15,7 +15,8 @@ import { Button } from '@/components/ui/button';
 import { useConfig } from '@/contexts/config-context';
 import { useTheme } from '@/contexts/theme-context';
 import type { TablePageSize } from '@/contexts/config-context';
-import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun } from 'lucide-react';
+import type { StartOfWeek } from '@/lib/types';
+import { MonitorCog, Table, BarChart3, RefreshCw, SortDesc, Moon, Sun, Calendar1 } from 'lucide-react';
 import { ColoredIcon } from '@/components/ui/colored-icon';
 
 export function DisplaySettingsForm() {
@@ -30,6 +31,8 @@ export function DisplaySettingsForm() {
     setAutoRefreshInterval,
     dashboardCardsSortOrder,
     setDashboardCardsSortOrder,
+    startOfWeek,
+    setStartOfWeek,
   } = useConfig();
   
   const { theme, toggleTheme } = useTheme();
@@ -150,6 +153,27 @@ export function DisplaySettingsForm() {
                 <SelectItem value="Server name (a-z)">{content.sortByServerName.value}</SelectItem>
                 <SelectItem value="Status (error>warnings>success)">{content.sortByStatus.value}</SelectItem>
                 <SelectItem value="Last backup received (new>old)">{content.sortByLastBackup.value}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Start of Week */}
+          <div className="grid gap-2">
+            <Label htmlFor="start-of-week" className="flex items-center gap-2">
+              <ColoredIcon icon={Calendar1} color="blue" size="sm" />
+              {content.startOfWeekLabel.value}
+            </Label>
+            <Select
+              value={startOfWeek}
+              onValueChange={(value) => setStartOfWeek(value as StartOfWeek)}
+            >
+              <SelectTrigger id="start-of-week">
+                <SelectValue placeholder={content.startOfWeekPlaceholder.value} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="locale">{content.basedOnLocale.value}</SelectItem>
+                <SelectItem value="sunday">{content.startOfWeekSunday.value}</SelectItem>
+                <SelectItem value="monday">{content.startOfWeekMonday.value}</SelectItem>
               </SelectContent>
             </Select>
           </div>

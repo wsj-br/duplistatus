@@ -221,7 +221,7 @@ export function BackupTooltipContent({
             }}
           >
             <Settings className="h-3 w-3" />
-            <span>{content.overdueConfiguration}</span>
+            <span>{content.backupConfiguration}</span>
           </button>
           <ServerConfigurationButton 
             className="text-xs !p-1" 

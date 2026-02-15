@@ -240,7 +240,7 @@ export function BackupCollectMenu({
     } finally {
       setIsLoadingServers(false);
     }
-  }, [toast, content]);
+  }, [toast, common.ui.error.value, api.errors.failedToLoadServerConnections.value]);
 
   // Parse server URL to extract hostname and port
   const parseServerUrl = (url: string) => {

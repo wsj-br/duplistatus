@@ -38,6 +38,7 @@ function LoginForm() {
   const locale = useLocale();
   const content = useIntlayer('login-page');
   const common = useIntlayer('common');
+  const layoutContent = useIntlayer('conditional-layout');
   const [username, setUsername] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem(REMEMBERED_USERNAME_KEY) || "";
@@ -319,6 +320,17 @@ function LoginForm() {
             </Card>
           )}
         </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex flex-col items-center gap-0.5">
+        <div className="flex items-center gap-6">
+          <AppVersion />
+          <GithubLink />
+        </div>
+        <span className="text-tiny text-muted-foreground text-center mb-4">
+          Copyright &copy; {new Date().getFullYear()} Waldemar Scudeller Jr.
+        </span>
       </div>
 
       <KeyChangedModal

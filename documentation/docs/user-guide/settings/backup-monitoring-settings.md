@@ -1,25 +1,25 @@
 
 
-# Backup Monitoring 
+# Backup Monitoring {#backup-monitoring}
 
-![Backup alerts](../../assets/screen-settings-backup-monitoring.png)
+![Backup alerts](../../assets/screen-settings-monitoring.png)
 
-## Configure Per-Backup Monitoring Settings 
+## Configure Per-Backup Monitoring Settings {#configure-per-backup-monitoring-settings}
 
 -  **Server Name**: The name of the server to monitor for overdue backups. 
    - Click <SvgIcon svgFilename="duplicati_logo.svg" height="18"/> to open the Duplicati server's web interface
    - Click <IIcon2 icon="lucide:download" height="18"/> to collect backup logs from this server.
 - **Backup Name**: The name of the backup to monitor for overdue backups.
 - **Next Run**: The next scheduled backup time displayed in green if scheduled in the future, or in red if overdue. Hovering over the "Next Run" value displays a tooltip showing the last backup timestamp from the database, formatted with full date/time and relative time.
-- **Backup Monitoring**: Enable or disable overdue monitoring for this backup.
+- **Backup Monitoring**: Enable or disable backup monitoring for this backup.
 - **Expected Backup Interval**: The expected backup interval.
 - **Unit**: The unit of the expected interval.
 - **Allowed Days**: The allowed weekdays for the backup.
 
-If the icons on the side of the server name are greyed out, the server is not configured in the [`Settings → Server Settings`](server-settings.md).
+If the icons on the side of the server name are greyed out, the server is not configured in the [Settings → Server Settings](/user-guide/settings/server-settings).
 
 :::note
-When you collect backup logs from a Duplicati server, **duplistatus** automatically updates the overdue monitoring intervals and configurations.
+When you collect backup logs from a Duplicati server, **duplistatus** automatically updates the backup monitoring intervals and configurations.
 :::
 
 :::tip
@@ -32,9 +32,9 @@ These settings apply to all backups:
 
 | Setting                         | Description                                                                                                                                                                                                                                                                                                                             |
 |:--------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Backup Tolerance**            | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is `1 hour`.                                                                                                                                                                                                             |
-| **Backup Monitoring Interval** | How often the system checks for overdue backups. The default is `5 minutes`.                                                                                                                                                                                                                                                            |
-| **Notification Frequency**      | How often to send overdue notifications: <br/> `One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month`: Send **monthly** notifications while overdue. |
+| **Backup Tolerance**            | The grace period (extra time allowed) added to the expected backup time before marking as overdue. The default is **1 hour**.                                                                                                                                                                                                             |
+| **Backup Monitoring Interval** | How often the system checks for overdue backups. The default is **5 minutes**.                                                                                                                                                                                                                                                            |
+| **Notification Frequency**      | How often to send overdue notifications: <br/> **One time`: Send **just one** notification when the backup becomes overdue. <br/> `Every day`: Send **daily** notifications while overdue (default). <br/> `Every week`: Send **weekly** notifications while overdue. <br/> `Every month**: Send **monthly** notifications while overdue. |
 
 ## Available Actions {#available-actions}
 

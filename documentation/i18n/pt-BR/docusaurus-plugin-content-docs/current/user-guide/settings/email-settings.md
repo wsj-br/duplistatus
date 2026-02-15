@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.675Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 4f0c83e8848eb7e7
+translation_last_updated: '2026-02-15T20:57:46.820Z'
+source_file_mtime: '2026-02-14T22:23:43.397Z'
+source_file_hash: c7c041a3840aa396
 translation_language: pt-BR
 source_file_path: user-guide/settings/email-settings.md
 ---
@@ -23,11 +23,11 @@ source_file_path: user-guide/settings/email-settings.md
 | **Endereço do remetente**        | Endereço de e-mail mostrado como remetente. Obrigatório para conexões SMTP simples ou quando a autenticação está desabilitada. O padrão é o nome de usuário SMTP quando a autenticação está habilitada. Observe que alguns provedores de e-mail substituirão o `Endereço do remetente` pelo `Nome de usuário do servidor SMTP`. |
 | **E-mail do destinatário**     | O endereço de e-mail para receber notificações. Deve estar em um formato de endereço de e-mail válido. |
 
-Um ícone <IIcon2 icon="lucide:mail" color="green"/> verde ao lado de `Email` na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:mail" color="yellow"/> amarelo, suas configurações não são válidas ou não estão configuradas.
+Um ícone <IIcon2 icon="lucide:mail" color="green"/> verde ao lado de **E-mail** na barra lateral significa que suas configurações são válidas. Se o ícone for <IIcon2 icon="lucide:mail" color="yellow"/> amarelo, suas configurações não são válidas ou não estão configuradas.
 
 O ícone fica verde quando todos os campos obrigatórios estão definidos: Host do servidor SMTP, Porta do servidor SMTP, E-mail do destinatário, e (Nome de usuário SMTP + Senha quando a autenticação é obrigatória) ou (Endereço do remetente quando a autenticação não é obrigatória).
 
-Quando a configuração não está totalmente configurada, uma caixa de alerta amarela é exibida informando que nenhum e-mail será enviado até que as Configurações de e-mail sejam preenchidas corretamente. As caixas de seleção de E-mail na aba [`Notificações de Backup`](backup-notifications-settings.md) também ficarão acinzentadas e exibirão rótulos "(Desabilitado)".
+Quando a configuração não está totalmente configurada, uma caixa de alerta amarela é exibida informando que nenhum e-mail será enviado até que as configurações de e-mail sejam preenchidas corretamente. As caixas de seleção de E-mail na aba [Notificações de backup](backup-notifications-settings.md) também ficarão acinzentadas e mostrarão rótulos "(Desabilitado)".
 
 <br/>
 
@@ -41,12 +41,12 @@ Quando a configuração não está totalmente configurada, uma caixa de alerta a
 
 <br/>
 
-:::info[IMPORTANTE]
-  Você deve usar o botão <IconButton icon="lucide:mail" label="Enviar e-mail de teste"/> para garantir que sua configuração de e-mail funcione antes de depender dela para notificações.
+:::info[IMPORTANT]
+  Você deve usar o botão <IconButton icon="lucide:mail" label="Enviar e-mail de teste"/> para garantir que sua configuração de e-mail funcione antes de confiar nela para notificações.
 
- Mesmo que você veja um ícone verde <IIcon2 icon="lucide:mail" color="green"/> e tudo pareça configurado, os e-mails podem não ser enviados.
+ Mesmo que você veja um ícone <IIcon2 icon="lucide:mail" color="green"/> verde e tudo pareça configurado, os e-mails podem não ser enviados.
  
- `duplistatus` apenas verifica se suas configurações de SMTP estão preenchidas, não se os e-mails podem realmente ser entregues.
+ **duplistatus** apenas verifica se suas configurações de SMTP estão preenchidas, não se os e-mails podem realmente ser entregues.
 :::
 
 <br/>

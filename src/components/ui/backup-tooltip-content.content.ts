@@ -94,7 +94,7 @@ export default {
       es: 'Esperado:', 
       'pt-BR': 'Esperado:' 
     }),
-    overdueConfiguration: t({ 
+    backupConfiguration: t({ 
       en: 'Overdue configuration', 
       de: 'Überfälligkeitskonfiguration', 
       fr: 'Configuration des retards', 

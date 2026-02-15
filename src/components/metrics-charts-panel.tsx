@@ -504,7 +504,7 @@ function MetricsChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [serverId, backupName, startDate, endDate, toast]);
+  }, [serverId, backupName, startDate, endDate, toast, content.errorLoading.value]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {

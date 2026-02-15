@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.061Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 351747b781a00331
+translation_last_updated: '2026-02-15T20:57:37.762Z'
+source_file_mtime: '2026-02-14T22:20:47.045Z'
+source_file_hash: 4bde5224faa7c371
 translation_language: de
 source_file_path: user-guide/settings/application-logs-settings.md
 ---
@@ -29,10 +29,10 @@ Der Anwendungsprotokoll-Viewer ermöglicht Administratoren, alle Anwendungsproto
 
 | Steuerelement | Beschreibung |
 |:--------|:-----------|
-| **Dateiversion** | Auswählen, welche Protokolldatei angezeigt werden soll: **Aktuell** (aktive Datei) oder rotierte Dateien (`.1`, `.2` usw., wobei höhere Nummern älter sind). |
-| **Anzuzeigende Zeilen** | Zeige die letzten **100**, **500**, **1000** (Standard), **5000** oder **10000** Zeilen aus der ausgewählten Datei an. |
-| **Automatisches Scrollen** | Wenn aktiviert (Standard für aktuelle Datei), wird automatisch zu neuen Protokolleinträgen gescrollt und alle 2 Sekunden aktualisiert. Funktioniert nur für die `Aktuell`-Dateiversion. |
-| **Suchen** | Protokollzeilen nach Text filtern (Groß-/Kleinschreibung wird nicht beachtet). Filter gelten für die aktuell angezeigten Zeilen. |
+| **Dateiversion** | Wählen Sie aus, welche Protokolldatei angezeigt werden soll: **Aktuell** (aktive Datei) oder rotierte Dateien (`.1`, `.2` usw., wobei höhere Nummern älter sind). |
+| **Anzuzeigende Zeilen** | Zeigen Sie die letzten **100**, **500**, **1000** (Standard), **5000** oder **10000** Zeilen aus der ausgewählten Datei an. |
+| **Automatisches Scrollen** | Wenn aktiviert (Standard für aktuelle Datei), wird automatisch zu neuen Protokolleinträgen gescrollt und alle 2 Sekunden aktualisiert. Funktioniert nur für die **Aktuelle** Dateiversion. |
+| **Suchen** | Filtern Sie Protokollzeilen nach Text (Groß-/Kleinschreibung wird nicht beachtet). Filter gelten für die derzeit angezeigten Zeilen. |
 
 <br/>
 

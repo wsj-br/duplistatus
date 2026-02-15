@@ -36,7 +36,7 @@ export type {
   EmailConfigurationFormContent,
   NtfyFormContent,
   NotificationTemplatesFormContent,
-  OverdueMonitoringFormContent,
+  BackupMonitoringFormContent,
   UserManagementFormContent,
   AuditLogViewerContent,
   DatabaseMaintenanceFormContent,

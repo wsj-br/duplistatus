@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-02-14T04:57:45.730Z'
-source_file_mtime: '2026-01-25T02:45:42.746Z'
-source_file_hash: 42ca049a94e01f4c
+translation_last_updated: '2026-02-15T20:57:40.471Z'
+source_file_mtime: '2026-02-15T20:27:31.910Z'
+source_file_hash: 7de89d625f466245
 translation_language: es
 source_file_path: migration/api-changes.md
 ---
-# Cambios Incompatibles de la API {#api-breaking-changes}
+# Cambios de API incompatibles con versiones anteriores {#api-breaking-changes}
 
 Este documento describe los cambios disruptivos en los puntos finales de la API externa en diferentes versiones de duplistatus. Los puntos finales de la API externa son aquellos diseñados para ser utilizados por otras aplicaciones e integraciones (por ejemplo, integración de Homepage).
 

@@ -63,7 +63,7 @@ export function AppHeader() {
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   // Get context-aware help URL and page name
-  const helpInfo = getHelpUrl(pathname, searchParams.toString());
+  const helpInfo = getHelpUrl(pathname, searchParams.toString(), locale);
   const helpTooltip = helpInfo.pageName === 'User Guide' 
     ? common.navigation.help.value
     : common.navigation.helpFor.value.replace('{pageName}', helpInfo.pageName);

@@ -63,7 +63,6 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/London
-      - LANG=en_GB
       - PWD_ENFORCE=true
       - PWD_MIN_LEN=8
     ports:
@@ -255,7 +254,7 @@ podman pod rm -f duplistatus-pod
 
 1. Configure your [Duplicati servers](duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
 2. Log in to duplistatus – see instructions in the [User Guide](../user-guide/overview.md#accessing-the-dashboard).
-3. Collect initial backup logs – use the [Collect Backup Logs](../user-guide/collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
+3. Collect initial backup logs – use the [Collect Backup Logs](../user-guide/collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the backup monitoring intervals based on each server’s configuration.
 4. Configure server settings – set up server aliases and notes in [Settings → Server](../user-guide/settings/server-settings.md) to make your dashboard more informative.
 5. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](../user-guide/settings/ntfy-settings.md).
 6. Configure email settings – set up email notifications in [Settings → Email](../user-guide/settings/email-settings.md).

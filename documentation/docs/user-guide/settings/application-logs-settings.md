@@ -25,7 +25,7 @@ The Application Logs viewer lets administrators monitor all application logs in 
 |:--------|:-----------|
 | **File Version** | Select which log file to view: **Current** (active file) or rotated files (`.1`, `.2`, etc., where higher numbers are older). |
 | **Lines to Show** | Display the most recent **100**, **500**, **1000** (default), **5000**, or **10000** lines from the selected file. |
-| **Auto-scroll** | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the `Current` file version. |
+| **Auto-scroll** | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the **Current** file version. |
 | **Search** | Filter log lines by text (case-insensitive). Filters apply to the currently displayed lines. |
 
 <br/>

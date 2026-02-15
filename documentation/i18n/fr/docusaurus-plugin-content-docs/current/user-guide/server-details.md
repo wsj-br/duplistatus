@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:38.913Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: f469b5229723b21f
+translation_last_updated: '2026-02-15T20:57:33.321Z'
+source_file_mtime: '2026-02-14T22:20:00.667Z'
+source_file_hash: 93fdbf4e891439e9
 translation_language: fr
 source_file_path: user-guide/server-details.md
 ---
@@ -23,11 +23,11 @@ Cette section affiche les statistiques pour toutes les sauvegardes sur le serveu
 - **STOCKAGE TOTAL UTILISÉ** : Stockage utilisé sur la destination de sauvegarde, tel que signalé dans le dernier journal de sauvegarde.
 - **TOTAL TÉLÉVERSÉ** : Somme de tous les données téléversées enregistrées dans la base de données **duplistatus**.
 
-Si cette sauvegarde ou l'une des sauvegardes du serveur (quand « All Backups » est sélectionné) est en retard, un message apparaît sous le résumé.
+Si cette sauvegarde ou l'une des sauvegardes du serveur (quand **Toutes les sauvegardes** est sélectionné) est en retard, un message apparaît sous le résumé.
 
 ![Server Details - Overdue Scheduled Backups](../assets/screen-server-overdue-message.png)
 
-Cliquez sur <IconButton icon="lucide:settings" href="settings/overdue-settings" label="Configurer"/> pour accéder à [`Paramètres → Surveillance en retard`](settings/overdue-settings.md). Ou cliquez sur <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> dans la barre d'outils pour ouvrir l'interface web du serveur Duplicati et vérifier les journaux.
+Cliquez sur le <IconButton icon="lucide:settings" href="settings/backup-monitoring-settings" label="Configurer"/> pour accéder à [Paramètres → Surveillance des sauvegardes](settings/backup-monitoring-settings.md). Ou cliquez sur le <SvgButton SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> dans la barre d'outils pour ouvrir l'interface web du serveur Duplicati et vérifier les journaux.
 
 <br/>
 
@@ -44,17 +44,17 @@ Ce tableau répertorie les journaux de sauvegarde pour le serveur sélectionné.
 - **Versions disponibles** : Le nombre de versions de sauvegarde disponibles sur la destination de sauvegarde. Si l'icône est grisée, les informations détaillées n'ont pas été reçues.
 - **Nombre de fichiers, Taille des fichiers, Taille téléversée, Durée, Taille de stockage** : Valeurs telles que signalées par le serveur Duplicati.
 
-:::tip Conseils
-• Utilisez le menu déroulant dans la section **Historique des sauvegardes** pour sélectionner « Toutes les sauvegardes » ou une sauvegarde spécifique pour ce serveur.
+:::tip Tips
+• Utilisez le menu déroulant dans la section **Historique des sauvegardes** pour sélectionner **Toutes les sauvegardes** ou une sauvegarde spécifique pour ce serveur.
 
 • Vous pouvez trier n'importe quelle colonne en cliquant sur son en-tête, cliquez à nouveau pour inverser l'ordre de tri.
  
 • Cliquez n'importe où sur une ligne pour afficher les [Détails de la sauvegarde](#backup-details).
 
-::: 
+:::
 
 :::note
-Quand « Toutes les sauvegardes » est sélectionné, la liste affiche toutes les sauvegardes ordonnées de la plus récente à la plus ancienne par défaut.
+Quand **Toutes les sauvegardes** est sélectionné, la liste affiche toutes les sauvegardes ordonnées de la plus récente à la plus ancienne par défaut.
 :::
 
 <br/>

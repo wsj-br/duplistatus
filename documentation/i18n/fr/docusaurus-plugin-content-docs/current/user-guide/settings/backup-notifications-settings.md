@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:39.078Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 3916dd789d9d4bf2
+translation_last_updated: '2026-02-15T20:57:33.529Z'
+source_file_mtime: '2026-02-14T22:21:33.554Z'
+source_file_hash: 175a9e765f355f43
 translation_language: fr
 source_file_path: user-guide/settings/backup-notifications-settings.md
 ---
@@ -29,18 +29,18 @@ Utilisez le champ **Filtrer par nom de serveur** en haut de la page pour trouver
 
 ## Configurer les paramètres de notification par sauvegarde {#configure-per-backup-notification-settings}
 
-| Paramètre                     | Description                                               | Valeur par défaut |
+| Paramètre                       | Description                                               | Valeur par défaut |
 | :---------------------------- | :-------------------------------------------------------- | :------------ |
-| **Événements de notification**       | Configurer quand envoyer des notifications pour les nouveaux journaux de sauvegarde. | `Avertissements`    |
-| **NTFY**                      | Activer ou désactiver les notifications NTFY pour cette sauvegarde.     | `Activé`     |
-| **E-mail**                     | Activer ou désactiver les notifications par e-mail pour cette sauvegarde.    | `Activé`    |
+| **Événements de notification**       | Configurer quand envoyer des notifications pour les nouveaux journaux de sauvegarde. | **Avertissements**    |
+| **NTFY**                      | Activer ou désactiver les notifications NTFY pour cette sauvegarde.     | **Activé**     |
+| **E-mail**                     | Activer ou désactiver les notifications par e-mail pour cette sauvegarde.    | **Activé**    |
 
 **Options des Événements de notification :**
 
-- `all`: Envoyer des notifications pour tous les événements de sauvegarde.
-- `warnings`: Envoyer des notifications pour les avertissements et les erreurs uniquement (par défaut).
-- `errors`: Envoyer des notifications pour les erreurs uniquement.
-- `off`: Désactiver les notifications pour les nouveaux journaux de sauvegarde pour cette sauvegarde.
+- **tous** : Envoyer des notifications pour tous les événements de sauvegarde.
+- **avertissements** : Envoyer des notifications pour les avertissements et les erreurs uniquement (par défaut).
+- **erreurs** : Envoyer des notifications pour les erreurs uniquement.
+- **désactivé** : Désactiver les notifications pour les nouveaux journaux de sauvegarde pour cette sauvegarde.
 
 <br/>
 
@@ -64,12 +64,12 @@ Si aucune icône n'est affichée, le serveur ou la sauvegarde n'a pas de destina
 
 Vous pouvez configurer des destinations supplémentaires par défaut au niveau du serveur que toutes les sauvegardes sur ce serveur hériteront automatiquement.
 
-1. Accédez à `Paramètres → Notifications de sauvegarde`.
-2. Le tableau est regroupé par serveur, avec des lignes d'en-tête de serveur distinctes affichant le nom du serveur, l'alias et le nombre de sauvegardes.
-   - **Note** : Pour les serveurs avec une seule sauvegarde, une ligne fusionnée s'affiche à la place d'un en-tête de serveur distinct. Les paramètres par défaut au niveau du serveur ne peuvent pas être configurés directement à partir de lignes fusionnées. Si vous devez configurer les paramètres par défaut du serveur pour un serveur avec une seule sauvegarde, vous pouvez le faire en ajoutant temporairement une autre sauvegarde à ce serveur, ou les Destinations supplémentaires de la sauvegarde hériteront automatiquement de tous les paramètres par défaut du serveur existants.
+1. Accédez à [Paramètres → Notifications de sauvegarde](backup-notifications-settings.md).
+2. Le tableau est groupé par serveur, avec des lignes d'en-tête de serveur distinctes affichant le nom du serveur, l'alias et le nombre de sauvegardes.
+   - **Note** : Pour les serveurs avec une seule sauvegarde, une ligne fusionnée s'affiche à la place d'un en-tête de serveur séparé. Les paramètres par défaut au niveau du serveur ne peuvent pas être configurés directement à partir de lignes fusionnées. Si vous devez configurer les paramètres par défaut du serveur pour un serveur avec une seule sauvegarde, vous pouvez le faire en ajoutant temporairement une autre sauvegarde à ce serveur, ou les destinations supplémentaires de la sauvegarde hériteront automatiquement des paramètres par défaut du serveur existants.
 3. Cliquez n'importe où dans une ligne de serveur pour développer la section **Destinations supplémentaires par défaut pour ce serveur**.
 4. Configurez les paramètres par défaut suivants :
-   - **Événement de notification** : Choisissez les événements qui déclenchent des notifications vers les destinations supplémentaires (`all`, `warnings`, `errors` ou `off`).
+   - **Événement de notification** : Choisissez les événements qui déclenchent des notifications vers les destinations supplémentaires (**tous**, **avertissements**, **erreurs** ou **désactivé**).
    - **E-mails supplémentaires** : Entrez une ou plusieurs adresses e-mail (séparées par des virgules) qui recevront des notifications pour toutes les sauvegardes sur ce serveur. Cliquez sur le bouton d'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer un e-mail de test aux adresses du champ.
    - **Sujet NTFY supplémentaire** : Entrez un nom de sujet NTFY personnalisé où les notifications seront publiées pour toutes les sauvegardes sur ce serveur. Cliquez sur le bouton d'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer une notification de test au sujet, ou cliquez sur le bouton d'icône <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour afficher un code QR du sujet afin de configurer votre appareil pour recevoir des notifications.
 
@@ -84,9 +84,9 @@ Les sauvegardes individuelles héritent automatiquement des paramètres par déf
 
 1. Cliquez n'importe où dans une ligne de sauvegarde pour développer sa section **Destinations supplémentaires**.
 2. Configurez les paramètres suivants :
-   - **Notification event** : Choisissez les événements qui déclenchent des notifications vers les destinations supplémentaires (`all`, `warnings`, `errors`, ou `off`).
-   - **Additional Emails** : Entrez une ou plusieurs adresses e-mail (séparées par des virgules) qui recevront des notifications en plus du destinataire global. Cliquez sur le bouton icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer un e-mail de test aux adresses du champ.
-   - **Additional NTFY Topic** : Entrez un nom de sujet NTFY personnalisé où les notifications seront publiées en plus du sujet par défaut. Cliquez sur le bouton icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer une notification de test au sujet, ou cliquez sur le bouton icône <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour afficher un code QR du sujet afin de configurer votre appareil pour recevoir des notifications.
+   - **Événement de notification** : Choisissez les événements qui déclenchent des notifications vers les destinations supplémentaires (**tous**, **avertissements**, **erreurs** ou **désactivé**).
+   - **E-mails supplémentaires** : Entrez une ou plusieurs adresses e-mail (séparées par des virgules) qui recevront des notifications en plus du destinataire global. Cliquez sur le bouton d'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer un e-mail de test aux adresses du champ.
+   - **Sujet NTFY supplémentaire** : Entrez un nom de sujet NTFY personnalisé où les notifications seront publiées en plus du sujet par défaut. Cliquez sur le bouton d'icône <IconButton icon="lucide:send-horizontal" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour envoyer une notification de test au sujet, ou cliquez sur le bouton d'icône <IconButton icon="lucide:qr-code" style={{border: 'none', padding: 0, color: 'inherit', background: 'transparent'}} /> pour afficher un code QR du sujet afin de configurer votre appareil pour recevoir des notifications.
 
 **Indicateurs d'héritage :**
 
@@ -97,7 +97,7 @@ Les sauvegardes individuelles héritent automatiquement des paramètres par déf
 
 - Les notifications sont envoyées aux paramètres globaux et aux destinations supplémentaires lorsqu'elles sont configurées.
 - Le paramètre d'événement de notification pour les destinations supplémentaires est indépendant du paramètre d'événement de notification principal.
-- Si les destinations supplémentaires sont définies sur `off`, aucune notification ne sera envoyée à ces destinations, mais les notifications principales continueront de fonctionner selon les paramètres principaux.
+- Si les destinations supplémentaires sont définies sur **désactivé**, aucune notification ne sera envoyée à ces destinations, mais les notifications principales fonctionneront toujours selon les paramètres principaux.
 - Quand une sauvegarde hérite des paramètres par défaut du serveur, toute modification des paramètres par défaut du serveur s'appliquera automatiquement à cette sauvegarde (sauf si elle a été remplacée).
 
 <br/>
@@ -108,25 +108,25 @@ Vous pouvez modifier les paramètres de destinations supplémentaires pour plusi
 
 ![Bulk edit dialog](../../assets/screen-settings-notifications-bulk.png)
 
-1. Accédez à `Paramètres → Notifications de sauvegarde`.
+1. Accédez à [Paramètres → Notifications de sauvegarde](backup-notifications-settings.md).
 2. Utilisez les cases à cocher de la première colonne pour sélectionner les sauvegardes ou serveurs que vous souhaitez modifier.
    - Utilisez la case à cocher de la ligne d'en-tête pour sélectionner ou désélectionner toutes les sauvegardes visibles.
    - Vous pouvez utiliser le filtre pour affiner la liste avant de sélectionner.
-3. Une fois les sauvegardes sélectionnées, une barre d'action en masse apparaîtra indiquant le nombre de sauvegardes sélectionnées.
-4. Cliquez sur `Modification en masse` pour ouvrir la boîte de dialogue de modification.
-5. Configurez les paramètres de destination supplémentaires :
+3. Une fois les sauvegardes sélectionnées, une barre d'action en masse s'affichera indiquant le nombre de sauvegardes sélectionnées.
+4. Cliquez sur **Modification en masse** pour ouvrir la boîte de dialogue d'édition.
+5. Configurez les paramètres de destination supplémentaire :
    - **Événement de notification** : Définissez l'événement de notification pour toutes les sauvegardes sélectionnées.
-   - **E-mails supplémentaires** : Entrez les adresses e-mail (séparées par des virgules) à appliquer à toutes les sauvegardes sélectionnées.
+   - **E-mails supplémentaires** : Entrez des adresses e-mail (séparées par des virgules) à appliquer à toutes les sauvegardes sélectionnées.
    - **Sujet NTFY supplémentaire** : Entrez un nom de sujet NTFY à appliquer à toutes les sauvegardes sélectionnées.
    - Des boutons de test sont disponibles dans la boîte de dialogue de modification en masse pour vérifier les adresses e-mail et les sujets NTFY avant de les appliquer à plusieurs sauvegardes.
-6. Cliquez sur `Enregistrer` pour appliquer les paramètres à toutes les sauvegardes sélectionnées.
+6. Cliquez sur **Enregistrer** pour appliquer les paramètres à toutes les sauvegardes sélectionnées.
 
 **Effacement en masse :**
 
 Pour supprimer tous les paramètres de destination supplémentaires des sauvegardes sélectionnées :
 
-1. Sélectionner les sauvegardes que vous souhaitez effacer.
-2. Cliquez sur « Bulk Clear » dans la barre d'action en masse.
+1. Sélectionnez les sauvegardes que vous souhaitez effacer.
+2. Cliquez sur **Effacement en masse** dans la barre d'actions en masse.
 3. Confirmez l'action dans la boîte de dialogue.
 
 Cela supprimera toutes les adresses e-mail supplémentaires, les rubriques NTFY et les événements de notification pour les sauvegardes sélectionnées. Après suppression, les sauvegardes hériteront à nouveau des paramètres par défaut du serveur (s'ils sont configurés).

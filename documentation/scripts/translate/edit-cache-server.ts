@@ -1,6 +1,6 @@
 /**
  * Translation cache editor web server.
- * Run from documentation/: pnpm translate:edit-cache
+ * Run from documentation/: pnpm translate:editor
  */
 
 import express from "express";

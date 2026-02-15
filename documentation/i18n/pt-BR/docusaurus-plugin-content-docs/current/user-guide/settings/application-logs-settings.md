@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:51.380Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 351747b781a00331
+translation_last_updated: '2026-02-15T20:57:46.431Z'
+source_file_mtime: '2026-02-14T22:20:47.045Z'
+source_file_hash: 4bde5224faa7c371
 translation_language: pt-BR
 source_file_path: user-guide/settings/application-logs-settings.md
 ---
@@ -29,10 +29,10 @@ O Visualizador de logs do aplicativo permite que administradores monitorem todos
 
 | Controle | Descrição |
 |:--------|:-----------|
-| **Versão do arquivo** | Selecionar qual arquivo de log visualizar: **Atual** (arquivo ativo) ou arquivos rotacionados (`.1`, `.2`, etc., onde números maiores são mais antigos). |
-| **Linhas para mostrar** | Exibir as **100**, **500**, **1000** (padrão), **5000**, ou **10000** linhas mais recentes do arquivo selecionado. |
-| **Rolagem automática** | Quando habilitado (padrão para arquivo atual), rola automaticamente para novas entradas de log e atualiza a cada 2 segundos. Funciona apenas para a versão de arquivo `Atual`. |
-| **Pesquisar** | Filtrar linhas de log por texto (sem distinção de maiúsculas e minúsculas). Os filtros se aplicam às linhas atualmente exibidas. |
+| **Versão do arquivo** | Selecione qual arquivo de log visualizar: **Atual** (arquivo ativo) ou arquivos rotacionados (`.1`, `.2`, etc., onde números maiores são mais antigos). |
+| **Linhas para mostrar** | Exiba as **100**, **500**, **1000** (padrão), **5000** ou **10000** linhas mais recentes do arquivo selecionado. |
+| **Rolagem automática** | Quando habilitada (padrão para arquivo atual), rola automaticamente para novas entradas de log e atualiza a cada 2 segundos. Funciona apenas para a versão de arquivo **Atual**. |
+| **Pesquisar** | Filtre linhas de log por texto (sem distinção de maiúsculas e minúsculas). Os filtros se aplicam às linhas exibidas no momento. |
 
 <br/>
 

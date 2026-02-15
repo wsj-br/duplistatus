@@ -1,11 +1,11 @@
 ---
-translation_last_updated: '2026-02-14T04:57:41.447Z'
-source_file_mtime: '2026-01-25T02:45:42.746Z'
-source_file_hash: 42ca049a94e01f4c
+translation_last_updated: '2026-02-15T20:57:36.019Z'
+source_file_mtime: '2026-02-15T20:27:31.910Z'
+source_file_hash: 7de89d625f466245
 translation_language: de
 source_file_path: migration/api-changes.md
 ---
-# API-Änderungen mit Auswirkungen auf die Kompatibilität {#api-breaking-changes}
+# Rückwärts-inkompatible API-Änderungen {#api-breaking-changes}
 
 Dieses Dokument beschreibt Breaking Changes für externe API-Endpunkte in verschiedenen Versionen von duplistatus. Externe API-Endpunkte sind solche, die für die Verwendung durch andere Anwendungen und Integrationen konzipiert sind (z. B. Homepage-Integration).
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:38.934Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
-source_file_hash: 351747b781a00331
+translation_last_updated: '2026-02-15T20:57:33.350Z'
+source_file_mtime: '2026-02-14T22:20:47.045Z'
+source_file_hash: 4bde5224faa7c371
 translation_language: fr
 source_file_path: user-guide/settings/application-logs-settings.md
 ---
@@ -29,9 +29,9 @@ Le Visualiseur de journaux d'application permet aux administrateurs de surveille
 
 | Contrôle | Description |
 |:--------|:-----------|
-| **Version du fichier** | Sélectionner quel fichier journal afficher : **Actuel** (fichier actif) ou fichiers archivés (`.1`, `.2`, etc., où les numéros plus élevés sont plus anciens). |
+| **Version du fichier** | Sélectionnez le fichier journal à afficher : **Actuel** (fichier actif) ou fichiers archivés (`.1`, `.2`, etc., où les numéros plus élevés sont plus anciens). |
 | **Lignes à afficher** | Afficher les **100**, **500**, **1000** (par défaut), **5000**, ou **10000** lignes les plus récentes du fichier sélectionné. |
-| **Défilement automatique** | Quand activé (par défaut pour le fichier actuel), défile automatiquement vers les nouvelles entrées du journal et s'actualise toutes les 2 secondes. Fonctionne uniquement pour la version de fichier `Actuel`. |
+| **Défilement automatique** | Quand activé (par défaut pour le fichier actuel), défile automatiquement vers les nouvelles entrées du journal et s'actualise toutes les 2 secondes. Fonctionne uniquement pour la version de fichier **Actuel**. |
 | **Rechercher** | Filtrer les lignes du journal par texte (insensible à la casse). Les filtres s'appliquent aux lignes actuellement affichées. |
 
 <br/>

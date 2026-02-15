@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:50.118Z'
-source_file_mtime: '2026-02-01T03:16:19.469Z'
-source_file_hash: 7cff43133e2a1c9a
+translation_last_updated: '2026-02-15T20:57:44.992Z'
+source_file_mtime: '2026-02-15T20:27:35.979Z'
+source_file_hash: f18ae0bd1263eac9
 translation_language: pt-BR
 source_file_path: migration/version_upgrade.md
 ---
@@ -28,11 +28,11 @@ Antes de atualizar para uma nova versão, é recomendado criar um backup de seu 
 
 Use a função de backup do banco de dados integrada:
 
-1. Navegue até `Settings → Database Maintenance` na interface web
+1. Navegue para [Configurações → Manutenção do banco de dados](../user-guide/settings/database-maintenance.md) na interface web
 2. Na seção **Backup do banco de dados**, selecione um formato de backup:
-   - **Arquivo de banco de dados (.db)**: Formato binário - backup mais rápido, preserva toda a estrutura do banco de dados exatamente
-   - **Dump SQL (.sql)**: Formato de texto - instruções SQL legíveis por humanos
-3. Clique em `Download Backup`
+   - **Arquivo de banco de dados (.db)**: Formato binário - backup mais rápido, preserva exatamente toda a estrutura do banco de dados
+   - **Dump SQL (.sql)**: Formato de texto - instruções SQL legíveis para humanos
+3. Clique em **Baixar backup**
 4. O arquivo de backup será baixado para seu computador com um nome de arquivo com timestamp
 
 Para mais detalhes, consulte a documentação de [Manutenção do banco de dados](../user-guide/settings/database-maintenance.md#database-backup).
@@ -183,9 +183,9 @@ Procure por mensagens como:
 1. **Entrar** com credenciais padrão de admin:
    - Nome de usuário: `admin`
    - Senha: `Duplistatus09`
-2. **Alterar a senha** quando solicitado (obrigatório no primeiro login)
-3. **Criar contas de usuário** para outros usuários (Configurações → Usuários)
-4. **Atualizar integrações de API externas** para incluir autenticação (consulte [API Breaking Changes](api-changes.md))
+2. **Altere a senha** quando solicitado (obrigatório no primeiro login)
+3. **Criar usuários** para outros usuários (Configurações → Usuários)
+4. **Atualizar integrações de API externas** para incluir autenticação (consulte [Mudanças incompatíveis com versões anteriores da API](api-changes.md))
 5. **Configurar retenção de log de auditoria** se necessário (Configurações → Log de Auditoria)
 
 #### Se Você Está Bloqueado {#if-youre-locked-out}
@@ -236,22 +236,22 @@ Consulte o [Guia de Recuperação do Admin](../user-guide/admin-recovery.md) par
 2. **Atualizar modelos de notificação**:
    - Substituir `{machine_name}` por `{server_name}`
 
-Consulte [API Breaking Changes](api-changes.md) para obter etapas detalhadas de migração da API.
+Consulte [Mudanças incompatíveis com versões anteriores da API](api-changes.md) para obter etapas detalhadas de migração de API.
 
 ## Lista de Verificação Pós-Migração {#post-migration-checklist}
 
 Após a atualização, verificar:
 
-- [ ] Todos os servidores aparecem corretamente no Painel
-- [ ] Histórico de backups está completo e acessível
-- [ ] Notificações funcionam (testar NTFY/E-mail)
-- [ ] Integrações de API externa funcionam (se aplicável)
-- [ ] Configurações estão acessíveis e corretas
-- [ ] Monitoramento de backups atrasados funciona corretamente
+- [ ] Todos os servidores aparecem corretamente no painel
+- [ ] O histórico de backups está completo e acessível
+- [ ] As notificações funcionam (testar NTFY/e-mail)
+- [ ] As integrações de API externa funcionam (se aplicável)
+- [ ] As configurações estão acessíveis e corretas
+- [ ] O monitoramento de backup funciona corretamente
 - [ ] Conectado com sucesso (0.9.x+)
-- [ ] Alterada senha padrão do Admin (0.9.x+)
-- [ ] Criadas contas de Usuário para outros usuários (0.9.x+)
-- [ ] Atualizadas Integrações de API externa com autenticação (0.9.x+)
+- [ ] Alterou a senha padrão do admin (0.9.x+)
+- [ ] Criou contas de usuário para outros usuários (0.9.x+)
+- [ ] Atualizou as integrações de API externa com autenticação (0.9.x+)
 
 ## Solução de Problemas {#troubleshooting}
 
@@ -277,10 +277,10 @@ Após a atualização, verificar:
 
 ### Erros de API {#api-errors}
 
-1. Revise [Alterações Quebradas da API](api-changes.md) para atualizações de endpoints
-2. Atualize integrações externas com novos nomes de campos
-3. Adicione autenticação às solicitações da API (0.9.x+)
-4. Teste endpoints da API após a migração
+1. Revise [Mudanças incompatíveis com versões anteriores da API](api-changes.md) para atualizações de endpoint
+2. Atualize integrações externas com novos nomes de campo
+3. Adicione autenticação às solicitações de API (0.9.x+)
+4. Teste endpoints de API após a migração
 
 ### Problemas de Chave Mestra (0.8.x+) {#master-key-issues-08x}
 
@@ -368,8 +368,8 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 ## Ajuda {#getting-help}
 
 - **Documentação**: [Guia do Usuário](../user-guide/overview.md)
-- **Referência da API**: [Documentação da API](../api-reference/overview.md)
-- **Alterações da API**: [Alterações Significativas da API](api-changes.md)
-- **Notas de Lançamento**: Verificar as notas de lançamento específicas da versão para alterações detalhadas
-- **Comunidade**: [Discussões do GitHub](https://github.com/wsj-br/duplistatus/discussions)
-- **Problemas**: [Problemas do GitHub](https://github.com/wsj-br/duplistatus/issues)
+- **Referência de API**: [Documentação da API](../api-reference/overview.md)
+- **Mudanças de API**: [Mudanças incompatíveis com versões anteriores da API](api-changes.md)
+- **Notas de Versão**: Verifique as notas de versão específicas para alterações detalhadas
+- **Comunidade**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
+- **Problemas**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

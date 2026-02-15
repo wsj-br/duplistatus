@@ -7,9 +7,9 @@
     "defaultModel-3": "nvidia/nemotron-nano-12b-v2-vl:free",
     "defaultModel-5": "stepfun/step-3.5-flash:free",
     "defaultModel-7": "anthropic/claude-3.5-haiku",
-    "defaultModel": "anthropic/claude-3.5-haiku",
+    "defaultModel": "anthropic/claude-haiku-4.5",
     "fallbackModel-1": "anthropic/claude-3.5-haiku",
-    "fallbackModel": "anthropic/claude-haiku-4.5",
+    "fallbackModel": "anthropic/claude-3-haiku",
     "maxTokens": 8192,
     "temperature": 0.2
   },

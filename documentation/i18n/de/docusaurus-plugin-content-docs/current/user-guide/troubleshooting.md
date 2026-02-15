@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-14T04:57:43.719Z'
-source_file_mtime: '2026-02-01T03:16:19.470Z'
-source_file_hash: ccb921e081ad2c50
+translation_last_updated: '2026-02-15T20:57:38.448Z'
+source_file_mtime: '2026-02-14T22:26:39.674Z'
+source_file_hash: e98421b0542e0de6
 translation_language: de
 source_file_path: user-guide/troubleshooting.md
 ---
@@ -36,9 +36,9 @@ Wenn Sie Duplicati-Server-Warnungen wie `HTTP Response request failed for:` und 
 
 Wenn Benachrichtigungen nicht gesendet oder empfangen werden:
 
-- **Prüfen Sie die NTFY-Konfiguration**: Stellen Sie sicher, dass die NTFY-URL und das Thema korrekt sind. Verwenden Sie die Schaltfläche `Testbenachrichtigung senden` zum Testen.
-- **Prüfen Sie die Netzwerkkonnektivität**: Bestätigen Sie, dass **duplistatus** Ihren NTFY-Server erreichen kann. Überprüfen Sie ggf. die Firewall-Einstellungen.
-- **Prüfen Sie die Benachrichtigungseinstellungen**: Bestätigen Sie, dass Benachrichtigungen für die relevanten Sicherungen aktiviert sind.
+- **NTFY-Konfiguration prüfen**: Stellen Sie sicher, dass die NTFY-URL und das Thema korrekt sind. Verwenden Sie die Schaltfläche **Testbenachrichtigung senden** zum Testen.
+- **Netzwerkkonnektivität prüfen**: Bestätigen Sie, dass **duplistatus** Ihren NTFY-Server erreichen kann. Überprüfen Sie die Firewall-Einstellungen, falls zutreffend.
+- **Benachrichtigungseinstellungen prüfen**: Bestätigen Sie, dass Benachrichtigungen für die relevanten Sicherungen aktiviert sind.
 
 ### Verfügbare Versionen werden nicht angezeigt {#available-versions-not-appearing}
 
@@ -50,9 +50,9 @@ Wenn Sicherungsversionen auf dem Dashboard oder der Detailseite nicht angezeigt 
 
 Wenn überfällige Backup-Benachrichtigungen nicht gesendet werden:
 
-- **Prüfen Sie die Überfälligkeitskonfiguration**: Bestätigen Sie, dass die Überwachung überfälliger Sicherungen für die Sicherung aktiviert ist. Bestätigen Sie die Einstellungen für das erwartete Intervall und die Toleranz.
-- **Prüfen Sie die Benachrichtigungshäufigkeit**: Wenn auf `One time` eingestellt, werden Warnungen nur einmal pro Überfälligkeitsereignis gesendet.
-- **Prüfen Sie den Cron-Service**: Stellen Sie sicher, dass der Cron-Service, der überfällige Sicherungen überwacht, ordnungsgemäß ausgeführt wird. Prüfen Sie die Anwendungsprotokolle auf Fehler. Bestätigen Sie, dass der Cron-Service unter dem konfigurierten Port erreichbar ist (Standard: `8667`).
+- **Überfälligkeitskonfiguration prüfen**: Bestätigen Sie, dass die Sicherungsüberwachung für die Sicherung aktiviert ist. Überprüfen Sie die Einstellungen für das erwartete Intervall und die Toleranz.
+- **Benachrichtigungshäufigkeit prüfen**: Wenn auf **Einmalig** eingestellt, werden Warnungen nur einmal pro Überfälligkeitsereignis gesendet.
+- **Cron-Dienst prüfen**: Stellen Sie sicher, dass der Cron-Dienst, der auf überfällige Sicherungen überwacht, ordnungsgemäß ausgeführt wird. Überprüfen Sie die Anwendungsprotokolle auf Fehler. Bestätigen Sie, dass der Cron-Dienst am konfigurierten Port erreichbar ist (Standard: `8667`).
 
 ### Backup-Protokolle sammeln funktioniert nicht {#collect-backup-logs-not-working}
 
@@ -90,8 +90,8 @@ Wenn Sie Ihr Administratorpasswort verloren haben oder aus Ihrem Konto gesperrt 
 Beim Migrieren von vorherigen Versionen oder beim Erstellen einer Datenbanksicherung:
 
 **Wenn Sie Version 1.2.1 oder später ausführen:**
-- Verwenden Sie die integrierte Sicherungsfunktion für Datenbanken in `Einstellungen → Datenbankwartung`
-- Wählen Sie Ihr bevorzugtes Format (.db oder .sql) aus und klicken Sie auf `Sicherung herunterladen`
+- Verwenden Sie die integrierte Datenbanksicherungsfunktion in [Einstellungen → Datenbankwartung](user-guide/settings/database-maintenance.md)
+- Wählen Sie Ihr bevorzugtes Format (.db oder .sql) und klicken Sie auf **Sicherung herunterladen**
 - Die Sicherungsdatei wird auf Ihren Computer heruntergeladen
 - Siehe [Datenbankwartung](settings/database-maintenance.md#database-backup) für detaillierte Anweisungen
 
