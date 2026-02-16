@@ -146,13 +146,12 @@ echo "🔍 Generating README_dockerhub.md for Docker Hub..."
 cp README.md README_dockerhub.md
 
 # Update image references from relative paths to GitHub raw URLs
-sed -i 's|documentation/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/img/|g' README_dockerhub.md
-sed -i 's|documentation/static/img/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/static/img/|g' README_dockerhub.md
-sed -i 's|documentation/docs/assets/|https://raw.githubusercontent.com/wsj-br/duplistatus/master/documentation/docs/assets/|g' README_dockerhub.md
-
-# Update document references from relative paths to GitHub blob URLs
-# Only replace docs/ that are NOT already part of a full URL
-sed -i 's|\[\([^]]*\)\](documentation/\([^)]*\))|[\1](https://github.com/wsj-br/duplistatus/blob/master/documentation/\2)|g' README_dockerhub.md
+# Adds raw GitHub URLs for images under documentation/img, documentation/static/img, documentation/static/assets, documentation/docs/assets
+RAW_BASE='https://raw.githubusercontent.com/wsj-br/duplistatus/master'
+sed -i "s|documentation/img/|${RAW_BASE}/documentation/img/|g" README_dockerhub.md
+sed -i "s|documentation/static/img/|${RAW_BASE}/documentation/static/img/|g" README_dockerhub.md
+sed -i "s|documentation/static/assets/|${RAW_BASE}/documentation/static/assets/|g" README_dockerhub.md
+sed -i "s|documentation/docs/assets/|${RAW_BASE}/documentation/docs/assets/|g" README_dockerhub.md
 
 # Handle standalone documentation/ references (not in markdown links)
 sed -i 's|documentation/\([^/]*\.md\)|https://github.com/wsj-br/duplistatus/blob/master/documentation/\1|g' README_dockerhub.md

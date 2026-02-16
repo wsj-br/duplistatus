@@ -18,6 +18,13 @@ Easy to deploy with Docker, Podman, or Portainer and available in 5 languages (E
 [Más información](https://wsj-br.github.io/duplistatus/es/)     |
 [Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/)
 
+[Install guide](https://wsj-br.github.io/duplistatus/installation)        |
+[Installationsleitfaden](https://wsj-br.github.io/duplistatus/de/installation)  | 
+[Guide d'Installation](https://wsj-br.github.io/duplistatus/fr/installation) | 
+[Guía de Instalación](https://wsj-br.github.io/duplistatus/es/installation)     |
+[Guia de Instalação](https://wsj-br.github.io/duplistatus/pt-BR/installation)
+
+
 <br/>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
