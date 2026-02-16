@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-16T00:13:28.420Z'
-source_file_mtime: '2026-02-15T16:25:07.956Z'
-source_file_hash: 4f631551c203abfa
+translation_last_updated: '2026-02-16T02:21:31.164Z'
+source_file_mtime: '2026-02-16T02:19:54.124Z'
+source_file_hash: 9b1245b795aeb585
 translation_language: fr
 source_file_path: installation/installation.md
 ---
 # Guide d'Installation {#installation-guide}
 
-L'application peut être déployée à l'aide de Docker, [Piles Portainer](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le FUSEAU HORAIRE et la LANGUE, comme décrit dans [Configurer le fuseau horaire](./configure-tz.md) et devrez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).
+L'application peut être déployée à l'aide de Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), ou Podman. Après l'installation, vous souhaiterez peut-être configurer le fuseau horaire, comme décrit dans la section [Configurer le fuseau horaire](./configure-tz.md) et vous devez configurer les serveurs Duplicati pour envoyer les journaux de sauvegarde à **duplistatus**, comme indiqué dans la section [Configuration Duplicati](./duplicati-server-configuration.md).
 
 ## Conditions préalables {#prerequisites}
 

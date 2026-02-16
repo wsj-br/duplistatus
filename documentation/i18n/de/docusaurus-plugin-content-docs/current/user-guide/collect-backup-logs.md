@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:34.355Z'
-source_file_mtime: '2026-02-14T22:26:39.674Z'
+translation_last_updated: '2026-02-16T02:21:37.019Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: f960ed5694a25582
 translation_language: de
 source_file_path: user-guide/collect-backup-logs.md

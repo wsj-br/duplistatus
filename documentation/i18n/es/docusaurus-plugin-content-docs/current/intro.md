@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:37.122Z'
-source_file_mtime: '2026-02-15T21:37:36.824Z'
+translation_last_updated: '2026-02-16T02:21:39.821Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: 65a8594207f730f7
 translation_language: es
 source_file_path: intro.md

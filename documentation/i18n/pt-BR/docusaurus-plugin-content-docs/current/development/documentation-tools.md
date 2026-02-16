@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:39.986Z'
-source_file_mtime: '2026-02-14T04:34:28.611Z'
+translation_last_updated: '2026-02-16T02:21:42.653Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: aa56e5210f4a05de
 translation_language: pt-BR
 source_file_path: development/documentation-tools.md

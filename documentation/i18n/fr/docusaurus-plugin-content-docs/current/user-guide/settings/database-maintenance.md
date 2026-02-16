@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:30.614Z'
-source_file_mtime: '2026-02-14T22:10:59.908Z'
+translation_last_updated: '2026-02-16T02:21:33.329Z'
+source_file_mtime: '2026-02-16T00:30:39.432Z'
 source_file_hash: 462b7eda950bd23d
 translation_language: fr
 source_file_path: user-guide/settings/database-maintenance.md

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:39.823Z'
-source_file_mtime: '2026-02-15T23:59:27.083Z'
+translation_last_updated: '2026-02-16T02:21:42.487Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: d8234c32e55b0877
 translation_language: pt-BR
 source_file_path: development/development-guidelines.md

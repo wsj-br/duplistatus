@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:38.914Z'
-source_file_mtime: '2026-02-02T01:09:34.944Z'
+translation_last_updated: '2026-02-16T02:21:41.608Z'
+source_file_mtime: '2026-02-16T00:30:39.432Z'
 source_file_hash: 2d1dbdbd08ce54ad
 translation_language: es
 source_file_path: user-guide/settings/audit-logs-viewer.md

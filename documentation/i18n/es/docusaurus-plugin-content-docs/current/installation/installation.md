@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-16T00:13:37.044Z'
-source_file_mtime: '2026-02-15T16:25:07.956Z'
-source_file_hash: 4f631551c203abfa
+translation_last_updated: '2026-02-16T02:21:39.748Z'
+source_file_mtime: '2026-02-16T02:19:54.124Z'
+source_file_hash: 9b1245b795aeb585
 translation_language: es
 source_file_path: installation/installation.md
 ---
 # Guía de Instalación {#installation-guide}
 
-La aplicación se puede implementar utilizando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA y el IDIOMA, como se describe en [Configurar Zona horaria](./configure-tz.md) y necesita configurar los servidores de Duplicati para enviar logs de backup a **duplistatus**, como se detalla en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
+La aplicación se puede implementar usando Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks), o Podman. Después de la instalación, es posible que desee configurar la ZONA HORARIA, como se describe en la sección [Configurar Zona horaria](./configure-tz.md) y necesita configurar los servidores Duplicati para enviar logs de backup a **duplistatus**, como se describe en la sección [Configuración de Duplicati](./duplicati-server-configuration.md).
 
 ## Requisitos previos {#prerequisites}
 

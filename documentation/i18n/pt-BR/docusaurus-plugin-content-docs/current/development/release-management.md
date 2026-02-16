@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:40.356Z'
-source_file_mtime: '2026-02-01T03:16:19.468Z'
+translation_last_updated: '2026-02-16T02:21:43.029Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: fae6b911d504b61b
 translation_language: pt-BR
 source_file_path: development/release-management.md

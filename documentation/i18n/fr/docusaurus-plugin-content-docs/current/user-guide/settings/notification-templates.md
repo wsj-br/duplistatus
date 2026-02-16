@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:30.727Z'
-source_file_mtime: '2026-02-15T19:21:45.771Z'
+translation_last_updated: '2026-02-16T02:21:33.434Z'
+source_file_mtime: '2026-02-16T00:30:39.432Z'
 source_file_hash: 28dda7829d88467c
 translation_language: fr
 source_file_path: user-guide/settings/notification-templates.md

@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:28.219Z'
-source_file_mtime: '2026-02-15T18:21:42.048Z'
+translation_last_updated: '2026-02-16T02:21:30.957Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: 73f503de6e910445
 translation_language: fr
 source_file_path: installation/environment-variables.md

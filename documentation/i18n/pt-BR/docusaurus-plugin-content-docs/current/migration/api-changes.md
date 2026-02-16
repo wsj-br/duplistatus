@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:41.511Z'
-source_file_mtime: '2026-02-15T20:27:31.910Z'
+translation_last_updated: '2026-02-16T02:21:44.181Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: 7de89d625f466245
 translation_language: pt-BR
 source_file_path: migration/api-changes.md

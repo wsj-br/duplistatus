@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:33.229Z'
-source_file_mtime: '2026-02-15T20:27:35.979Z'
+translation_last_updated: '2026-02-16T02:21:35.891Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: f18ae0bd1263eac9
 translation_language: de
 source_file_path: migration/version_upgrade.md

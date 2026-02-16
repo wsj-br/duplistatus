@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:38.537Z'
-source_file_mtime: '2026-02-14T22:26:39.674Z'
+translation_last_updated: '2026-02-16T02:21:41.220Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: f8701b469fe3932d
 translation_language: es
 source_file_path: user-guide/backup-monitoring.md

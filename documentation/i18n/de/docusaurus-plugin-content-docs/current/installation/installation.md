@@ -1,13 +1,13 @@
 ---
-translation_last_updated: '2026-02-16T00:13:32.707Z'
-source_file_mtime: '2026-02-15T16:25:07.956Z'
-source_file_hash: 4f631551c203abfa
+translation_last_updated: '2026-02-16T02:21:35.415Z'
+source_file_mtime: '2026-02-16T02:19:54.124Z'
+source_file_hash: 9b1245b795aeb585
 translation_language: de
 source_file_path: installation/installation.md
 ---
 # Installationsleitfaden {#installation-guide}
 
-Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die ZEITZONE und SPRACHE konfigurieren, wie in [Zeitzone konfigurieren](./configure-tz.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass Sicherungsprotokolle an **duplistatus** gesendet werden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) beschrieben.
+Die Anwendung kann mit Docker, [Portainer Stacks](https://docs.portainer.io/user/docker/stacks) oder Podman bereitgestellt werden. Nach der Installation möchten Sie möglicherweise die Zeitzone konfigurieren, wie in [Zeitzone konfigurieren](./configure-tz.md) beschrieben, und müssen die Duplicati-Server so konfigurieren, dass sie Sicherungsprotokolle an **duplistatus** senden, wie im Abschnitt [Duplicati-Konfiguration](./duplicati-server-configuration.md) dargelegt.
 
 ## Voraussetzungen {#prerequisites}
 

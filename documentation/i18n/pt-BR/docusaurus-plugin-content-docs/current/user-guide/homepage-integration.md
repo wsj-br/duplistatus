@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:43.004Z'
-source_file_mtime: '2026-01-25T02:45:42.747Z'
+translation_last_updated: '2026-02-16T02:21:45.717Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: 5b8fdae17a34ff83
 translation_language: pt-BR
 source_file_path: user-guide/homepage-integration.md

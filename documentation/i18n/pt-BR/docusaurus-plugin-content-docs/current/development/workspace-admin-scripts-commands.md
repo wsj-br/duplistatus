@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:40.965Z'
-source_file_mtime: '2026-02-06T21:19:15.606Z'
+translation_last_updated: '2026-02-16T02:21:43.627Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: a8ff236072ebae34
 translation_language: pt-BR
 source_file_path: development/workspace-admin-scripts-commands.md

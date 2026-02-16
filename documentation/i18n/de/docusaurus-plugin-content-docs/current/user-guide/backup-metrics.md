@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:34.247Z'
-source_file_mtime: '2026-02-02T01:09:34.943Z'
+translation_last_updated: '2026-02-16T02:21:36.921Z'
+source_file_mtime: '2026-02-16T00:30:39.431Z'
 source_file_hash: ded48f8ac20cea97
 translation_language: de
 source_file_path: user-guide/backup-metrics.md

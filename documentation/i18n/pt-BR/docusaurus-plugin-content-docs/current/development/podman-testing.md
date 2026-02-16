@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:40.190Z'
-source_file_mtime: '2026-01-25T02:45:42.745Z'
+translation_last_updated: '2026-02-16T02:21:42.876Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: 841b30d8ee97e362
 translation_language: pt-BR
 source_file_path: development/podman-testing.md

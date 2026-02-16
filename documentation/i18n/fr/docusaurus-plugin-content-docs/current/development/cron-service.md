@@ -1,6 +1,6 @@
 ---
-translation_last_updated: '2026-02-16T00:13:26.691Z'
-source_file_mtime: '2026-02-06T21:19:17.562Z'
+translation_last_updated: '2026-02-16T02:21:29.444Z'
+source_file_mtime: '2026-02-16T00:30:39.430Z'
 source_file_hash: 5ce1c81347ec9e1a
 translation_language: fr
 source_file_path: development/cron-service.md
