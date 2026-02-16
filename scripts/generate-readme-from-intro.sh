@@ -40,7 +40,7 @@ RELEASE_TEMP_FILE=""
 trap "rm -f $TEMP_FILE $RELEASE_TEMP_FILE" EXIT
 
 # Start building README.md with header (from documentation/docs/readme-header.md)
-cat "$PROJECT_ROOT/documentation/docs/readme-header.md" > "$TEMP_FILE"
+cat "$PROJECT_ROOT/documentation/docs/_readme-header.md" > "$TEMP_FILE"
 
 # Add version badge
 sed -i "s/[{]VERSION[}]/$VERSION/g" "$TEMP_FILE"

@@ -5,7 +5,7 @@
 LICENSE.md
 
 # don't translate the readme-header.md file
-readme-header.md
+_readme-header.md
 
 # Don't translate the API reference
 api-reference/*
