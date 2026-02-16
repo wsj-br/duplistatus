@@ -3,7 +3,8 @@
 
 # duplistatus -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers 
 
-![version](https://img.shields.io/badge/version-1.3.1-blue)
+![version](https://img.shields.io/badge/version-1.3.1-blue) 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/wsj-br/duplistatus)
 
 <br/>
 
