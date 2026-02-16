@@ -104,7 +104,7 @@ sed 's|(\./\([^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 sed 's|(\([^/][^)]*\)\.md)|(https://wsj-br.github.io/duplistatus/\1)|g' | \
 # Convert image paths: /img/ -> documentation/static/img/, assets/ -> documentation/docs/assets/
 sed 's|(/img/|(documentation/static/img/|g' | \
-sed 's|(assets/|(documentation/docs/assets/|g' | \
+sed 's|(assets/|(documentation/static/assets/|g' | \
 # Fix specific development links that don't have .md extension
 sed 's|(development/setup)|(https://wsj-br.github.io/duplistatus/development/setup)|g' | \
 sed 's|(development/how-i-build-with-ai)|(https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai)|g' >> "$TEMP_FILE"
