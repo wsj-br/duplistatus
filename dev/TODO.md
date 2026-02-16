@@ -27,8 +27,6 @@
 
 ## New Features (planned or under analysis)
 
-- internationalization with versions initially in english, spanish, french and portuguese (pt-br).
-
 - check if make sense to group servers in a hierarchy
 
 <br/>

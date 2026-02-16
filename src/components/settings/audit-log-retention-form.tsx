@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,8 @@ interface AuditLogRetentionFormProps {
 }
 
 export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
+  const content = useIntlayer('audit-log-retention-form');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const [retentionDays, setRetentionDays] = useState<number>(90);
   const [retentionLoading, setRetentionLoading] = useState(false);
@@ -34,8 +37,8 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
         } catch (error) {
           console.error('Error loading retention:', error);
           toast({
-            title: 'Error',
-            description: 'Failed to load retention configuration',
+            title: common.status.error,
+            description: content.failedToLoad,
             variant: 'destructive',
           });
         } finally {
@@ -44,7 +47,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
       };
       loadRetention();
     }
-  }, [isAdmin, toast]);
+  }, [isAdmin, toast, common.status.error, content.failedToLoad]);
 
   // Save retention configuration
   const saveRetention = async () => {
@@ -52,8 +55,8 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
     
     if (retentionDays < 30 || retentionDays > 365) {
       toast({
-        title: 'Error',
-        description: 'Retention days must be between 30 and 365',
+        title: common.status.error,
+        description: content.invalidRange.value,
         variant: 'destructive',
       });
       return;
@@ -75,18 +78,18 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to save retention configuration');
+        throw new Error(error.error || content.failedToSave.value);
       }
 
       toast({
-        title: 'Success',
-        description: `Audit log retention updated to ${retentionDays} days`,
+        title: common.status.success,
+        description: content.updatedSuccessfully.value.replace('{days}', retentionDays.toString()),
       });
     } catch (error) {
       console.error('Error saving retention:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to save retention configuration',
+        title: common.status.error,
+        description: error instanceof Error ? error.message : content.failedToSave.value,
         variant: 'destructive',
       });
     } finally {
@@ -97,7 +100,7 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
   if (!isAdmin) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        <p>You do not have permission to access this section.</p>
+        <p>{content.noPermission.value}</p>
       </div>
     );
   }
@@ -108,16 +111,16 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ColoredIcon icon={Clock} color="blue" size="md" />
-            Audit Log Retention
+            {content.title.value}
           </CardTitle>
           <CardDescription>
-            Configure how long audit logs are retained before automatic cleanup. Set the number of days audit logs should be retained. Logs older than this period will be automatically deleted during daily cleanup.
+            {content.description.value}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <Label htmlFor="retention-days">Retention (days):</Label>
+              <Label htmlFor="retention-days">{content.retentionDays.value}</Label>
               <Input
                 id="retention-days"
                 type="number"
@@ -135,15 +138,15 @@ export function AuditLogRetentionForm({ isAdmin }: AuditLogRetentionFormProps) {
               disabled={retentionLoading || retentionSaving || retentionDays < 30 || retentionDays > 365}
               size="sm"
             >
-              {retentionSaving ? 'Saving...' : 'Save'}
+              {retentionSaving ? content.saving.value : content.save.value}
             </Button>
             <span className="text-xs text-muted-foreground">
-              (Range: 30-365 days)
+              {content.range.value}
             </span>
           </div>
           
           {retentionLoading && (
-            <p className="text-sm text-muted-foreground">Loading retention configuration...</p>
+            <p className="text-sm text-muted-foreground">{content.loadingRetention.value}</p>
           )}
         </CardContent>
       </Card>

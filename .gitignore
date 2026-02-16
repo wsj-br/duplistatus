@@ -40,6 +40,7 @@ RELEASE_NOTES_github_*.md
 .specstory/**
 *.diff
 *.tmp
+temp-prompts.md
 
 # documentation
 documentation/node_modules
@@ -54,18 +55,26 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 run.log*
+*.log*
 
 # ide
 .vscode/*
 !.vscode/launch.json
 .cursor/*
-!.cursor/rules/project-rule.mdc
+!.cursor/rules/
+!.cursor/rules/**
 
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
 .genkit/*
+
+# intlayer - auto-generated files
+.intlayer/
+
+# environment variables
 .env*
+!.env.local.template
+
 

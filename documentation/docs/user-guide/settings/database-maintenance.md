@@ -1,20 +1,20 @@
 
-# Database Maintenance
+# Database Maintenance {#database-maintenance}
 
 Manage your backup data and optimise performance through database maintenance operations.
 
-![Database maintenance](/img/screen-settings-database-maintenance.png)
+![Database maintenance](../../assets/screen-settings-database-maintenance.png)
 
 
 <br/>
 
 
 
-## Database Backup
+## Database Backup {#database-backup}
 
 Create a backup of your entire database for safekeeping or migration purposes.
 
-1.  Navigate to `Settings → Database Maintenance`.
+1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  In the **Database Backup** section, select a backup format:
     - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
     - **SQL Dump (.sql)**: Text format - human-readable SQL statements, can be edited before restore
@@ -34,11 +34,11 @@ Create a backup of your entire database for safekeeping or migration purposes.
 
 <br/>
 
-## Database Restore
+## Database Restore {#database-restore}
 
 Restore your database from a previously created backup file.
 
-1.  Navigate to `Settings → Database Maintenance`.
+1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  In the **Database Restore** section, click the file input and select a backup file:
     - Supported formats: `.db`, `.sql`, `.sqlite`, `.sqlite3`
     - Maximum file size: 100MB
@@ -85,11 +85,11 @@ If you accidentally delete data, you can restore it using the [Collect Backup Lo
 
 <br/>
 
-## Data Cleanup Period
+## Data Cleanup Period {#data-cleanup-period}
 
 Remove outdated backup records to free up storage space and improve system performance.
 
-1.  Navigate to `Settings → Database Maintenance`.
+1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  Choose a retention period:
     - **6 months**: Retain records from the last 6 months.
     - **1 year**: Retain records from the last year.
@@ -114,11 +114,11 @@ It is strongly recommended to create a database backup before proceeding with th
 
 <br/>
 
-## Delete Backup Job Data
+## Delete Backup Job Data {#delete-backup-job-data}
 
 Remove a specific Backup Job (type) data.
 
-1.  Navigate to `Settings → Database Maintenance`.
+1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  Select a Backup Job from the dropdown list.
     - The backups will be ordered by server alias or name, then the backup name.
 3.  Click <IconButton icon="lucide:folder-open" label="Delete Backup Job" />.
@@ -132,11 +132,11 @@ Remove a specific Backup Job (type) data.
 
 <br/>
 
-## Delete Server Data
+## Delete Server Data {#delete-server-data}
 
 Remove a specific server and all its associated backup data.
 
-1.  Navigate to `Settings → Database Maintenance`.
+1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  Select a server from the dropdown list.
 3.  Click <IconButton icon="lucide:server" label="Delete Server Data" />.
 4.  Confirm the action in the dialogue box.
@@ -149,7 +149,7 @@ Remove a specific server and all its associated backup data.
 
 <br/>
 
-## Merge Duplicate Servers
+## Merge Duplicate Servers {#merge-duplicate-servers}
 
 Detect and merge duplicate servers that have the same name but different IDs. se this feature to consolidate them into a single server entry.  
 
@@ -157,7 +157,7 @@ This can occur when Duplicati's `machine-id` changes after an upgrade or reinsta
 
 
 
-1.  Navigate to `Settings → Database Maintenance`.
+1.  Navigate to [Settings → Database Maintenance](database-maintenance.md).
 2.  If duplicate servers are detected, a **Merge Duplicate Servers** section will appear.
 3.  Review the list of duplicate server groups:
     - Each group shows servers with the same name but different IDs

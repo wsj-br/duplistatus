@@ -24,7 +24,7 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'installation/installation',
-        'installation/configure-tz-lang',
+        'installation/configure-tz',
         'installation/environment-variables',
         'installation/duplicati-server-configuration',
         'installation/https-setup',
@@ -43,7 +43,7 @@ const sidebars: SidebarsConfig = {
         'user-guide/server-details',
         'user-guide/backup-metrics',
         'user-guide/collect-backup-logs',
-        'user-guide/overdue-monitoring',
+        'user-guide/backup-monitoring',
         'user-guide/duplicati-configuration',
         {
           type: 'category',
@@ -55,7 +55,7 @@ const sidebars: SidebarsConfig = {
           items: [
             'user-guide/settings/overview',
             'user-guide/settings/backup-notifications-settings',
-            'user-guide/settings/overdue-settings',
+            'user-guide/settings/backup-monitoring-settings',
             'user-guide/settings/notification-templates',
             'user-guide/settings/ntfy-settings',
             'user-guide/settings/email-settings',
@@ -119,6 +119,7 @@ const sidebars: SidebarsConfig = {
         'development/devel',
         'development/database',
         'development/documentation-tools',
+        'development/translation-workflow',
         'development/podman-testing',
         'development/release-management',
         'development/test-scripts',
@@ -136,6 +137,7 @@ const sidebars: SidebarsConfig = {
         icon: 'history',
       },
       items: [
+        'release-notes/1.3.1',
         'release-notes/1.3.0',
         'release-notes/1.2.1',
         'release-notes/1.1.x',

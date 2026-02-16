@@ -1,10 +1,10 @@
 
 
-# Overview
+# Overview {#overview}
 
 Welcome to the duplistatus user guide. This comprehensive document provides detailed instructions for using duplistatus to monitor and manage your Duplicati backup operations across multiple servers.
 
-## What is duplistatus?
+## What is duplistatus? {#what-is-duplistatus}
 
 duplistatus is a powerful monitoring dashboard designed specifically for Duplicati backup systems. It provides:
 
@@ -13,12 +13,13 @@ duplistatus is a powerful monitoring dashboard designed specifically for Duplica
 - Automated overdue backup detection with configurable alerts
 - Comprehensive metrics and visualisation of backup performance
 - Flexible notification system via NTFY and email
+- Multi-language support (English, French, German, Spanish, and Brazilian Portuguese).
 
-## Installation
+## Installation {#installation}
 
-For prerequisites and detailed installation instructions, please refer to the [Installation Guide](/installation/).
+For prerequisites and detailed installation instructions, please refer to the [Installation Guide](../installation/installation.md).
 
-## Accessing the Dashboard
+## Accessing the Dashboard {#accessing-the-dashboard}
 
 After successful installation, access the duplistatus web interface by following these steps:
 
@@ -26,16 +27,22 @@ After successful installation, access the duplistatus web interface by following
 2. Navigate to `http://your-server-ip:9666`
    - Replace `your-server-ip` with the actual IP address or hostname of your duplistatus server
    - The default port is `9666`
-3. You will be presented with a login page. Use these credentials for the first usage (or after an upgrade from pre-0.9.x versions):
+3. You will be presented with a login page. 
+
+   Use these credentials for first use (or after an upgrade from pre-0.9.x versions):
     - username: `admin`
     - password: `Duplistatus09` 
+     
+   Select the user interface language in the top right corner <IconButton icon="lucide:languages" label="Language" />, or in <IconButton icon="lucide:user" label="username" /> after login (see below).
+   
+
 4. After login, the main dashboard will display automatically (with no data on first usage)
 
-## User Interface Overview
+## User Interface Overview {#user-interface-overview}
 
 duplistatus provides an intuitive dashboard for monitoring Duplicati backup operations across your entire infrastructure.
 
-![Dashboard Overview](/img/screen-main-dashboard-card-mode.png)
+![Dashboard Overview](../assets/screen-main-dashboard-card-mode.png)
 
 
 The user interface is organised into several key sections to provide a clear and comprehensive monitoring experience:
@@ -49,11 +56,11 @@ The user interface is organised into several key sections to provide a clear and
 7. [Server Details](server-details.md): Comprehensive list of recorded backups for specific servers, including detailed statistics
 8. [Backup Details](server-details.md#backup-details): In-depth information for individual backups, including execution logs, warnings, and errors
 
-## Application Toolbar
+## Application Toolbar {#application-toolbar}
 
 The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
-![application toolbar](/img/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Button                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -63,12 +70,12 @@ The application toolbar provides convenient access to key functions and settings
 | <SvgButton svgFilename="duplicati_logo.svg" href="duplicati-configuration" /> &nbsp; [Duplicati configuration](duplicati-configuration.md)       | Open the selected Duplicati server's web interface <br/> _Right-click_ to open the Duplicati legacy UI (`/ngax`) in a new tab                                                                                                                           |
 | <IconButton icon="lucide:download" href="collect-backup-logs" /> &nbsp; [Collect logs](collect-backup-logs.md)                                   | Connect to Duplicati servers and retrieve backup logs <br/> _Right-click_ to collect logs for all configured servers                                                         |
 | <IconButton icon="lucide:settings" href="settings/backup-notifications-settings" /> &nbsp; [Settings](settings/backup-notifications-settings.md) | Configure notifications, monitoring, SMTP server, and notification templates                                                                                                 |
-| <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu. See more in [User Management](settings/user-management-settings.md)                               |
-| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Opens the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened.                                                                           |
+| <IconButton icon="lucide:user" label="username" />                                                                                               | Show the connected user, user type (`Admin`, `User`), click for user menu (includes language selection). See more in [User Management](settings/user-management-settings.md)                               |
+| <IconButton icon="lucide:book-open-text" href="overview" /> &nbsp; User Guide                                                                    | Open the [User Guide](overview.md) to the section relevant to the page you are currently viewing. The tooltip shows "Help for [Page Name]" to indicate which documentation will be opened.                                                                           |
 
-### User Menu
+### User Menu {#user-menu}
 
-Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user.
+Clicking the user button opens a dropdown menu with user-specific options. The menu options differ based on whether you're logged in as an administrator or a regular user. Both roles can change the interface language via the **Language** submenu. Supported languages: English, French, German, Spanish, and Brazilian Portuguese.
 
 <table>
   <tr>
@@ -76,15 +83,15 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
     <th>Regular User</th>
   </tr>
   <tr>
-    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-admin.png" alt="User Menu - Admin" /></td>
-    <td style={{verticalAlign: 'top'}}><img src="/img/screen-user-menu-user.png" alt="User Menu - User" /></td>
+    <td style={{verticalAlign: 'top'}}>![User Menu - Admin](../assets/screen-user-menu-admin.png)</td>
+    <td style={{verticalAlign: 'top'}}>![User Menu - User](../assets/screen-user-menu-user.png)</td>
   </tr>
 </table>
 
-## Essential Configuration
+## Essential Configuration {#essential-configuration}
 
 1. Configure your [Duplicati servers](../installation/duplicati-server-configuration.md) to send backup log messages to duplistatus (required).
-2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the overdue monitoring intervals based on each server’s configuration.
+2. Collect initial backup logs – use the [Collect Backup Logs](collect-backup-logs.md) feature to populate the database with historical backup data from all your Duplicati servers. This also automatically updates the backup monitoring intervals based on each server’s configuration.
 3. Configure server settings – set up server aliases and notes in [Settings → Server](settings/server-settings.md) to make your dashboard more informative.
 4. Configure NTFY settings – set up notifications via NTFY in [Settings → NTFY](settings/ntfy-settings.md).
 5. Configure email settings – set up email notifications in [Settings → Email](settings/email-settings.md).
@@ -93,11 +100,11 @@ Clicking the user button opens a dropdown menu with user-specific options. The m
 <br/>
 
 :::info[IMPORTANT]
-Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](/installation/duplicati-server-configuration.md) section.
+Remember to configure the Duplicati servers to send backup logs to duplistatus, as outlined in the [Duplicati Configuration](../installation/duplicati-server-configuration.md) section.
 :::
 
 <br/>
 
 :::note
-All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
 :::

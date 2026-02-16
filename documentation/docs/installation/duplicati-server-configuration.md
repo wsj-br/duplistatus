@@ -1,6 +1,6 @@
 
 
-# Duplicati Server Configuration (Required)
+# Duplicati Server Configuration (Required) {#duplicati-server-configuration-required}
 
 In order for this application to work properly, each of your Duplicati servers needs to be configured to send HTTP reports for each backup run to the **duplistatus** server.
 

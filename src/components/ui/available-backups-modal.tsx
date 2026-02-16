@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useState, useMemo, createContext, useContext, useCallback } from "react";
+import { useIntlayer } from 'react-intlayer';
+import { useLocale } from '@/contexts/locale-context';
 import { History } from "lucide-react";
 import { formatRelativeTime } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger } from "@/lib/number-format";
 import {
   Dialog,
   DialogContent,
@@ -45,6 +49,9 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 // Global modal component that will be rendered in the layout
 const GlobalAvailableBackupsModal = React.memo(() => {
+  const content = useIntlayer('available-backups-modal');
+  const common = useIntlayer('common');
+  const locale = useLocale();
   const { modalState, closeModal } = useModalContext();
 
   const formatAvailableBackupDate = (isoTimestamp: string): string => {
@@ -104,10 +111,11 @@ const GlobalAvailableBackupsModal = React.memo(() => {
         <DialogContent 
           className="max-w-2xl tooltip-hover-glow"
           style={getAnimationStyles}
+          data-screenshot-target="available-backups-modal"
         >
           <DialogHeader className="pb-3 leading-8">
             <DialogTitle>
-            Available Backup Versions    <br/> <br/>
+            {content.title}    <br/> <br/>
 
               <span className="font-medium text-muted-foreground">{modalState.serverAlias || modalState.serverName}</span>
               {modalState.serverAlias && modalState.serverName !== modalState.serverAlias && (
@@ -116,7 +124,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
               <span className="font-normal text-muted-foreground"> : </span>
               <span className="font-medium text-muted-foreground">{modalState.backupName}</span>
               <span className="font-normal text-muted-foreground"> @ </span>
-              <span className="text-blue-400 font-normal">{new Date(modalState.backupDate).toLocaleString()}</span>
+              <span className="text-blue-400 font-normal">{formatDateTime(modalState.backupDate, locale)}</span>
               {modalState.serverNote && (
                 <>
                   <br/>
@@ -129,9 +137,9 @@ const GlobalAvailableBackupsModal = React.memo(() => {
             <Table>
               <TableHeader>
                 <TableRow className="border-b">
-                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">Version</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Created</TableCell>
-                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">Age</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold w-16 py-2 px-3">{content.version}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{content.created}</TableCell>
+                  <TableCell className="font-medium text-blue-400 font-bold py-2 px-3">{content.age}</TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -146,7 +154,7 @@ const GlobalAvailableBackupsModal = React.memo(() => {
                   <TableRow key={index} className="border-b">
                     <TableCell className="w-16 py-1.5 px-3">{index + 1}</TableCell>
                     <TableCell className="py-1.5 px-3">{formatAvailableBackupDate(timestamp)}</TableCell>
-                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp)}</TableCell>
+                    <TableCell className="py-1.5 px-3">{formatRelativeTime(timestamp, undefined, locale)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -238,13 +246,16 @@ interface AvailableBackupsIconProps {
 }
 
 export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serverName, serverAlias, serverNote, backupName, onIconClick, count }: AvailableBackupsIconProps) {
+  const content = useIntlayer('available-backups-modal');
+  const common = useIntlayer('common');
+  const locale = useLocale();
   const hasAvailableBackups = availableBackups && availableBackups.length > 0;
   
   return (
     <TooltipProvider>
       <div className="flex items-center justify-center gap-2">
         <span>
-          {count !== null ? count.toLocaleString() : 'N/A'}
+          {count !== null ? formatInteger(count, locale) : 'N/A'}
         </span>
         {hasAvailableBackups ? (
           <Tooltip>
@@ -255,12 +266,13 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
                   onIconClick(availableBackups, currentBackupDate, serverName, serverAlias || '', serverNote || '', backupName, event);
                 }}
                 className="text-blue-600 hover:text-blue-800 transition-colors"
+                data-screenshot-target="available-backups-trigger"
               >
                 <History className="h-4 w-4" />
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Click to view available versions</p>
+              <p>{content.clickToView}</p>
             </TooltipContent>
           </Tooltip>
         ) : (
@@ -269,7 +281,7 @@ export function AvailableBackupsIcon({ availableBackups, currentBackupDate, serv
               <History className="h-4 w-4 text-gray-400 opacity-30 cursor-help" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Version info not received</p>
+              <p>{content.versionInfoNotReceived}</p>
             </TooltipContent>
           </Tooltip>
         )}

@@ -1,10 +1,10 @@
 
 
-# HTTPS Setup (Optional)
+# HTTPS Setup (Optional) {#https-setup-optional}
 
 For production deployments, it's recommended to serve **duplistatus** over HTTPS using a reverse proxy. This section provides configuration examples for popular reverse proxy solutions.
 
-### Option 1: Nginx with Certbot (Let's Encrypt)
+### Option 1: Nginx with Certbot (Let's Encrypt) {#option-1-nginx-with-certbot-lets-encrypt}
 
 [Nginx](https://nginx.org/) is a popular web server that can act as a reverse proxy, and [Certbot](https://certbot.eff.org/) provides free SSL certificates from Let's Encrypt.
 
@@ -62,7 +62,7 @@ Certbot will automatically update your Nginx configuration to include SSL settin
 - [Certbot Documentation](https://certbot.eff.org/instructions)
 - [Let's Encrypt Documentation](https://letsencrypt.org/docs/)
 
-### Option 2: Caddy
+### Option 2: Caddy {#option-2-caddy}
 
 [Caddy](https://caddyserver.com/) is a modern web server with automatic HTTPS that simplifies SSL certificate management.
 
@@ -104,7 +104,7 @@ Caddy will automatically obtain and manage SSL certificates from Let's Encrypt.
 - [Caddy Documentation](https://caddyserver.com/docs/)
 - [Caddy Reverse Proxy Guide](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
 
-### Important Notes
+### Important Notes {#important-notes}
 
 :::info[IMPORTANT]
 After setting up HTTPS, remember to update your Duplicati server configuration to use the HTTPS URL:

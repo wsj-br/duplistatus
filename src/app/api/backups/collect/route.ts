@@ -9,7 +9,7 @@ import { defaultAPIConfig } from '@/lib/default-config';
 import { setConfiguration } from '@/lib/db-utils';
 import { encryptData, getServerPassword } from '@/lib/secrets';
 import { withCSRF } from '@/lib/csrf-middleware';
-import { optionalAuth } from '@/lib/auth-middleware';
+import { requireAuth } from '@/lib/auth-middleware';
 import { getClientIpAddress } from '@/lib/ip-utils';
 import { AuditLogger } from '@/lib/audit-logger';
 
@@ -305,7 +305,7 @@ async function updateBackupSettingsWithSchedule(
   await updatePromise;
 }
 
-export const POST = withCSRF(optionalAuth(async (request: NextRequest, authContext) => {
+export const POST = withCSRF(requireAuth(async (request: NextRequest, authContext) => {
   // Store server info for error logging
   let providedServerId: string | undefined;
   let serverNameForError: string | undefined;
@@ -523,22 +523,20 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
       });
       
       // Log audit event for server creation
-      if (authContext) {
-        const ipAddress = getClientIpAddress(request);
-        const userAgent = request.headers.get('user-agent') || 'unknown';
-        await AuditLogger.logServerOperation(
-          'server_added',
-          authContext.userId,
-          authContext.username,
-          detectedServerId,
-          {
-            serverName: detectedServerName,
-            serverUrl: baseUrl,
-          },
-          ipAddress,
-          userAgent
-        );
-      }
+      const ipAddress = getClientIpAddress(request);
+      const userAgent = request.headers.get('user-agent') || 'unknown';
+      await AuditLogger.logServerOperation(
+        'server_added',
+        authContext.userId,
+        authContext.username,
+        detectedServerId,
+        {
+          serverName: detectedServerName,
+          serverUrl: baseUrl,
+        },
+        ipAddress,
+        userAgent
+      );
     }
     
     // Get the server information including alias from database
@@ -866,33 +864,31 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     }
 
     // Log audit event - determine status based on results
-    if (authContext) {
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      const finalServerId = providedServerId || detectedServerId || detectedServerName;
-      const hasErrors = errorCount > 0;
-      const status = hasErrors ? 'error' : 'success';
-      
-      await AuditLogger.log({
-        userId: authContext.userId,
-        username: authContext.username,
-        action: 'backup_collected',
-        category: 'backup',
-        targetType: 'backup',
-        targetId: finalServerId,
-        details: {
-          serverName: detectedServerName,
-          serverAlias,
-          processed: processedCount,
-          skipped: skippedCount,
-          errors: errorCount,
-        },
-        ipAddress,
-        userAgent,
-        status,
-        errorMessage: hasErrors ? `Collection completed with ${errorCount} error(s)` : undefined,
-      });
-    }
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const finalServerId = providedServerId || detectedServerId || detectedServerName;
+    const hasErrors = errorCount > 0;
+    const status = hasErrors ? 'error' : 'success';
+    
+    await AuditLogger.log({
+      userId: authContext.userId,
+      username: authContext.username,
+      action: 'backup_collected',
+      category: 'backup',
+      targetType: 'backup',
+      targetId: finalServerId,
+      details: {
+        serverName: detectedServerName,
+        serverAlias,
+        processed: processedCount,
+        skipped: skippedCount,
+        errors: errorCount,
+      },
+      ipAddress,
+      userAgent,
+      status,
+      errorMessage: hasErrors ? `Collection completed with ${errorCount} error(s)` : undefined,
+    });
 
     return NextResponse.json(responseData);
 
@@ -900,30 +896,28 @@ export const POST = withCSRF(optionalAuth(async (request: NextRequest, authConte
     console.error('Error collecting backups:', error instanceof Error ? error.message : String(error));
     
     // Log audit event for collection failure
-    if (authContext) {
-      const ipAddress = getClientIpAddress(request);
-      const userAgent = request.headers.get('user-agent') || 'unknown';
-      const errorMessage = error instanceof Error ? error.message : 'Failed to collect backups';
-      const finalServerId = providedServerId || 'unknown';
-      const finalServerName = serverNameForError || 'unknown';
-      
-      await AuditLogger.log({
-        userId: authContext.userId,
-        username: authContext.username,
-        action: 'backup_collected',
-        category: 'backup',
-        targetType: 'backup',
-        targetId: finalServerId,
-        details: {
-          serverName: finalServerName,
-          error: errorMessage,
-        },
-        ipAddress,
-        userAgent,
-        status: 'error',
-        errorMessage,
-      });
-    }
+    const ipAddress = getClientIpAddress(request);
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+    const errorMessage = error instanceof Error ? error.message : 'Failed to collect backups';
+    const finalServerId = providedServerId || 'unknown';
+    const finalServerName = serverNameForError || 'unknown';
+    
+    await AuditLogger.log({
+      userId: authContext.userId,
+      username: authContext.username,
+      action: 'backup_collected',
+      category: 'backup',
+      targetType: 'backup',
+      targetId: finalServerId,
+      details: {
+        serverName: finalServerName,
+        error: errorMessage,
+      },
+      ipAddress,
+      userAgent,
+      status: 'error',
+      errorMessage,
+    });
     
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to collect backups' },

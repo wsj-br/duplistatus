@@ -13,6 +13,7 @@ import QRCode from 'qrcode';
 import { NtfyConfig } from '@/lib/types';
 import { NtfyQrModal } from '@/components/ui/ntfy-qr-modal';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { useIntlayer } from 'react-intlayer';
 
 interface NtfyFormProps {
   config: NtfyConfig;
@@ -20,6 +21,8 @@ interface NtfyFormProps {
 }
 
 export function NtfyForm({ config, onSave }: NtfyFormProps) {
+  const content = useIntlayer('ntfy-form');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const [formData, setFormData] = useState<NtfyConfig>(config);
   const [isSaving, setIsSaving] = useState(false);
@@ -35,8 +38,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   const generateQrCode = async () => {
     if (!formData.url || !formData.topic) {
       toast({
-        title: "Validation Error",
-        description: "Please enter both NTFY URL and Topic before generating QR code",
+        title: content.validationError.value,
+        description: content.pleaseEnterBothUrlAndTopic.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -72,8 +75,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
     } catch (error) {
       console.error('Error generating QR code:', error);
       toast({
-        title: "QR Code Generation Failed",
-        description: "Failed to generate QR code. Please try again.",
+        title: content.qrCodeGenerationFailed.value,
+        description: content.failedToGenerateQrCode.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -101,8 +104,8 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
   const handleTestMessage = async () => {
     if (!formData.url || !formData.topic) {
       toast({
-        title: "Validation Error",
-        description: "Please enter both NTFY URL and Topic before testing",
+        title: content.validationError.value,
+        description: content.pleaseEnterBothUrlAndTopicForTest.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -121,19 +124,19 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send test notification');
+        throw new Error(errorData.error || content.failedToSendTestNotification.value);
       }
 
       toast({
-        title: "Test Successful",
-        description: "Test notification sent successfully! Check your device.",
+        title: content.testSuccessful.value,
+        description: content.testNotificationSentSuccessfully.value,
         duration: 2000,
       });
     } catch (error) {
       console.error('Error sending test notification:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Test Failed",
-        description: error instanceof Error ? error.message : "Failed to send test notification",
+        title: content.testFailed.value,
+        description: error instanceof Error ? error.message : content.failedToSendTestNotification.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -149,19 +152,30 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <div className="flex items-center gap-3">
             <ColoredIcon icon={MessageSquare} color="blue" size="lg" />
             <div>
-              <CardTitle>NTFY Configuration</CardTitle>
+              <CardTitle>{content.title.value}</CardTitle>
               <CardDescription className="mt-1">
-                Configure your NTFY server settings for receiving notifications. 
-                Learn more about NTFY at{' '}
+                {content.description.value}
+                {' '}
+                {content.cardDescLearnMore.value}
+                {' '}
                 <a 
                   href="https://docs.ntfy.sh/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  docs.ntfy.sh 
+                  docs.ntfy.sh
                 </a>
-                {' '} and <a href="https://docs.ntfy.sh/subscribe/phone/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">here</a> to subscribe to your topic in your phone.
+                {' '}{content.cardDescAnd.value}{' '}
+                <a 
+                  href="https://docs.ntfy.sh/subscribe/phone/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-primary hover:underline"
+                >
+                  {content.cardDescHere.value}
+                </a>
+                {' '}{content.cardDescSubscribe.value}
               </CardDescription>
             </div>
           </div>
@@ -170,41 +184,40 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <div className="space-y-2">
             <Label htmlFor="ntfy-url" className="flex items-center gap-2">
               <ColoredIcon icon={Globe} color="blue" size="sm" />
-              NTFY URL
+              {content.ntfyUrl.value}
             </Label>
             <Input
               id="ntfy-url"
               value={formData.url || ''}
               onChange={(e) => handleInputChange('url', e.target.value)}
-              placeholder="https://ntfy.sh/"
+              placeholder={content.ntfyUrlPlaceholder.value}
               type="url"
             />
             <p className="text-sm text-muted-foreground">
-              The URL of your NTFY server. Defaults to <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ntfy.sh/</a>
+              {content.ntfyUrlDescPrefix.value} <a href="https://ntfy.sh/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">https://ntfy.sh/</a>
             </p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="ntfy-topic" className="flex items-center gap-2">
               <ColoredIcon icon={MessageSquare} color="green" size="sm" />
-              NTFY Topic
+              {content.ntfyTopic.value}
             </Label>
             <Input
               id="ntfy-topic"
               value={formData.topic || ''}
               onChange={(e) => handleInputChange('topic', e.target.value)}
-              placeholder="duplistatus-my-notification-topic"
+              placeholder={content.ntfyTopicPlaceholder.value}
             />
             <p className="text-sm text-muted-foreground">
-                Leave empty to automatically generate a random name when you save.
-                You can view this topic at{' '}
+                {content.ntfyTopicDescription.value}{' '}
                 <a
-                  href={`https://ntfy.sh/${formData.topic || 'duplistatus-my-notification-topic'}`}
+                  href={`https://ntfy.sh/${formData.topic || content.ntfyTopicPlaceholder.value}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  https://ntfy.sh/{formData.topic || 'duplistatus-my-notification-topic'}
+                  https://ntfy.sh/{formData.topic || content.ntfyTopicPlaceholder.value}
                 </a>.
             </p>
           </div>
@@ -212,25 +225,24 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
           <div className="space-y-2">
             <Label htmlFor="ntfy-access-token" className="flex items-center gap-2">
               <ColoredIcon icon={Key} color="yellow" size="sm" />
-              NTFY Access Token (Optional)
+              {content.ntfyAccessTokenOptional.value}
             </Label>
             <TogglePasswordInput
               id="ntfy-access-token"
               value={formData.accessToken || ''}
               onChange={(value) => handleInputChange('accessToken', value)}
-              placeholder="Enter your NTFY access token"
+              placeholder={content.ntfyAccessTokenPlaceholder.value}
             />
             <p className="text-sm text-muted-foreground">
-            If your NTFY server requires authentication, please enter your access token.
-            For more details, refer to the {' '}
+            {content.ntfyAccessTokenDescPrefix.value}{' '}
               <a 
                 href="https://docs.ntfy.sh/config/#access-tokens" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                NTFY authentication
-              </a>  documentation.
+                {content.ntfyAccessTokenDescLink.value}
+              </a>  {content.ntfyAccessTokenDescSuffix.value}
             </p>
           </div>
 
@@ -241,7 +253,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               variant="gradient"
               className="w-full sm:w-auto"
             >
-              {isSaving ? "Saving..." : "Save Settings"}
+              {isSaving ? content.saving.value : content.saveSettings.value}
             </Button>
 
             <Button
@@ -253,12 +265,12 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               {isTesting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending...
+                  {content.sending.value}
                 </>
               ) : (
                 <>
                   <SendHorizonal className="w-4 h-4" />
-                  Send Test Message
+                  {content.sendTestMessage.value}
                 </>
               )}
             </Button>
@@ -269,7 +281,7 @@ export function NtfyForm({ config, onSave }: NtfyFormProps) {
               className="w-full sm:w-auto"
             >
               <QrCode className="w-4 h-4 mr-2" />
-              Configure Device
+              {content.configureDevice.value}
             </Button>
 
           </div>

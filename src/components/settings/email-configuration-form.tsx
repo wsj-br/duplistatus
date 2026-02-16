@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { TogglePasswordInput } from '@/components/ui/toggle-password-input';
+import { useIntlayer } from 'react-intlayer';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,6 +49,8 @@ interface EmailConfig {
 }
 
 export function EmailConfigurationForm() {
+  const content = useIntlayer('email-configuration-form');
+  const common = useIntlayer('common');
   const { toast } = useToast();
   const { config, refreshConfigSilently } = useConfiguration();
   const [emailConfig, setEmailConfig] = useState<EmailConfig>({
@@ -174,29 +177,29 @@ export function EmailConfigurationForm() {
     const missing: string[] = [];
     
     if (emailConfig.host.trim() === '') {
-      missing.push('SMTP Server Hostname');
+      missing.push(content.smtpServerHostnameMissing);
     }
     
     if (emailConfig.port <= 0) {
-      missing.push('SMTP Server Port');
+      missing.push(content.smtpServerPortMissing);
     }
     
     if (!isValidEmail(emailConfig.mailto)) {
-      missing.push('Recipient Email');
+      missing.push(content.recipientEmailMissing);
     }
     
     // If authentication is required, check username and password
     if (emailConfig.requireAuth !== false) {
       if (emailConfig.username.trim() === '') {
-        missing.push('SMTP Server Username');
+        missing.push(content.smtpServerUsernameMissing);
       }
       if (!emailConfig.hasPassword) {
-        missing.push('SMTP Server Password');
+        missing.push(content.smtpServerPasswordMissing);
       }
     } else {
       // If authentication is not required, fromAddress is required
       if (!emailConfig.fromAddress || emailConfig.fromAddress.trim() === '' || !isValidEmail(emailConfig.fromAddress)) {
-        missing.push('From Address');
+        missing.push(content.fromAddressMissing);
       }
     }
     
@@ -261,8 +264,8 @@ export function EmailConfigurationForm() {
       }
 
       toast({
-        title: "Settings Saved",
-        description: "SMTP settings saved successfully!",
+        title: content.settingsSaved,
+        description: content.smtpSettingsSavedSuccessfully,
         duration: 2000,
       });
       
@@ -271,8 +274,8 @@ export function EmailConfigurationForm() {
     } catch (error) {
       console.error('Error saving configuration:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save configuration",
+        title: content.saveFailed,
+        description: error instanceof Error ? error.message : content.failedToSaveConfiguration,
         variant: "destructive",
         duration: 3000,
       });
@@ -285,8 +288,8 @@ export function EmailConfigurationForm() {
     // First validate the form
     if (!isValidEmail(emailConfig.mailto)) {
       toast({
-        title: "Validation Error",
-        description: "Recipient email must contain '@' symbol",
+        title: content.validationError,
+        description: content.recipientEmailMustContainAt,
         variant: "destructive",
         duration: 3000,
       });
@@ -297,8 +300,8 @@ export function EmailConfigurationForm() {
     if (emailConfig.requireAuth === false) {
       if (!emailConfig.fromAddress || emailConfig.fromAddress.trim() === '' || !isValidEmail(emailConfig.fromAddress)) {
         toast({
-          title: "Validation Error",
-          description: "From address is required when authentication is disabled and must contain '@' symbol",
+          title: content.validationError,
+          description: content.fromAddressRequiredWhenAuthDisabled,
           variant: "destructive",
           duration: 3000,
         });
@@ -306,8 +309,8 @@ export function EmailConfigurationForm() {
       }
     } else if (emailConfig.fromAddress && emailConfig.fromAddress.trim() !== '' && !isValidEmail(emailConfig.fromAddress)) {
       toast({
-        title: "Validation Error",
-        description: "From address must contain '@' symbol",
+        title: content.validationError,
+        description: content.fromAddressMustContainAt,
         variant: "destructive",
         duration: 3000,
       });
@@ -414,8 +417,8 @@ export function EmailConfigurationForm() {
       });
 
       toast({
-        title: "Settings Deleted",
-        description: "SMTP settings have been deleted successfully.",
+        title: content.settingsDeleted,
+        description: content.smtpSettingsDeletedSuccessfully,
         duration: 2000,
       });
       
@@ -475,8 +478,8 @@ export function EmailConfigurationForm() {
     const saved = await saveCurrentConfigSilently();
     if (!saved) {
       toast({
-        title: "Warning",
-        description: "Failed to save current configuration. Your changes may be lost when changing password.",
+        title: content.warning,
+        description: content.failedToSaveCurrentConfiguration,
         variant: "default",
         duration: 3000,
       });
@@ -490,8 +493,8 @@ export function EmailConfigurationForm() {
     // When password is visible, confirmation field is synced, so only check newPassword
     if (!newPassword || (!showPassword && !confirmPassword)) {
       toast({
-        title: "Error",
-        description: "Please enter both password fields",
+        title: common.status.error,
+        description: content.pleaseEnterBothPasswordFields,
         variant: "destructive",
         duration: 3000,
       });
@@ -501,8 +504,8 @@ export function EmailConfigurationForm() {
     // When password is visible, confirmation is synced, so they match
     if (!showPassword && newPassword !== confirmPassword) {
       toast({
-        title: "Error",
-        description: "Passwords do not match",
+        title: common.status.error,
+        description: content.passwordsDoNotMatch,
         variant: "destructive",
         duration: 3000,
       });
@@ -546,16 +549,16 @@ export function EmailConfigurationForm() {
         setEmailConfig(prev => ({ ...prev, hasPassword: true }));
       } else {
         toast({
-          title: "Error",
-          description: result.error || "Failed to update password",
+          title: common.status.error,
+          description: result.error || content.failedToUpdatePassword,
           variant: "destructive",
           duration: 3000,
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update password",
+        title: common.status.error,
+        description: error instanceof Error ? error.message : content.failedToUpdatePassword,
         variant: "destructive",
         duration: 3000,
       });
@@ -606,16 +609,16 @@ export function EmailConfigurationForm() {
         setEmailConfig(prev => ({ ...prev, hasPassword: false }));
       } else {
         toast({
-          title: "Error",
-          description: result.error || "Failed to delete password",
+          title: common.status.error,
+          description: result.error || content.failedToDeletePassword,
           variant: "destructive",
           duration: 3000,
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete password",
+        title: common.status.error,
+        description: error instanceof Error ? error.message : content.failedToDeletePassword,
         variant: "destructive",
         duration: 3000,
       });
@@ -653,10 +656,10 @@ export function EmailConfigurationForm() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5" />
-            Email Settings
+            {content.emailSettings}
           </CardTitle>
           <CardDescription>
-            Configure SMTP settings for email notifications. Settings are stored securely in the database.
+            {content.descriptionFull}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -665,9 +668,9 @@ export function EmailConfigurationForm() {
             <Alert className="bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800 flex items-start gap-6 [&>svg]:relative [&>svg]:left-0 [&>svg]:top-0 [&>svg~*]:pl-0">
               <AlertTriangle className="h-8 w-8 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-3.5" />
               <AlertDescription className="text-white-800 dark:text-white-200">
-              <b>Email notifications are disabled.</b> Complete the required fields below to enable notifications.
+              <b>{content.emailNotificationsDisabled}</b> {content.completeRequiredFields}
               <br /><br />
-              <b>Important:</b> Always test your settings to ensure emails are delivered successfully.
+              <b>{content.important}</b> {content.alwaysTestSettings}
               </AlertDescription>
             </Alert>
           )}
@@ -677,29 +680,29 @@ export function EmailConfigurationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="smtp-host">
-                  SMTP Server Hostname
-                  {emailConfig.host.trim() === '' && <span className="text-red-500 ml-1">(required)</span>}
+                  {content.smtpServerHostname}
+                  {emailConfig.host.trim() === '' && <span className="text-red-500 ml-1">{content.required}</span>}
                 </Label>
                 <Input
                   id="smtp-host"
                   type="text"
                   value={emailConfig.host}
                   onChange={(e) => handleInputChange('host', e.target.value)}
-                  placeholder="smtp.your-domain.com"
+                  placeholder={content.smtpHostPlaceholder.value}
                 />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="smtp-port">
-                  SMTP Server Port
-                  {emailConfig.port <= 0 && <span className="text-red-500 ml-1">(required)</span>}
+                  {content.smtpServerPort}
+                  {emailConfig.port <= 0 && <span className="text-red-500 ml-1">{content.required}</span>}
                 </Label>
                 <Input
                   id="smtp-port"
                   type="number"
                   value={emailConfig.port}
                   onChange={(e) => handleInputChange('port', parseInt(e.target.value) || 587)}
-                  placeholder="587"
+                  placeholder={content.smtpPortPlaceholder.value}
                   min="1"
                   max="65535"
                 />
@@ -709,23 +712,23 @@ export function EmailConfigurationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="smtp-username">
-                  SMTP Server Username
-                  {emailConfig.requireAuth !== false && emailConfig.username.trim() === '' && <span className="text-red-500 ml-1">(required)</span>}
+                  {content.smtpServerUsername}
+                  {emailConfig.requireAuth !== false && emailConfig.username.trim() === '' && <span className="text-red-500 ml-1">{content.required}</span>}
                 </Label>
                 <Input
                   id="smtp-username"
                   type="text"
                   value={emailConfig.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
-                  placeholder="your-email@your-domain.com"
+                  placeholder={content.smtpUsernamePlaceholder.value}
                   disabled={emailConfig.requireAuth === false}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="smtp-password">
-                  SMTP Server Password
-                  {emailConfig.requireAuth !== false && !emailConfig.hasPassword && <span className="text-red-500 ml-1">(required)</span>}
+                  {content.smtpServerPassword}
+                  {emailConfig.requireAuth !== false && !emailConfig.hasPassword && <span className="text-red-500 ml-1">{content.required}</span>}
                 </Label>
                 <div className="flex items-center gap-2">
                   <Button
@@ -736,7 +739,7 @@ export function EmailConfigurationForm() {
                     className="flex items-center gap-2"
                   >
                     <KeyRound className="h-4 w-4" />
-                    {emailConfig.hasPassword ? 'Change Password' : 'Set Password'}
+                    {emailConfig.hasPassword ? content.changePassword : content.setPassword}
                   </Button>
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -745,7 +748,7 @@ export function EmailConfigurationForm() {
                       onCheckedChange={(checked) => handleInputChange('requireAuth', checked)}
                     />
                     <Label htmlFor="smtp-require-auth" className="text-sm">
-                      SMTP Server requires authentication
+                      {content.smtpRequiresAuth}
                     </Label>
                   </div>
                 </div>
@@ -755,20 +758,20 @@ export function EmailConfigurationForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="smtp-mailto">
-                  Recipient Email
-                  {!isValidEmail(emailConfig.mailto) && <span className="text-red-500 ml-1">(required)</span>}
+                  {content.recipientEmail}
+                  {!isValidEmail(emailConfig.mailto) && <span className="text-red-500 ml-1">{content.required}</span>}
                 </Label>
                 <Input
                   id="smtp-mailto"
                   type="email"
                   value={emailConfig.mailto}
                   onChange={(e) => handleInputChange('mailto', e.target.value)}
-                  placeholder="recipient@example.com"
+                  placeholder={content.recipientEmailPlaceholder.value}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="smtp-connection-type">Connection Type</Label>
+                <Label htmlFor="smtp-connection-type">{content.connectionType}</Label>
                 <div className="flex rounded-md border border-input bg-background shadow-sm w-fit" role="group">
                   <button
                     type="button"
@@ -783,7 +786,7 @@ export function EmailConfigurationForm() {
                       }
                     `}
                   >
-                    Plain SMTP
+                    {content.plainSmtp}
                   </button>
                   <button
                     type="button"
@@ -798,7 +801,7 @@ export function EmailConfigurationForm() {
                       }
                     `}
                   >
-                    STARTTLS
+                    {content.starttls}
                   </button>
                   <button
                     type="button"
@@ -813,15 +816,15 @@ export function EmailConfigurationForm() {
                       }
                     `}
                   >
-                    Direct SSL/TLS
+                    {content.directSslTls}
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {emailConfig.connectionType === 'plain'
-                    ? 'Plain SMTP connection without encryption (not recommended, use only for trusted networks).'
+                    ? content.plainSmtpDescription
                     : emailConfig.connectionType === 'starttls'
-                    ? 'STARTTLS connection (recommended for port 587). The connection will upgrade to TLS after initial handshake.'
-                    : 'Direct SSL/TLS connection (recommended for port 465). The connection is encrypted from the start.'
+                    ? content.starttlsDescription
+                    : content.directSslTlsDescription
                   }
                 </p>
               </div>
@@ -829,26 +832,26 @@ export function EmailConfigurationForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="smtp-sender-name">Sender Name (optional)</Label>
+                <Label htmlFor="smtp-sender-name">{content.senderNameOptional}</Label>
                 <Input
                   id="smtp-sender-name"
                   type="text"
                   value={emailConfig.senderName || ''}
                   onChange={(e) => handleInputChange('senderName', e.target.value)}
-                  placeholder="duplistatus"
+                  placeholder={content.senderNamePlaceholder.value}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Display name shown as the sender. Defaults to &quot;duplistatus&quot; if not set.
+                  {content.senderNameDescription}
                 </p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="smtp-from-address">
-                  From Address{' '}
+                  {content.fromAddressLabel}{' '}
                   {emailConfig.requireAuth === false ? (
-                    <span className="text-red-500">(required)</span>
+                    <span className="text-red-500">{content.required}</span>
                   ) : (
-                    <span>(optional)</span>
+                    <span>{content.optional}</span>
                   )}
                 </Label>
                 <Input
@@ -856,20 +859,17 @@ export function EmailConfigurationForm() {
                   type="email"
                   value={emailConfig.fromAddress || ''}
                   onChange={(e) => handleInputChange('fromAddress', e.target.value)}
-                  placeholder="noreply@your-domain.com"
+                  placeholder={content.fromAddressPlaceholder.value}
                   required={emailConfig.requireAuth === false}
                 />
                 <p className="text-xs text-muted-foreground">
                   {emailConfig.requireAuth === false ? (
                     <>
-                      Email address shown as the sender. <span className="text-red-500 font-medium">Required when authentication is disabled.</span> <br />
+                      {content.fromAddressRequiredDescription}
                     </>
                   ) : (
                     <>
-                      Email address shown as the sender. Defaults to 
-                      <code className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">SMTP Server Username</code> if not set. <br />
-                      <span className="text-yellow-500">Note:</span> Some email providers (like Gmail) will always use the 
-                      <code className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">SMTP Server Username</code> instead of this value.
+                      {content.fromAddressOptionalDescription}
                     </>
                   )}
                 </p>
@@ -885,7 +885,7 @@ export function EmailConfigurationForm() {
               disabled={isSaving}
               className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
             >
-              {isSaving ? "Saving..." : "Save Settings"}
+              {isSaving ? content.saving : content.saveSettings}
             </Button>
             
             <Button
@@ -897,12 +897,12 @@ export function EmailConfigurationForm() {
               {isTesting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending...
+                  {content.sending}
                 </>
               ) : (
                 <>
                   <Mail className="w-4 h-4" />
-                  Send Test Email
+                  {content.sendTestEmail}
                 </>
               )}
             </Button>
@@ -915,23 +915,23 @@ export function EmailConfigurationForm() {
                   className="w-full sm:w-auto"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  {isDeleting ? "Deleting..." : "Delete SMTP Settings"}
+                  {isDeleting ? content.deleting : content.deleteSmtpSettings}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete SMTP Settings</AlertDialogTitle>
+                <AlertDialogTitle>{content.deleteSmtpSettingsTitle}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to delete the SMTP settings? This action cannot be undone and will remove all email notification settings.
+                  {content.deleteSmtpSettingsDescription}
                 </AlertDialogDescription>
               </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{common.ui.cancel}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDeleteConfig}
                     className="bg-red-600 hover:bg-red-700"
                   >
-                    Delete Settings
+                    {content.deleteSettings}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -944,32 +944,32 @@ export function EmailConfigurationForm() {
       <Dialog open={passwordDialogOpen} onOpenChange={handlePasswordDialogClose}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Change Email Password</DialogTitle>
+            <DialogTitle>{content.changeEmailPassword}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="new-password" className="text-sm font-medium">
-                New Password
+                {content.newPassword}
               </Label>
               <TogglePasswordInput
                 ref={passwordInputRef}
                 id="new-password"
                 value={newPassword}
                 onChange={setNewPassword}
-                placeholder="Enter new password"
+                placeholder={content.enterNewPassword.value}
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password" className={`text-sm font-medium ${showPassword ? 'opacity-60' : ''}`}>
-                Confirm Password
+                {content.confirmPassword}
               </Label>
               <TogglePasswordInput
                 id="confirm-password"
                 value={confirmPassword}
                 onChange={setConfirmPassword}
-                placeholder="Confirm new password"
+                placeholder={content.confirmNewPassword.value}
                 className={!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword ? 'border-red-500' : ''}
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
@@ -980,7 +980,7 @@ export function EmailConfigurationForm() {
               {!showPassword && newPassword && confirmPassword && newPassword !== confirmPassword && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
                   <XCircle className="h-4 w-4" />
-                  Passwords do not match
+                  {content.passwordsDoNotMatch}
                 </p>
               )}
             </div>
@@ -997,10 +997,10 @@ export function EmailConfigurationForm() {
                 {isDeletingPassword ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Deleting...
+                    {content.deleting}
                   </>
                 ) : (
-                  'Delete Password'
+                  content.deletePassword
                 )}
               </Button>
               <div className="flex gap-2">
@@ -1010,7 +1010,7 @@ export function EmailConfigurationForm() {
                   onClick={handlePasswordDialogClose}
                   disabled={isSavingPassword || isDeletingPassword}
                 >
-                  Cancel
+                  {common.ui.cancel}
                 </Button>
                 <Button
                   type="button"
@@ -1021,10 +1021,10 @@ export function EmailConfigurationForm() {
                   {isSavingPassword ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
+                      {content.saving}
                     </>
                   ) : (
-                    'Save Password'
+                    content.savePassword
                   )}
                 </Button>
               </div>

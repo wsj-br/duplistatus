@@ -1,10 +1,10 @@
 
 
-# Homepage Integration (Optional)
+# Homepage Integration (Optional) {#homepage-integration-optional}
 
 [Homepage](https://gethomepage.dev/) is a customisable dashboard application. To integrate **duplistatus** with Homepage, add a widget to your `services.yaml` file using the [Custom API widget type](https://gethomepage.dev/widgets/services/customapi/).
 
-## Summary Widget
+## Summary Widget {#summary-widget}
 
 This widget displays overall backup statistics on your Homepage dashboard.
 
@@ -46,7 +46,7 @@ This widget displays overall backup statistics on your Homepage dashboard.
 
 ![Homepage Summary Widget](/img/homepage-summary.png)
 
-## Last Backup Information Widget
+## Last Backup Information Widget {#last-backup-information-widget}
 
 This widget displays the latest backup information for a specific machine.
 
@@ -81,7 +81,7 @@ This widget displays the latest backup information for a specific machine.
 
 ![Homepage Last Backup Widget](/img/homepage-lastbackup.png)
 
-## Configuration Notes
+## Configuration Notes {#configuration-notes}
 
 - Replace `your-server` with your server's IP address or hostname.
 - Adjust the `refreshInterval` as needed (in milliseconds).

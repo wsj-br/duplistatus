@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, forwardRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
+import { useIntlayer } from 'react-intlayer';
 
 interface TogglePasswordInputProps {
   id: string;
@@ -33,6 +34,7 @@ export const TogglePasswordInput = forwardRef<HTMLInputElement, TogglePasswordIn
   syncValue,
   passwordInputRef
 }, ref) {
+  const common = useIntlayer('common');
   // Use controlled mode if showPassword and onTogglePassword are provided, otherwise use internal state
   const [internalShowPassword, setInternalShowPassword] = useState(false);
   const isControlled = controlledShowPassword !== undefined && onTogglePassword !== undefined;
@@ -140,7 +142,7 @@ export const TogglePasswordInput = forwardRef<HTMLInputElement, TogglePasswordIn
         onMouseDown={(e) => e.preventDefault()}
         disabled={disabled}
         tabIndex={-1}
-        aria-label={showPassword ? 'Hide password' : 'Show password'}
+        aria-label={showPassword ? common.ui.hidePassword.value : common.ui.showPassword.value}
       >
         {showPassword ? (
           <EyeOff className="h-4 w-4 text-muted-foreground" />

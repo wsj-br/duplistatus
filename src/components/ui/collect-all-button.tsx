@@ -7,12 +7,55 @@ import { useGlobalRefresh } from '@/contexts/global-refresh-context';
 import { useConfiguration } from '@/contexts/configuration-context';
 import { ServerAddress } from '@/lib/types';
 import { Loader2, Import } from 'lucide-react';
+import { useIntlayer } from 'react-intlayer';
 import { 
   collectFromMultipleServers, 
   getEligibleServers, 
-  formatCollectionSummary,
   isValidUrl
 } from '@/lib/bulk-collection';
+import type { CollectionSummary } from '@/lib/bulk-collection';
+
+function formatCollectionSummaryFromContent(
+  summary: CollectionSummary,
+  content: ReturnType<typeof useIntlayer<'collect-all-button'>>
+): { title: string; description: string; variant: 'default' | 'destructive' } {
+  const {
+    totalServers,
+    successfulCollections,
+    totalProcessed,
+    totalSkipped,
+    totalErrors,
+    failedServerNames,
+  } = summary;
+  const replace = (s: string) =>
+    s
+      .replace('{successfulCollections}', String(successfulCollections))
+      .replace('{totalProcessed}', String(totalProcessed))
+      .replace('{totalSkipped}', String(totalSkipped))
+      .replace('{totalErrors}', String(totalErrors))
+      .replace('{totalServers}', String(totalServers))
+      .replace('{failedServerNames}', failedServerNames.join(', '));
+
+  if (successfulCollections === totalServers) {
+    return {
+      title: content.summaryAllSuccessTitle.value,
+      description: replace(content.summaryAllSuccessDescription.value),
+      variant: 'default',
+    };
+  }
+  if (successfulCollections > 0) {
+    return {
+      title: content.summaryPartialTitle.value,
+      description: replace(content.summaryPartialDescription.value),
+      variant: 'default',
+    };
+  }
+  return {
+    title: content.summaryFailedTitle.value,
+    description: replace(content.summaryFailedDescription.value),
+    variant: 'destructive',
+  };
+}
 
 interface CollectAllButtonProps {
   servers: ServerAddress[];
@@ -55,6 +98,7 @@ export function CollectAllButton({
   const { toast, removeToast } = useToast();
   const { refreshDashboard } = useGlobalRefresh();
   const { refreshConfigSilently } = useConfiguration();
+  const content = useIntlayer('collect-all-button');
 
   // Get eligible servers using library function
   const eligibleServers = getEligibleServers(servers, dynamicMode);
@@ -101,8 +145,8 @@ export function CollectAllButton({
     if (eligibleServers.length === 0) {
       if (showInstructionToast) {
         toast({
-          title: "No Eligible Servers",
-          description: "No servers with passwords and valid URLs found to collect from",
+          title: content.noEligibleServers.value,
+          description: content.noEligibleServersDescription.value,
           variant: "destructive",
           duration: 3000,
         });
@@ -126,9 +170,8 @@ export function CollectAllButton({
         onProgressUpdate: (progress) => setCollectionProgress(progress)
       });
 
-      // Show summary toast
-      const { title, description, variant } = formatCollectionSummary(summary);
-      
+      // Show summary toast (using translated content)
+      const { title, description, variant } = formatCollectionSummaryFromContent(summary, content);
       if (showInstructionToast) {
         toast({
           title,
@@ -140,10 +183,13 @@ export function CollectAllButton({
 
       // Show additional toast with instructions for partial or complete failures
       if (summary.failedCollections > 0 && showInstructionToast) {
+        const errorDescription = summary.successfulCollections > 0
+          ? content.serverErrorsDetectedDescriptionWithStatus.value
+          : content.serverErrorsDetectedDescription.value;
+        
         const instructionToast = toast({
-          title: "Server Errors Detected",
-          description: "Check server(s) settings and password and if the server is up and running, then try again. Click \"Collect All\" to show which server is with error" + 
-            (summary.successfulCollections > 0 ? " (column Status)" : ""),
+          title: content.serverErrorsDetected.value,
+          description: errorDescription,
           action: (
             <Button
               variant="outline"
@@ -154,7 +200,7 @@ export function CollectAllButton({
               }}
               className="underline hover:no-underline"
             >
-              Servers settings
+              {content.serversSettings.value}
             </Button>
           ),
           variant: "destructive",
@@ -172,8 +218,8 @@ export function CollectAllButton({
       
       if (showInstructionToast) {
         toast({
-          title: "Collection Error",
-          description: `An unexpected error occurred during collection: ${errorMessage}`,
+          title: content.collectionError.value,
+          description: `${content.collectionErrorDescription.value}: ${errorMessage}`,
           variant: "destructive",
           duration: 4000,
         });
@@ -199,7 +245,8 @@ export function CollectAllButton({
     refreshConfigSilently, 
     dynamicMode, 
     dynamicPort, 
-    dynamicPassword
+    dynamicPassword,
+    content
   ]);
 
   // Auto-trigger collection when autoTrigger is true and servers are available
@@ -217,6 +264,18 @@ export function CollectAllButton({
 
   const isDisabled = disabled || isCollecting || eligibleServers.length === 0;
 
+  const tooltip = eligibleServers.length === 0 
+    ? content.noServersTooltip.value
+    : content.tooltip.value;
+
+  const collectingText = showText && isCollecting
+    ? `${content.collecting.value} ${Math.round(collectionProgress)}%`
+    : null;
+
+  const collectAllText = showText && !isCollecting
+    ? `${content.collectAll.value} (${eligibleServers.length})`
+    : null;
+
   return (
     <Button
       onClick={handleCollectAll}
@@ -224,17 +283,17 @@ export function CollectAllButton({
       variant={variant}
       size={getButtonSize()}
       className={className}
-      title={eligibleServers.length === 0 ? "No servers with passwords configured" : "Collect backups from all configured servers"}
+      title={tooltip}
     >
       {isCollecting ? (
         <>
           <Loader2 className={`${getIconSize()} animate-spin`} />
-          {showText && `Collecting... ${Math.round(collectionProgress)}%`}
+          {collectingText}
         </>
       ) : (
         <>
           <Import className={`${getIconSize()}`} />
-          {showText && `Collect All (${eligibleServers.length})`}
+          {collectAllText}
         </>
       )}
     </Button>

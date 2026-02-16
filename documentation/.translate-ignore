@@ -1,0 +1,32 @@
+# Files to ignore during translations
+
+# Documentation files
+# Keep the license in English
+LICENSE.md
+
+# don't translate the readme-header.md file
+readme-header.md
+
+# Don't translate the API reference
+api-reference/*
+
+# SVG files not used in documentation (duplistatus*.svg converted to PNG)
+# These are ignored by translate:svg to avoid translating unused assets.
+
+# Dashboard/table diagram - not referenced in docs
+duplistatus_dash-table.svg
+
+# Logo variants - used in docusaurus.config.ts from static/img, not as translated docs images
+duplistatus_logo.svg
+duplistatus_logo_color.svg
+duplistatus_logo_flat.svg
+duplistatus_logo_old.svg
+
+# Banner variants - used in docusaurus.config.ts from static/img, not as translated docs images
+duplistatus_banner.svg
+duplistatus_banner_color.svg
+duplistatus_banner_flat.svg
+
+# Logo studies - not used in docs
+duplistatus_newlogo2.svg
+duplistatus_new_logo_study.svg

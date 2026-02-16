@@ -146,6 +146,22 @@ export interface NotificationTemplate {
   message: string;
 }
 
+/**
+ * Supported languages for notification templates.
+ */
+export type SupportedTemplateLanguage = 'en' | 'de' | 'fr' | 'es' | 'pt-BR';
+
+/**
+ * List of all supported template languages
+ */
+export const SUPPORTED_TEMPLATE_LANGUAGES: SupportedTemplateLanguage[] = [
+  'en',
+  'de',
+  'fr',
+  'es',
+  'pt-BR',
+];
+
 // Deprecated: NotificationConfig has been replaced by separate keys and unified response shape
 
 export type CronInterval = 'disabled' | '1min' | '5min'| '10min' | '15min' | '20min' | '30min' | '1hour' | '2hours';
@@ -188,6 +204,9 @@ export type NotificationFrequencyConfig = "onetime" | "every_day" | "every_week"
 
 // New type for overdue tolerance options
 export type OverdueTolerance = 'no_tolerance' | '5min' | '15min' | '30min' | '1h' | '2h' | '4h' | '6h' | '12h' | '1d';
+
+// Start of week options
+export type StartOfWeek = 'locale' | 'sunday' | 'monday';
 
 // Interface for overdue backup notification timestamps
 export interface OverdueNotificationTimestamp {

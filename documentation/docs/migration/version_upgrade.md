@@ -1,10 +1,10 @@
-# Migration Guide
+# Migration Guide {#migration-guide}
 
 This guide explains how to upgrade between versions of duplistatus. Migrations are automatic—the database schema updates itself when you start a new version.
 
 Manual steps are only required if you have customised notification templates (version 0.8.x changed template variables) or external API integrations that need updating (version 0.7.x changed API field names, version 0.9.x requires authentication).
 
-## Overview
+## Overview {#overview}
 
 duplistatus automatically migrates your database schema when upgrading. The system:
 
@@ -15,33 +15,33 @@ duplistatus automatically migrates your database schema when upgrading. The syst
 
 
 
-## Backing Up Your Database Before Migration
+## Backing Up Your Database Before Migration {#backing-up-your-database-before-migration}
 
 Before upgrading to a new version, it's recommended to create a backup of your database. This ensures you can restore your data if something goes wrong during the migration process.
 
-### If You're Running Version 1.2.1 or Later
+### If You're Running Version 1.2.1 or Later {#if-youre-running-version-121-or-later}
 
 Use the built-in database backup function:
 
-1. Navigate to `Settings → Database Maintenance` in the web interface
+1. Navigate to [Settings → Database Maintenance](../user-guide/settings/database-maintenance.md) in the web interface
 2. In the **Database Backup** section, select a backup format:
    - **Database File (.db)**: Binary format - fastest backup, preserves all database structure exactly
    - **SQL Dump (.sql)**: Text format - human-readable SQL statements
-3. Click `Download Backup`
+3. Click **Download Backup**
 4. The backup file will be downloaded to your computer with a timestamped filename
 
 For more details, see the [Database Maintenance](../user-guide/settings/database-maintenance.md#database-backup) documentation.
 
-### If You're Running a Version Before 1.2.1
+### If You're Running a Version Before 1.2.1 {#if-youre-running-a-version-before-121}
 
-#### Backup
+#### Backup {#backup}
 
 You must manually back up the database before proceeding. The database file is located at `/app/data/backups.db` inside the container.
 
-##### For Linux Users
+##### For Linux Users {#for-linux-users}
 If you are on Linux, don't worry about spinning up helper containers. You can use the native `cp` command to extract the database directly from the running container to your host.
 
-###### Using Docker or Podman:
+###### Using Docker or Podman: {#using-docker-or-podman}
 
 ```bash
 # Replace 'duplistatus' with your actual container name if different
@@ -49,40 +49,40 @@ docker cp duplistatus:/app/data/backups.db ./duplistatus-backup-$(date +%Y%m%d).
 ```
 (If using Podman, simply replace `docker` with `podman` in the command above.)
 
-##### For Windows Users
+##### For Windows Users {#for-windows-users}
 If you are running Docker Desktop on Windows, you have two simple ways to handle this without using the command line:
 
-###### Option A: Use Docker Desktop (Easiest)
+###### Option A: Use Docker Desktop (Easiest) {#option-a-use-docker-desktop-easiest}
 1. Open the Docker Desktop Dashboard.
 2. Go to the Containers tab and click on your duplistatus container.
 3. Click on the Files tab.
 4. Navigate to `/app/data/`.
 5. Right-click `backups.db` and select **Save as...** to download it to your Windows folders.
 
-###### Option B: Use PowerShell
+###### Option B: Use PowerShell {#option-b-use-powershell}
 If you prefer the terminal, you can use PowerShell to copy the file to your Desktop:
 
 ```powershell
 docker cp duplistatus:/app/data/backups.db $HOME\Desktop\duplistatus-backup.db
 ```
 
-##### If You Use Bind Mounts
+##### If You Use Bind Mounts {#if-you-use-bind-mounts}
 If you originally set up your container using a bind mount (e.g., you mapped a local folder like `/opt/duplistatus` to the container), you don't need Docker commands at all. Just copy the file using your file manager:
 - Linux: `cp /path/to/your/folder/backups.db ~/backups.db`
 - Windows: Simply copy the file in **File Explorer** from the folder you designated during setup.
 
 
-#### Restoring Your Data
+#### Restoring Your Data {#restoring-your-data}
 If you need to restore your database from a previous backup, follow the steps below based on your operating system.
 
 :::info[IMPORTANT] 
 Stop the container before restoring the database to prevent file corruption.
 :::
 
-##### For Linux Users
+##### For Linux Users {#for-linux-users}
 The easiest way to restore is to "push" the backup file back into the container's internal storage path.
 
-###### Using Docker or Podman:
+###### Using Docker or Podman: {#using-docker-or-podman}
 
 ```bash
 # stop the container
@@ -95,10 +95,10 @@ docker cp ./duplistatus-backup.db duplistatus:/app/data/backups.db
 docker start duplistatus
 ```
 
-##### For Windows Users
+##### For Windows Users {#for-windows-users}
 If you are using Docker Desktop, you can perform the restore via the GUI or PowerShell.
 
-###### Option A: Use Docker Desktop (GUI)
+###### Option A: Use Docker Desktop (GUI) {#option-a-use-docker-desktop-gui}
 1. Ensure the duplistatus container is Running (Docker Desktop requires the container to be active to upload files via the GUI).
 2. Go to the Files tab in your container settings.
 3. Navigate to `/app/data/`.
@@ -109,7 +109,7 @@ Rename the imported file to exactly backups.db if it has a timestamp in the name
 
 Restart the container.
 
-###### Option B: Use PowerShell
+###### Option B: Use PowerShell {#option-b-use-powershell}
 
 ```powershell
 # Copy the file from your Desktop back into the container
@@ -120,7 +120,7 @@ docker start duplistatus
 ```
 
 
-##### If You Use Bind Mounts
+##### If You Use Bind Mounts {#if-you-use-bind-mounts}
 If you are using a local folder mapped to the container, you don't need any special commands.
 
 1. Stop the container.
@@ -135,7 +135,7 @@ If you restore the database manually, you may encounter permission errors.
 Check the container logs and adjust the permissions if necessary. See the [Troubleshooting](#troubleshooting-your-restore--rollback) section below for more information.
 ::: 
 
-## Automatic Migration Process
+## Automatic Migration Process {#automatic-migration-process}
 
 When you start a new version, migrations run automatically:
 
@@ -144,7 +144,7 @@ When you start a new version, migrations run automatically:
 3. **Data Migration**: All existing data is preserved and migrated
 4. **Verification**: Migration success is logged
 
-### Monitoring Migration
+### Monitoring Migration {#monitoring-migration}
 
 Check Docker logs to monitor migration progress:
 
@@ -159,32 +159,32 @@ Look for messages like:
 - `"Database backup created: /path/to/backups-copy-YYYY-MM-DDTHH-MM-SS.db"`
 - `"All migrations completed successfully"`
 
-## Version-Specific Migration Notes
+## Version-Specific Migration Notes {#version-specific-migration-notes}
 
-### Upgrading to Version 0.9.x or Later (Schema v4.0)
+### Upgrading to Version 0.9.x or Later (Schema v4.0) {#upgrading-to-version-09x-or-later-schema-v40}
 
 :::warning
 **Authentication is now required.** All users must log in after upgrading.
 :::
 
-#### What Changes Automatically
+#### What Changes Automatically {#what-changes-automatically}
 
 - Database schema migrates from v3.1 to v4.0
 - New tables created: `users`, `sessions`, `audit_log`
 - Default admin account created automatically
 - All existing sessions invalidated
 
-#### What You Must Do
+#### What You Must Do {#what-you-must-do}
 
 1. **Log in** with default admin credentials:
    - Username: `admin`
    - Password: `Duplistatus09`
 2. **Change the password** when prompted (required on first login)
 3. **Create user accounts** for other users (Settings → Users)
-4. **Update external API integrations** to include authentication (see [API Breaking Changes](api-changes.md))
+4. **Update external API integrations** to include authentication (see [Backward-incompatible API changes](api-changes.md))
 5. **Configure audit log retention** if needed (Settings → Audit Log)
 
-#### If You're Locked Out
+#### If You're Locked Out {#if-youre-locked-out}
 
 Use the admin recovery tool:
 
@@ -194,35 +194,35 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 See [Admin Recovery Guide](../user-guide/admin-recovery.md) for details.
 
-### Upgrading to Version 0.8.x
+### Upgrading to Version 0.8.x {#upgrading-to-version-08x}
 
-#### What Changes Automatically
+#### What Changes Automatically {#what-changes-automatically}
 
 - Database schema updated to v3.1
 - Master key generated for encryption (stored in `.duplistatus.key`)
 - Sessions invalidated (new CSRF-protected sessions created)
 - Passwords encrypted using new system
 
-#### What You Must Do
+#### What You Must Do {#what-you-must-do}
 
 1. **Update notification templates** if you customised them:
    - Replace `{backup_interval_value}` and `{backup_interval_type}` with `{backup_interval}`
    - Default templates are updated automatically
 
-#### Security Notes
+#### Security Notes {#security-notes}
 
 - Ensure `.duplistatus.key` file is backed up (has 0400 permissions)
 - Sessions expire after 24 hours
 
-### Upgrading to Version 0.7.x
+### Upgrading to Version 0.7.x {#upgrading-to-version-07x}
 
-#### What Changes Automatically
+#### What Changes Automatically {#what-changes-automatically}
 
 - `machines` table renamed to `servers`
 - `machine_id` fields renamed to `server_id`
 - New fields added: `alias`, `notes`, `created_at`, `updated_at`
 
-#### What You Must Do
+#### What You Must Do {#what-you-must-do}
 
 1. **Update external API integrations**:
    - Change `totalMachines` → `totalServers` in `/api/summary`
@@ -232,9 +232,9 @@ See [Admin Recovery Guide](../user-guide/admin-recovery.md) for details.
 2. **Update notification templates**:
    - Replace `{machine_name}` with `{server_name}`
 
-See [API Breaking Changes](api-changes.md) for detailed API migration steps.
+See [Backward-incompatible API changes](api-changes.md) for detailed API migration steps.
 
-## Post-Migration Checklist
+## Post-Migration Checklist {#post-migration-checklist}
 
 After upgrading, verify:
 
@@ -243,52 +243,52 @@ After upgrading, verify:
 - [ ] Notifications work (test NTFY/email)
 - [ ] External API integrations work (if applicable)
 - [ ] Settings are accessible and correct
-- [ ] Overdue monitoring works correctly
+- [ ] Backup monitoring works correctly
 - [ ] Logged in successfully (0.9.x+)
 - [ ] Changed default admin password (0.9.x+)
 - [ ] Created user accounts for other users (0.9.x+)
 - [ ] Updated external API integrations with authentication (0.9.x+)
 
-## Troubleshooting
+## Troubleshooting {#troubleshooting}
 
-### Migration Fails
+### Migration Fails {#migration-fails}
 
 1. Check disk space (backup requires space)
 2. Verify write permissions on data directory
 3. Review container logs for specific errors
 4. Restore from backup if needed (see Rollback below)
 
-### Data Missing After Migration
+### Data Missing After Migration {#data-missing-after-migration}
 
 1. Verify backup was created (check data directory)
 2. Review container logs for backup creation messages
 3. Check database file integrity
 
-### Authentication Issues (0.9.x+)
+### Authentication Issues (0.9.x+) {#authentication-issues-09x}
 
 1. Verify default admin account exists (check logs)
 2. Try default credentials: `admin` / `Duplistatus09`
 3. Use admin recovery tool if locked out
 4. Verify `users` table exists in database
 
-### API Errors
+### API Errors {#api-errors}
 
-1. Review [API Breaking Changes](api-changes.md) for endpoint updates
+1. Review [Backward-incompatible API changes](api-changes.md) for endpoint updates
 2. Update external integrations with new field names
 3. Add authentication to API requests (0.9.x+)
 4. Test API endpoints after migration
 
-### Master Key Issues (0.8.x+)
+### Master Key Issues (0.8.x+) {#master-key-issues-08x}
 
 1. Ensure `.duplistatus.key` file is accessible
 2. Verify file permissions are 0400
 3. Check container logs for key generation errors
 
-### Podman DNS Configuration
+### Podman DNS Configuration {#podman-dns-configuration}
 
 If you're using Podman and experiencing network connectivity issues after upgrading, you may need to configure DNS settings for your container. See the [DNS configuration section](../installation/installation.md#configuring-dns-for-podman-containers) in the installation guide for details.
 
-## Rollback Procedure
+## Rollback Procedure {#rollback-procedure}
 
 If you need to rollback to a previous version:
 
@@ -307,11 +307,11 @@ If you need to rollback to a previous version:
 Rolling back may cause data loss if the newer schema is incompatible with the older version. Always ensure you have a recent backup before attempting rollback.
 :::
 
-### Troubleshooting Your Restore / Rollback
+### Troubleshooting Your Restore / Rollback {#troubleshooting-your-restore--rollback}
 
 If the application doesn't start or your data isn't appearing after a restore or rollback, check the following common issues:
 
-#### 1. Database File Permissions (Linux/Podman)
+#### 1. Database File Permissions (Linux/Podman) {#1-database-file-permissions-linuxpodman}
 
 If you restored the file as the `root` user, the application inside the container might not have permission to read or write to it.
 
@@ -327,14 +327,14 @@ docker exec -u 0 duplistatus chmod 664 /app/data/backups.db
 
 
 
-#### 2. Incorrect Filename
+#### 2. Incorrect Filename {#2-incorrect-filename}
 
 The application looks specifically for a file named `backups.db`.
 
 * **The Symptom:** The application starts but looks "empty" (like a fresh install).
 * **The Fix:** Check the `/app/data/` directory. If your file is named `duplistatus-backup-2024.db` or has a `.sqlite` extension, the app will ignore it. Use the `mv` command or Docker Desktop GUI to rename it exactly to `backups.db`.
 
-#### 3. Container Not Restarted
+#### 3. Container Not Restarted {#3-container-not-restarted}
 
 On some systems, using `docker cp` while the container is running may not immediately "refresh" the application's connection to the database.
 
@@ -345,7 +345,7 @@ docker restart duplistatus
 
 
 
-#### 4. Database Version Mismatch
+#### 4. Database Version Mismatch {#4-database-version-mismatch}
 
 If you are restoring a backup from a much newer version of duplistatus into an older version of the app, the database schema might be incompatible.
 
@@ -355,7 +355,7 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 ```
 
 
-## Database Schema Versions
+## Database Schema Versions {#database-schema-versions}
 
 | Application Version        | Schema Version | Key Changes                                        |
 |----------------------------|----------------|----------------------------------------------------|
@@ -364,11 +364,11 @@ docker inspect duplistatus --format '{{.Config.Image}}'
 | 0.8.x                      | v3.1           | Enhanced backup fields, encryption support         |
 | 0.9.x, 1.0.x, 1.1.x, 1.2.x, 1.3.x | v4.0           | User access control, authentication, audit logging |
 
-## Getting Help
+## Getting Help {#getting-help}
 
 - **Documentation**: [User Guide](../user-guide/overview.md)
 - **API Reference**: [API Documentation](../api-reference/overview.md)
-- **API Changes**: [API Breaking Changes](api-changes.md)
+- **API Changes**: [Backward-incompatible API changes](api-changes.md)
 - **Release Notes**: Check version-specific release notes for detailed changes
 - **Community**: [GitHub Discussions](https://github.com/wsj-br/duplistatus/discussions)
 - **Issues**: [GitHub Issues](https://github.com/wsj-br/duplistatus/issues)

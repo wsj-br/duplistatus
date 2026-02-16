@@ -10,7 +10,7 @@ import {
   Tooltip
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
+import { formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
@@ -20,6 +20,10 @@ import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
+import { useIntlayer } from 'react-intlayer';
+import { useLocale } from "@/contexts/locale-context";
+import { formatDateTime, formatDate } from "@/lib/date-format";
+import { formatInteger, formatBytes as formatBytesLocale } from "@/lib/number-format";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -43,7 +47,7 @@ const formatDuration = (minutes: number): string => {
 };
 
 // Use existing library function for bytes formatting with Y-axis specific precision
-const formatBytesForYAxis = (bytes: number): string => {
+const formatBytesForYAxis = (bytes: number, locale: string = 'en'): string => {
   if (bytes === 0) return '0 B';
   
   // Determine the appropriate precision based on the size for Y-axis labels
@@ -52,49 +56,30 @@ const formatBytesForYAxis = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
-  if (i >= sizes.length) return formatBytes(bytes, 1);
+  if (i >= sizes.length) return formatBytesLocale(bytes, locale, 1);
   
   const size = sizes[i];
   
   // Apply specific precision rules for Y-axis labels using the library function
   if (size === 'GB') {
-    return formatBytes(bytes, 1);  // 1 decimal place for GB
+    return formatBytesLocale(bytes, locale, 1);  // 1 decimal place for GB
   } else if (size === 'MB' || size === 'KB' || size === 'B') {
-    return formatBytes(bytes, 0);  // 0 decimal places for MB, KB, B
+    return formatBytesLocale(bytes, locale, 0);  // 0 decimal places for MB, KB, B
   } else {
-    return formatBytes(bytes, 1);  // 1 decimal place for TB+
+    return formatBytesLocale(bytes, locale, 1);  // 1 decimal place for TB+
   }
 };
 
 
-// Configuration for overview charts - only 3 metrics
-const overviewChartMetrics = [
-  { 
-    key: 'duration', 
-    label: 'Duration', 
-    formatter: formatDuration,
-    color: "#10b981" // Green
-  },
-  { 
-    key: 'fileSize', 
-    label: 'File Size', 
-    formatter: formatBytes,
-    color: "#ef4444" // Red
-  },
-  { 
-    key: 'storageSize', 
-    label: 'Storage Size', 
-    formatter: formatBytes,
-    color: "#8b5cf6" // Purple
-  }
-];
+// Note: Chart metrics configuration is now inside the component to use useIntlayer
 
 // Custom tooltip component for Recharts
-const CustomTooltip = ({ active, payload, label, metricKey }: {
+const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
   active?: boolean;
   payload?: Array<{ value: number; dataKey: string; payload: { isoDate: string } }>;
   label?: string;
   metricKey: keyof ChartDataPoint;
+  locale: string;
 }) => {
   if (!active || !payload || !payload.length) {
     return null;
@@ -103,15 +88,11 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   const data = payload[0];
   const value = data.value;
   
-  // Format the date for display
+  // Format the date for display using locale-aware formatting
   let formattedDate = label;
   try {
     if (data.payload?.isoDate) {
-      const date = new Date(data.payload.isoDate);
-      formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
+      formattedDate = formatDateTime(data.payload.isoDate, locale);
     }
   } catch {
     // Fallback to original label if date parsing fails
@@ -120,11 +101,11 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   // Format the value based on metric type
   let formattedValue: string;
   if (metricKey === 'fileSize' || metricKey === 'storageSize') {
-    formattedValue = formatBytesForYAxis(value);
+    formattedValue = formatBytesForYAxis(value, locale);
   } else if (metricKey === 'duration') {
     formattedValue = formatDuration(value);
   } else {
-    formattedValue = value.toLocaleString();
+    formattedValue = formatInteger(value, locale);
   }
 
   return (
@@ -144,11 +125,13 @@ function OverviewMetricChart({
   metricKey, 
   label, 
   color,
+  locale,
 }: { 
   data: ChartDataPoint[]; 
   metricKey: keyof ChartDataPoint; 
   label: string; 
   color: string;
+  locale: string;
 }) {
 
   // Create chart config
@@ -273,9 +256,8 @@ function OverviewMetricChart({
                   const dataIndex = resampledData.findIndex(item => item.isoDate === value);
                   if (dataIndex === 0 || dataIndex === resampledData.length - 1) {
                     try {
-                      // Parse the ISO date and format using browser locale
-                      const date = new Date(value);
-                      return date.toLocaleDateString();
+                      // Format using locale-aware date formatting
+                      return formatDate(value, locale);
                     } catch {
                       return value;
                     }
@@ -295,12 +277,12 @@ function OverviewMetricChart({
                   if (typeof value === 'number') {
                     // Format based on metric type with specific precision
                     if (metricKey === 'fileSize' || metricKey === 'storageSize') {
-                      return formatBytesForYAxis(value);
+                      return formatBytesForYAxis(value, locale);
                     } else if (metricKey === 'duration') {
                       return formatDuration(value);
                     } else {
                       // For counts - no decimal positions
-                      return Math.round(value).toLocaleString();
+                      return formatInteger(Math.round(value), locale);
                     }
                   }
                   return '';
@@ -315,7 +297,7 @@ function OverviewMetricChart({
                 connectNulls
                 isAnimationActive={false}
               />
-              <Tooltip content={<CustomTooltip metricKey={metricKey} />} />
+              <Tooltip content={<CustomTooltip metricKey={metricKey} locale={locale} />} />
           </ComposedChart>
         </ChartContainer>
         </div>
@@ -332,6 +314,29 @@ function OverviewChartsPanelCore({
   
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
+  const content = useIntlayer('overview-charts-panel');
+  const common = useIntlayer('common');
+  const locale = useLocale();
+  
+  // Configuration for overview charts - only 3 metrics
+  const overviewChartMetrics = [
+    { 
+      key: 'duration', 
+      label: content.backupDuration, 
+      formatter: formatDuration,
+      color: "#10b981" // Green
+    },
+    { 
+      key: 'fileSize', 
+      label: content.fileSize, 
+      color: "#ef4444" // Red
+    },
+    { 
+      key: 'storageSize', 
+      label: content.storageSize, 
+      color: "#8b5cf6" // Purple
+    }
+  ];
   // If externalChartData is provided, use it instead of fetching
   const [chartData, setChartData] = useState<ChartDataPoint[]>(externalChartData || []);
   const [isLoading, setIsLoading] = useState(true);
@@ -452,7 +457,7 @@ function OverviewChartsPanelCore({
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       toast({
-        title: "Error loading chart data",
+        title: content.errorLoadingChartData,
         description: errorMessage,
         variant: "destructive",
         duration: 3000
@@ -461,7 +466,7 @@ function OverviewChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [serverId, backupName, startDate, endDate, toast]);
+  }, [serverId, backupName, startDate, endDate, toast, content.errorLoadingChartData]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -578,7 +583,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-            <p className="text-xs">Loading chart data...</p>
+            <p className="text-xs">{content.loadingChartData}</p>
           </div>
         </div>
       )}
@@ -588,7 +593,7 @@ function OverviewChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-destructive">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">Error loading chart data</p>
+            <p className="text-xs">{content.errorLoadingChartData}</p>
           </div>
         </div>
       )}
@@ -603,6 +608,7 @@ function OverviewChartsPanelCore({
                 metricKey={metric.key as keyof ChartDataPoint}
                 label={metric.label}
                 color={metric.color}
+                locale={locale}
               />
             </div>
           ))}

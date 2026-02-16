@@ -1,0 +1,380 @@
+/* Dark theme */
+:root {
+  --bg-page: #1a1a1a;
+  --bg-card: #252525;
+  --bg-input: #2d2d2d;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border: #404040;
+  --accent: #4a9eff;
+  --accent-hover: #6bb3ff;
+  --danger: #e74c3c;
+  --danger-hover: #ec7063;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+header h1 {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Filters */
+.filters {
+  margin-bottom: 1rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-row input[type="text"] {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.filter-row input[type="text"]::placeholder {
+  color: var(--text-secondary);
+}
+
+.filter-row input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.filter-row select {
+  min-width: 120px;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.filter-row select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.filter-row .filter-stale-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.filter-row .filter-stale-label input[type="checkbox"] {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.filter-row button {
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.filter-row button:hover {
+  background: var(--accent-hover);
+}
+
+/* Delete by filepath */
+.delete-by-filepath {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.delete-by-filepath label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.delete-by-filepath select {
+  min-width: 280px;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.delete-by-filepath select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.delete-by-filepath button {
+  padding: 0.5rem 1rem;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-by-filepath button:hover:not(:disabled) {
+  background: var(--danger-hover);
+}
+
+.delete-by-filepath button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Pagination */
+.pagination-top,
+.pagination-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pagination-info,
+#pagination-info,
+#pagination-info-bottom {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pagination-controls button {
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-controls select {
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-card);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: var(--bg-input);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  vertical-align: top;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+td.source-text,
+td.translated-text {
+  max-width: 280px;
+  word-break: break-word;
+}
+
+td.actions {
+  white-space: nowrap;
+}
+
+td.last-hit-at {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+td.last-hit-at.stale {
+  color: var(--danger);
+}
+
+/* Edit / Delete icons */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0 2px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.icon-btn:hover {
+  background: var(--border);
+  color: var(--accent);
+}
+
+.icon-btn.delete-btn:hover {
+  color: var(--danger);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 560px;
+  width: 90%;
+}
+
+.modal h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.modal textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.modal textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.modal-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#btn-modal-cancel {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+#btn-modal-cancel:hover {
+  background: var(--border);
+}
+
+#btn-modal-save {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+}
+
+#btn-modal-save:hover {
+  background: var(--accent-hover);
+}

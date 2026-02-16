@@ -1,5 +1,6 @@
 "use client";
 
+import { useIntlayer } from 'react-intlayer';
 import type { Backup } from "@/lib/types";
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -15,10 +16,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { formatBytes, formatRelativeTime } from "@/lib/utils";
+import { formatRelativeTime } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 import { useConfig } from "@/contexts/config-context";
 import { useBackupSelection } from "@/contexts/backup-selection-context";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useLocale } from "@/contexts/locale-context";
 import {
   Tooltip,
   TooltipContent,
@@ -44,6 +48,8 @@ interface ServerBackupTableProps {
 }
 
 export function ServerBackupTable({ backups, serverName, serverAlias, serverNote }: ServerBackupTableProps) {
+  const content = useIntlayer('server-backup-table');
+  const common = useIntlayer('common');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: '', direction: 'asc' });
   const { selectedBackup, setSelectedBackup } = useBackupSelection();
@@ -95,6 +101,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
 
   const { totalPages, paginated: paginatedBackups } = sortedFilteredPaginatedBackups;
   const router = useRouter();
+  const locale = useLocale();
 
   const handleSort = (column: string) => {
     setSortConfig(prevConfig => {
@@ -177,7 +184,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
   const handleBackupClick = (backup: Backup) => {
     // Only navigate if there are messages to show
     if (!hasNoMessages(backup)) {
-      router.push(`/detail/${backup.server_id}/backup/${backup.id}`);
+      router.push(`/${locale}/detail/${backup.server_id}/backup/${backup.id}`);
     }
   };
 
@@ -193,10 +200,10 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               onValueChange={setSelectedBackup}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select backup" />
+                <SelectValue placeholder={content.selectBackup.value} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Backups</SelectItem>
+                <SelectItem value="all">{content.allBackups.value}</SelectItem>
                 {uniqueBackupNames.filter(name => name !== "all").map((name) => (
                   <SelectItem key={name} value={name}>
                     {name}
@@ -211,37 +218,37 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               <TableHeader>
                 <TableRow>
                   <SortableTableHead column="name" sortConfig={displaySortConfig} onSort={handleSort}>
-                    Backup Name
+                    {content.backupName}
                   </SortableTableHead>
                   <SortableTableHead column="date" sortConfig={displaySortConfig} onSort={handleSort}>
-                    Date
+                    {content.date}
                   </SortableTableHead>
                   <SortableTableHead column="status" sortConfig={displaySortConfig} onSort={handleSort}>
-                    Status
+                    {content.status}
                   </SortableTableHead>
                   <SortableTableHead column="warnings" sortConfig={displaySortConfig} onSort={handleSort} align="center">
-                    Warnings
+                    {content.warnings}
                   </SortableTableHead>
                   <SortableTableHead column="errors" sortConfig={displaySortConfig} onSort={handleSort} align="center">
-                    Errors
+                    {content.errors}
                   </SortableTableHead>
                   <SortableTableHead column="backup_list_count" sortConfig={displaySortConfig} onSort={handleSort} align="center">
-                    Available Versions
+                    {content.availableVersions}
                   </SortableTableHead>
                   <SortableTableHead column="fileCount" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    File Count
+                    {content.fileCount}
                   </SortableTableHead>
                   <SortableTableHead column="fileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    File Size
+                    {content.fileSize}
                   </SortableTableHead>
                   <SortableTableHead column="uploadedSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    Uploaded Size
+                    {content.uploadedSize}
                   </SortableTableHead>
                   <SortableTableHead column="duration" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    Duration
+                    {content.duration}
                   </SortableTableHead>
                   <SortableTableHead column="knownFileSize" sortConfig={displaySortConfig} onSort={handleSort} align="right">
-                    Storage Size
+                    {content.storageSize}
                   </SortableTableHead>
                 </TableRow>
               </TableHeader>
@@ -249,7 +256,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                 {paginatedBackups.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={11} className="text-center h-24">
-                      No backups found for this server.
+                      {content.noBackupsFoundForThisServer}
                     </TableCell>
                   </TableRow>
                 )}
@@ -261,9 +268,9 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                   >
                     <TableCell className="font-medium">{backup.name}</TableCell>
                     <TableCell>
-                      <div>{new Date(backup.date).toLocaleString()}</div>
+                      <div>{formatDateTime(backup.date, locale)}</div>
                       <div className="text-xs text-muted-foreground">
-                        {formatRelativeTime(backup.date)}
+                        {formatRelativeTime(backup.date, undefined, locale)}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -298,11 +305,11 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                         count={backup.backup_list_count}
                       />
                     </TableCell>
-                    <TableCell className="text-right">{backup.fileCount.toLocaleString()}</TableCell>
-                    <TableCell className="text-right">{formatBytes(backup.fileSize)}</TableCell>
-                    <TableCell className="text-right">{formatBytes(backup.uploadedSize)}</TableCell>
+                    <TableCell className="text-right">{formatInteger(backup.fileCount, locale)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.fileSize, locale)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.uploadedSize, locale)}</TableCell>
                     <TableCell className="text-right">{backup.duration}</TableCell>
-                    <TableCell className="text-right">{formatBytes(backup.knownFileSize)}</TableCell>
+                    <TableCell className="text-right">{formatBytes(backup.knownFileSize, locale)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -313,7 +320,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
           <div className="md:hidden space-y-3 p-4">
             {paginatedBackups.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
-                No backups found for this machine.
+                {content.noBackupsFoundForThisMachine}
               </div>
             )}
             {paginatedBackups.map((backup) => (
@@ -324,7 +331,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     <div className="flex-1">
                       <div className="font-medium text-sm">{backup.name}</div>
                       <div className="text-xs text-muted-foreground">
-                        {new Date(backup.date).toLocaleString()}
+                        {formatDateTime(backup.date, locale)}
                       </div>
                     </div>
                     
@@ -372,18 +379,18 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">File Count</Label>
-                      <div className="text-sm">{backup.fileCount.toLocaleString()}</div>
+                      <div className="text-sm">{formatInteger(backup.fileCount, locale)}</div>
                     </div>
 
                     {/* Row 2 */}
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">File Size</Label>
-                      <div className="text-sm">{formatBytes(backup.fileSize)}</div>
+                      <div className="text-sm">{formatBytes(backup.fileSize, locale)}</div>
                     </div>
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Uploaded Size</Label>
-                      <div className="text-sm">{formatBytes(backup.uploadedSize)}</div>
+                      <div className="text-sm">{formatBytes(backup.uploadedSize, locale)}</div>
                     </div>
 
                     {/* Row 3 */}
@@ -394,7 +401,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
                     
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Storage Size</Label>
-                      <div className="text-sm">{formatBytes(backup.knownFileSize)}</div>
+                      <div className="text-sm">{formatBytes(backup.knownFileSize, locale)}</div>
                     </div>
                   </div>
 
@@ -438,10 +445,10 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               disabled={currentPage === 1}
             >
               <ChevronLeft className="h-4 w-4" />
-              Previous
+              {content.previous}
             </Button>
             <div className="text-sm text-muted-foreground">
-              Page {currentPage} of {totalPages}
+              {content.page} {currentPage} {content.of} {totalPages}
             </div>
             <Button
               variant="outline"
@@ -449,7 +456,7 @@ export function ServerBackupTable({ backups, serverName, serverAlias, serverNote
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
-              Next
+              {content.next}
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>

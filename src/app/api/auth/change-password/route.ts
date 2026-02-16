@@ -37,7 +37,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       );
 
       return NextResponse.json(
-        { error: 'New password is required' },
+        { error: 'New password is required', errorCode: 'NEW_PASSWORD_REQUIRED' },
         { status: 400 }
       );
     }
@@ -59,8 +59,9 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       );
 
       return NextResponse.json(
-        { 
+        {
           error: 'New password does not meet policy requirements',
+          errorCode: 'POLICY_NOT_MET',
           validationErrors: validation.errors
         },
         { status: 400 }
@@ -88,7 +89,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
       );
 
       return NextResponse.json(
-        { error: 'User not found' },
+        { error: 'User not found', errorCode: 'USER_NOT_FOUND' },
         { status: 404 }
       );
     }
@@ -110,7 +111,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         );
 
         return NextResponse.json(
-          { error: 'Current password is incorrect' },
+          { error: 'Current password is incorrect', errorCode: 'CURRENT_PASSWORD_INCORRECT' },
           { status: 401 }
         );
       }
@@ -129,7 +130,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
         );
 
         return NextResponse.json(
-          { error: 'New password must be different from current password' },
+          { error: 'New password must be different from current password', errorCode: 'NEW_PASSWORD_SAME_AS_CURRENT' },
           { status: 400 }
         );
       }
@@ -161,6 +162,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     return NextResponse.json({
       success: true,
       message: 'Password changed successfully',
+      successCode: 'PASSWORD_CHANGED',
     });
 
   } catch (error) {
@@ -182,7 +184,7 @@ export const POST = withCSRF(requireAuth(async (request: NextRequest, authContex
     );
 
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', errorCode: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }

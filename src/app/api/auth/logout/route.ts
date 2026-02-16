@@ -20,7 +20,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
 
     if (!sessionId) {
       return NextResponse.json(
-        { error: 'No active session' },
+        { error: 'No active session', errorCode: 'NO_ACTIVE_SESSION' },
         { status: 400 }
       );
     }
@@ -48,6 +48,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
     const response = NextResponse.json({
       success: true,
       message: 'Logged out successfully',
+      successCode: 'LOGGED_OUT',
     });
 
     // Clear session cookie
@@ -74,7 +75,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
     );
 
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', errorCode: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }

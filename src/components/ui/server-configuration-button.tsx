@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { Button } from '@/components/ui/button';
 import { ServerIcon } from './server-icon';
 
@@ -26,6 +27,7 @@ export function ServerConfigurationButton({
   disabled = false,
   showText = false
 }: ServerConfigurationButtonProps) {
+  const content = useIntlayer('server-configuration-button');
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     
@@ -93,10 +95,10 @@ export function ServerConfigurationButton({
       onClick={handleClick}
       onContextMenu={handleContextMenu}
       disabled={isDisabled}
-      title={isDisabled ? "No URL configured" : (serverAlias ? `Open ${serverAlias}(${serverName}) configuration (Right-click for old UI)` : (serverName ? `Open ${serverName} configuration (Right-click for old UI)` : "Open Duplicati configuration (Right-click for old UI)"))}
+      title={isDisabled ? content.titleNoUrl.value : (serverAlias ? content.titleWithAlias.value.replace('{serverAlias}', serverAlias).replace('{serverName}', serverName || '') : (serverName ? content.titleWithName.value.replace('{serverName}', serverName) : content.titleDefault.value))}
     >
       <ServerIcon size={getIconSize()} className="mr-1" />
-      {showText && "Duplicati configuration"}
+      {showText && content.buttonText.value}
     </Button>
   );
 }

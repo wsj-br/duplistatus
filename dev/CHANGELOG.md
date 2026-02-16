@@ -2,120 +2,218 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
-
-### Added
-- **Password policy environment variables**: Added configurable password validation via environment variables (suggested by `danpeig`)
-  - `PWD_ENFORCE`: Set to `false` to disable password complexity requirements (uppercase, lowercase, numbers). Defaults to enforcing all rules. When disabled, only minimum length is enforced.
-  - `PWD_MIN_LEN`: Sets minimum password length in characters. Defaults to 8 characters.
-  - Password policy is evaluated at runtime, allowing changes without code modifications
-  - Backend validation in `src/lib/auth.ts` now dynamically reads policy from environment variables
-  - Frontend components (`change-password-modal.tsx` and `user-management-form.tsx`) now fetch and display requirements based on the current policy
-  - New API endpoint `/api/auth/password-policy` (GET) returns current password policy configuration
-  - New React hook `usePasswordPolicy()` fetches and caches password policy for frontend components
-  - Default password check (preventing use of default admin password) always enforced regardless of `PWD_ENFORCE` setting
-- **Test Entrypoint Script**: New test script (`pnpm test-entrypoint`) to test the Docker entrypoint script in local development
-  - Automatically builds a fresh version with `pnpm build-local` before testing
-  - Sets up the environment to test entrypoint logging functionality
-  - Logs are written to `data/logs/` so the application can access them
-  - Script located in `scripts/test-entrypoint.sh` with pnpm shortcut
-- **Application Logs Viewer**: New admin-only settings tab to view and download application logs
-  - View logs from a single consolidated `data/logs/application.log` file
-  - Access rotated log files (supports up to 10 rotated versions: `application.log.1`, `application.log.2`, etc.)
-  - File version selector with intuitive display names ("Current" for active log, ".1", ".2", etc. for rotated files)
-  - Configurable line count selector (100, 500, 1000, 5000, 10000 lines) to control how many lines are displayed
-  - Real-time search filter with case-insensitive text matching and clear button (X icon)
-  - Auto-scroll toggle for real-time log monitoring with automatic polling (every 2 seconds when enabled and viewing current file)
-  - Auto-scroll only triggers when new log lines are actually added (tracks line count changes)
-  - Copy to clipboard functionality for filtered log content
-  - View logs via `/api/application-logs` endpoint (GET) with file selection and tail functionality
-  - Export filtered logs as text file via `/api/application-logs/export` endpoint (GET)
-  - Scroll navigation buttons (scroll to top/bottom) for easy navigation in long log files
-  - File metadata display showing line count, file size (KB), and last modified timestamp
-  - Automatic file switching if selected file becomes unavailable (handles log rotation gracefully)
-  - Log rotation on container startup (per execution, keeping last 5 by default, configurable via `LOG_ROTATION_VERSIONS`)
-
-### Changed
-
-- **Locale-aware weekday display**: Weekday display in the overdue monitoring form now respects the user's browser locale settings (suggested by `Taomyn`)
-  - Weekdays are displayed in the correct order based on locale (Monday-Sunday for UK/France/Europe, Sunday-Saturday for US/Brazil)
-  - Uses JavaScript's `Intl.DateTimeFormat` API to detect locale and determine the first day of the week
-  - Added `getLocaleWeekDays()` utility function in `src/lib/utils.ts` to provide locale-aware weekday information
-  - Updated desktop table view, mobile card view, and weekday button displays to use locale-ordered weekdays
-  - CSV export uses English weekday names but orders allowed weekdays according to locale
-  - Internal day number representation (0=Sunday, 1=Monday, etc.) remains unchanged for compatibility
-- **Application Logs Viewer**: Simplified and improved the application logs viewer interface
-  - Removed log source selection (entrypoint/server/cron) - now reads from single `application.log` file
-  - Removed log combining logic - simplified to read directly from `data/logs/application.log`
-  - Improved UI layout: search filter field is 50% width and left-justified, with file selector, line count, and auto-scroll controls right-justified
-  - Added search icon when filter is empty and X icon when filter has text (clicking X clears the filter)
-  - Fixed log file path to correctly use `data/logs/application.log` instead of `data/application.log`
-  - Added automatic polling (every 2 seconds) when viewing current log file with auto-scroll enabled
-  - Improved auto-scroll behavior: only scrolls when new log lines are actually added (tracks line count), preventing constant scrolling
-  - Polling only occurs when viewing the current log file (not rotated files) and auto-scroll is enabled
-  - Added scroll to top/bottom navigation buttons in the log display header
-  - Enhanced file metadata display with line count, file size in KB, and formatted last modified timestamp
-  - Improved file selection logic: automatically switches to first available file if selected file becomes unavailable
-  - File display names show "Current" for active log and ".N" format for rotated files (e.g., ".1", ".2")
-  - Moved Application Logs menu item to the bottom of the settings sidebar
-- **Docker entrypoint logging implementation**: Simplified and unified logging in the Docker entrypoint script
-  - All output (entrypoint, server, and cron service) now writes to a single `data/logs/application.log` file
-  - Removed separate `server.log` and `cron.log` files - all logs are consolidated into `application.log`
-  - Removed timestamp prefix logic and FIFO complexity - logs now contain raw output without automatic timestamp prefixes
-  - Changed log file name from `entrypoint.log` to `application.log` (variable renamed from `ENTRY_LOG` to `APP_LOG`)
-  - Log rotation now only rotates `application.log` (previously rotated all three log files)
-  - Added configurable `LOG_ROTATION_VERSIONS` setting (default: 5) in the configuration section to control how many rotated log versions are kept
-  - Output is duplicated to both `application.log` file and Docker logs (via `docker logs` command) using `tee`
-  - Simplified log rotation function to use the configurable version count instead of hardcoded values
-
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.x]
 
-### Added
-
-- **Context-aware User Guide button**: The User Guide button in the app header now dynamically opens documentation relevant to the current page. The button detects the current route and opens the corresponding documentation page (e.g., Dashboard documentation when on the dashboard, specific settings documentation based on the active tab, server details documentation when viewing server details). The tooltip also updates to show "Help for [Page Name]" to indicate which documentation will be opened. Falls back to the overview page for unmapped routes.
-- **Server configuration button right-click**: Right-clicking the server configuration button or any server item in the server selection popover now opens the Duplicati old UI (`/ngax`) in a new tab, using the same hostname and port as the configured server URL. This provides an alternative way to access the Duplicati web interface to avoid login issues with the new UI.
+### Security
+- **API authentication**: Made authentication required on endpoints that previously had optional auth: `/api/backups/collect`, `/api/backups/sync-schedule`, `/api/cron-config` (POST), `/api/notifications/check-overdue`, `/api/notifications/clear-overdue-timestamps`. These endpoints now require a valid session and CSRF token. Improves accountability and reduces risk of unauthenticated abuse.
 
 ### Fixed
-
-- **TypeScript build error**: Fixed circular dependency issue in `backup-notifications-form.tsx` where `autoSaveTextInput` and `updateTextInputToMainState` were referencing each other in their dependency arrays. Resolved by reordering function definitions and removing unnecessary dependencies from useCallback hooks.
-- **SMTP error handling improvements**: Enhanced error detection to accurately identify and report authentication failures, SSL/TLS version mismatches, and connection type issues. Error messages now prioritize showing the actual problem (e.g., "SMTP authentication failed") rather than suggesting incorrect connection type changes when the issue is authentication or SSL version related.
+- **Database restore "database disk image is malformed"**: After restoring a .db file, the app could log "database disk image is malformed" for operations like getServersBackupNames/getAllLatestBackups/getServersSummary due to WAL/SHM files being out of sync with the replaced main .db file. Restore now: (1) runs a WAL checkpoint (TRUNCATE) before closing so the main .db is complete and safety backup is consistent; (2) closes the connection and waits 500ms for the OS to release file handles (Docker/NFS); (3) removes -wal and -shm before and after copying the new .db so the new connection starts with a clean WAL state; (4) uses the same delay and WAL/SHM removal in all recovery paths (integrity-check failure, SQL restore failure, outer catch). Added `runWalCheckpointTruncate()` in db.ts and `removeWalAndShmForPath()` helper in the restore route.
+- **Database restore CSRF in production/Docker**: Restore (and backup) in Settings → Database Maintenance was sending an invalid CSRF token in production, causing "Invalid CSRF Token" and 403. The `/api/csrf` response uses `token`, but the form expected `csrfToken` and sent `undefined`. Now the form reads `data.token ?? data.csrfToken` and validates that a token exists before calling restore/backup.
+- **Auth API error/success messages i18n**: Extended the error-code pattern to all auth APIs. Change-password API now returns errorCode (NEW_PASSWORD_REQUIRED, POLICY_NOT_MET, USER_NOT_FOUND, CURRENT_PASSWORD_INCORRECT, NEW_PASSWORD_SAME_AS_CURRENT, INTERNAL_ERROR) and successCode (PASSWORD_CHANGED); change-password-modal maps these to translated strings from auth.changePassword in auth.content.ts (newPasswordRequired, policyNotMet, userNotFound, currentPasswordIncorrect, newPasswordSameAsCurrent, internalError) for all five locales. Logout API returns errorCode (NO_ACTIVE_SESSION, INTERNAL_ERROR) and successCode (LOGGED_OUT). Me and password-policy APIs return errorCode (INTERNAL_ERROR, POLICY_RETRIEVE_FAILED). Added auth content: logout.noActiveSession, changePassword.newPasswordRequired, policyNotMet, userNotFound, newPasswordSameAsCurrent, internalError, and top-level passwordPolicyFailed. App-header and use-password-policy do not currently display these messages; keys are available for future toasts.
+- **Login page error messages i18n**: The login API returned hardcoded English error messages ("Username and password are required", "Invalid username or password", "Account is locked...", "Database is not ready...", "Internal server error"), which were shown on the login page regardless of UI language. The API now returns stable `errorCode` values (`REQUIRED_CREDENTIALS`, `INVALID_CREDENTIALS`, `ACCOUNT_LOCKED`, `DATABASE_NOT_READY`, `INTERNAL_ERROR`); the login page maps these to translated strings from `login/page.content.ts` (credentialsRequired, invalidCredentials, accountLocked, databaseNotReady, internalServerError) for all five locales. Fallback for unknown errors and use of `.value` for `content.unexpectedError` in the catch block were also fixed.
+- **Log collection completion toast i18n**: The toast shown when "Collect All" log collection completes was using hardcoded English from `formatCollectionSummary()` in `bulk-collection.ts`. Summary toasts are now built from translated strings in `collect-all-button.content.ts` (summaryAllSuccessTitle/Description, summaryPartialTitle/Description, summaryFailedTitle/Description) for all five locales. Also fixed "Starting Collection" toast in server-settings-form and backup-monitoring-form: they were passing intlayer content objects without `.value`, which could display incorrectly; both now use `content.startingCollection.value` and `content.collectingBackupLogs.value`.
+- **Help button documentation link for overdue settings**: Fixed broken documentation link when clicking the help button on the "Overdue Monitoring" settings tab. The `helpMapper.ts` referenced a non-existent page `user-guide/settings/overdue-settings`. Changed to point to the correct documentation page `user-guide/settings/backup-monitoring-settings`.
+- **Help button locale-aware documentation URLs**: Fixed help button not respecting the current UI language. When viewing the app in a non-English locale (e.g., `/pt-BR/settings?tab=monitoring`), clicking the help button would link to the English documentation (`http://localhost:3000/user-guide/settings/...`) instead of the localized version (`http://localhost:3000/pt-BR/user-guide/settings/...`). Updated `getHelpUrl()` function to accept a `locale` parameter and pass it from `AppHeader` component using `useLocale()` hook. Documentation URLs now correctly include the locale prefix for all supported languages (de, fr, es, pt-BR).
+- **translate:glossary-ui empty CSV output**: Fixed `pnpm translate:glossary-ui` generating an empty `glossary-ui.csv` file with only the header row. Root cause: the extraction script (`extract-glossary-from-intlayer.js`) was looking for language key `en` in intlayer dictionaries, but intlayer uses `en-GB` as the English language key. The script would extract no English terms, resulting in zero translations being generated. Fixed by updating the script to use the correct language key mapping: `'en': 'en-GB'` and referencing `translations['en-GB']` when extracting English terms. Now the script correctly extracts 1203 UI terms with translations across all 5 locales (en-GB, de, fr, es, pt-BR).
+- **backup-detail page i18n RuntimeError**: Fixed `TypeError: Cannot read properties of undefined (reading 'backupDetails')` when accessing the backup detail page. Root cause: incorrect intlayer import in an async server component. Changed from `getIntlayer()` (which doesn't work with string keys in server components) to `useIntlayer()` from `next-intlayer/server` (per intlayer's own documentation for async server components). Solution: (1) use `import { useIntlayer } from 'next-intlayer/server'` instead of from `react-intlayer`; (2) call `useIntlayer('backup-detail-page', intlayerLocale)` with the dictionary key string and locale parameter; (3) map short locale format (en, de, fr, es, pt-BR) to intlayer's internal format (en-GB for English); (4) add `eslint-disable-next-line react-hooks/rules-of-hooks` comment (intlayer's `useIntlayer` from `/server` is not a React hook despite the name). The fix ensures translation strings are properly loaded before rendering the page.
+- **translate:status TypeError**: Fixed `TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined` when running `pnpm translate:status`. Root cause: `checkFileStatus` function expected `info.cacheKey` to be defined, but the `sourceInfo` Map values only included `type`, `fullPath`, and `hash` - missing `cacheKey`. Fixed by adding `cacheKey` to the sourceInfo objects in check-status.ts. Also improved robustness in `ignore.ts` by handling empty strings from `path.relative()` (files at root of docs/jsonSource directories).
+- **Master key change detection false positives**: Fixed incorrect "key changed" detection when restoring database and `.duplistatus.key` together (same key). Root causes: (1) `secrets.ts` used hardcoded `./data/` instead of `getDataDir()`, so the key could be read from a different path than the database in standalone mode; (2) decryption-based detection treated any GCM auth failure (e.g. from data corruption) as a key change. Solution: use `getDataDir()` for key path consistency; add key fingerprint (SHA-256 hash) stored in `master_key_fingerprint` config; compare current vs stored fingerprint for reliable detection; fall back to decryption only for legacy DBs without fingerprint; update fingerprint when clearing passwords so we don't repeatedly detect a change.
+- **overdue-monitoring-form locale parameter**: Fixed missing `locale` parameter in two calls to `formatRelativeTime()` function. The function expects `(dateString, currentTime?, locale?)` but was being called with only the date string, causing potential incorrect relative time formatting in non-English locales. Updated both occurrences (table and card views) to pass `undefined` for currentTime and `locale` as the third parameter.
+- **backup-notifications-form i18n**: Replaced 40+ hardcoded toast and error strings with intlayer translations. Added translations for: synced/clear toasts, auto-save errors, validation/configuration errors, test email/NTFY toasts, QR code errors, bulk update/remove messages, and permission errors. All 5 locales (en, de, fr, es, pt-BR) supported.
+- **backup-notifications-form expanded section i18n**: Replaced hardcoded labels, descriptions, and placeholders in the expanded server/backup details view: Additional Destinations, Notification event, Additional Emails, Additional NTFY Topic, inheriting messages, placeholders (e.g. user1@example.com), Default Additional Destinations for Server, Sync to All, Clear All, and bulk edit modal. Fixes untranslated text when viewing server or backup details in non-English locales.
+- **backup-notifications-form HTML content i18n**: Replaced hardcoded text inside HTML elements (`<p>`, `<span>`, button labels) with intlayer translations. This includes: 'Clear' button, inherited default descriptions ('Default email addresses inherited by all backups on this server', 'Default NTFY topic inherited by all backups on this server'), disabled status labels ('NTFY (disabled)', 'Email (disabled)', 'All NTFY', 'All Email'), and various tooltips and aria-labels throughout the component. Added 22 new translation keys with full support for all 5 locales (en, de, fr, es, pt-BR).
+- **Dependency vulnerabilities**: Upgraded `fast-xml-parser` in documentation from ^4.5.0 to ^5.3.4 (fixes GHSA-37qj-frw5-hhjh RangeError DoS). Added pnpm override for `@isaacs/brace-expansion` >=5.0.1 (fixes GHSA-7h2j-956f-4vf2 Uncontrolled Resource Consumption).
+- **translate-svg last_hit_at for skipped files**: When a file was skipped (unchanged, output exists), its cache segments had `last_hit_at` set to NULL because `resetLastHitAtForSvg` runs at the start and skipped files never called `getSegment`. Now we touch the cache (call `getSegment` for each translatable segment) when skipping, so `last_hit_at` stays set and cleanup won't treat them as stale.
+- **Docs translation admonition directives**: The translator was sometimes translating admonition directive names (e.g. `:::note` → `:::nota` in Spanish), causing Docusaurus "unused Markdown directives" warnings. Implemented preprocessing: replace admonition opening lines (`:::note`, `:::tip`, etc.) and closing `:::` with `{{ADM_OPEN_N}}` and `{{ADM_END_N}}` placeholders before translation, then restore after. Added `admonition-placeholders.ts`; prompt updated to preserve placeholders.
+- **Docs translation admonition closing markers**: Fixed closing admonition markers (e.g. ` :::` with leading whitespace) not being replaced with placeholders. Updated `ADMONITION_CLOSING` regex from `/^(:::+)\s*$/` to `/^\s*(:::+)\s*$/` to allow optional leading whitespace, ensuring indented closing markers are also protected.
+- **Docs translation admonition opening markers**: Similarly updated `ADMONITION_DIRECTIVES` regex to allow optional leading whitespace (`/^\s*(:::.../)` for consistency with closing markers, ensuring indented opening directives are also protected.
+- **Docs translation URL preservation**: Markdown link URLs (e.g. `overview#application-toolbar`) were incorrectly translated when glossary terms like "overview" → "resumen" appeared inside the URL. Implemented preprocessing: replace URLs with `{{URL_PLACEHOLDER_N}}` placeholders before sending to the API, then restore originals after translation. Prevents broken links in Spanish and other locales. Added `url-placeholders.ts` utility; prompt updated to preserve placeholders.
+- **Docs translate cache with --force**: Fixed cache not being used when running `pnpm translate --force` after a successful translation. Root causes: (1) `resetLastHitAtForMarkdown` ran at the start of each run, setting `last_hit_at = NULL` for all markdown segments; if `translate:cleanup` ran in parallel or between runs, it would delete all segments. (2) Path format inconsistency (backslash vs forward slash) between translate and cleanup. (3) Frontmatter segment hash used `JSON.stringify(frontMatter)` instead of the actual segment content, causing cache misses when key order differed. Changes: moved reset to end of run via `resetLastHitAtForUnhitMarkdown(hitKeys)` so only unhit segments get `last_hit_at = NULL`; added `toPosixPath` for cache path normalization; fixed frontmatter hash to use `frontMatterStr`; wired `--no-cache` to skip segment cache reads.
 
 ### Changed
+- **Documentation**: Renamed `configure-tz-lang.md` to `configure-tz.md`; updated sidebars, installation.md, and i18n locale files.
+- **Development documentation**: Updated to match current implementation: fixed copy-images source path (`documentation/static/img`); expanded clean-workspace.sh description; removed non-existent SQL scripts (delete-backup-settings.sql, delete-last-backup.sql), replaced with show-backup-settings.sh; updated database.md version (v1.3.x); replaced duplistatus-cron.sh references with docker-entrypoint.sh; fixed documentation-tools screenshot paths (`documentation/static/assets/`) and screenshot list to match take-screenshots.ts; removed setup-git-credentials.sh reference; added pnpm take-screenshots command.
+- **Documentation notification-templates**: Updated user guide to reflect the new notification template settings interface: Template Language selector (with explanation that changing language updates locale but existing templates keep their text until updated or reset); renamed "Reset to Default" to "Reset this template to default"; added "Reset all to default" button; new Template Language section.
+- **Documentation multi-language support**: Updated user guide and configure-tz to document how to change the interface language. Overview now mentions the language selector in the user menu (when logged in) and lists supported languages in the User Menu section; toolbar user button description notes language selection; configure-tz clarifies that `LANG` affects server-side formatting only, not the UI language.
+- **TRANSLATION-HELP.md**: Added Glossary section (glossary-ui.csv, glossary-user.csv); updated translate:glossary-ui description to mention user overrides.
+- **update-glossary-markdown.js**: Regenerate instruction now uses `pnpm run translate:glossary-ui` instead of `./scripts/generate-glossary.sh`.
+- **Glossary generation**: Removed glossary-table.md generation from generate-glossary.sh and extract-glossary-from-intlayer.js. Script now outputs only glossary-ui.csv. Removed CONTRIBUTING-TRANSLATIONS.md update step. Deleted glossary-table.md.
+- **dev/TRANSLATION_SCRIPT_DESCRIPTION.md**: Updated to reflect current translation script implementation: batch translation (translateBatch, batch queue, BatchTranslationError fallback), config options (batchSize, maxBatchChars, cache), translation metadata (source_file_hash, etc.), locale normalization, progress display and cost tracking, OpenRouter context caching, batch vs single-segment prompts, glossary generation from intlayer (extract-glossary-from-intlayer.js, generate-glossary.sh, update-glossary-markdown.js), file structure (documentation/scripts/), CLI options (--no-batch, --debug-traffic default), and supporting scripts (translate:svg, translate:help, translate:clean alias).
+- **Translate output logs**: Removed `tee` from the package.json translate script. Both `translate` and `translate:svg` now write all console output to `.translation-cache/translate_<timestamp>.log` and `.translation-cache/translate-svg_<timestamp>.log` respectively. Added `log-output.ts` utility.
+- **Debug traffic default**: `--debug-traffic` is now on by default for the translate script. Use `--debug-traffic <path>` for a custom log filename, or `--no-debug-traffic` to disable. Removed explicit `--debug-traffic` from the package.json translate script.
+- **Combined translate script**: `pnpm run translate` now runs SVG translation at the end by default. Use `--no-svg` for docs only. `pnpm run translate:svg` remains available for SVG-only runs. Added `--no-export-png` to skip Inkscape PNG export. Refactored `translate-svg.ts` to export `runSvgTranslation()` for reuse by `index.ts`.
+- **SVG translation script**: Translated text in SVG files is now forced to lowercase. Applied to both newly translated segments and cached translations.
+- **dev/i18n-context.md**: Updated to reflect current i18n implementation: Intlayer ^8.0.2, proxy.ts (Next.js 16), 48+ content files, centralized (common, settings, auth, api, notifications) + co-located component content, .value access pattern, locale detection flow, RTL infrastructure.
 
-- **Toast notification behavior**: 
-  - Error toasts (destructive variant) now persist until manually closed by the user, instead of auto-dismissing after a few seconds. This ensures users don't miss important error messages.
-  - Success and informational toasts continue to auto-dismiss, with the default duration changed from 5 seconds to 3 seconds for a less intrusive experience.
-- **SMTP debug logging**: Verbose SMTP configuration and connection debug logs are now only displayed in development mode, reducing log noise in production environments.
-- **Email success logging**: Enhanced email success messages to include recipient email address and timestamp for better traceability. Format: `"Email sent successfully to {recipient} at {timestamp} (messageId: {messageId})"`.
-- **Notification settings table structure**: 
-  - Removed "Backup Name" column from the notification settings table
-  - Renamed "Server Name" column to "Server / Backup" to reflect combined display
-  - Removed blue color coding from chevron icons (chevrons now use default styling)
-  - Added contextual icons to indicate additional destination configuration:
-    - `Settings2` icon for servers with default additional destinations configured
-    - `ExternalLink` icon for backups (blue-400 for custom overrides, slate-500 for inherited server defaults)
-  - Icons include tooltips explaining their state
-  - Updated table column spans to accommodate the removed column
+### Added
+- **Documentation**: Added localized "More info" links to `documentation/docs/readme-header.md` pointing to English, French, German, Spanish, and Brazilian Portuguese documentation on GitHub Pages.
+- **JSON translation support**: The `translate` script now translates Docusaurus UI string JSON files (e.g., `code.json`, `navbar.json`, `footer.json`). Only the `message` fields are translated; `description` fields (developer documentation) are preserved. JSON files in `i18n/en/` are discovered recursively and can be excluded via `.translate-ignore`. This feature is enabled by default; use `--no-json` to skip. Includes `JsonSplitter` class for parsing and reassembly, with segment-level caching and glossary support.
+- **Translation batch API**: New `translateBatch(segments, locale, glossaryHints?)` method in `translator.ts` to translate multiple segments in a single API call. Wraps segments in `<seg id="N">` tags, instructs the LLM to reply with `<t id="N">...</t>`, and returns `BatchTranslationResult` (translations map + usage/cost). Throws `BatchTranslationError` when returned tag count doesn't match input (caller can fall back to single-segment mode). Added `BatchTranslationError` and `BatchTranslationResult` to `types.ts`.
+- **Batch translation in translateFile**: `index.ts` now accumulates cache-miss segments into a batch queue and flushes when `batchSize` (default 20) or `maxBatchChars` (default 2000) is reached. Uses `translateBatch` for cost savings. On `BatchTranslationError`, falls back to single-segment `translate()` for the affected items.
+- **dev/TRANSLATION_SCRIPT_DESCRIPTION.md**: Detailed technical documentation of the documentation translation script system: architecture, configuration, document splitting, placeholder protection, translation API, caching, SVG translation, supporting scripts, and file structure.
+- **Translation cleanup pre-run alert and confirmation**: `translate:cleanup` now shows an alert to run `pnpm translate --force` before cleanup (to ensure `last_hit_at` is updated). When run without `--dry-run`, it prompts for confirmation before proceeding.
+- **Orphaned translation files cleanup**: `translate:cleanup` now deletes orphaned translation files on disk (files in `i18n/{locale}/.../current/` whose source was removed from `docs/`). Aligns cleanup with `translate:status` orphan detection. Uses all source files (including ignored) when determining orphans so translations of ignored sources (e.g. LICENSE.md, api-reference/*) are not deleted.
+- **Translation cache cleanup log file**: `translate:cleanup` (cache-cleanup.ts) now writes a log file `cleanup_YYYY-MM-DD_HH-MM-SS.log` in the cache directory. The log records all deleted filepaths (orphaned file_tracking entries), orphaned translation rows (source_hash, locale, filepath), and stale entries deleted (last_hit_at or filepath NULL).
+- **Translation cache cleanup --dry-run**: `translate:cleanup` accepts `--dry-run`; when set, no deletions or updates are made, and the log reports what would be deleted.
+- **Translation cache editor log-links icon**: New link icon in the edit-cache table that, when clicked, logs the source and translated file paths (with line numbers) to the server console instead of opening them in the browser. Users can click the printed `file://` URLs in the terminal to open files in their editor. Supports both doc and SVG filepaths.
+- **Translation cache start_line**: The `translations` table now includes a `start_line` column (1-based line number in the markdown file where the segment started). Initially NULL for existing rows. When translate runs, `start_line` is updated if NULL (same behaviour as `last_hit_at` and `filepath`). The splitter computes `startLine` for each segment; `getSegment` and `setSegment` accept and persist it.
+- **Translation cache editor web app**: New `translate:edit-cache` script (`pnpm translate:edit-cache`) that serves a web UI on port 4000 (or next available) for browsing and editing the translation cache. Features: table view with filters (filename, source_hash, source_text, translated_text), inline edit of translated text, delete single entry, delete all translations for a filepath, pagination, dark theme. Run from `documentation/`.
+- **Translation cache cleanup script**: `cache-cleanup.ts` now performs orphaned cleanup (deletes/updates rows whose filepath points to deleted files; preserves translations when segment exists elsewhere) and stale cleanup (last_hit_at or filepath NULL). Added shared `file-utils.ts` with `getAllDocFiles`, `getAllSvgFiles`, `buildExistingSegmentsSnapshot`. Refactored `index.ts` and `translate-svg.ts` to use file-utils. Run with `pnpm exec tsx scripts/translate/cache-cleanup.ts` from `documentation/`.
+- **Translation cache last_hit_at**: The `translations` table now includes a `last_hit_at` column recording when a segment was last retrieved from cache. New segments use the same timestamp as `created_at`; existing segments get `last_hit_at` updated on each cache hit (`getSegment`) and when replaced via `setSegment`. `setSegment` now uses `ON CONFLICT DO UPDATE` to preserve `created_at` when updating existing rows.
+- **Translation cache filepath linkage**: The `translations` table in `cache.db` now includes a `filepath` column linking each cached segment to its source file. The translation script updates `filepath` when it is null on cache hit (via `getSegment` with optional filepath).
+- **Translation cache last_hit_at reset**: Before each run, the markdown translate script resets `last_hit_at = NULL` for rows where filepath does not end with `.svg`; the SVG translate script resets `last_hit_at = NULL` for rows where filepath ends with `.svg`. Unused entries remain NULL and can be removed by `translation:cleanup`. New translations store the filepath when written.
+- **SVG translation script**: New `translate:svg` script (`pnpm translate:svg`) that extracts text from SVG files in `documentation/static/img/`, translates via OpenRouter API (reusing cache, glossary, translator from markdown translation), and writes translated SVGs and PNGs to `i18n/{locale}/.../assets/`. Uses Inkscape CLI for SVG→PNG export. Options: `--locale`, `-p/--path`, `--dry-run`, `--no-cache`, `--no-export-png`, `--stats`. Dry-run and `--stats` work without `OPENROUTER_API_KEY`. Documented in documentation-tools.md. Inkscape added to development setup prerequisites.
+- **remove-code-block-anchors script**: New script `scripts/remove-code-block-anchors.ts` that removes incorrectly added Docusaurus heading anchors (`{#anchor-id}`) from lines inside fenced code blocks in Markdown files under `documentation/docs/`. Supports `--dry-run`. Run with `pnpm exec tsx scripts/remove-code-block-anchors.ts`.
+- **Translation ignore list**: Documentation translation script now reads `.translate.ignore` (gitignore-style patterns) and skips matching files during translation. Initially ignores `docs/LICENSE.md` via `LICENSE.md` pattern so Docusaurus can fall back to English. The `translate:status` report also marks ignored files with `i` and greys the filename.
+- **AI translation debug traffic**: `--debug-traffic [path]` option for the documentation translate script. When set, writes each OpenRouter request body (model, messages, max_tokens, temperature; no API key) and full response to a file for debugging. Default path: `.translation-cache/debug-traffic-<timestamp>.log`. Documented in TRANSLATION-WORKFLOW.md under Troubleshooting.
+- **Translation cache in git**: `.translation-cache/cache.db` is now tracked in git to save API costs for contributors. The cache is deterministic (hash-based) and automatically validates stale entries. Debug traffic logs remain excluded. Added `.gitattributes` to mark SQLite files as binary.
+- **Source file hash in translation metadata**: Translated files now include `source_file_hash` in frontmatter, allowing verification of which source file version was used for translation. This complements existing metadata fields (`source_file_mtime`, `source_file_path`, `translation_language`, `translation_last_updated`).
+- **Case-insensitive locale support**: All CLI options that accept locales (`--locale`, `--clear-cache`) now support case-insensitive input. Locales like `FR`, `fr`, `Pt-Br`, `PT-BR` are automatically normalized to the correct format (`fr`, `pt-BR`). Invalid locales are validated and show helpful error messages.
+- **Translation status checker**: New `translate:status` script (`scripts/translate/check-status.ts`) that generates a table showing translation status for all documentation files. Columns include filename and one column per locale with status indicators: `✓` (translated and up-to-date), `-` (not translated), `⫗` (translated but outdated), `⁇` (orphaned - exists in translation but not in source). Uses `source_file_hash` from frontmatter to detect outdated translations. Includes summary statistics per locale.
+- **Intlayer i18n dependencies**: Added `intlayer`, `react-intlayer`, and `next-intlayer` (^7.5.14) for Next.js 16 internationalisation support. Target languages: en, de, fr, es, pt-BR.
+- **intlayer.config.ts**: Core Intlayer config with locales (en, de, fr, es, pt-BR), default locale English, editor disabled and `applicationURL` http://localhost:8666, and build optimization (tree-shaking) enabled.
+- **Next.js + Intlayer integration**: `next.config.ts` now uses `withIntlayerSync` from `next-intlayer/server` for Intlayer webpack integration (aliases, IntlayerPlugin, .node loader). Our webpack customizations (better-sqlite3 externals, watchOptions, resolve, splitChunks, etc.) are composed to run first, then Intlayer's. Standalone output, experimental options, and all existing behaviour preserved. For full build-time tree-shaking of content, `@intlayer/swc` is recommended (optional).
+- **Dynamic [locale] routing**: App Router locale segment `src/app/[locale]/` with `generateStaticParams` for en, de, fr, es, pt-BR. Dashboard, detail, detail/backup, settings, login, and blank pages moved under `[locale]`. Root `/` redirects to `/en`. API routes remain at `src/app/api/`.
+- **Locale context and helpers**: `ClientLocaleProvider` and `useLocale()` in `src/contexts/locale-context.tsx`; locale derived from pathname, `document.documentElement.lang` set on client. `usePrefixWithLocale()` for building locale-prefixed paths.
+- **Locale-aware navigation**: All `Link` and `router.push` updated to use `/[locale]/...` in app-header, conditional-layout, dashboard (table, overview/status/server/overview-cards), server-details (summary-items, backup-table), backup-tooltip-content, global-refresh-controls, open-server-config-button. `requireServerAuth` redirects to `/[locale]/login`; login form and `getHelpUrl` support locale-prefixed paths.
+- **Locale detection and request proxy**: `src/proxy.ts` implements automatic locale detection, URL rewriting, and request header management. Detects locale from: (1) URL path (if already prefixed), (2) `NEXT_LOCALE` cookie (persisted preference), (3) `Accept-Language` header (browser language), (4) default "en". Automatically redirects requests without locale prefix to `/[locale]/path`. Sets custom headers (`x-pathname`, `x-search-params`) and cache control headers for dashboard and detail pages. Excludes API routes, `_next`, and static files. Matcher: `/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)`.
+- **Root layout locale support**: `src/app/layout.tsx` now dynamically sets HTML `lang` attribute based on detected locale (from cookies, headers, or Accept-Language). Root layout is async and uses `getServerLocale()` helper to determine locale server-side for SEO. ClientLocaleProvider continues to update `document.documentElement.lang` on client-side for consistency. All existing styling, authentication, and theming preserved.
+- **Locale switcher in app header**: Added language selection dropdown in the app header with support for all 5 languages (English, Deutsch, Français, Español, Português (BR)). Language preference is saved in `NEXT_LOCALE` cookie and persists across sessions. Switching languages automatically redirects to the same page in the selected locale.
+- **Translation validation verbose output**: When `--verbose` is used and validation issues are reported, the script now prints the source and translated segment content (first 200 chars) for each affected segment index, plus a hint to run with `--no-cache` to re-translate and fix cached issues.
+- **Translation heading level preservation**: Pipeline now enforces source heading level on translated segments. The model sometimes outputs # or ## when the source has ###; after cleaning we apply `preserveHeadingLevel(source, translated)` so the document outline matches the English source. Applied to both newly translated and cached segments. Prompt updated to state that heading levels must stay identical.
+- **LocalizedFileInput component**: Created new `src/components/ui/localized-file-input.tsx` component for locale-aware file input with customizable button and "no file chosen" text, improving file selection UX across all languages.
+- **Common translation strings**: Extended `common.content.ts` with additional shared translations:
+  - Password visibility controls (show/hide password)
+  - GitHub link text
+  - Help tooltips with page name support
+  - Time units (minutes, hours, days, weeks, months, years)
+  - Status labels (enabled/disabled)
+  - Cron interval options (disabled, 1min through 2hours)
+  - Overdue tolerance values (no tolerance, 5min through 1d)
+  - Notification frequency options (one time, every day/week/month)
+- **Notification Templates Internationalization**: Implemented multilingual support for notification templates with language selector and pre-translated defaults for 5 languages (English, German, French, Spanish, Portuguese (Brazil)).
+  - Created language-specific default template files: `src/lib/default-notifications-en.ts`, `-de.ts`, `-fr.ts`, `-es.ts`, `-pt-BR.ts`
+  - Added `SupportedTemplateLanguage` type and `SUPPORTED_TEMPLATE_LANGUAGES` constant in `src/lib/types.ts`
+  - Updated `src/lib/default-config.ts` to provide language-specific defaults via `getDefaultNotificationTemplates()` and `getDefaultNotificationTemplate()` helpers
+  - Extended database utilities (`src/lib/db-utils.ts`) to handle `language` field in templates, with backward compatibility (defaults to 'en')
+  - Created API endpoint `/api/configuration/templates/defaults` to retrieve default templates for a specified language
+  - Updated `/api/configuration/templates` route to persist and audit log language changes
+  - Created `src/lib/status-translations.ts` for translating backup status values (Success, Warning, Error, etc.) across locales
+  - Enhanced `src/lib/notifications.ts` with locale-aware formatting:
+    - Dates/times using `formatDateTime()` from `date-format`
+    - Numbers using `formatInteger()` from `number-format`
+    - Bytes using `formatBytesLocale()` from `number-format`
+    - Status values using `translateStatus()` from `status-translations`
+  - Updated upload API (`/api/upload`) to pass raw numeric values for locale-aware formatting instead of pre-formatted strings
+  - UI improvements in `notification-templates-form.tsx`:
+    - Language selector with tooltip explanation
+    - "Reset this template to default" and "Reset all to default" buttons with confirmation dialogs using `AlertDialog`
+    - Optimistic language change with CSRF protection via `authenticatedRequestWithRecovery`
+    - Fixed placeholders in toast messages and confirmation dialogs (using `.replaceAll()` for multiple occurrences)
+    - Moved language selector to bottom row with buttons, proper layout with flexbox
+  - Extended `notification-templates-form.content.ts` with translation keys for language selector, reset actions, and tooltips for all 5 locales
+  - Updated description text for template language selector to include note about using reset buttons when changing languages
+
+### Changed
+- **take-screenshots robustness**: All pages now use `data-screenshot-target` attributes for reliable element selection. The script waits for these targets (with a 15s timeout) before capturing. Added `waitForScreenshotTarget()` helper and `screenshotTarget` option to `takeScreenshot()`. Targets: `dashboard-main`, `dashboard-overview`, `dashboard-table-view`, `dashboard-view-mode-toggle`, `metrics-chart`, `server-detail-content`, `backup-detail`, `available-backups-trigger`, `available-backups-modal`, `settings-left-panel`, `settings-content-card`, `settings-notifications-bulk-bar`. Replaced `waitForSelector` on buttons/panels with `waitForScreenshotTarget` throughout.
+- **take-screenshots summary**: Summary output is now a table with rows = screenshot filenames (in capture order), columns = locales, cells = elapsed time per (filename, locale) or `-` if missing. A Totals row shows the sum of elapsed time per locale. Durations are stored per (filename, locale); `ORDERED_SCREENSHOT_FILENAMES` constant defines row order. Total time and average are computed from all (filename, locale) entries.
+- **take-screenshots timing**: Removed `timedCapture` wrapper. Timing uses two globals: `scriptStartTime` (for log prefix) and `lastOperationTimestamp` (start of current operation). Preparation phases (before Phase A and between Phase A and Phase B) use the same variable: preparation duration = `Date.now() - lastOperationTimestamp` when entering each phase. `recordDuration(filename, ms)` is called inside `takeScreenshot` on success and on failure (before rethrow); it stores duration per (filename, locale) and sets `lastOperationTimestamp = Date.now()`. Main calls capture functions directly and sets `currentCaptureLocale` per locale. Logs during capture are prefixed with elapsed `[HH:MM:SS]` via wrapped `console.log`/`console.error`; summary prints preparation durations and restores console before summary.
+- **take-screenshots summary**: Elapsed times in the summary use `HH:MM:SS.S` format. The summary table has fixed-width columns for readability, an "Average" row (average duration per locale), and a "Total" row. The "Average per screenshot" line is on its own line below the Time line.
+- **take-screenshots overdue hover card**: Overdue backup hover card capture is more robust against transient failures. It retries up to 3 times with a 5s wait for the overdue item selector and 1.5s delay between attempts; logs attempt number on retries and only reports final failure after all attempts.
+
+### Fixed
+- **take-screenshots overdue hover card (DE locale)**: The overdue backup hover card failed for DE because the overview side panel state (status vs chart) is persisted in localStorage per user. When EN ran first and ended with the panel in "chart" mode, DE loaded with that state. Overdue items only appear in the "status" panel. The script now switches to status mode (by clicking the overview-side-panel-toggle) before capturing if the panel is in chart mode.
+- **Docusaurus docs localized screenshots**: Translated docs (de, es, fr, pt-BR) were loading screenshots from the global `static/assets/` instead of locale-specific `i18n/{locale}/docusaurus-plugin-content-docs/current/assets/`. Image paths in markdown were absolute (`/assets/...`), which always resolve to static. Switched to relative paths (`assets/`, `../assets/`, `../../assets/`) so Docusaurus resolves them per doc and thus per locale. Added `documentation/scripts/fix-i18n-asset-paths.js` (run without args for i18n, with `--docs` for source docs), and created `documentation/docs/assets/` with screenshots for the default locale.
+- **take-screenshots**: Screenshot file path is now resolved with `path.resolve(process.cwd(), ...)` so files are always written under the project root, fixing cases where `screen-main-dashboard-table-mode.png` (and others) were reported as saved but missing on disk when the script ran with a different effective cwd.
+- **take-screenshots**: `screen-metrics.png` is now captured on the dashboard page in table mode, immediately after the dashboard table mode screenshot, with no navigation (the metrics chart panel is below the table on the same page).
+- **take-screenshots**: Script now measures the time to take each screenshot. The summary list shows the duration next to each screenshot (e.g. `(2.3s)`), and at the end it prints total time and average per screenshot.
+- **take-screenshots**: Timing for each screenshot now runs from when the start message is shown (e.g. "Capturing user menu dropdown (user)...") until the file is written. `timedCapture` logs the start message first, then starts the timer, then runs the capture.
+- **upgrade-dependencies.sh**: Script now sources nvm (`$NVM_DIR/nvm.sh`) at startup so `nvm install --lts` and `nvm use --lts` work when the script is run directly. nvm is a shell function and is not available in non-interactive script subshells otherwise. Also adds `PNPM_HOME` to PATH when present so pnpm is found when installed via the standalone installer (profile-only PATH).
+- **Build**: Components that imported `formatBytes` from `@/lib/utils` now import from `@/lib/number-format` (formatBytes was removed from utils). Updated: `dashboard-summary-cards.tsx`, `overview-cards.tsx`, `metrics-charts-panel.tsx`, `server-detail-summary-items.tsx`.
+- **Build**: Suppressed webpack "Critical dependency: the request of a dependency is an expression" warning for `@ts-morph/common` (pulled in by next-intlayer) via `next.config.ts` ignoreWarnings.
+- **Detail page initial load**: Server detail page now clears request/data cache before fetching so overdue message and other data show on first load instead of only after the first auto-refresh. Aligns server render with `/api/detail/[serverId]` behaviour.
+- **Docs translation persistence**: Some translated segments (e.g. heading "# Development Setup" → "# Configuration de développement") were not persisted for fr/es/pt-BR because `removeAppendedContent` treated the translated heading "Configuration de développement" as document-start content and cut the segment to empty, which was then cached. Removed all response cleanup (cleanTranslatedContent, removeAppendedContent, preserveHeadingLevel); cache now stores and returns raw API output. Line-count validation added to warn when source and translated segment line counts differ.
+- **Docs code-block anchors**: Removed erroneous Docusaurus anchors (`{#...}`) from comment lines inside fenced code blocks in `documentation/docs/` (e.g. `# Push the updated master branch {#push-the-updated-master-branch}` → `# Push the updated master branch`). Heading anchors outside code blocks are unchanged.
+- **Spanish translations**: Fixed Spanish translations for overdue notifications and configuration settings to ensure consistency and accuracy.
+- **Docs translate splitter**: Do not send standalone `<br/>` or Markdown thematic breaks (`---`) to the LLM; they are structural-only segments and caused the model to return unrelated “getting started” content, which then polluted translations.
+- **Docs translate splitter**: Treat any single-line HTML / non-text-only segment as non-translatable to avoid LLM hallucinations on structural markup.
+- **Docs translate splitter**: Allow normal prose lines that contain inline HTML/MDX (e.g. `<IconButton ... />`) to be translated; only structural/no-text single-line segments are skipped.
+- **take-screenshots user menu**: User menu dropdown capture no longer fails with "Could not select user menu button element". The script was tagging the loading-state button (User icon + "Loading" span), then the DOM was replaced when user loaded and the selector pointed at a removed node. The app header user menu trigger now has `data-screenshot-target="user-menu-trigger"` and the script waits for that selector (only present after user is loaded) before clicking.
+- **take-screenshots screen-metrics.png**: Metrics chart screenshot was never created because `captureMetricsChart` was defined but never called. The script now invokes it in Phase B after the available-backups modal capture and records success/failure for `screen-metrics.png`. Chart detection now waits for Recharts/canvas to render and includes Recharts class selectors when finding the metrics card.
+- **take-screenshots user-menu screenshots**: User menu (admin and user) captures were failing because the blank page was loaded with `domcontentloaded` so auth/me had not completed and the user-menu trigger (with `data-screenshot-target`) was not yet in the DOM. Navigation to `/blank` now uses `networkidle0`, and the wait for the user-menu trigger timeout is increased to 15s.
+- **Docs translate cache cleanup**: Purge cached segment translations whose `source_text` is a structural single-line (HTML/tag-only or non-text), which previously caused the model to return unrelated full-document content when asked to “translate” `<br/>`.
+
+
+
+### Changed
+- **dev/i18n-context.md**: Updated to reflect current i18n implementation: Intlayer ^8.0.2, proxy.ts (Next.js 16), 48+ content files, centralized (common, settings, auth, api, notifications) + co-located component content, .value access pattern, locale detection flow, RTL infrastructure.
+- **take-screenshots script speed**: Reduced execution time by (1) removing or shortening many `delay()` calls (e.g. after Escape, after navigation, popover/modal waits, settings tab waits), (2) using `waitUntil: 'domcontentloaded'` instead of `networkidle0` for `/blank`, `/login`, and settings pages, (3) adding optional `skipNavigation` to capture functions and consolidating navigations: Phase A navigates to `/blank` once then runs collect-button, Duplicati config, and user-menu captures without re-navigating; Phase B reuses the detail page for backup-history and available-backups-modal after the initial detail goto.
+- **take-screenshots --locale**: Optional `--locale` argument to capture screenshots for one or more locales (comma-separated). Example: `tsx scripts/take-screenshots.ts --locale en,de`. If omitted, all locales are used. Documented in documentation-tools.md.
+- **take-screenshots --help**: `-h` or `--help` prints usage (options, env vars, examples) and exits; checked before password validation so help works without setting env.
+- **Translation consolidation**: Refactored components to use common translations from `common.content.ts` instead of component-specific translations for better consistency:
+  - `overdue-monitoring-form`: Now uses common translations for time units, intervals, tolerance values, and frequency options
+  - `backup-notifications-form`: Updated to use common translations for bulk operations (additional destinations, backups selected, clear selection, bulk edit, bulk clear)
+  - `app-header`: Uses common translations for help tooltips
+  - `display-settings-form`: Removed redundant translations in favor of common ones
+- **Code cleanup**: Removed deprecated functions from `src/lib/utils.ts`:
+  - `formatNumber()` (use `formatNumber` from `@/lib/number-format` instead)
+  - `formatBytes()` (use `formatBytes` from `@/lib/number-format` instead)
+  - `formatSQLiteTimestamp()` (use `formatSQLiteTimestamp` from `@/lib/date-format` instead)
+  These functions were marked as deprecated and have been replaced by locale-aware versions in dedicated modules.
+
 
 ### Improved
+- **Screenshot script locale-stable locators**: Added `data-screenshot-target` (and `data-overview-panel-state` on the overview toggle) to UI elements so the documentation screenshot script finds them reliably in all locales (en, de, fr, es, pt-BR). App: collect button (`collect-button`), Duplicati configuration trigger (`duplicati-configuration-trigger`), overview side panel toggle (`overview-side-panel-toggle` with `data-overview-panel-state`), settings notifications bulk bar (`settings-notifications-bulk-bar`), and Clear Selection button (`settings-notifications-clear-selection`). Script: `take-screenshots.ts` now uses only these attributes instead of translated text, title, or aria-label for collect button, Duplicati trigger, overview panel state/toggle, bulk bar bounds, and clear-selection click.
+- **Date/Time Localization**: Enhanced date and time formatting with locale-aware utilities. Created `src/lib/date-format.ts` with locale-specific date/time formatting functions:
+  - Date formats: English (MM/DD/YYYY), German (DD.MM.YYYY), French/Spanish/Portuguese (DD/MM/YYYY)
+  - Time formats: 12-hour format for English, 24-hour format for German, French, Spanish, and Portuguese
+  - Updated all date displays across the application to use locale-aware formatting:
+    - Dashboard table (last backup dates, expected backup dates, overdue check times)
+    - Server backup table (backup dates with relative time)
+    - Chart components (tooltips and X-axis labels in overview and metrics charts)
+    - Backup tooltip content (last backup date, expected backup date)
+    - Server detail summary items (expected backup date formatting)
+    - Overdue monitoring form (next run dates, last backup timestamps)
+  - Functions: `formatDate()`, `formatTime()`, `formatDateTime()`, `formatDateForChart()`, and enhanced `formatSQLiteTimestamp()` with locale support
+- **Number Localization**: Enhanced number formatting with locale-aware utilities. Created `src/lib/number-format.ts` with locale-specific number formatting functions:
+  - Number formats: English (1,234.56), German (1.234,56), French (1 234,56), Spanish/Portuguese (1.234,56)
+  - Updated all number displays across the application to use locale-aware formatting:
+    - Dashboard summary cards (server counts, backup counts, file sizes)
+    - Server detail summary items (backup statistics, file counts)
+    - Backup tooltip content (file counts, backup versions)
+    - Overview cards (total file counts)
+    - Chart components (Y-axis labels and tooltips in overview and metrics charts)
+  - Functions: `formatNumber()`, `formatInteger()`, `formatDecimal()`, `formatBytes()`, `formatCurrency()`, and `formatPercentage()` with locale support
+  - Updated existing `formatNumber()` and `formatBytes()` in `utils.ts` to accept optional locale parameter for backward compatibility (now removed in favor of dedicated modules)
+- **Internationalization consistency**: Improved translation usage across components:
+  - Components now consistently use common translations for shared strings (time units, intervals, status labels)
+  - Better separation between component-specific and common translations
+  - Improved locale-aware week day ordering in overdue monitoring form
+- **UI improvements**:
+  - Increased server filter width in backup notifications form (260px → 360px) for better usability
+  - Enhanced bulk selection UI with proper pluralization support for backup counts
+  - Improved help tooltip text with page name context
+- **RTL (Right-to-Left) Support Preparation**: Added foundation for future RTL language support:
+  - Created `src/lib/rtl-utils.ts` with RTL detection utilities (`isRTL()`, `getTextDirection()`, `getLogicalProperties()`)
+  - Created `src/hooks/use-rtl.ts` hook for RTL-aware components
+  - Added CSS variables in `globals.css` for RTL-aware styling (direction, text-align, margins, padding, borders)
+  - Added RTL utility classes (`.rtl-safe-ml`, `.rtl-safe-mr`, `.rtl-safe-pl`, `.rtl-safe-pr`, `.rtl-safe-text-left`, `.rtl-safe-text-right`, etc.)
+  - Updated `locale-context.tsx` and root `layout.tsx` to automatically set `dir` attribute based on locale
+  - Added icon mirroring classes (`.rtl-mirror`, `.rtl-flip-icon`) for directional icons
+  - Updated navigation components (app-header) to use RTL-aware icon classes
+  - All current languages (en, de, fr, es, pt-BR) are LTR, but infrastructure is ready for future RTL languages (Arabic, Hebrew, etc.)
 
-- **SMTP error messages**: Error messages now provide more accurate guidance based on the actual error type:
-  - Authentication errors show: "SMTP authentication failed. Please verify your username and password are correct."
-  - SSL/TLS version errors show: "SSL/TLS version mismatch. The server may require a different TLS version or connection type."
-  - Connection type errors only suggest connection type changes when the error actually indicates connection type issues.
-  - Original error details are preserved in development mode for debugging purposes.
+
 
 ### Removed
+- **Test and documentation files**: Removed obsolete development files:
+  - `dev/phase4-testing-checklist.md`
+  - `dev/phase4-testing-guide.md`
+  - `dev/phase4-testing-results.md`
+  - `dev/session-ses_4364.md`
+  - `dev/string-extraction-document.md`
 
-- **Unused UI components**: Removed obsolete components that were migrated to the settings page:
-  - `database-maintenance-menu.tsx` - Functionality moved to Database Maintenance settings
-  - `display-menu.tsx` - Functionality moved to Display Settings
-  - `overdue-backup-check-button.tsx` - Functionality moved to Overdue Monitoring settings
-  - `theme-toggle-button.tsx` - Functionality moved to Display Settings
-  - `read-only-notice.tsx` - Component was never used (read-only notices implemented inline)
-- **Unused API endpoints**: Removed endpoints that were not being called by the application:
-  - `DELETE /api/backups/[backupId]` - Development-only endpoint that was never used
-  - `GET /api/audit-log/stats` - Endpoint was not called by the audit log viewer

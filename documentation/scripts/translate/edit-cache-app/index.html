@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translation Cache Editor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Translation Cache Editor</h1>
+    </header>
+
+    <section class="filters">
+      <div class="filter-row">
+        <input type="text" id="filter-filename" placeholder="Filename (partial)" title="Filter by filepath">
+        <select id="filter-locale" title="Filter by locale">
+          <option value="">All locales</option>
+        </select>
+        <select id="filter-model" title="Filter by model">
+          <option value="">All models</option>
+        </select>
+        <input type="text" id="filter-source-hash" placeholder="Source hash" title="Filter by source_hash">
+        <input type="text" id="filter-source-text" placeholder="Source text search" title="Filter by source_text">
+        <input type="text" id="filter-translated-text" placeholder="Translated text search" title="Filter by translated_text">
+        <label class="filter-stale-label" title="Filter entries where last_hit_at IS NULL (stale)">
+          <input type="checkbox" id="filter-stale-only"> stale entries
+        </label>
+        <button type="button" id="btn-apply">Apply</button>
+      </div>
+    </section>
+
+    <section class="delete-by-filepath">
+      <label for="select-filepath">Delete all translations for filepath:</label>
+      <select id="select-filepath">
+        <option value="">-- Select filepath --</option>
+      </select>
+      <button type="button" id="btn-delete-filepath" disabled>Delete all</button>
+      <button type="button" id="btn-delete-filtered">Delete filtered</button>
+    </section>
+
+    <section class="pagination-top">
+      <span id="pagination-info"></span>
+      <div class="pagination-controls">
+        <button type="button" id="btn-prev" disabled>Previous</button>
+        <span id="page-indicator"></span>
+        <button type="button" id="btn-next" disabled>Next</button>
+        <label>
+          Page size:
+          <select id="page-size">
+            <option value="25">25</option>
+            <option value="50" selected>50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Filepath</th>
+            <th>Line #</th>
+            <th>Locale</th>
+            <th>Source hash</th>
+            <th>Source text</th>
+            <th>Translated text</th>
+            <th>Model</th>
+            <th>Created</th>
+            <th>Last hit</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+      </table>
+    </section>
+
+    <section class="pagination-bottom">
+      <span id="pagination-info-bottom"></span>
+      <div class="pagination-controls">
+        <button type="button" id="btn-prev-bottom" disabled>Previous</button>
+        <span id="page-indicator-bottom"></span>
+        <button type="button" id="btn-next-bottom" disabled>Next</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2>Edit translated text</h2>
+      <textarea id="modal-textarea" rows="8"></textarea>
+      <div class="modal-actions">
+        <button type="button" id="btn-modal-cancel">Cancel</button>
+        <button type="button" id="btn-modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

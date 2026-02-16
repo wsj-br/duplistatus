@@ -1,15 +1,22 @@
 
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
+# duplistatus -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers 
 
-![version](https://img.shields.io/badge/version-1.3.0-blue)
+![version](https://img.shields.io/badge/version-1.3.1-blue)
 
 <br/>
 
-This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, notify overdue backups, job history,
+metrics, and performance across multiple servers.
 
-It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
+Easy to deploy with Docker, Podman, or Portainer and available in 5 languages (English, German, French, Spanish, and Portuguese), with full documentation in each language.
+
+[More information](https://wsj-br.github.io/duplistatus)        |
+[Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
+[Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
+[Más información](https://wsj-br.github.io/duplistatus/es/)     |
+[Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/)
 
 <br/>
 
@@ -37,17 +44,17 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 <br/>
 
-
 ## Features
 
 - **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
 - **Unified Dashboard**: View backup status, history, and details for all servers in one place.
-- **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
+- **Backup Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
 - **Audit Logging**: Complete audit trail of all system changes and user actions with advanced filtering, export capabilities, and configurable retention periods.
 - **Application Logs Viewer**: Admin-only interface to view, search, and export application logs directly from the web interface with real-time monitoring capabilities.
+- **Multi-language Support**: Interface and documentation available in English, French, German, Spanish, and Brazilian Portuguese.
 
 
 ## Installation
@@ -56,8 +63,8 @@ The application can be deployed using Docker, Portainer Stacks, or Podman.
 See details in the [Installation Guide](https://wsj-br.github.io/duplistatus/installation).
 
 
-- If you are upgrading from an earlier version, your database will be automatically 
-[migrated](https://wsj-br.github.io/duplistatus/migration/version_upgrade) to the new schema during the upgrade process.
+- If you are upgrading from an earlier version, your database will be automatically
+  [migrated](https://wsj-br.github.io/duplistatus/migration/version_upgrade) to the new schema during the upgrade process.
 
 - When using Podman (either as a standalone container or within a pod), and if you require custom DNS settings 
 (such as for Tailscale MagicDNS, corporate networks, or other custom DNS configurations), you can manually 
@@ -77,19 +84,19 @@ See the [User Guide](https://wsj-br.github.io/duplistatus/user-guide/overview) f
 
 ### Dashboard
 
-![dashboard](documentation/static/img/screen-main-dashboard-card-mode.png)
+![dashboard](documentation/docs/assets/screen-main-dashboard-card-mode.png)
 
 ### Backup History
 
-![server-detail](documentation/static/img/screen-server-backup-list.png)
+![server-detail](documentation/docs/assets/screen-server-backup-list.png)
 
 ### Backup Details
 
-![backup-detail](documentation/static/img/screen-backup-detail.png)
+![backup-detail](documentation/docs/assets/screen-backup-detail.png)
 
 ### Overdue Backups
 
-![overdue backups](documentation/static/img/screen-overdue-backup-hover-card.png)
+![overdue backups](documentation/docs/assets/screen-overdue-backup-hover-card.png)
 
 ### Overdue notifications on your phone
 
@@ -103,7 +110,7 @@ See the [API Endpoints Documentation](https://wsj-br.github.io/duplistatus/api-r
 
 For instructions on downloading, changing, or running the code, see [Development Setup](https://wsj-br.github.io/duplistatus/development/setup).
 
-This project was mainly built with AI help. To learn how, see [How I Built this Application using AI tools](https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai).
+This project was mainly built with AI help. To learn how, see [How I Build this Application using AI tools](https://wsj-br.github.io/duplistatus/development/how-i-build-with-ai).
 
 ## Credits
 
@@ -112,11 +119,12 @@ This project was mainly built with AI help. To learn how, see [How I Built this 
   💙 If you find [Duplicati](https://www.duplicati.com) useful, please consider supporting the developer. More details are available on their website or GitHub page.
 
 - Duplicati SVG icon from https://dashboardicons.com/icons/duplicati
-- Notify SVG icon from https://dashboardicons.com/icons/ntfy
+- ntfy SVG icon from https://dashboardicons.com/icons/ntfy
 - GitHub SVG icon from https://github.com/logos
 
->[!NOTE]
-> All product names, trademarks, and registered trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+> [!NOTE]
+>  All product names, logos and trademarks are the property of their respective owners. Icons and names are used for identification purposes only and do not imply endorsement.
+
 
 
 <br/>
@@ -134,5 +142,5 @@ For detailed migration information, including migration steps, monitoring, and r
 
 The project is licensed under the [Apache License 2.0](https://wsj-br.github.io/duplistatus/LICENSE).   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**
 

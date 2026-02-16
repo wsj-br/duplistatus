@@ -1,12 +1,12 @@
 
 
-# Admin Account Recovery
+# Admin Account Recovery {#admin-account-recovery}
 
 Recover administrator access to **duplistatus** when you've lost your password or been locked out of your account. This guide covers using the admin recovery script in Docker environments.
 
 
 
-## Using the Script in Docker
+## Using the Script in Docker {#using-the-script-in-docker}
 
 The Dockerfile includes the `scripts` directory and a convenient shell wrapper.
 
@@ -24,7 +24,7 @@ docker exec -it duplistatus /app/admin-recovery admin NewPassword123
 
 
 
-## Troubleshooting
+## Troubleshooting {#troubleshooting}
 
 If you encounter issues with the recovery script:
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useIntlayer } from 'react-intlayer';
 import {
   Dialog,
   DialogContent,
@@ -46,6 +47,9 @@ const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
 
 export function ChangePasswordModal({ open, onOpenChange, required = false }: ChangePasswordModalProps) {
   const router = useRouter();
+  const content = useIntlayer('change-password-modal');
+  const common = useIntlayer('common');
+  const auth = useIntlayer('auth');
   const passwordPolicy = usePasswordPolicy();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -156,7 +160,7 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
     setLoading(true);
 
     if (!isPasswordValid) {
-      setError('Please ensure all password requirements are met');
+      setError(content.errorRequirements.value);
       setLoading(false);
       return;
     }
@@ -181,10 +185,25 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Failed to change password');
-        if (data.validationErrors && Array.isArray(data.validationErrors)) {
-          setError(data.validationErrors.join(', '));
-        }
+        const message = (() => {
+          switch (data.errorCode) {
+            case 'NEW_PASSWORD_REQUIRED':
+              return auth.changePassword.newPasswordRequired.value;
+            case 'POLICY_NOT_MET':
+              return auth.changePassword.policyNotMet.value;
+            case 'USER_NOT_FOUND':
+              return auth.changePassword.userNotFound.value;
+            case 'CURRENT_PASSWORD_INCORRECT':
+              return auth.changePassword.currentPasswordIncorrect.value;
+            case 'NEW_PASSWORD_SAME_AS_CURRENT':
+              return auth.changePassword.newPasswordSameAsCurrent.value;
+            case 'INTERNAL_ERROR':
+              return auth.changePassword.internalError.value;
+            default:
+              return data.error || auth.changePassword.changeFailed.value;
+          }
+        })();
+        setError(message);
         setLoading(false);
         return;
       }
@@ -203,7 +222,7 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
       
     } catch (error) {
       console.error('Change password error:', error);
-      setError('An unexpected error occurred');
+      setError(content.errorUnexpected.value);
       setLoading(false);
     }
   };
@@ -212,11 +231,11 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
     <Dialog open={open} onOpenChange={required ? () => {} : handleOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Change Password</DialogTitle>
+          <DialogTitle>{content.title.value}</DialogTitle>
           <DialogDescription>
             {required 
-              ? 'You must change your password before continuing. Please set a new password that meets the requirements below.'
-              : 'Set a new password for your account. Make sure it meets all the requirements below.'}
+              ? content.descriptionRequired.value
+              : content.descriptionOptional.value}
           </DialogDescription>
         </DialogHeader>
 
@@ -230,19 +249,19 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           {success && (
             <div className="rounded-md bg-green-50 dark:bg-green-900/20 p-3">
               <div className="text-sm text-green-800 dark:text-green-200">
-                ✓ Password changed successfully!
+                ✓ {auth.changePassword.changeSuccess.value}
               </div>
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="new-password">New Password</Label>
+            <Label htmlFor="new-password">{content.newPasswordLabel.value}</Label>
             <TogglePasswordInput
               ref={passwordInputRef}
               id="new-password"
               value={newPassword}
               onChange={setNewPassword}
-              placeholder="Enter new password"
+              placeholder={content.newPasswordPlaceholder.value}
               disabled={loading || success}
               showPassword={showPassword}
               onTogglePassword={() => setShowPassword(!showPassword)}
@@ -250,12 +269,12 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm-password" className={showPassword ? 'opacity-60' : ''}>Confirm New Password</Label>
+            <Label htmlFor="confirm-password" className={showPassword ? 'opacity-60' : ''}>{content.confirmPasswordLabel.value}</Label>
             <TogglePasswordInput
               id="confirm-password"
               value={confirmPassword}
               onChange={setConfirmPassword}
-              placeholder="Confirm new password"
+              placeholder={content.confirmPasswordPlaceholder.value}
               disabled={loading || success}
               showPassword={showPassword}
               onTogglePassword={() => setShowPassword(!showPassword)}
@@ -266,35 +285,35 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
           </div>
 
           <div className="space-y-2 rounded-md bg-muted p-3">
-            <div className="text-sm font-semibold mb-2">Password Requirements:</div>
+            <div className="text-sm font-semibold mb-2">{content.requirementsTitle.value}</div>
             <div className="space-y-1.5">
               {passwordPolicy && (
                 <>
                   <RequirementItem 
                     met={requirements.minLength} 
-                    label={`At least ${passwordPolicy.minLength} characters long`}
+                    label={content.requirementMinLength.value.replace('{minLength}', String(passwordPolicy.minLength))}
                   />
                   {passwordPolicy.requireUppercase && (
                     <RequirementItem 
                       met={requirements.hasUppercase} 
-                      label="Contains at least one uppercase letter (A-Z)" 
+                      label={content.requirementUppercase.value} 
                     />
                   )}
                   {passwordPolicy.requireLowercase && (
                     <RequirementItem 
                       met={requirements.hasLowercase} 
-                      label="Contains at least one lowercase letter (a-z)" 
+                      label={content.requirementLowercase.value} 
                     />
                   )}
                   {passwordPolicy.requireNumbers && (
                     <RequirementItem 
                       met={requirements.hasNumber} 
-                      label="Contains at least one number (0-9)" 
+                      label={content.requirementNumber.value} 
                     />
                   )}
                   <RequirementItem 
                     met={requirements.passwordsMatch} 
-                    label="Passwords match" 
+                    label={content.requirementMatch.value} 
                   />
                 </>
               )}
@@ -309,14 +328,14 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
                 onClick={() => onOpenChange(false)}
                 disabled={loading || success}
               >
-                Cancel
+                {common.ui.cancel.value}
               </Button>
             )}
             <Button
               type="submit"
               disabled={!isPasswordValid || loading || success}
             >
-              {loading ? 'Changing...' : success ? 'Success!' : 'Change Password'}
+              {loading ? content.buttonChanging.value : success ? common.ui.success.value : content.buttonChangePassword.value}
             </Button>
           </DialogFooter>
         </form>

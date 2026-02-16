@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { dbOps } from './db';
 import { getConfiguration, setConfiguration } from './db-utils';
+import { getDataDir } from './paths';
 
 // Encryption configuration
 const ALGORITHM = 'aes-256-gcm';
@@ -11,13 +12,15 @@ const SALT_LENGTH = 32; // For key derivation
 const TAG_LENGTH = 16; // For GCM
 const KEY_DERIVATION_ITERATIONS = 100000; // For key derivation
 
-// Key file name and path
-const DataDir = './data/';
+// Key file name
 const KeyFileName = '.duplistatus.key';
 
-// Key file path
+// Configuration key for storing key fingerprint (used for reliable change detection)
+const KEY_FINGERPRINT_CONFIG = 'master_key_fingerprint';
+
+// Key file path - uses same path resolution as database (handles standalone mode)
 const getKeyFilePath = (): string => {
-  return path.join(DataDir, KeyFileName);
+  return path.join(getDataDir(), KeyFileName);
 };
 
 // Secure key reading with memory cleanup
@@ -35,6 +38,37 @@ function readEncryptionKey(): Buffer {
     return keyData;
   } catch (error) {
     throw new Error(`Failed to read encryption key: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/**
+ * Get a deterministic fingerprint of the current key file.
+ * Used for reliable key change detection (avoids false positives from decryption failures).
+ */
+function getKeyFingerprint(): string {
+  const keyPath = getKeyFilePath();
+  const keyData = fs.readFileSync(keyPath);
+  try {
+    return crypto.createHash('sha256').update(keyData).digest('hex');
+  } finally {
+    secureCleanup(keyData);
+  }
+}
+
+/**
+ * Store the key fingerprint in the database if not already set.
+ * Called when we encrypt data to establish the fingerprint for future change detection.
+ */
+function storeKeyFingerprintIfMissing(): void {
+  const existing = getConfiguration(KEY_FINGERPRINT_CONFIG);
+  if (existing && existing.trim() !== '') {
+    return; // Already have a fingerprint
+  }
+  try {
+    const fingerprint = getKeyFingerprint();
+    setConfiguration(KEY_FINGERPRINT_CONFIG, fingerprint);
+  } catch (error) {
+    console.error('Failed to store key fingerprint:', error instanceof Error ? error.message : String(error));
   }
 }
 
@@ -84,6 +118,9 @@ export function encryptData(plaintext: string): string {
     secureCleanup(salt);
     secureCleanup(iv);
     secureCleanup(derivedKey);
+    
+    // Store key fingerprint for reliable change detection (avoids false positives on restore)
+    storeKeyFingerprintIfMissing();
     
     return result;
   } catch (error) {
@@ -229,82 +266,65 @@ export function setServerPassword(serverId: string, password: string): boolean {
 }
 
 /**
- * Check if the key file has changed by attempting to decrypt an existing password
- * @returns true if the key file has changed (decryption fails), false otherwise
- * @returns false if no passwords are stored (check is not relevant)
+ * Check if the key file has changed.
+ * Uses key fingerprint comparison when available (reliable, no false positives on restore).
+ * Falls back to decryption attempt for legacy databases without a stored fingerprint.
+ * @returns true if the key file has changed, false otherwise
  */
 export function hasKeyFileChanged(): boolean {
   try {
-    // First, try to find a server password
+    const storedFingerprint = getConfiguration(KEY_FINGERPRINT_CONFIG);
+    const currentFingerprint = getKeyFingerprint();
+
+    // Primary check: fingerprint comparison (reliable, avoids false positives)
+    if (storedFingerprint && storedFingerprint.trim() !== '') {
+      return currentFingerprint !== storedFingerprint;
+    }
+
+    // Legacy fallback: no fingerprint stored, try decryption
+    // (decryption failures can have false positives from data corruption, but we have no fingerprint)
     const allServers = dbOps.getAllServers.all() as Array<{ id: string }>;
     for (const server of allServers) {
       const result = dbOps.getServerPassword.get(server.id) as { server_password: string } | undefined;
       if (result && result.server_password && result.server_password.trim() !== '') {
-        // Found a password, try to decrypt it
         try {
           decryptData(result.server_password);
-          // Decryption succeeded, key is valid
+          // Decryption succeeded - store fingerprint for future checks
+          setConfiguration(KEY_FINGERPRINT_CONFIG, currentFingerprint);
           return false;
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
-          // If decryption fails with master key error, the key has changed
           if (errorMessage.includes('MASTER_KEY_INVALID') || isInvalidMasterKeyError(error instanceof Error ? error : new Error(errorMessage))) {
             return true;
           }
-          // Other decryption errors are not related to key change
-          // Continue to check other passwords
         }
       }
     }
-    
-    // If no server passwords found, check SMTP password
+
     const smtpConfigJson = getConfiguration('smtp_config');
     if (smtpConfigJson) {
       try {
-        const smtpConfig = JSON.parse(smtpConfigJson) as {
-          password?: string;
-          username?: string;
-        };
-        
-        // Try to decrypt password if it exists
-        if (smtpConfig.password && smtpConfig.password.trim() !== '') {
+        const smtpConfig = JSON.parse(smtpConfigJson) as { password?: string; username?: string };
+        const toCheck = [smtpConfig.password, smtpConfig.username].filter((v): v is string => !!v && v.trim() !== '');
+        for (const encrypted of toCheck) {
           try {
-            decryptData(smtpConfig.password);
-            // Decryption succeeded, key is valid
+            decryptData(encrypted);
+            setConfiguration(KEY_FINGERPRINT_CONFIG, currentFingerprint);
             return false;
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            // If decryption fails with master key error, the key has changed
             if (errorMessage.includes('MASTER_KEY_INVALID') || isInvalidMasterKeyError(error instanceof Error ? error : new Error(errorMessage))) {
               return true;
             }
           }
         }
-        
-        // Try to decrypt username if it exists
-        if (smtpConfig.username && smtpConfig.username.trim() !== '') {
-          try {
-            decryptData(smtpConfig.username);
-            // Decryption succeeded, key is valid
-            return false;
-          } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            // If decryption fails with master key error, the key has changed
-            if (errorMessage.includes('MASTER_KEY_INVALID') || isInvalidMasterKeyError(error instanceof Error ? error : new Error(errorMessage))) {
-              return true;
-            }
-          }
-        }
-      } catch (error) {
-        // Failed to parse SMTP config, ignore
-        console.error('Failed to parse SMTP config for key check:', error instanceof Error ? error.message : String(error));
+      } catch {
+        // Ignore parse errors
       }
     }
-    
-    // No passwords found, check is not relevant
+
     return false;
   } catch (error) {
-    // Error during check, assume no change to be safe
     console.error('Error checking if key file changed:', error instanceof Error ? error.message : String(error));
     return false;
   }
@@ -312,10 +332,18 @@ export function hasKeyFileChanged(): boolean {
 
 /**
  * Clear all encrypted passwords (server passwords and SMTP passwords)
- * This should be called when the master key changes
+ * This should be called when the master key changes.
+ * Also updates the stored fingerprint to the current key so we don't repeatedly detect a change.
  */
 export function clearAllPasswords(): void {
   try {
+    // Update fingerprint to current key so future logins don't keep detecting a change
+    try {
+      setConfiguration(KEY_FINGERPRINT_CONFIG, getKeyFingerprint());
+    } catch (error) {
+      console.error('Failed to update key fingerprint after clear:', error instanceof Error ? error.message : String(error));
+    }
+
     // Clear all server passwords
     const allServers = dbOps.getAllServers.all() as Array<{ id: string }>;
     for (const server of allServers) {

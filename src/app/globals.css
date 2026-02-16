@@ -56,6 +56,20 @@ body {
     --status-warning: 245 158 11;
     --status-error: 239 68 68;
     --status-info: 59 130 246;
+    
+    /* RTL Support Variables */
+    --direction: ltr;
+    --text-align-start: left;
+    --text-align-end: right;
+    --margin-start: 0;
+    --margin-end: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --border-start: 0;
+    --border-end: 0;
+    --border-radius-start: 0;
+    --border-radius-end: 0;
+    --transform-rotate: 0deg;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -106,6 +120,36 @@ body {
     --status-warning: 245 158 11;
     --status-error: 239 68 68;
     --status-info: 59 130 246;
+    
+    /* RTL Support Variables - Same for both modes */
+    --direction: ltr;
+    --text-align-start: left;
+    --text-align-end: right;
+    --margin-start: 0;
+    --margin-end: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --border-start: 0;
+    --border-end: 0;
+    --border-radius-start: 0;
+    --border-radius-end: 0;
+    --transform-rotate: 0deg;
+  }
+  
+  /* RTL Mode Overrides */
+  [dir="rtl"] {
+    --direction: rtl;
+    --text-align-start: right;
+    --text-align-end: left;
+    --transform-rotate: 180deg;
+  }
+  
+  [dir="rtl"] .rtl-mirror {
+    transform: scaleX(-1);
+  }
+  
+  [dir="rtl"] .rtl-flip-icon {
+    transform: rotate(180deg);
   }
 }
 
@@ -123,6 +167,49 @@ body {
 }
 
 @layer utilities {
+  /* RTL Support Utilities */
+  .rtl-safe-ml {
+    margin-left: var(--margin-start);
+  }
+  
+  .rtl-safe-mr {
+    margin-right: var(--margin-end);
+  }
+  
+  .rtl-safe-pl {
+    padding-left: var(--padding-start);
+  }
+  
+  .rtl-safe-pr {
+    padding-right: var(--padding-end);
+  }
+  
+  .rtl-safe-text-left {
+    text-align: var(--text-align-start);
+  }
+  
+  .rtl-safe-text-right {
+    text-align: var(--text-align-end);
+  }
+  
+  .rtl-safe-border-l {
+    border-left-width: var(--border-start);
+  }
+  
+  .rtl-safe-border-r {
+    border-right-width: var(--border-end);
+  }
+  
+  .rtl-safe-rounded-l {
+    border-top-left-radius: var(--border-radius-start);
+    border-bottom-left-radius: var(--border-radius-start);
+  }
+  
+  .rtl-safe-rounded-r {
+    border-top-right-radius: var(--border-radius-end);
+    border-bottom-right-radius: var(--border-radius-end);
+  }
+  
   /* Override browser autofill styles for input fields */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
@@ -157,21 +244,6 @@ body {
   /* Prevent layout shift when scrollbar appears */
   .scrollbar-gutter-stable {
     scrollbar-gutter: stable;
-  }
-  
-  .server-cards-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .server-cards-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    /* Improve touch scrolling behavior */
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    scroll-behavior: smooth;
-    /* Improve smooth scrolling performance */
-    will-change: scroll-position;
-    transform: translateZ(0); /* Force hardware acceleration */
   }
 
   /* Modern thin scrollbars */

@@ -82,5 +82,8 @@ tsconfig.tsbuildinfo
 *.swo
 *.bak
 *.tmp
-*.temp 
+*.temp
+
+# intlayer - auto-generated files
+.intlayer/
 

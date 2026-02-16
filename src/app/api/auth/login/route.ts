@@ -44,7 +44,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
     if (!dbOpsReady) {
       console.error('[Login] dbOps not available after waiting, login will fail');
       return NextResponse.json(
-        { error: 'Database is not ready. Please try again in a moment.' },
+        { error: 'Database is not ready. Please try again in a moment.', errorCode: 'DATABASE_NOT_READY' },
         { status: 503 }
       );
     }
@@ -75,7 +75,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       );
 
       return NextResponse.json(
-        { error: 'Username and password are required' },
+        { error: 'Username and password are required', errorCode: 'REQUIRED_CREDENTIALS' },
         { status: 400 }
       );
     }
@@ -106,7 +106,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       );
 
       return NextResponse.json(
-        { error: 'Invalid username or password' },
+        { error: 'Invalid username or password', errorCode: 'INVALID_CREDENTIALS' },
         { status: 401 }
       );
     }
@@ -129,8 +129,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
         );
 
         return NextResponse.json(
-          { 
+          {
             error: 'Account is locked due to too many failed login attempts',
+            errorCode: 'ACCOUNT_LOCKED',
             lockedUntil: lockExpiry.toISOString(),
             minutesRemaining
           },
@@ -171,8 +172,9 @@ export const POST = withCSRF(async (request: NextRequest) => {
         );
 
         return NextResponse.json(
-          { 
+          {
             error: 'Account locked due to too many failed login attempts',
+            errorCode: 'ACCOUNT_LOCKED',
             lockedUntil: lockUntil.toISOString(),
             minutesRemaining: 15
           },
@@ -195,7 +197,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
       );
 
       return NextResponse.json(
-        { error: 'Invalid username or password' },
+        { error: 'Invalid username or password', errorCode: 'INVALID_CREDENTIALS' },
         { status: 401 }
       );
     }
@@ -325,7 +327,7 @@ export const POST = withCSRF(async (request: NextRequest) => {
     );
 
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', errorCode: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }

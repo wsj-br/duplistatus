@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { NotificationIcon } from '@/components/ui/notification-icon';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -15,6 +16,8 @@ interface NtfyConfig {
 }
 
 export function NtfyMessagesButton() {
+  const content = useIntlayer('ntfy-messages-button');
+  const common = useIntlayer('common');
   const [isLoading, setIsLoading] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
   const [topicUrl, setTopicUrl] = useState<string>('');
@@ -51,8 +54,8 @@ export function NtfyMessagesButton() {
     } catch (error) {
       console.error('Error generating QR code:', error);
       toast({
-        title: "QR Code Generation Failed",
-        description: "Failed to generate QR code. Please try again.",
+        title: content.qrGenerationFailedTitle.value,
+        description: content.qrGenerationFailedDescription.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -72,8 +75,8 @@ export function NtfyMessagesButton() {
 
       if (!ntfyConfig?.topic) {
         toast({
-          title: "Error",
-          description: "NTFY topic not configured",
+          title: common.ui.error.value,
+          description: content.topicNotConfigured.value,
           variant: "destructive",
           duration: 3000,
         });
@@ -85,8 +88,8 @@ export function NtfyMessagesButton() {
     } catch (error) {
       console.error('Error fetching NTFY configuration:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to load NTFY configuration",
+        title: common.ui.error.value,
+        description: content.failedToLoadConfig.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -109,8 +112,8 @@ export function NtfyMessagesButton() {
 
       if (!ntfyConfig?.topic) {
         toast({
-          title: "Error",
-          description: "NTFY topic not configured",
+          title: common.ui.error.value,
+          description: content.topicNotConfigured.value,
           variant: "destructive",
           duration: 3000,
         });
@@ -121,8 +124,8 @@ export function NtfyMessagesButton() {
     } catch (error) {
       console.error('Error fetching NTFY configuration:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to load NTFY configuration",
+        title: common.ui.error.value,
+        description: content.failedToLoadConfig.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -139,7 +142,7 @@ export function NtfyMessagesButton() {
         onClick={handleOpenNtfyMessages}
         onContextMenu={handleRightClick}
         disabled={isLoading}
-        title="View NTFY messages (right-click for QR code)"
+        title={content.buttonTitle.value}
       >
         <NotificationIcon className="h-4 w-4" />
       </Button>

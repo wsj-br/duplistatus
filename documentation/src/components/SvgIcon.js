@@ -13,10 +13,11 @@ export default function SvgIcon({ svgFilename, alt, className, height = 14, gap 
   // Render just the SVG icon without button/border styling
   // Prevent zoom behavior: add no-zoom class and data-nozoom attribute to exclude from image zoom
   return (
-    <img 
-      src={svgPath} 
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={svgPath}
       alt={alt || `${svgFilename} icon`}
-      height={height} 
+      height={height}
       className={`${className || ''} no-zoom`}
       style={mergedStyle}
       data-nozoom

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { ChangePasswordModal } from '@/components/change-password-modal';
 
 interface User {
@@ -20,6 +21,8 @@ interface PasswordChangeGuardProps {
  * and blocks rendering until the password is changed.
  */
 export function PasswordChangeGuard({ children }: PasswordChangeGuardProps) {
+  const content = useIntlayer('password-change-guard');
+  const common = useIntlayer('common');
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -56,7 +59,7 @@ export function PasswordChangeGuard({ children }: PasswordChangeGuardProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="text-lg text-muted-foreground">Loading...</div>
+          <div className="text-lg text-muted-foreground">{common.ui.loading.value}</div>
         </div>
       </div>
     );
@@ -69,7 +72,7 @@ export function PasswordChangeGuard({ children }: PasswordChangeGuardProps) {
       <>
         <div className="flex-1 flex items-center justify-center bg-background min-h-[60vh]">
           <div className="text-center">
-            <div className="text-lg text-muted-foreground">Please change your password to continue</div>
+            <div className="text-lg text-muted-foreground">{content.changePasswordMessage.value}</div>
           </div>
         </div>
         <ChangePasswordModal

@@ -13,10 +13,11 @@ export default function SvgButton({ svgFilename, label, href, className, height 
   // We use the constructed path as the src.
   // Prevent zoom behavior: add no-zoom class and data-nozoom attribute to exclude from image zoom
   const SvgElement = (
-    <img 
-      src={svgPath} 
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={svgPath}
       alt={`${label} icon`}
-      height={height} 
+      height={height}
       className={`${styles.svgIcon} no-zoom`}
       data-nozoom
     />

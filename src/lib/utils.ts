@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { parseISO, isValid } from 'date-fns';
-import type { BackupStatus, NotificationEvent, OverdueTolerance } from './types';
+import type { BackupStatus, NotificationEvent, OverdueTolerance, StartOfWeek } from './types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -9,60 +9,14 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Get the browser's locale for number formatting
- * Falls back to 'en-US' if not available (e.g., in SSR)
+ * Falls back to 'en-GB' if not available (e.g., in SSR)
  */
 function getBrowserLocale(): string {
   if (typeof window === 'undefined') {
-    return 'en-US'; // Default for SSR
+    return 'en-GB'; // Default for SSR
   }
   // Use navigator.language or navigator.languages[0] if available
-  return navigator.language || navigator.languages?.[0] || 'en-US';
-}
-
-/**
- * Format a number using the browser's locale
- * This ensures consistent locale-aware number formatting across the application
- */
-export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
-  const locale = getBrowserLocale();
-  return new Intl.NumberFormat(locale, options).format(value);
-}
-
-export function formatBytes(bytes: unknown, decimals = 2): string {
-  // Handle all possible invalid inputs
-  if (bytes === null || bytes === undefined) return '0 Bytes';
-  
-  let numBytes: number;
-  
-  if (typeof bytes === 'number') {
-    numBytes = bytes;
-  } else if (typeof bytes === 'string') {
-    try {
-      numBytes = Number(bytes);
-    } catch {
-      return '0 Bytes';
-    }
-  } else {
-    return '0 Bytes';
-  }
-  
-  if (isNaN(numBytes) || !isFinite(numBytes) || numBytes <= 0) return '0 Bytes';
-
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-  const i = Math.floor(Math.log(numBytes) / Math.log(k));
-  const value = numBytes / Math.pow(k, i);
-
-  // Use Intl.NumberFormat for locale-aware number formatting
-  const locale = getBrowserLocale();
-  const formatter = new Intl.NumberFormat(locale, {
-    minimumFractionDigits: dm,
-    maximumFractionDigits: dm,
-  });
-
-  return formatter.format(value) + ' ' + sizes[i];
+  return navigator.language || navigator.languages?.[0] || 'en-GB';
 }
 
 export function formatDurationFromMinutes(totalMinutes: unknown): string {
@@ -98,7 +52,39 @@ export function formatDurationFromMinutes(totalMinutes: unknown): string {
   return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
 }
 
-export function formatRelativeTime(dateString: string, currentTime?: Date): string {
+/**
+ * Remove articles from the beginning of relative time strings for certain locales
+ * This fixes cases where Intl.RelativeTimeFormat produces articles like:
+ * - Spanish: "la semana pasada" -> "semana pasada"
+ * - French: "la semaine dernière" -> "semaine dernière"
+ */
+function removeLocaleArticles(text: string, locale?: string): string {
+  if (!locale) {
+    return text;
+  }
+  const localeLower = locale.toLowerCase();
+  
+  // Spanish articles: el, la, los, las
+  if (localeLower.startsWith('es')) {
+    return text.replace(/^(el|la|los|las)\s+/i, '');
+  }
+  
+  // French articles: le, la, les, l'
+  if (localeLower.startsWith('fr')) {
+    return text.replace(/^(le|la|les|l')\s+/i, '');
+  }
+  
+  return text;
+}
+
+/**
+ * Format a relative time string (e.g., "2 hours ago", "in 3 days")
+ * Uses Intl.RelativeTimeFormat for locale-aware formatting when locale is provided
+ * @param dateString - ISO date string or SQLite timestamp
+ * @param currentTime - Optional reference time (defaults to now)
+ * @param locale - Optional locale string (e.g., "en", "de", "fr"). If not provided, uses English
+ */
+export function formatRelativeTime(dateString: string, currentTime?: Date, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     // Handle SQLite timestamps (YYYY-MM-DD HH:MM:SS format, UTC)
@@ -119,22 +105,80 @@ export function formatRelativeTime(dateString: string, currentTime?: Date): stri
 
     // Use absolute value for "just now" case as requested
     if (Math.abs(diffInSeconds) < 15) {
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+          return removeLocaleArticles(rtf.format(0, 'second'), locale);
+        } catch {
+          return "just now";
+        }
+      }
       return "just now";
     }
 
     const isFuture = diffInSeconds < 0;
     const absDiffInSeconds = Math.abs(diffInSeconds);
 
+    // Use Intl.RelativeTimeFormat if locale is provided
+    if (locale) {
+      try {
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+        
+        if (absDiffInSeconds < 60) {
+          const seconds = Math.floor(absDiffInSeconds);
+          return removeLocaleArticles(rtf.format(isFuture ? seconds : -seconds, 'second'), locale);
+        }
+        
+        if (absDiffInSeconds < 3600) {
+          const minutes = Math.floor(absDiffInSeconds / 60);
+          return removeLocaleArticles(rtf.format(isFuture ? minutes : -minutes, 'minute'), locale);
+        }
+        
+        if (absDiffInSeconds < 86400) {
+          const hours = Math.floor(absDiffInSeconds / 3600);
+          return removeLocaleArticles(rtf.format(isFuture ? hours : -hours, 'hour'), locale);
+        }
+        
+        if (absDiffInSeconds < 604800) {
+          const days = Math.floor(absDiffInSeconds / 86400);
+          return removeLocaleArticles(rtf.format(isFuture ? days : -days, 'day'), locale);
+        }
+        
+        if (absDiffInSeconds < 2592000) {
+          const weeks = Math.floor(absDiffInSeconds / 604800);
+          return removeLocaleArticles(rtf.format(isFuture ? weeks : -weeks, 'week'), locale);
+        }
+        
+        if (absDiffInSeconds < 31536000) {
+          const months = Math.floor(absDiffInSeconds / 2592000);
+          return removeLocaleArticles(rtf.format(isFuture ? months : -months, 'month'), locale);
+        }
+        
+        // For periods longer than 1 year, show years and months
+        const years = Math.floor(absDiffInSeconds / 31536000);
+        const remainingSeconds = absDiffInSeconds % 31536000;
+        const months = Math.floor(remainingSeconds / 2592000);
+        
+        if (months === 0) {
+          return removeLocaleArticles(rtf.format(isFuture ? years : -years, 'year'), locale);
+        } else {
+          // Intl.RelativeTimeFormat doesn't support compound formats, so we format separately
+          const yearPart = removeLocaleArticles(rtf.format(isFuture ? years : -years, 'year'), locale);
+          const monthPart = removeLocaleArticles(rtf.format(isFuture ? months : -months, 'month'), locale);
+          // Try to combine them in a locale-appropriate way
+          // For most locales, we can use a simple conjunction
+          return `${yearPart} ${monthPart}`;
+        }
+      } catch {
+        // Fall through to English fallback
+      }
+    }
+
+    // Fallback to English formatting if locale not provided or Intl.RelativeTimeFormat fails
     if (absDiffInSeconds < 60) {  
       const seconds = Math.floor(absDiffInSeconds);
       return isFuture ? `in ${seconds} second${seconds === 1 ? '' : 's'}` : `${seconds} second${seconds === 1 ? '' : 's'} ago`;
     }
-
-    if (absDiffInSeconds < 3600) {
-      const minutes = Math.floor(absDiffInSeconds / 60);
-      return isFuture ? `in ${minutes} minute${minutes === 1 ? '' : 's'}` : `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
-    }
-
 
     if (absDiffInSeconds < 3600) {
       const minutes = Math.floor(absDiffInSeconds / 60);
@@ -177,7 +221,15 @@ export function formatRelativeTime(dateString: string, currentTime?: Date): stri
 }
 
 
-export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean): string {
+/**
+ * Format a short relative time string (e.g., "6 mo", "2 y")
+ * Uses abbreviated format for compact display
+ * @param dateString - ISO date string
+ * @param currentTime - Optional reference time (defaults to now)
+ * @param addPlural - Optional flag for plural suffix (legacy parameter, not used with locale)
+ * @param locale - Optional locale string (e.g., "en", "de", "fr"). If not provided, uses English abbreviations
+ */
+export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPlural?: boolean, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -185,22 +237,50 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
       return ""; 
     }
 
-    const plural = addPlural === undefined ? '' : addPlural ? 's' : '';
-
     // Use a fixed reference time (server-side) to avoid hydration mismatches
     const now = currentTime || new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {
+      // Use Intl.RelativeTimeFormat for locale-aware "future" text
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'short' });
+          const absSeconds = Math.abs(diffInSeconds);
+          if (absSeconds < 60) {
+            return rtf.format(1, 'second').replace(/^in\s+/i, '') || 'future';
+          } else if (absSeconds < 3600) {
+            return rtf.format(Math.ceil(absSeconds / 60), 'minute').replace(/^in\s+/i, '') || 'future';
+          } else {
+            return rtf.format(Math.ceil(absSeconds / 3600), 'hour').replace(/^in\s+/i, '') || 'future';
+          }
+        } catch {
+          return "future";
+        }
+      }
       return "future";
     }
 
     if (diffInSeconds < 60) {
+      // Use Intl.RelativeTimeFormat for locale-aware "now" text
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+          return rtf.format(0, 'second');
+        } catch {
+          return "now";
+        }
+      }
       return "now";
     }
 
+    // For short format, we'll use abbreviated units that are more universal
+    // But we can still make them locale-aware for the unit abbreviations
+    const plural = addPlural === undefined ? '' : addPlural ? 's' : '';
+
     if (diffInSeconds < 3600) {
       const minutes = Math.floor(diffInSeconds / 60);
+      // Abbreviated minutes - keep short for compact display
       return `${minutes} m${minutes === 1 ? '' : plural}`;
     }
 
@@ -221,6 +301,17 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
 
     if (diffInSeconds < 31536000) {
       const months = Math.floor(diffInSeconds / 2592000);
+      // Use Intl.RelativeTimeFormat with narrow style for compact month abbreviation
+      if (locale) {
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' });
+          const formatted = rtf.format(-months, 'month');
+          // Extract just the number and abbreviation (e.g., "3mo" from "3mo ago")
+          return formatted.replace(/\s*ago\s*$/i, '').trim();
+        } catch {
+          return `${months} mo${months === 1 ? '' : plural}`;
+        }
+      }
       return `${months} mo${months === 1 ? '' : plural}`;
     }
 
@@ -228,6 +319,27 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
     const years = Math.floor(diffInSeconds / 31536000);
     const remainingSeconds = diffInSeconds % 31536000;
     const months = Math.floor(remainingSeconds / 2592000);
+    
+    if (locale) {
+      try {
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always', style: 'narrow' });
+        if (months === 0) {
+          const formatted = rtf.format(-years, 'year');
+          return formatted.replace(/\s*ago\s*$/i, '').trim();
+        } else {
+          const yearFormatted = rtf.format(-years, 'year').replace(/\s*ago\s*$/i, '').trim();
+          const monthFormatted = rtf.format(-months, 'month').replace(/\s*ago\s*$/i, '').trim();
+          return `${yearFormatted} ${monthFormatted}`;
+        }
+      } catch {
+        // Fallback to English abbreviations
+        if (months === 0) {
+          return `${years} y`;
+        } else {
+          return `${years} y ${months} mo${months === 1 ? '' : plural}`;
+        }
+      }
+    }
     
     if (months === 0) {
       return `${years} y`;
@@ -240,7 +352,7 @@ export function formatShortTimeAgo(dateString: string, currentTime?: Date, addPl
 }
 
 
-export function formatTimeElapsed(dateString: string, currentTime?: Date): string {
+export function formatTimeElapsed(dateString: string, currentTime?: Date, locale?: string): string {
   if (!dateString || dateString === "N/A") return "";
   try {
     const date = parseISO(dateString);
@@ -253,9 +365,72 @@ export function formatTimeElapsed(dateString: string, currentTime?: Date): strin
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 0) {
+      if (locale) {
+        // Try to get locale-specific translation
+        try {
+          const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+          // For future dates, we'll just return a generic message
+          return locale === 'fr' ? 'dans le futur' : locale === 'es' ? 'en el futuro' : locale === 'de' ? 'in der Zukunft' : locale === 'pt-BR' ? 'no futuro' : 'in the future';
+        } catch {
+          return "in the future";
+        }
+      }
       return "in the future";
     }
 
+    // Use Intl.RelativeTimeFormat if locale is provided
+    if (locale) {
+      try {
+        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'long' });
+        
+        if (Math.abs(diffInSeconds) < 15) {
+          return removeLocaleArticles(rtf.format(0, 'second'), locale);
+        }
+        
+        if (diffInSeconds < 3600) {
+          const minutes = Math.floor(diffInSeconds / 60);
+          return removeLocaleArticles(rtf.format(-minutes, 'minute'), locale);
+        }
+        
+        if (diffInSeconds < 86400) {
+          const hours = Math.floor(diffInSeconds / 3600);
+          return removeLocaleArticles(rtf.format(-hours, 'hour'), locale);
+        }
+        
+        if (diffInSeconds < 604800) {
+          const days = Math.floor(diffInSeconds / 86400);
+          return removeLocaleArticles(rtf.format(-days, 'day'), locale);
+        }
+        
+        if (diffInSeconds < 2592000) {
+          const weeks = Math.floor(diffInSeconds / 604800);
+          return removeLocaleArticles(rtf.format(-weeks, 'week'), locale);
+        }
+        
+        if (diffInSeconds < 31536000) {
+          const months = Math.floor(diffInSeconds / 2592000);
+          return removeLocaleArticles(rtf.format(-months, 'month'), locale);
+        }
+        
+        // Calculate years and remaining months for periods longer than 1 year
+        const years = Math.floor(diffInSeconds / 31536000);
+        const remainingSeconds = diffInSeconds % 31536000;
+        const months = Math.floor(remainingSeconds / 2592000);
+        
+        if (months === 0) {
+          return removeLocaleArticles(rtf.format(-years, 'year'), locale);
+        } else {
+          const yearPart = removeLocaleArticles(rtf.format(-years, 'year'), locale);
+          const monthPart = removeLocaleArticles(rtf.format(-months, 'month'), locale);
+          // For most locales, we can use a simple conjunction
+          return `${yearPart} ${monthPart}`;
+        }
+      } catch {
+        // Fall through to English fallback
+      }
+    }
+
+    // Fallback to English formatting if locale not provided or Intl.RelativeTimeFormat fails
     if (Math.abs(diffInSeconds) < 15) {
       return "just now";
     }
@@ -558,79 +733,57 @@ export interface LocaleWeekDay {
   fullName: string; // Full name (e.g., "Monday", "Tuesday")
 }
 
-export function getLocaleWeekDays(locale?: string): LocaleWeekDay[] {
+export function getLocaleWeekDays(locale?: string, startOfWeekOverride?: StartOfWeek): LocaleWeekDay[] {
   const browserLocale = locale || getBrowserLocale();
-  
+
   // Create a date for a known Sunday (January 7, 2024 was a Sunday)
   const baseDate = new Date(2024, 0, 7); // January 7, 2024 (Sunday)
-  
+
   // Get all 7 weekdays starting from Sunday
   const weekDays: LocaleWeekDay[] = [];
   for (let i = 0; i < 7; i++) {
     const date = new Date(baseDate);
     date.setDate(baseDate.getDate() + i);
     const dayNumber = date.getDay(); // 0=Sunday, 1=Monday, etc.
-    
+
     const shortFormatter = new Intl.DateTimeFormat(browserLocale, { weekday: 'short' });
     const fullFormatter = new Intl.DateTimeFormat(browserLocale, { weekday: 'long' });
-    
+
     weekDays.push({
       dayNumber,
       shortName: shortFormatter.format(date),
       fullName: fullFormatter.format(date),
     });
   }
-  
-  // Determine the first day of the week for this locale
-  // We'll check which day the locale considers as the start of the week
-  // by looking at the calendar week numbering
-  let firstDayOfWeek = 0; // Default to Sunday
-  
-  try {
-    // Try to get the first day of the week from Intl
-    // Create a date in the middle of a week and check formatting
-    const testDate = new Date(2024, 0, 10); // Wednesday, January 10, 2024
-    const formatter = new Intl.DateTimeFormat(browserLocale, { 
-      weekday: 'long',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric'
-    });
-    
-    // For most European locales, Monday is day 1
-    // For US/Brazil locales, Sunday is day 0
-    // We can determine this by checking locale patterns
-    const localeLower = browserLocale.toLowerCase();
-    
-    // Common Monday-first locales
-    const mondayFirstLocales = [
-      'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt', 
-      'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
-      'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
-    ];
-    
-    // Check if locale starts with any Monday-first locale prefix
-    const isMondayFirst = mondayFirstLocales.some(prefix => 
-      localeLower.startsWith(prefix)
-    );
-    
-    if (isMondayFirst) {
-      firstDayOfWeek = 1; // Monday
-    } else {
-      firstDayOfWeek = 0; // Sunday (default for US, Brazil, etc.)
+
+  // Determine the first day of the week
+  let firstDayOfWeek: number;
+
+  if (startOfWeekOverride && startOfWeekOverride !== 'locale') {
+    // Use user's explicit preference
+    firstDayOfWeek = startOfWeekOverride === 'monday' ? 1 : 0;
+  } else {
+    // Auto-detect from locale
+    try {
+      const localeLower = browserLocale.toLowerCase();
+      const mondayFirstLocales = [
+        'en-gb', 'en-au', 'en-nz', 'fr', 'de', 'es', 'it', 'pt-pt',
+        'nl', 'pl', 'ru', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'hu',
+        'ro', 'bg', 'hr', 'sl', 'et', 'lv', 'lt', 'el', 'is', 'mt'
+      ];
+      const isMondayFirst = mondayFirstLocales.some(prefix => localeLower.startsWith(prefix));
+      firstDayOfWeek = isMondayFirst ? 1 : 0;
+    } catch {
+      firstDayOfWeek = 0;
     }
-  } catch {
-    // Fallback to Sunday if detection fails
-    firstDayOfWeek = 0;
   }
-  
+
   // Reorder weekdays based on first day of week
   if (firstDayOfWeek === 0) {
-    // Sunday first (US, Brazil) - already in correct order
+    // Sunday first - already in correct order
     return weekDays;
   } else {
-    // Monday first (UK, France, most of Europe)
-    // Reorder: Monday (1) through Sunday (0)
+    // Monday first - reorder: Monday (1) through Sunday (0)
     const mondayFirst = weekDays.slice(1).concat(weekDays.slice(0, 1));
     return mondayFirst;
   }
@@ -714,38 +867,6 @@ export function getLocaleWeekDays(locale?: string): LocaleWeekDay[] {
 //   }
 // }
 
-/**
- * Parse a SQLite DATETIME timestamp string (UTC) and format it for display in browser timezone
- * SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format and are stored in UTC
- * @param timestamp - SQLite timestamp string in "YYYY-MM-DD HH:MM:SS" format
- * @returns Formatted date string in browser's local timezone
- */
-export function formatSQLiteTimestamp(timestamp: string): string {
-  if (!timestamp) return '';
-  
-  try {
-    // SQLite timestamps are in "YYYY-MM-DD HH:MM:SS" format (UTC)
-    // Convert to ISO format by replacing space with 'T' and appending 'Z' for UTC
-    const isoString = timestamp.replace(' ', 'T') + 'Z';
-    const date = new Date(isoString);
-    
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      // Fallback: try parsing as-is (might already be in a different format)
-      const fallbackDate = new Date(timestamp);
-      if (isNaN(fallbackDate.getTime())) {
-        return timestamp; // Return original if can't parse
-      }
-      return fallbackDate.toLocaleString();
-    }
-    
-    // Format in browser's local timezone
-    return date.toLocaleString();
-  } catch (error) {
-    console.error('Error formatting SQLite timestamp:', error);
-    return timestamp; // Return original on error
-  }
-}
 
 
 

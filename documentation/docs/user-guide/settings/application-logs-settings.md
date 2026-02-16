@@ -1,13 +1,13 @@
-# Application Logs
+# Application Logs {#application-logs}
 
 The Application Logs viewer lets administrators monitor all application logs in one place, with filtering, export, and real-time updates directly from the web interface.
 
-![Application Log Viewer](/img/screen-settings-application-logs.png)
+![Application Log Viewer](../../assets/screen-settings-application-logs.png)
 
 <br/>
 
 
-## Available Actions
+## Available Actions {#available-actions}
 
 | Button                                                              | Description                                                                                         |
 |:--------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------|
@@ -19,13 +19,13 @@ The Application Logs viewer lets administrators monitor all application logs in 
 
 <br/>
 
-## Controls and Filters
+## Controls and Filters {#controls-and-filters}
 
 | Control | Description |
 |:--------|:-----------|
 | **File Version** | Select which log file to view: **Current** (active file) or rotated files (`.1`, `.2`, etc., where higher numbers are older). |
 | **Lines to Show** | Display the most recent **100**, **500**, **1000** (default), **5000**, or **10000** lines from the selected file. |
-| **Auto-scroll** | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the `Current` file version. |
+| **Auto-scroll** | When enabled (default for current file), automatically scrolls to new log entries and refreshes every 2 seconds. Only works for the **Current** file version. |
 | **Search** | Filter log lines by text (case-insensitive). Filters apply to the currently displayed lines. |
 
 <br/>

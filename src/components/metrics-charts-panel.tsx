@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, memo, useCallback } from 'react';
+import { useIntlayer } from 'react-intlayer';
 import { 
   Line, 
   ComposedChart,
@@ -10,7 +11,7 @@ import {
   Tooltip
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatBytes, formatDurationFromMinutes } from "@/lib/utils";
+import { formatDurationFromMinutes } from "@/lib/utils";
 import type { ChartConfig } from "@/components/ui/chart";
 import { ChartContainer } from "@/components/ui/chart"; 
 import { FileBarChart2 } from "lucide-react";
@@ -20,6 +21,9 @@ import type { ChartDataPoint } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useGlobalRefresh } from "@/contexts/global-refresh-context";
 import { authenticatedRequestWithRecovery } from '@/lib/client-session-csrf';
+import { useLocale } from "@/contexts/locale-context";
+import { formatDateTime, formatDate } from "@/lib/date-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 
 // Interface for interpolated chart data points
 interface InterpolatedChartPoint {
@@ -43,7 +47,7 @@ const formatDuration = (minutes: number): string => {
 };
 
 // Use existing library function for bytes formatting with Y-axis specific precision
-const formatBytesForYAxis = (bytes: number): string => {
+const formatBytesForYAxis = (bytes: number, locale: string = 'en'): string => {
   if (bytes === 0) return '0 B';
   
   // Determine the appropriate precision based on the size for Y-axis labels
@@ -52,67 +56,68 @@ const formatBytesForYAxis = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
-  if (i >= sizes.length) return formatBytes(bytes, 1);
+  if (i >= sizes.length) return formatBytes(bytes, locale, 1);
   
   const size = sizes[i];
   
   // Apply specific precision rules for Y-axis labels using the library function
   if (size === 'GB') {
-    return formatBytes(bytes, 1);  // 1 decimal place for GB
+    return formatBytes(bytes, locale, 1);  // 1 decimal place for GB
   } else if (size === 'MB' || size === 'KB' || size === 'B') {
-    return formatBytes(bytes, 0);  // 0 decimal places for MB, KB, B
+    return formatBytes(bytes, locale, 0);  // 0 decimal places for MB, KB, B
   } else {
-    return formatBytes(bytes, 1);  // 1 decimal place for TB+
+    return formatBytes(bytes, locale, 1);  // 1 decimal place for TB+
   }
 };
 
 
-// Configuration for each chart type
-const chartMetrics = [
+// Configuration for each chart type - labels will be set dynamically using content
+const getChartMetrics = (content: ReturnType<typeof useIntlayer<'metrics-charts-panel'>>, locale: string) => [
   { 
     key: 'uploadedSize', 
-    label: 'Uploaded Size', 
-    formatter: formatBytes,
+    label: content.chartLabelUploadedSize.value, 
+    formatter: (v: number) => formatBytes(v, locale),
     color: "#3b82f6" // Blue
   },
   { 
     key: 'duration', 
-    label: 'Duration', 
+    label: content.chartLabelDuration.value, 
     formatter: formatDuration,
     color: "#10b981" // Green
   },
   { 
     key: 'fileCount', 
-    label: 'File Count', 
-    formatter: (v: number) => v.toLocaleString(),
+    label: content.chartLabelFileCount.value, 
+    formatter: (v: number) => formatInteger(v, locale),
     color: "#f59e0b" // Amber
   },
   { 
     key: 'fileSize', 
-    label: 'File Size', 
-    formatter: formatBytes,
+    label: content.chartLabelFileSize.value, 
+    formatter: (v: number) => formatBytes(v, locale),
     color: "#ef4444" // Red
   },
   { 
     key: 'storageSize', 
-    label: 'Storage Size', 
-    formatter: formatBytes,
+    label: content.chartLabelStorageSize.value, 
+    formatter: (v: number) => formatBytes(v, locale),
     color: "#8b5cf6" // Purple
   },
   { 
     key: 'backupVersions', 
-    label: 'Available Versions', 
-    formatter: (v: number) => v.toLocaleString(),
+    label: content.chartLabelAvailableVersions.value, 
+    formatter: (v: number) => formatInteger(v, locale),
     color: "#06b6d4" // Cyan
   }
 ];
 
 // Custom tooltip component for Recharts
-const CustomTooltip = ({ active, payload, label, metricKey }: {
+const CustomTooltip = ({ active, payload, label, metricKey, locale }: {
   active?: boolean;
   payload?: Array<{ value: number; dataKey: string; payload: { isoDate: string } }>;
   label?: string;
   metricKey: keyof ChartDataPoint;
+  locale: string;
 }) => {
   if (!active || !payload || !payload.length) {
     return null;
@@ -121,15 +126,11 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   const data = payload[0];
   const value = data.value;
   
-  // Format the date for display
+  // Format the date for display using locale-aware formatting
   let formattedDate = label;
   try {
     if (data.payload?.isoDate) {
-      const date = new Date(data.payload.isoDate);
-      formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
+      formattedDate = formatDateTime(data.payload.isoDate, locale);
     }
   } catch {
     // Fallback to original label if date parsing fails
@@ -138,11 +139,11 @@ const CustomTooltip = ({ active, payload, label, metricKey }: {
   // Format the value based on metric type
   let formattedValue: string;
   if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
-    formattedValue = formatBytesForYAxis(value);
+    formattedValue = formatBytesForYAxis(value, locale);
   } else if (metricKey === 'duration') {
     formattedValue = formatDuration(value);
   } else {
-    formattedValue = value.toLocaleString();
+    formattedValue = formatInteger(value, locale);
   }
 
   return (
@@ -162,11 +163,13 @@ function SmallMetricChart({
   metricKey, 
   label, 
   color,
+  locale,
 }: { 
   data: ChartDataPoint[]; 
   metricKey: keyof ChartDataPoint; 
   label: string; 
   color: string;
+  locale: string;
 }) {
 
   // Create chart config
@@ -291,9 +294,8 @@ function SmallMetricChart({
                   const dataIndex = resampledData.findIndex(item => item.isoDate === value);
                   if (dataIndex === 0 || dataIndex === resampledData.length - 1) {
                     try {
-                      // Parse the ISO date and format using browser locale
-                      const date = new Date(value);
-                      return date.toLocaleDateString();
+                      // Format using locale-aware date formatting
+                      return formatDate(value, locale);
                     } catch {
                       return value;
                     }
@@ -313,12 +315,12 @@ function SmallMetricChart({
                   if (typeof value === 'number') {
                     // Format based on metric type with specific precision
                     if (metricKey === 'uploadedSize' || metricKey === 'fileSize' || metricKey === 'storageSize') {
-                      return formatBytesForYAxis(value);
+                      return formatBytesForYAxis(value, locale);
                     } else if (metricKey === 'duration') {
                       return formatDuration(value);
                     } else {
                       // For counts (fileCount, backupVersions) - no decimal positions
-                      return Math.round(value).toLocaleString();
+                      return formatInteger(Math.round(value), locale);
                     }
                   }
                   return '';
@@ -333,7 +335,7 @@ function SmallMetricChart({
                 connectNulls
                 isAnimationActive={false}
               />
-              <Tooltip content={<CustomTooltip metricKey={metricKey} />} />
+              <Tooltip content={<CustomTooltip metricKey={metricKey} locale={locale} />} />
           </ComposedChart>
         </ChartContainer>
         </div>
@@ -342,14 +344,16 @@ function SmallMetricChart({
   );
 }
 
-function MetricsChartsPanelCore({ 
+function MetricsChartsPanelCore({
   serverId,
   backupName,
   chartData: externalChartData, // Use external chart data if provided
 }: MetricsChartsPanelProps) {
-  
+  const content = useIntlayer('metrics-charts-panel');
+  const common = useIntlayer('common');
   const { chartTimeRange } = useConfig();
   const { state: globalRefreshState } = useGlobalRefresh();
+  const locale = useLocale();
   // If externalChartData is provided, use it instead of fetching
   const [chartData, setChartData] = useState<ChartDataPoint[]>(externalChartData || []);
   const [isLoading, setIsLoading] = useState(true);
@@ -491,7 +495,7 @@ function MetricsChartsPanelCore({
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       toast({
-        title: "Error loading chart data",
+        title: content.errorLoading.value,
         description: errorMessage,
         variant: "destructive",
         duration: 3000
@@ -500,7 +504,7 @@ function MetricsChartsPanelCore({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [serverId, backupName, startDate, endDate, toast]);
+  }, [serverId, backupName, startDate, endDate, toast, content.errorLoading.value]);
 
   // Fetch data only when API parameters actually change and no external data is provided
   useEffect(() => {
@@ -567,33 +571,33 @@ function MetricsChartsPanelCore({
       if (backupName) {
         baseText += `:${backupName}`;
       } else {
-        baseText += ' (all backups)';
+        baseText += content.allBackups.value;
       }
     } else {
-      baseText = 'All Servers & Backups';
+      baseText = content.allServersAndBackups.value;
     }
     
     // Convert chartTimeRange to display label
     const getTimeRangeLabel = (timeRange: string) => {
       switch (timeRange) {
         case '24 hours':
-          return 'Last 24 hours';
+          return common.time.last24Hours.value;
         case '7 days':
-          return 'Last week';
+          return common.time.lastWeek.value;
         case '2 weeks':
-          return 'Last 2 weeks';
+          return common.time.last2Weeks.value;
         case '1 month':
-          return 'Last month';
+          return common.time.lastMonth.value;
         case '3 months':
-          return 'Last quarter';
+          return common.time.lastQuarter.value;
         case '6 months':
-          return 'Last semester';
+          return common.time.lastSemester.value;
         case '1 year':
-          return 'Last year';
+          return common.time.lastYear.value;
         case '2 years':
-          return 'Last 2 years';
+          return common.time.last2Years.value;
         case 'All data':
-          return 'All available data';
+          return common.time.allAvailableData.value;
         default:
           return timeRange;
       }
@@ -617,7 +621,7 @@ function MetricsChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 animate-pulse" />
-            <p className="text-xs">Loading chart data...</p>
+            <p className="text-xs">{content.loading.value}</p>
           </div>
         </div>
       )}
@@ -627,7 +631,7 @@ function MetricsChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-destructive">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">Error loading chart data</p>
+            <p className="text-xs">{content.errorLoading.value}</p>
           </div>
         </div>
       )}
@@ -635,13 +639,14 @@ function MetricsChartsPanelCore({
       {/* Charts - Responsive grid layout: 1 column mobile/small, 3 columns medium/large */}
       {!isLoading && !error && chartData.length > 0 && (
         <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${useContentBasedHeight ? 'auto-rows-auto' : 'auto-rows-fr'} items-stretch gap-2 sm:gap-3 pb-2 flex-1 min-h-0 overflow-hidden`}>
-          {chartMetrics.map((metric) => (
+          {getChartMetrics(content, locale).map((metric) => (
             <SmallMetricChart
               key={metric.key}
               data={chartData}
               metricKey={metric.key as keyof ChartDataPoint}
               label={metric.label}
               color={metric.color}
+              locale={locale}
             />
           ))}
         </div>
@@ -652,7 +657,7 @@ function MetricsChartsPanelCore({
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <FileBarChart2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-xs">No data available</p>
+            <p className="text-xs">{content.noDataAvailable.value}</p>
           </div>
         </div>
       )}
@@ -693,14 +698,15 @@ export const MetricsChartsPanel = ({
   backupName,
   chartData
 }: MetricsChartsPanelProps) => {
+  const content = useIntlayer('metrics-charts-panel');
   
   return (
-    <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden">
+    <div className="flex flex-col p-3 h-full min-h-0 min-w-0 overflow-hidden" data-screenshot-target="metrics-chart">
       {/* Header with independent refresh time display */}
       <div className="flex items-center justify-between mb-1 flex-shrink-0">
         <div className="flex items-center gap-2">
           <FileBarChart2 className="h-4 w-4 text-blue-600" />
-          <h2 className="text-sm font-semibold">Metrics</h2>
+          <h2 className="text-sm font-semibold">{content.title.value}</h2>
         </div>
         {/* <RefreshTimeDisplay /> */}
       </div>

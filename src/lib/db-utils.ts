@@ -1,10 +1,10 @@
 import { db, dbOps, waitForDatabaseReady } from './db';
 import { formatDurationFromSeconds } from "@/lib/db";
-import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType } from "@/lib/types";
+import type { BackupStatus, NotificationEvent, BackupKey, OverdueTolerance, BackupNotificationConfig, OverdueNotifications, ChartDataPoint, SMTPConfig, SMTPConfigEncrypted, NotificationTemplate, NtfyConfig, SMTPConnectionType, SupportedTemplateLanguage } from "@/lib/types";
 import { CronServiceConfig, CronInterval } from './types';
 import { cronIntervalMap } from './cron-interval-map';
 import type { NotificationFrequencyConfig } from "@/lib/types";
-import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic } from './default-config';
+import { defaultCronConfig, defaultNotificationFrequencyConfig, defaultOverdueTolerance, defaultCronInterval, defaultNtfyConfig, defaultNotificationTemplates, generateDefaultNtfyTopic, isValidTemplateLanguage, getDefaultNotificationTemplate } from './default-config';
 import { previousTemplatesMessages } from './previous-defaults';
 import { formatTimeElapsed } from './utils';
 import { migrateBackupSettings } from './migration-utils';
@@ -1647,48 +1647,104 @@ function getPreviousMessages(templateType: 'success' | 'warning' | 'overdueBacku
 }
 
 // New: Functions to get/set Notification Templates under 'notification_templates'
-export function getNotificationTemplates(): { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate } {
+export function getNotificationTemplates(): {
+  language: SupportedTemplateLanguage;
+  success: NotificationTemplate;
+  warning: NotificationTemplate;
+  overdueBackup: NotificationTemplate;
+} {
   return getCachedOrCompute('notification_templates', () => {
     try {
       const templatesJson = getConfiguration('notification_templates');
       if (!templatesJson || templatesJson.trim() === '') {
-        setNotificationTemplates(defaultNotificationTemplates);
-        return defaultNotificationTemplates;
+        const defaultTemplates = {
+          language: 'en' as SupportedTemplateLanguage,
+          success: defaultNotificationTemplates.success,
+          warning: defaultNotificationTemplates.warning,
+          overdueBackup: defaultNotificationTemplates.overdueBackup,
+        };
+        setNotificationTemplates(defaultTemplates);
+        return defaultTemplates;
       }
-      const parsed = JSON.parse(templatesJson) as { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate };
-      
+      const parsed = JSON.parse(templatesJson) as {
+        language?: string;
+        success?: NotificationTemplate;
+        warning?: NotificationTemplate;
+        overdueBackup?: NotificationTemplate;
+      };
+
       // Lazy upgrade: check if templates match old defaults and upgrade if needed
-      const updatedTemplates = { ...parsed };
+      const updatedTemplates: {
+        language?: SupportedTemplateLanguage;
+        success?: NotificationTemplate;
+        warning?: NotificationTemplate;
+        overdueBackup?: NotificationTemplate;
+      } = {
+        success: parsed.success,
+        warning: parsed.warning,
+        overdueBackup: parsed.overdueBackup,
+      };
       let needsUpdate = false;
-      
+
       // Check and replace warning template if it matches old defaults
       if (parsed.warning && isOldDefaultMessage(parsed.warning.message, getPreviousMessages('warning'))) {
         console.log('Lazy upgrade: Detected old warning template, replacing with new default');
         updatedTemplates.warning = defaultNotificationTemplates.warning;
         needsUpdate = true;
       }
-      
-      // Save updated templates if any were upgraded
-      if (needsUpdate) {
-        setNotificationTemplates(updatedTemplates);
-        return updatedTemplates;
+
+      // Ensure language field exists (backward compatibility)
+      const language = parsed.language && isValidTemplateLanguage(parsed.language)
+        ? (parsed.language as SupportedTemplateLanguage)
+        : 'en';
+      updatedTemplates.language = language;
+
+      // Save updated templates if any were upgraded or language was added
+      if (needsUpdate || !parsed.language) {
+        const templatesToSave: {
+          language: SupportedTemplateLanguage;
+          success: NotificationTemplate;
+          warning: NotificationTemplate;
+          overdueBackup: NotificationTemplate;
+        } = {
+          language: updatedTemplates.language || 'en',
+          success: updatedTemplates.success || defaultNotificationTemplates.success,
+          warning: updatedTemplates.warning || defaultNotificationTemplates.warning,
+          overdueBackup: updatedTemplates.overdueBackup || defaultNotificationTemplates.overdueBackup,
+        };
+        setNotificationTemplates(templatesToSave);
+        return templatesToSave;
       }
-      
+
       return {
+        language,
         success: parsed.success || defaultNotificationTemplates.success,
         warning: parsed.warning || defaultNotificationTemplates.warning,
         overdueBackup: parsed.overdueBackup || defaultNotificationTemplates.overdueBackup
       };
     } catch (error) {
       console.error('Failed to get notification templates:', error instanceof Error ? error.message : String(error));
-      setNotificationTemplates(defaultNotificationTemplates);
-      return defaultNotificationTemplates;
+      const defaultTemplates = {
+        language: 'en' as SupportedTemplateLanguage,
+        success: defaultNotificationTemplates.success,
+        warning: defaultNotificationTemplates.warning,
+        overdueBackup: defaultNotificationTemplates.overdueBackup,
+      };
+      setNotificationTemplates(defaultTemplates);
+      return defaultTemplates;
     }
   }, 'getNotificationTemplates');
 }
 
-export function setNotificationTemplates(templates: { success: NotificationTemplate; warning: NotificationTemplate; overdueBackup: NotificationTemplate }): void {
+export function setNotificationTemplates(templates: {
+  language?: SupportedTemplateLanguage;
+  success: NotificationTemplate;
+  warning: NotificationTemplate;
+  overdueBackup: NotificationTemplate;
+}): void {
   try {
+    // Simply save the provided templates directly
+    // The caller is responsible for providing a complete object
     setConfiguration('notification_templates', JSON.stringify(templates));
   } catch (error) {
     console.error('Failed to save notification templates:', error instanceof Error ? error.message : String(error));

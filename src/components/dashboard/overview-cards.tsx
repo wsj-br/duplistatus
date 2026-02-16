@@ -4,14 +4,25 @@ import { useMemo, memo } from 'react';
 import type { BackupStatus, ServerSummary } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { formatRelativeTime, formatBytes, formatShortTimeAgo } from "@/lib/utils";
+import { formatRelativeTime, formatShortTimeAgo } from "@/lib/utils";
+import { formatDateTime } from "@/lib/date-format";
+import { formatInteger, formatBytes } from "@/lib/number-format";
 import { HardDrive, AlertTriangle, Download, Server, Database, Calendar } from "lucide-react";
 import { ColoredIcon } from "@/components/ui/colored-icon";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/contexts/locale-context";
 import { useConfig } from "@/contexts/config-context";
 import { getStatusSortValue } from "@/lib/sort-utils";
 import { ServerConfigurationButton } from "@/components/ui/server-configuration-button";
 import { BackupTooltipContent } from "@/components/ui/backup-tooltip-content";
+import { useIntlayer } from 'react-intlayer';
+
+// Default card size constants
+const DEFAULT_MIN_CARD_WIDTH = 270;  // Minimum width of a card in pixels
+const DEFAULT_MAX_CARD_WIDTH = 330;  // Maximum width of a card in pixels
+const DEFAULT_MIN_CARD_HEIGHT = 235; // Minimum height of a card in pixels
+const DEFAULT_MIN_GAP_HORIZONTAL = 16;  // Minimum horizontal gap between cards in pixels
+const DEFAULT_MIN_GAP_VERTICAL = 16;    // Minimum vertical gap between cards in pixels
 
 // Helper function to get overall server status
 function getServerStatus(server: ServerSummary): BackupStatus {
@@ -126,6 +137,9 @@ interface OverviewCardProps {
 const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
   const serverStatus = getServerStatus(server);
   const router = useRouter();
+  const locale = useLocale();
+  const content = useIntlayer('overview-cards');
+  const common = useIntlayer('common');
 
   const handleCardClick = () => {
     onSelect(server.id);
@@ -135,9 +149,9 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
     <Card 
       variant="modern"
       hover={true}
-      className={`cursor-pointer h-full flex flex-col ${
+      className={`cursor-pointer h-full flex flex-col border-2 border-gray-700 ${
         isSelected 
-          ? 'border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-lg' 
+          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-lg' 
           : ''
       }`}
       onClick={handleCardClick}
@@ -149,7 +163,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/detail/${server.id}`);
+                router.push(`/${locale}/detail/${server.id}`);
               }}
               className="flex items-center hover:text-blue-600 transition-colors duration-200 cursor-pointer"
               title={`${server.alias ? server.name : ''}${server.alias && server.note ? '\n': ''}${server.note ? server.note : ''}`}
@@ -172,44 +186,44 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Database className="h-3 w-3" />
-              <span>Files</span>
+              <span>{content.files}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalFileCount > 0 ? server.totalFileCount.toLocaleString() : 'N/A'}
+              {server.totalFileCount > 0 ? formatInteger(server.totalFileCount, locale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <HardDrive className="h-3 w-3" />
-              <span>Size</span>
+              <span>{content.size}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalFileSize > 0 ? formatBytes(server.totalFileSize) : 'N/A'}
+              {server.totalFileSize > 0 ? formatBytes(server.totalFileSize, locale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Server className="h-3 w-3" />
-              <span>Storage</span>
+              <span>{content.storage}</span>
             </div>
             <p className="font-semibold text-sm">
-              {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize) : 'N/A'}
+              {server.totalStorageSize > 0 ? formatBytes(server.totalStorageSize, locale) : 'N/A'}
             </p>
           </section>
           <section className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1">
               <Calendar className="h-3 w-3" />
-              <span>Last</span>
+              <span>{content.last}</span>
             </div>
             <div className="font-semibold text-xs">
               {server.lastBackupDate !== "N/A" ? (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate)}</span>
+                      <span className="cursor-help">{formatRelativeTime(server.lastBackupDate, undefined, locale)}</span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      {new Date(server.lastBackupDate).toLocaleString()}
+                      {formatDateTime(server.lastBackupDate, locale)}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -222,7 +236,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
 
         {/* Backup List - Each backup job on its own row */}
         <section className="space-y-0.5 flex-1 flex flex-col mt-auto">
-          <h3 className="text-xs text-muted-foreground font-medium">Backups:</h3>
+          <h3 className="text-xs text-muted-foreground font-medium">{content.backups}</h3>
           {server.backupInfo.length > 0 ? (
             <div className="flex-1 flex flex-col divide-y divide-border/30">
               {server.backupInfo.map((backupJob, index) => (
@@ -233,7 +247,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
                       data-screenshot-trigger="backup-item"
                       onClick={(e) => {
                         e.stopPropagation();
-                        router.push(`/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
+                        router.push(`/${locale}/detail/${server.id}?backup=${encodeURIComponent(backupJob.name)}`);
                       }}
                     >
                       {/* Backup job name */}
@@ -306,7 +320,7 @@ const OverviewCard = ({ server, isSelected, onSelect }: OverviewCardProps) => {
               ))}
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground italic">No backup jobs available</div>
+            <div className="text-xs text-muted-foreground italic">{content.noBackupJobsAvailable}</div>
           )}
         </section>
       </CardContent>
@@ -318,10 +332,26 @@ interface OverviewCardsProps {
   servers: ServerSummary[];
   selectedServerId?: string | null;
   onSelect: (serverId: string | null) => void;
+  minCardWidth?: number;  // Minimum width of each card in pixels
+  maxCardWidth?: number;  // Maximum width of each card in pixels
+  minCardHeight?: number; // Minimum height of each card in pixels
+  minGapHorizontal?: number; // Minimum horizontal gap between cards in pixels
+  minGapVertical?: number;   // Minimum vertical gap between cards in pixels
 }
 
-export const OverviewCards = memo(function OverviewCards({ servers, selectedServerId, onSelect }: OverviewCardsProps) {
+export const OverviewCards = memo(function OverviewCards({ 
+  servers, 
+  selectedServerId, 
+  onSelect,
+  minCardWidth = DEFAULT_MIN_CARD_WIDTH,
+  maxCardWidth = DEFAULT_MAX_CARD_WIDTH,
+  minCardHeight = DEFAULT_MIN_CARD_HEIGHT,
+  minGapHorizontal = DEFAULT_MIN_GAP_HORIZONTAL,
+  minGapVertical = DEFAULT_MIN_GAP_VERTICAL
+}: OverviewCardsProps) {
   const { dashboardCardsSortOrder } = useConfig();
+  const content = useIntlayer('overview-cards');
+  const common = useIntlayer('common');
 
   // Remove duplicates by server ID, sort based on configuration, and memoize to prevent unnecessary re-renders
   const uniqueServers = useMemo(() => {
@@ -330,6 +360,7 @@ export const OverviewCards = memo(function OverviewCards({ servers, selectedServ
     );
     
     // Sort based on dashboardCardsSortOrder configuration
+    // Note: dashboardCardsSortOrder stores English strings, so we compare against English values
     return [...filtered].sort((a, b) => {
       switch (dashboardCardsSortOrder) {
         case 'Server name (a-z)':
@@ -373,13 +404,13 @@ export const OverviewCards = memo(function OverviewCards({ servers, selectedServ
           <CardContent className="text-center space-y-4 py-8">
             <ColoredIcon icon={HardDrive} color="gray" size="lg" className="h-16 w-16 mx-auto" />
             <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-muted-foreground">No servers found</h3>
+              <h3 className="text-lg font-semibold text-muted-foreground">{content.noServersFound}</h3>
               <p className="text-sm text-muted-foreground">
-                Collect data for your first server by clicking on{" "}
+                {content.collectDataMessage}{" "}
                 <span className="inline-flex items-center">
                   <ColoredIcon icon={Download} color="blue" size="sm" className="mx-1" />
                 </span>{" "}
-                (Collect backups logs) in the toolbar.
+                {content.collectBackupsLogs} in the toolbar.
               </p>
             </div>
           </CardContent>
@@ -388,20 +419,36 @@ export const OverviewCards = memo(function OverviewCards({ servers, selectedServ
     );
   }
 
+  // Calculate responsive grid template columns using minmax to respect min/max widths
+  const getGridTemplateColumns = () => {
+    // Use CSS Grid's minmax() to ensure columns respect min/max widths
+    // This ensures cards never go below minCardWidth or above maxCardWidth
+    return {
+      gridTemplateColumns: `repeat(auto-fill, minmax(${minCardWidth}px, ${maxCardWidth}px))`,
+    };
+  };
+
   return (
     <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
       {/* Responsive Grid Layout with vertical scrolling */}
       {/* 
-        Responsive breakpoints:
-        - xl (1280px+): 4 columns 
-        - lg (1024px+): 3 columns 
-        - md (768px+): 2 columns 
-        - sm (640px+): 2 columns 
-        - default: 1 column 
+        Uses auto-fill with minmax() to ensure cards respect min/max width constraints
+        Cards will automatically wrap to new rows as needed
       */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 xxl:grid-cols-5 gap-2">
+      <div 
+        className="grid"
+        style={{
+          ...getGridTemplateColumns(),
+          gap: `${minGapVertical}px ${minGapHorizontal}px`,
+        }}
+      >
         {uniqueServers.map((server) => (
-          <div key={server.id} className="w-full h-[200px]">
+          <div 
+            key={server.id} 
+            style={{
+              minHeight: `${minCardHeight}px`,
+            }}
+          >
             <OverviewCard
               server={server}
               isSelected={selectedServerId === server.id}
@@ -431,7 +478,13 @@ export const OverviewCards = memo(function OverviewCards({ servers, selectedServ
   });
   
   // Check other props
-  const otherPropsEqual = prevProps.selectedServerId === nextProps.selectedServerId;
+  const otherPropsEqual = 
+    prevProps.selectedServerId === nextProps.selectedServerId &&
+    prevProps.minCardWidth === nextProps.minCardWidth &&
+    prevProps.maxCardWidth === nextProps.maxCardWidth &&
+    prevProps.minCardHeight === nextProps.minCardHeight &&
+    prevProps.minGapHorizontal === nextProps.minGapHorizontal &&
+    prevProps.minGapVertical === nextProps.minGapVertical;
   
   return serversEqual && otherPropsEqual;
 });

@@ -40,6 +40,7 @@ import { ServerAddress } from '@/lib/types';
 import { authenticatedRequestWithRecovery } from "@/lib/client-session-csrf";
 import { CollectAllButton } from "@/components/ui/collect-all-button";
 import { collectFromMultipleServers, type CollectionResult } from "@/lib/bulk-collection";
+import { useIntlayer } from 'react-intlayer';
 
 
 interface BackupCollectMenuProps {
@@ -69,6 +70,10 @@ export function BackupCollectMenu({
   onAutoCollectStart,
   onAutoCollectEnd
 }: BackupCollectMenuProps) {
+  const content = useIntlayer('backup-collect-menu');
+  const common = useIntlayer('common');
+  const api = useIntlayer('api');
+  const settings = useIntlayer('settings');
   const [isCollecting, setIsCollecting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hostname, setHostname] = useState("");
@@ -227,15 +232,15 @@ export function BackupCollectMenu({
     } catch (error) {
       console.error('Error fetching server connections:', error instanceof Error ? error.message : String(error));
       toast({
-        title: "Error",
-        description: "Failed to load server connections",
+        title: common.ui.error.value,
+        description: api.errors.failedToLoadServerConnections.value,
         variant: "destructive",
         duration: 3000,
       });
     } finally {
       setIsLoadingServers(false);
     }
-  }, [toast]);
+  }, [toast, common.ui.error.value, api.errors.failedToLoadServerConnections.value]);
 
   // Parse server URL to extract hostname and port
   const parseServerUrl = (url: string) => {
@@ -316,57 +321,57 @@ export function BackupCollectMenu({
     // Check for master key error first
     if (errorMessage.includes('Master key is invalid') || errorMessage.includes('MASTER_KEY_INVALID')) {
       return {
-        title: "Master Key Invalid",
-        description: "The master key is no longer valid. All encrypted passwords and settings must be reconfigured."
+        title: content.masterKeyInvalid.value,
+        description: content.masterKeyInvalidDescription.value
       };
     }
     
     if (errorMessage.includes('Could not establish connection with any protocol')) {
       return {
-        title: "Connection Failed",
-        description: `Unable to connect to ${hostname}:${port}. Please check: Server is running and accessible, hostname/IP address is correct, port number is correct, and network connectivity.`
+        title: content.connectionFailed.value,
+        description: content.connectionFailedDescription.value.replace('{host}', hostname).replace('{port}', port)
       };
     }
     
     if (errorMessage.includes('EHOSTUNREACH')) {
       return {
-        title: "Host Unreachable",
-        description: `Cannot reach ${hostname}:${port}. The server may be down or the network address is incorrect.`
+        title: content.hostUnreachable.value,
+        description: content.hostUnreachableDescription.value.replace('{host}', hostname).replace('{port}', port)
       };
     }
     
     if (errorMessage.includes('ECONNREFUSED')) {
       return {
-        title: "Connection Refused",
-        description: `${hostname}:${port} refused the connection. The Duplicati service may not be running on this port.`
+        title: content.connectionRefused.value,
+        description: content.connectionRefusedDescription.value.replace('{host}', hostname).replace('{port}', port)
       };
     }
     
     if (errorMessage.includes('ETIMEDOUT')) {
       return {
-        title: "Connection Timeout",
-        description: `Connection to ${hostname}:${port} timed out. Check network connectivity and firewall settings.`
+        title: content.connectionTimeout.value,
+        description: content.connectionTimeoutDescription.value.replace('{host}', hostname).replace('{port}', port)
       };
     }
     
     if (errorMessage.includes('unauthorized') || errorMessage.includes('401')) {
       return {
-        title: "Authentication Failed",
-        description: `Invalid password for ${hostname}:${port}. Please check your Duplicati password.`
+        title: content.authenticationFailed.value,
+        description: content.authenticationFailedDescription.value.replace('{host}', hostname).replace('{port}', port)
       };
     }
     
     if (errorMessage.includes('ENOTFOUND')) {
       return {
-        title: "Host Not Found",
-        description: `Cannot resolve hostname "${hostname}". Please check the server name or IP address.`
+        title: content.hostNotFound.value,
+        description: content.hostNotFoundDescription.value.replace('{host}', hostname)
       };
     }
     
     // Return original error for unknown cases, but clean it up
     const cleanedMessage = errorMessage.replace(/\\n/g, ' ').replace(/\n/g, ' ').trim();
     return {
-      title: "Collection Failed",
+      title: content.collectionFailed.value,
       description: cleanedMessage
     };
   };
@@ -395,16 +400,16 @@ export function BackupCollectMenu({
       URL.revokeObjectURL(url);
       
       toast({
-        title: "JSON file downloaded",
-        description: `Downloaded ${filename}`,
+        title: content.jsonFileDownloaded.value,
+        description: content.downloadedFilename.value.replace('{filename}', filename),
         variant: "default",
         duration: 3000,
       });
     } catch (error) {
       console.error('Error downloading JSON file:', error);
       toast({
-        title: "Download failed",
-        description: "Failed to download JSON file",
+        title: content.downloadFailed.value,
+        description: content.failedToDownloadJsonFile.value,
         variant: "destructive",
         duration: 3000,
       });
@@ -461,8 +466,11 @@ export function BackupCollectMenu({
 
       // Show success toast
       toast({
-        title: `Backups collected successfully from ${serverName}`,
-        description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+        title: content.backupsCollectedSuccessfully.value.replace('{serverName}', serverName),
+        description: content.collectionStats.value
+          .replace('{processed}', String(result.stats.processed))
+          .replace('{skipped}', String(result.stats.skipped))
+          .replace('{errors}', String(result.stats.errors)),
         variant: "default",
         duration: 3000,
       });
@@ -478,7 +486,7 @@ export function BackupCollectMenu({
       
       // Show error toast
       toast({
-        title: "Collection Failed",
+        title: content.collectionFailed.value,
         description: errorMessage,
         variant: "destructive",
         duration: 10000,
@@ -506,8 +514,8 @@ export function BackupCollectMenu({
       // Validate that we have password for multiple servers
       if (!password) {
         toast({
-          title: "Error",
-          description: "Please enter a password for multiple servers",
+          title: common.ui.error.value,
+          description: content.pleaseEnterPasswordForMultipleServers.value,
           variant: "destructive",
           duration: 3000,
         });
@@ -517,8 +525,8 @@ export function BackupCollectMenu({
       // Show validation errors for invalid hostnames
       if (invalidHostnames.length > 0) {
         toast({
-          title: "Invalid Hostnames",
-          description: `Invalid hostnames detected: ${invalidHostnames.join(', ')}`,
+          title: content.invalidHostnames.value,
+          description: content.invalidHostnamesDetected.value.replace('{hostnames}', invalidHostnames.join(', ')),
           variant: "destructive",
           duration: 5000,
         });
@@ -617,7 +625,7 @@ export function BackupCollectMenu({
         console.error('Error during multi-server collection:', errorMessage);
         
         toast({
-          title: "Collection Error",
+          title: content.collectionError.value,
           description: errorMessage,
           variant: "destructive",
           duration: 5000,
@@ -649,8 +657,8 @@ export function BackupCollectMenu({
       // Case 2: Hostname/port/password only (new connection)
       if (!hostname) {
         toast({
-          title: "Error",
-          description: "Please enter a hostname",
+          title: common.ui.error.value,
+          description: content.pleaseEnterHostname.value,
           variant: "destructive",
           duration: 3000,
         });
@@ -658,8 +666,8 @@ export function BackupCollectMenu({
       }
       if (!password) {
         toast({
-          title: "Error",
-          description: "Please enter a password",
+          title: common.ui.error.value,
+          description: content.pleaseEnterPassword.value,
           variant: "destructive",
           duration: 3000,
         });
@@ -698,8 +706,8 @@ export function BackupCollectMenu({
         // Check for master key error
         if (error.masterKeyInvalid) {
           toast({
-            title: "Master Key Invalid",
-            description: "The master key is no longer valid. All encrypted passwords and settings must be reconfigured.",
+            title: content.masterKeyInvalid.value,
+            description: content.masterKeyInvalidDescription.value,
             variant: "destructive",
             duration: 8000,
           });
@@ -737,8 +745,11 @@ export function BackupCollectMenu({
 
       // Show success toast
       toast({
-        title: `Backups collected successfully from ${serverName}`,
-        description: `Processed: ${result.stats.processed}, Skipped: ${result.stats.skipped}, Errors: ${result.stats.errors}`,
+        title: content.backupsCollectedSuccessfully.value.replace('{serverName}', serverName),
+        description: content.collectionStats.value
+          .replace('{processed}', String(result.stats.processed))
+          .replace('{skipped}', String(result.stats.skipped))
+          .replace('{errors}', String(result.stats.errors)),
         variant: "default",
         duration: 3000,
       });
@@ -822,16 +833,16 @@ export function BackupCollectMenu({
     switch (status) {
       case 'collected':
         if (stats) {
-          return `Success (Processed: ${stats.processed}, Skipped: ${stats.skipped}, Errors: ${stats.errors})`;
+          return content.successWithStats.value.replace('{processed}', String(stats.processed)).replace('{skipped}', String(stats.skipped)).replace('{errors}', String(stats.errors));
         }
-        return 'Success';
+        return content.successWithStats.value.split('(')[0].trim();
       case 'failed':
-        return error || 'Failed';
+        return error || common.status.failed.value;
       case 'collecting':
-        return 'Collecting...';
+        return content.collecting.value;
       case 'waiting':
       default:
-        return 'Waiting...';
+        return content.waiting.value + '...';
     }
   };
 
@@ -885,8 +896,8 @@ export function BackupCollectMenu({
       }
     }
     
-    // Check if we have a selected server on dashboard (both analytics and overview view modes)
-    if (pathname === '/' && (serverSelectionState.viewMode === 'analytics' || serverSelectionState.viewMode === 'overview') && serverSelectionState.selectedServerId) {
+    // Check if we have a selected server on dashboard (overview view mode)
+    if (pathname === '/' && serverSelectionState.viewMode === 'overview' && serverSelectionState.selectedServerId) {
       const selectedServer = getSelectedServer();
       if (selectedServer && selectedServer.server_url && selectedServer.server_url.trim() !== '') {
         try {
@@ -937,8 +948,9 @@ export function BackupCollectMenu({
           variant={variant} 
           size={getButtonSize()} 
           className={className}
-          title="Collect backup logs (Right-click for Collect All)"
+          title={content.buttonTitle.value}
           disabled={disabled}
+          data-screenshot-target="collect-button"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -952,7 +964,7 @@ export function BackupCollectMenu({
           onContextMenu={handleRightClick}
         >
           <Download className={getIconSize()} />
-          {showText && "Collect"}
+          {showText && content.buttonText.value}
         </Button>
       </PopoverTrigger>
       <PopoverContent 
@@ -974,7 +986,7 @@ export function BackupCollectMenu({
                     <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
                     <div className="text-center space-y-2">
                       <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                        Collecting backup logs from {currentServerName}...
+                        {content.collectingFromServer.value.replace('{serverName}', currentServerName)}
                       </p>
                       <Progress value={progress} variant="gradient" className="w-full h-2" />
                       <p className="text-xs text-blue-600 dark:text-blue-400">
@@ -992,12 +1004,12 @@ export function BackupCollectMenu({
                       </div>
                     </div>
                     <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                      Collection complete from {currentServerName}!
+                      {content.collectionCompleteFrom.value.replace('{serverName}', currentServerName)}
                     </p>
                     <div className="space-y-1 text-xs text-muted-foreground">
-                      <p>Processed: {stats.processed} backups</p>
-                      <p>Skipped: {stats.skipped} duplicates</p>
-                      <p>Errors: {stats.errors}</p>
+                      <p>{content.processedBackups.value.replace('{count}', String(stats.processed))}</p>
+                      <p>{content.skippedDuplicates.value.replace('{count}', String(stats.skipped))}</p>
+                      <p>{content.errorsCount.value.replace('{count}', String(stats.errors))}</p>
                     </div>
                   </div>
                 ) : null}
@@ -1007,19 +1019,25 @@ export function BackupCollectMenu({
             /* Pre-filled mode or Server list mode: Show form */
             <>
               <GradientCardHeader>
-                <h4 className="text-lg font-semibold leading-none text-white">Collect Backup Logs</h4>
+                <h4 className="text-lg font-semibold leading-none text-white">{content.title.value}</h4>
               </GradientCardHeader>
               <div className="px-1 -mt-2">
                 <p className="text-xs text-muted-foreground">
                   {preFilledServerName
-                    ? <>Extract backup logs and configuration from <span className="font-medium text-foreground">{preFilledServerName}</span></>
+                    ? (() => {
+                        const parts = content.descriptionPrefilled.value.split('{serverName}');
+                        return <>{parts[0]}<span className="font-medium text-foreground">{preFilledServerName}</span>{parts[1]}</>;
+                      })()
                     : selectedServerId && selectedServerId !== "new-server" && !hostname && !password
-                    ? <>Using stored credentials for selected server</>
+                    ? <>{content.descriptionStoredCredentials.value}</>
                     : selectedServerId && selectedServerId !== "new-server" && hostname && password
-                    ? <>Updating server credentials and collecting backups</>
+                    ? <>{content.descriptionUpdatingCredentials.value}</>
                     : hasMultipleHostnames
-                    ? <>Extract backup logs from <span className="font-medium text-blue-600">{validHostnames.length} servers</span> using the same port and password</>
-                    : "Extract backup logs and schedule configuration directly from Duplicati server"}
+                    ? (() => {
+                        const parts = content.descriptionMultipleServers.value.split('{count}');
+                        return <>{parts[0]}<span className="font-medium text-blue-600">{validHostnames.length} servers</span>{parts[1]}</>;
+                      })()
+                    : content.descriptionDefault.value}
                 </p>
               </div>
               <div className="grid gap-3">
@@ -1028,23 +1046,23 @@ export function BackupCollectMenu({
                   <div className="grid gap-1.5">
                     <Label htmlFor="server-select" className="flex items-center gap-2">
                       <ColoredIcon icon={Server} color="blue" size="sm" />
-                      Select Server
+                      {content.selectServer.value}
                     </Label>
                     <Select value={selectedServerId} onValueChange={handleServerSelect} disabled={isCollecting}>
                       <SelectTrigger>
-                        <SelectValue placeholder={isLoadingServers ? "Loading servers..." : "Choose a server or enter manually below"} />
+                        <SelectValue placeholder={isLoadingServers ? settings.servers.loadingServers.value : content.chooseServerOrManual.value} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="new-server">
-                          + New Server
+                          {content.newServer.value}
                         </SelectItem>
                         {isLoadingServers ? (
                           <SelectItem value="loading" disabled>
-                            Loading servers...
+                            {settings.servers.loadingServers.value}
                           </SelectItem>
                         ) : serverAddresses.length === 0 ? (
                           <SelectItem value="no-servers" disabled>
-                            No servers with server URLs configured
+                            {settings.servers.noServersWithUrls.value}
                           </SelectItem>
                         ) : (
                           serverAddresses.map((server) => (
@@ -1061,15 +1079,15 @@ export function BackupCollectMenu({
                 <div className="grid gap-1.5">
                   <Label htmlFor="hostname" className="flex items-center gap-2">
                     <ColoredIcon icon={Globe} color="blue" size="sm" />
-                    Hostname
+                    {content.hostnameLabel.value}
                     {hasMultipleHostnames && (
-                      <span className="text-xs text-blue-600 font-medium">({validHostnames.length} servers)</span>
+                      <span className="text-xs text-blue-600 font-medium">{content.multipleServersCount.value.replace('{count}', String(validHostnames.length))}</span>
                     )}
                     {selectedServerId && selectedServerId !== "new-server" && !password && (
-                      <span className="text-xs text-muted-foreground">(stored hostname, change if needed)</span>
+                      <span className="text-xs text-muted-foreground">{content.storedHostnameHint.value}</span>
                     )}
                     {selectedServerId && selectedServerId !== "new-server" && password && (
-                      <span className="text-xs text-orange-600">(updating stored value)</span>
+                      <span className="text-xs text-orange-600">{content.updatingStoredValue.value}</span>
                     )}
                   </Label>
                   <Input
@@ -1077,13 +1095,13 @@ export function BackupCollectMenu({
                     value={hostname}
                     onChange={(e) => setHostname(e.target.value)}
                     onFocus={(e) => e.target.select()}
-                    placeholder={selectedServerId && selectedServerId !== "new-server" ? "Leave empty to use stored hostname" : "server name or IP (comma-separated for multiple)"}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" ? content.placeholderUseStoredHostname.value : content.placeholderHostname.value}
                     disabled={isCollecting}
                     className={hasMultipleHostnames ? "border-blue-300 dark:border-blue-700" : ""}
                   />
                   {hasMultipleHostnames && (
                     <div className="text-xs text-muted-foreground">
-                      <p className="font-medium text-blue-600 dark:text-blue-400">Multiple servers detected:</p>
+                      <p className="font-medium text-blue-600 dark:text-blue-400">{content.multipleServersDetected.value}</p>
                       <ul className="list-disc list-inside ml-2 space-y-0.5">
                         {validHostnames.map((h, index) => (
                           <li key={index} className="text-green-600 dark:text-green-400">✓ {h}</li>
@@ -1093,7 +1111,7 @@ export function BackupCollectMenu({
                         ))}
                       </ul>
                       {invalidHostnames.length > 0 && (
-                        <p className="text-red-600 dark:text-red-400 mt-1">Please fix invalid hostnames before collecting.</p>
+                        <p className="text-red-600 dark:text-red-400 mt-1">{content.fixInvalidHostnames.value}</p>
                       )}
                     </div>
                   )}
@@ -1102,7 +1120,7 @@ export function BackupCollectMenu({
                 <div className="grid gap-1.5">
                   <Label htmlFor="port" className="flex items-center gap-2">
                     <ColoredIcon icon={Server} color="purple" size="sm" />
-                    Port
+                    {content.portLabel.value}
                   </Label>
                   <Input
                     id="port"
@@ -1116,24 +1134,24 @@ export function BackupCollectMenu({
                 <div className="grid gap-1.5">
                   <Label htmlFor="password" className="flex items-center gap-2">
                     <ColoredIcon icon={Lock} color="red" size="sm" />
-                    Password
+                    {content.passwordLabel.value}
                     {selectedServerId && selectedServerId !== "new-server" && !password && (
-                      <span className="text-xs text-muted-foreground">(only fill if password changed)</span>
+                      <span className="text-xs text-muted-foreground">{content.passwordOnlyIfChanged.value}</span>
                     )}
                     {selectedServerId && selectedServerId !== "new-server" && password && (
-                      <span className="text-xs text-orange-600">(updating stored value)</span>
+                      <span className="text-xs text-orange-600">{content.updatingStoredValue.value}</span>
                     )}
                   </Label>
                   <TogglePasswordInput
                     id="password"
                     value={password}
                     onChange={setPassword}
-                    placeholder={selectedServerId && selectedServerId !== "new-server" ? "Leave empty to use stored password" : "Enter Duplicati password"}
+                    placeholder={selectedServerId && selectedServerId !== "new-server" ? content.placeholderUseStoredPassword.value : content.placeholderPassword.value}
                     disabled={isCollecting}
                     showPassword={showPassword}
                     onTogglePassword={() => setShowPassword(!showPassword)}
                   />
-                  <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">Password missing or lost?</a>
+                  <a href="https://docs.duplicati.com/detailed-descriptions/duplicati-access-password" target="_blank" rel="noopener noreferrer" className="text-blue-500 text-xs">{content.passwordMissingLink.value}</a>
                 </div>
                 <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg border border-border/50">
                   <Checkbox
@@ -1147,7 +1165,7 @@ export function BackupCollectMenu({
                     className="text-sm font-normal flex items-center gap-2 cursor-pointer"
                   >
                     <ColoredIcon icon={FileDown} color="green" size="sm" />
-                    Download collected JSON data
+                    {content.downloadJsonLabel.value}
                   </Label>
                 </div>
                 
@@ -1159,7 +1177,7 @@ export function BackupCollectMenu({
                         <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
                         <div className="text-center space-y-2">
                           <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                            Collecting backup logs from {currentServerName}...
+                            {content.collectingFromServer.value.replace('{serverName}', currentServerName)}
                           </p>
                           <Progress value={progress} variant="gradient" className="w-full h-2" />
                           <p className="text-xs text-blue-600 dark:text-blue-400">
@@ -1169,11 +1187,11 @@ export function BackupCollectMenu({
                       </>
                     ) : stats ? (
                       <div className="space-y-2 text-sm">
-                        <p className="font-medium">Collection complete from {currentServerName}:</p>
+                        <p className="font-medium">{content.collectionCompleteFrom.value.replace('{serverName}', currentServerName).replace('!', ':')}</p>
                         <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                          <li>Processed: {stats.processed} backups</li>
-                          <li>Skipped: {stats.skipped} duplicates</li>
-                          <li>Errors: {stats.errors}</li>
+                          <li>{content.processedBackups.value.replace('{count}', String(stats.processed))}</li>
+                          <li>{content.skippedDuplicates.value.replace('{count}', String(stats.skipped))}</li>
+                          <li>{content.errorsCount.value.replace('{count}', String(stats.errors))}</li>
                         </ul>
                       </div>
                     ) : null}
@@ -1185,22 +1203,22 @@ export function BackupCollectMenu({
                   disabled={isCollecting || (selectedServerId === "new-server" && (!hostname || !password)) || (hasMultipleHostnames && invalidHostnames.length > 0)}
                   variant={buttonState === 'success' ? 'success' : 'gradient'}
                   className="w-full relative overflow-hidden"
-                  title={hasMultipleHostnames ? `Collect backup logs from ${validHostnames.length} servers` : "Collect backup logs"}
+                  title={hasMultipleHostnames ? content.collectFromMultipleServers.value.replace('{count}', String(validHostnames.length)) : content.title.value}
                 >
                   {buttonState === 'loading' ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      {hasMultipleHostnames ? `Collecting from ${validHostnames.length} servers...` : "Collecting..."}
+                      {hasMultipleHostnames ? content.collectingFromMultiple.value.replace('{count}', String(validHostnames.length)) : content.collecting.value}
                     </>
                   ) : buttonState === 'success' ? (
                     <>
                       <ColoredIcon icon={Download} color="green" size="sm" className="mr-2 text-white" />
-                      Collection Complete!
+                      {content.collectionComplete.value}
                     </>
                   ) : (
                     <>
                       <Download className="h-4 w-4 mr-2" />
-                      {hasMultipleHostnames ? `Collect from ${validHostnames.length} Servers` : "Collect Backups"}
+                      {hasMultipleHostnames ? content.collectFromMultiple.value.replace('{count}', String(validHostnames.length)) : content.collectBackups.value}
                     </>
                   )}
                 </Button>
@@ -1215,16 +1233,16 @@ export function BackupCollectMenu({
     {showCollectAll && (
       <div className="fixed inset-0 bg-black/50 z-50">
         <div className="bg-background border rounded-lg p-6 max-w-md w-full mx-4 absolute top-1/3 left-1/2 transform -translate-x-1/2" data-screenshot-target="collect-button-right-click-popup">
-          <h3 className="text-lg font-semibold mb-4">Collect All Backups</h3>
+          <h3 className="text-lg font-semibold mb-4">{content.collectAllBackups.value}</h3>
           <p className="text-muted-foreground mb-4">
-            This will collect backup logs from all configured servers. Are you sure you want to continue?
+            {content.collectAllBackupsDescription.value}
           </p>
           <div className="flex gap-2 justify-end">
             <Button
               variant="outline"
               onClick={() => setShowCollectAll(false)}
             >
-              Cancel
+              {common.ui.cancel.value}
             </Button>
             <CollectAllButton
               servers={serverAddresses}
@@ -1234,8 +1252,8 @@ export function BackupCollectMenu({
                 setShowCollectAll(false);
                 if (showInstructionToast) {
                   toast({
-                    title: "Starting Collection",
-                    description: "Collecting backup logs from all configured servers...",
+                    title: content.startingCollection.value,
+                    description: content.collectingBackupLogs.value,
                     duration: 4000,
                   });
                 }
@@ -1261,7 +1279,7 @@ export function BackupCollectMenu({
     >
       <DialogContent className="max-w-full max-h-screen h-full sm:max-w-3xl sm:max-h-[85vh] sm:h-auto overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Multi-Server Collection Progress</DialogTitle>
+          <DialogTitle>{content.multiServerCollectionProgress.value}</DialogTitle>
         </DialogHeader>
         
         <div className="py-4">
@@ -1270,8 +1288,8 @@ export function BackupCollectMenu({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[40%]">Server Address</TableHead>
-                    <TableHead className="w-[60%]">Status</TableHead>
+                    <TableHead className="w-[40%]">{content.serverAddress.value}</TableHead>
+                    <TableHead className="w-[60%]">{content.status.value}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -1331,7 +1349,7 @@ export function BackupCollectMenu({
             disabled={isMultiServerCollecting}
             variant="gradient"
           >
-            {isMultiServerCollecting ? 'Collection in Progress...' : 'Close'}
+            {isMultiServerCollecting ? content.collectionInProgress.value : common.ui.close.value}
           </Button>
         </DialogFooter>
       </DialogContent>

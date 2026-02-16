@@ -1,46 +1,64 @@
-import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig } from './types';
+import { NotificationTemplate, CronServiceConfig, CronInterval, BackupNotificationConfig, SupportedTemplateLanguage, StartOfWeek } from './types';
+import { defaultNotificationTemplatesEn } from './default-notifications-en';
+import { defaultNotificationTemplatesDe } from './default-notifications-de';
+import { defaultNotificationTemplatesFr } from './default-notifications-fr';
+import { defaultNotificationTemplatesEs } from './default-notifications-es';
+import { defaultNotificationTemplatesPtBR } from './default-notifications-pt-BR';
 
-// Default notification templates
-export const defaultNotificationTemplates: {
+// Type for notification templates (without language field)
+type NotificationTemplatesData = {
   overdueBackup: NotificationTemplate;
   success: NotificationTemplate;
   warning: NotificationTemplate;
-} = {
-  success: {
-    title: "✅ {status} - {backup_name}  @ {server_alias}",
-    message: "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date} in {duration}.\n\n" + 
-             "🔍 Note: {server_note}\n" + 
-             "☁️ Uploaded: {uploaded_size}\n" + 
-             "💾 Store usage:  {storage_size}\n" +
-             "🔃 Available versions:  {available_versions}\n",
-    priority: "default",
-    tags: "duplicati, duplistatus, success"
-  },
-  warning: {
-    title: " ⚠️{status} - {backup_name}  @ {server_alias}",
-    message: "Backup {backup_name} on {server_alias} completed with status '{status}' at {backup_date}.\n\n" + 
-             "🔍 Note: {server_note}\n" + 
-             "⏰ Duration: {duration}\n" + 
-             "☁️ Uploaded: {uploaded_size}\n\n" + 
-             "🚨 {warnings_count} warnings\n" + 
-             "🛑 {errors_count} errors.\n\n" + 
-             "📄 Log Messages:\n{log_text}\n\n" + 
-             "⚠️ Check the duplicati server immediately {server_url}\n",
-    priority: "high",
-    tags: "duplicati, duplistatus, warning, error"
-  },
-  overdueBackup: {
-    title: "🕑 Overdue - {backup_name}  @ {server_alias}",
-    message: "The backup {backup_name} is overdue on {server_alias}.\n\n" + 
-              "🔍 Note: {server_note}\n" + 
-              "🚨 Last backup received: {last_backup_date} ({last_elapsed})\n" + 
-              "⏰ Expected backup time: {expected_date} ({expected_elapsed})\n\n" + 
-              "Expected interval: {backup_interval} / Tolerance: {overdue_tolerance}\n\n" + 
-             "⚠️ Check the duplicati server immediately {server_url}\n",
-    priority: "default",
-    tags: "duplicati, duplistatus, overdue"
-  }
 };
+
+/**
+ * Map of all default notification templates by language
+ */
+export const defaultNotificationTemplatesByLanguage: Record<
+  SupportedTemplateLanguage,
+  NotificationTemplatesData
+> = {
+  en: defaultNotificationTemplatesEn,
+  de: defaultNotificationTemplatesDe,
+  fr: defaultNotificationTemplatesFr,
+  es: defaultNotificationTemplatesEs,
+  'pt-BR': defaultNotificationTemplatesPtBR,
+};
+
+/**
+ * Default notification templates (English) - for backward compatibility
+ * @deprecated Use getDefaultNotificationTemplates(language) instead
+ */
+export const defaultNotificationTemplates = defaultNotificationTemplatesEn;
+
+/**
+ * Get default notification templates for a specific language
+ * Falls back to English if the language is not supported
+ */
+export function getDefaultNotificationTemplates(
+  language: SupportedTemplateLanguage = 'en'
+): NotificationTemplatesData {
+  return defaultNotificationTemplatesByLanguage[language] || defaultNotificationTemplatesByLanguage.en;
+}
+
+/**
+ * Get a specific default template by language and type
+ */
+export function getDefaultNotificationTemplate(
+  language: SupportedTemplateLanguage,
+  templateType: 'success' | 'warning' | 'overdueBackup'
+): NotificationTemplate {
+  const templates = getDefaultNotificationTemplates(language);
+  return templates[templateType];
+}
+
+/**
+ * Check if a language is supported for templates
+ */
+export function isValidTemplateLanguage(language: string): language is SupportedTemplateLanguage {
+  return ['en', 'de', 'fr', 'es', 'pt-BR'].includes(language);
+}
 
 // Default cron service configuration
 export const defaultCronConfig: CronServiceConfig = {
@@ -110,7 +128,8 @@ export const defaultUIConfig = {
   tablePageSize: 5 as const,
   chartTimeRange: 'All data' as const,
   autoRefreshInterval: 1 as const,
-  dashboardCardsSortOrder: 'Server name (a-z)' as const
+  dashboardCardsSortOrder: 'Server name (a-z)' as const,
+  startOfWeek: 'locale' as const // Default to locale-based (en-US = Sunday, en-GB = Monday)
 };
 
 // Default API configuration
