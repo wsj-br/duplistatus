@@ -4,6 +4,12 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag_as_latest:
+        description: "Tag this build as 'latest' (only for manual runs)"
+        required: false
+        default: false
+        type: boolean
 
 # ─────────────────────────────────────────────────────────────
 # Strategy: Build each architecture on its NATIVE runner, then
@@ -29,6 +35,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Get package.json version
         id: package_version
@@ -40,14 +48,26 @@ jobs:
       - name: Check if this is the latest release
         id: is_latest
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          CURRENT_TAG="${{ github.ref_name }}"
-          if [ "$LATEST_TAG" = "$CURRENT_TAG" ]; then
-            echo "is_latest=true" >> $GITHUB_OUTPUT
-            echo "This is the latest release"
+          # For release event, compare this release's tag to the newest tag in the repo (by version).
+          # For workflow_dispatch, use the optional "tag_as_latest" input.
+          if [ "${{ github.event_name }}" = "release" ]; then
+            CURRENT_TAG="${{ github.event.release.tag_name }}"
+            LATEST_TAG=$(git tag -l --sort=-v:refname 2>/dev/null | head -1 || echo "")
+            if [ -n "$LATEST_TAG" ] && [ "$LATEST_TAG" = "$CURRENT_TAG" ]; then
+              echo "is_latest=true" >> $GITHUB_OUTPUT
+              echo "This is the latest release ($CURRENT_TAG)"
+            else
+              echo "is_latest=false" >> $GITHUB_OUTPUT
+              echo "This is not the latest release (current=$CURRENT_TAG, latest=$LATEST_TAG)"
+            fi
           else
-            echo "is_latest=false" >> $GITHUB_OUTPUT
-            echo "This is not the latest release"
+            if [ "${{ github.event.inputs.tag_as_latest }}" = "true" ]; then
+              echo "is_latest=true" >> $GITHUB_OUTPUT
+              echo "Manual run: tagging as latest (user requested)"
+            else
+              echo "is_latest=false" >> $GITHUB_OUTPUT
+              echo "Manual run: not tagging as latest"
+            fi
           fi
 
   # ──────────────────────────────────────────────────────────
