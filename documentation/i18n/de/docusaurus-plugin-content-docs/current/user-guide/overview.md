@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:37.693Z'
-source_file_mtime: '2026-02-15T18:43:06.194Z'
-source_file_hash: 35e757492e15c229
+translation_last_updated: '2026-02-16T00:13:34.571Z'
+source_file_mtime: '2026-02-15T22:13:48.241Z'
+source_file_hash: 741b3ef6371412ec
 translation_language: de
 source_file_path: user-guide/overview.md
 ---
@@ -63,7 +63,7 @@ Die Benutzeroberfläche ist in mehrere Schlüsselbereiche unterteilt, um ein kla
 
 Die Anwendungssymbolleiste bietet bequemen Zugriff auf wichtige Funktionen und Einstellungen, organisiert für einen effizienten Arbeitsablauf.
 
-![Application toolbar](/img/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Schaltfläche | Beschreibung |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

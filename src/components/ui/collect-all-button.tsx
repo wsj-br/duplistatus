@@ -11,9 +11,51 @@ import { useIntlayer } from 'react-intlayer';
 import { 
   collectFromMultipleServers, 
   getEligibleServers, 
-  formatCollectionSummary,
   isValidUrl
 } from '@/lib/bulk-collection';
+import type { CollectionSummary } from '@/lib/bulk-collection';
+
+function formatCollectionSummaryFromContent(
+  summary: CollectionSummary,
+  content: ReturnType<typeof useIntlayer<'collect-all-button'>>
+): { title: string; description: string; variant: 'default' | 'destructive' } {
+  const {
+    totalServers,
+    successfulCollections,
+    totalProcessed,
+    totalSkipped,
+    totalErrors,
+    failedServerNames,
+  } = summary;
+  const replace = (s: string) =>
+    s
+      .replace('{successfulCollections}', String(successfulCollections))
+      .replace('{totalProcessed}', String(totalProcessed))
+      .replace('{totalSkipped}', String(totalSkipped))
+      .replace('{totalErrors}', String(totalErrors))
+      .replace('{totalServers}', String(totalServers))
+      .replace('{failedServerNames}', failedServerNames.join(', '));
+
+  if (successfulCollections === totalServers) {
+    return {
+      title: content.summaryAllSuccessTitle.value,
+      description: replace(content.summaryAllSuccessDescription.value),
+      variant: 'default',
+    };
+  }
+  if (successfulCollections > 0) {
+    return {
+      title: content.summaryPartialTitle.value,
+      description: replace(content.summaryPartialDescription.value),
+      variant: 'default',
+    };
+  }
+  return {
+    title: content.summaryFailedTitle.value,
+    description: replace(content.summaryFailedDescription.value),
+    variant: 'destructive',
+  };
+}
 
 interface CollectAllButtonProps {
   servers: ServerAddress[];
@@ -128,9 +170,8 @@ export function CollectAllButton({
         onProgressUpdate: (progress) => setCollectionProgress(progress)
       });
 
-      // Show summary toast
-      const { title, description, variant } = formatCollectionSummary(summary);
-      
+      // Show summary toast (using translated content)
+      const { title, description, variant } = formatCollectionSummaryFromContent(summary, content);
       if (showInstructionToast) {
         toast({
           title,

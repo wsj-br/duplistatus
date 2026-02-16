@@ -4,6 +4,9 @@
 # Keep the license in English
 LICENSE.md
 
+# don't translate the readme-header.md file
+readme-header.md
+
 # Don't translate the API reference
 api-reference/*
 

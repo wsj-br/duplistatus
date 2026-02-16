@@ -6,7 +6,7 @@
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
-- pnpm >=10.24.0
+- pnpm >=10.24.0 (packageManager: pnpm@10.29.3)
 - SQLite3
 - Inkscape (for documentation SVG translation and PNG export; required only if you run `translate` or `translate:svg`)
 - bat/batcat (to show a pretty version of the `translate:help`)

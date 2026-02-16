@@ -6,6 +6,7 @@ import {
   getDatabasePath, 
   validateDatabaseFile, 
   createSafetyBackup,
+  runWalCheckpointTruncate,
   closeDatabaseConnection,
   reinitializeDatabaseConnection,
   restoreDatabaseFromSQL
@@ -19,6 +20,25 @@ import fs from 'fs';
 import { getDataDir } from '@/lib/paths';
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+/** Delay after closing DB so the OS releases file handles (e.g. in Docker). */
+const RESTORE_CLOSE_DELAY_MS = 500;
+
+/** Remove -wal and -shm files for a database path so the next open gets a clean WAL state. */
+function removeWalAndShmForPath(dbPath: string): void {
+  const walPath = dbPath + '-wal';
+  const shmPath = dbPath + '-shm';
+  try {
+    if (fs.existsSync(walPath)) fs.unlinkSync(walPath);
+  } catch {
+    // ignore
+  }
+  try {
+    if (fs.existsSync(shmPath)) fs.unlinkSync(shmPath);
+  } catch {
+    // ignore
+  }
+}
 
 export const POST = withCSRF(requireAdmin(async (request: NextRequest, authContext) => {
   // CRITICAL: Capture auth context and session info BEFORE restore
@@ -106,40 +126,27 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
         }
       }
       
-      // Create safety backup of current database
-      safetyBackupPath = createSafetyBackup();
-      
       if (format === 'db') {
+        // Flush WAL into main .db and truncate WAL so on-disk state is consistent
+        // and safety backup / replace do not leave stale -wal/-shm
+        runWalCheckpointTruncate();
+        // Safety backup of current database (main .db is now complete after checkpoint)
+        safetyBackupPath = createSafetyBackup();
+
         // Close current database connection
         closeDatabaseConnection();
-        
-        // Wait a moment to ensure file handles are released
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Replace database file
-        if (fs.existsSync(dbPath)) {
-          // Backup WAL and SHM files if they exist
-          const walPath = dbPath + '-wal';
-          const shmPath = dbPath + '-shm';
-          const walBackup = walPath + '.backup';
-          const shmBackup = shmPath + '.backup';
-          
-          if (fs.existsSync(walPath)) {
-            fs.copyFileSync(walPath, walBackup);
-            fs.unlinkSync(walPath);
-          }
-          if (fs.existsSync(shmPath)) {
-            fs.copyFileSync(shmPath, shmBackup);
-            fs.unlinkSync(shmPath);
-          }
-          
-          fs.copyFileSync(tempFilePath, dbPath);
-          fs.chmodSync(dbPath, 0o644); // Ensure proper permissions
-        } else {
-          fs.copyFileSync(tempFilePath, dbPath);
-          fs.chmodSync(dbPath, 0o644);
-        }
-        
+        // Wait for OS to release file handles (important in Docker/NFS)
+        await new Promise(resolve => setTimeout(resolve, RESTORE_CLOSE_DELAY_MS));
+
+        // Remove WAL/SHM so no stale files remain for the replaced .db
+        removeWalAndShmForPath(dbPath);
+
+        fs.copyFileSync(tempFilePath, dbPath);
+        fs.chmodSync(dbPath, 0o644);
+
+        // Remove any -wal/-shm again so the new connection starts clean
+        removeWalAndShmForPath(dbPath);
+
         // Reinitialize database connection
         reinitializeDatabaseConnection();
         
@@ -152,8 +159,10 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           // Restore from safety backup if integrity check fails
           if (safetyBackupPath && fs.existsSync(safetyBackupPath)) {
             closeDatabaseConnection();
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, RESTORE_CLOSE_DELAY_MS));
+            removeWalAndShmForPath(dbPath);
             fs.copyFileSync(safetyBackupPath, dbPath);
+            removeWalAndShmForPath(dbPath);
             reinitializeDatabaseConnection();
             await ensureDatabaseInitialized();
           }
@@ -175,6 +184,9 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           );
         }
         
+        // Safety backup before SQL restore (in case we need to roll back)
+        safetyBackupPath = createSafetyBackup();
+
         try {
           // Execute SQL restore
           restoreDatabaseFromSQL(sqlContent);
@@ -199,8 +211,10 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
           if (safetyBackupPath && fs.existsSync(safetyBackupPath)) {
             try {
               closeDatabaseConnection();
-              await new Promise(resolve => setTimeout(resolve, 100));
+              await new Promise(resolve => setTimeout(resolve, RESTORE_CLOSE_DELAY_MS));
+              removeWalAndShmForPath(dbPath);
               fs.copyFileSync(safetyBackupPath, dbPath);
+              removeWalAndShmForPath(dbPath);
               reinitializeDatabaseConnection();
               await ensureDatabaseInitialized();
               console.log('[Database Restore] Restored from safety backup after SQL restore failure');
@@ -336,8 +350,10 @@ export const POST = withCSRF(requireAdmin(async (request: NextRequest, authConte
       if (safetyBackupPath && fs.existsSync(safetyBackupPath)) {
         try {
           closeDatabaseConnection();
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, RESTORE_CLOSE_DELAY_MS));
+          removeWalAndShmForPath(dbPath);
           fs.copyFileSync(safetyBackupPath, dbPath);
+          removeWalAndShmForPath(dbPath);
           reinitializeDatabaseConnection();
           await ensureDatabaseInitialized();
         } catch (recoveryError) {

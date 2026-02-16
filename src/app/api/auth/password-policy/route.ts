@@ -20,7 +20,7 @@ export async function GET() {
   } catch (error) {
     console.error('[Password Policy] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve password policy' },
+      { error: 'Failed to retrieve password policy', errorCode: 'POLICY_RETRIEVE_FAILED' },
       { status: 500 }
     );
   }

@@ -1157,8 +1157,8 @@ export function ServerSettingsForm({ serverAddresses }: ServerSettingsFormProps)
                 onCollectionStart={(showInstructionToast) => {
                   if (showInstructionToast) {
                     toast({
-                      title: content.startingCollection,
-                      description: content.collectingBackupLogs,
+                      title: content.startingCollection.value,
+                      description: content.collectingBackupLogs.value,
                       duration: 4000,
                     });
                   }

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:30.665Z'
-source_file_mtime: '2026-02-14T03:28:17.279Z'
-source_file_hash: 34cb441ca91355e0
+translation_last_updated: '2026-02-16T00:13:27.617Z'
+source_file_mtime: '2026-02-15T23:59:02.536Z'
+source_file_hash: d88751514a7cd433
 translation_language: fr
 source_file_path: development/setup.md
 ---
@@ -11,7 +11,7 @@ source_file_path: development/setup.md
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
-- pnpm >=10.24.0
+- pnpm >=10.24.0 (packageManager: pnpm@10.29.3)
 - SQLite3
 - Inkscape (pour la traduction SVG de la documentation et l'export PNG ; requis uniquement si vous exécutez `translate` ou `translate:svg`)
 - bat/batcat (pour afficher une version élégante de `translate:help`)

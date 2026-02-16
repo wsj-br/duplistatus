@@ -22,7 +22,7 @@ This section displays aggregated statistics for all backups.
 
 The cards layout shows the status of the most recent backup log received for each backup.
 
-![Dashboard Overview](/img/duplistatus_dash-cards.png)
+![Dashboard Overview](../assets/duplistatus_dash-cards.png)
 
 - **Server Name**: Name of the Duplicati server (or the alias)
   - Hovering over the **Server Name** will show the server name and note

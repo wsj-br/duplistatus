@@ -87,5 +87,48 @@ export default {
       es: 'Ocurrió un error inesperado durante la recopilación', 
       'pt-BR': 'Ocorreu um erro inesperado durante a coleta' 
     }),
+    // Completion summary toasts (placeholders: {successfulCollections}, {totalProcessed}, {totalSkipped}, {totalErrors}, {totalServers}, {failedServerNames})
+    summaryAllSuccessTitle: t({ 
+      en: 'All Collections Successful', 
+      de: 'Alle Sammlungen erfolgreich', 
+      fr: 'Toutes les collectes ont réussi', 
+      es: 'Todas las recopilaciones exitosas', 
+      'pt-BR': 'Todas as coletas bem-sucedidas' 
+    }),
+    summaryAllSuccessDescription: t({ 
+      en: 'Collected from {successfulCollections} servers. Processed: {totalProcessed}, Skipped: {totalSkipped}, Errors: {totalErrors}', 
+      de: 'Gesammelt von {successfulCollections} Servern. Verarbeitet: {totalProcessed}, Übersprungen: {totalSkipped}, Fehler: {totalErrors}', 
+      fr: 'Collecté depuis {successfulCollections} serveur(s). Traités: {totalProcessed}, Ignorés: {totalSkipped}, Erreurs: {totalErrors}', 
+      es: 'Recopilado de {successfulCollections} servidor(es). Procesados: {totalProcessed}, Omitidos: {totalSkipped}, Errores: {totalErrors}', 
+      'pt-BR': 'Coletado de {successfulCollections} servidor(es). Processados: {totalProcessed}, Ignorados: {totalSkipped}, Erros: {totalErrors}' 
+    }),
+    summaryPartialTitle: t({ 
+      en: 'Partial Collection Success', 
+      de: 'Teilweise Sammlung erfolgreich', 
+      fr: 'Collecte partielle réussie', 
+      es: 'Recopilación parcial exitosa', 
+      'pt-BR': 'Coleta parcial bem-sucedida' 
+    }),
+    summaryPartialDescription: t({ 
+      en: 'Successfully collected from {successfulCollections}/{totalServers} servers. Processed: {totalProcessed}, Skipped: {totalSkipped}, Errors: {totalErrors}. Failed servers: {failedServerNames}', 
+      de: 'Erfolgreich von {successfulCollections}/{totalServers} Servern gesammelt. Verarbeitet: {totalProcessed}, Übersprungen: {totalSkipped}, Fehler: {totalErrors}. Fehlgeschlagene Server: {failedServerNames}', 
+      fr: 'Collecté avec succès depuis {successfulCollections}/{totalServers} serveur(s). Traités: {totalProcessed}, Ignorés: {totalSkipped}, Erreurs: {totalErrors}. Serveurs en échec: {failedServerNames}', 
+      es: 'Recopilado correctamente de {successfulCollections}/{totalServers} servidor(es). Procesados: {totalProcessed}, Omitidos: {totalSkipped}, Errores: {totalErrors}. Servidores fallidos: {failedServerNames}', 
+      'pt-BR': 'Coletado com sucesso de {successfulCollections}/{totalServers} servidor(es). Processados: {totalProcessed}, Ignorados: {totalSkipped}, Erros: {totalErrors}. Servidores com falha: {failedServerNames}' 
+    }),
+    summaryFailedTitle: t({ 
+      en: 'Collection Failed', 
+      de: 'Sammlung fehlgeschlagen', 
+      fr: 'Collecte échouée', 
+      es: 'Recopilación fallida', 
+      'pt-BR': 'Coleta falhou' 
+    }),
+    summaryFailedDescription: t({ 
+      en: 'Failed to collect from all {totalServers} servers: {failedServerNames}. Check individual server configurations.', 
+      de: 'Sammlung von allen {totalServers} Servern fehlgeschlagen: {failedServerNames}. Überprüfen Sie die einzelnen Serverkonfigurationen.', 
+      fr: 'Échec de la collecte depuis tous les {totalServers} serveur(s): {failedServerNames}. Vérifiez les configurations de chaque serveur.', 
+      es: 'Error al recopilar de todos los {totalServers} servidor(es): {failedServerNames}. Verifique las configuraciones de cada servidor.', 
+      'pt-BR': 'Falha ao coletar de todos os {totalServers} servidor(es): {failedServerNames}. Verifique as configurações de cada servidor.' 
+    }),
   },
 } satisfies Dictionary;

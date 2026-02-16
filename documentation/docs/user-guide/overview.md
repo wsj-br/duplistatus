@@ -60,7 +60,7 @@ The user interface is organised into several key sections to provide a clear and
 
 The application toolbar provides convenient access to key functions and settings, organised for efficient workflow.
 
-![Application toolbar](/img/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Button                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

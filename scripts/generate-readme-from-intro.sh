@@ -39,32 +39,11 @@ TEMP_FILE=$(mktemp)
 RELEASE_TEMP_FILE=""
 trap "rm -f $TEMP_FILE $RELEASE_TEMP_FILE" EXIT
 
-# Start building README.md with header
-cat > "$TEMP_FILE" <<EOF
+# Start building README.md with header (from documentation/docs/readme-header.md)
+cat "$PROJECT_ROOT/documentation/docs/readme-header.md" > "$TEMP_FILE"
 
-![duplistatus](documentation/static/img/duplistatus_banner.png)
-
-# **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
-
-![version](https://img.shields.io/badge/version-$VERSION-blue)
-
-<br/>
-
-This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
-
-It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
-
-<br/>
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-<br/>
-
-EOF
+# Add version badge
+sed -i "s/[{]VERSION[}]/$VERSION/g" "$TEMP_FILE"
 
 # Process intro.md and convert links
 # First, skip header lines: empty lines (1-2), "# Welcome to duplistatus" (3), empty line (4), subtitle line (5)

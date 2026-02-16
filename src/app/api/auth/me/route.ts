@@ -31,7 +31,7 @@ export const GET = withCSRF(async (request: NextRequest) => {
     console.error('[Auth] Get current user error:', error);
     
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', errorCode: 'INTERNAL_ERROR' },
       { status: 500 }
     );
   }

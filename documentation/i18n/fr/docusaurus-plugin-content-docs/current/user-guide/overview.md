@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:33.274Z'
-source_file_mtime: '2026-02-15T18:43:06.194Z'
-source_file_hash: 35e757492e15c229
+translation_last_updated: '2026-02-16T00:13:30.224Z'
+source_file_mtime: '2026-02-15T22:13:48.241Z'
+source_file_hash: 741b3ef6371412ec
 translation_language: fr
 source_file_path: user-guide/overview.md
 ---
@@ -63,7 +63,7 @@ L'interface utilisateur est organisée en plusieurs sections clés pour offrir u
 
 La barre d'outils de l'application fournit un accès pratique aux fonctions et paramètres clés, organisés pour un flux de travail efficace.
 
-![Application toolbar](/img/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Bouton                                                                                                                                           | Description                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

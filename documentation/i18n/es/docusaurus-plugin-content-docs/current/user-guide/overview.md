@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:42.003Z'
-source_file_mtime: '2026-02-15T18:43:06.194Z'
-source_file_hash: 35e757492e15c229
+translation_last_updated: '2026-02-16T00:13:38.793Z'
+source_file_mtime: '2026-02-15T22:13:48.241Z'
+source_file_hash: 741b3ef6371412ec
 translation_language: es
 source_file_path: user-guide/overview.md
 ---
@@ -63,7 +63,7 @@ La interfaz de usuario está organizada en varias secciones clave para proporcio
 
 La barra de herramientas de la aplicación proporciona acceso conveniente a funciones y configuración clave, organizada para un flujo de trabajo eficiente.
 
-![Application toolbar](/img/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Botón | Descripción |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

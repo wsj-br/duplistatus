@@ -157,5 +157,26 @@ export default {
       es: 'Ocurrió un error inesperado', 
       'pt-BR': 'Ocorreu um erro inesperado' 
     }),
+    credentialsRequired: t({ 
+      en: 'Username and password are required', 
+      de: 'Benutzername und Passwort sind erforderlich', 
+      fr: 'Le nom d\'utilisateur et le mot de passe sont requis', 
+      es: 'Se requieren nombre de usuario y contraseña', 
+      'pt-BR': 'Nome de usuário e senha são obrigatórios' 
+    }),
+    databaseNotReady: t({ 
+      en: 'Database is not ready. Please try again in a moment.', 
+      de: 'Datenbank ist nicht bereit. Bitte versuchen Sie es in Kürze erneut.', 
+      fr: 'La base de données n\'est pas prête. Veuillez réessayer dans un instant.', 
+      es: 'La base de datos no está lista. Por favor, inténtelo de nuevo en un momento.', 
+      'pt-BR': 'O banco de dados não está pronto. Por favor, tente novamente em um momento.' 
+    }),
+    internalServerError: t({ 
+      en: 'Internal server error', 
+      de: 'Interner Serverfehler', 
+      fr: 'Erreur interne du serveur', 
+      es: 'Error interno del servidor', 
+      'pt-BR': 'Erro interno do servidor' 
+    }),
   },
 } satisfies Dictionary;

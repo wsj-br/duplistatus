@@ -1858,6 +1858,23 @@ export function createSafetyBackup(): string {
 }
 
 /**
+ * Run WAL checkpoint (TRUNCATE) to flush all WAL content into the main database file
+ * and truncate/remove the WAL file. Call before close + file replace on restore so
+ * the on-disk .db is consistent and no stale -wal/-shm remain.
+ */
+export function runWalCheckpointTruncate(): void {
+  const instance = (global.__dbInstance && global.__dbInstance.open) ? global.__dbInstance : db;
+  if (!instance || !instance.open) {
+    return;
+  }
+  try {
+    instance.pragma('wal_checkpoint(TRUNCATE)');
+  } catch (error) {
+    warnWithTimestamp('[Database] WAL checkpoint before restore failed:', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
  * Close database connection (for restore operations)
  */
 export function closeDatabaseConnection(): void {

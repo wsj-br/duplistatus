@@ -47,7 +47,7 @@ export default {
     }),
     overdueBackups: t({ 
       en: 'Overdue Backups', 
-      de: 'Überfällige Sicherungen', 
+      de: 'Überfällige Backups', 
       fr: 'Sauvegardes en retard', 
       es: 'Backups retrasados', 
       'pt-BR': 'Backups atrasados' 

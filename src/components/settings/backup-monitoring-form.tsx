@@ -1397,8 +1397,8 @@ export function BackupMonitoringForm({ backupSettings }: BackupMonitoringFormPro
                   onCollectionStart={(showInstructionToast) => {
                     if (showInstructionToast) {
                       toast({
-                        title: content.startingCollection,
-                        description: content.collectingBackupLogs,
+                        title: content.startingCollection.value,
+                        description: content.collectingBackupLogs.value,
                         duration: 4000,
                       });
                     }

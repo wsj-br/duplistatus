@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:34.998Z'
-source_file_mtime: '2026-02-14T03:28:17.279Z'
-source_file_hash: 34cb441ca91355e0
+translation_last_updated: '2026-02-16T00:13:31.918Z'
+source_file_mtime: '2026-02-15T23:59:02.536Z'
+source_file_hash: d88751514a7cd433
 translation_language: de
 source_file_path: development/setup.md
 ---
@@ -11,11 +11,11 @@ source_file_path: development/setup.md
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
-- pnpm >=10.24.0
+- pnpm >=10.24.0 (packageManager: pnpm@10.29.3)
 - SQLite3
-- Inkscape (für Dokumentations-SVG-Übersetzung und PNG-Export; nur erforderlich, wenn Sie `translate` oder `translate:svg` ausführen)
-- bat/batcat (um eine schöne Version von `translate:help` anzuzeigen)
-- direnv (zum automatischen Laden der `.env*`-Dateien)
+- Inkscape (für SVG-Übersetzung und PNG-Exportieren in der Dokumentation; erforderlich nur, wenn Sie `translate` oder `translate:svg` ausführen)
+- bat/batcat (um eine ansprechende Version der `translate:help` einzublenden)
+- direnv (um die `.env*`-Dateien automatisch zu laden)
 
 ## Schritte {#steps}
 

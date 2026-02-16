@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:41.876Z'
-source_file_mtime: '2026-02-15T19:53:12.345Z'
-source_file_hash: be758d204cdf9a84
+translation_last_updated: '2026-02-16T00:13:38.661Z'
+source_file_mtime: '2026-02-15T22:15:04.119Z'
+source_file_hash: f6c6ca4ff4f10cd7
 translation_language: es
 source_file_path: user-guide/dashboard.md
 ---
@@ -27,7 +27,7 @@ Esta sección muestra estadísticas agregadas para todas las copias de seguridad
 
 El diseño de tarjetas muestra el estado del registro de backup más reciente recibido para cada backup.
 
-![Dashboard Overview](/img/duplistatus_dash-cards.png)
+![Dashboard Overview](../assets/duplistatus_dash-cards.png)
 
 - **Nombre del servidor**: Nombre del servidor Duplicati (o el alias)
   - Al pasar el cursor sobre el **Nombre del servidor** se mostrará el nombre del servidor y la nota

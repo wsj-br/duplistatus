@@ -388,7 +388,11 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       if (!csrfResponse.ok) {
         throw new Error('Failed to get CSRF token');
       }
-      const { csrfToken } = await csrfResponse.json();
+      const data = await csrfResponse.json();
+      const csrfToken = data.token ?? data.csrfToken;
+      if (!csrfToken) {
+        throw new Error('Failed to get CSRF token');
+      }
       
       // Download backup
       const backupResponse = await fetch(`/api/database/backup?format=${backupFormat}`, {
@@ -463,7 +467,11 @@ export function DatabaseMaintenanceForm({ isAdmin }: DatabaseMaintenanceFormProp
       if (!csrfResponse.ok) {
         throw new Error('Failed to get CSRF token');
       }
-      const { csrfToken } = await csrfResponse.json();
+      const data = await csrfResponse.json();
+      const csrfToken = data.token ?? data.csrfToken;
+      if (!csrfToken) {
+        throw new Error('Failed to get CSRF token');
+      }
       
       // Create form data
       const formData = new FormData();

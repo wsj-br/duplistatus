@@ -29,6 +29,7 @@ export default {
       cancel: t({ en: 'Cancel', de: 'Abbrechen', fr: 'Annuler', es: 'Cancelar', 'pt-BR': 'Cancelar' }),
       logoutSuccess: t({ en: 'Logged out successfully', de: 'Erfolgreich abgemeldet', fr: 'Déconnecté avec succès', es: 'Sesión cerrada exitosamente', 'pt-BR': 'Sessão encerrada com sucesso' }),
       logoutFailed: t({ en: 'Failed to logout', de: 'Abmelden fehlgeschlagen', fr: 'Échec de la déconnexion', es: 'Falló cerrar sesión', 'pt-BR': 'Falha ao sair' }),
+      noActiveSession: t({ en: 'No active session', de: 'Keine aktive Sitzung', fr: 'Aucune session active', es: 'No hay sesión activa', 'pt-BR': 'Nenhuma sessão ativa' }),
     },
     changePassword: {
       title: t({ en: 'Change Password', de: 'Passwort ändern', fr: 'Changer le mot de passe', es: 'Cambiar contraseña', 'pt-BR': 'Alterar senha' }),
@@ -52,6 +53,11 @@ export default {
       changeFailed: t({ en: 'Failed to change password', de: 'Passwortänderung fehlgeschlagen', fr: 'Échec du changement de mot de passe', es: 'Falló cambiar contraseña', 'pt-BR': 'Falha ao alterar senha' }),
       currentPasswordIncorrect: t({ en: 'Current password is incorrect', de: 'Aktuelles Passwort ist falsch', fr: 'Le mot de passe actuel est incorrect', es: 'La contraseña actual es incorrecta', 'pt-BR': 'A senha atual está incorreta' }),
       passwordsDoNotMatch: t({ en: 'Passwords do not match', de: 'Passwörter stimmen nicht überein', fr: 'Les mots de passe ne correspondent pas', es: 'Las contraseñas no coinciden', 'pt-BR': 'As senhas não correspondem' }),
+      newPasswordRequired: t({ en: 'New password is required', de: 'Neues Passwort ist erforderlich', fr: 'Le nouveau mot de passe est requis', es: 'Se requiere una nueva contraseña', 'pt-BR': 'Nova senha é obrigatória' }),
+      policyNotMet: t({ en: 'New password does not meet policy requirements', de: 'Das neue Passwort erfüllt nicht die Anforderungen', fr: 'Le nouveau mot de passe ne respecte pas les exigences', es: 'La nueva contraseña no cumple con los requisitos', 'pt-BR': 'A nova senha não atende aos requisitos' }),
+      userNotFound: t({ en: 'User not found', de: 'Benutzer nicht gefunden', fr: 'Utilisateur introuvable', es: 'Usuario no encontrado', 'pt-BR': 'Usuário não encontrado' }),
+      newPasswordSameAsCurrent: t({ en: 'New password must be different from current password', de: 'Das neue Passwort muss sich vom aktuellen Passwort unterscheiden', fr: 'Le nouveau mot de passe doit être différent du mot de passe actuel', es: 'La nueva contraseña debe ser diferente de la contraseña actual', 'pt-BR': 'A nova senha deve ser diferente da senha atual' }),
+      internalError: t({ en: 'Internal server error', de: 'Interner Serverfehler', fr: 'Erreur interne du serveur', es: 'Error interno del servidor', 'pt-BR': 'Erro interno do servidor' }),
     },
     register: {
       title: t({ en: 'Register Account', de: 'Konto registrieren', fr: 'Créer un compte', es: 'Registrar cuenta', 'pt-BR': 'Registrar conta' }),
@@ -117,5 +123,6 @@ export default {
       useBackupCode: t({ en: 'Use Backup Code', de: 'Backup-Code verwenden', fr: 'Utiliser le code de sauvegarde', es: 'Usar código de backup', 'pt-BR': 'Usar código de backup' }),
       resendCode: t({ en: 'Resend Code', de: 'Code erneut senden', fr: 'Renvoyer le code', es: 'Reenviar código', 'pt-BR': 'Reenviar código' }),
     },
+    passwordPolicyFailed: t({ en: 'Failed to retrieve password policy', de: 'Passwortrichtlinie konnte nicht geladen werden', fr: 'Échec de la récupération de la politique de mot de passe', es: 'Error al obtener la política de contraseñas', 'pt-BR': 'Falha ao obter política de senha' }),
   },
 } satisfies Dictionary;

@@ -185,10 +185,25 @@ export function ChangePasswordModal({ open, onOpenChange, required = false }: Ch
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || auth.changePassword.changeFailed.value);
-        if (data.validationErrors && Array.isArray(data.validationErrors)) {
-          setError(data.validationErrors.join(', '));
-        }
+        const message = (() => {
+          switch (data.errorCode) {
+            case 'NEW_PASSWORD_REQUIRED':
+              return auth.changePassword.newPasswordRequired.value;
+            case 'POLICY_NOT_MET':
+              return auth.changePassword.policyNotMet.value;
+            case 'USER_NOT_FOUND':
+              return auth.changePassword.userNotFound.value;
+            case 'CURRENT_PASSWORD_INCORRECT':
+              return auth.changePassword.currentPasswordIncorrect.value;
+            case 'NEW_PASSWORD_SAME_AS_CURRENT':
+              return auth.changePassword.newPasswordSameAsCurrent.value;
+            case 'INTERNAL_ERROR':
+              return auth.changePassword.internalError.value;
+            default:
+              return data.error || auth.changePassword.changeFailed.value;
+          }
+        })();
+        setError(message);
         setLoading(false);
         return;
       }

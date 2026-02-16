@@ -216,18 +216,17 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
     lastLineCountRef.current = 0;
   }, [loadLogs]);
 
-  // Auto-scroll to bottom when auto-scroll is toggled on (but not on every logData change)
+  // Auto-scroll to bottom only when auto-scroll is toggled on or selected file changes.
+  // Do NOT depend on logData: scrolling on new log lines is handled in loadLogs (hasNewLines).
   useEffect(() => {
     if (autoScroll && scrollContainerRef.current && logData && isCurrentFile(selectedFile)) {
-      // Only scroll when auto-scroll is first enabled, not on every render
-      // Actual new data scrolling is handled in loadLogs when new lines are detected
       requestAnimationFrame(() => {
         if (scrollContainerRef.current) {
           scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
         }
       });
     }
-  }, [autoScroll, selectedFile, isCurrentFile, logData]); // Include isCurrentFile and logData for proper dependency tracking
+  }, [autoScroll, selectedFile, isCurrentFile]); // Intentionally omit logData so we don't scroll on every poll, only when new lines arrive (handled in loadLogs)
 
   // Polling for current log file when auto-scroll is enabled
   useEffect(() => {

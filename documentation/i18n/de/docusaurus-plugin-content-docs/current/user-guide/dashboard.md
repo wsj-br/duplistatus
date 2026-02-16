@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:37.559Z'
-source_file_mtime: '2026-02-15T19:53:12.345Z'
-source_file_hash: be758d204cdf9a84
+translation_last_updated: '2026-02-16T00:13:34.441Z'
+source_file_mtime: '2026-02-15T22:15:04.119Z'
+source_file_hash: f6c6ca4ff4f10cd7
 translation_language: de
 source_file_path: user-guide/dashboard.md
 ---
@@ -27,7 +27,7 @@ Dieser Abschnitt zeigt aggregierte Statistiken für alle Sicherungen an.
 
 Das Kartenlayout zeigt den Status des zuletzt empfangenen Sicherungsprotokolls für jede Sicherung.
 
-![Dashboard Overview](/img/duplistatus_dash-cards.png)
+![Dashboard Overview](../assets/duplistatus_dash-cards.png)
 
 - **Servername**: Name des Duplicati-Servers (oder des Alias)
   - Wenn Sie mit der Maus über den **Servernamen** fahren, werden der Servername und der Hinweis angezeigt

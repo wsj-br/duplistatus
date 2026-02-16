@@ -1017,6 +1017,9 @@ export interface LoginPageContent {
   defaultLoginCredentialsAre: string;
   loading: string;
   unexpectedError: string;
+  credentialsRequired: string;
+  databaseNotReady: string;
+  internalServerError: string;
 }
 
 export interface SettingsContent {
@@ -1301,6 +1304,7 @@ export interface AuthContent {
     cancel: string;
     logoutSuccess: string;
     logoutFailed: string;
+    noActiveSession: string;
   };
   changePassword: {
     title: string;
@@ -1324,7 +1328,13 @@ export interface AuthContent {
     changeFailed: string;
     currentPasswordIncorrect: string;
     passwordsDoNotMatch: string;
+    newPasswordRequired: string;
+    policyNotMet: string;
+    userNotFound: string;
+    newPasswordSameAsCurrent: string;
+    internalError: string;
   };
+  passwordPolicyFailed: string;
   register: {
     title: string;
     subtitle: string;

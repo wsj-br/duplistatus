@@ -164,7 +164,23 @@ function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || content.loginFailed);
+        const message = (() => {
+          switch (data.errorCode) {
+            case 'REQUIRED_CREDENTIALS':
+              return content.credentialsRequired.value;
+            case 'INVALID_CREDENTIALS':
+              return content.invalidCredentials.value;
+            case 'ACCOUNT_LOCKED':
+              return content.accountLocked.value;
+            case 'DATABASE_NOT_READY':
+              return content.databaseNotReady.value;
+            case 'INTERNAL_ERROR':
+              return content.internalServerError.value;
+            default:
+              return data.error || content.loginFailed.value;
+          }
+        })();
+        setError(message);
         setLoading(false);
         return;
       }
@@ -189,7 +205,7 @@ function LoginForm() {
       const targetUrl = validateRedirectUrl(redirectUrl);
       window.location.href = targetUrl;
     } catch {
-      setError(content.unexpectedError);
+      setError(content.unexpectedError.value);
       setLoading(false);
     }
   };

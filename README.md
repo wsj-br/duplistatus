@@ -1,15 +1,22 @@
 
 ![duplistatus](documentation/static/img/duplistatus_banner.png)
 
-# **duplistatus** - Another [Duplicati](https://github.com/duplicati/duplicati) Dashboard
+# duplistatus -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers 
 
 ![version](https://img.shields.io/badge/version-1.3.1-blue)
 
 <br/>
 
-This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, execution, metrics, and performance across multiple servers.
+This web application monitors and visualises backup operations from [Duplicati](https://github.com/duplicati/duplicati). **duplistatus** provides a comprehensive dashboard to track backup statuses, notify overdue backups, job history,
+metrics, and performance across multiple servers.
 
-It also provides API endpoints that can be integrated with third-party tools such as [Homepage](https://gethomepage.dev/).
+Easy to deploy with Docker, Podman, or Portainer and available in 5 languages (English, German, French, Spanish, and Portuguese), with full documentation in each language.
+
+[More information](https://wsj-br.github.io/duplistatus)        |
+[Mehr informationen](https://wsj-br.github.io/duplistatus/de/)  | 
+[Plus d'informations](https://wsj-br.github.io/duplistatus/fr/) | 
+[Más información](https://wsj-br.github.io/duplistatus/es/)     |
+[Mais informações](https://wsj-br.github.io/duplistatus/pt-BR/)
 
 <br/>
 
@@ -37,12 +44,11 @@ It also provides API endpoints that can be integrated with third-party tools suc
 
 <br/>
 
-
 ## Features
 
 - **Quick Setup**: Simple containerised deployment, with images available on Docker Hub and GitHub.
 - **Unified Dashboard**: View backup status, history, and details for all servers in one place.
-- **Overdue Monitoring**: Automated checking and alerting for overdue scheduled backups.
+- **Backup Monitoring**: Automated checking and alerting for overdue scheduled backups.
 - **Data Visualisation & Logs**: Interactive charts and automatic log collection from Duplicati servers.
 - **Notifications & Alerts**: Integrated NTFY and SMTP email support for backup alerts, including overdue backup notifications.
 - **User Access Control & Security**: Secure authentication system with role-based access control (Admin/User roles), configurable password policies, account lockout protection, and comprehensive user management.
@@ -136,5 +142,5 @@ For detailed migration information, including migration steps, monitoring, and r
 
 The project is licensed under the [Apache License 2.0](https://wsj-br.github.io/duplistatus/LICENSE).   
 
-**Copyright © 2025 Waldemar Scudeller Jr.**
+**Copyright © 2026 Waldemar Scudeller Jr.**
 

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:46.348Z'
-source_file_mtime: '2026-02-15T18:43:06.194Z'
-source_file_hash: 35e757492e15c229
+translation_last_updated: '2026-02-16T00:13:43.072Z'
+source_file_mtime: '2026-02-15T22:13:48.241Z'
+source_file_hash: 741b3ef6371412ec
 translation_language: pt-BR
 source_file_path: user-guide/overview.md
 ---
@@ -63,7 +63,7 @@ A interface do usuário é organizada em várias seções principais para propor
 
 A barra de ferramentas da aplicação fornece acesso conveniente às funções e configurações principais, organizada para um fluxo de trabalho eficiente.
 
-![Application toolbar](/img/duplistatus_toolbar.png)
+![Application toolbar](../assets/duplistatus_toolbar.png)
 
 | Botão                                                                                                                                           | Descrição                                                                                                                                                                  |
 |--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

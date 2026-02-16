@@ -89,7 +89,7 @@ const response = await fetch('/api/servers/server-id', {
     "password": "password123"
   }
   ```
-- **Response**:
+- **Response** (success):
   ```json
   {
     "success": true,
@@ -98,13 +98,16 @@ const response = await fetch('/api/servers/server-id', {
       "username": "admin",
       "isAdmin": true,
       "mustChangePassword": false
-    }
+    },
+    "keyChanged": false
   }
   ```
-- **Error Responses**:
-  - `400`: Missing username or password
-  - `401`: Invalid username or password
-  - `403`: Account locked due to too many failed login attempts (includes `lockedUntil` and `minutesRemaining`)
+- **Error Responses**: All error responses include `error` (English message) and `errorCode` (stable code for client-side translation).
+  - `400`: Missing username or password — `errorCode: "REQUIRED_CREDENTIALS"`
+  - `401`: Invalid username or password — `errorCode: "INVALID_CREDENTIALS"`
+  - `403`: Account locked due to too many failed login attempts — `errorCode: "ACCOUNT_LOCKED"` (includes `lockedUntil`, `minutesRemaining`)
+  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
+  - `503`: Database not ready — `errorCode: "DATABASE_NOT_READY"`
 - **Notes**:
   - Account is locked after 5 failed login attempts for 15 minutes
   - Failed login attempts are tracked and logged
@@ -117,16 +120,17 @@ const response = await fetch('/api/servers/server-id', {
 - **Method**: POST
 - **Description**: Logs out the current user and destroys their session.
 - **Authentication**: Requires valid session and CSRF token
-- **Response**:
+- **Response** (success):
   ```json
   {
     "success": true,
-    "message": "Logged out successfully"
+    "message": "Logged out successfully",
+    "successCode": "LOGGED_OUT"
   }
   ```
-- **Error Responses**:
-  - `400`: No active session
-  - `500`: Internal server error
+- **Error Responses**: Include `error` and `errorCode` for client-side translation.
+  - `400`: No active session — `errorCode: "NO_ACTIVE_SESSION"`
+  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
 - **Notes**:
   - Session cookie is cleared in the response
   - Logout is logged to audit log
@@ -156,8 +160,8 @@ const response = await fetch('/api/servers/server-id', {
     "user": null
   }
   ```
-- **Error Responses**:
-  - `500`: Internal server error
+- **Error Responses**: Include `error` and `errorCode` for client-side translation.
+  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
 - **Notes**:
   - Can be called without a logged-in user (returns `authenticated: false`)
   - Useful for checking authentication status on page load
@@ -176,18 +180,21 @@ const response = await fetch('/api/servers/server-id', {
   ```
   - `currentPassword`: Optional if `mustChangePassword` is true, required otherwise
   - `newPassword`: Required, must meet password policy requirements
-- **Response**:
+- **Response** (success):
   ```json
   {
     "success": true,
-    "message": "Password changed successfully"
+    "message": "Password changed successfully",
+    "successCode": "PASSWORD_CHANGED"
   }
   ```
-- **Error Responses**:
-  - `400`: Missing new password, password policy violation, or new password same as current
-  - `401`: Current password is incorrect (when required)
-  - `404`: User not found
-  - `500`: Internal server error
+- **Error Responses**: Include `error` and `errorCode` for client-side translation. Policy violation may include `validationErrors` (array of strings).
+  - `400`: Missing new password — `errorCode: "NEW_PASSWORD_REQUIRED"`
+  - `400`: Password policy violation — `errorCode: "POLICY_NOT_MET"` (may include `validationErrors`)
+  - `400`: New password same as current — `errorCode: "NEW_PASSWORD_SAME_AS_CURRENT"`
+  - `401`: Current password is incorrect — `errorCode: "CURRENT_PASSWORD_INCORRECT"`
+  - `404`: User not found — `errorCode: "USER_NOT_FOUND"`
+  - `500`: Internal server error — `errorCode: "INTERNAL_ERROR"`
 - **Notes**:
   - New password must meet password policy requirements (length, complexity, etc.)
   - If `mustChangePassword` flag is set, current password verification is skipped
@@ -227,13 +234,25 @@ const response = await fetch('/api/servers/server-id', {
     "requireSpecialChars": false
   }
   ```
-- **Error Responses**:
-  - `500`: Internal server error
+- **Error Responses**: Include `error` and `errorCode` for client-side translation.
+  - `500`: Failed to retrieve password policy — `errorCode: "POLICY_RETRIEVE_FAILED"`
 - **Notes**:
   - Public endpoint, no authentication required
   - Used by frontend components to display password requirements and validate passwords before submission
   - Policy is configured via environment variables (`PWD_ENFORCE`, `PWD_MIN_LEN`)
   - Default password check (preventing use of default admin password) is always enforced regardless of policy settings
+
+### Auth API error and success codes (i18n) {#auth-api-error-and-success-codes-i18n}
+
+Auth endpoints return a stable `errorCode` (and, on success, `successCode`) in addition to the human-readable `error` or `message` field. The `error` and `message` values are in English. Clients should use the codes to look up localized strings so that the UI displays messages in the user's selected language.
+
+| Endpoint | Success code | Error codes |
+|----------|--------------|-------------|
+| `/api/auth/login` | — | `REQUIRED_CREDENTIALS`, `INVALID_CREDENTIALS`, `ACCOUNT_LOCKED`, `DATABASE_NOT_READY`, `INTERNAL_ERROR` |
+| `/api/auth/logout` | `LOGGED_OUT` | `NO_ACTIVE_SESSION`, `INTERNAL_ERROR` |
+| `/api/auth/me` | — | `INTERNAL_ERROR` |
+| `/api/auth/change-password` | `PASSWORD_CHANGED` | `NEW_PASSWORD_REQUIRED`, `POLICY_NOT_MET`, `USER_NOT_FOUND`, `CURRENT_PASSWORD_INCORRECT`, `NEW_PASSWORD_SAME_AS_CURRENT`, `INTERNAL_ERROR` |
+| `/api/auth/password-policy` | — | `POLICY_RETRIEVE_FAILED` |
 
 ### Error Responses {#error-responses}
 - `401 Unauthorized`: Invalid or missing session, expired session, or CSRF token validation failed

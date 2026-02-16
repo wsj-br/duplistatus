@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-15T20:57:33.143Z'
-source_file_mtime: '2026-02-15T19:53:12.345Z'
-source_file_hash: be758d204cdf9a84
+translation_last_updated: '2026-02-16T00:13:30.099Z'
+source_file_mtime: '2026-02-15T22:15:04.119Z'
+source_file_hash: f6c6ca4ff4f10cd7
 translation_language: fr
 source_file_path: user-guide/dashboard.md
 ---
@@ -27,7 +27,7 @@ Cette section affiche les statistiques agrégées pour toutes les sauvegardes.
 
 La disposition des cartes affiche le statut du journal de sauvegarde le plus récent reçu pour chaque sauvegarde.
 
-![Dashboard Overview](/img/duplistatus_dash-cards.png)
+![Dashboard Overview](../assets/duplistatus_dash-cards.png)
 
 - **Nom du serveur** : Nom du serveur Duplicati (ou l'alias)
   - Le survol du **Nom du serveur** affichera le nom du serveur et la note

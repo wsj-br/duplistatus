@@ -1,5 +1,4 @@
 
-
 # Welcome to duplistatus {#welcome-to-duplistatus}
 
 **duplistatus** -  Monitor Multiple [Duplicati's](https://github.com/duplicati/duplicati) Servers from a Single Dashboard
