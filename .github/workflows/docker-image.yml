@@ -196,30 +196,29 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # ── Compute tags ──
-      # Always tag with version (e.g. v1.3.1). When is_latest, also tag as latest.
+      # Always tag with version (e.g. 1.3.1). When is_latest, also tag as latest.
       - name: Compute image tags
         id: tags
         run: |
           VERSION="${{ needs.prepare.outputs.version }}"
-          VERSION_TAG="v${VERSION}"
           IS_LATEST="${{ needs.prepare.outputs.is_latest }}"
 
           # GHCR: version tag always, latest when requested or when release is latest
-          GHCR_TAGS="-t ghcr.io/${{ github.repository }}:${VERSION_TAG}"
+          GHCR_TAGS="-t ghcr.io/${{ github.repository }}:${VERSION}"
           if [ "$IS_LATEST" = "true" ]; then
             GHCR_TAGS="${GHCR_TAGS} -t ghcr.io/${{ github.repository }}:latest"
           fi
 
           # Docker Hub: same
           DH_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/duplistatus"
-          DH_TAGS="-t ${DH_IMAGE}:${VERSION_TAG}"
+          DH_TAGS="-t ${DH_IMAGE}:${VERSION}"
           if [ "$IS_LATEST" = "true" ]; then
             DH_TAGS="${DH_TAGS} -t ${DH_IMAGE}:latest"
           fi
 
           echo "ghcr_tags=${GHCR_TAGS}" >> $GITHUB_OUTPUT
           echo "dh_tags=${DH_TAGS}" >> $GITHUB_OUTPUT
-          echo "version_tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "version_tag=${VERSION}" >> $GITHUB_OUTPUT
 
       # ── Create and push multi-arch manifests ──
       - name: Create multi-arch manifest (GHCR)
