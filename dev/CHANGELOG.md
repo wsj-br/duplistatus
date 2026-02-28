@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.x]
 
 ### Security
+- **Dependency vulnerabilities**: Fixed 4 high-severity vulnerabilities by adding pnpm overrides:
+  - `minimatch >=3.1.4`: Fixes GHSA-3ppc-4f35-3m26 (ReDoS via repeated wildcards), GHSA-7r86-cg39-jmmj (combinatorial backtracking), and GHSA-23c5-xmqv-rm74 (nested extglobs backtracking) in documentation>@docusaurus/core>serve-handler>minimatch.
+  - `serialize-javascript >=7.0.3`: Fixes GHSA-5c6j-r48x-rmvq (RCE via RegExp.flags and Date.prototype.toISOString()) in webpack>terser-webpack-plugin>serialize-javascript.
 - **API authentication**: Made authentication required on endpoints that previously had optional auth: `/api/backups/collect`, `/api/backups/sync-schedule`, `/api/cron-config` (POST), `/api/notifications/check-overdue`, `/api/notifications/clear-overdue-timestamps`. These endpoints now require a valid session and CSRF token. Improves accountability and reduces risk of unauthenticated abuse.
 
 ### Fixed
