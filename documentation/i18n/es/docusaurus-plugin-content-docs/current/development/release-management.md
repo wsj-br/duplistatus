@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-16T02:21:38.864Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: fae6b911d504b61b
+translation_last_updated: '2026-03-01T00:16:55.690Z'
+source_file_mtime: '2026-03-01T00:08:29.885Z'
+source_file_hash: 717b94b8fdfe2364
 translation_language: es
 source_file_path: development/release-management.md
 ---
@@ -20,11 +20,11 @@ El proyecto sigue Versionamiento Semántico (SemVer) con el formato `MAJOR.MINOR
 Antes de lanzar una nueva versión, asegúrese de haber completado lo siguiente:
 
 - [ ] Todos los cambios están confirmados e insertados en la rama `vMAJOR.MINOR.x`.
-- [ ] El número de versión se actualiza en `package.json` (use `scripts/update-version.sh` para sincronizarlo en todos los archivos).
-- [ ] Todos los tests pasan (en modo desarrollo, local, docker y podman).
-- [ ] Inicie un contenedor Docker con `pnpm docker-up` y ejecute `scripts/compare-versions.sh` para verificar la consistencia de versiones entre el entorno de desarrollo y el contenedor Docker (requiere que el contenedor Docker esté en ejecución). Este script compara versiones de SQLite solo por versión principal (p. ej., 3.45.1 vs 3.51.1 se consideran compatibles) y compara las versiones de Node, npm y duplistatus exactamente.
-- [ ] La documentación está actualizada, actualice las capturas de pantalla (use `pnpm take-screenshots`)
-- [ ] Las notas de la versión están preparadas en `documentation/docs/release-notes/VERSION.md`.
+- [ ] El número de versión se actualiza en `package.json` (utilice `scripts/update-version.sh` para sincronizarlo en todos los archivos).
+- [ ] Todas las pruebas pasan (en modo desarrollo, local, docker y podman). 
+- [ ] Inicie un contenedor Docker con `pnpm docker:up` y ejecute `scripts/compare-versions.sh` para verificar la consistencia de versiones entre el entorno de desarrollo y el contenedor Docker (requiere que el contenedor Docker esté en ejecución). Este script compara versiones de SQLite solo por versión principal (por ejemplo, 3.45.1 frente a 3.51.1 se consideran compatibles), y compara exactamente las versiones de Node, npm y duplistatus.
+- [ ] La documentación está actualizada, actualice las capturas de pantalla (utilice `pnpm take-screenshots`)
+- [ ] Las notas de la versión se preparan en `documentation/docs/release-notes/VERSION.md`.
 - [ ] Ejecute `scripts/generate-readme-from-intro.sh` para actualizar `README.md` con la nueva versión y cualquier cambio de `documentation/docs/intro.md`. Este script también genera automáticamente `README_dockerhub.md` y `RELEASE_NOTES_github_VERSION.md`.
 
 ## Resumen del Proceso de Lanzamiento {#release-process-overview}

@@ -226,7 +226,8 @@ export function ApplicationLogsViewer({}: ApplicationLogsViewerProps) {
         }
       });
     }
-  }, [autoScroll, selectedFile, isCurrentFile]); // Intentionally omit logData so we don't scroll on every poll, only when new lines arrive (handled in loadLogs)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- logData omitted so we don't scroll on every poll
+  }, [autoScroll, selectedFile, isCurrentFile]);
 
   // Polling for current log file when auto-scroll is enabled
   useEffect(() => {

@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-16T02:21:30.287Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: fae6b911d504b61b
+translation_last_updated: '2026-03-01T00:16:11.463Z'
+source_file_mtime: '2026-03-01T00:08:29.885Z'
+source_file_hash: 717b94b8fdfe2364
 translation_language: fr
 source_file_path: development/release-management.md
 ---
@@ -22,7 +22,7 @@ Avant de publier une nouvelle version, assurez-vous d'avoir terminé les éléme
 - [ ] Tous les changements sont validés et poussés vers la branche `vMAJOR.MINOR.x`.
 - [ ] Le numéro de version est mis à jour dans `package.json` (utilisez `scripts/update-version.sh` pour le synchroniser dans tous les fichiers).
 - [ ] Tous les tests réussissent (en mode développement, local, docker et podman).
-- [ ] Démarrer un conteneur Docker avec `pnpm docker-up` et exécuter `scripts/compare-versions.sh` pour vérifier la cohérence des versions entre l'environnement de développement et le conteneur Docker (nécessite que le conteneur Docker soit en cours d'exécution). Ce script compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 et 3.51.1 sont considérées comme compatibles) et compare exactement les versions de Node, npm et duplistatus.
+- [ ] Démarrez un conteneur Docker avec `pnpm docker:up` et exécutez `scripts/compare-versions.sh` pour vérifier la cohérence des versions entre l'environnement de développement et le conteneur Docker (nécessite que le conteneur Docker soit en cours d'exécution). Ce script compare les versions SQLite par version majeure uniquement (par exemple, 3.45.1 et 3.51.1 sont considérées comme compatibles) et compare exactement les versions de Node, npm et duplistatus.
 - [ ] La documentation est à jour, mettez à jour les captures d'écran (utilisez `pnpm take-screenshots`)
 - [ ] Les notes de version sont préparées dans `documentation/docs/release-notes/VERSION.md`.
 - [ ] Exécutez `scripts/generate-readme-from-intro.sh` pour mettre à jour `README.md` avec la nouvelle version et les modifications de `documentation/docs/intro.md`. Ce script génère également automatiquement `README_dockerhub.md` et `RELEASE_NOTES_github_VERSION.md`.

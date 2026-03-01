@@ -85,6 +85,23 @@ const config: Config = {
   plugins: [
     '@docusaurus/theme-mermaid',
     'docusaurus-plugin-image-zoom',
+    // Suppress webpack "Critical dependency" warning from vscode-languageserver-types (transitive from intlayer-editor)
+    function suppressVscodeLspWarning() {
+      return {
+        name: 'suppress-vscode-lsp-warning',
+        configureWebpack() {
+          return {
+            ignoreWarnings: [
+              {
+                module: /vscode-languageserver-types/,
+                message:
+                  /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
+              },
+            ],
+          };
+        },
+      };
+    },
   ],
 
   themes: [

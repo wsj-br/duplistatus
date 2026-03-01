@@ -6,7 +6,7 @@
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
-- pnpm >=10.24.0 (packageManager: pnpm@10.29.3)
+- pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 - SQLite3
 - Inkscape (for documentation SVG translation and PNG export; required only if you run `translate` or `translate:svg`)
 - bat/batcat (to show a pretty version of the `translate:help`)
@@ -156,10 +156,10 @@ The development servers (`start:*`) provide hot module replacement for rapid dev
 - `pnpm start` - Start production server (port 9666)
 
 ### Docker Scripts {#docker-scripts}
-- `pnpm docker-up` - Start Docker Compose stack
-- `pnpm docker-down` - Stop Docker Compose stack
-- `pnpm docker-clean` - Clean Docker environment and cache
-- `pnpm docker-devel` - Build a development Docker image tagged as `wsj-br/duplistatus:devel`
+- `pnpm docker:up` - Start Docker Compose stack
+- `pnpm docker:down` - Stop Docker Compose stack
+- `pnpm docker:clean` - Clean Docker environment and cache
+- `pnpm docker:devel` - Build a development Docker image tagged as `wsj-br/duplistatus:devel`
 
 ### Cron Service Scripts {#cron-service-scripts}
 - `pnpm cron:start` - Start cron service in production mode

@@ -1,6 +1,6 @@
 {
   "name": "duplistatus",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.30.3",
@@ -31,10 +31,10 @@
     "take-screenshots": "sh -c 'tsx --env-file=.env scripts/take-screenshots.ts \"$@\" 2>&1 | tee take-screenshots.log' _",
     "set-smtp-test-config": "tsx --env-file=.env scripts/set-smtp-test-config.ts",
     "test-smtp-connections": "tsx --env-file=.env scripts/test-smtp-connections.ts",
-    "docker-up": "./scripts/pre-checks.sh && docker compose up --build -d",
-    "docker-down": "docker compose down",
-    "docker-clean": "./scripts/clean-docker.sh",
-    "docker-devel": "docker build . -t wsj-br/duplistatus:devel",
+    "docker:up": "./scripts/pre-checks.sh && docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "docker:clean": "./scripts/clean-docker.sh",
+    "docker:devel": "docker build . -t wsj-br/duplistatus:devel",
     "test-entrypoint": "./scripts/test-entrypoint.sh"
   },
   "dependencies": {
@@ -96,12 +96,12 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.3.2",
+    "@types/node": "^25.3.3",
     "@types/node-cron": "^3.0.11",
     "@types/react": "19.2.14",
     "@types/string-template": "^1.0.7",
     "baseline-browser-mapping": "latest",
-    "eslint": "^10.0.2",
+    "eslint": "^9.16.0",
     "eslint-config-next": "16.1.6",
     "intlayer-editor": "^8.1.8",
     "puppeteer": "^24.37.5",

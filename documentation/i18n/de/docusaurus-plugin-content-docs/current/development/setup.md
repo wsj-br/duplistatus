@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-16T02:21:34.633Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: d88751514a7cd433
+translation_last_updated: '2026-03-01T00:16:36.121Z'
+source_file_mtime: '2026-03-01T00:09:27.997Z'
+source_file_hash: 6d8b0e530d4c1ecb
 translation_language: de
 source_file_path: development/setup.md
 ---
@@ -11,10 +11,10 @@ source_file_path: development/setup.md
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
-- pnpm >=10.24.0 (packageManager: pnpm@10.29.3)
+- pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 - SQLite3
-- Inkscape (für SVG-Übersetzung und PNG-Exportieren in der Dokumentation; erforderlich nur, wenn Sie `translate` oder `translate:svg` ausführen)
-- bat/batcat (um eine ansprechende Version der `translate:help` einzublenden)
+- Inkscape (für die Übersetzung von Dokumentations-SVG und PNG-Exportieren; erforderlich nur, wenn Sie `translate` oder `translate:svg` ausführen)
+- bat/batcat (um eine schöne Version der `translate:help` einzublenden)
 - direnv (um die `.env*`-Dateien automatisch zu laden)
 
 ## Schritte {#steps}
@@ -156,10 +156,10 @@ Die Entwicklungsserver (`start:*`) bieten Hot-Module-Replacement für schnelle E
 - `pnpm start` - Produktions-Server starten (Port 9666)
 
 ### Docker-Skripte {#docker-scripts}
-- `pnpm docker-up` - Docker Compose Stack starten
-- `pnpm docker-down` - Docker Compose Stack stoppen
-- `pnpm docker-clean` - Docker-Umgebung und Cache bereinigen
-- `pnpm docker-devel` - Development Docker Image mit dem Tag `wsj-br/duplistatus:devel` erstellen
+- `pnpm docker:up` - Docker-Compose-Stack starten
+- `pnpm docker:down` - Docker-Compose-Stack stoppen
+- `pnpm docker:clean` - Docker-Umgebung und Cache bereinigen
+- `pnpm docker:devel` - Ein Entwicklungs-Docker-Image mit dem Tag `wsj-br/duplistatus:devel` erstellen
 
 ### Cron-Service-Skripte {#cron-service-scripts}
 - `pnpm cron:start` - Starten des Cron-Service im Produktionsmodus

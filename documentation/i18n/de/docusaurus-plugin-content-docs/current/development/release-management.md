@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-16T02:21:34.558Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: fae6b911d504b61b
+translation_last_updated: '2026-03-01T00:16:34.112Z'
+source_file_mtime: '2026-03-01T00:08:29.885Z'
+source_file_hash: 717b94b8fdfe2364
 translation_language: de
 source_file_path: development/release-management.md
 ---
@@ -19,11 +19,11 @@ Das Projekt folgt Semantic Versioning (SemVer) mit dem Format `MAJOR.MINOR.PATCH
 
 Vor der Veröffentlichung einer neuen Version müssen Sie sicherstellen, dass Sie Folgendes abgeschlossen haben:
 
-- [ ] Alle Änderungen sind committed und in den `vMAJOR.MINOR.x` Branch gepusht.
+- [ ] Alle Änderungen sind auf den `vMAJOR.MINOR.x`-Branch committed und gepusht.
 - [ ] Die Versionsnummer ist in `package.json` aktualisiert (verwenden Sie `scripts/update-version.sh`, um sie über alle Dateien hinweg zu synchronisieren).
-- [ ] Alle Tests bestehen (im Entwicklungsmodus, lokal, Docker und podman).
-- [ ] Starten Sie einen Docker-Container mit `pnpm docker-up` und führen Sie `scripts/compare-versions.sh` aus, um die Versionskonsistenz zwischen Entwicklungsumgebung und Docker-Container zu bestätigen (erfordert, dass der Docker-Container läuft). Dieses Skript vergleicht SQLite-Versionen nur nach Hauptversion (z. B. werden 3.45.1 und 3.51.1 als kompatibel betrachtet) und vergleicht Node-, npm- und Duplistatus-Versionen exakt.
-- [ ] Dokumentation ist aktuell, aktualisieren Sie die Screenshots (verwenden Sie `pnpm take-screenshots`).
+- [ ] Alle Tests bestehen (im Entwicklungsmodus, lokal, Docker und Podman). 
+- [ ] Starten Sie einen Docker-Container mit `pnpm docker:up` und führen Sie `scripts/compare-versions.sh` aus, um die Versionskonsistenz zwischen Entwicklungsumgebung und Docker-Container zu bestätigen (erfordert, dass der Docker-Container ausgeführt wird). Dieses Skript vergleicht SQLite-Versionen nur nach Hauptversion (z. B. werden 3.45.1 und 3.51.1 als kompatibel betrachtet) und vergleicht Node-, npm- und Duplistatus-Versionen exakt.
+- [ ] Dokumentation ist aktuell, aktualisieren Sie die Screenshots (verwenden Sie `pnpm take-screenshots`)
 - [ ] Versionshinweise sind in `documentation/docs/release-notes/VERSION.md` vorbereitet.
 - [ ] Führen Sie `scripts/generate-readme-from-intro.sh` aus, um `README.md` mit der neuen Version und allen Änderungen aus `documentation/docs/intro.md` zu aktualisieren. Dieses Skript generiert auch automatisch `README_dockerhub.md` und `RELEASE_NOTES_github_VERSION.md`.
 

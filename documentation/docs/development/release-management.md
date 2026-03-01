@@ -15,7 +15,7 @@ Before releasing a new version, ensure you have completed the following:
 - [ ] All changes are committed and pushed to the `vMAJOR.MINOR.x` branch.
 - [ ] The version number is updated in `package.json` (use `scripts/update-version.sh` to synchronise it across files).
 - [ ] All tests pass (in devel mode, local, docker and podman). 
-- [ ] Start a Docker container with `pnpm docker-up` and run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running). This script compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible), and compares Node, npm, and Duplistatus versions exactly.
+- [ ] Start a Docker container with `pnpm docker:up` and run `scripts/compare-versions.sh` to verify version consistency between development environment and Docker container (requires Docker container to be running). This script compares SQLite versions by major version only (e.g., 3.45.1 vs 3.51.1 are considered compatible), and compares Node, npm, and Duplistatus versions exactly.
 - [ ] Documentation is up to date, update the screenshots (use `pnpm take-screenshots`)
 - [ ] Release notes are prepared in `documentation/docs/release-notes/VERSION.md`.
 - [ ] Run `scripts/generate-readme-from-intro.sh` to update `README.md` with the new version and any changes from `documentation/docs/intro.md`. This script also automatically generates `README_dockerhub.md` and `RELEASE_NOTES_github_VERSION.md`.

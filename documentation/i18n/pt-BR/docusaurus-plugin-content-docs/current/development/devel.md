@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-16T02:21:42.439Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: 4651d154540967f5
+translation_last_updated: '2026-03-01T00:17:09.881Z'
+source_file_mtime: '2026-03-01T00:08:30.255Z'
+source_file_hash: 0fdfead3056820d5
 translation_language: pt-BR
 source_file_path: development/devel.md
 ---
@@ -38,7 +38,7 @@ pnpm start-local
 ## Iniciar uma pilha Docker (Docker Compose) {#start-a-docker-stack-docker-compose}
 
 ```bash
-pnpm docker-up
+pnpm docker:up
 ```
 
 Ou manualmente:
@@ -50,7 +50,7 @@ docker compose up --build -d
 ## Parar uma pilha Docker (Docker Compose) {#stop-a-docker-stack-docker-compose}
 
 ```bash
-pnpm docker-down
+pnpm docker:down
 ```
 
 Ou manualmente:
@@ -62,7 +62,7 @@ docker compose down
 ## Limpar ambiente Docker {#clean-docker-environment}
 
 ```bash
-pnpm docker-clean
+pnpm docker:clean
 ```
 
 Ou manualmente:

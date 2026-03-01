@@ -34,7 +34,7 @@ pnpm start-local
 ## Start a Docker stack (Docker Compose) {#start-a-docker-stack-docker-compose}
 
 ```bash
-pnpm docker-up
+pnpm docker:up
 ```
 
 Or manually:
@@ -45,7 +45,7 @@ docker compose up --build -d
 ## Stop a Docker stack (Docker Compose) {#stop-a-docker-stack-docker-compose}
 
 ```bash
-pnpm docker-down
+pnpm docker:down
 ```
 
 Or manually:
@@ -56,7 +56,7 @@ docker compose down
 ## Clean Docker environment {#clean-docker-environment}
 
 ```bash
-pnpm docker-clean
+pnpm docker:clean
 ```
 
 Or manually:

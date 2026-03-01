@@ -11,10 +11,10 @@ This file documents essential information for AI agents working in the duplistat
 | Component | Version |
 |-----------|---------|
 | Node.js | >=24.12.0 |
-| TypeScript | ~5.9.3 |
-| Next.js (App Router) | ^16.1.x |
-| React & React-DOM | ^19.2.x |
-| Tailwind CSS | ^4.2.x |
+| TypeScript | ^5.9.3 |
+| Next.js (App Router) | ^16.1.6 |
+| React & React-DOM | ^19.2.4 |
+| Tailwind CSS | ^4.2.1 |
 | pnpm | >=10.24.0 (packageManager: pnpm@10.30.3) |
 | SQLite | better-sqlite3 ^12.6.2 |
 | intlayer | ^8.1.8 (i18n) |
@@ -73,9 +73,9 @@ pnpm validate-csv-export  # Validate CSV export functionality
 pnpm take-screenshots     # Take documentation screenshots
 
 # Docker
-pnpm docker-up            # Build and start Docker containers
-pnpm docker-down          # Stop Docker containers
-pnpm docker-clean         # Clean Docker resources
+pnpm docker:up            # Build and start Docker containers
+pnpm docker:down          # Stop Docker containers
+pnpm docker:clean         # Clean Docker resources
 
 # Translation (documentation)
 pnpm translate            # Translate documentation (runs docs + SVG translation)
@@ -221,7 +221,7 @@ export default {
   - `pnpm generate-test-data` - Populate test data
   - `pnpm validate-csv-export` - Test exports
   - `pnpm take-screenshots` - Visual regression
-  - Docker testing: `pnpm docker-devel`
+  - Docker testing: `pnpm docker:devel`
 
 ## API Patterns
 

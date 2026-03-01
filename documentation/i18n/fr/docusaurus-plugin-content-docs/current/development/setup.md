@@ -1,7 +1,7 @@
 ---
-translation_last_updated: '2026-02-16T02:21:30.369Z'
-source_file_mtime: '2026-02-16T00:30:39.430Z'
-source_file_hash: d88751514a7cd433
+translation_last_updated: '2026-03-01T00:16:13.394Z'
+source_file_mtime: '2026-03-01T00:09:27.997Z'
+source_file_hash: 6d8b0e530d4c1ecb
 translation_language: fr
 source_file_path: development/setup.md
 ---
@@ -11,7 +11,7 @@ source_file_path: development/setup.md
 
 - Docker / Docker Compose
 - Node.js >=24.12.0
-- pnpm >=10.24.0 (packageManager: pnpm@10.29.3)
+- pnpm >=10.24.0 (packageManager: pnpm@10.30.3)
 - SQLite3
 - Inkscape (pour la traduction SVG de la documentation et l'export PNG ; requis uniquement si vous exécutez `translate` ou `translate:svg`)
 - bat/batcat (pour afficher une version élégante de `translate:help`)
@@ -156,10 +156,10 @@ Les serveurs de développement (`start:*`) offrent un remplacement de module à 
 - `pnpm start` - Démarrer le serveur de production (port 9666)
 
 ### Scripts Docker {#docker-scripts}
-- `pnpm docker-up` - Démarrer la pile Docker Compose
-- `pnpm docker-down` - Arrêter la pile Docker Compose
-- `pnpm docker-clean` - Nettoyer l'environnement Docker et le cache
-- `pnpm docker-devel` - Construire une image Docker de développement étiquetée comme `wsj-br/duplistatus:devel`
+- `pnpm docker:up` - Démarrer la pile Docker Compose
+- `pnpm docker:down` - Arrêter la pile Docker Compose
+- `pnpm docker:clean` - Nettoyer l'environnement Docker et le cache
+- `pnpm docker:devel` - Construire une image Docker de développement étiquetée `wsj-br/duplistatus:devel`
 
 ### Scripts du Service Cron {#cron-service-scripts}
 - `pnpm cron:start` - Démarrer le service cron en mode production
