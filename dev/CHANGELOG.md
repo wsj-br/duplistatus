@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.2]
 
 ### Fixed
+- **pnpm install warnings**: Resolved three install-time warnings: (1) unmet peer `webpack@5.104.1` from `next-intlayer` > `@intlayer/webpack` (project has webpack 5.105.3) by adding `pnpm.peerDependencyRules.allowedVersions.webpack: "5"` in root `package.json`; (2) deprecated subdependencies `prebuild-install@7.1.3` (from better-sqlite3) and `whatwg-encoding@3.1.1` (from documentation > docusaurus-search-local > cheerio) by adding `pnpm.allowedDeprecatedVersions` for both so install runs without warnings.
 - **application-logs-viewer useEffect exhaustive-deps**: Resolved react-hooks/exhaustive-deps warning for the auto-scroll effect. `logData` is intentionally omitted from the dependency array so we only scroll when auto-scroll or selected file changes, not on every poll; new-line scrolling is handled in loadLogs. Added an eslint-disable-next-line with a short comment.
 - **Build warning vscode-languageserver-types (documentation)**: Suppressed Webpack "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted" for transitive dependency `vscode-languageserver-types` (from intlayer-editor) in the **documentation** (Docusaurus) build via an inline plugin in `documentation/docusaurus.config.ts` that adds `ignoreWarnings`. The warning occurs during the docs build only, not the main app.
 
